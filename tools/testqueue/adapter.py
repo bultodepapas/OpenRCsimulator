@@ -28,12 +28,12 @@ def prepare_history(preset, directory, request):
             raise ValueError("history destination must be new inside the owned attempt")
         history = directory / "history"
         subprocess.run(["git", "clone", "--no-checkout", "--no-hardlinks", request["source"], str(history)],
-                       check=True, capture_output=True, timeout=300)
+                       check=True, capture_output=True, timeout=300, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         shutil.move(str(history / ".git"), str(ROOT / ".git"))
         subprocess.run(["git", "reset", "--mixed", request["manifest"]["commit"]], cwd=ROOT,
-                       check=True, capture_output=True, timeout=60)
+                       check=True, capture_output=True, timeout=60, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
     elif preset == "landscape":
-        subprocess.run(["git", "init", "-q", str(ROOT)], check=True, capture_output=True, timeout=30)
+        subprocess.run(["git", "init", "-q", str(ROOT)], check=True, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
 
 
 def main(directory: Path) -> int:
@@ -51,8 +51,11 @@ def main(directory: Path) -> int:
             if not manifest.get("import_files") or "--import" in options["argv"]:
                 imported = run_checked([os.environ["OPENRC_GODOT"], "--headless", "--path", str(ROOT / "app"),
                                         "--audio-driver", "Dummy", "--import"], directory / "imports", timeout=600)
-                if not imported["ok"]:
-                    verdict.update(ok=False, complete=True, import_verdict=imported)
+                if (imported.get("ok") is not True or
+                        preset == "checked" and imported.get("complete") is not True):
+                    # The requested checked test did not run. Preserve the
+                    # import report without presenting it as a complete check.
+                    verdict.update(ok=False, complete=preset != "checked", import_verdict=imported)
                     code = 1
                     return code
                 options["argv"] = [arg for arg in options["argv"] if arg != "--import"]
@@ -91,8 +94,10 @@ def main(directory: Path) -> int:
             command += ["--script", options["script"]]
             result = run_checked(command, directory / "checks", timeout=options["timeout"] - 0.5,
                                  required=options["require"], **options.get("settings", {}))
-            verdict.update(ok=result["ok"], complete=True, checked=result)
-            code = 0 if result["ok"] else 1
+            complete = result.get("complete") is True and type(result.get("ok")) is bool
+            ok = complete and result["ok"] is True
+            verdict.update(ok=ok, complete=complete, checked=result)
+            code = 0 if ok else 1
         elif preset == "aircraft-screenshot":
             from tools.godot.run_checked import run_checked
             command = [os.environ["OPENRC_GODOT"], "--path", str(ROOT / "app"),
@@ -122,7 +127,7 @@ def main(directory: Path) -> int:
                 command += ["--out", str(directory / "captures"), "--run-id", directory.name]
             if preset == "godtest":
                 command += ["--godot", os.environ["OPENRC_GODOT"], "--out", str(directory / "godtest")]
-            code = subprocess.call(command, cwd=ROOT)
+            code = subprocess.call(command, cwd=ROOT, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
             complete, evidence_ok, evidence = validate_evidence(preset, directory, ROOT, options)
             verdict.update(ok=code == 0 and evidence_ok, complete=complete, evidence=evidence)
             if code == 0 and complete and not evidence_ok:

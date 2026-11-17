@@ -193,6 +193,38 @@ class SnapshotTests(unittest.TestCase):
         self.assertFalse(report["ok"])
         self.assertIn("manifest digest does not match", report["errors"])
 
+    def test_verified_manifest_object_and_raw_hash_share_the_same_read(self) -> None:
+        original = self.capture()
+        directory = self.base / "snapshot"
+        path = directory / "manifest.json"
+        data = path.read_bytes()
+        report = snapshots.verify(directory, include_manifest=True)
+        self.assertTrue(report["ok"])
+        self.assertEqual(report["manifest"], original)
+        self.assertEqual(report["manifest_sha256"], hashlib.sha256(data).hexdigest())
+        self.assertNotIn("manifest", snapshots.verify(directory))
+        forged = dict(original, source_root="unverified-path", scope=["app", "tools", "research"])
+        path.write_text(json.dumps(forged), encoding="utf-8")
+        self.assertEqual(report["manifest"], original)
+        invalid = snapshots.verify(directory, include_manifest=True)
+        self.assertFalse(invalid["ok"])
+        self.assertNotIn("manifest", invalid)
+        self.assertEqual(invalid["failure_kind"], "INVALID")
+
+    def test_policy_file_read_rejects_substitution_with_the_original_receipt(self) -> None:
+        self.write("app/get-godot.sh", b"ENGINE_VERSION=original\n")
+        self.capture()
+        directory = self.base / "snapshot"
+        manifest = snapshots.verify(directory, include_manifest=True)["manifest"]
+        self.assertEqual(snapshots.read_verified_file(directory, manifest, "app/get-godot.sh"),
+                         b"ENGINE_VERSION=original\n")
+        path = directory / "source/app/get-godot.sh"
+        path.write_bytes(b"ENGINE_VERSION=forged\n")
+        with self.assertRaisesRegex(ValueError, "policy input differs"):
+            snapshots.read_verified_file(directory, manifest, "app/get-godot.sh")
+        with self.assertRaisesRegex(ValueError, "absent from the verified manifest"):
+            snapshots.read_verified_file(directory, manifest, "app/undeclared.sh")
+
     def test_rejects_links_and_destinations_inside_checkout(self) -> None:
         with self.assertRaisesRegex(ValueError, "outside"):
             snapshots.capture(self.repo, self.repo, scope=("app",))

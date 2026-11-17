@@ -51,6 +51,7 @@ Folder names can differ between tools and reports. Use this map rather than rena
 | Tools and inputs | Evidence / authoritative home |
 | --- | --- |
 | [input](input/) | [Radio/input evidence](../docs/research/radio-input/) |
+| [testqueue/resilience](testqueue/resilience/README.md) | [MCP queue resilience audit and recorded probes, 2026-11-15](../docs/research/testqueue/2026-11-15-resilience/README.md); assertions reproduce baseline limitations, not desired production behavior |
 | [radio-latency](radio-latency/README.md) | [F6b latency reduction](../docs/research/radio-input/F6b/README.md) |
 | [aircraft-editor](aircraft-editor/) | [Workshop guide and evidence map](../docs/AIRCRAFT-WORKSHOP.md) |
 | [flight-overlays](flight-overlays/) | [HUD evidence](../docs/research/flight-overlays/HUD-01-10/README.md) |

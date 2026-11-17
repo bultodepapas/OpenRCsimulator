@@ -129,6 +129,10 @@ use a durable request ID and do not need an interactive `sim_launch` session. Th
 status and recovery are separate from interactive session handles and `sim_stop`.
 
 The interactive bridge uses MCP over stdio, the standard library and `debugctl.py`.
+Protocol intake and cached batch status can progress during an ordered simulator
+call; `sim_stop` still executes in that ordered lane. See the
+[queue operating contract](../testqueue/README.md#mcp-checked-batches) for overload,
+EOF reply loss, recovery IDs and observation limits.
 The checked-batch tools also use the configured [test pool](../testqueue/README.md).
 
 ```sh

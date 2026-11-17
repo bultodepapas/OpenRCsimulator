@@ -6,6 +6,8 @@ import threading
 import unittest
 from unittest.mock import patch
 
+from tools.testqueue.test_pool import verified_fixture
+
 from tools.testqueue.pool import Pool
 
 
@@ -61,10 +63,10 @@ class PoolConcurrencyTests(unittest.TestCase):
                 queried.set()
                 return {"job": "local-job"}
             if operation == "status":
-                return {"state": "RUNNING"}
+                return {"state": "RUNNING", "payload": {"manifest": {"source_digest": "fixture"}}}
             raise AssertionError(operation)
 
-        with patch("tools.testqueue.pool.verify", return_value={"ok": True}), \
+        with patch("tools.testqueue.pool.verify", side_effect=verified_fixture), \
                 patch.object(self.pool, "probe", return_value=[]), \
                 patch("tools.testqueue.pool.plan", return_value={"selected": "windows"}), \
                 patch("tools.testqueue.pool.rpc", side_effect=rpc):
@@ -93,16 +95,18 @@ class PoolConcurrencyTests(unittest.TestCase):
         recovering = threading.Event()
         release = threading.Event()
         queried = threading.Event()
+        identity_calls = []
 
         def rpc(operation, **request):
-            if operation == "submit":
-                recovering.set()
-                if not release.wait(5):
-                    raise RuntimeError("fixture timed out")
-                return {"job": "local-job", "handle": "local-job:owner"}
             if operation == "recover":
-                queried.set()
-                return {"job": "local-job"}
+                identity_calls.append(request["request_id"])
+                if len(identity_calls) == 1:
+                    recovering.set()
+                    if not release.wait(5):
+                        raise RuntimeError("fixture timed out")
+                else:
+                    queried.set()
+                return {"job": "local-job", "handle": "local-job:owner"}
             if operation == "status":
                 return {"state": "RUNNING"}
             raise AssertionError(operation)

@@ -387,7 +387,7 @@ def _launch_local(argv: list[str]) -> int:
         command += ["--fullscreen"]
     if "--import" in argv:  # assets pulled since the last import load as "Unable to open file: …ctex"
         imported = subprocess.run([command[0], "--headless", "--path", command[2], "--audio-driver", "Dummy", "--import"],
-                                  capture_output=True, text=True, timeout=1800)
+                                  capture_output=True, text=True, timeout=1800, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         if imported.returncode != 0:
             print("import failed:\n" + imported.stdout[-2000:], file=sys.stderr)
             return 2
@@ -432,7 +432,7 @@ def _launch_local(argv: list[str]) -> int:
         env["OPENRC_DEBUG_BRIDGE"] = str(chosen)
         with open(out / "engine.log", "wb") as engine_log:
             process = subprocess.Popen(command, cwd=REPO, env=env, stdout=engine_log, stderr=subprocess.STDOUT,
-                                       stdin=subprocess.DEVNULL, start_new_session=True)
+                                       stdin=subprocess.DEVNULL, start_new_session=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         _OWNED_PROCESSES[process.pid] = process
         session = {"port": chosen, "launcher_pid": process.pid, "out": str(out),
                    "profile": str(profile) if profile else "real", "command": command, "attempt": attempt + 1}
@@ -555,7 +555,7 @@ def kill_group(pid: int | None) -> None:
         if hasattr(os, "killpg"):
             os.killpg(pid, signal.SIGKILL)  # the launcher leads its own session/process group
         else:
-            subprocess.run(["taskkill", "/F", "/T", "/PID", str(pid)], capture_output=True)
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(pid)], capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
     except OSError:
         pass
 
@@ -1656,7 +1656,7 @@ def bugit(argv: list[str]) -> int:
 def _git_identity() -> dict:
     def git(*args: str) -> str:
         try:
-            return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, timeout=20).stdout.strip()
+            return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, timeout=20, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).stdout.strip()
         except (OSError, subprocess.SubprocessError):
             return ""
     changed = [line for line in git("status", "--short").splitlines() if line.strip()]

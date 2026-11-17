@@ -82,7 +82,7 @@ def stop_process(process: subprocess.Popen) -> str:
             try:
                 result = subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"],
                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                        timeout=10, check=False)
+                                        timeout=10, check=False, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                 if result.returncode and process.poll() is None:
                     cleanup_error = "taskkill failed; only the direct process could be terminated"
             except (OSError, subprocess.SubprocessError) as error:
@@ -240,7 +240,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             try:
                 process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                            stdin=subprocess.DEVNULL, start_new_session=os.name != "nt",
-                                           env=child_env)
+                                           env=child_env, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
             except OSError as error:
                 reason, detail = "launch_error", str(error)
             if process is not None:

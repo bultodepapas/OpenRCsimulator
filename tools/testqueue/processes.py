@@ -36,13 +36,16 @@ _CLEANUP_SECONDS = 8.0
 # -I -S prevents Python environment/site hooks from executing before the gate.
 # On Windows the gate itself waits for the command, so its exit code is the
 # requested command's status.  The job continues to count orphaned children.
+# Both console launch layers run without a console. CREATE_NO_WINDOW does not
+# suppress native GUI windows, and never changes job membership or captured I/O.
 _WINDOWS_GATE = r"""
 import sys
 if sys.stdin.buffer.read(1) != b'1':
     sys.exit(125)
 import subprocess
 try:
-    process = subprocess.Popen(sys.argv[1:], stdin=subprocess.DEVNULL, close_fds=True)
+    process = subprocess.Popen(sys.argv[1:], stdin=subprocess.DEVNULL, close_fds=True,
+                               creationflags=subprocess.CREATE_NO_WINDOW)
     sys.exit(process.wait())
 except OSError as exc:
     print('Could not launch command: ' + str(exc), file=sys.stderr, flush=True)
@@ -280,6 +283,10 @@ def confirm_stopped(identity: dict) -> bool:
         return False
 
 
+class ProcessNotStartedError(RuntimeError):
+    """This adapter observed a failure before entering process creation."""
+
+
 def orphan_absent(identity: dict) -> bool:
     """Bounded same-boot evidence for explicit operator abandonment.
 
@@ -357,13 +364,20 @@ class OwnedProcess:
         self._closed = False
         self._cleanup_error = None
         self._posix_killed = False
+        self._nonlaunch_confirmed = False
+
+    @property
+    def nonlaunch_confirmed(self):
+        """True only after this instance witnessed and cleaned up a pre-create failure."""
+        return self._nonlaunch_confirmed
 
     def start(self):
         if self._process is not None or self._closed:
             raise RuntimeError("attempt already started or closed")
-        self._log_file = self.log.open("xb")
+        creation_entered = False
         status_write = None
         try:
+            self._log_file = self.log.open("xb")
             if os.name == "nt":
                 job_name = "Global\\OpenRC-testqueue-" + str(uuid.uuid4())
                 ctypes.set_last_error(0)
@@ -384,9 +398,11 @@ class OwnedProcess:
                 self._observer = threading.Thread(target=self._observe_windows, daemon=True)
                 self._observer.start()
                 args = [sys.executable, "-I", "-S", "-c", _WINDOWS_GATE, *self.command]
+                creation_entered = True
                 self._process = subprocess.Popen(args, cwd=self.cwd, env=self.env,
                                                  stdin=subprocess.PIPE, stdout=self._log_file,
-                                                 stderr=subprocess.STDOUT, close_fds=True)
+                                                 stderr=subprocess.STDOUT, close_fds=True,
+                                                 creationflags=subprocess.CREATE_NO_WINDOW)
                 self.pid = self._process.pid
                 _wincheck(_kernel32.AssignProcessToJobObject(self._job, int(self._process._handle)))
                 self._assigned = True
@@ -398,6 +414,7 @@ class OwnedProcess:
                 os.set_blocking(self._status_fd, False)
                 args = [sys.executable, "-I", "-S", "-c", _POSIX_GATE,
                         str(status_write), *self.command]
+                creation_entered = True
                 self._process = subprocess.Popen(args, cwd=self.cwd, env=self.env,
                                                  stdin=subprocess.PIPE, stdout=self._log_file,
                                                  stderr=subprocess.STDOUT, close_fds=True,
@@ -415,10 +432,15 @@ class OwnedProcess:
                 self.identity.update({"kind": "windows-job-v1", "job": job_name, "host": host})
             self._process.stdin.write(b"1")
             self._process.stdin.flush()
-        except BaseException:
+        except BaseException as error:
             if status_write is not None:
                 os.close(status_write)
             self._abort_start()
+            if not creation_entered and isinstance(error, Exception):
+                # This receipt is emitted only by this adapter, after local
+                # setup has unwound and before any Popen invocation was entered.
+                self._nonlaunch_confirmed = True
+                raise ProcessNotStartedError(str(error)) from error
             raise
 
     def _abort_start(self):
@@ -470,7 +492,8 @@ class OwnedProcess:
             self._status_fd = None
         if os.name == "nt" and self._process is not None:
             self._process._handle.Close()
-        self._log_file.close()
+        if self._log_file is not None:
+            self._log_file.close()
         self._closed = True
         self._cleanup_error = failure
         if failure:

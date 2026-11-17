@@ -13617,3 +13617,38 @@ msgstr "Qualificação de voo"
 
 msgid "Estimated package proposal. Choose a configuration on Import."
 msgstr "Proposta de pacote estimado. Escolha uma configuração em Importação."
+
+# ClearView import diagnostics.
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+msgstr "Este formato de textura ainda não é compatível. Converta a textura para um PNG padrão ou BMP de 24 bits sem compressão e atualize sua referência no modelo."
+
+msgid "This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+msgstr "Esta codificação JPEG ou estes metadados não são compatíveis. Exporte novamente a textura como JPEG baseline padrão ou PNG."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges."
+msgstr "O polígono %s na peça “%s” tem arestas que se cruzam."
+
+msgid "Recenter or rescale this model to preserve its detail at render precision."
+msgstr "Centralize novamente ou redimensione este modelo para preservar seus detalhes na precisão de renderização."
+
+msgid "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing."
+msgstr "Um triângulo do modelo perde sua área ou a orientação de seus vértices na precisão de renderização. Centralize novamente ou redimensione a geometria de origem antes de importar."
+
+msgid "The import was cancelled."
+msgstr "A importação foi cancelada."
+
+msgid "The ClearView ZIP cannot be opened."
+msgstr "Não foi possível abrir o ZIP do ClearView."
+
+msgid "The ClearView ZIP must be between 22 bytes and 64 MiB."
+msgstr "O ZIP do ClearView deve ter entre 22 bytes e 64 MiB."
+
+msgid "The ZIP contains no ClearView model-root params.txt file."
+msgstr "O ZIP não contém um arquivo params.txt na raiz de um modelo ClearView."
+
+msgid "ClearView model %s: %s"
+msgstr "Modelo ClearView %s: %s"
+
+msgid "ClearView aircraft ZIP"
+msgstr "ZIP de aeronave ClearView"

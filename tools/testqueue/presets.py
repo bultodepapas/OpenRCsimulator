@@ -57,7 +57,9 @@ def validate(preset: str, options: dict) -> dict:
         if argv:
             raise ValueError("checked uses script and require options, not raw engine arguments")
         markers = result.setdefault("require", [])
-        if not isinstance(markers, list) or any(not isinstance(marker, str) or not marker or len(marker) > 4096 or "\n" in marker for marker in markers):
+        if (not isinstance(markers, list) or len(markers) > 128
+                or any(not isinstance(marker, str) or not marker or len(marker) > 4096
+                       or any(char in marker for char in ("\n", "\r", "\0")) for marker in markers)):
             raise ValueError("checked completion markers must be nonempty literals")
         settings = result.setdefault("settings", {})
         if not isinstance(settings, dict) or set(settings) - {"max_log_bytes", "warnings_as_errors", "label"}:

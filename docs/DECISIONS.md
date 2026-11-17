@@ -348,6 +348,46 @@ containment with either backend; do not build a generic backend framework meanwh
 [SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
 workers must use structured transport rather than share this database.
 
+**TQ-04 resilience direction, 2026-11-15; partial implementation under review.** The
+[resilience audit](research/testqueue/2026-11-15-resilience/README.md) reproduces
+avoidable nonlaunch quarantine, dead-scheduler readiness, pre-receipt recovery
+gaps and falsely confirmed nonexecution during local replay. The
+[repair subplan](plans/mcp-queue-resilience.md) keeps the existing authority
+and proof-based release contract, separates observation/progress deadlines from
+explicit owned cancellation, and gates higher concurrency on physical-host and
+resource reservations. Repair these failures before expanding the pool; a new
+queue backend is not a prerequisite. Independent guardians and remote cancel are
+proposed work, not capabilities of the current combined worker.
+
+The [implementation handoff](research/testqueue/2026-11-15-resilience/implementation.md)
+records the candidate repairs and their negative controls. Keep typed nonlaunch
+proof, pending journal fences, identity-first recovery and conservative version-2
+batch migration. Bounded MCP output delivery may lose replies; it must not block
+accepted work or admit new actions after delivery is abandoned. Preserve the
+concurrent upstream operator-abandonment exception as explicit incomplete evidence;
+automatic recovery must never use it or bypass pending journal fences. Fleet
+capacity and native qualification have not changed.
+
+**TQ-04-R8, narrow storage candidate.** Reclaim a redundant successful remote
+input copy only after verifying and pinning the original archive and journaling
+intent; record storage uncertainty separately from process cleanup. Remove failed
+coordinator temporaries only when owned by that invocation. A terminal state or
+file age cannot establish nonuse: source trees can hold capture evidence, abandoned
+attempts can retain unconfirmed cleanup, and shared archives can have readers.
+Broader retention waits for explicit evidence ownership and reader lifetimes in
+the [same repair plan](plans/mcp-queue-resilience.md#storage-cleanup-and-retention-acceptance).
+
+**TQ-04-R8 collection, 2026-11-16; review candidate.** Publish isolated, immutable
+evidence generations bound to the original request and finished status, with an
+explicit collection format and verified reuse. An interrupted copy must not
+overwrite the files behind an earlier passing report. Reobserve/recollect older
+unverified batch results under the same execution identity and preserve their
+history. Local control files are excluded, diagnostic-only results cannot pass,
+and collection does not grant authority to delete a workspace. The selected
+checked-evidence contract is intentionally narrower than a complete per-preset
+artifact inventory; broaden retention only after the ownership, reader-lifetime
+and native durability gates in the [handoff](research/testqueue/2026-11-15-resilience/implementation.md#16-november-re-audit-of-current-main-and-the-review-branch).
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**

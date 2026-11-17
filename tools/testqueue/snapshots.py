@@ -80,7 +80,7 @@ def _git(root: Path, *args: str) -> bytes:
     try:
         return subprocess.check_output(
             ["git", "--literal-pathspecs", "-C", str(root), *args],
-            stderr=subprocess.PIPE, timeout=120,
+            stderr=subprocess.PIPE, timeout=120, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
     except (OSError, subprocess.SubprocessError) as exc:
         raise ValueError(f"Git command failed ({args[0]}): {exc}") from exc
@@ -393,16 +393,47 @@ def capture(source: Path, destination: Path, *, scope: tuple[str, ...] = DEFAULT
     return manifest
 
 
-def verify(snapshot_dir: Path, *, canceled=None) -> dict:
-    """Validate receipt, file hashes, metadata, links and unexpected materialized files."""
+def read_verified_file(snapshot_dir: Path, manifest: dict, relative: str) -> bytes:
+    """Return the exact bytes used by a policy check, bound to its verified receipt."""
+    relative = _relative(relative)
+    expected = manifest["files"].get(relative)
+    if not isinstance(expected, dict) or not isinstance(expected.get("sha256"), str):
+        raise ValueError(f"policy input is absent from the verified manifest: {relative}")
+    path = Path(snapshot_dir) / "source" / relative
+    metadata = _file_stat(path)
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        if _signature(os.fstat(stream.fileno())) != _signature(metadata):
+            raise ValueError(f"policy input changed during read: {relative}")
+        data = stream.read()
+        if _signature(os.fstat(stream.fileno())) != _signature(metadata):
+            raise ValueError(f"policy input changed during read: {relative}")
+    if (_signature(_file_stat(path)) != _signature(metadata)
+            or hashlib.sha256(data).hexdigest() != expected["sha256"]):
+        raise ValueError(f"policy input differs from the verified manifest: {relative}")
+    return data
+
+
+def verify(snapshot_dir: Path, *, canceled=None, include_manifest: bool = False) -> dict:
+    """Validate receipt, file hashes, metadata, links and unexpected materialized files.
+
+    Admission callers may request the exact verified manifest. They must consume
+    that object instead of rereading unchecked fields from a mutable pathname.
+    The raw receipt hash also binds batch input identities to this same read.
+    Neither option makes the directory an atomic filesystem snapshot.
+    """
     errors = []
     manifest = None
+    manifest_sha256 = None
+    failure_kind = None
     try:
         directory = Path(os.path.abspath(snapshot_dir))
         _check_no_links(directory)
         receipt = directory / "manifest.json"
         _file_stat(receipt)
-        manifest = json.loads(receipt.read_text(encoding="utf-8"))
+        receipt_bytes = receipt.read_bytes()
+        manifest_sha256 = hashlib.sha256(receipt_bytes).hexdigest()
+        manifest = json.loads(receipt_bytes.decode("utf-8"))
         if not isinstance(manifest, dict) or manifest.get("format") != FORMAT:
             raise ValueError("unsupported snapshot manifest")
         if manifest.get("manifest_digest") != _digest({key: value for key, value in manifest.items() if key != "manifest_digest"}):
@@ -442,7 +473,16 @@ def verify(snapshot_dir: Path, *, canceled=None) -> dict:
                 errors.append(f"metadata mismatch: {name}")
             if _read_hash(path, metadata) != expected["sha256"]:
                 errors.append(f"hash mismatch: {name}")
-    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except OSError as exc:
+        failure_kind = "IO"
         errors.append(str(exc))
-    return {"ok": not errors, "errors": errors,
-            "source_digest": manifest.get("source_digest") if isinstance(manifest, dict) else None}
+    except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        errors.append(str(exc))
+    report = {"ok": not errors, "errors": errors,
+              "failure_kind": failure_kind or ("INVALID" if errors else None),
+              "source_digest": manifest.get("source_digest") if isinstance(manifest, dict) else None,
+              "manifest_digest": manifest.get("manifest_digest") if isinstance(manifest, dict) else None,
+              "manifest_sha256": manifest_sha256}
+    if include_manifest and not errors:
+        report["manifest"] = manifest
+    return report

@@ -22,6 +22,31 @@ from .presets import scheduling, validate
 from .store import Store
 
 
+_SCHEDULER_INTERVAL = 0.1
+_SCHEDULER_MAX_BACKOFF = 5.0
+_SCHEDULER_STALE_SECONDS = 30.0
+
+
+class _LaunchGate:
+    """One-way scheduler decision: a started thread cannot execute while pending."""
+
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._resolved = threading.Event()
+        self._decision = None
+
+    def resolve(self, allowed):
+        with self._lock:
+            if self._decision is not None:
+                raise RuntimeError("attempt launch decision already made")
+            self._decision = allowed
+            self._resolved.set()
+
+    def allowed(self):
+        self._resolved.wait()
+        return self._decision is True
+
+
 def sha256(path: Path) -> str:
     value = hashlib.sha256()
     with path.open("rb") as stream:
@@ -106,7 +131,20 @@ class Worker:
         self.auth = secrets.token_hex(32)
         self.contexts: dict[str, tuple[str, str]] = {}
         self.active: dict[str, object] = {}
+        self._unresolved_attempts: set[str] = set()
+        self._pending_unknown: dict[str, tuple[str, dict]] = {}
+        self._pending_nonlaunch: dict[str, tuple[str, dict]] = {}
         self.stopping = threading.Event()
+        self._scheduler_lock = threading.Lock()
+        self._scheduler_thread = None
+        self._scheduler_state = "STARTING"
+        self._scheduler_last_success = None
+        self._scheduler_last_success_monotonic = None
+        self._scheduler_last_dispatch = None
+        self._scheduler_error = None
+        self._scheduler_diagnostic_error = None
+        self._scheduler_needs_storage_check = False
+        self._scheduler_fault_version = 0
         self.draining = False
         self.reservation = None
         self._occupancy_cache = None
@@ -157,7 +195,7 @@ class Worker:
         import re
         # Exact official build identifier comes from the tested revision, not a moving stable alias.
         versions = re.findall(r'4\.[0-9]+\.[A-Za-z0-9.]+\.official\.[0-9a-f]+', pin)
-        observed = subprocess.check_output([str(self.engine), "--version"], timeout=15, text=True).strip()
+        observed = subprocess.check_output([str(self.engine), "--version"], timeout=15, text=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).strip()
         if not versions or observed not in versions:
             raise ValueError(f"ENGINE_MISMATCH: {observed}; revision pins {versions}")
         binaries = {self.engine.name: sha256(self.engine)}
@@ -188,16 +226,56 @@ class Worker:
             if not windows or set(identity["binaries_sha512"].values()) != set(windows[1].split()):
                 raise ValueError("ENGINE_MISMATCH: Windows binary digests do not match snapshot's official pins")
 
+    def _storage_capacity(self):
+        """Observe the materialization volume; unknown is never empty/free."""
+        path = self.root / "attempts"
+        try:
+            if not path.exists():
+                path = self.root
+            usage = shutil.disk_usage(path)
+            if (any(type(value) is not int or value < 0 for value in (usage.total, usage.used, usage.free))
+                    or usage.free > usage.total):
+                raise ValueError("invalid filesystem capacity observation")
+            return {"available": True, "path": str(path), "free_bytes": usage.free,
+                    "total_bytes": usage.total, "observed_at": time.time(),
+                    "scope": "attempt filesystem volume; not reserved capacity"}
+        except (OSError, ValueError, RuntimeError) as error:
+            return {"available": False, "path": str(path), "free_bytes": None,
+                    "total_bytes": None, "observed_at": time.time(), "error": str(error),
+                    "scope": "attempt filesystem volume; not reserved capacity"}
+
     def dispatch(self, request: dict):
         if not hmac.compare_digest(str(request.get("auth", "")), self.auth):
             raise ValueError("invalid worker authority")
         operation = request.get("operation")
+        # Filesystem capacity is advisory and can be slow. Do not hold the
+        # admission lock while asking the OS about the attempt volume.
+        storage = self._storage_capacity() if operation == "hosts" else None
         with self.lock:
             if operation == "hosts":
+                scheduler = self._scheduler_health()
+                inventory_error = None
+                try:
+                    claims = [dict(row) for row in self.store.db.execute("SELECT * FROM claims")]
+                except Exception as error:
+                    # Unknown inventory must not look like an empty claim set.
+                    claims, inventory_error = None, str(error)
+                    with self._scheduler_lock:
+                        self._scheduler_state = "DEGRADED"
+                        self._scheduler_error = "claim inventory unavailable: " + inventory_error
+                        self._scheduler_needs_storage_check = True
+                        self._scheduler_fault_version += 1
+                    scheduler = self._scheduler_health()
+                condition = ("DRAINING" if self.draining else "READY"
+                             if scheduler["state"] == "READY" and inventory_error is None
+                             and not self._unresolved_attempts else "DEGRADED")
                 return {"id": self.host_id, "platform": platform.system().lower(), "architecture": platform.machine(),
                         "engine": self.engine_identity, "worker_version": VERSION, "observed_at": time.time(),
-                        "condition": "DRAINING" if self.draining else "READY", "reservation": ({key: value for key, value in self.reservation.items() if key != "secret"} if self.reservation else None),
-                        "capacities": self.capacities, "claims": [dict(row) for row in self.store.db.execute("SELECT * FROM claims")],
+                        "condition": condition, "scheduler": scheduler, "inventory_error": inventory_error,
+                        "storage": storage,
+                        "pending_quarantines": len(self._unresolved_attempts),
+                        "reservation": ({key: value for key, value in self.reservation.items() if key != "secret"} if self.reservation else None),
+                        "capacities": self.capacities, "claims": claims,
                         "qualified": [], "adapter": "windows-local-experimental" if os.name == "nt" else "UNSUPPORTED",
                         "remote_hosts": "UNVERIFIED", "physical_parent": "UNVERIFIED"}
             if operation in {"status", "result"}:
@@ -249,6 +327,8 @@ class Worker:
                     raise ValueError("operator abandonment requires a drained worker and an UNKNOWN attempt")
                 if self.active or self.contexts:
                     raise ValueError("attempt still belongs to an executing supervisor thread")
+                if self._unresolved_attempts or self._pending_unknown or self._pending_nonlaunch:
+                    raise ValueError("operator abandonment requires pending attempt journals to recover first")
                 if self.store.db.execute("SELECT 1 FROM attempts WHERE state IN ('DISPATCHING','RUNNING','CLEANING') LIMIT 1").fetchone():
                     raise ValueError("operator abandonment requires no executing attempts")
                 if not orphan_absent(status.get("process")):
@@ -287,6 +367,14 @@ class Worker:
 
     def submit(self, request):
         preset, options = request["preset"], validate(request["preset"], request.get("options", {}))
+        expected_digests = {}
+        for key in ("source_digest", "manifest_digest"):
+            field = "expected_" + key
+            if field in request:
+                value = request[field]
+                if not isinstance(value, str) or len(value) != 64 or any(char not in "0123456789abcdef" for char in value):
+                    raise ValueError(field + " must be a 64-character lowercase hexadecimal digest")
+                expected_digests[key] = value
         owner = request.get("owner")
         if not isinstance(owner, str) or not 1 <= len(owner) <= 128:
             raise ValueError("owner is required")
@@ -301,17 +389,20 @@ class Worker:
         # Resolve a caller-supplied immutable snapshot before acceptance. A duplicate
         # submission must resolve to these same bytes, not resnapshot a changing tree.
         snapshot = Path(request["snapshot"]).resolve()
-        from .snapshots import verify
-        manifest = verify(snapshot)
-        if manifest.get("ok") is False:
+        from .snapshots import read_verified_file, verify
+        manifest = verify(snapshot, include_manifest=True)
+        if manifest.get("ok") is not True:
             raise ValueError("snapshot verification failed: " + str(manifest))
-        receipt = json.loads((snapshot / "manifest.json").read_text(encoding="utf-8"))
+        receipt = manifest["manifest"]
+        for key in ("source_digest", "manifest_digest"):
+            if key in expected_digests and manifest.get(key) != expected_digests[key]:
+                raise ValueError("SNAPSHOT_MISMATCH: " + key + " differs from the accepted request")
         if Path(receipt["source_root"]).resolve() != source:
             raise ValueError("snapshot source does not match the submitted history source")
         if preset in {"suite", "ci", "capture"} and not {"app", "tools", "research", "assets", "site", "docs", ".github"}.issubset(receipt.get("scope", [])):
             raise ValueError("preset requires a full repository snapshot; use its admitted entry point")
         if not self.fixture:
-            pin = (snapshot / "source/app/get-godot.sh").read_text(encoding="utf-8")
+            pin = read_verified_file(snapshot, receipt, "app/get-godot.sh").decode("utf-8")
             self._check_engine_pin(pin, self.engine_identity)
             if preset == "aircraft-screenshot":
                 self._verify_studio_adapter(snapshot / "source")
@@ -348,16 +439,86 @@ class Worker:
         self.store.update(job, status["attempts"][-1]["id"], "FINISHED", data)
         return self.store.get(job)
 
+    def _scheduler_health(self):
+        # A heartbeat is a completed successful scheduler pass, not a promise
+        # about any attempt. Use monotonic age so wall-clock shifts cannot renew it.
+        with self._scheduler_lock:
+            thread = self._scheduler_thread
+            age = (None if self._scheduler_last_success_monotonic is None
+                   else max(0.0, time.monotonic() - self._scheduler_last_success_monotonic))
+            state = self._scheduler_state
+            if thread is not None and not thread.is_alive():
+                state = "STOPPED"
+            elif state == "READY" and (age is None or age > _SCHEDULER_STALE_SECONDS):
+                state = "STALE"
+            return {"state": state, "thread_id": thread.ident if thread else None,
+                    "last_heartbeat": self._scheduler_last_success, "heartbeat_age_seconds": age,
+                    "last_dispatch": self._scheduler_last_dispatch,
+                    "error": self._scheduler_error, "diagnostic_error": self._scheduler_diagnostic_error}
+
     def schedule(self):
-        while not self.stopping.wait(0.1):
-            try:
-                self.schedule_once()
-            except Exception as error:
-                with self.lock, self.store.db:
-                    self.store.event(None, "SCHEDULER_ERROR", {"error": str(error)})
+        with self._scheduler_lock:
+            if self._scheduler_thread is not None:
+                raise RuntimeError("scheduler already started")
+            self._scheduler_thread = threading.current_thread()
+        delay = _SCHEDULER_INTERVAL
+        try:
+            while not self.stopping.wait(delay):
+                with self._scheduler_lock:
+                    needs_storage_check = self._scheduler_needs_storage_check
+                    fault_version = self._scheduler_fault_version
+                try:
+                    if needs_storage_check:
+                        # An empty queue scan alone does not prove writes work.
+                        with self.lock, self.store.db:
+                            self.store.event(None, "SCHEDULER_RECOVERY_CHECK")
+                    self.schedule_once()
+                except Exception as error:
+                    with self._scheduler_lock:
+                        self._scheduler_state = "DEGRADED"
+                        self._scheduler_error = str(error)
+                        self._scheduler_diagnostic_error = None
+                        self._scheduler_needs_storage_check = True
+                        self._scheduler_fault_version += 1
+                    try:
+                        with self.lock, self.store.db:
+                            self.store.event(None, "SCHEDULER_ERROR", {"error": str(error)})
+                    except Exception as diagnostic_error:
+                        # Recording the error may fail for the same reason as
+                        # scheduling. Keep this loop and its attempt owners alive.
+                        with self._scheduler_lock:
+                            self._scheduler_diagnostic_error = str(diagnostic_error)
+                    delay = min(delay * 2, _SCHEDULER_MAX_BACKOFF)
+                else:
+                    with self._scheduler_lock:
+                        self._scheduler_last_success = time.time()
+                        self._scheduler_last_success_monotonic = time.monotonic()
+                        # A later inventory fault cannot be cleared by a pass
+                        # that started before that fault was observed.
+                        if self._scheduler_fault_version == fault_version:
+                            self._scheduler_state = "READY"
+                            self._scheduler_error = None
+                            self._scheduler_diagnostic_error = None
+                            self._scheduler_needs_storage_check = False
+                    delay = _SCHEDULER_INTERVAL
+        finally:
+            with self._scheduler_lock:
+                self._scheduler_state = "STOPPED"
 
     def schedule_once(self):
         with self.lock:
+            # Make fenced outcomes durable before any new allocation. A denied
+            # thread gate proves nonlaunch; failed process cleanup does not.
+            for attempt, (job, data) in list(self._pending_unknown.items()):
+                self.store.update(job, attempt, "UNKNOWN", data)
+                del self._pending_unknown[attempt]
+                self._unresolved_attempts.discard(attempt)
+            for attempt, (job, data) in list(self._pending_nonlaunch.items()):
+                self.store.update(job, attempt, "FINISHED", data)
+                del self._pending_nonlaunch[attempt]
+                self._unresolved_attempts.discard(attempt)
+            if self._unresolved_attempts:
+                return
             if self.draining:
                 return
             barrier = None
@@ -392,34 +553,74 @@ class Worker:
                 if policy["mode"] == "exclusive":
                     barrier = job
                 from .processes import host_identity
-                attempt = self.store.allocate(job, policy["resources"], self.capacities,
-                                              {"process": host_identity(), "host": self.host_id, "scheduling": policy})
+                identity = {"process": host_identity(), "host": self.host_id, "scheduling": policy}
+                gate = _LaunchGate()
+                attempt = self.store.allocate(job, policy["resources"], self.capacities, identity)
                 if attempt:
                     self.active[attempt] = None
-                    threading.Thread(target=self.execute, args=(job, attempt), daemon=True).start()
+                    try:
+                        thread = threading.Thread(target=self._execute_if_granted, args=(gate, job, attempt),
+                                                  name="openrc-attempt-" + attempt, daemon=True)
+                        thread.start()
+                    except BaseException as error:
+                        # start() can raise even after a thread was created. The
+                        # target cannot execute until this one-way gate is granted.
+                        gate.resolve(False)
+                        self.active.pop(attempt, None)
+                        self._unresolved_attempts.add(attempt)
+                        try:
+                            detail = str(error)
+                        except BaseException:
+                            detail = type(error).__name__
+                        data = {**identity, "attempt": attempt, "worker_version": VERSION,
+                                "engine": self.engine_identity, "started": time.time(),
+                                "finished": time.time(), "launch": "NOT_CREATED", "nonlaunch": "CONFIRMED",
+                                "cleanup": "CONFIRMED", "outcome": "INFRA_FAILED", "evidence": "INCOMPLETE",
+                                "error": "execution thread start failed: " + detail}
+                        self._pending_nonlaunch[attempt] = (job, data)
+                        # A failure leaves both the fence and pending transition
+                        # intact for this same scheduler to retry after recovery.
+                        self.store.update(job, attempt, "FINISHED", data)
+                        del self._pending_nonlaunch[attempt]
+                        self._unresolved_attempts.discard(attempt)
+                        if not isinstance(error, Exception):
+                            raise
+                        continue
+                    gate.resolve(True)
+                    with self._scheduler_lock:
+                        self._scheduler_last_dispatch = time.time()
 
-    def _close_process(self, attempt, process):
+    def _execute_if_granted(self, gate, job, attempt):
+        if gate.allowed():
+            self.execute(job, attempt)
+
+    def _close_process(self, attempt, process, *, job=None, data=None):
         # OwnedProcess handle methods are not thread safe. Serialize teardown with
         # occupancy observation and stop advertising the object before result I/O.
         # The durable claim survives until verified cleanup AND collection finish.
         with self.lock:
             try:
                 process.close()
-            except Exception:
-                # Make uncertainty visible before another scheduler pass can
-                # admit compatible work under the old resource-only claims.
-                with self.store.db:
-                    self.store.db.execute("UPDATE attempts SET state='UNKNOWN' WHERE id=?", (attempt,))
-                    self.store.db.execute("UPDATE jobs SET state='UNKNOWN' WHERE id=(SELECT job FROM attempts WHERE id=?)", (attempt,))
+            except BaseException as error:
+                # Fence immediately, before any potentially failing DB write.
+                # The regular execute handler journals its detailed UNKNOWN;
+                # a BaseException needs a retryable fallback of its own.
+                self._unresolved_attempts.add(attempt)
+                if not isinstance(error, Exception) and job is not None:
+                    self._pending_unknown[attempt] = (job, {**(data or {}),
+                        "error": "process cleanup ended without a termination receipt",
+                        "cleanup_error": "process-tree teardown was not established"})
                 raise
             finally:
                 self.active.pop(attempt, None)
 
     def execute(self, job: str, attempt: str):
-        from .processes import OwnedProcess, host_identity
+        from .processes import OwnedProcess, ProcessNotStartedError, host_identity
         directory = self.root / "attempts" / attempt
         process = None
         start_attempted = False
+        start_completed = False
+        confirmed_nonlaunch = False
         cleanup_attempted = False
         cleanup_verified = False
         data = {"host": self.host_id, "worker_version": VERSION, "engine": self.engine_identity,
@@ -427,6 +628,9 @@ class Worker:
         try:
             data["process"] = host_identity()
             directory.mkdir(parents=True, exist_ok=False)
+            # Discoverability does not imply teardown or complete artifacts.
+            # Publish the owned path even when preparation or cleanup fails.
+            data["output"] = str(directory)
             with self.lock:
                 status = self.store.get(job)
                 payload = status["payload"]
@@ -439,11 +643,11 @@ class Worker:
             def canceled_before_start():
                 with self.lock:
                     return bool(self.store.db.execute("SELECT canceled FROM jobs WHERE id=?", (job,)).fetchone()[0])
-            report = verify(Path(payload["snapshot"]), canceled=canceled_before_start)
-            receipt = json.loads((Path(payload["snapshot"]) / "manifest.json").read_text(encoding="utf-8"))
-            if (not report["ok"] or report["source_digest"] != payload["manifest"]["source_digest"]
-                    or receipt.get("manifest_digest") != payload["manifest"].get("manifest_digest")):
+            report = verify(Path(payload["snapshot"]), canceled=canceled_before_start, include_manifest=True)
+            if (not report["ok"] or any(report.get(key) != payload["manifest"].get(key)
+                                        for key in ("source_digest", "manifest_digest"))):
                 raise ValueError("queued snapshot changed or failed verification")
+            receipt = report["manifest"]
             # Each attempt has its own writable project/import cache. Never execute
             # against the immutable source store or another job's .godot directory.
             source = directory / "source"
@@ -462,9 +666,8 @@ class Worker:
             shutil.copytree(Path(payload["snapshot"]) / "source", source, copy_function=copy_owned_file)
             shutil.copy2(Path(payload["snapshot"]) / "manifest.json", directory / "manifest.json")
             copied = verify(directory, canceled=canceled_before_start)
-            copied_receipt = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
-            if (not copied["ok"] or copied["source_digest"] != payload["manifest"]["source_digest"]
-                    or copied_receipt.get("manifest_digest") != payload["manifest"].get("manifest_digest")):
+            if (not copied["ok"] or any(copied.get(key) != payload["manifest"].get(key)
+                                        for key in ("source_digest", "manifest_digest"))):
                 raise ValueError("materialized inputs changed or failed verification")
             if not self.fixture:
                 if payload["preset"] == "aircraft-screenshot":
@@ -496,23 +699,50 @@ class Worker:
             write_json(directory / "request.json", payload)
             command = [sys.executable, str(source / "tools/testqueue/adapter.py"), str(directory)]
             process = OwnedProcess(command, cwd=source, env=env, log=directory / "worker.log")
-            with self.lock:
-                if self.store.get(job)["canceled"]:
-                    data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
-                    self.store.update(job, attempt, "FINISHED", data)
-                    return
-                if not self.fixture and not payload["options"]["headless"] and not desktop_ready():
-                    raise RuntimeError("GUI_LOCKED_OR_UNAVAILABLE before process start")
-                if not self.fixture and self._external_conflicts(refresh=True):
-                    raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
-                self.contexts[attempt] = (job, secret)
-                # Persist the dispatch before spawning. A crash in start is UNKNOWN.
-                self.store.update(job, attempt, "RUNNING", data)
-                start_attempted = True
-                process.start()
-                self.active[attempt] = process
-                data["process"] = process.identity
-                self.store.update(job, attempt, "RUNNING", data)
+            while True:
+                with self.lock:
+                    if self.store.get(job)["canceled"]:
+                        data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
+                        self.store.update(job, attempt, "FINISHED", data)
+                        return
+                    quarantined = self._unresolved_attempts or self.store.db.execute(
+                        "SELECT 1 FROM attempts WHERE state='UNKNOWN' LIMIT 1").fetchone()
+                    if not quarantined:
+                        if not self.fixture and not payload["options"]["headless"] and not desktop_ready():
+                            raise RuntimeError("GUI_LOCKED_OR_UNAVAILABLE before process start")
+                        if not self.fixture and self._external_conflicts(refresh=True):
+                            raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
+                        self.contexts[attempt] = (job, secret)
+                        # Persist uncertainty before crossing the OS creation boundary.
+                        data["launch"] = "CREATION_UNCERTAIN"
+                        self.store.update(job, attempt, "RUNNING", data)
+                        start_attempted = True
+                        try:
+                            process.start()
+                        except BaseException as error:
+                            # The exception alone is not proof: it must be the receipt
+                            # recorded by this instance after its own pre-create failure.
+                            confirmed_nonlaunch = (isinstance(error, ProcessNotStartedError)
+                                                   and process.nonlaunch_confirmed is True)
+                            if not confirmed_nonlaunch:
+                                self._unresolved_attempts.add(attempt)
+                                if not isinstance(error, Exception):
+                                    # The normal exception handler will not run.
+                                    # The scheduler must still persist quarantine.
+                                    self._pending_unknown[attempt] = (job, {**data,
+                                        "error": "process start ended without a launch receipt",
+                                        "cleanup_error": "process-tree teardown was not established"})
+                            raise
+                        start_completed = True
+                        self.active[attempt] = process
+                        data["launch"] = "CREATED_OWNED"
+                        data["process"] = process.identity
+                        self.store.update(job, attempt, "RUNNING", data)
+                        break
+                # An attempt allocated before quarantine must not cross the gate;
+                # it keeps its claims and can still receive owned cancellation.
+                if self.stopping.wait(_SCHEDULER_INTERVAL):
+                    raise RuntimeError("worker stopped before process start")
             deadline = time.monotonic() + payload["options"]["timeout"]
             reason = None
             next_desktop_check = time.monotonic() + 1
@@ -552,7 +782,7 @@ class Worker:
             with self.lock:
                 code = process.poll()
             cleanup_attempted = True
-            self._close_process(attempt, process)
+            self._close_process(attempt, process, job=job, data=data)
             cleanup_verified = True
             data.update(cleanup="CONFIRMED", runner_exit_code=code, finished=time.time())
             verdict_path = directory / "verdict.json"
@@ -572,11 +802,14 @@ class Worker:
         except Exception as error:
             data["error"] = str(error)
             try:
-                if not cleanup_verified and (cleanup_attempted or (start_attempted and process.identity is None)):
+                if not cleanup_verified and (cleanup_attempted or (start_attempted and not confirmed_nonlaunch
+                                            and (not start_completed or process.identity is None))):
                     raise RuntimeError("prior start/cleanup did not establish process-tree teardown")
-                if not cleanup_verified and process is not None and start_attempted:
+                if not cleanup_verified and process is not None and start_attempted and not confirmed_nonlaunch:
                     cleanup_attempted = True
-                    self._close_process(attempt, process)
+                    self._close_process(attempt, process, job=job, data=data)
+                if confirmed_nonlaunch:
+                    data.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
                 with self.lock:
                     canceled = bool(self.store.get(job)["canceled"])
                 data.update(cleanup="CONFIRMED", outcome="CANCELED" if canceled else "INFRA_FAILED", evidence="INCOMPLETE", finished=time.time())
@@ -585,7 +818,11 @@ class Worker:
                 data["cleanup_error"] = str(cleanup_error)
                 state = "UNKNOWN"
             with self.lock:
+                if attempt in self._unresolved_attempts:
+                    self._pending_unknown[attempt] = (job, dict(data))
                 self.store.update(job, attempt, state, data)
+                self._pending_unknown.pop(attempt, None)
+                self._unresolved_attempts.discard(attempt)
         finally:
             with self.lock:
                 self.contexts.pop(attempt, None)

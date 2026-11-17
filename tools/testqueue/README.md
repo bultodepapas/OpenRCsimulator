@@ -1,5 +1,13 @@
 # Shared-host test admission
 
+The [15 November 2026 resilience audit](../../docs/research/testqueue/2026-11-15-resilience/README.md)
+records known recovery/control gaps and a [baseline recovery runbook](../../docs/research/testqueue/2026-11-15-resilience/runbook.md).
+The [implementation handoff](../../docs/research/testqueue/2026-11-15-resilience/implementation.md)
+records the tested repair candidate, evidence and remaining gates. The
+[TQ-04 repair plan](../../docs/plans/mcp-queue-resilience.md) distinguishes partial
+implementation from proposed guardian/resource work. This guide describes the
+source on this branch; deployed hosts may still run the older audited version.
+
 ## Automatic multi-host checked tests
 
 `testctl.py pool` coordinates independent headless GDScript checks across the
@@ -44,6 +52,16 @@ and cannot qualify a passing batch.
 If freezing is interrupted before a snapshot manifest exists, exact inputs were not
 frozen and no tests were dispatched. Submit a new request ID for a stable source.
 
+Protocol ping/list/validation and cached `sim_test_status` have independent intake
+from the ordered simulator tool lane. Other tools, including `sim_stop`, still
+execute in order. The lanes have fixed workers and bounded queues; overload is
+an explicit nonacceptance error. A disconnected or saturated observer cannot
+block accepted calls behind reply publication. After input EOF, accepted calls
+finish, then reply delivery has a 0.5-second drain window; queued or partial replies
+may be lost. Individual reply bytes are not capped. Recover durable work by its
+original batch ID or session handle. Use a fresh JSON-RPC wire ID for each call;
+that wire ID is separate from the stable batch `request_id` argument.
+
 For example, pass these argument objects to the named MCP tools:
 
 ```text
@@ -85,10 +103,102 @@ Reusing the batch command resumes its saved IDs. Finished attempts must have
 complete checked evidence, confirmed cleanup and locally verified artifacts
 before the batch passes. Failed tests remain failed. SSH ambiguity retains the
 selected host and request identity. `recover` retries that identical submission
-on the same host. A preparation interrupted before a durable execution request
-can be closed as `NOT_DISPATCHED`; its files and failure remain available.
+on the same host only after querying the original authority and only when the
+saved destination permits replay. New receipts bind configuration bytes and the
+local authority root. Restore the original configuration if recovery reports a
+changed destination. Legacy unbound receipts permit observation, not automatic
+replay. A receipt missing dispatch metadata stays `UNKNOWN/UNCONFIRMED`.
+
+Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
+interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
+blindly resubmitted. Proved predispatch lock/I/O deferral uses `RETRY_WAIT` with
+0.25-second initial backoff capped at 30 seconds. Returned invalid-input refusal
+uses `REJECTED`, without asserting global nonexecution or cleanup. Old
+`NOT_DISPATCHED` and associated terminal/collection results require reobservation;
+their previous status/artifacts remain available and new collection uses
+`recovery-1`. MCP cached status exposes `recovery_required: true` and `INCOMPLETE`
+for those records. Old supervisors refuse version-2 state; do not downgrade it.
 The lower-level `pool submit` returns exit 3 when no host is eligible and nothing
 was submitted. `pool run` and the batch driver retain and wait for pending work.
+
+### Verified collection and retry
+
+`pool collect JOB_ID` publishes a new immutable generation under
+`results/JOB_ID/collection-<binding-sha256>/`. The binding covers the retained
+request/destination and the exact finished status observation. The returned
+`report`, `log`, `pool_status` or `pool_report` paths are authoritative; callers
+must not assume the old `results/JOB_ID/report.json` layout. Legacy nonexecution
+recovery retains its `recovery-1` parent. Existing files are preserved.
+
+Collection first writes an isolated pending directory. It checks the declared
+sizes and hashes, the selected report's inventory digest and strict parsed JSON
+value, command, required markers and settings, and the report/log membership in that same inventory. Passing
+reports also require complete evidence, confirmed process cleanup and matching
+log error/warning counts and required markers. A fresh manifest is published only after verification. A retry
+revalidates an existing generation instead of overwriting it or reading a stale
+log from an older directory. For a local authority, it can reuse verified
+evidence after the original attempt directory is no longer available, provided
+the authority still confirms completion. A new remote collection still requires
+original-authority status; local batch revalidation is described below.
+
+Local collection copies only `checks/`, `imports/`, `worker.log` and `verdict.json`
+when declared by the worker. Private request/control files are not copied.
+Remote collection copies the remote inventory through a bounded Python reader
+over noninteractive SSH; it retains the configured host-key policy. The limits
+are 128 MiB of declared artifacts, 4,096 files and 4 MiB per collection JSON.
+Paths must be portable and must not traverse links, device aliases or conflicting
+file/directory names. Cooperating processes under one private account are assumed;
+these checks are not isolation from a hostile writer under the same account.
+
+Interrupted transfers retain their pending evidence and never replace an earlier
+verified generation. Three retained pending attempts block further collection in
+that job/output directory. Inspect them before retrying, or explicitly select
+another output root:
+
+```powershell
+python tools/testqueue/testctl.py pool collect JOB_ID --out C:/OpenRC/review-results
+```
+
+This cap is not a general disk quota or automatic garbage collector. Collection
+does not delete remote originals, workspaces, snapshots, failed output or unknown
+attempts. POSIX publication synchronizes files and directory entries; Windows
+power-loss durability remains separately unqualified. Filesystem operations can
+still block beyond a cooperative observation budget.
+
+An incomplete import, interrupted remote runner or legacy failed attempt can
+produce a `diagnostic_only: true` collection retaining its original outcome and
+available evidence. It cannot satisfy a passing batch or the functional checked
+runner. New results carry `collection_format: openrc-pool-collection-v1`.
+Completed batch rows with older unverified collections require original-identity
+observation and collection; their previous results remain in history. MCP cached
+status exposes recovery required without issuing network requests. Recollection
+does not submit a new execution attempt.
+
+MCP status labels its evidence observation `CACHED_METADATA`: it reads retained
+metadata without continuously hashing large artifacts. An active batch resume
+revalidates a completed generation locally before accepting it again, without
+contacting the authority when that evidence is intact. A missing or changed
+generation blocks collection; it cannot keep passing from cached metadata alone.
+Direct `pool collect` also revalidates existing generations.
+
+### Background consoles on Windows
+
+Queue launch gates, engine probes, snapshot/history Git commands, SSH/SCP
+helpers, checked runners and debug launch/cleanup helpers request
+`CREATE_NO_WINDOW` for background console processes. The launch sites retain their
+existing pipes/logs, Job Object assignment and cancellation code. Preserving these
+behaviors on the combined Windows revision remains a native validation gate. Native simulator GUI windows retain their normal
+visibility; no global `SW_HIDE` policy is applied. The already detached MCP and
+remote supervisors retain their existing detached-process semantics.
+
+These changes affect newly launched helpers after the compatible runtime is
+installed. Updating or restarting a worker must wait for an idle/drained boundary.
+Hosted Windows fixtures can verify console visibility and retained I/O for owned
+fake processes; the user's interactive desktop still needs a controlled check.
+Creation flags apply to the targeted launch, not every descendant a shell or
+external program may create; shell-launched grandchildren need native checking.
+The launcher used by an external MCP client is outside these child-process
+settings and may need separate diagnosis if its own initial window remains.
 
 Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
 engine hashes and insufficient storage/memory. The estimate combines observed
@@ -99,6 +209,21 @@ Initial capacity is one exclusive attempt per remote host. Windows submissions
 retain the existing queue's admission and ownership. Long-lived remote jobs are
 detached from SSH and supervised with process-group cleanup and durable state.
 Cooperative POSIX containment retains its documented limits.
+
+For local placement, `hosts` reports free space on the worker's attempt filesystem,
+not necessarily the coordinator's filesystem. An older worker without this storage
+observation, or one reporting it unavailable, is ineligible for pool placement with
+`DISK_UNKNOWN`. Update the worker only at an idle, drained boundary after confirming
+its claims are clear; do not restart active work to refresh the observation.
+
+When a remote host is selected, the coordinator prepares and verifies its archive
+before writing a dispatch receipt. It releases the dispatch lock during preparation,
+then probes and selects again before recording a destination; that selection may
+change before a receipt exists. Once a destination is recorded, the existing
+original-host recovery rule applies. Failed archive builds discard only the unique
+unpublished temporary whose identity that invocation can verify. If its identity or
+removal is unresolved, or an archive needs inspection, the batch can remain blocked;
+preserve the reported path and investigate rather than sweeping temporary files.
 
 The regular checked runner can opt into automatic placement in a shell.
 
@@ -311,7 +436,32 @@ Resource allocation and dispatch intent are transactional. The database is opene
 only by the authority, using schema-version checks, WAL and full synchronization.
 The worker holds a singleton guard; a restart converts unresolved dispatch/running/
 cleanup records to `UNKNOWN` and retains their claims. Cancellation is durable before
-a delayed start can proceed. There is no automatic retry or claim expiry.
+a delayed start can proceed. Execution is not automatically retried and claims
+do not expire. Typed predispatch pool deferrals and pending journal writes can
+retry without creating another execution attempt.
+
+Proved failures before process creation finalize as infrastructure failures with
+confirmed nonlaunch. An allocated execution thread must receive a one-way grant
+after thread startup succeeds; a denied grant cannot launch, even if the thread
+was created before startup raised. Ambiguous start or cleanup failure retains
+quarantine. If the quarantine write fails, an in-memory fence blocks allocation
+and preallocated launches until the same journal transition becomes durable.
+
+`hosts` includes scheduler thread/liveness, last successful scan/dispatch, age,
+error and recovery state. The same scheduler recovers with capped backoff after
+dispatch/diagnostic faults. Unavailable claim inventory is `null`, not an empty
+list. Scheduler health is not proof that capacity is free: inspect claims,
+reservations and attempt states too. A worker lock or filesystem stall can still
+delay this response; running-loop database failure is not yet continuity-safe.
+
+`wait` shares a monotonic socket deadline across connection, send and every read.
+A prior nonterminal observation returned on timeout carries
+`wait_observation: {state: STALE, reason: DEADLINE_EXPIRED|RPC_STEP_TIMEOUT}`.
+With no observation it raises an explicit observation timeout identifying the
+job. Zero wait issues no status RPC. Managed MCP launch retains the accepted
+handle and returns `ACCEPTED / NOT_REQUESTED`; an initial positive observation
+timeout retains the same handle with `observation: TIMEOUT`. This does not cancel
+the job, bound preparation/filesystem I/O, or alter its accepted execution limit.
 
 Windows containment assigns a blocked Python launch gate to a kill-on-close Job Object
 before it can execute the adapter. A Job completion port observes member processes;
@@ -337,11 +487,62 @@ only that attempt's claims. The terminal result is `INFRA_FAILED` with
 `cleanup: UNCONFIRMED` and `evidence: INCOMPLETE`. This administrative exception
 requires an explicit operator decision each time. After closure, restore admission
 with `testctl drain off`. Ordinary cancellation and reconciliation retain their
-existing process-tree proof requirements.
+existing process-tree proof requirements. Abandonment is also refused while any
+attempt has a pending in-memory fence/journal retry; let that journal recover first.
+
+### Storage after a remote checked job
+
+After a remote checked job durably records `FINISHED`, `PASSED`, `COMPLETE` evidence
+and process `cleanup: CONFIRMED`, the remote supervisor attempts to remove only its
+redundant job-local `input.tar`. It verifies that file and the retained incoming
+archive against the original digest, and pins a verified `retained-input.tar` hard
+link in the job before recording unlink intent. The anchor retains the verified
+archive even if the shared incoming name is later replaced. Files that fail these
+checks are not removed.
+
+`storage_cleanup` is separate from process `cleanup` and the test outcome:
+`PENDING` means storage work or its journal is unresolved; `RECLAIMED` reports
+`logical_bytes_removed`, not guaranteed physical space; `SKIPPED` means the cleanup
+did not act; and `ABSENT_AFTER_INTENT` means the file is absent after a durable
+intent but the deletion could not be witnessed, so removed bytes are unknown.
+Status or a duplicate launch does not retry storage cleanup. Inspect its reason or
+pending state and use the original host and identity for a single-job retry:
+
+```sh
+# On the original remote host, set these from pool status and that host's config.
+printf '{"request_id":"%s","payload_sha256":"%s"}\n' "$TQ_REQUEST_ID" "$TQ_PAYLOAD_SHA256" | \
+  python3 "$TQ_REMOTE_AGENT" reclaim-input --root "$TQ_REMOTE_ROOT"
+```
+
+Use the remote `request_id` and exact lowercase `payload_sha256` from that job's
+status. The digest binds the original request; it is not a secret or an ownership
+credential. A mismatch returns `CONFLICT`; a busy host lock returns `BUSY`. This
+action does not launch tests or sweep other jobs.
+
+Reclamation requires POSIX descriptor-relative no-follow operations and hard links;
+it is unsupported on Windows. Hashing is limited to 16 GiB per file and a cooperative
+30-second budget; a blocked filesystem call can exceed the deadline. A private
+queue directory with cooperating processes under one account is required. The checks
+confine path operations and refuse detected changes, but cannot make unlink atomic
+against an arbitrary same-account writer.
+
+Source trees, profiles, temporary directories, captures, logs, artifacts, job
+records, journals, locks, shared snapshots and caches remain protected, including
+failed, incomplete and `UNKNOWN` work. Full capture evidence can live inside an
+attempt's source tree. The queue does not yet provide shared-cache garbage collection
+or atomic storage reservations; remote upload can still leave a partial file before
+remote admission checks. A completed infrastructure-failure collection does not
+prove that all remote diagnostics were inventoried. Preserve remote evidence until
+independently verified. For a bounded read-only size inventory, use
+[`storage_audit.py`](../godot/README.md#process-ram-io-and-storage-pt1h-r4);
+its logical sizes and partial-scan indicators do not authorize deletion.
 
 Snapshots bind actual dirty/untracked bytes, deletions, relevant metadata, launcher
 digests, referenced aircraft authoring files, installed native inputs and optional
 prepared imports. Stored input and per-attempt materialization are both verified.
+Admission uses the exact verified manifest object. Batch receipt hashes and
+engine-pin policy reads are bound to the same verified inputs; new pool and
+interactive requests also pin expected source and manifest digests.
 Writable source, `.godot`, profile, temp and output directories are independent.
 History-dependent presets receive a separate local clone of Git history. Copies are
 verified per file and inventories rechecked; this is **not an atomic multi-file

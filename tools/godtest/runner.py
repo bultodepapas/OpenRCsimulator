@@ -49,7 +49,7 @@ def file_hash(path: Path) -> str:
 
 def source_identity() -> dict:
     def git(*args):
-        return subprocess.check_output(["git", *args], cwd=ROOT, timeout=30)
+        return subprocess.check_output(["git", *args], cwd=ROOT, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
     commit = git("rev-parse", "HEAD").decode().strip()
     status = git("status", "--porcelain=v1", "-z").decode(errors="replace").split("\0")
     listed = git("ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", "app", "tools/godtest", "research/performance/godtest").decode(errors="strict").split("\0")
