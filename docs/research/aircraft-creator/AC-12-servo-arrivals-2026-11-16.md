@@ -397,3 +397,347 @@ context and replay. No diagnostic subset or recovered prefix can substitute
 for these 68 cells. Preserve every failure; this candidate is not public flight
 permission or physical validation. Its full checked-job timeout is 10,800 seconds;
 an observer timeout does not cancel or qualify the native run.
+
+The complete candidate finished as Windows request
+`58c04cf2adf4416688fcc2535808fe32`, attempt
+`A-6eb32a9a9c0447a984a9111e70d8d6d2`. Native checked execution passed with
+confirmed cleanup and complete evidence. Independent collection accepted all
+68 registered cells, their source identities and their complete 1,441-row exact
+own-source baselines. Numerical acceptance is **64/68**, so G05 remains open.
+New failures are C06/roll (charge), C07/throttle (charge), C13/roll (charge),
+and C17/rudder (charge and position). Those cells passed under arrivals-only;
+the eight selected diagnostic successes did not predict the complete matrix.
+The zero-half candidate is not adopted into the production runtime.
+
+Retained evidence: `G:/OpenRCsimulator-clearview-scratch/servo-zero-half-v16-full-retained`.
+Its `verification.json` SHA-256 is
+`4028a067d8585eeb5968bfb76bc56a46dd2fb938448caf980f6610c808bfb511`;
+independent verifier SHA-256 is
+`5b289819a9a5f98bdbec91f31733257a4c2d80c649de24c91a19cb93a80050b4`.
+The receipt declares `complete=true`, `partial=false`,
+`numerical_campaign_pass=false`, `flight_qualified=false`. All original rules,
+case maps and failed outputs remain retained; no tolerance or floor was changed.
+
+### Stage-coupled wake candidate
+
+The next private candidate is `ac12-servo-stage-wake-local-v1-20261116`,
+policy `servo-arrivals-zero-half-stage-wake-local-v1`, checkpoint v17, coupling
+`wing-wake-stage-coupled-rk4-v1`. It integrates the existing authored wake-lag
+ODE from stage body, air and servo values instead of holding the outer tick's
+advanced wake through every RK stage. The authored length and equilibrium law
+are unchanged. A lagged model has five continuous values, with bit-identical
+accepted RPM and wake mirrors; the electric evaluator still receives exactly
+four values. A no-lag model retains four continuous values and a distinct v17
+layout. Whole-tick `dt * V / length > 0.25` is refused, including during event
+trials. This bound does not establish coupled-system stability or convergence.
+The pre-setup selector is explicit and locked once setup begins. It refuses
+models without the selected servo law. There is no checkpoint migration.
+
+The private Windows unit request `servo-stage-wake-v17-unit-win-v4-20261116`
+passed 112 checks with zero engine errors/warnings, complete evidence and
+confirmed cleanup. Snapshot `1ad2869d1eb44e1b88e9fd2a21a2f4a5` has manifest
+SHA-256 `cad936adc89d0cd4e8352bcf149d66c1866f7bbba470416695c99935fb941f06`;
+attempt `A-38de9ba3131d424b8371339f7684baf9`, pool job
+`47f069b02315486d8da935d6c39bc3d4`. Coverage includes analytic constant/linear
+wake forcing through the actual partition/event composer, stage sensitivity,
+no-lag and zero-speed cases, electrical events, exact accepted mirrors,
+atomic refusal, selector locking, cross-wrapper refusal and a complete nine-row
+own-source exact replay. Earlier attempts retained a parse failure and a test
+fixture failure: constant folding lost the negative-zero sign. The corrected
+fixture constructs and verifies its float64 bits at runtime.
+
+Before numerical execution, register the same complete C01–C17 × four-tape
+matrix and order, 240/480/960 Hz, six-second duration, physical inputs, case-map
+hashes, metrics, floors, tolerances and 0.75 ratio limit used above. Require one
+fresh complete 1,441-row exact own-source baseline per cell. The independent
+collector must pin the frozen v17-aware replay validator, exact wrapper, policy,
+coupling, layout and initial mirrors. Preserve all refusals and failures; do not
+drop a cell that exceeds the new solver's explicit bound. Diagnostic subsets
+remain separate. Unit success grants no flight permission. Production remains
+arrivals-only v16; this candidate and its full numerical result are not adopted.
+
+The numerical source is frozen at
+`G:/OpenRCsimulator-clearview-scratch/servo-stage-wake-v17-campaign-snapshot`,
+manifest `04328424615932e4c5773ac2f8b5e1bdd29127a536e90e1d551e0cfbee7243c3`.
+Its first diagnostic uses C06/roll, C07/throttle, C13/roll and C17/rudder,
+in that order, because those are the four zero-half failures above. It uses
+the same three rates, six-second tapes and complete per-cell exact baselines.
+The fixed four-cell selector accepts no overrides. Its collector requires
+`partial=true`, leaves 64 cells missing and cannot establish G05. The unchanged
+complete 68-cell selector is retained in the same frozen source.
+
+The four-cell Windows request `5f33416c40cb40708741a773e013dd27`, attempt
+`A-061f88f31b944e37ac8aeec0d752bea8`, completed with confirmed cleanup and
+complete checked evidence. Independent collection accepted all four numerical
+verdicts, frozen inputs, five-slot mirrors and complete 1,441-row exact baselines.
+Retained `servo-stage-wake-v17-four-retained/verification.json` has SHA-256
+`7ac2909ccf9f6496d4aa8025d46b064eddf5ea01212bb3629114d5103637cfb5`.
+It reports `partial=true`, `complete=false`, `numerical_campaign_pass=false`
+and `flight_qualified=false`. The verifier is
+`5eb47c576db8ab354c79083ee665e6dc70ee4193e5808ad9baa7e2e6eedd3254`;
+the frozen replay validator is
+`88959ef7e777b091021c406c346cf45f5f3d5081106660d8e893ba395f3afb6c`.
+The verifier executes hash-checked source, refuses unmanifested bytecode caches
+for both validator modules, and prevents cache writes into frozen inputs.
+Disposable clean/stale-bytecode checks passed. Its metric and numerical-gate
+functions remain AST-identical to the zero-half collector.
+
+The complete 68-cell request is `cb6f9c36b1b143afba6e6c4b0fbda3e6`, attempt
+`A-de976cb2d06c4bc1ab4f151ef60df35b`, on the same frozen source and Windows
+engine. It failed at C08/throttle: the 240 Hz run rejected its next joint stage
+after 547 accepted ticks. The composite correctly stopped instead of skipping
+that cell. There are 31 complete cells (30 numerical passes and a C03/throttle
+failure), one incomplete cell and 36 unexecuted cells. C03 fails attitude and
+charge convergence, with respective ratios 1.304515 and 1.280009. G05 remains open.
+
+The failed checked job has confirmed cleanup and complete retained diagnostics;
+its process exit is 1 and its outcome remains `TEST_FAILED`. The independent
+retainer verified the 31 complete subcells, including exact full baselines, and
+retained the incomplete C08 prefix. This does not turn the failed parent job into
+a checked pass. Evidence is under `servo-stage-wake-v17-full-failed-retained`;
+`failure-retention.json` reports `complete=false`, `partial=true`,
+`numerical_campaign_pass=false`, `flight_qualified=false`.
+
+The failure-retention receipt SHA-256 is
+`abb447d64322573d1970fac27a36f25408e8d93a1bed0b41bb0824727d191408`.
+
+C03's signed trace changes coincide with shared Ct/Cp and Ct-only advance-ratio
+knots; the later coast-to-drive transition contributes a separate charge change.
+These observations motivate an isolated coefficient-knot localization ablation,
+not a replacement numerical rule. The private primitive refuses electrical
+events, bounds work, preserves the no-crossing path and reports detected
+endpoint branch changes only. It cannot certify hidden-crossing completeness.
+Its canonical-cut regression and an observed earlier-excursion refusal are
+required before aircraft wiring. No such policy is adopted into production.
+
+### C08 refusal diagnosis and a separately versioned piece bound
+
+Windows request `servo-wake-bound-probe-win-v4-20261117` passed ten diagnostic
+checks with zero engine errors/warnings, complete evidence and confirmed cleanup.
+Pool job `d64f165c33594dba85a64b4b99a3b52c`, attempt
+`A-d2492fa2eb894aeaa9d8db4cde0b4349`, used snapshot
+`04c22c43113c44679eabcc78e13611a3`. It reproduced the original 547 accepted
+17-value float64 rows bit for bit, then the same C08 refusal. The base session,
+record, tape, physical laws and existing refusal were retained; a bounded
+observer was inserted immediately before that refusal. Earlier diagnostic
+attempts retained a malformed record-identity lookup and the deliberate base
+provider admission refusal; neither established a physical result.
+
+At 2.28229166666667 s, an evaluated stage had speed 26.7027311200079 m/s,
+authored lag length 0.445 m and outer timestep 1/240 s. The whole-tick ratio was
+0.250025572284718; its half-width ratio was 0.125012786142359. This confirms
+the whole-tick refusal as the cause of this retained failure. The checked log
+SHA-256 is `853eb85024166d1778b1e6aafcf50b2720ef65e22202d0d7029d5254fa27c2ff`.
+
+The next private policy is
+`servo-arrivals-zero-half-stage-wake-max-piece-local-v1`. It retains the 0.25
+sampled-stage refusal limit and applies it to the evaluated RK trial width,
+capped by the mandatory half-tick partition. Initial k1 and accepted-boundary
+checks use the maximum permitted half width. Reset boundary checks use the
+candidate timestep rather than the previous simulation clock. The original
+v17 selector and policy keep their whole-tick behavior; old/new checkpoints
+cannot restore across policies, and exact replay selects the recorded policy
+before setup. This is a separate solver candidate, not a changed numerical
+acceptance rule or a stability proof. G05 remains open.
+
+The private Windows batch
+`servo-wake-max-piece-contract-c08-win-v2-20261117` passed with zero engine
+errors/warnings, complete evidence and confirmed cleanup. Frozen snapshot
+`81be790242124ecdbf7a040336ac81d5` has manifest SHA-256
+`e3986e105f59a2c0ba34fb1aecb3f218ac5b8f85d646a7f60354de9f1b99942f`.
+The new policy passed 77 checks (`7902ef0697ab4525ada29eda71be9b64`), including
+actual RK/electrical-localization widths, boundary/reset clocks, selector locks,
+cross-policy refusal and nine-row exact own-source replay. The unchanged
+whole-tick policy passed its 112 checks (`b35b70a1ef1e49febb8c6354cec1a6b7`).
+An earlier 77-check attempt retained two fixture failures: its fixed test speed
+belonged to another geometry. The corrected tests derive speed from the actual
+fixture's lag length; no production limit or numerical gate changed.
+
+C08/throttle (`cd53109e5edd46ada0c619754657bb6d`) completed all three rates and
+passed the independent unchanged numerical rules, initial mirrors and complete
+1,441-row exact baseline. Evidence is under
+`servo-wake-max-piece-c08-retained-v2`; `verification.json` SHA-256 is
+`0c02f0d5f673b4a9e818bba154f46067f80cf4fc11a6c096280b9f7c20fedc70`.
+Verifier `a1a47dd7147ca85ec121ed1963b0e2cb521bbeb3f30e3276f12fffc843298710`
+requires both exact native prerequisite checks once, binds their report/log
+hashes and verifies completed-source relocation inventories. Missing,
+duplicate and absent-marker mutations were refused. Metric, gate, CSV and
+cell-verification functions remain AST-identical to the prior collector.
+The receipt remains `partial=true`, `complete=false`,
+`numerical_campaign_pass=false`, `flight_qualified=false`, with 67 missing cells.
+
+The unchanged complete matrix finished on that frozen source as request
+`3af2eba922bd420abdfc27bd1eb303d9`, with zero checked errors/warnings,
+complete evidence and confirmed cleanup. All 68 cells and their 1,441-row exact
+own-source baselines were retained. The strict collector accepts 58 cells,
+rejects eight numerically, and leaves two unresolved at its unchanged
+charge-fraction noise-floor ambiguity guard. The numerical failures are
+C03/throttle, C09/throttle, C10/throttle, C11/throttle, C12/throttle,
+C13/rudder, C14/throttle and C15/rudder. C09/pitch and C16/pitch remain
+unresolved. A successful checked process does not admit this campaign.
+For C09/pitch, both adjacent floor branches would pass, but the unchanged
+ambiguity guard still refuses the comparison. C16/pitch would pass below the
+floor and fail above it; its reported ratio is 0.979219. Neither is resolved.
+
+Evidence is under `servo-wake-max-piece-full-retained`; the diagnostic retention
+receipt SHA-256 is
+`47f453a1393e4208788cbc96ad1de090f124420abc4af4f29a3691e9c38eb4ef`.
+It records a complete artifact inventory, incomplete strict verification,
+`numerical_campaign_pass=false` and `flight_qualified=false`. The original strict
+collector remains unchanged; the separate retainer preserves every rejected or
+unresolved result instead of converting an exception into an accepted metric.
+
+For the separate C03 investigation, the unwired observed-knot primitive passed
+50 native Mac checks. Its actual-hub J provider passed 20 checks in request
+`coefficient-branch-provider-unit-mac-v2-20261117`, job
+`8252d004646c4fb883fde5215a649218`, with zero engine errors/warnings and confirmed
+cleanup. It covers hub rotation, tilted axes, the exact 1 RPM branch and
+shared/Ct-only knots; it refuses nonpositive inflow, table extrapolation and
+contradictory electric/glow inputs. The provider must run at every observed
+derivative stage and localization endpoint before an aircraft ablation. Neither
+module establishes hidden-crossing completeness or flight permission.
+
+Subsequent review found an accepted-cut endpoint defect not covered by those
+50 primitive checks: shortened localization trials forwarded the original
+owning-piece endpoint to the servo sampler. A valid split-clock round trip can
+still leave a nonzero two-sum residual, so accepted k4 and next k1 could sample
+different servo bits at the same cut. The private correction forwards the
+validated shortened trial endpoint and retains the original endpoint for a
+full-width trial. The native Mac counterexample failed exactly one of four
+checks with the old helper (`f3a8afa15a7349a9978a641f235cb61a`), then passed
+all four with the correction (`30eec3da06a14aadbe9148638e571c32`). The existing
+50-check suite also passed (`d28f220ae3d04075a3d3c877ff29ae96`). All three have
+zero engine errors/warnings, complete evidence and confirmed cleanup. The
+before/after manifests differ only in `app/sim/coefficient_knot_step.gd`;
+the corrected helper SHA-256 is
+`60a72392f165334c3197c0c3e1c7c4ea1bba05286d256d1837b5c1b9c16cc0a4`.
+Earlier check timeouts with empty engine logs remain infrastructure failures
+and establish no code result. The aircraft ablation remains private and
+unqualified: its initial full-source Mac unit failed to parse two test variables
+inferred through a dynamic Node; explicit packed-float64 types correct that
+fixture. The corrected unit passed 33 checks and nine-row exact own-source replay
+on macOS (`440b84faab6d44a08b9954b4e0b69566`), with zero checked diagnostics and
+confirmed cleanup. Its reported scope
+may establish policy selection and numerical results only: the present wiring
+does not retain actual knot-cut observations and cannot establish causal
+localization from the aircraft artifacts.
+
+The observed-only C03/throttle diagnostic then completed 240/480/960 Hz runs
+and its full exact baseline on macOS (`56311a57ab8f49d68a59b30f0068c54f`).
+Independent recomputation preserves the registered metric, convergence,
+tolerance and ambiguity rules and accepts all seven metrics. The receipt
+`servo-observed-coefficient-c03-mac-retained/independent-verification.json`
+has SHA-256
+`d3145b8f70d134d43aec0127c6b339a0b4ce129e6537a95b419dba37bbc94448`.
+The verifier also binds the unique audit hash emitted by the checked native
+log, its report/log artifact hashes, the exact selector and frozen entrypoint.
+Six differences are below their registered noise floors; RPM has ratio
+0.499625, so this is not evidence of global fourth-order convergence.
+
+The native definition matches the registered case, but the raw record does
+not: four crash-hull coordinates are `0.065616497644443` on Mac and
+`0.06561649764444301` in the registered Windows record. Their cause and
+cross-platform equivalence are not established. Source verification permits
+only the recorded project-name isolation; all 1,059 frozen files and 378 audit
+source hashes were checked. The diagnostic remains partial, has no actual
+cut-observation or hidden-crossing certificate, and grants no flight permission.
+
+A separate private guarded-cut candidate is in review. The observed-only
+profile refuses ordinary stopped-rotor, nonpositive-inflow, extrapolation and
+electrical-event states, so it cannot be the public flight route. The guarded
+candidate treats only explicitly classified finite domain exits or actual
+electrical events as reasons to retry the unchanged max-piece integrator from
+the original state. Malformed state, arithmetic, clock, root-order and budget
+failures remain fatal. Speculative derivative callbacks stop at the first
+refusal, and retry restores the audited session caches. These are intended
+contracts, not passing native or full-campaign evidence; the candidate remains
+unintegrated and G05 remains open.
+
+The first detached inspector fixture passed 62 native macOS checks
+(`74999377b8d742bcbebfa8c9024881bf`), with zero checked diagnostics, complete
+evidence and confirmed cleanup. Frozen manifest SHA-256 is
+`5794a77f3e61e67f6190f95c0908f54fc4e52e4c8e2c99c2b8c41417ee419ba0`.
+It covers every coupled coordinate, quaternion validity, electrical-domain
+precedence, low RPM, actual hub projection, malformed tables/air and finite
+unsupported inflow. Subsequent zero-initial-charge support and guarded-step
+cache/event retry behavior still require native checks; this fixture does not
+establish aircraft admission or baseline retry parity.
+
+The subsequent guarded contract snapshot
+`6c07a78c81cbf5d88fea5d5596f9d618f015142b4cdb138ed494b2d3e131b256`
+passed 63 inspector and 42 detached retry checks on both Windows and macOS.
+It includes zero initial charge, full state/event/cache byte parity with the
+seven-cut baseline, callback shielding after an unsupported stage, typed
+electrical retry, and fatal state/clock/cut validation. The retry budget test
+targets the bounded knot primitive directly; it does not establish arbitrary
+hidden-crossing completeness.
+
+The full-source guarded snapshot manifest is
+`ea5c55ee2ce04fe319981dabf710489f0c1f25b46e00a9aff3c68b87cc65eaad`.
+On Windows it passed 85 real-session checks (`811a59aa07e44164b09ed745b3e826e5`)
+and the unchanged 112-check old-policy suite (`369eec6d362f4f38b4539515dd879f95`).
+The new suite includes actual kernel ticks for stopped rotor, zero/reverse
+inflow, extrapolation and battery exhaustion, matching body/continuous/sampled
+state, modes, events and caches against the baseline. It also covers both
+four- and five-slot layouts, rollback without publication, policy-locked
+checkpoints and nine-row exact replay. All checks have zero engine diagnostics,
+complete evidence and confirmed cleanup.
+
+A four-cell Windows diagnostic (`a971d358e51e488b8387620987232c59`) then completed
+all rates and exact baselines. Independent unchanged strict checks accept
+C03/throttle and C16/pitch and reject C13/rudder and C15/rudder. The registered
+Windows record identities match. The collector's metric, ambiguity, source,
+CSV, replay and cell checks are AST-identical to its strict predecessor; only
+the explicit profile, selector, frozen source and prerequisite identities
+change. This remains partial, with 64 missing cells and no numerical campaign
+or flight qualification. The residual rudder failures have small absolute
+pair differences but non-shrinking convergence; their rule provides no accepted
+240 Hz error estimate. Preserve those failures while investigating actual law
+boundaries; do not replace the rule with absolute tolerance alone.
+
+## Guarded quarter-step diagnostic, 2026-11-17
+
+The next private profile is
+`servo-arrivals-zero-quarter-stage-wake-guarded-coefficient-cuts-local-v1`.
+It adds mandatory rounded quarter/half/three-quarter cuts and explicitly permits
+up to nine cuts, including servo zero/arrival boundaries. Wake guards use each
+actual rounded piece width. Older research profiles retain their seven-cut
+default. This is an empirical refinement candidate, not proof that every
+coefficient or aerodynamic branch crossing was found.
+
+Frozen manifest
+`93556a71139cfe5a714eb2aa2f0f30effe969b0a94527cb3841356e68b682355`
+passed 35 real-session quarter checks and 85 preceding guarded-profile checks
+on Windows (`16be0ea26d5741a1aebd57f5aa7e4813`,
+`5efc3539eeb24b328ab1a0047c172c38`), including nine-row exact replays.
+The corrected detached cut-contract fixture separately passed 87 checks
+(`7d21afb80862464d816712ada4756935`). The preceding fixture incorrectly
+compared typed versus untyped empty event-array serialization; the correction
+compares state bits and physical event contents separately and retains that
+container-header counterexample.
+
+The four-cell diagnostic (`f9bb65b3c2514df78f918f6d037922dd`) completed in
+785.5 seconds with zero engine diagnostics and complete evidence/cleanup.
+Independent strict verification accepts C03/throttle, C13/rudder, C15/rudder
+and C16/pitch, including every own-source 1,441-row exact baseline. The retained
+verification SHA-256 is
+`984acb04ba6d62767a30a444a3796ce4ffd1a3007d2b988853ab40a29c18d03c`;
+the verifier is `35eb382b343f2ae5a9d2ce35f6cc8c54e6063f69c1acc44799eb1604e126c828`.
+Metric, ambiguity, source, CSV, replay and cell checks remain AST-identical to
+the preceding strict verifier. Prerequisite markers now require exactly one
+complete line, including their existing `flight_qualified=false` suffix.
+
+This diagnostic remains partial with 64 missing cells. The unchanged 68-cell
+campaign is running on the same frozen source under the existing exclusive
+Windows checked-pool path (`5037de0315554f71b22568949d720aa2`). G05 remains open;
+step-cost, actual-world launch and native target evidence remain separate.
+
+The research source must not be integrated wholesale. Its non-wake default
+changes Main's existing arrivals-only partition and cut preparation. Production
+adoption must preserve `servo-arrivals-local-v1`, its three-cut default, original
+v16 fingerprint and arithmetic, and select the distinct v17 profile before
+setup. Old ORFL exact replay still requires its recorded solver/source and
+engine; unchanged old arithmetic under a new source hash is not an old-hash
+replay. Aircraft definition/publication/SourceRef identify the aircraft, not a
+qualification receipt or a numerical profile. Future scratch and live launches
+must bind and revalidate the same explicit profile and actual environment.

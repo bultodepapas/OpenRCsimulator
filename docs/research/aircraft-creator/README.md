@@ -11,6 +11,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 | [AC-12 servo stage-time ablation](AC-12-servo-stage-2026-11-16.md) | Separate controlled investigation using original complete logs, a byte-checked hold control and a private source-hashed ramp candidate. No production law or qualification is implied. |
 | [AC-12 versioned servo arrivals](AC-12-servo-arrivals-2026-11-16.md) | Explicit law and local interval protocol, exact replay, complete 68-cell negative result and separately registered forcing-partition diagnostics; G05 remains open. |
 | [AC-13 publication binding](AC-13-publication-binding-2026-11-16.md) | Captured v4 publication, v2 receipts, legacy byte comparisons, interrupted saves and atomic editor reopening on Windows and Apple Silicon. |
+| [AC-18 exact source resolution](AC-18-source-reference-2026-11-16.md) | Pinned indexed revision references, source/presentation re-admission, legacy provenance and detached non-flight owners; Home and flight integration remain open. |
 
 ## Engine probes (2026-11-10)
 
