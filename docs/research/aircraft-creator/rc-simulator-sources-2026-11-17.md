@@ -2,13 +2,15 @@
 
 Date: 2026-11-17. Status: source research and implementation recommendation; no new runtime importer, conversion, flight qualification or redistribution permission is delivered by this record.
 
+Later same-day evidence: the [modern RC follow-up](modern-rc-simulators-2026-11-17.md) now documents complete HELI-X V11 plane assets, an aerofly RC10 static TMB/TTX reconstruction, RealFlight EA/AV inspections and two REFLEX MOD/PAR samples. It owns the current modern-ecosystem assessment; the original inventory here remains a record of the earlier inspection scope.
+
 This extends the [Aircraft Creator evidence](README.md) and the [Flight Simulator research](flight-simulator-2026-11-16/README.md). It identifies RC-specific inputs for the same automatic in-app conversion goal. The [Creator plan](../../plans/aircraft-creator.md), [ClearView plan](../../plans/clearview-aircraft-import.md) and proposed [Flight Simulator plan](../../plans/flight-simulator-aircraft-import.md) retain their implementation and qualification ownership. This record neither creates new accepted step IDs nor expands their completed scope.
 
 Runtime inspected: OpenRC main `a986b99ca453db90f0a05399483c11cc55d17afd`. Research branch base: `09ff600a362e9d2bc847882fcfa4be9665220e68`. The [source inventory](rc-simulator-source-inventory-2026-11-17.json) distinguishes downloaded packages, repository files, catalog-only leads and unresolved geometry. Hashes establish which bytes were inspected, not their authenticity, license or compatibility.
 
 ## Recommendation
 
-Start with **CRRCSim**, then build a shared **DirectX X geometry path for FMS and RC Desk Pilot**. Keep PicaSim technically close to CRRCSim but make asset permission a separate acquisition task. Consider SSS as an additional 3DS/DAT source after the first adapters work. Aerofly RC, Phoenix, RealFlight, HELI-X and REFLEX require further source acquisition or decoder evidence before promising general import.
+For older/open-format sources, start with **CRRCSim**, then build a shared **DirectX X geometry path for FMS and RC Desk Pilot**. Keep PicaSim technically close to CRRCSim but make asset permission a separate acquisition task. Consider SSS as an additional 3DS/DAT source after the first adapters work. For the user's subsequent modern-content priority, use the [follow-up recommendation](modern-rc-simulators-2026-11-17.md#decision): HELI-X V11 and aerofly RC10 have substantially stronger new evidence, while general compatibility remains unqualified.
 
 | Source | Evidence actually obtained | Main geometry / definition | Engineering priority | Content position |
 | --- | --- | --- | --- | --- |
@@ -17,10 +19,10 @@ Start with **CRRCSim**, then build a shared **DirectX X geometry path for FMS an
 | RC Desk Pilot | Source tree, Xtra PAR, mesh and loader read | DirectX X + XML in PAR; PNG/JPG/DDS | First group with FMS | Root GPLv3 coexists with a restrictive legacy EULA; clarify asset scope |
 | PicaSim | Official aircraft definitions, source tree and loader read | AC3D, some 3DS + XML + ordinary images | Technically promising; obtain authorized examples | Current PolyForm Noncommercial covers code/text/XML; models/images require separate permission |
 | SSS | Author's complete distribution downloaded as data | 3DS or generated components + DAT | Complementary legacy source | Package GPLv2; inspect contributed-model provenance |
-| Aerofly RC10 | Compiled Panda and two editable workshop ZIPs inspected | TMB/TTX runtime; MQO or BLEND author sources; TMD/TMC | Author-source route first | No cross-project license found in inspected ZIPs |
+| Aerofly RC10 | Original package audit; later Panda static TMB/TTX reconstruction documented in modern follow-up | TMB/TTX runtime; MQO or BLEND author sources; TMD/TMC | Modern follow-up owns updated priority | No cross-project license found in inspected ZIPs |
 | Phoenix RC | Author catalog and separate Pitts OBJ link confirmed | PKG / compiled geometry; separate OBJ source offered for one aircraft | Defer generic decoder; pursue authorized author sources | Pitts author states noncommercial distribution; conversion scope unresolved |
-| RealFlight | Official format docs and author's EA catalog verified | RFX/G3X container; KEX mesh | Defer generic reader until KEX path is demonstrated | Per-aircraft permission; EA, AV and CS differ |
-| HELI-X | Official fixed-wing catalog, manual, actual EasyStar XML | Plane XML; full current plane geometry not obtained | Obtain one complete authorized fixture first | Simulator EULA is not a general asset-reuse grant |
+| RealFlight | Original official-doc/catalog audit; later actual EA/AV inspection in modern follow-up | RFX/G3X container; KEX mesh | Metadata/source route possible; generic KEX reader unproven | Per-aircraft permission; EA, AV and CS differ |
+| HELI-X | Original EasyStar XML audit; later two complete V11 geometry packages inspected | OBJ/MTL/XML confirmed for two V11 demo planes | Modern follow-up owns updated priority | Simulator EULA is not a general asset-reuse grant |
 | REFLEX XTR² | Author-maintained fixed-wing catalog and format description | MOD + PAR, commonly delivered through installers | Defer until MOD/source geometry is demonstrated | Author and component-specific permissions |
 
 Priority is an engineering judgment from inspected formats and OpenRC's existing seams. It is not an estimated schedule, measured importer success rate or legal opinion.
@@ -124,6 +126,8 @@ The [official workshop](https://www.ikarus.net/en/rc10-model-workshop/) document
 
 Author sources can enable selected aircraft. A one-way compiler into Aerofly does not establish a TMB/TTX reader, and compiled binary does not itself mean encrypted. Do not promise arbitrary RC7/RC9/RC10 ZIP compatibility from the editable examples.
 
+**Updated evidence:** the [modern follow-up](modern-rc-simulators-2026-11-17.md#aerofly-rc10-strongest-new-compiled-format-result) now records an independently decoded and rendered static Panda GLB and a separate Deproni BLEND conversion. These are laboratory visual results, with controls, flight mapping, full material fidelity and general version/DLC coverage still open.
+
 ### Phoenix RC
 
 [SupermotoXL's Pitts Special release](https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/hobby-king-pitts-special-bi-plane-phoenix-r-c-simulator.html) offers both Phoenix and separate OBJ source ZIPs. The author's Wing Wing Z-84 and Durafly P-51D releases provide further real candidates. The [installation guide](https://www.supermotoxl.com/resources/guides-tutorial/3d-models-creation-and-simulator/how-to-install-custom-models-in-phoenix-rc.html) describes PKG installation.
@@ -138,11 +142,15 @@ The [official KEmax documentation](https://forums.realflight.com/KEmax/) disting
 
 The [official 10.10.203 release announcement](https://steamcommunity.com/app/2069310/allnews/) changes re-export behavior for imported RFX geometry and checks base dependencies for AV imports. Do not base a conversion design on opening any imported RFX and re-exporting its entire geometry. A KEX reader or original author source plus permission remains a prerequisite.
 
+**Updated evidence:** the [modern follow-up](modern-rc-simulators-2026-11-17.md#realflight-evolution-valuable-recent-catalog-unresolved-compiled-mesh) inspects public AcroMaster EA and AeroScout AV files plus associated Skywalker FBX/BLEND sources. Plain metadata is readable in the samples, but KEX geometry decoding remains unproven. The CLIK25 download above was not obtained.
+
 ### HELI-X and REFLEX
 
 [HELI-X's official catalog](https://www.heli-x.info/cms/models/) includes EasyStar, Extra300/330, PiperJ3, Funray and ASW28. The [V11 manual](https://www.heli-x.info/help11/UsersManualV11.pdf) documents PlaneMonoStandard parameters and an older developer section describing OBJ/XML. The actual [EasyStar XML](https://www.heli-x.info/models10/EasyStar/EasyStar.xml) was read. A complete current fixed-wing geometry package was not obtained; a same-basename OBJ URL returned 404. Do not generalize legacy OBJ documentation into verified availability for every current plane. The simulator's private-use EULA does not clear cross-project asset reuse.
 
 [Burkhard Erdlenbruch's REFLEX catalog](https://erdlenbruch.de/Burkhard/Modellflug/textReflex.html) includes Ugly Stik, Kwik Fli III, Telemaster, MDM-1 Fox and Bergfalke. He describes PAR physics and MOD visuals created through RMK. No qualified MOD decoder or original geometry package was demonstrated. Import should consume captured data, not execute model installers.
+
+**Updated evidence:** the [modern follow-up](modern-rc-simulators-2026-11-17.md) obtained complete Extra330SC-UL_FC and Stearman OBJ/material/XML packages from the official HELI-X V11 demo, distinguished them from 39 metadata-only plane folders and documented V10/V11 incompatibility. It also inspected two REFLEX MOD/PAR packages with embedded JPEG blocks. Those findings supersede the earlier sample-availability limitations here without establishing production import or flight qualification.
 
 ## Shared automatic pipeline
 

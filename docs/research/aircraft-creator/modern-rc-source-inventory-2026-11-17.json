@@ -1,0 +1,1435 @@
+{
+  "schema": "openrc-modern-rc-research-v1",
+  "research_date": "2026-11-17",
+  "report": "modern-rc-simulators-2026-11-17.md",
+  "research_base_commit": "6d4678c6d284789de5a5f90720970870156e702a",
+  "previously_inspected_openrc_main": "a986b99ca453db90f0a05399483c11cc55d17afd",
+  "status": "Research and external laboratory visual reconstruction; no production importer or flight qualification",
+  "limitations": [
+    "No third-party aircraft/source/texture/derived GLB is included in this record.",
+    "Hashes identify inspected bytes, not authenticity, legal permission or general compatibility.",
+    "No paid DLC was acquired or inspected and no source simulator executable was run.",
+    "No inspected asset is cleared here for cross-project redistribution.",
+    "Geometry, motion, source flight semantics, OpenRC capabilities and redistribution are separate gates."
+  ],
+  "ecosystems": [
+    {
+      "id": "helix",
+      "version": "11.0 revision 2675",
+      "primary_sources": [
+        "https://www.heli-x.info/cms/download-2/",
+        "https://www.heli-x.info/cms/release-notes/",
+        "https://forum.heli-x.info/viewtopic.php?t=2760",
+        "https://www.heli-x.info/help11/UsersManualV11.pdf",
+        "https://www.heli-x.info/cms/models/"
+      ],
+      "archive": {
+        "name": "HELI-X11.tar.gz",
+        "bytes": 492613770,
+        "sha256": "88f4a77ca8715ce1996249b4a5d5201d5aceec83d677f1bee76c95b92c6f3675",
+        "source_url": "https://www.heli-x.info/2675/HELI-X11.tar.gz"
+      },
+      "plane_root_count": 41,
+      "roots_with_same_name_primary_obj": [
+        "Extra330SC-UL_FC",
+        "Stearman"
+      ],
+      "metadata_only_roots": [
+        "ASW28",
+        "Addiction_PA",
+        "Alphajet",
+        "DassaultMystere",
+        "EasyStar",
+        "EasyStar_Ailerons",
+        "Edge540v3_FC",
+        "Extra300",
+        "Extra330",
+        "Extra330LC-UL_FC",
+        "Extra330SC-VP-UL_FC",
+        "Extra330XL",
+        "ExtraNG103",
+        "ExtraNG67",
+        "F4U_Corsair",
+        "FK12_Comet",
+        "FW190",
+        "Funray",
+        "ME163_Komet",
+        "Modster_Paradise",
+        "Mosquito",
+        "Opterra",
+        "Opterra1_2m",
+        "P-38_Lightning",
+        "PiperJ3",
+        "PiperJ3XL",
+        "PittsChallenger106",
+        "PittsChallenger73",
+        "PittsChallenger87",
+        "RESolution",
+        "RaceWing",
+        "Revolto265",
+        "SR71",
+        "SR71_NG",
+        "Spitfire",
+        "Streamline270V",
+        "Swift_S1",
+        "Tortuga",
+        "Trojan"
+      ],
+      "samples": [
+        {
+          "model": "Extra330SC-UL_FC",
+          "archive_root": "HELI-X11/resources/models/plane/Extra330SC-UL_FC/",
+          "files": [
+            {
+              "name": "330ULparts.png",
+              "bytes": 106519,
+              "sha256": "879486b5e8466fc258751584c767e90b63061bc70d552a5a073b7c60f80fd70e"
+            },
+            {
+              "name": "330ULtexSC1.jpg",
+              "bytes": 667147,
+              "sha256": "5ce5907152d5a1d076ea18f6f3f7f4c55ba3e17f54f4b137c02299ff846d94a0"
+            },
+            {
+              "name": "Extra330SC-UL_FC.mtl",
+              "bytes": 1124,
+              "sha256": "3f1baf32311a99bc20ffc0f261f9ca92677c2a81fb57bf92db3f07c9e29be7c6"
+            },
+            {
+              "name": "Extra330SC-UL_FC.obj",
+              "bytes": 593048,
+              "sha256": "498e49e32a15a57193743cffd4a8357150c1670e4beaa4f41cfdda817e0537e4"
+            },
+            {
+              "name": "Extra330SC-UL_FC.xml",
+              "bytes": 14355,
+              "sha256": "8dfdb1523f63a2d1bdcf2178d4669a73776183204b955e69ac76b8f02f71d6a6"
+            },
+            {
+              "name": "Mainrotor.mtl",
+              "bytes": 194,
+              "sha256": "ad476edf38fc2c83d9913b3fe90513511af65af8e8fd6ae4a2bd68b27d3729ae"
+            },
+            {
+              "name": "Mainrotor.obj",
+              "bytes": 28882,
+              "sha256": "66ee18d30909c91238a40e3bcf892118e51fb1c3312830fc930957c7d7d8479a"
+            },
+            {
+              "name": "Shocky.wav",
+              "bytes": 275276,
+              "sha256": "8e96d2e70b569bb57581959290fe7deeda7511eb709fbdffc9f92ebaf75e9fac"
+            },
+            {
+              "name": "bottom.png",
+              "bytes": 2639,
+              "sha256": "2287ebdb4d2c4a00504a55b513e076300bef672927cbb0e6c1aeb00f49522438"
+            },
+            {
+              "name": "col_Extra330SC-UL_FC.obj",
+              "bytes": 2988,
+              "sha256": "b1a4133e0eb2ac2aa92a74b369c13e734c84863ce50f7757fd45b2467c7cb900"
+            },
+            {
+              "name": "preview.jpg",
+              "bytes": 199896,
+              "sha256": "a8341b5089e68509bc229920ece6d524b61422cbbf4b459876b01689db801105"
+            },
+            {
+              "name": "top.png",
+              "bytes": 4630,
+              "sha256": "5fbe712caa360a86420b71d9da6d5da78fa664b524137e6e91194e7ed2e405ae"
+            }
+          ],
+          "independently_checked_main_mesh": {
+            "main_obj_bytes": 593048,
+            "sha256": "498e49e32a15a57193743cffd4a8357150c1670e4beaa4f41cfdda817e0537e4",
+            "vertices": 3656,
+            "faces": 6240,
+            "triangular_faces": 6240,
+            "missing_materials": {},
+            "material_extended_keywords": [
+              "Kb"
+            ],
+            "xml_sha256": "8dfdb1523f63a2d1bdcf2178d4669a73776183204b955e69ac76b8f02f71d6a6"
+          },
+          "evidence_level": "geometry_material_and_definition_files_inspected_no_render_or_flight",
+          "rights": "No cross-simulator reuse grant established"
+        },
+        {
+          "model": "Stearman",
+          "archive_root": "HELI-X11/resources/models/plane/Stearman/",
+          "files": [
+            {
+              "name": "Mainrotor.mtl",
+              "bytes": 194,
+              "sha256": "ad476edf38fc2c83d9913b3fe90513511af65af8e8fd6ae4a2bd68b27d3729ae"
+            },
+            {
+              "name": "Mainrotor.obj",
+              "bytes": 28882,
+              "sha256": "66ee18d30909c91238a40e3bcf892118e51fb1c3312830fc930957c7d7d8479a"
+            },
+            {
+              "name": "Read-Me.txt",
+              "bytes": 253,
+              "sha256": "e23fe908687507c6b7497bea035fea8b96e8a9b255e29dd1f1ebc516a05055a4"
+            },
+            {
+              "name": "Stearman.mtl",
+              "bytes": 1097,
+              "sha256": "1498f73a58d5a7bb38da696fee1633cf3bdbd7a64b0f56db702b70ed57d5d5de"
+            },
+            {
+              "name": "Stearman.obj",
+              "bytes": 4745532,
+              "sha256": "a48efe5ebafaaa9f2f8c4627d9f5b4302f6c00192550064b4ece2399c36fcd45"
+            },
+            {
+              "name": "Stearman.wav",
+              "bytes": 290916,
+              "sha256": "f6bd2414a706b8ad9cb28ab2f3eaf4cfae4bac3b53388dac4b83c8a5a6570e96"
+            },
+            {
+              "name": "Stearman.xml",
+              "bytes": 13841,
+              "sha256": "fe21de5611f7a9da51860a9878d7d90784a852a5fed54c24450612506873566a"
+            },
+            {
+              "name": "bottom.png",
+              "bytes": 2639,
+              "sha256": "2287ebdb4d2c4a00504a55b513e076300bef672927cbb0e6c1aeb00f49522438"
+            },
+            {
+              "name": "col_Stearman.obj",
+              "bytes": 2500,
+              "sha256": "8f3188a3ddbc6d237e044fd7ba9f397939e5cda1ffcb7ca3fd6c6c28173a0631"
+            },
+            {
+              "name": "interior.png",
+              "bytes": 154124,
+              "sha256": "9a34c4f7e7f8333ce169edbb57b6f6bbee9595dcddc90b63f4a8c6767223933a"
+            },
+            {
+              "name": "panel.png",
+              "bytes": 88154,
+              "sha256": "f74ff75385904d6b0fc09e0a707c6aa18a9cdf44af906659f49172ef40e9c6cd"
+            },
+            {
+              "name": "preview.jpg",
+              "bytes": 121810,
+              "sha256": "fe753ae5cb2b1b15d29e335aecd30775c32fe94abce9d2afcd42100fd6ea5d0c"
+            },
+            {
+              "name": "r670.png",
+              "bytes": 40532,
+              "sha256": "a7687568f440c0f1240ff2198a4d4167f9157048f0e4d67bd6a262b8c963f9eb"
+            },
+            {
+              "name": "texture.png",
+              "bytes": 1069567,
+              "sha256": "c56b7486a3951c285e15361a208c6eac2142ce31ace54518b1d8735502638ef1"
+            },
+            {
+              "name": "top.png",
+              "bytes": 4630,
+              "sha256": "5fbe712caa360a86420b71d9da6d5da78fa664b524137e6e91194e7ed2e405ae"
+            },
+            {
+              "name": "wind.wav",
+              "bytes": 215084,
+              "sha256": "6b5715f2541206e130648dc846695bd4f6db22a5882a6f481b6d85057f7e834a"
+            }
+          ],
+          "independently_checked_main_mesh": {
+            "main_obj_bytes": 4745532,
+            "sha256": "a48efe5ebafaaa9f2f8c4627d9f5b4302f6c00192550064b4ece2399c36fcd45",
+            "vertices": 27527,
+            "faces": 50081,
+            "triangular_faces": 50081,
+            "missing_materials": {
+              "DefaultWhite_turn.png": 240,
+              "DefaultWhite_alt.png": 4
+            },
+            "material_extended_keywords": [
+              "Kb"
+            ],
+            "xml_sha256": "fe21de5611f7a9da51860a9878d7d90784a852a5fed54c24450612506873566a"
+          },
+          "evidence_level": "geometry_material_and_definition_files_inspected_no_render_or_flight",
+          "rights": "Stearman has a FlightGear GPL attribution; version and adapted-bundle scope unresolved"
+        }
+      ],
+      "extra330_declared_visual_wingspan_m": 0.8,
+      "extra330_declared_main_wing_span_m": 0.884,
+      "compatibility": "Vendor explicitly says V10 and V11 models are not compatible; developer manual section is legacy V8 material",
+      "unresolved": [
+        "Visual normalization and pivot scaling",
+        "MTL/PBR mapping",
+        "Linked master/slave/rod motion",
+        "Version-specific physics fields and enum semantics",
+        "Flight qualification and model permission"
+      ]
+    },
+    {
+      "id": "aerofly_rc",
+      "version": "RC10",
+      "primary_sources": [
+        "https://www.ikarus.net/en/aeroflyrc10-usermodels/",
+        "https://www.ikarus.net/en/aeroflyrc10-blender-workshop/",
+        "https://www.ikarus.net/en/rc10-purchase/",
+        "https://store.steampowered.com/app/2394350/",
+        "https://store.steampowered.com/app/2615690/",
+        "https://store.steampowered.com/app/2615700/",
+        "https://jaria-simulator.com/aerofly/tmdgenerator/"
+      ],
+      "samples": [
+        {
+          "name": "rc10_panda.zip",
+          "bytes": 244868,
+          "sha256": "c59ff43167ea15ca6076c830bd841f9bbdac5ca0b34986ce5414750031c53cfd",
+          "source_url": "https://www.ikarus.net/downloads/rc10-user-aircraft/rc10_as-panda.zip",
+          "members": [
+            {
+              "path": "as-panda/as-panda.tmb",
+              "uncompressed_bytes": 68760,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/as-panda.tmc",
+              "uncompressed_bytes": 1424,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/as-panda.tmd",
+              "uncompressed_bytes": 30553,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/glass_color.ttx",
+              "uncompressed_bytes": 560,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/glass_normal.ttx",
+              "uncompressed_bytes": 544,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/glass_reflection.ttx",
+              "uncompressed_bytes": 536,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/innereien_color.ttx",
+              "uncompressed_bytes": 83320,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/innereien_normal.ttx",
+              "uncompressed_bytes": 888,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/innereien_reflection.ttx",
+              "uncompressed_bytes": 888,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/innereien_specular.ttx",
+              "uncompressed_bytes": 920,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/panda_color.ttx",
+              "uncompressed_bytes": 23856,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/panda_normal.ttx",
+              "uncompressed_bytes": 1560,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/panda_reflection.ttx",
+              "uncompressed_bytes": 1560,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/panda_specular.ttx",
+              "uncompressed_bytes": 1600,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "as-panda/preview.ttx",
+              "uncompressed_bytes": 58712,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "one_sample_compiled_geometry_and_color_textures_reconstructed_and_rendered_static_glb",
+          "decompression": {
+            "as-panda.tmb": {
+              "compressed_bytes": 68760,
+              "uncompressed_bytes": 301952,
+              "crc32_verified": true,
+              "dump_bytes": 986318,
+              "line_count": 421,
+              "vertices_lines": 14,
+              "indices_lines": 0
+            },
+            "panda_color.ttx": {
+              "compressed_bytes": 23856,
+              "uncompressed_bytes": 699408,
+              "crc32_verified": true,
+              "format": "type_rgb_s3tc_dxt1",
+              "target": "target_2d",
+              "width": 1024,
+              "height": 1024,
+              "layers": 1,
+              "mips": 11,
+              "pixels_len": 699064
+            }
+          },
+          "mesh_validation": [
+            {
+              "name": "Fuselage",
+              "declared_vertices": 2673,
+              "decoded_vertices": 2673,
+              "declared_faces": 1805,
+              "decoded_nondegenerate_faces": 1805,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "strip",
+              "max_index": 2672,
+              "material": 0
+            },
+            {
+              "name": "Glass",
+              "declared_vertices": 1486,
+              "decoded_vertices": 1486,
+              "declared_faces": 868,
+              "decoded_nondegenerate_faces": 868,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 1485,
+              "material": 1
+            },
+            {
+              "name": "RightWing",
+              "declared_vertices": 265,
+              "decoded_vertices": 265,
+              "declared_faces": 202,
+              "decoded_nondegenerate_faces": 202,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "strip",
+              "max_index": 264,
+              "material": 0
+            },
+            {
+              "name": "LeftWing",
+              "declared_vertices": 277,
+              "decoded_vertices": 277,
+              "declared_faces": 202,
+              "decoded_nondegenerate_faces": 202,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "strip",
+              "max_index": 276,
+              "material": 0
+            },
+            {
+              "name": "RightRubber",
+              "declared_vertices": 594,
+              "decoded_vertices": 594,
+              "declared_faces": 552,
+              "decoded_nondegenerate_faces": 552,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "strip",
+              "max_index": 593,
+              "material": 0
+            },
+            {
+              "name": "LeftRubber",
+              "declared_vertices": 594,
+              "decoded_vertices": 594,
+              "declared_faces": 552,
+              "decoded_nondegenerate_faces": 552,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "strip",
+              "max_index": 593,
+              "material": 0
+            },
+            {
+              "name": "RightStabilizer",
+              "declared_vertices": 128,
+              "decoded_vertices": 128,
+              "declared_faces": 76,
+              "decoded_nondegenerate_faces": 76,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 127,
+              "material": 0
+            },
+            {
+              "name": "LeftStabilizer",
+              "declared_vertices": 128,
+              "decoded_vertices": 128,
+              "declared_faces": 76,
+              "decoded_nondegenerate_faces": 76,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 127,
+              "material": 0
+            },
+            {
+              "name": "RightElevator",
+              "declared_vertices": 72,
+              "decoded_vertices": 72,
+              "declared_faces": 36,
+              "decoded_nondegenerate_faces": 36,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 71,
+              "material": 0
+            },
+            {
+              "name": "LeftElevator",
+              "declared_vertices": 72,
+              "decoded_vertices": 72,
+              "declared_faces": 36,
+              "decoded_nondegenerate_faces": 36,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 71,
+              "material": 0
+            },
+            {
+              "name": "Stabilizer",
+              "declared_vertices": 280,
+              "decoded_vertices": 280,
+              "declared_faces": 168,
+              "decoded_nondegenerate_faces": 168,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 279,
+              "material": 0
+            },
+            {
+              "name": "Rudder",
+              "declared_vertices": 131,
+              "decoded_vertices": 131,
+              "declared_faces": 76,
+              "decoded_nondegenerate_faces": 76,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 130,
+              "material": 0
+            },
+            {
+              "name": "Receiver",
+              "declared_vertices": 24,
+              "decoded_vertices": 24,
+              "declared_faces": 12,
+              "decoded_nondegenerate_faces": 12,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 23,
+              "material": 2
+            },
+            {
+              "name": "Lipo",
+              "declared_vertices": 24,
+              "decoded_vertices": 24,
+              "declared_faces": 12,
+              "decoded_nondegenerate_faces": 12,
+              "stride": 8,
+              "attrib_size": "3 3 0 0 2 0 0 0",
+              "attrib_offset": "0 3 -1 -1 6 -1 -1 -1",
+              "index_type": "list",
+              "max_index": 23,
+              "material": 2
+            }
+          ],
+          "derived_glb_observations": {
+            "bytes": 622616,
+            "sha256": "ad2164a1fc0fd2ee123b57eec4f603a60a88efba3ba987a1ec26f39c6112cd15",
+            "valid_header": true,
+            "meshes": 14,
+            "nodes": 14,
+            "materials": 3,
+            "images": 3,
+            "animations": 0,
+            "skins": 0,
+            "triangles": 4673,
+            "named_nodes": [
+              "Fuselage",
+              "Glass",
+              "RightWing",
+              "LeftWing",
+              "RightRubber",
+              "LeftRubber",
+              "RightStabilizer",
+              "LeftStabilizer",
+              "RightElevator",
+              "LeftElevator",
+              "Stabilizer",
+              "Rudder",
+              "Receiver",
+              "Lipo"
+            ]
+          },
+          "render_observed": true,
+          "measured_visual_wingspan_m": 1.3200004,
+          "catalog_wingspan_m": 1.32,
+          "source_normals_preserved": false,
+          "source_motion_preserved": false,
+          "source_flight_dynamics_converted": false,
+          "decoded_color_images": [
+            {
+              "name": "panda_color.png",
+              "bytes": 59801,
+              "sha256": "971a7462d8adeb23bc4d22a74a31f54a3f266191119315cda6d7c6152578e479",
+              "width": 1024,
+              "height": 1024,
+              "mode": "RGBA"
+            },
+            {
+              "name": "innereien_color.png",
+              "bytes": 190938,
+              "sha256": "bb24d4b6df3968eb41d26bd5d5516ba01327f51bf9b5d886de8c1c491a749e69",
+              "width": 512,
+              "height": 512,
+              "mode": "RGBA"
+            },
+            {
+              "name": "glass_color.png",
+              "bytes": 209,
+              "sha256": "1a3ef1cc5d469b5093d5ceeda16332db8dfdf5d32aa93da5b139095a73e7228b",
+              "width": 64,
+              "height": 64,
+              "mode": "RGBA"
+            }
+          ]
+        },
+        {
+          "name": "rc10_blender_model.zip",
+          "bytes": 655936,
+          "sha256": "961d32f3d524eca7fab048726cec6f8ee046d5806e468c6dacbf303ee3bb3ca1",
+          "source_url": "https://www.ikarus.net/downloads/workshops/rc10_blender_model.zip",
+          "members": [
+            {
+              "path": "rc10_blender_model/convert_aircraft.tmc",
+              "uncompressed_bytes": 1858,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_bump.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_color.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_reflection.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_specular.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_specular_alpha.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_bump.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_color.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_reflection.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_specular.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_specular_alpha.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_bump.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_color.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_reflection.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_specular.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_specular_alpha.bmp",
+              "uncompressed_bytes": 12342,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_bump.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_color.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/dekor_deproni.bmp",
+              "uncompressed_bytes": 3145784,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_reflection.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_specular.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_specular_alpha.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.blend",
+              "uncompressed_bytes": 1112824,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.tmc",
+              "uncompressed_bytes": 1289,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.tmd",
+              "uncompressed_bytes": 32004,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/preview.png",
+              "uncompressed_bytes": 262090,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_bump.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_color.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_reflection.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_specular.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_specular_alpha.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/white_color.bmp",
+              "uncompressed_bytes": 786488,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "editable_blend_exported_to_static_glb",
+          "derived_glb_observations": {
+            "bytes": 267912,
+            "sha256": "4d6afdc2d2b6a36619bfcc76642f9380a67f71ed39f26b5d33c0e9b43282a467",
+            "valid_header": true,
+            "meshes": 21,
+            "nodes": 21,
+            "materials": 8,
+            "images": 5,
+            "animations": 0,
+            "skins": 0,
+            "triangles": 4392,
+            "named_nodes": [
+              "Fuselage",
+              "Stabilizer",
+              "Rudder",
+              "LeftStabilizer",
+              "LeftElevator",
+              "RightStabilizer",
+              "RightElevator",
+              "LeftWing",
+              "Propeller",
+              "Blade1",
+              "Blade2",
+              "LeftWheel",
+              "RightGear",
+              "RightWheel",
+              "Engine",
+              "TailGear",
+              "PropellerDisk",
+              "LeftAileron",
+              "RightWing",
+              "RightAileron",
+              "LeftGear"
+            ]
+          }
+        },
+        {
+          "name": "jaria_demo.zip",
+          "bytes": 2820588,
+          "sha256": "746c10d81a44deff0582ee8ddc3918ab6f6622c0093b99e5e984dda6b1e0ab6d",
+          "source_url": "https://jaria-simulator.com/aerofly/aircrafts/demo.zip",
+          "members": [
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo.tmb",
+              "uncompressed_bytes": 722752,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo.tmc",
+              "uncompressed_bytes": 954,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo.tmd",
+              "uncompressed_bytes": 42138,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo_color.ttx",
+              "uncompressed_bytes": 16160,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo_normal.ttx",
+              "uncompressed_bytes": 4096,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo_reflection.ttx",
+              "uncompressed_bytes": 4080,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo_specular.ttx",
+              "uncompressed_bytes": 4136,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__electric.tmc",
+              "uncompressed_bytes": 959,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__electric.tmd",
+              "uncompressed_bytes": 40392,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__nogear.tmc",
+              "uncompressed_bytes": 974,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__nogear.tmd",
+              "uncompressed_bytes": 31775,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__turboprop.tmc",
+              "uncompressed_bytes": 960,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/demo__turboprop.tmd",
+              "uncompressed_bytes": 42267,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/preview.ttx",
+              "uncompressed_bytes": 8392,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/propellerdisk_color.ttx",
+              "uncompressed_bytes": 760,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/propellerdisk_normal.ttx",
+              "uncompressed_bytes": 888,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/propellerdisk_reflection.ttx",
+              "uncompressed_bytes": 896,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/aircraft (rc8-9)/demo/propellerdisk_specular.ttx",
+              "uncompressed_bytes": 920,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/convert_aircraftRC10.tmc",
+              "uncompressed_bytes": 1450,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/convert_aircraft_rc9.tmc",
+              "uncompressed_bytes": 1449,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/convert-tgi.bat",
+              "uncompressed_bytes": 119,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo.mqo",
+              "uncompressed_bytes": 4751815,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_bump.bmp",
+              "uncompressed_bytes": 12582966,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_color.bmp",
+              "uncompressed_bytes": 12582968,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_generator.mqo",
+              "uncompressed_bytes": 4725230,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_reflection.bmp",
+              "uncompressed_bytes": 12582966,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_specular.bmp",
+              "uncompressed_bytes": 12582966,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/demo_specular_alpha.bmp",
+              "uncompressed_bytes": 12582966,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/ipacs_mqo_to_tgi.exe",
+              "uncompressed_bytes": 745472,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/preview.png",
+              "uncompressed_bytes": 22095,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/PropellerDisk_bump.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/PropellerDisk_color.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/PropellerDisk_reflection.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/PropellerDisk_specular.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "demo/demo/rc7/PropellerDisk_specular_alpha.bmp",
+              "uncompressed_bytes": 786486,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "archive_and_editable_mqo_source_presence_inspected_no_conversion"
+        }
+      ],
+      "laboratory_tools": {
+        "generic_parser_repository": "https://github.com/RishiK-06/AeroflyFS-Native-Converter",
+        "commit": "b7863b9ace57d0b0b82b7d286affd8739ff63d6c",
+        "release": "1.1.3",
+        "root_license": "MIT",
+        "source_archive": {
+          "name": "fs-converter-b7863b9.zip",
+          "bytes": 168818,
+          "sha256": "3d2de6a786ac39a924da45e54d4c4ce4bd772835796891ee597a5b9b16c9925f"
+        },
+        "included_wasm_used": false,
+        "included_wasm_provenance": "Not established",
+        "decompressor": "pylzham 0.1.3, built from MIT-licensed source",
+        "decompressor_source_archive": {
+          "name": "pylzham-0.1.3.tar.gz",
+          "bytes": 112019,
+          "sha256": "af4828d4b0e158a938550d9299e5da82bdc9fbb375fe6e3da429012839fbade2"
+        },
+        "decompressor_source_url": "https://pypi.org/project/pylzham/0.1.3/",
+        "blender": "4.3.2, factory startup and auto-execution disabled",
+        "workflow_scope": "Laboratory only; not a required manual Blender workflow for players"
+      },
+      "compatibility": "Source RC9 models/textures can be rebuilt for RC10; no universal older compiled-package or DLC import proof",
+      "unresolved": [
+        "Broader TMB/TTX dialects",
+        "Source normals and full shader fidelity",
+        "TMD controls/pivots",
+        "Source physics semantics",
+        "Stock and paid DLC format coverage",
+        "Asset redistribution permission"
+      ]
+    },
+    {
+      "id": "realflight",
+      "version": "Evolution 10.10.249, current published release as checked",
+      "sample_repository": "ArduPilot/SITL_Models",
+      "sample_commit": "28de13e4011096a403f3cf3e0119e5062a1305d5",
+      "primary_sources": [
+        "https://steamcommunity.com/app/2069310/allnews/",
+        "https://store.steampowered.com/app/4343140/RealFlight_Evolution_2026_Year_Content_Pass/",
+        "https://store.steampowered.com/app/3483210/RealFlight_Evolution_2025_Year_Content_Pass/",
+        "https://forums.realflight.com/KEmax/",
+        "https://www.realflight.com/rfl-kb-rf9.html",
+        "https://store.steampowered.com/eula/2069310_eula_0"
+      ],
+      "samples": [
+        {
+          "name": "acromaster.rfx",
+          "bytes": 1084370,
+          "sha256": "4951350dba111d63a68000dcbe978758ea4b41a1098eaa3ce2743c127ca69a7f",
+          "source_url": "https://raw.githubusercontent.com/ArduPilot/SITL_Models/28de13e4011096a403f3cf3e0119e5062a1305d5/RealFlight/Released_Models/Planes/AcroMaster/Multiplex%20Acro%20Master_EA.RFX",
+          "members": [
+            {
+              "path": "Multiplex Acro Master.KEX",
+              "uncompressed_bytes": 865308,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "Multiplex Acro Master.bse",
+              "uncompressed_bytes": 1240,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "Acro Master ArduPilot.rfvehicle",
+              "uncompressed_bytes": 30995,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "acro master texture.colorscheme",
+              "uncompressed_bytes": 893,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "acro master texture.tga",
+              "uncompressed_bytes": 4194322,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "evo20 1800mah.battery",
+              "uncompressed_bytes": 178,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "Multiplex Acro Master.jpg",
+              "uncompressed_bytes": 50479,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "g3x.enc",
+              "uncompressed_bytes": 1012,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "zip_members_and_selected_plain_config_inspected_no_kex_decode",
+          "flight_domain_assessment": "Not qualified; fixed-wing electric type alone is insufficient, and source gear components require adaptation",
+          "rights": "No asset-specific redistribution grant identified in inspected paths"
+        },
+        {
+          "name": "skywalker.rfx",
+          "bytes": 3264185,
+          "sha256": "be78c70a77ea3827bc63ee8c092b847569ff749fa2ea0ff435af17438807dc43",
+          "source_url": "https://raw.githubusercontent.com/ArduPilot/SITL_Models/28de13e4011096a403f3cf3e0119e5062a1305d5/RealFlight/Released_Models/QuadPlanes/Skywalker_X8_QuadPlane/UCD%20Skywalker%20X8%20VTOL.RFX",
+          "members": [
+            {
+              "path": "tridge.kex",
+              "uncompressed_bytes": 6776056,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "tridge.bse",
+              "uncompressed_bytes": 280,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "Skywalker X8 Quadplane.rfvehicle",
+              "uncompressed_bytes": 58829,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "tridge.colorscheme",
+              "uncompressed_bytes": 693,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "tridge.tga",
+              "uncompressed_bytes": 1065246,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "TMotor MN505-S Navigator KV380.electricTorque",
+              "uncompressed_bytes": 254,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "TMotor Imaginary AT4120 KV375.electricTorque",
+              "uncompressed_bytes": 254,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "Imaginary LiPo 8667mAh.battery",
+              "uncompressed_bytes": 249,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "tridge.jpg",
+              "uncompressed_bytes": 218166,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "g3x.enc",
+              "uncompressed_bytes": 1168,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "zip_members_and_selected_plain_config_inspected_no_kex_decode",
+          "flight_domain_assessment": "Outside current target: QuadPlane VTOL",
+          "rights": "No asset-specific redistribution grant identified in inspected paths"
+        },
+        {
+          "name": "skywalker.fbx",
+          "bytes": 1699468,
+          "sha256": "85459de5115a0753ad38a6d4bc669d15faef6456ab05f778d198bc5ff9090d72",
+          "source_url": "https://raw.githubusercontent.com/ArduPilot/SITL_Models/28de13e4011096a403f3cf3e0119e5062a1305d5/RealFlight/Released_Models/QuadPlanes/Skywalker_X8_QuadPlane/CAD/Skywalker%20X8%20Quadplane.fbx",
+          "evidence_level": "author_source_file_header_and_presence_inspected_no_conversion",
+          "flight_domain_assessment": "Outside current target: QuadPlane VTOL",
+          "rights": "No asset-specific redistribution grant identified in inspected paths"
+        },
+        {
+          "name": "skywalker.blend",
+          "bytes": 5223684,
+          "sha256": "f9aac9e22c752d5c237f4186edd5f21d9981375552b79ef8b04060acec5fd9ef",
+          "source_url": "https://raw.githubusercontent.com/ArduPilot/SITL_Models/28de13e4011096a403f3cf3e0119e5062a1305d5/RealFlight/Released_Models/QuadPlanes/Skywalker_X8_QuadPlane/CAD/x8_vtol.blend",
+          "evidence_level": "author_source_file_header_and_presence_inspected_no_conversion",
+          "flight_domain_assessment": "Outside current target: QuadPlane VTOL",
+          "rights": "No asset-specific redistribution grant identified in inspected paths"
+        },
+        {
+          "name": "aeroscout.rfx",
+          "bytes": 51443,
+          "sha256": "2ec232148c53daf560ce252b4d88e55a577cc4c8dfc858de274558482c5432d4",
+          "source_url": "https://raw.githubusercontent.com/ArduPilot/SITL_Models/28de13e4011096a403f3cf3e0119e5062a1305d5/RealFlight/Released_Models/Planes/Aeroscout/HobbyZone%20AeroScout%20APM_AV.RFX",
+          "members": [
+            {
+              "path": "HobbyZone AeroScout APM.rfvehicle",
+              "uncompressed_bytes": 31556,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "HobbyZone AeroScout APM.jpg",
+              "uncompressed_bytes": 45836,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "g3x.enc",
+              "uncompressed_bytes": 497,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "evidence_level": "variant_zip_inspected_no_mesh_present",
+          "base_aircraft_independently_resolved": false
+        }
+      ],
+      "current_2026_dlc": {
+        "released_quarters": [
+          1,
+          2,
+          3
+        ],
+        "future_quarters": [
+          4
+        ],
+        "minimum_builds": {
+          "1": "10.10.203",
+          "2": "10.10.215",
+          "3": "10.10.239"
+        },
+        "delivery": "Steam unlock requiring Evolution; vendor DLC bytes not inspected"
+      },
+      "kex_decoder_verified": false,
+      "g3x_enc_decoded": false,
+      "configuration_observations": {
+        "acromaster_rfvehicle_bytes": 30995,
+        "geometry_file": "Multiplex Acro Master.KEX",
+        "field_semantics": "Component span/chord/mass/airfoil/servo data are not necessarily whole-aircraft values"
+      },
+      "unresolved": [
+        "KEX geometry/UV/material/hierarchy decoder",
+        "Specific AV/CS base dependencies",
+        "Actual purchased DLC packaging",
+        "Source revision identity",
+        "Flight solver semantics and asset rights"
+      ]
+    },
+    {
+      "id": "reflex",
+      "version": "XTR2 6.02.0",
+      "latest_published_release_date": "2019-11-03",
+      "primary_sources": [
+        "https://www.reflex-sim.net/download-en",
+        "https://www.reflex-sim.net/news-en",
+        "https://www.reflex-sim.net/features-en",
+        "https://www.catv296.ne.jp/~myergo/rmk.html",
+        "https://www.catv296.ne.jp/~myergo/rmkguide.html"
+      ],
+      "samples": [
+        {
+          "name": "edge540v3_sl_fs.zip",
+          "bytes": 480392,
+          "sha256": "20e2aef2854440d964dbd08c5502b0addccac43d3f6b53c1fadf5235dccb78cf",
+          "source_url": "https://www.catv296.ne.jp/~myergo/rmk.files/plane/edge540v3_sl_fs.zip",
+          "members": [
+            {
+              "path": "mike pro/edge540v3_sl_fs.MOD",
+              "uncompressed_bytes": 518844,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "mike pro/edge540v3_sl_fs.PAR",
+              "uncompressed_bytes": 618,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "mod": {
+            "name": "edge540v3_sl_fs.mod",
+            "bytes": 518844,
+            "sha256": "318de8a4053031536207f9e90b8834d9908f6dd46d28d47a381a77d14e961bc6"
+          },
+          "par": {
+            "name": "edge540v3_sl_fs.par",
+            "bytes": 618,
+            "sha256": "48d390ad752846ab9e366c595e6074fb000768afa0de7bd3c1b3b36bce88987b"
+          },
+          "embedded_texture": {
+            "kind": "JPEG",
+            "bytes": 471062,
+            "width": 1004,
+            "height": 1012,
+            "binary_start": 47780,
+            "sha256": "97f972cbeae36552aa14881d95195fdd713aa0fc70dba408969de3d94fa4ab3b"
+          },
+          "evidence_level": "mixed_text_binary_records_and_embedded_jpeg_inspected_no_full_mesh_decode",
+          "missing_dependency": "PAR references shared IKARUS/Axi audio not included in ZIP"
+        },
+        {
+          "name": "edge580pro_blue.zip",
+          "bytes": 342146,
+          "sha256": "b73ba736575f470302c7b01015c4300282eec85865e2ee087e4c4f6eec54d51a",
+          "source_url": "https://www.catv296.ne.jp/~myergo/rmk.files/plane/edge580pro_blue.zip",
+          "members": [
+            {
+              "path": "mike pro/edge580pro_blue.MOD",
+              "uncompressed_bytes": 382638,
+              "zip_encrypted_flag": false
+            },
+            {
+              "path": "mike pro/edge580pro_blue.PAR",
+              "uncompressed_bytes": 618,
+              "zip_encrypted_flag": false
+            }
+          ],
+          "mod": {
+            "name": "edge580pro_blue.mod",
+            "bytes": 382638,
+            "sha256": "92c8e928a34de3c3b7306cd46fac1a2e69f3aefd69998084e9cf38c65522298f"
+          },
+          "par": {
+            "name": "edge580pro_blue.par",
+            "bytes": 618,
+            "sha256": "f6e0cca424f74e191b800b4610a58a8dcd4da2994d2e2055a4eec76221d20f67"
+          },
+          "embedded_texture": {
+            "kind": "JPEG",
+            "bytes": 331415,
+            "width": 1004,
+            "height": 1012,
+            "binary_start": 51221,
+            "sha256": "3d1e2ad15c1e31edf50b56bc22f2b3134ce8bda93fed0f98a467bb782f235178"
+          },
+          "evidence_level": "mixed_text_binary_records_and_embedded_jpeg_inspected_no_full_mesh_decode",
+          "missing_dependency": "PAR references shared IKARUS/Axi audio not included in ZIP"
+        }
+      ],
+      "modernity_limit": "Currently available product; no newer official release demonstrated",
+      "unresolved": [
+        "MOD record semantics and triangulation",
+        "Axes/normalization",
+        "RUDER/ROTOR motion",
+        "Positional PAR physics semantics",
+        "Model-specific version behavior",
+        "Asset rights"
+      ]
+    },
+    {
+      "id": "next",
+      "version": "2.090",
+      "release_date": "2026-09-29",
+      "evidence_level": "primary_documentation_and_catalog_only",
+      "primary_sources": [
+        "https://www.cgm-online.com/rc-flight-simulator/download_e.html",
+        "https://www.cgm-online.com/rc-flight-simulator/rc-flight-simulator_e.html",
+        "https://www.cgm-online.com/rc-flight-simulator/next-faq_e.html",
+        "https://next-rc-heli-simulator.xobor.de/"
+      ],
+      "advertised_fixed_wing_models": 26,
+      "compatibility": "Setup-string sharing and custom scenery verified, not full aircraft geometry import/export",
+      "aircraft_sample_inspected": false
+    },
+    {
+      "id": "seligsim",
+      "version": "2026a v20.1 rev6571",
+      "release_date": "2026-09-20",
+      "evidence_level": "primary_documentation_and_migration_file_inspected_no_aircraft_mesh",
+      "primary_sources": [
+        "https://www.seligsim.com/manual/release_notes.html",
+        "https://www.seligsim.com/manual/getting_started.html",
+        "https://www.seligsim.com/manual/documentation.html",
+        "https://www.seligsim.com/manual/scaling_wizard.html"
+      ],
+      "migration_document": {
+        "name": "migration.md",
+        "bytes": 13941,
+        "sha256": "ccf644f2ba3258aa0fc76ae16a333398ecdda13c9cf30b14239ad0dbacb46cef",
+        "source_url": "https://www.seligsim.com/manual/files/AIRPLANE_MIGRATION_2024_5_TO_2026_USER.md"
+      },
+      "geometry_extension": ".ohm",
+      "physics_path": "Aircraft/FixedWing/<name>/",
+      "graphics_path": "Graphics/Aircraft/FixedWing/<name>/",
+      "compatibility": "Author states 2024.5 user fixed-wing files migrate into 2026 without format conversion; this is internal migration only",
+      "dlc": "Earlier 2024.5 DLC included; no separate 2026 DLC listed yet",
+      "aircraft_sample_inspected": false,
+      "decoder_verified": false,
+      "site_discrepancy": "Older homepage/download page still labels 2024.5",
+      "free_is_open_source": false
+    },
+    {
+      "id": "wings",
+      "version": "Direct product available; Steam release Coming soon",
+      "evidence_level": "primary_documentation_and_catalog_only",
+      "primary_sources": [
+        "https://www.wings-sim.com/",
+        "https://store.steampowered.com/app/5158720/Wings_Simulator/",
+        "https://www.wings-sim.com/Tutorials.php"
+      ],
+      "advertised_included_aircraft": 32,
+      "compatibility": "Paint/setup and tracks are not proof of arbitrary aircraft geometry exchange",
+      "aircraft_sample_inspected": false
+    },
+    {
+      "id": "accurc",
+      "version": "AccuRC 2",
+      "evidence_level": "primary_documentation_and_catalog_only",
+      "primary_sources": [
+        "https://accurcsimulator.com/models/",
+        "https://accurcsimulator.com/faqs/",
+        "https://store.steampowered.com/app/495290/"
+      ],
+      "fixed_wing_examples": [
+        "Alpha 40",
+        "Angel S 50E",
+        "AT-6 Texan",
+        "P-51 Mustang",
+        "Spitfire"
+      ],
+      "compatibility": "Download Blend File catalog labels did not establish an actual inspected fixed-wing source file",
+      "aircraft_sample_inspected": false,
+      "current_platform_behavior_tested": false
+    }
+  ]
+}
