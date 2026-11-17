@@ -35,6 +35,7 @@ _FINAL_OBSERVATION_SECONDS = 5.0  # terminal cancel attribution is not time-crit
 _JOURNAL_RETRY_SECONDS = 1.0
 _PROCESS_LOCK_SECONDS = 0.2
 _HOSTS_LOCK_SECONDS = 1.0
+_CAPACITY_SECONDS = 1.0
 
 
 class _OwnershipBusy(RuntimeError):
@@ -145,6 +146,10 @@ class Worker:
         # Lock order: ``lock`` may be held while taking ``_process_lock``; never
         # the reverse. Teardown therefore cannot wait behind a stalled journal.
         self._process_lock = threading.RLock()
+        # At most one filesystem capacity observation is in flight; callers
+        # share it and stop waiting after _CAPACITY_SECONDS.
+        self._capacity_lock = threading.Lock()
+        self._capacity_probe: tuple[threading.Thread, dict] | None = None
         self.store = Store(self.root)
         self.auth = secrets.token_hex(32)
         self.contexts: dict[str, tuple[str, str]] = {}
@@ -258,6 +263,25 @@ class Worker:
                 raise ValueError("ENGINE_MISMATCH: Windows binary digests do not match snapshot's official pins")
 
     def _storage_capacity(self):
+        """Bounded capacity observation; a stalled volume reports unknown, never free."""
+        with self._capacity_lock:
+            if self._capacity_probe is None or not self._capacity_probe[0].is_alive():
+                box: dict = {}
+                def observe():
+                    box["value"] = self._observe_storage_capacity()
+                thread = threading.Thread(target=observe, name="testqueue-capacity", daemon=True)
+                self._capacity_probe = (thread, box)
+                thread.start()
+            thread, box = self._capacity_probe
+        thread.join(_CAPACITY_SECONDS)
+        if "value" in box:
+            return box["value"]
+        return {"available": False, "path": str(self.root / "attempts"), "free_bytes": None,
+                "total_bytes": None, "observed_at": time.time(),
+                "error": f"filesystem capacity observation still pending after {_CAPACITY_SECONDS:g} s",
+                "scope": "attempt filesystem volume; not reserved capacity"}
+
+    def _observe_storage_capacity(self):
         """Observe the materialization volume; unknown is never empty/free."""
         path = self.root / "attempts"
         try:

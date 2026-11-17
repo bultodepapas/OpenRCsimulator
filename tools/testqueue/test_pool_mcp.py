@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from tools.testqueue import pool_mcp as api
+from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.common import Singleton, write_json
 
 
@@ -126,6 +127,68 @@ class PoolMcpTests(unittest.TestCase):
         freeze.assert_not_called()
         batch.assert_not_called()
         self.assertIn("new request_id", api._read(self.directory / "supervisor.json")["error"])
+
+    def test_status_summary_is_compact_actionable_and_cached(self):
+        passed = {"state": "FINISHED", "outcome": "PASSED", "evidence": "COMPLETE", "cleanup": "CONFIRMED"}
+        failed = {**passed, "outcome": "TEST_FAILED"}
+        collection = lambda job, outcome: {"pool_job": job, "pool_outcome": outcome, "diagnostic_only": False,
+                                           "collection_format": COLLECTION_FORMAT,
+                                           "report": f"/e/{job}/report.json", "log": f"/e/{job}/engine.log"}
+        rows = [{"request_id": "a", "input": {"script": "res://tests/a.gd"}, "phase": "DONE",
+                 "status": passed, "collection": collection("a", "PASSED")},
+                {"request_id": "b", "input": {"script": "res://tests/b.gd"}, "phase": "DONE",
+                 "status": failed, "collection": collection("b", "TEST_FAILED")},
+                {"request_id": "c", "input": {"script": "res://tests/c.gd"}, "phase": "TRACKING",
+                 "status": {"state": "RUNNING"}},
+                {"request_id": "d", "input": {"script": "res://tests/d.gd"}, "phase": "WAITING"},
+                {"request_id": "e", "input": {"script": "res://tests/e.gd"}, "phase": "BLOCKED",
+                 "status": {"state": "UNKNOWN", "error": "lost link"}}]
+        pool = api.Pool(self.config)
+        write_json(pool.root / "history.json", {"linux": {"res://tests/c.gd": {"samples": [12, 14, 13]}},
+                                                "mac": {"res://tests/c.gd": 40, "res://tests/d.gd": 3}})
+        incomplete = {"result": "INCOMPLETE", "jobs": rows, "supervisor": {"state": "WAITING"},
+                      "supervisor_active": True}
+        summary = api.summarize(incomplete, pool)
+        self.assertEqual({key: summary[key] for key in ("total", "passed", "failed", "running", "queued", "blocked")},
+                         {"total": 5, "passed": 1, "failed": 1, "running": 1, "queued": 1, "blocked": 1})
+        self.assertEqual([item["request_id"] for item in summary["attention"]], ["b", "e"])
+        self.assertEqual(summary["attention"][0]["log"], "/e/b/engine.log")
+        self.assertEqual(summary["next_action"], "poll sim_test_status")
+        # Blocked rows never execute again: only queued/running medians count.
+        self.assertEqual(summary["pending_test_seconds_serial"], 16)
+        self.assertEqual(summary["unmeasured_pending_tests"], 0)
+        self.assertEqual(summary["suggested_poll_seconds"], 3)
+        # A live supervisor reobserves by itself; recovery is only for a stopped one.
+        live_recovery = {**incomplete, "recovery_required": True}
+        self.assertEqual(api.summarize(live_recovery, pool)["next_action"], "poll sim_test_status")
+        stopped = {**incomplete, "supervisor_active": False}
+        self.assertIn("sim_test_recover", api.summarize(stopped, pool)["next_action"])
+        self.assertIn("sim_test_recover", api.summarize({**stopped, "supervisor": {}, "recovery_required": True},
+                                                        pool)["next_action"])
+        accepted = api.summarize({**stopped, "supervisor": {"state": "ACCEPTED"}}, pool)["next_action"]
+        self.assertTrue(accepted.startswith("poll") and "30 s" in accepted)
+        interrupted = {**stopped, "supervisor": {"state": "SNAPSHOTTING"}}
+        self.assertIn("new request_id", api.summarize(interrupted, pool)["next_action"])
+        frozen = {**interrupted, "source_frozen": True}
+        self.assertIn("sim_test_recover", api.summarize(frozen, pool)["next_action"])
+        self.assertIn("inspect attention", api.summarize({**stopped, "result": "FAILED"}, pool)["next_action"])
+        rejected = {"request_id": "r", "input": {"script": "res://tests/r.gd"}, "phase": "REJECTED",
+                    "status": {"state": "REJECTED", "error": "invalid script"}}
+        summary = api.summarize({**stopped, "result": "FAILED", "jobs": [rejected]}, pool)
+        self.assertEqual((summary["rejected"], summary["attention"][0]["error"]), (1, "invalid script"))
+        summary = api.summarize({"result": "PASSED", "jobs": rows[:1], "supervisor_active": False}, pool)
+        self.assertEqual((summary["result"], summary["passed"], summary["attention"]), ("PASSED", 1, []))
+        self.assertNotIn("suggested_poll_seconds", summary)
+
+        # The real status call carries the summary without remote operations.
+        with patch.object(api, "_start"):
+            self.launch()
+        write_json(self.directory / "batch.json", {"result": "INCOMPLETE", "snapshot": "s", "jobs": rows[2:]})
+        with patch.object(api.Pool, "status") as remote, patch.object(api.Pool, "probe") as probe:
+            summary = api.status("test1", config=self.config)["summary"]
+        remote.assert_not_called()
+        probe.assert_not_called()
+        self.assertEqual((summary["running"], summary["queued"], summary["blocked"]), (1, 1, 1))
 
     def test_duplicate_worker_cannot_dispatch(self):
         with patch.object(api, "_start"):

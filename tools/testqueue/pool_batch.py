@@ -83,6 +83,35 @@ def _result(state):
     return "INCOMPLETE"
 
 
+def _script_specific_refusal(submission):
+    """A per-script history refusal does not prove other scripts are ineligible."""
+    candidates = (submission.get("decision") or {}).get("candidates") or []
+    return any(isinstance(reason, str) and reason.startswith("INVALID_INVENTORY: historical duration")
+               for candidate in candidates if isinstance(candidate, dict)
+               for reason in candidate.get("reasons") or [])
+
+
+def submission_order(pool, rows):
+    """Longest expected test first, so short tests fill gaps near the end.
+
+    Measured medians come from advisory pool history; an unmeasured test uses
+    its timeout. Ties keep manifest order. Ordering never changes which host is
+    eligible, and every row is still submitted exactly as before.
+    """
+    estimate = getattr(pool, "expected_seconds", None)
+    known = {}
+    for script in dict.fromkeys(row["input"]["script"] for row in rows):
+        try:
+            known[script] = estimate(script) if callable(estimate) else None
+        except Exception:  # advisory: unreadable history keeps manifest order
+            known[script] = None
+    def expected(item):
+        index, row = item
+        value = known[row["input"]["script"]]
+        return (-(value if type(value) in (int, float) and math.isfinite(value) else row["input"]["timeout"]), index)
+    return [row for _, row in sorted(enumerate(rows), key=expected)]
+
+
 def reobservation_ids(pool, rows):
     """Find stale or previously unverified terminal rows without RPC."""
     return {row["request_id"] for row in rows if row.get("phase") in {"DONE", "COLLECTING", "COLLECTION_BLOCKED"}
@@ -191,14 +220,24 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
         retry_ready = {row["request_id"]: time.monotonic() + min(RETRY_MAX_SECONDS,
                        max(0, row["retry_after"] - time.time())) for row in state["jobs"]
                        if row["phase"] == "RETRY_WAIT"}
+        order = submission_order(pool, state["jobs"])
         while True:
-            for row in state["jobs"]:
+            # Every WAITING answer in this pass proves that no host was eligible
+            # for its (platform, host) constraint. Rows whose constraint is the
+            # same or narrower would only repeat the full host probe; they are
+            # reconsidered on the next pass instead.
+            saturated = set()
+            for row in order:
                 if row["phase"] not in {"WAITING", "RETRY_WAIT"}:
                     continue
                 if row["phase"] == "RETRY_WAIT" and time.monotonic() < retry_ready[row["request_id"]]:
                     continue
                 if time.monotonic() >= deadline:
                     break
+                constraint = (row["input"]["platform"], row["input"]["host"])
+                if any(platform in {"any", constraint[0]} and host in {None, constraint[1]}
+                       for platform, host in saturated):
+                    continue
                 row.update(phase="SUBMITTING", submission_attempts=row.get("submission_attempts", 0) + 1)
                 write_json(state_path, state)
                 try:
@@ -209,6 +248,8 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                                              expected_manifest_sha256=state["snapshot_manifest_sha256"])
                     if submission.get("state") == "WAITING":
                         row.update(phase="WAITING", status=submission)
+                        if not _script_specific_refusal(submission):
+                            saturated.add(constraint)
                     elif submission.get("job") == row["request_id"]:
                         row.update(phase="TRACKING", status=submission)
                     else:

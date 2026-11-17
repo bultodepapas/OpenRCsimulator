@@ -555,16 +555,38 @@ cannot open. The remote fixture now uses a dedicated engine file, and the queue
 guide documents the private root for enrolled workstations. Neither was a runtime
 defect; hosted CI runners are not enrolled.
 
+### Efficiency and usability round (merged to local `main`)
+
+Fast-forwarded onto `main` as `d9e68b84c`, then:
+
+| Change | Behavior | Regression |
+| --- | --- | --- |
+| Robust duration history (`pool_history.py`) | Nine-sample window per host/script, tagged by pool job (retried collection adds no sample), median estimate, tiny/overflowing values floored or ignored. Unmeasured hosts borrow speed-scaled peer medians and at least the peers' setup instead of the full timeout. Unreadable history no longer takes a host offline. One-way format. | `test_pool_history` (7), `test_history_feeds_placement_and_corrupt_history_keeps_host_online` |
+| Batch ordering | Longest expected test first; one history read per distinct script. | `test_longest_expected_test_is_submitted_first` |
+| Saturated-constraint skip | A `WAITING` answer defers same-or-narrower rows to the next pass instead of re-probing every host per row; a per-script history refusal does not saturate. | `test_waiting_constraint_skips_only_same_or_narrower_rows_in_that_pass`, `test_script_specific_history_refusal_does_not_hold_back_other_rows` |
+| `sim_test_status` summary | Counts, attention list with report/log, `next_action` (recovery only for a stopped supervisor), `suggested_poll_seconds`, serial pending seconds. Cached data only. | `test_status_summary_is_compact_actionable_and_cached` |
+| Bounded capacity probe | One shared in-flight `disk_usage` observation; `hosts` waits at most 1 s, then reports it unavailable (ineligible, never free). | `test_stalled_capacity_query_is_bounded_unknown_and_not_duplicated` |
+
+The ordering, skip and capacity regressions fail on `d9e68b84c`. A Good Enemy
+review of the first candidate found no invariant violation and raised per-script
+saturation starvation, duplicate samples on collection retry, misleading
+recovery advice under a live supervisor, an inflated ETA including blocked rows,
+an `OverflowError` path and an optimistic cold-host setup; all are fixed and
+tested. The same hermetic Windows-native six-group run on the final candidate
+reports 614 cases (queue 365, debug 120, checked 22, resource 14, performance 75,
+GOD TEST 18), 579 passed, 35 skipped, 0 failures. Placement benefit is not
+measured: no fleet comparison is claimed.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |
 | --- | --- | --- |
 | P0 for continuity claims | **Closed in fixtures on 17 November** (see below): storage failure no longer stops a healthy owned process, a watchdog enforces the deadline even while the monitor hangs in storage, terminal journals are ordered and claims stay held until durable. A worker *process* restart still converts live attempts to `UNKNOWN`; a remote supervisor whose filesystem call hangs still blocks its single thread. | Separate guardian process (R4) for restart continuity and authenticated remote cancellation; native Windows/Linux/Mac fault campaign before rollout. |
 | P0 for rollout | Native Windows process semantics and the operator exception need the exact combined candidate. | Review Windows Actions fixtures, then an idle/private native campaign: start ambiguity, cleanup failure, pending journals, owned cancel and foreign-process preservation. Hosted fixtures do not qualify the interactive desktop. |
-| P1 | **Mostly closed 17 November:** `hosts` waits at most 1 s for the worker lock, then answers `DEGRADED` with `claims: null`; held-lock and hung-storage cases are tested. The capacity filesystem call is still unbounded. | Bound the capacity observation (cached sample with age) if a native hang is observed. |
+| P1 | **Closed in fixtures 17 November:** `hosts` waits at most 1 s for the worker lock and at most 1 s for the shared capacity probe, then reports `DEGRADED`/unknown capacity. | Observe native behavior on a stalled volume during the campaign. |
 | P1 | Preparation/upload/collection remain synchronous in parts of the pool. | Give each stage owned background lifetime, progress and remaining-budget propagation; do not equate reporting expiry with cleanup. |
 | P1 | Physical host/VM/alias identity, memory/volume reservations and runtime version negotiation remain incomplete. | Implement R4/R5 before increasing capacities or routing CI onto personal machines. |
-| P1 | Pool placement still serializes per host and uses existing estimates. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering and calibrated durations under R6. |
+| P1 | Pool placement still serializes per host. Durations are now robust medians with peer estimates and batches run longest-first (17 November), but are uncalibrated against fleet measurements. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering across batches under R6. |
 | P1 | Windows workflow still has path filters; stable required-gate integration and rule visibility are incomplete. | Confirm repository rules with authorized access, validate selected/missing/canceled results, keep full required CI policy intact. |
 | P1 | Immutable collection is implemented, but complete artifact ownership, cache-reader leases and atomic volume reservations are not. | Continue R8: protect source-contained captures, qualify complete per-preset inventory before workspace retirement, bind shared readers and retain interrupted uploads until nonuse is proved. |
 | P2 | Output-byte budgets, paginated status, bounded event/log retention and incident diagnostics. | Add limits that preserve active/unknown evidence and report unavailable observations honestly; do not treat the new copy reclamation as general GC. |

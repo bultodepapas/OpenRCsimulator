@@ -20,6 +20,7 @@ import uuid
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, rpc, state_root, write_json, submission_receipt
+from tools.testqueue import pool_history
 from tools.testqueue.pool_policy import DISK_RESERVE_BYTES, plan
 from tools.testqueue.presets import validate, scheduling
 from tools.testqueue.snapshots import capture, read_verified_file, verify
@@ -215,14 +216,25 @@ class Pool:
             value.setdefault('cached_inputs', [])
             value.setdefault('durations', {})
             value['transfer_bytes_per_second'] = host.get('transfer_bytes_per_second', 10 * 1024 * 1024)
-            history_path = self.root / 'history.json'
-            if history_path.exists():
-                history = json.loads(history_path.read_text()).get(host['id'], {})
-                value['durations'] = {key: value for key, value in history.items() if key != '_setup_seconds'}
-                value['setup_seconds'] = history.get('_setup_seconds', 0 if host.get('local') else 5)
+            history = self.history()
+            if history:
+                durations, sources, setup = pool_history.host_view(history, host['id'], 0 if host.get('local') else 5)
+                value.update(durations=durations, duration_sources=sources, setup_seconds=setup)
             return value
         except (OSError, ValueError, RuntimeError, ImportError, subprocess.SubprocessError) as error:
             return {'id': host['id'], 'online': False, 'reason': str(error)}
+
+    def history(self):
+        """Advisory duration history; unreadable history never takes a host offline."""
+        try:
+            value = json.loads((self.root / 'history.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError, RecursionError):
+            return {}
+        return value if isinstance(value, dict) else {}
+
+    def expected_seconds(self, script):
+        """Fleet-best median duration of one script, or None when never measured."""
+        return pool_history.expected_seconds(self.history(), script)
 
     def probe(self):
         with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:

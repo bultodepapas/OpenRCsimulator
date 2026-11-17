@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import threading
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -40,6 +41,22 @@ class PoolStorageCapacityTests(unittest.TestCase):
         result = self.probe()
         self.assertEqual(result["free_disk_bytes"], 123456)
         self.assertEqual(result["storage"]["path"], "D:/OpenRC/attempts")
+
+    def test_history_feeds_placement_and_corrupt_history_keeps_host_online(self):
+        self.current["storage"] = {"available": True, "free_bytes": 10**12}
+        history = self.pool.root / "history.json"
+        history.write_text(json.dumps({"local": {"_setup_seconds": 2}, "linux": {"res://tests/a.gd": 7}}))
+        result = self.probe()
+        self.assertEqual((result["durations"], result["duration_sources"], result["setup_seconds"]),
+                         ({"res://tests/a.gd": 7.0}, {"res://tests/a.gd": "peer"}, 2))
+        decision = plan({"platform": "windows", "duration_key": "res://tests/a.gd", "estimated_seconds": 90}, [result])
+        self.assertEqual(decision["candidates"][0]["score"]["duration_source"], "peer")
+        for corrupt in ["{not json", "[1, 2]", '{"local": {"a": ' + "9" * 400 + "}}"]:
+            with self.subTest(corrupt=corrupt[:12]):
+                history.write_text(corrupt)
+                result = self.probe()
+                self.assertTrue(result["online"], result)
+                self.assertEqual(plan({"platform": "windows"}, [result])["selected"], "local")
 
     def test_older_unavailable_and_malformed_capacity_is_ineligible(self):
         variants = [None, {}, {"available": False, "free_bytes": 10**12},
@@ -117,6 +134,32 @@ class WorkerStorageCapacityTests(unittest.TestCase):
                 thread.join(5)
         self.assertFalse(thread.is_alive())
         self.assertEqual(errors, [])
+
+    def test_stalled_capacity_query_is_bounded_unknown_and_not_duplicated(self):
+        release, calls = threading.Event(), []
+
+        def stalled(path):
+            calls.append(path)
+            if not release.wait(10):
+                raise OSError("fixture release missing")
+            return SimpleNamespace(total=1000, used=700, free=300)
+
+        with patch.object(worker_module.shutil, "disk_usage", side_effect=stalled):
+            try:
+                for _ in range(2):
+                    started = time.monotonic()
+                    status = self.fixture._call("hosts")
+                    self.assertLess(time.monotonic() - started, 3)
+                    self.assertFalse(status["storage"]["available"])
+                    self.assertIsNone(status["storage"]["free_bytes"])
+                    self.assertIn("pending", status["storage"]["error"])
+                self.assertEqual(len(calls), 1, "a second probe stacked behind the stalled volume")
+            finally:
+                release.set()
+            probe = self.fixture.worker._capacity_probe[0]
+            probe.join(5)
+            self.assertFalse(probe.is_alive())
+            self.assertEqual(self.fixture._call("hosts")["storage"]["free_bytes"], 300)
 
     def test_preparation_failure_retains_discoverable_owned_directory(self):
         with patch.object(worker_module.shutil, "copytree", side_effect=OSError("fixture disk full")):

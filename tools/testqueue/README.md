@@ -37,6 +37,13 @@ Existing Codex sessions must reconnect to load the new tools.
    `source_frozen: true`. Status reads durable state only: `supervisor_active`,
    `supervisor`, optional `result` (`INCOMPLETE`, `PASSED` or `FAILED`), snapshot,
    job outcomes and collected artifact locations. It does not launch work.
+   Read its `summary` first: counts (`passed`, `failed`, `rejected`, `blocked`,
+   `running`, `queued`), `attention` (each failed, rejected or blocked test with
+   its report/log or error), `next_action` and, while incomplete,
+   `suggested_poll_seconds` and `pending_test_seconds_serial` (serial sum of
+   historical medians for queued and running tests; parallel hosts finish sooner,
+   advisory, not a deadline). `next_action` recommends recovery only when the
+   supervisor is not running. `jobs` remains authoritative.
 3. Inspect the checked outcomes, cleanup and collected evidence. A failed test is
    not retried. If interrupted or a reply is lost, use `sim_test_recover` with the
    same ID; recovery retains the frozen snapshot, request identity and selected
@@ -91,6 +98,13 @@ Use `--platform windows`, `linux` or `darwin` when the required coverage is OS
 specific. Different platforms in one batch use a JSON manifest with a `snapshot`
 path and `jobs` array, each containing `script`, `platform`, `timeout`, `require`
 and optional `host`. A pool snapshot is created with `pool snapshot --source PATH`.
+
+Batches submit the longest expected test first (fleet-best historical median, or
+the timeout when unmeasured; ties keep manifest order), so short tests fill the
+tail. When one submission answers `WAITING` for its platform/host constraint,
+rows with the same or a narrower constraint wait for the next pass instead of
+repeating a probe of every host; a refusal caused only by that script's history
+does not hold back other scripts. Ordering never changes eligibility or identity.
 
 ```powershell
 python tools/testqueue/pool_batch.py --config C:/ProgramData/OpenRC/testpool/config.json --manifest batch.json --state batch-state.json --timeout 3600
@@ -203,6 +217,17 @@ settings and may need separate diagnosis if its own initial window remains.
 Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
 engine hashes and insufficient storage/memory. The estimate combines observed
 load, recorded per-test duration, import setup and configured transfer bandwidth.
+`history.json` keeps the newest nine successful durations per host and script,
+tagged with their pool job so a retried collection adds no second sample (legacy
+single numbers are read as one sample). Placement uses the median, so one cold
+or loaded run does not dominate. A host that has not run a script borrows other
+hosts' medians, scaled by the median speed ratio over scripts both have run
+(`duration_source: peer`), and assumes at least the peers' median import setup,
+instead of competing with the full timeout. Unreadable or overflowing history is
+ignored rather than taking a host offline. History only ranks eligible hosts and
+orders submissions; it never admits, reserves or retries. The window format is
+one-way: older pool code refuses history-based placement for those scripts, so
+keep `history.json` with the version that wrote it (or move it aside) on rollback.
 Bandwidth starts as an estimate. Repeated source archives are content-addressed,
 verified and reused over SSH; each attempt still receives writable isolation.
 Initial capacity is one exclusive attempt per remote host. Windows submissions
@@ -213,7 +238,10 @@ Cooperative POSIX containment retains its documented limits.
 For local placement, `hosts` reports free space on the worker's attempt filesystem,
 not necessarily the coordinator's filesystem. An older worker without this storage
 observation, or one reporting it unavailable, is ineligible for pool placement with
-`DISK_UNKNOWN`. Update the worker only at an idle, drained boundary after confirming
+`DISK_UNKNOWN`. The observation runs in one shared background probe; if the volume
+does not answer within 1 s, `hosts` reports it unavailable ("pending") instead of
+waiting, and a stalled probe is never duplicated.
+Update the worker only at an idle, drained boundary after confirming
 its claims are clear; do not restart active work to refresh the observation.
 
 When a remote host is selected, the coordinator prepares and verifies its archive

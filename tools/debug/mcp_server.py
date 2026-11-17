@@ -112,6 +112,8 @@ TOOLS += [
              "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
              "host": {"type": "string"}}, ["script"])}}, ["request_id", "jobs"])},
     {"name": "sim_test_status", "description": "Read cached test-pool progress and automatically collected report/log paths. "
+     "Read summary first: counts, attention (failed/rejected/blocked tests with report and log), next_action and "
+     "suggested_poll_seconds; jobs holds the authoritative rows. "
      "No SSH or waiting. Only result PASSED with verified evidence qualifies a batch; an accepted ticket is not a frozen source or test pass.",
      "inputSchema": _schema({"request_id": {"type": "string"}}, ["request_id"])},
     {"name": "sim_test_recover", "description": "Resume a stopped test supervisor using the same frozen snapshot and job IDs/hosts. "

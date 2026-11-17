@@ -16,6 +16,7 @@ import stat
 import tempfile
 import unicodedata
 
+from . import pool_history
 from .snapshots import _check_no_links, _relative
 
 
@@ -556,12 +557,16 @@ def collect(pool, identifier, out_dir=None):
                     try:
                         path = pool.root / "history.json"
                         history = _json(path) if path.exists() else {}
-                        history.setdefault(host["id"], {})[receipt["options"]["script"]] = max(0.001, elapsed)
+                        if not isinstance(history, dict):
+                            raise ValueError("history must be a mapping")
+                        # Keyed by pool job: a retried collection of the same
+                        # run cannot add a second sample to the window.
+                        pool_history.record(history, host["id"], receipt["options"]["script"], elapsed, identifier)
                         if isinstance(status.get("import"), dict):
                             setup = status["import"].get("elapsed_seconds")
                             if type(setup) not in (int, float) or not math.isfinite(setup) or setup < 0:
                                 raise ValueError("invalid import elapsed time")
-                            history[host["id"]]["_setup_seconds"] = max(0.001, setup)
+                            pool_history.record(history, host["id"], pool_history.SETUP_KEY, setup, identifier)
                         protocol.write_json(path, history)
                     finally:
                         history_guard.close()

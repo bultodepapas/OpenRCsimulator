@@ -28,6 +28,7 @@ class FakePool:
         self.submissions = {}
         self.statuses = {}
         self.wait_once = set()
+        self.wait_decisions = {}
         self.crash_once = False
 
     def submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id,
@@ -38,7 +39,7 @@ class FakePool:
         self.submit_calls.append((script, request_id))
         if script in self.wait_once:
             self.wait_once.remove(script)
-            return {"state": "WAITING", "decision": {"selected": None}}
+            return {"state": "WAITING", "decision": self.wait_decisions.get(script, {"selected": None})}
         # The real pool binds the input and request ID to one durable receipt.
         self.submissions.setdefault(request_id, script)
         if self.crash_once:
@@ -96,12 +97,49 @@ class PoolBatchTests(unittest.TestCase):
         result = self.run_case()
         self.assertEqual(result["result"], "PASSED")
         calls = list(self.pool.submit_calls)
-        self.assertEqual([call[0] for call in calls], [first, second, first])
-        self.assertEqual(calls[0][1], calls[2][1])
-        self.assertNotEqual(calls[0][1], calls[1][1])
+        # WAITING for platform "any" proves no host is eligible for the
+        # narrower darwin/mac-1 row, so that row waits for the next pass.
+        self.assertEqual([call[0] for call in calls], [first, first, second])
+        self.assertEqual(calls[0][1], calls[1][1])
+        self.assertNotEqual(calls[0][1], calls[2][1])
         self.assertEqual(len(self.pool.submissions), 2)
         self.run_case()
         self.assertEqual(self.pool.submit_calls, calls)
+
+    def test_waiting_constraint_skips_only_same_or_narrower_rows_in_that_pass(self):
+        a, b, c, d = (f"res://tests/test_{name}.gd" for name in "abcd")
+        self.inputs([{"script": a, "platform": "linux"}, {"script": b, "platform": "linux", "host": "l1"},
+                     {"script": c, "platform": "windows"}, {"script": d}])
+        self.pool.wait_once.add(a)
+        result = self.run_case()
+        self.assertEqual(result["result"], "PASSED")
+        # linux waited: the linux/l1 row is skipped, windows proceeds; the
+        # broader "any" row is not implied by a linux wait and proceeds too.
+        self.assertEqual([call[0] for call in self.pool.submit_calls], [a, c, d, a, b])
+        self.assertEqual(len(self.pool.submissions), 4)
+
+    def test_script_specific_history_refusal_does_not_hold_back_other_rows(self):
+        a, b = "res://tests/test_a.gd", "res://tests/test_b.gd"
+        self.inputs([{"script": a}, {"script": b}])
+        self.pool.wait_once.add(a)
+        self.pool.wait_decisions[a] = {"selected": None, "candidates": [
+            {"host": "linux", "eligible": False,
+             "reasons": ["INVALID_INVENTORY: historical duration must be positive"]}]}
+        self.assertEqual(self.run_case()["result"], "PASSED")
+        self.assertEqual([call[0] for call in self.pool.submit_calls], [a, b, a])
+
+    def test_longest_expected_test_is_submitted_first(self):
+        short, long, unmeasured = (f"res://tests/test_{name}.gd" for name in ("short", "long", "new"))
+        self.inputs([{"script": short}, {"script": unmeasured, "timeout": 20}, {"script": long}])
+        medians = {short: 2.0, long: 50.0}
+        self.pool.expected_seconds = medians.get
+        self.assertEqual(self.run_case()["result"], "PASSED")
+        self.assertEqual([call[0] for call in self.pool.submit_calls], [long, unmeasured, short])
+        self.pool.submit_calls.clear()
+        self.state.unlink()
+        self.pool.expected_seconds = lambda script: (_ for _ in ()).throw(OSError("history unavailable"))
+        self.assertEqual(self.run_case()["result"], "PASSED")
+        self.assertEqual([call[0] for call in self.pool.submit_calls], [short, long, unmeasured])
 
     def test_crash_after_launch_recovers_same_id_without_another_attempt(self):
         self.inputs([{"script": "res://tests/test_a.gd"}])
@@ -271,7 +309,7 @@ class PoolBatchTests(unittest.TestCase):
                         submit.assert_not_called()
         self.assertEqual(len(launched), 2)
         history = json.loads((pool.root / "history.json").read_text())
-        self.assertEqual(history["windows"]["res://tests/test_a.gd"], 1.25)
+        self.assertEqual(history["windows"]["res://tests/test_a.gd"]["samples"], [1.25])
 
 
 if __name__ == "__main__":

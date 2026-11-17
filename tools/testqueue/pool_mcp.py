@@ -15,7 +15,8 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.pool import Pool, default_config, digest
-from tools.testqueue.pool_batch import reobservation_ids, run_batch
+from tools.testqueue.pool_batch import _finished_success, reobservation_ids, run_batch
+from tools.testqueue.pool_history import expected_seconds
 from tools.testqueue.presets import validate, scheduling
 
 
@@ -123,7 +124,88 @@ def status(request_id, *, config=None):
                                 "status": {"state": "UNKNOWN", "cleanup": "UNCONFIRMED"},
                                 "recovery_required": True} if row["request_id"] in reobserve else row)
                               for row in batch["jobs"]]
+    result["summary"] = summarize(result, pool)
     return result
+
+
+_ACTIVE = {"SUBMITTING", "TRACKING", "COLLECTING"}
+_QUEUED = {"WAITING", "RETRY_WAIT"}
+
+
+def summarize(result, pool=None):
+    """Compact, actionable digest of a status; the full rows remain authoritative.
+
+    Built from cached receipts and local advisory history only. Expected times
+    are medians of past successful runs, not deadlines or promises.
+    """
+    rows = result.get("jobs") or []
+    supervisor = result.get("supervisor") or {}
+    counts = {"total": len(rows), "passed": 0, "failed": 0, "rejected": 0, "blocked": 0,
+              "running": 0, "queued": 0}
+    attention, pending = [], []
+    for row in rows:
+        script = (row.get("input") or {}).get("script")
+        status, collection = row.get("status") or {}, row.get("collection") or {}
+        phase = row.get("phase")
+        if phase == "DONE" and _finished_success(row):
+            counts["passed"] += 1
+            continue
+        if phase == "DONE":
+            counts["failed"] += 1
+            attention.append({"script": script, "request_id": row.get("request_id"), "phase": phase,
+                              "outcome": status.get("outcome"),
+                              "evidence": collection.get("report") or collection.get("pool_report"),
+                              "log": collection.get("log") or collection.get("diagnostic_log")})
+            continue
+        if phase == "REJECTED":
+            counts["rejected"] += 1
+            attention.append({"script": script, "request_id": row.get("request_id"), "phase": phase,
+                              "error": status.get("error") or row.get("first_error")})
+            continue
+        if phase in {"BLOCKED", "COLLECTION_BLOCKED"}:
+            counts["blocked"] += 1
+            attention.append({"script": script, "request_id": row.get("request_id"), "phase": phase,
+                              "state": status.get("state"),
+                              "error": row.get("collection_error") or status.get("error")})
+        elif phase in _QUEUED:
+            counts["queued"] += 1
+            pending.append(script)
+        elif phase in _ACTIVE:
+            counts["running"] += 1
+            pending.append(script)
+    overall = result.get("result", "INCOMPLETE")
+    active = bool(result.get("supervisor_active"))
+    state = supervisor.get("state")
+    if overall == "PASSED":
+        action = "none: every test passed with recorded verified evidence (status does not rehash artifacts)"
+    elif not active and state == "SNAPSHOTTING" and not result.get("source_frozen"):
+        action = "snapshot was interrupted before any dispatch; sim_test_launch with a new request_id"
+    elif state == "ERROR" and not active:
+        action = "inspect supervisor.error; then sim_test_recover with the same request_id"
+    elif not active and overall == "INCOMPLETE" and (result.get("recovery_required") or state not in {None, "ACCEPTED"}):
+        action = "sim_test_recover with the same request_id (supervisor is not running)"
+    elif not active and overall == "INCOMPLETE":
+        action = ("poll sim_test_status; if supervisor stays ACCEPTED and inactive for about 30 s, "
+                  "sim_test_recover with the same request_id")
+    elif overall == "FAILED":
+        action = "inspect attention[].evidence and attention[].log; fix and launch a new request_id"
+    else:
+        action = "poll sim_test_status"
+    summary = {"result": overall, **counts, "attention": attention, "next_action": action}
+    if overall == "INCOMPLETE" and pool is not None:
+        try:
+            history = pool.history()
+            expected = [expected_seconds(history, script) for script in pending]
+        except Exception:  # advisory only; status must still answer
+            expected = []
+        known = [value for value in expected if value is not None]
+        if known:
+            # Serial sum of fleet-best medians for queued and running tests;
+            # parallel hosts finish sooner and running tests may be near done.
+            summary["pending_test_seconds_serial"] = round(sum(known), 1)
+            summary["unmeasured_pending_tests"] = len(expected) - len(known)
+        summary["suggested_poll_seconds"] = int(min(30, max(2, min(known) if known else 10)))
+    return summary
 
 
 def recover(request_id, *, config=None):
