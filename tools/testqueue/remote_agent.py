@@ -74,6 +74,35 @@ def write_json(path, value):
             os.close(fd)
 
 
+TERMINAL_WRITE_ATTEMPTS = 6
+TERMINAL_WRITE_DELAY = 0.25
+JOURNAL_RETRY_SECONDS = 1.0
+
+
+def publish_observation(path, value):
+    """Post-start journal: True once durable. Failure never touches the owned child."""
+    try:
+        write_json(path, value)
+        return True
+    except (OSError, ValueError, TypeError):
+        return False
+
+
+def publish_terminal(path, value):
+    """Ordered bounded retries; the caller keeps the host lock until this returns.
+
+    If every attempt fails, the last durable record (RUNNING) stays in place and
+    a later status observation quarantines it. Capacity is never released early.
+    """
+    for attempt in range(TERMINAL_WRITE_ATTEMPTS):
+        try:
+            return write_json(path, value)
+        except OSError:
+            if attempt + 1 == TERMINAL_WRITE_ATTEMPTS:
+                raise
+            time.sleep(TERMINAL_WRITE_DELAY * 2 ** attempt)
+
+
 def read_json(path):
     with Path(path).open(encoding="utf-8") as stream:
         return json.load(stream)
@@ -544,7 +573,12 @@ def status(root, identifier):
             expired = state.get("state") == "RUNNING" or (state.get("state") == "STARTING" and time.time() - state.get("accepted_at", 0) >= START_GRACE)
             if expired:
                 state.update(state="UNKNOWN", cleanup="UNCONFIRMED", error="supervisor disappeared; host is quarantined")
-                write_json(path, state)
+                try:
+                    write_json(path, state)
+                except OSError as error:
+                    # The durable RUNNING/STARTING record already keeps the host
+                    # quarantined; report the truthful observation, not a crash.
+                    state["error"] += f"; quarantine record not persisted ({error})"
         finally:
             lock.close()
     return public_status(state)
@@ -783,31 +817,36 @@ def execute_stage(root, directory, state, stage, deadline):
     process = OwnedProcess([sys.executable, str(Path(__file__).resolve()), "_invoke", "--root", str(root),
                             "--request-id", state["request_id"], "--stage", stage],
                            cwd=source, env=env, log=directory / (stage + "-runner.log"))
+    # A previous stage's closed process must never be attributed to this stage.
+    state.pop("process", None)
     state.update(state="RUNNING", stage=stage, dispatch_at=time.time())
     write_json(directory / "state.json", state)
     started = False
+    timed_out = False
+    code = None
     try:
         process.start()
         started = True
         state["process"] = process.identity
-        write_json(directory / "state.json", state)
-        timed_out = False
+        # Storage failure after creation is an observation fault: the child stays
+        # owned and the absolute monotonic deadline below remains in force. Only
+        # this single supervisor thread writes the live dict, so newest wins.
+        journaled = publish_observation(directory / "state.json", state)
+        retry_at = time.monotonic() + JOURNAL_RETRY_SECONDS
         while process.alive():
             code = process.poll()
-            if time.monotonic() >= deadline or (code is not None and code != 0):
-                timed_out = time.monotonic() >= deadline
+            now = time.monotonic()
+            if now >= deadline or (code is not None and code != 0):
+                timed_out = now >= deadline
                 process.terminate()
                 break
+            if not journaled and now >= retry_at:
+                journaled = publish_observation(directory / "state.json", state)
+                retry_at = time.monotonic() + JOURNAL_RETRY_SECONDS
             time.sleep(0.1)
         code = process.poll()
         process.close()
         started = False
-        if timed_out:
-            return {"ok": False, "complete": False, "reason": "timeout"}
-        result_path = directory / (stage + "-result.json")
-        if code != 0 or not result_path.is_file():
-            return {"ok": False, "complete": False, "reason": "runner_exit", "exit_code": code}
-        return read_json(result_path)
     except BaseException:
         if started:
             try:
@@ -818,6 +857,17 @@ def execute_stage(root, directory, state, stage, deadline):
             # A failed launch can have dispatched before it reported an identity.
             raise RuntimeError("process start or cleanup was not confirmed")
         raise
+    # Teardown is proved here. Result I/O faults are evidence gaps, never
+    # uncertainty about the process tree.
+    if timed_out:
+        return {"ok": False, "complete": False, "reason": "timeout"}
+    result_path = directory / (stage + "-result.json")
+    if code != 0 or not result_path.is_file():
+        return {"ok": False, "complete": False, "reason": "runner_exit", "exit_code": code}
+    try:
+        return read_json(result_path)
+    except (OSError, ValueError):
+        return {"ok": False, "complete": False, "reason": "result_unreadable"}
 
 
 def invoke(root, identifier, stage):
@@ -990,8 +1040,9 @@ def supervise(root, identifier):
     finally:
         try:
             # FINISHED and its process-cleanup receipt must be durable before
-            # reclaiming storage. Readers may observe storage cleanup pending.
-            write_json(path, state)
+            # reclaiming storage or releasing the host lock. Readers may observe
+            # storage cleanup pending.
+            publish_terminal(path, state)
             if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) == (
                     "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported():
                 try:

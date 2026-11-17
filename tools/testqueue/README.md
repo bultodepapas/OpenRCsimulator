@@ -447,12 +447,41 @@ was created before startup raised. Ambiguous start or cleanup failure retains
 quarantine. If the quarantine write fails, an in-memory fence blocks allocation
 and preallocated launches until the same journal transition becomes durable.
 
+After an owned process is created, storage is observation, not ownership. The
+admitted hard deadline is armed from a monotonic clock at the creation boundary
+and enforced by a separate per-attempt watchdog that touches only the session
+bridge and the process lock, so it fires even while the monitor thread hangs
+inside a storage call. Process handles, cancellation enforcement and teardown use
+that process lock, never the storage/admission lock; the monitor waits at most
+0.05 s per pass for the storage lock, and occupancy probes never wait out another
+attempt's teardown (busy ownership is unknown occupancy). A failed or blocked `RUNNING`/`CLEANING`/`FINISHED` journal keeps
+the attempt's newest transition pending. Its monitor retries it each second, and
+the scheduler retries it before any new allocation. The process keeps running,
+its outcome is never rewritten as an infrastructure failure, and its claims stay
+held until teardown is proved **and** the terminal record is durable. An
+unobservable cancel flag delays cancellation; it is never a cancellation or a
+reason to stop healthy work. A new attempt does not cross its launch gate while
+another attempt's teardown is still unresolved. The store refuses any transition
+on an attempt whose `FINISHED` record is already durable. A worker restart still
+converts undurable attempts to `UNKNOWN`.
+
 `hosts` includes scheduler thread/liveness, last successful scan/dispatch, age,
-error and recovery state. The same scheduler recovers with capped backoff after
-dispatch/diagnostic faults. Unavailable claim inventory is `null`, not an empty
-list. Scheduler health is not proof that capacity is free: inspect claims,
-reservations and attempt states too. A worker lock or filesystem stall can still
-delay this response; running-loop database failure is not yet continuity-safe.
+error and recovery state, `pending_quarantines`, `pending_journals` and
+`journal_errors`. Any pending journal reports `DEGRADED`. The same scheduler
+recovers with capped backoff after dispatch/diagnostic faults. Unavailable claim
+inventory is `null`, not an empty list. If the worker lock stays busy for 1 s
+(stalled storage or scheduler), `hosts` answers `DEGRADED` with `claims: null`
+instead of waiting. Scheduler health is not proof that capacity is free: inspect
+claims, reservations and attempt states too. A blocked capacity filesystem call
+can still delay the response.
+
+The remote supervisor follows the same rule: a failed post-start `state.json`
+write is retried while the owned child keeps running, a stage result that cannot
+be read after proved teardown is `result_unreadable` (not cleanup uncertainty),
+and the terminal record gets six ordered attempts before the host lock is
+released. If they all fail, the stale `RUNNING` record is later observed as
+`UNKNOWN` and quarantines the host. A filesystem call that hangs rather than
+fails still blocks that single supervisor thread.
 
 `wait` shares a monotonic socket deadline across connection, send and every read.
 A prior nonterminal observation returned on timeout carries
@@ -488,7 +517,8 @@ only that attempt's claims. The terminal result is `INFRA_FAILED` with
 requires an explicit operator decision each time. After closure, restore admission
 with `testctl drain off`. Ordinary cancellation and reconciliation retain their
 existing process-tree proof requirements. Abandonment is also refused while any
-attempt has a pending in-memory fence/journal retry; let that journal recover first.
+attempt has a pending in-memory fence/journal retry or an unresolved teardown;
+let that journal recover first.
 
 ### Storage after a remote checked job
 
@@ -572,6 +602,12 @@ transfer. The checked pool above selects a host before a new attempt is submitte
 ## Verification
 
 Set `TEMP`, `TMP` and `TMPDIR` to a local volume with at least the snapshot reserve.
+On an **enrolled** workstation, also point `OPENRC_TESTQUEUE_ROOT` at a fresh empty
+private directory (as the `tools/ci` fixtures do). Otherwise the debug, checked-runner
+and GOD TEST fixtures inherit the host's real enrollment and fail because they
+require a running worker; hosted CI runners are not enrolled and do not show this.
+Fixture engines are dedicated files, never `sys.executable`: a Microsoft Store
+Python alias cannot be opened for hashing.
 For MCP checked-batch changes, run the focused client and coordinator fixtures:
 
 ```powershell

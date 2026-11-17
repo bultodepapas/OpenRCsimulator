@@ -1,6 +1,7 @@
 """Lifecycle, ownership and archive checks for the remote transport."""
 from __future__ import annotations
 
+import errno
 import hashlib
 import io
 import json
@@ -42,6 +43,11 @@ class RemoteAgentTests(unittest.TestCase):
         self.root = Path(self.tmp.name).resolve()
         (self.root / "incoming").mkdir()
         (self.root / "jobs").mkdir()
+        # The engine is only digested and checked for execute permission here.
+        # Never hash the interpreter: a Microsoft Store Python alias is unreadable.
+        self.engine = self.root / "engine-fixture"
+        self.engine.write_bytes(b"#!/bin/sh\nexit 0\n")
+        self.engine.chmod(0o755)
 
     def archive(self, entries, filename="source.tar"):
         path = self.root / "incoming" / filename
@@ -61,7 +67,7 @@ class RemoteAgentTests(unittest.TestCase):
     def request(self, archive, identifier="job1"):
         return {"request_id": identifier, "preset": "checked",
                 "archive": {"path": str(archive), "sha256": agent.digest(archive)},
-                "engine_path": sys.executable,
+                "engine_path": str(self.engine),
                 "options": {"script": "res://tests/test_sample.gd", "require": ["0 failed"], "timeout": 90}}
 
     def sample_archive(self):
@@ -160,7 +166,7 @@ class RemoteAgentTests(unittest.TestCase):
     def test_supervisor_runs_import_and_check_in_owned_process(self):
         archive = self.sample_archive()
         request = self.request(archive)
-        request["expected_engine_sha256"] = agent.digest(sys.executable)
+        request["expected_engine_sha256"] = agent.digest(self.engine)
         self.accepted(request)
         with mock.patch.object(agent, "authority_enrolled", return_value=False), mock.patch.object(agent, "external_engine_present", return_value=False):
             self.assertEqual(agent.supervise(self.root, "job1"), 0)
@@ -227,6 +233,92 @@ class RemoteAgentTests(unittest.TestCase):
         Path(result["report"]).write_text(json.dumps(result), encoding="utf-8")
         with self.assertRaises(agent.Refused):
             agent.verify_result(directory, "check", result, request)
+
+    # TQ-04 continuity: the remote supervisor journal is observation, not ownership.
+
+    def _supervise(self):
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False):
+            return agent.supervise(self.root, "job1")
+
+    def test_post_start_journal_failure_keeps_owned_child_running(self):
+        self.accepted(self.request(self.sample_archive()))
+        real_write = agent.write_json
+        failures = []
+
+        def fail_owned_observation(path, value):
+            if value.get("state") == "RUNNING" and value.get("process") and len(failures) < 2:
+                failures.append(value.get("stage"))
+                raise OSError(errno.ENOSPC, "injected post-start journal failure")
+            return real_write(path, value)
+
+        with mock.patch.object(agent, "write_json", side_effect=fail_owned_observation):
+            self.assertEqual(self._supervise(), 0)
+        # Both failures hit owned observations (a slow import may retry once).
+        self.assertEqual(len(failures), 2, failures)
+        self.assertEqual(failures[0], "import")
+        status = agent.status(self.root, "job1")
+        self.assertEqual((status["state"], status["outcome"], status["cleanup"], status["evidence"]),
+                         ("FINISHED", "PASSED", "CONFIRMED", "COMPLETE"), status)
+        self.assertTrue((self.root / "jobs/job1/import-result.json").is_file())
+
+    def test_terminal_write_is_retried_before_the_host_lock_is_released(self):
+        self.accepted(self.request(self.sample_archive()))
+        real_write = agent.write_json
+        failures = []
+
+        def fail_terminal_twice(path, value):
+            if value.get("state") == "FINISHED" and len(failures) < 2:
+                failures.append(1)
+                raise OSError(errno.EIO, "injected terminal journal failure")
+            return real_write(path, value)
+
+        with mock.patch.object(agent, "write_json", side_effect=fail_terminal_twice), \
+                mock.patch.object(agent, "TERMINAL_WRITE_DELAY", 0):
+            self.assertEqual(self._supervise(), 0)
+        self.assertEqual(len(failures), 2)
+        status = agent.status(self.root, "job1")
+        self.assertEqual((status["state"], status["outcome"]), ("FINISHED", "PASSED"), status)
+
+    def test_exhausted_terminal_write_fails_closed_and_quarantines(self):
+        self.accepted(self.request(self.sample_archive()))
+        real_write = agent.write_json
+        attempts = []
+
+        def always_fail_terminal(path, value):
+            if value.get("state") in {"FINISHED", "UNKNOWN"}:
+                attempts.append(value["state"])
+                raise OSError(errno.EIO, "injected persistent terminal failure")
+            return real_write(path, value)
+
+        with mock.patch.object(agent, "write_json", side_effect=always_fail_terminal), \
+                mock.patch.object(agent, "TERMINAL_WRITE_DELAY", 0), self.assertRaises(OSError):
+            self._supervise()
+        self.assertEqual(attempts, ["FINISHED"] * agent.TERMINAL_WRITE_ATTEMPTS)
+        # No durable terminal record: the stale RUNNING record is observed as
+        # uncertainty and the host refuses new work instead of freeing capacity.
+        self.assertEqual(agent.read_json(self.root / "jobs/job1/state.json")["state"], "RUNNING")
+        self.assertEqual(agent.status(self.root, "job1")["state"], "UNKNOWN")
+        second = self.archive([("app/project.godot", "[application]\n")], "second.tar")
+        with self.assertRaises(agent.Refused) as refused:
+            self.accepted(self.request(second, "job2"))
+        self.assertEqual(refused.exception.code, "QUARANTINED")
+
+    def test_unreadable_result_after_confirmed_teardown_is_not_unknown(self):
+        self.accepted(self.request(self.sample_archive()))
+        real_read = agent.read_json
+
+        def unreadable_import(path):
+            if str(path).endswith("import-result.json"):
+                raise ValueError("injected unreadable stage result")
+            return real_read(path)
+
+        with mock.patch.object(agent, "read_json", side_effect=unreadable_import):
+            self.assertEqual(self._supervise(), 0)
+        status = agent.status(self.root, "job1")
+        self.assertEqual((status["state"], status["outcome"], status["cleanup"], status["evidence"]),
+                         ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"), status)
+        self.assertEqual(status["import"]["reason"], "result_unreadable")
 
 
 if __name__ == "__main__":

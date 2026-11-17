@@ -1,6 +1,7 @@
 """Persistent host-local coordinator and worker, with fail-closed recovery."""
 from __future__ import annotations
 
+import copy
 import hashlib
 import hmac
 import json
@@ -19,12 +20,25 @@ import uuid
 
 from .common import LIMIT, VERSION, Singleton, HostSingleton, write_json
 from .presets import scheduling, validate
-from .store import Store
+from .store import StaleTransition, Store
 
 
 _SCHEDULER_INTERVAL = 0.1
 _SCHEDULER_MAX_BACKOFF = 5.0
 _SCHEDULER_STALE_SECONDS = 30.0
+# Owned execution never waits indefinitely for the storage/admission lock. A
+# busy or hung journal delays observation and journaling, not ownership,
+# cancellation of an already observed request, or the admitted hard deadline.
+_OBSERVATION_LOCK_SECONDS = 0.5
+_MONITOR_LOCK_SECONDS = 0.05     # per-pass waits inside the 0.1 s monitor loop
+_FINAL_OBSERVATION_SECONDS = 5.0  # terminal cancel attribution is not time-critical
+_JOURNAL_RETRY_SECONDS = 1.0
+_PROCESS_LOCK_SECONDS = 0.2
+_HOSTS_LOCK_SECONDS = 1.0
+
+
+class _OwnershipBusy(RuntimeError):
+    """Occupancy cannot be observed now; never evidence that a host is free."""
 
 
 class _LaunchGate:
@@ -127,13 +141,23 @@ class Worker:
         from .processes import host_identity
         self.host_guard = None if fixture else HostSingleton(host_identity()["host"])
         self.lock = threading.RLock()
+        # Guards OwnedProcess handle methods (not thread-safe) and ``active``.
+        # Lock order: ``lock`` may be held while taking ``_process_lock``; never
+        # the reverse. Teardown therefore cannot wait behind a stalled journal.
+        self._process_lock = threading.RLock()
         self.store = Store(self.root)
         self.auth = secrets.token_hex(32)
         self.contexts: dict[str, tuple[str, str]] = {}
         self.active: dict[str, object] = {}
+        self._closing: set[str] = set()
         self._unresolved_attempts: set[str] = set()
         self._pending_unknown: dict[str, tuple[str, dict]] = {}
         self._pending_nonlaunch: dict[str, tuple[str, dict]] = {}
+        # Newest unrecorded transition of an owned attempt. Storage failure keeps
+        # it here for ordered retry; it never tears down the owned process.
+        self._journal_lock = threading.Lock()
+        self._pending_journal: dict[str, tuple[str, str, dict]] = {}
+        self._journal_errors: dict[str, str] = {}
         self.stopping = threading.Event()
         self._scheduler_lock = threading.Lock()
         self._scheduler_thread = None
@@ -183,9 +207,16 @@ class Worker:
         if refresh or self._occupancy_cache is None or now - self._occupancy_cache[0] >= 1:
             self._occupancy_cache = (now, set(external_simulators()))
         managed = set()
-        for process in self.active.values():
-            if process is not None:
-                managed.update(process.pids())
+        # Callers hold ``lock``; never let them wait out another attempt's
+        # teardown. Busy ownership is unknown occupancy, which fails closed.
+        if not self._process_lock.acquire(timeout=_PROCESS_LOCK_SECONDS):
+            raise _OwnershipBusy("managed process ownership is busy (teardown in progress)")
+        try:
+            for process in self.active.values():
+                if process is not None:
+                    managed.update(process.pids())
+        finally:
+            self._process_lock.release()
         return self._occupancy_cache[1] - managed
 
     def _engine_identity(self):
@@ -250,34 +281,9 @@ class Worker:
         operation = request.get("operation")
         # Filesystem capacity is advisory and can be slow. Do not hold the
         # admission lock while asking the OS about the attempt volume.
-        storage = self._storage_capacity() if operation == "hosts" else None
+        if operation == "hosts":
+            return self._hosts(self._storage_capacity())
         with self.lock:
-            if operation == "hosts":
-                scheduler = self._scheduler_health()
-                inventory_error = None
-                try:
-                    claims = [dict(row) for row in self.store.db.execute("SELECT * FROM claims")]
-                except Exception as error:
-                    # Unknown inventory must not look like an empty claim set.
-                    claims, inventory_error = None, str(error)
-                    with self._scheduler_lock:
-                        self._scheduler_state = "DEGRADED"
-                        self._scheduler_error = "claim inventory unavailable: " + inventory_error
-                        self._scheduler_needs_storage_check = True
-                        self._scheduler_fault_version += 1
-                    scheduler = self._scheduler_health()
-                condition = ("DRAINING" if self.draining else "READY"
-                             if scheduler["state"] == "READY" and inventory_error is None
-                             and not self._unresolved_attempts else "DEGRADED")
-                return {"id": self.host_id, "platform": platform.system().lower(), "architecture": platform.machine(),
-                        "engine": self.engine_identity, "worker_version": VERSION, "observed_at": time.time(),
-                        "condition": condition, "scheduler": scheduler, "inventory_error": inventory_error,
-                        "storage": storage,
-                        "pending_quarantines": len(self._unresolved_attempts),
-                        "reservation": ({key: value for key, value in self.reservation.items() if key != "secret"} if self.reservation else None),
-                        "capacities": self.capacities, "claims": claims,
-                        "qualified": [], "adapter": "windows-local-experimental" if os.name == "nt" else "UNSUPPORTED",
-                        "remote_hosts": "UNVERIFIED", "physical_parent": "UNVERIFIED"}
             if operation in {"status", "result"}:
                 return self._status(request["job"])
             if operation == "list":
@@ -327,7 +333,10 @@ class Worker:
                     raise ValueError("operator abandonment requires a drained worker and an UNKNOWN attempt")
                 if self.active or self.contexts:
                     raise ValueError("attempt still belongs to an executing supervisor thread")
-                if self._unresolved_attempts or self._pending_unknown or self._pending_nonlaunch:
+                with self._journal_lock:
+                    pending_journals = bool(self._pending_journal)
+                if (self._unresolved_attempts or self._pending_unknown or self._pending_nonlaunch
+                        or pending_journals or self._closing):
                     raise ValueError("operator abandonment requires pending attempt journals to recover first")
                 if self.store.db.execute("SELECT 1 FROM attempts WHERE state IN ('DISPATCHING','RUNNING','CLEANING') LIMIT 1").fetchone():
                     raise ValueError("operator abandonment requires no executing attempts")
@@ -340,6 +349,49 @@ class Worker:
         if operation == "submit":
             return self.submit(request)
         raise ValueError("unknown worker operation")
+
+    def _hosts(self, storage):
+        """Health snapshot that answers promptly even while storage is stalled."""
+        locked = self.lock.acquire(timeout=_HOSTS_LOCK_SECONDS)
+        try:
+            scheduler = self._scheduler_health()
+            inventory_error = None
+            if not locked:
+                # Do not wait behind a hung journal or scheduler pass. Unknown
+                # inventory is never presented as an empty claim set.
+                claims = None
+                inventory_error = "worker lock unavailable: storage or scheduler is stalled"
+            else:
+                try:
+                    claims = [dict(row) for row in self.store.db.execute("SELECT * FROM claims")]
+                except Exception as error:
+                    claims, inventory_error = None, str(error)
+                    with self._scheduler_lock:
+                        self._scheduler_state = "DEGRADED"
+                        self._scheduler_error = "claim inventory unavailable: " + inventory_error
+                        self._scheduler_needs_storage_check = True
+                        self._scheduler_fault_version += 1
+                    scheduler = self._scheduler_health()
+            with self._journal_lock:
+                pending_journals = len(self._pending_journal)
+                journal_errors = dict(self._journal_errors)
+            condition = ("DRAINING" if self.draining else "READY"
+                         if scheduler["state"] == "READY" and inventory_error is None
+                         and not self._unresolved_attempts and not pending_journals else "DEGRADED")
+            reservation = self.reservation
+            return {"id": self.host_id, "platform": platform.system().lower(), "architecture": platform.machine(),
+                    "engine": self.engine_identity, "worker_version": VERSION, "observed_at": time.time(),
+                    "condition": condition, "scheduler": scheduler, "inventory_error": inventory_error,
+                    "storage": storage,
+                    "pending_quarantines": len(self._unresolved_attempts),
+                    "pending_journals": pending_journals, "journal_errors": journal_errors,
+                    "reservation": ({key: value for key, value in reservation.items() if key != "secret"} if reservation else None),
+                    "capacities": self.capacities, "claims": claims,
+                    "qualified": [], "adapter": "windows-local-experimental" if os.name == "nt" else "UNSUPPORTED",
+                    "remote_hosts": "UNVERIFIED", "physical_parent": "UNVERIFIED"}
+        finally:
+            if locked:
+                self.lock.release()
 
     def _status(self, job):
         status = self.store.get(job)
@@ -456,6 +508,131 @@ class Worker:
                     "last_dispatch": self._scheduler_last_dispatch,
                     "error": self._scheduler_error, "diagnostic_error": self._scheduler_diagnostic_error}
 
+    def _deadline_watchdog(self, attempt, process, directory, deadline, expired, finished):
+        """Enforce one attempt's admitted hard budget without storage or ``lock``.
+
+        The monitor thread can hang inside a journal call; this thread cannot,
+        because it touches only the bridge socket and the process lock. It never
+        closes handles: the monitor owns close() and the cleanup verdict.
+        """
+        while not finished.wait(max(0.0, deadline - time.monotonic())):
+            if time.monotonic() >= deadline:
+                break
+        if finished.is_set():
+            return
+        with self._process_lock:
+            try:
+                if self.active.get(attempt) is not process or not process.alive():
+                    return  # Closed, or ended naturally at the boundary.
+            except Exception:
+                pass  # Uncertain liveness: enforce the budget anyway.
+            expired.set()
+        if (directory / "ready.json").exists():
+            self._graceful_stop(directory)
+        with self._process_lock:
+            if self.active.get(attempt) is not process:
+                return
+            try:
+                process.terminate()
+            except Exception:
+                # The monitor repeats terminate(); its close() decides whether
+                # teardown is proved or the attempt is quarantined.
+                pass
+
+    def _journal(self, job, attempt, state, data, *, wait=_OBSERVATION_LOCK_SECONDS):
+        """Record an owned attempt's newest transition; True once it is durable.
+
+        A failed or lock-blocked write leaves the newest transition pending for
+        ordered retry (by its monitor or by the scheduler before any new
+        allocation). It never stops the owned process or releases its claims.
+        """
+        record = (job, state, copy.deepcopy(data))
+        with self._journal_lock:
+            self._pending_journal[attempt] = record
+        return self._flush_journal(attempt, wait=wait)
+
+    def _flush_journal(self, attempt, *, wait=_OBSERVATION_LOCK_SECONDS):
+        if not self.lock.acquire(timeout=wait):
+            with self._journal_lock:
+                if attempt in self._pending_journal:
+                    self._journal_errors[attempt] = "worker storage lock busy"
+            return False
+        try:
+            return self._flush_journal_locked(attempt)
+        finally:
+            self.lock.release()
+
+    def _flush_journal_locked(self, attempt):
+        """Caller holds ``lock``; writers are serialized, so newest always lands last."""
+        with self._journal_lock:
+            record = self._pending_journal.get(attempt)
+        if record is None:
+            return True
+        job, state, data = record
+        try:
+            self.store.update(job, attempt, state, data)
+        except StaleTransition:
+            # Superseded by a durable terminal record: nothing left to write.
+            with self._journal_lock:
+                if self._pending_journal.get(attempt) is record:
+                    del self._pending_journal[attempt]
+                self._journal_errors.pop(attempt, None)
+            return True
+        except Exception as error:
+            with self._journal_lock:
+                self._journal_errors[attempt] = state + ": " + str(error)
+            return False
+        with self._journal_lock:
+            self._journal_errors.pop(attempt, None)
+            # A newer transition published meanwhile stays pending for its own write.
+            if self._pending_journal.get(attempt) is record:
+                del self._pending_journal[attempt]
+                return True
+        return False
+
+    def _observe_canceled(self, job, *, wait=_OBSERVATION_LOCK_SECONDS):
+        """Durable cancel flag, or None when storage cannot be observed now."""
+        if not self.lock.acquire(timeout=wait):
+            return None
+        try:
+            row = self.store.db.execute("SELECT canceled FROM jobs WHERE id=?", (job,)).fetchone()
+            return bool(row[0]) if row else None
+        except Exception:
+            return None
+        finally:
+            self.lock.release()
+
+    def _finalize(self, job, attempt, state, data):
+        """Terminal transition; capacity stays claimed until it is durable."""
+        if state != "UNKNOWN" and attempt in self._unresolved_attempts:
+            # Defence in depth: a fenced attempt never finalizes as proved cleanup.
+            data = {**data, "cleanup": "UNCONFIRMED",
+                    "cleanup_error": data.get("cleanup_error") or "attempt was fenced as unresolved"}
+            state = "UNKNOWN"
+        if state != "UNKNOWN":
+            self._journal(job, attempt, state, data)
+            return
+        # Fence before any write. The quarantine record supersedes older
+        # pending observations of the same attempt.
+        self._unresolved_attempts.add(attempt)
+        self._pending_unknown[attempt] = (job, copy.deepcopy(data))
+        with self._journal_lock:
+            self._pending_journal.pop(attempt, None)
+        if not self.lock.acquire(timeout=_OBSERVATION_LOCK_SECONDS):
+            return
+        try:
+            self.store.update(job, attempt, "UNKNOWN", data)
+        except Exception as error:
+            with self._journal_lock:
+                self._journal_errors[attempt] = "UNKNOWN: " + str(error)
+        else:
+            self._pending_unknown.pop(attempt, None)
+            self._unresolved_attempts.discard(attempt)
+            with self._journal_lock:
+                self._journal_errors.pop(attempt, None)
+        finally:
+            self.lock.release()
+
     def schedule(self):
         with self._scheduler_lock:
             if self._scheduler_thread is not None:
@@ -510,13 +687,31 @@ class Worker:
             # Make fenced outcomes durable before any new allocation. A denied
             # thread gate proves nonlaunch; failed process cleanup does not.
             for attempt, (job, data) in list(self._pending_unknown.items()):
-                self.store.update(job, attempt, "UNKNOWN", data)
-                del self._pending_unknown[attempt]
+                # Quarantine is always the newest record of that attempt.
+                with self._journal_lock:
+                    self._pending_journal.pop(attempt, None)
+                try:
+                    self.store.update(job, attempt, "UNKNOWN", data)
+                except StaleTransition:
+                    pass  # Its proved terminal record is already durable.
+                self._pending_unknown.pop(attempt, None)
                 self._unresolved_attempts.discard(attempt)
+                with self._journal_lock:
+                    self._journal_errors.pop(attempt, None)
+            # Independent nonlaunch releases are not held hostage by another
+            # attempt's failing observation journal.
             for attempt, (job, data) in list(self._pending_nonlaunch.items()):
                 self.store.update(job, attempt, "FINISHED", data)
-                del self._pending_nonlaunch[attempt]
+                self._pending_nonlaunch.pop(attempt, None)
                 self._unresolved_attempts.discard(attempt)
+            with self._journal_lock:
+                pending = list(self._pending_journal)
+            for attempt in pending:
+                if not self._flush_journal_locked(attempt):
+                    with self._journal_lock:
+                        error = self._journal_errors.get(attempt)
+                    if error is not None:
+                        raise RuntimeError("pending attempt journal " + attempt + " failed: " + error)
             if self._unresolved_attempts:
                 return
             if self.draining:
@@ -597,22 +792,29 @@ class Worker:
     def _close_process(self, attempt, process, *, job=None, data=None):
         # OwnedProcess handle methods are not thread safe. Serialize teardown with
         # occupancy observation and stop advertising the object before result I/O.
-        # The durable claim survives until verified cleanup AND collection finish.
-        with self.lock:
-            try:
-                process.close()
-            except BaseException as error:
-                # Fence immediately, before any potentially failing DB write.
-                # The regular execute handler journals its detailed UNKNOWN;
-                # a BaseException needs a retryable fallback of its own.
-                self._unresolved_attempts.add(attempt)
-                if not isinstance(error, Exception) and job is not None:
-                    self._pending_unknown[attempt] = (job, {**(data or {}),
-                        "error": "process cleanup ended without a termination receipt",
-                        "cleanup_error": "process-tree teardown was not established"})
-                raise
-            finally:
-                self.active.pop(attempt, None)
+        # Teardown uses the process lock, never the storage/admission lock, so a
+        # stalled journal cannot delay it. Launch gates wait on ``_closing``
+        # until this teardown is proved or fenced. The durable claim survives
+        # until verified cleanup AND a durable terminal journal.
+        self._closing.add(attempt)
+        try:
+            with self._process_lock:
+                try:
+                    process.close()
+                except BaseException as error:
+                    # Fence immediately, before any potentially failing DB write.
+                    # The regular execute handler journals its detailed UNKNOWN;
+                    # a BaseException needs a retryable fallback of its own.
+                    self._unresolved_attempts.add(attempt)
+                    if not isinstance(error, Exception) and job is not None:
+                        self._pending_unknown[attempt] = (job, {**(data or {}),
+                            "error": "process cleanup ended without a termination receipt",
+                            "cleanup_error": "process-tree teardown was not established"})
+                    raise
+                finally:
+                    self.active.pop(attempt, None)
+        finally:
+            self._closing.discard(attempt)
 
     def execute(self, job: str, attempt: str):
         from .processes import OwnedProcess, ProcessNotStartedError, host_identity
@@ -625,6 +827,7 @@ class Worker:
         cleanup_verified = False
         data = {"host": self.host_id, "worker_version": VERSION, "engine": self.engine_identity,
                 "attempt": attempt, "started": time.time(), "cleanup": "UNCONFIRMED", "evidence": "INCOMPLETE"}
+        expired, finished = threading.Event(), threading.Event()
         try:
             data["process"] = host_identity()
             directory.mkdir(parents=True, exist_ok=False)
@@ -705,12 +908,20 @@ class Worker:
                         data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
                         self.store.update(job, attempt, "FINISHED", data)
                         return
-                    quarantined = self._unresolved_attempts or self.store.db.execute(
+                    # A teardown still in progress may yet fail; wait for its proof.
+                    quarantined = self._unresolved_attempts or self._closing or self.store.db.execute(
                         "SELECT 1 FROM attempts WHERE state='UNKNOWN' LIMIT 1").fetchone()
+                    conflicts = None
+                    if not quarantined and not self.fixture:
+                        try:
+                            conflicts = self._external_conflicts(refresh=True)
+                        except _OwnershipBusy:
+                            # Another teardown holds process ownership; re-check later.
+                            quarantined = True
                     if not quarantined:
                         if not self.fixture and not payload["options"]["headless"] and not desktop_ready():
                             raise RuntimeError("GUI_LOCKED_OR_UNAVAILABLE before process start")
-                        if not self.fixture and self._external_conflicts(refresh=True):
+                        if conflicts:
                             raise RuntimeError("EXTERNAL_SIMULATOR appeared during preparation; no process started")
                         self.contexts[attempt] = (job, secret)
                         # Persist uncertainty before crossing the OS creation boundary.
@@ -733,53 +944,81 @@ class Worker:
                                         "error": "process start ended without a launch receipt",
                                         "cleanup_error": "process-tree teardown was not established"})
                             raise
+                        # Arm the admitted hard budget from the creation boundary,
+                        # before any journal I/O that could block, hang or fail.
+                        deadline = time.monotonic() + payload["options"]["timeout"]
                         start_completed = True
-                        self.active[attempt] = process
+                        with self._process_lock:
+                            self.active[attempt] = process
+                        # Independent enforcer: even if this thread later hangs in
+                        # storage, the owned tree is stopped at the deadline.
+                        threading.Thread(target=self._deadline_watchdog,
+                                         args=(attempt, process, directory, deadline, expired, finished),
+                                         name="openrc-deadline-" + attempt, daemon=True).start()
                         data["launch"] = "CREATED_OWNED"
                         data["process"] = process.identity
-                        self.store.update(job, attempt, "RUNNING", data)
+                        # From here on, storage failure is an observation fault:
+                        # the transition stays pending and the process stays owned.
+                        self._journal(job, attempt, "RUNNING", data)
                         break
                 # An attempt allocated before quarantine must not cross the gate;
                 # it keeps its claims and can still receive owned cancellation.
                 if self.stopping.wait(_SCHEDULER_INTERVAL):
                     raise RuntimeError("worker stopped before process start")
-            deadline = time.monotonic() + payload["options"]["timeout"]
             reason = None
+            canceled = False
             next_desktop_check = time.monotonic() + 1
+            next_journal_retry = time.monotonic() + _JOURNAL_RETRY_SECONDS
+            ready = directory / "ready.json"
             while True:
-                with self.lock:
+                with self._process_lock:
                     if not process.alive():
                         break
                     root_exit = process.poll()
-                    canceled = bool(self.store.get(job)["canceled"])
-                    ready = directory / "ready.json"
-                    if ready.exists() and "session" not in data:
+                # Cancellation is sticky once observed; an unavailable store is
+                # neither a cancel request nor a reason to stop healthy work.
+                canceled = canceled or self._observe_canceled(job, wait=_MONITOR_LOCK_SECONDS) is True
+                if "session" not in data and ready.exists():
+                    try:
                         private_session = json.loads(ready.read_text(encoding="utf-8"))
+                    except (OSError, ValueError):
+                        # Windows can refuse a read during the adapter's atomic
+                        # replace. Observe again on the next pass.
+                        private_session = None
+                    if isinstance(private_session, dict):
                         data["session"] = {key: value for key, value in private_session.items() if key != "token"}
-                        self.store.update(job, attempt, "RUNNING", data)
+                        self._journal(job, attempt, "RUNNING", data, wait=_MONITOR_LOCK_SECONDS)
+                if time.monotonic() >= next_journal_retry:
+                    next_journal_retry = time.monotonic() + _JOURNAL_RETRY_SECONDS
+                    with self._journal_lock:
+                        pending = attempt in self._pending_journal
+                    if pending:
+                        self._flush_journal(attempt, wait=_MONITOR_LOCK_SECONDS)
                 lost_desktop = False
                 failed_root = root_exit is not None and root_exit != 0
                 if not self.fixture and not payload["options"]["headless"] and time.monotonic() >= next_desktop_check:
                     lost_desktop = not desktop_ready()
                     next_desktop_check = time.monotonic() + 1
-                if canceled or time.monotonic() >= deadline or lost_desktop or failed_root:
+                if canceled or expired.is_set() or time.monotonic() >= deadline or lost_desktop or failed_root:
                     if canceled:
                         reason = "CANCELED"
                     elif lost_desktop:
                         reason = "INFRA_FAILED"
-                    elif time.monotonic() >= deadline:
+                    elif expired.is_set() or time.monotonic() >= deadline:
                         reason = "TIMED_OUT"
                     if lost_desktop:
                         data["session_failure"] = "GUI_LOCKED_OR_UNAVAILABLE"
-                    with self.lock:
-                        self.store.update(job, attempt, "CLEANING", data)
-                    if (directory / "ready.json").exists():
+                    self._journal(job, attempt, "CLEANING", data, wait=_MONITOR_LOCK_SECONDS)
+                    if ready.exists():
                         self._graceful_stop(directory)
-                    with self.lock:
+                    with self._process_lock:
                         process.terminate()
                     break
                 time.sleep(0.1)
-            with self.lock:
+            if reason is None and expired.is_set():
+                # The independent watchdog enforced the admitted deadline.
+                reason = "TIMED_OUT"
+            with self._process_lock:
                 code = process.poll()
             cleanup_attempted = True
             self._close_process(attempt, process, job=job, data=data)
@@ -797,8 +1036,9 @@ class Worker:
             data["artifacts"] = {path.relative_to(directory).as_posix(): sha256(path) for path in directory.rglob("*")
                                  if path.is_file() and path.relative_to(directory).parts[0] not in {"source", "history", "profile", "temp"}}
             data["output"] = str(directory)
-            with self.lock:
-                self.store.update(job, attempt, "FINISHED", data)
+            # A failed terminal write keeps the verdict and claims pending; it
+            # can no longer be rewritten as an infrastructure failure below.
+            self._finalize(job, attempt, "FINISHED", data)
         except Exception as error:
             data["error"] = str(error)
             try:
@@ -810,22 +1050,18 @@ class Worker:
                     self._close_process(attempt, process, job=job, data=data)
                 if confirmed_nonlaunch:
                     data.update(launch="NOT_CREATED", nonlaunch="CONFIRMED")
-                with self.lock:
-                    canceled = bool(self.store.get(job)["canceled"])
+                canceled = self._observe_canceled(job, wait=_FINAL_OBSERVATION_SECONDS) is True
                 data.update(cleanup="CONFIRMED", outcome="CANCELED" if canceled else "INFRA_FAILED", evidence="INCOMPLETE", finished=time.time())
                 state = "FINISHED"
             except Exception as cleanup_error:
                 data["cleanup_error"] = str(cleanup_error)
                 state = "UNKNOWN"
-            with self.lock:
-                if attempt in self._unresolved_attempts:
-                    self._pending_unknown[attempt] = (job, dict(data))
-                self.store.update(job, attempt, state, data)
-                self._pending_unknown.pop(attempt, None)
-                self._unresolved_attempts.discard(attempt)
+            self._finalize(job, attempt, state, data)
         finally:
-            with self.lock:
-                self.contexts.pop(attempt, None)
+            finished.set()
+            # Revoke the inherited capability without waiting on a stalled journal.
+            self.contexts.pop(attempt, None)
+            with self._process_lock:
                 self.active.pop(attempt, None)
 
     def bridge(self, request):

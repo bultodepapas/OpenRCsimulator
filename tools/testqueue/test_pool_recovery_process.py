@@ -70,7 +70,7 @@ class PoolRecoveryProcessTests(unittest.TestCase):
             self.assertEqual(live["state"], "RUNNING")
             self.assertEqual(len(live["attempts"]), 1)
             attempt = live["attempts"][0]["id"]
-            with fixture.worker.lock:
+            with fixture.worker.lock, fixture.worker._process_lock:
                 owned_process = fixture.worker.active[attempt]
                 self.assertTrue(owned_process.alive())
                 before_claims = [tuple(row) for row in fixture.worker.store.db.execute(
@@ -99,7 +99,7 @@ class PoolRecoveryProcessTests(unittest.TestCase):
             still_live = fixture._status(actual["job"])
             self.assertEqual(still_live["state"], "RUNNING")
             self.assertEqual([item["id"] for item in still_live["attempts"]], [attempt])
-            with fixture.worker.lock:
+            with fixture.worker.lock, fixture.worker._process_lock:
                 self.assertIs(fixture.worker.active[attempt], owned_process)
                 self.assertTrue(owned_process.alive())
                 after_claims = [tuple(row) for row in fixture.worker.store.db.execute(

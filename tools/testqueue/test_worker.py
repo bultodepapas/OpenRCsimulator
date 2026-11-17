@@ -4,6 +4,7 @@ These fixtures do not launch Godot or qualify a graphical platform adapter.
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 from contextlib import closing
@@ -124,12 +125,18 @@ class WorkerFixture(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
 
+    @contextlib.contextmanager
+    def _owned_view(self):
+        """Stable view of owned processes: the worker's lock order, storage first."""
+        with self.worker.lock, self.worker._process_lock:
+            yield
+
     def _call(self, operation, **args):
         return self.worker.dispatch({"auth": self.worker.auth, "operation": operation, **args})
 
-    def _submit(self, owner, *, headless=False, capture=False):
+    def _submit(self, owner, *, headless=False, capture=False, timeout=40):
         preset = "aircraft-screenshot" if capture else "checked" if headless else "debug-session"
-        options = {"headless": headless, "timeout": 40}
+        options = {"headless": headless, "timeout": timeout}
         if capture:
             options["aircraft"] = "fixture-plane"
         elif headless:
@@ -309,7 +316,7 @@ class WorkerFixture(unittest.TestCase):
         attempt = self._status(first["job"])["attempts"][-1]["id"]
 
         def launcher_exited():
-            with self.worker.lock:
+            with self._owned_view():
                 process = self.worker.active.get(attempt)
                 return process is not None and process.poll() == 0 and process.alive()
 
@@ -957,7 +964,7 @@ class WorkerFixture(unittest.TestCase):
                                and (candidate / "started.json").exists() else None))
         original = self._status(live["job"])
         attempt = original["attempt"]
-        with self.worker.lock:
+        with self._owned_view():
             owned = self.worker.active[attempt]
             original_claims = self.worker.store.db.execute("SELECT resource,amount FROM claims WHERE attempt=? ORDER BY resource", (attempt,)).fetchall()
             self.assertTrue(owned.alive())
@@ -1002,7 +1009,7 @@ class WorkerFixture(unittest.TestCase):
             self.assertEqual(self._call("hosts")["condition"], "DEGRADED")
             self.assertEqual(self._status(later["job"])["state"], "QUEUED")
             self.assertTrue(self.scheduler.is_alive())
-            with self.worker.lock:
+            with self._owned_view():
                 self.assertIs(self.worker.active[attempt], owned)
                 self.assertTrue(owned.alive())
                 self.assertEqual(self.worker.store.db.execute("SELECT resource,amount FROM claims WHERE attempt=? ORDER BY resource", (attempt,)).fetchall(), original_claims)
@@ -1011,7 +1018,7 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(recovered["scheduler"]["thread_id"], initial["scheduler"]["thread_id"])
         self.assertGreater(recovered["scheduler"]["last_heartbeat"], degraded["scheduler"]["last_heartbeat"])
         self.assertEqual(self._finish(later["job"])["outcome"], "PASSED")
-        with self.worker.lock:
+        with self._owned_view():
             self.assertIs(self.worker.active[attempt], owned)
             self.assertTrue(owned.alive())
         self.assertTrue((directory / "started.json").exists())
@@ -1144,7 +1151,9 @@ class WorkerFixture(unittest.TestCase):
             with mock.patch.object(processes, "orphan_absent", return_value=True) as probe:
                 registries = ((self.worker._unresolved_attempts, {attempt}),
                               (self.worker._pending_unknown, {attempt: (accepted["job"], data)}),
-                              (self.worker._pending_nonlaunch, {attempt: (accepted["job"], data)}))
+                              (self.worker._pending_nonlaunch, {attempt: (accepted["job"], data)}),
+                              (self.worker._pending_journal, {attempt: (accepted["job"], "RUNNING", data)}),
+                              (self.worker._closing, {attempt}))
                 for registry, entry in registries:
                     registry.update(entry)
                     try:
@@ -1174,6 +1183,152 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(status.get("outcome"), "INFRA_FAILED")
         self.assertIn("ADAPTER_MISMATCH", status.get("error", ""))
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
+
+    # TQ-04 continuity: storage is observation, not ownership.
+
+    def test_post_start_journal_failure_keeps_the_owned_process_running(self):
+        # The 16 November reproduction tore this healthy process down and
+        # reported INFRA_FAILED. The same injection must now leave it alone.
+        real_update = self.worker.store.update
+        injected = threading.Event()
+
+        def fail_owned_journal_once(job, attempt, state, data):
+            if state == "RUNNING" and data.get("launch") == "CREATED_OWNED" and not injected.is_set():
+                injected.set()
+                raise sqlite3.OperationalError("injected post-start journal failure")
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=fail_owned_journal_once):
+            accepted = self._submit("poststart-storage", headless=True)
+            result = self._finish(accepted["job"])
+        self.assertTrue(injected.is_set())
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "PASSED", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+        self.assertEqual(result.get("evidence"), "COMPLETE", result)
+        self.assertNotIn("error", result)
+        directory = self.worker.root / "attempts" / result["attempt"]
+        self.assertTrue((directory / "ended.json").exists(), "owned workload did not complete normally")
+        self.assertEqual(self._call("hosts")["pending_journals"], 0)
+
+    def test_hard_deadline_is_enforced_while_the_monitor_hangs_in_storage(self):
+        # A call that hangs (rather than fails) inside the CREATED_OWNED journal,
+        # while holding the worker lock, must not suspend the admitted budget.
+        real_update = self.worker.store.update
+        hung, release = threading.Event(), threading.Event()
+        self.addCleanup(release.set)
+
+        def hang_owned_journal(job, attempt, state, data):
+            if state == "RUNNING" and data.get("launch") == "CREATED_OWNED" and not hung.is_set():
+                hung.set()
+                release.wait(30)
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=hang_owned_journal):
+            accepted = self._submit("long-hung-journal", headless=True, timeout=2)
+            self.assertTrue(hung.wait(15))
+            began = time.monotonic()
+            with self.worker._process_lock:
+                attempt, owned = next((key, value) for key, value in self.worker.active.items() if value is not None)
+            directory = self.worker.root / "attempts" / attempt
+            host_started = time.monotonic()
+            host = self._call("hosts")
+            self.assertLess(time.monotonic() - host_started, 3.0)
+            self.assertEqual(host["condition"], "DEGRADED", host)
+
+            def stopped():
+                with self.worker._process_lock:
+                    return not owned.alive()
+
+            # Deadline (2 s from creation) plus termination, while the monitor
+            # thread is still blocked inside storage holding the worker lock.
+            wait_until(stopped, timeout=8)
+            self.assertLess(time.monotonic() - began, 7.0)
+            self.assertFalse(release.is_set())
+            self.assertFalse((directory / "ended.json").exists())
+            release.set()
+            result = self._finish(accepted["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "TIMED_OUT", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+
+    def test_hard_deadline_and_teardown_do_not_wait_for_a_stalled_journal(self):
+        accepted = self._submit("long-stalled-storage", headless=True, timeout=3)
+        directory = wait_until(lambda: (candidate if (candidate := self._directory(accepted["job"]))
+                                        and (candidate / "started.json").exists() else None))
+        observed_start = time.monotonic()
+        attempt = directory.name
+        held, release = threading.Event(), threading.Event()
+
+        def hold_storage_lock():
+            # Stand-in for a hung SQLite call that owns the worker lock.
+            with self.worker.lock:
+                held.set()
+                release.wait(20)
+
+        holder = threading.Thread(target=hold_storage_lock, daemon=True)
+        holder.start()
+        self.addCleanup(release.set)
+        self.assertTrue(held.wait(5))
+        try:
+            began = time.monotonic()
+            host = self._call("hosts")
+            self.assertLess(time.monotonic() - began, 3.0)
+            self.assertEqual(host["condition"], "DEGRADED", host)
+            self.assertIsNone(host["claims"])
+            self.assertIn("worker lock unavailable", host["inventory_error"])
+            # The admitted 3 s budget expires and teardown completes while the
+            # journal stays stalled; bound the overshoot, not just eventuality.
+            wait_until(lambda: attempt not in self.worker.active, timeout=15)
+            self.assertLess(time.monotonic() - observed_start, 3.0 + 4.0)
+            self.assertFalse((directory / "ended.json").exists())
+            self.assertTrue(holder.is_alive())
+        finally:
+            release.set()
+            holder.join(5)
+        result = self._finish(accepted["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "TIMED_OUT", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+        self.assertEqual(self.worker.store.db.execute(
+            "SELECT COUNT(*) FROM claims WHERE attempt=?", (attempt,)).fetchone()[0], 0)
+
+    def test_failed_terminal_journal_keeps_claims_and_the_real_verdict(self):
+        real_update = self.worker.store.update
+        failing = threading.Event()
+        failing.set()
+
+        def fail_terminal(job, attempt, state, data):
+            if state == "FINISHED" and failing.is_set():
+                raise sqlite3.OperationalError("injected terminal journal failure")
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=fail_terminal):
+            first = self._submit("terminal-storage", headless=True)
+            directory = wait_until(lambda: (candidate if (candidate := self._directory(first["job"]))
+                                            and (candidate / "ended.json").exists() else None))
+            attempt = directory.name
+            wait_until(lambda: attempt not in self.worker.active and attempt not in self.worker.contexts)
+            host = wait_until(lambda: (item if (item := self._call("hosts"))["pending_journals"] == 1 else None))
+            self.assertEqual(host["condition"], "DEGRADED", host)
+            self.assertIn("injected terminal journal failure", host["journal_errors"][attempt])
+            second = self._submit("after-terminal-storage", headless=True)
+            time.sleep(0.5)
+            # Capacity is not released before the verdict is durable, and the
+            # scheduler retries that journal before any new allocation.
+            self.assertNotEqual(self._status(first["job"])["state"], "FINISHED")
+            self.assertGreater(self.worker.store.db.execute(
+                "SELECT COUNT(*) FROM claims WHERE attempt=?", (attempt,)).fetchone()[0], 0)
+            self.assertEqual(self._status(second["job"])["attempts"], [])
+            failing.clear()
+            result = self._finish(first["job"])
+            later = self._finish(second["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "PASSED", result)
+        self.assertEqual(result.get("evidence"), "COMPLETE", result)
+        self.assertNotIn("error", result)
+        self.assertEqual(later.get("outcome"), "PASSED", later)
+        wait_until(lambda: self._call("hosts")["pending_journals"] == 0)
 
 
 if __name__ == "__main__":

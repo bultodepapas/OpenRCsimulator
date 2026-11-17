@@ -498,13 +498,70 @@ Resume-time local verification still precedes the batch polling deadline; slow o
 blocked filesystem operations can exceed that nominal budget. This pass does not
 claim a hard end-to-end deadline for preparation, transfer or collection.
 
+## 17 November Windows integration and continuity repair
+
+Branch `integrate/testqueue-resilience-20261117` merges this branch (`4b4a9fe24`)
+onto `main` `2a3cf04db` as `2ec329f34`. Only the seven non-Spanish catalogs
+conflicted (both sides appended distinct entries; all kept, no duplicate `msgid`).
+The 19 branch UID sidecars have their scripts and collide with no tracked UID.
+
+### Continuity repair (closes the P0 above in fixtures)
+
+| Defect | Repair | Regression (fails on `2ec329f34`, passes on candidate) |
+| --- | --- | --- |
+| Post-start journal exception tore down the healthy process and rewrote its outcome `INFRA_FAILED` | Post-start `RUNNING`/`CLEANING`/`FINISHED` writes go through one newest-wins pending journal, retried by the monitor each second and by the scheduler before any allocation. | `test_post_start_journal_failure_keeps_the_owned_process_running` |
+| Hard deadline armed after a blocking write; monitor needed the worker lock every 0.1 s | Deadline armed at the creation boundary; a per-attempt watchdog enforces it through the process lock and session bridge only. Process handles moved from `lock` to `_process_lock` (order `lock` → `_process_lock`). | `test_hard_deadline_is_enforced_while_the_monitor_hangs_in_storage`, `test_hard_deadline_and_teardown_do_not_wait_for_a_stalled_journal` |
+| Failed terminal write lost the transition (thread died) or relabeled a pass | `_finalize` keeps the verdict pending; claims stay until it is durable; a fenced attempt never finalizes as proved cleanup. `Store.update` refuses transitions on a durable `FINISHED` attempt (`StaleTransition`). | `test_failed_terminal_journal_keeps_claims_and_the_real_verdict` |
+| `hosts` blocked behind a held worker lock (20 s observed) | 1 s bounded acquire, then `DEGRADED`, `claims: null`; adds `pending_journals`/`journal_errors`. | Both deadline tests assert a prompt degraded response |
+| Unreadable `ready.json` during the adapter's atomic replace (Windows sharing violation) killed the process | Read failure is retried on the next pass. | Covered by inspection; no deterministic Windows race fixture |
+| Remote: post-start `state.json` failure killed the child; result read failure after proved teardown became `UNKNOWN`; terminal write had no retry; next stage inherited the closed process identity | Non-fatal observation with retry; result block moved after proved teardown (`result_unreadable`); six ordered terminal attempts before the host lock is released, otherwise fail closed; identity cleared per stage; `status()` reports instead of crashing when its quarantine write fails. | Four new `test_remote_agent` cases |
+
+New teardown no longer holds the storage lock. A `_closing` set keeps the
+earlier guarantee that no new attempt crosses its launch gate while another
+teardown is unresolved; occupancy probes that meet a busy process lock report
+unknown occupancy (fail closed) and the launch gate waits. `abandon` also refuses
+while pending journals or teardowns exist. An independent Good Enemy review of
+the first candidate found no deadlock, lost terminal record or early claim
+release, and raised the hung-call deadline gap, lock-wait inversion and test
+lock-order findings that the watchdog, bounded occupancy probe and `_owned_view`
+test helper resolve.
+
+### First Windows-native run of every group
+
+Windows 11 Pro 10.0.26100, Ryzen 9 5900X, Python 3.11.9 (Microsoft Store),
+private `TMP`/`TEMP` and a private empty `OPENRC_TESTQUEUE_ROOT`:
+
+| Group | Cases | Passed | Skipped |
+| --- | ---: | ---: | ---: |
+| Queue | 352 | 320 | 32 |
+| Debug/MCP | 120 | 119 | 1 |
+| Checked runner | 22 | 21 | 1 |
+| Resource runner | 14 | 14 | 0 |
+| Performance admission | 75 | 74 | 1 |
+| GOD TEST tooling | 18 | 18 | 0 |
+| **Total** | **601** | **566** | **35** |
+
+Zero failures or errors. The queue skips are 27 POSIX retention, two POSIX
+collection, one POSIX process-group, one Linux/WSL preflight and the opt-in native
+desktop campaign; the Windows-only Job/lock/path cases skipped on Linux ran and
+passed here. These are fixtures with task-owned fake processes, not a native
+Godot, desktop or fleet campaign.
+
+The first baseline on the same merge without isolation reported 4 queue, 48 debug,
+31 checked-runner and 2 GOD TEST failures/errors. All debug/checked/GOD TEST cases
+came from inheriting this workstation's real enrollment (no worker was running);
+the four queue cases hashed `sys.executable`, which a Microsoft Store Python alias
+cannot open. The remote fixture now uses a dedicated engine file, and the queue
+guide documents the private root for enrolled workstations. Neither was a runtime
+defect; hosted CI runners are not enrolled.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |
 | --- | --- | --- |
-| P0 for continuity claims | A reproduced post-start journal failure stops a healthy owned process; the hard deadline is armed after blocking storage. Local and remote ownership remain coupled to journals. | Independent ownership/deadline continuity, ordered final-write retries and authenticated cancellation; prove the same process survives storage failure without weakening admitted hard limits or releasing claims. |
+| P0 for continuity claims | **Closed in fixtures on 17 November** (see below): storage failure no longer stops a healthy owned process, a watchdog enforces the deadline even while the monitor hangs in storage, terminal journals are ordered and claims stay held until durable. A worker *process* restart still converts live attempts to `UNKNOWN`; a remote supervisor whose filesystem call hangs still blocks its single thread. | Separate guardian process (R4) for restart continuity and authenticated remote cancellation; native Windows/Linux/Mac fault campaign before rollout. |
 | P0 for rollout | Native Windows process semantics and the operator exception need the exact combined candidate. | Review Windows Actions fixtures, then an idle/private native campaign: start ambiguity, cleanup failure, pending journals, owned cancel and foreign-process preservation. Hosted fixtures do not qualify the interactive desktop. |
-| P1 | `hosts` shares the worker lock with scheduling/storage; a stall holding it can prevent a prompt degraded response. | Separate immutable health snapshots from blocking admission operations; test a held lock and hung storage explicitly. |
+| P1 | **Mostly closed 17 November:** `hosts` waits at most 1 s for the worker lock, then answers `DEGRADED` with `claims: null`; held-lock and hung-storage cases are tested. The capacity filesystem call is still unbounded. | Bound the capacity observation (cached sample with age) if a native hang is observed. |
 | P1 | Preparation/upload/collection remain synchronous in parts of the pool. | Give each stage owned background lifetime, progress and remaining-budget propagation; do not equate reporting expiry with cleanup. |
 | P1 | Physical host/VM/alias identity, memory/volume reservations and runtime version negotiation remain incomplete. | Implement R4/R5 before increasing capacities or routing CI onto personal machines. |
 | P1 | Pool placement still serializes per host and uses existing estimates. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering and calibrated durations under R6. |

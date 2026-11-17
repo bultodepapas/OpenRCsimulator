@@ -10,9 +10,14 @@ of R3/R7/R8, plus execution-volume observations for R5, have a tested candidate 
 [implementation handoff and evidence](../research/testqueue/2026-11-15-resilience/implementation.md).
 The 16 November re-audit integrates `main` at `6dfe1b9179af408f6b765b91ca164e626570db9f`,
 adds immutable collection and Windows background-console controls, and reproduces
-the still-open post-launch journal failure that can stop a healthy owned process.
-Native deployment, higher capacity, guardians, required-check policy changes and
-fleet efficiency qualification remain open. Current source commands and limits
+the post-launch journal failure that could stop a healthy owned process. The
+17 November integration onto `main` closes that defect for the local worker and
+remote supervisor in fixtures: storage is observation, a per-attempt watchdog
+enforces the admitted deadline, terminal journals are ordered and claims stay held
+until they are durable. It also adds the first Windows-native run of every group
+([evidence](../research/testqueue/2026-11-15-resilience/implementation.md#17-november-windows-integration-and-continuity-repair)).
+Native deployment, a separate guardian process, higher capacity, required-check
+policy changes and fleet efficiency qualification remain open. Current source commands and limits
 are in the [operating guide](../../tools/testqueue/README.md); the dated
 [runbook](../research/testqueue/2026-11-15-resilience/runbook.md) is preserved for
 the original audited baseline.
@@ -409,8 +414,8 @@ authoritative at track level; these are the operational-refinement substeps.
 
 | Step | Work and primary owner | Paths/interfaces | Proof/status |
 | --- | --- | --- | --- |
-| **TQ-04-R1** | Repair false nonexecution during accepted-request recovery, proven nonlaunch classification, pre-receipt recovery and schema/error disagreement. Queue/process and pool owners coordinate the shared outcome contract. | `processes.py`, `worker.py`, `pool.py`, `pool_batch.py`, `pool_mcp.py`, `presets.py`, `remote_agent.py` and focused tests. | Bounded candidate with desired-behavior regressions, version-2 batch migration, input/result binding and corrected checked-adapter completeness. Old unverified collections reobserve the original identity. The reproduced post-launch journal failure still requires independent ownership/deadline continuity; senior/native review and deployment remain open. |
-| **TQ-04-R2** | Recover scheduler liveness in-place; guard diagnostic writes and expose real readiness. Queue owner. | `worker.py`, `store.py`, host/status schema. | Candidate implemented for dispatcher/diagnostic faults, pending journals and health reporting. General running-loop storage continuity and bounded lock-held status are not solved. |
+| **TQ-04-R1** | Repair false nonexecution during accepted-request recovery, proven nonlaunch classification, pre-receipt recovery and schema/error disagreement. Queue/process and pool owners coordinate the shared outcome contract. | `processes.py`, `worker.py`, `pool.py`, `pool_batch.py`, `pool_mcp.py`, `presets.py`, `remote_agent.py` and focused tests. | Bounded candidate with desired-behavior regressions, version-2 batch migration, input/result binding and corrected checked-adapter completeness. Old unverified collections reobserve the original identity. The post-launch journal failure is closed in local/remote fixtures (17 November): non-fatal newest-wins journals, watchdog deadline, durable-terminal claim retention, stale-transition refusal. Process-restart guardian continuity (R4), native campaign and deployment remain open. |
+| **TQ-04-R2** | Recover scheduler liveness in-place; guard diagnostic writes and expose real readiness. Queue owner. | `worker.py`, `store.py`, host/status schema. | Candidate implemented for dispatcher/diagnostic faults, pending journals and health reporting. Running-loop storage continuity and a bounded `hosts` response under a held worker lock are implemented (17 November); a blocked capacity filesystem call can still delay `hosts`. |
 | **TQ-04-R3** | Responsive MCP intake, asynchronous expensive launch preparation, immutable session context and observer deadline propagation. MCP owner. | `mcp_server.py`, `integration.py`, `common.py`, MCP tests. | Partial candidate: bounded lanes, stalled-output handling and socket observation deadlines. Session mutations/stop remain ordered; snapshot/transfer/filesystem bounds and immutable session context remain open. |
 | **TQ-04-R4** | Independent guardians, phase budgets, owned remote cancel and proof-based reconciliation. Native process/transport owners. | Guardian protocol; local/remote worker lifecycle; versioned receipts and migration. | Proposed, highest native risk. Controller restart preserves a healthy guardian; guardian loss never grants duplicate execution. |
 | **TQ-04-R5** | Enforce physical-host/parent identity and atomic per-volume/memory/preparation reservations. Host admission owner. | `pool.py`, `pool_policy.py`, local/remote admission and private configuration schema. | Worker execution-volume observation implemented; unknown capacity is ineligible. Reservations/physical-domain identity remain proposed: two roots/aliases must not double-admit or double-count shared volumes. |

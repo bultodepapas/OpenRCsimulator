@@ -13,6 +13,10 @@ import re
 ACTIVE = ("DISPATCHING", "RUNNING", "CLEANING", "UNKNOWN")
 
 
+class StaleTransition(ValueError):
+    """A transition arrived after the attempt's terminal record became durable."""
+
+
 def digest(value) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
 
@@ -169,6 +173,11 @@ class Store:
 
     def update(self, job: str, attempt: str, state: str, data: dict):
         with self.db:
+            current = self.db.execute("SELECT state FROM attempts WHERE id=? AND job=?", (attempt, job)).fetchone()
+            if current is not None and current[0] == "FINISHED":
+                # A durable terminal record is never rewritten by a later or
+                # older transition; that would resurrect released claims.
+                raise StaleTransition(f"attempt {attempt} is already FINISHED; refusing {state}")
             self.db.execute("UPDATE attempts SET state=?,data=? WHERE id=? AND job=?", (state, json.dumps(data), attempt, job))
             self.db.execute("UPDATE jobs SET state=? WHERE id=?", (state, job))
             self.event(job, state, {"attempt": attempt, **data})
