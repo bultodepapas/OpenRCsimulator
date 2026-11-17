@@ -336,6 +336,17 @@ class RemoteAgentTests(unittest.TestCase):
                          ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"))
         self.assertEqual(written["checked"]["reason"], "not_serializable")
 
+    def test_job_input_is_a_hard_link_not_a_second_copy(self):
+        archive = self.sample_archive()
+        self.accepted(self.request(archive))
+        self.assertEqual(self._supervise(), 0)
+        state = agent.read_json(self.root / "jobs/job1/state.json")
+        self.assertEqual(state["outcome"], "PASSED")
+        self.assertTrue(state.get("input_link"))
+        self.assertEqual(state["storage_cleanup"]["state"], "SKIPPED")
+        linked = (self.root / "jobs/job1/input.tar").stat()
+        self.assertEqual((linked.st_ino, linked.st_dev), (archive.stat().st_ino, archive.stat().st_dev))
+
     def test_operator_gc_reclaims_only_a_collected_pass(self):
         self.accepted(self.request(self.sample_archive()))
         self.assertEqual(self._supervise(), 0)

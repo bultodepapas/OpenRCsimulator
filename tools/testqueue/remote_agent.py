@@ -1006,12 +1006,18 @@ def supervise(root, identifier):
             raise Refused("host enrolled before launch")
         source_archive = Path(request["archive"]["path"])
         copied = directory / "input.tar"
-        if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
-            raise Refused("insufficient disk for archive and reserve")
-        with source_archive.open("rb") as src, copied.open("xb") as dst:
-            shutil.copyfileobj(src, dst, 1024 * 1024)
-            dst.flush()
-            os.fsync(dst.fileno())
+        try:
+            # A hard link pins the verified inode without a second copy: incoming
+            # archives are published by atomic replace, never rewritten in place.
+            os.link(source_archive, copied)
+            state["input_link"] = True
+        except OSError:
+            if shutil.disk_usage(directory).free < source_archive.stat().st_size + RESERVE:
+                raise Refused("insufficient disk for archive and reserve")
+            with source_archive.open("rb") as src, copied.open("xb") as dst:
+                shutil.copyfileobj(src, dst, 1024 * 1024)
+                dst.flush()
+                os.fsync(dst.fileno())
         if digest(copied) != request["archive"]["sha256"]:
             raise Refused("transferred archive SHA-256 differs")
         source = directory / "source"
@@ -1048,7 +1054,10 @@ def supervise(root, identifier):
                      cleanup="CONFIRMED", evidence="COMPLETE" if complete else "INCOMPLETE",
                      artifacts=artifact_inventory(directory), finished_at=time.time())
         if ok:
-            state["storage_cleanup"] = ({"state": "PENDING", "phase": "PREPARING", "logical_bytes_removed": None}
+            state["storage_cleanup"] = ({"state": "SKIPPED", "logical_bytes_removed": 0,
+                                         "reason": "job input is a hard link to the verified incoming archive; no redundant copy"}
+                                        if state.get("input_link") else
+                                        {"state": "PENDING", "phase": "PREPARING", "logical_bytes_removed": None}
                                         if _retention_supported() else
                                         {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable",
                                          "logical_bytes_removed": 0})
@@ -1064,7 +1073,8 @@ def supervise(root, identifier):
             # storage cleanup pending.
             publish_terminal(path, state)
             if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) == (
-                    "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported():
+                    "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported() \
+                    and (state.get("storage_cleanup") or {}).get("state") == "PENDING":
                 try:
                     _reclaim_success_input_locked(root, identifier)
                 except (OSError, Refused, ValueError):

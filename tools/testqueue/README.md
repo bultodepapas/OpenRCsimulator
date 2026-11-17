@@ -609,6 +609,47 @@ independently verified. For a bounded read-only size inventory, use
 [`storage_audit.py`](../godot/README.md#process-ram-io-and-storage-pt1h-r4);
 its logical sizes and partial-scan indicators do not authorize deletion.
 
+### Operator storage and reconciliation tools
+
+Measured on 17 November 2026, retention filled every queue disk. Each local
+checked attempt keeps a writable copy of the frozen tree (about 3 GB), and each
+remote job keeps its extracted source; local attempts held 52 GB on `C:` and
+`angel` 45 GB. Remote jobs now hard-link the verified incoming archive into the
+job instead of copying it (one copy less; placement counts one upload plus the
+extraction). The explicit operator tools below never touch failed, incomplete or
+`UNKNOWN` work, logs, reports or job records:
+
+```powershell
+python tools/testqueue/local_gc.py                     # dry run; --execute removes
+python tools/testqueue/testctl.py pool gc --host angel  # dry run; --execute removes
+python tools/testqueue/testctl.py pool reconcile JOB_ID [--operator-confirm]
+python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
+```
+
+- `local_gc.py` removes `<attempt>/source` only for unclaimed attempts recorded
+  `FINISHED/PASSED/COMPLETE/CONFIRMED`. It reads the store read-only and never
+  follows a link, junction or reparse point.
+- `pool gc` first collects (or re-verifies) each remote `PASSED` job on this
+  coordinator, then asks the remote agent to remove that job's source and archive
+  copies, then removes incoming archives older than an hour that no unfinished
+  job uses (refused if an unfinished journal is unreadable).
+- `pool reconcile` releases a coordinator receipt that never reached execution.
+  Local receipts use the authority's durable submission tombstone. A remote
+  authority that has no record of the request releases the host only with
+  `--operator-confirm`, because a remote run has no tombstone.
+- `pool remote-reconcile` closes a remote `UNKNOWN` quarantine only when the host
+  lock is free and the host rebooted or no process remains in the recorded gate's
+  PID/process group.
+
+Unpinned placement also skips a host whose newest two finished attempts of the
+same source ended `INFRA_FAILED` (`BUSY: CIRCUIT_OPEN …`); a different source or
+a later test result closes it. A local worker that sees an unmanaged simulator
+reports `occupancy.external_simulators: true`, and placement treats it as busy
+instead of queueing work behind the user's session. `hosts` also reports
+`queued` local jobs (they hold no claim yet), so placement spreads work to other
+hosts instead of stacking it behind a busy desktop. A passed local checked
+attempt removes its own writable source copy as soon as its verdict is durable.
+
 Snapshots bind actual dirty/untracked bytes, deletions, relevant metadata, launcher
 digests, referenced aircraft authoring files, installed native inputs and optional
 prepared imports. Stored input and per-attempt materialization are both verified.

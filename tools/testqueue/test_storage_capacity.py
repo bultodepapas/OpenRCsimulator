@@ -42,6 +42,13 @@ class PoolStorageCapacityTests(unittest.TestCase):
         self.assertEqual(result["free_disk_bytes"], 123456)
         self.assertEqual(result["storage"]["path"], "D:/OpenRC/attempts")
 
+    def test_queued_local_work_makes_the_host_busy_for_placement(self):
+        self.current["storage"] = {"available": True, "free_bytes": 10**12}
+        for queued, busy in [(2, True), (0, False), (None, False)]:
+            with self.subTest(queued=queued):
+                self.current["queued"] = queued
+                self.assertIs(self.probe()["busy"], busy)
+
     def test_unmanaged_simulator_makes_the_local_host_busy_for_placement(self):
         self.current["storage"] = {"available": True, "free_bytes": 10**12}
         for occupancy, busy in [({"external_simulators": True}, True), ({"external_simulators": False}, False),

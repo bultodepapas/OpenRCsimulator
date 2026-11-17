@@ -113,9 +113,10 @@ def _candidate(job, host):
         cached_inputs = []
     cached = bool(job.get("cache_id")) and job["cache_id"] in cached_inputs
     source_bytes = job.get("source_bytes", 0)
-    # Remote attempts retain an incoming archive and an attempt archive, then
-    # extract the source. Local attempts need a cache and a workspace copy.
-    copies = (1 if local else 2) + (0 if cached else 1)
+    # Remote attempts hard-link the verified incoming archive into the job and
+    # extract the source (an upload adds one archive). Local attempts need a
+    # cache and a workspace copy.
+    copies = 1 + (0 if cached else 1)
     disk_required = DISK_RESERVE_BYTES + job.get("disk_bytes", 0) + source_bytes * copies
     free_disk = host.get("free_disk_bytes")
     if not _size(free_disk):

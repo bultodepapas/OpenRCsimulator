@@ -429,6 +429,7 @@ class Worker:
         try:
             scheduler = self._scheduler_health()
             inventory_error = None
+            queued = None
             if not locked:
                 # Do not wait behind a hung journal or scheduler pass. Unknown
                 # inventory is never presented as an empty claim set.
@@ -437,6 +438,8 @@ class Worker:
             else:
                 try:
                     claims = [dict(row) for row in self.store.db.execute("SELECT * FROM claims")]
+                    # Queued work holds no claim yet; placement must still see it.
+                    queued = self.store.db.execute("SELECT COUNT(*) FROM jobs WHERE state='QUEUED'").fetchone()[0]
                 except Exception as error:
                     claims, inventory_error = None, str(error)
                     with self._scheduler_lock:
@@ -459,7 +462,7 @@ class Worker:
                     "pending_quarantines": len(self._unresolved_attempts),
                     "pending_journals": pending_journals, "journal_errors": journal_errors,
                     "reservation": ({key: value for key, value in reservation.items() if key != "secret"} if reservation else None),
-                    "capacities": self.capacities, "claims": claims,
+                    "capacities": self.capacities, "claims": claims, "queued": queued,
                     "qualified": [], "adapter": "windows-local-experimental" if os.name == "nt" else "UNSUPPORTED",
                     "remote_hosts": "UNVERIFIED", "physical_parent": "UNVERIFIED"}
         finally:
@@ -674,6 +677,19 @@ class Worker:
             return None
         finally:
             self.lock.release()
+
+    def _reclaim_passed_source(self, directory):
+        """Drop a passed checked attempt's writable source copy (about 3 GB).
+
+        Evidence (verdict, checks, logs, manifest) lives outside ``source`` and
+        is already hashed into the record. Failure only leaves the copy for
+        ``local_gc.py``; it never changes the attempt's outcome.
+        """
+        from .local_gc import safe_remove_tree
+        try:
+            safe_remove_tree(directory / "source")
+        except Exception:  # advisory storage work; the verdict is final
+            pass
 
     def _finalize(self, job, attempt, state, data):
         """Terminal transition; capacity stays claimed until it is durable."""
@@ -1117,6 +1133,9 @@ class Worker:
             # A failed terminal write keeps the verdict and claims pending; it
             # can no longer be rewritten as an infrastructure failure below.
             self._finalize(job, attempt, "FINISHED", data)
+            if (payload["preset"] == "checked" and data.get("outcome") == "PASSED"
+                    and data.get("evidence") == "COMPLETE" and data.get("cleanup") == "CONFIRMED"):
+                self._reclaim_passed_source(directory)
         except Exception as error:
             data["error"] = str(error)
             try:

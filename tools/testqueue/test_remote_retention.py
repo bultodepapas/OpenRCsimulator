@@ -494,17 +494,23 @@ class RemoteRetentionTests(unittest.TestCase):
         agent.write_json(self.job / "state.json", state)
         self.target.unlink()
         (self.job / "source").rename(self.job / "preserved-source")
-        original_unlink = agent.os.unlink
+        original_unlink, original_link = agent.os.unlink, agent.os.link
         observed = []
         def check_before_unlink(name, *args, **kwargs):
             if name == "input.tar":
                 observed.append(self.saved())
             return original_unlink(name, *args, **kwargs)
+        def no_job_input_link(source, target, *args, **kwargs):
+            # Exercise the copy fallback (a filesystem without hard links).
+            if "dst_dir_fd" not in kwargs:
+                raise OSError("hard links unavailable in this fixture")
+            return original_link(source, target, *args, **kwargs)
         with mock.patch.object(agent, "_retention_supported", return_value=True), \
              mock.patch.object(agent, "authority_enrolled", return_value=False), \
              mock.patch.object(agent, "external_engine_present", return_value=False), \
              mock.patch.object(agent, "execute_stage", return_value={"ok": True, "complete": True}), \
              mock.patch.object(agent, "verify_result"), \
+             mock.patch.object(agent.os, "link", side_effect=no_job_input_link), \
              mock.patch.object(agent.os, "unlink", side_effect=check_before_unlink):
             self.assertEqual(agent.supervise(self.root, "job1"), 0)
         self.assertEqual(len(observed), 1)

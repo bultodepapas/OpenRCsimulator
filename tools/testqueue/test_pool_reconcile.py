@@ -77,5 +77,28 @@ class PoolReconcileTests(unittest.TestCase):
             self.pool.reconcile("done1", operator_confirm=True)
 
 
+class PoolCircuitTests(PoolReconcileTests):
+    def finished(self, identifier, host, outcome, created, source="src"):
+        self.receipt(identifier, host, state="SUBMITTED", created=created, source_digest=source,
+                     last_status={"state": "FINISHED", "outcome": outcome})
+
+    def circuit(self, source="src"):
+        return {item["id"]: item.get("busy_reason") for item in self.pool._circuit(
+            [{"id": "windows", "busy": False}, {"id": "mac", "busy": False}], source)}
+
+    def test_consecutive_infra_failures_open_only_that_host_and_source(self):
+        self.finished("a1", "mac", "PASSED", 1)
+        self.finished("a2", "mac", "INFRA_FAILED", 2)
+        self.assertIsNone(self.circuit()["mac"])
+        self.finished("a3", "mac", "INFRA_FAILED", 3)
+        self.finished("w1", "windows", "INFRA_FAILED", 3)
+        reasons = self.circuit()
+        self.assertIn("CIRCUIT_OPEN", reasons["mac"])
+        self.assertIsNone(reasons["windows"])
+        self.assertIsNone(self.circuit(source="other")["mac"])
+        self.finished("a4", "mac", "TEST_FAILED", 4)  # a real test result closes it
+        self.assertIsNone(self.circuit()["mac"])
+
+
 if __name__ == "__main__":
     unittest.main()

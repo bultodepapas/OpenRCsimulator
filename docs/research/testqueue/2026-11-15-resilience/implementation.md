@@ -607,6 +607,45 @@ The hermetic Windows-native six-group run of the audited candidate reports 626
 cases (queue 377, debug 120, checked 22, resource 14, performance 75, GOD TEST
 18), 591 passed, 35 skipped, 0 failures.
 
+### First native fleet campaign (17 November, afternoon)
+
+A real saturation attempt (28 independent checked tests, declared `any` for the
+load test) across Windows, `angel`, `angela` and `linux` found that the fleet,
+not the queue logic, limited throughput:
+
+| Observation | Measured | Response |
+| --- | --- | --- |
+| Legacy `NOT_DISPATCHED` receipts reserved three hosts forever | 7 receipts; remote authorities had no record | `pool reconcile`: local tombstone proof; remote absence with operator confirmation |
+| Remote `UNKNOWN` quarantine with no live process | `angel`, same boot, empty PID/PGID | Remote agent `reconcile` (lock free + group absent or reboot) |
+| Retention filled every disk | local attempts 52 GB on `C:`; `angel` 45 GB; remotes at 100 % | Operator GC (local and remote, PASSED only); passed local checked attempts now drop their 3 GB source automatically |
+| Remote job archive was a second 1 GB copy | 3 copies per job | Hard link to the verified incoming archive |
+| Import cache was not reserved | `angela` ran out of space mid-import (403 MB `.godot` and growing) | Placement reserves 2 GiB for the import cache |
+| `C:` reached 0 GB during the run | coordinator died writing batch state; WSL stayed writable | Drain, local GC (24.5 GB), automatic source reclamation |
+| macOS imports exit 1: no `macos.arm64` library for the ground-vehicle GDExtension | 455 s import, `INFRA_FAILED` | Per-source circuit breaker after two consecutive infrastructure failures; Mac capacity needs that native build |
+| Placement kept sending work behind an unmanaged simulator | user Godot running | Worker reports `occupancy.external_simulators`; placement treats it as busy |
+| Coordinator killed with a row in `SUBMITTING` | no receipt existed | Resume observed it by original ID (`UNKNOWN`, never resubmitted) |
+| Rendered debug session | 401 s cold launch, 1920×1027 client area at a 1920×1080 request | Not changed; `home` from a flight started without Home exits the app (exit 0) |
+
+The `angel` pool root, engine and Python environment were removed outside this
+session during the campaign; it is offline until reprovisioned. With the
+owner's approval the old queue jobs on `angela` were removed (149 jobs) after its
+quarantine was reconciled. Measurements are one run on one day; they show failure
+modes, not a throughput benchmark.
+
+Batch result (28 rows, coordinator killed once on purpose with a row in
+`SUBMITTING` and once by the full disk): 19 `PASSED`, 6 `INFRA_FAILED` (macOS
+import or full disks, never a false pass) and 3 `BLOCKED` rows that were never
+resubmitted: two had no receipt when their coordinator died, one belongs to the
+wiped `angel`. After the fixes, local passed attempts released their source as
+they finished and `C:` stayed near 20–23 GB. A later rendered launch was refused
+because `app/.godot` had become a junction to another track's cache; the
+snapshot correctly refuses reparse points.
+
+Final hermetic Windows-native run of the candidate: 641 cases (queue 392, debug
+120, checked 22, resource 14, performance 75, GOD TEST 18), 606 passed, 35 skipped,
+0 failures; the POSIX remote, retention, policy, GC and reconcile modules also
+passed on the real Linux host (65 cases).
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |

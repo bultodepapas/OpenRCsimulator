@@ -26,6 +26,9 @@ from tools.testqueue.presets import validate, scheduling
 from tools.testqueue.snapshots import capture, read_verified_file, verify
 
 
+IMPORT_CACHE_BYTES = 2 * 1024 ** 3
+
+
 class PoolLockTimeout(RuntimeError):
     """The requested pool lock was not acquired; another caller may own it."""
 
@@ -193,9 +196,11 @@ class Pool:
                 if type(free_disk) is not int or free_disk < 0:
                     free_disk = None
                 external = (current.get('occupancy') or {}).get('external_simulators') is True
+                queued = current.get('queued')
                 value = {'platform': current['platform'], 'online': True,
                          'busy': (bool(current['claims']) or current['condition'] != 'READY'
-                                  or bool(current['reservation']) or external),
+                                  or bool(current['reservation']) or external
+                                  or type(queued) is int and queued > 0),
                          'free_disk_bytes': free_disk, 'storage': storage,
                          'free_memory_bytes': psutil.virtual_memory().available,
                          'cores': os.cpu_count(), 'load': psutil.cpu_percent(interval=0.1) * (os.cpu_count() or 1) / 100,
@@ -244,6 +249,34 @@ class Pool:
         with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:
             observations = list(executor.map(self.probe_host, self.hosts))
         return self._reserve(observations)
+
+    CIRCUIT_FAILURES = 2
+
+    def _circuit(self, observations, source_digest):
+        """Open a per-host, per-source circuit after consecutive INFRA_FAILED results.
+
+        The newest ``CIRCUIT_FAILURES`` observed finished attempts of this source
+        on a host must all be infrastructure failures (for example an import
+        that cannot load a platform extension). A different source digest, or a
+        later non-infrastructure result, closes it. Nothing is retried or moved.
+        """
+        finished = {}
+        for path in (self.root / 'jobs').glob('*.json'):
+            try:
+                receipt = json.loads(path.read_text(encoding='utf-8'))
+                last = receipt.get('last_status') or {}
+                if receipt.get('source_digest') != source_digest or last.get('state') != 'FINISHED':
+                    continue
+                finished.setdefault(receipt['host'], []).append((float(receipt.get('created', 0)), last.get('outcome'), path.stem))
+            except (OSError, ValueError, KeyError, TypeError, AttributeError):
+                continue
+        for observation in observations:
+            recent = sorted(finished.get(observation['id'], []), reverse=True)[:self.CIRCUIT_FAILURES]
+            if len(recent) == self.CIRCUIT_FAILURES and all(outcome == 'INFRA_FAILED' for _, outcome, _ in recent):
+                observation['busy'] = True
+                observation['busy_reason'] = (f'CIRCUIT_OPEN: last {self.CIRCUIT_FAILURES} attempts of this source ended '
+                                              f'INFRA_FAILED ({", ".join(stem[:8] for _, _, stem in recent)}); inspect them')
+        return observations
 
     def _reserve(self, observations, since=None):
         """Mark hosts held by local receipts busy; cheap, local and idempotent.
@@ -439,10 +472,13 @@ class Pool:
             match = re.search(r'^ENGINE_VERSION=(\S+)', pin, re.MULTILINE)
             if not match or match[1] != self.config.get('engine_version'):
                 raise ValueError('Frozen candidate engine pin differs from configured pool engine')
+        # A checked attempt also writes Godot's import cache (.godot) inside its
+        # workspace; 17 November: 403 MB and growing when a 2.5 GB-free Mac ran
+        # out of space mid-import. Reserve it instead of discovering it.
         job = {'platform': platform, 'workload': 'headless',
                'source_bytes': sum(item['size'] for item in manifest['files'].values()),
                'cache_id': manifest['source_digest'], 'duration_key': script, 'estimated_seconds': timeout,
-               'memory_bytes': 512 * 1024 * 1024}
+               'memory_bytes': 512 * 1024 * 1024, 'disk_bytes': IMPORT_CACHE_BYTES}
         return manifest, options, job
 
     def _submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id, settings,
@@ -497,6 +533,10 @@ class Pool:
                 observations = self._reserve(observations, since=probed_at)
                 if host_id:
                     observations = [item for item in observations if item['id'] == host_id]
+                else:
+                    # Unpinned work avoids a host where this exact source keeps
+                    # failing infrastructure; pinned work keeps its explicit host.
+                    observations = self._circuit(observations, manifest['source_digest'])
                 decision = plan(job, observations)
                 if decision['selected'] is None:
                     return {'state': 'WAITING', 'decision': decision}

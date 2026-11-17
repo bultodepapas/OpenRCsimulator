@@ -130,9 +130,11 @@ class PoolPolicyTests(unittest.TestCase):
         local = candidate(decision, "local")["score"]["required_disk_bytes"]
         remote = candidate(decision, "remote")["score"]["required_disk_bytes"]
         self.assertEqual(local, pool_policy.DISK_RESERVE_BYTES + 2 * GIB)
-        self.assertEqual(remote, pool_policy.DISK_RESERVE_BYTES + 3 * GIB)
+        # Remote: upload + extraction; the job archive is a hard link, not a copy.
+        self.assertEqual(remote, pool_policy.DISK_RESERVE_BYTES + 2 * GIB)
         cached = pool_policy.plan(job, [host("remote", cached_inputs=["id"])])
-        self.assertEqual(candidate(cached, "remote")["score"]["required_disk_bytes"], local)
+        self.assertEqual(candidate(cached, "remote")["score"]["required_disk_bytes"],
+                         pool_policy.DISK_RESERVE_BYTES + GIB)
 
     def test_invalid_inputs_do_not_create_an_eligible_host(self):
         for job in ({"workload": "gpu"}, {"workload": []}, {"platform": []}, {"source_bytes": -1}, {"memory_bytes": True},
