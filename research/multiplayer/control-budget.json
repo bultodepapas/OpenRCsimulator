@@ -1,0 +1,215 @@
+{
+  "format": "openrc-mp-control-size-research-v1",
+  "status": "candidate size fixtures; no final control schema, parser or transport",
+  "prefix_hex": "4f520102",
+  "total_application_limit_bytes": 1024,
+  "pose_raw_bytes": 128,
+  "pose_base64_chars": 172,
+  "scope": [
+    "fits_size_limit_only does not imply schema, identity, ordering or admission validity",
+    "Base64 bytes are deliberately not a valid pose; this is only a length fixture",
+    "message keys and digest coverage require the MP-01a schema/compatibility review",
+    "fresh connection/attempt nonces distinguish old generations; they do not authenticate cleartext peers",
+    "8-player and bundled-baseline shapes are comparisons, not proposed v1 messages",
+    "final Godot serialization may differ; measure its bytes independently",
+    "ensure_ascii is not a worst-case bound; legal escaped ASCII can be larger still",
+    "no real names, capabilities, account or network data are present"
+  ],
+  "cases": [
+    {
+      "id": "room_4_ascii",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967294,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967293,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967292,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 710,
+      "framed_bytes": 714,
+      "remaining_bytes": 310,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "room_4_quotes",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967294,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967293,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967292,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 838,
+      "framed_bytes": 842,
+      "remaining_bytes": 182,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "room_4_accented",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"éééééééééééééééé\"},{\"entity\":4294967294,\"name\":\"éééééééééééééééé\"},{\"entity\":4294967293,\"name\":\"éééééééééééééééé\"},{\"entity\":4294967292,\"name\":\"éééééééééééééééé\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 710,
+      "framed_bytes": 714,
+      "remaining_bytes": 310,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "room_4_emoji",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"✈️✈️✈️✈️✈️AB\"},{\"entity\":4294967294,\"name\":\"✈️✈️✈️✈️✈️AB\"},{\"entity\":4294967293,\"name\":\"✈️✈️✈️✈️✈️AB\"},{\"entity\":4294967292,\"name\":\"✈️✈️✈️✈️✈️AB\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 710,
+      "framed_bytes": 714,
+      "remaining_bytes": 310,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "room_4_ascii_all_name_chars_escaped",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\"},{\"entity\":4294967294,\"name\":\"\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\"},{\"entity\":4294967293,\"name\":\"\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\"},{\"entity\":4294967292,\"name\":\"\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\\u0041\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 1350,
+      "framed_bytes": 1354,
+      "remaining_bytes": -330,
+      "fits_size_limit_only": false,
+      "container_depth": 3,
+      "serialization_override": "every ASCII name character uses a six-byte Unicode escape"
+    },
+    {
+      "id": "room_4_accented_ascii_escape",
+      "ensure_ascii": true,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\"},{\"entity\":4294967294,\"name\":\"\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\"},{\"entity\":4294967293,\"name\":\"\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\"},{\"entity\":4294967292,\"name\":\"\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\\u00e9\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 966,
+      "framed_bytes": 970,
+      "remaining_bytes": 54,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "room_8_quotes",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967294,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967293,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967292,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967291,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967290,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967289,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967288,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 1222,
+      "framed_bytes": 1226,
+      "remaining_bytes": -202,
+      "fits_size_limit_only": false,
+      "container_depth": 3
+    },
+    {
+      "id": "room_8_ascii",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967294,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967293,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967292,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967291,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967290,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967289,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"},{\"entity\":4294967288,\"name\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 966,
+      "framed_bytes": 970,
+      "remaining_bytes": 54,
+      "fits_size_limit_only": true,
+      "container_depth": 3
+    },
+    {
+      "id": "baseline_single",
+      "ensure_ascii": false,
+      "json_utf8": "{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967295,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"DEGRADED\",\"status_rev\":4294967295,\"type\":\"BASELINE\"}",
+      "json_bytes": 410,
+      "framed_bytes": 414,
+      "remaining_bytes": 610,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "paused_status_single",
+      "ensure_ascii": false,
+      "json_utf8": "{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967295,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"PAUSED\",\"status_rev\":4294967295,\"type\":\"STATUS\"}",
+      "json_bytes": 406,
+      "framed_bytes": 410,
+      "remaining_bytes": 614,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "heartbeat_decimal_strings",
+      "ensure_ascii": false,
+      "json_utf8": "{\"connection\":\"cccccccccccccccccccccccccccccccc\",\"entity\":4294967295,\"epoch\":4294967295,\"room\":\"ffffffffffffffff\",\"sample_sequence\":4294967295,\"sample_time_us\":\"-4503599627370495\",\"sequence\":4294967295,\"sim_tick\":\"9223372036854775807\",\"status\":\"PAUSED\",\"status_rev\":4294967295,\"type\":\"HEARTBEAT\"}",
+      "json_bytes": 296,
+      "framed_bytes": 300,
+      "remaining_bytes": 724,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "session_heartbeat_before_baseline",
+      "ensure_ascii": false,
+      "json_utf8": "{\"connection\":\"cccccccccccccccccccccccccccccccc\",\"room\":\"ffffffffffffffff\",\"sequence\":4294967295,\"type\":\"SESSION_HEARTBEAT\"}",
+      "json_bytes": 124,
+      "framed_bytes": 128,
+      "remaining_bytes": 896,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "auth_hello_candidate",
+      "ensure_ascii": false,
+      "json_utf8": "{\"attempt\":\"dddddddddddddddddddddddddddddddd\",\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"capability\":\"ffffffffffffffffffffffffffffffff\",\"compatibility_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\",\"type\":\"HELLO\"}",
+      "json_bytes": 324,
+      "framed_bytes": 328,
+      "remaining_bytes": 696,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "auth_accept_candidate",
+      "ensure_ascii": false,
+      "json_utf8": "{\"attempt\":\"dddddddddddddddddddddddddddddddd\",\"compatibility_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"entity\":4294967295,\"room\":\"ffffffffffffffff\",\"type\":\"ACCEPT\"}",
+      "json_bytes": 270,
+      "framed_bytes": 274,
+      "remaining_bytes": 750,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "auth_ack_candidate",
+      "ensure_ascii": false,
+      "json_utf8": "{\"attempt\":\"dddddddddddddddddddddddddddddddd\",\"connection\":\"cccccccccccccccccccccccccccccccc\",\"room\":\"ffffffffffffffff\",\"type\":\"AUTH_ACK\"}",
+      "json_bytes": 138,
+      "framed_bytes": 142,
+      "remaining_bytes": 882,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "room_4_with_4_baselines_antipattern",
+      "ensure_ascii": false,
+      "json_utf8": "{\"aircraft_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"baselines\":[{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967295,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"DEGRADED\",\"status_rev\":4294967295,\"type\":\"BASELINE\"},{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967294,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"DEGRADED\",\"status_rev\":4294967295,\"type\":\"BASELINE\"},{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967293,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"DEGRADED\",\"status_rev\":4294967295,\"type\":\"BASELINE\"},{\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"entity\":4294967292,\"epoch\":4294967295,\"pose_b64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn8=\",\"room\":\"ffffffffffffffff\",\"status\":\"DEGRADED\",\"status_rev\":4294967295,\"type\":\"BASELINE\"}],\"build\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"config_rev\":4294967295,\"connection\":\"cccccccccccccccccccccccccccccccc\",\"control_id\":4294967295,\"environment_sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"field_sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"room\":\"ffffffffffffffff\",\"roster\":[{\"entity\":4294967295,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967294,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967293,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"},{\"entity\":4294967292,\"name\":\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\\\"\"}],\"type\":\"ROOM\"}",
+      "json_bytes": 2496,
+      "framed_bytes": 2500,
+      "remaining_bytes": -1476,
+      "fits_size_limit_only": false,
+      "container_depth": 3
+    },
+    {
+      "id": "size_only_1024",
+      "ensure_ascii": false,
+      "json_utf8": "{\"padding\":\"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"}",
+      "json_bytes": 1020,
+      "framed_bytes": 1024,
+      "remaining_bytes": 0,
+      "fits_size_limit_only": true,
+      "container_depth": 1
+    },
+    {
+      "id": "size_only_1025",
+      "ensure_ascii": false,
+      "json_utf8": "{\"padding\":\"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"}",
+      "json_bytes": 1021,
+      "framed_bytes": 1025,
+      "remaining_bytes": -1,
+      "fits_size_limit_only": false,
+      "container_depth": 1
+    }
+  ],
+  "separate_message_example": {
+    "room_4_quotes_bytes": 842,
+    "one_baseline_bytes": 414,
+    "room_plus_four_baselines_total_bytes": 2498,
+    "order": "apply/ACK ROOM first; then bounded individual BASELINE controls",
+    "control_ids_for_sized_sequence": [
+      4294967291,
+      4294967292,
+      4294967293,
+      4294967294,
+      4294967295
+    ],
+    "note": "sum is not one packet; substitute these distinct 10-digit IDs for the per-shape U32 placeholder; sequence exhaustion requires a fresh generation; no READY, ACK, auth, transport or retransmit cost included"
+  }
+}

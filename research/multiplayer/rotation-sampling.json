@@ -1,0 +1,172 @@
+{
+  "format": "openrc-mp-rotation-sampling-research-v1",
+  "status": "analytical constant-axis examples; no flight or network was measured",
+  "cases": [
+    {
+      "id": "ordinary_50ms",
+      "axis_rate_rad_per_sim_second": 20,
+      "accepted_simulation_gap_seconds": 0.05,
+      "actual_rotation_degrees": 57.29578,
+      "shortest_endpoint_rotation_degrees": 57.29578,
+      "within_component_outer_guard_100_radps": true,
+      "path_length_below_pi": true,
+      "sampled_errors": [
+        {
+          "fraction": 0.0,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.25,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.5,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.75,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 1.0,
+          "angular_error_degrees": 0.0
+        }
+      ]
+    },
+    {
+      "id": "outer_guard_50ms",
+      "axis_rate_rad_per_sim_second": 100,
+      "accepted_simulation_gap_seconds": 0.05,
+      "actual_rotation_degrees": 286.478898,
+      "shortest_endpoint_rotation_degrees": -73.521102,
+      "within_component_outer_guard_100_radps": true,
+      "path_length_below_pi": false,
+      "sampled_errors": [
+        {
+          "fraction": 0.0,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.25,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 0.5,
+          "angular_error_degrees": 180.0
+        },
+        {
+          "fraction": 0.75,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 1.0,
+          "angular_error_degrees": 0.0
+        }
+      ]
+    },
+    {
+      "id": "one_missing_20hz_sample",
+      "axis_rate_rad_per_sim_second": 40,
+      "accepted_simulation_gap_seconds": 0.1,
+      "actual_rotation_degrees": 229.183118,
+      "shortest_endpoint_rotation_degrees": -130.816882,
+      "within_component_outer_guard_100_radps": true,
+      "path_length_below_pi": false,
+      "sampled_errors": [
+        {
+          "fraction": 0.0,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.25,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 0.5,
+          "angular_error_degrees": 180.0
+        },
+        {
+          "fraction": 0.75,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 1.0,
+          "angular_error_degrees": 0.0
+        }
+      ]
+    },
+    {
+      "id": "full_turn_in_100ms",
+      "axis_rate_rad_per_sim_second": 62.83185307179586,
+      "accepted_simulation_gap_seconds": 0.1,
+      "actual_rotation_degrees": 360.0,
+      "shortest_endpoint_rotation_degrees": -0.0,
+      "within_component_outer_guard_100_radps": true,
+      "path_length_below_pi": false,
+      "sampled_errors": [
+        {
+          "fraction": 0.0,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.25,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 0.5,
+          "angular_error_degrees": 180.0
+        },
+        {
+          "fraction": 0.75,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 1.0,
+          "angular_error_degrees": 0.0
+        }
+      ]
+    },
+    {
+      "id": "negative_roll_50ms",
+      "axis_rate_rad_per_sim_second": -100,
+      "accepted_simulation_gap_seconds": 0.05,
+      "actual_rotation_degrees": -286.478898,
+      "shortest_endpoint_rotation_degrees": 73.521102,
+      "within_component_outer_guard_100_radps": true,
+      "path_length_below_pi": false,
+      "sampled_errors": [
+        {
+          "fraction": 0.0,
+          "angular_error_degrees": 0.0
+        },
+        {
+          "fraction": 0.25,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 0.5,
+          "angular_error_degrees": 180.0
+        },
+        {
+          "fraction": 0.75,
+          "angular_error_degrees": 90.0
+        },
+        {
+          "fraction": 1.0,
+          "angular_error_degrees": 0.0
+        }
+      ]
+    }
+  ],
+  "scope": [
+    "0.05/0.10 seconds are simulation-time gaps; mapping them to 20 Hz wall-time sends assumes a 1:1 simulation/wall-time ratio",
+    "errors compare equal simulation-time fractions; applying them to equal wall-time fractions also assumes linear simulation-time progression within that bracket",
+    "endpoints do not reveal the number or direction of intervening full turns",
+    "the 100 rad/s per-component guard is not a measured admitted-aircraft envelope",
+    "for varying axes, a path bound needs an integral bound on angular-speed norm; tick-sampled quadrature is only an estimate unless within-tick motion is bounded",
+    "path length below pi excludes this wrap ambiguity but does not prove interpolation accuracy",
+    "packet loss and scheduling can widen the available bracket beyond one nominal send interval",
+    "delay, float64 precision and quaternion sign normalization cannot recreate missing turns",
+    "implementation must qualify recorded stock-aircraft motion and a bounded gap/freeze policy"
+  ]
+}

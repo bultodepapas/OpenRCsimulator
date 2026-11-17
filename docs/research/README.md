@@ -56,6 +56,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [Twenty practical investigations, 2026-11-16](multiplayer-2026-11-15/round-3-20-investigations.md) evaluate reusable demos, libraries, tools and tutorials, with per-topic experiments, costs and stop rules. Includes synthetic packet vectors, fixed-datum/timing corrections, UPnP ownership limits, existing-tool reuse and a current-main drift check; runtime phases remain pending.
 
+[Twenty further investigations, 2026-11-17](multiplayer-2026-11-15/round-4-20-investigations.md) add topics 21–40: DTLS/invites, ENet limits, DNS/JSON, lifecycle/ACKs, native permissions, flight/voice/interest examples and conditional optimizations. Includes reproducible control-byte and quaternion-sampling counterexamples plus a material core-source drift review; the implementation plan now requires accepted-crash/pause and field-coherence fixtures.
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

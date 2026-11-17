@@ -8,6 +8,8 @@ Read the [implementation plan](../../plans/multiplayer.md) for decisions, phases
 
 **Practical reuse, 2026-11-16:** [twenty investigations](round-3-20-investigations.md) evaluate examples, libraries, tools and tutorials with concrete experiments and stop rules. They add synthetic packet vectors, correct fixed-datum semantics, start interpolation without extrapolation, hold unsafe UPnP automation and record newer `main` drift. No multiplayer runtime or provider qualification is claimed.
 
+**Further research, 2026-11-17:** [twenty more investigations, 21–40](round-4-20-investigations.md) examine DTLS/invites, actual ENet limits, DNS cancellation, strict JSON, lifecycle/ACKs, native permissions, FlightGear, spectators, Mumble, handoff and compression. They deliver reproducible control-size and fast-roll counterexamples. New `main` changes now include core session/simulation/native code; MP-01 requires a fresh integration audit and coherent accepted-crash/pause sampling. The current plan/protocol incorporate these gates; all runtime phases remain pending.
+
 ## Conclusions
 
 The useful no-spend baseline is **player-hosted ENet**. It needs no hosted account for LAN or reachable direct sessions and fits the existing native engine. Private rooms are application behavior, not a paid hosting feature. The main engineering work is replica presentation, lifecycle, compatibility, timing and testing.
