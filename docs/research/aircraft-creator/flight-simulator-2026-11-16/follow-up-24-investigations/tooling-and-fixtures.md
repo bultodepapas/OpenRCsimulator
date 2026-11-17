@@ -43,6 +43,20 @@ Do not add a second aircraft store, direct runtime source loader or alternative 
 
 The six exact source revisions inspected for the interchange/fixture tools are in the [revision record](packages-and-tools.md#tool-revision-record). Those hashes document research, not installed release pins. Review all transitive components and artifact terms at adoption. No SDK sample aircraft, package compiler or restricted benchmarking workflow is required for the initial product path.
 
+### Game and runtime lessons added 2026-11-17
+
+The [20-repository source survey](../game-repository-survey-2026-11-17.md) adds actual game/simulator, engine and asset-library implementations. Prefer existing Creator/Godot boundaries, Authoring's revision cache and Store's immutable objects; transfer supported mechanisms without adopting another engine, catalog or mod-execution model.
+
+| Reference | Proposed use and adoption boundary |
+| --- | --- |
+| Godot GLTFDocument | Reuse OpenRC's pinned engine behind strict admitted self-contained bytes. The separately inspected upstream revision does not upgrade the engine or prove its external URI handling is an intake boundary. [G15](../game-repository-survey-2026-11-17.md#g15) |
+| Bevy / Fyrox | Source references for transitive dependency state, pending consumers, failed-reload preservation and temporary resource ownership. No engine/framework dependency selected. [G16/G17](../game-repository-survey-2026-11-17.md#g16) |
+| Unity glTFast / UnityGLTF | References for cooperative scheduling, injected data resolution and cleanup. Unity coupling and indivisible calls prevent assuming direct Godot integration or hard responsiveness guarantees. Count the glTFast variants as one investigation. [G18/G19](../game-repository-survey-2026-11-17.md#g18) |
+| cgltf | MIT-declared candidate for a narrowly justified parsing comparison if existing primitives leave a concrete gap. Qualify actual vendor features, captured-only I/O, aggregate allocation/token limits, full preprocessing cost and packaging before adoption. It does not translate RC flight behavior. [G20](../game-repository-survey-2026-11-17.md#g20) |
+| Game/simulator loaders and mod systems | Adapt independently specified metadata, precedence, source reporting, geometry sharing and recovery concepts. Preserve exact-file/code/asset terms; PicaSim's inspected license is noncommercial, and several other sources declare copyleft terms. No code or aircraft assets copied. [G01–G14 and license register](../game-repository-survey-2026-11-17.md#license-and-reuse-register) |
+
+Use the [bounded comparison procedure](../game-repository-survey-2026-11-17.md#component-selection-and-bounded-experiments): correct uncached baseline, same-oracle cold/retry/edit/change cases, stage invocation counts and identity checks, then peak memory/stall/drain measurements. A cache remains disposable acceleration; its invalidation, corruption recovery and lifetime cannot bypass ordinary admission or delete accepted versions. G fixtures extend C/F/W mechanisms where applicable rather than requiring duplicate tests.
+
 ## Proposed bounded tool experiment
 
 1. **Freeze the question.** Select one original fixture, an exact candidate release/build, its license/dependencies, supported input profile and expected output. Record explicit byte, memory, pixel, process, thread and time budgets before the trial.

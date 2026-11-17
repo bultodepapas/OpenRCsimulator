@@ -22,6 +22,8 @@ The [24-question follow-up](follow-up-24-investigations/README.md) adds dated pr
 
 The [2026-11-17 code investigations](code-investigations-2026-11-17.md) deepen the evidence with 26 cases across eight external repositories and OpenRC: actual aircraft build/control paths, converter and validator implementation, an additional importer, and existing runtime boundaries. These cases drive the [eight milestones and contingency matrix](../../../plans/flight-simulator-import-milestones.md); they are not executed conversions or 26 separate external studies.
 
+The [20 additional game and asset-pipeline repository studies](game-repository-survey-2026-11-17.md) inspect how RC simulators, games, compatibility engines and runtime libraries handle data selection, overlays, dependencies, caching, resource cleanup and user diagnostics. Every G01–G20 case links immutable source and an observed license scope, proposes an independent fixture and maps to existing owners. Its [reuse decisions and bounded comparisons](game-repository-survey-2026-11-17.md#reuse-decisions-carried-into-the-plan) refine the plans; game-specific semantics, default models and executable mods are not adopted as Flight Simulator support.
+
 | Aircraft/mod case | Evidence added | Design use |
 | --- | --- | --- |
 | C152X / JPLogistics | Stock dependency and simulator-update changes | Preserve base/overlay/build identity |
