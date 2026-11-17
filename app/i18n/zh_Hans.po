@@ -11261,9 +11261,6 @@ msgstr "横滚：右摇杆左右（左右方向键）"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "俯仰：右摇杆前推＝机头向下（上下方向键）"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "解锁或上锁：E、手柄LB，或设为起落架的遥控器开关。油门在低位时解锁。"
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "飞行模式 特技/自稳：M 或手柄 RB。开始时遥控器为特技，手柄或键盘为自稳。"
 
@@ -12813,3 +12810,81 @@ msgstr "ClearView 模型 %s：%s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ClearView 飞机 ZIP 文件"
+
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "控制器连接已变化：电机已上锁。请检查控制器，继续后重新解锁。"
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "无法使用已保存的控制器配置：请打开“控制”进行修复或重新选择。"
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "继续时电机将上锁：请在油门低位时重新解锁。"
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "比赛成绩未保存（%d 条待保存）：请检查存储后重试。"
+
+msgid "Race records restored from the previous copy."
+msgstr "比赛记录已从上一份副本恢复。"
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "OSD 设置未保存：在离开前有效。下次更改时会再次尝试保存。"
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "FPV 四旋翼操作（手柄）"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "FPV 四旋翼操作（遥控器）"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "油门：%s（键盘 W/S）"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "偏航：%s（键盘 A/D）"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "横滚：%s（键盘左右方向键）"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "俯仰：%s，前推＝机头向下（键盘上下方向键）"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "摇杆：油门、偏航、横滚和俯仰按“控制”中为遥控器校准的设置。"
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "解锁或上锁：解锁开关（%s）。油门在低位时解锁。"
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "解锁或上锁：设为起落架的遥控器开关（%s）。油门在低位时解锁。"
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "解锁或上锁：E 或手柄 LB。油门在低位时解锁。"
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "解锁或上锁：E。油门在低位时解锁。"
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "飞行模式：飞行模式开关（%s），关为自稳，开为特技。"
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飞行模式 特技/自稳：M。开始时遥控器为特技，手柄或键盘为自稳。"
+
+msgid "left stick sides"
+msgstr "左摇杆左右"
+
+msgid "left stick up/down"
+msgstr "左摇杆上下"
+
+msgid "right stick sides"
+msgstr "右摇杆左右"
+
+msgid "right stick up/down"
+msgstr "右摇杆上下"
+
+msgid "left trigger"
+msgstr "左扳机"
+
+msgid "right trigger"
+msgstr "右扳机"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d 条比赛成绩未保存。8 秒内再次选择“返回主界面”即丢弃它们。"

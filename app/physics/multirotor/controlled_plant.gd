@@ -9,7 +9,8 @@
 #                 same lag). Continuous: four shaft speeds.
 #   LAW_ELECTRIC  experimental product law: four motors on one battery bus, either one-quadrant (electric_bus.gd:
 #                 drive only, the shaft coasts above the commanded speed) or, with powertrain.braking = "damped",
-#                 a signed-current bridge (active braking and regeneration into the pack, no current limit),
+#                 a signed-current bridge (active braking and regeneration into the pack, no current limit; the
+#                 pack accepts charge only below its capacity, see CHARGE_ACCEPTANCE_S),
 #                 coupled shaft/body acceleration (FPV flight dynamics §4), pack charge and energy integrals and
 #                 the terminal cut latch. Continuous: four shaft speeds, charge [C], terminal energy [J], pack
 #                 loss [J], cut latch (exactly 0 or 1, zero derivative).
@@ -40,7 +41,16 @@ const FC := preload("res://physics/multirotor/flight_controller.gd")
 const LAW_LAB := "multirotor-controlled-first-order-v1"
 const LAW_ELECTRIC := "multirotor-controlled-el-coupled-v1"
 ## Bus law identity of the damped (signed-current) bridge variant; the one-quadrant variant is electric_bus.gd.
-const BUS_DAMPED := "multirotor-four-load-damped-bus-v1"
+## v2 (audit A06): regeneration is bounded by the pack's charge acceptance.
+const BUS_DAMPED := "multirotor-four-load-damped-bus-v2"
+## Audit A06, declared charge-acceptance law of the damped bridge: a charging pack current is limited to
+## (capacity charge - charge) / CHARGE_ACCEPTANCE_S, so a full pack accepts none and the charge approaches its capacity
+## without crossing it (RK4 with h/tau <= 1/48 is monotone on that decay). While the limit binds, the bus floats above
+## the pack's Thevenin voltage until the motors' regenerative currents fall to what the pack accepts (overvoltage that
+## weakens the braking, as a blocked pack would), and the energy the pack cannot store is dissipated in it
+## (p_pack_loss_w = (Voc - V)*I, which reduces to R*I^2 when the limit does not bind). Not a model of a real ESC's
+## braking, a LiPo's overvoltage limit or its charge chemistry: a coherent bound in place of unbounded regeneration.
+const CHARGE_ACCEPTANCE_S := 0.2
 const LAYOUT_LAB := "openrc-multirotor-controlled-lab-v1"
 const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v1"
 
@@ -83,6 +93,14 @@ const PARKED_CHECK_DT := 1.0 / 240.0
 ## Crash impact law: fractions of the tangential velocity and of the body rates kept at a ground crash.
 const CRASH_TANGENT_KEEP := 0.5
 const CRASH_RATE_KEEP := 0.3
+## Rotor disc strike search (audit A07): rim samples are taken once the planar penetration bound at the hub is within
+## this margin (m) of the terrain. 0.03 m is four times the plane-versus-ramp deviation of the steepest shipped RC ramp
+## over the prop radius (1/2 * 2.88 1/m * 0.0648^2 m^2 = 6 mm) and above the 21.5 mm hub height of a quad resting on
+## the pad (so the ring also runs there, with no false strike: only real terrain samples decide).
+const ROTOR_RIM_MARGIN := 0.03
+## Rim directions, 45 degrees apart in the disc plane (the first is the worst direction of the local plane).
+const ROTOR_RIM_COS := [1.0, 0.7071067811865476, 0.0, -0.7071067811865476, -1.0, -0.7071067811865476, 0.0, 0.7071067811865476]
+const ROTOR_RIM_SIN := [0.0, 0.7071067811865476, 1.0, 0.7071067811865476, 0.0, -0.7071067811865476, -1.0, -0.7071067811865476]
 
 var prepared: Dictionary
 var config: Dictionary
@@ -359,7 +377,7 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 			enabled[i] = 1
 	var bus: Dictionary = {}
 	if connected:
-		bus = _bus(_ocv(_soc(continuous)), duty, back_emf, enabled, drive)
+		bus = _bus(_ocv(_soc(continuous)), duty, back_emf, enabled, drive, continuous[C_CHARGE])
 		if not bus.get("ok", false):
 			return {loads = PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = derivative,
 				rotor_momentum = M.v3(0.0, 0.0, 0.0), bus = bus}
@@ -417,7 +435,8 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 ## flight: no drive (only the auxiliary load), and all four loads driving, accepted only when that active set is
 ## consistent with its own bus voltage. Every other case (a coasting rotor among driving ones) is the exhaustive
 ## active-set solve of electric_bus.gd, the law's reference (tests compare the two).
-func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, enabled: PackedInt64Array, drive: bool) -> Dictionary:
+func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, enabled: PackedInt64Array, drive: bool,
+		charge: float = 0.0) -> Dictionary:
 	var pack_resistance: float = prepared.battery.resistance_ohm
 	var auxiliary: float = prepared.battery.auxiliary_current_a
 	if not drive:
@@ -439,6 +458,17 @@ func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, en
 		for i in 4:
 			currents[i] = (duty[i] * v_bus - back_emf[i]) / resistance
 			pack_current += duty[i] * currents[i]
+		var acceptance: float = maxf(0.0, 3600.0 * float(prepared.battery.capacity_ah) - charge) / CHARGE_ACCEPTANCE_S
+		if pack_current < -acceptance and duty_sum > 0.0:
+			# Audit A06: the pack accepts no more charge; the floating bus sets the regenerative currents so that the
+			# pack current is exactly -acceptance (the bus is linear in V: sum(d_i (d_i V - E_i)/R) + I_aux = -acceptance).
+			v_bus = (emf_sum - auxiliary - acceptance) / duty_sum
+			pack_current = auxiliary
+			for i in 4:
+				currents[i] = (duty[i] * v_bus - back_emf[i]) / resistance
+				pack_current += duty[i] * currents[i]
+			return {ok = v_bus > 0.0, v_bus = v_bus, i_motor = currents, i_pack = pack_current,
+				p_terminal_w = v_bus * pack_current, p_pack_loss_w = (voc - v_bus) * pack_current, acceptance_limited = true}
 		return {ok = v_bus > 0.0, v_bus = v_bus, i_motor = currents, i_pack = pack_current,
 			p_terminal_w = v_bus * pack_current, p_pack_loss_w = pack_resistance * pack_current * pack_current}
 	var consistent: bool = v_bus > 0.0
@@ -672,22 +702,49 @@ func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, c
 		var v_before: PackedFloat64Array = M.q_rotate(previous_attitude, M.add(previous_velocity, M.cross(previous_rates, point)))
 		if maxf(-M.dot(v_world, normal), -M.dot(v_before, normal)) > crash_speed:
 			return "Hard impact"
-	# Spinning disc: the rim point closest to the ground.
+	# Spinning disc (audit A07): the hub centre, the rim point lowest in the world and, within ROTOR_RIM_MARGIN of the
+	# terrain, a ring of rim points whose first point is the worst rim direction of the plane through the hub's local
+	# slopes. On planar terrain the deepest rim penetration is hub_depth + r·|l − a(a·l)|, l = (slope_n, slope_e, 1) and
+	# a the disc normal, so an uphill rim point is found, not only the world-lowest one. A strike is always a real
+	# terrain sample below the surface. A witness search, not a clearance proof: a crest narrower than the ring
+	# spacing can still pass between samples (no curvature bound exists for the composed ground callable).
 	var axis: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
 	var lowest: PackedFloat64Array = M.sub(M.v3(0.0, 0.0, 1.0), M.scale(axis, axis[2]))
 	var lowest_norm: float = M.norm(lowest)
+	var position: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	for i in 4:
 		if continuous[i] <= strike_speed:
 			continue
 		var rotor: Dictionary = prepared.rotors[i]
-		var rim: PackedFloat64Array = M.q_rotate(attitude, rotor.hub_frd)
-		if lowest_norm > 1.0e-9:
-			rim = M.add(rim, M.scale(lowest, 0.5 * float(rotor.diameter_m) / lowest_norm))
-		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + rim[0], body[RB.POS + 1] + rim[1])
-		if body[RB.POS + 2] + rim[2] + surface[0] > 0.0:
+		var radius: float = 0.5 * float(rotor.diameter_m)
+		var hub: PackedFloat64Array = M.add(position, M.q_rotate(attitude, rotor.hub_frd))
+		var under_hub: PackedFloat64Array = _ground_at(hub[0], hub[1])
+		var hub_depth: float = hub[2] + under_hub[0]
+		if hub_depth > 0.0:
 			return "Propeller strike"
+		if lowest_norm > 1.0e-9 and _rim_depth(hub, M.scale(lowest, 1.0 / lowest_norm), radius) > 0.0:
+			return "Propeller strike"
+		var up: PackedFloat64Array = M.v3(under_hub[1], under_hub[2], 1.0)
+		var worst: PackedFloat64Array = M.sub(up, M.scale(axis, M.dot(axis, up)))
+		var worst_norm: float = M.norm(worst)
+		if hub_depth + radius * worst_norm <= -ROTOR_RIM_MARGIN:
+			continue
+		var u: PackedFloat64Array = M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
+		if worst_norm > 1.0e-9:
+			u = M.scale(worst, 1.0 / worst_norm)
+		var v: PackedFloat64Array = M.cross(axis, u)
+		for k in ROTOR_RIM_COS.size():
+			var direction: PackedFloat64Array = M.add(M.scale(u, float(ROTOR_RIM_COS[k])), M.scale(v, float(ROTOR_RIM_SIN[k])))
+			if _rim_depth(hub, direction, radius) > 0.0:
+				return "Propeller strike"
 	return ""
+
+
+## Penetration (m, positive below the terrain) of the rim point `radius` from `hub` along the world unit `direction`.
+func _rim_depth(hub: PackedFloat64Array, direction: PackedFloat64Array, radius: float) -> float:
+	var surface: PackedFloat64Array = _ground_at(hub[0] + radius * direction[0], hub[1] + radius * direction[1])
+	return hub[2] + radius * direction[2] + surface[0]
 
 
 ## Domain of an accepted frame: enum values, shaft speeds, charge and the cut latch's agreement with the lifecycle.
@@ -711,7 +768,9 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 		return false
 	if electric:
 		var terminal: bool = frame.modes[FC.MODE_MOTOR] == FC.MOTOR_CRASHED or frame.modes[FC.MODE_MOTOR] == FC.MOTOR_DEPLETED
-		if continuous[C_CHARGE] < -CHARGE_TOLERANCE or continuous[C_CUT_LATCH] not in [0.0, 1.0] \
+		# Audit A06: the charge never exceeds the capacity (the damped bridge's acceptance bound keeps it there).
+		var capacity: float = 3600.0 * float(prepared.battery.capacity_ah)
+		if continuous[C_CHARGE] < -CHARGE_TOLERANCE or continuous[C_CHARGE] > capacity * (1.0 + 1.0e-12) 				or continuous[C_CUT_LATCH] not in [0.0, 1.0] \
 				or (continuous[C_CUT_LATCH] == 1.0) != terminal:
 			return false
 	return true

@@ -13,12 +13,29 @@ const MAX_COURSES := 64
 ## courses in Angle mode; a fast pilot well above 10 m/s.
 const MEDALS := [["gold", 11.0], ["silver", 8.0], ["bronze", 5.0]]
 const MEDAL_RANK := {"": 0, "bronze": 1, "silver": 2, "gold": 3}
+## Audit A13: the previous committed book, kept beside it; the loader recovers from it when the book is lost or
+## unreadable (a replacement interrupted between the engine's removal of the target and its rename).
+const PREVIOUS_SUFFIX := ".prev"
+## A best-total entry stores one time per lap; a longer list is not a book this code wrote.
+const MAX_BEST_LAPS := 64
 
 
-## The record book at `path`: {ok, records: {course identity: entry}, dropped (invalid entries left out), error}. A
-## missing file is an empty book; an unreadable one, or one with dropped entries, is reported (the caller keeps it
-## aside rather than overwrite it).
+## The record book at `path`: {ok, records: {course identity: entry}, dropped (invalid entries left out), error,
+## recovered}. A missing file is an empty book; an unreadable one, or one with dropped entries, is reported (the caller
+## keeps it aside rather than overwrite it). Audit A13: a missing or unreadable book with a readable previous copy
+## (PREVIOUS_SUFFIX) is recovered from it (recovered = true).
 static func load_file(path: String) -> Dictionary:
+	var current := _read_book(path)
+	if (not current.ok or not FileAccess.file_exists(path)) and FileAccess.file_exists(path + PREVIOUS_SUFFIX):
+		var previous := _read_book(path + PREVIOUS_SUFFIX)
+		if previous.ok and FileAccess.file_exists(path + PREVIOUS_SUFFIX):
+			previous.recovered = true
+			return previous
+	current.recovered = false
+	return current
+
+
+static func _read_book(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {ok = true, records = {}, dropped = 0, error = ""}
 	# A JSON instance reports a parse error by its return value (JSON.parse_string would also log an engine error).
@@ -37,32 +54,67 @@ static func load_file(path: String) -> Dictionary:
 	return {ok = true, records = records, dropped = dropped, error = ""}
 
 
+## Audit A16: every value apply() reads must be present with its type and bounds; an empty or partial entry is
+## dropped (and the book kept aside by the caller), never filled with defaults that hide a damaged file.
 static func _entry_is_valid(entry: Dictionary) -> bool:
 	for key: String in ["best_total_s", "best_lap_s"]:
-		var value: Variant = entry.get(key, 0.0)
-		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)) or float(value) < 0.0:
+		if not _non_negative(entry.get(key)):
 			return false
-	return str(entry.get("medal", "")) in MEDAL_RANK and typeof(entry.get("best_laps", [])) == TYPE_ARRAY
+	if typeof(entry.get("medal")) != TYPE_STRING or not str(entry.medal) in MEDAL_RANK:
+		return false
+	var laps: Variant = entry.get("best_laps")
+	if typeof(laps) != TYPE_ARRAY or (laps as Array).size() > MAX_BEST_LAPS:
+		return false
+	for lap: Variant in laps:
+		if not _non_negative(lap):
+			return false
+	for key: String in ["finishes", "attempts"]:
+		if entry.has(key) and not _non_negative(entry[key]):
+			return false
+	return true
 
 
-## Write the book atomically (a complete temporary file, then a rename in the same directory).
-static func save_file(records: Dictionary, path: String) -> Error:
+static func _non_negative(value: Variant) -> bool:
+	return typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value)) and float(value) >= 0.0
+
+
+## Write the book recoverably (audit A13): a complete, read-back temporary file; the current readable book is copied to
+## PREVIOUS_SUFFIX (verified) before the rename, and a failed rename restores it. A replacement interrupted after the
+## old book was removed leaves the previous copy, which load_file() recovers. `publish` (Callable(temporary, target)
+## -> Error) is a fault-injection seam for the final rename. Failure model: errors and interruption of this process;
+## no fsync, so not a power-loss guarantee.
+static func save_file(records: Dictionary, path: String, publish := Callable()) -> Error:
 	var made: Error = DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	if made != OK:
 		return made
+	var expected := (JSON.stringify({format = FORMAT, courses = records}, "\t", true) + "\n").to_utf8_buffer()
 	var temporary := path + ".tmp"
 	var file := FileAccess.open(temporary, FileAccess.WRITE)
 	if file == null:
 		return FileAccess.get_open_error()
-	file.store_string(JSON.stringify({format = FORMAT, courses = records}, "\t", true) + "\n")
+	file.store_buffer(expected)
 	file.flush()
 	var written: Error = file.get_error()
 	file.close()
-	if written != OK:
-		return written
-	if FileAccess.file_exists(path):
-		DirAccess.remove_absolute(path)
-	return DirAccess.rename_absolute(temporary, path)
+	if written != OK or FileAccess.get_file_as_bytes(temporary) != expected:
+		DirAccess.remove_absolute(temporary)
+		return written if written != OK else ERR_FILE_CORRUPT
+	var previous := path + PREVIOUS_SUFFIX
+	var had_book: bool = FileAccess.file_exists(path) and _read_book(path).ok
+	if had_book:
+		var original := FileAccess.get_file_as_bytes(path)
+		var copied: Error = DirAccess.copy_absolute(path, previous)
+		if copied != OK or FileAccess.get_file_as_bytes(previous) != original:
+			DirAccess.remove_absolute(temporary)
+			return copied if copied != OK else ERR_FILE_CORRUPT
+	var error: Error = publish.call(temporary, path) if publish.is_valid() else DirAccess.rename_absolute(temporary, path)
+	if error == OK and FileAccess.get_file_as_bytes(path) != expected:
+		error = ERR_FILE_CORRUPT
+	if error != OK and had_book:
+		DirAccess.copy_absolute(previous, path) # if this fails too, load_file() recovers from the previous copy
+	if FileAccess.file_exists(temporary):
+		DirAccess.remove_absolute(temporary)
+	return error
 
 
 ## Keep an unreadable book aside (never overwritten): returns the path it was moved to, or "".
@@ -129,9 +181,12 @@ static func next_medal(medal: String, goals: Dictionary) -> Dictionary:
 static func apply(records: Dictionary, course: Dictionary, result: Dictionary, count_attempt := true) -> Dictionary:
 	var book: Dictionary = records.duplicate(true)
 	var identity := str(course.get("identity", result.get("course_identity", "")))
-	var entry: Dictionary = book.get(identity, {track_id = str(course.get("track_id", "")),
-		track_name = str(course.get("track_name", "")), best_total_s = 0.0, best_laps = [], best_lap_s = 0.0, medal = "",
-		finishes = 0, attempts = 0, best_utc = ""}).duplicate(true)
+	# Defaults first, the stored entry over them: an in-memory entry missing a field cannot reach a missing key (A16).
+	var entry: Dictionary = {track_id = str(course.get("track_id", "")), track_name = str(course.get("track_name", "")),
+		best_total_s = 0.0, best_laps = [], best_lap_s = 0.0, medal = "", finishes = 0, attempts = 0, best_utc = ""}
+	var stored: Variant = book.get(identity, {})
+	if typeof(stored) == TYPE_DICTIONARY:
+		entry.merge((stored as Dictionary).duplicate(true), true)
 	entry.attempts = int(entry.get("attempts", 0)) + (1 if count_attempt else 0)
 	var summary := {finished = false, new_best_total = false, new_best_lap = false,
 		previous_total_s = float(entry.best_total_s), previous_lap_s = float(entry.best_lap_s), medal = "",

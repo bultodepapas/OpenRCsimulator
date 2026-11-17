@@ -217,6 +217,33 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 **DR-37/DR-40 (2026-11-12).** The quad race keeps a local record book (`user://race_results/records.json`) beside the per-attempt result files, which stay the authoritative record of every attempt. Each entry is keyed by the prepared course identity, so a moved gate or another field starts a new entry instead of comparing unlike courses. It stores the best three-lap total with its lap times, the best single lap (an aborted attempt's completed lap counts), the best medal, finishes and attempts. A pad reset during a race is not an attempt. Medal targets are game targets, not pilot data: the straight gate-to-gate path flown three times from the pad at a mean of 5 m/s (bronze), 8 m/s (silver) and 11 m/s (gold). An unreadable book is kept aside and a new one starts. The flow inside the activity explains itself: the OSD says what the start needs (arm, then G; throttle low until GO), every refused start or GO names its cause, a results card shows the time against the best and the next medal, and G or R returns to the pad and flies on without the menu (G also stages the next start). Online leaderboards, ghosts and achievements outside a course were rejected: there is no account or validation path. [Plan](plans/drone-racing.md), [record book](../app/vehicles/multirotor/race_records.gd).
 
+### FPV audit repairs fix the quad's control, energy, scoring and result contracts
+
+**DR-14/16/21/25/26/26a (2026-11-17), [FPV audit 2026-11-16](research/drone-racing/audit-2026-11-16/README.md).** Each choice below repairs one finding. Each regression test fails against the audit's baseline behaviour.
+
+- **Controls.**
+  - A refused managed profile keeps the selected device connected but unready. The quad never substitutes RcInput's built-in pad mapping (A01). The airship already behaved this way.
+  - One physical control has one authority. LB arms, RB changes the mode and the profile's effective Pause button pauses, each only while no configured AUX member or Pause owns that button (A02).
+  - An ordinary hold keeps an arm switch's ON only while the same source, mapping and connection hold. The live position must read ON through the whole hold. An OFF reading, an edge-toggle binding, focus loss or a source change ends that continuity. The menu then says that resuming disarms (A03).
+  - Any change of the selected device's registry connection generation re-resolves the source and verifier behind the menu, before another tick is accepted (A19).
+  - The direct route starts its own `ControllerService` (current store, refusal policy, UI device), because AppRoot's bytes are pinned by the companion behaviour manifest (A04/A05).
+  - Help is generated from the effective bindings (A18).
+- **Energy.** The damped bridge's regeneration is bounded by a declared charge-acceptance law (A06, bus law v2).
+  - The pack accepts at most (capacity − charge)/0.2 s, so a full pack accepts none.
+  - While that limit binds, the bus floats to the voltage at which the motors return only that current. The energy the pack cannot store is counted as pack loss.
+  - Rejected alternatives: clamping charge or SOC, clipping pack current while keeping motor torque, and dropping active braking. The one-quadrant candidate weakened chop authority.
+  - Hover admission solves the loaded shared pack (A08). One physical-invariant list guards raw and prepared models (A09).
+- **Scoring.** The ruleset record adds `terminal_policy`: a crash or depletion decided on a tick's endpoint voids that tick's crossings (A10). An event locator can later narrow this.
+  - The course identity hashes the resolved solid frame boxes (A15).
+  - Both changes create new course identities. Older record-book entries remain as history under their old identities and are not re-ranked.
+  - A pad-reset result keeps its terminal tick and reports the published-only reason code `pad_reset` (A14).
+- **Results.**
+  - Each attempt file has a random 128-bit publication id, kept across retries.
+  - No-clobber publication: identical bytes count as an idempotent success, while other bytes are a conflict that stays pending (A12/A13).
+  - The record book keeps a verified `.prev` copy that the loader recovers. Only complete entries load (A13/A16).
+  - Opening the menu or a start retries pending saves. Leaving with unsaved results takes a second, informed Back to Home (A11).
+  - These are graceful-session guarantees only, with no fsync or crash-durable queue.
+
 ### Reuse flight logs for factual analysis
 
 **FL-01…05 / UI-FS.** Bounded recording observes accepted state without driving physics. Offline replay, CSV and existing plotting tools support analysis; marker debriefs reuse those artifacts instead of introducing another campaign runner or unvalidated coaching score. UI statistics and retained flight history have their own lifecycle, not checkpoint authority. [Flight logging](FLIGHT-LOGGING.md), [FL-05](research/flight-logging/FL-05/README.md), [flight statistics](FLIGHT-STATISTICS.md).

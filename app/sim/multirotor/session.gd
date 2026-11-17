@@ -89,6 +89,8 @@ var race: RefCounted
 var course: Dictionary = {}
 var results: Array[Dictionary] = []
 var _result_sequence := 0
+## Test seam: Callable() -> String giving a new publication id ("" = generation failed). Default: 128 random bits.
+var publication_id_source := Callable()
 var _field: Dictionary = {}
 ## Resolved start pose {mode, north_m, east_m, heading_deg[, altitude_m], initial_soc, source_generation}.
 var _start: Dictionary = {}
@@ -195,6 +197,12 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 		var shape := _prepared_shape_error(doc)
 		if not shape.is_empty():
 			return _refused(shape)
+	# Audit A09: one physical-invariant list for both routes; a prepared document (tests, Workshop, a candidate
+	# replay) meets the loader's bounds (passive drag, nonnegative resistances, positive-definite inertia, a pack
+	# that carries the hover load). Nothing is built yet, so a refusal leaves an accepted session untouched.
+	var invariants: PackedStringArray = Data.physical_invariant_errors(doc)
+	if not invariants.is_empty():
+		return _refused("multirotor model: " + "; ".join(invariants))
 	if typeof(opts.rates) != TYPE_DICTIONARY:
 		return _refused("option rates must be an openrc-rates profile or empty")
 	var profile: Dictionary = Rates.default_profile() if opts.rates.is_empty() else opts.rates
@@ -393,7 +401,12 @@ func reset_to_pad() -> bool:
 		aborted.terminal = true
 		aborted.phase = "ABORTED"
 		aborted.valid = false
-		aborted.reason = "pad_reset"
+		# Audit A14: the reset's own reason code, and the terminal clock of the accepted frame being left (the record
+		# is published after the new tick-zero frame is committed).
+		aborted.reason = RaceDirector.REASON_NAMES[RaceDirector.REASON_PAD_RESET]
+		aborted.reason_code = RaceDirector.REASON_PAD_RESET
+		aborted.terminal_tick = int(sim.tick)
+		aborted.terminal_time_s = float(sim.time())
 	var candidate: Dictionary = sim.prepare_reset_frame(frame, input)
 	if not candidate.ok:
 		load_error = "multirotor reset refused: " + str(candidate.message)
@@ -434,18 +447,32 @@ func _publish_result(result: Dictionary) -> void:
 	var record: Dictionary = result.duplicate(true)
 	record.session = {data_sha256 = source_sha256, rates = str(plant.config.rates.identity), controller = str(plant.config.identity),
 		collision_identity = collision_identity(), field_id = str(_field.get("id", ""))}
-	record.terminal_tick = int(sim.tick)
+	record.terminal_tick = int(result.get("terminal_tick", sim.tick))
 	record.saved = false
-	# A file identity that stays unique across pad resets (which restart the attempt counter) and across sessions.
+	# Diagnostic order inside this session; the file identity is publication_id.
 	_result_sequence += 1
 	record.sequence = _result_sequence
 	record.created_utc = Time.get_datetime_string_from_system(true)
+	# Audit A12: a stable, globally unique publication identity, kept by every retry ("" when generation failed:
+	# save_results() tries again and then keeps the id on this pending record).
+	record.publication_id = _new_publication_id()
 	results.append(record)
 	race_result.emit(record.duplicate(true))
 
 
-## DR-26: write every pending terminal record as one JSON file (complete temporary file, then a rename in the same
-## directory). A record leaves the outbox only after its file is confirmed; a failure keeps it for a later retry.
+func _new_publication_id() -> String:
+	if publication_id_source.is_valid():
+		return str(publication_id_source.call())
+	var bytes: PackedByteArray = Crypto.new().generate_random_bytes(16)
+	return bytes.hex_encode() if bytes.size() == 16 else ""
+
+
+## DR-26: write every pending terminal record as its own JSON file. A record leaves the outbox only after its file is
+## confirmed; a failure keeps it for a later retry. Audit A12/A13: the file name carries the record's stable
+## publication id, and a result file is never replaced: a complete, read-back temporary file is renamed onto a name
+## that does not exist yet (so no earlier file can be lost on a failed rename, also where the engine removes the
+## target before moving), and an existing file with the same bytes is the idempotent success of a retry while one
+## with other bytes is a conflict that keeps the record pending. No fsync: not a power-loss guarantee.
 ## Returns {saved, failed, errors, paths}. Accepted physics is never touched.
 func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 	var report := {saved = 0, failed = 0, errors = PackedStringArray(), paths = PackedStringArray()}
@@ -458,33 +485,51 @@ func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 		return report
 	var kept: Array[Dictionary] = []
 	for record: Dictionary in results:
-		var name := "race-%s-%s-n%03d.json" % [str(record.get("track_id", "track")).validate_filename(),
-			str(record.get("created_utc", "")).replace(":", "").validate_filename(), int(record.get("sequence", 0))]
-		var target := directory.path_join(name)
-		var temporary := target + ".tmp"
-		var written := false
-		var file := FileAccess.open(temporary, FileAccess.WRITE)
-		if file != null:
+		if str(record.get("publication_id", "")).is_empty():
+			record.publication_id = _new_publication_id() # kept on the pending record from now on
+		var id := str(record.get("publication_id", ""))
+		var target := directory.path_join("race-%s-%s-%s.json" % [str(record.get("track_id", "track")).validate_filename(),
+			str(record.get("created_utc", "")).replace(":", "").validate_filename(), id.validate_filename()])
+		var failure := ""
+		if id.is_empty() or id != id.validate_filename():
+			failure = "no valid publication id"
+		else:
 			var stored: Dictionary = record.duplicate(true)
 			stored.saved = true
-			file.store_string(JSON.stringify(stored, "\t", true) + "\n")
-			file.flush()
-			var write_error: Error = file.get_error()
-			file.close()
-			if write_error == OK:
-				# Idempotent: a record keeps its name, so a retry replaces its own earlier file.
-				if FileAccess.file_exists(target):
-					DirAccess.remove_absolute(target)
-				written = DirAccess.rename_absolute(temporary, target) == OK
-		if written:
+			failure = _publish_new_file(target, JSON.stringify(stored, "\t", true) + "\n")
+		if failure.is_empty():
 			report.saved += 1
 			report.paths.append(target)
 		else:
 			report.failed += 1
-			report.errors.append("could not write %s" % target)
+			report.errors.append("could not write %s: %s" % [target, failure])
 			kept.append(record)
 	results = kept
 	return report
+
+
+## Publish a result file without ever replacing another one. "" when the file now holds exactly `text` (written now,
+## or already identical: the retry of the same record); otherwise the reason.
+static func _publish_new_file(target: String, text: String) -> String:
+	var expected := text.to_utf8_buffer()
+	if FileAccess.file_exists(target):
+		return "" if FileAccess.get_file_as_bytes(target) == expected else "a different result already uses this name"
+	var temporary := target + ".tmp"
+	var file := FileAccess.open(temporary, FileAccess.WRITE)
+	if file == null:
+		return "cannot open %s (%s)" % [temporary, error_string(FileAccess.get_open_error())]
+	file.store_buffer(expected)
+	file.flush()
+	var write_error: Error = file.get_error()
+	file.close()
+	if write_error != OK or FileAccess.get_file_as_bytes(temporary) != expected:
+		DirAccess.remove_absolute(temporary)
+		return "the temporary file was not written completely"
+	var renamed: Error = DirAccess.rename_absolute(temporary, target)
+	if renamed != OK:
+		DirAccess.remove_absolute(temporary)
+		return "rename failed (%s)" % error_string(renamed)
+	return "" if FileAccess.get_file_as_bytes(target) == expected else "the file differs after publication"
 
 
 ## Drop every pending record without saving (an explicit pilot choice, never automatic).

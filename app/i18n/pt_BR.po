@@ -12100,9 +12100,6 @@ msgstr "Rolagem: manche direito para os lados (setas esquerda/direita)"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "Arfagem: manche direito para frente = nariz para baixo (setas cima/baixo)"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "Armar ou desarmar: E, LB do controle ou a chave do rádio definida como Trem de pouso. Arme com o acelerador baixo."
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "Modo de voo Acro/Angle: M ou RB do controle. No início, Acro com rádio e Angle com controle ou teclado."
 
@@ -13652,3 +13649,81 @@ msgstr "Modelo ClearView %s: %s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ZIP de aeronave ClearView"
+
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "A conexão do controle mudou: os motores estão desarmados. Verifique o controle e arme novamente ao retomar."
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "Não foi possível usar o perfil de controle salvo: abra Controles para repará-lo ou selecioná-lo de novo."
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "Ao retomar, os motores são desarmados: arme novamente com o acelerador baixo."
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "Os resultados da corrida não foram salvos (%d pendentes): verifique o armazenamento e tente de novo."
+
+msgid "Race records restored from the previous copy."
+msgstr "Recordes de corrida restaurados da cópia anterior."
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "Configurações do OSD não salvas: valem até você sair. A próxima alteração tenta de novo."
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "CONTROLES DO QUADRICÓPTERO FPV (controle)"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "CONTROLES DO QUADRICÓPTERO FPV (rádio)"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "Acelerador: %s (teclado W/S)"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "Guinada: %s (teclado A/D)"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "Rolagem: %s (teclado, setas esquerda/direita)"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "Arfagem: %s, para frente = nariz para baixo (teclado, setas cima/baixo)"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "Manches: acelerador, guinada, rolagem e arfagem conforme a calibração do seu rádio em Controles."
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "Armar ou desarmar: a chave de armar (%s). Arme com o acelerador baixo."
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "Armar ou desarmar: a chave do rádio definida como Trem de pouso (%s). Arme com o acelerador baixo."
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "Armar ou desarmar: E ou LB do controle. Arme com o acelerador baixo."
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "Armar ou desarmar: E. Arme com o acelerador baixo."
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "Modo de voo: a chave de modo de voo (%s), OFF Angle, ON Acro."
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Modo de voo Acro/Angle: M. No início, Acro com rádio e Angle com controle ou teclado."
+
+msgid "left stick sides"
+msgstr "manche esquerdo para os lados"
+
+msgid "left stick up/down"
+msgstr "manche esquerdo para cima/baixo"
+
+msgid "right stick sides"
+msgstr "manche direito para os lados"
+
+msgid "right stick up/down"
+msgstr "manche direito para cima/baixo"
+
+msgid "left trigger"
+msgstr "gatilho esquerdo"
+
+msgid "right trigger"
+msgstr "gatilho direito"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d resultados de corrida não foram salvos. Escolha Voltar ao Início de novo em até 8 s para descartá-los."

@@ -64,8 +64,12 @@ const REASON_START_NOT_ON_PAD := 6
 const REASON_START_MOVING := 7
 const REASON_START_TERMINAL := 8
 const REASON_CANCELLED := 9
+## Audit A14: a pad reset aborts an attempt outside the director. Published result records only; it never enters the
+## checkpointed modes (the domain check below stays at REASON_CANCELLED).
+const REASON_PAD_RESET := 10
 const REASON_NAMES := ["none", "crash", "pack_depleted", "go_refused_throttle", "go_refused_source",
-	"go_refused_not_armed", "start_refused_not_on_pad", "start_refused_moving", "start_refused_terminal", "cancelled"]
+	"go_refused_not_armed", "start_refused_not_on_pad", "start_refused_moving", "start_refused_terminal", "cancelled",
+	"pad_reset"]
 
 const ACTION_NONE := 0
 const ACTION_START := 1
@@ -264,8 +268,15 @@ static func _abort(modes: PackedInt64Array, terminal: Dictionary, raised: Array)
 
 ## RACING: candidate crossings of every gate on the chord plus the terminal events, sorted, grouped by the tie window
 ## anchored at each group's earliest item. A terminal in a group suppresses that group's crossings and every later one.
+## Audit A10 (rules.terminal_policy): a terminal decided on this tick's endpoint has no located time inside the tick, so
+## it voids every crossing of the tick; the attempt aborts with that terminal and no gate, lap or finish is scored.
 static func _score(aux: PackedFloat64Array, modes: PackedInt64Array, piece: Dictionary, terminals: Array,
 		course: Dictionary, rules: Dictionary, raised: Array) -> void:
+	if not terminals.is_empty() and str(rules.get("terminal_policy", "")) != "":
+		var ordered: Array = terminals.duplicate()
+		ordered.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return _before(a, b))
+		_abort(modes, ordered[0], raised)
+		return
 	var t0: float = float(piece.t0)
 	var t1: float = float(piece.t1)
 	var epsilon: float = Gates.chord_bound_m(float(rules.acceleration_envelope_mps2), t1 - t0)

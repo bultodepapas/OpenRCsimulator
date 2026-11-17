@@ -226,19 +226,29 @@ func _crash_ties() -> void:
 		and before.race.modes[Director.D_REASON] == Director.REASON_CRASH and before.race.modes[Director.D_VALID_LAPS] == 1
 		and before.race.aux[Director.A_LAP_DURATION] == 10.0 and before.valid, _types(before.events))
 	var after: Dictionary = results["crash 2 us after"]
-	_check("RACE-08/13 a crossing earlier than the crash by more than 1 us completes lap 2, then the attempt aborts",
-		_types(after.events) == "race_gate,race_lap,crash,race_abort" and after.race.modes[Director.D_PHASE] == Director.PHASE_ABORTED
-		and after.race.modes[Director.D_VALID_LAPS] == 2 and after.race.aux[Director.A_LAP_DURATION] == 10.0
-		and absf(after.race.aux[Director.A_LAP_DURATION + 1] - (crossing - 13.0)) < 1e-12 and after.valid, _types(after.events))
+	# Audit A10 (rules.terminal_policy): an endpoint-decided crash has no located time inside its tick, so even a
+	# crossing interpolated before its endpoint stamp is voided; lap 2 is not completed.
+	_check("RACE-08/13 A10 a crash on the tick's endpoint voids an earlier-stamped crossing of the same tick",
+		_types(after.events) == "crash,race_abort" and after.race.modes[Director.D_PHASE] == Director.PHASE_ABORTED
+		and after.race.modes[Director.D_VALID_LAPS] == 1 and after.race.aux[Director.A_LAP_DURATION] == 10.0
+		and after.race.aux[Director.A_LAP_DURATION + 1] == 0.0 and after.valid, _types(after.events))
+	var legacy_rules: Dictionary = _rules.duplicate(true)
+	legacy_rules.erase("terminal_policy")
+	var legacy: Dictionary = Director.advance(base, _through(3, tick), [{type = "crash", time_s = crossing + 2.0e-6,
+		reason = "Hard impact"}], _course, legacy_rules, {tick = tick + 1})
+	_check("RACE-08/13 without the A10 policy (historical rules) the earlier crossing still completed lap 2",
+		_types(legacy.events) == "race_gate,race_lap,crash,race_abort", _types(legacy.events))
+	var clean: Dictionary = _advance(base, _through(3, tick), [])
+	_check("A10 a clean tick still scores the finish-gate crossing", "race_lap" in _types(clean.events), _types(clean.events))
 	var tie_after: Dictionary = results["crash 0.5 us after"]
 	var tie_before: Dictionary = results["crash 0.5 us before"]
 	_check("RACE-08 a crash within 1 us of the crossing wins on either side and suppresses it",
 		_types(tie_after.events) == "crash,race_abort" and _types(tie_before.events) == "crash,race_abort"
 		and tie_after.race.modes[Director.D_VALID_LAPS] == 1 and tie_before.race.modes[Director.D_VALID_LAPS] == 1
 		and tie_after.race.modes[Director.D_GATES_TOTAL] == 7)
-	var abort_event: Dictionary = after.events[3]
+	var abort_event: Dictionary = after.events[1]
 	_check("the abort event carries the physical time, reason and current lap", abort_event.time_s == crossing + 2.0e-6
-		and abort_event.reason == "crash" and abort_event.detail == "Hard impact" and abort_event.lap == 3)
+		and abort_event.reason == "crash" and abort_event.detail == "Hard impact" and abort_event.lap == 2)
 	var depleted: Dictionary = _advance(base, _still(tick), [{type = "pack_depleted", time_s = float(tick + 1) * DT}])
 	_check("RACE-13 pack depletion during the race aborts with its reason", depleted.race.modes[Director.D_PHASE] == Director.PHASE_ABORTED
 		and depleted.race.modes[Director.D_REASON] == Director.REASON_DEPLETED and depleted.valid)

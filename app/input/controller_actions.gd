@@ -525,6 +525,19 @@ static func _is_unbound(value: Variant) -> bool:
 	return value is Dictionary and str(value.get("type", "")) == "unbound"
 
 
+## Physical buttons owned by the profile's configured AUX channels: every member of a button or switch binding
+## (a detent group reserves its inactive positions too). An activity's own shortcuts must not reuse them.
+static func aux_owned_buttons(profile: Dictionary) -> Dictionary:
+	var owned: Dictionary = {}
+	for entry in _configured_aux_bindings(profile):
+		var binding: Dictionary = entry.binding
+		var buttons: Array = SmokeAux.bound_buttons(binding) if str(binding.get("type", "")) == "switch" \
+			else ([binding.get("button")] if str(binding.get("type", "")) == "button" else [])
+		for button: Variant in buttons:
+			owned[int(button)] = str(entry.name)
+	return owned
+
+
 static func _configured_aux_bindings(profile: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var aux: Variant = _dict_value(profile, "aux", {})

@@ -16,6 +16,7 @@ const Visual = preload("res://vehicles/multirotor/multirotor_visual.gd")
 const Cam = preload("res://vehicles/multirotor/multirotor_camera.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const FC = preload("res://physics/multirotor/flight_controller.gd")
+const ControllerProfile = preload("res://input/controller_profile.gd")
 const UiDriver = preload("res://tests/ui_driver.gd")
 
 const DT := 1.0 / 240.0
@@ -497,7 +498,9 @@ func _audit_fixes() -> void:
 	activity.enable_audio = false
 	activity.departure_managed = true
 	activity.controller_registry = registry
-	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
+	# ControllerService resolves an explicit default for a healthy new known pad; an empty result is a refusal (audit A01).
+	var pad_default: Dictionary = ControllerProfile.defaults("gamepad", "mode2")
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return pad_default.duplicate(true)
 	# ControllerService._confirmed_gamepad_connection stand-in: the selected pad of this connection generation.
 	activity.controller_confirmation = func(id: int, expected_id: int, generation: int) -> bool:
 		return id == expected_id and generation == registry.connection_generation(id) and registry.flight == id

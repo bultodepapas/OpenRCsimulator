@@ -11312,9 +11312,6 @@ msgstr "ロール：右スティック左右（左右矢印キー）"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "ピッチ：右スティック前＝機首下げ（上下矢印キー）"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "アーム／ディスアーム：E、ゲームパッドのLB、または着陸装置に割り当てた送信機スイッチ。スロットルを下げてアームします。"
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "飛行モード Acro/Angle：M またはゲームパッドの RB。開始時は送信機で Acro、ゲームパッドとキーボードで Angle。"
 
@@ -12864,3 +12861,81 @@ msgstr "ClearViewモデル %s: %s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ClearView機体のZIP"
+
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "コントローラーの接続が変わりました：モーターはディスアーム状態です。コントローラーを確認し、再開後にもう一度アームしてください。"
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "保存されたコントローラープロファイルを使用できません：「操作」を開いて修復するか選び直してください。"
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "再開するとモーターはディスアームされます：スロットルを下げてもう一度アームしてください。"
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "レース結果を保存できていません（未保存 %d 件）：保存先を確認してから再試行してください。"
+
+msgid "Race records restored from the previous copy."
+msgstr "レース記録を前回のコピーから復元しました。"
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "OSD 設定を保存できませんでした：終了するまで有効です。次の変更時にもう一度保存を試みます。"
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "FPV クアッドの操作（ゲームパッド）"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "FPV クアッドの操作（送信機）"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "スロットル：%s（キーボード W/S）"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "ヨー：%s（キーボード A/D）"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "ロール：%s（キーボードの左右矢印キー）"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "ピッチ：%s、前＝機首下げ（キーボードの上下矢印キー）"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "スティック：スロットル、ヨー、ロール、ピッチは「操作」で送信機に設定したキャリブレーションに従います。"
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "アーム／ディスアーム：アームスイッチ（%s）。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "アーム／ディスアーム：着陸装置に割り当てた送信機スイッチ（%s）。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "アーム／ディスアーム：E またはゲームパッドの LB。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "アーム／ディスアーム：E。スロットルを下げてアームします。"
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "飛行モード：飛行モードスイッチ（%s）、OFF で Angle、ON で Acro。"
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飛行モード Acro/Angle：M。開始時は送信機で Acro、ゲームパッドとキーボードで Angle。"
+
+msgid "left stick sides"
+msgstr "左スティック左右"
+
+msgid "left stick up/down"
+msgstr "左スティック上下"
+
+msgid "right stick sides"
+msgstr "右スティック左右"
+
+msgid "right stick up/down"
+msgstr "右スティック上下"
+
+msgid "left trigger"
+msgstr "左トリガー"
+
+msgid "right trigger"
+msgstr "右トリガー"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d 件のレース結果が保存されていません。8 秒以内にもう一度「ホームに戻る」を選ぶと破棄します。"

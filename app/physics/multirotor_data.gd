@@ -15,7 +15,10 @@
 # Hover balance: the static quadratic law's wrench rows [1, -y_i, x_i, s_i*kappa] (FPV/03 §2) are solved for the
 # four rotor thrusts holding the weight with zero moment; `hover_thrust_per_rotor_n` is the most loaded rotor's
 # thrust and `hover_speed_rad_s` its speed. Static motor balance for el-one-quadrant-bus-v1 at command d and supply
-# V: Kt*((d*V - w/Kv)/R - I0) = k_Q*w^2, Kt = 1/Kv, evaluated at the open-circuit voltage (no pack sag).
+# V: Kt*((d*V - w/Kv)/R - I0) = k_Q*w^2, Kt = 1/Kv, evaluated at the open-circuit voltage (no pack sag). Audit A08:
+# the electrical hover must also close on the LOADED shared pack at the low-charge point (hover_bus_solution:
+# V^2 - B*V + Rp*P = 0, high-voltage root). Audit A09: physical_invariant_errors is the one list of physical bounds a
+# prepared model must meet, whether it came from this loader or was built in memory.
 # Admission screens a model's internal consistency only; it does not validate the aircraft physically.
 extends RefCounted
 
@@ -34,6 +37,12 @@ const DIAGNOSTIC_TOLERANCE := 1.0e-9
 const UNIT_AXIS_TOLERANCE := 1.0e-9
 ## Hover must also be reachable at the lowest listed OCV point strictly above this state of charge.
 const LOW_CHARGE_SOC := 0.1
+## Shaft speed (rad/s) below which the electrical friction torque is viscous (controlled_plant.gd FRICTION_SPEED).
+const FRICTION_SPEED := 30.0
+## Loaded-bus screen: the smallest discriminant (relative to B^2) that counts as an operating point (a near-double root
+## is the maximum-power fold, not a usable hover) and the bus residual tolerance (relative to the open-circuit voltage).
+const BUS_DISCRIMINANT_MIN := 1.0e-6
+const BUS_RESIDUAL_TOLERANCE := 1.0e-9
 const CELL_VOLTS_MIN := 2.5
 const CELL_VOLTS_MAX := 4.35
 const MAX_COMPONENTS := 64
@@ -134,6 +143,159 @@ static func static_speed(powertrain: Dictionary, rotor_law: Dictionary, u: float
 	return _electric_speed(u, v, float(powertrain.kv_rad_s_per_v), float(powertrain.resistance_ohm),
 		float(powertrain.no_load_current_a), float(rotor_law.torque_coefficient_n_m_s2))
 
+
+
+## Audit A08: quasi-steady hover operating point on the LOADED shared pack at open-circuit voltage `voc` (charge
+## frozen), with the plant's own laws: shaft speed from the rotor law, motor current from the shaft balance with the
+## regularized friction (I = I0*clamp(w/FRICTION_SPEED, 0, 1) + Kv*kQ*w^2), drive A_i = d_i*V = w_i/Kv + R*I_i,
+## P = sum(A_i*I_i) and the bus V^2 - B*V + Rp*P = 0 with B = voc - Rp*Iaux. The high-voltage root is the branch reached
+## from open circuit as the load rises; Rp = 0 gives V = B exactly. Every duty must stay below max_command. Not a
+## sustained-hover proof: positive pack current still drains the charge.
+## {ok, message, v_bus_v, speeds_rad_s, currents_a, drive_v, duties, power_w, pack_current_a, max_power_w}.
+static func hover_bus_solution(pt: Dictionary, battery: Dictionary, k_t: float, k_q: float,
+		thrusts: PackedFloat64Array, voc: float) -> Dictionary:
+	var kv: float = pt.kv_rad_s_per_v
+	var r_motor: float = pt.resistance_ohm
+	var i_no_load: float = pt.no_load_current_a
+	var top: float = pt.max_command
+	var r_pack: float = battery.resistance_ohm
+	var i_aux: float = battery.auxiliary_current_a
+	var speeds := PackedFloat64Array()
+	var currents := PackedFloat64Array()
+	var drives := PackedFloat64Array()
+	var power := 0.0
+	for thrust: float in thrusts:
+		if not (thrust > 0.0) or not (k_t > 0.0):
+			return {ok = false, message = "hover thrust %s N is not positive" % thrust}
+		var w := sqrt(thrust / k_t)
+		var current := i_no_load * clampf(w / FRICTION_SPEED, 0.0, 1.0) + kv * k_q * w * w
+		var drive := w / kv + r_motor * current
+		speeds.append(w)
+		currents.append(current)
+		drives.append(drive)
+		power += drive * current
+	var b := voc - r_pack * i_aux
+	if not (b > 0.0):
+		return {ok = false, message = "the auxiliary load leaves no positive bus voltage (open circuit %s V, pack %s ohm, auxiliary %s A)" % [
+			voc, r_pack, i_aux]}
+	var v_bus := b
+	var p_max := INF
+	if r_pack > 0.0:
+		p_max = b * b / (4.0 * r_pack)
+		var disc := b * b - 4.0 * r_pack * power
+		if not (disc > BUS_DISCRIMINANT_MIN * b * b):
+			return {ok = false, message = "the loaded pack cannot carry the hover load: %s W at the motor terminals against at most %s W deliverable (open circuit %s V, pack %s ohm, auxiliary %s A)" % [
+				power, p_max, voc, r_pack, i_aux]}
+		v_bus = 0.5 * (b + sqrt(disc))
+	var duties := PackedFloat64Array()
+	var pack_current := i_aux
+	for i in drives.size():
+		duties.append(drives[i] / v_bus)
+		pack_current += duties[i] * currents[i]
+		if not (duties[i] < top):
+			return {ok = false, message = "rotor %d needs duty %s at the loaded bus %s V but max_command is %s" % [i + 1, duties[i], v_bus, top]}
+	var residual := absf(v_bus - (voc - r_pack * pack_current))
+	if not (residual <= BUS_RESIDUAL_TOLERANCE * maxf(voc, 1.0)):
+		return {ok = false, message = "loaded bus residual %s V exceeds the tolerance (ill-conditioned operating point)" % residual}
+	return {ok = true, message = "", v_bus_v = v_bus, speeds_rad_s = speeds, currents_a = currents, drive_v = drives,
+		duties = duties, power_w = power, pack_current_a = pack_current, max_power_w = p_max}
+
+
+## Audit A09: the physical invariants of a PREPARED model (what `prepare` returns, or an in-memory equivalent that a
+## test, the Workshop or a candidate replay hands to the session): signs and domains the plant relies on (positive mass,
+## coefficients and stiffness; nonnegative drag, resistances, auxiliary load, damping and friction; a positive-definite
+## inertia also without the spinning rotors; two rotors spinning each way; a monotone open-circuit table; idle below
+## max command) and hover reachability on the loaded pack. Raw-only checks (units, provenance, inventory, sanity upper
+## bounds, swept-disc clearance, diagnostics) are not repeated. Precondition: the prepared shape
+## (session._prepared_shape_error). Field-path errors; empty = admissible. Nothing is clamped or repaired.
+static func physical_invariant_errors(m: Dictionary) -> PackedStringArray:
+	var e := PackedStringArray()
+	_positive(e, "mass_kg", m.get("mass_kg"))
+	var law: Dictionary = m.rotor_law
+	_positive(e, "rotor_law.thrust_coefficient_n_s2", law.get("thrust_coefficient_n_s2"))
+	_positive(e, "rotor_law.torque_coefficient_n_m_s2", law.get("torque_coefficient_n_m_s2"))
+	_nonnegative(e, "rotor_law.rotor_drag_n_s2_per_m", law.get("rotor_drag_n_s2_per_m"))
+	_positive(e, "rotor_law.max_speed_rad_s", law.get("max_speed_rad_s"))
+	var drag: PackedFloat64Array = m.airframe.drag_areas_m2
+	for k in drag.size():
+		_nonnegative(e, "airframe.drag_areas_m2[%d]" % k, drag[k])
+	var spins := 0
+	var rotor_inertia := 0.0
+	for i in m.rotors.size():
+		var rotor: Dictionary = m.rotors[i]
+		var spin := float(rotor.get("spin", 0.0))
+		if absf(spin) != 1.0:
+			e.append("rotors[%d].spin: must be +1 or -1" % i)
+		spins += int(spin)
+		_positive(e, "rotors[%d].diameter_m" % i, rotor.get("diameter_m"))
+		_positive(e, "rotors[%d].inertia_kg_m2" % i, rotor.get("inertia_kg_m2"))
+		rotor_inertia += float(rotor.get("inertia_kg_m2", 0.0))
+	if spins != 0:
+		e.append("rotors: two must spin each way")
+	var pt: Dictionary = m.powertrain
+	var electric: bool = pt.get("law") == LAW_ELECTRIC
+	if electric:
+		_positive(e, "powertrain.kv_rad_s_per_v", pt.get("kv_rad_s_per_v"))
+		_positive(e, "powertrain.resistance_ohm", pt.get("resistance_ohm"))
+		_nonnegative(e, "powertrain.no_load_current_a", pt.get("no_load_current_a"))
+		if str(pt.get("braking", "none")) not in ["none", "damped"]:
+			e.append("powertrain.braking: must be 'none' or 'damped'")
+	elif pt.get("law") == LAW_LAB:
+		_positive(e, "powertrain.full_command_speed_rad_s", pt.get("full_command_speed_rad_s"))
+		_positive(e, "powertrain.time_constant_s", pt.get("time_constant_s"))
+	else:
+		e.append("powertrain.law: unsupported law '%s'" % str(pt.get("law")))
+	var idle := float(pt.get("idle_command", NAN))
+	var top := float(pt.get("max_command", NAN))
+	if not (idle >= 0.0 and idle < top and top <= 1.0):
+		e.append("powertrain: need 0 <= idle_command < max_command <= 1 (got %s, %s)" % [idle, top])
+	var battery: Dictionary = {}
+	if electric:
+		battery = m.get("battery", {})
+		_positive(e, "battery.capacity_ah", battery.get("capacity_ah"))
+		_nonnegative(e, "battery.resistance_ohm", battery.get("resistance_ohm"))
+		_nonnegative(e, "battery.auxiliary_current_a", battery.get("auxiliary_current_a"))
+		var soc := float(battery.get("initial_soc", NAN))
+		if not (soc > 0.0 and soc <= 1.0):
+			e.append("battery.initial_soc: must lie in (0, 1], got %s" % soc)
+		var ocv: PackedFloat64Array = battery.get("ocv_points", PackedFloat64Array())
+		if ocv.size() < 4 or ocv.size() % 2 != 0:
+			e.append("battery.ocv_points: needs at least two [soc, volts] rows")
+		else:
+			for i in range(0, ocv.size(), 2):
+				if not (ocv[i + 1] > 0.0):
+					e.append("battery.ocv_points[%d]: voltage must be positive" % (i / 2))
+				if i > 0 and (not (ocv[i] > ocv[i - 2]) or not (ocv[i + 1] >= ocv[i - 1])):
+					e.append("battery.ocv_points[%d]: state of charge must increase and voltage must not decrease" % (i / 2))
+	var con: Dictionary = m.contacts
+	_positive(e, "contacts.stiffness_n_per_m", con.get("stiffness_n_per_m"))
+	_nonnegative(e, "contacts.damping_n_s_per_m", con.get("damping_n_s_per_m"))
+	_nonnegative(e, "contacts.friction", con.get("friction"))
+	_positive(e, "contacts.crash_speed_mps", con.get("crash_speed_mps"))
+	_positive(e, "contacts.rotor_strike_speed_rad_s", con.get("rotor_strike_speed_rad_s"))
+	if not e.is_empty():
+		return e # the checks below divide by these values
+	var j: PackedFloat64Array = m.inertia_kg_m2
+	if not _positive_definite(j):
+		e.append("inertia_kg_m2: %s is not positive definite" % [j])
+	var effective := j.duplicate()
+	effective[2] -= rotor_inertia
+	if not _positive_definite(effective):
+		e.append("rotors: the inertia without the spinning rotors (Jzz %s) is not positive definite" % effective[2])
+	var k_t := float(law.thrust_coefficient_n_s2)
+	var k_q := float(law.torque_coefficient_n_m_s2)
+	var b_rows: Array = [[], [], [], []]
+	for rotor: Dictionary in m.rotors:
+		b_rows[0].append(1.0)
+		b_rows[1].append(-float(rotor.hub_frd[1]))
+		b_rows[2].append(float(rotor.hub_frd[0]))
+		b_rows[3].append(float(rotor.spin) * k_q / k_t)
+	if absf(_determinant4(b_rows)) < 1.0e-12:
+		e.append("rotors: the spin/hub arrangement has no independent roll, pitch and yaw authority")
+		return e
+	var hover := solve4(b_rows, PackedFloat64Array([float(m.mass_kg) * GRAVITY, 0.0, 0.0, 0.0]))
+	_powertrain_hover(e, pt, battery, k_t, k_q, float(law.max_speed_rad_s), hover)
+	return e
 
 # --- admission ------------------------------------------------------------------------------------
 
@@ -598,40 +760,8 @@ static func _semantics(raw: Dictionary, d: Dictionary, e: PackedStringArray) -> 
 	r.hover_thrusts = hover
 	r.hover_thrust = hover_max
 	r.hover_speed = sqrt(maxf(hover_max, 0.0) / d.k_t)
-	var pt: Dictionary = d.powertrain
-	var rotor_law := {torque_coefficient_n_m_s2 = d.k_q}
-	var top: float = pt.max_command
-	var checks := [] # [label, idle thrust, maximum thrust]
-	if pt.law == LAW_ELECTRIC:
-		var ocv: PackedFloat64Array = d.battery.ocv_points
-		var v_full := ocv[ocv.size() - 1]
-		var v_low := NAN
-		for i in range(0, ocv.size(), 2):
-			if ocv[i] > LOW_CHARGE_SOC:
-				v_low = ocv[i + 1]
-				break
-		var idle_speed := static_speed(pt, rotor_law, pt.idle_command, v_full)
-		var w_full := static_speed(pt, rotor_law, top, v_full)
-		var idle_thrust: float = d.k_t * idle_speed * idle_speed
-		r.static_max_thrust = d.k_t * w_full * w_full
-		checks.append(["full charge %s V" % v_full, idle_thrust, r.static_max_thrust])
-		if is_nan(v_low):
-			e.append("battery.ocv_points: no point above state of charge %s for the low-charge hover check" % LOW_CHARGE_SOC)
-		else:
-			var w_low := static_speed(pt, rotor_law, top, v_low)
-			checks.append(["low charge %s V" % v_low, idle_thrust, d.k_t * w_low * w_low])
-		if w_full > d.max_speed:
-			e.append("rotor_law.max_speed: static full-command speed %s rad/s exceeds the declared %s rad/s" % [w_full, d.max_speed])
-	else:
-		var full: float = pt.full_command_speed_rad_s
-		r.static_max_thrust = d.k_t * _sq(top * full)
-		checks.append(["lab law", d.k_t * _sq(float(pt.idle_command) * full), r.static_max_thrust])
-		if top * full > d.max_speed:
-			e.append("rotor_law.max_speed: max_command * full_command_speed %s rad/s exceeds the declared %s rad/s" % [top * full, d.max_speed])
-	for check: Array in checks:
-		if not (hover_min > check[1] and hover_max < check[2]):
-			e.append("hover: unreachable at %s; rotor thrusts %s N must lie strictly between idle %s N and static maximum %s N" % [
-				check[0], hover, check[1], check[2]])
+	r.static_max_thrust = _powertrain_hover(e, d.powertrain, d.battery if d.powertrain.law == LAW_ELECTRIC else {},
+		d.k_t, d.k_q, d.max_speed, hover)
 	r.thrust_to_weight = 4.0 * r.static_max_thrust / weight
 	# Feet: at least three non-collinear feet below the CG; the resting height follows from the stiffness.
 	var below := []
@@ -674,6 +804,68 @@ static func _semantics(raw: Dictionary, d: Dictionary, e: PackedStringArray) -> 
 	_diag_scalar(e, dpath, diag, "hover_speed_rad_s", r.hover_speed)
 	return r
 
+
+
+## Hover reachability under the powertrain: the hover thrusts lie strictly between the idle and the static maximum
+## thrust at full charge and at the lowest listed state of charge above LOW_CHARGE_SOC (open circuit), and (audit A08)
+## the electrical law carries that load on the shared pack at the low-charge point. Appends field errors; returns the
+## static maximum thrust per rotor at full charge.
+static func _powertrain_hover(e: PackedStringArray, pt: Dictionary, battery: Dictionary, k_t: float, k_q: float,
+		max_speed: float, hover: PackedFloat64Array) -> float:
+	var hover_min := INF
+	var hover_max := -INF
+	for t in hover:
+		hover_min = minf(hover_min, t)
+		hover_max = maxf(hover_max, t)
+	var rotor_law := {torque_coefficient_n_m_s2 = k_q}
+	var top: float = pt.max_command
+	var static_max := 0.0
+	var checks := [] # [label, idle thrust, maximum thrust]
+	if pt.law == LAW_ELECTRIC:
+		var ocv: PackedFloat64Array = battery.ocv_points
+		var v_full := ocv[ocv.size() - 1]
+		var v_low := NAN
+		for i in range(0, ocv.size(), 2):
+			if ocv[i] > LOW_CHARGE_SOC:
+				v_low = ocv[i + 1]
+				break
+		var idle_speed := static_speed(pt, rotor_law, pt.idle_command, v_full)
+		var w_full := static_speed(pt, rotor_law, top, v_full)
+		var idle_thrust: float = k_t * idle_speed * idle_speed
+		static_max = k_t * w_full * w_full
+		checks.append(["full charge %s V" % v_full, idle_thrust, static_max])
+		if is_nan(v_low):
+			e.append("battery.ocv_points: no point above state of charge %s for the low-charge hover check" % LOW_CHARGE_SOC)
+		else:
+			var w_low := static_speed(pt, rotor_law, top, v_low)
+			checks.append(["low charge %s V" % v_low, idle_thrust, k_t * w_low * w_low])
+			if hover_min > 0.0:
+				var loaded := hover_bus_solution(pt, battery, k_t, k_q, hover, v_low)
+				if not loaded.ok:
+					e.append("hover: %s (low charge %s V)" % [loaded.message, v_low])
+		if w_full > max_speed:
+			e.append("rotor_law.max_speed: static full-command speed %s rad/s exceeds the declared %s rad/s" % [w_full, max_speed])
+	else:
+		var full: float = pt.full_command_speed_rad_s
+		static_max = k_t * _sq(top * full)
+		checks.append(["lab law", k_t * _sq(float(pt.idle_command) * full), static_max])
+		if top * full > max_speed:
+			e.append("rotor_law.max_speed: max_command * full_command_speed %s rad/s exceeds the declared %s rad/s" % [top * full, max_speed])
+	for check: Array in checks:
+		if not (hover_min > check[1] and hover_max < check[2]):
+			e.append("hover: unreachable at %s; rotor thrusts %s N must lie strictly between idle %s N and static maximum %s N" % [
+				check[0], hover, check[1], check[2]])
+	return static_max
+
+
+static func _positive(e: PackedStringArray, path: String, value: Variant) -> void:
+	if not (typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value)) and float(value) > 0.0):
+		e.append("%s: must be positive, got %s" % [path, value])
+
+
+static func _nonnegative(e: PackedStringArray, path: String, value: Variant) -> void:
+	if not (typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value)) and float(value) >= 0.0):
+		e.append("%s: must not be negative, got %s" % [path, value])
 
 static func _diag_scalar(e: PackedStringArray, path: String, diag: Dictionary, key: String, value: float) -> void:
 	if diag.has(key) and not _agrees(float(diag[key]), value, 0.0, DIAGNOSTIC_TOLERANCE):

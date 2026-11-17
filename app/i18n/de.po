@@ -12206,9 +12206,6 @@ msgstr "Rollen: rechter Stick seitlich (Pfeiltasten links/rechts)"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "Nicken: rechter Stick nach vorn = Nase runter (Pfeiltasten hoch/runter)"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "Scharf- oder unscharf schalten: E, Gamepad-LB oder der als Fahrwerk belegte Senderschalter. Mit wenig Gas scharf schalten."
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "Flugmodus Acro/Angle: M oder Gamepad-RB. Zu Beginn Acro mit Sender, Angle mit Gamepad oder Tastatur."
 
@@ -13758,3 +13755,81 @@ msgstr "ClearView-Modell %s: %s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ClearView-Flugzeug-ZIP"
+
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "Die Controller-Verbindung hat sich geändert: Die Motoren sind gesichert. Controller prüfen und nach dem Fortsetzen erneut scharf schalten."
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "Das gespeicherte Controller-Profil kann nicht verwendet werden: In der Steuerung reparieren oder neu auswählen."
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "Beim Fortsetzen werden die Motoren gesichert: Mit wenig Gas erneut scharf schalten."
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "Rennergebnisse nicht gespeichert (%d ausstehend): Speicher prüfen und erneut versuchen."
+
+msgid "Race records restored from the previous copy."
+msgstr "Rennrekorde aus der vorherigen Kopie wiederhergestellt."
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "OSD-Einstellungen nicht gespeichert: Sie gelten bis zum Verlassen. Die nächste Änderung versucht es erneut."
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "FPV-QUADCOPTER-STEUERUNG (Gamepad)"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "FPV-QUADCOPTER-STEUERUNG (Sender)"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "Gas: %s (Tastatur W/S)"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "Gieren: %s (Tastatur A/D)"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "Rollen: %s (Tastatur, Pfeiltasten links/rechts)"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "Nicken: %s, nach vorn = Nase runter (Tastatur, Pfeiltasten hoch/runter)"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "Sticks: Gas, Gieren, Rollen und Nicken wie in der Steuerung für deinen Sender kalibriert."
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "Scharf- oder unscharf schalten: der Scharfschalter (%s). Mit wenig Gas scharf schalten."
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "Scharf- oder unscharf schalten: der als Fahrwerk belegte Senderschalter (%s). Mit wenig Gas scharf schalten."
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "Scharf- oder unscharf schalten: E oder Gamepad-LB. Mit wenig Gas scharf schalten."
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "Scharf- oder unscharf schalten: E. Mit wenig Gas scharf schalten."
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "Flugmodus: der Flugmodusschalter (%s), AUS Angle, EIN Acro."
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Flugmodus Acro/Angle: M. Zu Beginn Acro mit Sender, Angle mit Gamepad oder Tastatur."
+
+msgid "left stick sides"
+msgstr "linker Stick seitlich"
+
+msgid "left stick up/down"
+msgstr "linker Stick hoch/runter"
+
+msgid "right stick sides"
+msgstr "rechter Stick seitlich"
+
+msgid "right stick up/down"
+msgstr "rechter Stick hoch/runter"
+
+msgid "left trigger"
+msgstr "linker Trigger"
+
+msgid "right trigger"
+msgstr "rechter Trigger"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d Rennergebnisse sind nicht gespeichert. Innerhalb von 8 s erneut „Zurück zur Startseite“ wählen, um sie zu verwerfen."

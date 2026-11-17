@@ -331,7 +331,7 @@ Next: the repair sequence below, required CI, a native 1080p session with a real
 
 ## 16. Audit remediation programme (2026-11-16)
 
-**Status: planned, no production repairs landed by this audit branch.** The [baseline audit](../research/drone-racing/audit-2026-11-16/README.md) records 18 initial findings plus A19 from the follow-up (19 total); the [follow-up investigation](../research/drone-racing/audit-2026-11-16/follow-up.md) supplies stronger scene/session witnesses, negative search results, alternatives and pinned engine-source analysis. Those documents own dated evidence; this section is the authoritative remaining-work plan. Implementation must reference the owning DR step and applicable A finding, with proof in its commit.
+**Status (2026-11-17): all 19 findings implemented with software evidence ([§16.5](#165-repair-status-2026-11-17)); native controller, OS replacement, performance and physical gates remain open.** The audit branch itself landed no production repairs. The [baseline audit](../research/drone-racing/audit-2026-11-16/README.md) records 18 initial findings plus A19 from the follow-up (19 total); the [follow-up investigation](../research/drone-racing/audit-2026-11-16/follow-up.md) supplies stronger scene/session witnesses, negative search results, alternatives and pinned engine-source analysis. Those documents own dated evidence; this section is the authoritative remaining-work plan. Implementation must reference the owning DR step and applicable A finding, with proof in its commit.
 
 The compared main head is `6dfe1b9179af408f6b765b91ca164e626570db9f`; relevant FPV/input/session/race source is unchanged from `cfb5acd5`. Recheck drift before implementation. Preserve baseline recordings and configuration identities before intentional physics changes. Documentation and observation probes do not promote M2/M3 qualification.
 
@@ -388,3 +388,26 @@ For each packet, first turn its baseline observation into a desired-behavior reg
 - **Physical gate:** DR-40 selected-build mass/CG/inertia, thrust/torque/RPM/current, ESC/braking and pack response, independent held-out motion and uncertainty. Estimated coefficients and passing software checks do not close it.
 
 Track each finding as **open → implemented with software evidence → applicable native/hardware acceptance complete**, linking the repair commit and retained evidence. Do not mark all 19 closed because diagnostic probes pass, or describe the baseline 1,120 checks as tests of an unimplemented repair.
+
+### 16.5 Repair status (2026-11-17)
+
+Every finding below is **implemented with software evidence**, on branch `fix/fpv-drone-racing-audit-2026-11-16` from `main` `f0ed7dec`. The production FPV source was unchanged from `cfb5acd5` at that point. Each new desired-behaviour suite inverts the audit's diagnostic observation. Inspection shows every one fails on the baseline; none was run there.
+
+The suites passed with zero script errors under pinned Godot 4.8-beta2 on Windows: 38 multirotor, race and quad-controller suites plus `test_ui_language`. An independent adversarial review found two low-severity defects, both fixed with regressions: a stale integrate flag after the A19 resync, and an A01 refusal message shown for uncalibrated radios without a retry. The runs were direct headless runs: the checked runner refuses this workspace's `app/.godot` junction. Required CI is still needed. [DECISIONS](../DECISIONS.md#fpv-audit-repairs-fix-the-quads-control-energy-scoring-and-result-contracts) records the contracts.
+
+| Findings | Repair | Desired-behaviour evidence | Still open |
+| --- | --- | --- | --- |
+| A01, A02, A18, A19 | Refusal stays unready; one authority per LB/RB/Pause button; generated help; connection-generation re-resolution behind the menu | `test_mr_controller_authority` (46) | Real radio and gamepad session, native hotplug |
+| A03 | Ordinary-hold arm-switch continuity; disclosed disarming resume | `test_mr_controller_authority` | Physical radio switch behaviour |
+| A04, A05 | Direct route owns the managed `ControllerService` and UI device; AppRoot unchanged (pinned) | `test_mr_controller_authority` | Native visible menu navigation |
+| A06 | Charge-acceptance-bounded regeneration (bus law v2) | `test_mr_pack_charge` (9) | ESC braking and LiPo acceptance under DR-40 |
+| A07 | Local-plane worst rim direction plus rim ring witnesses | `test_mr_rotor_strike_slope` (29) | Proven clearance on curved custom terrain |
+| A08, A09 | Loaded shared-pack hover solve; shared physical invariants for prepared models | `test_mr_admission` (28) | Sustained and real-FC hover |
+| A10, A15 | `terminal_policy` voids same-tick crossings; identity hashes resolved solids | `test_mr_race_integrity` (32), `test_race_director` | Event locator (false-invalid reduction) |
+| A11–A14, A16 | Publication id with no-clobber writes; `.prev` book recovery; strict entries; retry and informed discard; pad-reset context | `test_mr_race_integrity` | Crash-durable queue; native Windows/macOS rename |
+| A17 | In-session change kept and reported; the next change retries | `test_mr_race_integrity` | 1080p readability |
+
+Deliberate consequences:
+- Course identities change (A10/A15). Older record-book entries remain history and are not re-ranked.
+- The `app/physics` and `app/sim` edits change the solver identity, so recorded `.orfl` tapes replay as solver-changed.
+- After committing, the owner reruns `tools/companions/rebind.py`. The retained tapes are fixed-wing, so their CSVs are expected to be byte-identical.

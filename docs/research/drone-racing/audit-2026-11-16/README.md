@@ -14,6 +14,8 @@ This is a comprehensive review of the available implementation, not proof that n
 
 **Follow-up investigation:** [stronger scene/session witnesses and compared repair options](follow-up.md) extend A03, A07 and A10, exercise Start/AUX ownership, bound the normal pad-start regeneration claim, and test an existing persistence recovery pattern. The follow-up adds A19 to the original 18 findings: a matching gamepad arrival can leave the active verifier stale and silently disarm the scene. [The active remediation programme](../../../plans/drone-racing.md#16-audit-remediation-programme-2026-11-16) now owns implementation order and acceptance; the findings below remain the dated, unrepaired baseline.
 
+**Repair status (2026-11-17).** All 19 findings now have software repairs and desired-behaviour regressions; see the [plan's repair status](../../../plans/drone-racing.md#165-repair-status-2026-11-17). The findings below remain the dated baseline. The probes in this folder still describe the baseline: after the repair they are expected to stop observing their defects.
+
 ## Priority and evidence conventions
 
 | Priority | Meaning in this audit |

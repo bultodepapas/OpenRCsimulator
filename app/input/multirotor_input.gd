@@ -13,6 +13,8 @@ const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
 const ControllerStore = preload("res://input/controller_profile_store.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
+const ControllerActions = preload("res://input/controller_actions.gd")
+const SmokeAux = preload("res://input/smoke_aux.gd")
 const Commands = preload("res://input/commands.gd")
 const Keyboard = preload("res://input/keyboard.gd")
 const Spec = preload("res://spec.gd")
@@ -69,6 +71,21 @@ var _throttle_limits := {}
 ## Key names for `raw` and the OSD bindings, looked up once (the sample runs every 240 Hz tick).
 var _arm_key_name := OS.get_keycode_string(ARM_KEY)
 var _mode_key_name := OS.get_keycode_string(MODE_KEY)
+## Audit A02: the gamepad shortcuts in force for the active source (-1 = none). A button that a configured AUX
+## channel or the effective Pause binding owns is never also an arm or mode toggle (one authority per control).
+var _arm_button := -1
+var _mode_button := -1
+var _pause_button := -1
+## Audit A03: ordinary-hold continuity of an arm SWITCH. A pause resets the AUX channels (no edge may be queued
+## while the menu is open), so on the first resumed ticks the switch has no valid request yet. While the same
+## source, mapping and connection hold and the physical switch was read ON through the whole hold, the arm level
+## stays ON until the channel is valid again; any OFF reading, an unknown position or a changed source ends it.
+var _arm_continuity := false
+var _continuity_generation := -1
+var _continuity_profile: Dictionary = {}
+## The hold could not keep the arm switch's ON (not ON at entry, unreadable, or changed): resuming disarms.
+var _continuity_lost := false
+var _last_arm_level := false
 
 
 func _init() -> void:
@@ -119,16 +136,81 @@ func cycle_throttle_limit() -> float:
 ## throttle_up: key name or "" when the source has a stick, source: radio, gamepad or keyboard}. D6-UX-01 adds
 ## (additively) arm_aux: the AUX channel that arms ("arm", legacy "gear" or ""), mode: the mode toggle's key or
 ## button name, mode_switch: the "flight_mode" AUX switch sets the mode instead.
+## Audit A02/A18: arm_button and mode_button name the gamepad shortcut only while it is in force (a button an AUX
+## channel or Pause owns is not one); arm_control and mode_control describe a bound AUX switch's physical control.
 func bindings() -> Dictionary:
 	var result := {arm = _arm_key_name, arm_switch = arm_from_switch(), arm_aux = arm_aux(), throttle_up = "",
-		source = source(), mode = _mode_key_name, mode_switch = mode_from_switch()}
+		source = source(), mode = _mode_key_name, mode_switch = mode_from_switch(), arm_button = "", mode_button = "",
+		arm_control = aux_control_text(arm_aux()), mode_control = aux_control_text(MODE_AUX) if mode_from_switch() else "",
+		pause_button = _button_text(_pause_button), axes = {throttle = stick_axis("throttle"), yaw = stick_axis("yaw"),
+		roll = stick_axis("roll"), pitch = stick_axis("pitch")}}
 	match result.source:
 		"gamepad":
-			result.arm = "LB"
-			result.mode = "RB"
+			if _arm_button >= 0:
+				result.arm = "LB"
+				result.arm_button = "LB"
+			if _mode_button >= 0:
+				result.mode = "RB"
+				result.mode_button = "RB"
 		"keyboard":
 			result.throttle_up = "W"
 	return result
+
+
+## The active gamepad's effective Pause button (-1: none, or not a gamepad); the activity pauses only on it.
+func pause_button() -> int:
+	return _pause_button
+
+
+## The calibrated source axis of a flight channel (-1 for the keyboard or an unmapped channel), for the help.
+func stick_axis(channel_name: String) -> int:
+	if not radio.connected:
+		return -1
+	var channel: Variant = radio.profile.get(channel_name, {})
+	return int((channel as Dictionary).get("axis", -1)) if typeof(channel) == TYPE_DICTIONARY else -1
+
+
+## The physical control of a bound AUX channel ("" when unbound): a button name, a calibrated axis or the buttons
+## of a maintained switch.
+func aux_control_text(channel_name: String) -> String:
+	if channel_name.is_empty() or not _aux_bound(channel_name):
+		return ""
+	var binding: Dictionary = radio.profile.aux[channel_name]
+	match str(binding.get("type", "")):
+		"button", "axis":
+			return ControllerActions.binding_text(binding)
+		"switch":
+			var names := PackedStringArray()
+			for button: Variant in SmokeAux.bound_buttons(binding):
+				names.append(_button_text(int(button)))
+			return " / ".join(names)
+	return ""
+
+
+func _button_text(button: int) -> String:
+	return ControllerActions.binding_text({type = "button", button = button}) if button >= 0 else ""
+
+
+## Recompute the gamepad shortcuts for the active source and profile (audit A02): LB arms and RB changes the mode
+## only when no arm/mode switch replaces them and neither the profile's AUX channels nor its Pause binding own that
+## button; Pause is the profile's effective Pause button unless an AUX channel owns it. Fixed-wing actions the quad
+## never dispatches (LB's inherited throttle cut) do not count as owners.
+func _refresh_shortcuts() -> void:
+	_arm_button = -1
+	_mode_button = -1
+	_pause_button = -1
+	if not radio.connected or not radio.is_gamepad():
+		return
+	var profile: Dictionary = radio.profile
+	var owned: Dictionary = ControllerActions.aux_owned_buttons(profile)
+	var pause: Dictionary = ControllerActions.effective_bindings(profile, ControllerActions.MULTIROTOR_CAPABILITIES).get("pause", {})
+	if str(pause.get("type", "")) == "button" and not owned.has(int(pause.get("button", -1))):
+		_pause_button = int(pause.button)
+		owned[_pause_button] = "pause"
+	if arm_aux().is_empty() and not owned.has(int(ARM_BUTTON)):
+		_arm_button = ARM_BUTTON
+	if not mode_from_switch() and not owned.has(int(MODE_BUTTON)):
+		_mode_button = MODE_BUTTON
 
 
 func connect_first_device() -> void:
@@ -246,6 +328,8 @@ func invalidate_for_focus() -> void:
 	if radio.connected:
 		radio.require_neutral(true, true)
 	source_generation += 1
+	_end_arm_continuity(true)
+	_last_arm_level = false
 	_arm_latch = false
 	_arm_input_held = true
 	_mode_input_held = true
@@ -256,6 +340,9 @@ func invalidate_for_focus() -> void:
 ## A pad restart: the virtual arm switch returns to OFF and the keyboard sticks to centre. The flight mode is kept.
 func reset_for_restart() -> void:
 	_arm_latch = false
+	_end_arm_continuity(false)
+	_continuity_lost = false
+	_last_arm_level = false
 	_actions = 0
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 
@@ -278,6 +365,88 @@ func _source_changed() -> void:
 	_actions &= ~FC.ACTION_RECOVERY
 	_mode = FC.FLIGHT_ANGLE if mode_from_switch() else default_mode(source())
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
+	_end_arm_continuity(_arm_continuity)
+	_last_arm_level = false
+	_refresh_shortcuts()
+
+
+## Audit A03: the activity enters an ordinary hold (P, Esc, Start, the menu). An arm switch read ON by the last
+## flying sample keeps its level across the hold only if its position can be read without the AUX channel's
+## arming (a level button, an axis or a maintained switch, not an edge toggle). Returns whether it is kept.
+func begin_hold() -> bool:
+	_continuity_lost = false
+	_arm_continuity = false
+	var channel := arm_aux()
+	if channel.is_empty() or not _last_arm_level:
+		return false
+	if _raw_switch_on(channel) != 1:
+		_continuity_lost = true
+		return false
+	_arm_continuity = true
+	_continuity_generation = source_generation
+	_continuity_profile = radio.profile.duplicate(true)
+	return true
+
+
+## Whether resuming now keeps an armed arm level: the toggle latch, or an arm switch whose hold continuity holds.
+func hold_keeps_arm() -> bool:
+	if arm_aux().is_empty():
+		return _arm_latch
+	return _arm_continuity
+
+
+## Whether an armed hold lost its arm switch's continuity (resuming disarms); the activity discloses it.
+func hold_continuity_lost() -> bool:
+	return _continuity_lost
+
+
+func _end_arm_continuity(lost: bool) -> void:
+	if _arm_continuity and lost:
+		_continuity_lost = true
+	_arm_continuity = false
+	_continuity_profile = {}
+
+
+## Physical position of a bound AUX switch from the live device, independent of the channel's arming: 1 ON, 0 OFF,
+## -1 unknown (an edge toggle has no position; a switch reading no or two positions is transitional).
+func _raw_switch_on(channel_name: String) -> int:
+	if not radio.connected or not _aux_bound(channel_name):
+		return -1
+	var binding: Dictionary = radio.profile.aux[channel_name]
+	var id := int(radio.device_id)
+	match str(binding.get("type", "")):
+		"button":
+			if str(binding.get("mode", "")) != "level" or not read_button.is_valid():
+				return -1
+			return 1 if bool(read_button.call(id, int(binding.button))) else 0
+		"axis":
+			var axis := int(binding.axis)
+			if axis < 0 or axis >= radio.axes.size() or not is_finite(radio.axes[axis]):
+				return -1
+			return 1 if SmokeAux.axis_amount(radio.axes[axis], binding) >= ARM_SWITCH_ON else 0
+		"switch":
+			if not read_button.is_valid():
+				return -1
+			var buttons: Array = SmokeAux.bound_buttons(binding)
+			var active := -1
+			for i in buttons.size():
+				if bool(read_button.call(id, int(buttons[i]))):
+					if active >= 0:
+						return -1
+					active = i
+			if active < 0 or buttons.size() < 2:
+				return -1
+			var amount := float(active) / float(buttons.size() - 1)
+			if bool(binding.get("invert", false)):
+				amount = 1.0 - amount
+			return 1 if amount >= ARM_SWITCH_ON else 0
+	return -1
+
+
+## The kept arm level is still that of the same source, mapping and switch position.
+func _continuity_holds(channel_name: String, ready: bool) -> bool:
+	return ready and source_generation == _continuity_generation and radio.profile == _continuity_profile \
+		and _raw_switch_on(channel_name) == 1
 
 
 ## Sample once per physics tick. `integrate` false (a hold) still tracks readiness and button state, but toggles and
@@ -310,8 +479,8 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 			yaw = _centered(profile, "yaw")
 			throttle = _throttle(profile)
 		if radio.is_gamepad() and read_button.is_valid():
-			button_arm = bool(read_button.call(radio.device_id, ARM_BUTTON))
-			button_mode = bool(read_button.call(radio.device_id, MODE_BUTTON))
+			button_arm = _arm_button >= 0 and bool(read_button.call(radio.device_id, _arm_button))
+			button_mode = _mode_button >= 0 and bool(read_button.call(radio.device_id, _mode_button))
 	else:
 		if integrate:
 			var rate: float = Spec.CONTROLS.rate
@@ -342,8 +511,19 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	var arm_source := "toggle"
 	if not arm_channel.is_empty():
 		arm_source = "switch:" + arm_channel
-		arm_level = ready and radio.auxiliary_request_valid(arm_channel) \
-			and float(radio.auxiliary_amount(arm_channel)) >= ARM_SWITCH_ON
+		if ready and radio.auxiliary_request_valid(arm_channel):
+			# The channel speaks again (fresh OFF evidence after the hold): its level is the command.
+			arm_level = float(radio.auxiliary_amount(arm_channel)) >= ARM_SWITCH_ON
+			_end_arm_continuity(false)
+		elif _arm_continuity and _continuity_holds(arm_channel, ready):
+			# Audit A03: an invalid request is "no command yet", not OFF; the switch held ON keeps the arm level.
+			arm_level = true
+			arm_source += ":held"
+		else:
+			_end_arm_continuity(true)
+			arm_level = false
+	if integrate:
+		_last_arm_level = arm_level and ready
 	var mode_source := "toggle"
 	if mode_switch:
 		mode_source = "switch:" + MODE_AUX
@@ -373,7 +553,7 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	var raw := {roll = pilot[FC.IN_ROLL], pitch = pilot[FC.IN_PITCH], yaw = pilot[FC.IN_YAW], throttle = throttle,
 		arm = arm_level, arm_source = arm_source, mode = "angle" if _mode == FC.FLIGHT_ANGLE else "acro", mode_source = mode_source,
 		arm_key = _arm_key_name, mode_key = _mode_key_name,
-		arm_button = int(ARM_BUTTON), mode_button = int(MODE_BUTTON)}
+		arm_button = _arm_button, mode_button = _mode_button}
 	return {pilot = pilot, source = kind, ready = ready, error = error, throttle_policy = policy, raw = raw,
 		source_generation = source_generation}
 
