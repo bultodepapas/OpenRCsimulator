@@ -130,6 +130,8 @@ Author sources can enable selected aircraft. A one-way compiler into Aerofly doe
 
 ### Phoenix RC
 
+Follow-up: the [dedicated Phoenix investigation](phoenix-2026-11-17.md) now records seven decoded PKG containers, including the author's Freewing SU-35 and recent forum releases, plus readable MOD declarations and a proposed [AC-PX plan](../../plans/phoenix-aircraft-import.md). This advances the acquisition evidence below; complete GEO conversion and flight support remain unproven. The original Pitts-source download limitation still applies.
+
 [SupermotoXL's Pitts Special release](https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/hobby-king-pitts-special-bi-plane-phoenix-r-c-simulator.html) offers both Phoenix and separate OBJ source ZIPs. The author's Wing Wing Z-84 and Durafly P-51D releases provide further real candidates. The [installation guide](https://www.supermotoxl.com/resources/guides-tutorial/3d-models-creation-and-simulator/how-to-install-custom-models-in-phoenix-rc.html) describes PKG installation.
 
 The Pitts OBJ and Z-84 package links returned HTTP 403 to the binary inspection client. Contents, dependencies and hashes were not verified. The author permits free noncommercial distribution; that is not an unrestricted commercial conversion grant. No general PKG/compiled-geometry reader was established. An OBJ offered by one author is a source route for that aircraft, not proof of a generic Phoenix importer.
