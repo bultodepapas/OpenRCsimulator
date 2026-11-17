@@ -1,0 +1,50 @@
+{
+  "base_commit": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+  "scope": "One isolated editor import and three observational probes. Completion does not mean desired behavior passed. No full application or exported journey.",
+  "checks": [
+    {
+      "label": "followup-inventory",
+      "report": "runs/followup-inventory/report.json",
+      "report_sha256": "42b076fcc9f4f1e57960a91a68a7a4899dd614691446b1614509f35c5072a728",
+      "log_sha256": "7de5c5afc4fae31d20bcd01370e6d6bf53e9f161a2f41e1de1a060547fca6418",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 2.784206,
+      "probe": "../probes/inventory_edit_probe.gd",
+      "probe_sha256": "c0fb1c5d84b989f62af27cfd7fefa6a275477bf4544418c8464888227ac62726"
+    },
+    {
+      "label": "followup-package",
+      "report": "runs/followup-package/report.json",
+      "report_sha256": "5c0507d7ab4aea0e8c85e4906bcc70952dae8b98e17e2d22ab3ee06da798eebd",
+      "log_sha256": "f752107fcfe3d62e85fca41aec4dca89b152d2b639567b481aea8dbfa3fd8c9b",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 0.769251,
+      "probe": "../probes/package_inventory_probe.gd",
+      "probe_sha256": "140c83a9e4e01d5929b2d01971a40abe1478972e5f346b9bd64dd5879a08591d"
+    },
+    {
+      "label": "followup-semantic-pair",
+      "report": "runs/followup-semantic-pair/report.json",
+      "report_sha256": "de7015782dbe9d4184057e427362d9063c2a9ba081e275d447f116e2e2894cdb",
+      "log_sha256": "0cbe5a7d00eb59b723e56aa2a9635cc2716760f311a2513ee9013d29a7e5973a",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 2.220115,
+      "probe": "../probes/semantic_pair_probe.gd",
+      "probe_sha256": "c9cd2dae6828c0a59587c8a6a223f354eaaf48cb7ecfe31ed93e67d056692b3b"
+    },
+    {
+      "label": "import-followup-prepare",
+      "report": "runs/import-followup-prepare/report.json",
+      "report_sha256": "e3c4f39b27732b1e9923a302dfe3ddea9e370ec98239d6442eea05f9f1b23683",
+      "log_sha256": "bcb6af83781053910eccf54e38c6ae6b65733a8bffbc922a080706b3e251bfaf",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 8.726727
+    }
+  ],
+  "documentation_check": "documentation-check.json",
+  "lexical_ledger_check": "ledger-check.json"
+}

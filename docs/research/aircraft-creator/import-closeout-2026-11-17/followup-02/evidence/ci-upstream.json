@@ -1,0 +1,405 @@
+{
+  "format": "openrc-import-audit-ci-observation-v1",
+  "observed_on": "2026-11-17",
+  "head_sha": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+  "run_id": 44109522803,
+  "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803",
+  "overall_conclusion": "failure",
+  "source": "GitHub Actions run jobs and decoded failed-job logs retrieved through the connected GitHub API",
+  "scope": "Upstream main only; no claim about the later audit merge commit. Excerpts are not the complete job logs.",
+  "jobs": [
+    {
+      "id": 134130980399,
+      "name": "CI selection and release preflight",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134130980399",
+      "failed_steps": []
+    },
+    {
+      "id": 134130984330,
+      "name": "Publication source rebind evidence",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134130984330",
+      "failed_steps": []
+    },
+    {
+      "id": 134133474737,
+      "name": "Godot visual captures",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133474737",
+      "failed_steps": []
+    },
+    {
+      "id": 134133474783,
+      "name": "three.js prototype (archived bake-off build)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133474783",
+      "failed_steps": []
+    },
+    {
+      "id": 134133474822,
+      "name": "RC native Linux build",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133474822",
+      "failed_steps": []
+    },
+    {
+      "id": 134133474832,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133474832",
+      "failed_steps": []
+    },
+    {
+      "id": 134133474936,
+      "name": "Website source and download checks",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133474936",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475015,
+      "name": "RC native Windows build",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475015",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475071,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475071",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475535,
+      "name": "Godot app (integration 0)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475535",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133475632,
+      "name": "Godot app (units 1)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475632",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475697,
+      "name": "Godot app (units 4)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475697",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133475764,
+      "name": "Godot app (units 7)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475764",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133475793,
+      "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475793",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475811,
+      "name": "Godot app (units 0)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475811",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133475816,
+      "name": "Godot app (units 5)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475816",
+      "failed_steps": []
+    },
+    {
+      "id": 134133475873,
+      "name": "Godot app (units 2)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475873",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133475929,
+      "name": "Godot app (units 3)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475929",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133476135,
+      "name": "Godot app (units 6)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133476135",
+      "failed_steps": [
+        "Run app checks with unit-backed parse coverage",
+        "Validate diagnostic evidence and export JUnit"
+      ]
+    },
+    {
+      "id": 134133477813,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133477813",
+      "failed_steps": []
+    },
+    {
+      "id": 134136494537,
+      "name": "RC native production checks (windows)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134136494537",
+      "failed_steps": []
+    },
+    {
+      "id": 134136494681,
+      "name": "RC native production checks (linux)",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134136494681",
+      "failed_steps": []
+    },
+    {
+      "id": 134147547576,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134147547576",
+      "failed_steps": [
+        "Run app/export.sh"
+      ]
+    },
+    {
+      "id": 134225900554,
+      "name": "CI required",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134225900554",
+      "failed_steps": [
+        "Reject failed, cancelled, missing or unexpected skipped jobs"
+      ]
+    },
+    {
+      "id": 134225903890,
+      "name": "Visual group shadow comparison",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134225903890",
+      "failed_steps": []
+    },
+    {
+      "id": 134227662949,
+      "name": "GitHub release (v* tags)",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134227662949",
+      "failed_steps": []
+    }
+  ],
+  "failed_job_excerpts": [
+    {
+      "job_id": 134133475535,
+      "name": "Godot app (integration 0)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475535",
+      "excerpts": [
+        {
+          "line": 6070,
+          "text": "2026-11-17T15:21:43.3042121Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-_t6sguti/report.json"
+        },
+        {
+          "line": 6084,
+          "text": "2026-11-17T15:21:43.3048736Z ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6088,
+          "text": "2026-11-17T15:21:43.3051156Z ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6092,
+          "text": "2026-11-17T15:21:43.3053171Z ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6096,
+          "text": "2026-11-17T15:21:43.3056098Z   log:14 ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6100,
+          "text": "2026-11-17T15:21:43.3058909Z   log:18 ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6104,
+          "text": "2026-11-17T15:21:43.3062491Z   log:22 ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6124,
+          "text": "2026-11-17T15:21:43.3662020Z log:14 ERROR: aero.coefficients.Cmq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6128,
+          "text": "2026-11-17T15:21:43.3664180Z log:18 ERROR: aero.coefficients.CLq.source does not match current or qualified historical provenance"
+        },
+        {
+          "line": 6132,
+          "text": "2026-11-17T15:21:43.3667171Z log:22 ERROR: aero.coefficients.Cnr.source does not match current or qualified historical provenance"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133475697,
+      "name": "Godot app (units 4)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475697",
+      "excerpts": [
+        {
+          "line": 487,
+          "text": "2026-11-17T15:15:52.9157319Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-o8xclxj8/report.json"
+        },
+        {
+          "line": 493,
+          "text": "2026-11-17T15:15:52.9172994Z FAIL normal Home flight starts"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133475764,
+      "name": "Godot app (units 7)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475764",
+      "excerpts": [
+        {
+          "line": 2767,
+          "text": "2026-11-17T15:29:05.2921861Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-p_3advhb/report.json"
+        },
+        {
+          "line": 2770,
+          "text": "2026-11-17T15:29:05.2924373Z FAIL source-bound shaft fixture loads"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133475811,
+      "name": "Godot app (units 0)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475811",
+      "excerpts": [
+        {
+          "line": 566,
+          "text": "2026-11-17T15:22:05.5768158Z Godot check failed: timeout (process exit -9); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-ivegbr9f/report.json"
+        },
+        {
+          "line": 567,
+          "text": "2026-11-17T15:22:05.5769866Z   log:4 SCRIPT ERROR: Invalid access to property or key 'format' on a base object of type 'Dictionary'."
+        },
+        {
+          "line": 573,
+          "text": "2026-11-17T15:22:05.5775387Z FAIL actual profile admission enforces the manifest [\"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"]"
+        },
+        {
+          "line": 574,
+          "text": "2026-11-17T15:22:05.5777531Z SCRIPT ERROR: Invalid access to property or key 'format' on a base object of type 'Dictionary'."
+        },
+        {
+          "line": 594,
+          "text": "2026-11-17T15:22:05.6780705Z log:4 SCRIPT ERROR: Invalid access to property or key 'format' on a base object of type 'Dictionary'."
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133475873,
+      "name": "Godot app (units 2)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475873",
+      "excerpts": [
+        {
+          "line": 943,
+          "text": "2026-11-17T15:17:09.7101389Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-u2vzqjfv/report.json"
+        },
+        {
+          "line": 948,
+          "text": "2026-11-17T15:17:09.7108145Z FAIL fixed-roster flight admits { \"ok\": false, \"errors\": [\"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"], \"profile\": {  }, \"field_profile\": {  }, \"identity\": {  } }"
+        },
+        {
+          "line": 950,
+          "text": "2026-11-17T15:17:09.7110773Z FAIL fixed-roster flight admits { \"ok\": false, \"errors\": [\"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"], \"profile\": {  }, \"field_profile\": {  }, \"identity\": {  } }"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133475929,
+      "name": "Godot app (units 3)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133475929",
+      "excerpts": [
+        {
+          "line": 3457,
+          "text": "2026-11-17T15:22:14.3928038Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-51_8256o/report.json"
+        },
+        {
+          "line": 3460,
+          "text": "2026-11-17T15:22:14.3929330Z FAIL actual fixed-voltage motor-off common kernel captures positive RPM exactly step rejected: step policy returned no state"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134133476135,
+      "name": "Godot app (units 6)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134133476135",
+      "excerpts": [
+        {
+          "line": 798,
+          "text": "2026-11-17T15:15:47.1217250Z Godot check failed: process_exit (process exit 1); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/godot-checks/godot-go0lvoqh/report.json"
+        },
+        {
+          "line": 841,
+          "text": "2026-11-17T15:15:47.1232407Z FAIL companion qualification pins the current physics/sim/failures identity  pinned ea70a38e, current 93956ff0: physics changed since the last qualification; run python3 tools/companions/rebind.py"
+        },
+        {
+          "line": 842,
+          "text": "2026-11-17T15:15:47.1233355Z FAIL current Stik and Club profiles validate  [\"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"]"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    },
+    {
+      "job_id": 134147547576,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44109522803/job/134147547576",
+      "excerpts": [
+        {
+          "line": 870,
+          "text": "2026-11-17T15:39:11.2685063Z ERROR: NK-3 export inputs differ from the prepared verified manifest"
+        },
+        {
+          "line": 4129,
+          "text": "2026-11-17T15:39:11.4315278Z Godot check failed: engine_error (process exit 0); report: /home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/nk3-export-si539W5r/checks/export-Linux-k2g0idbj/report.json"
+        },
+        {
+          "line": 4130,
+          "text": "2026-11-17T15:39:11.4315454Z   log:17 ERROR: NK-3 export inputs differ from the prepared verified manifest"
+        }
+      ],
+      "interpretation": "Observed upstream job failure; root cause not requalified by this documentation audit."
+    }
+  ]
+}

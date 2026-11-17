@@ -1,0 +1,58 @@
+[
+  {
+    "key": "ken-pack1",
+    "url": "https://time2rc.s3.amazonaws.com/kendata/cvplanepaks/CVPlanesPk1.zip",
+    "bytes": 10557890,
+    "sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/ken-pack1.zip"
+  },
+  {
+    "key": "extra-v6",
+    "url": "https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip",
+    "bytes": 1414972,
+    "sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/extra-v6.zip"
+  },
+  {
+    "key": "calmato",
+    "url": "https://time2rc.s3.amazonaws.com/tb-models/Calmato_40_sports.zip",
+    "bytes": 1183603,
+    "sha256": "cb53aa60dc46a919e4a27fbfca4a0d83960cb3a15d4c5cd468e34c6085553017",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/calmato.zip"
+  },
+  {
+    "key": "biplane-v5",
+    "url": "https://time2rc.s3.amazonaws.com/mc-models/OP/MC_Tiburon-bipe-7-2.zip",
+    "bytes": 580124,
+    "sha256": "1d346d518cbdfb76c04a7e3cc0978466a1e227d3f442fc7ac4902f7a10568afe",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/biplane-v5.zip"
+  },
+  {
+    "key": "osprey",
+    "url": "https://time2rc.s3.amazonaws.com/tb-models/V-22_Osprey.zip",
+    "bytes": 633845,
+    "sha256": "789247541c924c56ce612bfc0e1b33d89f2463b9abddfe1f0ec2591fda5df604",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/osprey.zip"
+  },
+  {
+    "key": "paint",
+    "url": "https://time2rc.s3.amazonaws.com/mc-models/NP22/MC_300S-Air_Guard.zip",
+    "bytes": 1301722,
+    "sha256": "39ee27cecb946ce5b4929ed95ab64cd37011f8a56ef4d021ff353b46f8e26e9c",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/paint.zip"
+  },
+  {
+    "key": "f117",
+    "url": "https://time2rc.s3.amazonaws.com/tb-models/F117.zip",
+    "bytes": 923682,
+    "sha256": "c6ead5a4a348433a3acfaa9d51b841a8a82daa8de0636da582b34192257ace21",
+    "matches_inventory": true,
+    "path": "tmp/aircraft-import-audit/corpus/f117.zip"
+  }
+]

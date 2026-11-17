@@ -1,0 +1,29 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+AUDIT_CORPUS_MODEL: {"archive":"biplane-v5.zip","ok":true,"root":"MC Tiburon-bipe-7-2"}
+AUDIT_CORPUS_MODEL: {"archive":"calmato.zip","ok":false,"root":"Calmato 40 Sports"}
+AUDIT_CORPUS_MODEL: {"archive":"extra-v6.zip","ok":true,"root":"MC 3D Hobby Shops Extra 330 Red"}
+AUDIT_CORPUS_MODEL: {"archive":"f117.zip","ok":true,"root":"F-117"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"701f"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"B-25"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"701F2"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"BD-5J"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"C-130"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"Beluga"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"A6-Zero"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"Beech99"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"A-10_GWS"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"AlleyCat"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"Beginair"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"Bell X-5"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"A-7 Corsair"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"A-6 Intruder"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"B-26 Marauder"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"Bellanca C-27"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"Brown-B1 Racer"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"Agri Duck Duster"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":false,"root":"Ascent Park Glider"}
+AUDIT_CORPUS_MODEL: {"archive":"ken-pack1.zip","ok":true,"root":"B-52-Stratofortress"}
+AUDIT_CORPUS_MODEL: {"archive":"osprey.zip","ok":true,"root":"V22 Osprey"}
+AUDIT_CORPUS_MODEL: {"archive":"paint.zip","ok":false,"root":"MC 300S-Air Guard"}
+AUDIT_CORPUS_COMPLETE: 26 models; 18 converted; 8 refused

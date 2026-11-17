@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-17",
+  "base_commit": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "method": "Existing tools/ci/check_docs.py link parser/target checks on new and affected links in changed Markdown against staged Git objects; pinned repository blob/line targets checked with Git. This is a focused document/evidence check, not required CI.",
+  "local_links_checked": 118,
+  "pinned_blob_links_checked": 28,
+  "retained_report_log_hashes_checked": 38,
+  "json_files_parsed": 30,
+  "checked_markdown": [
+    {
+      "path": "docs/DECISIONS.md",
+      "git_blob_sha256": "03ac5fd8cf2b03b9703572b663bf4d3ab851fb69565546bc4e07d01ba9ad2206"
+    },
+    {
+      "path": "docs/README.md",
+      "git_blob_sha256": "fe7cf10986c0ba0c6f1984042afb20033dfb5136fe3737174425bcbe6bc5a4b7"
+    },
+    {
+      "path": "docs/plans/aircraft-creator.md",
+      "git_blob_sha256": "fdb22f3c17afc585e6e11056f5f1366244197ef86c0247a48c1f5b73de683e26"
+    },
+    {
+      "path": "docs/plans/aircraft-import-agent-handoff.md",
+      "git_blob_sha256": "223aa540930fc3a53e6e9184e2ce46a4fe5552ac39cf4b391b9717fad544b4bd"
+    },
+    {
+      "path": "docs/plans/aircraft-import-closeout.md",
+      "git_blob_sha256": "e39462e0f616ada2a2d4685481a07c3fcc2aa56783b519fb47dd79cabf50aad6"
+    },
+    {
+      "path": "docs/plans/clearview-aircraft-import.md",
+      "git_blob_sha256": "50ae6bceb11ed38e82debf52412c95fbd9c158f1f0ebbd624fdbaa29416952cd"
+    },
+    {
+      "path": "docs/research/aircraft-creator/README.md",
+      "git_blob_sha256": "1fd7634f296120cd7bfaadc874d0d70b7d59ad1375ae2af59a8a46c5c86b90a4"
+    },
+    {
+      "path": "docs/research/aircraft-creator/import-closeout-2026-11-17/README.md",
+      "git_blob_sha256": "55d8eda4f5c105fddfb96ec10c736e0b3263f37a4b1f3d750214fa657676b228"
+    },
+    {
+      "path": "docs/research/aircraft-creator/import-closeout-2026-11-17/verification.md",
+      "git_blob_sha256": "2181b8781ca27e8472f320726ec34ff7c22b2dcf5bf04efcb29f23f1f89f23fb"
+    }
+  ],
+  "fixture_builder": "Executed successfully: reconstructed 715 source/asset copies from pinned Git objects and verified each recorded SHA-256, including checkout EOL policy. No new Godot test run implied.",
+  "independent_reviews": "Two read-only reviewers confirmed their bounded findings were resolved after lead source verification. No additional tests attributed to them.",
+  "production_files_changed": false,
+  "errors": []
+}

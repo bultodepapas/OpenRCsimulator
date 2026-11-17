@@ -1,0 +1,889 @@
+{
+  "inventory": {
+    "base_commit": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+    "cases": [
+      {
+        "after_edit": {
+          "dirty": false,
+          "fingerprint": "70c5bb5ce105f0426aa10fe3d5cf699559da60311ac830af299040cf662473a7",
+          "invalid_inventory_fields": {
+            "item_wing_airframe/mass": true
+          },
+          "local_issues": [
+            {
+              "arguments": [
+                "Wing with ailerons \u00b7 Mass"
+              ],
+              "code": "FIELD_INVALID",
+              "field": "local/item/item_wing_airframe/mass",
+              "message": "\"%s\" is not a number.",
+              "severity": "error",
+              "step": "weight_balance"
+            }
+          ],
+          "mass": 0.504,
+          "revision": 7,
+          "visible_text": "not-a-number"
+        },
+        "after_reopen": {
+          "dirty": false,
+          "fingerprint": "70c5bb5ce105f0426aa10fe3d5cf699559da60311ac830af299040cf662473a7",
+          "invalid_inventory_fields": {},
+          "local_issues": [],
+          "mass": 0.504,
+          "revision": 1,
+          "visible_text": "0.504"
+        },
+        "before": {
+          "dirty": false,
+          "fingerprint": "70c5bb5ce105f0426aa10fe3d5cf699559da60311ac830af299040cf662473a7",
+          "invalid_inventory_fields": {},
+          "local_issues": [],
+          "mass": 0.504,
+          "revision": 7,
+          "visible_text": "0.504"
+        },
+        "case_name": "invalid_inventory_mass_save_reopen",
+        "forced_backup_entry_count": 0,
+        "reopen_ok": true,
+        "save_ok": true,
+        "stored_snapshot_contains_invalid_text": false
+      },
+      {
+        "accepted_edit": true,
+        "case_name": "documented_estimated_item_reproposal_policy",
+        "edited": {
+          "id": "item_wing_airframe",
+          "kind": "estimated",
+          "mass": 0.75,
+          "name": "Wing with ailerons",
+          "position": [
+            0.12,
+            0.0,
+            0.0
+          ],
+          "size": [
+            0.3,
+            1.5,
+            0.036
+          ]
+        },
+        "initial": {
+          "id": "item_wing_airframe",
+          "kind": "estimated",
+          "mass": 0.504,
+          "name": "Wing with ailerons",
+          "position": [
+            0.12,
+            0.0,
+            0.0
+          ],
+          "size": [
+            0.3,
+            1.5,
+            0.036
+          ]
+        },
+        "reproposed": {
+          "id": "item_wing_airframe",
+          "kind": "estimated",
+          "mass": 0.504,
+          "name": "Wing with ailerons",
+          "position": [
+            0.12,
+            0.0,
+            0.0
+          ],
+          "size": [
+            0.3,
+            1.5,
+            0.036
+          ]
+        }
+      }
+    ],
+    "isolated_store_removed": true
+  },
+  "package": {
+    "base_commit": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+    "cancellation_sweep": [
+      {
+        "cancel_at": 1,
+        "cancellation_observed": true,
+        "diagnostics": [
+          {
+            "arguments": [],
+            "code": "SOURCE_INVALID",
+            "field": "source",
+            "message": "The import was cancelled.",
+            "severity": "error",
+            "step": "import"
+          }
+        ],
+        "models": [],
+        "package_ok": false,
+        "polls": 1
+      },
+      {
+        "cancel_at": 2,
+        "cancellation_observed": true,
+        "diagnostics": [
+          {
+            "arguments": [],
+            "code": "SOURCE_INVALID",
+            "field": "source",
+            "message": "The import was cancelled.",
+            "severity": "error",
+            "step": "import"
+          }
+        ],
+        "models": [],
+        "package_ok": false,
+        "polls": 3
+      },
+      {
+        "cancel_at": 3,
+        "cancellation_observed": true,
+        "diagnostics": [
+          {
+            "arguments": [],
+            "code": "SOURCE_INVALID",
+            "field": "source",
+            "message": "The import was cancelled.",
+            "severity": "error",
+            "step": "import"
+          }
+        ],
+        "models": [],
+        "package_ok": false,
+        "polls": 3
+      },
+      {
+        "cancel_at": 4,
+        "cancellation_observed": true,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "SOURCE_INVALID",
+                "field": "source",
+                "message": "The import was cancelled.",
+                "severity": "error",
+                "step": "import"
+              }
+            ],
+            "ok": false,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 5,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 6,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 7,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 8,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 9,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 10,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 11,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 12,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 13,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 14,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 15,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 16,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      },
+      {
+        "cancel_at": 17,
+        "cancellation_observed": false,
+        "diagnostics": [],
+        "models": [
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "One"
+          },
+          {
+            "diagnostics": [
+              {
+                "arguments": [],
+                "code": "UNSUPPORTED_CAPABILITY",
+                "field": "source",
+                "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+                "severity": "warning",
+                "step": "import"
+              }
+            ],
+            "ok": true,
+            "root": "Two"
+          }
+        ],
+        "package_ok": true,
+        "polls": 4
+      }
+    ],
+    "nested_roots": {
+      "combined_models": [
+        {
+          "case_adjusted": false,
+          "diagnostics": [
+            {
+              "arguments": [],
+              "code": "UNSUPPORTED_CAPABILITY",
+              "field": "source",
+              "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+              "severity": "warning",
+              "step": "import"
+            }
+          ],
+          "name": "Outer",
+          "ok": true,
+          "params": {
+            "model_name": "body.ac",
+            "model_type": 1,
+            "records": [
+              {
+                "key": "verNumber",
+                "line": 1,
+                "raw_rhs": "5.0",
+                "section": ""
+              },
+              {
+                "key": "modelType",
+                "line": 2,
+                "raw_rhs": "1.0",
+                "section": ""
+              },
+              {
+                "key": "modelName",
+                "line": 3,
+                "raw_rhs": "body.ac",
+                "section": ""
+              }
+            ],
+            "sections": [],
+            "sha256": "986db586987731fc144fa318a6eb693857788d099b8f53bddbfa44c5fc7a1a30",
+            "version": 5
+          },
+          "params_member": "Outer/params.txt",
+          "root": "Outer",
+          "visual_member": "Outer/data/body.ac"
+        }
+      ],
+      "combined_ok": true,
+      "inner_alone_models": [
+        {
+          "case_adjusted": false,
+          "diagnostics": [
+            {
+              "arguments": [],
+              "code": "UNSUPPORTED_CAPABILITY",
+              "field": "source",
+              "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+              "severity": "warning",
+              "step": "import"
+            }
+          ],
+          "name": "Inner",
+          "ok": true,
+          "params": {
+            "model_name": "body.ac",
+            "model_type": 1,
+            "records": [
+              {
+                "key": "verNumber",
+                "line": 1,
+                "raw_rhs": "5.0",
+                "section": ""
+              },
+              {
+                "key": "modelType",
+                "line": 2,
+                "raw_rhs": "1.0",
+                "section": ""
+              },
+              {
+                "key": "modelName",
+                "line": 3,
+                "raw_rhs": "body.ac",
+                "section": ""
+              }
+            ],
+            "sections": [],
+            "sha256": "986db586987731fc144fa318a6eb693857788d099b8f53bddbfa44c5fc7a1a30",
+            "version": 5
+          },
+          "params_member": "Outer/Inner/params.txt",
+          "root": "Outer/Inner",
+          "visual_member": "Outer/Inner/data/body.ac"
+        }
+      ],
+      "inner_alone_ok": true
+    },
+    "uncancelled_models": [
+      {
+        "case_adjusted": false,
+        "diagnostics": [
+          {
+            "arguments": [],
+            "code": "UNSUPPORTED_CAPABILITY",
+            "field": "source",
+            "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "severity": "warning",
+            "step": "import"
+          }
+        ],
+        "name": "One",
+        "ok": true,
+        "params": {
+          "model_name": "body.ac",
+          "model_type": 1,
+          "records": [
+            {
+              "key": "verNumber",
+              "line": 1,
+              "raw_rhs": "5.0",
+              "section": ""
+            },
+            {
+              "key": "modelType",
+              "line": 2,
+              "raw_rhs": "1.0",
+              "section": ""
+            },
+            {
+              "key": "modelName",
+              "line": 3,
+              "raw_rhs": "body.ac",
+              "section": ""
+            }
+          ],
+          "sections": [],
+          "sha256": "986db586987731fc144fa318a6eb693857788d099b8f53bddbfa44c5fc7a1a30",
+          "version": 5
+        },
+        "params_member": "One/params.txt",
+        "root": "One",
+        "visual_member": "One/data/body.ac"
+      },
+      {
+        "case_adjusted": false,
+        "diagnostics": [
+          {
+            "arguments": [],
+            "code": "UNSUPPORTED_CAPABILITY",
+            "field": "source",
+            "message": "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "severity": "warning",
+            "step": "import"
+          }
+        ],
+        "name": "Two",
+        "ok": true,
+        "params": {
+          "model_name": "body.ac",
+          "model_type": 1,
+          "records": [
+            {
+              "key": "verNumber",
+              "line": 1,
+              "raw_rhs": "5.0",
+              "section": ""
+            },
+            {
+              "key": "modelType",
+              "line": 2,
+              "raw_rhs": "1.0",
+              "section": ""
+            },
+            {
+              "key": "modelName",
+              "line": 3,
+              "raw_rhs": "body.ac",
+              "section": ""
+            }
+          ],
+          "sections": [],
+          "sha256": "986db586987731fc144fa318a6eb693857788d099b8f53bddbfa44c5fc7a1a30",
+          "version": 5
+        },
+        "params_member": "Two/params.txt",
+        "root": "Two",
+        "visual_member": "Two/data/body.ac"
+      }
+    ],
+    "uncancelled_ok": true
+  },
+  "semantic_pair": {
+    "base_commit": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+    "compiled_bytes_differ": true,
+    "cross_pair_match_document_diagnostics": [],
+    "cross_pair_match_document_ok": true,
+    "cross_pair_valid_pair": true,
+    "definition_a_sha256": "3d0f8cbc77a222fd209b18b807188d69e8c9d4c753009b8b29b9fe310bfe85d1",
+    "raw_a_sha256": "f65fdf2a02984489c59eb2bc42e234fbe391860a5ff546c0fdd0930ab333e08a",
+    "raw_b_sha256": "2516287db091e0cf063ed9e133e691af9155816f2297aa36f612efea34a7390d",
+    "recomputed_binding_matches": true,
+    "same_law": true,
+    "same_uuid": true,
+    "scope": "Read-only helpers; no Store publication, external bundle admission or flight was performed.",
+    "servo_time_a": 0.14,
+    "servo_time_b": 0.2,
+    "trusted_capture_keeps_corresponding_bytes": true
+  }
+}

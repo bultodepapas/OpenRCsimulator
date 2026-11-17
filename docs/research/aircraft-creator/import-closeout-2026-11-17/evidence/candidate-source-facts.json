@@ -1,0 +1,141 @@
+{
+  "base_commit": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "note": "Source declarations are facts about files, not validated physical semantics. Extra is a translation-reference fixture; neither candidate is flight-qualified. No source bytes or redistribution permission are supplied.",
+  "cases": [
+    {
+      "archive": "extra-v6.zip",
+      "archive_sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85",
+      "model_root": "MC 3D Hobby Shops Extra 330 Red",
+      "params_member": "MC 3D Hobby Shops Extra 330 Red/params.txt",
+      "params_sha256": "2d043cb0d7af35bad07fbc820baaf188473d79c6aa1f663e86e2f7c914a11ff4",
+      "selected_parameter_facts": [
+        {
+          "line": 47,
+          "text": "modelMass 10.1"
+        },
+        {
+          "line": 49,
+          "text": "modelMotors motor1"
+        },
+        {
+          "line": 50,
+          "text": "modelName body.ac"
+        },
+        {
+          "line": 52,
+          "text": "modelServos elevator laileron raileron PilotHead ruder rudder2Servo throttle pilotHandX pilotHandY"
+        },
+        {
+          "line": 62,
+          "text": "planeType 0.0"
+        },
+        {
+          "line": 323,
+          "text": "maxRPM 17000.0"
+        },
+        {
+          "line": 327,
+          "text": "powerCurveWatts 0.0 6000.0 6230.0 6260.0 6260.0 6160.0"
+        },
+        {
+          "line": 346,
+          "text": "propDiamInch 18.0"
+        },
+        {
+          "line": 351,
+          "text": "propMass 0.1"
+        },
+        {
+          "line": 352,
+          "text": "propMaxRPM 17000.0"
+        },
+        {
+          "line": 356,
+          "text": "propPitchInch 7.0"
+        }
+      ],
+      "geometry_members": [
+        {
+          "member": "MC 3D Hobby Shops Extra 330 Red/data/fmodel.ac",
+          "sha256": "c2ce7bc5cff30696c1c81e9bf905147828f248d60faa07f4359dc01147589ad9"
+        },
+        {
+          "member": "MC 3D Hobby Shops Extra 330 Red/data/colbody.ac",
+          "sha256": "a8244891ebfd19082e2107d9bfe34931cb0ca48187d4336db1edea5039565b33"
+        }
+      ]
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8",
+      "model_root": "Beginair",
+      "params_member": "Beginair/params.txt",
+      "params_sha256": "54ede221d35d16a0ee65bc64c471f9411e4e6f2d3cf70c429b508f46f9a58eb5",
+      "selected_parameter_facts": [
+        {
+          "line": 4,
+          "text": "aelRate 50.0"
+        },
+        {
+          "line": 40,
+          "text": "elevRate 50.0"
+        },
+        {
+          "line": 76,
+          "text": "maxThrust 40.0"
+        },
+        {
+          "line": 78,
+          "text": "modelMass 5.0"
+        },
+        {
+          "line": 79,
+          "text": "modelName Beginair.ac"
+        },
+        {
+          "line": 85,
+          "text": "paramModelName PlaneParamModel.ac"
+        },
+        {
+          "line": 87,
+          "text": "planeType 1.0"
+        },
+        {
+          "line": 92,
+          "text": "ruderRate 30.0"
+        }
+      ],
+      "geometry_members": [
+        {
+          "member": "Beginair/data/colbody.ac",
+          "sha256": "49a11b7ddd4fcecb65052fc88d446739107bb4b46c7a1f3b7892d061e1dadc80"
+        },
+        {
+          "member": "Beginair/data/PlaneParamModel.ac",
+          "sha256": "e9316bbc9cb360113494a12bdc588dd5f3762abc97a01e4fa10938a7457a4023"
+        },
+        {
+          "member": "Beginair/data/Beginair.ac",
+          "sha256": "be6a9d766a3530ea8e2e8fadb1c38bf3e67b89065f7c00c16919a3e06c38c2c3"
+        }
+      ],
+      "identical_auxiliary_parameter_geometry": [
+        "Bell X-5/data/PlaneParamModel.ac",
+        "Bellanca C-27/data/PlaneParamModel.ac",
+        "Beluga/data/PlaneParamModel.ac",
+        "Brown-B1 Racer/data/PlaneParamModel.ac",
+        "C-130/data/PlaneParamModel.ac",
+        "701f/data/PlaneParamModel.ac",
+        "701F2/data/PlaneParamModel.ac",
+        "A-6 Intruder/data/PlaneParamModel.ac",
+        "A-7 Corsair/data/PlaneParamModel.ac",
+        "AlleyCat/data/PlaneParamModel.ac",
+        "B-25/data/PlaneParamModel.ac",
+        "B-26 Marauder/data/PlaneParamModel.ac",
+        "BD-5J/data/PlaneParamModel.ac",
+        "Beech99/data/PlaneParamModel.ac",
+        "Beginair/data/PlaneParamModel.ac"
+      ]
+    }
+  ]
+}
