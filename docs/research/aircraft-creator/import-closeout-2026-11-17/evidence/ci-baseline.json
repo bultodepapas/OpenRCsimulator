@@ -1,0 +1,175 @@
+{
+  "retrieved_date": "2026-11-17",
+  "source": "GitHub Actions API and decoded job log",
+  "run": [
+    {
+      "id": 44077057768,
+      "head_sha": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768",
+      "created_at": "2026-11-17T11:46:42Z",
+      "updated_at": "2026-11-17T11:50:59Z"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 134017678191,
+      "name": "CI selection and release preflight",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134017678191",
+      "failed_steps": [
+        {
+          "name": "Check release source, version and notes before expensive jobs",
+          "number": 5,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 134017680909,
+      "name": "Publication source rebind evidence",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134017680909",
+      "failed_steps": []
+    },
+    {
+      "id": 134019009498,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019009498",
+      "failed_steps": []
+    },
+    {
+      "id": 134019009582,
+      "name": "Website source and download checks",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019009582",
+      "failed_steps": []
+    },
+    {
+      "id": 134019009709,
+      "name": "Godot app (${{ matrix.part }} ${{ matrix.shard }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019009709",
+      "failed_steps": []
+    },
+    {
+      "id": 134019009732,
+      "name": "NK-3 native kernel qualification (macOS ARM64)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019009732",
+      "failed_steps": []
+    },
+    {
+      "id": 134019009754,
+      "name": "RC native Linux build",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019009754",
+      "failed_steps": []
+    },
+    {
+      "id": 134019010013,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010013",
+      "failed_steps": []
+    },
+    {
+      "id": 134019010052,
+      "name": "CI required",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010052",
+      "failed_steps": [
+        {
+          "name": "Run actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+          "number": 3,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 134019010212,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010212",
+      "failed_steps": []
+    },
+    {
+      "id": 134019010567,
+      "name": "RC native Windows build",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010567",
+      "failed_steps": []
+    },
+    {
+      "id": 134019010602,
+      "name": "Visual group shadow comparison",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010602",
+      "failed_steps": []
+    },
+    {
+      "id": 134019010754,
+      "name": "three.js prototype (archived bake-off build)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019010754",
+      "failed_steps": []
+    },
+    {
+      "id": 134019011377,
+      "name": "RC native production checks (${{ matrix.platform }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019011377",
+      "failed_steps": []
+    },
+    {
+      "id": 134019011683,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019011683",
+      "failed_steps": []
+    },
+    {
+      "id": 134019012107,
+      "name": "Godot visual captures",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019012107",
+      "failed_steps": []
+    },
+    {
+      "id": 134019858200,
+      "name": "GitHub release (v* tags)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44077057768/job/134019858200",
+      "failed_steps": []
+    }
+  ],
+  "preflight_log_excerpt": [
+    "2026-11-17T11:48:59.4643162Z Ran 130 tests in 59.130s",
+    "2026-11-17T11:49:18.1392430Z Ran 170 tests in 18.481s",
+    "2026-11-17T11:49:18.6721871Z Release preflight failed: missing or invalid tracked Godot UID sidecars (22): [\"app/tests/test_creator_clearview_jpeg.gd.uid\", \"app/tests/test_creator_clearview_motion.gd.uid\", \"app/tests/test_creator_clearview_observations.gd.uid\", \"app/tests/test_creator_clearview_readers.gd.uid\", \"app/tests/test_creator_clearview_ui.gd.uid\", \"app/tests/test_creator_clearview_visual.gd.uid\", \"app/tests/test_creator_source_installation.gd.uid\", \"app/tests/test_extra_visual_details.gd.uid\", \"app/ui/aircraft_creator_installation.gd.uid\", \"app/ui/aircraft_creator_source_report.gd.uid\", \"app/workshop/creator/clearview/ac3d.gd.uid\", \"app/workshop/creator/clearview/archive.gd.uid\", \"app/workshop/creator/clearview/cancellation.gd.uid\", \"app/workshop/creator/clearview/converter.gd.uid\", \"app/workshop/creator/clearview/deflate.gd.uid\", \"app/workshop/creator/clearview/images.gd.uid\", \"app/workshop/creator/clearview/jpeg_check.gd.uid\", \"app/workshop/creator/clearview/motion.gd.uid\", \"app/workshop/creator/clearview/observations.gd.uid\", \"app/workshop/creator/clearview/package.gd.uid\"] ...; generate with the pinned editor and commit them with their scripts/shaders",
+    "2026-11-17T11:49:18.6785196Z ##[error]Process completed with exit code 1."
+  ],
+  "required_job_log_excerpt": [
+    "2026-11-17T11:50:57.4749379Z ##[error]Unable to download artifact(s): Artifact not found for name: ci-selection"
+  ]
+}

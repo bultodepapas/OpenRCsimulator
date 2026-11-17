@@ -4,6 +4,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 
 | Record | Content |
 | --- | --- |
+| [2026-11-17 import closeout audit](import-closeout-2026-11-17/README.md) | Current main and separate Flight Simulator plan audit; seven re-downloaded archives, 18/26 visual conversions, 15 focused script passes, reproduced boundary defects and CI preflight blocker. [Verification and missing tests](import-closeout-2026-11-17/verification.md); [closeout order](../../plans/aircraft-import-closeout.md). |
 | [Revision 6 specification](2026-11-07-creator-specification-rev6.md) | External source specification, 2026-11-07, written against `997e2127` and never run against the application. Kept unchanged as the detailed reference for record, storage and UI contracts. The plan supersedes it where they differ. Its companion pack and historical probe receipts (H01, H02) were never in this repository. |
 | [Estimated trainer package](estimated-trainer-package.md) | Derivation, borrowed values, domain and software checks of the first airframe and power packages (AC-05, AC-06). |
 | [ClearView compatibility research](clearview-2026-11-15.md) | Primary documentation, seven ZIPs / 26 model roots, exact source inventory, experimental importer evidence, conversion matrix and limits, 2026-11-15. The [AC-CV subplan](../../plans/clearview-aircraft-import.md) owns implementation and open qualification gates. |

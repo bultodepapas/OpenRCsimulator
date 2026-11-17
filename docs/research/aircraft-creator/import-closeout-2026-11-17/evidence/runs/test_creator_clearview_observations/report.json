@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "41483136-90f4-449d-bf9f-d7e6bb6d0bcb",
+  "command": [
+    "/workspace/scratch/9d4ac2655a54/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/9d4ac2655a54/OpenRCsimulator/tmp/aircraft-import-audit/fixture-core",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_creator_clearview_observations.gd"
+  ],
+  "cwd": "/workspace/scratch/9d4ac2655a54/OpenRCsimulator",
+  "started_utc": "2026-11-17T12:20:11.740780+00:00",
+  "label": "test_creator_clearview_observations",
+  "log": "/workspace/scratch/9d4ac2655a54/OpenRCsimulator/tmp/aircraft-import-audit/final-tests/test_creator_clearview_observations/test_creator_clearview_observations-q1_kg6k6/engine.log",
+  "report": "/workspace/scratch/9d4ac2655a54/OpenRCsimulator/tmp/aircraft-import-audit/final-tests/test_creator_clearview_observations/test_creator_clearview_observations-q1_kg6k6/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.385411,
+  "log_bytes": 117,
+  "log_sha256": "3e40c14ad868309db158117003c23800cae2cc4c75d3192d1fa1a76a65211b5d"
+}
