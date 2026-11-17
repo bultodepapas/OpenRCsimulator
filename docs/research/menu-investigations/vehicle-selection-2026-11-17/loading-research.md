@@ -2,6 +2,12 @@
 
 **Researched:** 2026-11-17. **Application baseline:** main 3c91936; Godot 4.8-beta2, engine commit cafc17a192acf67903910a68aeb3c076c0907a4b. These findings support the [implementation plan](../../../plans/vehicle-selection-performance.md); they do not demonstrate a speedup in OpenRC.
 
+## Twenty-investigation expansion
+
+The follow-up [T01–T20 research index](techniques/README.md) contains twenty individual notes with actual search queries, primary sources, exact OpenRC seams, counterexamples and experiments. It extends this engine overview rather than replacing it. The plan and benchmark now incorporate five additional decisions: trace the complete dependency/selection-save path; separate immediate thumbnail/proxy/full readiness; distinguish work admission from cache retention; reserve transient and retirement overlap; and qualify asset formats against both engine support and Creator admission.
+
+The most consequential new source checks are [F21–F24](code-audit.md#5-loading-findings-and-investigation-priority): synchronous verified settings publication, Creator's compressed-extension restrictions, the jet/F4U BasisU import recipes, and the aggregated pipeline counters. They expose measurement and compatibility boundaries, not established bottlenecks. Scan-resistant caching, cross-Home root carryover, proxy assets, package locality and write coalescing remain conditional; none is added merely because another engine or paper reports a benefit.
+
 ## 1. Separate the costs before choosing a technique
 
 A vehicle switch can involve catalog lookup, validation/hash work, disk reads, decompression/transcoding, script loading, scene instantiation, binding/customization, geometry fitting, texture creation/upload, first-use shader/pipeline work, drawing, and retirement of old resources. Some stages overlap. Sum only exclusive phase spans; do not add nested timings or a separate attribution run to total wall time.

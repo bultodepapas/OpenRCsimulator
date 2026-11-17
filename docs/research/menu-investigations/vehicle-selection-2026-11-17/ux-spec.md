@@ -30,7 +30,7 @@ Each visible card has a fixed image region and a readable name region. Long name
 
 One checkmark/selection accent means “selected for the next session.” A distinct focus outline means “keyboard/controller focus.” Hover is a transient hint, not a change of selection. A favorite star is a separate, named control and does not also select or launch the vehicle. Avoid a large nested button hierarchy that creates ambiguous keyboard/gamepad navigation.
 
-Empty/failed thumbnails retain layout and show a neutral family icon, not a black broken image or another vehicle. Loading a thumbnail cannot block activation of its text card. A late thumbnail result may update only the card still bound to the same source-qualified ID and revision.
+Empty/failed thumbnails retain layout and show a neutral family icon, not a black broken image or another vehicle. Loading a thumbnail cannot block activation of its text card. A late thumbnail result may update only the card still bound to the same source-qualified ID, revision and binding generation. Recycled callbacks/focus targets follow that generation as well. With four columns, three visible rows and one overscan row at either end, twenty reusable card slots are an illustrative starting pool—not twenty simultaneously prepared models. Recompute the window when text scale or layout changes.
 
 ## 3. Search, filters and catalog scale
 
@@ -58,6 +58,8 @@ Current stock defaults are not encoded uniformly. Several aircraft and cars pers
 
 Changing away and back restores that vehicle's last accepted skin. A removed custom skin shows that it is unavailable and identifies any actual fallback; never leave its old label on a different finish. Preserve the current save-error channel. A visible successful selection is an in-memory result; a failed write must not be described as successfully saved. Keep current synchronous saves in the first slice and profile them before proposing write coalescing.
 
+If the conditional T20 experiment later changes persistence, keep effective selection immediate and distinguish pending save, durable completion and failure using the existing notice area. Avoid a modal for each change. A failed/pending transaction remains retryable; other settings changes and external file recovery must not be lost. Technical generation and cache details stay in diagnostics, not in the player's selection flow.
+
 Keep persisted desired, effective selected and displayed appearance identities distinct. While an index is being bootstrapped/repaired, an unresolved saved skin is “Checking installed skin,” not proof it has been deleted. If the desired skin is unavailable after reconciliation, show its name/reason and a clearly identified factory-finish option; choosing that option is an explicit new selection. Recheck or retain the exact selected content revision through launch. Never silently launch a default under the missing skin's name.
 
 ## 5. Interaction and loading state table
@@ -69,6 +71,8 @@ The selected launch tuple and displayed preview tuple are separate. The interfac
 | Focus or hover another card | Focus cue changes; selected checkmark and skin remain | No committed selection, preference write or full preview build; optional bounded prediction can nominate future work |
 | Activate vehicle B | Immediately show B's name and remembered skin | Commit latest selection; invalidate obsolete UI consumers; start eligible preview preparation |
 | B preparing while A is visible | “Selected: B / Skin: …”; “Showing A · Preparing B” beside old preview, or use B's static thumbnail | Old image cannot masquerade as B; navigation and skin metadata remain active |
+| Optional lightweight B preview | Show B's exact appearance and a concise “Preview · detail loading” state; use the correct thumbnail if the tier cannot represent that skin | Explicit activation still queues full preparation under admission; proxy readiness is separate from full readiness; no minimum fade or fixed waiting period |
+| Detailed preview over budget | Keep B's name/skin and correct static image; explain that detailed preview is unavailable at the current limit | Navigation remains active; do not silently alter flight quality or treat a placeholder as full-ready; launch validity belongs to the activity |
 | Compatible cached skin selected | Name/checkmark change immediately; show short preparing status only if needed | Prepare complete material transaction; publish if still current and valid; no geometry rebuild |
 | Detailed preview ready | Remove pending label after the requested tuple's first rendered draw | Keep selection unchanged; ready means displayed, not just resource-loaded |
 | Preview failed | “Preview unavailable for B / Skin …”; Retry; preserve selected identity | Independent launch validation remains authoritative; no silent A launch |
@@ -80,6 +84,8 @@ The selected launch tuple and displayed preview tuple are separate. The interfac
 | Import revision published/removed | Mark stale entry; refresh matching metadata without losing unrelated selection | Invalidate content-keyed derivatives; in-flight work uses its immutable snapshot or is discarded |
 
 Do not display an overall percentage derived from resource-load progress. If useful, show resource phase progress separately, then “Preparing preview” and “Displaying preview.” The existing stage-based loading-bar policy owns full launch transitions. There is no artificial minimum load time or animation that delays a cache hit.
+
+The static image and exact name are required; the additional 3D tier is a conditional [T03](techniques/03-progressive-preview.md) experiment. Once a valid current full candidate is committed, observe its first visible frame before removing its loading state. An offscreen warmup does not satisfy that visible endpoint. [T02](techniques/02-virtualized-cards.md) supplies the recycled-control contract; [T04](techniques/04-material-variants.md) supplies the geometry-preserving skin transaction.
 
 ## 6. Native input and accessibility
 

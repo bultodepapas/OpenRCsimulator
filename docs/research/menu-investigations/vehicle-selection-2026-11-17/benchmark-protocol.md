@@ -2,6 +2,8 @@
 
 **Proposed acceptance work for UI-VS, 2026-11-17.** This file specifies future measurements; none of the runs below was performed for this documentation branch. [Current evidence and historical limits](code-audit.md). [Implementation steps and targets](../../../plans/vehicle-selection-performance.md).
 
+Expanded after [twenty targeted investigations](techniques/README.md). Use the smallest comparison that resolves a measured uncertainty. Conditional experiments are not a requirement to implement every technique or run every combination.
+
 ## 1. Reuse the existing measurement routes
 
 Read the [tool index](../../../tools/README.md) and the relevant host-admission guide before running the application. Use an isolated source snapshot and profile. On enrolled hosts, reserve the required test-queue session and retain its ownership handle through teardown; do not overlap performance campaigns with other engine/asset-generation work. Follow the repository's U-drive cache/temp policy on the Windows host. This cloud source-only review did not reserve or launch a native session.
@@ -23,6 +25,7 @@ Do not change hashed production builders just to insert timing probes without re
 | --- | --- | --- |
 | Acknowledgement | Actual recognized selection event → first rendered frame carrying the requested vehicle/skin label/marker | Updating a Label or returning from the handler is not a drawn acknowledgement |
 | Static preview | Selection event → first frame showing the correct thumbnail or explicitly labeled old preview | Useful feedback before detailed content; not detailed-preview readiness |
+| Optional proxy | Selection event → first visible frame of the correct declared lightweight representation | Separate asset/tier endpoint; neither a thumbnail nor proxy counts as full detail; total full-ready cost is still reported |
 | Queue wait | Selection request → admission of its resource/appearance work | Split waits behind obsolete loads and idle flight preparation |
 | Resource ready | Accepted load request → terminal successful collection | Excludes later construction, GPU work and final image |
 | Detailed preview ready | Selection event → first rendered frame of the requested vehicle + skin + revision | Check identity and readiness together; do not count the old model or a placeholder |
@@ -31,6 +34,7 @@ Do not change hashed production builders just to insert timing probes without re
 | Launch readiness | Accepted action → validated candidate, first complete draw and active control readiness | Paused/recovery first draw is separately labeled; loading time is never integrated as simulation time |
 | Frame hitch | Consecutive rendered frame interval during complete request/commit/retire window | Continue observation beyond completion to include final construction and deferred disposal |
 | Memory peak/plateau | Before request through candidate installation and retirement/drain | Peak overlapping ownership differs from retained steady cache; RSS is not VRAM |
+| Selection persistence | Selection event → validation/serialization/publication spans and matching durable-generation acknowledgement | Separate in-memory selection from storage; no-op checks include full payload/commit semantics; pending/failed saves are not durable success |
 
 Use monotonic engine time for local phase spans and record its mapping to external sampler timestamps. Software event-to-frame_post_draw is not physical mouse/controller-to-scanout latency. Report that boundary explicitly; real device/display latency needs its own hardware method.
 
@@ -40,11 +44,17 @@ Record catalog/index lookup, custom-skin inventory/admission, registry/provenanc
 
 Capture asynchronous start/end events with request generation and content identity. Do not sum overlapping resource, numeric and render work; retain both critical-path elapsed time and exclusive CPU spans. An outer 3 ms scheduler budget does not prove that a single surface read or upload respected it.
 
+For dependency attribution, compare a recursive static resource inventory with actual dynamic paths requested during build, paint and first draw. Record path aliases, source/dependency revisions, request/collection counts and owner handoffs. Static enumeration alone does not prove all work is covered. For cooperative preparation, record per-slice CPU and the largest indivisible operation; prove an actual next-frame boundary rather than a chain of same-idle deferred calls.
+
+For retirement, observe Node release, retained references, queued roots and aggregate memory separately. Qualify a conservative per-renderer observation window and bounded retirement allowance. No exact per-resource GPU reclamation signal is assumed. Test pressure/timeout fallback without treating timeout as freed bytes or blocking navigation forever.
+
 ## 3. Per-run identity and event record
 
 Keep one small run manifest with source commit plus scoped diff, engine full version/hash, source/asset/import hashes, export/package identity, machine/OS/CPU/RAM/GPU/driver, renderer, actual viewport resolution, MSAA/quality/lighting/landscape, audio/input mode, isolated profile, observers, temperature/power state where relevant and competing workload disclosure.
 
 Each selection record should contain run ID, sequence/generation, intent kind, source-qualified vehicle ID/revision, desired and effective skin IDs/revisions, displayed tuple before/after, timestamps for each phase, cache outcome, queue reason, canceled/failed/superseded flags, failure stage, admitted/reserved byte estimates and current ownership counts. Store native resource units explicitly: microseconds versus milliseconds, bytes versus MiB. A deleted/mismatched revision is not a successful cache hit.
+
+Add only the diagnostics needed by a candidate: card binding generation and live-card count; actual encoded/decoded/GPU formats and unique owners; retention admission versus work admission; useful prefetched adoption before demand, late adoption, bytes/work discarded and eviction-caused reload; full-settings generation, writer count and durable generation. Report cache benefit as work/latency avoided on real demand, not only hit percentage. Pipeline compilation counter deltas are correlation, not a time measurement; the current debug bridge sum needs per-category detail if attribution requires it.
 
 Reports include raw sample links/hashes, sample count, median, p95/p99 where sample size supports them, maximum, and counts of frames above 33/50/100 ms. Separate canceled and failed selections from successful latency distributions but report their counts and user-visible recovery. A lower average can hide one second-long freeze.
 
@@ -81,6 +91,33 @@ Change one material mechanism per candidate and alternate baseline/candidate ord
 | E8: shader preparation | Existing first draw vs bounded selected-path warmup | Only after first-use attribution; real Compatibility and Metal/Mobile paths separately, matching settings and total elapsed work |
 | E9: import/index lifecycle | Indexed path vs bounded bootstrap/repair | Legacy .orskin folder, absent/corrupt/stale index, external file replacement/removal, interrupted derivative write and changed engine/recipe version |
 
+### Targeted comparisons added by the twenty investigations
+
+| Experiment | Compare | Cases and decision |
+| --- | --- | --- |
+| E10: dependency ownership | Baseline traced closure vs one justified early dependency preparation, through the existing owner | Dynamic paths, aliases, duplicate consumers, same-path incompatible options/revisions, stale/failed terminal collection, Home exit and immediate launch; accept only exact identity, balanced tokens and reduced complete wait |
+| E11: retention admission | Current recency vs minimal probation/protected retention, with equal byte and count caps | Sequential full selections, frequent A revisits, delayed second access, skin churn, large entries; exclude metadata-only scroll from full-cache traffic; measure work avoided, eviction reload and bookkeeping |
+| E12: reuse and retirement | A controlled 2×2: current retention vs one safely transferred root across Home recreation; current retirement vs pacing independent roots | Home return, launch overlap, failure, stale completion, materials reset and 20+ cycles; preserve total caps; identify each effect separately; reject moved hitches, pressure or owner leaks |
+| E13: derivative publication | Current admitted path vs one immutable, content-keyed derivative generation | Same-path replacement with old owners, missing dependency, corrupt/interrupted generation, recipe/engine change, concurrent index refresh and clean export; distinguish visibility, process crash and power-loss guarantees |
+| E14: package locality | Current package layout vs measured family grouping; then a separate matched compression comparison | Same closure/quality, actual file reads/seeks where measurable, decode/staging/upload, first draw, package/update bytes and peaks; no assumption that pack size equals loaded residency |
+| E15: progressive preview | Thumbnail→full vs thumbnail→separate proxy→full | One measured heavy vehicle, correct skin, immediate launch, rapid abandonment, low memory and warm cache hit; useful proxy time, full-ready/launch time and combined cost; no fixed animation floor |
+| E16: geometry delivery | Current owner-generated asset vs one change in mesh representation, complexity or eligible structure | Named nodes/hinges, skin slots, crash mappings, bounds and validation parity; nodes/surfaces/vertices, decode/instantiate, largest surface read, draw and memory; preserve Creator admission |
+| E17: persistence | Existing transaction vs full-state/durable-state no-op detection; only then conditional generation-safe coalescing | Fast vehicle/skin changes; older queued snapshot overlapping another settings writer; external deletion/corruption/replacement after success; failed/pending retry, Home exit, launch, Quit, interrupted publish and restart; verify full payload, conflicts and recovery |
+| E18: cooperative finalization | Existing preparation vs one measured phase split at safe boundaries | Large indivisible surface, cancellation between phases, stale generation, rollback, main/worker ownership and final draw; per-slice/max CPU, total elapsed and temporary peak; reject cosmetic yielding |
+
+| Research coverage | Experiment ownership |
+| --- | --- |
+| T01 / T02 | E5 catalog; E9 published metadata and repair |
+| T03 / T04 / T05 | E15 proxy; E1 appearance; E3 generated outputs |
+| T06 / T07 / T08 | E0/E10 dependencies and owner; E2/E7 duplicate-consumer cases; E18 safe slices |
+| T09 / T10 | E2 browse admission; E7 prediction |
+| T11 / T12 / T13 | E11 retention; E4 reservations; E12 reuse/retirement |
+| T14 / T15 | E9/E13 publication; E14 layout/compression |
+| T16 / T17 / T18 | E6 separate texture-format and tier candidates; E16 geometry |
+| T19 / T20 | E8 first-use rendering; E17 persistence |
+
+Run E0 to choose the critical stage, then the relevant narrow screen. E1/E2, the catalog contract and required identity regressions are early candidates. E7/E8 and E11–E18 are conditional except for correctness cases required by a changed storage/ownership path. Do not multiply nineteen experiments by the complete host/fleet matrix. After accepting a local change, qualify the affected complete flow and required target cases. E12's planned factorial comparison is an exception to one-factor screening because it measures two separate, potentially interacting effects under controlled caps.
+
 Use five alternating fresh-process pairs and at least twenty warm transitions per representative case for screening, retaining every sample. Those small screens are descriptive, not reliable tail qualification. For final p95 gates collect at least thirty first-visit repetitions per gated vehicle/host case and at least two hundred warm/burst transitions across repeated runs; report tail uncertainty and maxima. Escalate sample count only when variation or a failed/inconclusive gate requires it. A 20-cycle lifecycle loop checks bounded ownership; it is not a long-duration soak qualification.
 
 For catalog logic, 100/1,000 synthetic metadata records are legitimate fixtures. They do not prove the memory behavior of 100 distinct heavy assets. Add a library of admitted real/generated imports with varied node/surface/texture complexity and known content identities, then traverse it under bounded admission. Oversized or unknown-budget entries must exercise the documented thumbnail/fallback path. Do not weaken importer limits to make the fixture pass.
@@ -110,7 +147,7 @@ For selectors and non-aircraft activities, extend the existing observer/debug sc
 | [test_livery_picker.gd](../../../../app/tests/test_livery_picker.gd), [test_ui_home.gd](../../../../app/tests/test_ui_home.gd), [test_ui_home_layout.gd](../../../../app/tests/test_ui_home_layout.gd) | Visible-row/image bounds, selected/default/error cards, no build on focus, recycled binding tokens, controller/native focus, empty results and locale/text reflow |
 | [test_home_vehicle_roster.gd](../../../../app/tests/test_home_vehicle_roster.gd) and [test_aircraft_catalog.gd](../../../../app/tests/test_aircraft_catalog.gd) | Stock IDs remain stable; namespaced imports cannot collide or spoof readiness/adapter; aircraft-only consumers stay aircraft-only; future family adapters are explicit |
 | [test_home_flight_preparation.gd](../../../../app/tests/test_home_flight_preparation.gd) and root activity-route tests | No new speculation while browsing, active job drains before gate release, adopted work not duplicated/evicted, cancel/Quit; snapshot activity tuple before awaiting drain |
-| Preferences/skin selection through Home/root | Legacy empty/default IDs and aliases, wanted/effective/displayed identity, missing skin on restart, save failure/retry and file replacement between selection and launch |
+| Preferences/skin selection through Home/root | Legacy empty/default IDs and aliases, wanted/effective/displayed identity, missing skin on restart, save failure/retry and file replacement between selection and launch; if persistence changes, concurrent full-settings generations, bounded unsaved age, checkpoint semantics and interrupted publication recovery |
 
 A specifically required activity case is **Drive car A with skin X → hold a controlled preparation drain → change Home selection/skin → release drain**. The launched activity must use the original accepted tuple, or explicitly refuse/recover; it must not silently pick a later Home value. Repeat for airship and multirotor settings and failure paths. Current activity construction is not automatically the aircraft staged route; the source gap and proposed repair are recorded in the plan.
 

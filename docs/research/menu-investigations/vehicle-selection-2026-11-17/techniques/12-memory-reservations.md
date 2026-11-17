@@ -1,0 +1,31 @@
+# T12 — Unique-resource reservations and pressure hysteresis
+
+**Research date:** 2026-11-17. **Status:** proposal; no runtime measurements. [Twenty-investigation index](README.md).
+
+**Question.** Can admission predict the overlapping cost of a preview swap well enough to avoid preventable pressure and reload oscillation while the current visual stays visible? This controls capacity before work starts; T11's separate policy chooses which unpinned completed entries deserve retention.
+
+## Search and evidence
+
+Actual queries on 2026-11-17: `Godot resource memory size rendering server texture size performance monitors video memory`; `site:docs.godotengine.org "get_rendering_info" "Compatibility" "RENDERING_INFO_VIDEO_MEM_USED"`; `site:docs.godotengine.org Godot 4 resource importer texture compression VRAM compressed uncompressed lossless file size GPU memory`.
+
+- [Godot RenderingServer](https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#enum-renderingserver-renderinginfo) describes global texture, buffer and video-memory counters; Compatibility's reported total is their sum, whereas Forward+/Mobile include other reported allocations. A zero can mean counters are not ready until rendered frames have occurred. These are renderer statistics, not a complete platform residency budget.
+- [Godot CompressedTexture2D 4.5](https://docs.godotengine.org/en/4.5/classes/class_compressedtexture2d.html) distinguishes disk-oriented image compression from GPU-compressed texture residency. A small compressed file is not itself a reliable GPU allocation estimate.
+- [Godot ResourceLoader](https://docs.godotengine.org/en/stable/classes/class_resourceloader.html#enum-resourceloader-cachemode) describes shared cached resources and external dependencies. Its stable documentation can change and 4.5 is not the deployed 4.8-beta2; check the [pinned engine audit](../loading-research.md#2-resourceloader-contract-on-the-pinned-engine) and actual target behavior.
+
+Accessed 2026-11-17. These sources motivate the accounting distinction; none proves complete per-resource driver costs or an OpenRC speedup.
+
+## OpenRC seam and exact policy to test
+
+[HomeScene](../../../../../app/ui/home_scene.gd) holds a visible model, up to two recent models and a separately prepared candidate; [HomePreviewGeometry](../../../../../app/ui/home_preview_geometry.gd) creates bounded private snapshots; the [broker](../../../../../app/ui/home_preview_resources.gd) owns active resource work and two retained resources. Before an eligible heavy request, reserve a conservative estimate for the **actual simultaneous peak**: current displayed root and shared resources, candidate incremental resources, CPU decode/transcode and geometry snapshots, upload/staging copies, plus old objects and driver work still pending retirement. Include accepted-launch pins and active work. A queued latest intent reserves bounded metadata immediately and reserves heavy allocations when actually admitted. Do not count an already-owned shared texture again merely because the candidate references it; count distinct CPU and GPU copies, staging allocations and distinct materials.
+
+Key ledger entries by actual resource/allocation identity where observable and by conservative content/format/size class otherwise; retain explicit owner counts for visible, candidate, broker and retirement references. Derive texture cost from declared dimensions, format and mip chain; account for block rounding and unknown overhead. Geometry and nodes need separate estimates. Disk bytes, ledger estimates/reservations, process RSS and renderer/platform counters are different views. RSS and GPU counters can overlap, especially on Apple Silicon unified memory, so do not sum them as independent physical usage. Record predicted versus measured peaks to calibrate missing driver and engine overhead.
+
+Use two measured watermarks, `low < high`: enter pressure at/above high; stop speculation and evict eligible unpinned entries toward low; remain under pressure if pinned or retiring work prevents reaching it. Resume speculation only at/below low after draining. A selected request that cannot reserve may evict unpinned data, take an explicitly available smaller preview tier, or remain a clearly identified thumbnail with an honest limit. Never evict the current visual or silently degrade flight quality. Unknown imports must first pass bounded dimension/node/surface/decompression limits and a conservative admission class; if cost remains unknown or cannot fit, stay thumbnail-only. The ledger is a best-effort admission limit, **not** an absolute process/RAM/VRAM cap. Keep today's hard three-model/two-resource and one-active-request limits as fallbacks while estimates are qualified.
+
+## Experiment and decision
+
+Under [benchmark protocol](../benchmark-protocol.md), A uses existing count-only retention and B adds reservations and two watermarks, with identical assets, renderer, selection tape and no speculative change. Establish limits from UI-VS-00 measurements on named low-memory, main desktop and Apple Silicon systems, not arbitrary universal percentages. Test large→large, shared-resource variants, unknown/oversized import, rapid reversals and 20 repeated cycles. Record estimated/reserved peak components, actual RSS/system pressure, renderer counters, delayed post-free samples, fallback frequency, eviction/reload counts, p95/p99 input frames and first correct draw. Record which counters overlap and retain renderer, resolution and content hashes.
+
+**Reject or revise** B if observed peaks repeatedly exceed its calibrated safety envelope, it oscillates or blocks ordinary selection, it cannot account for unknown content safely, or its responsiveness loss exceeds a predeclared tolerance. Any stale/wrong preview or changed launch validation is an unconditional failure. A released dictionary entry is not evidence of immediate GPU reclamation.
+
+**Recommendation and step:** implement instrumentation first in UI-VS-00; qualify the ledger, reservations, low/high thresholds and unknown-size fallback under UI-VS-05 before broader retention or UI-VS-10 prefetch. Runtime cache eviction never deletes user source files. No OpenRC runtime measurement was made for this note.

@@ -1,0 +1,32 @@
+# T14 — Versioned derived-cache identity and publication
+
+**Research date:** 2026-11-17. **Status:** proposal; no runtime measurements. [Twenty-investigation index](README.md).
+
+**Question.** Can an imported preview derivative be reused across restarts without showing a stale revision or exposing a partial write, even while an older revision remains in use? This investigates identity, invalidation and publication; generation of bounds, pose or shadow is a separate experiment.
+
+## Search and evidence
+
+Actual queries on 2026-11-17: `Godot 4 ResourceLoader cache mode replace ignore resource path cached docs Resource take_over_path`; `site:docs.godotengine.org ResourceLoader "cached" "path" "CACHE_MODE_REUSE" Godot resource`; `site:docs.godotengine.org DirAccess rename overwrite same directory FileAccess flush crash Godot 4`; `site:learn.microsoft.com windows ReplaceFileW function atomic durability crash MoveFileEx same volume`.
+
+- [Godot ResourceLoader](https://docs.godotengine.org/en/stable/classes/class_resourceloader.html#enum-resourceloader-cachemode) documents `CACHE_MODE_REUSE` for a resource and external dependencies. `CACHE_MODE_REPLACE` can refresh existing compatible cached instances; it is not an isolated eviction operation.
+- [Godot DirAccess 4.5](https://docs.godotengine.org/en/4.5/classes/class_diraccess.html#class-diraccess-method-rename) documents rename and overwrite but does not promise atomicity or crash durability on all platforms. [Microsoft MoveFileExW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw) describes a cross-volume move that can become copy/delete, so a generic move is insufficient evidence of atomic publication.
+
+Accessed 2026-11-17. Stable/4.5 docs are not 4.8-beta2 guarantees; the [existing audit](../loading-research.md#application-keys-do-not-override-the-engines-path-cache) links pinned engine source. Atomic visibility, process-crash recovery and power-loss durability require separate filesystem evidence.
+
+## OpenRC seam and candidate
+
+[HomePreviewResources](../../../../../app/ui/home_preview_resources.gd) currently maps stock paths and retains `PackedScene`s; downstream [AirplaneBuilder](../../../../../app/render/airplane.gd) and individual visual builders perform their own loads. A hash only in a broker dictionary cannot make their `load(old_path)` bypass Godot's existing path cache. Imported-content admission and persistent storage belong to the Creator/library owner; [CreatorSelectionState](../../../../../app/app_state/creator_selection_state.gd) rejects stale owner/generation callbacks without granting flight admission.
+
+After an input passes the importer's existing size, archive, path and validation limits, build a canonical versioned key over the exact source bytes and full dependency closure, content hashes, relevant importer/options, output recipe/schema, engine/importer version, and target platform/renderer format where output depends on them. Include adapter/binding identity and appearance/camera/lighting recipe only where relevant to that derivative. Hashes identify bytes; verify the actual source and dependency revision on admission/use according to the library contract. An indexed record, name, mtime or cache hit is never validation or flight authorization. Invalidation changes the key when any relevant dependency or recipe changes; corrupt, missing or unsupported artifacts are regenerated or fall back explicitly.
+
+Store complete outputs as immutable version paths under a rebuildable, user-clearable derivative area. The *actual* builder and every external dependency must resolve within the same revision closure, not only a renamed top-level record. For raw user content, use a supported runtime load path rather than assuming an exported game has run the editor importer. Retain the exact old revision while live consumers drain. Its runtime references and rebuildable derivatives can be retired under their owner; this does **not** authorize deleting user source files or source revisions governed by separate retention policy.
+
+Write bounded outputs to a unique temporary sibling on the same volume. Close them, check all errors, hashes and completeness, then publish a small catalog/manifest pointer only through a platform-qualified atomic replacement. Keep the previously valid manifest until the replacement succeeds; one publisher serializes revisions. If that atomic primitive or semantics is unavailable, use a verified recoverable two-generation manifest with checksums and a complete-marker protocol; readers reject incomplete or corrupt generations and use the last complete one. Process termination at each stage must not expose half-built content. `DirAccess.rename` documentation alone does not establish this guarantee, and a cross-volume copy is not atomic. Make no power-loss durability claim without the target filesystem's file-and-directory sync guarantee and fault evidence.
+
+## Experiment and decision
+
+Compare A, validated rebuild from admitted source, with B, validated derivative reuse on the same input and cache state. Exercise clean install, cold and warm restart, changed texture only, importer/engine/recipe version change, same visible filename with different bytes, missing/corrupt derivative and low disk space. Keep an old visual alive while publishing a new revision, including external texture dependencies; confirm both consumers see their own bytes and the builder's actual paths. Kill the process at each publication stage, concurrently read the catalog, restart, and verify a complete old or complete new generation with no mixed revision. Repeat on supported filesystems and exported builds.
+
+Measure complete request-to-correct-first-draw, hash/validation and rebuild time, I/O bytes, cache size and hit usefulness, plus recovery time. **Reject** if any stale/mixed revision, source deletion, bypassed validation or partial publication occurs; reject the optimization if complete latency/storage cost does not beat rebuilding beyond repeated baseline variation. Unsupported filesystems keep the rebuild/fallback route.
+
+**Recommendation and step:** UI-VS-08 is conditional on UI-VS-05/06 and the existing import owner. Start with a single derivative type and a tested revision closure, not a new asset manager. UI-VS-12 qualifies packaged runtime and failure recovery. No OpenRC implementation or fault test was performed here.

@@ -4,6 +4,8 @@
 
 [Current-source investigation](vehicle-selection-2026-11-17/README.md) audits main 3c91936 on Godot 4.8-beta2: the 13-vehicle/49-appearance inventory, existing loader/cache/gallery, remaining full preview construction, skin/archive work and idle-preparation contention. Includes a detailed interface specification, primary engine/game-loading research and controlled measurement protocol. [UI-VS-00…12](../../plans/vehicle-selection-performance.md) owns the proposed implementation sequence. Documentation only; no new runtime timing or optimization is claimed.
 
+Expanded with [twenty targeted loading investigations](vehicle-selection-2026-11-17/techniques/README.md): metadata and virtualization, material reuse, generated preparation, dependency ownership, scheduling/prediction, bounded memory/retention, immutable derivatives, package/texture/mesh delivery, renderer warmup and transactional settings persistence. Each records search terms, primary evidence, application, counterexample and a falsifiable experiment; the plan and benchmark incorporate the resulting decisions.
+
 ## UI-15-JETI-05 — scroll and focus audit, 2026-10-26
 
 [Cross-menu findings and regression evidence](scroll-focus-2026-10-26.md): rejected Workshop lighting edits,
