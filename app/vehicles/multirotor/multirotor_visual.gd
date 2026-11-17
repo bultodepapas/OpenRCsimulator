@@ -11,6 +11,9 @@ extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
 const PropellerBlur = preload("res://render/propeller_blur.gd")
+const PropBreak = preload("res://render/crash/prop_break.gd")
+## DR-19d: largest wobble (rad) of a damaged prop's disc, reached as its health falls to zero.
+const DAMAGE_WOBBLE_RAD := 0.12
 
 const MODEL_PATH := "res://assets/multirotors/ion-r5/ion_r5.glb"
 ## Prop plane above the frame's arm-top (motor-mount) plane. Estimated; motors are not in the downloaded frame.
@@ -267,9 +270,34 @@ func pose(body: PackedFloat64Array, rotor_speed: PackedFloat64Array, frame_dt: f
 		rotor.speed = omega
 		rotor.phase = fposmod(float(rotor.phase) + float(rotor.spin) * omega * frame_dt, TAU)
 		var pivot: Node3D = rotor.pivot
-		pivot.transform = Transform3D((rotor.base as Basis) * Basis(Vector3(0.0, 0.0, 1.0), float(rotor.phase)), pivot.transform.origin)
+		var spin_basis := Basis(Vector3(0.0, 0.0, 1.0), float(rotor.phase))
+		var health := float(rotor.get("health", 1.0))
+		if health < 1.0 and health > 0.0:
+			# DR-19d: a chipped prop runs out of balance: its disc wobbles once per turn.
+			spin_basis = Basis(Vector3(1.0, 0.0, 0.0), DAMAGE_WOBBLE_RAD * (1.0 - health) * sin(float(rotor.phase))) * spin_basis
+		pivot.transform = Transform3D((rotor.base as Basis) * spin_basis, pivot.transform.origin)
 		if rotor.blur != null and is_instance_valid(rotor.blur):
 			rotor.blur.update(omega * 60.0 / TAU)
+
+
+## DR-19d: per-prop health from telemetry (1 intact … 0 broken). A broken prop's blades go (render/crash/prop_break.gd,
+## which also keeps its blur disc hidden); a restored one (a pad restart) comes back; a damaged one wobbles in pose().
+func set_rotor_health(health: PackedFloat64Array) -> void:
+	for i in rotors.size():
+		var rotor: Dictionary = rotors[i]
+		var value := health[i] if i < health.size() and is_finite(health[i]) else 1.0
+		rotor.health = value
+		var broken: bool = rotor.has("break_records")
+		if value <= 0.0 and not broken:
+			rotor.break_records = PropBreak.break_blades(rotor.pivot)
+		elif value > 0.0 and broken:
+			PropBreak.restore(rotor.break_records)
+			rotor.erase("break_records")
+
+
+## Whether rotor `index` is shown broken (its blades removed).
+func rotor_broken(index: int) -> bool:
+	return rotors[index].has("break_records")
 
 
 ## Blur fraction of a rotor (0 = solid blades, 1 = disc only); -1 without a blur observer.

@@ -13715,3 +13715,129 @@ msgstr "grilletto destro"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d risultati di gara non sono salvati. Scegli di nuovo Torna a Home entro 8 s per scartarli."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "Quadricottero FPV EdgeTX (CH5 armamento, CH6 modalità, CH9 ripartenza)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "Quadricottero FPV EdgeTX: stick AETR su CH1-CH4, armamento su CH5 (arma solo la posizione alta), modalità di volo su CH6 (basso Angle, centro e alto Acro), ripartenza dalla piazzola su CH9 (un interruttore momentaneo). Assegna questi interruttori nel mixer della radio, poi calibra."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "Il preset FPV EdgeTX è disponibile solo per una radio."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Impossibile applicare il preset FPV EdgeTX: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Gli interruttori FPV EdgeTX sono nella bozza. Controllali sulla radio, poi Salva per mantenerli."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Riparti dalla piazzola: R o %s sul controller."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "Capovolto: premi R per tornare alla piazzola."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "Capovolto: premi R o %s per tornare alla piazzola."
+
+msgid "PROP BROKEN"
+msgstr "ELICA ROTTA"
+
+msgid "PROP DAMAGE"
+msgstr "ELICA DANNEGGIATA"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Schianti: graduati (gli impatti possono danneggiare le eliche)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Schianti: ogni schianto termina il volo"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "L’impostazione degli schianti vale dopo Riparti dalla piazzola."
+
+msgid "rear right"
+msgstr "posteriore destra"
+
+msgid "front right"
+msgstr "anteriore destra"
+
+msgid "rear left"
+msgstr "posteriore sinistra"
+
+msgid "front left"
+msgstr "anteriore sinistra"
+
+msgid "Prop broken: %s"
+msgstr "Elica rotta: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Elica danneggiata: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Atterraggio duro (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Rimbalzo su un ostacolo (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX aereo (CH5 carrello, CH6 flap, CH10 fumo, CH9 riavvio)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX aereo: stick AETR su CH1-CH4, carrello su CH5 (SD), flap su CH6 (SA, retratti / decollo / atterraggio), riavvio su CH9 (SH, momentaneo), fumo su CH10 (SE). Dual rate, expo e taglio motore restano nella radio. Calibra, poi usa Configura questo dispositivo per verificare ogni interruttore."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "Il preset EdgeTX aereo è disponibile solo per una radio."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Impossibile applicare il preset EdgeTX aereo: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "Il preset EdgeTX aereo è nella bozza. Usa Configura questo dispositivo per verificare carrello, flap e fumo sulla radio, poi Salva."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s usa il pulsante %d (attivo finché premuto). Salva il profilo per mantenerlo."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · inizia da %s"
+
+msgid "DOWN (gear down)"
+msgstr "GIÙ (carrello estratto)"
+
+msgid "UP (flaps up)"
+msgstr "SU (flap retratti)"
+
+msgid "OFF (smoke off)"
+msgstr "OFF (fumo spento)"
+
+msgid "released"
+msgstr "rilasciato"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 o Esc → Sovrimpressioni di volo"
+
+msgid "Throttle cut"
+msgstr "Taglio motore"
+
+msgid "On your radio (special function)"
+msgstr "Sulla radio (funzione speciale)"
+
+msgid "Flap → elevator mix"
+msgstr "Mix flap → elevatore"
+
+msgid "Applied by your radio"
+msgstr "Applicato dalla radio"
+
+msgid "Applied by OpenRC"
+msgstr "Applicato da OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Porta %s su OFF per prendere il controllo"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Porta il suo interruttore su OFF per prendere il controllo"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "Radio USB (EdgeTX): seleziona USB Joystick (Classic) in Model setup e spegni la RF. Disposizione suggerita: AETR su CH1-CH4, carrello CH5 (SD), flap CH6 (SA), riavvio CH9 (SH), fumo CH10 (SE); dual rate, expo e taglio motore restano nella radio. Abbassa il gas per armare; scollegare mette in pausa. K: calibra. Comandi → Configura questo dispositivo verifica ogni interruttore. F1 mostra la guida ai comandi in volo. Senza la verifica degli interruttori, assegna il carrello a un AUX o a «Attiva/disattiva il carrello» in Comandi."
+
+msgid "Control guide: show / hide"
+msgstr "Guida ai comandi: mostra / nascondi"

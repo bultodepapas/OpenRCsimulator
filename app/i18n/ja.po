@@ -12939,3 +12939,129 @@ msgstr "右トリガー"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d 件のレース結果が保存されていません。8 秒以内にもう一度「ホームに戻る」を選ぶと破棄します。"
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "EdgeTX FPV クアッド（CH5 アーム、CH6 モード、CH9 再開）"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "EdgeTX FPV クアッド：AETR スティックは CH1-CH4、アームは CH5（上端でのみアーム）、飛行モードは CH6（下で Angle、中央と上で Acro）、パッドから再開は CH9（モーメンタリースイッチ）。送信機のミキサーでこれらのスイッチを割り当ててから、キャリブレーションしてください。"
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "EdgeTX FPV プリセットは送信機でのみ使用できます。"
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "EdgeTX FPV プリセットを適用できませんでした：%s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "EdgeTX FPV のスイッチを下書きに入れました。送信機で確認してから保存してください。"
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "パッドから再開：R またはコントローラーの %s。"
+
+msgid "Upside down: press R to return to the pad."
+msgstr "裏返し：R を押すとパッドに戻ります。"
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "裏返し：R または %s を押すとパッドに戻ります。"
+
+msgid "PROP BROKEN"
+msgstr "プロペラ破損"
+
+msgid "PROP DAMAGE"
+msgstr "プロペラ損傷"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "クラッシュ：段階的（衝撃でプロペラが損傷することがあります）"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "クラッシュ：どのクラッシュでも飛行終了"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "クラッシュ設定は「パッドから再開」後に適用されます。"
+
+msgid "rear right"
+msgstr "右後"
+
+msgid "front right"
+msgstr "右前"
+
+msgid "rear left"
+msgstr "左後"
+
+msgid "front left"
+msgstr "左前"
+
+msgid "Prop broken: %s"
+msgstr "プロペラ破損：%s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "プロペラ損傷：%s（%d%%）"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "ハードランディング（%.1f m/s）"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "障害物に当たって跳ね返りました（%.1f m/s）"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX 飛行機（CH5 脚、CH6 フラップ、CH10 スモーク、CH9 リスタート）"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX 飛行機：AETR スティックは CH1-CH4、脚は CH5（SD）、フラップは CH6（SA、上げ / 離陸 / 着陸）、リスタートは CH9（SH、モーメンタリ）、スモークは CH10（SE）。デュアルレート、エクスポ、スロットルカットは送信機側に残ります。キャリブレーション後、「このデバイスを設定」で各スイッチを確認してください。"
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "EdgeTX 飛行機プリセットは送信機でのみ使用できます。"
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "EdgeTX 飛行機プリセットを適用できませんでした: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "EdgeTX 飛行機プリセットを下書きに入れました。「このデバイスを設定」で送信機の脚、フラップ、スモークを確認してから保存してください。"
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s はボタン %d を使います（押している間オン）。保持するにはプロファイルを保存してください。"
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · %s から開始"
+
+msgid "DOWN (gear down)"
+msgstr "下（脚下げ）"
+
+msgid "UP (flaps up)"
+msgstr "上（フラップ上げ）"
+
+msgid "OFF (smoke off)"
+msgstr "オフ（スモーク停止）"
+
+msgid "released"
+msgstr "離した状態"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 または Esc → フライト表示"
+
+msgid "Throttle cut"
+msgstr "スロットルカット"
+
+msgid "On your radio (special function)"
+msgstr "送信機側（スペシャルファンクション）"
+
+msgid "Flap → elevator mix"
+msgstr "フラップ → エレベーター ミキシング"
+
+msgid "Applied by your radio"
+msgstr "送信機が適用"
+
+msgid "Applied by OpenRC"
+msgstr "OpenRC が適用"
+
+msgid "Move %s to OFF to take control"
+msgstr "%s を OFF にすると操作できます"
+
+msgid "Move its switch to OFF to take control"
+msgstr "そのスイッチを OFF にすると操作できます"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB 送信機（EdgeTX）：Model setup で USB Joystick (Classic) を選び、RF をオフにします。推奨配置：AETR は CH1-CH4、脚 CH5（SD）、フラップ CH6（SA）、リスタート CH9（SH）、スモーク CH10（SE）。デュアルレート、エクスポ、スロットルカットは送信機側に残ります。スロットルを下げるとアーム、抜くと一時停止。K：キャリブレーション。操作 → このデバイスを設定 で各スイッチを確認します。飛行中は F1 で操作ガイドを表示します。 スイッチ確認を使わない場合は、操作 で脚を AUX または「着陸装置を切り替え」に割り当てます。"
+
+msgid "Control guide: show / hide"
+msgstr "操作ガイド：表示 / 非表示"

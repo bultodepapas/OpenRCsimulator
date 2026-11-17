@@ -12478,3 +12478,129 @@ msgstr "gatillo derecho"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d resultados de carrera no están guardados. Elige Volver al inicio otra vez en 8 s para descartarlos."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "Cuadricóptero FPV EdgeTX (CH5 armado, CH6 modo, CH9 reinicio)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "Cuadricóptero FPV EdgeTX: sticks AETR en CH1-CH4, armado en CH5 (solo arma su extremo alto), modo de vuelo en CH6 (abajo Angle, centro y arriba Acro), reinicio en la plataforma en CH9 (un interruptor momentáneo). Asigna esos interruptores en el mezclador de tu emisora y luego calibra."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "El preajuste FPV de EdgeTX solo está disponible para una emisora."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "No se pudo aplicar el preajuste FPV de EdgeTX: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Los interruptores FPV de EdgeTX están en el borrador. Compruébalos en tu emisora y pulsa Guardar para conservarlos."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Reiniciar en la plataforma: R o %s en el control."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "Boca abajo: pulsa R para volver a la plataforma."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "Boca abajo: pulsa R o %s para volver a la plataforma."
+
+msgid "PROP BROKEN"
+msgstr "HÉLICE ROTA"
+
+msgid "PROP DAMAGE"
+msgstr "HÉLICE DAÑADA"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Choques: graduados (los impactos pueden dañar hélices)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Choques: cualquier choque termina el vuelo"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "El ajuste de choques se aplica tras Reiniciar en la plataforma."
+
+msgid "rear right"
+msgstr "trasera derecha"
+
+msgid "front right"
+msgstr "delantera derecha"
+
+msgid "rear left"
+msgstr "trasera izquierda"
+
+msgid "front left"
+msgstr "delantera izquierda"
+
+msgid "Prop broken: %s"
+msgstr "Hélice rota: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Hélice dañada: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Aterrizaje duro (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Rebote contra un obstáculo (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX avión (CH5 tren, CH6 flaps, CH10 humo, CH9 reinicio)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX avión: palancas AETR en CH1-CH4, tren de aterrizaje en CH5 (SD), flaps en CH6 (SA, arriba / despegue / aterrizaje), reinicio en CH9 (SH, momentáneo), humo en CH10 (SE). Los dual rates, el expo y el corte de motor quedan en la radio. Calibra y luego usa Configurar este dispositivo para comprobar cada interruptor."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "El preajuste EdgeTX avión solo está disponible para una radio."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "No se pudo aplicar el preajuste EdgeTX avión: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "El preajuste EdgeTX avión está en el borrador. Usa Configurar este dispositivo para comprobar tren, flaps y humo en tu radio y luego Guarda."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s usa el botón %d (activo mientras está pulsado). Guarda el perfil para conservarlo."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · empieza en %s"
+
+msgid "DOWN (gear down)"
+msgstr "ABAJO (tren abajo)"
+
+msgid "UP (flaps up)"
+msgstr "ARRIBA (flaps arriba)"
+
+msgid "OFF (smoke off)"
+msgstr "OFF (humo apagado)"
+
+msgid "released"
+msgstr "suelto"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 o Esc → Overlays de vuelo"
+
+msgid "Throttle cut"
+msgstr "Corte de motor"
+
+msgid "On your radio (special function)"
+msgstr "En tu radio (función especial)"
+
+msgid "Flap → elevator mix"
+msgstr "Mezcla flaps → profundidad"
+
+msgid "Applied by your radio"
+msgstr "La aplica tu radio"
+
+msgid "Applied by OpenRC"
+msgstr "La aplica OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Pon %s en OFF para tomar el control"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Pon su interruptor en OFF para tomar el control"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "Radio USB (EdgeTX): selecciona USB Joystick (Classic) en Model setup y apaga la RF. Distribución sugerida: AETR en CH1-CH4, tren de aterrizaje CH5 (SD), flaps CH6 (SA), reinicio CH9 (SH), humo CH10 (SE); los dual rates, el expo y el corte de motor quedan en la radio. Baja el acelerador para armar; desconectar pausa. K: calibrar. Controles → Configurar este dispositivo comprueba cada interruptor. F1 muestra la guía de controles en vuelo. Sin la comprobación de interruptores, asigna el tren a AUX o a Alternar tren de aterrizaje en Controles."
+
+msgid "Control guide: show / hide"
+msgstr "Guía de controles: mostrar / ocultar"

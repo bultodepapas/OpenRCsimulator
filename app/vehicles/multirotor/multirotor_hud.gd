@@ -700,7 +700,7 @@ func _notification(what: int) -> void:
 func set_controls_help(bindings: Dictionary) -> void:
 	var key := {}
 	for field: String in ["source", "axes", "arm_button", "arm_aux", "arm_control", "mode_button", "mode_switch",
-			"mode_control", "pause_button", "restart_control"]:
+			"mode_control", "pause_button", "restart_control", "turtle", "turtle_button"]:
 		key[field] = bindings.get(field)
 	if key == _controls_help:
 		return
@@ -747,7 +747,16 @@ func controls_help_lines(bindings: Dictionary) -> PackedStringArray:
 	var restart := str(bindings.get("restart_control", "")) if bindings.get("restart_control") != null else ""
 	if not restart.is_empty():
 		lines.append(_tr("Restart on the pad: R or %s on the controller.") % restart)
+	lines.append(_tr("Turtle mode (flip over after a crash): %s while disarmed, then arm and push the stick toward the side to flip to.")
+		% turtle_controls(bindings))
 	return lines
+
+
+## DR-19e: the turtle-mode toggle(s) of the active source ("F", or "F / Y" with a gamepad).
+static func turtle_controls(bindings: Dictionary) -> String:
+	var key := str(bindings.get("turtle", "F")) if bindings.get("turtle") != null else "F"
+	var button := str(bindings.get("turtle_button", "")) if bindings.get("turtle_button") != null else ""
+	return key if button.is_empty() else "%s / %s" % [key, button]
 
 
 func _axis_text(axis: Variant) -> String:
@@ -1078,7 +1087,7 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	if mode < 0:
 		mode = int(t.get("flight_mode", FC.FLIGHT_ACRO))
 	# The four-letter mode names of Betaflight and INAV.
-	mode_label.text = "ANGL" if mode == FC.FLIGHT_ANGLE else "ACRO"
+	mode_label.text = "TRTL" if mode == FC.FLIGHT_TURTLE else ("ANGL" if mode == FC.FLIGHT_ANGLE else "ACRO")
 	mode_label.visible = shows("mode")
 	var arm_requested := bool(osd_state.get("arm_requested", false))
 	var bindings: Dictionary = osd_state.get("bindings", {})
@@ -1147,8 +1156,8 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until, prop_health = prop_health(t)}), now)
 	if bool(osd_state.get("upside_down", false)) and str(osd_state.get("crash_reason", "")).is_empty():
 		# DR-19c: a graded crash can leave the quad upside down on the ground; there is no turtle mode, so say how back.
-		var restart := str((osd_state.get("bindings", {}) as Dictionary).get("restart_control", ""))
-		hint_label.text = _tr("Upside down: press R to return to the pad.") if restart.is_empty() 			else _tr("Upside down: press R or %s to return to the pad.") % restart
+		# DR-19e: the crash flip first; R (or the controller's restart) returns to the pad.
+		hint_label.text = _tr("Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad.") 			% turtle_controls(osd_state.get("bindings", {}))
 	else:
 		hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
 	if now > _message_until:

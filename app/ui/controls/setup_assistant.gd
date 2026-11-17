@@ -38,6 +38,8 @@ const BindingChip := preload("res://ui/controls/binding_chip.gd")
 const CalibrationView := preload("res://ui/controls/calibration_view.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
+const EdgeTxRadio := preload("res://input/edgetx_radio.gd")
+const EDGETX_AIRPLANE_PRESET := "edgetx_airplane"
 
 ## Above the Controls screen (12). The owner's calibration surface (13) is shown while the assistant hides.
 const LAYER := 13
@@ -71,7 +73,8 @@ const MULTIROTOR_ESSENTIALS: PackedStringArray = ["aux:arm", "aux:flight_mode"]
 ## Recovery: Pause stays assignable for every vehicle; Back is shown read-only (it is mandatory and menu-owned).
 const RECOVERY_ASSIGNABLE: PackedStringArray = ["pause"]
 const RECOVERY_READ_ONLY: PackedStringArray = ["back"]
-const AUX_TITLES := { "aux:arm": "Arm motors", "aux:flight_mode": "Flight mode" }
+const AUX_TITLES := { "aux:arm": "Arm motors", "aux:flight_mode": "Flight mode", "aux:gear": "Landing gear",
+	"aux:flaps": "Flaps", "aux:smoke": "Smoke" }
 const VEHICLE_NAMES := { airplane = "Airplane", helicopter = "Helicopter", multirotor = "FPV quad" }
 const RADIO_CHECKLIST: PackedStringArray = [
 	"EdgeTX / OpenTX: select USB Joystick (Classic) for this model.",
@@ -272,7 +275,7 @@ func configure(next_host: Object) -> void:
 	_calibration = ""
 	_busy = ""
 	_index = 0
-	_essentials = essentials_for(_capabilities)
+	_essentials = essentials_for(_capabilities, str(_info.get("preset", "")))
 	_build_switch_rows()
 	_compute_steps()
 	_show_step()
@@ -325,13 +328,22 @@ static func detected_kind(info: Dictionary) -> String:
 	return ""
 
 
-## Essentials for a vehicle's capabilities (Switches page), before the recovery rows.
-static func essentials_for(capabilities: Dictionary) -> PackedStringArray:
+## Essentials for a vehicle's capabilities (Switches page), before the recovery rows. UI-15-ETX-01: the EdgeTX
+## airplane preset's switch check lists the layout's functions (gear, flaps, smoke as AUX switches, restart) that the
+## aircraft has, in layout order.
+static func essentials_for(capabilities: Dictionary, preset := "") -> PackedStringArray:
 	var list := PackedStringArray()
 	if bool(capabilities.get("helicopter", false)):
 		list.append_array(HELICOPTER_ESSENTIALS)
 	elif bool(capabilities.get("multirotor", false)):
 		list.append_array(MULTIROTOR_ESSENTIALS)
+	elif preset == EDGETX_AIRPLANE_PRESET:
+		for entry: Dictionary in EdgeTxRadio.AIRPLANE_LAYOUT:
+			var id := str(entry.id)
+			var applies := ControllerActions.aux_applies(id.trim_prefix("aux:"), capabilities) if id.begins_with("aux:") \
+				else ControllerActions.action_applies(id, capabilities)
+			if applies:
+				list.append(id)
 	else:
 		for id in AIRPLANE_ESSENTIALS:
 			if ControllerActions.action_applies(id, capabilities):
@@ -346,6 +358,17 @@ static func vehicle_name(capabilities: Dictionary) -> String:
 	if bool(capabilities.get("multirotor", false)):
 		return VEHICLE_NAMES.multirotor
 	return VEHICLE_NAMES.airplane
+
+
+## UI-15-ETX-01: the layout's suggestion under a switch-check row ("CH5 · SD · start at DOWN (gear down)"), or "".
+static func layout_hint(id: String, preset: String) -> String:
+	if preset != EDGETX_AIRPLANE_PRESET:
+		return ""
+	var entry := EdgeTxRadio.layout_entry(id)
+	if entry.is_empty():
+		return ""
+	return TranslationServer.translate("CH%d · %s · start at %s") % [int(entry.channel), str(entry.switch),
+		TranslationServer.translate(str(entry.off))]
 
 
 ## The untranslated label of an action or AUX id.
@@ -1121,6 +1144,10 @@ func _grid_heading(text: String) -> void:
 func _switch_row(id: String, read_only: bool) -> void:
 	var title := Widgets.label(item_title(id), "", false)
 	title.name = "Title_" + id.replace(":", "_")
+	var hint := layout_hint(id, str(_info.get("preset", "")))
+	if not hint.is_empty():
+		title.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		title.text = tr(item_title(id)) + "\n" + hint
 	title.custom_minimum_size.x = 360.0
 	title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_switch_grid.add_child(title)

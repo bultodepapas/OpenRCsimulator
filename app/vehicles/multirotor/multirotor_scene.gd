@@ -33,9 +33,11 @@ const LensSettings = preload("res://render/lens/lens_settings.gd")
 const RcTrackOption = preload("res://scenery/rc_track_option.gd")
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const M = preload("res://physics/math3d.gd")
 const ControllerService = preload("res://input/controller_service.gd")
 const ControllerActions = preload("res://input/controller_actions.gd")
 const UiInput = preload("res://ui/ui_input.gd")
+const QuadCrashFx = preload("res://vehicles/multirotor/quad_crash_fx.gd")
 
 const DT := 1.0 / 240.0
 ## CC0 quadcopter recording already shipped for the blimp's electric motors (assets/audio/powertrains/LICENSE.txt).
@@ -120,6 +122,12 @@ var _lens: LensStack
 var _obstacle_world: Dictionary = {}
 var _audio: AudioStreamPlayer3D
 var _audio_level := 0.0
+## DR-19d: the damaged-prop rattle layered on the motor loop (same stream, detuned), and the crash presentation.
+var _rattle: AudioStreamPlayer3D
+var crash_fx: Node3D
+## Shortest interval (ms) between two impact messages; prop messages come once per prop and damage step.
+const IMPACT_MESSAGE_INTERVAL_MS := 1200
+var _impact_message_at := -100000
 var _hover_speed := 1.0
 var _accumulation_owned := false
 var _accumulation_before := true
@@ -258,6 +266,12 @@ func _ready() -> void:
 		controller_registry.selection_changed.connect(_on_controller_selection_changed)
 	if enable_audio:
 		_build_audio()
+	crash_fx = QuadCrashFx.new()
+	crash_fx.name = "QuadCrashFx"
+	crash_fx.enable_audio = enable_audio
+	crash_fx.enable_effects = enable_world
+	crash_fx.ground_height = _ground_height_render
+	add_child(crash_fx)
 	_start_lens()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
@@ -642,9 +656,11 @@ func _route_restart(event: InputEvent) -> void:
 			active = ControllerActions.matches_binding(binding, event, int(input.radio.device_id), _restart_active)
 		_:
 			return
+	# While the menu (or a dialog over it, such as Controls capturing this very control) is open, the control is only
+	# observed: the menu's own Restart on pad is the way back, and a press held into the menu cannot fire on closing.
 	if not active:
 		_restart_off_seen = true
-	elif not _restart_active and _restart_off_seen:
+	elif not _restart_active and _restart_off_seen and not hud.menu_visible:
 		quick_restart()
 	_restart_active = active
 
@@ -875,6 +891,8 @@ func _after_pad_reset() -> void:
 	_terminal_text = ""
 	_crash_cause = ""
 	view.snap()
+	if crash_fx != null:
+		crash_fx.reset()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
 
@@ -885,6 +903,10 @@ func _on_crashed(reason: String) -> void:
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
 	# The OSD hint already names the cause (no duplicate flash).
 	_lens_crash(reason)
+	# DR-19d: the shared crash ladder (sound and debris) and a full camera jolt.
+	if crash_fx != null and visual != null:
+		crash_fx.crash(reason, visual.root.position, _render_velocity())
+	view.shake(1.0)
 
 
 ## LENS-01: the quad session reports a strike only as a reason. Presentation names what was hit by asking the installed
@@ -952,18 +974,43 @@ func _lens_crash(reason: String) -> void:
 
 
 ## DR-19c: a survivable impact or prop damage (graded crashes): say what happened; the flight goes on.
+## DR-19d: messages once per prop and damage step (a grinding prop reports every tick) and at most one impact message
+## per IMPACT_MESSAGE_INTERVAL_MS; the crash presentation paces its own sound and effects; impacts jolt the camera.
 func _on_impact(event: Dictionary) -> void:
+	var velocity := _render_velocity()
 	match str(event.get("type", "")):
 		"prop_damage":
 			var rotor := int(event.get("rotor", -1))
 			var where: String = tr(str(ROTOR_NAMES[rotor])) if rotor >= 0 and rotor < ROTOR_NAMES.size() else "?"
 			var health := float(event.get("health", 0.0))
-			hud.flash(tr("Prop broken: %s") % where if health <= 0.0 else tr("Prop damaged: %s (%d%%)") % [where, int(round(100.0 * health))], 3.0)
+			if health <= 0.0:
+				hud.flash(tr("Prop broken: %s") % where, 3.0)
+			elif bool(event.get("first", false)):
+				hud.flash(tr("Prop damaged: %s (%d%%)") % [where, int(round(100.0 * health))], 3.0)
+			if crash_fx != null:
+				crash_fx.prop_damage(event, velocity)
+			view.shake(0.25 if health > 0.0 else 0.5)
 		"impact":
-			if str(event.get("surface", "")) == "ground":
-				hud.flash(tr("Hard landing (%.1f m/s)") % float(event.get("normal_speed_mps", 0.0)), 2.5)
-			else:
-				hud.flash(tr("Bounced off an obstacle (%.1f m/s)") % float(event.get("normal_speed_mps", 0.0)), 2.5)
+			var speed := float(event.get("normal_speed_mps", 0.0))
+			var now := Time.get_ticks_msec()
+			if now - _impact_message_at >= IMPACT_MESSAGE_INTERVAL_MS:
+				_impact_message_at = now
+				if str(event.get("surface", "")) == "ground":
+					hud.flash(tr("Hard landing (%.1f m/s)") % speed, 2.5)
+				else:
+					hud.flash(tr("Bounced off an obstacle (%.1f m/s)") % speed, 2.5)
+			if crash_fx != null:
+				crash_fx.impact(event, velocity)
+			view.shake(clampf(speed / 12.0, 0.15, 1.0))
+
+
+## The accepted CG velocity in render axes (presentation).
+func _render_velocity() -> Vector3:
+	var state: PackedFloat64Array = session.sim.state
+	if state.size() < RB.SIZE:
+		return Vector3.ZERO
+	var world: PackedFloat64Array = M.q_rotate(RB._att(state), M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
+	return Frames.ned_to_render(world)
 
 
 ## DR-19c: lying upside down on the ground, nearly still (no turtle mode: the pilot restarts on the pad).
@@ -1048,8 +1095,11 @@ func _process(delta: float) -> void:
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
 	var t: Dictionary = _current_telemetry()
 	var frame_dt := delta if not session.paused else 0.0
+	visual.set_rotor_health(t.get("rotor_health", PackedFloat64Array()))
 	visual.pose(drawn, t.get("rotor_speed_rad_s", PackedFloat64Array()), frame_dt)
 	view.update(drawn, visual.fpv_mount_frd, delta, _ground_height_render)
+	if crash_fx != null:
+		crash_fx.update(delta, session.paused)
 	if _lens != null:
 		_lens.advance(delta, float(session.sim.time()), session.paused)
 	if _environment != null:
@@ -1139,6 +1189,16 @@ func _build_audio() -> void:
 	add_child(_audio)
 	_audio.play()
 	_audio.stream_paused = true
+	# DR-19d: the out-of-balance rattle of damaged props: the same loop, detuned, silent while every prop is intact.
+	_rattle = AudioStreamPlayer3D.new()
+	_rattle.name = "MotorRattle"
+	_rattle.stream = looped
+	_rattle.unit_size = 2.0
+	_rattle.max_distance = 150.0
+	_rattle.volume_db = -80.0
+	add_child(_rattle)
+	_rattle.play(0.37 * stream.get_length())
+	_rattle.stream_paused = true
 
 
 ## One loop for the four motors: pitch follows the mean ACHIEVED shaft speed relative to hover; the level fades to
@@ -1160,6 +1220,28 @@ func _update_audio(t: Dictionary, delta: float) -> void:
 		return
 	_audio.pitch_scale = clampf(n, 0.35, 2.5)
 	_audio.volume_db = linear_to_db(clampf(_audio_level, 0.001, 1.0)) - 4.0
+	_update_rattle(t)
+
+
+## DR-19d: a damaged or broken prop makes the motors rattle: a detuned copy of the loop whose level follows the
+## missing prop health of the spinning props, with a slight warble. Silent while every prop is intact.
+func _update_rattle(t: Dictionary) -> void:
+	if _rattle == null:
+		return
+	var health: PackedFloat64Array = t.get("rotor_health", PackedFloat64Array())
+	var speeds: PackedFloat64Array = t.get("rotor_speed_rad_s", PackedFloat64Array())
+	var missing := 0.0
+	for i in mini(health.size(), speeds.size()):
+		if absf(speeds[i]) > 0.3 * _hover_speed:
+			missing += 1.0 - clampf(health[i], 0.0, 1.0)
+	var level := clampf(missing * 0.6, 0.0, 1.0) * _audio_level
+	_rattle.global_position = _audio.global_position
+	_rattle.stream_paused = session.paused or level < 0.02
+	if _rattle.stream_paused:
+		return
+	var warble := 0.03 * sin(float(Time.get_ticks_msec()) * 0.031)
+	_rattle.pitch_scale = clampf(_audio.pitch_scale * (1.09 + warble), 0.35, 2.8)
+	_rattle.volume_db = linear_to_db(clampf(level, 0.001, 1.0)) - 2.0
 
 
 ## Start or stop the opt-in flight log of the current flight; a reset or reconfiguration closes it.

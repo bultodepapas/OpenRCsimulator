@@ -244,6 +244,21 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
   - Opening the menu or a start retries pending saves. Leaving with unsaved results takes a second, informed Back to Home (A11).
   - These are graceful-session guarantees only, with no fsync or crash-durable queue.
 
+### Quad crashes are graded and controllers arrive preconfigured
+
+**DR-19c/DR-14d (2026-11-17), owner feedback.**
+- **Crashes.** A deterministic gameplay law replaces "every contact ends the flight". Each prop's health is checkpointed state.
+  - The frame and the props are judged separately, by closing speed and by obstacle material.
+  - Most impacts bounce, using the shared energy-bounded scenery impulse, or wear and break props. Only the hardest end the flight.
+  - The previous law stays selectable for practice.
+  - Thresholds are estimates. No source gives fly-on versus walk-of-shame numbers; Betaflight does not disarm on impact by default.
+- **Controllers.**
+  - A recognized EdgeTX radio starts from CH5 arm (high end only), CH6 mode and CH9 restart. CH7/CH8 are avoided because Windows DirectInput can swap them.
+  - Pads restart on View/Back.
+  - Restart needs a fresh OFF and never fires while a menu owns the input.
+  - Saved profiles are never rewritten.
+- Rejected: turtle mode and motor or arm damage, until there is evidence. [Plan §17](plans/drone-racing.md#17-pilot-feedback-2026-11-17-preconfigured-controls-and-graded-crashes).
+
 ### Reuse flight logs for factual analysis
 
 **FL-01…05 / UI-FS.** Bounded recording observes accepted state without driving physics. Offline replay, CSV and existing plotting tools support analysis; marker debriefs reuse those artifacts instead of introducing another campaign runner or unvalidated coaching score. UI statistics and retained flight history have their own lifecycle, not checkpoint authority. [Flight logging](FLIGHT-LOGGING.md), [FL-05](research/flight-logging/FL-05/README.md), [flight statistics](FLIGHT-STATISTICS.md).

@@ -13833,3 +13833,129 @@ msgstr "rechter Trigger"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d Rennergebnisse sind nicht gespeichert. Innerhalb von 8 s erneut „Zurück zur Startseite“ wählen, um sie zu verwerfen."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "EdgeTX-FPV-Quadcopter (CH5 Scharfschalten, CH6 Modus, CH9 Neustart)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "EdgeTX-FPV-Quadcopter: AETR-Sticks auf CH1-CH4, Scharfschalten auf CH5 (nur die obere Stellung schaltet scharf), Flugmodus auf CH6 (unten Angle, Mitte und oben Acro), Neustart am Startplatz auf CH9 (ein Taster). Diese Schalter im Mischer des Senders zuweisen, dann kalibrieren."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "Die EdgeTX-FPV-Vorlage ist nur für einen Sender verfügbar."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Die EdgeTX-FPV-Vorlage konnte nicht angewendet werden: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Die EdgeTX-FPV-Schalter sind im Entwurf. Am Sender prüfen und dann speichern, um sie zu behalten."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Neustart am Startplatz: R oder %s am Controller."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "Auf dem Kopf: R drücken, um zum Startplatz zurückzukehren."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "Auf dem Kopf: R oder %s drücken, um zum Startplatz zurückzukehren."
+
+msgid "PROP BROKEN"
+msgstr "PROP GEBROCHEN"
+
+msgid "PROP DAMAGE"
+msgstr "PROP BESCHÄDIGT"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Abstürze: abgestuft (Aufprälle können Propeller beschädigen)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Abstürze: jeder Absturz beendet den Flug"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "Die Absturzeinstellung gilt nach „Neustart am Startplatz“."
+
+msgid "rear right"
+msgstr "hinten rechts"
+
+msgid "front right"
+msgstr "vorne rechts"
+
+msgid "rear left"
+msgstr "hinten links"
+
+msgid "front left"
+msgstr "vorne links"
+
+msgid "Prop broken: %s"
+msgstr "Propeller gebrochen: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Propeller beschädigt: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Harte Landung (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Von einem Hindernis abgeprallt (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX Flugzeug (CH5 Fahrwerk, CH6 Landeklappen, CH10 Rauch, CH9 Neustart)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX Flugzeug: AETR-Knüppel auf CH1-CH4, Fahrwerk auf CH5 (SD), Landeklappen auf CH6 (SA, eingefahren / Start / Landung), Neustart auf CH9 (SH, Taster), Rauch auf CH10 (SE). Dual Rates, Expo und Motorabschaltung bleiben im Sender. Kalibriere und prüfe dann mit „Dieses Gerät einrichten“ jeden Schalter."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "Die Vorgabe „EdgeTX Flugzeug“ ist nur für einen Sender verfügbar."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Die Vorgabe „EdgeTX Flugzeug“ konnte nicht angewendet werden: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "Die Vorgabe „EdgeTX Flugzeug“ ist im Entwurf. Prüfe mit „Dieses Gerät einrichten“ Fahrwerk, Landeklappen und Rauch an deinem Sender und speichere dann."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s verwendet Taste %d (an, solange gedrückt). Speichere das Profil, um es zu behalten."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · beginne bei %s"
+
+msgid "DOWN (gear down)"
+msgstr "UNTEN (Fahrwerk ausgefahren)"
+
+msgid "UP (flaps up)"
+msgstr "OBEN (Landeklappen eingefahren)"
+
+msgid "OFF (smoke off)"
+msgstr "AUS (Rauch aus)"
+
+msgid "released"
+msgstr "losgelassen"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 oder Esc → Flugeinblendungen"
+
+msgid "Throttle cut"
+msgstr "Motorabschaltung"
+
+msgid "On your radio (special function)"
+msgstr "Im Sender (Spezialfunktion)"
+
+msgid "Flap → elevator mix"
+msgstr "Mischer Landeklappen → Höhenruder"
+
+msgid "Applied by your radio"
+msgstr "Vom Sender angewendet"
+
+msgid "Applied by OpenRC"
+msgstr "Von OpenRC angewendet"
+
+msgid "Move %s to OFF to take control"
+msgstr "Stelle %s auf AUS, um die Kontrolle zu übernehmen"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Stelle den Schalter auf AUS, um die Kontrolle zu übernehmen"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB-Sender (EdgeTX): Wähle in Model setup USB Joystick (Classic) und schalte HF aus. Empfohlene Belegung: AETR auf CH1-CH4, Fahrwerk CH5 (SD), Landeklappen CH6 (SA), Neustart CH9 (SH), Rauch CH10 (SE); Dual Rates, Expo und Motorabschaltung bleiben im Sender. Gas zurück zum Scharfschalten; Abziehen pausiert. K: kalibrieren. Steuerung → Dieses Gerät einrichten prüft jeden Schalter. F1 zeigt im Flug die Steuerungsübersicht. Ohne Schalterprüfung weise das Fahrwerk in Steuerung einem AUX oder „Fahrwerk umschalten“ zu."
+
+msgid "Control guide: show / hide"
+msgstr "Steuerungsübersicht: ein / aus"

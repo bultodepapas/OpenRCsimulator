@@ -13689,3 +13689,129 @@ msgstr "правый курок"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "Не сохранено результатов гонок: %d. Выберите «Вернуться на Главную» ещё раз в течение 8 с, чтобы отбросить их."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "FPV-квадрокоптер EdgeTX (CH5 арм, CH6 режим, CH9 перезапуск)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "FPV-квадрокоптер EdgeTX: стики AETR на CH1-CH4, арм на CH5 (армит только верхнее положение), режим полёта на CH6 (вниз — Angle, середина и вверх — Acro), перезапуск на площадке на CH9 (кнопка без фиксации). Назначьте эти тумблеры в микшере пульта, затем откалибруйте."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "Пресет EdgeTX FPV доступен только для пульта."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Не удалось применить пресет EdgeTX FPV: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Тумблеры EdgeTX FPV добавлены в черновик. Проверьте их на пульте и сохраните, чтобы оставить."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Заново на площадке: R или %s на контроллере."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "Перевёрнут: нажмите R, чтобы вернуться на площадку."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "Перевёрнут: нажмите R или %s, чтобы вернуться на площадку."
+
+msgid "PROP BROKEN"
+msgstr "ПРОП СЛОМАН"
+
+msgid "PROP DAMAGE"
+msgstr "ПРОП ПОВРЕЖДЁН"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Столкновения: по силе удара (удары могут повредить пропеллеры)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Столкновения: любое столкновение завершает полёт"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "Настройка столкновений применится после «Заново на площадке»."
+
+msgid "rear right"
+msgstr "задний правый"
+
+msgid "front right"
+msgstr "передний правый"
+
+msgid "rear left"
+msgstr "задний левый"
+
+msgid "front left"
+msgstr "передний левый"
+
+msgid "Prop broken: %s"
+msgstr "Пропеллер сломан: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Пропеллер повреждён: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Жёсткая посадка (%.1f м/с)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Отскок от препятствия (%.1f м/с)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX самолёт (CH5 шасси, CH6 закрылки, CH10 дым, CH9 перезапуск)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX самолёт: стики AETR на CH1-CH4, шасси на CH5 (SD), закрылки на CH6 (SA, убраны / взлёт / посадка), перезапуск на CH9 (SH, кнопка без фиксации), дым на CH10 (SE). Двойные расходы, экспонента и отсечка газа остаются в аппаратуре. Откалибруйте, затем проверьте каждый переключатель через «Настроить это устройство»."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "Пресет «EdgeTX самолёт» доступен только для аппаратуры."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Не удалось применить пресет «EdgeTX самолёт»: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "Пресет «EdgeTX самолёт» в черновике. Проверьте шасси, закрылки и дым на аппаратуре через «Настроить это устройство», затем сохраните."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s использует кнопку %d (включено, пока нажата). Сохраните профиль, чтобы оставить это."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · начните с %s"
+
+msgid "DOWN (gear down)"
+msgstr "ВНИЗ (шасси выпущено)"
+
+msgid "UP (flaps up)"
+msgstr "ВВЕРХ (закрылки убраны)"
+
+msgid "OFF (smoke off)"
+msgstr "ВЫКЛ (дым выключен)"
+
+msgid "released"
+msgstr "отпущена"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 или Esc → Экранные элементы полёта"
+
+msgid "Throttle cut"
+msgstr "Отсечка газа"
+
+msgid "On your radio (special function)"
+msgstr "На аппаратуре (спецфункция)"
+
+msgid "Flap → elevator mix"
+msgstr "Микс закрылки → руль высоты"
+
+msgid "Applied by your radio"
+msgstr "Выполняет аппаратура"
+
+msgid "Applied by OpenRC"
+msgstr "Выполняет OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Переведите %s в OFF, чтобы взять управление"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Переведите его переключатель в OFF, чтобы взять управление"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB-аппаратура (EdgeTX): выберите USB Joystick (Classic) в Model setup и отключите радиомодуль. Рекомендуемая раскладка: AETR на CH1-CH4, шасси CH5 (SD), закрылки CH6 (SA), перезапуск CH9 (SH), дым CH10 (SE); двойные расходы, экспонента и отсечка газа остаются в аппаратуре. Уберите газ, чтобы взвести; отключение ставит паузу. K: калибровка. Управление → Настроить это устройство проверяет каждый переключатель. F1 показывает подсказку по управлению в полёте. Без проверки переключателей назначьте шасси на AUX или «Убрать / выпустить шасси» в разделе Управление."
+
+msgid "Control guide: show / hide"
+msgstr "Подсказка по управлению: показать / скрыть"

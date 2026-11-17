@@ -13727,3 +13727,129 @@ msgstr "gatilho direito"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d resultados de corrida não foram salvos. Escolha Voltar ao Início de novo em até 8 s para descartá-los."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "Quadricóptero FPV EdgeTX (CH5 armar, CH6 modo, CH9 reinício)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "Quadricóptero FPV EdgeTX: manches AETR em CH1-CH4, armar em CH5 (só a posição alta arma), modo de voo em CH6 (baixo Angle, meio e alto Acro), reinício na plataforma em CH9 (uma chave momentânea). Atribua essas chaves no mixer do seu rádio e depois calibre."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "A predefinição FPV EdgeTX está disponível apenas para um rádio."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Não foi possível aplicar a predefinição FPV EdgeTX: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "As chaves FPV EdgeTX estão no rascunho. Confira-as no seu rádio e Salve para mantê-las."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Reiniciar na plataforma: R ou %s no controle."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "De cabeça para baixo: pressione R para voltar à plataforma."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "De cabeça para baixo: pressione R ou %s para voltar à plataforma."
+
+msgid "PROP BROKEN"
+msgstr "HÉLICE QUEBRADA"
+
+msgid "PROP DAMAGE"
+msgstr "HÉLICE DANIFICADA"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Batidas: graduadas (impactos podem danificar hélices)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Batidas: qualquer batida encerra o voo"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "A configuração de batidas vale após Reiniciar na plataforma."
+
+msgid "rear right"
+msgstr "traseira direita"
+
+msgid "front right"
+msgstr "dianteira direita"
+
+msgid "rear left"
+msgstr "traseira esquerda"
+
+msgid "front left"
+msgstr "dianteira esquerda"
+
+msgid "Prop broken: %s"
+msgstr "Hélice quebrada: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Hélice danificada: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Pouso duro (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Ricocheteou em um obstáculo (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX avião (CH5 trem de pouso, CH6 flapes, CH10 fumaça, CH9 reinício)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX avião: manches AETR em CH1-CH4, trem de pouso em CH5 (SD), flapes em CH6 (SA, recolhidos / decolagem / pouso), reinício em CH9 (SH, momentâneo), fumaça em CH10 (SE). Dual rates, expo e corte do motor ficam no rádio. Calibre e depois use Configurar este dispositivo para verificar cada chave."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "A predefinição EdgeTX avião está disponível apenas para um rádio."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Não foi possível aplicar a predefinição EdgeTX avião: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "A predefinição EdgeTX avião está no rascunho. Use Configurar este dispositivo para verificar trem de pouso, flapes e fumaça no seu rádio e depois Salve."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s usa o botão %d (ligado enquanto pressionado). Salve o perfil para mantê-lo."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · comece em %s"
+
+msgid "DOWN (gear down)"
+msgstr "BAIXO (trem baixado)"
+
+msgid "UP (flaps up)"
+msgstr "CIMA (flapes recolhidos)"
+
+msgid "OFF (smoke off)"
+msgstr "DESLIGADO (fumaça desligada)"
+
+msgid "released"
+msgstr "solto"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 ou Esc → Sobreposições de voo"
+
+msgid "Throttle cut"
+msgstr "Corte do motor"
+
+msgid "On your radio (special function)"
+msgstr "No seu rádio (função especial)"
+
+msgid "Flap → elevator mix"
+msgstr "Mixagem flapes → profundor"
+
+msgid "Applied by your radio"
+msgstr "Aplicada pelo seu rádio"
+
+msgid "Applied by OpenRC"
+msgstr "Aplicada pelo OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Coloque %s em OFF para assumir o controle"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Coloque a chave em OFF para assumir o controle"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "Rádio USB (EdgeTX): selecione USB Joystick (Classic) em Model setup e desligue o RF. Layout sugerido: AETR em CH1-CH4, trem de pouso CH5 (SD), flapes CH6 (SA), reinício CH9 (SH), fumaça CH10 (SE); dual rates, expo e corte do motor ficam no rádio. Abaixe o acelerador para armar; desconectar pausa. K: calibrar. Controles → Configurar este dispositivo verifica cada chave. F1 mostra o guia de controles em voo. Sem a verificação de chaves, atribua o trem de pouso a um AUX ou a Alternar trem de pouso em Controles."
+
+msgid "Control guide: show / hide"
+msgstr "Guia de controles: mostrar / ocultar"

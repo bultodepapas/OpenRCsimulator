@@ -284,6 +284,9 @@ var _capture_target := "" # the capture_finished target of the running capture
 var _detect_channel := ""
 var _axis_detector: AxisDetector
 var _capturing_aux_axis := "" # AUX channel measured by "Move the control" (ActionAxisCapture)
+## D6-ETX / UI-15-ETX-01: the running "Move the control" also accepts a radio button pressed after OFF (switch check
+## for an unbound or button AUX: Classic sends CH9-CH32 as buttons), binding it as a level button.
+var _aux_auto_capture := false
 var _finding := false
 ## Axis values when Find control started; a resting end position is not a deliberate choice.
 var _find_baseline := PackedFloat64Array()
@@ -2159,6 +2162,11 @@ func _input(event: InputEvent) -> void:
 			if event.pressed and (event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE): _cancel_capture()
 		elif (event is InputEventJoypadMotion or event is InputEventJoypadButton) and event.device == _capturing_device_id:
 			get_viewport().set_input_as_handled()
+			var auto_button := event as InputEventJoypadButton
+			if auto_button != null and auto_button.pressed and _aux_auto_capture and not _capturing_aux_axis.is_empty() \
+					and not _axis_capture.returning and int(_axis_capture._axis) < 0:
+				_track_capture_release(auto_button)
+				_accept_aux_button_binding(int(auto_button.button_index))
 		return
 	if _axis_detector != null:
 		_input_axis_detect(event)
@@ -2430,10 +2438,13 @@ func _device_draft_context(device_id: int) -> String:
 func _default_profile_for_device(device_id: int) -> Dictionary:
 	var device := _device_for_id(device_id)
 	var expected_kind := str(device.get("kind", "gamepad"))
-	# DR-14d: a recognized EdgeTX/OpenTX radio starts from the FPV switch conventions (CH5 arm, CH6 mode, CH9 restart);
-	# its sticks still need calibration and nothing is saved until the pilot saves the draft.
+	# DR-14d / D6-ETX-02: a recognized EdgeTX/OpenTX radio starts from the conventions of the activity that opened
+	# Controls: the FPV quad's switches (CH5 arm, CH6 mode, CH9 restart) or the airplane preset, whose gear, flaps and
+	# smoke the Setup assistant's switch check binds. Sticks still need calibration; nothing is saved before Save.
+	var edgetx_preset := ControllerProfile.EDGETX_FPV_PRESET if bool(action_capabilities.get("multirotor", false)) \
+		else ControllerProfile.EDGETX_AIRPLANE_PRESET
 	var preset := "mode2" if expected_kind == "gamepad" else ("jeti_mode2" if _is_jeti_device(device) \
-		else (ControllerProfile.EDGETX_FPV_PRESET if expected_kind == "radio" and EdgeTxRadio.matches(device) else "radio_custom"))
+		else (edgetx_preset if expected_kind == "radio" and EdgeTxRadio.matches(device) else "radio_custom"))
 	var candidate_profile := ControllerProfile.defaults(expected_kind, preset)
 	if candidate_profile.is_empty():
 		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
@@ -2650,6 +2661,7 @@ func _update_preset_options() -> void:
 		if _is_jeti_device(_device_for_id(_draft_flight_device_id)):
 			choices.append({"id": "jeti_mode2", "label": "JETI Mode 2"})
 		choices.append({"id": ControllerProfile.EDGETX_FPV_PRESET, "label": "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"})
+		choices.append({"id": ControllerProfile.EDGETX_AIRPLANE_PRESET, "label": "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"})
 	for option in choices:
 		var option_index := preset_picker.item_count
 		var translated_label := tr(str(option.label))
@@ -2682,6 +2694,9 @@ func _update_preset_options() -> void:
 			ControllerProfile.EDGETX_FPV_PRESET:
 				preset_help_label.text = tr("EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate.")
 				preset_help_label.visible = true
+			ControllerProfile.EDGETX_AIRPLANE_PRESET:
+				preset_help_label.text = tr("EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch.")
+				preset_help_label.visible = true
 			_:
 				preset_help_label.text = tr("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.")
 				preset_help_label.visible = kind == "gamepad"
@@ -2704,8 +2719,8 @@ func _apply_preset(preset: String) -> void:
 	if preset == "jeti_mode2":
 		_apply_jeti_mode2_preset()
 		return
-	if preset == ControllerProfile.EDGETX_FPV_PRESET:
-		_apply_edgetx_fpv_preset()
+	if preset in [ControllerProfile.EDGETX_FPV_PRESET, ControllerProfile.EDGETX_AIRPLANE_PRESET]:
+		_apply_edgetx_preset(preset)
 		return
 	if preset == "radio_custom":
 		var custom := ControllerProfile.defaults("radio", "radio_custom")
@@ -2744,12 +2759,15 @@ func _apply_preset(preset: String) -> void:
 	_set_status(tr("Preset restored. Save the profile to keep this mapping."), false)
 
 
-## DR-14d: the EdgeTX FPV switch conventions on the draft. The radio's calibration and its other AUX channels and
-## actions are kept; the preset's arm, flight mode and restart assignments take their places.
-func _apply_edgetx_fpv_preset() -> void:
-	var replacement := ControllerProfile.defaults("radio", ControllerProfile.EDGETX_FPV_PRESET)
+## DR-14d / D6-ETX-02: an EdgeTX preset's switch conventions on the draft. The radio's calibration and its other AUX
+## channels and actions are kept; the preset's own assignments (the quad's arm, flight mode and restart; the
+## airplane's restart) take their places. The airplane's gear, flaps and smoke come from the switch check.
+func _apply_edgetx_preset(preset_id: String) -> void:
+	var airplane := preset_id == ControllerProfile.EDGETX_AIRPLANE_PRESET
+	var replacement := ControllerProfile.defaults("radio", preset_id)
 	if replacement.is_empty() or str(_draft_profile.get("kind", "")) != "radio":
-		_set_status(tr("The EdgeTX FPV preset is available only for a radio."), true)
+		_set_status(tr("The EdgeTX airplane preset is available only for a radio.") if airplane \
+			else tr("The EdgeTX FPV preset is available only for a radio."), true)
 		return
 	for key in ["profile_id", "name", "association", "presentation", "flap_elevator_mix_owner"]:
 		if _draft_profile.has(key):
@@ -2772,14 +2790,18 @@ func _apply_edgetx_fpv_preset() -> void:
 				if current_channel.has(calibration_key):
 					next_channel[calibration_key] = current_channel[calibration_key]
 		replacement[channel_name] = next_channel
-	replacement["preset"] = ControllerProfile.EDGETX_FPV_PRESET
-	replacement["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(replacement.get("name", "EdgeTX FPV quad"))
+	replacement["preset"] = preset_id
+	replacement["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(replacement.get("name", "EdgeTX airplane" if airplane else "EdgeTX FPV quad"))
 	var validation: Dictionary = ControllerProfile.validate(replacement)
 	if not bool(validation.get("ok", false)):
-		_set_status(tr("Could not apply the EdgeTX FPV preset: %s") % _friendly_validation_text(validation.get("issues", []), validation.get("errors", [])), true)
+		var reason := _friendly_validation_text(validation.get("issues", []), validation.get("errors", []))
+		_set_status((tr("Could not apply the EdgeTX airplane preset: %s") if airplane else tr("Could not apply the EdgeTX FPV preset: %s")) % reason, true)
 		return
 	_set_draft_profile(replacement)
-	_set_status(tr("EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."), false)
+	if airplane:
+		_set_status(tr("EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."), false)
+	else:
+		_set_status(tr("EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."), false)
 
 
 func _apply_jeti_mode2_preset() -> void:
@@ -3766,7 +3788,10 @@ func _end_capture_state() -> void:
 	# A cancelled Confirm OFF step (Learn axis / Move the control) owned focus inside the overlay; give it back to the
 	# row that started the capture so keyboard and gamepad users are never left without a focus owner.
 	var focus_return := _capture_button if is_instance_valid(_capture_button) else null
-	var overlay_had_focus := capture_overlay != null and is_inside_tree() 		and capture_overlay.is_ancestor_of(get_viewport().gui_get_focus_owner()) if get_viewport() != null else false
+	# With nothing focused (a headless or covered screen) there is no focus to return: never pass a null node.
+	var focus_owner: Control = get_viewport().gui_get_focus_owner() if get_viewport() != null else null
+	var overlay_had_focus := capture_overlay != null and is_inside_tree() and focus_owner != null \
+		and capture_overlay.is_ancestor_of(focus_owner)
 	_axis_capture = null
 	if is_instance_valid(_axis_capture_dialog): _axis_capture_dialog.queue_free()
 	_axis_capture_dialog = null
@@ -3781,6 +3806,7 @@ func _end_capture_state() -> void:
 	_detect_channel = ""
 	_detect_preview_axis = -1
 	_capturing_aux_axis = ""
+	_aux_auto_capture = false
 	_axis_capture_phase = ""
 	_finding = false
 	if capture_overlay != null and capture_overlay.is_capturing():
@@ -5131,6 +5157,16 @@ func start_capture_for(target_id: String) -> bool:
 				var slot := int(rows[0])
 				_start_aux_capture(aux_name, slot, _aux_controls[aux_name].switch_capture_buttons[slot])
 				return _capturing_aux_name == aux_name
+			"", "button":
+				# Switch check (UI-15-ETX-01): on the EdgeTX airplane preset an unbound or button AUX learns whichever
+				# control moves, an axis switch (OFF→ON→OFF endpoints) or a button pressed after OFF. Other profiles keep
+				# their typed Extra channel captures.
+				if str(_draft_profile.get("kind", "")) != "radio" or not _aux_detect_buttons.has(aux_name) \
+						or str(_draft_profile.get("preset", "")) != ControllerProfile.EDGETX_AIRPLANE_PRESET:
+					return false
+				_start_aux_axis_capture(aux_name, _aux_detect_buttons[aux_name])
+				_aux_auto_capture = _capturing_aux_axis == aux_name
+				return _aux_auto_capture
 		return false
 	if ControllerActions.action_definition(target_id).is_empty():
 		return false
@@ -5382,6 +5418,51 @@ func _draft_aux(aux_name: String) -> Dictionary:
 	return {}
 
 
+## D6-ETX-03/04: on the EdgeTX airplane preset, name the radio channel and suggested switch when the learned control
+## is where the OpenRC layout puts that function on a raw Classic joystick (axis N = CH N+1, button N = CH N+9), and
+## let a flaps binding snap to the aircraft's detents. Presentation and opt-in snapping only.
+func _decorate_edgetx_aux(aux_name: String, binding: Dictionary) -> void:
+	if str(_draft_profile.get("preset", "")) != ControllerProfile.EDGETX_AIRPLANE_PRESET:
+		return
+	var entry := EdgeTxRadio.layout_entry("aux:" + aux_name)
+	if not entry.is_empty() and EdgeTxRadio.classic_channel(binding) == int(entry.channel):
+		binding["channel"] = int(entry.channel)
+		binding["label"] = str(entry.switch)
+	if aux_name == "flaps":
+		binding["detents"] = "aircraft"
+
+
+## Switch check: a radio button pressed after OFF becomes the AUX channel's level button (ON while pressed).
+func _accept_aux_button_binding(button_index: int) -> void:
+	var aux_name := _capturing_aux_axis
+	var target := _capture_target
+	var return_focus := _capture_button
+	var binding := {"type": "button", "button": button_index, "mode": "level"}
+	_decorate_edgetx_aux(aux_name, binding)
+	var previous := _draft_aux(aux_name)
+	var candidate := _draft_profile.duplicate(true)
+	var aux: Dictionary = (candidate.get("aux", {}) as Dictionary).duplicate(true) if candidate.get("aux", {}) is Dictionary else {}
+	aux[aux_name] = binding
+	candidate["aux"] = aux
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate, action_capabilities)
+	var caption := _target_caption("aux:" + aux_name)
+	var success := tr("%s uses button %d (on while pressed). Save the profile to keep it.") % [caption, button_index]
+	_end_capture_state()
+	if bool(validation.get("ok", false)):
+		_commit_candidate_profile(candidate)
+		_set_status(success, false)
+		_emit_capture_finished(target, true, "")
+		return
+	var owner := _single_conflict_owner(validation.get("issues", []), "aux:" + aux_name)
+	if not owner.is_empty():
+		_offer_conflict({"target": "aux:" + aux_name, "report": target, "owner": owner, "candidate": candidate,
+			"binding": binding, "previous": previous, "rejected": validation,
+			"rejected_message": "Extra channel was not changed: %s", "focus": return_focus, "success": success})
+		return
+	_show_rejected_validation(validation, "Extra channel was not changed: %s")
+	_emit_capture_finished(target, false, _rejection_text())
+
+
 ## AUX "Move the control" result: the channel's axis with the measured OFF and ON endpoints.
 func _accept_aux_axis_binding(learned: Dictionary) -> void:
 	var aux_name := _capturing_aux_axis
@@ -5390,6 +5471,7 @@ func _accept_aux_axis_binding(learned: Dictionary) -> void:
 	var off := float(learned.get("off", -1.0))
 	var on := float(learned.get("on", 1.0))
 	var binding := {"type": "axis", "axis": int(learned.get("axis", 0)), "off": off, "on": on, "invert": on < off}
+	_decorate_edgetx_aux(aux_name, binding)
 	var previous := _draft_aux(aux_name)
 	var candidate := _draft_profile.duplicate(true)
 	var aux: Dictionary = (candidate.get("aux", {}) as Dictionary).duplicate(true) if candidate.get("aux", {}) is Dictionary else {}

@@ -44,7 +44,7 @@ func _init() -> void:
 	rows.mouse_filter = Control.MOUSE_FILTER_PASS
 	rows.add_theme_constant_override("separation", 5)
 	scroll.add_child(rows)
-	var footer := text_label(tr("Reopen: Esc → Flight overlays"), 12, UiTheme.TEXT_2)
+	var footer := text_label(tr("F1 or Esc → Flight overlays"), 12, UiTheme.TEXT_2)
 	body.add_child(footer)
 	refresh({})
 	_rebuild()
@@ -195,6 +195,10 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif not gamepad and binding.get("type", "") == "button":
 			prompt = {text = tr("Button %d") % int(binding.button), texture_path = ""}
+		if not aux.is_empty():
+			prompt.text = radio_control_text(aux, str(prompt.text))
+			if not prompt.text.is_empty() and aux.has("channel"):
+				prompt.texture_path = ""
 		if not available:
 			caption += "\n" + tr("Not available")
 			if binding.get("type", "unbound") == "unbound":
@@ -203,7 +207,13 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 			caption += "\n" + tr("Assign in Controls")
 		var label := _row(caption, prompt.text, prompt.texture_path)
 		if available and binding.get("type", "unbound") != "unbound":
-			_equipment_labels[channel] = {label = label, caption = caption}
+			_equipment_labels[channel] = {label = label, caption = caption, switch_name = _switch_name(aux, prompt.text)}
+	if str(profile.get("kind", "")) == "radio":
+		# HUD-ETX-01: with a radio, these stay on the transmitter (EdgeTX Special Functions, Inputs, mixes).
+		_row(tr("Throttle cut") + "\n" + tr("On your radio (special function)"), "—")
+		if bool(capabilities.get("flaps", false)):
+			var mix_owner := str(profile.get("flap_elevator_mix_owner", "simulator"))
+			_row(tr("Flap → elevator mix") + "\n" + (tr("Applied by your radio") if mix_owner == "transmitter" else tr("Applied by OpenRC")), "—")
 
 
 func _update_equipment_state() -> void:
@@ -224,6 +234,14 @@ func _update_equipment_state() -> void:
 			continue
 		var state_name := str(state)
 		entry.label.text = entry.caption + ("\n" + tr(names[state_name]) if names.has(state_name) else "")
+	# HUD-ETX-03: a bound radio switch has no command until it is seen at OFF (fresh-OFF arming).
+	var waiting: Variant = _equipment_state.get("waiting", {})
+	if waiting is Dictionary:
+		for channel: String in _equipment_labels:
+			if bool((waiting as Dictionary).get(channel, false)):
+				var switch_name := str(_equipment_labels[channel].get("switch_name", ""))
+				_equipment_labels[channel].label.text += "\n" + (tr("Move %s to OFF to take control") % switch_name \
+					if not switch_name.is_empty() else tr("Move its switch to OFF to take control"))
 
 
 func _section(caption: String) -> void:
@@ -277,6 +295,22 @@ func _row(caption: String, binding: String, texture_path := "") -> Label:
 	content.add_child(value)
 	line.tooltip_text = "%s: %s" % [caption, binding]
 	return label
+
+
+## HUD-ETX-01: a radio AUX binding as the pilot's radio names it: "CH5 · SD" from the binding's presentation
+## metadata (D6-ETX-03), "SD · Axis 4" with a label only, else the given fallback ("Axis 4", "Button 1").
+static func radio_control_text(binding: Dictionary, fallback: String) -> String:
+	var label := str(binding.get("label", "")).strip_edges()
+	if binding.has("channel") and typeof(binding.channel) == TYPE_INT:
+		return "CH%d · %s" % [int(binding.channel), label] if not label.is_empty() else "CH%d" % int(binding.channel)
+	if not label.is_empty() and str(binding.get("type", "")) != "switch":
+		return "%s · %s" % [label, fallback]
+	return fallback
+
+
+static func _switch_name(binding: Dictionary, fallback: String) -> String:
+	var label := str(binding.get("label", "")).strip_edges()
+	return label if not label.is_empty() else fallback
 
 
 static func key_text(keys: Array) -> String:

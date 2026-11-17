@@ -200,6 +200,11 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 		errors.append_array(controller.errors)
 		return {ok = false, errors = errors, plant = null}
 	plant.config = controller.config
+	# DR-19e: the turtle sample chooses motors by their hub side.
+	var hubs: Array = []
+	for rotor: Dictionary in data.rotors:
+		hubs.append(PackedFloat64Array(rotor.hub_frd))
+	plant.config.hubs = hubs
 	if plant.electric:
 		var effective: PackedFloat64Array = data.inertia_kg_m2.duplicate()
 		effective[2] -= rotor_inertia # every spin axis is body z
@@ -388,7 +393,8 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 	for i in 4:
 		back_emf[i] = (continuous[i] if _braking else maxf(continuous[i], 0.0)) / kv
 		if drive:
-			duty[i] = aux[FC.AUX_COMMAND + i]
+			# DR-19e: a turtle command is negative (reverse drive); only the damped bridge can drive in reverse.
+			duty[i] = aux[FC.AUX_COMMAND + i] if _braking else maxf(aux[FC.AUX_COMMAND + i], 0.0)
 			enabled[i] = 1
 	var bus: Dictionary = {}
 	if connected:
@@ -414,10 +420,18 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		var hy: float = _hub[3 * i + 1]
 		var hz: float = _hub[3 * i + 2]
 		var health: float = continuous[C_HEALTH + i]
+		# Thrust follows the prop's health; its drag never falls below what a broken prop's hub and stubs keep, so a
+		# driven motor with a broken prop cannot run away past the shaft-speed domain.
+		var load: float = maxf(health, BROKEN_PROP_LOAD)
 		var thrust: float = _k_t * motoring * motoring * health
-		var torque: float = _k_q * motoring * motoring * health
-		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy) * health
-		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz) * health
+		var torque: float = _k_q * motoring * motoring * load
+		if omega < 0.0:
+			# DR-19e: a prop spinning backwards (turtle mode) pushes the other way at a fraction of its efficiency; its
+			# drag torque opposes the reversed rotation.
+			thrust = -_k_t * REVERSE_PROP_EFFICIENCY * omega * omega * health
+			torque = -_k_q * REVERSE_PROP_EFFICIENCY * omega * omega * load
+		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy) * load
+		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz) * load
 		fx += rotor_fx
 		fy += rotor_fy
 		fz -= thrust
@@ -674,7 +688,16 @@ func _settle_impact(body: PackedFloat64Array) -> PackedFloat64Array:
 ## solution on the flat pad does not depend on the step); free flight keeps one piece (DR-18/R1, R2).
 func substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> int:
 	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
-	if not (-body[RB.POS + 2] - under[0] < CONTACT_SUBSTEP_HEIGHT):
+	var height: float = -body[RB.POS + 2] - under[0]
+	if graded_impacts:
+		# DR-19d: a fast approach takes pieces short enough that no RK4 stage overshoots deep into the stiff pad springs
+		# (at 12.5 m/s four pieces let one stage sink 13 mm and kicked a flat landing into a 136 rad/s pitch).
+		var descent: float = M.q_rotate(RB._att(body), M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2]))[2]
+		if descent > 0.0 and height < CONTACT_SUBSTEP_HEIGHT + descent * PARKED_CHECK_DT:
+			var fine: int = int(ceilf(descent * PARKED_CHECK_DT / IMPACT_PIECE_TRAVEL_M))
+			if fine > CONTACT_SUBSTEPS:
+				return mini(fine, IMPACT_MAX_PIECES)
+	if not (height < CONTACT_SUBSTEP_HEIGHT):
 		return 1
 	return CONTACT_SUBSTEPS if contact_is_moving(body, continuous) else parked_pieces
 
@@ -750,20 +773,29 @@ func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, c
 ## points within ROTOR_RIM_MARGIN; every hit is a real terrain sample below the surface).
 func _disc_in_ground(i: int, position: PackedFloat64Array, attitude: PackedFloat64Array, axis: PackedFloat64Array,
 		lowest: PackedFloat64Array, lowest_norm: float) -> bool:
+	return not _disc_ground_hit(i, position, attitude, axis, lowest, lowest_norm).is_empty()
+
+
+## Where rotor `i`'s disc reaches the terrain: the world unit direction from its hub to the rim point found below the
+## surface (the world-lowest direction for a buried hub), or empty when the disc is clear. Same search as A07.
+func _disc_ground_hit(i: int, position: PackedFloat64Array, attitude: PackedFloat64Array, axis: PackedFloat64Array,
+		lowest: PackedFloat64Array, lowest_norm: float) -> PackedFloat64Array:
 	var rotor: Dictionary = prepared.rotors[i]
 	var radius: float = 0.5 * float(rotor.diameter_m)
 	var hub: PackedFloat64Array = M.add(position, M.q_rotate(attitude, rotor.hub_frd))
 	var under_hub: PackedFloat64Array = _ground_at(hub[0], hub[1])
 	var hub_depth: float = hub[2] + under_hub[0]
+	var down_rim: PackedFloat64Array = M.scale(lowest, 1.0 / lowest_norm) if lowest_norm > 1.0e-9 \
+		else M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
 	if hub_depth > 0.0:
-		return true
-	if lowest_norm > 1.0e-9 and _rim_depth(hub, M.scale(lowest, 1.0 / lowest_norm), radius) > 0.0:
-		return true
+		return down_rim
+	if lowest_norm > 1.0e-9 and _rim_depth(hub, down_rim, radius) > 0.0:
+		return down_rim
 	var up: PackedFloat64Array = M.v3(under_hub[1], under_hub[2], 1.0)
 	var worst: PackedFloat64Array = M.sub(up, M.scale(axis, M.dot(axis, up)))
 	var worst_norm: float = M.norm(worst)
 	if hub_depth + radius * worst_norm <= -ROTOR_RIM_MARGIN:
-		return false
+		return PackedFloat64Array()
 	var u: PackedFloat64Array = M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
 	if worst_norm > 1.0e-9:
 		u = M.scale(worst, 1.0 / worst_norm)
@@ -771,8 +803,8 @@ func _disc_in_ground(i: int, position: PackedFloat64Array, attitude: PackedFloat
 	for k in ROTOR_RIM_COS.size():
 		var direction: PackedFloat64Array = M.add(M.scale(u, float(ROTOR_RIM_COS[k])), M.scale(v, float(ROTOR_RIM_SIN[k])))
 		if _rim_depth(hub, direction, radius) > 0.0:
-			return true
-	return false
+			return direction
+	return PackedFloat64Array()
 
 
 ## DR-19c (docs/plans/drone-racing.md §17.2): impact laws. The strict law ends the flight at any hard contact, prop
@@ -789,14 +821,35 @@ const PROP_WEAR_PER_TICK := 0.2
 const PROP_BROKEN_HEALTH := 0.3
 ## Health a spinning prop keeps when a hard landing or a frame bounce chips it.
 const PROP_CHIP_FACTOR := 0.85
+## DR-19d (§18): a touchdown faster than this (m/s along the normal) is resolved as one impulse at the contact patch
+## (the centroid of the touching points) instead of being left to the stiff pad springs, which sank the quad by up to
+## 28 mm and threw it into a spin on a flat 12 m/s landing. Restitution of that impulse.
+const TOUCHDOWN_IMPULSE_SPEED_MPS := 3.0
+## DR-19d: graded law only, the longest travel (m) of one RK4 piece toward the ground, and the piece cap per tick.
+const IMPACT_PIECE_TRAVEL_M := 0.004
+const IMPACT_MAX_PIECES := 16
+const TOUCHDOWN_RESTITUTION := 0.15
+## DR-19d: a spinning prop that digs into the ground loses this share of its shaft speed per tick, and the ground's
+## reaction on the blade (the rotor's lost angular momentum over the prop radius) kicks the quad at the hub: the
+## prop "walks" and flips the quad, as real prop strikes do.
+const PROP_STRIKE_BRAKE := 0.5
+## DR-19e: thrust and drag-torque share of a prop driven backwards (turtle mode); a pitched blade run in reverse is
+## far less efficient (declared estimate).
+const REVERSE_PROP_EFFICIENCY := 0.35
+## Share of the intact prop's aerodynamic torque and rotor drag a broken prop still has (hub and blade stubs).
+const BROKEN_PROP_LOAD := 0.3
+## A frame contact closing slower than this (m/s) is resting or scraping: no chipped props and no impact event.
+const IMPACT_EVENT_SPEED_MPS := 0.5
 ## A spinning prop that strikes an obstacle faster than this (m/s along the normal) breaks.
 const PROP_BREAK_SPEED_MPS := 6.0
 ## Frame impact speed (m/s along the normal) that ends the flight, by the obstacle's response class.
 const FRAME_TERMINAL_SPEED_MPS := {"soft_foliage_impulse": 12.0, "gate_frame": 10.0}
 const FRAME_TERMINAL_DEFAULT_MPS := 8.0
-## Bounce classes of the shared scenery response (restitution 0.35 for foliage, 0.20 otherwise).
+## Bounce classes of the shared scenery response (restitution 0.35 for foliage, 0.20 otherwise; the touchdown uses the
+## same 0.20 class, the nearest shared value to TOUCHDOWN_RESTITUTION).
 const FOLIAGE_RESPONSE := "soft_foliage_impulse"
 const SOLID_RESPONSE := "frangible_impulse"
+const TOUCHDOWN_RESPONSE := "frangible_impulse"
 ## Step (m) of the central differences that give an obstacle's surface normal from its clearance field.
 const OBSTACLE_NORMAL_STEP_M := 0.005
 
@@ -815,10 +868,11 @@ func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array
 	return out
 
 
-## Frame (the sphere through the motor hubs) against an obstacle, at the tick's midpoint and endpoint.
+## Frame (the sphere through the motor hubs) against an obstacle: the endpoint, else the tick's midpoint (a thin solid
+## crossed within the tick).
 func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
 	var body: PackedFloat64Array = out.body
-	for fraction: float in [0.5, 1.0]:
+	for fraction: float in [1.0, 0.5]:
 		var centre := PackedFloat64Array()
 		for k in 3:
 			centre.append(lerpf(previous_body[RB.POS + k], body[RB.POS + k], fraction))
@@ -838,20 +892,23 @@ func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, 
 		for k in 3:
 			moved[RB.POS + k] = centre[k] + normal[k] * maxf(0.0, _frame_radius - float(clearance))
 		out.body = _bounce(moved, contact_body, normal, speed, FOLIAGE_RESPONSE if kind == FOLIAGE_RESPONSE else SOLID_RESPONSE)
-		_chip_nearest(out, contact_body, t, "frame")
-		out.events.append({type = "impact", time_s = t, surface = kind if not kind.is_empty() else "obstacle",
-			part = "frame", normal_speed_mps = speed})
+		if speed > IMPACT_EVENT_SPEED_MPS:
+			_chip_nearest(out, contact_body, t, "frame")
+			out.events.append({type = "impact", time_s = t, surface = kind if not kind.is_empty() else "obstacle",
+				part = "frame", normal_speed_mps = speed, point_ned = M.sub(centre, M.scale(normal, _frame_radius))})
 		return
 
 
-## Each spinning prop disc (a sphere of the prop radius at its hub) against an obstacle: wear or a break, a bounce.
+## Spinning prop discs (spheres of the prop radius at their hubs) against obstacles, all judged on the same pose: each
+## touching prop wears, or breaks above PROP_BREAK_SPEED_MPS; then one push-out and one bounce at the deepest contact.
 func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
+	var body: PackedFloat64Array = out.body
+	var attitude := RB._att(body)
+	var deepest := {}
 	for i in 4:
 		if out.continuous[i] <= strike_speed:
 			continue
-		var body: PackedFloat64Array = out.body
-		var attitude := RB._att(body)
 		var rotor: Dictionary = prepared.rotors[i]
 		var radius: float = 0.5 * float(rotor.diameter_m)
 		var hub := M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, rotor.hub_frd))
@@ -865,10 +922,15 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 			_set_health(out, i, 0.0, t, "obstacle")
 		else:
 			_wear(out, i, t, "obstacle")
-		var moved := body.duplicate()
-		for k in 3:
-			moved[RB.POS + k] += normal[k] * maxf(0.0, radius - float(clearance))
-		out.body = _bounce(moved, contact_body, normal, speed, SOLID_RESPONSE)
+		var depth := radius - float(clearance)
+		if deepest.is_empty() or depth > float(deepest.depth):
+			deepest = {depth = depth, normal = normal, contact = contact_body, speed = speed}
+	if deepest.is_empty():
+		return
+	var moved := body.duplicate()
+	for k in 3:
+		moved[RB.POS + k] += deepest.normal[k] * maxf(0.0, float(deepest.depth))
+	out.body = _bounce(moved, deepest.contact, deepest.normal, float(deepest.speed), SOLID_RESPONSE)
 
 
 ## Terrain: a new touchdown of a foot or hull point (severity: the faster of its arrival and endpoint closing speeds)
@@ -888,6 +950,10 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 	var crash_speed: float = prepared.contacts.crash_speed_mps
 	var hardest := 0.0
 	var hardest_point := PackedFloat64Array()
+	var patch := M.v3(0.0, 0.0, 0.0)
+	var patch_weight := 0.0
+	var patch_normal := M.v3(0.0, 0.0, -1.0)
+	var deepest := 0.0
 	for point: PackedFloat64Array in _points:
 		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
 		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + offset[0], body[RB.POS + 1] + offset[1])
@@ -905,20 +971,73 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 		if speed > hardest:
 			hardest = speed
 			hardest_point = point
+		var depth: float = body[RB.POS + 2] + offset[2] + surface[0]
+		patch = M.add(patch, M.scale(point, depth))
+		patch_weight += depth
+		if depth > deepest:
+			deepest = depth
+			patch_normal = normal
 	if hardest > HARD_IMPACT_FACTOR * crash_speed:
 		out.reason = "Hard impact"
 		return
 	if hardest > crash_speed:
 		_chip_nearest(out, hardest_point, t, "ground")
-		out.events.append({type = "impact", time_s = t, surface = "ground", part = "frame", normal_speed_mps = hardest})
+		out.events.append({type = "impact", time_s = t, surface = "ground", part = "frame", normal_speed_mps = hardest,
+			point_ned = M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, hardest_point))})
+	if hardest > TOUCHDOWN_IMPULSE_SPEED_MPS and patch_weight > 0.0:
+		# The patch's closing speed at the endpoint (what the springs have not yet stopped), resolved at once; then
+		# lifted along the normal so the deepest new contact sits on the surface.
+		var centroid: PackedFloat64Array = M.scale(patch, 1.0 / patch_weight)
+		var closing := _closing_speed(body, centroid, patch_normal)
+		var lifted := body.duplicate()
+		for k in 3:
+			lifted[RB.POS + k] += patch_normal[k] * deepest * -patch_normal[2]
+		out.body = _bounce(lifted, centroid, patch_normal, closing, TOUCHDOWN_RESPONSE) if closing > 0.0 else lifted
+		body = out.body
+		attitude = RB._att(body)
 	var axis: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
 	var lowest: PackedFloat64Array = M.sub(M.v3(0.0, 0.0, 1.0), M.scale(axis, axis[2]))
 	var position: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	for i in 4:
-		if out.continuous[i] > strike_speed and out.continuous[C_HEALTH + i] > 0.0 \
-				and _disc_in_ground(i, position, attitude, axis, lowest, M.norm(lowest)):
-			_wear(out, i, t, "ground")
+		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0:
+			continue
+		var hit := _disc_ground_hit(i, position, attitude, axis, lowest, M.norm(lowest))
+		if hit.is_empty():
+			continue
+		_wear(out, i, t, "ground")
+		_prop_strike_kick(out, i, hit)
+
+
+## DR-19d: a spinning prop digging into the ground. The ground stops the blade (the shaft loses PROP_STRIKE_BRAKE of its
+## speed this tick) and pushes back on it: an impulse I_r·Δω / r against the blade tip's motion at the contact, applied
+## at the hub (its rim lever cancels the rotor's own momentum change). Bounded by the rotor's lost momentum; energy only
+## leaves the system (the rotor's lost kinetic energy far exceeds what the kick gives the airframe).
+func _prop_strike_kick(out: Dictionary, i: int, hit_world: PackedFloat64Array) -> void:
+	var omega: float = out.continuous[i]
+	var lost: float = omega * PROP_STRIKE_BRAKE
+	out.continuous[i] = omega - lost
+	var rotor: Dictionary = prepared.rotors[i]
+	var radius: float = 0.5 * float(rotor.diameter_m)
+	var body: PackedFloat64Array = out.body
+	var attitude := RB._att(body)
+	var conj := M.q_conj(attitude)
+	var rim_body: PackedFloat64Array = M.scale(M.q_rotate(conj, hit_world), radius)
+	# Rotor angular velocity in FRD is (0, 0, −spin·ω) (momentum_z = −spin·I·ω); the tip moves as Ω × r.
+	var tip_velocity: PackedFloat64Array = M.cross(M.v3(0.0, 0.0, -float(rotor.spin) * omega), rim_body)
+	var tip_speed := M.norm(tip_velocity)
+	if not (tip_speed > 1.0e-9) or not (radius > 0.0):
+		return
+	var magnitude: float = float(rotor.inertia_kg_m2) * absf(lost) / radius
+	var impulse: PackedFloat64Array = M.scale(tip_velocity, -magnitude / tip_speed)
+	var inverse_inertia: PackedFloat64Array = RB.inertia_inverse(prepared.inertia_kg_m2)
+	var delta_rates: PackedFloat64Array = RB.inertia_mul(inverse_inertia, M.cross(rotor.hub_frd, impulse))
+	var mass: float = prepared.mass_kg
+	var kicked := body.duplicate()
+	for k in 3:
+		kicked[RB.VEL + k] += impulse[k] / mass
+		kicked[RB.RATE + k] += delta_rates[k]
+	out.body = kicked
 
 
 ## Unit outward normal of the nearest obstacle at `point` (central differences of the clearance field); straight up
@@ -989,7 +1108,11 @@ func _set_health(out: Dictionary, i: int, value: float, t: float, cause: String)
 	if health == before:
 		return
 	out.continuous[C_HEALTH + i] = health
-	out.events.append({type = "prop_damage", time_s = t, rotor = i, health = health, cause = cause})
+	var body: PackedFloat64Array = out.body
+	var hub: PackedFloat64Array = M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]),
+		M.q_rotate(RB._att(body), prepared.rotors[i].hub_frd))
+	out.events.append({type = "prop_damage", time_s = t, rotor = i, health = health, cause = cause, point_ned = hub,
+		broken = health == 0.0, first = before == 1.0})
 
 
 ## Penetration (m, positive below the terrain) of the rim point `radius` from `hub` along the world unit `direction`.
@@ -1011,8 +1134,9 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 		if continuous[i] < floor_speed or continuous[i] > ceiling:
 			return false
 	var aux: PackedFloat64Array = frame.aux
+	var command_floor: float = -1.0 if frame.modes[FC.MODE_FLIGHT] == FC.FLIGHT_TURTLE else 0.0 # DR-19e reverse drive
 	for i in 4:
-		if aux[FC.AUX_COMMAND + i] < 0.0 or aux[FC.AUX_COMMAND + i] > 1.0:
+		if aux[FC.AUX_COMMAND + i] < command_floor or aux[FC.AUX_COMMAND + i] > 1.0:
 			return false
 	if aux[FC.AUX_COLLECTIVE] < 0.0 or aux[FC.AUX_COLLECTIVE] > 1.0 \
 			or aux[FC.AUX_VIRTUAL_THROTTLE] < 0.0 or aux[FC.AUX_VIRTUAL_THROTTLE] > 1.0:

@@ -13860,3 +13860,129 @@ msgstr "gâchette droite"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d résultats de course ne sont pas enregistrés. Choisissez à nouveau Retour à l’accueil dans les 8 s pour les abandonner."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "Quadricoptère FPV EdgeTX (CH5 armement, CH6 mode, CH9 redémarrage)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "Quadricoptère FPV EdgeTX : manches AETR sur CH1-CH4, armement sur CH5 (seule la position haute arme), mode de vol sur CH6 (bas Angle, milieu et haut Acro), redémarrage sur l’aire sur CH9 (un interrupteur momentané). Affectez ces interrupteurs dans le mixeur de votre radio, puis étalonnez."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "Le préréglage FPV EdgeTX n’est disponible que pour une radio."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Impossible d’appliquer le préréglage FPV EdgeTX : %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Les interrupteurs FPV EdgeTX sont dans le brouillon. Vérifiez-les sur votre radio, puis enregistrez pour les conserver."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Redémarrer sur l’aire : R ou %s sur la manette."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "À l’envers : appuyez sur R pour revenir à l’aire."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "À l’envers : appuyez sur R ou %s pour revenir à l’aire."
+
+msgid "PROP BROKEN"
+msgstr "HÉLICE CASSÉE"
+
+msgid "PROP DAMAGE"
+msgstr "HÉLICE ABÎMÉE"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Crashs : gradués (les impacts peuvent abîmer les hélices)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Crashs : tout crash termine le vol"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "Le réglage des crashs s’applique après Redémarrer sur l’aire."
+
+msgid "rear right"
+msgstr "arrière droite"
+
+msgid "front right"
+msgstr "avant droite"
+
+msgid "rear left"
+msgstr "arrière gauche"
+
+msgid "front left"
+msgstr "avant gauche"
+
+msgid "Prop broken: %s"
+msgstr "Hélice cassée : %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Hélice abîmée : %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Atterrissage dur (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Rebond sur un obstacle (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX avion (CH5 train, CH6 volets, CH10 fumée, CH9 redémarrage)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX avion : manches AETR sur CH1-CH4, train d’atterrissage sur CH5 (SD), volets sur CH6 (SA, rentrés / décollage / atterrissage), redémarrage sur CH9 (SH, momentané), fumée sur CH10 (SE). Les dual rates, l’expo et la coupure moteur restent dans la radio. Calibrez, puis utilisez Configurer cet appareil pour vérifier chaque interrupteur."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "Le préréglage EdgeTX avion n’est disponible que pour une radio."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Impossible d’appliquer le préréglage EdgeTX avion : %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "Le préréglage EdgeTX avion est dans le brouillon. Utilisez Configurer cet appareil pour vérifier le train, les volets et la fumée sur votre radio, puis Enregistrez."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s utilise le bouton %d (actif tant qu’il est enfoncé). Enregistrez le profil pour le conserver."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · commencez sur %s"
+
+msgid "DOWN (gear down)"
+msgstr "BAS (train sorti)"
+
+msgid "UP (flaps up)"
+msgstr "HAUT (volets rentrés)"
+
+msgid "OFF (smoke off)"
+msgstr "ARRÊT (fumée coupée)"
+
+msgid "released"
+msgstr "relâché"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 ou Esc → Incrustations de vol"
+
+msgid "Throttle cut"
+msgstr "Coupure moteur"
+
+msgid "On your radio (special function)"
+msgstr "Sur votre radio (fonction spéciale)"
+
+msgid "Flap → elevator mix"
+msgstr "Mixage volets → profondeur"
+
+msgid "Applied by your radio"
+msgstr "Appliqué par votre radio"
+
+msgid "Applied by OpenRC"
+msgstr "Appliqué par OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Mettez %s sur OFF pour prendre le contrôle"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Mettez son interrupteur sur OFF pour prendre le contrôle"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "Radio USB (EdgeTX) : sélectionnez USB Joystick (Classic) dans Model setup et coupez la HF. Disposition suggérée : AETR sur CH1-CH4, train d’atterrissage CH5 (SD), volets CH6 (SA), redémarrage CH9 (SH), fumée CH10 (SE) ; les dual rates, l’expo et la coupure moteur restent dans la radio. Baissez les gaz pour armer ; débrancher met en pause. K : calibrer. Commandes → Configurer cet appareil vérifie chaque interrupteur. F1 affiche le guide des commandes en vol. Sans la vérification des interrupteurs, attribuez le train à un AUX ou à Basculer le train d’atterrissage dans Commandes."
+
+msgid "Control guide: show / hide"
+msgstr "Guide des commandes : afficher / masquer"

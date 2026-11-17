@@ -24,10 +24,15 @@ const EDGETX_FPV_AUX := {
 	"flight_mode": {"type": "axis", "axis": 5, "invert": false, "off": -1.0, "on": 1.0},
 }
 const EDGETX_FPV_RESTART := {"type": "button", "button": 0}
+## D6-ETX-02 (docs/plans/edgetx-airplane-controls.md): EdgeTX airplane. AETR on axes 0-3 (calibrated as any radio)
+## and restart on CH9 (button 0) like the quad; gear, flaps and smoke are bound only by the Setup assistant's switch
+## check (EdgeTxRadio.AIRPLANE_LAYOUT is the recommendation it presents), so the preset never trusts an AUX index.
+## Dual rates and expo stay on the radio.
+const EDGETX_AIRPLANE_PRESET := "edgetx_airplane"
 
 
 ## Returns a complete, validated starter profile. `preset` is one of mode1,
-## mode2, trigger_absolute, radio_custom, jeti_mode2 or edgetx_fpv. Unknown combinations return {}.
+## mode2, trigger_absolute, radio_custom, jeti_mode2, edgetx_fpv or edgetx_airplane. Unknown combinations return {}.
 static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dictionary:
 	if preset == "custom" and kind in ["radio", "joystick"]:
 		preset = "radio_custom"
@@ -35,7 +40,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		return {}
 	if kind == "gamepad" and not ["mode1", "mode2", "trigger_absolute"].has(preset):
 		return {}
-	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2", EDGETX_FPV_PRESET]:
+	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2", EDGETX_FPV_PRESET, EDGETX_AIRPLANE_PRESET]:
 		return {}
 	if kind == "joystick" and preset != "radio_custom":
 		return {}
@@ -64,6 +69,8 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		name = "JETI USB Mode 2"
 	elif preset == EDGETX_FPV_PRESET:
 		name = "EdgeTX FPV quad"
+	elif preset == EDGETX_AIRPLANE_PRESET:
+		name = "EdgeTX airplane"
 	var result: Dictionary = {
 		"schema_version": SCHEMA_VERSION,
 		"profile_id": _new_uuid(),
@@ -91,6 +98,8 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		result.actions = ControllerActions.clean_radio_bindings()
 	if preset == EDGETX_FPV_PRESET:
 		result.aux = EDGETX_FPV_AUX.duplicate(true)
+		result.actions.restart_flight = EDGETX_FPV_RESTART.duplicate(true)
+	elif preset == EDGETX_AIRPLANE_PRESET:
 		result.actions.restart_flight = EDGETX_FPV_RESTART.duplicate(true)
 	return result if validate(result).ok else {}
 

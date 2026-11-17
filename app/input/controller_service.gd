@@ -6,6 +6,7 @@ const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const EdgeTxRadio := preload("res://input/edgetx_radio.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
 
 signal flight_selection_changed
@@ -160,7 +161,8 @@ static func observed_devices() -> Array:
 			info["kind"] = "radio"
 		elif JetiRadio.has_jeti_identity_claim(info):
 			info["kind"] = "joystick"
-		elif RcInput.looks_like_radio(str(info.name)):
+		elif RcInput.looks_like_radio(str(info.name)) or EdgeTxRadio.classifies_as_radio(info):
+			# D6-ETX-01: every EdgeTX maker by the USB pair, unless SDL already reports a known gamepad.
 			info["kind"] = "radio"
 		devices.append(info)
 	return devices

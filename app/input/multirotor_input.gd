@@ -24,6 +24,10 @@ const FC = preload("res://physics/multirotor/flight_controller.gd")
 ## [ ] - =) or the Mode 2 flying keys (arrows, W A S D).
 const ARM_KEY := KEY_E
 const MODE_KEY := KEY_M
+## DR-19e: the turtle-mode (crash flip) toggle: F on the keyboard, Y on a gamepad (never a button an AUX channel or
+## Pause owns). The controller engages it only on an arming edge, never in flight.
+const TURTLE_KEY := KEY_F
+const TURTLE_BUTTON := JOY_BUTTON_Y
 const ARM_BUTTON := JOY_BUTTON_LEFT_SHOULDER
 const MODE_BUTTON := JOY_BUTTON_RIGHT_SHOULDER
 ## D6-UX-01: a controller profile with the explicit "arm" AUX channel bound arms from that switch level (any source).
@@ -63,6 +67,9 @@ var _last_arm_channel := ""
 var _mode := FC.FLIGHT_ANGLE
 var _arm_input_held := false
 var _mode_input_held := false
+var _turtle := false
+var _turtle_input_held := false
+var _turtle_button := -1
 var _actions := 0
 var _keyboard_sticks := {roll = 0.0, pitch = 0.0, yaw = 0.0}
 var _source_key := ""
@@ -101,6 +108,7 @@ static func _read_keyboard() -> Dictionary:
 	var raw: Dictionary = Keyboard.read_raw()
 	raw.arm = Input.is_physical_key_pressed(ARM_KEY)
 	raw.mode = Input.is_physical_key_pressed(MODE_KEY)
+	raw.turtle = Input.is_physical_key_pressed(TURTLE_KEY)
 	return raw
 
 
@@ -145,8 +153,9 @@ func bindings() -> Dictionary:
 	var result := {arm = _arm_key_name, arm_switch = arm_from_switch(), arm_aux = arm_aux(), throttle_up = "",
 		source = source(), mode = _mode_key_name, mode_switch = mode_from_switch(), arm_button = "", mode_button = "",
 		arm_control = aux_control_text(arm_aux()), mode_control = aux_control_text(MODE_AUX) if mode_from_switch() else "",
-		pause_button = _button_text(_pause_button),
-		restart_control = ControllerActions.binding_text(_restart_binding) if not _restart_binding.is_empty() else "", axes = {throttle = stick_axis("throttle"), yaw = stick_axis("yaw"),
+		pause_button = _button_text(_pause_button), turtle = OS.get_keycode_string(TURTLE_KEY),
+		turtle_button = _button_text(_turtle_button) if radio.connected and radio.is_gamepad() else "",
+		restart_control = _control_text(_restart_binding) if not _restart_binding.is_empty() else "", axes = {throttle = stick_axis("throttle"), yaw = stick_axis("yaw"),
 		roll = stick_axis("roll"), pitch = stick_axis("pitch")}}
 	match result.source:
 		"gamepad":
@@ -187,7 +196,7 @@ func aux_control_text(channel_name: String) -> String:
 	var binding: Dictionary = radio.profile.aux[channel_name]
 	match str(binding.get("type", "")):
 		"button", "axis":
-			return ControllerActions.binding_text(binding)
+			return _control_text(binding)
 		"switch":
 			var names := PackedStringArray()
 			for button: Variant in SmokeAux.bound_buttons(binding):
@@ -197,7 +206,15 @@ func aux_control_text(channel_name: String) -> String:
 
 
 func _button_text(button: int) -> String:
-	return ControllerActions.binding_text({type = "button", button = button}) if button >= 0 else ""
+	return _control_text({type = "button", button = button}) if button >= 0 else ""
+
+
+## A binding's physical control as the pilot knows it: SDL names on a gamepad, the joystick's own 1-based button
+## number on a radio (an EdgeTX radio's CH9 is its button 1), never a gamepad face-button name for a radio.
+func _control_text(binding: Dictionary) -> String:
+	if str(binding.get("type", "")) == "button" and not radio.is_gamepad():
+		return TranslationServer.translate("Button %d") % (int(binding.get("button", -1)) + 1)
+	return ControllerActions.binding_text(binding)
 
 
 ## Recompute the gamepad shortcuts for the active source and profile (audit A02): LB arms and RB changes the mode
@@ -207,6 +224,7 @@ func _button_text(button: int) -> String:
 func _refresh_shortcuts() -> void:
 	_arm_button = -1
 	_mode_button = -1
+	_turtle_button = -1
 	_pause_button = -1
 	_restart_binding = {}
 	if not radio.connected or not bool(radio.profile.get("configured", true)):
@@ -227,6 +245,8 @@ func _refresh_shortcuts() -> void:
 		_arm_button = ARM_BUTTON
 	if not mode_from_switch() and not owned.has(int(MODE_BUTTON)):
 		_mode_button = MODE_BUTTON
+	if not owned.has(int(TURTLE_BUTTON)):
+		_turtle_button = TURTLE_BUTTON
 
 
 func connect_first_device() -> void:
@@ -356,6 +376,7 @@ func invalidate_for_focus() -> void:
 ## A pad restart: the virtual arm switch returns to OFF and the keyboard sticks to centre. The flight mode is kept.
 func reset_for_restart() -> void:
 	_arm_latch = false
+	_turtle = false
 	_end_arm_continuity(false)
 	_continuity_lost = false
 	_last_arm_level = false
@@ -364,7 +385,12 @@ func reset_for_restart() -> void:
 
 
 func flight_mode() -> int:
-	return _mode
+	return FC.FLIGHT_TURTLE if _turtle else _mode
+
+
+## DR-19e: whether turtle mode (the crash flip) is requested.
+func turtle_requested() -> bool:
+	return _turtle
 
 
 func _current_source_key() -> String:
@@ -381,6 +407,7 @@ func _source_changed() -> void:
 	_actions &= ~FC.ACTION_RECOVERY
 	_mode = FC.FLIGHT_ANGLE if mode_from_switch() else default_mode(source())
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
+	_turtle = false
 	_end_arm_continuity(_arm_continuity)
 	_last_arm_level = false
 	_refresh_shortcuts()
@@ -483,6 +510,7 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	var throttle := 0.0
 	var button_arm := false
 	var button_mode := false
+	var button_turtle := false
 	if radio.connected:
 		error = str(radio.input_error) if not str(radio.input_error).is_empty() else str(radio.profile_error)
 		# RcInput owns fresh low-throttle evidence for raw radios and the verified
@@ -497,6 +525,7 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 		if radio.is_gamepad() and read_button.is_valid():
 			button_arm = _arm_button >= 0 and bool(read_button.call(radio.device_id, _arm_button))
 			button_mode = _mode_button >= 0 and bool(read_button.call(radio.device_id, _mode_button))
+			button_turtle = _turtle_button >= 0 and bool(read_button.call(radio.device_id, _turtle_button))
 	else:
 		if integrate:
 			var rate: float = Spec.CONTROLS.rate
@@ -521,6 +550,10 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 		_arm_latch = not _arm_latch
 	if integrate and mode_pressed and not _mode_input_held and not mode_switch:
 		_mode = FC.FLIGHT_ANGLE if _mode == FC.FLIGHT_ACRO else FC.FLIGHT_ACRO
+	var turtle_pressed := bool(keys.get("turtle", false)) or button_turtle
+	if integrate and turtle_pressed and not _turtle_input_held:
+		_turtle = not _turtle
+	_turtle_input_held = turtle_pressed
 	_arm_input_held = arm_pressed
 	_mode_input_held = mode_pressed
 	var arm_level := _arm_latch
@@ -564,10 +597,11 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	pilot[FC.IN_YAW] = clampf(yaw, -1.0, 1.0)
 	pilot[FC.IN_THROTTLE] = throttle
 	pilot[FC.IN_ARM] = 1.0 if arm_level else 0.0
-	pilot[FC.IN_MODE] = float(_mode)
+	pilot[FC.IN_MODE] = float(FC.FLIGHT_TURTLE if _turtle else _mode)
 	pilot[FC.IN_ACTIONS] = float(actions)
 	var raw := {roll = pilot[FC.IN_ROLL], pitch = pilot[FC.IN_PITCH], yaw = pilot[FC.IN_YAW], throttle = throttle,
-		arm = arm_level, arm_source = arm_source, mode = "angle" if _mode == FC.FLIGHT_ANGLE else "acro", mode_source = mode_source,
+		arm = arm_level, arm_source = arm_source, mode = "turtle" if _turtle else ("angle" if _mode == FC.FLIGHT_ANGLE else "acro"),
+		mode_source = mode_source,
 		arm_key = _arm_key_name, mode_key = _mode_key_name,
 		arm_button = _arm_button, mode_button = _mode_button}
 	return {pilot = pilot, source = kind, ready = ready, error = error, throttle_policy = policy, raw = raw,

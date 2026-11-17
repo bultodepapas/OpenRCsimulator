@@ -452,6 +452,17 @@ A declared, deterministic gameplay law (`multirotor-graded-impact-v1`) replaces 
 
 ### 17.3 Verification
 
+**Status (2026-11-17): implemented with software evidence.** `test_mr_graded_crashes` (24 checks) and `test_mr_controls_presets` (22 checks) are new. 77 multirotor, race, controller and Controls-setup suites, plus `test_ui_language`, pass with zero script errors: pinned Godot 4.8-beta2 on Windows, direct headless runs.
+
+An adversarial review found five defects, all fixed with regressions:
+- a restart control could fire while a menu or dialog owned the input;
+- a resting frame contact could chip props every tick;
+- a midpoint contact took precedence over the endpoint;
+- a driven broken prop could outrun the shaft-speed domain;
+- a radio button was named like a gamepad face button.
+
+A broken prop keeps 30 % of its aerodynamic load. Still open: physical-radio and pad sessions, and a owner flight log to tune the estimated thresholds.
+
 New desired-behaviour suites (each fails on the previous behaviour):
 - **Controls:**
   - The EdgeTX preset validates, a middle switch position does not arm, and a calibrated draft keeps its calibration.
@@ -465,3 +476,28 @@ New desired-behaviour suites (each fails on the previous behaviour):
   - The damage is replayed exactly, and strict mode keeps the old outcomes.
 
 Affected suites: multirotor plant/session/activity/OSD/flight log and race suites, controller setup/profile/actions, and `test_ui_language`.
+
+## 18. Crash audit and second iteration (2026-11-17)
+
+**Owner request:** keep improving crashes: physics, broken props, sound and the crash experience. The audit flew the graded law in headless scenarios (drops of 0.5–11 m, tilted and inverted drops, a 10 m/s skid, a 15 m/s dive, a broken and a damaged prop in powered flight) and inventoried reusable presentation code.
+
+### 18.1 Findings
+
+| ID | Finding | Evidence | Disposition |
+| --- | --- | --- | --- |
+| C1 | Hard touchdowns sank into the stiff pad springs, up to 28 mm at 12.5 m/s. At high approach speed some RK4 stages overshot deep into the springs, injecting up to 136 rad/s of pitch in one tick with no contact at either endpoint. | Drop probe and tick trace | Fixed: a touchdown above 3 m/s is one impulse at the contact patch (restitution about 0.15) with lift-out. Fast approaches take pieces of at most 4 mm (graded law only). Sink is now 0.3–3 mm. |
+| C2 | Tumbles after flat drops were partly real: the drag of the still-spinning props tilts a disarmed falling quad about 24°, and the shipped CG sits 0.6 mm ahead of the feet's centre. | Tick trace, geometry | Kept as physics. The regression requires no flip on a level 10 m/s landing. |
+| C3 | A spinning prop touching the ground only wore. It never braked or kicked the airframe, so the characteristic prop-strike flip was missing. | Law review | Fixed. A strike halves the shaft speed and applies the ground's reaction on the blade (I_r·Δω/r, against the tip motion, at the hub). Mirror strikes of counter-rotating props cancel. No energy is gained. |
+| C4 | Grinding props reported damage every tick: a flood of messages (and, once added, sounds). | Skid and dive probes | Fixed in presentation. Messages, sounds and effects come once per prop and damage step; touches are paced at 0.12 s and impact messages at 1.2 s. |
+| C5 | No crash sound, dust, chips, debris or camera jolt for the quad. A broken prop still rendered and spun. | Presentation inventory | Fixed by reusing the project's crash kit (synthetic MIT sounds in `render/crash/crash_audio.gd`; dust, chips, marks and debris in `render/crash/effects.gd`), allocated at the first event. Broken blades leave the model (`render/crash/prop_break.gd`, blur kept hidden). Damaged discs wobble. The motor loop gains a detuned rattle with prop damage. Impacts jolt the camera briefly. |
+| C6 | Upside down after a crash, the only way back is a restart (no turtle mode). | Probe | Open, next step: Betaflight-style crash flip (reverse-spinning motors, a dedicated switch/key) needs a reverse-thrust rotor law and FC support. The OSD already names the restart control. |
+| C7 | All thresholds are estimates. | Research (§17) | Open: tune against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)). |
+
+### 18.2 Verification
+
+- **New and updated suites, all passing on pinned Godot 4.8-beta2 (Windows, direct headless runs):**
+  - `test_mr_graded_crashes`, 28 checks: flat touchdown, the strike brake and kick, mirror cancellation, and a driven prop grinding to break.
+  - `test_mr_crash_presentation`, 12 checks: pacing, broken blades leaving and returning, the wobble, the camera jolt fading, and lazy allocation.
+- **Affected suites:** multirotor activity, visual, camera, plant, session, flight log, race and controls.
+- **Unchanged:** strict-law frames, and normal flight and gentle landings, because the new behaviour runs only for graded contacts above the thresholds.
+- **Not established:** audible quality of the synthetic crash sounds on a quad, native 1080p effect cost, and measured crash physics.

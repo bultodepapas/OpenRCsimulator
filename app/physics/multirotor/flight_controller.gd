@@ -23,7 +23,8 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const Allocator := preload("res://physics/multirotor/allocator.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 
-const LAW := "openrc-fc-acro-angle-v1"
+## v2 (DR-19e): turtle mode (FLIGHT_TURTLE).
+const LAW := "openrc-fc-acro-angle-turtle-v2"
 const SAMPLE_HZ := 240
 
 ## Pilot frame, flattened: the kernel's input array. Sticks are calibrated and PRE-expo; the rates law is the only
@@ -71,6 +72,15 @@ const MOTOR_CRASHED := 2
 const MOTOR_DEPLETED := 3
 const FLIGHT_ACRO := 0
 const FLIGHT_ANGLE := 1
+## DR-19e (docs/plans/drone-racing.md §19): turtle mode, the Betaflight-style crash flip. Requested only while
+## disarmed (it engages on the arming edge, never in flight); armed in it, the motors on the side
+## opposite the stick spin in REVERSE with power following it (the quad flips toward the stick), and stop once the quad is upright again. No PID or allocation runs.
+const FLIGHT_TURTLE := 2
+## Reverse command (duty, negative) at full stick, the stick deadband, and the upright limit (world-up component of
+## the body's up axis) at which the flip stops.
+const TURTLE_MAX_COMMAND := 0.6
+const TURTLE_DEADBAND := 0.15
+const TURTLE_UPRIGHT := 0.5
 const BLOCK_NONE := 0
 const BLOCK_THROTTLE := 1 # throttle was not low at the ON edge
 const BLOCK_SWITCH := 2 # no OFF observed in this source generation, or the switch was held ON
@@ -197,7 +207,7 @@ static func input_is_valid(config: Dictionary, input: Variant) -> bool:
 	var throttle_floor: float = -1.0 if int(config.throttle_policy) == THROTTLE_RATE else 0.0
 	if input[IN_THROTTLE] < throttle_floor or input[IN_THROTTLE] > 1.0:
 		return false
-	return input[IN_ARM] in [0.0, 1.0] and input[IN_MODE] in [0.0, 1.0] and input[IN_SOURCE_READY] in [0.0, 1.0] \
+	return input[IN_ARM] in [0.0, 1.0] and input[IN_MODE] in [0.0, 1.0, 2.0] and input[IN_SOURCE_READY] in [0.0, 1.0] \
 		and input[IN_SOURCE_GENERATION] >= 0.0 and input[IN_SOURCE_GENERATION] == floorf(input[IN_SOURCE_GENERATION]) \
 		and input[IN_SOURCE_GENERATION] < 9.0e15 and input[IN_ACTIONS] in [0.0, 1.0, 2.0, 3.0]
 
@@ -206,7 +216,7 @@ static func input_is_valid(config: Dictionary, input: Variant) -> bool:
 static func modes_are_valid(modes: Variant) -> bool:
 	return typeof(modes) == TYPE_PACKED_INT64_ARRAY and modes.size() == MODES_SIZE \
 		and modes[MODE_MOTOR] >= MOTOR_DISARMED and modes[MODE_MOTOR] <= MOTOR_DEPLETED \
-		and modes[MODE_FLIGHT] in [FLIGHT_ACRO, FLIGHT_ANGLE] and modes[MODE_PREVIOUS_ARM] in [0, 1] \
+		and modes[MODE_FLIGHT] in [FLIGHT_ACRO, FLIGHT_ANGLE, FLIGHT_TURTLE] and modes[MODE_PREVIOUS_ARM] in [0, 1] \
 		and modes[MODE_OFF_OBSERVED] in [0, 1] and modes[MODE_SOURCE_GENERATION] >= 0 \
 		and modes[MODE_FILTER_READY] in [0, 1] and modes[MODE_ARM_BLOCK] >= BLOCK_NONE and modes[MODE_ARM_BLOCK] <= BLOCK_TERMINAL \
 		and modes[MODE_SAMPLES] >= 0
@@ -288,10 +298,18 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 			motor = MOTOR_ARMED
 			modes[MODE_ARM_BLOCK] = BLOCK_NONE
 	modes[MODE_PREVIOUS_ARM] = arm_level
+	var was_armed: bool = frame.modes[MODE_MOTOR] == MOTOR_ARMED
+	var requested: int = int(input[IN_MODE])
 	modes[MODE_MOTOR] = motor
-	modes[MODE_FLIGHT] = int(input[IN_MODE]) # the rate loop and its memory are shared; a switch resets nothing
+	if motor == MOTOR_ARMED and was_armed and frame.modes[MODE_FLIGHT] == FLIGHT_TURTLE:
+		requested = FLIGHT_TURTLE # turtle holds until the motors disarm
+	elif motor == MOTOR_ARMED and was_armed and requested == FLIGHT_TURTLE:
+		requested = frame.modes[MODE_FLIGHT] # never in flight: the request waits for a disarm
+	modes[MODE_FLIGHT] = requested # the rate loop and its memory are shared; a switch resets nothing
 	modes[MODE_SAMPLES] = modes[MODE_SAMPLES] + 1
 	var armed: bool = motor == MOTOR_ARMED
+	if armed and requested == FLIGHT_TURTLE:
+		return _turtle(config, frame, input, aux, modes)
 	if int(config.throttle_policy) == THROTTLE_RATE and not armed:
 		aux[AUX_VIRTUAL_THROTTLE] = 0.0
 		collective = 0.0
@@ -373,6 +391,38 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 		aux[AUX_COMMAND + rotor] = commands[rotor]
 		aux[AUX_THRUST_TARGET + rotor] = targets[rotor]
 	aux[AUX_COLLECTIVE] = collective
+	return {aux = aux, modes = modes}
+
+
+## DR-19e turtle sample: the quad flips toward the stick (Betaflight crash flip), so the motors on the OPPOSITE side
+## spin in reverse and lift it: pitch forward lifts the rear, roll right lifts the left (FRD body axes). Zero once
+## upright; no controller memory.
+static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64Array, aux: PackedFloat64Array,
+		modes: PackedInt64Array) -> Dictionary:
+	var body: PackedFloat64Array = frame.body
+	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
+	var up: float = -M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))[2] # world-up component of the body's up axis
+	var stick := PackedFloat64Array([-input[IN_PITCH], input[IN_ROLL]])
+	var amount: float = sqrt(stick[0] * stick[0] + stick[1] * stick[1])
+	var hubs: Array = config.get("hubs", [])
+	for axis in 3:
+		aux[AUX_INTEGRAL + axis] = 0.0
+		aux[AUX_TAU_REQUEST + axis] = 0.0
+		aux[AUX_TAU_ALLOCATED + axis] = 0.0
+		aux[AUX_SETPOINT + axis] = 0.0
+		aux[AUX_PREVIOUS_SETPOINT + axis] = 0.0
+		aux[AUX_GYRO + axis] = body[RB.RATE + axis]
+		aux[AUX_DTERM + axis] = 0.0
+	for rotor in 4:
+		aux[AUX_COMMAND + rotor] = 0.0
+		aux[AUX_THRUST_TARGET + rotor] = 0.0
+		if up > TURTLE_UPRIGHT or amount <= TURTLE_DEADBAND or rotor >= hubs.size():
+			continue
+		var hub: PackedFloat64Array = hubs[rotor]
+		# A hub opposite the stick direction (FRD x forward, y right) is the side that must rise.
+		if hub[0] * stick[0] + hub[1] * stick[1] < 0.0:
+			aux[AUX_COMMAND + rotor] = -TURTLE_MAX_COMMAND * clampf((amount - TURTLE_DEADBAND) / (1.0 - TURTLE_DEADBAND), 0.0, 1.0)
+	aux[AUX_COLLECTIVE] = 0.0
 	return {aux = aux, modes = modes}
 
 

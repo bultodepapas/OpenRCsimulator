@@ -1184,6 +1184,7 @@ func _prepare_flight() -> void:
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
 	session.reset()
+	_sync_radio_flap_detents()
 	GroundGear.attach(_airplane, session)
 	TimberVisualMotion.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
@@ -1480,6 +1481,7 @@ func _process(delta: float) -> void:
 		_clear_wheel_brake()
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
+	_sync_radio_flap_detents()
 	_advance_wing_fold(dt)
 	_advance_mechanisms(dt)
 	if _frametimes_active:
@@ -1970,6 +1972,18 @@ func controller_action(action: String) -> bool:
 		_: return false
 	return true
 
+## D6-ETX-04: a radio flaps switch with `detents: "aircraft"` snaps to the flown aircraft's detents (the same list as
+## the keyboard). Pushed when the aircraft (or its flap data) changes; an aircraft without flaps clears it.
+func _sync_radio_flap_detents() -> void:
+	if session == null or session.radio == null:
+		return
+	var detents: Array[float] = []
+	if session.aircraft.get("ok", false) and session.flaps_available():
+		detents = _flap_detents()
+	if session.radio.flap_detents() != detents:
+		session.radio.set_flap_detents(detents)
+
+
 ## Keyboard detents follow the active model's full-down angle and recommended takeoff fraction.
 func _flap_detents() -> Array[float]:
 	var takeoff_fraction: float = float(session.aircraft.model.flaps.get("takeoff_fraction", 0.4))
@@ -2310,6 +2324,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					_overlays.toggle_developer()
 				else:
 					_show_perf = not _show_perf
+			KEY_F1:
+				# HUD-ETX-02: show or hide the control guide (it lists every stick, switch and key for this aircraft).
+				if _overlays != null:
+					_overlays.set_overlay_visible("controls", not _overlays.is_overlay_visible("controls"))
 			KEY_F2:
 				if _overlays != null:
 					_overlays.cycle_preset()
@@ -2438,8 +2456,25 @@ func _overlay_snapshot() -> Dictionary:
 			smoke = "on" if _smoke_requested_for_presentation() else "off",
 			flaps = session.flap_state(),
 			rates = session.rate_profile_label(),
+			waiting = _aux_waiting_for_off(),
 		}
 	return snap
+
+
+## HUD-ETX-03: bound radio switches that have no command yet because they were not seen at OFF since the last
+## connection, pause or focus boundary (gear and flaps keep their last target meanwhile; smoke stays off).
+func _aux_waiting_for_off() -> Dictionary:
+	var waiting := {}
+	if session == null or not session.radio.connected or session.sim.paused:
+		return waiting
+	var aux: Variant = session.radio.profile.get("aux", {})
+	if not aux is Dictionary:
+		return waiting
+	for channel: String in ["gear", "flaps", "smoke"]:
+		var binding: Variant = (aux as Dictionary).get(channel, {})
+		if binding is Dictionary and not (binding as Dictionary).is_empty():
+			waiting[channel] = not session.radio.auxiliary_request_valid(channel)
+	return waiting
 
 
 func _smoke_requested_for_presentation() -> bool:

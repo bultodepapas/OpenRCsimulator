@@ -12888,3 +12888,129 @@ msgstr "右扳机"
 
 msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 msgstr "%d 条比赛成绩未保存。8 秒内再次选择“返回主界面”即丢弃它们。"
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "EdgeTX FPV 四旋翼（CH5 解锁，CH6 模式，CH9 重新开始）"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "EdgeTX FPV 四旋翼：AETR 摇杆在 CH1-CH4，解锁在 CH5（仅高位解锁），飞行模式在 CH6（低位自稳，中位和高位特技），在起降台重新开始在 CH9（瞬时开关）。请在遥控器混控中分配这些开关，然后校准。"
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "EdgeTX FPV 预设仅适用于遥控器。"
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "无法应用 EdgeTX FPV 预设：%s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "EdgeTX FPV 开关已在草稿中。请在遥控器上检查，然后保存以保留。"
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "在起降台重新开始：R 或控制器上的 %s。"
+
+msgid "Upside down: press R to return to the pad."
+msgstr "机身倒扣：按 R 返回起降台。"
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "机身倒扣：按 R 或 %s 返回起降台。"
+
+msgid "PROP BROKEN"
+msgstr "螺旋桨断裂"
+
+msgid "PROP DAMAGE"
+msgstr "螺旋桨受损"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "撞击：分级（撞击可能损坏螺旋桨）"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "撞击：任何撞击都会结束飞行"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "撞击设置在“在起降台重新开始”后生效。"
+
+msgid "rear right"
+msgstr "右后"
+
+msgid "front right"
+msgstr "右前"
+
+msgid "rear left"
+msgstr "左后"
+
+msgid "front left"
+msgstr "左前"
+
+msgid "Prop broken: %s"
+msgstr "螺旋桨断裂：%s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "螺旋桨受损：%s（%d%%）"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "重着陆（%.1f m/s）"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "撞到障碍物后弹开（%.1f m/s）"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX 固定翼（CH5 起落架、CH6 襟翼、CH10 拉烟、CH9 重新开始）"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX 固定翼：AETR 摇杆在 CH1-CH4，起落架在 CH5（SD），襟翼在 CH6（SA，收起 / 起飞 / 着陆），重新开始在 CH9（SH，自复位），拉烟在 CH10（SE）。双比率、指数和油门锁定保留在遥控器上。先校准，再用“设置此设备”逐个检查开关。"
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "EdgeTX 固定翼预设仅适用于遥控器。"
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "无法应用 EdgeTX 固定翼预设：%s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "EdgeTX 固定翼预设已放入草稿。请用“设置此设备”在遥控器上检查起落架、襟翼和拉烟，然后保存。"
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s 使用按钮 %d（按住时开启）。保存配置文件以保留此设置。"
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · 从 %s 开始"
+
+msgid "DOWN (gear down)"
+msgstr "下（起落架放下）"
+
+msgid "UP (flaps up)"
+msgstr "上（襟翼收起）"
+
+msgid "OFF (smoke off)"
+msgstr "关（拉烟关闭）"
+
+msgid "released"
+msgstr "松开"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 或 Esc → 飞行叠加显示"
+
+msgid "Throttle cut"
+msgstr "油门锁定"
+
+msgid "On your radio (special function)"
+msgstr "在遥控器上（特殊功能）"
+
+msgid "Flap → elevator mix"
+msgstr "襟翼 → 升降舵混控"
+
+msgid "Applied by your radio"
+msgstr "由遥控器执行"
+
+msgid "Applied by OpenRC"
+msgstr "由 OpenRC 执行"
+
+msgid "Move %s to OFF to take control"
+msgstr "将 %s 拨到 OFF 以接管控制"
+
+msgid "Move its switch to OFF to take control"
+msgstr "将其开关拨到 OFF 以接管控制"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB 遥控器（EdgeTX）：在 Model setup 中选择 USB Joystick (Classic) 并关闭射频。建议布局：AETR 在 CH1-CH4，起落架 CH5（SD），襟翼 CH6（SA），重新开始 CH9（SH），拉烟 CH10（SE）；双比率、指数和油门锁定保留在遥控器上。拉低油门以解锁；拔出会暂停。K：校准。控制 → 设置此设备会逐个检查开关。飞行中按 F1 显示控制指南。 不做开关检查时，可在控制中分配起落架 AUX 或“切换起落架”。"
+
+msgid "Control guide: show / hide"
+msgstr "控制指南：显示 / 隐藏"
