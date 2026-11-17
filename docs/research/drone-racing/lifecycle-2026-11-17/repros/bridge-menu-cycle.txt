@@ -1,0 +1,22 @@
+# Precondition: Home -> Vehicles -> ION R5 -> FLY, at the initial paused menu.
+# Diagnostic witnesses: successful assertions confirm current gaps, not fixes.
+look
+press text="OSD settings"
+action name=ui_cancel
+assert expr="app.ground_vehicle.hud.settings_panel.visible" message="Semantic Back leaves OSD settings open"
+key name=Escape
+assert expr="not app.ground_vehicle.hud.settings_panel.visible and app.ground_vehicle.session.paused" message="Escape backs out one level"
+action name=ui_cancel
+assert expr="app.ground_vehicle.hud.menu_visible and app.ground_vehicle.session.paused" message="Semantic Back leaves the pause menu open"
+key name=Escape
+assert expr="not app.ground_vehicle.hud.menu_visible and not app.ground_vehicle.session.paused" message="Escape resumes from the pause menu"
+key name=P
+assert expr="app.ground_vehicle.hud.menu_visible and app.ground_vehicle.session.paused" message="P pauses"
+key name=R
+assert expr="not app.ground_vehicle.hud.menu_visible and not app.ground_vehicle.session.paused" message="R deliberately resets and resumes"
+key name=P
+press text="Restart on pad"
+assert expr="app.ground_vehicle.hud.menu_visible and app.ground_vehicle.session.paused and app.ground_vehicle.session.sim.tick == 0" message="Menu restart resets and stays paused"
+press text="Back to Home"
+assert expr="app.ground_vehicle == null and app.home != null" message="Home retires the activity"
+look

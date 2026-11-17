@@ -77,6 +77,12 @@ Original research and executed engine probes: [menu investigations](research/men
 
 ## Remaining work and acceptance
 
+**FPV activity integration (2026-11-17).** The [menu/crash/lifecycle audit](research/drone-racing/lifecycle-2026-11-17/README.md)
+records reproduced gaps where the quad's independent menu and exclusive activity slot do not fully participate in
+the shared input, Resume and departure contracts. The remedies remain planned in [drone-racing §16](plans/drone-racing.md#16-audit-remediation-programme-2026-11-16),
+with UI-21/UI-31 coordination. Existing shared-shell test passes do not close the quad's held-key, semantic Back,
+ground-depletion Resume, guarded-quit, restart transaction or recording-failure cases.
+
 UI-22…29 own theme, scaling/display, Settings, Home/Hangar, pause/conditions polish, HUD, motion and delivery proof. UI-07/08/09 are superseded by that [active redesign plan](plans/menu-redesign.md).
 
 Further UI-06 scenario selection, UI-14 model inspection and general UI-15 key remapping remain separate work. Settings and menu gamepad navigation exist; fullscreen-by-default and screen-reader acceptance remain open. Controller setup/profile status belongs to the controller track rather than this menu acceptance claim.

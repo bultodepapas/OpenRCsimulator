@@ -1,0 +1,661 @@
+{
+  "format": "openrc-fpv-lifecycle-audit v1",
+  "date": "2026-11-17",
+  "source_commit": "7f6719137115a6da5a3b355cf6232a2f1de0661f",
+  "branch": "fix/fpv-battery-power-2026-11-16",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "scope": "diagnostic observation and plans; no production changes",
+  "test_environment": {
+    "runtime": "Linux headless",
+    "viewport_coordinates": [
+      1920,
+      1080
+    ],
+    "profiles": "isolated XDG_DATA_HOME for final checked runs and bridge-managed profile",
+    "queue": "no configured test pool; checked local runner used",
+    "native_or_hardware_qualified": false
+  },
+  "final_diagnostics": [
+    {
+      "probe": "repros/menu_cycles.gd",
+      "checks": 50,
+      "failures": 0,
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      },
+      "observations": {
+        "checks": 50,
+        "failures": 0,
+        "observations": [
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "frozen_throttle": 0.2,
+              "resumed_throttle": 0.2
+            },
+            "id": "L01-control",
+            "label": "released keys preserve throttle across Resume",
+            "observed": true
+          },
+          {
+            "facts": {
+              "after_tick": 72,
+              "before_tick": 71,
+              "first_pitch": 0.0166666666666667,
+              "frozen_throttle": 0.2,
+              "resumed_throttle": 0.203333333333333
+            },
+            "id": "L01",
+            "label": "held keyboard controls act on the first resumed tick",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02",
+            "label": "selected mapped Back leaves OSD settings open",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02-control",
+            "label": "physical Escape closes OSD settings without resuming",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02",
+            "label": "selected mapped Back leaves the flight menu open",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02-control",
+            "label": "physical Escape resumes from the flight menu",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02",
+            "label": "selected UI-only pad Start does not open the flight menu",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L02-control",
+            "label": "unselected pad does not open the flight menu",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "terminal": "depleted_ground",
+              "tick": 482
+            },
+            "id": "L03-setup",
+            "label": "ground depletion offers restart only",
+            "observed": true
+          },
+          {
+            "facts": {
+              "after_tick": 483,
+              "before_tick": 482
+            },
+            "id": "L03",
+            "label": "Escape bypasses the hidden ground-depletion Resume",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L03-control",
+            "label": "bypass does not restore charge or motor power",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L03-control",
+            "label": "air depletion offers watch-the-fall Resume",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L03-control",
+            "label": "air depletion remains resumable and unpowered",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L04-setup",
+            "label": "real countdown reaches RACING",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L04-setup",
+            "label": "G after GO publishes an aborted outcome",
+            "observed": true
+          },
+          {
+            "facts": {
+              "menu_reason": "Ready. Cycle the arm switch OFF then ON at low throttle.\nATTEMPT OVER   G: race again   R: back to the pad",
+              "old_title": "ATTEMPT OVER",
+              "phase": "IDLE"
+            },
+            "id": "L04",
+            "label": "restart menu carries the previous race outcome into IDLE",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L04-control",
+            "label": "centered race card is hidden in IDLE",
+            "observed": true
+          },
+          {
+            "facts": {
+              "menu_reason": "Ready. Cycle the arm switch OFF then ON at low throttle.\nATTEMPT OVER   G: race again   R: back to the pad"
+            },
+            "id": "L04",
+            "label": "course-change menu also keeps the old outcome",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L04-control",
+            "label": "new countdown clears the cached outcome",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L04-control",
+            "label": "cancelling before GO returns to IDLE without a result card",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": false,
+              "phase": "IDLE",
+              "tick": 15
+            },
+            "id": "L05-control",
+            "label": "Session.prepare refusal preserves old flight and log",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": false,
+              "armed_ticks_after": 0,
+              "armed_ticks_before": 11,
+              "message": "Restart refused: option initial_soc must be -1 (document default) or within [0, 1]",
+              "new_phase": "IDLE",
+              "new_tick": 15,
+              "old_phase": "IDLE",
+              "old_tick": 15
+            },
+            "id": "L05",
+            "label": "scene restart reports refusal but closes the old recording",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05",
+            "label": "inactive attempt keeps session state but resets scene counters",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05-control",
+            "label": "valid replacement applies the pending limit at a paused pad",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": true,
+              "phase": "COUNTDOWN",
+              "tick": 25
+            },
+            "id": "L05-control",
+            "label": "Session.prepare refusal preserves old flight and log",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": true,
+              "armed_ticks_after": 0,
+              "armed_ticks_before": 21,
+              "message": "Restart refused: option initial_soc must be -1 (document default) or within [0, 1]",
+              "new_phase": "IDLE",
+              "new_tick": 0,
+              "old_phase": "COUNTDOWN",
+              "old_tick": 25
+            },
+            "id": "L05",
+            "label": "scene restart reports refusal but closes the old recording",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05",
+            "label": "active attempt was already reset before prepare refusal",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05-control",
+            "label": "valid replacement applies the pending limit at a paused pad",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": true,
+              "phase": "RACING",
+              "tick": 755
+            },
+            "id": "L05-control",
+            "label": "Session.prepare refusal preserves old flight and log",
+            "observed": true
+          },
+          {
+            "facts": {
+              "active_attempt": true,
+              "armed_ticks_after": 0,
+              "armed_ticks_before": 751,
+              "message": "Restart refused: option initial_soc must be -1 (document default) or within [0, 1]",
+              "new_phase": "IDLE",
+              "new_tick": 0,
+              "old_phase": "RACING",
+              "old_tick": 755
+            },
+            "id": "L05",
+            "label": "scene restart reports refusal but closes the old recording",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05",
+            "label": "active attempt was already reset before prepare refusal",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L05-control",
+            "label": "valid replacement applies the pending limit at a paused pad",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "early_focus": true,
+              "tick": 355
+            },
+            "id": "L08-setup",
+            "label": "admitted airborne free fall produces a real crash",
+            "observed": true
+          },
+          {
+            "facts": {
+              "crash_cause": "Hard impact",
+              "hint": "Crashed: Hard impact. Press R to reset.",
+              "menu_reason": "Paused: the window lost focus."
+            },
+            "id": "L08",
+            "label": "focus during crash aftermath leaves a generic menu reason",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L08-control",
+            "label": "crashed flight refuses shortcut Resume",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L08-control",
+            "label": "R deliberately resets and resumes from the crash menu",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "setup",
+            "label": "prepared activity",
+            "observed": true
+          },
+          {
+            "facts": {
+              "early_focus": false,
+              "tick": 355
+            },
+            "id": "L08-setup",
+            "label": "admitted airborne free fall produces a real crash",
+            "observed": true
+          },
+          {
+            "facts": {
+              "menu_reason": "Crashed: Hard impact. Press R to reset."
+            },
+            "id": "L08-control",
+            "label": "focus after the aftermath preserves the crash reason",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L08-control",
+            "label": "crashed flight refuses shortcut Resume",
+            "observed": true
+          },
+          {
+            "facts": {},
+            "id": "L08-control",
+            "label": "R deliberately resets and resumes from the crash menu",
+            "observed": true
+          }
+        ]
+      },
+      "source_sha256": "7f9ca53dc32ec1fd799124a9614bf38f0bd8a339d5e10ae7102a5ba9023a53e5"
+    },
+    {
+      "probe": "repros/recording_cycles.gd",
+      "checks": 11,
+      "failures": 0,
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      },
+      "observations": {
+        "checks": 11,
+        "failures": 0,
+        "healthy_complete": true,
+        "home": {
+          "departure_signal_count": 1,
+          "hud_unchanged": true,
+          "incomplete": true,
+          "injected": true
+        },
+        "home_scope": "activity managed-departure signal; AppRoot and native close not exercised",
+        "injection": "explicit packet-writer failure; not a real disk-full observation",
+        "new_f10": {
+          "finalized": true,
+          "previous_failure_not_in_notice": true,
+          "started": true
+        },
+        "reset": {
+          "hud_unchanged": true,
+          "injected": true,
+          "prefix_readable_incomplete": true,
+          "reset_succeeded": true
+        }
+      },
+      "source_sha256": "fd5797069e860170e01baafc6b73db4a7c1b79e5ecdae1d3fe022c51d3d3197a"
+    },
+    {
+      "probe": "repros/shell_cycles.gd",
+      "checks": 23,
+      "failures": 0,
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      },
+      "observations": {
+        "checks": 23,
+        "failures": 0,
+        "fixture": {
+          "input": "synthetic root viewport keys; Cancel uses the dialog's canceled signal",
+          "race": "scripted pilot; manual calls to the activity's real physics tick",
+          "race_departure": "terminal projection observation; departure policy is not specified",
+          "statistics_failure": "injected: real statistics store path points to a file"
+        },
+        "format": "openrc-lifecycle-shell-observation v1",
+        "quit_guard": {
+          "activity_unhandled_enabled": true,
+          "cancel_clears_request": true,
+          "cancel_keeps_activity": true,
+          "cancel_menu_visible": false,
+          "cancel_paused": false,
+          "cancel_tick_delta": 4,
+          "dialog_still_visible": true,
+          "dialog_visible": true,
+          "menu_visible": false,
+          "paused": false,
+          "quit_requests": 0,
+          "request_active": true,
+          "statistics_note": "Statistics snapshot could not be written: file open failed (Can't open file)",
+          "synthetic_c_changed_view": false,
+          "tick_after": 26,
+          "tick_before": 23,
+          "tick_delta": 3
+        },
+        "race_home": {
+          "control_cancel_files": 1,
+          "control_cancel_results": 1,
+          "exit_snapshot": [
+            {
+              "pending_results": 0,
+              "phase": 3,
+              "tick": 733
+            }
+          ],
+          "home_returned": true,
+          "result_files_after_home": 0,
+          "second_race_phase": "RACING",
+          "terminal_signals_after_home": 0
+        }
+      },
+      "source_sha256": "0ad5487cf9d5d2c48b41a217f1dc543f153653744cd19cff63da82bda711c128"
+    }
+  ],
+  "baseline_suites": [
+    {
+      "suite": "app/tests/test_mr_activity.gd",
+      "checks": 96,
+      "count_method": "successful assertion lines in complete checked run",
+      "summary": "96 checks, 0 failed",
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      }
+    },
+    {
+      "suite": "app/tests/test_mr_activity_race.gd",
+      "checks": 19,
+      "count_method": "successful assertion lines in complete checked run",
+      "summary": "19 checks, 0 failed",
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      }
+    },
+    {
+      "suite": "app/tests/test_ground_exit_transaction.gd",
+      "checks": 22,
+      "count_method": "successful assertion lines in complete checked run",
+      "summary": "Ground exit transaction: 22 checks, 0 failed",
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      }
+    },
+    {
+      "suite": "app/tests/test_ui_input.gd",
+      "checks": 17,
+      "count_method": "successful assertion lines in complete checked run",
+      "summary": "all UI input checks passed",
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      }
+    },
+    {
+      "suite": "app/tests/test_ui_screen_stack.gd",
+      "checks": 38,
+      "count_method": "successful assertion lines in complete checked run",
+      "summary": "all UI screen stack checks passed",
+      "checked_runner": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed"
+      }
+    }
+  ],
+  "debug_bridge": {
+    "scenario": "repros/bridge-menu-cycle.txt",
+    "entry": "Home -> Vehicles -> ION R5 -> FLY",
+    "display": "headless",
+    "assertions": 8,
+    "commands_completed": 9,
+    "command_exits": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "engine_log_counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "stop": {
+      "stopped": true,
+      "forced": false,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "source_sha256": "d1f51ab914995c6c40897cfe858d03f51b47cc5d084e51cdd9777d58925b4341"
+  },
+  "totals": {
+    "diagnostic_checks": 84,
+    "diagnostic_failures": 0,
+    "baseline_checks": 192,
+    "baseline_suites": 5,
+    "baseline_failures": 0,
+    "bridge_assertions": 8
+  },
+  "superseded_trials": [
+    {
+      "stage": "cold import",
+      "outcome": "first 240-second import timed out; resumed import completed with zero errors and warnings",
+      "audit_finding": false
+    },
+    {
+      "stage": "first bridge exploration",
+      "outcome": "sparse checkout lacked airplane authoring metadata; hydrated tracked metadata and repeated the scenario with a clean engine log",
+      "audit_finding": false
+    },
+    {
+      "stage": "initial menu probe",
+      "outcome": "one assertion used the wrong expected focus-loss wording; corrected the diagnostic and reran all expanded menu cases",
+      "audit_finding": false
+    }
+  ],
+  "limits": [
+    "Passing diagnostic assertions reproduce defects; they are not repair acceptance.",
+    "Held keyboard values are synthetic input-reader samples; Escape and gamepad buttons use viewport dispatch.",
+    "UI-only Start does not qualify a configured controller-registry Pause binding.",
+    "Prepare and storage failures are explicitly induced, not observed natural failure rates.",
+    "Recording fault probe covers automatic final-buffer failures, not in-flight chunk or footer-only failure.",
+    "Home race observation has no completed lap; active-attempt abandonment is a policy gap.",
+    "No native EN/ES display, physical controller, OS-modal, real disk-full, hardware or performance qualification.",
+    "Required repository CI was not run for this documentation-only checkpoint."
+  ]
+}
