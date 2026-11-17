@@ -192,12 +192,16 @@ class Pool:
                 free_disk = storage.get('free_bytes') if storage.get('available') is True else None
                 if type(free_disk) is not int or free_disk < 0:
                     free_disk = None
+                external = (current.get('occupancy') or {}).get('external_simulators') is True
                 value = {'platform': current['platform'], 'online': True,
-                         'busy': bool(current['claims']) or current['condition'] != 'READY' or bool(current['reservation']),
+                         'busy': (bool(current['claims']) or current['condition'] != 'READY'
+                                  or bool(current['reservation']) or external),
                          'free_disk_bytes': free_disk, 'storage': storage,
                          'free_memory_bytes': psutil.virtual_memory().available,
                          'cores': os.cpu_count(), 'load': psutil.cpu_percent(interval=0.1) * (os.cpu_count() or 1) / 100,
                          'capabilities': ['headless'], 'engine': current['engine']}
+                if external:
+                    value['busy_reason'] = 'an unmanaged simulator is running on this desktop'
             else:
                 remote = self.remote(host, 'probe', {'engine_path': host['engine']})
                 capacity, admission = remote['capacity'], remote['admission']

@@ -42,6 +42,18 @@ class PoolStorageCapacityTests(unittest.TestCase):
         self.assertEqual(result["free_disk_bytes"], 123456)
         self.assertEqual(result["storage"]["path"], "D:/OpenRC/attempts")
 
+    def test_unmanaged_simulator_makes_the_local_host_busy_for_placement(self):
+        self.current["storage"] = {"available": True, "free_bytes": 10**12}
+        for occupancy, busy in [({"external_simulators": True}, True), ({"external_simulators": False}, False),
+                                ({"external_simulators": None}, False), (None, False)]:
+            with self.subTest(occupancy=occupancy):
+                self.current["occupancy"] = occupancy
+                result = self.probe()
+                self.assertIs(result["busy"], busy)
+                if busy:
+                    self.assertIn("unmanaged simulator", result["busy_reason"])
+                    self.assertIn("BUSY: an unmanaged simulator", str(plan({"platform": "windows"}, [result])))
+
     def test_reservation_covers_dispatches_during_the_unlocked_probe_and_corrupt_receipts(self):
         jobs = self.pool.root / "jobs"
         jobs.mkdir(parents=True, exist_ok=True)

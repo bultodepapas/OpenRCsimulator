@@ -327,7 +327,7 @@ class Worker:
         # Filesystem capacity is advisory and can be slow. Do not hold the
         # admission lock while asking the OS about the attempt volume.
         if operation == "hosts":
-            return self._hosts(self._storage_capacity())
+            return {**self._hosts(self._storage_capacity()), "occupancy": self._occupancy_summary()}
         with self._rpc_lock():
             if operation in {"status", "result"}:
                 return self._status(request["job"])
@@ -394,6 +394,19 @@ class Worker:
         if operation == "submit":
             return self.submit(request)
         raise ValueError("unknown worker operation")
+
+    def _occupancy_summary(self):
+        """Unmanaged simulators make queued work wait here; tell placement so.
+
+        Uses the scheduler's 1 s occupancy cache, outside the worker lock. In
+        fixture mode, and when the observation fails, occupancy is unknown.
+        """
+        if self.fixture:
+            return {"external_simulators": None, "scope": "fixture"}
+        try:
+            return {"external_simulators": bool(self._external_conflicts())}
+        except Exception as error:
+            return {"external_simulators": None, "error": str(error)[:200]}
 
     @contextlib.contextmanager
     def _rpc_lock(self):
