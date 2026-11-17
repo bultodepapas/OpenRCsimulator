@@ -1099,6 +1099,53 @@ class ServoReplayReportTests(unittest.TestCase):
             path.write_text(json.dumps(document), encoding="utf-8")
             flight_log._check_godot_report(path)
 
+    def policy_report(self, policy="servo-arrivals-local-v1"):
+        document = self.report()
+        for owner in ("recorded", "replay"):
+            declaration = document["servo_integration"][owner]
+            declaration["checkpoint_format"] = "openrc-flight-checkpoint v16"
+            declaration["partition_policy"] = policy
+        document["metadata"]["servo_partition_policy"] = policy
+        return document
+
+    def test_explicit_policy_reports_and_owner_mismatches(self):
+        for policy in ("servo-arrivals-local-v1", "servo-arrivals-zero-half-local-v1"):
+            self.checked(self.policy_report(policy))
+        for bad in (None, False, 1, [], {}, "", "unknown"):
+            document = self.policy_report()
+            for owner in ("recorded", "replay"):
+                document["servo_integration"][owner]["partition_policy"] = bad
+            document["metadata"]["servo_partition_policy"] = bad
+            with self.subTest(bad=bad), self.assertRaises(flight_log.FlightLogError):
+                self.checked(document)
+        for owner in ("metadata", "recorded", "replay"):
+            document = self.policy_report()
+            if owner == "metadata":
+                del document[owner]["servo_partition_policy"]
+            else:
+                del document["servo_integration"][owner]["partition_policy"]
+            with self.subTest(owner=owner), self.assertRaises(flight_log.FlightLogError):
+                self.checked(document)
+        document = self.policy_report()
+        document["metadata"]["servo_partition_policy"] = "servo-arrivals-zero-half-local-v1"
+        with self.assertRaises(flight_log.FlightLogError):
+            self.checked(document)
+
+    def test_historical_policy_is_not_inferred_or_smuggled(self):
+        self.checked(self.report())
+        for owner in ("metadata", "recorded", "replay"):
+            document = self.report()
+            if owner == "metadata":
+                document[owner]["servo_partition_policy"] = "servo-arrivals-local-v1"
+            else:
+                document["servo_integration"][owner]["partition_policy"] = "servo-arrivals-local-v1"
+            with self.subTest(owner=owner), self.assertRaises(flight_log.FlightLogError):
+                self.checked(document)
+        document = self.policy_report()
+        del document["servo_integration"]
+        with self.assertRaises(flight_log.FlightLogError):
+            self.checked(document)
+
     def test_complete_same_law_report_and_old_report(self) -> None:
         self.checked(self.report())
         self.checked({"status": "ok", "error": "", "complete": True})

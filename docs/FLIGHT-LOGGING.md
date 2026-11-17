@@ -233,15 +233,18 @@ initial wake and input tape, and reports the changed solver identity. Other law/
 changes still require their own compatibility proof. Live restore and exact replay
 do not migrate this boundary.
 
-The optional `normalized-slew-arrivals-v1` servo law uses checkpoint v15. Exact
+The optional `normalized-slew-arrivals-v1` servo law uses checkpoint v16. Exact
 replay validates agreement between the recorded aircraft, trace metadata,
-checkpoint, simulation protocol/layout and explicit reference backend. Its report
+checkpoint, simulation protocol/layout, partition policy and explicit reference backend. Its report
 adds `servo_integration` with matching recorded/replay declarations and
 `checkpoint_migration: "none"`. The Python consumer validates the complete group.
 `solver_changed` retains its existing fingerprint/backend meaning; it does not
-identify an aircraft's servo law. Candidate replay across this boundary, or from
-a v15 recording, is currently refused. Historical undeclared laws are unrecorded;
-absence alone does not establish which private solver behavior created a log.
+identify an aircraft's servo law or partition policy. Candidate replay across this
+boundary is refused. V15 declarations remain readable without assigning a policy;
+exact historical replay requires the verified matching historical solver and
+engine. The current runtime refuses isolated v15 restores because private v15
+solvers used different integration policies under the same wrapper. Historical
+undeclared laws remain unrecorded; absence alone does not establish behavior.
 
 Equal array lengths do not establish compatible state semantics. For example, the
 R02 wake changed from a coefficient to velocity in m/s. Historical exact replay

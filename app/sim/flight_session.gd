@@ -5931,6 +5931,7 @@ func trace_meta() -> Dictionary:
 		metadata.servo_integration_law = ServoFlight.Law.LAW
 		metadata.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 		metadata.servo_interval_layout = sim.model.state_layout_identity
+		metadata.servo_partition_policy = ServoFlight.PARTITION_POLICY
 		metadata.state_timing = "accepted body/continuous/servo endpoints at tick k; immutable before/after servo interval sampled at RK stages"
 		metadata.loads = "k1 at previous body/continuous endpoint and previous actual servo; current input target held through the interval"
 	return metadata
@@ -6067,6 +6068,7 @@ func checkpoint() -> Dictionary:
 		boundary.servo_integration_law = ServoFlight.Law.LAW
 		boundary.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 		boundary.servo_interval_layout = sim.model.state_layout_identity
+		boundary.servo_partition_policy = ServoFlight.PARTITION_POLICY
 	return boundary
 
 
@@ -6201,22 +6203,26 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
 	if typeof(candidate.get("format")) != TYPE_STRING: return false
+	# Private and historical v15 solvers used different policies with the same wrapper.
+	if candidate.format == ServoFlight.UNBOUND_CHECKPOINT_FORMAT: return false
+	if candidate.get("simulation") is Dictionary and candidate.simulation.has("servo_partition_policy"): return false
 	var servo_selected := ServoFlight.selected(aircraft.get("model"))
 	if candidate.format == ServoFlight.CHECKPOINT_FORMAT:
-		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_physics_format"]:
+		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_partition_policy", "servo_physics_format"]:
 			if typeof(candidate.get(field)) != TYPE_STRING:
 				return false
-		if (not servo_selected or not ServoFlight.admission(self, aircraft.model).ok
+		if (not servo_selected or not ServoFlight.admission(self, aircraft.model).ok or not ServoFlight.installed(self, aircraft.model)
 			or candidate.get("servo_integration_law") != ServoFlight.Law.LAW
 			or candidate.get("servo_interval_protocol") != VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
+			or candidate.get("servo_partition_policy") != ServoFlight.PARTITION_POLICY
 			or candidate.get("servo_interval_layout") != sim.model.state_layout_identity
 			or candidate.get("servo_physics_format") != "openrc-flight-checkpoint v6"):
 			return false
 		candidate = candidate.duplicate(true)
 		candidate.format = candidate.servo_physics_format
-		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_physics_format"]:
+		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_partition_policy", "servo_physics_format"]:
 			candidate.erase(field)
-	elif servo_selected or candidate.has("servo_integration_law") or candidate.has("servo_interval_protocol") or candidate.has("servo_interval_layout") or candidate.has("servo_physics_format"):
+	elif servo_selected or candidate.has("servo_integration_law") or candidate.has("servo_interval_protocol") or candidate.has("servo_interval_layout") or candidate.has("servo_partition_policy") or candidate.has("servo_physics_format"):
 		return false
 	var restored_mix: Variant = candidate.get("flap_mix_owner", "simulator")
 	if typeof(restored_mix) != TYPE_STRING or restored_mix not in ["simulator", "transmitter"]:
@@ -6507,6 +6513,8 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 	_turbulence_aux_index = expected_aux - 7 if turbulent else -1
 	_prepare_stage_backend(float(snapshot.tick) * float(snapshot.dt), str(recorded_backend.backend))
 	if recorded_backend != stage_backend_identity():
+		return false
+	if servo_selected and not ServoFlight.installed(self, aircraft.model):
 		return false
 	return sim.restore_checkpoint(snapshot, func() -> void:
 		_flap_mix_owner = restored_mix

@@ -28,6 +28,7 @@ const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
+const CompiledPublication := preload("res://workshop/creator/compiled_publication.gd")
 const Store := preload("res://workshop/creator/store.gd")
 const PreviewScript := preload("res://ui/aircraft_creator_preview.gd")
 const LibraryScript := preload("res://ui/aircraft_creator_library.gd")
@@ -3013,17 +3014,17 @@ func _finish_open(kind: String, value: Dictionary, source: InspectedSource,obser
 		return false
 	var stored_definition: Variant = value.get("definition")
 	var versioned_stored: bool = stored_definition is Dictionary and typeof(stored_definition.get("format")) == TYPE_STRING \
-		and stored_definition.format in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT]
-	var versioned_restored: bool = fresh.definition().get("format") in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT]
-	if kind == "aircraft" and (versioned_stored or versioned_restored):
-		var definition: Variant = value.get("definition")
-		var canonical := Definition.validate_complete(fresh.definition())
-		if not definition is Dictionary or not canonical.ok or definition != canonical.value \
-				or CreatorBytes.encode(canonical.value).value.sha256 != value.get("definition_sha256"):
-			set_note(tr("The saved source declarations do not match this model. Re-import the ZIP."))
+		and stored_definition.format in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT,Definition.SERVO_FORMAT]
+	var versioned_restored: bool = fresh.definition().get("format") in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT,Definition.SERVO_FORMAT]
+	if kind == "aircraft" and (versioned_stored or versioned_restored
+			or value.has("compile_binding") or value.has("record_format")
+			or CompiledPublication.raw_has_servo_declaration(value.get("raw_bytes"))):
+		var matched: Dictionary = CompiledPublication.match_document(fresh, value)
+		if not matched.ok:
+			set_note(_diagnostics_text(matched.diagnostics))
 			_refresh()
 			return false
-	if source != null and not fresh.bindings().is_empty():
+	if source != null and fresh.servo_integration().is_empty() and not fresh.bindings().is_empty():
 		# Stored numbers come back as floats: the normalized copy writes the same content as before.
 		var bound: Dictionary = VisualBuilder.validate_bindings(source, fresh.bindings())
 		if bound.ok:
@@ -3087,21 +3088,34 @@ func _on_publish_pressed() -> void:
 		set_note(tr(NEEDS_NAME))
 		_focus_control.call_deferred(_name_edit)
 		return
-	var compiled: Dictionary = _doc.compile()
-	var source: InspectedSource = _doc.source()
-	if not compiled.get("ok", false) or not compiled.get("value") is Object or source == null:
-		set_note(_diagnostics_text(compiled.get("diagnostics", [])))
+	# UI-owned invalid buffers must block a direct handler call as well as the disabled button.
+	_issues = _collect_issues()
+	if not _issues.is_empty():
+		_refresh()
 		return
-	var candidate: Object = compiled.value
-	var definition := Definition.validate_complete(_doc.definition())
-	if not definition.ok or CreatorBytes.encode(definition.value).value.sha256 != candidate.call("definition_sha256"):
-		set_note(tr("The compiled definition changed. Review the aircraft and save again."))
-		return
-	var publication := {"aircraft_uuid": _doc.aircraft_uuid(), "name": _doc.name, "definition": definition.value,
-		"raw_bytes": candidate.call("raw_bytes"), "source_bytes": source.source_bytes(),
-		"source_file_name": source.file_name(), "placement": _doc.placement(), "bindings": _doc.bindings(),
-		"appearance": _doc.appearance(), "snapshot": _doc.snapshot(_current)}
-	var published: Dictionary = _store.publish_aircraft(publication, _doc.published_revision)
+	var published: Dictionary
+	if not _doc.servo_integration().is_empty():
+		var captured: Dictionary = CompiledPublication.capture(_doc, _current)
+		if not captured.ok:
+			set_note(_diagnostics_text(captured.diagnostics))
+			return
+		published = _store.publish_compiled_aircraft(captured.value, _doc.published_revision)
+	else:
+		var compiled: Dictionary = _doc.compile()
+		var source: InspectedSource = _doc.source()
+		if not compiled.get("ok", false) or not compiled.get("value") is Object or source == null:
+			set_note(_diagnostics_text(compiled.get("diagnostics", [])))
+			return
+		var candidate: Object = compiled.value
+		var definition := Definition.validate_complete(_doc.definition())
+		if not definition.ok or CreatorBytes.encode(definition.value).value.sha256 != candidate.call("definition_sha256"):
+			set_note(tr("The compiled definition changed. Review the aircraft and save again."))
+			return
+		var publication := {"aircraft_uuid": _doc.aircraft_uuid(), "name": _doc.name, "definition": definition.value,
+			"raw_bytes": candidate.call("raw_bytes"), "source_bytes": source.source_bytes(),
+			"source_file_name": source.file_name(), "placement": _doc.placement(), "bindings": _doc.bindings(),
+			"appearance": _doc.appearance(), "snapshot": _doc.snapshot(_current)}
+		published = _store.publish_aircraft(publication, _doc.published_revision)
 	if not published.ok:
 		_store_failed(published)
 		return

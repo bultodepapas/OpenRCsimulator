@@ -10,7 +10,9 @@ const NATIVE_STAGE_BACKEND := "native"
 const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 ## Local identities keep this reader rebindable to historical solver sources.
-const SERVO_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
+const SERVO_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v16"
+const UNBOUND_SERVO_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
+const SERVO_PARTITION_POLICIES := ["servo-arrivals-local-v1", "servo-arrivals-zero-half-local-v1"]
 const SERVO_LAW := "normalized-slew-arrivals-v1"
 const SERVO_PROTOCOL := "joint-interval-local-v1"
 const SERVO_PHYSICS_FORMAT := "openrc-flight-checkpoint v6"
@@ -89,18 +91,21 @@ static func recorded_servo_declaration(header: Dictionary) -> Dictionary:
 	var controls: Variant = aircraft.model.get("controls", {})
 	if not controls is Dictionary:
 		return {ok = false, error = "Malformed controls in aircraft model."}
-	var wrapped: bool = typeof(boundary.get("format")) == TYPE_STRING and boundary.format == SERVO_CHECKPOINT_FORMAT
+	var wrapped: bool = typeof(boundary.get("format")) == TYPE_STRING and boundary.format in [SERVO_CHECKPOINT_FORMAT, UNBOUND_SERVO_CHECKPOINT_FORMAT]
+	var policy_bound: bool = wrapped and boundary.format == SERVO_CHECKPOINT_FORMAT
 	var declared: bool = controls.has("servo_integration")
 	var inner: Variant = boundary.get("simulation")
+	if inner is Dictionary and inner.has("servo_partition_policy"):
+		return {ok = false, error = "Partition policy belongs to the outer servo declaration, not the simulation snapshot."}
 	if inner is Dictionary and typeof(inner.get("state_layout_identity")) == TYPE_STRING:
 		declared = declared or inner.state_layout_identity.begins_with(SERVO_LAW+";")
 	for key: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout"]:
 		declared = declared or metadata.has(key) or boundary.has(key)
-	declared = declared or boundary.has("servo_physics_format")
+	declared = declared or boundary.has("servo_physics_format") or metadata.has("servo_partition_policy") or boundary.has("servo_partition_policy")
 	if not wrapped and not declared:
 		return {ok = true, declared = false}
 	if not wrapped:
-		return {ok = false, error = "Servo declaration requires the v15 checkpoint."}
+		return {ok = false, error = "Servo declaration requires a versioned servo checkpoint."}
 	if not header.has("stage_backend") or not header.stage_backend is Dictionary \
 			or header.stage_backend != {backend = REFERENCE_STAGE_BACKEND}:
 		return {ok = false, error = "Servo checkpoint requires an explicit reference backend."}
@@ -114,6 +119,14 @@ static func recorded_servo_declaration(header: Dictionary) -> Dictionary:
 			or typeof(boundary.get("servo_physics_format")) != TYPE_STRING \
 			or boundary.servo_physics_format != SERVO_PHYSICS_FORMAT:
 		return {ok = false, error = "Unsupported servo law or checkpoint declaration."}
+	if policy_bound:
+		if typeof(metadata.get("servo_partition_policy")) != TYPE_STRING \
+				or typeof(boundary.get("servo_partition_policy")) != TYPE_STRING \
+				or metadata.servo_partition_policy != boundary.servo_partition_policy \
+				or metadata.servo_partition_policy not in SERVO_PARTITION_POLICIES:
+			return {ok = false, error = "Servo partition policy is missing, unknown or inconsistent."}
+	elif metadata.has("servo_partition_policy") or boundary.has("servo_partition_policy"):
+		return {ok = false, error = "The historical servo checkpoint did not bind a partition policy."}
 	var layout: Variant = header.get("layout")
 	var snapshot: Variant = boundary.get("simulation")
 	if not layout is Dictionary or not snapshot is Dictionary:
@@ -130,10 +143,13 @@ static func recorded_servo_declaration(header: Dictionary) -> Dictionary:
 			or typeof(snapshot.get("callback_protocol")) != TYPE_STRING or snapshot.callback_protocol != SERVO_PROTOCOL \
 			or typeof(snapshot.get("state_layout_identity")) != TYPE_STRING or snapshot.state_layout_identity != expected_layout:
 		return {ok = false, error = "Servo simulation protocol or layout disagrees."}
-	return {ok = true, declared = true, declaration = {
+	var declaration := {
 		law = SERVO_LAW, protocol = SERVO_PROTOCOL, layout = expected_layout,
-		checkpoint_format = SERVO_CHECKPOINT_FORMAT, physics_format = SERVO_PHYSICS_FORMAT,
-		simulation_format = SERVO_SIMULATION_FORMAT, stage_backend = header.stage_backend.duplicate(true)}}
+		checkpoint_format = boundary.format, physics_format = SERVO_PHYSICS_FORMAT,
+		simulation_format = SERVO_SIMULATION_FORMAT, stage_backend = header.stage_backend.duplicate(true)}
+	if policy_bound:
+		declaration["partition_policy"] = boundary.servo_partition_policy
+	return {ok = true, declared = true, declaration = declaration}
 
 
 static func solver_changed(recorded_solver: String, current_solver: String,

@@ -22,9 +22,10 @@ import flight_log
 LAW = "normalized-slew-arrivals-v1"
 PROTOCOL = "joint-interval-local-v1"
 CAMPAIGN = "ac12-normalized-slew-arrivals-local-v1-20261116"
+CASE_MAP_CAMPAIGN = "ac12-normalized-slew-arrivals-v1-20261116"
 LEGACY_MAP_SHA256 = "5ee4b31e617ba4fb35cefa41eed03a256fb9631e624717c9ff92cef3933a2f9a"
 CASE_MAP_SHA256 = "f1217baebde255a9b5d9516a1e70b9118ce048643a24639b7e0a73d3ce9edc86"
-SNAPSHOT_MANIFEST_SHA256 = "a3129c799c422501ce9649e503447c5e009cd3853482a4eb00f1cc7005ae57e3"
+SNAPSHOT_MANIFEST_SHA256 = "0b5f1cd35e64307b1285774665a09e57322f948b2b9b6c1ef6a4e1f2362c6258"
 HISTORICAL_INPUTS = {
     "res://tools/ac12/variants.gd": "be780aa316d9a1799983f53ee3f577846b88d3f29f43faeef697f900a5361cd5",
     "res://data/creator/airframe-conventional-trainer-estimated-v1.json": "00cd592b2e53bd06f544f996bf1845023017f9ed7761c36529be2c92a2113887",
@@ -318,7 +319,7 @@ def main() -> int:
     legacy_map = read(args.legacy_case_map)
     case_ids = {f"C{n:02d}" for n in range(1, 18)}
     require(case_map.get("format") == "openrc-ac12-servo-case-map v1"
-            and case_map.get("campaign_id") == CAMPAIGN and case_map.get("servo_integration_law") == LAW
+            and case_map.get("campaign_id") == CASE_MAP_CAMPAIGN and case_map.get("servo_integration_law") == LAW
             and set(case_map["cases"]) == case_ids and set(legacy_map["cases"]) == case_ids,
             "invalid registered case inventory")
     require(legacy_map.get("format") == "openrc-ac12-legacy-case-map v1"

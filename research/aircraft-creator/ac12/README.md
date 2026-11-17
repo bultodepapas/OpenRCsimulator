@@ -1,6 +1,6 @@
 # AC-12 research scripts: handling probe and numerical campaign
 
-Research drivers and audit contract checks for step AC-12 of the [Aircraft Creator plan](../../../docs/plans/aircraft-creator.md), outside `app/`. The drivers compile in-domain definitions with the unchanged compiler and fly them in the unchanged `FlightSession`. Results and their limits are recorded in [the campaign record](../../../docs/research/aircraft-creator/AC-12-numerical-campaign.md) and [the package derivation](../../../docs/research/aircraft-creator/estimated-trainer-package.md). Software evidence about an estimated package; no physical validation.
+Research drivers and audit contract checks for step AC-12 of the [Aircraft Creator plan](../../../docs/plans/aircraft-creator.md), outside `app/`. Historical drivers retain their original definitions and law; separately versioned studies explicitly select and identify their candidate compiler/session contracts. Results and limits are recorded in [the campaign record](../../../docs/research/aircraft-creator/AC-12-numerical-campaign.md), [the package derivation](../../../docs/research/aircraft-creator/estimated-trainer-package.md) and the [versioned servo-arrival record](../../../docs/research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md). Software evidence about an estimated package; no physical validation.
 
 | File | Role |
 | --- | --- |
@@ -10,6 +10,8 @@ Research drivers and audit contract checks for step AC-12 of the [Aircraft Creat
 | `campaign.gd` | Preregistered step-refinement campaign: 17 cases × 4 input tapes × 240/480/960 Hz |
 | `refinement_audit.gd` | Separate current-source diagnostic: strict sampling/clock checks, unchanged legacy verdict on cached runs, exact float64 artifacts, pinned reference backend and exact `.orfl` baseline replay |
 | `test_refinement_audit.gd` | Known-answer shape, finite-value, metric, binary-encoding, cell-selection, full-replay and output-path boundaries; no flights |
+| `servo_arrival_campaign.gd`, `servo_arrival_campaign_all.gd` | Separately identified normalized-slew campaign and exclusive 68-cell driver; complete measurements do not imply a numerical pass |
+| `verify_servo_arrivals.py` | Source-pinned independent Windows retention, binary metrics and full exact-replay verification; a partial collection never closes the gate |
 
 Run from the repository root with the pinned engine (`app/get-godot.sh`; on Windows `.tools/Godot_v4.8-beta2_win64_console.exe`), scripts by absolute path:
 

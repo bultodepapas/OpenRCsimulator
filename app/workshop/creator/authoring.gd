@@ -31,6 +31,7 @@ const STATUS_COMPLETE := "Complete"
 const SNAPSHOT_FORMAT := "openrc-creator-document v1"
 const SOURCE_SNAPSHOT_FORMAT := "openrc-creator-document v2"
 const INSTALLATION_SNAPSHOT_FORMAT := "openrc-creator-document v3"
+const SERVO_SNAPSHOT_FORMAT := "openrc-creator-document v4"
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const AIRFRAME_PACKAGE := "conventional-trainer-estimated-v1"
@@ -100,6 +101,7 @@ var _source_observations := {}
 var _review_observations := {}
 var _source_installation := {}
 var _installation_proposal := {}
+var _servo_integration := ""
 var _inventory: Array = []
 var _compiled := {}
 var _compiled_revision := -1
@@ -275,6 +277,25 @@ func placed_bounds() -> Dictionary:
 
 
 # --- Typed fields ---------------------------------------------------------------------------
+
+## The empty choice retains the historical servo law. A new law is always an explicit choice.
+func servo_integration() -> String:
+	return _servo_integration
+
+
+## Returns false for unsupported choices; no-op and refused choices leave the revision unchanged.
+func set_servo_integration(chosen: Variant) -> bool:
+	if typeof(chosen) != TYPE_STRING:
+		return false
+	var law: String = chosen
+	if not law.is_empty() and law != Definition.ServoLaw.LAW:
+		return false
+	if law == _servo_integration:
+		return true
+	_servo_integration = law
+	_touch()
+	return true
+
 
 func raw(path: String) -> String:
 	return str(_raw.get(path, ""))
@@ -498,6 +519,9 @@ func snapshot(step := "") -> Dictionary:
 	if not _source_installation.is_empty():
 		saved.format = INSTALLATION_SNAPSHOT_FORMAT
 		saved.source_installation = _source_installation.duplicate(true)
+	if not _servo_integration.is_empty():
+		saved.format = SERVO_SNAPSHOT_FORMAT
+		saved.servo_integration = _servo_integration
 	return saved
 
 
@@ -506,16 +530,23 @@ func snapshot(step := "") -> Dictionary:
 ## a source whose identity differs from the one the snapshot was saved with is refused.
 ## Returns the R envelope; on failure the document is unchanged.
 func restore(saved: Dictionary, admitted: InspectedSource, observations: Observations.CheckedReport = null) -> Dictionary:
-	if saved.get("format") not in [SNAPSHOT_FORMAT,SOURCE_SNAPSHOT_FORMAT,INSTALLATION_SNAPSHOT_FORMAT]:
+	if saved.get("format") not in [SNAPSHOT_FORMAT,SOURCE_SNAPSHOT_FORMAT,INSTALLATION_SNAPSHOT_FORMAT,SERVO_SNAPSHOT_FORMAT]:
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
+	var servo := ""
+	if saved.format == SERVO_SNAPSHOT_FORMAT:
+		if typeof(saved.get("servo_integration")) != TYPE_STRING or saved.servo_integration != Definition.ServoLaw.LAW:
+			return R.fail(R.RECORD_INVALID, "Choose a supported servo integration law.", "servo_integration", "controls_ground")
+		servo = saved.servo_integration
+	elif saved.has("servo_integration"):
+		return R.fail(R.RECORD_INVALID, "Servo integration requires the versioned document format.", "servo_integration", "controls_ground")
 	var context := {}
-	if saved.format == SOURCE_SNAPSHOT_FORMAT or (saved.format == INSTALLATION_SNAPSHOT_FORMAT and saved.has("source_observations")):
+	if saved.format == SOURCE_SNAPSHOT_FORMAT or (saved.format in [INSTALLATION_SNAPSHOT_FORMAT,SERVO_SNAPSHOT_FORMAT] and saved.has("source_observations")):
 		var checked := Observations.validate(saved.get("source_observations"))
 		if not checked.ok or observations == null or not observations.matches(admitted) or checked.value != observations.context():
 			return R.fail(R.IDENTITY_MISMATCH, "The saved source declarations do not match this model. Re-import the ZIP.","source_observations","import")
 		context = checked.value
 	var installation := {}
-	if saved.format == INSTALLATION_SNAPSHOT_FORMAT:
+	if saved.format == INSTALLATION_SNAPSHOT_FORMAT or (saved.format == SERVO_SNAPSHOT_FORMAT and saved.has("source_installation")):
 		var checked := Installation.validate(saved.get("source_installation"),context,AIRFRAME_PACKAGE,POWER_PACKAGE)
 		if not checked.ok:
 			return checked
@@ -587,6 +618,7 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	_source = admitted
 	_source_observations = context
 	_source_installation = installation
+	_servo_integration = servo
 	_review_observations = observations.context() if observations != null and observations.matches(admitted) else context.duplicate(true)
 	_installation_proposal = Installation.make(_source,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
 	_placement = placed
@@ -615,7 +647,8 @@ func mark_saved(record_sha256: String) -> void:
 ## True when the content differs from the last save, or was never saved and holds anything.
 func has_unsaved_changes() -> bool:
 	if _saved_fingerprint.is_empty():
-		return _source != null or not _values.is_empty() or not _raw.is_empty() or not _inventory.is_empty() or not name.is_empty()
+		return _source != null or not _values.is_empty() or not _raw.is_empty() or not _inventory.is_empty() \
+			or not name.is_empty() or not _servo_integration.is_empty()
 	return fingerprint() != _saved_fingerprint
 
 
@@ -766,6 +799,9 @@ func definition() -> Dictionary:
 	if not _source_installation.is_empty():
 		record.format = Definition.INSTALLATION_FORMAT
 		record.source_installation = _source_installation.duplicate(true)
+	if not _servo_integration.is_empty():
+		record.format = Definition.SERVO_FORMAT
+		record.servo_integration = _servo_integration
 	return record
 
 

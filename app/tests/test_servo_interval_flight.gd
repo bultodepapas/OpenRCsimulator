@@ -1,4 +1,5 @@
 extends SceneTree
+const Servo := preload("res://sim/servo_interval_flight.gd")
 const Law := preload("res://physics/slew_trajectory.gd")
 const Old := preload("res://physics/control_actuators.gd")
 const Compose := preload("res://sim/electric_contact_step.gd")
@@ -58,7 +59,7 @@ func replay_check(flight: Node) -> void:
 		malformed.checkpoint.format=bad
 		check("malformed checkpoint format refused before dispatch",not Reader.recorded_stage_backend(malformed).ok and not Reader.prepare_replay(malformed).ok)
 	for owner: String in ["metadata","checkpoint"]:
-		for key: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout"]:
+		for key: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout","servo_partition_policy"]:
 			for bad: Variant in [null,1,true,[],"unknown"]:
 				var damaged:=header.duplicate(true)
 				damaged[owner][key]=bad
@@ -73,14 +74,24 @@ func replay_check(flight: Node) -> void:
 	damaged.checkpoint.simulation.callback_protocol=Model.PROTOCOL_LEGACY
 	check("partial simulation declaration refused",not Reader.recorded_servo_declaration(damaged).ok)
 	var refused_candidate: Dictionary=Reader.prepare_replay(header,"not-a-candidate.json")
-	check("v15 candidate replay stays explicitly unsupported",not refused_candidate.ok and refused_candidate.error=="Candidate replay of a servo checkpoint is not supported.")
+	check("versioned candidate replay stays explicitly unsupported",not refused_candidate.ok and refused_candidate.error=="Candidate replay of a servo checkpoint is not supported.")
 	damaged=header.duplicate(true)
 	damaged.aircraft.model.controls.erase("servo_integration")
 	damaged.checkpoint.format="openrc-flight-checkpoint v6"
-	for key: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout","servo_physics_format"]:
+	for key: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout","servo_partition_policy","servo_physics_format"]:
 		damaged.checkpoint.erase(key)
 		damaged.metadata.erase(key)
 	check("partial inner servo layout cannot masquerade as historical",not Reader.recorded_servo_declaration(damaged).ok)
+	var historical := header.duplicate(true)
+	historical.checkpoint.format = "openrc-flight-checkpoint v15"
+	historical.checkpoint.erase("servo_partition_policy")
+	historical.metadata.erase("servo_partition_policy")
+	var historical_declaration: Dictionary = Reader.recorded_servo_declaration(historical)
+	check("historical declaration stays readable and policy unrecorded", historical_declaration.ok and historical_declaration.declared
+		and not historical_declaration.declaration.has("partition_policy"))
+	check("historical exact replay cannot infer an integration policy", not Reader.prepare_replay(historical).ok)
+	historical.metadata["servo_partition_policy"] = Servo.PARTITION_POLICY
+	check("policy cannot be smuggled into a v15 carrier", not Reader.recorded_servo_declaration(historical).ok)
 	for index: int in 12:
 		flight.sim.inputs[0]=0.1 if index<4 else (-0.05 if index<8 else 0.0)
 		flight.sim.inputs[1]=-0.03 if index<6 else 0.02
@@ -196,7 +207,29 @@ func _initialize() -> void:
 	flight.sim.step()
 	check("real second tick has no historical residual fault",flight.sim.fault_reason.is_empty() and flight.sim.tick==2)
 	var cp: Dictionary=flight.checkpoint()
-	check("law and interval identity pinned in outer checkpoint",not cp.is_empty() and cp.format=="openrc-flight-checkpoint v15" and cp.servo_integration_law==Law.LAW)
+	check("law and interval identity pinned in outer checkpoint",not cp.is_empty() and cp.format==Servo.CHECKPOINT_FORMAT and cp.servo_integration_law==Law.LAW and cp.servo_partition_policy==Servo.PARTITION_POLICY)
+	var unbound := cp.duplicate(true)
+	unbound.format = "openrc-flight-checkpoint v15"
+	unbound.erase("servo_partition_policy")
+	var policy_frame := frame(flight)
+	check("unbound isolated v15 checkpoint refuses without policy inference", not flight.restore_checkpoint(unbound) and frame(flight) == policy_frame)
+	var wrong_policy := cp.duplicate(true)
+	wrong_policy.servo_partition_policy = "servo-arrivals-zero-half-local-v1"
+	check("another known partition cannot restore into this policy", not flight.restore_checkpoint(wrong_policy) and frame(flight) == policy_frame)
+	var stock_frame := frame(legacy)
+	var old_policy := old_cp.duplicate(true)
+	old_policy["servo_partition_policy"] = Servo.PARTITION_POLICY
+	check("policy marker cannot enter a stock checkpoint", not legacy.restore_checkpoint(old_policy) and frame(legacy) == stock_frame)
+	old_policy = old_cp.duplicate(true)
+	old_policy.format = Servo.UNBOUND_CHECKPOINT_FORMAT
+	check("bare unbound v15 cannot enter a stock session", not legacy.restore_checkpoint(old_policy) and frame(legacy) == stock_frame)
+	old_policy = old_cp.duplicate(true)
+	old_policy.simulation["servo_partition_policy"] = Servo.PARTITION_POLICY
+	check("nested policy marker cannot enter a stock checkpoint", not legacy.restore_checkpoint(old_policy) and frame(legacy) == stock_frame)
+	var stock_header := {metadata = legacy.trace_meta(), checkpoint = old_policy, aircraft = legacy.aircraft,
+		stage_backend = legacy.stage_backend_identity(), layout = {state = 13, loads = 6, inputs = 4,
+		aux = legacy.sim.aux.size(), continuous = legacy.sim.continuous.size(), modes = legacy.sim.modes.size()}}
+	check("nested policy marker cannot hide in historical inspection", not Reader.recorded_servo_declaration(stock_header).ok)
 	var wind:=Weather.defaults()
 	wind.speed_mps=2.0
 	var kept_frame:=frame(flight)
@@ -220,7 +253,7 @@ func _initialize() -> void:
 	flight.sim.stepped.connect(func(_k: int,_t: float,_b: PackedFloat64Array,_l: PackedFloat64Array,_i: PackedFloat64Array,_a: PackedFloat64Array) -> void:samples[0]+=1)
 	check("unsupported restored weather is refused atomically",not flight.restore_checkpoint(wind_cp) and frame(flight)==kept_frame and flight.weather_is_calm())
 	check("refused restore publishes no reset or recorder samples",resets[0]==0 and samples[0]==0)
-	for field: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout","servo_physics_format"]:
+	for field: String in ["servo_integration_law","servo_interval_protocol","servo_interval_layout","servo_partition_policy","servo_physics_format"]:
 		for bad: Variant in [null,1,true,[],{}]:
 			var malformed:=cp.duplicate(true)
 			malformed[field]=bad
@@ -233,6 +266,56 @@ func _initialize() -> void:
 	check("restored new-law continuation is exact",flight.sim.fault_reason.is_empty() and restored.sim.fault_reason.is_empty() and frame(flight)==frame(restored))
 	check("trace declares actual law/protocol",flight.trace_meta().servo_integration_law==Law.LAW and flight.trace_meta().servo_interval_protocol==Model.PROTOCOL_JOINT_INTERVAL_LOCAL)
 	replay_check(restored)
+	for tamper: String in ["token", "callback", "pre_tick", "stage_interval", "block_aux"]:
+		var guarded := session(selected, "gdscript_reference")
+		var guarded_frame := frame(guarded)
+		var guarded_cp: Dictionary = guarded.checkpoint()
+		var observed: Array[int] = [0]
+		guarded.resetting.connect(func() -> void: observed[0] += 1)
+		guarded.sim.stepped.connect(func(_k: int, _t: float, _b: PackedFloat64Array, _l: PackedFloat64Array,
+			_i: PackedFloat64Array, _a: PackedFloat64Array) -> void: observed[0] += 1)
+		if tamper == "token":
+			guarded.sim.model.identity.servo_partition_policy = "tampered-policy"
+		elif tamper == "callback":
+			guarded.sim.model.step_policy_interval = func(_s: PackedFloat64Array, _t: float, _dt: float,
+				_d: Callable, _f: PackedFloat64Array, _c: Dictionary) -> Variant: return _s.duplicate()
+		elif tamper == "pre_tick":
+			guarded.sim.model.pre_tick = func(_a: PackedFloat64Array, _i: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return _a.duplicate()
+		elif tamper == "stage_interval":
+			guarded.sim.model.stage_interval = func(_b: PackedFloat64Array, _v: PackedFloat64Array, _at: float,
+				_c: Dictionary, _origin: float, _end: float) -> Dictionary: return {}
+		else:
+			guarded.sim.model.block_aux = func(_v: PackedFloat64Array, _a: PackedFloat64Array) -> PackedFloat64Array: return _a.duplicate()
+		check("live partition " + tamper + " mutation refuses checkpoint", guarded.checkpoint().is_empty())
+		check("live partition " + tamper + " mutation refuses restore without publication", not guarded.restore_checkpoint(guarded_cp)
+			and frame(guarded) == guarded_frame and observed[0] == 0)
+		guarded.sim.step()
+		check("live partition " + tamper + " mutation refuses before stepping", not guarded.sim.fault_reason.is_empty() and frame(guarded) == guarded_frame)
+		guarded.free()
+	for bad: Variant in [null, false, 1, [], {}, StringName(Servo.PARTITION_POLICY)]:
+		var guarded := session(selected, "gdscript_reference")
+		var guarded_frame := frame(guarded)
+		var guarded_cp: Dictionary = guarded.checkpoint()
+		guarded.sim.model.identity.servo_partition_policy = bad
+		check("malformed live policy refuses checkpoint quietly", guarded.checkpoint().is_empty())
+		check("malformed live policy refuses restore atomically", not guarded.restore_checkpoint(guarded_cp) and frame(guarded) == guarded_frame)
+		guarded.sim.step()
+		check("malformed live policy refuses the tick quietly", not guarded.sim.fault_reason.is_empty() and frame(guarded) == guarded_frame)
+		guarded.free()
+	for owner: String in ["model_identity", "aircraft_controls"]:
+		for bad: Variant in [null, false, 1, [], {}, StringName(Law.LAW)]:
+			var guarded := session(selected, "gdscript_reference")
+			var guarded_frame := frame(guarded)
+			var guarded_cp: Dictionary = guarded.checkpoint()
+			if owner == "model_identity":
+				guarded.sim.model.identity.servo_integration = bad
+			else:
+				guarded.aircraft.model.controls.servo_integration = bad
+			check("malformed live law refuses checkpoint quietly", guarded.checkpoint().is_empty())
+			check("malformed live law refuses restore atomically", not guarded.restore_checkpoint(guarded_cp) and frame(guarded) == guarded_frame)
+			guarded.sim.step()
+			check("malformed live law refuses the tick quietly", not guarded.sim.fault_reason.is_empty() and frame(guarded) == guarded_frame)
+			guarded.free()
 	var tiny:=session(selected,"gdscript_reference")
 	for _i in 240: tiny.sim.step()
 	var tiny_frame:=frame(tiny)

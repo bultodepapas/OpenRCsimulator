@@ -1036,7 +1036,8 @@ def _check_servo_report(document: dict[str, Any]) -> None:
     """Validate the optional same-law replay extension; old reports keep their shape."""
     metadata = document.get("metadata", {})
     fields = ("servo_integration_law", "servo_interval_protocol", "servo_interval_layout")
-    declared = isinstance(metadata, dict) and any(key in metadata for key in fields)
+    policy_field = "servo_partition_policy"
+    declared = isinstance(metadata, dict) and any(key in metadata for key in (*fields, policy_field))
     if "servo_integration" not in document:
         if declared and document.get("mode") == "exact":
             raise FlightLogError("servo replay report is missing its declaration group")
@@ -1055,6 +1056,14 @@ def _check_servo_report(document: dict[str, Any]) -> None:
         "simulation_format": "openrc-simulation-checkpoint v2",
         "stage_backend": {"backend": "gdscript_reference"},
     }
+    policy_bound = isinstance(declaration, dict) and declaration.get("checkpoint_format") == "openrc-flight-checkpoint v16"
+    if policy_bound:
+        policy = declaration.get("partition_policy")
+        if policy not in ("servo-arrivals-local-v1", "servo-arrivals-zero-half-local-v1"):
+            raise FlightLogError("servo replay partition policy is unsupported")
+        expected.update(checkpoint_format="openrc-flight-checkpoint v16", partition_policy=policy)
+    elif isinstance(metadata, dict) and policy_field in metadata:
+        raise FlightLogError("historical servo report did not bind a partition policy")
     if not isinstance(declaration, dict) or set(declaration) != set(expected) | {"layout"} \
             or any(declaration[key] != value for key, value in expected.items()) \
             or declaration["layout"] not in (
@@ -1062,8 +1071,12 @@ def _check_servo_report(document: dict[str, Any]) -> None:
                 "normalized-slew-arrivals-v1;body13;aux5;shaft-charge-energy-heat;modes1",
             ):
         raise FlightLogError("servo replay declaration is unsupported")
+    names = ("law", "protocol", "layout")
+    if policy_bound:
+        fields = (*fields, policy_field)
+        names = (*names, "partition_policy")
     if not isinstance(metadata, dict) or any(metadata.get(key) != declaration[value]
-            for key, value in zip(fields, ("law", "protocol", "layout"))):
+            for key, value in zip(fields, names)):
         raise FlightLogError("servo replay metadata and declaration disagree")
     if any(document.get(key) != expected["stage_backend"]
            for key in ("baseline_stage_backend", "current_stage_backend")):

@@ -9,6 +9,8 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 | [ClearView compatibility research](clearview-2026-11-15.md) | Primary documentation, seven ZIPs / 26 model roots, exact source inventory, experimental importer evidence, conversion matrix and limits, 2026-11-15. The [AC-CV subplan](../../plans/clearview-aircraft-import.md) owns implementation and open qualification gates. |
 | [AC-12 current-source audit](AC-12-audit-2026-11-16.md) | Fixed diagnostic cells, strict float64 traces, same-rate repeats and complete exact-replay baselines for the ClearView flight dependency. The historical failed campaign and flight gate remain unchanged. |
 | [AC-12 servo stage-time ablation](AC-12-servo-stage-2026-11-16.md) | Separate controlled investigation using original complete logs, a byte-checked hold control and a private source-hashed ramp candidate. No production law or qualification is implied. |
+| [AC-12 versioned servo arrivals](AC-12-servo-arrivals-2026-11-16.md) | Explicit law and local interval protocol, exact replay, complete 68-cell negative result and separately registered forcing-partition diagnostics; G05 remains open. |
+| [AC-13 publication binding](AC-13-publication-binding-2026-11-16.md) | Captured v4 publication, v2 receipts, legacy byte comparisons, interrupted saves and atomic editor reopening on Windows and Apple Silicon. |
 
 ## Engine probes (2026-11-10)
 

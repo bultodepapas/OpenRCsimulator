@@ -30,9 +30,10 @@ extends RefCounted
 ## transaction added the object: a pointer is only ever moved after every object of its
 ## transaction was installed and read back, so an accepted pointer never names an unfinished one.
 ##
-## Opaque members (`snapshot`, `placement`, `bindings`, `appearance`, `definition`) are JSON data
-## the store does not interpret. Every number in them is stored as a float: a whole number comes
-## back as a float, so loading and saving the same content is a no-op.
+## V1 members (`snapshot`, `placement`, `bindings`, `appearance`, `definition`) are opaque JSON.
+## V2 additionally validates its canonical definition, raw-data binding and snapshot identity;
+## the adopting owner rejoins the source and presentation. Every number in these members is
+## stored as a float: a whole number comes back as a float, preserving save/load no-ops.
 ##
 ## Not thread-safe: use one instance from one thread at a time.
 
@@ -40,6 +41,9 @@ const R := preload("res://workshop/creator/result.gd")
 const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
 const RecordLoader := preload("res://workshop/creator/record_loader.gd")
+const Definition := preload("res://workshop/creator/definition.gd")
+const CompileBinding := preload("res://workshop/creator/compile_binding.gd")
+const CompiledPublication := preload("res://workshop/creator/compiled_publication.gd")
 const ProcessLock := preload("res://workshop/creator/process_lock.gd")
 
 const DEFAULT_ROOT := "user://aircraft_creator"
@@ -108,6 +112,8 @@ const INDEX_RECOVERY_KEYS := ["record", "updated_unix"]
 const DRAFT_KEYS := ["format", "draft_id", "name", "aircraft_uuid", "snapshot", "source", "source_file_name"]
 const AIRCRAFT_KEYS := ["format", "aircraft_uuid", "revision", "name", "definition", "aircraft", "source",
 	"source_file_name", "placement", "bindings", "appearance", "snapshot", "created_unix"]
+const AIRCRAFT_V2_KEYS := ["format", "aircraft_uuid", "revision", "name", "definition", "aircraft", "source",
+	"source_file_name", "placement", "bindings", "appearance", "snapshot", "created_unix", "compile_binding"]
 
 const POINTER_INTEGERS: PackedStringArray = ["generation", "index/byte_length"]
 const INDEX_INTEGERS: PackedStringArray = ["generation", "stored_bytes", "predecessor/byte_length",
@@ -372,8 +378,9 @@ func clear_recovery(draft_id: String, expected_record_sha256: String) -> Diction
 
 # --- Published aircraft -----------------------------------------------------------------------
 
-## Publishes a new immutable revision. `publication` = `{aircraft_uuid, name, definition,
-## raw_bytes, source_bytes, source_file_name, placement, bindings, appearance, snapshot}`; other
+## Publishes a legacy immutable revision. V4/servo markers require publish_compiled_aircraft().
+## `publication` = `{aircraft_uuid, name, definition, raw_bytes, source_bytes, source_file_name,
+## placement, bindings, appearance, snapshot}`; other
 ## keys are ignored. `raw_bytes` must load as an aircraft whose model ID is
 ## "user-aircraft-<aircraft_uuid>"; the store neither compiles nor judges the physics.
 ## `expected_revision` 0 = first publication, otherwise the current revision (else SAVE_CONFLICT).
@@ -383,10 +390,25 @@ func publish_aircraft(publication: Dictionary, expected_revision: int) -> Dictio
 	var prepared := _prepare_publication(publication)
 	if not prepared.ok:
 		return prepared
+	return _publish_prepared(prepared.value, expected_revision)
+
+
+## Publishes only the v4 document/candidate association captured in this process. No raw payload
+## or caller-supplied receipt can enter through the flat legacy API.
+func publish_compiled_aircraft(captured: Variant, expected_revision: int) -> Dictionary:
+	if not CompiledPublication.is_captured(captured):
+		return R.fail(R.RECORD_INVALID, "The aircraft publication was not captured from a document.")
+	var prepared := _prepare_publication(captured.publication(), captured.binding())
+	if not prepared.ok:
+		return prepared
+	return _publish_prepared(prepared.value, expected_revision)
+
+
+## Both publication entry points retain the same CAS, quota, object and pointer transaction.
+func _publish_prepared(parts: Dictionary, expected_revision: int) -> Dictionary:
 	var begun := _begin()
 	if not begun.ok:
 		return begun
-	var parts: Dictionary = prepared.value
 	var aircraft_uuid: String = parts.aircraft_uuid
 	var aircraft: Dictionary = _index.aircraft
 	var entry: Variant = aircraft.get(aircraft_uuid)
@@ -422,8 +444,9 @@ func publish_aircraft(publication: Dictionary, expected_revision: int) -> Dictio
 ## `revision` 0 = current. Value = `{aircraft_uuid, revision, name, definition (Dictionary),
 ## definition_bytes, definition_sha256, raw_bytes, raw_sha256, source_bytes, source_sha256,
 ## source_file_name, placement, bindings, appearance, snapshot, created_unix, record_sha256}`.
+## V2 additionally returns `record_format` and `compile_binding`; legacy v1 return shape is unchanged.
 ## Every blob is checked by length and SHA-256. A consumer that flies `raw_bytes` still loads them
-## through its own record boundary.
+## through its own record boundary and rejoins the snapshot, source and presentation.
 func load_aircraft(aircraft_uuid: String, revision: int = 0) -> Dictionary:
 	var entry: Variant = (_index.get("aircraft", {}) as Dictionary).get(aircraft_uuid)
 	if entry == null:
@@ -574,9 +597,10 @@ static func _draft_problem(record: Dictionary) -> String:
 
 # --- Aircraft records -------------------------------------------------------------------------
 
-## Validates a publication and encodes its payloads. Value = `{aircraft_uuid, name, record (without
+## Validates a publication and encodes its payloads. `binding` is internal to the captured path;
+## a flat caller's similarly named member is ignored. Value = `{aircraft_uuid, name, record (without
 ## revision and time), objects}`.
-func _prepare_publication(publication: Dictionary) -> Dictionary:
+func _prepare_publication(publication: Dictionary, binding: Variant = null) -> Dictionary:
 	for key: String in ["aircraft_uuid", "name", "definition", "raw_bytes", "source_bytes", "source_file_name",
 			"placement", "bindings", "appearance", "snapshot"]:
 		if not publication.has(key):
@@ -609,6 +633,8 @@ func _prepare_publication(publication: Dictionary) -> Dictionary:
 	if definition.has("aircraft_uuid") and definition.aircraft_uuid != aircraft_uuid:
 		return R.fail(R.RECORD_INVALID, M_NOT_AIRCRAFT, "definition", "", ["the definition names another aircraft"])
 	var raw: PackedByteArray = publication.raw_bytes
+	if binding == null and _has_servo_marker(definition, members.snapshot, raw):
+		return R.fail(R.UNSUPPORTED_CAPABILITY, "Publish the selected servo law from an accepted Creator document.", "servo_integration", "controls_ground")
 	var raw_problem := _aircraft_bytes_problem(raw, aircraft_uuid)
 	if not raw_problem.is_empty():
 		return R.fail(R.RECORD_INVALID, M_NOT_AIRCRAFT, "raw_bytes", "", [raw_problem])
@@ -618,14 +644,39 @@ func _prepare_publication(publication: Dictionary) -> Dictionary:
 	var definition_bytes: PackedByteArray = definition_written.value.bytes
 	var raw_sha := CreatorBytes.sha256(raw)
 	var source_sha := CreatorBytes.sha256(source)
+	if binding != null:
+		if not CompileBinding.matches(binding, definition_written.value.sha256, raw_sha) \
+				or not CompiledPublication.valid_pair(definition, raw, aircraft_uuid) \
+				or members.snapshot.get("format") != "openrc-creator-document v4" \
+				or members.snapshot.get("aircraft_uuid") != aircraft_uuid \
+				or members.snapshot.get("source_sha256") != source_sha \
+				or members.snapshot.get("servo_integration") != Definition.ServoLaw.LAW:
+			return R.fail(R.IDENTITY_MISMATCH, "The captured publication does not match its aircraft.")
 	var record := {format = AIRCRAFT_FORMAT, aircraft_uuid = aircraft_uuid, name = publication.name,
 		definition = _blob(definition_written.value.sha256, definition_bytes.size(), MEDIA_DEFINITION),
 		aircraft = _blob(raw_sha, raw.size(), MEDIA_AIRCRAFT),
 		source = _blob(source_sha, source.size(), MEDIA_SOURCE),
 		source_file_name = publication.source_file_name, placement = members.placement,
 		bindings = members.bindings, appearance = members.appearance, snapshot = members.snapshot}
+	if binding != null:
+		record.format = CompileBinding.REVISION_FORMAT
+		record["compile_binding"] = (binding as Dictionary).duplicate(true)
 	var objects: Array = [definition_written.value, {bytes = raw, sha256 = raw_sha}, {bytes = source, sha256 = source_sha}]
 	return R.ok({aircraft_uuid = aircraft_uuid, name = publication.name, record = record, objects = objects})
+
+
+## V4 cannot be laundered through the opaque legacy flat-publication path. Presence is enough;
+## raw is checked only when it is a valid CreatorBytes record, then the loader still validates it.
+static func _has_servo_marker(definition: Variant, snapshot: Variant, raw: Variant) -> bool:
+	if definition is Dictionary and (definition.get("format") == Definition.SERVO_FORMAT or definition.has("servo_integration")):
+		return true
+	if snapshot is Dictionary and (snapshot.get("format") == "openrc-creator-document v4" or snapshot.has("servo_integration")):
+		return true
+	if typeof(raw) != TYPE_PACKED_BYTE_ARRAY:
+		return false
+	var decoded: Dictionary = CreatorBytes.decode(raw)
+	return decoded.ok and decoded.value.data.get("controls") is Dictionary \
+		and decoded.value.data.controls.has("servo_integration")
 
 
 ## "" when `raw` is a loadable aircraft record whose model ID belongs to `aircraft_uuid`.
@@ -667,18 +718,35 @@ func _load_revision_record(listed: Dictionary, aircraft_uuid: String) -> Diction
 	var definition_data: Dictionary = CreatorBytes.decode(definition.bytes)
 	if not definition_data.ok:
 		return _entry_damaged("the aircraft definition is not readable")
-	return R.ok({aircraft_uuid = aircraft_uuid, revision = record.revision, name = record.name,
+	if record.format == AIRCRAFT_FORMAT:
+		if _has_servo_marker(definition_data.value.data, record.snapshot, raw.bytes):
+			return _entry_damaged("the aircraft has no compile binding for its servo law")
+	else:
+		var checked: Dictionary = Definition.validate_complete(definition_data.value.data)
+		if not checked.ok:
+			return _entry_damaged("the compiled aircraft definition is invalid")
+		var canonical: Dictionary = CreatorBytes.encode(checked.value)
+		if not canonical.ok or canonical.value.bytes != definition.bytes \
+				or not CompiledPublication.valid_pair(checked.value, raw.bytes, aircraft_uuid):
+			return _entry_damaged("the compiled aircraft does not match its stored definition")
+	var value := {aircraft_uuid = aircraft_uuid, revision = record.revision, name = record.name,
 		definition = definition_data.value.data, definition_bytes = definition.bytes,
 		definition_sha256 = str(record.definition.sha256), raw_bytes = raw.bytes,
 		raw_sha256 = str(record.aircraft.sha256), source_bytes = source.bytes,
 		source_sha256 = str(record.source.sha256), source_file_name = record.source_file_name,
 		placement = record.placement, bindings = record.bindings, appearance = record.appearance,
 		snapshot = record.snapshot, created_unix = record.created_unix,
-		record_sha256 = str(listed.record.sha256)})
+		record_sha256 = str(listed.record.sha256)}
+	if record.format == CompileBinding.REVISION_FORMAT:
+		value["record_format"] = CompileBinding.REVISION_FORMAT
+		value["compile_binding"] = (record.compile_binding as Dictionary).duplicate(true)
+	return R.ok(value)
 
 
 static func _revision_problem(record: Dictionary) -> String:
-	if not _closed(record, AIRCRAFT_KEYS) or not _is_format(record.format, AIRCRAFT_FORMAT):
+	var v2 := _is_format(record.get("format"), CompileBinding.REVISION_FORMAT)
+	if not _closed(record, AIRCRAFT_V2_KEYS if v2 else AIRCRAFT_KEYS) \
+			or (not v2 and not _is_format(record.get("format"), AIRCRAFT_FORMAT)):
 		return "the aircraft record has an unknown shape"
 	if not _is_uuid(record.aircraft_uuid) or not _is_count(record.revision) or record.revision < 1 \
 			or not _is_name(record.name, false) or not _is_file_name(record.source_file_name) \
@@ -691,6 +759,8 @@ static func _revision_problem(record: Dictionary) -> String:
 			or not _blob_problem(record.aircraft, MEDIA_AIRCRAFT, Limits.RECORD_BYTES).is_empty() \
 			or not _blob_problem(record.source, MEDIA_SOURCE, Limits.MODEL_SOURCE_BYTES).is_empty():
 		return "the aircraft record names a file wrongly"
+	if v2 and not CompileBinding.matches(record.compile_binding, record.definition.sha256, record.aircraft.sha256):
+		return "the aircraft compile binding does not match its files"
 	return ""
 
 

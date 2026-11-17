@@ -57,7 +57,7 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 		return {ok=false,message="local partition requires a zero origin and one owning partition"}
 	if extra.is_empty():
 		if local_clock:
-			var local_derivative := func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,0.0)
+			var local_derivative := func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,0.0,dt)
 			return BatteryStep.advance(combined,at,dt,local_derivative,first,rpm_index,charge_index,project,true)
 		return advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,pieces)
 	if pieces<1 or pieces>MAX_PIECES or extra.size()>3 or not is_finite(at) or not is_finite(dt) \
@@ -106,20 +106,23 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 		var end: float = offsets[index+1]
 		var piece_derivative: Callable = derivative
 		if local_clock:
-			piece_derivative = func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,begin)
+			piece_derivative = func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,begin,end)
 		var result := BatteryStep.advance(state,0.0 if local_clock else at+begin,end-begin,piece_derivative,
 			first if index==0 else PackedFloat64Array(),rpm_index,charge_index,project,local_clock)
 		if not result.get("ok",false) or not result.get("state") is PackedFloat64Array \
 				or not result.get("events") is Array:
 			return {ok=false,message="explicit finite-battery piece failed"}
 		var event_index := 0
+		var previous_phase := -INF
+		var previous_local_event := -INF
 		for event: Variant in result.events:
 			if local_clock and event is Dictionary and typeof(event.get("time_s")) in [TYPE_FLOAT,TYPE_INT]:
 				var phase: float = event.time_s
-				var local_at: float = begin + phase
-				if phase < 0.0 or phase > end-begin or (phase>0.0 and local_at<=begin) \
-					or (phase<end-begin and local_at>=end):
+				var local_at: float = local_event_time(begin,end-begin,phase,previous_phase,previous_local_event)
+				if not is_finite(local_at):
 					return {ok=false,message="piece event phase cannot be represented on the tick clock"}
+				previous_phase=phase
+				previous_local_event=local_at
 				event = event.duplicate(true)
 				event.time_s = local_at
 			if not event is Dictionary or typeof(event.get("type"))!=TYPE_STRING \
@@ -152,3 +155,18 @@ static func _append_ordered(events: Array[Dictionary], event: Dictionary, piece_
 			return true
 	events.append(copy)
 	return true
+
+
+## Preserve phase order before a rounded clock conversion can erase it. Exact
+## shared phases stay shared; distinct phases must remain distinct public times.
+static func local_event_time(origin: float,duration: float,phase: float,
+		previous_phase: float = -INF,previous_time: float = -INF) -> float:
+	if not is_finite(origin) or not is_finite(duration) or duration<=0.0 \
+		or not is_finite(phase) or phase<0.0 or phase>duration or phase<previous_phase:
+		return NAN
+	var at: float=origin+phase
+	if not is_finite(at) or (phase>0.0 and at<=origin) \
+		or (phase<duration and at>=origin+duration) \
+		or (phase>previous_phase and at<=previous_time):
+		return NAN
+	return at

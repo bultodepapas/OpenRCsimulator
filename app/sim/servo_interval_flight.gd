@@ -6,7 +6,10 @@ const Step := preload("res://sim/electric_contact_step.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Wash := preload("res://physics/wash_transport.gd")
-const CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
+const CHECKPOINT_FORMAT := "openrc-flight-checkpoint v16"
+const UNBOUND_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
+## The policy is independent of the trajectory and array layout. V15 did not identify it.
+const PARTITION_POLICY := "servo-arrivals-local-v1"
 const LAYOUT_PREFIX := Law.LAW+";"
 
 
@@ -34,7 +37,7 @@ static func admission(session: Node, model: Dictionary) -> Dictionary:
 		or environment.weather.get_script().resource_path != "res://physics/wind_field.gd" \
 		or environment.turbulence != Callable(session, "_turbulence_noise"):
 		return _error("servo law v1 requires the unchanged base environment providers")
-	if model.controls.servo_integration != Law.LAW:
+	if typeof(model.controls.servo_integration) != TYPE_STRING or model.controls.servo_integration != Law.LAW:
 		return _error("unsupported servo integration law")
 	var prop: Dictionary = model.get("propulsion", {})
 	if not Propulsion.is_electric(prop) or not Propulsion.has_dynamic_battery(prop) or Propulsion.has_pack_ecm(prop) \
@@ -66,6 +69,7 @@ static func install(vehicle: RefCounted, session: Node) -> void:
 	vehicle.continuous_size = 4
 	vehicle.state_layout_identity = "%s;body13;aux%d;shaft-charge-energy-heat;modes1" % [Law.LAW, aux_count]
 	vehicle.identity.servo_integration = Law.LAW
+	vehicle.identity.servo_partition_policy = PARTITION_POLICY
 	vehicle.pre_tick = pre_tick.bind(session)
 	vehicle.stage_interval = evaluate.bind(session)
 	vehicle.step_policy_interval = advance.bind(session)
@@ -89,14 +93,23 @@ static func pre_tick(actual: PackedFloat64Array, input: PackedFloat64Array, dt: 
 
 static func installed(session: Node, model: Dictionary) -> bool:
 	var simulation: Node = session.get("sim")
-	return selected(model) and simulation != null and simulation.model.callback_protocol == Model.PROTOCOL_JOINT_INTERVAL_LOCAL \
-		and simulation.model.identity.get("servo_integration", "") == Law.LAW and session.call("shaft_is_coupled")
+	if simulation == null or simulation.model == null:
+		return false
+	var installed_law: Variant = simulation.model.identity.get("servo_integration")
+	var installed_policy: Variant = simulation.model.identity.get("servo_partition_policy")
+	return selected(model) and simulation.model.callback_protocol == Model.PROTOCOL_JOINT_INTERVAL_LOCAL \
+		and typeof(installed_law) == TYPE_STRING and installed_law == Law.LAW \
+		and typeof(installed_policy) == TYPE_STRING and installed_policy == PARTITION_POLICY \
+		and simulation.model.pre_tick == pre_tick.bind(session) \
+		and simulation.model.stage_interval == evaluate.bind(session) \
+		and simulation.model.block_aux == Callable(session, "_coupled_aux") \
+		and simulation.model.step_policy_interval == advance.bind(session) and session.call("shaft_is_coupled")
 
 
 static func evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
-		context: Dictionary, piece_origin_s: float, session: Node) -> Dictionary:
+		context: Dictionary, piece_origin_s: float, piece_end_s: float, session: Node) -> Dictionary:
 	if not admission(session, session.get("aircraft").model).ok or not installed(session, session.get("aircraft").model): return {}
-	var sampled := _sample(context, at, session.get("aircraft").model, piece_origin_s)
+	var sampled := _sample(context, at, session.get("aircraft").model, piece_origin_s, piece_end_s)
 	if not sampled.ok: return {}
 	var absolute_at: float = context.time_s + (piece_origin_s + at)
 	var result: Dictionary = session.call("_coupled_response", body, continuous, absolute_at, {}, true, {}, false, sampled.aux)
@@ -122,11 +135,8 @@ static func advance(combined: PackedFloat64Array, at: float, dt: float, derivati
 	var previous_absolute := -INF
 	for event: Dictionary in result.events:
 		var local_at: float = event.time_s
-		var absolute_at: float = context.time_s + local_at
-		if local_at < 0.0 or local_at > dt or local_at < previous_local \
-			or (local_at>0.0 and absolute_at<=context.time_s) \
-			or (local_at<dt and absolute_at>=context.time_s+dt) \
-			or (local_at > previous_local and absolute_at <= previous_absolute):
+		var absolute_at: float = Step.local_event_time(context.time_s,dt,local_at,previous_local,previous_absolute)
+		if not is_finite(absolute_at):
 			return _failure("local event chronology cannot be represented on the public clock")
 		event.time_s = absolute_at
 		previous_local = local_at
@@ -149,12 +159,12 @@ static func _checked_plan(context: Dictionary, model: Dictionary) -> Dictionary:
 	return plan
 
 
-static func _sample(context: Dictionary, at: float, model: Dictionary, piece_origin_s: float = 0.0) -> Dictionary:
+static func _sample(context: Dictionary, at: float, model: Dictionary, piece_origin_s: float = 0.0, piece_end_s: float = -1.0) -> Dictionary:
 	var values: PackedFloat64Array = context.after_aux.duplicate()
 	if context.kind == "boundary": return {ok = true, aux = values}
 	var plan := _checked_plan(context, model)
 	if not plan.ok: return plan
-	var sample := Law.sample_split(plan, piece_origin_s, at)
+	var sample := Law.sample_split(plan, piece_origin_s, at, piece_end_s)
 	if sample.size() != 3: return _error("servo stage time outside interval")
 	for index: int in 3: values[index + 1] = sample[index]
 	return {ok = true, aux = values}

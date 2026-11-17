@@ -173,9 +173,15 @@ the generic transport, not the rounded servo law, case geometry, tapes, metrics,
 floors or thresholds. `joint-interval-local-v1` supplies stage/policy offsets in
 `[0, dt]` and keeps the absolute origin in the same immutable context. Reset
 stages have offset zero. The absolute-clock v1 protocol keeps its semantics.
-Every RK trial, including rotor/battery root refinements, must have distinct
+Each planned piece retains its own origin and phase: a cut immediately before
+the tick endpoint need not have a representable midpoint on the outer clock.
+The local stage callback receives that piece origin separately; a compensated
+sum samples the same rounded ramp/hold, preserving the original sampler whenever
+the query sum is exactly represented. Every RK trial, including rotor/battery root refinements, must have distinct
 represented start/midpoint/end and normal positive RK weights. Truly unresolved
 trials still refuse atomically; no epsilon cut merging or target snap is added.
+The existing event root time/value tolerances are unchanged; this is not a claim
+of exact rotor/battery event localization below those tolerances.
 
 Time-dependent generic laws can consume origin and offset separately. Adding
 them into one float cannot preserve sub-ULP phase. The aircraft adapter therefore
@@ -187,3 +193,207 @@ cannot be represented are refused, rather than relabelled simultaneous.
 
 The follow-up requires a fresh frozen source identity, strict independent verifier
 and all 68 fresh full baselines. Nothing from the failed prefix is reused as a pass.
+
+Before the first local refinement flight, the frozen candidate is
+`8c342047d1fb4f8d903d1b8280d0903d`, manifest SHA-256
+`0b5f1cd35e64307b1285774665a09e57322f948b2b9b6c1ef6a4e1f2362c6258`,
+source digest `4809f880187d7503f3dd0d10ba88870b68b7b1dae4418d97b86aaaa10d120b78`.
+Both registered case maps and all historical inputs retain their previous hashes.
+The selected map retains its original campaign label as the physical inventory's
+provenance. The verifier checks that original map label separately from the new
+measurement campaign label; neither is caller-selectable.
+The independent verifier pins this new manifest and the local campaign/protocol;
+it cannot combine or relabel the absolute-clock prefix.
+
+Local transport checks passed 29 assertions on Windows
+(`f2ecbd65f3a443cca86e07cdf155611b`) and Apple Silicon
+(`6dc021fd9bb74195945a8d933ede32fa`). They include the original one-ULP residual,
+an analytic nonautonomous integral, short initial/final pieces, exact endpoint
+identity, dynamic root refusal and subnormal RK weights. The unchanged absolute
+protocol passed 130 assertions (`df37fabc0ed04731a5070342e584d176`). Authoring v4
+passed 72 document/compile/restore checks (`a1b9bfa4770e4d478931a6fb54c23f76`),
+preserving byte-identical v1–v3 documents when no law is chosen. The full selected-law
+integration passed 142 assertions and 13 exact replay rows on Windows
+(`b7aa9c1be24e4f30a21bfd2819f14ff8`). These are component results, not G05 closure.
+
+The source replay fingerprint additionally binds `input/commands.gd` and `spec.gd`,
+which supply stage surface-angle conversion and constants outside the existing
+physics/simulation/failure source trees. The hash algorithm and identity format
+are unchanged; the extra source dependencies cannot keep the previous digest.
+
+The same selected-law integration passed 142 assertions on Apple Silicon
+(`ea303f786c2e4910bdc0cf22f2e17272`). Local C02/rudder-kick pilot
+`628a9629b38e43b9b7e35f09f0493906` passed the strict partial verifier, including
+its 1,441-row exact replay. Neither component nor partial evidence closes G05.
+
+### Complete local-clock result
+
+Request `a82526ea29a54054a984ff75b327e57f`, native attempt
+`A-33c8dd21677e48219a5c5e54fd642783`, completed all 68 cells on Windows using
+the registered `8c342047d1fb4f8d903d1b8280d0903d` source. The independent full
+verifier accepted measurement completeness, source/context identities and exact
+baseline replays, but rejected numerical convergence: 60 cells pass and eight
+fail. There are no missing cells. The runner's successful completion marker
+establishes completed measurements only; `numerical_campaign_pass=false` and
+`flight_qualified=false` remain authoritative.
+
+| Cell | Failed metric | Refinement ratio |
+| --- | --- | ---: |
+| C01/rudder_kick | charge_fraction | 0.917357579600 |
+| C02/throttle_step | rotor_rpm | 0.927326689910 |
+| C04/throttle_step | rotor_rpm | 0.795016326665 |
+| C05/throttle_step | charge_fraction | 3.02037337822 |
+| C07/roll_doublet | charge_fraction | 0.798832722175 |
+| C09/throttle_step | charge_fraction | 2.05640297818 |
+| C14/rudder_kick | charge_fraction | 2.18640305585 |
+| C16/throttle_step | charge_fraction | 1.56420172457 |
+
+All eight fail the unchanged ratio rule, outside its floor exemption. The charge
+metric compares final consumed charge, normalized by the finer run's final
+consumed charge; it is not an SOC or maximum-over-time metric. Signed charge
+differences can cancel before the final sample. This does not justify changing
+the metric, floor, threshold or required matrix. Full raw reports, float64
+samples, replay files, native receipts and independent verification are retained
+outside Git in `G:/OpenRCsimulator-clearview-scratch/servo-arrivals-local-full`.
+The finished native source/profile were relocated with SHA-256 inventories to
+`G:/OpenRCsimulator-clearview-scratch/retained-local-full-native-20261116` to
+relieve disk pressure. Junctions preserve old access paths; they do not establish
+native source-manifest equivalence, because admission rejects reparse points.
+The original frozen snapshot and the verifier's retained receipts remain intact.
+
+### Registered private forcing-partition diagnostic
+
+This diagnostic is registered before its first refinement flight. C07/roll
+contains two servo zero crossings while the global drag law contains absolute
+aileron deflections. Offline cusp-integral estimates predict the observed signed
+airspeed-difference jumps near those crossings. A separate candidate will add
+strict interior zero-crossing offsets to the local forcing partition, retaining
+all existing arrival cuts, exact trajectory/endpoint arithmetic, outer cadence,
+case maps, physical data, tapes, metrics, floors and thresholds. Three channels
+can contribute six distinct cuts; only the local composer's diagnostic bound is
+extended from three to six. The historical absolute protocol retains its bound.
+An independent triangle-and-hold integral and byte-identical trajectory checks
+passed 19 assertions on Apple Silicon (`fdc386a6abec4ddf8d6221f059b6fc17`).
+
+The first comparison is C07/roll on the same Windows engine and unchanged
+registered baseline; a different-platform comparison cannot isolate this change.
+This is a separately labelled, separately hashed private study, never a G05 pass.
+No production physics change follows without causal evidence and the complete
+unchanged qualification matrix. Positive-RPM drive/coast transitions and
+propeller-table knots are separate hypotheses for throttle cases; the zero-cut
+study does not claim to resolve them or the remaining charge failures.
+
+The private C07 candidate froze as `84117399fa01423f8b05a7377f8888e2`, manifest
+`fa57063bba286221192d08c25da05abf17b2bded3fe74114f38208b5695c52ff`.
+Windows request `719dec2b6fc54f6285c8b7c9cfca5417` completed the cell and its
+1,441-row exact replay. A private copy of the independent verifier, pinning that
+manifest, diagnostic label and exact C07 selector, accepted the partial result.
+All numerical rules and case-map pins are unchanged. The two predicted coarse
+forward-speed difference jumps decreased from `+1.913741245e-6` and
+`-4.003649696e-7` m/s to `-1.138037220e-9` and `-1.725858567e-9` m/s.
+Buffers agree bit-for-bit before the first crossing. The final charge ratio
+improved from 0.798833 to 0.432667, while absolute final charge pair differences
+increased because the original result had cancellation. Therefore the ratio
+alone does not establish a smaller charge error. This cell supports the local
+cusp mechanism, not full qualification. Its retained evidence is separate at
+`G:/OpenRCsimulator-clearview-scratch/servo-zero-c07-retained`.
+
+Before any throttle subdivision flight, register a separate C02/throttle study:
+compare the unchanged registered baseline with two and four equal local RK
+pieces per outer tick, each from a separate frozen source and campaign label.
+Retain the unchanged outer cadence, sampled downwash, physical data, tapes,
+measurement rule and strict local-clock checks. Refuse if the servo is moving
+or an arrival cut is present; this isolates electrical/body integration from
+servo forcing partitions. Inspect signed RPM/current differences near the
+authored `J=0.373` propeller knot and positive-RPM coast-to-drive transition,
+then the complete traces and exact own-source replays. This is a diagnostic
+subset; neither selected subdivisions nor a partial pass close G05.
+
+C02 two-piece request `00190f015910469c81fd5d50e2917f1a` and four-piece request
+`306bc376e0af4e67912897f30adddb89` completed with strict partial verification and
+full own-source exact replays. Their frozen snapshots are respectively
+`b41ae902acec4c628446027a27bac626` (manifest
+`be603a1c7d457b05b550beaf387e7ca28430e4f41436d77e904bcc0fad1fdd2b`)
+and `47f1301aa5c34379bc485feff1e18a49` (manifest
+`88a727b841dd7a56eaa341ae06ff04b4d6d864609319b1b9de3fc7880ab2341e`).
+Both cells pass the inherited rule; rotor ratios are 0.163564 and 0.253057.
+Near `J=0.373`, the coarse signed RPM-difference jump changes from
+`-0.001820194446` to `+0.000049676045` and `+0.000022260067` rpm. At drive
+resumption it changes from `-0.001423681357` to `+0.000683604101` and
+`-0.000363728331` rpm. Grid phase and cancellation still matter: the two-piece
+coarse maximum increases from 0.00121938 to 0.00217931 rpm. These are evidence
+of piecewise integration sensitivity, not proof of monotone accuracy improvement.
+Raw/definition, initial, engine, environment, command and edge identities agree;
+all servo axes stayed bit-identically held. Retained outputs are separate under
+`G:/OpenRCsimulator-clearview-scratch/servo-c02-pieces2-retained` and
+`servo-c02-pieces4-retained`.
+
+A separately labelled combined diagnostic is also registered before flight:
+retain zero forcing cuts and add one exact `dt * 0.5` local boundary. Keep exact
+duplicates shared, distinct cuts separate, all clock guards and the old absolute
+protocol unchanged. Three servos plus the midpoint require at most seven local
+interior cuts. The first diagnostic subset is the eight failed cells listed
+above, in that order, with unchanged definitions, tapes and measurement rules.
+It is not a new required matrix or a replacement for the complete 68 cells.
+Any accepted candidate still needs all 68 fresh baselines/replays and the other
+independent gates. This study tests a fixed integration partition; it does not
+claim exact localization of propeller knots or drive/coast transitions.
+
+The combined private source froze as `f11aa5b019764a43b9a93d11bd6354b7`,
+manifest `c3990901a0c636b9f999ac1816e4e5ffb7d69b6d0d02d7fdd51748bb33c7409b`.
+It passed 22 analytic partition assertions (`f1e4738180a74fcd9e7cdc676e596e5f`)
+and 142 selected-law integration/replay assertions
+(`5b2cb635177046798e8ae5e77d744a3c`) on Windows. The eight-cell request
+`db3d0621fdda40fe8b396f21a26e23a0` completed and its strict partial verifier
+accepted all eight inherited-rule results and full exact own-source replays.
+The private verifier pins the manifest, diagnostic campaign, selector and exact
+eight-cell order; metrics, rules and case-map identities are unchanged.
+The eight failures were used to select this diagnostic subset, so it is not
+independent qualification. Its retained `verification.json` SHA-256 is
+`303de2d0919f3303cdabbdc1202fe928342c71e351348ede51d4eda70ebc088e`
+and `partial=true`, `flight_qualified=false` remain authoritative.
+
+Before production adoption or a fresh complete candidate campaign, the partition
+policy must have an explicit runtime/checkpoint/replay identity. Historical and
+private v15 checkpoints share law/protocol/layout across different algorithms;
+an isolated v15 checkpoint cannot identify its policy. Do not infer an arrivals-only
+policy from that wrapper. A new version must reject unbound current-runtime
+restores, retain unmodified historical report reading, and keep exact historical
+replay bound to the verified matching solver/engine source. Finer-rate and repeated
+diagnostics remain separate from the unchanged complete 68-cell gate.
+
+### Explicit policy identity and complete candidate registration
+
+The current arrivals-only runtime now records `servo-arrivals-local-v1` in
+checkpoint v16 and matching trace/replay declarations. It refuses unbound v15
+restores, malformed or mismatched tokens, and replaced trajectory callbacks
+before checkpoint publication, restore commitment or tick advancement. Snapshot
+`0936861484854952a59678509b6af817` passed 258 checks on Windows
+(`958abdec7af34463bc583471a790a115`) and macOS
+(`cfb96a8ecc82426fbb2c916b3612412c`), each including a 13-row exact replay.
+The Python report/CLI suite passed 37 tests. The current reader, rebound to the
+verified historical physics sources and Windows engine, also replayed all 1,441
+rows of the retained v15 C02/throttle baseline
+(`a925a5afb2a24bdba5b82ccf6ec5647c`). Reading v15 assigns no partition policy.
+
+Before its first full refinement flight, register candidate
+`ac12-servo-zero-half-local-v1-20261116`, policy
+`servo-arrivals-zero-half-local-v1`, checkpoint v16. The frozen source is
+`c210d6369cae42e0a2b69f9a7ee1a255`, manifest SHA-256
+`fade2c3eb4cc43e7b0e5c7cb5721cd3587818664068c9d21cc579509ca15f124`.
+It retains the studied strict interior zero cuts and exact half-tick boundary,
+all arrival cuts, unchanged trajectory/endpoint arithmetic and outer wake
+cadence. The absolute-clock protocol keeps its three-cut bound; the local
+policy admits at most seven. New-law integration/replay (258), independent
+forcing integrals (22), and fixed campaign registration/order (217) checks
+passed on Windows before the full run.
+
+Run every original C01–C17 × four tapes, in the original order, at
+240/480/960 Hz for six seconds with a fresh complete 1,441-row own-source exact
+baseline per cell. Keep both preregistered case maps, all physical inputs,
+metrics, floors, tolerances and the 0.75 ratio limit unchanged. The independent
+collector must additionally require the v16 wrapper and the exact policy in
+context and replay. No diagnostic subset or recovered prefix can substitute
+for these 68 cells. Preserve every failure; this candidate is not public flight
+permission or physical validation. Its full checked-job timeout is 10,800 seconds;
+an observer timeout does not cancel or qualify the native run.

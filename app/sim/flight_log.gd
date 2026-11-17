@@ -436,6 +436,10 @@ static func _solver_identity_uncached() -> String:
 	var paths: Array[String] = []
 	for directory in ["res://physics", "res://sim", "res://failures"]:
 		_source_paths(directory, paths)
+	# These also supply stage surface angles and constants outside those trees.
+	# A mapping edit must change replay identity even with the same input tape.
+	for source in ["res://input/commands.gd", "res://spec.gd"]:
+		if FileAccess.file_exists(source):paths.append(source)
 	paths.sort()
 	var hash := HashingContext.new()
 	hash.start(HashingContext.HASH_SHA256)

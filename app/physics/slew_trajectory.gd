@@ -63,10 +63,14 @@ static func sample(plan: Dictionary, elapsed: float) -> PackedFloat64Array:
 ## A piece may be shorter than one ULP of its tick-local origin. Preserve its
 ## phase with an error-free sum; every exactly represented query retains sample().
 ## This extends the same ramp/hold to split clock queries without merging cuts.
-static func sample_split(plan: Dictionary, origin: float, phase: float) -> PackedFloat64Array:
+static func sample_split(plan: Dictionary, origin: float, phase: float, piece_end: float = -1.0) -> PackedFloat64Array:
+	if not plan.get("ok",false):return PackedFloat64Array()
+	var end: float=plan.duration if piece_end == -1.0 else piece_end
 	if not is_finite(origin) or not is_finite(phase) or origin < 0.0 or phase < 0.0 \
-		or not plan.get("ok",false) or origin > plan.duration or phase > plan.duration-origin:
+		or not is_finite(end) or origin>end or end>plan.duration or phase>end-origin:
 		return PackedFloat64Array()
+	if phase==0.0:return sample(plan,origin)
+	if phase==end-origin:return sample(plan,end)
 	var high := origin + phase
 	var virtual_phase := high - origin
 	var low := (origin - (high - virtual_phase)) + (phase - virtual_phase)
