@@ -1013,7 +1013,7 @@ func _render_velocity() -> Vector3:
 	return Frames.ned_to_render(world)
 
 
-## DR-19c: lying upside down on the ground, nearly still (no turtle mode: the pilot restarts on the pad).
+## DR-19c: lying upside down on the ground, nearly still: the HUD offers turtle mode (DR-19e) or the pad restart.
 func _upside_down() -> bool:
 	if session == null or not session.crash.is_empty():
 		return false
@@ -1183,8 +1183,8 @@ func _build_audio() -> void:
 	_audio = AudioStreamPlayer3D.new()
 	_audio.name = "Motors"
 	_audio.stream = looped
-	_audio.unit_size = 2.0
-	_audio.max_distance = 150.0
+	_audio.unit_size = QuadCrashFx.VOICE_UNIT_SIZE_M # one distance law for motors and crash voices (§19.3)
+	_audio.max_distance = QuadCrashFx.VOICE_MAX_DISTANCE_M
 	_audio.volume_db = -80.0
 	add_child(_audio)
 	_audio.play()
@@ -1193,8 +1193,8 @@ func _build_audio() -> void:
 	_rattle = AudioStreamPlayer3D.new()
 	_rattle.name = "MotorRattle"
 	_rattle.stream = looped
-	_rattle.unit_size = 2.0
-	_rattle.max_distance = 150.0
+	_rattle.unit_size = QuadCrashFx.VOICE_UNIT_SIZE_M
+	_rattle.max_distance = QuadCrashFx.VOICE_MAX_DISTANCE_M
 	_rattle.volume_db = -80.0
 	add_child(_rattle)
 	_rattle.play(0.37 * stream.get_length())
@@ -1224,7 +1224,9 @@ func _update_audio(t: Dictionary, delta: float) -> void:
 
 
 ## DR-19d: a damaged or broken prop makes the motors rattle: a detuned copy of the loop whose level follows the
-## missing prop health of the spinning props, with a slight warble. Silent while every prop is intact.
+## missing prop health of the spinning props, with a slight warble. Silent while every prop is intact. Level
+## 0.5 × sqrt(missing), at most 0.8 (DR-19e §19.3): one prop chipped to 85 % sits about 12 dB under the motors, one
+## broken prop about 4 dB under, and never above them.
 func _update_rattle(t: Dictionary) -> void:
 	if _rattle == null:
 		return
@@ -1234,7 +1236,7 @@ func _update_rattle(t: Dictionary) -> void:
 	for i in mini(health.size(), speeds.size()):
 		if absf(speeds[i]) > 0.3 * _hover_speed:
 			missing += 1.0 - clampf(health[i], 0.0, 1.0)
-	var level := clampf(missing * 0.6, 0.0, 1.0) * _audio_level
+	var level := minf(0.5 * sqrt(missing), 0.8) * _audio_level
 	_rattle.global_position = _audio.global_position
 	_rattle.stream_paused = session.paused or level < 0.02
 	if _rattle.stream_paused:

@@ -7,6 +7,10 @@ const VALID_KINDS := ["gamepad", "radio", "joystick"]
 const VALID_THROTTLE_MODES := ["stick_rate", "trigger_absolute", "radio_absolute"]
 const VALID_GLYPHS := ["auto", "xbox", "playstation", "nintendo", "generic"]
 const VALID_FLAP_ELEVATOR_MIX_OWNERS := ["simulator", "transmitter"]
+## D6-ETX-07: who applies dual rates and expo to a radio's sticks. "transmitter": the radio (EdgeTX Inputs), OpenRC
+## passes the sticks through; "simulator": the radio sends linear 100 % sticks and OpenRC applies the flown aircraft's
+## manual rates (normal / sport / full), chosen by the profile's rates switch or the Dual rates action.
+const VALID_RATES_OWNERS := ["simulator", "transmitter"]
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
@@ -204,6 +208,17 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 	return result if validate(result).ok else {}
 
 
+## D6-ETX-07: the side that shapes the sticks. A missing field keeps the established behaviour: a radio applies its
+## own rates; keyboard, gamepads and calibrated joysticks get the aircraft's rates.
+static func rates_owner(profile: Variant) -> String:
+	if typeof(profile) != TYPE_DICTIONARY:
+		return "simulator"
+	var kind := _string_field(profile, "kind")
+	if kind in ["radio", "joystick"] and _string_field(profile, "rates_owner") in VALID_RATES_OWNERS:
+		return _string_field(profile, "rates_owner")
+	return "transmitter" if kind == "radio" else "simulator"
+
+
 ## Missing or invalid ownership fails safe to the simulator's established behavior.
 static func flap_elevator_mix_owner(profile: Variant) -> String:
 	if typeof(profile) == TYPE_DICTIONARY and _string_field(profile, "kind") in ["radio", "joystick"] \
@@ -378,6 +393,14 @@ static func validate(value: Variant) -> Dictionary:
 		elif owner == "transmitter" and _string_field(value, "kind") not in ["radio", "joystick"]:
 			var error: String = "transmitter flap-to-elevator compensation requires a radio or joystick profile"
 			_append_validation_issue(errors, issues, "profile_invalid", ["flap_elevator_mix_owner"], error)
+	if value.has("rates_owner"):
+		var rates_owner_value: Variant = value.get("rates_owner")
+		if typeof(rates_owner_value) != TYPE_STRING or not VALID_RATES_OWNERS.has(rates_owner_value):
+			var error: String = "rates_owner must be simulator or transmitter"
+			_append_validation_issue(errors, issues, "profile_invalid", ["rates_owner"], error)
+		elif _string_field(value, "kind") not in ["radio", "joystick"]:
+			var error: String = "rates_owner applies only to a radio or joystick profile"
+			_append_validation_issue(errors, issues, "profile_invalid", ["rates_owner"], error)
 	var configured: Variant = value.get("configured", true)
 	if typeof(configured) != TYPE_BOOL or not configured:
 		var error: String = "unconfigured profile cannot drive flight commands"

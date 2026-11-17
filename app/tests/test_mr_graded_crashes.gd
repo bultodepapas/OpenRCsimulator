@@ -17,6 +17,8 @@ const Fixtures := preload("res://tests/mr_fixtures.gd")
 var _count := 0
 var _failures := 0
 var _wall_north := 0.0
+var _class := ""
+var _ceiling_down := 0.0
 
 
 func _check(label: String, ok: bool, detail := "") -> void:
@@ -200,20 +202,31 @@ func _class_foliage(_n: float, _e: float, _d: float) -> String:
 	return "soft_foliage_impulse"
 
 
-## A flat wall ahead (clearance = wall north − point north). Frame radius = hub distance; prop clips reach farther.
+func _class_named(_n: float, _e: float, _d: float) -> String:
+	return _class
+
+
+## A flat wall ahead (clearance = wall north − point north). The frame box's front face is the front hubs; prop clips
+## reach farther.
 func _obstacles() -> void:
 	var p := _plant()
 	p.obstacle = Callable(self, "_wall")
 	p.obstacle_class = Callable(self, "_class_hard")
-	var frame_radius: float = p._frame_radius
+	var frame_radius: float = p._frame_box_centre[0] + p._frame_box_half[0]
+	var hub_front := -INF
+	for rotor: Dictionary in p.prepared.rotors:
+		hub_front = maxf(hub_front, float(rotor.hub_frd[0]))
+	_check("the frame box's front face is the front hubs", absf(frame_radius - hub_front) < 1.0e-12)
 	var level := M.q_identity()
 	# Frame contact at 3 m/s: a bounce (restitution 0.2), pushed out of the wall, not terminal.
 	_wall_north = frame_radius - 0.01
 	var body := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(3.0, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
 	var hit: Dictionary = p._graded_impacts(body, body, _speeds(p, body, 0.0), 0.0)
-	var vn: float = hit.body[RB.VEL]
-	_check("a 3 m/s frame hit on a wall bounces back (-0.2 × 3 m/s) and is not terminal", hit.reason == "" and absf(vn + 0.6) < 0.05,
-		"v %.4f" % vn)
+	# Restitution acts at the contact point (the box face's centre, a few mm off the CG: some of the impulse pitches).
+	var contact: PackedFloat64Array = p._box_support(M.v3(-1.0, 0.0, 0.0)).point
+	var vn: float = p._closing_speed(hit.body, contact, M.v3(-1.0, 0.0, 0.0)) # negative: separating
+	_check("a 3 m/s frame hit on a wall bounces the contact point back (-0.2 × 3 m/s) and is not terminal",
+		hit.reason == "" and absf(vn + 0.6) < 0.01 and hit.body[RB.VEL] < 0.0, "v %.4f" % vn)
 	_check("the bounce leaves the frame outside the wall", _wall_north - hit.body[RB.POS] >= frame_radius - 1.0e-9)
 	_check("the bounce dissipates energy", hit.body[RB.VEL] * hit.body[RB.VEL] < 9.0)
 	# Resting against the wall (no closing speed): pushed out, but no chipped props and no impact event.
@@ -233,6 +246,14 @@ func _obstacles() -> void:
 	p.obstacle_class = Callable(self, "_class_foliage")
 	_check("the same 9 m/s into foliage bounces (foliage ends the flight from 12 m/s)",
 		p._graded_impacts(fast, fast, _speeds(p, fast, 0.0), 0.0).reason == "")
+	for kind: String in ["frangible_impulse", "light_airframe_impulse", "gate_frame"]:
+		_class = kind
+		p.obstacle_class = Callable(self, "_class_named")
+		var at_nine: String = p._graded_impacts(fast, fast, _speeds(p, fast, 0.0), 0.0).reason
+		var limit: float = float(Plant.FRAME_TERMINAL_SPEED_MPS[kind])
+		var over := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(limit + 0.5, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+		_check("9 m/s into %s bounces; %.1f m/s ends the flight" % [kind, limit + 0.5], at_nine == ""
+			and p._graded_impacts(over, over, _speeds(p, over, 0.0), 0.0).reason == "Obstacle strike")
 	p.obstacle_class = Callable(self, "_class_hard")
 	# Prop clip: the wall reaches the front prop discs but not the frame.
 	var front_reach: float = 0.0
@@ -260,6 +281,45 @@ func _obstacles() -> void:
 	p.graded_impacts = false
 	_check("strict: the 2 m/s prop clip is the original obstacle strike", p.crash_reason(clip, clip, _speeds(p, clip, hover))
 		== "Obstacle strike")
+	p.graded_impacts = true
+	_shapes(p, hover)
+
+
+## Horizontal surface above the quad (a roof or a gate's top bar wider than the quad): clearance = point down − ceiling
+## down. Box and disc shapes (v2): v1's spheres reached 7.7 cm above the body and 6.5 cm above each prop disc.
+func _ceiling(_n: float, _e: float, d: float) -> float:
+	return d - _ceiling_down
+
+
+func _shapes(p: RefCounted, hover: float) -> void:
+	p.obstacle = Callable(self, "_ceiling")
+	var level := M.q_identity()
+	var top: float = p._frame_box_centre[2] - p._frame_box_half[2] # FRD z of the hull's top point (negative: up)
+	var climbing := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(0.0, 0.0, -1.0), level, M.v3(0.0, 0.0, 0.0))
+	# 2 cm above the body's top and the prop discs: no contact (v1 bounced the frame and ground every prop).
+	_ceiling_down = -5.0 + top - 0.02
+	var clear: Dictionary = p._graded_impacts(climbing, climbing, _speeds(p, climbing, hover), 0.0)
+	_check("a roof 2 cm above the body is not touched (box, not a 10 cm sphere)", clear.reason == "" and clear.events.is_empty()
+		and clear.body == climbing, str(clear.events))
+	# 5 mm into the body's top at 1 m/s: a frame contact, pushed down below the roof, bouncing (not terminal).
+	_ceiling_down = -5.0 + top + 0.005
+	var touched: Dictionary = p._graded_impacts(climbing, climbing, _speeds(p, climbing, 0.0), 0.0)
+	_check("a roof 5 mm into the body's top is a frame contact: pushed out below it, rising no more",
+		touched.reason == "" and touched.body[RB.POS + 2] + top >= _ceiling_down - 1.0e-9 and touched.body[RB.VEL + 2] >= 0.0,
+		"%.4f %.4f" % [touched.body[RB.POS + 2] + top - _ceiling_down, touched.body[RB.VEL + 2]])
+	# Yawed 30 degrees into a wall: the leading edge takes the hit, so the bounce spins the quad (v1's sphere hit
+	# through the CG and never did).
+	p.obstacle = Callable(self, "_wall")
+	var yawed := M.q_from_euler(deg_to_rad(30.0), 0.0, 0.0)
+	var reach: float = p._box_support(M.q_rotate(M.q_conj(yawed), M.v3(-1.0, 0.0, 0.0))).extent
+	_wall_north = p._frame_box_centre[0] + reach - 0.005
+	var oblique := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(0.0, 0.0, 0.0), yawed, M.v3(0.0, 0.0, 0.0))
+	var world_v := M.q_rotate(M.q_conj(yawed), M.v3(3.0, 0.0, 0.0))
+	for k in 3:
+		oblique[RB.VEL + k] = world_v[k]
+	var spun: Dictionary = p._graded_impacts(oblique, oblique, _speeds(p, oblique, 0.0), 0.0)
+	_check("a frame edge hit on a wall spins the quad about its vertical axis", spun.reason == ""
+		and absf(spun.body[RB.RATE + 2]) > 0.5, "r %.3f rad/s" % spun.body[RB.RATE + 2])
 
 
 ## A broken prop on a motor driven at full throttle: the flight keeps running (no runaway shaft beyond the law's

@@ -13959,3 +13959,51 @@ msgstr "USB-Sender (EdgeTX): Wähle in Model setup USB Joystick (Classic) und sc
 
 msgid "Control guide: show / hide"
 msgstr "Steuerungsübersicht: ein / aus"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Dual-Rate-Schalter (simulierte Ausschläge)"
+
+msgid "Dual-rate switch"
+msgstr "Dual-Rate-Schalter"
+
+msgid "Dual rates and expo"
+msgstr "Dual Rates und Expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "Im Sender (EdgeTX Dual Rates)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Von OpenRC simuliert (Ausschläge des Modells)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC wendet keine Dual Rates und kein Expo an: Stelle sie in den Inputs des Senders ein (zum Beispiel SC 100/75/50 %, Expo 30, wie der EdgeTX-Plane-Assistent). Kalibriere mit dem Rate-Schalter auf 100 %. Der Rate-Schalter wird nicht gelesen."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC wendet die Ausschläge und das Expo aus dem Handbuch des geflogenen Modells an: Der Schalter wählt normal, Sport (Mitte) oder voll. Im Sender: Inputs Gewicht 100 %, Expo 0, keine D/R- oder Flugphasen-Zeilen, Outputs ±100 %; füge einen Mischer CH7 = SC, Gewicht 100 hinzu. Ohne Schalter schaltet die Dual-Rates-Aktion um."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "Zuständigkeit für Dual Rates geändert. Speichere das Profil, um sie zu behalten."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "Der FPV-Quad wird mit demselben Schalter scharf geschaltet (nur obere Stellung)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "Der FPV-Quad nimmt seinen Flugmodus vom selben Schalter."
+
+msgid "LOW (normal rates)"
+msgstr "UNTEN (normale Ausschläge)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Dual Rates: normal / Sport / voll"
+
+msgid "Simulated by OpenRC"
+msgstr "Von OpenRC simuliert"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "Die Dual Rates folgen dem Rate-Schalter des Senders."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Schildkrötenmodus (nach einem Absturz umdrehen): %s im entschärften Zustand, scharf schalten und den Stick zur Seite drücken, auf die gedreht werden soll; danach entschärfen, um weiterzufliegen."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "Kopfüber: Schildkrötenmodus (%s), scharf schalten und den Stick drücken, um umzudrehen, oder R für das Startfeld."

@@ -13853,3 +13853,51 @@ msgstr "Rádio USB (EdgeTX): selecione USB Joystick (Classic) em Model setup e d
 
 msgid "Control guide: show / hide"
 msgstr "Guia de controles: mostrar / ocultar"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Chave de duplo curso (cursos simulados)"
+
+msgid "Dual-rate switch"
+msgstr "Chave de duplo curso"
+
+msgid "Dual rates and expo"
+msgstr "Duplo curso e expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "No rádio (duplo curso do EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Simulado pelo OpenRC (cursos da aeronave)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "O OpenRC não aplica duplo curso nem expo: configure-os nas Inputs do rádio (por exemplo SC 100/75/50 %, expo 30, como faz o assistente Plane do EdgeTX). Calibre com a chave de curso em 100 %. A chave de curso não é lida."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "O OpenRC aplica os cursos e o expo do manual da aeronave pilotada: a chave escolhe normal, sport (meio) ou máximo. No rádio: Inputs com peso 100 %, expo 0, sem linhas de D/R ou modos de voo, Outputs ±100 %; adicione uma mixagem CH7 = SC, peso 100. Sem chave, a ação de duplo curso alterna."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "Mudou quem aplica o duplo curso. Salve o perfil para mantê-lo."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "O quadricóptero FPV arma com a mesma chave (só na posição alta)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "O quadricóptero FPV usa a mesma chave para o modo de voo."
+
+msgid "LOW (normal rates)"
+msgstr "BAIXO (curso normal)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Duplo curso: normal / sport / máximo"
+
+msgid "Simulated by OpenRC"
+msgstr "Simulado pelo OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "O duplo curso segue a chave do rádio."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Modo tartaruga (desvirar após uma queda): %s desarmado, arme e empurre o stick para o lado para onde quer virar; depois desarme para seguir voando."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "De cabeça para baixo: modo tartaruga (%s), arme e empurre o stick para desvirar, ou R para voltar à plataforma."

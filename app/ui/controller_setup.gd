@@ -59,9 +59,9 @@ const PROFILE_KIND_CHOICES: Array[Dictionary] = [
 ]
 const CHANNELS: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 const CHANNEL_LABELS: Dictionary = {"roll": "Roll", "pitch": "Pitch", "yaw": "Yaw", "throttle": "Throttle"}
-const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear", "arm", "flight_mode"]
+const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear", "rates", "arm", "flight_mode"]
 const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear",
-	"arm": "Arm (FPV quad)", "flight_mode": "Flight mode (FPV quad)"}
+	"rates": "Dual-rate switch (simulated rates)", "arm": "Arm (FPV quad)", "flight_mode": "Flight mode (FPV quad)"}
 const AUX_LEGACY_ARM_HINT := "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 ## UI-15-UX-03: full-screen workspace (menu-redesign safe inset at 1080p); beyond SPAN the text column stops growing.
 const WORKSPACE_INSET := 48.0
@@ -104,6 +104,9 @@ var axis_grid: GridContainer
 var aux_grid: VBoxContainer
 var aux_help_label: Label
 var flap_mix_owner_picker: OptionButton
+## D6-ETX-07: who applies dual rates and expo to a radio (EdgeTX natively, or OpenRC from the aircraft's rates).
+var rates_owner_picker: OptionButton
+var rates_owner_help: Label
 var action_grid: GridContainer
 var preview_label: Label
 var status_label: Label
@@ -1267,6 +1270,17 @@ func _build() -> void:
 			var mix_help := _label("Simulator compensation follows actual flap position. Choose Transmitter when your radio already adds flap-to-elevator compensation; the simulator will not add its own.", "SecondaryLabel", true)
 			mix_help.name = "FlapElevatorMixHelp"
 			channel_block.add_child(mix_help)
+		if aux_name == "rates":
+			rates_owner_picker = _option("Dual rates and expo")
+			rates_owner_picker.name = "RatesOwner"
+			rates_owner_picker.add_item(tr("On the radio (EdgeTX dual rates)"), 0)
+			rates_owner_picker.add_item(tr("Simulated by OpenRC (aircraft rates)"), 1)
+			rates_owner_picker.item_selected.connect(_on_rates_owner_selected)
+			var rates_label := _add_control_field(channel_block, "Dual rates and expo", rates_owner_picker)
+			_register_validation_field("rates_owner", "aux", rates_owner_picker, [rates_label], "Dual rates and expo")
+			rates_owner_help = _label("", "SecondaryLabel", true)
+			rates_owner_help.name = "RatesOwnerHelp"
+			channel_block.add_child(rates_owner_help)
 		if aux_name == "arm":
 			aux_legacy_arm_hint = _label(AUX_LEGACY_ARM_HINT, "SecondaryLabel", true)
 			aux_legacy_arm_hint.name = "AuxLegacyArmHint"
@@ -2613,6 +2627,8 @@ func _on_profile_kind_selected(index: int) -> void:
 			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 	if selected_kind in ["radio", "joystick"] and str(_draft_profile.get("kind", "")) in ["radio", "joystick"]:
 		replacement["flap_elevator_mix_owner"] = ControllerProfile.flap_elevator_mix_owner(_draft_profile)
+		if _draft_profile.has("rates_owner"):
+			replacement["rates_owner"] = ControllerProfile.rates_owner(_draft_profile)
 	var entered_name := profile_name_edit.text.strip_edges()
 	if not entered_name.is_empty() and entered_name != str(_draft_profile.get("name", "")):
 		replacement["name"] = entered_name
@@ -2727,7 +2743,7 @@ func _apply_preset(preset: String) -> void:
 		if custom.is_empty():
 			_set_status(tr("Could not restore the selected radio profile."), true)
 			return
-		for key in ["profile_id", "name", "association", "actions", "presentation", "aux", "flap_elevator_mix_owner"]:
+		for key in ["profile_id", "name", "association", "actions", "presentation", "aux", "flap_elevator_mix_owner", "rates_owner"]:
 			if _draft_profile.has(key):
 				custom[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 		custom["preset"] = "radio_custom"
@@ -2769,7 +2785,7 @@ func _apply_edgetx_preset(preset_id: String) -> void:
 		_set_status(tr("The EdgeTX airplane preset is available only for a radio.") if airplane \
 			else tr("The EdgeTX FPV preset is available only for a radio."), true)
 		return
-	for key in ["profile_id", "name", "association", "presentation", "flap_elevator_mix_owner"]:
+	for key in ["profile_id", "name", "association", "presentation", "flap_elevator_mix_owner", "rates_owner"]:
 		if _draft_profile.has(key):
 			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 	var aux_value: Variant = _draft_profile.get("aux", {})
@@ -2812,7 +2828,7 @@ func _apply_jeti_mode2_preset() -> void:
 	if replacement.is_empty():
 		_set_status(tr("Could not restore the JETI Mode 2 preset."), true)
 		return
-	for key in ["profile_id", "name", "association", "presentation", "aux", "flap_elevator_mix_owner"]:
+	for key in ["profile_id", "name", "association", "presentation", "aux", "flap_elevator_mix_owner", "rates_owner"]:
 		if _draft_profile.has(key):
 			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 	var actions_value: Variant = _draft_profile.get("actions", {})
@@ -2889,6 +2905,11 @@ func _update_aux_controls() -> void:
 		return
 	flap_mix_owner_picker.select(1 if ControllerProfile.flap_elevator_mix_owner(_draft_profile) == "transmitter" else 0)
 	flap_mix_owner_picker.disabled = str(_draft_profile.get("kind", "")) not in ["radio", "joystick"]
+	if rates_owner_picker != null:
+		var simulated := ControllerProfile.rates_owner(_draft_profile) == "simulator"
+		rates_owner_picker.select(1 if simulated else 0)
+		rates_owner_picker.disabled = str(_draft_profile.get("kind", "")) not in ["radio", "joystick"]
+		rates_owner_help.text = tr(RATES_SIMULATED_HELP if simulated else RATES_RADIO_HELP)
 	var aux_value: Variant = _draft_profile.get("aux", {})
 	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
 	aux_legacy_arm_hint.visible = _legacy_gear_arms_quad()
@@ -2985,6 +3006,22 @@ func _legacy_gear_arms_quad() -> bool:
 	var gear: Variant = aux_value.get("gear", {})
 	var arm: Variant = aux_value.get("arm", {})
 	return gear is Dictionary and not gear.is_empty() and not (arm is Dictionary and not arm.is_empty())
+
+
+## D6-ETX-07: the pilot's checklist for each rates owner (docs/research/radio-input/D6-ETX-01).
+const RATES_RADIO_HELP := "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+const RATES_SIMULATED_HELP := "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+
+
+func _on_rates_owner_selected(index: int) -> void:
+	if _draft_profile.is_empty() or str(_draft_profile.get("kind", "")) not in ["radio", "joystick"] \
+			or index < 0 or index >= rates_owner_picker.item_count:
+		_update_aux_controls()
+		return
+	_draft_profile["rates_owner"] = "simulator" if rates_owner_picker.get_item_id(index) == 1 else "transmitter"
+	_set_status(tr("Dual rates owner changed. Save the profile to keep it."), false)
+	_update_aux_controls()
+	_refresh_validation_feedback()
 
 
 func _on_flap_mix_owner_selected(index: int) -> void:
@@ -5162,7 +5199,7 @@ func start_capture_for(target_id: String) -> bool:
 				# control moves, an axis switch (OFF→ON→OFF endpoints) or a button pressed after OFF. Other profiles keep
 				# their typed Extra channel captures.
 				if str(_draft_profile.get("kind", "")) != "radio" or not _aux_detect_buttons.has(aux_name) \
-						or str(_draft_profile.get("preset", "")) != ControllerProfile.EDGETX_AIRPLANE_PRESET:
+						or str(_draft_profile.get("preset", "")) not in EdgeTxRadio.PRESETS:
 					return false
 				_start_aux_axis_capture(aux_name, _aux_detect_buttons[aux_name])
 				_aux_auto_capture = _capturing_aux_axis == aux_name
@@ -5422,7 +5459,7 @@ func _draft_aux(aux_name: String) -> Dictionary:
 ## is where the OpenRC layout puts that function on a raw Classic joystick (axis N = CH N+1, button N = CH N+9), and
 ## let a flaps binding snap to the aircraft's detents. Presentation and opt-in snapping only.
 func _decorate_edgetx_aux(aux_name: String, binding: Dictionary) -> void:
-	if str(_draft_profile.get("preset", "")) != ControllerProfile.EDGETX_AIRPLANE_PRESET:
+	if str(_draft_profile.get("preset", "")) not in EdgeTxRadio.PRESETS:
 		return
 	var entry := EdgeTxRadio.layout_entry("aux:" + aux_name)
 	if not entry.is_empty() and EdgeTxRadio.classic_channel(binding) == int(entry.channel):
@@ -5430,6 +5467,32 @@ func _decorate_edgetx_aux(aux_name: String, binding: Dictionary) -> void:
 		binding["label"] = str(entry.switch)
 	if aux_name == "flaps":
 		binding["detents"] = "aircraft"
+
+
+## D6-ETX-06: one EdgeTX profile serves the airplane and the FPV quad. A learned gear/flaps axis also becomes the
+## quad's arm/flight-mode axis when that quad channel is unbound, with the quad's own endpoints (never the airplane's).
+## Returns whether it was added to `aux` (the candidate's AUX dictionary).
+func _share_with_quad(aux_name: String, binding: Dictionary, aux: Dictionary) -> bool:
+	if str(_draft_profile.get("preset", "")) not in EdgeTxRadio.PRESETS or str(binding.get("type", "")) != "axis" \
+			or not EdgeTxRadio.QUAD_SHARED_AUX.has(aux_name):
+		return false
+	var shared: Dictionary = EdgeTxRadio.QUAD_SHARED_AUX[aux_name]
+	var quad_aux := str(shared.aux)
+	if aux.has(quad_aux) and aux[quad_aux] is Dictionary and not (aux[quad_aux] as Dictionary).is_empty():
+		# A quad binding that this switch check derived earlier (the previous gear/flaps axis, the quad's own
+		# endpoints) follows the re-learned switch; any other quad binding is the pilot's and is never moved.
+		var previous := _draft_aux(aux_name)
+		var existing: Dictionary = aux[quad_aux]
+		var derived := str(previous.get("type", "")) == "axis" and str(existing.get("type", "")) == "axis" \
+			and int(existing.get("axis", -1)) == int(previous.get("axis", -2)) \
+			and float(existing.get("off", 9.0)) == float(shared.off) and float(existing.get("on", 9.0)) == float(shared.on)
+		if not derived or int(existing.axis) == int(binding.axis):
+			return false
+	var quad_binding := {"type": "axis", "axis": int(binding.axis), "invert": false, "off": float(shared.off), "on": float(shared.on)}
+	if binding.has("channel"):
+		quad_binding["channel"] = int(binding.channel)
+	aux[quad_aux] = quad_binding
+	return true
 
 
 ## Switch check: a radio button pressed after OFF becomes the AUX channel's level button (ON while pressed).
@@ -5477,9 +5540,13 @@ func _accept_aux_axis_binding(learned: Dictionary) -> void:
 	var aux: Dictionary = (candidate.get("aux", {}) as Dictionary).duplicate(true) if candidate.get("aux", {}) is Dictionary else {}
 	aux[aux_name] = binding
 	candidate["aux"] = aux
+	var quad_shared := _share_with_quad(aux_name, binding, aux)
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate, action_capabilities)
 	var caption := _target_caption("aux:" + aux_name)
 	var success := tr("%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it.") % [caption, int(binding.axis), off, on]
+	if quad_shared:
+		success += " " + (tr("The FPV quad arms from the same switch (high end only).") if aux_name == "gear" \
+			else tr("The FPV quad takes its flight mode from the same switch."))
 	_end_capture_state()
 	if bool(validation.get("ok", false)):
 		_commit_candidate_profile(candidate)

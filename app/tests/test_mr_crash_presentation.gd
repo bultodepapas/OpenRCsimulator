@@ -29,6 +29,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_pacing()
+	_mix()
 	await _activity()
 	_camera()
 	print("crash presentation: %d checks, %d failed" % [_count, _failures])
@@ -52,6 +53,28 @@ func _pacing() -> void:
 	_check("touches are paced and the pause freezes the pacing clock", cooled and fx._touch_cooldown == 0.0)
 	fx.reset()
 	_check("a pad restart forgets the presented damage", fx._bands.is_empty() and not fx._crashed)
+	fx.free()
+
+
+## DR-19e (§19.3): the touch curve rises with impact speed and saturates at FULL_TOUCH_SPEED_MPS, and the kit's
+## voices take the quad motor loop's distance law (the crash-to-motor balance does not change with the view).
+func _mix() -> void:
+	var s3 := Fx.touch_strength(3.0)
+	var s6 := Fx.touch_strength(6.0)
+	_check("the touch curve: (v / 12)^0.6, floored at 0.05 and saturated at 1", absf(s3 - pow(0.25, 0.6)) < 1.0e-12
+		and s6 > s3 and Fx.touch_strength(12.0) == 1.0 and Fx.touch_strength(30.0) == 1.0 and Fx.touch_strength(0.0) == 0.05)
+	var fx: Node3D = Fx.new()
+	fx.enable_effects = false
+	root.add_child(fx)
+	fx.impact({surface = "ground", normal_speed_mps = 4.0, point_ned = PackedFloat64Array([0.0, 0.0, 0.0])}, Vector3.ZERO)
+	var voices := 0
+	var matched := 0
+	for voice in fx.audio.get_children():
+		if voice is AudioStreamPlayer3D:
+			voices += 1
+			if voice.unit_size == Fx.VOICE_UNIT_SIZE_M and voice.max_distance == Fx.VOICE_MAX_DISTANCE_M:
+				matched += 1
+	_check("every crash voice uses the motor loop's distance law (2 m unit size)", voices > 0 and matched == voices, "%d/%d" % [matched, voices])
 	fx.free()
 
 

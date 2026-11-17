@@ -14,8 +14,18 @@ const Frames := preload("res://render/frames.gd")
 const TOUCH_INTERVAL_S := 0.12
 ## A prop's damage band for pacing: intact, damaged, badly damaged, broken.
 const BAND_LIMITS := [1.0, 0.75, 0.0]
-## Impact speed (m/s along the normal) that maps to a full-strength touch.
+## Impact speed (m/s along the normal) that maps to a full-strength touch, and the curve exponent. Measured against
+## the motor loop at hover (max 50 ms RMS, FPV listener; docs/plans/drone-racing.md §19.3): a 3 m/s touchdown sits
+## about 10 dB under the motors, 6 m/s about 5 dB under, and 12 m/s level with them (a linear map left everything
+## under 5 m/s buried 10 to 20 dB under the motors).
 const FULL_TOUCH_SPEED_MPS := 12.0
+const TOUCH_EXPONENT := 0.6
+## Strength of the blade-chip tick of a damaged (not yet broken) prop: about 8 dB under the motors.
+const CHIP_STRENGTH := 0.7
+## The kit's voices take the motor loop's distance law (unit size and range of the quad's motor player), so the crash
+## to motor balance is the same in FPV and from a ground view; the shared kit's 20 m unit suits a full-size airframe.
+const VOICE_UNIT_SIZE_M := 2.0
+const VOICE_MAX_DISTANCE_M := 150.0
 ## Terminal crash speed (m/s) that maps to the top of the shared outcome ladder.
 const FULL_CRASH_SPEED_MPS := 20.0
 
@@ -50,6 +60,10 @@ func _ensure() -> void:
 		audio.name = "QuadImpactAudio"
 		add_child(audio)
 		audio.setup()
+		for voice in audio.get_children():
+			if voice is AudioStreamPlayer3D:
+				voice.unit_size = VOICE_UNIT_SIZE_M
+				voice.max_distance = VOICE_MAX_DISTANCE_M
 
 
 ## A survivable impact event ({surface, normal_speed_mps, point_ned}); `velocity` is the quad's render velocity.
@@ -59,7 +73,7 @@ func impact(event: Dictionary, velocity: Vector3) -> void:
 	_ensure()
 	_touch_cooldown = TOUCH_INTERVAL_S
 	var point := _render_point(event)
-	var strength := clampf(float(event.get("normal_speed_mps", 0.0)) / FULL_TOUCH_SPEED_MPS, 0.05, 1.0)
+	var strength := touch_strength(float(event.get("normal_speed_mps", 0.0)))
 	var on_ground := str(event.get("surface", "")) == "ground"
 	var sliding := Vector2(velocity.x, velocity.z).length() > 2.0
 	if audio != null:
@@ -83,7 +97,7 @@ func prop_damage(event: Dictionary, velocity: Vector3) -> void:
 		if band >= BAND_LIMITS.size():
 			audio.prop_strike(point)
 		else:
-			audio.touch(point, 0.35, true, "hard")
+			audio.touch(point, CHIP_STRENGTH, true, "hard")
 	if effects != null and band >= 2:
 		_at_ground(point, func(local: Vector3) -> void: effects.prop_break(local, velocity, "grass"))
 
@@ -130,6 +144,11 @@ func reset() -> void:
 
 
 ## Damage band of a prop health (0 intact, 1 damaged, 2 badly damaged, 3 broken).
+## Touch strength [0.05, 1] of an impact speed (m/s along the normal).
+static func touch_strength(speed_mps: float) -> float:
+	return clampf(pow(maxf(speed_mps, 0.0) / FULL_TOUCH_SPEED_MPS, TOUCH_EXPONENT), 0.05, 1.0)
+
+
 static func band_of(health: float) -> int:
 	if health <= 0.0:
 		return 3

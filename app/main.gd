@@ -503,6 +503,7 @@ var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 const ProfileSmoke := preload("res://render/smoke/smoke_system.gd")
 const StockSmoke := preload("res://render/smoke/stock_profile.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 var _profile_smoke: Node3D
 var _stock_smoke_profile := false
@@ -1957,7 +1958,9 @@ func controller_action(action: String) -> bool:
 		"rates_toggle":
 			if session.toggle_rate_profile():
 				_note = tr(session.rate_profile_label())
-			elif session.radio.connected and session.radio.profile.get("kind", "radio") == "radio":
+			elif session.rate_profile_available() and session.radio.has_rate_switch():
+				_note = tr("Dual rates follow the radio's rate switch.")
+			elif session.radio.connected and ControllerProfile.rates_owner(session.radio.profile) == "transmitter":
 				_note = tr("The radio sets its own rates.")
 			else:
 				_note = tr("This aircraft has no rate profile.")
@@ -2470,7 +2473,9 @@ func _aux_waiting_for_off() -> Dictionary:
 	var aux: Variant = session.radio.profile.get("aux", {})
 	if not aux is Dictionary:
 		return waiting
-	for channel: String in ["gear", "flaps", "smoke"]:
+	for channel: String in ["gear", "flaps", "smoke", "rates"]:
+		if channel == "rates" and not (session.rate_profile_available() and session.radio.has_rate_switch()):
+			continue # an inert rate switch (radio-owned rates) never waits for OFF
 		var binding: Variant = (aux as Dictionary).get(channel, {})
 		if binding is Dictionary and not (binding as Dictionary).is_empty():
 			waiting[channel] = not session.radio.auxiliary_request_valid(channel)

@@ -13065,3 +13065,51 @@ msgstr "USB 送信機（EdgeTX）：Model setup で USB Joystick (Classic) を�
 
 msgid "Control guide: show / hide"
 msgstr "操作ガイド：表示 / 非表示"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "デュアルレートスイッチ（シミュレーター側レート）"
+
+msgid "Dual-rate switch"
+msgstr "デュアルレートスイッチ"
+
+msgid "Dual rates and expo"
+msgstr "デュアルレートとエクスポ"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "送信機側（EdgeTX のデュアルレート）"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "OpenRC がシミュレート（機体のレート）"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC はデュアルレートもエクスポも適用しません：送信機の Inputs で設定してください（例：SC 100/75/50 %、エクスポ 30。EdgeTX の Plane ウィザードと同じ）。レートスイッチを 100 % にしてキャリブレーションします。レートスイッチは読み取りません。"
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC は飛行中の機体マニュアルのレートとエクスポを適用します：スイッチで通常、スポーツ（中央）、フルを選びます。送信機側：Inputs のウェイト 100 %、エクスポ 0、D/R やフライトモードの行なし、Outputs ±100 %。ミックス CH7 = SC、ウェイト 100 を追加します。スイッチがない場合はデュアルレート操作で切り替えます。"
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "デュアルレートの適用先を変更しました。保持するにはプロファイルを保存してください。"
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "FPV クアッドは同じスイッチでアームします（上端のみ）。"
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "FPV クアッドは同じスイッチでフライトモードを切り替えます。"
+
+msgid "LOW (normal rates)"
+msgstr "下（通常レート）"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "デュアルレート：通常 / スポーツ / フル"
+
+msgid "Simulated by OpenRC"
+msgstr "OpenRC がシミュレート"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "デュアルレートは送信機のレートスイッチに従います。"
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "タートルモード（墜落後に起き上がる）：ディスアーム中に %s、アームして起こしたい側へスティックを倒し、その後ディスアームすれば飛行を続けられます。"
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "逆さま：タートルモード（%s）、アームしてスティックを倒すと起き上がります。R でパッドに戻ります。"

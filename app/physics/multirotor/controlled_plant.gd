@@ -142,7 +142,10 @@ var _k_h := 0.0
 var graded_impacts := false
 var obstacle_class: Callable = Callable()
 var _hover_speed := 0.0
-var _frame_radius := 0.0
+## DR-19e (§19.4): the frame's collision box (FRD, from the CG): x/y across the motor hubs, z from the hull's top point
+## to the feet (the declared contact geometry, the same the ground sees). Centre and half extents.
+var _frame_box_centre := PackedFloat64Array([0.0, 0.0, 0.0])
+var _frame_box_half := PackedFloat64Array([0.0, 0.0, 0.0])
 
 
 ## {ok, errors, plant}. `data` is a prepared multirotor document (physics/multirotor_data.gd), `rates_profile` an
@@ -184,10 +187,10 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 		reach_y = maxf(reach_y, absf(rotor.hub_frd[1]))
 		rotor_inertia += float(rotor.inertia_kg_m2)
 		plant._body_radius = maxf(plant._body_radius, M.norm(rotor.hub_frd) + 0.5 * float(rotor.diameter_m))
-		plant._frame_radius = maxf(plant._frame_radius, M.norm(rotor.hub_frd))
 		plant._rotor_laws.append({thrust_coefficient_n_s2 = k_t,
 			torque_coefficient_n_m_s2 = float(data.rotor_law.torque_coefficient_n_m_s2),
 			rotor_drag_n_s2_per_m = float(data.rotor_law.rotor_drag_n_s2_per_m), inertia_kg_m2 = float(rotor.inertia_kg_m2)})
+	plant._prepare_frame_box()
 	var allocator: Dictionary = Allocator.prepare(data.rotors, PackedFloat64Array([kappa, kappa, kappa, kappa]),
 		PackedFloat64Array([4.0 * top_thrust, 2.0 * top_thrust * reach_y, 2.0 * top_thrust * reach_x, 2.0 * top_thrust * kappa]),
 		data.controller.allocator_weights)
@@ -812,7 +815,9 @@ func _disc_ground_hit(i: int, position: PackedFloat64Array, attitude: PackedFloa
 ## damage data: severity is the closing speed along the contact normal at the contact point; the frame and the props
 ## are told apart; most contacts bounce or wear the props and the flight goes on, and only the hardest impacts end it.
 const IMPACT_STRICT := "multirotor-strict-impact-v1"
-const IMPACT_GRADED := "multirotor-graded-impact-v1"
+## v2 (DR-19e §19.4): the frame is a box and each spinning prop a thin disc (v1: spheres of the hub and prop radii,
+## which reached 7.7 cm above and below the 4.9 cm body and 6.5 cm above and below each prop disc).
+const IMPACT_GRADED := "multirotor-graded-impact-v2"
 ## A ground touchdown faster than this multiple of contacts.crash_speed ends the flight ("Hard impact").
 const HARD_IMPACT_FACTOR := 3.0
 ## Prop health lost per accepted tick while a spinning prop is in contact, at the hover shaft speed (scales with speed).
@@ -842,16 +847,70 @@ const BROKEN_PROP_LOAD := 0.3
 const IMPACT_EVENT_SPEED_MPS := 0.5
 ## A spinning prop that strikes an obstacle faster than this (m/s along the normal) breaks.
 const PROP_BREAK_SPEED_MPS := 6.0
-## Frame impact speed (m/s along the normal) that ends the flight, by the obstacle's response class.
-const FRAME_TERMINAL_SPEED_MPS := {"soft_foliage_impulse": 12.0, "gate_frame": 10.0}
+## Frame impact speed (m/s along the normal) that ends the flight, by the obstacle's response class (declared
+## gameplay estimates, ordered by how much the obstacle gives way): foliage and people 12, a foam parked airplane 11,
+## frangible stakes, lamps, bales and gate fabric 10, and buildings, trunks, benches or an unknown class 8.
+const FRAME_TERMINAL_SPEED_MPS := {"soft_foliage_impulse": 12.0, "light_airframe_impulse": 11.0,
+	"frangible_impulse": 10.0, "gate_frame": 10.0, "hard_terminal": 8.0}
 const FRAME_TERMINAL_DEFAULT_MPS := 8.0
-## Bounce classes of the shared scenery response (restitution 0.35 for foliage, 0.20 otherwise; the touchdown uses the
-## same 0.20 class, the nearest shared value to TOUCHDOWN_RESTITUTION).
+## Bounce classes of the shared scenery response (restitution 0.35 for foliage, 0.25 for a parked airframe, 0.20
+## otherwise; the touchdown uses the 0.20 class, the nearest shared value to TOUCHDOWN_RESTITUTION).
 const FOLIAGE_RESPONSE := "soft_foliage_impulse"
+const AIRFRAME_RESPONSE := "light_airframe_impulse"
 const SOLID_RESPONSE := "frangible_impulse"
 const TOUCHDOWN_RESPONSE := "frangible_impulse"
 ## Step (m) of the central differences that give an obstacle's surface normal from its clearance field.
 const OBSTACLE_NORMAL_STEP_M := 0.005
+## DR-19e: half thickness (m) of a spinning prop disc (blade pitch envelope; the model's blades span 5 mm).
+const PROP_DISC_HALF_THICKNESS_M := 0.003
+## Normal component (body axes) below which a box contact point blends from an edge to the face centre, so a face that
+## is nearly parallel to the surface does not jump between its edges.
+const BOX_EDGE_BLEND := 0.05
+
+
+## The frame box from the hubs (x, y) and the hull and feet heights (z).
+func _prepare_frame_box() -> void:
+	var low := PackedFloat64Array([INF, INF, INF])
+	var high := PackedFloat64Array([-INF, -INF, -INF])
+	for rotor: Dictionary in prepared.rotors:
+		for k in 2:
+			low[k] = minf(low[k], float(rotor.hub_frd[k]))
+			high[k] = maxf(high[k], float(rotor.hub_frd[k]))
+	var contacts: Dictionary = prepared.get("contacts", {})
+	for key: String in ["hull_frd", "feet_frd"]:
+		for point in contacts.get(key, []):
+			low[2] = minf(low[2], float(point[2]))
+			high[2] = maxf(high[2], float(point[2]))
+	for k in 3:
+		if not (is_finite(low[k]) and is_finite(high[k])):
+			low[k] = 0.0
+			high[k] = 0.0
+		_frame_box_centre[k] = 0.5 * (low[k] + high[k])
+		_frame_box_half[k] = 0.5 * (high[k] - low[k])
+
+
+## Support (m) of the frame box along the body-axes unit normal `nb` (its extent from the box centre toward -nb), and
+## the body point (FRD from the CG) that touches a surface with that outward normal.
+func _box_support(nb: PackedFloat64Array) -> Dictionary:
+	var extent := 0.0
+	var point := _frame_box_centre.duplicate()
+	for k in 3:
+		extent += _frame_box_half[k] * absf(nb[k])
+		point[k] -= _frame_box_half[k] * clampf(nb[k] / BOX_EDGE_BLEND, -1.0, 1.0)
+	return {extent = extent, point = point}
+
+
+## Support (m) of a thin prop disc (radius, unit axis, half thickness) along the body-axes unit normal `nb`, and the
+## touching point relative to the hub.
+static func _disc_support(nb: PackedFloat64Array, axis: PackedFloat64Array, radius: float) -> Dictionary:
+	var along := M.dot(nb, axis)
+	var in_plane := M.sub(nb, M.scale(axis, along))
+	var spread := M.norm(in_plane)
+	var extent := radius * spread + PROP_DISC_HALF_THICKNESS_M * absf(along)
+	var point := M.scale(axis, -PROP_DISC_HALF_THICKNESS_M * signf(along))
+	if spread > 1.0e-9:
+		point = M.sub(point, M.scale(in_plane, radius / spread))
+	return {extent = extent, point = point}
 
 
 ## The graded law at an accepted endpoint: {reason ("" unless terminal), body (bounced and pushed out of obstacles),
@@ -868,21 +927,27 @@ func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array
 	return out
 
 
-## Frame (the sphere through the motor hubs) against an obstacle: the endpoint, else the tick's midpoint (a thin solid
-## crossed within the tick).
+## Frame (the box over the hubs, hull top and feet) against an obstacle: the endpoint, else the tick's midpoint (a thin
+## solid crossed within the tick). The obstacle is judged by its clearance and normal at the box centre (exact for a
+## wall, roof or bar wider than the box; never wider than a sphere around the box for a thinner one).
 func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
 	var body: PackedFloat64Array = out.body
+	var attitude := RB._att(body)
+	var offset := M.q_rotate(attitude, _frame_box_centre)
 	for fraction: float in [1.0, 0.5]:
 		var centre := PackedFloat64Array()
 		for k in 3:
-			centre.append(lerpf(previous_body[RB.POS + k], body[RB.POS + k], fraction))
+			centre.append(lerpf(previous_body[RB.POS + k], body[RB.POS + k], fraction) + offset[k])
 		var clearance: Variant = obstacle.call(centre[0], centre[1], centre[2])
-		if typeof(clearance) != TYPE_FLOAT or float(clearance) > _frame_radius:
+		if typeof(clearance) != TYPE_FLOAT or float(clearance) > M.norm(_frame_box_half):
 			continue
 		var normal := _obstacle_normal(centre)
+		var support := _box_support(M.q_rotate(M.q_conj(attitude), normal))
+		var depth: float = float(support.extent) - float(clearance)
+		if depth < 0.0:
+			continue
 		var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
-		var attitude := RB._att(body)
-		var contact_body := M.q_rotate(M.q_conj(attitude), M.scale(normal, -_frame_radius))
+		var contact_body: PackedFloat64Array = support.point
 		var speed := _closing_speed(body, contact_body, normal)
 		if speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS)):
 			out.reason = "Obstacle strike"
@@ -890,17 +955,18 @@ func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, 
 		# Survivable: back to this contact position, out of the solid, then a bounded bounce; the nearest props chip.
 		var moved := body.duplicate()
 		for k in 3:
-			moved[RB.POS + k] = centre[k] + normal[k] * maxf(0.0, _frame_radius - float(clearance))
-		out.body = _bounce(moved, contact_body, normal, speed, FOLIAGE_RESPONSE if kind == FOLIAGE_RESPONSE else SOLID_RESPONSE)
+			moved[RB.POS + k] = centre[k] - offset[k] + normal[k] * depth
+		out.body = _bounce(moved, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE)
 		if speed > IMPACT_EVENT_SPEED_MPS:
 			_chip_nearest(out, contact_body, t, "frame")
 			out.events.append({type = "impact", time_s = t, surface = kind if not kind.is_empty() else "obstacle",
-				part = "frame", normal_speed_mps = speed, point_ned = M.sub(centre, M.scale(normal, _frame_radius))})
+				part = "frame", normal_speed_mps = speed, point_ned = M.sub(centre, M.scale(normal, float(support.extent)))})
 		return
 
 
-## Spinning prop discs (spheres of the prop radius at their hubs) against obstacles, all judged on the same pose: each
-## touching prop wears, or breaks above PROP_BREAK_SPEED_MPS; then one push-out and one bounce at the deepest contact.
+## Spinning prop discs (thin discs of the prop radius at their hubs, judged by the clearance and normal at the hub)
+## against obstacles, all judged on the same pose: each touching prop wears, or breaks above PROP_BREAK_SPEED_MPS; then
+## one push-out and one bounce at the deepest contact.
 func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	var body: PackedFloat64Array = out.body
@@ -916,13 +982,16 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 		if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius:
 			continue
 		var normal := _obstacle_normal(hub)
-		var contact_body := M.add(rotor.hub_frd, M.q_rotate(M.q_conj(attitude), M.scale(normal, -radius)))
+		var support := _disc_support(M.q_rotate(M.q_conj(attitude), normal), M.v3(0.0, 0.0, -1.0), radius) # the admitted thrust axis
+		var depth: float = float(support.extent) - float(clearance)
+		if depth < 0.0:
+			continue
+		var contact_body := M.add(rotor.hub_frd, support.point)
 		var speed := _closing_speed(body, contact_body, normal)
 		if speed > PROP_BREAK_SPEED_MPS:
 			_set_health(out, i, 0.0, t, "obstacle")
 		else:
 			_wear(out, i, t, "obstacle")
-		var depth := radius - float(clearance)
 		if deepest.is_empty() or depth > float(deepest.depth):
 			deepest = {depth = depth, normal = normal, contact = contact_body, speed = speed}
 	if deepest.is_empty():

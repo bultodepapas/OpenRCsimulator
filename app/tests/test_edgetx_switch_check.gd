@@ -108,10 +108,16 @@ func _run() -> void:
 	var gear: Dictionary = setup.current_profile().get("aux", {}).get("gear", {})
 	_check("gear: axis 4 named CH5 · SD, OFF measured low", int(gear.get("axis", -1)) == 4 and int(gear.get("channel", 0)) == 5
 		and str(gear.get("label", "")) == "SD" and float(gear.get("off", 0.0)) < float(gear.get("on", 0.0)), str(gear))
+	var arm: Dictionary = setup.current_profile().get("aux", {}).get("arm", {})
+	_check("phase 2: the quad arms from the same CH5 axis with its own endpoints (high end only)", int(arm.get("axis", -1)) == 4
+		and float(arm.get("off", 9.0)) == 0.0 and float(arm.get("on", 9.0)) == 1.0, str(arm))
 	_check("flaps learn the CH6 axis switch", _learn_axis(setup, "aux:flaps", 5))
 	var flaps: Dictionary = setup.current_profile().get("aux", {}).get("flaps", {})
 	_check("flaps: CH6 · SA and aircraft detents", int(flaps.get("channel", 0)) == 6 and str(flaps.get("label", "")) == "SA"
 		and str(flaps.get("detents", "")) == "aircraft", str(flaps))
+	var mode: Dictionary = setup.current_profile().get("aux", {}).get("flight_mode", {})
+	_check("phase 2: the quad's flight mode shares the CH6 axis", int(mode.get("axis", -1)) == 5
+		and float(mode.get("off", 9.0)) == -1.0 and float(mode.get("on", 9.0)) == 1.0, str(mode))
 	# Smoke on a button channel: Classic CH10 is joystick button 2 (SDL button 1), pressed when the switch is ON.
 	_check("smoke starts the switch check", setup.start_capture_for("aux:smoke"))
 	setup.capture_overlay.confirm_button.pressed.emit()
@@ -132,6 +138,17 @@ func _run() -> void:
 	gear = setup.current_profile().get("aux", {}).get("gear", {})
 	_check("an axis outside the layout's channel gets no channel or switch name", int(gear.get("axis", -1)) == 7
 		and not gear.has("channel") and not gear.has("label"), str(gear))
+	# An existing FPV profile keeps its arm switch; the learned gear only adds the airplane meaning.
+	var fpv: Dictionary = ControllerProfile.defaults("radio", ControllerProfile.EDGETX_FPV_PRESET)
+	var current: Dictionary = setup.current_profile()
+	for key in ["profile_id", "name", "roll", "pitch", "yaw", "throttle"]:
+		fpv[key] = current[key]
+	fpv.aux["arm"] = {"type": "axis", "axis": 7, "invert": false, "off": 0.0, "on": 1.0}
+	setup._set_draft_profile(fpv)
+	_check("an FPV profile learns the airplane gear", _learn_axis(setup, "aux:gear", 4))
+	var kept: Dictionary = setup.current_profile().get("aux", {})
+	_check("its own arm binding is never moved", int(kept.get("arm", {}).get("axis", -1)) == 7 and int(kept.get("gear", {}).get("axis", -1)) == 4,
+		str(kept))
 	# Other presets keep the typed captures: an unbound channel has no capture slot there.
 	var custom: Dictionary = setup.current_profile()
 	custom["preset"] = "radio_custom"

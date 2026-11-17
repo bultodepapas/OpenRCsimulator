@@ -13014,3 +13014,51 @@ msgstr "USB 遥控器（EdgeTX）：在 Model setup 中选择 USB Joystick (Clas
 
 msgid "Control guide: show / hide"
 msgstr "控制指南：显示 / 隐藏"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "双舵量开关（模拟舵量）"
+
+msgid "Dual-rate switch"
+msgstr "双舵量开关"
+
+msgid "Dual rates and expo"
+msgstr "双舵量和指数"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "在遥控器上（EdgeTX 双舵量）"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "由 OpenRC 模拟（机型舵量）"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC 不施加双舵量或指数：请在遥控器的 Inputs 中设置（例如 SC 100/75/50 %，指数 30，与 EdgeTX Plane 向导相同）。校准时把舵量开关置于 100 %。不会读取舵量开关。"
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC 施加所飞机型说明书中的舵量和指数：开关选择普通、运动（中位）或全舵量。遥控器上：Inputs 权重 100 %、指数 0、不要 D/R 或飞行模式行，Outputs ±100 %；添加混控 CH7 = SC，权重 100。没有开关时，用双舵量动作切换。"
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "已更改双舵量的执行方。保存配置文件以保留。"
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "FPV 四轴用同一开关解锁（仅高位）。"
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "FPV 四轴的飞行模式取自同一开关。"
+
+msgid "LOW (normal rates)"
+msgstr "低位（普通舵量）"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "双舵量：普通 / 运动 / 全舵量"
+
+msgid "Simulated by OpenRC"
+msgstr "由 OpenRC 模拟"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "双舵量跟随遥控器上的舵量开关。"
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "乌龟模式（坠机后翻正）：未解锁时按 %s，解锁后将摇杆推向要翻转的一侧，然后上锁即可继续飞行。"
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "机身倒扣：乌龟模式（%s），解锁并推动摇杆翻正，或按 R 回到起飞台。"

@@ -13841,3 +13841,51 @@ msgstr "Radio USB (EdgeTX): seleziona USB Joystick (Classic) in Model setup e sp
 
 msgid "Control guide: show / hide"
 msgstr "Guida ai comandi: mostra / nascondi"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Interruttore doppia corsa (corse simulate)"
+
+msgid "Dual-rate switch"
+msgstr "Interruttore doppia corsa"
+
+msgid "Dual rates and expo"
+msgstr "Doppia corsa ed expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "Nella radio (doppia corsa EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Simulata da OpenRC (corse dell’aereo)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC non applica doppia corsa né expo: impostali negli Inputs della radio (per esempio SC 100/75/50 %, expo 30, come fa il wizard Plane di EdgeTX). Calibra con l’interruttore delle corse al 100 %. L’interruttore non viene letto."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC applica le corse e l’expo del manuale dell’aereo pilotato: l’interruttore sceglie normale, sport (centro) o massima. Nella radio: Inputs peso 100 %, expo 0, nessuna riga D/R o di fase di volo, Outputs ±100 %; aggiungi un mix CH7 = SC, peso 100. Senza interruttore, l’azione doppia corsa alterna."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "È cambiato chi applica la doppia corsa. Salva il profilo per mantenerlo."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "Il quad FPV si arma con lo stesso interruttore (solo in alto)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "Il quad FPV prende la modalità di volo dallo stesso interruttore."
+
+msgid "LOW (normal rates)"
+msgstr "BASSO (corsa normale)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Doppia corsa: normale / sport / massima"
+
+msgid "Simulated by OpenRC"
+msgstr "Simulata da OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "La doppia corsa segue l’interruttore della radio."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Modalità tartaruga (raddrizzarsi dopo uno schianto): %s da disarmato, arma e spingi lo stick verso il lato su cui girarsi, poi disarma per continuare a volare."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "Capovolto: modalità tartaruga (%s), arma e spingi lo stick per raddrizzarti, oppure R per la piazzola."

@@ -74,7 +74,7 @@ const MULTIROTOR_ESSENTIALS: PackedStringArray = ["aux:arm", "aux:flight_mode"]
 const RECOVERY_ASSIGNABLE: PackedStringArray = ["pause"]
 const RECOVERY_READ_ONLY: PackedStringArray = ["back"]
 const AUX_TITLES := { "aux:arm": "Arm motors", "aux:flight_mode": "Flight mode", "aux:gear": "Landing gear",
-	"aux:flaps": "Flaps", "aux:smoke": "Smoke" }
+	"aux:flaps": "Flaps", "aux:smoke": "Smoke", "aux:rates": "Dual-rate switch" }
 const VEHICLE_NAMES := { airplane = "Airplane", helicopter = "Helicopter", multirotor = "FPV quad" }
 const RADIO_CHECKLIST: PackedStringArray = [
 	"EdgeTX / OpenTX: select USB Joystick (Classic) for this model.",
@@ -275,7 +275,7 @@ func configure(next_host: Object) -> void:
 	_calibration = ""
 	_busy = ""
 	_index = 0
-	_essentials = essentials_for(_capabilities, str(_info.get("preset", "")))
+	_essentials = essentials_for(_capabilities, str(_info.get("preset", "")), str(_info.get("rates_owner", "")) == "simulator")
 	_build_switch_rows()
 	_compute_steps()
 	_show_step()
@@ -331,14 +331,18 @@ static func detected_kind(info: Dictionary) -> String:
 ## Essentials for a vehicle's capabilities (Switches page), before the recovery rows. UI-15-ETX-01: the EdgeTX
 ## airplane preset's switch check lists the layout's functions (gear, flaps, smoke as AUX switches, restart) that the
 ## aircraft has, in layout order.
-static func essentials_for(capabilities: Dictionary, preset := "") -> PackedStringArray:
+static func essentials_for(capabilities: Dictionary, preset := "", simulated_rates := false) -> PackedStringArray:
 	var list := PackedStringArray()
 	if bool(capabilities.get("helicopter", false)):
 		list.append_array(HELICOPTER_ESSENTIALS)
 	elif bool(capabilities.get("multirotor", false)):
 		list.append_array(MULTIROTOR_ESSENTIALS)
-	elif preset == EDGETX_AIRPLANE_PRESET:
+	elif preset in EdgeTxRadio.PRESETS:
+		# D6-ETX-06: either EdgeTX preset (the quad's too) gets the airplane switch check; the rate switch only when
+		# OpenRC simulates the rates.
 		for entry: Dictionary in EdgeTxRadio.AIRPLANE_LAYOUT:
+			if bool(entry.get("simulated_rates", false)) and not simulated_rates:
+				continue
 			var id := str(entry.id)
 			var applies := ControllerActions.aux_applies(id.trim_prefix("aux:"), capabilities) if id.begins_with("aux:") \
 				else ControllerActions.action_applies(id, capabilities)
@@ -362,7 +366,7 @@ static func vehicle_name(capabilities: Dictionary) -> String:
 
 ## UI-15-ETX-01: the layout's suggestion under a switch-check row ("CH5 · SD · start at DOWN (gear down)"), or "".
 static func layout_hint(id: String, preset: String) -> String:
-	if preset != EDGETX_AIRPLANE_PRESET:
+	if preset not in EdgeTxRadio.PRESETS:
 		return ""
 	var entry := EdgeTxRadio.layout_entry(id)
 	if entry.is_empty():

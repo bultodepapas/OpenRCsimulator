@@ -332,6 +332,14 @@ func _stage_equivalence() -> void:
 				result.derivative[i], law)
 			force = M.add(force, loads.force)
 			moment = M.add(moment, loads.moment)
+			if frame.continuous[i] < 0.0:
+				# DR-19e reverse law: a backward-spinning prop pushes toward the belly (+z) at the declared efficiency
+				# and its drag torque opposes the reversed spin.
+				var w: float = frame.continuous[i]
+				var push: float = float(data.rotor_law.thrust_coefficient_n_s2) * Plant.REVERSE_PROP_EFFICIENCY * w * w
+				var drag: float = -float(data.rotor_law.torque_coefficient_n_m_s2) * Plant.REVERSE_PROP_EFFICIENCY * w * w
+				force = M.add(force, M.v3(0.0, 0.0, push))
+				moment = M.add(moment, M.add(M.cross(rotor.hub_frd, M.v3(0.0, 0.0, push)), M.v3(0.0, 0.0, float(rotor.spin) * drag)))
 		for i in 3:
 			worst = maxf(worst, absf(result.loads[i] - force[i]) / maxf(1.0, absf(force[i])))
 			worst = maxf(worst, absf(result.loads[3 + i] - moment[i]) / maxf(1.0, absf(moment[i])))

@@ -6,6 +6,7 @@ const Reference := preload("res://ui/controls_reference.gd")
 const Keys := preload("res://ui/key_labels.gd")
 const Actions := preload("res://input/controller_actions.gd")
 const Prompts := preload("res://ui/controller_prompts.gd")
+const Profiles := preload("res://input/controller_profile.gd")
 const ARROWS := { KEY_LEFT: "←", KEY_RIGHT: "→", KEY_UP: "↑", KEY_DOWN: "↓" }
 const CHANNELS := { roll = "Roll", pitch = "Pitch", yaw = "Rudder", throttle = "Throttle" }
 
@@ -146,7 +147,7 @@ func _controller_rows() -> void:
 		if not gamepad and binding.get("type", "") == "button":
 			prompt = { text = tr("Button %d") % int(binding.button), texture_path = "" }
 		_row(tr(action.label), prompt.text, prompt.texture_path)
-	for channel: String in ["smoke", "flaps", "gear"]:
+	for channel: String in ["smoke", "flaps", "gear", "rates"]:
 		if _context.has("capabilities"):
 			continue
 		var binding: Dictionary = profile.get("aux", {}).get(channel, {})
@@ -157,7 +158,7 @@ func _controller_rows() -> void:
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif binding.type == "button" and not gamepad:
 			prompt.text = tr("Button %d") % int(binding.button)
-		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request" }[channel]), prompt.text)
+		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request", rates = "Dual-rate switch" }[channel]), prompt.text)
 	_row(tr("Pause"), Keys.label(KEY_ESCAPE))
 	_row(tr("Restart flight"), Keys.label(KEY_R))
 	_note(tr("Aircraft capabilities determine which auxiliary controls are available."))
@@ -165,11 +166,20 @@ func _controller_rows() -> void:
 
 func _rates_row(profile: Dictionary, bindings: Dictionary, family: String, info: Dictionary) -> void:
 	var caption := tr("Dual rates: normal / high")
-	if profile.get("kind", "radio") == "radio":
+	# D6-ETX-08: a radio's rates belong to the radio unless its profile asks OpenRC to simulate them.
+	if Profiles.rates_owner(profile) == "transmitter":
 		_row(caption + "\n" + tr("The radio sets its own rates."), "—")
 		return
 	if not bool(_context.get("capabilities", {}).get("rates", false)):
 		_row(caption + "\n" + tr("This aircraft has no rate profile."), "—")
+		return
+	var rate_switch: Dictionary = profile.get("aux", {}).get("rates", {}) if profile.get("aux", {}) is Dictionary else {}
+	if rate_switch.get("type", "") in ["axis", "button", "switch"]:
+		var fallback := tr("Axis %d") % int(rate_switch.get("axis", -1)) if rate_switch.type == "axis" \
+			else (tr("Button %d") % int(rate_switch.get("button", -1)) if rate_switch.type == "button" else tr("Switch"))
+		caption = tr("Dual rates: normal / sport / full") + "\n" + tr("Simulated by OpenRC")
+		var switch_label := _row(caption, radio_control_text(rate_switch, fallback))
+		_equipment_labels.rates = {label = switch_label, caption = caption, switch_name = _switch_name(rate_switch, fallback)}
 		return
 	var binding: Dictionary = bindings.get("rates_toggle", {})
 	var prompt := Prompts.prompt(binding, family, info, profile)

@@ -28,7 +28,7 @@ const HELD_DIRECTIONS := { roll = "right", pitch = "back", yaw = "right" }
 const OPPOSITE_DIRECTIONS := { roll = "left", pitch = "forward", yaw = "left" }
 ## AUX channels other than smoke that a recalibration keeps when they do not overlap the new flight axes. Mirrors
 ## ControllerActions.AUX_CHANNEL_IDS without "smoke" (checked by tests/test_multirotor_arm_mode_aux.gd).
-const EXTRA_AUX_CHANNELS: PackedStringArray = ["flaps", "gear", "arm", "flight_mode"]
+const EXTRA_AUX_CHANNELS: PackedStringArray = ["flaps", "gear", "rates", "arm", "flight_mode"]
 ## An axis must sweep at least this much (of the −1…+1 range) to count as moved.
 const MIN_SWEEP := 0.5
 ## A second moving channel or a stick left away from its starting position makes an assignment ambiguous.
@@ -55,6 +55,9 @@ var _direction_sign := 0.0
 var _used := {}
 var _preserved_smoke: Dictionary = {}
 var _preserved_extra_aux: Dictionary = {}
+## D6-ETX-07: who applies dual rates and the flap mix is the pilot's radio setup, not a measurement: a recalibrated
+## profile keeps both owner fields (otherwise a simulated-rates radio would silently fall back to radio rates).
+var _preserved_owners: Dictionary = {}
 var aux_warning: String = ""
 var aux_removals: Array[Dictionary] = []
 var _window: Array[PackedFloat64Array] = []
@@ -63,6 +66,9 @@ var _window: Array[PackedFloat64Array] = []
 func _init(existing_profile: Dictionary = {}) -> void:
 	profile = { kind = "radio" }
 	var clean := SmokeAux.sanitize_profile(existing_profile)
+	for owner_field in ["rates_owner", "flap_elevator_mix_owner"]:
+		if typeof(clean.get(owner_field)) == TYPE_STRING and str(clean.get(owner_field)) in ["simulator", "transmitter"]:
+			_preserved_owners[owner_field] = str(clean.get(owner_field))
 	var aux: Variant = clean.get("aux", {})
 	if typeof(aux) == TYPE_DICTIONARY:
 		var smoke: Variant = aux.get("smoke", {})
@@ -384,6 +390,7 @@ static func load_smoke_binding(path: String, device_key: String) -> Dictionary:
 
 
 func _preserve_smoke_if_clear() -> void:
+	profile.merge(_preserved_owners, true)
 	var extra: Dictionary = {}
 	for channel_name in _preserved_extra_aux:
 		if SmokeAux.valid_binding(_preserved_extra_aux[channel_name], SmokeAux.flight_axes(profile)):

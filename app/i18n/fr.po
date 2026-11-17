@@ -13986,3 +13986,51 @@ msgstr "Radio USB (EdgeTX) : sélectionnez USB Joystick (Classic) dans Model set
 
 msgid "Control guide: show / hide"
 msgstr "Guide des commandes : afficher / masquer"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Interrupteur de double débattement (débattements simulés)"
+
+msgid "Dual-rate switch"
+msgstr "Interrupteur de double débattement"
+
+msgid "Dual rates and expo"
+msgstr "Double débattement et expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "Dans la radio (double débattement EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Simulé par OpenRC (débattements de l’avion)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC n’applique ni double débattement ni expo : réglez-les dans les Inputs de la radio (par exemple SC 100/75/50 %, expo 30, comme l’assistant Plane d’EdgeTX). Calibrez avec l’interrupteur de débattement à 100 %. L’interrupteur de débattement n’est pas lu."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC applique les débattements et l’expo du manuel de l’avion piloté : l’interrupteur choisit normal, sport (milieu) ou maximum. Dans la radio : Inputs poids 100 %, expo 0, aucune ligne D/R ni de phase de vol, Outputs ±100 % ; ajoutez un mixage CH7 = SC, poids 100. Sans interrupteur, l’action double débattement bascule."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "Le responsable du double débattement a changé. Enregistrez le profil pour le conserver."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "Le quad FPV s’arme avec le même interrupteur (position haute seulement)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "Le quad FPV prend son mode de vol sur le même interrupteur."
+
+msgid "LOW (normal rates)"
+msgstr "BAS (débattement normal)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Double débattement : normal / sport / maximum"
+
+msgid "Simulated by OpenRC"
+msgstr "Simulé par OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "Le double débattement suit l’interrupteur de la radio."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Mode tortue (se retourner après un crash) : %s désarmé, armez et poussez le manche vers le côté où basculer, puis désarmez pour reprendre le vol."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "À l'envers : mode tortue (%s), armez et poussez le manche pour vous retourner, ou R pour la plateforme."

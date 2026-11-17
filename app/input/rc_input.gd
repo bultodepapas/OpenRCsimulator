@@ -51,8 +51,13 @@ var axes := PackedFloat64Array()
 var smoke_aux = SmokeAux.new()
 ## These are input requests, not simulated flap/gear actuator positions. D6-UX-01: "arm" and "flight_mode" are the
 ## FPV quad's arm and Angle/Acro switches (read by multirotor_input.gd); they have no semantic toggle actions.
-var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "arm": SmokeAux.new(), "flight_mode": SmokeAux.new()}
-const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "arm": 0.0, "flight_mode": 0.0}
+## D6-ETX-07: "rates" is the airplane's dual-rate switch (0 = normal … 1 = full), read only for simulated rates.
+var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "rates": SmokeAux.new(), "arm": SmokeAux.new(),
+	"flight_mode": SmokeAux.new()}
+const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "rates": 0.0, "arm": 0.0, "flight_mode": 0.0}
+## D6-ETX-07: rate profiles selected by the rates switch's position band (low, middle, high). A two-position switch
+## gives normal / full; a three-position switch normal / sport / full.
+const RATE_SWITCH_PROFILES: PackedStringArray = ["normal", "sport", "full"]
 var _aux_action_values := _AUX_ACTION_DEFAULTS.duplicate()
 var _auxiliary_enabled := true
 ## D6-ETX-04: the flown aircraft's flap detents (ascending fractions 0…1), set by the airplane activity; [] = none.
@@ -477,6 +482,21 @@ func auxiliary_amount(channel_name: String) -> float:
 	if channel_name == "flaps" and str(channel.binding.get("detents", "")) == "aircraft":
 		return SmokeAux.snap_to_detents(channel.amount(), _flap_detents)
 	return channel.amount()
+
+
+## D6-ETX-07: whether the profile binds a dual-rate switch (it then owns the rate choice; the toggle is refused).
+func has_rate_switch() -> bool:
+	return connected and _profile_ready and not _extra_aux.rates.binding.is_empty()
+
+
+## D6-ETX-07: the rate profile the bound rates switch selects now ("normal", "sport" or "full"), or "" when no switch
+## is bound or it has no valid command yet (not seen at OFF since the last boundary: keep the current profile).
+func rate_switch_profile() -> String:
+	if not has_rate_switch() or not auxiliary_request_valid("rates"):
+		return ""
+	var amount := clampf(auxiliary_amount("rates"), 0.0, 1.0)
+	var index := clampi(int(floor(amount * float(RATE_SWITCH_PROFILES.size()))), 0, RATE_SWITCH_PROFILES.size() - 1)
+	return RATE_SWITCH_PROFILES[index]
 
 
 ## D6-ETX-04: the flap detents of the aircraft being flown (main.gd's keyboard detents: up, take-off, full). Invalid

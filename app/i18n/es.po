@@ -12604,3 +12604,51 @@ msgstr "Radio USB (EdgeTX): selecciona USB Joystick (Classic) en Model setup y a
 
 msgid "Control guide: show / hide"
 msgstr "Guía de controles: mostrar / ocultar"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Interruptor de doble recorrido (rates simulados)"
+
+msgid "Dual-rate switch"
+msgstr "Interruptor de doble recorrido"
+
+msgid "Dual rates and expo"
+msgstr "Doble recorrido y expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "En la radio (doble recorrido de EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Simulado por OpenRC (recorridos del avión)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC no aplica doble recorrido ni expo: configúralos en las Inputs de la radio (por ejemplo SC 100/75/50 %, expo 30, como hace el asistente Plane de EdgeTX). Calibra con el interruptor de recorrido al 100 %. El interruptor de recorrido no se lee."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC aplica los recorridos y el expo del manual del avión que vuelas: el interruptor elige normal, sport (centro) o máximo. En la radio: Inputs con peso 100 %, expo 0, sin líneas de D/R ni de modos de vuelo, Outputs ±100 %; añade una mezcla CH7 = SC, peso 100. Sin interruptor, la acción de doble recorrido alterna."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "Cambió quién aplica el doble recorrido. Guarda el perfil para conservarlo."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "El dron FPV se arma con el mismo interruptor (solo en el extremo alto)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "El dron FPV toma su modo de vuelo del mismo interruptor."
+
+msgid "LOW (normal rates)"
+msgstr "BAJO (recorrido normal)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Doble recorrido: normal / sport / máximo"
+
+msgid "Simulated by OpenRC"
+msgstr "Simulado por OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "El doble recorrido sigue al interruptor de la radio."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Modo tortuga (darse la vuelta tras un choque): %s desarmado, arma y empuja el stick hacia el lado al que quieres voltear; luego desarma para seguir volando."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "Boca abajo: modo tortuga (%s), arma y empuja el stick para darte la vuelta, o R para volver a la plataforma."

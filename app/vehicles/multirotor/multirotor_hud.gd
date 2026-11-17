@@ -747,7 +747,7 @@ func controls_help_lines(bindings: Dictionary) -> PackedStringArray:
 	var restart := str(bindings.get("restart_control", "")) if bindings.get("restart_control") != null else ""
 	if not restart.is_empty():
 		lines.append(_tr("Restart on the pad: R or %s on the controller.") % restart)
-	lines.append(_tr("Turtle mode (flip over after a crash): %s while disarmed, then arm and push the stick toward the side to flip to.")
+	lines.append(_tr("Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on.")
 		% turtle_controls(bindings))
 	return lines
 
@@ -1155,8 +1155,8 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 		not_ready = controller_not_ready(bindings), crashed = crashed, depleted = bool(t.get("depleted", false)),
 		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until, prop_health = prop_health(t)}), now)
 	if bool(osd_state.get("upside_down", false)) and str(osd_state.get("crash_reason", "")).is_empty():
-		# DR-19c: a graded crash can leave the quad upside down on the ground; there is no turtle mode, so say how back.
-		# DR-19e: the crash flip first; R (or the controller's restart) returns to the pad.
+		# DR-19c/19e: a graded crash can leave the quad upside down on the ground: the crash flip first; R (or the
+		# controller's restart) returns to the pad.
 		hint_label.text = _tr("Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad.") 			% turtle_controls(osd_state.get("bindings", {}))
 	else:
 		hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))

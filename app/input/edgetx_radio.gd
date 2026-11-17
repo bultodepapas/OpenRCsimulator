@@ -24,8 +24,16 @@ const AIRPLANE_LAYOUT := [
 	{"id": "aux:gear", "channel": 5, "switch": "SD", "off": "DOWN (gear down)", "prefer": "axis"},
 	{"id": "aux:flaps", "channel": 6, "switch": "SA", "off": "UP (flaps up)", "prefer": "axis"},
 	{"id": "aux:smoke", "channel": 10, "switch": "SE", "off": "OFF (smoke off)", "prefer": "button"},
+	{"id": "aux:rates", "channel": 7, "switch": "SC", "off": "LOW (normal rates)", "prefer": "axis", "simulated_rates": true},
 	{"id": "restart_flight", "channel": 9, "switch": "SH", "off": "released", "prefer": "button"},
 ]
+## D6-ETX-06: the quad channel that shares each airplane switch in one EdgeTX profile, with the quad's own DR-14d
+## endpoints (arm only at the high end; flight mode low Angle, middle and high Acro). Only the axis is shared.
+const QUAD_SHARED_AUX := {
+	"gear": {"aux": "arm", "off": 0.0, "on": 1.0},
+	"flaps": {"aux": "flight_mode", "off": -1.0, "on": 1.0},
+}
+const PRESETS: PackedStringArray = ["edgetx_airplane", "edgetx_fpv"]
 ## Functions that stay on the radio with this layout (shown in Help and the control guide).
 const RADIO_OWNED_SWITCHES := {"throttle_cut": "SF", "dual_rates": "SC"}
 

@@ -95,8 +95,9 @@ func _layout() -> void:
 		and int(by_id["aux:flaps"].channel) == 6 and int(by_id["restart_flight"].channel) == 9 and int(by_id["aux:smoke"].channel) == 10)
 	var fragile := false
 	for entry: Dictionary in EdgeTx.AIRPLANE_LAYOUT:
-		fragile = fragile or int(entry.channel) in [7, 8]
-	_check("nothing on the CH7/CH8 pair", not fragile)
+		fragile = fragile or (int(entry.channel) in [7, 8] and not bool(entry.get("simulated_rates", false)))
+	_check("only the optional simulated-rates switch uses the CH7/CH8 pair", not fragile
+		and int(EdgeTx.layout_entry("aux:rates").get("channel", 0)) == 7)
 	_check("Classic channel of raw axes and buttons", EdgeTx.classic_channel({type = "axis", axis = 4}) == 5
 		and EdgeTx.classic_channel({type = "button", button = 0}) == 9 and EdgeTx.classic_channel({type = "button", button = 1}) == 10
 		and EdgeTx.classic_channel({type = "axis", axis = 8}) == 0 and EdgeTx.classic_channel({type = "switch"}) == 0)
@@ -195,6 +196,10 @@ func _assistant() -> void:
 	rows = Assistant.essentials_for(airplane, "edgetx_airplane")
 	_check("functions the aircraft lacks are left out", not rows.has("aux:gear") and not rows.has("aux:smoke") and rows.has("aux:flaps"))
 	_check("other presets keep the press-action essentials", Assistant.essentials_for(Actions.AIRPLANE_CAPABILITIES, "radio_custom").has("gear_toggle"))
+	_check("simulated rates add the rate switch row", Assistant.essentials_for(Actions.AIRPLANE_CAPABILITIES, "edgetx_airplane", true)
+		== PackedStringArray(["aux:gear", "aux:flaps", "aux:smoke", "aux:rates", "restart_flight", "pause"]))
+	_check("an FPV profile flown as an airplane gets the same switch check",
+		Assistant.essentials_for(Actions.AIRPLANE_CAPABILITIES, "edgetx_fpv").has("aux:gear"))
 	_check("the quad keeps its own essentials", Assistant.essentials_for(Actions.MULTIROTOR_CAPABILITIES, "edgetx_airplane")
 		== PackedStringArray(["aux:arm", "aux:flight_mode", "pause"]))
 	var hint := Assistant.layout_hint("aux:gear", "edgetx_airplane")

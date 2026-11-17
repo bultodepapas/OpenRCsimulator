@@ -76,11 +76,20 @@ const FLIGHT_ANGLE := 1
 ## disarmed (it engages on the arming edge, never in flight); armed in it, the motors on the side
 ## opposite the stick spin in REVERSE with power following it (the quad flips toward the stick), and stop once the quad is upright again. No PID or allocation runs.
 const FLIGHT_TURTLE := 2
-## Reverse command (duty, negative) at full stick, the stick deadband, and the upright limit (world-up component of
-## the body's up axis) at which the flip stops.
-const TURTLE_MAX_COMMAND := 0.6
+## Reverse command (duty, negative) at full stick (a square-root curve beyond the deadband, so half stick already
+## flips) and the stick deadband.
+const TURTLE_MAX_COMMAND := 0.4
 const TURTLE_DEADBAND := 0.15
-const TURTLE_UPRIGHT := 0.5
+## The attitude (world-up component of the body's up axis) from which the motors stop: past vertical, gravity
+## completes the flip. Below it the command fades from full at -TURTLE_FADE_SPAN to TURTLE_FADE_FLOOR at vertical, so
+## the quad does not arrive with the momentum to cartwheel on.
+const TURTLE_UPRIGHT := 0.0
+const TURTLE_FADE_SPAN := 0.6
+const TURTLE_FADE_FLOOR := 0.35
+## Once the quad has been this upright the flip is done: the motors stay stopped until a disarm, even if it rocks
+## back. The latch lives in AUX_PREVIOUS_SETPOINT (feed-forward memory that turtle mode does not use), set to 1.
+const TURTLE_DONE_UP := 0.8
+const AUX_TURTLE_DONE := AUX_PREVIOUS_SETPOINT
 const BLOCK_NONE := 0
 const BLOCK_THROTTLE := 1 # throttle was not low at the ON edge
 const BLOCK_SWITCH := 2 # no OFF observed in this source generation, or the switch was held ON
@@ -309,7 +318,11 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 	modes[MODE_SAMPLES] = modes[MODE_SAMPLES] + 1
 	var armed: bool = motor == MOTOR_ARMED
 	if armed and requested == FLIGHT_TURTLE:
-		return _turtle(config, frame, input, aux, modes)
+		return _turtle(config, frame, input, aux, modes, not was_armed)
+	if frame.modes[MODE_FLIGHT] == FLIGHT_TURTLE and previous[AUX_TURTLE_DONE] != 0.0:
+		# Leaving or awaiting turtle: the flip latch never reaches the rate loop's setpoint memory.
+		aux[AUX_TURTLE_DONE] = 0.0
+		previous = aux.duplicate()
 	if int(config.throttle_policy) == THROTTLE_RATE and not armed:
 		aux[AUX_VIRTUAL_THROTTLE] = 0.0
 		collective = 0.0
@@ -395,16 +408,19 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 
 
 ## DR-19e turtle sample: the quad flips toward the stick (Betaflight crash flip), so the motors on the OPPOSITE side
-## spin in reverse and lift it: pitch forward lifts the rear, roll right lifts the left (FRD body axes). Zero once
-## upright; no controller memory.
+## spin in reverse and lift it: pitch forward lifts the rear, roll right lifts the left (FRD body axes). Zero past
+## vertical and for good once the flip is done (AUX_TURTLE_DONE); no other controller memory.
 static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64Array, aux: PackedFloat64Array,
-		modes: PackedInt64Array) -> Dictionary:
+		modes: PackedInt64Array, arming: bool) -> Dictionary:
 	var body: PackedFloat64Array = frame.body
 	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
 	var up: float = -M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))[2] # world-up component of the body's up axis
 	var stick := PackedFloat64Array([-input[IN_PITCH], input[IN_ROLL]])
 	var amount: float = sqrt(stick[0] * stick[0] + stick[1] * stick[1])
 	var hubs: Array = config.get("hubs", [])
+	# On the arming edge the slot still holds the disarmed rate loop's memory, never a latch.
+	var done: bool = (not arming and aux[AUX_TURTLE_DONE] == 1.0) or up > TURTLE_DONE_UP
+	var fade: float = clampf(-up / TURTLE_FADE_SPAN, TURTLE_FADE_FLOOR, 1.0)
 	for axis in 3:
 		aux[AUX_INTEGRAL + axis] = 0.0
 		aux[AUX_TAU_REQUEST + axis] = 0.0
@@ -416,12 +432,13 @@ static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64A
 	for rotor in 4:
 		aux[AUX_COMMAND + rotor] = 0.0
 		aux[AUX_THRUST_TARGET + rotor] = 0.0
-		if up > TURTLE_UPRIGHT or amount <= TURTLE_DEADBAND or rotor >= hubs.size():
+		if done or up > TURTLE_UPRIGHT or amount <= TURTLE_DEADBAND or rotor >= hubs.size():
 			continue
 		var hub: PackedFloat64Array = hubs[rotor]
 		# A hub opposite the stick direction (FRD x forward, y right) is the side that must rise.
 		if hub[0] * stick[0] + hub[1] * stick[1] < 0.0:
-			aux[AUX_COMMAND + rotor] = -TURTLE_MAX_COMMAND * clampf((amount - TURTLE_DEADBAND) / (1.0 - TURTLE_DEADBAND), 0.0, 1.0)
+			aux[AUX_COMMAND + rotor] = -TURTLE_MAX_COMMAND * fade 				* sqrt(clampf((amount - TURTLE_DEADBAND) / (1.0 - TURTLE_DEADBAND), 0.0, 1.0))
+	aux[AUX_TURTLE_DONE] = 1.0 if done else 0.0
 	aux[AUX_COLLECTIVE] = 0.0
 	return {aux = aux, modes = modes}
 

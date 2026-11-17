@@ -13815,3 +13815,51 @@ msgstr "USB-аппаратура (EdgeTX): выберите USB Joystick (Classi
 
 msgid "Control guide: show / hide"
 msgstr "Подсказка по управлению: показать / скрыть"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Переключатель двойных расходов (симулируемые расходы)"
+
+msgid "Dual-rate switch"
+msgstr "Переключатель двойных расходов"
+
+msgid "Dual rates and expo"
+msgstr "Двойные расходы и экспонента"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "В аппаратуре (двойные расходы EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Симулирует OpenRC (расходы модели)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC не применяет двойные расходы и экспоненту: задайте их в Inputs аппаратуры (например SC 100/75/50 %, экспонента 30, как делает мастер Plane в EdgeTX). Калибруйте с переключателем расходов на 100 %. Переключатель расходов не считывается."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC применяет расходы и экспоненту из инструкции летающей модели: переключатель выбирает обычные, спорт (середина) или полные. В аппаратуре: Inputs вес 100 %, экспонента 0, без строк D/R и полётных режимов, Outputs ±100 %; добавьте микс CH7 = SC, вес 100. Без переключателя действие двойных расходов переключает их."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "Изменено, кто применяет двойные расходы. Сохраните профиль, чтобы оставить это."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "FPV-квадрокоптер взводится тем же переключателем (только верхнее положение)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "FPV-квадрокоптер берёт режим полёта с того же переключателя."
+
+msgid "LOW (normal rates)"
+msgstr "НИЗ (обычные расходы)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Двойные расходы: обычные / спорт / полные"
+
+msgid "Simulated by OpenRC"
+msgstr "Симулирует OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "Двойные расходы следуют переключателю на аппаратуре."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Режим черепахи (перевернуться после аварии): %s при снятом арме, затем арм и стик в сторону переворота; после этого снимите арм, чтобы лететь дальше."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "Вверх ногами: режим черепахи (%s), арм и стик, чтобы перевернуться, или R для возврата на площадку."

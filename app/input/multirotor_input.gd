@@ -70,6 +70,8 @@ var _mode_input_held := false
 var _turtle := false
 var _turtle_input_held := false
 var _turtle_button := -1
+## The turtle request was armed once: the following disarm ends it (one flip per request; the next arm flies).
+var _turtle_used := false
 var _actions := 0
 var _keyboard_sticks := {roll = 0.0, pitch = 0.0, yaw = 0.0}
 var _source_key := ""
@@ -377,6 +379,7 @@ func invalidate_for_focus() -> void:
 func reset_for_restart() -> void:
 	_arm_latch = false
 	_turtle = false
+	_turtle_used = false
 	_end_arm_continuity(false)
 	_continuity_lost = false
 	_last_arm_level = false
@@ -408,6 +411,7 @@ func _source_changed() -> void:
 	_mode = FC.FLIGHT_ANGLE if mode_from_switch() else default_mode(source())
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 	_turtle = false
+	_turtle_used = false
 	_end_arm_continuity(_arm_continuity)
 	_last_arm_level = false
 	_refresh_shortcuts()
@@ -573,6 +577,13 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 			arm_level = false
 	if integrate:
 		_last_arm_level = arm_level and ready
+		if _turtle and arm_level and ready:
+			_turtle_used = true
+		elif _turtle_used and not arm_level:
+			_turtle = false
+			_turtle_used = false
+		elif not _turtle:
+			_turtle_used = false
 	var mode_source := "toggle"
 	if mode_switch:
 		mode_source = "switch:" + MODE_AUX
