@@ -1,18 +1,19 @@
 # Proposed updater architecture
 
 DT-UPD-00, 2026-11-17. This is an implementation contract to test, not implemented
-runtime behavior. [Plan](../../../plans/github-updates.md) · [Sources](sources.md).
+runtime behavior. Expanded after the [27-repository survey](game-update-survey.md).
+[Plan](../../../plans/github-updates.md) · [Sources](sources.md) · [Spikes](reuse-spikes.md).
 
 ## 1. Components and boundaries
 
 | Component | Responsibility | Cannot assume |
 | --- | --- | --- |
 | Existing game UI | Check policy, present update/release notes, consent, progress and graceful exit | It cannot safely replace its own loaded executable/libraries. |
-| Discovery/verifier | Fetch a small bounded signed channel envelope; verify pinned trust and policy | API metadata, TLS or a colocated SHA256SUMS alone do not authenticate the publisher independently. |
+| Discovery/verifier | Verify maintained trust metadata and a bounded release descriptor; enforce product policy | API metadata, TLS or a colocated SHA256SUMS alone do not authenticate the publisher independently. |
 | Transfer/staging worker | Stream bytes to a private partial file, resume correctly, hash, extract and verify a new generation | An HTTP success or ZIP hash alone does not establish safe extracted paths or a runnable install. |
 | Native apply/recovery helper | Recheck the approved transaction; wait for owned processes; commit/recover using an OS adapter; launch the target | Generic directory rename sequences are not cross-platform atomic or automatically recoverable. |
 | Release publisher | Preserve source/package qualification and publish exact tested bytes | A newer tag, successful cross-export or signed feed does not establish native lifecycle acceptance. |
-| Channel publisher | Publish a signed pointer after verified public assets; serialize promotion | Release publication and Pages deployment are not one transaction. |
+| Channel publisher | Publish authenticated selection after verified public assets; serialize promotion | Release publication and Pages deployment are not one transaction. |
 
 Keep these interfaces stable so an adapter can wrap a qualified existing framework.
 Reuse mature HTTP, signature, archive and filesystem libraries rather than writing
@@ -28,100 +29,158 @@ is required on a player's machine.
 
 ## 2. GitHub discovery and channels
 
-Proposed URLs are /OpenRCsimulator/updates/stable.json and
-/OpenRCsimulator/updates/preview.json on the existing GitHub Pages site. These
-files do not exist as part of this research deployment. Do not put packages on Pages.
+The preferred investigation uses maintained TUF metadata in a dedicated
+/OpenRCsimulator/updates/tuf/metadata/ namespace on the existing GitHub Pages site.
+Small release descriptors are TUF targets under updates/tuf/targets/, using the
+selected library's hash-prefixed names for consistent snapshots. These namespaces
+have not been deployed. Large packages stay on GitHub Releases.
 
-One response contains an envelope with a fixed protocol marker, key ID, exact
-base64-encoded UTF-8 payload bytes and a detached Ed25519 signature. Sign a fixed
-application/protocol domain prefix, validated ASCII key ID, a NUL separator and
-those exact payload bytes. This also prevents changing a key alias without
-re-signing. It avoids ambiguity
-from JSON reserialization and the cache race of separately fetched payload and
-signature files. Reject duplicate JSON keys, non-finite numbers, invalid UTF-8,
-unknown fields/version, excessive sizes/depth and unsupported algorithms.
+This is an OpenRC integration proposal: TUF authenticates a small descriptor, and
+that descriptor binds the actual release ZIP and release manifest. It preserves
+the current six-asset Release inventory and avoids trying to fit GitHub's existing
+asset names to a chunk store or hash-prefixed target layout. The implementation
+must qualify this indirection; TUF does not itself understand OpenRC packages.
 
-The production contract must bind:
+Use four top-level roles in the first spike. Stable/preview are target descriptors,
+not independently delegated channel keys. The descriptor's closed, bounded schema
+must bind:
 
-- Repository and channel; a monotonically increasing per-channel sequence.
-- Issued and expiry times; supported updater protocol/version.
+- Repository, product, subscription channel and artifact channel.
 - Release ID/tag/version, source commit and clean official release provenance.
 - Exact release-manifest URL, byte length and SHA-256.
-- Per-platform architecture, ZIP URL, byte length, SHA-256, expanded-byte and
-  member-count bounds, plus OS/format requirements.
-- Future withdrawal and key-transition types with separate, closed validation;
-  they are not arbitrary remote commands.
-- Future deltas' exact base identity, patch identity/algorithm/bounds and target
-  identity, while retaining the corresponding full package.
+- Per-platform OS/architecture, ZIP URL, byte length, SHA-256, expanded-byte and
+  member-count bounds, package/OS requirements and minimum updater capability.
+- Authenticated withdrawal/eligibility state with explicit closed semantics;
+  no arbitrary remote command, filesystem destination or executable argument.
+- Optional deltas' exact source, patch identity/algorithm/resource bounds and
+  complete target identity, always retaining a full-package alternative.
 
-URLs are exact HTTPS release-download paths under this repository and a fixed
-tag/filename, not /latest links or arbitrary hosts. An install path, shell command,
-post-install hook or executable argument never comes from the feed. Entrypoints
-and supported layouts are compiled client policy plus verified package metadata.
+A streamed TUF target can expose bytes before its final checksum passes. Buffer
+these small descriptors within a hard limit and wait for successful complete
+length/hash validation before parsing them for any product decision. Reject
+unsupported formats, duplicate keys, invalid UTF-8, non-finite numbers and excessive
+size/depth. Package download begins only after descriptor authentication and policy
+selection. Actual archive bytes remain bounded, streamed and hashed separately.
 
-Persist the highest authenticated sequence and payload hash per channel using a
-durable atomic local replacement. Lower sequence is rejected; the same sequence
-with different bytes is rejected. Repeated identical still-valid metadata is fine.
-A higher sequence pointing to an older game must not cause automatic downgrade;
-local restoration of a recorded previous generation is a separate recovery action.
+URLs are exact HTTPS release-download paths under this repository and fixed
+release tag/filename. The feed never supplies a shell command or executable path.
+Check the resulting artifact's architecture and internal package identity rather
+than trusting a filename substring. Native entrypoints are compiled policy plus
+verified package metadata.
 
-The reference draft implements a stable-channel subset with fixed platform names,
-a single pinned-key verifier and no install actions. It intentionally omits release
-ID, root delegation, preview selection, withdrawal and deltas until their production
-contracts are implemented and tested. It is not the production schema.
+TUF metadata versions prevent the class of rollback defined by the selected
+client/specification when trusted state persists correctly. They do not mean a
+newly signed descriptor cannot name an older game. Independently enforce OpenRC's
+installed-version, channel and updater-compatibility policy. Local restoration of
+a recorded previous generation is a separate recovery operation, with profile
+compatibility and trust-state preservation.
+
+Keep subscription channel distinct from artifact channel: a preview subscription
+may offer a preview or its final stable successor; stable offers only stable.
+Reconcile artifact channel against the tag and release manifest. Preserve the
+current natural prerelease ordering through a tested migration; do not substitute
+string ordering or unmodified SemVer assumptions. Revalidate selection on a channel
+change and preserve relevant trusted-state history.
 
 Check after Home is available, at most daily automatically, with cache, jitter and
-bounded backoff. Check now has its own cooldown. ETags reduce bytes; anonymous
-GitHub API 304 responses are not promised to be free of quota. Prefer the signed
-Pages feed, retain the canonical Release page as manual fallback and avoid
-automatically fanning out to API endpoints after every Pages failure.
+bounded backoff. Check now has a cooldown. Prefer Pages metadata and retain a
+canonical GitHub manual route; do not fan out to repeated API requests after every
+failure. ETags can reduce bytes; anonymous API 304 quota exemption is not assumed.
+Distinguish Current from Failed, Not checked and Unsupported.
 
-Keep subscription channel distinct from artifact channel: a preview feed may
-offer either a preview artifact or its final stable successor; a stable feed may
-offer only stable artifacts. Reconcile the artifact channel with its tag and
-release manifest, not by requiring equality with the subscription channel.
-Keep a stable default and explicit preview opt-in. The current natural prerelease
-ordering differs from strict SemVer; use a tested migration policy, not string
-ordering. Reset/revalidate cached selection when channels change.
+### The earlier envelope remains a comparison model
+
+The prior stable.json/preview.json proposal and executable Python model use one
+Ed25519 signature over a fixed domain, ASCII key ID, NUL and exact payload bytes.
+They model a per-channel sequence, expiry and target hashes, with 30 negative and
+positive tests. They do not implement TUF, persistent trust, root rotation, release
+withdrawal or native installation. Those tests remain useful comparison evidence;
+they cannot qualify the preferred TUF route or lock its production wire format.
+Do not layer a second custom signature protocol inside authenticated TUF targets.
 
 ## 3. Trust and the zero-budget operating model
 
-HTTPS protects transport; a pinned public key authenticates update metadata;
-SHA-256 binds package bytes; OpenRC receipts bind build/runtime identity; OS
-publisher signing affects platform trust prompts. These are separate boundaries.
+HTTPS protects transport. TUF's trusted roles authorize descriptors. Descriptor
+hashes bind package bytes. OpenRC receipts bind build/runtime identity. OS publisher
+signing affects platform trust prompts. These are separate boundaries; none alone
+qualifies installation or exact replay.
 
-For the initial bespoke design, use an offline-controlled Ed25519 release-signing
-key, protected backups and a deliberate signing step after package verification.
-The helper ships only public keys. Keep private keys out of Git, player builds,
-logs and the repository's ordinary CI environment. This provides useful separation
-from a repository-only compromise, at the cost of maintainer work.
+The survey promotes maintained TUF over extending a homegrown key-lifecycle
+protocol. The initial candidates are tough 0.24.0 for a native Rust helper and
+python-tuf 7.0.1 for maintainer/reference work. A library/toolchain is selected only
+after [Spike A](reuse-spikes.md#spike-a--standard-trust-on-static-github-hosting).
+Player systems do not require Python. A C++ implementation route needs a qualified
+library/integration choice, not an assumption that the Rust candidate is drop-in.
 
-**Deliberate threat limit:** the small single-key protocol does not recover safely
-from compromise of its trusted signing key. An attacker able to sign arbitrary
-replacement game code can also change future verifier behavior. Normal key
-rotation can use a transitional release trusted by older clients; compromise or
-loss without a usable prior trust path requires an independently obtained bootstrap.
-A second interchangeable update key is not by itself a cure for that problem.
+Keep root and targets keys offline; separate snapshot/timestamp authority if
+GitHub automation renews freshness. Never use the example's one key for every role
+as the production compromise-isolation design. Protect backups and rehearse normal
+rotation and recovery. A compromised root or malicious authorized executable is
+not magically repaired by adding TUF. Define the actual threat model and retain
+an independent manual bootstrap route.
 
-Before production, compare this operational burden with a maintained TUF client:
-offline root, delegated online roles, expiry/version checks and threshold policies
-provide a more established model, but require metadata and key operations.
-Do not call the prototype TUF or invent an incomplete TUF implementation.
-Keep signing authority independent of hosting when that is the claimed threat model.
+### Persistent trust is a separate acceptance boundary
 
-Use a proposed 90-day metadata horizon and renew by day 60; renewals increment the
-sequence. Expiry stops new installs while permitting offline play. Use wall time
-for signed validity, a monotonic clock for in-process deadlines, and detect large
-backward/forward clock anomalies against retained observations. Reject automatic
-installation and explain correction when time cannot be trusted; do not silently
-disable expiry. First-contact freshness and freezes within the valid period remain
-limited. Local same-user malware, compromised signing/build machines and compromised
-OS trust are outside the protection this protocol establishes.
+Store the latest verified root, required root history and metadata high-water state
+outside every replaceable game generation. Preserve it across binary rollback.
+Use explicit owner-checked locking if multiple installations share a trust store;
+installation journals remain bound to their own real install roots.
 
-GitHub release immutability and tag rules are desirable additional controls.
-Enabling them is a separate future repository operation. Inspect current settings
-and publisher semantics first; do not rewrite old tags or assume existing v0.2.8
-assets became immutable retroactively.
+The inspected tough loader takes the caller's trusted root bytes. Passing the
+original bundled root on every run does not establish root advancement. Its
+optional datastore defaults to temporary storage, uses process-local locks and
+ordinary writes, and skips some previous-version comparisons when cached metadata
+does not parse. These observations make the integration gate concrete:
+
+- Select and durably retain the latest verified root, with qualified crash recovery.
+- Keep expiry enforcement enabled and establish persistent state before use.
+- Treat missing/corrupt established trust state as recovery-required; never quietly
+  reset to the old bundled root or erase high-water marks to make an update pass.
+- Distinguish a legitimate root-authorized role-key rotation from unexplained loss
+  of old metadata. Test torn writes, concurrent processes, old helper versions and
+  stale CDN/root history explicitly.
+- Complete target streams and independent descriptor length checks before use.
+  Do not rely on a successful stream-open call as verification.
+
+The source header's old delegation limitation conflicts with current code; neither
+that comment nor a broad feature list establishes exact interoperability. Initial
+scope uses top-level roles; later delegation needs its own fixtures. Applicable
+security advisories are a dependency-selection input, not a whole-product verdict.
+
+### Freshness and applying a prepared update
+
+Require a successful trust refresh before granting automatic apply. Persist the
+accepted target/authorization with the transaction; after graceful exit, recheck
+its validity, the target's eligibility in that accepted authorization and the
+installed-version policy before mutation. Authorization validity includes the
+earliest expiry of the complete accepted root/timestamp/snapshot/targets chain
+and any future delegated roles, plus any stricter descriptor validity. Persist
+and revalidate the authenticated evidence; a descriptor-local expiry alone is
+insufficient. Failed/offline refresh leaves the candidate ready for later and the
+current game usable. An expired authorization cannot install silently just because
+its download once passed. Recovery to an already recorded local generation is a
+separately qualified action.
+
+A refresh cannot prove global newest information against replay of still-valid
+metadata; retain high-water marks and state the remaining freshness window.
+A withdrawal published after the successful pre-exit refresh can remain unseen
+at the local post-exit check and may be installed while that authorization remains
+valid. Withdrawal is not instantaneous revocation. A first/long-inactive client
+with no evidence of a higher root cannot distinguish a withheld next root from
+an absent newer root while older metadata remains valid. Use wall time for signed
+validity, monotonic time for deadlines, and qualify backward/forward clock anomalies.
+Never disable expiry to cure a clock problem. First-contact/reinstallation and
+local same-user compromise remain explicit limits.
+
+Role-specific validity/renewal hypotheses and missed-schedule exercises are in the
+trust spike. Online timestamp renewal cannot extend an expired offline-signed
+targets role. The previous 90-day single-envelope policy applies only to the
+comparison model. No production key, schedule or signing workflow exists in this
+branch. Paid KMS, certificates or hosting are not dependencies of the proposal.
+
+GitHub immutable releases and tag rules remain useful additional controls. Inspect
+current policy and publisher semantics before changing them; existing assets do
+not become retroactively immutable. No repository setting is changed here.
 
 ## 4. Download and bounded preparation
 
@@ -193,8 +252,13 @@ be a measured tradeoff, not a hidden extra 1.5 GB requirement.
 
 The unit of installation is a complete immutable generation of managed files.
 Do not overwrite an arbitrary extracted folder containing player-added files.
-Inventory ownership at bootstrap; unknown/unmanaged additions cause assisted
-migration or explicit preservation, not deletion.
+Establish ownership at bootstrap; unknown/unmanaged additions cause assisted
+migration or explicit preservation, not deletion. A version string, ZIP digest or
+selected native receipt does not inventory a legacy installed tree. Establish a
+complete baseline from an authenticated archive/derived inventory, introduce a
+qualified signed inventory, or use conservative side-by-side/assisted migration.
+Do not fetch an old 1.5 GB archive merely to create an eligible delta base. No
+automatic pruning of a legacy folder is allowed without known ownership.
 
 Proposed state contract:
 
@@ -295,54 +359,66 @@ read-only/manual recovery when compatibility is unproven. Keep exact old game
 versions obtainable for historical replay; upgrading does not make an old log's
 solver identity equivalent.
 
-## 7. Release and feed publication
+## 7. Release and metadata publication
 
-Preserve current six-file output and release verification for the first
-Pages-only signed-feed pilot. A feed envelope on Pages is not a seventh Release
-asset. If release signatures, patch files or alternate packaging are later added
-to Releases, explicitly version and update all strict inventories and consumers.
+Preserve current six-file output and release verification for the first Pages
+metadata pilot. Descriptors and trust metadata on Pages are not additional Release
+assets. If patches, signatures or alternate packaging later enter Releases,
+explicitly version all strict inventories and consumers.
 
-Proposed sequence:
+Proposed dependency order:
 
-1. Freeze source/tag and build with existing required gates. Generate bounds
-   and target metadata from final artifacts, not mutable source strings.
-2. Independently verify the complete release set and intended source/run identity.
-3. Create the release and upload all assets before declaring it complete. If adopting
-   immutable releases, adapt/rehearse the publisher's draft/upload/publish sequence;
-   do not assume the present gh release create invocation is an equivalent atomic API.
-4. Verify the public release identity and downloaded bytes using the existing
-   independent expectations. Test redirects from the canonical public URLs.
-5. Now sign the exact channel payload with the offline-controlled key, including
-   the actual observed release ID. Store only the signed public envelope with the
-   promotion evidence. The ID cannot be guessed or signed before release creation.
-6. Under a lock shared by all promotions for that channel and by website publication,
-   reject stale promotion attempts, commit the higher-sequence signed envelope in
-   updates/, deploy Pages through the actual configured route and verify public bytes.
-7. Record release commit, release ID, artifact hashes, envelope sequence/hash,
-   Pages commit/deployment and actual test scopes. Never log credentials.
+1. Freeze source/tag, build through existing required gates and generate identities
+   from final artifacts. Verify the exact complete release set and source/run.
+2. Create/upload/publish the release using a rehearsed publisher. If adopting
+   immutable releases, explicitly qualify draft/upload/publish semantics.
+3. Verify the actual public release ID and downloaded bytes, including canonical
+   redirect handling. A tag, release object or asset count alone is not completion.
+4. Create bounded descriptor targets from those verified facts, including the
+   observed release ID. Obtain the required offline targets signature. Every new
+   descriptor or targets-expiry renewal needs that role's signing authority.
+5. Under a channel/website-wide serialized publisher, reject stale promotion and
+   publish the immutable/hash-prefixed descriptor objects, versioned targets and
+   snapshot metadata, and any required versioned roots. Retain root history and
+   objects needed by supported inactive clients; verify their public availability.
+6. Advance timestamp.json last, then verify its public bytes and consistency with
+   the intended snapshot/targets/descriptors. For an already qualified alternative
+   protocol, retain its equivalent authenticate-complete-state-before-promotion rule.
+7. Record release/source/run, archive hashes, role/descriptor versions and hashes,
+   Pages commit/deployment and actual qualification scopes. Never log credentials.
 
-Current site/publish.py does not copy an updates/ source directory. A future
-change must deliberately add/preserve that namespace and coordinate concurrent
-website/feed pushes. Never put the feed under assets/, which the site publisher
-replaces. Do not overwrite the rest of gh-pages with a feed-only deployment.
-A GITHUB_TOKEN branch push alone may not trigger the branch-based Pages build;
-use a supported deployment or the qualified existing publish route.
+Publication is not an atomic cross-service transaction. Pages/CDN visibility may
+lag and clients can encounter an old valid timestamp or a temporarily unavailable
+referenced file. Retry without mixing generations, bypassing authentication or
+blocking play. Serving immutable objects before the mutable selector reduces this
+risk but does not eliminate cache races. Keep public objects reachable for the
+qualified support window; do not garbage-collect root history during site refresh.
 
-Per-tag release concurrency is insufficient to order vN and vN+1 feed promotion.
-Use one channel-wide serialized promotion and a compare/revalidate operation
-after any branch rebase/retry. A stale job cannot blindly overwrite the current
-signed sequence. The public CDN can lag; failures keep the old app working.
-No claim of atomic visibility across GitHub Release and Pages is made.
+site/publish.py does not copy a new updates/ source directory automatically and
+replaces assets/. Deliberately integrate the updates/ namespace and serialize
+website/feed publishers. Never replace the entire website with a metadata-only
+deployment. A GITHUB_TOKEN branch push may not trigger branch-based Pages; use the
+supported, qualified deployment route.
+
+Per-tag release concurrency does not order different tags or shared timestamps.
+Revalidate after rebase/retry and never let an older job overwrite newer authorized
+selection. Expiry renewal is a real maintenance operation: daily freshness jobs,
+manual recovery and offline targets/root renewal need named procedures. No such
+live publishing operation is performed by this research.
 
 ## 8. Delta extension contract
 
-Start only after the full path passes. Bind exact source and target hashes, the
+Enable production deltas only after the full path passes; research benchmarks can
+run in parallel. Compare HDiffPatch and Butler/Wharf using the
+[qualified command drafts](reuse-spikes.md#spike-c--existing-delta-tools-on-actual-openrc-packages),
+with librsync as a baseline. Bind exact source and target hashes, the
 patch's own signature-bound hash/size, algorithm/version and resource limits.
 Do not download an old package merely to construct a patch base; full target
 download is then the sensible fallback. Rehash the actual base, not a version
 label. Produce the target in staging and run the same whole-package validation.
 
-An archive-to-archive patch must reconstruct the exact signed ZIP bytes. An
+An archive-to-archive patch must reconstruct the exact ZIP bytes authenticated by
+the verified descriptor. An
 extracted-file patch cannot be compared directly to that ZIP hash: it needs a new
 signed canonical inventory covering the complete managed file tree and relevant
 modes/link/bundle metadata, plus equivalence to the full package's installed
@@ -354,3 +430,10 @@ patches or a partial application to live files. A smaller network transfer does
 not excuse higher RAM that excludes the project's modest-machine targets.
 Modular PCK work must revise composite runtime/replay identity and prove exact
 base/load order before it becomes a production option.
+
+Butler's optional signature validation occurs after committing its output. A
+fresh isolated output directory is therefore mandatory in that experiment; its
+staging flag alone does not satisfy verify-before-activation. Matching checksums
+from any patch tool are not publisher signatures. Independently verify the entire
+authenticated target and retain profile/ownership boundaries. If full fallback
+increases the approved transfer, disclose the new download size and request consent.

@@ -151,8 +151,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [DT-UPD-00, 2026-11-17](desktop-delivery-investigations/DT-UPD-00/README.md)
 investigates GitHub-only game updates: current-source audit, framework comparison,
-signed feed and native recovery design, zero-budget constraints, 62 future
+authenticated metadata and native recovery design, zero-budget constraints, 82 future
 acceptance cases and an offline protocol draft. The
+[27 additional game/component studies](desktop-delivery-investigations/DT-UPD-00/game-update-survey.md)
+add 115 pinned primary files, reusable-component spikes and player help drafts. The
 [update system plan](../plans/github-updates.md) owns implementation; no installed
 updater, delta savings or native recovery is claimed.
 

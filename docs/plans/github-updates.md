@@ -1,6 +1,6 @@
 # GitHub-only game updates
 
-**Status:** proposed design and research draft, 2026-11-17. No production updater is implemented by this branch.
+**Status:** proposed design and research draft, expanded 2026-11-17 with 27 additional repository studies. No production updater is implemented by this branch.
 **Owner/prefix:** desktop delivery, **DT-UPD-00…12**; subordinate to DT-08/08a/09/12/13.
 **Baseline:** main commit 2a3cf04dbbdaf486b9c9c8e983463d828f90c64a.
 **Constraints:** GitHub remains the distributor; no launcher, storefront, player account, paid infrastructure or mandatory update.
@@ -8,14 +8,20 @@
 ## Recommendation
 
 Extend the existing Home update notice into a verified download and restart flow.
-Keep complete platform ZIPs on GitHub Releases. Put a small signed channel document
-on the existing GitHub Pages site. Use a bundled, short-lived native helper for
-installation after the game exits. Players continue opening the game directly;
+Keep complete platform ZIPs on GitHub Releases. Put small authenticated release
+descriptors and trust metadata on the existing GitHub Pages site. **Prefer a
+maintained TUF implementation for the trust layer**, subject to the native,
+persistent-state and maintenance spike; retain the previous custom envelope only
+as a comparison model. Use a bundled, short-lived native helper for installation
+after the game exits. Players continue opening the game directly;
 the helper is not a normal-startup stub, resident service or second product.
 
-Start with complete packages. Add differential downloads only after measuring
-actual OpenRC artifacts and proving that the reconstructed package is byte-identical
-to the signed target. Keep a complete-package fallback permanently.
+Start production delivery with complete packages. In parallel, measure existing
+HDiffPatch and Butler/Wharf tools on actual OpenRC artifacts. Enable differential
+downloads only after proving exact target identity and the qualified full-package
+path: exact ZIP equality for archive deltas, or a new authenticated complete-tree
+inventory and full-install equivalence for file deltas. Keep a complete-package
+fallback permanently. Do not invent a new patch algorithm.
 
 **Automatic installation is conditional on each platform's recovery proof.**
 A two-rename directory replacement is not a portable atomic transaction. If a
@@ -36,7 +42,11 @@ implementation/library choice remains the DT-UPD-01 comparison outcome.
 - [Proposed architecture and protocol](../research/desktop-delivery-investigations/DT-UPD-00/design.md).
 - [Acceptance and fault-injection matrix](../research/desktop-delivery-investigations/DT-UPD-00/validation.md).
 - [Primary source ledger](../research/desktop-delivery-investigations/DT-UPD-00/sources.md).
-- [Executable protocol draft](../../research/github-updates/README.md).
+- [27 additional repository studies](../research/desktop-delivery-investigations/DT-UPD-00/game-update-survey.md).
+- [Pinned source ledger](../research/desktop-delivery-investigations/DT-UPD-00/survey-evidence.json).
+- [Reuse decisions and four investigation briefs](../research/desktop-delivery-investigations/DT-UPD-00/reuse-spikes.md).
+- [Player help and interface copy draft](../research/desktop-delivery-investigations/DT-UPD-00/player-help-draft.md).
+- [Executable envelope comparison model](../../research/github-updates/README.md).
 
 The existing [desktop plan](../DESKTOP-DELIVERY-PLAN.md), [release tools](../../tools/release/README.md),
 [Linux plan](linux-support-distribution.md), [Apple plan](apple-silicon-performance.md)
@@ -66,6 +76,12 @@ gamepad and mouse. Review at 1920×1080 first, then above 1080p, then 1280×720.
 A checking preference, manual Check now and an explicit automatic-download preference
 belong in Settings. Default to checking automatically, asking before downloading.
 No telemetry service is required; GitHub sees normal requests and their IP addresses.
+Keep Not checked, Failed, Current and Unsupported distinct. Require a successful
+trust refresh before granting apply; recheck its authorization/expiry after the
+normal exit flow. Offline or failed refresh leaves the candidate ready for later
+and the installed game playable. This bounds freshness; it cannot guarantee instant
+withdrawal against replay of still-valid metadata. If a failed delta needs a larger
+full download, show the new transfer size and request the player's consent.
 
 ## Required product properties
 
@@ -112,16 +128,16 @@ for native hardware. Steps can overlap only where contracts are already stable.
 
 | ID | Work | Exit evidence / status |
 | --- | --- | --- |
-| DT-UPD-00 | Source audit, primary research, design and negative protocol fixtures. | Research delivered in this branch; implementation and native qualification remain open. |
-| DT-UPD-01 | Compare the bespoke helper with pinned Velopack no-stub and a macOS Sparkle spike. Establish recovery topology and license/dependency lock. | Real OpenRC export launches directly, completes a trial update, preserves receipts, and proves the chosen ordinary/recovery paths. Estimated 3–5 days. |
-| DT-UPD-02 | Specify and implement signing, trust bootstrap, sequence/expiry state, bounded parsers, platform selection and release identity. | Adversarial fixtures and independent signature vectors; offline key backup and rotation/recovery rehearsal. Estimated 3–5 days. |
-| DT-UPD-03 | Integrate signed Pages feed and publication orchestration. | Exact source/assets verified before feed promotion; concurrent different-tag and website publishes cannot regress or lose the feed. Estimated 3–5 days. |
+| DT-UPD-00 | Source audit, primary research, 27 additional repository studies, design/help drafts and negative protocol fixtures. | Research delivered; 115 pinned source files in the follow-up ledger; all 82 product acceptance cases remain unrun. |
+| DT-UPD-01 | Compare a minimal helper with pinned Velopack no-stub, macOS Sparkle and, if useful, a per-user Windows installer. Establish legacy-install ownership, recovery topology and license/dependency lock. | Real OpenRC export launches directly, completes a trial update, preserves receipts, and proves the chosen ordinary/recovery paths. Estimated 3–5 days. |
+| DT-UPD-02 | Qualify maintained TUF against the custom-envelope comparison; choose native/publisher libraries and descriptor format. | Native/reference interoperability, verified EOF before use, durable latest root/high-water state, corrupt-cache and role-rotation tests, offline key backup and renewal/recovery rehearsal. Initial spike estimated 3–5 days; persistence/integration fixes may extend it. |
+| DT-UPD-03 | Integrate authenticated Pages metadata/descriptors and publication orchestration. | Exact public assets verified; immutable/versioned objects available before timestamp promotion; website/concurrent-tag jobs preserve metadata/root history. Estimated 3–5 days after trust selection. |
 | DT-UPD-04 | Home/Settings download UX and transport. | Bounded streaming/resume, cancellation, rate limits, offline play, localization/accessibility and existing update tests. Estimated 4–7 days. |
 | DT-UPD-05 | Windows apply/recovery adapter. | Writable local install, locked DLLs, paths, process ownership, every fault boundary and real shortcut/reboot recovery. Estimated 5–10 days. |
 | DT-UPD-06 | Linux apply/recovery adapter. | Executable modes, native sidecars, local filesystems, launch path and fault/reboot matrix. Estimated 3–6 days. |
 | DT-UPD-07 | macOS apply/recovery adapter. | Universal .app plus receipts, quarantined download, translocation, permissions, process restart and failure matrix on native Mac. Estimated 5–10 days. |
 | DT-UPD-08 | Startup health and profile compatibility. | Rendered Home acknowledgement with bound transaction identity; renderer fallback restart; data/Workshop/recording upgrade and rollback witnesses. Estimated 3–6 days. |
-| DT-UPD-09 | Measure differential strategies. | Real N→N+1, N−2→N, code/asset/engine changes; bytes, CPU, time, memory, disk, failure and exact target hashes. Estimated 3–5 days. |
+| DT-UPD-09 | Benchmark HDiffPatch and Butler/Wharf; librsync baseline, packaging churn, conditional chunk comparison. Research can run alongside the full-package implementation. | Real adjacent/skipped, code/asset/native/engine and same-source repeat exports; actual base availability, bytes, CPU, time, memory, disk and exact target identity. Estimated 3–5 days for the first matrix. |
 | DT-UPD-10 | Adopt the winning optional delta route. | Exact-base matching, bounded patcher, no long chains, full fallback and unchanged package/replay identity. Conditional, estimated 5–10 days. |
 | DT-UPD-11 | Rehearse downloaded releases and bootstrap migration. | Complete end-to-end native matrix; rollback, update withdrawal, stale channel, lost key and paused rollout rehearsal. Estimated 4–7 days. |
 | DT-UPD-12 | Enable by qualified platform and record acceptance. | Opt-in testers first, then stable; release notes state exact scope and recovery limits. No service-side telemetry required. |
@@ -140,16 +156,19 @@ and preview feeds without changing existing installed clients. Enable automatic
 apply only for tested OS/filesystem/layout combinations; unsupported installations
 retain assisted download.
 
-Promote a signed channel envelope only after the release is public and its exact
-assets pass downloaded-byte verification. A withdrawn update stops being offered
-through a higher-sequence signed control record in the future production protocol;
-this research verifier deliberately does not implement withdrawal. Never rewrite
-an already published archive or silently relabel a different binary as the same version.
+Promote authenticated channel metadata only after the release is public and its
+exact assets pass downloaded-byte verification. For the preferred TUF spike,
+publish immutable descriptor targets and versioned metadata before advancing
+timestamp.json; retain root history and revalidate concurrent publisher retries.
+Withdrawal is authenticated policy and never rewrites published archives.
+Metadata-version ordering and game-version downgrade policy are separate.
 
-Use a 90-day metadata lifetime as an initial operational proposal, with renewal
-before 60 days and on each release. Refresh does not require a new game version.
-No scheduled task, key, repository policy or deployment is created in this branch.
-A lapsed feed disables new automatic installations, not the installed simulator.
+Role lifetimes and renewal operations are hypotheses in the
+[trust spike](../research/desktop-delivery-investigations/DT-UPD-00/reuse-spikes.md#spike-a--standard-trust-on-static-github-hosting),
+not adopted production settings. Online timestamp renewal cannot renew expired
+offline-signed targets. A lapsed feed disables new automatic installation, not
+the simulator. No workflow, key, recurring job, repository policy or deployment
+is created in this branch.
 
 Stop promotion if signatures, target bytes, package receipts, data compatibility
 or recovery proof fail. Preserve the failed candidate and previous working build.
@@ -160,7 +179,8 @@ Document how to recover a bootstrap client that predates key rotation.
 
 Prefer a maintained framework if the DT-UPD-01 spike proves compliance and reduces
 our security/lifecycle maintenance. Consider AppImageUpdate only if the Linux packaging
-track adopts AppImage. Consider TUF when role delegation, multiple publishers or
-compromise recovery becomes necessary. Consider external PCK/content partitioning
+track adopts AppImage. Prefer maintained TUF now, but record concrete native,
+persistence or maintenance blockers before selecting its production implementation.
+Consider external PCK/content partitioning
 only with composite build/replay identity and measured benefit. None of these choices
 requires leaving GitHub or charging players.

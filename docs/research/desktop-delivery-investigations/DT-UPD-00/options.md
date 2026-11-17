@@ -1,7 +1,7 @@
 # Update options and decision
 
 2026-11-17; DT-UPD-00. [Plan](../../../plans/github-updates.md) ·
-[Primary sources](sources.md). Ratings below are engineering assessments for
+[Primary sources](sources.md) · [27 additional repository studies](game-update-survey.md). Ratings below are engineering assessments for
 OpenRC's current layout, not benchmarks or vendor rankings.
 
 ## Comparison
@@ -16,10 +16,40 @@ OpenRC's current layout, not benchmarks or vendor rankings.
 | WinSparkle | Native Windows update experience | MIT; static appcast | Documented flow launches an installer; portable replacement still needs a solution | Useful if Windows install lifecycle is deliberately adopted. |
 | AppImageUpdate / zsync | Small Linux transfers and integrated update possibility | MIT; supports GitHub Releases metadata | Change Linux ZIP to AppImage, integration, trust/recovery qualification | Conditional on Linux packaging owner; not universal solution. |
 | Godot resource PCK patches | Potentially much smaller content updates | Uses existing engine and release hosting | Pack ordering, base identity, early loading, patch compaction, signature and native/engine fallback | Optional later content strategy; not a complete safe updater today. |
-| Precomputed binary patch assets | Potentially smaller downloads, same installed release | Patches are ordinary GitHub assets | Exact-base detection, bounded patcher, target reconstruction and benchmarks | Preferred first efficiency experiment after full-package correctness. |
+| Precomputed deltas using HDiffPatch or Butler/Wharf | Potentially smaller transfers, same admitted release | Offline tools; ordinary GitHub patch assets | Exact-base identity, isolated output, target verification, footprint and native qualification | First efficiency experiments; production use follows full-package qualification. |
+| Maintained TUF with small descriptors on Pages | Same player UX; no account | Static metadata and Releases assets; no paid service required | Native integration, durable trusted state, offline root/targets signing and renewal | Preferred trust candidate; spike before selecting production implementation. |
 | Versioned content packs / content-addressed chunks | Reuse unchanged content across releases | Can use Release assets; no custom server inherently needed | New export/runtime identity, asset-count/request budget and cache GC | Larger architecture investment; justify with actual release measurements. |
 | OS package managers, Flatpak, winget | Convenient for some users | Software may be free; can source GitHub packages | External catalog/service and package-specific lifecycle | Optional future distribution, outside the requested GitHub-only core. |
 | git pull, rsync, generic folder sync | Poor for ordinary players | Free tools, but GitHub is not an rsync endpoint | Dev dependencies, source assets, dirty/mixed installs and no trusted package contract | Reject for player updates. |
+
+## What the game survey changes
+
+The [27 cases](game-update-survey.md) support a reuse-first approach, with distinct
+boundaries. DDNet and Mindustry supply useful player-flow ideas but their inspected
+replacement paths do not qualify OpenRC's complete native release. Warzone provides
+a signed GitHub Pages announcement precedent, not install authorization. ScummVM
+strengthens the case for native framework adapters. Luanti/Wesnoth concern content,
+while several other cases concern packaging or manual acquisition.
+
+For trust, **prefer maintained TUF before extending the bespoke envelope**. The
+small custom model is simpler to build but leaves root/key recovery and durable
+replay state to us. TUF reuses established metadata semantics while still requiring
+qualified caller state, descriptor handling and renewal operations. No implementation
+is selected merely because it is maintained. The tough source's temporary-store
+default, caller-supplied root and ordinary cache writes are concrete integration
+gates, detailed in [Spike A](reuse-spikes.md#spike-a--standard-trust-on-static-github-hosting).
+
+For deltas, prioritize **HDiffPatch** and **Butler/Wharf** as two different practical
+experiments. HDiffPatch fits the existing C/C++ toolchain; Butler supplies an offline
+multi-file pipeline without an itch account. Neither supplies a complete trusted
+OpenRC installer. Butler's output commit precedes optional verification, so fresh
+output plus independent admission is mandatory. librsync is a useful baseline;
+casync remains conditional on a workable GitHub-only chunk layout and platform
+support. [Pinned candidates and commands](reuse-spikes.md#spike-c--existing-delta-tools-on-actual-openrc-packages).
+
+No single inspected case proves all of our requirements together. Keep the robust
+OpenRC release publisher, combine suitable components behind stable interfaces,
+and own only the product-specific selection, identity, lifecycle and profile work.
 
 ## Velopack: investigate before adopting or rejecting
 
@@ -78,7 +108,7 @@ Apple's waiver requires a qualifying legal entity and excludes individuals/sole
 proprietors. An open-source repository by itself does not qualify. The $0 core
 plan therefore makes no paid-certificate or waiver assumption. Source A4.
 
-## Why full packages first
+## Why full packages remain the first production route
 
 A verified complete new generation gives one coherent target. It covers Godot
 runtime, scripts, assets, GDExtensions, manifests and receipts together, and works
@@ -87,7 +117,7 @@ chain of layered patches.
 
 The cost is bandwidth and temporary disk, significant for current ~1.5 GB ZIPs.
 Reliable streaming/resume and a clear restart flow provide immediate value while
-delta experiments proceed. Full packages remain the recovery reference even if
+measured delta research proceeds in parallel. Full packages remain the recovery reference even if
 most users later receive patches.
 
 A short-lived updater helper is infrastructure internal to the game: it runs
@@ -96,6 +126,9 @@ new storefront UI, resident service, account and mandatory launch stub. It does
 not pretend that a helper can replace files robustly without platform work.
 
 ## Efficiency experiments
+
+The detailed inputs, pinned tools, command drafts and decision receipts now live
+in [Spike C](reuse-spikes.md#spike-c--existing-delta-tools-on-actual-openrc-packages).
 
 | Candidate | What to measure | Failure/fallback |
 | --- | --- | --- |

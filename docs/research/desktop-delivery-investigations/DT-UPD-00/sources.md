@@ -78,3 +78,18 @@ The [API observation](release-observation.json) records package sizes and API-pr
 digests without claiming to have verified downloaded bytes. Primary technical
 sources were preferred over aggregator articles. Dates, versions, limits and
 framework capabilities must be rechecked before implementation.
+
+## Additional game and component research
+
+The same-branch follow-up is indexed separately to keep each source's scope and
+revision reviewable: [27 repository case studies](game-update-survey.md) and the
+[machine-readable ledger](survey-evidence.json). It adds 20 game/game-engine
+projects and seven supporting tools, covering 115 distinct commit-pinned source,
+workflow, documentation and license files. Main cases are counted once; Warzone's
+feed/verifier and SuperTux's version repository are supporting sources.
+
+The ledger also records the 2026 tough security bulletin/advisory, GitHub's schedule
+contract, TUF role documentation, and exact candidate release references. These
+references support the [reuse spikes](reuse-spikes.md), not a claim that native
+updating or delta savings have been demonstrated. Mutable upstream documentation
+and release/advisory status need a fresh check when selecting dependencies.

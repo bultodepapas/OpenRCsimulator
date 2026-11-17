@@ -5,6 +5,10 @@ DT-UPD-00, 2026-11-17. [Plan](../../../plans/github-updates.md) ·
 
 ## What was actually checked
 
+The original checks below belong to the first research commit. This follow-up
+changes documentation and evidence only; it retains the existing 30-test result
+without presenting it as TUF coverage or rerunning unchanged model code.
+
 | Check | Result | Boundary |
 | --- | --- | --- |
 | Frozen source audit | Completed at 2a3cf04dbbdaf486b9c9c8e983463d828f90c64a | Source analysis, not executed package lifecycle. |
@@ -39,6 +43,50 @@ The independent closure review found no remaining mismatch in the four corrected
 findings; three focused signature tests also passed. A branch push alone does not
 run the current main/PR CI workflow.
 
+## Follow-up source review
+
+The [27-case survey](game-update-survey.md) and [JSON ledger](survey-evidence.json)
+add 20 game/game-engine projects and seven update/security tools, with 115 distinct
+commit-pinned primary files. Three bounded researchers supplied source evidence;
+the lead inspected decision-driving original files, reconciled the claims and
+authored the integrated design. An independent Good Enemy challenged the result.
+Requested helper settings were Terra/max; effective provider settings were not
+independently verified.
+
+Accepted review findings include latest trusted-root selection, persistent cache
+corruption, cross-process ownership, verified stream completion, product-version
+policy separate from metadata versions, bounded withdrawal freshness, authenticated
+legacy-install ownership and timestamp-last publication. A categorical claim that
+tough lacks delegation was withdrawn after checking current implementation and the
+vendor advisory against a stale source-header comment. Initial scope remains four
+top-level roles; no delegated-channel isolation is claimed.
+
+The fixed-head comparison to main 08f948265d40d83fbb4726a302b9e1c9490ccfce found
+the reviewed updater/export/release/receipt/profile boundaries unchanged from the
+original baseline. Nearby queue-trigger changes are not native updater evidence.
+No merge/rebase, third-party updater execution, patch benchmark, key generation,
+production dependency change or live deployment is part of this follow-up.
+
+Final review corrections distinguish indirect descriptor authentication from a
+direct ZIP signature; bound unknown/new root and unseen-withdrawal expectations;
+require the earliest expiry of the complete accepted trust chain; and distinguish
+HDiffPatch's single-stream format from actual compression selection. The lead
+checked the pinned source and resolved these before publication.
+
+Integrated follow-up verification:
+
+| Check | Result | Boundary |
+| --- | --- | --- |
+| Relative documentation links | 78 resolved, including 8 anchors; no missing target/anchor | Owning research packet and changed navigation links, not every link in the repository. |
+| Evidence ledger | 27 distinct case repositories; 20 game/engine + 7 tools; 115 distinct pinned file URLs; seven additional guidance records | SHA/URL structure, unique counts and Markdown/JSON agreement checked; source inspection is not upstream execution. |
+| Acceptance register | T01–T82 unique and sequential, all UNRUN | Qualification requirements, not 82 passing tests. |
+| Change boundary | Runtime, export/release tools, workflows, website code, dependency pin and Python comparison-model code/tests unchanged | Documentation/evidence continuation only. |
+| Targeted independent review | Concrete trust, delta, publication and help findings resolved through source inspection and document corrections | Does not certify future native implementations. |
+| Earlier protocol suite | Existing 30-test result retained; unchanged code not rerun in this follow-up | Custom-envelope comparison only; no TUF test result claimed. |
+
+Staged whitespace validation passed for the 13 documentation/evidence files.
+Product cases T01–T82 remain **UNRUN**.
+
 ## Acceptance rule
 
 For every supported platform/layout, retain before/after package and profile
@@ -57,10 +105,10 @@ end-to-end cases.
 | Case | Exercise | Required result |
 | --- | --- | --- |
 | T01 | Valid stable release on each supported platform | Correct archive, architecture, exact source and manifest selected; installed version bound. |
-| T02 | Change one signed-payload byte; alter signature/key ID | Reject before payload interpretation, download or extraction. |
+| T02 | Change authenticated metadata/descriptor bytes; alter signature/key ID | Reject before authorizing a package download or extraction; use the chosen protocol's verification workflow. |
 | T03 | Unknown key, invalid signature, malformed base64/UTF-8, duplicate fields, NaN, huge/deep JSON | Bounded deterministic refusal; no crash, side effects or fallback to unsigned metadata. |
 | T04 | Expired/future feed, clock moved backward/forward, first-contact stale metadata | Respect documented validity/clock policy; offline play continues. |
-| T05 | Older sequence; same sequence with different bytes; intact same-sequence cache | Reject rollback/equivocation; accept only valid identical cache. |
+| T05 | Older metadata/sequence; changed same-version immutable object; intact cache | Reject rollback and changed immutable identities under the chosen protocol; the comparison envelope also rejects same-sequence equivocation. |
 | T06 | Wrong repository/product/channel, unsupported protocol/OS/architecture | No automatic install; meaningful manual fallback. |
 | T07 | Stable/preview transitions, preview → final stable, skipped versions, equal version, downgrade | Distinguish subscription and artifact channels; no unintended prerelease or downgrade. |
 | T08 | Key rotation, client missing the transition, signing-key loss/compromise | Exercise the documented trust path or independent bootstrap; no claim old-key-only rotation repairs compromise. |
@@ -89,7 +137,7 @@ end-to-end cases.
 | T21 | ZIP bomb, misleading expanded size/count, truncated metadata, extreme nesting | Enforce actual stream limits, disk budget and bounded work. |
 | T22 | Missing/wrong executable, native library, mode or architecture | Reject staged generation; never install a plausible partial set. |
 | T23 | Correct Mac .app plus absent/stale/mismatched reference or native receipt | Reject incoherent release; preserve old app and exact receipt pair. |
-| T24 | Signed archive disagrees with signed-bound release manifest/source | Reject; no trust by filename or tag alone. |
+| T24 | Descriptor-authenticated archive disagrees with its bound release manifest/source | Reject; no trust by filename or tag alone. |
 | T25 | Current runtime integrity and exact-replay package checks after update | Same identity contract as a complete qualified release; no silent script/PCK overlay. |
 | T26 | Dirty/custom install or unmanaged files inside target folder | No destructive sync/delete; assisted migration or explicitly preserved managed-generation policy. |
 
@@ -136,13 +184,42 @@ end-to-end cases.
 | T53 | New immutable-release policy plus draft/assets/publication | All assets attached before publish; real retry and failure semantics qualified. |
 | T54 | Different-tag release jobs finish out of order | Channel-wide monotonic promotion; older job cannot regress the feed. |
 | T55 | Concurrent website publish and feed publish; later normal site refresh | Whole site and updates/ remain intact; actual Pages build/deploy occurs. |
-| T56 | CDN stale envelope, delayed Pages visibility, Pages 429/outage | Authentic target consistency; retry without blocking play or using unsigned data. |
-| T57 | Withdraw a faulty release and renew same-version metadata | Higher-sequence signed policy works; no replacement of old published bytes. |
+| T56 | CDN stale metadata, delayed Pages visibility, Pages 429/outage | Authentic target consistency; retry without blocking play or using unsigned data. |
+| T57 | Withdraw a faulty release and renew same-version metadata | Newer authenticated policy works within documented freshness limits; no replacement of old published bytes. |
 | T58 | Actual code-only/asset/native/engine version pairs | Measured delta bytes, generation/apply time, p50/p95, peak RSS/disk and final exact hash. |
 | T59 | Skipped release, missing base archive, modified base, corrupt/oversized patch | Full-package fallback; never download a base just to save a smaller patch. |
 | T60 | Native PCK/chunk experiment with exact-replay and bundle/native identity | Composite identity preserved or new contract explicitly admitted; startup/load cost measured. |
 | T61 | Offline use, opt-out, manual checks, UI navigation/localization | Game remains usable; explicit consent; 1080p-first review without focus theft. |
 | T62 | First bootstrap install and long-inactive client | Clear one-time manual upgrade; old client/key/protocol recovery is real and documented. |
+
+## Survey-derived qualification cases
+
+These 20 additions make the new source findings falsifiable. They supplement
+T01–T62; they are neither implemented tests nor passing upstream results.
+G/U identifiers refer to the [repository survey](game-update-survey.md).
+
+| Case | Concrete fixture / precedent | Required result |
+| --- | --- | --- |
+| T63 | TUF descriptor stream returns useful-looking bytes, then hash/length error (U06) | No descriptor interpretation, download decision or execution before verified completion; bounded buffering. |
+| T64 | Rotate root, skip releases, then restart or roll back the game with stale bundled root (U06) | Latest verified root remains authoritative. A known newer-root requirement or unverifiable chain causes refusal; a client with no higher-root evidence may accept still-valid old metadata. Never silently reset established trust. |
+| T65 | Tear/truncate timestamp/snapshot/root/cache files; distinguish legitimate role-key rotation (U06) | Established high-water state is recovered or updates stop; malformed local state cannot silently erase rollback protection. |
+| T66 | Two installs refresh one trust store while one crashes during persistence (U06–U07) | Cross-process ownership and durable state remain coherent; each apply journal stays bound to its own install. |
+| T67 | Attacker controls only timestamp or snapshot key (U06–U07) | Cannot authorize a new executable/descriptor without targets authority; freshness/denial limits are explicit. |
+| T68 | Versioned targets/snapshot or hash-prefixed descriptor unavailable when timestamp appears (U06–U07) | Consistent retry/refusal, no mixed generation; publisher verifies immutable objects before promoting timestamp. |
+| T69 | Scheduled job delayed/disabled; targets expires while timestamp renews (G04, N03) | Offline play continues; update blocked with accurate help; offline targets signing and manual renewal are actually rehearsed. |
+| T70 | SSL, parsing, rate-limit or offline failure during a check (G06, G18) | Failed or Not checked, never a falsely successful Current result; retain last successful check time. |
+| T71 | Notification-only/content-only/unqualified native capability (G05, G08–G10, G14) | UI exposes only available actions; an assisted download is not labelled automatic installation. |
+| T72 | Legacy install has unknown custom files and no complete trusted baseline inventory (G03, G15) | Preserve old tree; establish ownership from trusted evidence or offer side-by-side/assisted migration; no guessed cleanup. |
+| T73 | Butler output commit succeeds, then optional validation fails (U01–U02) | Only isolated candidate is affected; independently verify every target before any OpenRC activation. |
+| T74 | Correct-looking version but wrong/mutated rdiff or binary-patch basis (U03, U05) | Exact source identity rejected before patching; no garbage candidate becomes active. |
+| T75 | Directory patch omits a library/receipt/mode/link, or includes extra files (G14, U01–U02) | Full authenticated inventory and full-install equivalence fail; no comparison of a directory to a ZIP digest. |
+| T76 | First capable update after manual ZIP was deleted (U02–U05) | Record actual base eligibility; select full target when needed, never download an old ZIP just to claim delta savings. |
+| T77 | Repeat export of identical source/toolchain with different timestamps/order/compression (G19, U05) | Attribute measured byte churn; preserve signing/receipt/replay identity before any packaging change. |
+| T78 | Delta fails and full fallback exceeds approved transfer bytes (U02–U05) | Explain new size and obtain download consent; installed game remains usable. |
+| T79 | Large compressed executable, adversarial patch windows or decompressor allocation (G17, U05) | Real RSS/CPU/output/disk limits hold; a cache flag or payload header is not mistaken for a whole-process bound. |
+| T80 | Mutable nightly tag, complete-looking asset count, misleading architecture filename (G11–G13) | Exact source/OS/CPU/asset identities verified and descriptor promoted only after public byte checks. |
+| T81 | Prepared target expires or is withdrawn before/after pre-exit refresh; refresh unavailable (G04, U06–U07) | Require pre-apply refresh; after exit recheck observed eligibility and earliest expiry of the entire accepted chain. An unseen later withdrawal may remain installable within validity; failed refresh stays ready. |
+| T82 | Old helper restored with old binary but newer trust state/profile remains (G15, U06–U07) | Compatible use or explicit refusal/recovery; no trust/profile reset and no false claim that binary rollback restores all state. |
 
 ## Benchmark receipt to produce later
 

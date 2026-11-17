@@ -8,20 +8,66 @@ or Windows/macOS installation acceptance.
 
 [Active plan](../../../plans/github-updates.md) · [Options](options.md) ·
 [Design](design.md) · [Validation](validation.md) · [Sources](sources.md) ·
-[Draft code](../../../../research/github-updates/README.md)
+[Comparison model](../../../../research/github-updates/README.md) ·
+[Game survey](game-update-survey.md) · [Reuse spikes](reuse-spikes.md) ·
+[Player help](player-help-draft.md)
 
 ## Conclusion
 
 The best fit is an in-game update experience with GitHub Releases packages, a
-signed small discovery feed on the existing GitHub Pages site and a temporary
-native installation helper. Complete-package replacement is the correctness
-baseline; differential download is a replaceable transport optimization.
+small authenticated discovery metadata on the existing GitHub Pages site and a
+temporary native installation helper. Complete-package replacement is the
+correctness baseline; differential download is a replaceable transport optimization.
+The follow-up makes maintained TUF the preferred trust candidate and HDiffPatch /
+Butler-Wharf the first delta comparison, subject to the documented spikes.
 
 The largest uncertainty is safe cross-platform installation with no permanent
 launcher. The research therefore specifies a platform qualification gate and a
 useful verified-download fallback. Generic two-rename code is insufficient.
 Framework comparison remains open at a bounded integration spike; the design does
 not require rebuilding every updater feature ourselves.
+
+## Follow-up: learning from 27 additional repositories
+
+Continued on the same branch from 67645ef810c2e6d6844a27cdb8c0343d4f3446fc.
+The [survey](game-update-survey.md) covers **20 game/game-engine projects and seven
+supporting tools**, with **115 distinct commit-pinned primary files**, plus seven
+additional guidance/release/advisory records. The [JSON ledger](survey-evidence.json)
+records every pin, inspected mechanism, limitation and source link. Supporting
+feed/dependency repositories are not counted as extra cases. None of the initial
+framework cases is counted again.
+
+The new findings produce concrete design changes:
+
+- Prefer an established TUF trust implementation over expanding the custom
+  signature/key-lifecycle model; qualify durable latest-root/high-water storage.
+- Benchmark existing HDiffPatch and Butler/Wharf tools in isolated outputs; treat
+  tool block signatures separately from publisher authentication.
+- Preserve strict exact-inventory publication and advance authenticated channel
+  selection only after public artifact verification and consistent metadata staging.
+- Establish legacy-install ownership before cleanup; preserve newer shared profiles
+  independently of old binary generations.
+- Add four bounded [spike briefs](reuse-spikes.md), actionable
+  [player help/UI copy](player-help-draft.md), and 20 survey-derived acceptance cases.
+
+All **82 product acceptance cases remain unrun**. No package savings, native
+recovery, TUF interoperability or new player capability is claimed from this survey.
+The existing 30-test envelope result is retained as comparison evidence, not TUF
+coverage. No third-party game/updater or patch binary was executed.
+
+### Fixed-head check against newer main
+
+Main advanced to [08f948265d40d83fbb4726a302b9e1c9490ccfce](https://github.com/bultodepapas/OpenRCsimulator/commit/08f948265d40d83fbb4726a302b9e1c9490ccfce)
+during this follow-up. The [comparison to the audit baseline](https://github.com/bultodepapas/OpenRCsimulator/compare/2a3cf04dbbdaf486b9c9c8e983463d828f90c64a...08f948265d40d83fbb4726a302b9e1c9490ccfce)
+and pinned tree inspection found no changes in the reviewed updater, startup,
+preferences, export, native receipt, flight-log, release publisher, site publisher
+or main CI boundaries. The complete tools/release tree is unchanged.
+
+Nearby test-queue changes include a Windows workflow path trigger for the Mac
+receipt tool and hidden-console behavior in a test runner. They do not implement
+an updater or prove native Mac/Windows replacement. This research keeps its
+original baseline and branch history; future implementation must read the then-current
+queue/tool guidance. This statement is scoped to the fixed main SHA above.
 
 ## Current-source findings
 
@@ -97,8 +143,11 @@ No signed redirect URLs or credentials are retained.
   overwrite of a running game, git pull on player machines, PCK hot overlays,
   a new storefront, a permanent launcher or a paid update backend.
 - **Kept as comparison candidates:** Velopack with an actually tested no-stub path,
-  Sparkle for Mac if receipt/layout and signing constraints are solved,
-  AppImageUpdate if the Linux delivery owner adopts AppImage.
+  Sparkle for Mac if receipt/layout and signing constraints are solved, a per-user
+  Windows installer when justified, and AppImageUpdate if Linux adopts AppImage.
+- **Preferred for the next reuse experiments:** maintained TUF with a qualified
+  persistent trust adapter; HDiffPatch and Butler/Wharf for isolated reconstruction.
+  The bespoke envelope is retained for comparison, not selected for production.
 - **Deferred:** delta and modular-content benefits until actual measurements;
   unattended rollback across incompatible data schemas; blanket atomicity claims.
 

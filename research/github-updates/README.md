@@ -1,8 +1,14 @@
-# DT-UPD-00 executable protocol draft
+# DT-UPD-00 custom-envelope comparison model
 
 This is an **offline research model**, not a deployable updater. It performs no
 network requests, package extraction, filesystem replacement, process launch,
 key generation on disk or GitHub mutation.
+
+The 2026-11-17 [game-survey follow-up](../../docs/research/desktop-delivery-investigations/DT-UPD-00/game-update-survey.md)
+prefers a maintained TUF trust implementation for the next qualification spike.
+This earlier custom envelope remains a bounded comparison and negative-fixture
+reference. It does not implement or test TUF; its passing tests do not select a
+production wire format or qualify native trust persistence.
 
 [Active plan](../../docs/plans/github-updates.md) ·
 [Architecture](../../docs/research/desktop-delivery-investigations/DT-UPD-00/design.md) ·
@@ -73,7 +79,9 @@ matrix in the evidence document.
 
 ## Implementation draft boundary
 
-Port the verified contract to the selected native implementation after DT-UPD-01.
+Use these fixtures to compare product invariants during DT-UPD-01/02. Qualify the
+chosen standard protocol/library directly; do not port this model as a homemade
+TUF client or stack another custom signature format inside TUF targets.
 Do not ship Python or require players to run it. Use the existing game UI and
 a bundled helper, keeping player consent, save/recording exit guards and per-OS
-installation details separate. Full signed packages stay the correctness baseline.
+installation details separate. Full authenticated package archives stay the correctness baseline.
