@@ -8,6 +8,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 | [Estimated trainer package](estimated-trainer-package.md) | Derivation, borrowed values, domain and software checks of the first airframe and power packages (AC-05, AC-06). |
 | [ClearView compatibility research](clearview-2026-11-15.md) | Primary documentation, seven ZIPs / 26 model roots, exact source inventory, experimental importer evidence, conversion matrix and limits, 2026-11-15. The [AC-CV subplan](../../plans/clearview-aircraft-import.md) owns implementation and open qualification gates. |
 | [Flight Simulator compatibility research](flight-simulator-2026-11-16/README.md) | Import/source audit, version matrix, aircraft examples, tooling/rights and RC scaling; [26 aircraft/converter code cases](flight-simulator-2026-11-16/code-investigations-2026-11-17.md) and [20 additional game/asset-pipeline studies](flight-simulator-2026-11-16/game-repository-survey-2026-11-17.md), 2026-11-17. The proposed [AC-FS subplan](../../plans/flight-simulator-aircraft-import.md), [wizard](../../plans/flight-simulator-import-wizard.md) and [eight milestones](../../plans/flight-simulator-import-milestones.md) own implementation and qualification; no runtime converter or flight qualification is delivered by the research. |
+| [RC simulator source survey](rc-simulator-sources-2026-11-17.md) | CRRCSim, FMS, RC Desk Pilot, PicaSim, SSS and five additional RC ecosystems; actual package/repository inspections, source inventory, permission boundaries and automatic adapter priorities, 2026-11-17. Research only; no new runtime importer or flight qualification. |
 
 ## Engine probes (2026-11-10)
 
@@ -120,3 +121,4 @@ Not reached by that review: a kill at an arbitrary instruction beyond the store'
 - **Engine log on corrupt deflate data.** A stream that is well formed up to a corrupt block still makes the engine log one error while it is refused.
 - **Real exporter corpus (G02).** No corpus of real STL, GLB and PNG exports has been run; the chunk and extension allow-lists may refuse common files.
 - **Parser differential as a class.** Building the mesh from the preflight's own validated accessors instead of calling the engine importer would remove it; an STL-only first release is the conservative alternative. Decide before G02.
+
