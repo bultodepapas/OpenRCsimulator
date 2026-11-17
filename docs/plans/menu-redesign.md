@@ -4,6 +4,8 @@
 
 **Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, lime/graphite theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](../research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks for the earlier palette. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
+**Vehicle-selection follow-up, 2026-11-17:** [UI-VS-00…12](vehicle-selection-performance.md) now owns the proposed detailed catalog/skin-switching work: 100+ entries, exact appearance identity, compatible material transactions, preview preparation and measured memory/admission policy. Its [current-source audit](../research/menu-investigations/vehicle-selection-2026-11-17/README.md) distinguishes the existing loader/cache/gallery from remaining work. This is planning only; this document retains the overall shell and Home-to-flight ownership.
+
 Build an aircraft-led RC club experience: a believable field, a well-lit model, a clear route to flight and a restrained interface that leaves the world visible. The [dated visual/resource investigation](../research/menu-investigations/UI-20-R2/README.md) owns the current-screen diagnosis, reference analysis, Godot/GitHub research and source licenses.
 
 ## 1. Outcome, scope and retained work

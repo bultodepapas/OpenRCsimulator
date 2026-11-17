@@ -2,6 +2,8 @@
 
 Status: current shell, UI-00…06, UI-06d-R1 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](plans/menu-redesign.md). Core cinematic shell implementation and native EN/ES 720p–4K evidence were added on 2026-10-15 in [UI-22–26-R2](research/menu-investigations/UI-25-R2/README.md). Pilot, extended accessibility and release acceptance remain open.
 
+The [vehicle selection and skin performance plan](plans/vehicle-selection-performance.md), UI-VS-00…12, adds a source-audited proposal dated 2026-11-17 for visual catalog scale, clear skin identity and faster preview changes. It does not change the current runtime status in this guide. [Audit, interface specification, engine research and measurement protocol](research/menu-investigations/vehicle-selection-2026-11-17/README.md).
+
 Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, build-info export integration and UI tests. Coordinate simulation holds/recording with physics, world construction with rendering, weather with M5-W/ATM, lighting with TOD/FW and display settings with DT.
 
 ## Implemented behavior
