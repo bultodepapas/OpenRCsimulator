@@ -7,10 +7,12 @@
 | [Implementation plan](../../../plans/flight-simulator-aircraft-import.md) | Product flow, ownership, architecture, steps, dependencies and release gates |
 | This investigation | Current import audit, version matrix, findings, alternatives and evidence limits |
 | [Automatic import wizard](../../../plans/flight-simulator-import-wizard.md) | Clarified product goal: in-app conversion, conditional questions, editable defaults and ready-state acceptance |
+| [Milestones and contingency evidence](../../../plans/flight-simulator-import-milestones.md) | Eight delivery milestones, entry/exit/stop criteria, resource enforcement, independent oracles and 26 failure/recovery cases |
 | [Conversion and scaling](conversion-and-scaling.md) | Per-field mapping, units, reference frames, inertia, aerodynamic semantics and RC scaling |
 | [Sources and examples](sources-and-examples.md) | Primary-source register, inspected aircraft and conversion-tool assessment |
 | [24 additional investigations](follow-up-24-investigations/README.md) | Specialist forums, GitHub issues, six aircraft-mod case studies, conditional physics, composition, tools and regressions |
 | [Tool and fixture backlog](follow-up-24-investigations/tooling-and-fixtures.md) | Optional tool decisions, exact experiment boundaries and 24 proposed failure-mechanism fixtures |
+| [26 source-code investigations](code-investigations-2026-11-17.md) | Pinned aircraft/tool/importer implementations and OpenRC integration boundaries, 2026-11-17; observed code, inferred risks and proposed checks |
 
 ## Findings that determine the design
 
@@ -170,3 +172,21 @@ The [wizard](../../../plans/flight-simulator-import-wizard.md) now defines W15�
 Existing source capture, axis/scale separation, inventory-derived mass properties, source-law conditional mapping, source-to-visual correspondence, stale-job rejection and exact trial/start identities remain applicable. The audit did not establish new failures in those already specified contracts. The existing numerical, Home/portable and exported-platform qualification work remains open; passing documentation checks cannot close it.
 
 **Verification:** the integrated correction received focused closure review; remaining property-granularity and conditional-rated-profile wording was aligned before staging. Reused `tools/ci/check_docs.py` against the staged Git tree: **87 new or affected local links across 14 bounded related documents, zero errors**, with all existing anchors in the five changed documents preserved. W01–W19 are unique and consecutive; all 16 AC-FS work packages remain, and the five new journeys map to their stated implementation owners. Changed-file whitespace checks passed. This revision changes five Markdown files only. Runtime tests, conversion, numerical campaigns and platform qualification were not run or claimed.
+
+### Source-code and milestone refinement (2026-11-17)
+
+**Inspected OpenRC revision:** `2e83947f9c1d7acf257ff2971cee58151e569106`. The [source-code dossier](code-investigations-2026-11-17.md) records 26 bounded cases from eight external repositories and OpenRC, each tied to inspected functions/files and an immutable external revision. This deepens the earlier 24 investigations without relabelling the cases as independent publications or successful imports. Source and selected tests were read; third-party code, aircraft conversion, binary asset decoding and performance campaigns were not executed.
+
+The [milestone contract](../../../plans/flight-simulator-import-milestones.md) turns the findings into M1–M8 with explicit prerequisites, deliverables, independent expected results, stop/reopen conditions and owning AC-FS steps. The contingency matrix maps every C01–C26 mechanism to proposed original fixtures and W journeys. M1–M5 are partial engineering outcomes, M6 qualifies a stated exact trial, M7 requires the complete applicable W01–W19 suite and saved/packaged automatic workflow, and M8 qualifies additional families separately. Early milestones close only their stage assertions; they cannot claim later readiness, persistence or restart checks.
+
+Material corrections now integrated into the canonical plan are:
+
+- Resolve safe parent references within selected roots while keeping strict archive entry and escape rules; select active model/LOD declarations rather than commented or merely present files.
+- Distinguish authored, generated and assembled source. Supplying a generated file resolves its dependency only; behavior semantics need independent support. Recognizing an animation does not establish its coupled flight-control law.
+- Require expected-parts, transform, image-index and node-instance correspondence. Silent mesh loss, default substitution for zero, heuristic packed encodings and repaired-away required parts cannot become complete import evidence.
+- Inspect validator scope/options and `issues.truncated`, and independently admit required extensions. Correct the older unqualified license description for msfs2blend after finding conflicting root/file declarations; no converter dependency is adopted.
+- Account for serialization, ordinary re-admission, preview construction and superseded jobs. Specify one active import plus one coalesced pending selection, finite target-specific budgets, actual worker termination/drain enforcement and exact check-to-launch context.
+
+Three read-only reviews covered aircraft source, tool source and adversarial milestone/runtime boundaries. The lead verified material source claims and integrated the accepted corrections, including stage sequencing and generated-behavior limits. No exact authorized conventional real W01 source or shipping conversion runtime is qualified by this research. Those selections, the open physics/domain gates, persistent Home/portable lifecycle and clean target exports remain explicit implementation prerequisites.
+
+**Verification:** reused `tools/ci/check_docs.py` against the staged Git tree: **220 new or affected local links across 18 bounded related documents, zero errors**; all existing anchors in the nine edited documents were preserved. Confirmed 26 unique consecutive C cases and matching contingency rows, eight milestones, W01–W19, all 16 AC-FS work packages, eight pinned external repositories and valid matrix owner/journey references. Independently checked four groups of documented fixture arithmetic: rotation/translation, index slice/byte offset, half-float values and conditional rudder targets. These checks validate documentation examples, not a runtime converter. Focused review closed the stage-sequencing, termination and older-source-description inconsistencies. Whitespace checks passed. The revision changes 11 Markdown files, including two new documents; no runtime, conversion, numerical-flight or platform campaign was run.
