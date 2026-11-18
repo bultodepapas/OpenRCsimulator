@@ -1,0 +1,43 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-18",
+  "baseline_commit": "e488ef765",
+  "candidate_commit": "fe296f1c3 plus this renewal",
+  "platform": "Linux x86_64 (WSL2, LF clone), official Godot 4.8-beta2 cafc17a19",
+  "inventory": {
+    "paths_before": 149,
+    "paths_after": 151,
+    "qualified_sha256_before": "57453acc5a6c1a1cda23bac423467ef172cabdec0001e503e91e56e2a2da6653",
+    "qualified_sha256_after": "006037e924b555b79fd92243a415b3926823eeebf4b4424ff62a67f8de19807e",
+    "changed": [
+      "app/physics/aircraft_data.gd",
+      "app/physics/electric_battery_step.gd",
+      "app/physics/electric_stop.gd",
+      "app/physics/event_step.gd",
+      "app/physics/multirotor/controlled_plant.gd",
+      "app/physics/multirotor/flight_controller.gd",
+      "app/physics/multirotor_data.gd",
+      "app/project.godot"
+    ],
+    "added": [
+      "app/physics/slew_interval.gd",
+      "app/physics/slew_trajectory.gd"
+    ]
+  },
+  "numerical_and_provenance_result": "Between the baseline and candidate reports only data_check (the three historical-source leaves) and the solver source inventory differ; normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance are identical.",
+  "reports_sha256": {
+    "baseline": "05eb72de3183b587bc58afc598cb6c0a9ec1454c643fd115d36615d1cbf9f563",
+    "candidate": "d55012ce90c2d690649e1a8b5f57676ed0ace973369d657595538a857fc182a2",
+    "renewed": "0e305e9d8ab97f8cee9817e4269363078ed66e03139b6a82325654ba1d72c6c3",
+    "physics-mutation": "49ea71f3e1dc7962d8912cb25cd6e41e90ddb80cc56d4d8916c365a1fef94e96",
+    "version-mutation": "2f896416e32668db16bcb3d7b3fbe8eec55769b072affa0a015fd19aec4238c5",
+    "restored": "0e305e9d8ab97f8cee9817e4269363078ed66e03139b6a82325654ba1d72c6c3"
+  },
+  "checks": {
+    "renewed": "generator and updater --check pass; historical provenance admitted",
+    "physics_mutation": "comment appended to app/physics/aero.gd: both guards refuse, then restored",
+    "version_mutation": "config/version suffixed in app/project.godot: both guards refuse, then restored",
+    "restored": "both guards pass again"
+  },
+  "limits": "Software provenance renewal on Linux only; not physical validation, not a Windows D11g reconstruction."
+}

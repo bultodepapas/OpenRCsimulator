@@ -197,3 +197,14 @@ Option 2 of the brief now, option 3 later as held-out validation (DECISIONS.md, 
 - **CLadot** (borrowed 1.97) is unused by the code; the lag now supplies the tail's CLα̇.
 - **First-order lag vs pure delay:** at ωτ 0.46 a pure transport delay has ~17% more quadrature (damping) and ~40% less in-phase effect than the first-order lag. A delay line would be the next refinement if VAL short-period data demand it.
 - **Clp:** the converged-strip question (D11d) is now the only damping derivative still borrowed.
+
+### 2026-11-18 source renewal after servo, Creator, crash and EdgeTX edits
+
+The comparison ran on Linux x86_64 (WSL2, LF clone) with pinned Godot 4.8 beta2. Baseline was `e488ef765`; candidate was `fe296f1c3`.
+- **Inventory:** it grew from 149 to 151 inputs. `slew_interval.gd` and `slew_trajectory.gd` were added.
+- **Changes:** eight inputs changed, seven physics sources and `app/project.godot`.
+- **Aggregate:** the new normalized value is `006037e924b555b79fd92243a415b3926823eeebf4b4424ff62a67f8de19807e`.
+
+The baseline generator passed, and the unrenewed candidate refused exactly the three historical-source leaves. Aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance matched exactly.
+
+After the two inventory guards were renewed, the generator and the updater passed. Both refused a physics-comment mutation and a project-version mutation; both were restored, and the checks passed again. Aircraft bytes and historical source strings are unchanged. The [receipt](2026-11-18-source-renewal.json) binds the six reports. This is a Linux software provenance renewal, not a Windows reconstruction or physical validation.
