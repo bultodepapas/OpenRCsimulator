@@ -1,11 +1,15 @@
 name: Telemetry contracts
 
+# Offline contract checks only; not a required check. Path filters keep it off unrelated PRs.
 on:
   push:
     paths:
       - 'research/telemetry/**'
       - '.github/workflows/telemetry-contracts.yml'
   pull_request:
+    paths:
+      - 'research/telemetry/**'
+      - '.github/workflows/telemetry-contracts.yml'
   workflow_dispatch:
 
 permissions:

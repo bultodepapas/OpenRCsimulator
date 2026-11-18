@@ -71,3 +71,20 @@ Newer main `d407acd9da55dc49d6e1e0442a81f3b6d7657591` was source-reviewed for ar
 ### Handoff decision
 
 The result is prepared for senior review and merge as documentation, executable contracts and test infrastructure. It does not activate product telemetry. The [master plan](../../../plans/telemetry.md#merge-readiness-versus-activation) owns the first implementation PRs and pending activation decisions. Native Godot consent/persistence/rotation/sockets, real database transactions and erasure, authenticated/durable publication, all enabled locales and target-hardware performance remain qualification gates. No first-run production guarantee is inferred from this offline review.
+
+## Main integration review
+
+Date: 2026-11-18. Candidate: branch head `bd7187cd9acf390af689455e5d0c17b111107490` merged onto main; current-main claims were checked at `35787fb583f3b654b28381c951783be7a85be0e0`. One independent source-read-only reviewer (requested Sonnet, high effort; effective settings not independently verified) statically compared docs against the executable reference, the CI workflow against repository conventions, and architecture claims against current main. It reported no merge blocker and confirmed the listed transport, window, budget, retention, disclosure and HTTP-mapping limits against the code. The lead verified each finding below against source before accepting it.
+
+| Finding | Disposition |
+| --- | --- |
+| Two test reads used the platform default encoding; the example report contains non-ASCII characters | Fixed: explicit UTF-8. Local runs passed only because this host uses Python UTF-8 mode |
+| Retry delay was documented as 5…300 s; the reference uses a jittered fraction of min(300, 5·2^n) with a 1 s floor | Fixed in the architecture transport table |
+| NaN/Infinity literals (400) and overflowing numbers such as 1e999 (422) were not distinguished in the delivery text | Fixed; matches existing regression tests |
+| Statuses outside the documented sets, and the HTTP-date Retry-After form, had no stated behavior | Documented the model's drop/delta-seconds behavior; final handling is TELEM-06/12 work |
+| Architecture omitted current main's single automatic-graphics policy owner and scene-detail module | Added auto_graphics_policy.gd and scene_detail.gd; telemetry reads decided state and never re-derives it |
+| Consent copy said "graphics settings", broader than the closed wire context | EN/ES copy now names renderer/API, resolution range, VSync/frame cap and customized-or-default |
+| The contract workflow ran on every pull request, unlike other scoped workflows | Added the same path filter as pushes; the job is not a required check |
+| Snapshot files appeared to use CRLF | Rejected: all 48 branch blobs are LF; the CRs came from the review export under core.autocrlf |
+
+Integration checks are recorded in [verification](verification.md#main-integration).

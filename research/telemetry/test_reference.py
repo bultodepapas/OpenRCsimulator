@@ -33,11 +33,11 @@ class PayloadTests(unittest.TestCase):
     def test_generated_schemas_match_source(self):
         from generate_contracts import schemas
         for name, schema in schemas().items():
-            self.assertEqual(json.loads((ROOT / "contracts" / name).read_text()), schema)
+            self.assertEqual(json.loads((ROOT / "contracts" / name).read_text(encoding="utf-8")), schema)
 
     def test_examples_are_reproducible(self):
         for name, content in outputs().items():
-            self.assertEqual((ROOT / "examples" / name).read_text(), content)
+            self.assertEqual((ROOT / "examples" / name).read_text(encoding="utf-8"), content)
 
     def test_every_object_is_closed(self):
         for path in [(), ("build",), ("context",), ("events", 0)]:

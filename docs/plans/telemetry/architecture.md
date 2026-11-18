@@ -34,10 +34,10 @@ The first gate owns collection, queue creation and transmission. A hidden SDK, c
 | app/render/render_timing_lease.gd | Shared measurement ownership if optional GPU observations are introduced | No independent viewport timing enable/disable flag |
 | app/statistics/service.gd | Accepted fixed-wing event classifications and detached notifications | Never serialize data/store, persistent IDs, history, source hashes or exact timelines |
 | app/app_state/update_checker.gd | Bounded asynchronous HTTP lifecycle and silent-peer lesson | Keep update and telemetry preferences separate; its timeout/opt-out semantics are not copied blindly |
-| app/render/auto_calibration.gd, auto_graphics_report.gd, gpu_capability.gd; app/app_state/renderer_preference.gd | Newer main d407acd has independent graphics recommendations, local calibration and renderer-mode ownership | Their hardware probes and shared timing lease continue independently of product telemetry consent. Never upload their raw dictionaries, adapter-keyed calibration file, diagnostics or logs. |
+| app/render/auto_graphics_policy.gd, auto_calibration.gd, auto_graphics_report.gd, gpu_capability.gd, scene_detail.gd; app/app_state/renderer_preference.gd | Main (reviewed through 35787fb5) has independent graphics recommendations, local calibration and renderer-mode ownership; auto_graphics_policy.gd is the single owner of automatic renderer/scene-detail thresholds and decisions | Their hardware probes and shared timing lease continue independently of product telemetry consent. Read an already decided effective state; never re-derive automatic decisions or upload their raw dictionaries, adapter-keyed calibration file, diagnostics or logs. |
 | tools/analytics/ | Existing website/GitHub traffic reporting, separate audience | Does not collect runtime game behavior; do not merge identities or denominators |
 
-The original baseline had no universal whole-graphics presets. In newer main d407acd, renderer modes Automatic/Standard/High and separate scene-detail levels exist, but they are not whole-settings presets. The v1 wire context records renderer/driver, coarse resolution, vsync/cap and current_default/custom only. It does not capture those detailed settings; custom can represent materially different configurations. Do not claim comparable graphics configurations or explain individual graphics-setting effects from this context alone.
+The original baseline had no universal whole-graphics presets. Current main has renderer modes Automatic/Standard/High and separate scene-detail levels (including an Extreme level that Automatic can choose), but they are not whole-settings presets. The v1 wire context records renderer/driver, coarse resolution, vsync/cap and current_default/custom only. It does not capture those detailed settings; custom can represent materially different configurations. Do not claim comparable graphics configurations or explain individual graphics-setting effects from this context alone.
 
 ## Proposed module interfaces
 
@@ -93,15 +93,15 @@ Do not attach a telemetry observer to every 240 Hz physics tick. Read already ac
 | Response | Maximum 4 KiB, redirects=0, TLS verification enabled |
 | Queue | At most 256 KiB / 32 sealed batches, oldest first eviction, maximum age 10 minutes |
 | Cadence | At most one normal send per 60 seconds, randomized by 0–10 seconds |
-| Retry | Full-jitter exponential delay 5…300 seconds; honor a valid longer Retry-After |
+| Retry | Full-jitter exponential delay: uniform fraction of min(300, 5·2^n) seconds for retry n = 0…4, with a 1-second floor; honor a valid longer Retry-After |
 | Retry horizon | At most 5 retries per batch, also subject to age, hour budget and current grant |
 | Hour budget | 90 attempts and 256 KiB transmitted body bytes including retries per fixed 3,600-second window anchored at the first counted request; preserve it across disable/re-enable and reset on a new process. Boundary bursts can exceed those limits within a rolling hour; ingress has independent caps. |
 | Persistence | No telemetry payload/session token on disk; consent choice only |
 | Shutdown | Cancel and drop; no final flush, retry, worker join or exit delay |
 
-HTTP 202 means the whole validated batch and its dedup receipt are durably committed; a duplicate same-body batch also returns 202. Do not acknowledge before durable commit. 400/409/413/415/422 permanently drop that batch with a bounded local status code; 401/403/410 suspend the uploader until a new eligible process/configuration. Only connection failures, 408, 429 and 5xx are retryable. Never follow a redirect. No report body appears in error logs.
+HTTP 202 means the whole validated batch and its dedup receipt are durably committed; a duplicate same-body batch also returns 202. Do not acknowledge before durable commit. 400/409/413/415/422 permanently drop that batch with a bounded local status code; 401/403/410 suspend the uploader until a new eligible process/configuration. Only connection failures, 408, 429 and 5xx are retryable. Any other status, including other 2xx, 3xx and 404/405, drops the batch without suspension; sustained non-202 responses are a TELEM-06/12 qualification case. Never follow a redirect. No report body appears in error logs.
 
-A server Retry-After beyond the queue lifetime causes expiry, not an early retry. With no disk queue, restart loses pending data. Disclose incomplete coverage. A public application identifier, Origin header or version string is not authentication and does not prevent forgery.
+A server Retry-After beyond the queue lifetime causes expiry, not an early retry. The offline model honors only delta-seconds; parsing the HTTP-date form, or ignoring it in favor of the computed delay, is a TELEM-06 decision. With no disk queue, restart loses pending data. Disclose incomplete coverage. A public application identifier, Origin header or version string is not authentication and does not prevent forgery.
 
 ## Reuse choices and alternatives
 

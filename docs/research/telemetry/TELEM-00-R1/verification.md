@@ -51,3 +51,18 @@ Independent re-reviews and their exact scope are recorded in the [final review](
 Final integration checks: **220 local Markdown links/anchors checked with zero errors** across telemetry documents plus introduced/affected index links; **25 files changed** by this review and **48 files in the complete telemetry branch delta**. `git diff --cached --check` passes. The staged telemetry subtree and workflow are byte-identical to those used in the clean-snapshot test. A three-way Git merge-tree against main `d60cf725c8f40379ef10768678ae1e873764839f` completed without conflict. No unrelated main history was merged or rewritten.
 
 The latest main increment after the architecture audit changed a capture-only flood-light probe and native-kernel evidence; it did not change the proposed telemetry integration interfaces. This source/merge inspection does not qualify native behavior or future main revisions. Hosted CI and the repository's existing required merge checks must be inspected on the proposed revision; no production or native-runtime qualification is claimed here.
+
+## Main integration
+
+Date: 2026-11-18. Branch head `bd7187cd9acf390af689455e5d0c17b111107490` was merged into main with a no-fast-forward merge, followed by one correction commit for the [main integration review](review.md#main-integration-review). Main had advanced at least 16 commits past the branch base; the commit messages name the exact parents. Current-main interface claims were checked at `35787fb583f3b654b28381c951783be7a85be0e0`; the only later main commit before the merge changed publication-rebind tooling, not telemetry interfaces.
+
+| Check | Result |
+| --- | --- |
+| Hosted branch run before merge | Telemetry contracts run 44351174882 on `bd7187cd` passed |
+| Merge | Conflict-free; the merge index tree equaled `git merge-tree --write-tree` for the same pair |
+| Clean branch snapshot, fresh Python 3.12.12 venv, exact pins | Dependency check clean; both generator `--check` commands match; 123 tests OK |
+| Corrected candidate under `PYTHONUTF8=0` (cp1252) | Original snapshot: 1 failure (`test_examples_are_reproducible`); candidate: both generator checks match and 123 tests OK |
+| Local Markdown links on the integrated tree | **1332 local links/anchors** in the 34 telemetry and touched index Markdown files resolve with zero errors, using the repository's `check_docs` parser against Git objects |
+| Branch protection | Main has no protection rules or rulesets, so the path-filtered contract job cannot block unrelated pull requests |
+
+Branch-protection status was read from the GitHub API on that date. Existing repository CI and the hosted contract job on the merged main revision remain the hosted evidence. No runtime collection, receiver, publisher, Godot code or physics change is included.
