@@ -798,6 +798,38 @@ loader checks the exact `Godot_v4.8-beta2_win64.exe`, the descriptor, binary and
 `--define` diagnostic builds are never installable. On an enrolled workstation, run the headless gates with
 `OPENRC_TESTQUEUE_ROOT` pointing at a private unenrolled root (no timing gate is involved). If `app/.godot` is
 relocated through a junction or link, installation reads its `extension_list.cfg` and refuses only when it would
-have to remove this kernel's registration there. Release packages remain Linux-only. CI job
+have to remove this kernel's registration there. CI job
 `native-kernel-windows` repeats the build, every gate and the native production markers with the pinned nuwen
 MinGW archive (informational until it has run green).
+
+### Windows release packages (NK-4, owner decision 2026-11-18: native kernel always)
+
+A Windows release carries the verified DLL beside its executable, as Linux does. The package has its own
+embedded manifest, `res://native/kernel/package-windows.json`, so Linux and Windows exports from one run cannot
+replace each other.
+
+```bash
+python research/native-kernel/package.py prepare-windows --tool-root "$OPENRC_NK_TOOL_ROOT"   # after --install-app
+"$GODOT" --headless --path app --export-release Windows "<new dir>/OpenRC Simulator.exe"
+python research/native-kernel/package.py finalize-windows --executable "<new dir>/OpenRC Simulator.exe" \
+  --template <windows_release_x86_64.exe> --tool-root "$OPENRC_NK_TOOL_ROOT"
+```
+
+**Commands:**
+
+- `prepare-windows` revalidates the installed DLL, its receipt, sources, toolchain lock, builder and pinned
+  Windows editor, and the exact oracle evidence the receipt cites.
+- The export plugin then embeds the manifest and the six diagnostics. On a Windows editor it requires the
+  qualified editor binary. A cross-export from Linux checks only that the identity is well formed.
+- `finalize-windows` writes `native/kernel/` with the DLL, the LF-only descriptor and the licence. It also
+  writes `package-receipt.json`, which binds the executable, manifest, template and DLL.
+
+`app/sim/native_stage.gd` and `app/app_state/native_package.gd` load the DLL only after these identities match;
+anything else selects the reference backend.
+
+**Qualification is on the exported executable.** It runs the same five `--quick-flight --native-qualification`
+modes as the Linux gate in `app/export.sh`, then `test_default_route.py --release-executable` (Windows aware).
+The DLL was qualified against the editor, and the shipped template is a different binary. Only this gate shows
+they agree. The [first local Windows package](../../docs/research/native-kernel/NK-4/windows-package-2026-11-18.md)
+passed all five modes. The CI release path (a windows-2025 package gate after the Linux cross-export) is the
+remaining release step in the [automatic graphics plan](../../docs/plans/automatic-graphics.md) (A6).

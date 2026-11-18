@@ -3680,6 +3680,7 @@ func _write_trace_and_quit(ticks: int, path: String) -> void:
 
 
 func _capture(t: float, c: Dictionary, out: String) -> void:
+	for _probe_flood in get_tree().root.find_children("*", "SpotLight3D", true, false): if (_probe_flood as Node).has_meta("role"): (_probe_flood as SpotLight3D).shadow_enabled = OS.get_environment("SA17_FLOOD") == "1" # TEMP SA-17 flood probe
 	var sim: Node = session.sim
 	if _scripted:
 		_t = t
