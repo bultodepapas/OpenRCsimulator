@@ -574,8 +574,9 @@ Source-editor performance work is independent of deferred public distribution.
 
 ### DT-MAC-04n-R1 — keep the Mac native default after world changes
 
-**Status, 2026-11-18:** source repair and gates implemented; the hosted Mac CI
-result and physical-M1 confirmation are recorded in the
+**Status, 2026-11-18:** domain renewed and gates in place. The hosted virtual M1
+passed the domain guard and the no-flag default route (native stage executed);
+the physical-M1 run is pending. See the
 [R1 evidence](../research/native-kernel/DT-MAC-04n-R1/README.md). Scenery and
 collision owners trigger this procedure; this track owns the Mac pins.
 

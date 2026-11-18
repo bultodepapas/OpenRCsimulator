@@ -46,9 +46,41 @@ power-of-two steps put exact authored values on rounding edges: 121 values at
 - `test_macos_diagnostics.py`: 13 tests; `test_ci_macos.py` with
   `test_ci_macos_selection.py`: 11 tests.
 
+## Companion admission
+
+- Solver: all nine retained tapes replayed byte-identically (2,881 rows each);
+  pin `90499aa6` → `8cdbbf8b`,
+  [receipt](../../ai-companions/AFC-02/rebinds/2026-11-18-90499aa6-to-8cdbbf8b.json).
+- Behavior manifest: the telemetry commit `1c9199b5a` had changed the pinned
+  `app/app_root.gd` without renewal, so `test_companions_profiles.gd` refused both
+  profiles. Its 188 lines touch no companion code; only that hash was renewed.
+  Profiles 95/0, behavior manifest 39/0, airspace 48/0, external rejection 63/0.
+
+## Local Windows native install
+
+The domain file is a mirrored native source, so the edit made this workstation's
+install stale. The rebuilt DLL (`5c64d4e7…`) passed all 18 positive gates, the
+mutant failed as required, and the installed receipt binds the new domain bytes.
+`test_native_session.gd`: 343 checks, 0 failures, native verdict pass.
+
+## Hosted Mac CI
+
+`native-macos.yml` dispatched on `7dbc30243` (run 44410231374, `Apple M1 (Virtual)`,
+`VirtualMac2,1`) passed every step of `ci_macos.py`:
+
+- Domain guard: 72 checks; the stock profile measured `4077c4fd…`, 6,139 proxies.
+- Oracle roster, mutant, FPCR control, install, and installed stage, lifecycle
+  and replay qualification.
+- New `installed-default-route`: `MACOS_DEFAULT_ROUTE verdict=pass checks=74`,
+  checked report `ok`, zero errors and warnings. The ordinary Quick Flight logged
+  `requested: native`, `backend: native`, binary `ee7c6126e629f535…`, with no
+  refusal reason. Its `--alt=31` control stayed on the reference evaluator with
+  "custom spawn is outside the screened stock scope".
+
+This is source-editor evidence on a hosted virtual M1. It does not qualify a
+package, the fleet, performance or physical hardware.
+
 ## Pending
 
-- Hosted Mac CI on the candidate: domain guard and the new default-route gate.
-- Companion solver rebind receipt.
 - Physical M1 default-route run. On 2026-11-18 ANGEL was running another track's
   rendered campaign and ANGELA_AIR had 1.4 GiB free.
