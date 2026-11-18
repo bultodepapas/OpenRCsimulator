@@ -47,6 +47,7 @@ const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
 const WorldResourceHold := preload("res://render/world/world_resource_hold.gd")
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
 const FrameDiagnostics := preload("res://render/frame_diagnostics.gd")
 const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
@@ -409,7 +410,7 @@ func _ready() -> void:
 	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
 		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
 			RenderingServer.get_current_rendering_method())
-		DisplayPreferences.first_run_defaults = GpuCapability.first_run_settings(RenderingServer.get_video_adapter_name(),
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(RenderingServer.get_video_adapter_name(),
 			OS.get_name(), DisplayServer.screen_get_scale(), DisplayServer.screen_get_refresh_rate())
 		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
 	DisplayPreferences.first_run_applies = fresh_install

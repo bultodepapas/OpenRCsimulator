@@ -5,6 +5,10 @@ extends SceneTree
 ##   <godot> --headless --path app --script res://tests/test_auto_graphics_snapshot.gd -- --write-snapshot
 
 const Report := preload("res://render/auto_graphics_report.gd")
+const Policy := preload("res://render/auto_graphics_policy.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 
 const SNAPSHOT_PATH := "res://tests/data/auto_graphics_snapshot.json"
 const STEAM_PATH := "res://tests/data/steam_gpus_2026_10.json"
@@ -61,6 +65,23 @@ func _initialize() -> void:
 	if not (report.inputs as Dictionary).has("cpu_threads") or not (report.decisions as Dictionary).has("reasons"):
 		failures += 1
 		printerr("FAIL: runtime report lacks hardware inputs or reasons: %s" % report)
+	# A1: one home for thresholds. Older names must alias the policy, never hold their own copies.
+	var aliases := [[RendererPreference.HIGH_BUDGET_MS, Policy.HIGH_BUDGET_MS],
+		[RendererPreference.MIN_HIGH_VRAM_GB, Policy.MIN_HIGH_VRAM_GB], [RendererPreference.MIN_PIXELS, Policy.MIN_PIXELS],
+		[AutoCalibration.DOWN_ABOVE, Policy.CALIBRATION_DOWN_ABOVE], [AutoCalibration.UP_BELOW, Policy.CALIBRATION_UP_BELOW],
+		[AutoCalibration.HIGH_REJECT_ABOVE, Policy.CALIBRATION_HIGH_REJECT_ABOVE],
+		[SceneDetail.DISCRETE_MARKERS, Policy.DISCRETE_MARKERS], [SceneDetail.SOFTWARE_MARKERS, Policy.SOFTWARE_MARKERS]]
+	for pair: Array in aliases:
+		checks += 1
+		if pair[0] != pair[1]:
+			failures += 1
+			printerr("FAIL: a threshold drifted from the policy: %s != %s" % [pair[0], pair[1]])
+	for source: String in ["res://render/gpu_capability.gd", "res://render/scene_detail.gd", "res://app_state/renderer_preference.gd"]:
+		checks += 1
+		var text := FileAccess.get_file_as_string(source)
+		if text.contains("SCENE_LOW_BELOW := 0") or text.contains("MSAA_OFF_BELOW := 0") or text.contains("HIGH_BUDGET_MS := 4"):
+			failures += 1
+			printerr("FAIL: %s holds its own copy of a policy threshold" % source)
 	checks += 1
 	if table.size() < 1500:
 		failures += 1

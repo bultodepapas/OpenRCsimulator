@@ -6,6 +6,7 @@ extends RefCounted
 ## `runtime()` adds the actual host: adapter, renderer, display, RAM, CPU, driver, saved mode and calibration.
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
@@ -15,20 +16,7 @@ const FORMAT := "openrc-auto-graphics-report v1"
 
 ## inputs: {adapter, os, arm64, screen: Vector2i, scale, refresh}. Returns {renderer, scene_detail, first_run, reasons}.
 static func decide(inputs: Dictionary) -> Dictionary:
-	var adapter := str(inputs.get("adapter", ""))
-	var os_name := str(inputs.get("os", ""))
-	var screen: Vector2i = inputs.get("screen", Vector2i.ZERO)
-	var scale := float(inputs.get("scale", 1.0))
-	var refresh := float(inputs.get("refresh", 60.0))
-	var renderer := RendererPreference.auto_profile({os = os_name, arm64 = bool(inputs.get("arm64", false)),
-		adapter = adapter, pixels = screen.x * screen.y})
-	# Retina Macs judge Scene detail at the pixels rendered under Automatic MetalFX (AGENTS display exception).
-	var render_pixels := GpuCapability.mac_render_pixels(screen) \
-		if GpuCapability.mac_native_target(os_name, scale) and bool(inputs.get("arm64", false)) else 0
-	var scene: Dictionary = SceneDetail.recommend(adapter, "", render_pixels)
-	var first_run := GpuCapability.first_run_settings(adapter, os_name, scale, refresh)
-	return {"renderer": str(renderer.profile), "scene_detail": str(scene.level), "first_run": first_run,
-		"reasons": {"renderer": str(renderer.reason), "scene_detail": str(scene.get("detail", scene.reason))}}
+	return AutoGraphicsPolicy.decide(inputs)
 
 
 ## One compact line per decision, for snapshots and logs: renderer|scene|msaa|window|max_fps ("-" = default).

@@ -25,41 +25,57 @@
   }
  ],
  "provenance": "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor specifications and review aggregates; only the anchor is measured. vram_gb: common vendor configuration. steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). 2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, scaled to the anchor; integrated parts about 10% below the midpoint for power limits. No third-party benchmark table is copied.",
+ "provenance_levels": {
+  "measured": "OpenRC measured this GPU in its own workload",
+  "measured-circular": "derived from an OpenRC measurement that also defines it; not independent evidence",
+  "benchmark-derived": "public game or 3D benchmark ratios scaled to the anchor (Notebookcheck, 3DMark WLE, CheckFPS)",
+  "extrapolated": "estimated from vendor specifications and review aggregates"
+ },
  "rows": [
   {
    "id": "rtx_2050",
    "match": "^rtx 2050\\b",
    "rel": 0.13,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_workstation_laptop",
    "match": "^(quadro rtx a?\\d{4}|rtx a\\d{4})\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.2,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5090_laptop",
    "match": "^rtx 5090\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.95,
    "vram_gb": 24,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5080_laptop",
    "match": "^rtx 5080\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.85,
    "vram_gb": 16,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5070_ti_laptop",
    "match": "^rtx 5070 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.65,
    "vram_gb": 12,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5070_laptop",
@@ -67,7 +83,9 @@
    "rel": 0.55,
    "vram_gb": 8,
    "class": "laptop",
-   "steam_share_2026_10": 0.69
+   "steam_share_2026_10": 0.69,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5060_laptop",
@@ -75,28 +93,36 @@
    "rel": 0.45,
    "vram_gb": 8,
    "class": "laptop",
-   "steam_share_2026_10": 2.68
+   "steam_share_2026_10": 2.68,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5050_laptop",
    "match": "^rtx 5050\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.35,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4090_laptop",
    "match": "^rtx 4090\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.85,
    "vram_gb": 16,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4080_laptop",
    "match": "^rtx 4080\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.72,
    "vram_gb": 12,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4070_laptop",
@@ -104,7 +130,9 @@
    "rel": 0.5,
    "vram_gb": 8,
    "class": "laptop",
-   "steam_share_2026_10": 0.92
+   "steam_share_2026_10": 0.92,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4060_laptop",
@@ -112,7 +140,9 @@
    "rel": 0.4,
    "vram_gb": 8,
    "class": "laptop",
-   "steam_share_2026_10": 3.6
+   "steam_share_2026_10": 3.6,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4050_laptop",
@@ -120,35 +150,45 @@
    "rel": 0.3,
    "vram_gb": 6,
    "class": "laptop",
-   "steam_share_2026_10": 1.76
+   "steam_share_2026_10": 1.76,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3080_ti_laptop",
    "match": "^rtx 3080 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.55,
    "vram_gb": 16,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3080_laptop",
    "match": "^rtx 3080\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.5,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3070_ti_laptop",
    "match": "^rtx 3070 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3070_laptop",
    "match": "^rtx 3070\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.42,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3060_laptop",
@@ -156,7 +196,9 @@
    "rel": 0.36,
    "vram_gb": 6,
    "class": "laptop",
-   "steam_share_2026_10": 1.74
+   "steam_share_2026_10": 1.74,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3050_ti_laptop",
@@ -164,7 +206,9 @@
    "rel": 0.22,
    "vram_gb": 4,
    "class": "laptop",
-   "steam_share_2026_10": 0.61
+   "steam_share_2026_10": 0.61,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3050_laptop",
@@ -172,210 +216,270 @@
    "rel": 0.2,
    "vram_gb": 4,
    "class": "laptop",
-   "steam_share_2026_10": 0.74
+   "steam_share_2026_10": 0.74,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2080_super_laptop",
    "match": "^rtx 2080 super\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.47,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2080_laptop",
    "match": "^rtx 2080\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2070_super_laptop",
    "match": "^rtx 2070 super\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.4,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2070_laptop",
    "match": "^rtx 2070\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.38,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2060_laptop",
    "match": "^rtx 2060\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.3,
    "vram_gb": 6,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1660_ti_laptop",
    "match": "^gtx 1660 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.26,
    "vram_gb": 6,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1650_ti_laptop",
    "match": "^gtx 1650 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.15,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1650_laptop",
    "match": "^gtx 1650\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.13,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1060_laptop",
    "match": "^gtx 1060\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.18,
    "vram_gb": 6,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1050_ti_laptop",
    "match": "^gtx 1050 ti\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.1,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx570",
    "match": "^mx ?570\\b",
    "rel": 0.1,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx550",
    "match": "^mx ?550\\b",
    "rel": 0.08,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx450",
    "match": "^mx ?450\\b",
    "rel": 0.07,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx350",
    "match": "^mx ?350\\b",
    "rel": 0.05,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx250",
    "match": "^mx ?250\\b",
    "rel": 0.05,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx150",
    "match": "^mx ?150\\b",
    "rel": 0.05,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx330",
    "match": "^mx ?330\\b",
    "rel": 0.04,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx230",
    "match": "^mx ?230\\b",
    "rel": 0.035,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx130",
    "match": "^mx ?130\\b",
    "rel": 0.035,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx110",
    "match": "^mx ?110\\b",
    "rel": 0.025,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_9xxm",
    "match": "^gtx 9[6-8]0m\\b",
    "rel": 0.07,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_950m",
    "match": "^gtx 9[45]0m\\b",
    "rel": 0.055,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "geforce_9xxm",
    "match": "^9[1-4]0mx?\\b",
    "rel": 0.03,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "geforce_8xxm",
    "match": "^8[1-4]0m\\b",
    "rel": 0.025,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_laptop",
    "match": "^gt \\d{3}m\\b",
    "rel": 0.015,
    "vram_gb": 1,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mx_series",
    "match": "^mx\\s?\\d{3}\\b",
    "rel": 0.06,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3050_ti_unsuffixed",
    "match": "^rtx 3050 ti\\b",
    "rel": 0.22,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1650_ti_unsuffixed",
    "match": "^gtx 1650 ti\\b",
    "rel": 0.15,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5090",
    "match": "^rtx 5090\\b",
    "rel": 1.9,
    "vram_gb": 32,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5080",
@@ -383,7 +487,9 @@
    "rel": 1.48,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 1.78
+   "steam_share_2026_10": 1.78,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5070_ti",
@@ -391,7 +497,9 @@
    "rel": 1.27,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 1.91
+   "steam_share_2026_10": 1.91,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5070",
@@ -399,7 +507,9 @@
    "rel": 1.0,
    "vram_gb": 12,
    "class": "discrete",
-   "steam_share_2026_10": 3.78
+   "steam_share_2026_10": 3.78,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5060_ti",
@@ -407,7 +517,9 @@
    "rel": 0.68,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 2.7
+   "steam_share_2026_10": 2.7,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5060",
@@ -415,14 +527,18 @@
    "rel": 0.57,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 3.15
+   "steam_share_2026_10": 3.15,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_5050",
    "match": "^rtx 5050\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4090",
@@ -430,7 +546,9 @@
    "rel": 1.6,
    "vram_gb": 24,
    "class": "discrete",
-   "steam_share_2026_10": 0.7
+   "steam_share_2026_10": 0.7,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4080_super",
@@ -438,7 +556,9 @@
    "rel": 1.33,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 0.62
+   "steam_share_2026_10": 0.62,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4080",
@@ -446,7 +566,9 @@
    "rel": 1.3,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 0.67
+   "steam_share_2026_10": 0.67,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4070_ti_super",
@@ -454,7 +576,9 @@
    "rel": 1.17,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 0.73
+   "steam_share_2026_10": 0.73,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4070_ti",
@@ -462,7 +586,9 @@
    "rel": 1.07,
    "vram_gb": 12,
    "class": "discrete",
-   "steam_share_2026_10": 0.89
+   "steam_share_2026_10": 0.89,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4070_super",
@@ -470,7 +596,9 @@
    "rel": 1.0,
    "vram_gb": 12,
    "class": "discrete",
-   "steam_share_2026_10": 1.43
+   "steam_share_2026_10": 1.43,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4070",
@@ -478,7 +606,9 @@
    "rel": 0.8,
    "vram_gb": 12,
    "class": "discrete",
-   "steam_share_2026_10": 1.71
+   "steam_share_2026_10": 1.71,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4060_ti",
@@ -486,7 +616,9 @@
    "rel": 0.62,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 2.3
+   "steam_share_2026_10": 2.3,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_4060",
@@ -494,28 +626,36 @@
    "rel": 0.5,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 3.51
+   "steam_share_2026_10": 3.51,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3090_ti",
    "match": "^rtx 3090 ti\\b",
    "rel": 1.1,
    "vram_gb": 24,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3090",
    "match": "^rtx 3090\\b",
    "rel": 1.0,
    "vram_gb": 24,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "measured: RTX 3090 renderer/resolution matrix and knob costs, 2026-11-17/18",
+   "correction": 1.0
   },
   {
    "id": "rtx_3080_ti",
    "match": "^rtx 3080 ti\\b",
    "rel": 0.97,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3080",
@@ -523,7 +663,9 @@
    "rel": 0.87,
    "vram_gb": 10,
    "class": "discrete",
-   "steam_share_2026_10": 1.36
+   "steam_share_2026_10": 1.36,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3070_ti",
@@ -531,7 +673,9 @@
    "rel": 0.74,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 0.9
+   "steam_share_2026_10": 0.9,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3070",
@@ -539,7 +683,9 @@
    "rel": 0.67,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 1.98
+   "steam_share_2026_10": 1.98,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3060_ti",
@@ -547,7 +693,9 @@
    "rel": 0.6,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 2.13
+   "steam_share_2026_10": 2.13,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3060",
@@ -555,7 +703,9 @@
    "rel": 0.43,
    "vram_gb": 12,
    "class": "discrete",
-   "steam_share_2026_10": 3.78
+   "steam_share_2026_10": 3.78,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_3050",
@@ -563,28 +713,36 @@
    "rel": 0.3,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 3.25
+   "steam_share_2026_10": 3.25,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2080_ti",
    "match": "^rtx 2080 ti\\b",
    "rel": 0.7,
    "vram_gb": 11,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2080_super",
    "match": "^rtx 2080 super\\b",
    "rel": 0.6,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2080",
    "match": "^rtx 2080\\b",
    "rel": 0.57,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2070_super",
@@ -592,14 +750,18 @@
    "rel": 0.52,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 0.66
+   "steam_share_2026_10": 0.66,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2070",
    "match": "^rtx 2070\\b",
    "rel": 0.46,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2060_super",
@@ -607,7 +769,9 @@
    "rel": 0.43,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 0.76
+   "steam_share_2026_10": 0.76,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_2060",
@@ -615,7 +779,9 @@
    "rel": 0.36,
    "vram_gb": 6,
    "class": "discrete",
-   "steam_share_2026_10": 1.61
+   "steam_share_2026_10": 1.61,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1660_super",
@@ -623,7 +789,9 @@
    "rel": 0.32,
    "vram_gb": 6,
    "class": "discrete",
-   "steam_share_2026_10": 1.39
+   "steam_share_2026_10": 1.39,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1660_ti",
@@ -631,21 +799,27 @@
    "rel": 0.31,
    "vram_gb": 6,
    "class": "discrete",
-   "steam_share_2026_10": 0.86
+   "steam_share_2026_10": 0.86,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1660",
    "match": "^gtx 1660\\b",
    "rel": 0.28,
    "vram_gb": 6,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1650_super",
    "match": "^gtx 1650 super\\b",
    "rel": 0.22,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1650",
@@ -653,35 +827,45 @@
    "rel": 0.16,
    "vram_gb": 4,
    "class": "discrete",
-   "steam_share_2026_10": 2.44
+   "steam_share_2026_10": 2.44,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1080_ti",
    "match": "^gtx 1080 ti\\b",
    "rel": 0.52,
    "vram_gb": 11,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1080",
    "match": "^gtx 1080\\b",
    "rel": 0.4,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1070_ti",
    "match": "^gtx 1070 ti\\b",
    "rel": 0.36,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1070",
    "match": "^gtx 1070\\b",
    "rel": 0.32,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1060",
@@ -689,7 +873,9 @@
    "rel": 0.21,
    "vram_gb": 6,
    "class": "discrete",
-   "steam_share_2026_10": 1.45
+   "steam_share_2026_10": 1.45,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1050_ti",
@@ -697,483 +883,621 @@
    "rel": 0.12,
    "vram_gb": 4,
    "class": "discrete",
-   "steam_share_2026_10": 1.14
+   "steam_share_2026_10": 1.14,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_1050",
    "match": "^gtx 1050\\b",
    "rel": 0.09,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_980_ti",
    "match": "^gtx 980 ti\\b",
    "rel": 0.33,
    "vram_gb": 6,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_980",
    "match": "^gtx 980\\b",
    "rel": 0.25,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_970",
    "match": "^gtx 970\\b",
    "rel": 0.2,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_960",
    "match": "^gtx 960\\b",
    "rel": 0.11,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_950",
    "match": "^gtx 950\\b",
    "rel": 0.1,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_780_ti",
    "match": "^gtx 780 ti\\b",
    "rel": 0.19,
    "vram_gb": 3,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_780",
    "match": "^gtx 780\\b",
    "rel": 0.16,
    "vram_gb": 3,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_770",
    "match": "^gtx 770\\b",
    "rel": 0.12,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_760",
    "match": "^gtx 760\\b",
    "rel": 0.09,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_750_ti",
    "match": "^gtx 750 ti\\b",
    "rel": 0.07,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_750",
    "match": "^gtx 750\\b",
    "rel": 0.06,
    "vram_gb": 1,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_680",
    "match": "^gtx 680\\b",
    "rel": 0.11,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_670",
    "match": "^gtx 670\\b",
    "rel": 0.1,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_660_ti",
    "match": "^gtx 660 ti\\b",
    "rel": 0.08,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_660",
    "match": "^gtx 660\\b",
    "rel": 0.07,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_650_ti",
    "match": "^gtx 650 ti\\b",
    "rel": 0.045,
    "vram_gb": 1,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gtx_650",
    "match": "^gtx 650\\b",
    "rel": 0.035,
    "vram_gb": 1,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_1030",
    "match": "^gt 1030\\b",
    "rel": 0.045,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_740",
    "match": "^gt 740\\b",
    "rel": 0.03,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_730",
    "match": "^gt 730\\b",
    "rel": 0.015,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_720",
    "match": "^gt 720\\b",
    "rel": 0.012,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_710",
    "match": "^gt 710\\b",
    "rel": 0.01,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_640",
    "match": "^gt 640\\b",
    "rel": 0.012,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_630",
    "match": "^gt 630\\b",
    "rel": 0.008,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_610",
    "match": "^gt 610\\b",
    "rel": 0.006,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "gt_series",
    "match": "^gt \\d{3,4}\\b",
    "rel": 0.05,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_workstation",
    "match": "^(quadro rtx a?\\d{4}|rtx a\\d{4})\\b",
    "rel": 0.5,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_unlisted_laptop",
    "match": "^rtx \\d{4}\\b.*\\b(laptop|max-q|mobile)\\b",
    "rel": 0.25,
    "vram_gb": 6,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rtx_unlisted",
    "match": "^rtx \\d{4}\\b",
    "rel": 0.5,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7600m_xt",
    "match": "^radeon rx 7600m xt\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7600m",
    "match": "^radeon rx 7600m\\b",
    "rel": 0.38,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7600s",
    "match": "^radeon rx 7600s\\b",
    "rel": 0.38,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6800s",
    "match": "^radeon rx 6800s\\b",
    "rel": 0.48,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6700s",
    "match": "^radeon rx 6700s\\b",
    "rel": 0.42,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6600s",
    "match": "^radeon rx 6600s\\b",
    "rel": 0.35,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6850m_xt",
    "match": "^radeon rx 6850m xt\\b",
    "rel": 0.65,
    "vram_gb": 12,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6800m",
    "match": "^radeon rx 6800m\\b",
    "rel": 0.6,
    "vram_gb": 12,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6700m",
    "match": "^radeon rx 6700m\\b",
    "rel": 0.5,
    "vram_gb": 10,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6650m",
    "match": "^radeon rx 6650m\\b",
    "rel": 0.42,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6600m",
    "match": "^radeon rx 6600m\\b",
    "rel": 0.4,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6500m",
    "match": "^radeon rx 6500m\\b",
    "rel": 0.18,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5600m",
    "match": "^radeon rx 5600m\\b",
    "rel": 0.25,
    "vram_gb": 6,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5500m",
    "match": "^radeon rx 5500m\\b",
    "rel": 0.2,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_9070_gre",
    "match": "^radeon rx ?9070 gre\\b",
    "rel": 1.0,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7650_gre",
    "match": "^radeon rx ?7650 gre\\b",
    "rel": 0.52,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6750_gre",
    "match": "^radeon rx ?6750 gre\\b",
    "rel": 0.66,
    "vram_gb": 10,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_580_2048sp",
    "match": "^radeon rx ?580 2048sp\\b",
    "rel": 0.18,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_590_gme",
    "match": "^radeon rx ?590 gme\\b",
    "rel": 0.22,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_560",
    "match": "^radeon rx ?560\\b",
    "rel": 0.11,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_550",
    "match": "^radeon rx ?550\\b",
    "rel": 0.06,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_470",
    "match": "^radeon rx ?470\\b",
    "rel": 0.17,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_460",
    "match": "^radeon rx ?460\\b",
    "rel": 0.1,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_vega_20",
    "match": "^radeon rx ?vega 20\\b",
    "rel": 0.12,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_11_igpu",
    "match": "^radeon (rx )?vega 11( mobile)? graphics\\b",
    "rel": 0.045,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_10_igpu",
    "match": "^radeon (rx )?vega 10( mobile)? graphics\\b",
    "rel": 0.04,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_8_igpu",
    "match": "^radeon (rx )?vega 8( mobile)? graphics\\b",
    "rel": 0.035,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_7_igpu",
    "match": "^radeon (rx )?vega 7( mobile)? graphics\\b",
    "rel": 0.035,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_6_igpu",
    "match": "^radeon (rx )?vega 6( mobile)? graphics\\b",
    "rel": 0.025,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_3_igpu",
    "match": "^radeon (rx )?vega 3( mobile)? graphics\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_vega",
    "match": "^radeon rx vega\\b",
    "rel": 0.31,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_r7_igpu",
    "match": "^radeon r7 graphics\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_r5_igpu",
    "match": "^radeon r[45] graphics\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_r_mobile",
    "match": "^radeon r[5-9] m\\d{3}\\b",
    "rel": 0.015,
    "vram_gb": 2,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_pro_laptop",
    "match": "^radeon pro [4-5]\\d{2}x?\\b",
    "rel": 0.1,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_hd",
    "match": "^radeon hd [5-8]\\d{3}\\b",
    "rel": 0.05,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_r9",
    "match": "^radeon r9 \\d{3}x?\\b",
    "rel": 0.12,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_r7_discrete",
    "match": "^radeon r7 \\d{3}x?\\b",
    "rel": 0.06,
    "vram_gb": 2,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_9070_xt",
@@ -1181,14 +1505,18 @@
    "rel": 1.12,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 1.59
+   "steam_share_2026_10": 1.59,
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "rx_9070",
    "match": "^radeon rx 9070\\b",
    "rel": 1.0,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "rx_9060_xt",
@@ -1196,35 +1524,45 @@
    "rel": 0.78,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 0.89
+   "steam_share_2026_10": 0.89,
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "rx_9060",
    "match": "^radeon rx 9060\\b",
    "rel": 0.65,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "rx_7900_xtx",
    "match": "^radeon rx 7900 xtx\\b",
    "rel": 1.45,
    "vram_gb": 24,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7900_xt",
    "match": "^radeon rx 7900 xt\\b",
    "rel": 1.25,
    "vram_gb": 20,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7900_gre",
    "match": "^radeon rx 7900 gre\\b",
    "rel": 1.05,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7800_xt",
@@ -1232,91 +1570,117 @@
    "rel": 0.92,
    "vram_gb": 16,
    "class": "discrete",
-   "steam_share_2026_10": 0.63
+   "steam_share_2026_10": 0.63,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7700_xt",
    "match": "^radeon rx 7700 xt\\b",
    "rel": 0.78,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7600_xt",
    "match": "^radeon rx 7600 xt\\b",
    "rel": 0.5,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_7600",
    "match": "^radeon rx 7600\\b",
    "rel": 0.48,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6950_xt",
    "match": "^radeon rx 6950 xt\\b",
    "rel": 1.05,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6900_xt",
    "match": "^radeon rx 6900 xt\\b",
    "rel": 1.0,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6800_xt",
    "match": "^radeon rx 6800 xt\\b",
    "rel": 0.93,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6800",
    "match": "^radeon rx 6800\\b",
    "rel": 0.82,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6750_xt",
    "match": "^radeon rx 6750 xt\\b",
    "rel": 0.68,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6700_xt",
    "match": "^radeon rx 6700 xt\\b",
    "rel": 0.64,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6700",
    "match": "^radeon rx 6700\\b",
    "rel": 0.57,
    "vram_gb": 10,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6650_xt",
    "match": "^radeon rx 6650 xt\\b",
    "rel": 0.5,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6600_xt",
    "match": "^radeon rx 6600 xt\\b",
    "rel": 0.47,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6600",
@@ -1324,210 +1688,270 @@
    "rel": 0.42,
    "vram_gb": 8,
    "class": "discrete",
-   "steam_share_2026_10": 0.84
+   "steam_share_2026_10": 0.84,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6500_xt",
    "match": "^radeon rx 6500 xt\\b",
    "rel": 0.2,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_6400",
    "match": "^radeon rx 6400\\b",
    "rel": 0.15,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5700_xt",
    "match": "^radeon rx 5700 xt\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5700",
    "match": "^radeon rx 5700\\b",
    "rel": 0.4,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5600_xt",
    "match": "^radeon rx 5600 xt\\b",
    "rel": 0.37,
    "vram_gb": 6,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5500_xt",
    "match": "^radeon rx 5500 xt\\b",
    "rel": 0.25,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_590",
    "match": "^radeon rx 590\\b",
    "rel": 0.22,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_580",
    "match": "^radeon rx 580\\b",
    "rel": 0.2,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_570",
    "match": "^radeon rx 570\\b",
    "rel": 0.17,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_480",
    "match": "^radeon rx 480\\b",
    "rel": 0.19,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_5500",
    "match": "^radeon rx 5500\\b",
    "rel": 0.24,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_vega_64",
    "match": "^radeon rx vega 64\\b",
    "rel": 0.33,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_vega_56",
    "match": "^radeon rx vega 56\\b",
    "rel": 0.29,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "rx_unlisted",
    "match": "^radeon rx [7-9]\\d{3}\\b",
    "rel": 0.6,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_8060s",
    "match": "^radeon 8060s\\b",
    "rel": 0.42,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_8050s",
    "match": "^radeon 8050s\\b",
    "rel": 0.34,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_8040s",
    "match": "^radeon 8040s\\b",
    "rel": 0.18,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_890m",
    "match": "^radeon 890m\\b",
    "rel": 0.14,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_880m",
    "match": "^radeon 880m\\b",
    "rel": 0.11,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_860m",
    "match": "^radeon 860m\\b",
    "rel": 0.08,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_840m",
    "match": "^radeon 840m\\b",
    "rel": 0.045,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_820m",
    "match": "^radeon 820m\\b",
    "rel": 0.03,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_780m",
    "match": "^radeon 780m\\b",
    "rel": 0.12,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_760m",
    "match": "^radeon 760m\\b",
    "rel": 0.09,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_740m",
    "match": "^radeon 740m\\b",
    "rel": 0.05,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_680m",
    "match": "^radeon 680m\\b",
    "rel": 0.1,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_660m",
    "match": "^radeon 660m\\b",
    "rel": 0.06,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "radeon_610m",
    "match": "^radeon 610m\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_vega_igpu",
    "match": "^radeon vega \\d+\\b|^radeon (rx )?vega graphics\\b",
    "rel": 0.03,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "radeon_graphics_igpu",
@@ -1535,357 +1959,459 @@
    "rel": 0.05,
    "vram_gb": 0,
    "class": "integrated",
-   "steam_share_2026_10": 2.72
+   "steam_share_2026_10": 2.72,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_b580",
    "match": "^arc b580\\b",
    "rel": 0.55,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_b570",
    "match": "^arc b570\\b",
    "rel": 0.48,
    "vram_gb": 10,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a770",
    "match": "^arc a770\\b",
    "rel": 0.5,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a750",
    "match": "^arc a750\\b",
    "rel": 0.45,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a580",
    "match": "^arc a580\\b",
    "rel": 0.38,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a380",
    "match": "^arc a380\\b",
    "rel": 0.15,
    "vram_gb": 6,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a310",
    "match": "^arc a310\\b",
    "rel": 0.1,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a770m",
    "match": "^arc a770m\\b",
    "rel": 0.4,
    "vram_gb": 16,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a730m",
    "match": "^arc a730m\\b",
    "rel": 0.33,
    "vram_gb": 12,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a570m",
    "match": "^arc a570m\\b",
    "rel": 0.28,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a370m",
    "match": "^arc a370m\\b",
    "rel": 0.12,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_a350m",
    "match": "^arc a350m\\b",
    "rel": 0.09,
    "vram_gb": 4,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "arc_b390_igpu",
    "match": "^arc b390\\b",
    "rel": 0.3,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_b370_igpu",
    "match": "^arc b370\\b",
    "rel": 0.25,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_140v_igpu",
    "match": "^arc 140v\\b",
    "rel": 0.15,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_130v_igpu",
    "match": "^arc 130v\\b",
    "rel": 0.13,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_140t_igpu",
    "match": "^arc 140t\\b",
    "rel": 0.14,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_130t_igpu",
    "match": "^arc 130t\\b",
    "rel": 0.12,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "arc_igpu",
    "match": "^arc graphics\\b",
    "rel": 0.12,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "intel_graphics_igpu",
    "match": "^graphics\\b",
    "rel": 0.08,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "adreno_x2",
    "match": "^qualcomm adreno x2\\b",
    "rel": 0.18,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "adreno_x1",
    "match": "^qualcomm adreno\\b",
    "rel": 0.08,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_770_igpu",
    "match": "^uhd graphics 770\\b",
    "rel": 0.05,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_750_igpu",
    "match": "^uhd graphics 750\\b",
    "rel": 0.045,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_730_igpu",
    "match": "^uhd graphics 730\\b",
    "rel": 0.04,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_710_igpu",
    "match": "^uhd graphics 710\\b",
    "rel": 0.03,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_630_igpu",
    "match": "^uhd graphics 630\\b",
    "rel": 0.025,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_620_igpu",
    "match": "^uhd graphics 620\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_617_igpu",
    "match": "^uhd graphics 617\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_615_igpu",
    "match": "^uhd graphics 615\\b",
    "rel": 0.016,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_610_igpu",
    "match": "^uhd graphics 610\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_605_igpu",
    "match": "^uhd graphics 605\\b",
    "rel": 0.014,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_600_igpu",
    "match": "^uhd graphics 600\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_630_igpu",
    "match": "^hd graphics 630\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_620_igpu",
    "match": "^hd graphics 620\\b",
    "rel": 0.017,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_615_igpu",
    "match": "^hd graphics 615\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_610_igpu",
    "match": "^hd graphics 610\\b",
    "rel": 0.013,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_530_igpu",
    "match": "^hd graphics 530\\b",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_520_igpu",
    "match": "^hd graphics 520\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_515_igpu",
    "match": "^hd graphics 515\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_510_igpu",
    "match": "^hd graphics 510\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_6000_igpu",
    "match": "^hd graphics 6000\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_5500_igpu",
    "match": "^hd graphics 5500\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_5000_igpu",
    "match": "^hd graphics 5000\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_4600_igpu",
    "match": "^hd graphics 4600\\b",
    "rel": 0.015,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_4400_igpu",
    "match": "^hd graphics 4400\\b",
    "rel": 0.012,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_4000_igpu",
    "match": "^hd graphics 4000\\b",
    "rel": 0.008,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_2500_igpu",
    "match": "^hd graphics 2500\\b",
    "rel": 0.004,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "hd_3000_igpu",
    "match": "^hd graphics 3000\\b",
    "rel": 0.005,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "iris_plus_igpu",
    "match": "^iris plus\\b|^iris pro\\b",
    "rel": 0.035,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "iris_xe_igpu",
@@ -1893,7 +2419,9 @@
    "rel": 0.05,
    "vram_gb": 0,
    "class": "integrated",
-   "steam_share_2026_10": 1.78
+   "steam_share_2026_10": 1.78,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "uhd_igpu",
@@ -1901,392 +2429,504 @@
    "rel": 0.025,
    "vram_gb": 0,
    "class": "integrated",
-   "steam_share_2026_10": 1.99
+   "steam_share_2026_10": 1.99,
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "apple_m1_ultra",
    "match": "^apple m1 ultra\\b",
    "rel": 0.29,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m1_max",
    "match": "^apple m1 max\\b",
    "rel": 0.16,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m1_pro",
    "match": "^apple m1 pro\\b",
    "rel": 0.09,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m1",
    "match": "^apple m1\\b",
    "rel": 0.055,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "measured-circular: rel derived from the same M1 Mobile/Metal frame (DT-MAC-00-R4, Medium detail, beta1), so it cannot validate the cost model",
+   "correction": 1.0
   },
   {
    "id": "apple_m2_ultra",
    "match": "^apple m2 ultra\\b",
    "rel": 0.42,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m2_max",
    "match": "^apple m2 max\\b",
    "rel": 0.24,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m2_pro",
    "match": "^apple m2 pro\\b",
    "rel": 0.13,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m2",
    "match": "^apple m2\\b",
    "rel": 0.07,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m3_ultra",
    "match": "^apple m3 ultra\\b",
    "rel": 0.5,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m3_max",
    "match": "^apple m3 max\\b",
    "rel": 0.27,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m3_pro",
    "match": "^apple m3 pro\\b",
    "rel": 0.14,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m3",
    "match": "^apple m3\\b",
    "rel": 0.08,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m4_max",
    "match": "^apple m4 max\\b",
    "rel": 0.33,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m4_pro",
    "match": "^apple m4 pro\\b",
    "rel": 0.18,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m4",
    "match": "^apple m4\\b",
    "rel": 0.093,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m5_ultra",
    "match": "^apple m5 ultra\\b",
    "rel": 0.73,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m5_max",
    "match": "^apple m5 max\\b",
    "rel": 0.39,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m5_pro",
    "match": "^apple m5 pro\\b",
    "rel": 0.21,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m5",
    "match": "^apple m5\\b",
    "rel": 0.115,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m6_ultra",
    "match": "^apple m6 ultra\\b",
    "rel": 0.95,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m6_max",
    "match": "^apple m6 max\\b",
    "rel": 0.5,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m6_pro",
    "match": "^apple m6 pro\\b",
    "rel": 0.27,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_m6",
    "match": "^apple m6\\b",
    "rel": 0.15,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "benchmark-derived",
+   "correction": 1.0
   },
   {
    "id": "apple_a18_pro",
    "match": "^apple a18 pro\\b",
    "rel": 0.045,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "apple_unlisted",
    "match": "^apple [ma]\\d",
    "rel": 0.12,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_gfx1201",
    "match": "^mesa gfx1201$",
    "rel": 1.1,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_gfx1200",
    "match": "^mesa gfx1200$",
    "rel": 0.75,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi48",
    "match": "^mesa navi48$",
    "rel": 1.1,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi44",
    "match": "^mesa navi44$",
    "rel": 0.75,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_vega20",
    "match": "^mesa vega20$",
    "rel": 0.45,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi12",
    "match": "^mesa navi12$",
    "rel": 0.3,
    "vram_gb": 8,
-   "class": "laptop"
+   "class": "laptop",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi31",
    "match": "^mesa navi31$",
    "rel": 1.3,
    "vram_gb": 20,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi32",
    "match": "^mesa navi32$",
    "rel": 0.85,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi33",
    "match": "^mesa navi33$",
    "rel": 0.48,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi21",
    "match": "^mesa navi21$",
    "rel": 0.93,
    "vram_gb": 16,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi22",
    "match": "^mesa navi22$",
    "rel": 0.64,
    "vram_gb": 12,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi23",
    "match": "^mesa navi23$",
    "rel": 0.44,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi24",
    "match": "^mesa navi24$",
    "rel": 0.18,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi10",
    "match": "^mesa navi10$",
    "rel": 0.42,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_navi14",
    "match": "^mesa navi14$",
    "rel": 0.25,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_vega10",
    "match": "^mesa vega10$",
    "rel": 0.31,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_polaris10",
    "match": "^mesa polaris10$",
    "rel": 0.2,
    "vram_gb": 8,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_polaris11",
    "match": "^mesa polaris11$",
    "rel": 0.1,
    "vram_gb": 4,
-   "class": "discrete"
+   "class": "discrete",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_gfx1151",
    "match": "^mesa gfx1151$",
    "rel": 0.3,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_gfx1150",
    "match": "^mesa gfx1150$",
    "rel": 0.12,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_phoenix",
    "match": "^mesa phoenix$",
    "rel": 0.09,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_phoenix2",
    "match": "^mesa phoenix2$",
    "rel": 0.04,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_rembrandt",
    "match": "^mesa rembrandt$",
    "rel": 0.08,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_vangogh",
    "match": "^mesa vangogh$",
    "rel": 0.04,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_renoir",
    "match": "^mesa renoir$",
    "rel": 0.03,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_cezanne",
    "match": "^mesa cezanne$",
    "rel": 0.03,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_lucienne",
    "match": "^mesa lucienne$",
    "rel": 0.025,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "mesa_raphael_mendocino",
    "match": "^mesa raphael_mendocino$",
    "rel": 0.02,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "steam_deck",
    "match": "^custom gpu 0405\\b|^custom gpu 0932\\b",
    "rel": 0.04,
    "vram_gb": 0,
-   "class": "integrated"
+   "class": "integrated",
+   "provenance": "extrapolated",
+   "correction": 1.0
   },
   {
    "id": "software",
    "match": "llvmpipe|softpipe|lavapipe|swiftshader|microsoft basic render|gdi generic|software rasterizer",
    "rel": 0.0,
    "vram_gb": 0,
-   "class": "software"
+   "class": "software",
+   "provenance": "extrapolated",
+   "correction": 1.0
   }
  ]
 }

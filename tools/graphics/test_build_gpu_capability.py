@@ -26,6 +26,17 @@ class GpuCapabilityTableTests(unittest.TestCase):
             self.assertIn(row["class"], {"discrete", "laptop", "integrated", "software"})
             self.assertGreaterEqual(row["rel"], 0.0)
 
+    def test_every_row_states_provenance_and_correction(self) -> None:
+        document = json.loads(TABLE.read_text(encoding="utf-8"))
+        levels = set(document["provenance_levels"])
+        for row in document["rows"]:
+            self.assertIn(row["provenance"].split(":")[0], levels, row["id"])
+            self.assertGreater(row["correction"], 0.0, row["id"])
+        by_id = {row["id"]: row for row in document["rows"]}
+        self.assertTrue(by_id["rtx_3090"]["provenance"].startswith("measured:"))
+        self.assertTrue(by_id["apple_m1"]["provenance"].startswith("measured-circular"))
+        self.assertEqual(by_id["radeon_890m"]["provenance"], "benchmark-derived")
+
     def test_anchor_fit_reproduces_both_measurements(self) -> None:
         anchor = json.loads(TABLE.read_text(encoding="utf-8"))["anchor"]
         for pixels, measured in ((1920 * 1080, anchor["high_gpu_ms_1080p"]), (3840 * 2160, anchor["high_gpu_ms_2160p"])):

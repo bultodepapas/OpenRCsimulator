@@ -9,6 +9,7 @@ extends RefCounted
 ## replaced with its OpenGL fallback blocks High for that build, so it cannot become a restart loop.
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
 const OVERRIDE_PATH := "user://renderer.cfg"
 const MODES: Array[String] = ["auto", "standard", "high"]
@@ -23,9 +24,9 @@ const STATE_SECTION := "openrc_renderer"
 ## Automatic High: a known dedicated GPU (data/gpu/capability.json) whose extrapolated High GPU time at the
 ## screen's resolution (at least 1080p) stays within HIGH_BUDGET_MS. 4.3 ms is rel 0.25 at 1080p and keeps
 ## more than 3.5x headroom inside a 60 Hz frame for heavier scenes and the estimate's error.
-const HIGH_BUDGET_MS := 4.3
-const MIN_HIGH_VRAM_GB := 4
-const MIN_PIXELS := 1920 * 1080
+const HIGH_BUDGET_MS := AutoGraphicsPolicy.HIGH_BUDGET_MS
+const MIN_HIGH_VRAM_GB := AutoGraphicsPolicy.MIN_HIGH_VRAM_GB
+const MIN_PIXELS := AutoGraphicsPolicy.MIN_PIXELS
 
 ## Test seam: tests point this at a private file.
 static var override_path := OVERRIDE_PATH
@@ -73,26 +74,7 @@ static func project_standard_method(effective: String, honored: bool, state: Dic
 
 ## Pure Automatic policy. facts: {os, arm64, adapter, pixels}. Returns {profile, reason, gpu, predicted_ms}.
 static func auto_profile(facts: Dictionary) -> Dictionary:
-	var os_name := str(facts.get("os", ""))
-	if os_name not in ["Windows", "Linux"] or bool(facts.get("arm64", false)):
-		return {profile = "standard", reason = "High is chosen automatically only on Windows and Linux x86_64"}
-	var gpu := GpuCapability.lookup(str(facts.get("adapter", "")))
-	if not bool(gpu.matched):
-		return {profile = "standard", reason = "GPU not in the capability table", gpu = gpu}
-	if str(gpu["class"]) in ["integrated", "software"]:
-		return {profile = "standard", reason = "%s GPU" % gpu["class"], gpu = gpu}
-	# Linux: desktop GPUs only. Hybrid laptops usually present their integrated GPU to OpenGL anyway, and
-	# Forward+ driver reports on Linux are thinner, so laptop parts keep Standard there.
-	if os_name == "Linux" and str(gpu["class"]) != "discrete":
-		return {profile = "standard", reason = "Linux laptop GPU", gpu = gpu}
-	if int(gpu.vram_gb) < MIN_HIGH_VRAM_GB:
-		return {profile = "standard", reason = "less than %d GB of video memory" % MIN_HIGH_VRAM_GB, gpu = gpu}
-	var pixels := maxi(int(facts.get("pixels", 0)), MIN_PIXELS)
-	var predicted := GpuCapability.predicted_high_ms(float(gpu.rel), pixels)
-	var within := predicted <= HIGH_BUDGET_MS
-	return {profile = "high" if within else "standard", gpu = gpu, predicted_ms = predicted,
-		reason = "%s: estimated High GPU %.1f ms at %.1f MP (budget %.1f ms)" % [gpu.id, predicted,
-			float(pixels) / 1.0e6, HIGH_BUDGET_MS]}
+	return AutoGraphicsPolicy.renderer(facts)
 
 
 ## Pure startup decision. facts: {os, arm64, adapter, vendor, headless, template, cli_renderer,

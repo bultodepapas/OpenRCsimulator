@@ -8,6 +8,9 @@ table sets Scene detail Automatic (Low/Medium/High by estimated throughput) and,
 the first MSAA level for integrated GPUs ([knob costs](../../docs/research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18/README.md)).
 Retina Macs start full screen at the native panel resolution, and base chips on 120 Hz panels start at 60 fps.
 `app/tests/data/steam_gpus_2026_10.json` requires every named Steam-survey GPU to resolve to a table row.
+Each row states its `provenance` (measured, measured-circular, benchmark-derived or extrapolated) and a measured
+`correction` factor (1.0 until evidence exists); thresholds live in `app/render/auto_graphics_policy.gd`, and
+`app/tests/data/auto_graphics_snapshot.json` freezes every decision (regenerate it only for a reviewed policy change).
 The first eligible flight on each GPU measures GPU time once and corrects Automatic by one Scene detail level,
 or rejects automatic High (`app/render/auto_calibration.gd`; verdict in `user://graphics_calibration.cfg`)
 ([decision](../../docs/DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package)). The [Windows NVIDIA package](native/README.md)

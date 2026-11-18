@@ -215,6 +215,28 @@ add("steam_deck", r"^custom gpu 0405\b|^custom gpu 0932\b", 0.04, 0, "integrated
 add("software", r"llvmpipe|softpipe|lavapipe|swiftshader|microsoft basic render|gdi generic|software rasterizer",
     0.0, 0, "software")
 
+# VQ-07h-A3 step 1: how far to trust each row. `correction` multiplies `rel` and stays 1.0 until a lab machine or
+# calibration reports measure the GPU (plan A5); provenance then becomes "measured" for that row.
+MEASURED = {"rtx_3090": "measured: RTX 3090 renderer/resolution matrix and knob costs, 2026-11-17/18"}
+MEASURED_CIRCULAR = {"apple_m1": "measured-circular: rel derived from the same M1 Mobile/Metal frame (DT-MAC-00-R4, "
+                                 "Medium detail, beta1), so it cannot validate the cost model"}
+BENCHMARK_DERIVED_IDS = {
+    "radeon_8060s", "radeon_8050s", "radeon_8040s", "radeon_890m", "radeon_880m", "radeon_860m", "radeon_840m",
+    "radeon_820m", "radeon_780m", "radeon_760m", "radeon_740m", "radeon_680m", "radeon_660m", "arc_b390_igpu",
+    "arc_b370_igpu", "arc_140v_igpu", "arc_130v_igpu", "arc_140t_igpu", "arc_130t_igpu", "arc_igpu",
+    "rx_9070_xt", "rx_9070", "rx_9060_xt", "rx_9060"}
+for _row in ROWS:
+    _id = _row["id"]
+    if _id in MEASURED:
+        _row["provenance"] = MEASURED[_id]
+    elif _id in MEASURED_CIRCULAR:
+        _row["provenance"] = MEASURED_CIRCULAR[_id]
+    elif _id in BENCHMARK_DERIVED_IDS or (_id.startswith("apple_m") and _id != "apple_unlisted"):
+        _row["provenance"] = "benchmark-derived"
+    else:
+        _row["provenance"] = "extrapolated"
+    _row["correction"] = 1.0
+
 DOCUMENT = {
     "format": "openrc-gpu-capability v1",
     "generator": "tools/graphics/build_gpu_capability.py",
@@ -236,6 +258,12 @@ DOCUMENT = {
         "2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, "
         "scaled to the anchor; integrated parts about 10% below the midpoint for power limits. "
         "No third-party benchmark table is copied."),
+    "provenance_levels": {
+        "measured": "OpenRC measured this GPU in its own workload",
+        "measured-circular": "derived from an OpenRC measurement that also defines it; not independent evidence",
+        "benchmark-derived": "public game or 3D benchmark ratios scaled to the anchor (Notebookcheck, 3DMark WLE, CheckFPS)",
+        "extrapolated": "estimated from vendor specifications and review aggregates",
+    },
     "rows": ROWS,
 }
 

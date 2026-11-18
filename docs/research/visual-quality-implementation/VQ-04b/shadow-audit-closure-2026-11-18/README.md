@@ -72,6 +72,21 @@ Fleet effect: the P-51 canopy and windscreen and the Extra 300 canopy (about 2,0
 | SA-22 | Forward+ Ultra: Native→Projected kept 332.5 MiB of textures before; 76.5 MiB now (256 MiB atlas released). Compatibility's counters omit the atlas. |
 | SA-23 | Disabled-cue bind collection: 0.9–22 ms warm per stock aircraft (Corsair 321k triangles the largest), ≤ 148 ms first cold call, 0.9–11 MiB retained, once per session load. |
 
+## Follow-up experiments (same day)
+
+**Aircraft mask cost.** Production cue on the Stik spinning 1°/frame, the mask's own GPU time (median, 8 s after warm-up) and, where noted, the frame's wall time:
+
+| Change to the 256² mask | Compatibility mask ms | Forward+ mask ms |
+| --- | --- | --- |
+| Current (165,768 triangles, MSAA 4×) | 0.397 | 0.059 |
+| meshoptimizer silhouette, 42,501 / 21,582 / 10,470 triangles (error 3 / 6 / 12 mm) | 0.385 / 0.371 / 0.384 | 0.036 / 0.032 / 0.029 |
+| MSAA off / 2× | 0.398 / 0.385 | 0.040 / 0.048 |
+| Positional shadow atlas 0 (was 2048) | 0.374 | — |
+
+Compatibility's mask cost is a fixed per-viewport overhead: 94% fewer triangles, no MSAA or no positional atlas leave it unchanged. Its real frame cost is smaller than the GLES3 timer suggests: redrawing every frame adds +0.22 ms of wall time (2.00 vs 1.79 ms) against +0.07 ms on Forward+. Simplification would save 0.03 ms on Forward+ for a 240 ms bind (weld 93 ms + LOD 147 ms), so it was not adopted. The remaining lever is redraw frequency, a quality trade that needs integrated-GPU measurement.
+
+**Field flood shadows (VQ-04b-S08).** Night pilot view (23:30, Stik on the runway under the 12 m mast), the four floods and the windsock lamp with `shadow_enabled` on vs off: Compatibility 289 → 718 draw calls and a broad, unlocalized darkening of the runway (up to 32/255, default bias); High 293 → 436 draw calls and a pixel-identical image. Not adopted.
+
 ## Limits
 
 - One GPU (RTX 3090), Windows, 1080p first; Mobile/Metal, integrated GPUs and Macs are unmeasured.

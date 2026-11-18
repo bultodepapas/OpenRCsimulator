@@ -9,6 +9,7 @@
 extends RefCounted
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
 const LEVELS: Array[String] = ["low", "medium", "high", "extreme"]
@@ -18,14 +19,11 @@ const AUTO_FALLBACK := "medium"
 # VQ-06b-R1: Godot 4.7.2's Compatibility driver reports no device type (always DEVICE_TYPE_OTHER),
 # so Automatic classifies the GL renderer/vendor strings. Discrete markers are checked before
 # integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs start at Medium; Extreme is never automatic.
-const SOFTWARE_MARKERS: Array[String] = ["llvmpipe", "softpipe", "lavapipe", "swiftshader",
-	"microsoft basic render", "gdi generic", "software rasterizer"]
-const ENTRY_DISCRETE_MARKERS: Array[String] = ["geforce mx", "geforce gt ", "geforce 9", "geforce 8"]
-const DISCRETE_MARKERS: Array[String] = ["geforce", "rtx", "quadro", "radeon rx", "radeon pro", "radeon r9",
-	"radeon r7", "firepro", "intel(r) arc", "intel arc", "arc(tm)"]
-const INTEGRATED_MARKERS: Array[String] = ["intel", "uhd graphics", "iris", "hd graphics", "radeon(tm) graphics",
-	"radeon graphics", "radeon vega", "radeon(tm) vega", "apple m"]
-const MOBILE_MARKERS: Array[String] = ["adreno", "mali", "powervr", "tegra"]
+const SOFTWARE_MARKERS := AutoGraphicsPolicy.SOFTWARE_MARKERS
+const ENTRY_DISCRETE_MARKERS := AutoGraphicsPolicy.ENTRY_DISCRETE_MARKERS
+const DISCRETE_MARKERS := AutoGraphicsPolicy.DISCRETE_MARKERS
+const INTEGRATED_MARKERS := AutoGraphicsPolicy.INTEGRATED_MARKERS
+const MOBILE_MARKERS := AutoGraphicsPolicy.MOBILE_MARKERS
 # scenery_quality: Scenery tier filter. field_tree_half_angle_deg: 3D field trees within this angle
 # of the runway as seen from the pilot (0 = cards only; 180 = the whole near ring).
 # mesh_lod_threshold_px: Godot's per-viewport LOD error; 1 px is its perceptually lossless default.
@@ -115,20 +113,7 @@ static func _native_render_pixels() -> int:
 
 
 static func recommend(adapter_name: String, vendor: String, render_pixels: int = 0) -> Dictionary:
-	var gpu := (adapter_name + " " + vendor).strip_edges().to_lower()
-	if gpu.is_empty():
-		return {level = AUTO_FALLBACK, reason = "no GPU reported"}
-	# VQ-07h: known GPUs follow their estimated capability (data/gpu/capability.json); markers cover the rest.
-	var capable: Dictionary = GpuCapability.scene_detail_level(adapter_name, render_pixels)
-	if not str(capable.level).is_empty():
-		return {level = capable.level, reason = capable.reason, detail = capable.detail}
-	for rule: Array in [[SOFTWARE_MARKERS, "low", "software renderer"], [MOBILE_MARKERS, "low", "mobile GPU"],
-			[ENTRY_DISCRETE_MARKERS, "medium", "entry-level GPU"], [DISCRETE_MARKERS, "high", "dedicated GPU"],
-			[INTEGRATED_MARKERS, "medium", "integrated GPU"]]:
-		for marker: String in rule[0]:
-			if gpu.contains(marker):
-				return {level = rule[1], reason = rule[2]}
-	return {level = AUTO_FALLBACK, reason = "unrecognized GPU"}
+	return AutoGraphicsPolicy.scene_detail(adapter_name, vendor, render_pixels)
 
 
 static func profile(detail_level: String = "") -> Dictionary:

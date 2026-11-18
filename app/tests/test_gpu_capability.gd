@@ -2,6 +2,7 @@ extends SceneTree
 ## VQ-07h: GPU capability table, adapter-name normalization and High-cost extrapolation.
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 
 var _checks := 0
@@ -113,10 +114,10 @@ func _test_lookup() -> void:
 		"Intel(R) UHD Graphics 620": ["low", "integrated GPU"], "Apple M1 Max (Apple7)": ["high", "integrated GPU"],
 		"llvmpipe (LLVM 15.0.7, 256 bits)": ["low", "software renderer"]}
 	for raw: String in scene_cases:
-		var scene := GpuCapability.scene_detail_level(raw)
+		var scene := AutoGraphicsPolicy.scene_detail_from_capability(raw)
 		_check("scene detail for %s uses a translated reason" % raw, scene.level == scene_cases[raw][0]
 			and scene.reason == scene_cases[raw][1], scene)
-	_check("unknown GPUs leave scene detail to the caller", str(GpuCapability.scene_detail_level("Example 9000").level).is_empty())
+	_check("unknown GPUs leave scene detail to the caller", str(AutoGraphicsPolicy.scene_detail_from_capability("Example 9000").level).is_empty())
 	_check("an unknown Mesa chip is unknown, not the generic integrated row",
 		not GpuCapability.lookup("AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0, DRM 3.70, 6.20.0)").matched
 		and GpuCapability.lookup("AMD Radeon Graphics (radeonsi, navi48, LLVM 21.0.0)").id == "mesa_navi48"
@@ -141,26 +142,26 @@ func _test_mac_native() -> void:
 		GpuCapability.mac_render_pixels(Vector2i(2940, 1912)) == int(2940 * 2.0 / 3.0) * int(1912 * 2.0 / 3.0))
 	_check("a small panel renders natively", GpuCapability.mac_render_pixels(Vector2i(1440, 900)) == 1440 * 900)
 	_check("a base M1 Air starts full screen at its native resolution",
-		GpuCapability.first_run_settings("Apple M1 (Apple7)", "macOS", 2.0, 60.0) == {"window_mode": "borderless"})
+		AutoGraphicsPolicy.first_run("Apple M1 (Apple7)", "macOS", 2.0, 60.0) == {"window_mode": "borderless"})
 	_check("a base M5 on a 120 Hz ProMotion panel is capped at 60 fps",
-		GpuCapability.first_run_settings("Apple M5 (Apple10)", "macOS", 2.0, 120.0) == {"window_mode": "borderless", "max_fps": 60})
-	_check("a Max chip keeps 120 Hz", GpuCapability.first_run_settings("Apple M5 Max (Apple10)", "macOS", 2.0, 120.0)
+		AutoGraphicsPolicy.first_run("Apple M5 (Apple10)", "macOS", 2.0, 120.0) == {"window_mode": "borderless", "max_fps": 60})
+	_check("a Max chip keeps 120 Hz", AutoGraphicsPolicy.first_run("Apple M5 Max (Apple10)", "macOS", 2.0, 120.0)
 		== {"window_mode": "borderless"})
 	_check("a Mac on a non-Retina external display keeps the windowed defaults",
-		GpuCapability.first_run_settings("Apple M1 (Apple7)", "macOS", 1.0, 60.0).is_empty())
+		AutoGraphicsPolicy.first_run("Apple M1 (Apple7)", "macOS", 1.0, 60.0).is_empty())
 	_check("an Intel Mac on a Retina panel keeps the window (no MetalFX, weak GPU)",
-		not GpuCapability.first_run_settings("Intel(R) Iris(TM) Plus Graphics 655", "macOS", 2.0, 60.0).has("window_mode"))
+		not AutoGraphicsPolicy.first_run("Intel(R) Iris(TM) Plus Graphics 655", "macOS", 2.0, 60.0).has("window_mode"))
 	_check("without MetalFX the native panel is rendered in full",
 		GpuCapability.mac_render_pixels(Vector2i(2880, 1800), 1.0) == 2880 * 1800
 		and GpuCapability.mac_render_pixels(Vector2i(2560, 1440), 0.85) == int(2560 * 0.85) * int(1440 * 0.85))
 	_check("Windows never gets the Mac window rule",
-		not GpuCapability.first_run_settings("Intel(R) Iris(R) Xe Graphics", "Windows", 2.0, 120.0).has("window_mode"))
+		not AutoGraphicsPolicy.first_run("Intel(R) Iris(R) Xe Graphics", "Windows", 2.0, 120.0).has("window_mode"))
 	var native := GpuCapability.mac_render_pixels(Vector2i(3024, 1964))
 	_check("an M4 Pro is High at 1080p but Medium at a 14-inch native panel",
-		GpuCapability.scene_detail_level("Apple M4 Pro (Apple9)").level == "high"
-		and GpuCapability.scene_detail_level("Apple M4 Pro (Apple9)", native).level == "medium")
+		AutoGraphicsPolicy.scene_detail_from_capability("Apple M4 Pro (Apple9)").level == "high"
+		and AutoGraphicsPolicy.scene_detail_from_capability("Apple M4 Pro (Apple9)", native).level == "medium")
 	_check("an M5 Max stays High at its native panel",
-		GpuCapability.scene_detail_level("Apple M5 Max (Apple10)", GpuCapability.mac_render_pixels(Vector2i(3456, 2234))).level == "high")
+		AutoGraphicsPolicy.scene_detail_from_capability("Apple M5 Max (Apple10)", GpuCapability.mac_render_pixels(Vector2i(3456, 2234))).level == "high")
 	DisplayPreferences.first_run_defaults = {"window_mode": "borderless", "max_fps": 60}
 	var recommended := DisplayPreferences.recommended_defaults()
 	_check("first-launch window and frame-cap values are accepted", recommended.window_mode == "borderless"
@@ -213,11 +214,11 @@ func _test_first_run() -> void:
 		"AMD Radeon Graphics (radeonsi, gfx9999, LLVM 21.0.0, DRM 3.70, 6.20.0)": {},
 		"llvmpipe (LLVM 15.0.7, 256 bits)": {"msaa_3d": Viewport.MSAA_DISABLED}}
 	for raw: String in cases:
-		_check("first-run settings for %s" % raw, GpuCapability.first_run_settings(raw) == cases[raw],
-			GpuCapability.first_run_settings(raw))
+		_check("first-run settings for %s" % raw, AutoGraphicsPolicy.first_run(raw) == cases[raw],
+			AutoGraphicsPolicy.first_run(raw))
 	var path := "user://test gpu first run display.cfg"
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	DisplayPreferences.first_run_defaults = GpuCapability.first_run_settings("Intel(R) Iris(R) Xe Graphics")
+	DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run("Intel(R) Iris(R) Xe Graphics")
 	DisplayPreferences.first_run_applies = false
 	_check("an upgrader without a display file keeps the shipped default",
 		int(DisplayPreferences.load_from(path).msaa_3d) == DisplayPreferences.DEFAULTS.msaa_3d)
