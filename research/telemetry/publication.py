@@ -19,6 +19,12 @@ def canonical_repository(value):
     return value.lower()
 
 
+def canonical_author(value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9-]{1,100}(?:\[bot\])?", value):
+        raise ContractError("publication_author")
+    return value.lower()
+
+
 @dataclass(frozen=True)
 class Policy:
     repository: str
@@ -28,7 +34,8 @@ class Policy:
 
     def __post_init__(self):
         object.__setattr__(self, "repository", canonical_repository(self.repository))
-        if not self.bot_author or self.audience not in ("private", "public"):
+        object.__setattr__(self, "bot_author", canonical_author(self.bot_author))
+        if self.audience not in ("private", "public"):
             raise ContractError("publication_policy")
         if (not isinstance(self.approved_releases, frozenset) or not self.approved_releases or
             any(not isinstance(release, str) for release in self.approved_releases)):
@@ -40,6 +47,7 @@ class Approval:
     """Trusted review receipt in the model; not an authentication mechanism."""
     key: str
     repository: str
+    bot_author: str
     digest: str
     inventory_digest: str
 
@@ -49,6 +57,7 @@ class RemoteIssue:
     repository: str
     number: int
     author: str
+    title: str
     body: str
     is_pull_request: bool
 
@@ -60,6 +69,7 @@ class Decision:
     token: int | None = None
     body: str | None = None
     issue_number: int | None = None
+    title: str | None = None
 
 
 @dataclass
@@ -67,6 +77,7 @@ class Entry:
     policy: Policy
     key: str
     digest: str
+    title: str
     body: str
     token: int
     state: str = "creating"
@@ -74,12 +85,18 @@ class Entry:
     inventory_digest: str | None = None
 
 
+def report_title(report):
+    return f"OpenRC telemetry: {report['day']} / {report['release_id']} / daily GPU v1"
+
+
 def material(report):
     """Only the fixed daily report schema can reach this renderer."""
     validate_report(report)
     key = f"daily-gpu-v1/{report['day']}/{report['release_id']}"
     body = f"<!-- openrc-telemetry:{key} -->\n" + render_report(report)
-    return key, body, sha256(body.encode("utf-8")).hexdigest()
+    artifact = json.dumps({"title": report_title(report), "body": body},
+                          sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return key, body, sha256(artifact.encode("utf-8")).hexdigest()
 
 
 def closed_day(report, as_of_utc):
@@ -88,7 +105,7 @@ def closed_day(report, as_of_utc):
         day = datetime.combine(date.fromisoformat(report["day"]), datetime.min.time(), timezone.utc)
         if current.utcoffset() != timedelta(0) or current < day + timedelta(hours=25):
             raise ValueError
-    except (ValueError, TypeError, AttributeError):
+    except (ValueError, TypeError, AttributeError, OverflowError):
         raise ContractError("publication_day") from None
 
 
@@ -110,6 +127,7 @@ class PublicationModel:
 
     def prepare(self, report, policy, *, as_of_utc, expected_key, approval=None):
         key, body, digest = material(report)
+        title = report_title(report)
         closed_day(report, as_of_utc)
         if report["release_id"] not in policy.approved_releases:
             raise ContractError("unapproved_release")
@@ -129,41 +147,62 @@ class PublicationModel:
         inventory = None
         if policy.audience == "public":
             if (not isinstance(approval, Approval) or approval.key != key or
-                canonical_repository(approval.repository) != policy.repository or approval.digest != digest or
+                canonical_repository(approval.repository) != policy.repository or
+                canonical_author(approval.bot_author) != policy.bot_author or approval.digest != digest or
                 approval.inventory_digest != self.inventory_digest()):
                 return Decision("review_required", key)
             inventory = approval.inventory_digest
         self.serial += 1
-        self.entries[identity] = Entry(policy, key, digest, body, self.serial,
+        self.entries[identity] = Entry(policy, key, digest, title, body, self.serial,
                                        inventory_digest=inventory)
         # Production must durably commit this intent before using the returned body.
-        return Decision("create", key, self.serial, body)
+        return Decision("create", key, self.serial, body, title=title)
 
     def uncertain(self, repository, key, token):
         entry = self.entries.get((canonical_repository(repository), key))
-        if not entry or entry.token != token or entry.state in ("published", "review_required"):
+        if (not entry or type(token) is not int or entry.token != token or
+            entry.state in ("published", "review_required")):
             return False
         entry.state = "unknown"
         return True
 
     @staticmethod
-    def matches(entry, issue):
+    def same_publisher(entry, issue):
         if not isinstance(issue, RemoteIssue):
             return False
         try:
             repository = canonical_repository(issue.repository)
+            author = canonical_author(issue.author)
         except ContractError:
             return False
         return (issue.is_pull_request is False and
                 type(issue.number) is int and issue.number > 0 and
                 repository == entry.policy.repository and
-                issue.author == entry.policy.bot_author and issue.body == entry.body)
+                author == entry.policy.bot_author)
+
+    @classmethod
+    def matches(cls, entry, issue):
+        return (cls.same_publisher(entry, issue) and
+                issue.title == entry.title and issue.body == entry.body)
+
+    @classmethod
+    def related(cls, entry, issue):
+        """Positive collision evidence; never sufficient to authorize binding."""
+        if not cls.same_publisher(entry, issue):
+            return False
+        marker = f"<!-- openrc-telemetry:{entry.key} -->"
+        return (issue.number == entry.issue_number or issue.title == entry.title or
+                (isinstance(issue.body, str) and marker in issue.body))
 
     def confirmed(self, repository, key, token, issue):
         entry = self.entries.get((canonical_repository(repository), key))
-        if not entry or entry.token != token or not self.matches(entry, issue):
+        if not entry or type(token) is not int or entry.token != token:
             return False
         if entry.state == "review_required":
+            return False
+        if not self.matches(entry, issue):
+            if self.related(entry, issue):
+                entry.state = "review_required"
             return False
         if entry.state == "published":
             if entry.issue_number != issue.number:
@@ -179,15 +218,22 @@ class PublicationModel:
             raise ContractError("unknown_intent")
         if entry.state == "review_required":
             return Decision("review_required", key)
+        matches = set()
+        for issue in candidates:
+            if self.matches(entry, issue):
+                matches.add(issue.number)
+            elif self.related(entry, issue):
+                entry.state = "review_required"
+                return Decision("review_required", key)
+        # Positive conflict evidence survives even an incomplete remote listing.
+        if len(matches) > 1:
+            entry.state = "review_required"
+            return Decision("review_required", key)
         if discovery_complete is not True:
             return Decision("reconcile", key)
-        matches = {issue.number for issue in candidates if self.matches(entry, issue)}
         if entry.state == "published":
             if matches == {entry.issue_number}:
                 return Decision("noop", key, issue_number=entry.issue_number)
-            entry.state = "review_required"
-            return Decision("review_required", key)
-        if len(matches) > 1:
             entry.state = "review_required"
             return Decision("review_required", key)
         if not matches:

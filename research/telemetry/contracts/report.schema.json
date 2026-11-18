@@ -81,7 +81,7 @@
           "interval_sum_us": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10000000000000000
+            "maximum": 9007199254740991
           },
           "rendered_frames": {
             "type": "integer",

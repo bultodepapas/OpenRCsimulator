@@ -33,6 +33,12 @@
           "202": {
             "description": "Whole batch durably accepted or identical retry. Empty response body."
           },
+          "408": {
+            "description": "Intermediary timeout; opaque bounded response; retry within consent and queue limits."
+          },
+          "5XX": {
+            "description": "Opaque intermediary failure; retry within consent and queue limits. No response body is assumed."
+          },
           "400": {
             "description": "Malformed request; drop",
             "content": {

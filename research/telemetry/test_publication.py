@@ -28,7 +28,8 @@ class PublicationTests(unittest.TestCase):
 
     def issue(self, decision, number=42, **changes):
         fields = dict(repository=self.policy.repository, number=number,
-                      author=self.policy.bot_author, body=decision.body, is_pull_request=False)
+                      author=self.policy.bot_author, title=decision.title,
+                      body=decision.body, is_pull_request=False)
         fields.update(changes)
         return RemoteIssue(**fields)
 
@@ -72,7 +73,6 @@ class PublicationTests(unittest.TestCase):
     def test_marker_alone_cannot_authorize_binding(self):
         intent = self.prepare()
         for changes in [dict(repository="attacker/other"), dict(author="some-user"),
-                        dict(body=intent.body + "extra unreviewed text"),
                         dict(is_pull_request=True), dict(is_pull_request=None),
                         dict(is_pull_request=0), dict(is_pull_request=""), dict(number=True)]:
             issue = self.issue(intent, **changes)
@@ -104,9 +104,9 @@ class PublicationTests(unittest.TestCase):
         public = Policy("example/public-telemetry", "report-bot[bot]", self.releases, "public")
         key, _, digest = material(self.report)
         self.assertEqual(self.prepare(policy=public).action, "review_required")
-        wrong = Approval(key, public.repository, "0" * 64, "1" * 64)
+        wrong = Approval(key, public.repository, public.bot_author, "0" * 64, "1" * 64)
         self.assertEqual(self.prepare(policy=public, approval=wrong).action, "review_required")
-        valid = Approval(key, public.repository, digest, self.model.inventory_digest())
+        valid = Approval(key, public.repository, public.bot_author, digest, self.model.inventory_digest())
         self.assertEqual(self.prepare(policy=public, approval=valid).action, "create")
 
     def test_repository_casing_cannot_create_a_second_intent(self):
@@ -124,14 +124,15 @@ class PublicationTests(unittest.TestCase):
         first_key, _, first_digest = material(self.report)
         second_key, _, second_digest = material(other)
         old_inventory = self.model.inventory_digest()
-        first = Approval(first_key, public.repository, first_digest, old_inventory)
-        second = Approval(second_key, public.repository, second_digest, old_inventory)
+        first = Approval(first_key, public.repository, public.bot_author, first_digest, old_inventory)
+        second = Approval(second_key, public.repository, public.bot_author, second_digest, old_inventory)
         intent = self.prepare(policy=public, approval=first)
         self.assertEqual(intent.action, "create")
         self.assertEqual(self.prepare(other, public, second).action, "review_required")
         self.model.uncertain(public.repository, intent.key, intent.token)
         self.assertEqual(self.prepare(other, public, second).action, "review_required")
-        renewed = Approval(second_key, public.repository, second_digest, self.model.inventory_digest())
+        renewed = Approval(second_key, public.repository, public.bot_author,
+                           second_digest, self.model.inventory_digest())
         self.assertEqual(self.prepare(other, public, renewed).action, "create")
 
     def test_published_remote_edit_deletion_or_duplicate_requires_review(self):
@@ -180,7 +181,7 @@ class PublicationTests(unittest.TestCase):
     def test_approval_for_another_destination_is_rejected(self):
         public = Policy("example/public-telemetry", "report-bot[bot]", self.releases, "public")
         key, _, digest = material(self.report)
-        wrong = Approval(key, "example/other", digest, "1" * 64)
+        wrong = Approval(key, "example/other", public.bot_author, digest, "1" * 64)
         self.assertEqual(self.prepare(policy=public, approval=wrong).action, "review_required")
 
     def test_open_day_and_non_utc_reference_are_rejected(self):
@@ -210,6 +211,81 @@ class PublicationTests(unittest.TestCase):
         value["session_id"] = "a" * 32
         with self.assertRaises(ContractError):
             self.prepare(value)
+        self.assertEqual(self.model.entries, {})
+
+    def test_issue_title_is_fixed_and_part_of_the_frozen_artifact(self):
+        intent = self.prepare()
+        self.assertEqual(intent.title, "OpenRC telemetry: 2026-11-17 / v0.2.7 / daily GPU v1")
+        changed = self.issue(intent, title="Unreviewed title")
+        self.assertFalse(self.model.confirmed(self.policy.repository, intent.key, intent.token, changed))
+        self.assertEqual(self.prepare().action, "review_required")
+
+    def test_public_approval_cannot_change_expected_publisher(self):
+        public = Policy(self.policy.repository, "original-bot[bot]", self.releases, "public")
+        changed = Policy(self.policy.repository, "different-bot[bot]", self.releases, "public")
+        key, _, digest = material(self.report)
+        receipt = Approval(key, public.repository, public.bot_author, digest, self.model.inventory_digest())
+        self.assertEqual(self.prepare(policy=changed, approval=receipt).action, "review_required")
+        self.assertEqual(self.model.entries, {})
+        self.assertEqual(self.prepare(policy=public, approval=receipt).action, "create")
+
+    def test_bot_policy_rejects_mutable_or_invalid_authors(self):
+        for author in [None, ["report-bot"], {"login": "report-bot"}, 1, b"report-bot", "", "a b"]:
+            with self.subTest(author=author), self.assertRaisesRegex(ContractError, "^publication_author$"):
+                Policy(self.policy.repository, author, self.releases)
+
+    def test_author_casing_preserves_the_same_identity(self):
+        mixed = Policy(self.policy.repository, "REPORT-BOT[bot]", self.releases)
+        intent = self.prepare(policy=mixed)
+        self.assertTrue(self.model.confirmed(self.policy.repository, intent.key, intent.token,
+                                             self.issue(intent, author="REPORT-BOT[bot]")))
+        self.assertEqual(self.prepare().action, "noop")
+
+    def test_altered_same_key_collision_is_not_filtered_out(self):
+        for published in (False, True):
+            for complete in (False, True):
+                for changed_field in ("body", "title"):
+                    with self.subTest(published=published, complete=complete, changed_field=changed_field):
+                        self.model = PublicationModel()
+                        intent = self.prepare()
+                        if published:
+                            self.model.confirmed(self.policy.repository, intent.key, intent.token, self.issue(intent))
+                        edits = {changed_field: getattr(intent, changed_field) + " unreviewed"}
+                        result = self.model.reconcile(self.policy.repository, intent.key,
+                            [self.issue(intent), self.issue(intent, 43, **edits)], discovery_complete=complete)
+                        self.assertEqual(result.action, "review_required")
+                        self.assertEqual(self.prepare().action, "review_required")
+                        narrowed = self.model.reconcile(self.policy.repository, intent.key,
+                            [self.issue(intent)], discovery_complete=True)
+                        self.assertEqual(narrowed.action, "review_required")
+
+    def test_multiple_exact_matches_are_conflict_even_in_partial_discovery(self):
+        intent = self.prepare()
+        result = self.model.reconcile(self.policy.repository, intent.key,
+            [self.issue(intent), self.issue(intent, 43)], discovery_complete=False)
+        self.assertEqual(result.action, "review_required")
+        self.assertEqual(self.prepare().action, "review_required")
+
+    def test_known_issue_edit_without_marker_remains_conflict(self):
+        intent = self.prepare()
+        self.model.confirmed(self.policy.repository, intent.key, intent.token, self.issue(intent))
+        result = self.model.reconcile(self.policy.repository, intent.key,
+            [self.issue(intent), self.issue(intent, body="edited", title="edited")], discovery_complete=True)
+        self.assertEqual(result.action, "review_required")
+
+    def test_boolean_cannot_impersonate_first_attempt_token(self):
+        intent = self.prepare()
+        self.assertEqual(intent.token, 1)
+        self.assertFalse(self.model.confirmed(self.policy.repository, intent.key, True, self.issue(intent)))
+        self.assertFalse(self.model.uncertain(self.policy.repository, intent.key, True))
+        self.assertEqual(self.prepare().action, "reconcile")
+
+    def test_last_calendar_day_is_refused_with_safe_category(self):
+        value = deepcopy(self.report)
+        value.update(day="9999-12-31", period="9999-W52")
+        with self.assertRaisesRegex(ContractError, "^publication_day$"):
+            self.model.prepare(value, self.policy, as_of_utc="9999-12-31T23:59:59Z",
+                               expected_key=material(value)[0])
         self.assertEqual(self.model.entries, {})
 
 

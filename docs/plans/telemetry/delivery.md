@@ -22,7 +22,7 @@ Proposed logical records:
 | accepted_batch | batch ID, body digest, receipt day/time for expiry, expiration; no request headers/IP |
 | accepted_event | bounded schema fields, session/sequence for 48-hour dedup, receipt expiry |
 | daily_rollup | day, approved release/dimension/category, coverage, summed counts/durations/histograms; no session IDs |
-| publication | trusted report key, destination repo, issue number, digest and publication outcome |
+| publication | trusted report key, destination repo, expected bot, frozen title/body digest, issue number and publication outcome |
 | service metrics | status counts, queue depth, latency histograms, expiry lag, volume; no player labels/payloads |
 
 Use one transaction for all event inserts plus dedup receipt. Acknowledge 202 only after commit. A DB timeout before commit returns retryable failure; an uncertain commit is resolved by the same retry identity. Unique constraints protect concurrent submissions. A full queue/database returns 429/503 before acknowledgment. Do not silently drop an acknowledged batch and still call it delivered.
@@ -35,7 +35,9 @@ At READ COMMITTED, insert the immutable batch receipt with ON CONFLICT DO NOTHIN
 
 If cleanup removed the receipt, restart within a bounded budget. If the receipt is at or too near expiry, release locks and return a bounded retryable failure until cleanup; never refresh the deadline. Bound lock/transaction duration and preserve a measured purge margin. PostgreSQL now()/transaction_timestamp() is fixed at transaction start; it cannot alone decide expiry after a long wait. Hash equality relies on the stated cryptographic collision assumption. These are design requirements from F15, not executed SQL or proof of real concurrency/durability.
 
-Schema is independent of the client. Treat all inputs as hostile, including valid-but-fabricated values. Never log body bytes or jsonschema exception reprs: error messages can contain rejected personal data. Reject diagnostic attachment content types, arbitrary destinations and compressed bombs. The [OpenAPI proposal](../../../research/telemetry/contracts/openapi.json) has no live server.
+Schema is independent of the client. Treat all inputs as hostile, including valid-but-fabricated values. Never log body bytes or jsonschema exception reprs: error messages can contain rejected personal data. Reject diagnostic attachment content types, arbitrary destinations and compressed bombs. The [OpenAPI proposal](../../../research/telemetry/contracts/openapi.json) has no live server. The reference maps malformed JSON/encoding/duplicate keys/depth to 400, oversized bytes to 413 and schema/semantic/release rejection to 422.
+
+The documented fixed JSON errors, including the explicit 503, describe the application receiver. Intermediaries can return different or empty bounded bodies; the 408/5XX entries acknowledge that boundary. The sender selects retry from status and validated headers, never parses or logs an arbitrary error body. Qualify direct-service response schemas separately from gateway timeout/5xx behavior, including a gateway 503; retain the 4 KiB response cap in both paths. An explicit OpenAPI status takes precedence over a range, so the conformance harness must not mistake a deliberately injected intermediary response for a receiver-schema failure.
 
 ## Anonymous ingress and abuse limits
 
@@ -55,9 +57,9 @@ Use a trusted default-branch workflow in the report repository:
 2. OIDC obtains short-lived read access to the aggregate-only endpoint when supported. Restrict audience, repository, workflow, trusted ref and environment. Otherwise use a narrowly scoped server credential with a documented rotation process.
 3. Validate the aggregate schema, release allowlist, exact period, row/size caps and publication status. No ad hoc dimension query or raw storage permission is available to the job.
 4. Render deterministic Markdown with a fixed renderer. Do not interpolate player/API text into shell or JavaScript source.
-5. Create or reconcile one frozen report per approved identity. The prepared model supports a daily GPU report keyed by day/release/destination; future weekly reports need a distinct reviewed identity. A trusted store owns intent, issue number and exact body digest; verify repository, issue kind, complete body/marker and expected bot author.
+5. Create or reconcile one frozen report per approved identity. The prepared model supports a daily GPU report keyed by day/release/destination; future weekly reports need a distinct reviewed identity. A trusted store owns intent, issue number and exact title/body content digest; verify repository, issue kind, complete title/body/marker and expected bot author. Public approval binds that proposed author as well as the artifact and current disclosure inventory.
 6. Persist intent before writing. On an ambiguous create timeout, retain unknown and reconcile rather than automatically creating again. Serialize by report key. Incomplete discovery, zero inconclusive matches or multiple matches cannot authorize a blind retry. Ignore an unchanged published digest; a changed digest or audience requires disclosure review. Bound retries of operations with established safe semantics.
-7. Record the issue URL/digest and status privately. A failed update preserves the previous report; monitoring marks it stale.
+7. Record the issue URL/digest and status privately. An unresolved publication preserves the previous report; monitoring marks it stale. The current protocol has no automatic update/correction transition. Related same-key artifacts with altered titles or bodies require review even when an exact original also exists.
 
 The [publication protocol](publication-protocol.md) owns these transitions and their offline tests. Repository concurrency and a durable workflow engine do not make an arbitrary remote create exactly-once. An approval hash is not reviewer authentication, and frozen bodies do not prove that overlapping public disclosures are safe.
 
@@ -103,7 +105,7 @@ Illustrative workload, not measured traffic or a provider quote: 30 minutes per 
 | 10,000 | 300,000 | 586 MiB | 3.47 |
 | 100,000 | 3,000,000 | 5.72 GiB | 34.72 |
 
-Benchmark a 10× traffic burst and explicit 32 KiB maximum bodies, not only the 2 KiB example. The hard client limit is 256 KiB/hour and 90 attempts/hour, including retries; modified clients can bypass it, so enforce receiver caps independently. Hosting selection must include a monthly spending ceiling and usage alerts before activation. No paid service is provisioned here.
+Benchmark a 10× traffic burst and explicit 32 KiB maximum bodies, not only the 2 KiB example. The client permits 256 KiB and 90 attempts, including retries, per fixed 3,600-second process window anchored at its first counted request. Disable/re-enable preserves that budget; a new process starts a new budget. This is not a rolling-hour limit, and a boundary can admit a burst. Modified clients can bypass it, so enforce receiver caps independently. Hosting selection must include a monthly spending ceiling and usage alerts before activation. No paid service is provisioned here.
 
 ## Operating procedures
 
@@ -123,4 +125,4 @@ TLS, private credentials, storage encryption, least-privilege roles, log redacti
 
 ## Manual GitHub path
 
-Prepare a sanitized file locally, show it to the player, then optionally open an Issue Form. The player handles attachment/submission. GitHub identity and public-attachment visibility are stated before upload. Never auto-send a report, populate a URL with telemetry JSON, or attach the existing raw flight/diagnostics archive. The [template](../../../research/telemetry/templates/manual-report.md) is documentation-only and contains no submit action.
+Prepare a separate allowlisted manual artifact locally, show its exact bytes to the player, then optionally open an Issue Form. The [manual-export contract](consent.md#manual-diagnostics-and-crash-reporting) governs this future projector; raw batches, session/batch tokens, sequences and per-window/session event arrays never enter it. The player handles attachment/submission. GitHub identity and public-attachment visibility are stated before upload. Never auto-send a report, populate a URL with telemetry JSON, or attach the existing raw flight/diagnostics archive. The [template](../../../research/telemetry/templates/manual-report.md) is documentation-only and contains no submit action.

@@ -32,3 +32,22 @@ The publication model is sequential and in memory. It verifies local intent deci
 Toxiproxy, mitmproxy, Schemathesis, PresentMon, MangoHud, Perfetto, ASV, HdrHistogram, PostgreSQL, pgBackRest, NGINX, Uvicorn and the multilingual example applications were researched, not installed or qualified by this task. No native Godot UI, packet capture, physical erasure drill, live receiver, real publication or target-hardware performance test was run. The branch does not activate telemetry. Local focused checks do not replace hosted CI or release qualification.
 
 The [review record](review.md) tracks concrete corrections, independent checks and remaining trust boundaries. The link check covered all local links in affected telemetry Markdown files, plus new or affected local links in changed indices; external URL availability and unrelated repository documentation were outside that check. The lead checked the staged scope and diff before branch publication. Hosted CI is not claimed as part of this local evidence.
+
+## Final candidate verification
+
+Date: 2026-11-18. Review baseline: `a16a2dbc2e0fdf3d22cdf7c2dd23bbfca24dd2e8`. The preceding 97-test and 211-link results describe that earlier research follow-up. This section records the final merge-preparation corrections and is the current local evidence for the starter.
+
+The lead exported all 16 tracked `research/telemetry` files from the staged Git tree into a new empty directory. A fresh Python **3.12.14** virtual environment was created without system site packages, and all eight exact requirements were installed. The two `run` blocks from the actual [CI workflow](../../../../.github/workflows/telemetry-contracts.yml) were executed against that clean snapshot, with an isolated runner temp directory and Hypothesis storage. Both exited zero:
+
+- `pip check`: no broken requirements.
+- `generate_contracts.py --check`: contracts match their generator.
+- `generate_examples.py --check`: synthetic examples match their generator.
+- Complete unittest discovery: **123 tests passed**, including the generated properties/state machine; **26 more tests than the review baseline**.
+
+The workflow YAML was parsed and its shell blocks passed Bash syntax checking. Structural checks confirmed ordinary push/pull-request/manual events, `contents: read`, immutable checkout at `11d5960a326750d5838078e36cf38b85af677262`, no persisted checkout credentials, sparse telemetry checkout, a ten-minute timeout and no publisher secrets or live telemetry calls. The pin was verified in the official actions/checkout repository; Ubuntu 24.04's official runner inventory includes Python 3.12. This local reproduction does not execute GitHub's checkout action or establish a hosted runner result.
+
+Independent re-reviews and their exact scope are recorded in the [final review](review.md#final-merge-preparation-review). The publication reviewer ran the integrated 121-test candidate; the final two admission/suspension additions and generated state machine were independently rechecked by the contract reviewer. The lead then ran the full 123-test clean-snapshot candidate. No deliberate mutation was made in the integration checkout, and the previous two disposable mutation receipts remain limited to their stated earlier faults.
+
+Final integration checks: **220 local Markdown links/anchors checked with zero errors** across telemetry documents plus introduced/affected index links; **25 files changed** by this review and **48 files in the complete telemetry branch delta**. `git diff --cached --check` passes. The staged telemetry subtree and workflow are byte-identical to those used in the clean-snapshot test. A three-way Git merge-tree against main `d60cf725c8f40379ef10768678ae1e873764839f` completed without conflict. No unrelated main history was merged or rewritten.
+
+The latest main increment after the architecture audit changed a capture-only flood-light probe and native-kernel evidence; it did not change the proposed telemetry integration interfaces. This source/merge inspection does not qualify native behavior or future main revisions. Hosted CI and the repository's existing required merge checks must be inspected on the proposed revision; no production or native-runtime qualification is claimed here.

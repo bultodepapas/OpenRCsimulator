@@ -1,7 +1,7 @@
 # Transparent product telemetry — implementation plan
 
-Status: **design and offline contract prototype; no game collection, service, or publisher deployed**.
-Dated 2026-11-18. Baseline: [39fa2746](https://github.com/bultodepapas/OpenRCsimulator/commit/39fa2746ae4f4ba8698b87db279adcfe84ef5d17).
+Status: **design and offline contract prototype; no product-telemetry collection, service, or publisher deployed**.
+Dated 2026-11-18. Telemetry design baseline: [39fa2746](https://github.com/bultodepapas/OpenRCsimulator/commit/39fa2746ae4f4ba8698b87db279adcfe84ef5d17); the offline telemetry branch is based on that snapshot. Compatibility was also source-reviewed against newer main [d407acd](https://github.com/bultodepapas/OpenRCsimulator/commit/d407acd9da55dc49d6e1e0442a81f3b6d7657591); that is not a claim of a merged or runtime-qualified build.
 Track: **TELEM-00…15**. Owner: product telemetry lead; UI, PT/VQ, UI-FS, DT and infrastructure maintainers own their existing interfaces.
 
 ## Outcome
@@ -10,7 +10,7 @@ Learn which supported machines struggle, where frame cadence deteriorates, which
 
 The enabled choice is recommended on first launch, but **collection and transmission begin only after an explicit enabling action**. Every later eligible launch shows the actual telemetry state and a Settings link. There is no permanent player, installation, device, or account identifier. Raw minimized session reports are treated as potentially identifiable; only reviewed aggregates reach GitHub. Do not advertise guaranteed anonymity.
 
-This plan implements the user's requested default-enabled experience as a recommended enabled choice plus affirmative acceptance. A stored enabled preference can start collection automatically on subsequent eligible launches. A preselected preference alone cannot authorize first-run transmission; the consent rationale and exact copy live in [consent](telemetry/consent.md).
+The requested enabled-by-default experience is represented by a visibly recommended enabled choice, not automatic first-run collection. Only a deliberate, telemetry-specific Enable action grants it; a generic Continue, a preselection or input held as the notice appears cannot. A stored enabled preference can start collection automatically on subsequent eligible launches only while the notice and locale remain qualified. The consent rationale and exact copy live in [consent](telemetry/consent.md).
 
 ## Read in this order
 
@@ -38,7 +38,7 @@ This plan implements the user's requested default-enabled experience as a recomm
 6. Source/editor, headless, technical/direct-argument and automation runs are off by default and cannot use production ingestion. A no-argument exported GUI launched from a terminal is indistinguishable from the same GUI launched by a shortcut.
 7. No disk spool in v1. A small memory queue favors privacy and simple revocation over guaranteed event delivery. All reports are best-effort observations, never a census.
 8. Use unpartitioned logged raw/dedup tables for the small pilot candidate, with global uniqueness and indexed expiry. A receipt-day partition key must not weaken cross-day deduplication. SQL deletion and backup age alone cannot qualify the 48-hour storage promise; raw-copy isolation and erasure feasibility remain explicit deployment gates.
-9. Freeze a reviewed report snapshot. Persist publication intent before a remote write, preserve an unknown outcome and reconcile it; never blindly repeat an ambiguous create. Public review binds the exact destination, body digest and relevant disclosure inventory. The offline model does not authenticate reviewers or provide durable coordination.
+9. Freeze a reviewed report snapshot. Persist publication intent before a remote write, preserve an unknown outcome and reconcile it; never blindly repeat an ambiguous create. Public review binds the exact destination, expected author, title/body content digest and relevant disclosure inventory. The offline model does not authenticate reviewers or provide durable coordination.
 
 The [decision record](../DECISIONS.md#transparent-telemetry-as-a-separate-product-data-boundary) records the credible alternatives and revisit conditions.
 
@@ -51,7 +51,7 @@ Effort ranges are planning estimates for one experienced engineer with timely re
 | 0 — evidence and contract, 2–3 days | TELEM-00 | Source audit and external investigations; privacy and GitHub alternatives | Baseline repository | **Delivered:** original 38 plus the adaptive follow-up; see its register and integration evidence |
 | 0 | TELEM-01 | Versioned data/consent/API contracts, adversarial fixtures and offline reference | TELEM-00 | **Delivered as prototype:** see test evidence; no production integration |
 | 1 — local consent and measurement, 4–6 days | TELEM-02 | Consent store, forced-off policy, generation fencing, no-network stub | TELEM-01; UI/DT | Unit/packet tests prove zero telemetry before grant and after decline; pending |
-| 1 | TELEM-03 | First-launch panel, startup state, Settings privacy page, exact preview, translations | TELEM-02; UI/i18n | EN/ES keyboard/controller and scale review at 1080p; pending |
+| 1 | TELEM-03 | First-launch panel, startup state, Settings privacy page, exact preview, translations | TELEM-02; UI/i18n | Reviewed notices and keyboard/controller/scale review in each enabled locale; 1080p-first except native Retina target; pending |
 | 1 | TELEM-04 | Read-only frame observer, hardware classifier and effective graphics snapshot | TELEM-02; PT/VQ | Known-trace calculations, availability matrix and overhead campaign; pending |
 | 1 | TELEM-05 | Accepted activity summaries and allowlisted aircraft/context projection | TELEM-04; UI-FS/vehicle owners | Rejected launch, restart, pause, custom aircraft and unsupported classifier tests; pending |
 | 2 — bounded delivery, 3–5 days | TELEM-06 | Memory queue, one-request sender, deadlines, retry budget and revocation races | TELEM-02/04/05 | Silent peer, TLS, redirects, 429, offline and shutdown harness; pending |
@@ -60,7 +60,7 @@ Effort ranges are planning estimates for one experienced engineer with timely re
 | 3 | TELEM-09 | Indexed expiry, raw/aggregate storage separation, restricted roles, safe error logs and service monitoring | TELEM-08 | Physical-copy/backup feasibility, boundary races and log-canary evidence; pending |
 | 4 — useful GitHub feedback, 3–5 days | TELEM-10 | Daily rollups and fixed weekly aggregate tables with disclosure gates | TELEM-09 | Correct weighting, suppressed cells, missing periods and late batches; pending |
 | 4 | TELEM-11 | Deterministic renderer, frozen review record and recoverable GitHub publisher | TELEM-10 | Offline intent/disclosure model prepared; durable state, real permission/rate/timeout/concurrency tests pending |
-| 5 — qualification and rollout, 4–7 days plus beta time | TELEM-12 | Cross-platform release-package consent, network and performance qualification | TELEM-02…11 | Windows/Linux/macOS, 1080p-first evidence; pending |
+| 5 — qualification and rollout, 4–7 days plus beta time | TELEM-12 | Cross-platform release-package consent, network and performance qualification | TELEM-02…11 | Windows/Linux/macOS, 1080p-first except Apple Silicon Retina native-panel evidence; pending |
 | 5 | TELEM-13 | Small volunteer preview cohort and maintenance runbook rehearsal | TELEM-12 | Observed payloads, bounded costs, real off-switch, operator response; pending |
 | 5 | TELEM-14 | Enable the approved release configuration and publish the notice | TELEM-13; completed deployment/privacy gates | Release owner accepts exact build, endpoint and notice; pending |
 | 5 | TELEM-15 | First release comparison, metric review, deletion drill and quarterly pruning | TELEM-14 | Actionable regression report and unused-field removal; pending |
@@ -71,9 +71,9 @@ Expected implementation effort after this design: roughly **18–30 engineering 
 
 ### PR 1 — local consent foundation
 
-Add proposed app/telemetry/consent_store.gd, policy.gd and a no-op service; wire only the interactive exported route in app/app_root.gd. Add a separate versioned user://telemetry_consent.cfg instead of overloading display/flight preferences. Test corrupt, future, unwritable and revoked states. Keep the compiled endpoint empty and collection off until policy admits it. Do not activate third-party autoloads.
+Add proposed app/telemetry/consent_store.gd, policy.gd and a no-op service; wire only the interactive exported route in app/app_root.gd. Add the first-launch choice and startup/Settings effective-state controls, using reviewed notices for enabled locales. Add a separate versioned user://telemetry_consent.cfg instead of overloading display/flight preferences. Test corrupt, future, unwritable and revoked states. Keep the compiled endpoint empty and collection off until policy admits it. Do not activate third-party autoloads.
 
-Done means startup/Settings report the effective state correctly, a denial survives a successful restart/save, and a failed save is visible without resuming current-session collection. No live transport exists in this PR.
+Done means startup/Settings report the effective state correctly, a denial survives a successful restart/save, and a failed save is visible without resuming current-session collection. No live transport exists in this PR. Qualify the current notice in all offered locales or force effective telemetry off in locales without reviewed notices; an unreviewed language change cannot silently reactivate a saved grant.
 
 ### PR 2 — local data path and preview
 
@@ -83,9 +83,17 @@ Done means known input traces produce the specified measurements, custom strings
 
 ### PR 3 — controlled transport and receiving spike
 
-Use an isolated local test collector and exported release builds. Implement cancellation/epoch fences, status-specific retry and the strict server schema. Prove silent-peer shutdown and queue behavior before any operator endpoint is configured. Reuse the synthetic fixtures only.
+Use an isolated local test collector and exported release builds. Implement cancellation/epoch fences, status-specific retry and the strict server schema. Prove silent-peer shutdown and queue behavior before any operator endpoint is configured. Use synthetic fixtures for transport failure tests; the separately admitted native qualification route can capture controlled tester timings and coarse hardware categories.
 
-Done means both sides enforce the contract under malformed traffic and outages; no test depends on real player data. Promotion requires the remaining operations/consent/hardware gates.
+Done means both sides enforce the contract under malformed traffic and outages; no test depends on real player data. A non-shipped, explicitly admitted qualification build may run the same adapter against a compiled local-only test origin for controlled native measurements; ordinary shipped-route off-state checks remain separate. Promotion requires the remaining operations/consent/hardware gates.
+
+## Merge readiness versus activation
+
+The design and offline starter are reviewable as preparation when their generated artifacts and focused tests pass on the candidate and the source diff is reviewed. The [isolated CI job](../../.github/workflows/telemetry-contracts.yml) runs both generator checks and the offline suite for pull requests, relevant pushes and manual dispatch. It uses a fresh pinned-dependency environment, read-only repository permission and no publisher credential. Its hosted result and the repository's existing required CI must be checked on the proposed merge; this job does not replace the existing gates. A merge does not make collection or a receiver available and does not satisfy the pending implementation, privacy, provider, hardware, publication or volunteer-preview gates in TELEM-02…15.
+
+The first implementation sequence remains the three PRs above: local consent foundation, local data path and preview, then isolated transport and receiver. Their stated acceptance, including locale and qualification-build boundaries, is required before each next integration; later phases keep their own owners and evidence.
+
+Senior-team handoff: review the [final finding dispositions](../research/telemetry/TELEM-00-R1/review.md#final-merge-preparation-review) and [verification evidence](../research/telemetry/TELEM-00-R1/verification.md#final-candidate-verification), confirm the current merge base and required CI, then merge this preparation as TELEM-00/01. Assign named owners to the first three implementation PRs and the deployment decisions below. No production endpoint, telemetry secret or public-report destination is needed to merge the preparation. Enabling a live release remains TELEM-14, after its explicit gates.
 
 ## Decisions that remain before deployment
 
@@ -104,8 +112,8 @@ These decisions do not block the local adapter, UI, schemas or tests. They block
 ## Success criteria and limits
 
 - Every supported release can fly indefinitely with telemetry off or the receiver unavailable.
-- We can compare cadence by release, broad hardware and stock aircraft without tracking people across launches.
+- We can investigate cadence by release, broad hardware and stock aircraft without tracking people across launches; the initial context cannot establish detailed graphics-setting comparability or causation.
 - Each telemetry field has a documented purpose, finite representation and removal/review owner.
 - The UI, wire data, logging stack and actual retention agree.
-- No event, token or player session is posted directly to public GitHub.
+- Automatic telemetry never posts an event, token or player session directly to public GitHub. The optional manual route uses its separate reviewed allowlist and player submission.
 - Observations cover consenting sessions only. We cannot infer total players, unique machines, retention, crashes not observed, or causal performance improvements from these samples alone.

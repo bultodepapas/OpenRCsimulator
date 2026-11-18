@@ -1,0 +1,41 @@
+name: Telemetry contracts
+
+on:
+  push:
+    paths:
+      - 'research/telemetry/**'
+      - '.github/workflows/telemetry-contracts.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: telemetry-contracts-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  contracts:
+    name: Offline telemetry contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Check out the reviewed telemetry source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # Same immutable pin as repository CI.
+        with:
+          persist-credentials: false
+          sparse-checkout: research/telemetry
+      - name: Install exact test dependencies in isolation
+        run: |
+          python3.12 --version
+          python3.12 -m venv "$RUNNER_TEMP/telemetry-venv"
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m pip install --disable-pip-version-check -r research/telemetry/requirements.txt
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m pip check
+      - name: Verify schemas, examples and behavioral contracts
+        run: |
+          "$RUNNER_TEMP/telemetry-venv/bin/python" research/telemetry/generate_contracts.py --check
+          "$RUNNER_TEMP/telemetry-venv/bin/python" research/telemetry/generate_examples.py --check
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m unittest discover -s research/telemetry -p 'test_*.py' -v

@@ -53,7 +53,8 @@ def _object(pairs):
 
 
 def _constant(_value):
-    raise ContractError("nonfinite")
+    # NaN and Infinity are not JSON numeric literals.
+    raise ContractError("invalid_json")
 
 
 def _bounded_tree(value, depth=0):
@@ -90,12 +91,17 @@ def validate_body(body):
         raise ContractError("invalid_json") from None
     if not BATCH_VALIDATOR.is_valid(payload):
         raise ContractError("schema")
-    seqs = set()
+    seqs, previous = set(), 0
     for event in payload["events"]:
         if event["seq"] in seqs:
             raise ContractError("duplicate_sequence")
+        if event["seq"] <= previous:
+            raise ContractError("sequence_order")
         seqs.add(event["seq"])
+        previous = event["seq"]
         if event["name"] == "performance_window":
+            if event["window_complete"] and event["interval_sum_us"] < 30_000_000:
+                raise ContractError("incomplete_window")
             hist = event["interval_histogram"]
             if sum(hist) != event["interval_count"]:
                 raise ContractError("histogram_count")
@@ -115,29 +121,30 @@ def hardware_family(raw, kind):
     if not value:
         return "unknown"
     words = set(re.sub(r"[^a-z0-9]+", " ", value).split())
+    matches = set()
     if kind == "cpu":
         if "intel" in words and "core" in words:
-            return "intel_core"
+            matches.add("intel_core")
         if "amd" in words and "ryzen" in words:
-            return "amd_ryzen"
+            matches.add("amd_ryzen")
         if "apple" in words:
-            return "apple_silicon"
+            matches.add("apple_silicon")
     elif kind == "gpu":
         if words.intersection({"llvmpipe", "swiftshader"}):
-            return "software"
+            matches.add("software")
         if "apple" in words:
-            return "apple_silicon"
+            matches.add("apple_silicon")
         if "geforce" in words and "rtx" in words:
-            return "nvidia_rtx"
+            matches.add("nvidia_rtx")
         if "geforce" in words and "gtx" in words:
-            return "nvidia_gtx"
+            matches.add("nvidia_gtx")
         if "radeon" in words:
-            return "amd_radeon"
+            matches.add("amd_radeon")
         if "intel" in words and "arc" in words:
-            return "intel_arc"
+            matches.add("intel_arc")
         if "intel" in words and words.intersection({"iris", "uhd", "hd"}):
-            return "intel_integrated"
-    return "other"
+            matches.add("intel_integrated")
+    return next(iter(matches)) if len(matches) == 1 else "other"
 
 
 def vehicle_id(raw, custom=False):
@@ -162,9 +169,13 @@ class FrameWindow:
         if draws is not None and (type(draws) is not int or draws < 0):
             raise ContractError("draws")
         if interval_us > 5_000_000:
+            if self.excluded >= 1000:
+                raise ContractError("window_full")
             self.excluded += 1
             return False
         if self.interval_count >= 60000 or self.interval_sum_us + interval_us > 60_000_000:
+            raise ContractError("window_full")
+        if draws is not None and self.rendered_frames + draws > 60000:
             raise ContractError("window_full")
         for index, upper in enumerate(HISTOGRAM_UPPER_US):
             if interval_us <= upper:
@@ -178,7 +189,15 @@ class FrameWindow:
             self.rendered_frames += draws
         return True
 
-    def event(self, seq=1, aircraft="f4u-corsair-250", complete=True):
+    def event(self, seq=1, aircraft="f4u-corsair-250", complete=None):
+        if self.interval_count == 0:
+            raise ContractError("window_empty")
+        if complete is None:
+            complete = self.interval_sum_us >= 30_000_000
+        if type(complete) is not bool:
+            raise ContractError("window_complete")
+        if complete and self.interval_sum_us < 30_000_000:
+            raise ContractError("incomplete_window")
         known = self.draws_known
         return {
             "name": "performance_window", "seq": seq, "mode": "flight",
@@ -206,6 +225,7 @@ class ClientModel:
     def __init__(self, eligible=True):
         self.eligible = eligible
         self.state = "pending"
+        self.service_suspended = False
         self.epoch = 0
         self.session_id = None
         self.queue = deque()
@@ -218,18 +238,23 @@ class ClientModel:
 
     @property
     def enabled(self):
-        return self.eligible and self.state == "enabled"
+        return self.eligible is True and not self.service_suspended and self.state == "enabled"
 
     def enable(self, notice=NOTICE):
+        if self.service_suspended:
+            return False
         self.disable("pending")
-        if self.eligible and notice == NOTICE:
+        if self.eligible is True and notice == NOTICE:
             self.state = "enabled"
             self.session_id = secrets.token_hex(16)
             return True
         return False
 
     def disable(self, state="off"):
-        self.state = state  # close the gate before clearing identities or callbacks
+        # An invalid disabled state must not reopen the probe gate.
+        self.state = state if state in ("off", "pending", "suspended") else "off"
+        if self.state == "suspended":
+            self.service_suspended = True
         self.epoch += 1
         self.active = None
         self.queue.clear()
@@ -315,7 +340,11 @@ class IngressModel:
     def ingest(self, body, now):
         try:
             payload = validate_body(body)
-        except ContractError:
+        except ContractError as error:
+            if str(error) == "body_too_large":
+                return 413
+            if str(error) in {"bytes_required", "invalid_json", "duplicate_key", "depth"}:
+                return 400
             return 422
         if payload["build"]["release_id"] not in self.approved_releases:
             return 422
@@ -344,7 +373,7 @@ def aggregate_daily_gpu(records, day, release_id, minimum=20, *, as_of_utc):
     windows. Suppress the whole table if any cell is below the threshold.
     Never lower the normative floor through this test seam.
     """
-    if minimum < 20:
+    if type(minimum) is not int or minimum < 20:
         raise ContractError("cohort_floor")
     try:
         closed = date.fromisoformat(day)
@@ -353,10 +382,14 @@ def aggregate_daily_gpu(records, day, release_id, minimum=20, *, as_of_utc):
         if (closed.isoformat() != day or current.utcoffset() != timedelta(0) or
             not start + timedelta(hours=25) <= current < start + timedelta(hours=47)):
             raise ValueError
-    except ValueError:
+    except (ValueError, TypeError, AttributeError, OverflowError):
         raise ContractError("day_not_eligible") from None
     iso = closed.isocalendar()
     period = f"{iso.year:04d}-W{iso.week:02d}"
+    # Validate even a no-data request before consuming any record iterator.
+    validate_report({"report_version": 1, "aggregation_scope": "closed_day", "day": day,
+                     "period": period, "release_id": release_id, "status": "no_data",
+                     "basis": "eligible_daily_session_observations", "rows": []})
     groups, seen, counts = {}, {}, {}
     for receipt_day, body in records:
         if receipt_day != day:
@@ -411,11 +444,17 @@ def validate_report(report):
         iso = report_day.isocalendar()
         if report["period"] != f"{iso.year:04d}-W{iso.week:02d}":
             raise ValueError
-    except ValueError:
+    except (ValueError, TypeError, OverflowError):
         raise ContractError("report_period") from None
     families = [row["gpu_family"] for row in report["rows"]]
     if len(families) != len(set(families)):
         raise ContractError("duplicate_report_cell")
+    for row in report["rows"]:
+        sessions = row["session_observations"]
+        if not sessions * 30_000_000 <= row["interval_sum_us"] <= sessions * 120 * 60_000_000:
+            raise ContractError("report_exposure")
+        if row["rendered_frames"] > sessions * 120 * 60000:
+            raise ContractError("report_frames")
 
 
 def render_report(report):
@@ -425,7 +464,9 @@ def render_report(report):
         "",
         f"UTC day: {report['day']} (daily subset of {report['period']}) · Release: {report['release_id']} · Status: {report['status']}",
         "",
-        "Coverage: this closed day only; ineligible windows and suppressed cells are excluded.",
+        "Coverage: this closed day only; complete steady-flight windows with at least 30 s observed time and observed draw counts.",
+        "This release-wide GPU table pools channels and other contexts; it cannot establish channel-specific or matched-settings regressions.",
+        "Intervals over 5 s, including real foreground stalls, are excluded. This censored cadence estimate does not measure freeze incidence; gap counts are not in this table.",
         "Temporary sessions are not unique players or machines. FPS is an engine render-cadence estimate, not monitor presentation.",
         "",
     ]

@@ -553,6 +553,18 @@
                     },
                     "aircraft_crashes": {
                       "type": "integer"
+                    },
+                    "vehicle_id": {
+                      "enum": [
+                        "jensen-das-ugly-stik-60",
+                        "stik-electric-6s",
+                        "gp-extra-300s-60",
+                        "p51d-mustang-120",
+                        "f4u-corsair-250",
+                        "sebart-avanti-s-a200-p100rx",
+                        "turbo-lumber-evolution",
+                        "moonrunner-x99"
+                      ]
                     }
                   }
                 }

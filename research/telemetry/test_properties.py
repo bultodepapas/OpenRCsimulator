@@ -21,7 +21,7 @@ BOUNDED = settings(max_examples=80, deadline=None, derandomize=True, database=No
 
 def state(client):
     """Snapshot externally relevant consent/request/queue state."""
-    return (client.state, client.epoch, client.session_id, client.active,
+    return (client.state, client.service_suspended, client.epoch, client.session_id, client.active,
             tuple((x.body, x.epoch, x.created, x.due, x.retries) for x in client.queue))
 
 
@@ -124,9 +124,9 @@ class ConsentStateMachine(RuleBasedStateMachine):
 
     @rule(current_notice=st.booleans())
     def grant(self, current_notice):
-        self.allowed = current_notice
+        self.allowed = current_notice and not self.client.service_suspended
         result = self.client.enable() if current_notice else self.client.enable("old")
-        assert result == current_notice
+        assert result == self.allowed
 
     @rule()
     def revoke(self):
@@ -193,6 +193,8 @@ class ConsentStateMachine(RuleBasedStateMachine):
     @invariant()
     def consent_and_memory_contract(self):
         assert self.client.enabled == self.allowed
+        if self.client.service_suspended:
+            assert not self.allowed
         assert len(self.client.queue) <= QUEUE_BATCHES
         assert sum(len(item.body) for item in self.client.queue) <= QUEUE_BYTES
         if not self.allowed:

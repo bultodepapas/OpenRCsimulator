@@ -9,11 +9,14 @@ ROOT = Path(__file__).resolve().parent
 SCHEMA_URI = "https://json-schema.org/draft/2020-12/schema"
 NOTICE = "2026-11-18"
 # Match the inspected shipped catalog; do not accept an arbitrary slug from a player.
-VEHICLES = [
-    "none", "custom", "unknown", "jensen-das-ugly-stik-60",
+FIXED_WING_VEHICLES = [
+    "jensen-das-ugly-stik-60",
     "stik-electric-6s", "gp-extra-300s-60", "p51d-mustang-120",
     "f4u-corsair-250", "sebart-avanti-s-a200-p100rx",
-    "turbo-lumber-evolution", "moonrunner-x99", "xcell-60-research",
+    "turbo-lumber-evolution", "moonrunner-x99",
+]
+VEHICLES = [
+    "none", "custom", "unknown", *FIXED_WING_VEHICLES, "xcell-60-research",
     "openrc-fpv5-x1", "rc-blimp-5m", "mt8-bisonte", "monster-car-2",
 ]
 GPU_FAMILIES = [
@@ -99,7 +102,10 @@ def schemas():
     activity["allOf"] = [{
         "if": {"properties": {"classification": {"const": "unsupported"}}},
         "then": {"properties": {k: {"type": "null"} for k in ("takeoffs", "landings", "aircraft_crashes")}},
-        "else": {"properties": {k: {"type": "integer"} for k in ("takeoffs", "landings", "aircraft_crashes")}},
+        "else": {"properties": {
+            **{k: {"type": "integer"} for k in ("takeoffs", "landings", "aircraft_crashes")},
+            "vehicle_id": {"enum": FIXED_WING_VEHICLES},
+        }},
     }]
     batch = closed({
         "schema_version": {"const": 1},
@@ -126,7 +132,8 @@ def schemas():
     row = closed({
         "gpu_family": enum(*GPU_FAMILIES),
         "session_observations": integer(20, 1000000000),
-        "interval_sum_us": integer(1, 10**16),
+        # Keep every reported integer exactly representable by common JSON consumers.
+        "interval_sum_us": integer(1, 2**53 - 1),
         "rendered_frames": integer(0, 10**12),
     })
     report = closed({
@@ -159,6 +166,8 @@ def schemas():
             "requestBody": {"required": True, "content": {"application/json": {"schema": {"$ref": "batch.schema.json"}}}},
             "responses": {
                 "202": {"description": "Whole batch durably accepted or identical retry. Empty response body."},
+                "408": {"description": "Intermediary timeout; opaque bounded response; retry within consent and queue limits."},
+                "5XX": {"description": "Opaque intermediary failure; retry within consent and queue limits. No response body is assumed."},
                 **{str(code): {"description": description, "content": {"application/json": {"schema": error}}}
                    for code, description in [
                        (400, "Malformed request; drop"), (409, "Conflicting retry/event identity; drop"),

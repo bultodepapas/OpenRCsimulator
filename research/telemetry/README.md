@@ -4,6 +4,7 @@
 
 [Phased plan](../../docs/plans/telemetry.md) · [data contract](../../docs/plans/telemetry/data-contract.md) · [actual evidence](../../docs/research/telemetry/TELEM-00/verification.md).
 [Adaptive follow-up and new checks](../../docs/research/telemetry/TELEM-00-R1/README.md) · [publication protocol](../../docs/plans/telemetry/publication-protocol.md) · [planned validation laboratory](../../docs/plans/telemetry/validation-lab.md).
+[Final merge review](../../docs/research/telemetry/TELEM-00-R1/review.md#final-merge-preparation-review) · [offline CI](../../.github/workflows/telemetry-contracts.yml).
 
 ## Contents
 
@@ -39,15 +40,15 @@ Edit the generators, then regenerate; do not hand-edit the JSON/Markdown example
 
 ## Contract coverage
 
-The model demonstrates strict UTF-8 JSON, duplicate-key/depth/nonfinite rejection, closed enums and nested properties, finite metric bounds, histogram plausibility and safe failure categories. It models no pre-grant probe, generation and per-attempt fences, pending queue expiry/purge, retry classes, Retry-After and attempt/byte budgets.
+The model demonstrates strict UTF-8 JSON, duplicate-key/depth/nonfinite rejection, closed enums and nested properties, increasing batch sequences, fixed-wing classifier eligibility, finite metric bounds, histogram/exposure plausibility and safe failure categories. It models no pre-grant probe, literal-Boolean eligibility, sticky service suspension, generation and per-attempt fences, pending queue expiry/purge, retry classes, Retry-After and fixed-window attempt/byte budgets.
 
 The fake ingress models whole-batch acceptance, same-body dedup, conflicting identity, sequence overlap, approved release IDs, storage backpressure and a finite replay-protection horizon. It is not durable or concurrent database code.
 
 Hypothesis generates bounded synthetic payloads and consent/request action sequences. Settings cap each data property at 80 examples and the state machine at 120 examples of up to 50 steps; these are configured bounds, not a claim that every possible sequence or that exact many cases ran. The package and sortedcontainers are exact test-only pins. No example database is persisted by these tests.
 
-The publication model normalizes repository casing, checks an explicit release allowlist/requested report identity, freezes the exact body and preserves unknown outcomes. A public approval must match the current inventory of known public intents; a new reservation invalidates older approvals. Missing/edited/duplicated published artifacts create a sticky review-required state. The model has no automatic conflict resolution, real reviewer authentication, immutable repository-ID/visibility lookup, durable/multi-process coordinator, complete remote inventory or provider request. Its small state machine must not be shipped as a ready publisher.
+The publication model normalizes repository/bot casing, checks an explicit release allowlist/requested report identity, freezes the exact title and body and preserves unknown outcomes. A public approval binds the proposed bot, content digest and current inventory of known public intents; a new reservation invalidates older approvals. Missing/edited/duplicated artifacts, including altered same-key reports found alongside an exact original, create a sticky review-required state. The model has no automatic conflict resolution, real reviewer authentication, immutable repository-ID/visibility lookup, durable/multi-process coordinator, complete remote inventory or provider request. Its small state machine must not be shipped as a ready publisher.
 
-The reducer takes trusted server receipt-day/body tuples plus a trusted UTC as-of instant. It rejects mixed days/releases and runs only from day close +1 hour until day start +47 hours. It counts temporary session tokens, caps each at 120 eligible windows, suppresses the whole fixed GPU table if a cell has fewer than 20, and removes identifiers before rendering. Its output includes the specific UTC day and containing ISO week.
+The reducer takes trusted server receipt-day/body tuples plus a trusted UTC as-of instant. It rejects mixed days/releases and runs only from day close +1 hour until day start +47 hours. Complete windows need at least 30 seconds of observed time. It counts temporary session tokens, caps each at 120 eligible windows, suppresses the whole fixed GPU table if a cell has fewer than 20, and removes identifiers before rendering. Its output includes the specific UTC day and containing ISO week. This is a release-wide pooled GPU summary: channels and other contexts are not distinguished; intervals over five seconds, even real foreground stalls, are excluded. The output lacks gap counts/histograms and does not qualify release or channel comparisons. Impossible totals and scalar-capacity overflow reject the whole report.
 
 Weekly pooling, aircraft popularity tables, arbitrary-dimension suppression, provider deletion, real authentication/roles, actual GitHub writes and schedules are **not implemented**. Do not claim these offline models verify those features. The deployment plan owns those next steps.
 
