@@ -4,6 +4,7 @@ extends Node
 
 const ShadowSettings = preload("res://render/shadow_settings.gd")
 const FieldShadows = preload("res://render/field_projected_shadows.gd")
+const ProjectedShadow = preload("res://render/projected_shadow.gd")
 const OPAQUE_SHELTER_SHADER := "res://scenery/pit_shelter_roof.gdshader"
 const MAX_SHELTER_MESHES := 2
 const OPAQUE_CUE_SHADERS := [
@@ -111,6 +112,7 @@ func _capture(field: Node3D, manager: Node) -> void:
 		"skipped_material": 0, "skipped_population_range": 0, "selected_cells": 0,
 		"shelter_meshes": 0, "skipped_shelter_range": 0, "skipped_shelter_budget": 0,
 		"enabled_from_off": 0, "already_casting": 0,
+		"skipped_reasons": {}, "skipped_examples": [],
 		"max_shelter_meshes": MAX_SHELTER_MESHES,
 		"max_scenery_range_m": FieldShadows.MAX_SCENERY_RANGE}
 	var cues := field.get_node_or_null("FlightCueShadows") as MeshInstance3D
@@ -167,17 +169,18 @@ func _collect_source(node: Node, source: Node3D) -> void:
 	if node is MeshInstance3D:
 		var mesh_node := node as MeshInstance3D
 		if mesh_node.mesh != null and mesh_node.mesh.get_surface_count() > 0:
-			if _opaque_mesh(mesh_node, mesh_node.mesh):
+			var reason := _rejection(mesh_node, mesh_node.mesh)
+			if reason.is_empty():
 				_add_caster(mesh_node, false)
 			else:
-				_diagnostics.skipped_material += 1
+				_skip(mesh_node, reason)
 	for child: Node in node.get_children():
 		if not child is MultiMeshInstance3D:
 			_collect_source(child, source)
 
 
 ## A MultiMesh casts every instance together. Admit only complete, in-range batches whose
-## placements all belong to selected projected cells; mixed or alpha-cut batches remain off.
+## placements all belong to selected projected cells; mixed batches remain off. SA-18: alpha-cut people cast natively.
 func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 	if scenery == null or selected_cells.is_empty() or _pilot.is_empty():
 		return
@@ -197,8 +200,9 @@ func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 		var transforms: Array = batch.get_meta("instance_transforms", [])
 		if count == 0 or placements.size() < count or transforms.size() < count:
 			continue
-		if not _opaque_mesh(batch, batch.multimesh.mesh):
-			_diagnostics.skipped_material += 1
+		var batch_reason := _rejection(batch, batch.multimesh.mesh)
+		if not batch_reason.is_empty():
+			_skip(batch, batch_reason)
 			continue
 		eligible_batches.append(batch)
 	if eligible_batches.is_empty():
@@ -265,12 +269,16 @@ func _collect_shelters(scenery: Node3D) -> void:
 		if not shelter.visible:
 			continue
 		if shelter.mesh == null or shelter.mesh.get_surface_count() != 1:
-			_diagnostics.skipped_material += 1
+			_skip(shelter, "shelter_surfaces")
 			continue
 		var material: Material = shelter.material_override if shelter.material_override != null else shelter.get_active_material(0)
 		var shader: Shader = (material as ShaderMaterial).shader if material is ShaderMaterial else null
-		if shader == null or shader.resource_path != OPAQUE_SHELTER_SHADER or not _opaque_mesh(shelter, shelter.mesh, true):
-			_diagnostics.skipped_material += 1
+		if shader == null or shader.resource_path != OPAQUE_SHELTER_SHADER:
+			_skip(shelter, "shelter_shader")
+			continue
+		var shelter_reason := _rejection(shelter, shelter.mesh, true)
+		if not shelter_reason.is_empty():
+			_skip(shelter, shelter_reason)
 			continue
 		var bounds: AABB = (scenery.transform * shelter.transform) * shelter.mesh.get_aabb()
 		var center := bounds.get_center()
@@ -296,8 +304,16 @@ func _collect_shelters(scenery: Node3D) -> void:
 
 
 func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh, allow_shelter_shader: bool = false) -> bool:
+	return _rejection(node, mesh, allow_shelter_shader).is_empty()
+
+
+## SA-18: why a candidate is not a native caster ("" when it is admitted). Reasons are reported, not guessed later.
+## Admission follows what the engine actually casts (SA-05, measured on Forward+ and Compatibility): opaque, depth
+## pre-pass and alpha-tested (scissor/hash) materials cast with their real coverage, including a shader's vertex
+## animation; blended materials cast nothing and stay out. Unshaded lamps/emitters stay out by policy.
+func _rejection(node: GeometryInstance3D, mesh: Mesh, allow_shelter_shader: bool = false) -> String:
 	if node.material_overlay != null:
-		return false
+		return "material_overlay"
 	for index in mesh.get_surface_count():
 		var material: Material = node.material_override
 		if material == null:
@@ -305,21 +321,43 @@ func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh, allow_shelter_shader: bo
 		if material == null:
 			continue # Godot's default surface material is opaque.
 		if material.next_pass != null:
-			return false
+			return "next_pass"
 		if material is BaseMaterial3D:
-			if material.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED \
-					or material.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
-				return false
+			if material.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
+				return "unshaded"
+			if material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA:
+				return "blended"
 		elif material is ShaderMaterial:
 			if material.shader == null:
-				return false
+				return "shader_missing"
 			var shader_path: String = material.shader.resource_path
-			if shader_path not in OPAQUE_CUE_SHADERS \
-					and not (allow_shelter_shader and shader_path == OPAQUE_SHELTER_SHADER):
-				return false
+			if shader_path in OPAQUE_CUE_SHADERS or (allow_shelter_shader and shader_path == OPAQUE_SHELTER_SHADER):
+				continue
+			if ProjectedShadow._shader_blends(material.shader):
+				return "blended_shader:" + (shader_path.get_file() if not shader_path.is_empty() else "inline")
+			if _unshaded_shader(material.shader):
+				return "unshaded"
 		else:
-			return false
-	return mesh.get_surface_count() > 0
+			return "material_class:" + material.get_class()
+	return "" if mesh.get_surface_count() > 0 else "no_surfaces"
+
+
+static var _unshaded_mode: RegEx = null
+
+
+static func _unshaded_shader(shader: Shader) -> bool:
+	if _unshaded_mode == null:
+		_unshaded_mode = RegEx.create_from_string("\\brender_mode\\b[^;]*\\bunshaded\\b")
+	return _unshaded_mode.search(shader.code) != null
+
+
+func _skip(node: Node, reason: String) -> void:
+	_diagnostics.skipped_material += 1
+	var reasons: Dictionary = _diagnostics.skipped_reasons
+	reasons[reason] = int(reasons.get(reason, 0)) + 1
+	var examples: Array = _diagnostics.skipped_examples
+	if examples.size() < 16:
+		examples.append("%s: %s" % [str(node.name), reason])
 
 
 func _add_caster(caster: GeometryInstance3D, population: bool) -> void:

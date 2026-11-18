@@ -56,8 +56,15 @@ func _test_auto_policy() -> void:
 		["", ""], ["Unknown Accelerator", "Example"]]
 	for gpu: Array in standard:
 		_check("Automatic keeps Standard for '%s'" % gpu[0], _auto(gpu[0], gpu[1]) == "standard")
-	_check("Automatic High is Windows-only", _auto("NVIDIA GeForce RTX 3090", "NVIDIA", "Linux") == "standard"
-		and _auto("Apple M2 Max", "Apple", "macOS", true) == "standard")
+	_check("Linux desktop GPUs get Automatic High", _auto("NVIDIA GeForce RTX 3090", "NVIDIA", "Linux") == "high"
+		and _auto("AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)", "AMD", "Linux") == "high"
+		and _auto("AMD Radeon Graphics (radeonsi, gfx1201, LLVM 19.1.7, DRM 3.61, 6.14.0)", "AMD", "Linux") == "high")
+	_check("Linux laptops, iGPUs and handhelds keep Standard",
+		_auto("NVIDIA GeForce RTX 4060 Laptop GPU", "NVIDIA", "Linux") == "standard"
+		and _auto("AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)", "AMD", "Linux") == "standard"
+		and _auto("Mesa Intel(R) UHD Graphics 620 (WHL GT2)", "Intel", "Linux") == "standard"
+		and _auto("llvmpipe (LLVM 15.0.7, 256 bits)", "Mesa", "Linux") == "standard")
+	_check("Macs never get Automatic High", _auto("Apple M4 Max (Apple9)", "Apple", "macOS", true) == "standard")
 	_check("Automatic High excludes arm64 Windows", _auto("NVIDIA GeForce RTX 3090", "NVIDIA", "Windows", true) == "standard")
 	var uhd := 3840 * 2160
 	_check("a 4K screen asks more of the GPU: RTX 3060 stays Standard, RTX 3080 keeps High",
@@ -132,7 +139,9 @@ func _test_plan() -> void:
 	var editor := RendererPreference.plan(_facts({template = false}), _state())
 	_check("an editor binary cannot honor the file, so it never restarts", not editor.restart, editor)
 	var linux := RendererPreference.plan(_facts({os = "Linux"}), _state())
-	_check("Automatic on Linux stays Standard", not linux.write and linux.profile == "standard", linux)
+	_check("Automatic on a Linux desktop RTX saves High", linux.write and linux.restart and linux.profile == "high", linux)
+	var linux_igpu := RendererPreference.plan(_facts({os = "Linux", adapter = "Mesa Intel(R) UHD Graphics 620 (WHL GT2)"}), _state())
+	_check("Automatic on a Linux iGPU stays Standard", not linux_igpu.write and linux_igpu.profile == "standard", linux_igpu)
 	var linux_high := RendererPreference.plan(_facts({os = "Linux"}), _state({mode = "high"}))
 	_check("an explicit High choice persists on Linux x86_64", linux_high.write and linux_high.profile == "high", linux_high)
 	for unsupported: Dictionary in [{headless = true}, {os = "macOS", arm64 = true}, {arm64 = true}, {os = "Android"}]:

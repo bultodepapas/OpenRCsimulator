@@ -32,7 +32,7 @@ sustained gains, lifecycle and package gates remain open. The M1 unexpectedly
 reported denoised support/allocation despite the Apple9 table floor; keep the
 runtime/input/execution gates rather than rejecting solely by GPU family.
 
-The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
+The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. **Resolution target (owner, 2026-11-18):** on an Apple Silicon Mac with a Retina (2×) display, which includes every MacBook and iMac panel, the product target is that display's native pixel resolution at 60 Hz, following the [AGENTS exception](../../AGENTS.md#display-resolution-priorities). Intel Macs and Macs on a standard (1×) external display keep 1920×1080 first, then higher resolutions, then 720p. The available M1 has a built-in 2560×1600 panel, which is its native target; it is currently set to 1440×900 logical points. Record measured viewport, drawable and internal 3D pixels separately. A built-in-panel run qualifies that named Mac configuration, but it does not establish 1080p on other systems. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
 
@@ -436,7 +436,7 @@ Detailed work packages DT-MAC-07a1/a2, -07b1/b2 and -07c1 live in the
 They extend the existing policy/history/lifecycle boundaries below instead of
 creating another reconstruction system.
 
-**Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and Native 1080p baseline. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
+**Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and a Native baseline at the built-in panel's native resolution. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
 
 ### DT-MAC-07a — effective execution and creation/failure contract
 
@@ -502,7 +502,7 @@ Developer sidecars can require local tooling, but the eventual user flow must no
 
 Freeze final source/configuration and release export. Repeat three uninterrupted 30-minute active-flight runs with 30 s warmup, comparable initial conditions, complete v3/resources/required host-state coverage and minimal observers. Compare baseline/finalist early and final windows; report pacing tails/bursts, sim/wall, memory/pressure, thermal and native errors. Run 50 warm Home/flight cycles with relevant Workshop/world transitions, power/focus/sleep/wake/display changes and actual audio/controller reconnect. Perform owner pilot orientation/control acceptance independently of scripted/replayed evidence.
 
-Qualify AC first on the M1 built-in display; battery/Low Power and 120 Hz/VRR are distinct profiles. Then test actual 1080p and higher outputs when available; lastly 720p fallback. A built-in-display result does not establish 1080p qualification, and no failure at 1080p can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
+Qualify AC first on the M1 built-in display at its native panel resolution, the MacBook product target. Battery, Low Power and 120 Hz/VRR are distinct profiles. External 1080p and higher outputs follow the general order when available, with 720p last. A built-in-panel result does not establish external 1080p qualification, and no failure can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
 
 **Tests:** T8 final required workload, lifecycle and physical-device matrix; T7 final integrated same-host replay and applicable cross-platform policy. **Exit:** required targets met through the final window and visual/control gates accepted, or named limitation/failure retained without a broad support claim.
 
@@ -745,9 +745,9 @@ session probes, radio-free sustained circuits and event-bounded GOD TEST have
 different scopes/schemas. Never interchange reducers or call an effects-off
 scripted run a wet-lens/physical-controller/settlement benchmark.
 
-Keep 1920×1080 actual output first, higher resolutions second, 720p last. A built-in
-Retina test or `--require-1080p` render-target estimate cannot close physical output
-acceptance. Add A/A and whole-product observer-on/off controls, include work after
+On a built-in Retina panel the native panel resolution is the target. On external displays, keep 1920×1080
+actual output first, higher resolutions second and 720p last. A `--require-1080p` render-target estimate cannot
+close physical output acceptance. Add A/A and whole-product observer-on/off controls, include work after
 `Simulation.step_usec` and synchronous subscribers, and retain unknown channels.
 Use the [existing protocol](#campaign-protocol-and-acceptance-budgets), not copied
 handoff shell commands. Actual allocation traces and matching symbols identify

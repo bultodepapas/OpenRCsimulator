@@ -2,6 +2,7 @@ extends SceneTree
 
 # CR-22c-R2: cached shadows survive pooled wreck lifecycle changes.
 const WreckScript = preload("res://render/crash/wreck.gd")
+const ShadowSettings = preload("res://render/shadow_settings.gd")
 
 var checks := 0
 var failures := 0
@@ -70,6 +71,41 @@ func _run() -> void:
 	body.visible = true
 	wreck._update_contact_shadow(0)
 	_check("re-shown body repopulates the cache", shadow.visible and wreck._shadow_cache_valid[0] == 1)
+
+	# SA-20: the planes follow celestial strength and yield to a casting native sun near the camera.
+	var base_opacity: float = float(material.get_shader_parameter("opacity"))
+	wreck._started = true
+	var strength := [0.0]
+	wreck.shadow_strength_provider = func() -> float: return strength[0]
+	wreck._refresh_shadow_light()
+	_check("SA-20: no celestial light, no wreck shadow", not shadow.visible
+		and float(material.get_shader_parameter("opacity")) == 0.0)
+	strength[0] = 0.5
+	wreck._refresh_shadow_light()
+	_check("SA-20: the plane follows the celestial strength", shadow.visible
+		and is_equal_approx(float(material.get_shader_parameter("opacity")), base_opacity * 0.5))
+	var camera := Camera3D.new()
+	camera.far = 5000.0
+	root.add_child(camera)
+	camera.current = true
+	camera.global_position = shadow.global_position + Vector3(0, 2, 10)
+	var sun := DirectionalLight3D.new()
+	root.add_child(sun)
+	ShadowSettings.apply({})
+	ShadowSettings.apply_sun(sun, true)
+	wreck._refresh_shadow_light()
+	_check("SA-20: Auto leaves the near wreck shadow to the casting native sun", sun.shadow_enabled and not shadow.visible)
+	ShadowSettings.apply({"shadow_technique": "projected"})
+	wreck._refresh_shadow_light()
+	_check("SA-20: Projected draws it again", shadow.visible
+		and is_equal_approx(float(material.get_shader_parameter("opacity")), base_opacity * 0.5))
+	wreck._update_contact_shadow(0)
+	_check("SA-20: a cached projection keeps the light share", is_equal_approx(
+		float(material.get_shader_parameter("opacity")), base_opacity * 0.5))
+	ShadowSettings.apply({})
+	sun.free()
+	camera.free()
+	wreck._started = false
 
 	wreck.reset()
 	_check("reset hides every pooled shadow and clears every cache slot", _pool_shadow_cache_clear(wreck))

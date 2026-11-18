@@ -1308,6 +1308,7 @@ func _prepare_flight() -> void:
 		crash_context.wind_provider = Callable(self, "_render_wind")
 		crash_context.shadow = _shadow
 		crash_context.sun = _sun
+		crash_context.shadow_strength = Callable(self, "_celestial_shadow_strength")
 		crash_context.propeller_blur = get_node_or_null("PropellerBlur") as Node3D
 		if _crash_director.configure(crash_context, str(args.get("soundscape", "on")) != "off"):
 			session.crash_auto_restart = false
@@ -3589,6 +3590,12 @@ func _bind_aircraft_shadow() -> void:
 	Shadow.Projected.tag_articulation(_airplane)
 	_shadow_receiving = {y = NAN, fit = 1.0}
 	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+
+
+## SA-20: the celestial direct-shadow strength the aircraft cue uses, for the wreck's planar shadows. Read-only.
+func _celestial_shadow_strength() -> float:
+	return Atmosphere.shadow_strength(_lighting) if lighting_config.get("mode", "legacy") != "legacy" \
+		else Atmosphere.shadow_strength()
 
 
 ## Apply the current flight-local cue to the presentation carrier.

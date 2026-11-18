@@ -133,9 +133,9 @@ func _ready() -> void:
  _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
  add_child(_airplane.root)
- # SA-08: a Projected shadow selection also gives the helicopter its planar shadow; spinning rotors stay out.
+ # SA-08: a Projected shadow selection also gives the helicopter its planar shadow; parked rotors cast, spinning ones stay out (SA-19).
  var shadow_cue: Script=preload("res://render/vehicle_shadow_cue.gd")
- shadow_cue.attach(self,_airplane.root,_lighting_snapshot,Callable(self,"_ground_height"),shadow_cue.helicopter_excluded(_airplane))
+ shadow_cue.attach(self,_airplane.root,_lighting_snapshot,Callable(self,"_ground_height"),shadow_cue.helicopter_rotors(_airplane))
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
@@ -180,6 +180,8 @@ func _ready() -> void:
  if not _crash_presentation.configure(_airplane,session.aircraft.context):
   _refuse("Helicopter crash presentation could not prepare the source model."); return
  _crash_presentation.set_collision_world(obstacles.world)
+ # SA-20: the wreck planes follow the celestial strength the vehicle cue uses (snapshot, or {} for flowing time).
+ _crash_presentation.wreck.shadow_strength_provider=func() -> float: return World.Atmosphere.shadow_strength(_lighting_snapshot)
  _rotors=RotorVisual.attach(_airplane,self)
  Magnifier.tag(_rotors) # CAM-18: rotor discs belong in the magnifier too
  _night_kit=NightLights.attach(_airplane)

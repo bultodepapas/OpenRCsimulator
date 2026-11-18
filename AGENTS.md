@@ -26,6 +26,8 @@ Reuse suitable freely available tools, assets and data before creating equivalen
 
 Use this order for planning, optimization and acceptance evidence. A 720p viewport default, capture fixture or historical benchmark does not make 720p the product target; 720p results cannot establish 1080p qualification. These are development priorities, not claims that any resolution is already qualified on particular hardware.
 
+**Exception: Apple Silicon Macs on a Retina (2× backing scale) display.** This covers every MacBook Air/Pro and iMac built-in panel, and Retina external displays. The target is the display's **native pixel resolution** (for example 2560×1600, 2880×1864, 3024×1964, 3456×2234), not 1080p. On these Macs, performance assumptions, automatic defaults and acceptance evidence use the native panel. That includes full-screen output and the internal 3D resolution after MetalFX, where MetalFX is available. Godot reports the backing store, which can exceed the physical panel at scaled "looks like" modes. A 1080p result does not qualify a MacBook panel, and a native-panel result does not qualify 1080p elsewhere. Intel Macs, Macs on standard (1×) external displays, and every other system keep the 1080p-first order above. Record output, drawable and internal 3D pixels separately. The [Apple plan](docs/plans/apple-silicon-performance.md) owns Mac acceptance details.
+
 ## Tools
 
 - Shared-host launch admission and session ownership: [test queue](tools/testqueue/README.md).

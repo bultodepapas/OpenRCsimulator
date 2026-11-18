@@ -21,9 +21,10 @@ var _bound: Node3D = null
 var _extent := Vector2.ZERO
 
 
-## `excluded` subtrees (spinning rotors, for example) never enter the silhouette.
+## `rotors` (pivots whose blades the activity's rotor blur shows only while slow) contribute only their blades, and
+## only while the blur shows them (SA-19, ProjectedShadow.tag_rotor): parked rotors cast, spinning ones never freeze.
 static func attach(parent: Node3D, vehicle_root: Node3D, lighting_snapshot: Dictionary,
-		ground: Callable = Callable(), excluded: Array = []) -> Node3D:
+		ground: Callable = Callable(), rotors: Array = []) -> Node3D:
 	var cue := new()
 	cue.name = "VehicleShadowCue"
 	cue.lighting = lighting_snapshot
@@ -33,12 +34,12 @@ static func attach(parent: Node3D, vehicle_root: Node3D, lighting_snapshot: Dict
 	parent.add_child(cue)
 	cue.carrier = Shadow.create(cue)
 	cue.carrier.visible = false
-	cue.set_vehicle(vehicle_root, excluded)
+	cue.set_vehicle(vehicle_root, rotors)
 	return cue
 
 
-## The helicopter's spinning rotors: the main rotor sits under a `propeller` wrapper, the tail rotor does not.
-static func helicopter_excluded(helicopter: Dictionary) -> Array:
+## The helicopter's rotors: the main rotor sits under a `propeller` wrapper, the tail rotor does not.
+static func helicopter_rotors(helicopter: Dictionary) -> Array:
 	return [helicopter.get("main_rotor_pivot"), helicopter.get("tail_rotor_pivot")]
 
 
@@ -47,11 +48,11 @@ static func active() -> bool:
 
 
 ## A replaced vehicle visual (skin change, restart) rebinds on the next active frame.
-func set_vehicle(vehicle_root: Node3D, excluded: Array = []) -> void:
+func set_vehicle(vehicle_root: Node3D, rotors: Array = []) -> void:
 	vehicle = vehicle_root
-	for node: Variant in excluded:
+	for node: Variant in rotors:
 		if node is Node3D and is_instance_valid(node):
-			(node as Node3D).set_meta(Projected.EXCLUDED_META, true)
+			Projected.tag_rotor(node as Node3D)
 	_bound = null
 
 

@@ -18,8 +18,16 @@ const REUSE_BLUR_M := 0.002
 ## SA-03: a mesh under a node named `*_hinge`, or tagged with this meta, follows that node's live transform in the
 ## mask; the rest of the model is one static merged mesh. Gear wheels and propellers are not articulated parts.
 const ARTICULATED_META := &"shadow_articulated"
-## A subtree tagged with this meta never enters the mask, like `propeller` (e.g. spinning quad rotors).
+## A subtree tagged with this meta never enters the mask (presentation overlays such as propeller-blur copies).
 const EXCLUDED_META := &"shadow_excluded"
+## SA-19: a rotor (`propeller`, or a node tagged with this meta by tag_rotor()) contributes only its blade meshes,
+## and only as articulated parts: they follow the blades' live angle and visibility. The blur shows the model's own
+## blades while stopped or slow and hides them once they blur, where the native renderer also stops casting them,
+## so a parked propeller casts its blades and a spinning one never leaves a frozen streak. Untagged rotor meshes
+## (hubs, spinners whose rotation would force a redraw every frame) stay out.
+const ROTOR_META := &"shadow_rotor"
+## Share of the rotor's reach a mesh must span to count as a blade (PropellerBlur.BLADE_SHARE).
+const BLADE_SHARE := 0.5
 
 var source: Node3D
 ## SA-04: world height of the receiving plane. Field casters keep the fixed datum; the aircraft and vehicle cues
@@ -56,11 +64,92 @@ var redraw_count := 0
 ## SA-03: unless `min_height` crops it (static scenery), meshes under an articulated node are returned as `parts`
 ## in that node's frame; `mesh` holds the rest. `bounds` and `triangles` always cover the whole bind-time model.
 static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
-	var entries := mesh_entries(model, min_height == -INF)
+	var aircraft := min_height == -INF
+	var entries := mesh_entries(model, aircraft)
 	var faces: Array[PackedVector3Array] = []
 	for entry: Dictionary in entries:
-		faces.append((entry.instance as MeshInstance3D).mesh.get_faces())
+		var instance := entry.instance as MeshInstance3D
+		faces.append(casting_faces(instance) if aircraft else instance.mesh.get_faces())
 	return assemble(model, entries, faces, min_height)
+
+
+## SA-05: whether a mesh surface casts a native directional shadow, so the aircraft mask keeps the same caster set.
+## Measured on Forward+ and Compatibility (Godot 4.8-beta2, 2026-11-18): alpha blending (BaseMaterial3D ALPHA, or a
+## shader that writes ALPHA without depth_prepass_alpha) casts nothing, whatever its alpha; depth pre-pass casts
+## solid; scissor and hash test alpha. A uniform alpha decides scissor and hash here (hash at its 50% mean); textured
+## alpha cannot be tested by the solid mask and keeps the surface. Canopy glass is blended on the stock fleet.
+static func surface_casts(instance: MeshInstance3D, surface: int) -> bool:
+	var material := instance.get_active_material(surface)
+	if material is BaseMaterial3D:
+		var base := material as BaseMaterial3D
+		match base.transparency:
+			BaseMaterial3D.TRANSPARENCY_ALPHA:
+				return false
+			BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+				return base.albedo_texture != null or base.albedo_color.a >= base.alpha_scissor_threshold
+			BaseMaterial3D.TRANSPARENCY_ALPHA_HASH:
+				return base.albedo_texture != null or base.albedo_color.a >= 0.5
+		return true
+	if material is ShaderMaterial and (material as ShaderMaterial).shader != null:
+		return not _shader_blends((material as ShaderMaterial).shader)
+	return true
+
+
+static var _alpha_write: RegEx = null
+static var _comments: RegEx = null
+static var _blend_mode: RegEx = null
+
+
+## A spatial shader is drawn in the transparent pass (no native shadow) when it writes ALPHA (=, +=, -=, *=, /=) or
+## selects a non-mix blend mode, unless it opts into the depth pre-pass or alpha clipping (ALPHA_SCISSOR_THRESHOLD /
+## ALPHA_HASH_SCALE). Comments are ignored. Code in #include files is not inspected (it keeps the surface).
+static func _shader_blends(shader: Shader) -> bool:
+	if _alpha_write == null:
+		_alpha_write = RegEx.create_from_string("\\bALPHA\\s*[-+*/]?=(?!=)")
+		_comments = RegEx.create_from_string("(?s)/\\*.*?\\*/|//[^\\n]*")
+		_blend_mode = RegEx.create_from_string("\\brender_mode\\b[^;]*\\bblend_(add|sub|mul|premul_alpha)\\b")
+	var code := _comments.sub(shader.code, " ", true)
+	if code.is_empty() or "depth_prepass_alpha" in code or "ALPHA_SCISSOR_THRESHOLD" in code \
+			or "ALPHA_HASH_SCALE" in code:
+		return false
+	return _alpha_write.search(code) != null or _blend_mode.search(code) != null
+
+
+## SA-05: the mesh's faces (get_faces() order) from natively casting surfaces only.
+static func casting_faces(instance: MeshInstance3D) -> PackedVector3Array:
+	var mesh := instance.mesh
+	var all := mesh.get_faces()
+	var casting: Array[bool] = []
+	var every := true
+	for surface in mesh.get_surface_count():
+		casting.append(surface_casts(instance, surface))
+		every = every and casting[surface]
+	if every:
+		return all
+	var faces := PackedVector3Array()
+	var offset := 0
+	for surface in mesh.get_surface_count():
+		if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
+			continue # get_faces() contributes no faces for lines or points
+		var count := surface_face_vertices(mesh, surface)
+		if offset + count > all.size():
+			return all
+		if casting[surface]:
+			faces.append_array(all.slice(offset, offset + count))
+		offset += count
+	return faces if offset == all.size() else all
+
+
+## Vertices that surface `surface` contributes to get_faces() (its index count, or vertex count without indices).
+static func surface_face_vertices(mesh: Mesh, surface: int) -> int:
+	if mesh is ArrayMesh:
+		var indexed := (mesh as ArrayMesh).surface_get_array_index_len(surface)
+		return indexed if indexed > 0 else (mesh as ArrayMesh).surface_get_array_len(surface)
+	var arrays := mesh.surface_get_arrays(surface)
+	var indices: Variant = arrays[Mesh.ARRAY_INDEX]
+	if indices is PackedInt32Array and not (indices as PackedInt32Array).is_empty():
+		return (indices as PackedInt32Array).size()
+	return (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
 
 
 ## Visible, non-propeller meshes with their transforms. With `articulate`, `part` is the deepest moving ancestor
@@ -74,27 +163,48 @@ static func mesh_entries(model: Node3D, articulate: bool = true) -> Array[Dictio
 		var mi := item as MeshInstance3D
 		if mi.mesh == null:
 			continue
+		# SA-05/SA-19: an aircraft mirrors the native caster set; a mesh that never casts natively (light cones,
+		# lenses, blur discs) is not part of its shadow. Field scenery keeps its own caster policy.
+		if articulate and mi.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			continue
+		if articulate:
+			var any_casts := false
+			for surface in mi.mesh.get_surface_count():
+				if surface_casts(mi, surface):
+					any_casts = true
+					break
+			if not any_casts:
+				continue
 		var transform := Transform3D.IDENTITY
 		var to_part := Transform3D.IDENTITY
 		var part: Node3D = null
 		var node: Node = mi
 		var include := true
+		var in_rotor := false
+		# A blade's own visibility belongs to the blur and is read live per frame; it may be blurred at bind time.
+		var blade := articulate and bool(mi.get_meta(ARTICULATED_META, false)) and bool(mi.get_meta(ROTOR_META, false))
 		while node != model and node != null:
 			if node is Node3D:
-				include = include and node.visible and node.name != &"propeller" and not bool(node.get_meta(EXCLUDED_META, false))
+				include = include and (node.visible or (blade and node == mi)) \
+					and not bool(node.get_meta(EXCLUDED_META, false))
+				in_rotor = in_rotor or node.name == &"propeller" or bool(node.get_meta(ROTOR_META, false))
 				if articulate and part == null and articulated(node as Node3D):
 					part = node as Node3D
 					to_part = transform
 				transform = node.transform * transform
 			node = node.get_parent()
+		# A rotor blade enters only as its own articulated part (tag_rotor), never into the static mesh.
+		if in_rotor and not (blade and part == mi):
+			include = false
 		if include:
 			entries.append({instance = mi, to_model = transform, part = part, to_part = to_part})
 	return entries
 
 
 ## SA-03: mark the nodes a built aircraft moves (control hinges, wing folds, mechanisms and gear retraction) before
-## its shadow is collected. Wheel spin/steering and propellers stay static: they do not change the silhouette, and
-## a spinning part would force a redraw every frame. Builders stay untouched; this only sets node metadata.
+## its shadow is collected. Wheel spin/steering stays static: it does not change the silhouette. SA-19: the propeller's
+## blades become parts that cast only while the blur shows them (stopped or slow). Builders stay untouched; this only
+## sets node metadata.
 static func tag_articulation(airplane: Dictionary) -> void:
 	var moving: Array = [] # untyped: entries are checked below
 	for key: Variant in airplane.get("hinges", {}):
@@ -118,6 +228,56 @@ static func tag_articulation(airplane: Dictionary) -> void:
 	for node: Variant in moving:
 		if node is Node3D and is_instance_valid(node):
 			(node as Node3D).set_meta(ARTICULATED_META, true)
+	var propeller: Variant = airplane.get("propeller")
+	if propeller is Node3D:
+		tag_rotor(propeller)
+
+
+## SA-19: mark `rotor` as a rotor and its blade meshes as articulated parts. A blade reaches at least BLADE_SHARE of
+## the rotor's radius, measured across the rotor axis (the thinnest extent of all its meshes). Metadata only.
+static func tag_rotor(rotor: Node3D) -> void:
+	if rotor == null or not is_instance_valid(rotor):
+		return
+	rotor.set_meta(ROTOR_META, true)
+	# Real vertex radii, as PropellerBlur.profile() measures them: a round hub's bounding-box corner would reach
+	# r·√2 and pass for a blade the blur never hides (a part spinning while visible would redraw every frame).
+	var points := {}
+	var union := AABB()
+	var first := true
+	for item in rotor.find_children("*", "MeshInstance3D", true, false):
+		var mi := item as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var to_rotor := Transform3D.IDENTITY
+		var walk: Node = mi
+		while walk != rotor and walk != null:
+			if walk is Node3D:
+				to_rotor = (walk as Node3D).transform * to_rotor
+			walk = walk.get_parent()
+		var vertices: PackedVector3Array = to_rotor * mi.mesh.get_faces()
+		if vertices.is_empty():
+			continue
+		points[mi] = vertices
+		for point: Vector3 in vertices:
+			union = AABB(point, Vector3.ZERO) if first else union.expand(point)
+			first = false
+	if points.is_empty():
+		return
+	var axis := union.get_shortest_axis_index()
+	var radius := {}
+	var tip := 0.0
+	for mi: MeshInstance3D in points:
+		var reach := 0.0
+		for point: Vector3 in points[mi]:
+			point[axis] = 0.0
+			reach = maxf(reach, point.length_squared())
+		reach = sqrt(reach)
+		radius[mi] = reach
+		tip = maxf(tip, reach)
+	for mi: MeshInstance3D in radius:
+		if tip > 0.0 and float(radius[mi]) >= BLADE_SHARE * tip:
+			mi.set_meta(ARTICULATED_META, true)
+			mi.set_meta(ROTOR_META, true)
 
 
 static func articulated(node: Node3D) -> bool:

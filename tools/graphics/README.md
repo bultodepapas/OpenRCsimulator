@@ -3,7 +3,13 @@
 VQ-07 uses the existing Godot renderer and accepted assets. The official-engine build
 starts in the saved graphics mode. Automatic, the default, chooses High on Windows x86_64 when the GPU
 [capability table](../../app/data/gpu/capability.json) (generator: `build_gpu_capability.py`) predicts that
-High fits its budget at the screen's resolution, and Standard elsewhere
+High fits its budget at the screen's resolution, Linux x86_64 desktop GPUs likewise, and Standard elsewhere. The same
+table sets Scene detail Automatic (Low/Medium/High by estimated throughput) and, on a fresh install only,
+the first MSAA level for integrated GPUs ([knob costs](../../docs/research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18/README.md)).
+Retina Macs start full screen at the native panel resolution, and base chips on 120 Hz panels start at 60 fps.
+`app/tests/data/steam_gpus_2026_10.json` requires every named Steam-survey GPU to resolve to a table row.
+The first eligible flight on each GPU measures GPU time once and corrects Automatic by one Scene detail level,
+or rejects automatic High (`app/render/auto_calibration.gd`; verdict in `user://graphics_calibration.cfg`)
 ([decision](../../docs/DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package)). The [Windows NVIDIA package](native/README.md)
 defaults to High and exposes DLSS, DLAA and Reflex in Settings. High is not a
 hardware performance guarantee. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
@@ -278,8 +284,13 @@ It uses the production settings resolver and records requested/effective values 
 native-field caster inventory in `report.json`. Unknown choices fail. These static fixture views do not
 exercise the flight's V-key override or establish complete Native coverage. Default options preserve
 the prior capture configuration; contact experiments remain independent.
+`--aircraft-cue=on` draws the production planar aircraft cue (bind, articulation and the SA-02 native handoff, as
+in flight); the default `off` keeps the prior images. `--aircraft-motion=spin` turns the aircraft 1° per frame so the
+mask and native maps redraw as in flight. `--width=3840` qualifies 4K.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
-image readback. These offscreen static timings do not qualify flight performance.
+image readback. Profiles also record every offscreen SubViewport's own GPU time (median, maximum and update
+mode); a mask that did not redraw reports zero. [Shadow cost matrix](../shadows/README.md#shadow-cost-matrix)
+drives these runs per technique and renderer. These offscreen static timings do not qualify flight performance.
 Use the existing native flight collector separately, without concurrent tests,
 exports or captures. `restart_probe.gd` requires an editor binary; release templates
 ignore its `--script` route. It is not a packaged-release probe. Packaged restart

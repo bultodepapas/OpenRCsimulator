@@ -170,7 +170,33 @@ static func load_from(file_path: String) -> Dictionary:
 	result.writable = true
 	result.note = ""
 	if not FileAccess.file_exists(file_path):
-		return result
+		return _with_first_run_defaults(result) if first_run_applies else result
+	return _load_existing(file_path, result)
+
+
+## VQ-07h: per-GPU recommendations (render/gpu_capability.gd first_run_settings). They replace DEFAULTS when no
+## display file exists only if `first_run_applies` (a fresh install, decided by AppRoot, which then stores them),
+## and always seed recommended_defaults() for "Restore graphics defaults". Tools and private profiles keep DEFAULTS.
+static var first_run_defaults: Dictionary = {}
+static var first_run_applies := false
+
+
+static func recommended_defaults() -> Dictionary:
+	return _with_first_run_defaults(DEFAULTS.duplicate(true))
+
+
+static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
+	for key: String in first_run_defaults:
+		var value: Variant = first_run_defaults[key]
+		if key in ["msaa_3d", "max_fps"] and typeof(value) == TYPE_INT \
+				and int(value) in (MSAA_3D_VALUES if key == "msaa_3d" else MAX_FPS_VALUES):
+			result[key] = int(value)
+		elif key == "window_mode" and typeof(value) == TYPE_STRING and str(value) in WINDOW_MODES:
+			result[key] = str(value)
+	return result
+
+
+static func _load_existing(file_path: String, result: Dictionary) -> Dictionary:
 
 	var cfg := ConfigFile.new()
 	var load_error := cfg.load(file_path)

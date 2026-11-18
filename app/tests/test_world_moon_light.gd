@@ -1,8 +1,8 @@
 # FW-MOON-06: the light through twilight, step by step (30 s of sky, as World.flow_to). The setting sun's apparent
 # elevation never drops more than its own pace (continuous refraction); the sun's shadows fade as its disc crosses
 # the horizon, so the light passes between sun and moon with no shadow on either side; the sky's cloud lighting and
-# horizon lobes take both sources, so nothing in the sky flips when the brighter source changes; flowing steps drive
-# the engine shadows' switch and opacity, while the calibrated day and explicit snapshots keep full opacity.
+# horizon lobes take both sources, so nothing in the sky flips when the brighter source changes; the strength drives
+# the engine shadows' switch and opacity in flowing steps and explicit snapshots alike (SA-21); the calibrated day stays full.
 # Run: godot --headless --path . --script res://tests/test_world_moon_light.gd
 extends SceneTree
 
@@ -140,7 +140,8 @@ func _initialize() -> void:
 	var snapshot: Dictionary = Atmosphere.Spec.ATMOSPHERE.duplicate(true)
 	snapshot.shadow_strength = 0.4
 	Atmosphere.update_sun(light, snapshot)
-	_check("explicit snapshot: switch only, full opacity", light.shadow_enabled and light.shadow_opacity == 1.0)
+	_check("SA-21: an explicit snapshot drives the opacity like flowing time", light.shadow_enabled
+		and is_equal_approx(light.shadow_opacity, 0.4), str(light.shadow_opacity))
 	light.free()
 	Atmosphere.engine_shadows = engine
 

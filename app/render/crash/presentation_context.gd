@@ -23,6 +23,8 @@ var pose_provider: Callable
 var wind_provider: Callable
 var shadow: MeshInstance3D
 var sun: DirectionalLight3D
+## SA-20: the current celestial direct-shadow strength (0..1), read-only, for the wreck's planar contact shadows.
+var shadow_strength := Callable()
 var propeller_blur: Node3D
 ## CR-22e: the scenery collision world the owner installed in `session`, shared read-only so a
 ## scenery crash does not deep-copy every proxy. Empty: ask the session for a detached copy.

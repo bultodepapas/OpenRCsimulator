@@ -78,6 +78,7 @@ func configure(next_context: PresentationContext, audio_enabled: bool = true) ->
 	context = next_context
 	_audio_enabled = audio_enabled
 	wreck = Wreck.new()
+	wreck.shadow_strength_provider = context.shadow_strength
 	add_child(wreck)
 	wreck.prepare(context.model_bindings.root)
 	SceneryBodies.prepare(context.collision_world) # CR-22e: one world scan at setup, not at the crash.

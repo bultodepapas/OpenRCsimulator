@@ -183,8 +183,9 @@ Python; it was reinstalled at the same pin after Apple tools became available
 to complete its library install-name setup. These are headless source checks;
 the full suite, native compilation, GUI, GPU/performance and release gates
 still need their own evidence. No task-owned Godot process remains running.
-The original Mac's built-in-display exception below does not apply to ANGEL;
-use the repository's 1920×1080 priority for future rendered qualification.
+Since 2026-11-18 every MacBook's built-in Retina panel at its native resolution is the product target (see the
+[AGENTS exception](../../AGENTS.md#display-resolution-priorities)), so this applies to ANGEL's built-in display too.
+Use 1920×1080 only for external-display rendered qualification.
 
 Bootstrap references checked November 7: [uv installation](https://docs.astral.sh/uv/getting-started/installation/),
 [managed Python versions](https://docs.astral.sh/uv/concepts/python-versions/)
@@ -504,8 +505,9 @@ to accept a failed run; preserve the failure and collect a fresh complete run.
 For this Mac, the user authorizes the built-in display instead of an external
 1080p screen. The panel is 2560×1600; desktop logical size and Godot's reported
 screen/viewport can differ. Record requested, reported, internal and drawable
-dimensions separately; unknown drawable pixels stay unknown. This exception
-does not change the repository's 1080p product priority. Uncapped throughput,
+dimensions separately; unknown drawable pixels stay unknown. The native panel is
+the Mac product target ([AGENTS exception](../../AGENTS.md#display-resolution-priorities)); external displays keep
+the 1080p priority. Uncapped throughput,
 60 Hz pacing, observer overhead and final-package qualification are separate.
 
 After measurement, retrieve only the relevant complete output directories. From

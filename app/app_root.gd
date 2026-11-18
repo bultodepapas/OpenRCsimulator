@@ -46,6 +46,9 @@ const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
 const WorldResourceHold := preload("res://render/world/world_resource_hold.gd")
+const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
+const FrameDiagnostics := preload("res://render/frame_diagnostics.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -398,7 +401,20 @@ func _ready() -> void:
 	var initial_ui_scale: Dictionary = UiScale.apply(ui_window)
 	UiTheme.compact_layout = bool(initial_ui_scale.compact)
 	ui_window.size_changed.connect(_on_ui_window_resized)
-	display_preferences = DisplayPreferences.new(preferences_path + ".display")
+	# VQ-07h: a fresh production install (no settings or display file yet) starts with this GPU's efficient defaults
+	# and stores them at once; upgraders keep their values. Restore graphics defaults offers the same recommendation.
+	var display_path := preferences_path + ".display"
+	var fresh_install := false
+	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
+		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
+			RenderingServer.get_current_rendering_method())
+		DisplayPreferences.first_run_defaults = GpuCapability.first_run_settings(RenderingServer.get_video_adapter_name(),
+			OS.get_name(), DisplayServer.screen_get_scale(), DisplayServer.screen_get_refresh_rate())
+		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
+	DisplayPreferences.first_run_applies = fresh_install
+	display_preferences = DisplayPreferences.new(display_path)
+	if fresh_install and not DisplayPreferences.first_run_defaults.is_empty() and display_preferences.save(display_preferences.config) != OK:
+		push_warning("Could not store the recommended display settings; they apply to this session only.")
 	menu_audio = MenuSounds.attach(self, func() -> Control:
 		return ScreenStack._surface(screens.top()) if screens.top() != null else null)
 	screens.surface_opened.connect(func(surface: Control, id: String, feedback: bool) -> void:
@@ -1659,6 +1675,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+		_attach_graphics_calibration()
 
 	if staged:
 		# Let disposal and the fully configured paused candidate draw behind the opaque layer.
@@ -1671,6 +1688,29 @@ func start_flight(request: Dictionary = {}) -> void:
 			open_pause()
 		elif flight.session != null:
 			_finish_controller_launch(flight.session)
+
+
+## VQ-07h: the first eligible flight on a GPU measures its GPU time once, when Automatic still decides the
+## Scene detail or the graphics mode (render/auto_calibration.gd). Production profile and rendered sessions only.
+func _attach_graphics_calibration() -> void:
+	if not has_home or flight == null or flight.session == null or preferences_path != Preferences.DEFAULT_PATH \
+			or display_preferences == null:
+		return
+	var method := RenderingServer.get_current_rendering_method()
+	# Same gate as frame diagnostics: no viewport GPU timings headless or on macOS Compatibility.
+	if not FrameDiagnostics._timing_unavailable_reason(DisplayServer.get_name(), OS.get_name(), method).is_empty():
+		return
+	var adapter := RenderingServer.get_video_adapter_name()
+	var automatic_scene := str(display_preferences.config.get("scene_detail", SceneDetail.AUTO)) == SceneDetail.AUTO
+	var automatic_high := str(RendererPreference.load_state().mode) == "auto" and HighGraphics.active()
+	var pixels := get_window().size.x * get_window().size.y
+	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels):
+		return
+	var calibration := AutoCalibration.new(flight.session, adapter)
+	calibration.finished.connect(func(result: Dictionary) -> void:
+		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
+		print("Graphics calibration: ", JSON.stringify(result)))
+	flight.add_child(calibration) # freed with the flight; an interrupted flight measures again next time
 
 
 ## Fly is the explicit launch action; a ready airplane needs no second Continue action.

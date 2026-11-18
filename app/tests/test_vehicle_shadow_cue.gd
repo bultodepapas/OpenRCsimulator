@@ -80,8 +80,17 @@ func _vehicle_cue() -> void:
 	_check("SA-08: Projected draws the vehicle cue", cue.carrier.visible and projected != null
 		and (projected.get("receiver") as MeshInstance3D).visible)
 	if projected != null:
-		_check("SA-08: an excluded spinning rotor stays out of the silhouette", int(projected.get("triangle_count")) == 12,
-			str(projected.get("triangle_count")))
+		var parts: Array = projected.get("_parts")
+		_check("SA-19: a parked rotor blade casts as its own live part", parts.size() == 1
+			and parts[0].node == rotor.get_node("Blade") and projected.get("_drawn_part_visibility") == [true],
+			str(parts.size()))
+		(rotor.get_node("Blade") as Node3D).visible = false # the blur hides the model's blades once they spin fast
+		vehicle.rotate_y(0.3) # force a new mask
+		cue._process(0.0)
+		_check("SA-19: a blurred (hidden) blade leaves the silhouette", projected.get("_drawn_part_visibility") == [false])
+		(rotor.get_node("Blade") as Node3D).visible = true
+		vehicle.rotation = Vector3.ZERO
+		cue._process(0.0)
 		_check("SA-04: the receiver sits on the terrain under the vehicle",
 			is_equal_approx(float(projected.get("receiver_height")), 1.5 + Spec.SHADOW.height)
 			and is_equal_approx((projected.get("receiver") as MeshInstance3D).global_position.y, 1.5 + Spec.SHADOW.height))
@@ -106,24 +115,29 @@ func _vehicle_cue() -> void:
 	host.free()
 
 
-func _helicopter_rotor_excluded() -> void:
+func _helicopter_rotors() -> void:
 	var heli: Dictionary = AirplaneBuilder.build(AirplaneBuilder.X_CELL_ID)
 	if heli.is_empty() or heli.get("root") == null:
 		_check("HX-700 builds for the rotor check", false)
 		return
 	var host := Node3D.new()
 	root.add_child(host)
-	var cue := VehicleShadowCue.attach(host, heli.root, {}, Callable(), VehicleShadowCue.helicopter_excluded(heli))
-	var spinning := 0
+	var cue := VehicleShadowCue.attach(host, heli.root, {}, Callable(), VehicleShadowCue.helicopter_rotors(heli))
+	var static_rotor := 0
+	var blades := 0
 	for entry: Dictionary in Projected.mesh_entries(heli.root):
 		var node: Node = entry.instance
 		while node != null and node != heli.root:
 			if node == heli.get("main_rotor_pivot") or node == heli.get("tail_rotor_pivot"):
-				spinning += 1
+				if entry.part == entry.instance:
+					blades += 1
+				else:
+					static_rotor += 1
 				break
 			node = node.get_parent()
-	_check("SA-08: the helicopter silhouette omits its spinning rotors", spinning == 0
-		and not Projected.mesh_entries(heli.root).is_empty(), "%d rotor meshes" % spinning)
+	_check("SA-19: helicopter rotor meshes enter only as live blade parts, never the static silhouette",
+		static_rotor == 0 and blades > 0 and not Projected.mesh_entries(heli.root).is_empty(),
+		"%d static rotor meshes, %d blades" % [static_rotor, blades])
 	host.free() # also frees the cue
 	heli.root.free()
 
@@ -132,7 +146,7 @@ func _run() -> void:
 	var previous: Dictionary = ShadowSettings.describe().requested
 	_receiving_ground()
 	_vehicle_cue()
-	_helicopter_rotor_excluded()
+	_helicopter_rotors()
 	ShadowSettings.apply(previous)
 	print("Vehicle shadow cue: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

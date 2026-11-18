@@ -342,13 +342,12 @@ func _update_contact_shadow(index: int) -> void:
 	width = absf(body_basis.x.dot(local_x)) * half.x + absf(body_basis.y.dot(local_x)) * half.y + absf(body_basis.z.dot(local_x)) * half.z
 	depth = absf(body_basis.x.dot(local_z)) * half.x + absf(body_basis.y.dot(local_z)) * half.y + absf(body_basis.z.dot(local_z)) * half.z
 	var alpha := 0.22 * fade
-	shadow.visible = alpha > 0.002
 	var projected := body.global_position - normal * (body.global_position - _ground_point).dot(normal)
 	var shadow_basis := Basis(local_x, normal, local_z).scaled(Vector3(
 		maxf(width * 2.0 + 0.35, 0.65) * shrink, 1.0,
 		maxf(depth * 2.0 + 0.35, 0.65) * shrink))
 	shadow.global_transform = Transform3D(shadow_basis, projected + normal * 0.012)
-	_shadow_materials[index].set_shader_parameter("opacity", alpha)
+	_apply_shadow_alpha(index, alpha) # SA-20: celestial strength and native handoff, as for the fixed-wing wreck
 
 
 func _rebuild_attached_core_bounds(pose: Transform3D, velocity: Vector3, angular: Vector3, cg_model: Vector3) -> void:

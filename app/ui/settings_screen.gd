@@ -6,6 +6,8 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const Preferences := preload("res://app_state/preferences.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 ## CAM-06b/28 pilot-view aid combinations offered by one picker.
@@ -60,6 +62,7 @@ var window_close_managed := false # AppRoot owns save/recovery decisions before 
 var _surface: Control
 var _saved: Dictionary
 var _draft: Dictionary
+var _calibration_reset_pending := false
 var _language := "en"
 var _trial_deadline_msec := 0
 var _trial_baseline: Dictionary = {}
@@ -1061,8 +1064,10 @@ func _trial_preview_ready() -> bool:
 
 
 func _restore_graphics_defaults() -> void:
+	var recommended := DisplayPreferences.recommended_defaults() # VQ-07h: this GPU's first-launch values
 	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
-		_draft[key] = DisplayPreferences.DEFAULTS[key]
+		_draft[key] = recommended[key]
+	_calibration_reset_pending = true # VQ-07h: kept restores also forget the measured first-flight verdicts
 	_on_graphics_option_changed()
 
 
@@ -1290,6 +1295,11 @@ func keep_changes() -> void:
 		_set_status("save_error", err)
 		feedback_requested.emit(&"reject")
 		return
+	# Only the production profile owns the calibration file (AppRoot's preferences_path + ".display").
+	if _calibration_reset_pending and display_preferences.path == Preferences.DEFAULT_PATH + ".display":
+		AutoCalibration.clear()
+		SceneDetail.calibration = {}
+	_calibration_reset_pending = false
 	_saved = _draft.duplicate(true)
 	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0

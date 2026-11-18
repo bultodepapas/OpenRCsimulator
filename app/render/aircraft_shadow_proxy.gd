@@ -56,7 +56,7 @@ static func collect(model: Node3D, max_lod_distance: float) -> Dictionary:
 	var vertex_count := 0
 	for entry: Dictionary in entries:
 		var instance := entry.instance as MeshInstance3D
-		var selected := _mesh_faces(instance.mesh, instance.mesh.get_faces(), max_lod_distance)
+		var selected := _mesh_faces(instance, max_lod_distance)
 		faces.append(selected.faces)
 		vertex_count += (selected.faces as PackedVector3Array).size()
 		lod_surfaces += int(selected.lod_surfaces)
@@ -85,31 +85,38 @@ static func _full(shape: Dictionary, reason: String) -> Dictionary:
 	return result
 
 
-static func _mesh_faces(mesh: Mesh, full_faces: PackedVector3Array, max_distance: float) -> Dictionary:
-	var fallback := {faces = full_faces, lod_surfaces = 0}
+## SA-05: only natively casting surfaces (ProjectedShadow.surface_casts) contribute, as in the full collection.
+static func _mesh_faces(instance: MeshInstance3D, max_distance: float) -> Dictionary:
+	var mesh := instance.mesh
+	var full_faces := mesh.get_faces()
+	# Built only when needed: casting_faces() reads the faces again.
+	var fallback := func() -> Dictionary: return {faces = Projected.casting_faces(instance), lod_surfaces = 0}
 	if not mesh is ArrayMesh or mesh.get_blend_shape_count() != 0:
-		return fallback
+		return fallback.call()
 	var serialized: Variant = mesh.get("_surfaces")
 	if not serialized is Array or serialized.size() != mesh.get_surface_count():
-		return fallback
+		return fallback.call()
 	var faces := PackedVector3Array()
 	var offset := 0
 	var selected_count := 0
 	for surface in mesh.get_surface_count():
 		if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
-			return fallback
+			return fallback.call()
 		var arrays := mesh.surface_get_arrays(surface)
 		if not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array or not serialized[surface] is Dictionary:
-			return fallback
+			return fallback.call()
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 		var base_count: int = (mesh as ArrayMesh).surface_get_array_index_len(surface)
 		if base_count == 0:
 			base_count = vertices.size()
 		if base_count % 3 != 0 or offset + base_count > full_faces.size():
-			return fallback
+			return fallback.call()
+		if not Projected.surface_casts(instance, surface):
+			offset += base_count
+			continue
 		var selected := _select_lod(serialized[surface], vertices.size(), base_count, max_distance)
 		if not selected.ok:
-			return fallback
+			return fallback.call()
 		var indices: PackedInt32Array = selected.indices
 		if indices.is_empty():
 			faces.append_array(full_faces.slice(offset, offset + base_count))
@@ -122,7 +129,7 @@ static func _mesh_faces(mesh: Mesh, full_faces: PackedVector3Array, max_distance
 			selected_count += 1
 		offset += base_count
 	if offset != full_faces.size():
-		return fallback
+		return fallback.call()
 	return {faces = faces, lod_surfaces = selected_count}
 
 

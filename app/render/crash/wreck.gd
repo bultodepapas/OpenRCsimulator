@@ -8,6 +8,7 @@ const SectionSplitter = preload("res://render/crash/section_splitter.gd")
 const PropBreak = preload("res://render/crash/prop_break.gd")
 const Severity = preload("res://render/crash/severity.gd")
 const ShadowSettings = preload("res://render/shadow_settings.gd")
+const ShadowCue = preload("res://render/shadow.gd")
 
 const MAX_BODIES := 24
 const DEBRIS_LAYER := 1 << 19
@@ -113,6 +114,13 @@ var _shadow_shader: Shader
 var _shadow_mesh: PlaneMesh
 var _shadow_policy_revision := -1
 var _shadow_policy_enabled := true
+## SA-20: these planes are the projected route's stand-in for the fragments' direct sun shadow, under the same rule as
+## every planar cue: none without celestial light (this provider, 0..1; invalid keeps full strength), and in Auto
+## they yield to the casting native sun, whose maps already shade the fragments, by the SA-02 fade-band handoff.
+## Ambient contact darkening belongs to SSAO, not to these planes.
+var shadow_strength_provider := Callable()
+var _shadow_base_alpha := PackedFloat32Array()
+var _shadow_light := 1.0
 var _groups: Array[Dictionary] = []
 var _prepared_groups: Array[Dictionary] = []
 var _member_records: Array[Dictionary] = []
@@ -398,6 +406,9 @@ func reset() -> void:
 	_c3_contact_release_pending = false
 	_c3_contact_exposure_index_j = 0.0
 	_invalidate_all_shadow_cache()
+	# SA-20: no stale light share or plane opacity carries into the next crash.
+	_shadow_light = 1.0
+	_shadow_base_alpha.fill(0.0)
 	if _bodies.is_empty():
 		_started = false
 		_paused = false
@@ -529,6 +540,7 @@ func core_position() -> Variant:
 func _process(delta: float) -> void:
 	if _shadow_policy_revision != ShadowSettings.revision:
 		apply_shadow_policy()
+	_refresh_shadow_light() # also while paused: the camera and the light can still change
 	if not _started or _paused:
 		return
 	var dt := maxf(_finite_number(delta, 0.0), 0.0)
@@ -592,6 +604,7 @@ func _ensure_pool() -> void:
 		_shadow_cache_valid.append(0)
 		_shadow_cache_transforms.append(Transform3D.IDENTITY)
 		_shadow_cache_shape_sizes.append(Vector3.ZERO)
+		_shadow_base_alpha.append(0.0)
 		var shadow := MeshInstance3D.new()
 		shadow.name = "WreckContactShadow_%02d" % _shadows.size()
 		shadow.mesh = _shadow_mesh
@@ -1200,15 +1213,45 @@ func _update_contact_shadow(index: int) -> void:
 	var fade := clampf(1.0 - height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0)
 	var shrink := lerpf(1.0, 0.35, clampf(height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0))
 	var alpha := 0.22 * fade
-	shadow.visible = alpha > 0.002
 	shadow.global_transform = Transform3D(
 		Basis.IDENTITY.scaled(Vector3(maxf(horizontal_x * 2.0 + 0.35, 0.65) * shrink, 1.0, maxf(horizontal_z * 2.0 + 0.35, 0.65) * shrink)),
 		Vector3(body_transform.origin.x, 0.012, body_transform.origin.z)
 	)
-	_shadow_materials[index].set_shader_parameter("opacity", alpha)
+	_apply_shadow_alpha(index, alpha)
 	_shadow_cache_transforms[index] = body_transform
 	_shadow_cache_shape_sizes[index] = shape_size
 	_shadow_cache_valid[index] = 1
+
+
+## SA-20: a plane's geometric opacity scaled by the current light share; hidden when it would not show.
+func _apply_shadow_alpha(index: int, alpha: float) -> void:
+	_shadow_base_alpha[index] = alpha
+	var shown := alpha * _shadow_light
+	_shadows[index].visible = shown > 0.002
+	_shadow_materials[index].set_shader_parameter("opacity", shown)
+
+
+## SA-20: celestial strength times the native handoff at the wreck, applied to every live plane when it changes.
+func _refresh_shadow_light() -> void:
+	if not _started or not ShadowSettings.projected_enabled():
+		_shadow_light = 1.0 # recomputed from scratch when planes return
+		return
+	var light := 1.0
+	if shadow_strength_provider.is_valid():
+		light = clampf(float(shadow_strength_provider.call()), 0.0, 1.0)
+	if light > 0.0:
+		for index in mini(_shadows.size(), _bodies.size()):
+			if _bodies[index].visible and _shadow_base_alpha[index] > 0.0:
+				light *= ShadowCue.native_handoff(_shadows[index])
+				break
+	if absf(light - _shadow_light) < 0.004 and (light > 0.0) == (_shadow_light > 0.0):
+		return
+	_shadow_light = light
+	for index in mini(_shadows.size(), _bodies.size()):
+		if _bodies[index].visible:
+			var shown := _shadow_base_alpha[index] * light
+			_shadows[index].visible = shown > 0.002
+			_shadow_materials[index].set_shader_parameter("opacity", shown)
 
 
 func _invalidate_shadow_cache(index: int) -> void:

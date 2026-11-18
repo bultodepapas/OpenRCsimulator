@@ -48,6 +48,14 @@ func run() -> void:
 		check("sun direction agrees %d" % hour, sun.basis.z.distance_to(ground.get_shader_parameter("sun_dir")) < 1e-6)
 		check("fixed exposure %d" % hour, is_equal_approx(env.tonemap_exposure, Spec.ATMOSPHERE.exposure))
 		check("finite sun transform %d" % hour, sun.transform.is_finite())
+		# SA-21: fixed time shares flowing time's direct-shadow contract: full while the disc is 0.5 deg up, never
+		# weighted by sun energy, and the native opacity follows it.
+		if float(a.disc_elevation_deg) >= 0.5:
+			check("SA-21: daytime snapshot shadows are full strength %d" % hour, Atmosphere.shadow_strength(a) == 1.0
+				and sun.shadow_opacity == 1.0)
+		check("SA-21: native opacity follows the snapshot strength %d" % hour,
+			is_equal_approx(sun.shadow_opacity, clampf(Atmosphere.shadow_strength(a), 0.0, 1.0))
+			or not sun.shadow_enabled)
 		if float(a.solar.elevation_deg) < -18.0:
 			check("night direct sun/shadow absent %d" % hour, sun.light_energy == 0.0 and Atmosphere.shadow_strength(a) == 0.0)
 			check("night cloud illumination weak %d" % hour, (sky.get_shader_parameter("cloud_lin") as Vector3).length() < 0.002)

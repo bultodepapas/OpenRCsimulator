@@ -10,6 +10,8 @@ const Frames := preload("res://render/frames.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const GROUND_SHADER := preload("res://render/ground.gdshader")
 const NEAR_GRASS_SHADER := preload("res://render/near_grass.gdshader")
+## SA-16: the lake water also receives the ground's spatial cloud shade (render/lake/water.gdshader).
+const WATER_SHADER := preload("res://render/lake/water.gdshader")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const SkyAppearance := preload("res://render/weather/sky_appearance.gd")
 const CloudTransport := preload("res://render/weather/cloud_transport.gd")
@@ -498,7 +500,7 @@ static func track_shadow_material_copy(material: ShaderMaterial, source: ShaderM
 		_remember_shadow_lighting(material, entry.duplicate(true))
 	# Copies made before an asynchronous bake need their own publication binding.
 	# Otherwise their copied disabled flag would remain analytic indefinitely.
-	if material.shader == GROUND_SHADER or material.shader == NEAR_GRASS_SHADER:
+	if is_cloud_receiver(material):
 		if not material.has_meta(CLOUD_SHADOW_META):
 			material.set_meta(CLOUD_SHADOW_META, source.get_meta(CLOUD_SHADOW_META,
 				material.get_shader_parameter("cloud_shadow_strength")))
@@ -662,7 +664,7 @@ static func _selected_cloud_offset(sim_time_s: float, offsets: Array = []) -> Ve
 
 
 static func _set_profile_shadow_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
-	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+	if not is_cloud_receiver(mat):
 		return
 	if not _appearance_enabled:
 		mat.set_shader_parameter("appearance_cloud_shadow", false)
@@ -923,7 +925,7 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 		mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
 	_set_haze_uniforms(mat, lighting)
 	_set_profile_shadow_uniforms(mat, lighting)
-	if mat.shader == GROUND_SHADER or mat.shader == NEAR_GRASS_SHADER:
+	if is_cloud_receiver(mat):
 		# SA-15: remember the weather's strength so the saved Cloud shadows choice can restore it.
 		mat.set_meta(CLOUD_SHADOW_META, mat.get_shader_parameter("cloud_shadow_strength"))
 		_register_cloud_receiver(mat)
@@ -933,7 +935,7 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 ## SA-15: Off removes the spatial cloud shade from ground and near grass. Their shaders skip the cloud sampling at
 ## zero strength, and the cached noise tile is released; visible clouds, sky and weather are unchanged.
 static func _apply_cloud_shadow_choice(mat: ShaderMaterial) -> void:
-	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+	if not is_cloud_receiver(mat):
 		return
 	if ShadowSettings.cloud_shadows_enabled():
 		mat.set_shader_parameter("cloud_shadow_strength", mat.get_meta(CLOUD_SHADOW_META,
@@ -942,6 +944,12 @@ static func _apply_cloud_shadow_choice(mat: ShaderMaterial) -> void:
 	else:
 		mat.set_shader_parameter("cloud_shadow_strength", 0.0)
 		CloudShadowMap.clear_ground(mat)
+
+
+## Materials that draw the spatial cloud shade: ground, near grass and (SA-16) lake water.
+static func is_cloud_receiver(mat: Material) -> bool:
+	var shader: Shader = (mat as ShaderMaterial).shader if mat is ShaderMaterial else null
+	return shader != null and (shader == GROUND_SHADER or shader == NEAR_GRASS_SHADER or shader == WATER_SHADER)
 
 
 static func _register_cloud_receiver(mat: ShaderMaterial) -> void:
@@ -957,7 +965,7 @@ static func _register_cloud_receiver(mat: ShaderMaterial) -> void:
 	ShadowSettings.set_cloud_refresh(_refresh_cloud_shadow_choice)
 
 
-## A changed Cloud shadows preference applies at once to every live ground/near-grass material.
+## A changed Cloud shadows preference applies at once to every live ground/near-grass/water material.
 static func _refresh_cloud_shadow_choice() -> void:
 	for key: int in _cloud_receivers.keys():
 		var mat := (_cloud_receivers[key] as WeakRef).get_ref() as ShaderMaterial
@@ -969,7 +977,7 @@ static func _refresh_cloud_shadow_choice() -> void:
 
 ## DT-MAC-06b C2 candidate: the periodic noise tile for the seed this material's shadow uses.
 static func _set_cloud_shadow_map(mat: ShaderMaterial) -> void:
-	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+	if not is_cloud_receiver(mat):
 		return
 	if _appearance_enabled and (_shadow_layer_index() < 0 \
 			or float(_appearance.get("cloud_density", 0.0)) <= 0.0 \
@@ -1044,13 +1052,13 @@ static func _update_environment_parameters(env: Environment, lighting: Dictionar
 	_remember_shadow_lighting(env, {"kind": "environment", "source": _shadow_scatter_source(lighting)})
 
 
-## Engine shadows follow the shadow strength. FW-MOON-06b: with time flowing (every step, not only at build) the
-## PSSM opacity is the strength itself, so moon and setting-sun shadows fade like the projected and planar shadows;
-## the calibrated day and explicit snapshots keep on/off at full opacity.
+## Engine shadows follow the shadow strength. FW-MOON-06b: the PSSM opacity is the strength itself, so moon and
+## setting-sun shadows fade like the projected and planar shadows. SA-21: fixed snapshots use the same contract
+## (their strength is the same disc-beam share), so the calibrated day stays at full opacity in both modes.
 static func _apply_shadow(light: DirectionalLight3D, lighting: Dictionary = {}) -> void:
 	var strength := shadow_strength(lighting)
 	light.shadow_enabled = engine_shadows and strength > 0.0
-	light.shadow_opacity = clampf(strength, 0.0, 1.0) if _uses_flow_state(lighting) else 1.0
+	light.shadow_opacity = clampf(strength, 0.0, 1.0)
 	HighGraphics.apply_sun(light)
 	ShadowSettings.apply_sun(light, engine_shadows and strength > 0.0)
 

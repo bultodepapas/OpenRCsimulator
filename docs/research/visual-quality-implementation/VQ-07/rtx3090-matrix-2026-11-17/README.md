@@ -10,7 +10,7 @@
 
 - **Workloads:** `scripted` is the repeatable pilot-view circle with physics off. `static` is the live-input route with no radio: the Stik sits on the runway with the 240 Hz physics running, seen from the pilot station.
 - **Profiles:** Standard is `gl_compatibility`/OpenGL. High is `forward_plus` on Vulkan or D3D12. Mobile was forced with `--rendering-method mobile` on Vulkan or D3D12.
-- **Fixed settings:** non-temporal rows use MSAA 2×, the direct-route default; FSR2 rows own their AA. Scene detail is `high` unless noted.
+- **Fixed settings:** non-temporal rows use MSAA 4× (`msaa_3d=2` is Godot's `MSAA_4X`), the direct-route and Settings default; FSR2 rows own their AA. Scene detail is `high` unless noted.
 
 All 55 runs exited 0 with no engine errors, every sample was drawable (`render_progress: observed`), and every diagnosis was valid. One run per row, except the four core rows, which ran three times in interleaved order.
 
@@ -32,7 +32,7 @@ Wall frame interval in ms. The GPU column is the root-viewport poll, whose fresh
 
 | Mode (nominal input) | Vulkan p50 / p95 | D3D12 p50 / p95 | GPU p50 Vulkan |
 | --- | --- | --- | --- |
-| Native, MSAA 2× | 1.51 / 1.84 | 1.53 / 1.80 | 1.07 |
+| Native, MSAA 4× | 1.51 / 1.84 | 1.53 / 1.80 | 1.07 |
 | FSR2 Native AA (1920×1080) | 1.73 / 2.33 | 1.79 / 2.62 | 1.41 |
 | FSR2 85% (1632×918) | 1.65 / 2.19 | 1.75 / 2.50 | 1.23 |
 | FSR2 Quality (1280×720) | 1.53 / 1.83 (×3) | 1.83 / 2.77 | 1.03 |

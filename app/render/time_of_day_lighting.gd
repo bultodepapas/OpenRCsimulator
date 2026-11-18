@@ -4,6 +4,7 @@ extends RefCounted
 
 const Spec = preload("res://spec.gd")
 const Solar = preload("res://environment/solar_position.gd")
+const SkyState = preload("res://render/world/sky_state.gd")
 const PROFILE: String = "openrc-lighting-curves v1"
 ## Geometric solar elevation, zenith/horizon/cloud sRGB appearance. Twilight bounds: USNO.
 const ANCHORS: Array = [
@@ -38,7 +39,10 @@ static func snapshot(config: Dictionary) -> Dictionary:
 	result.sun_color = Color("#ff975a").lerp(Spec.ATMOSPHERE.sun_color, smoothstep(0.0, 25.0, elevation))
 	result.sun_scatter = Spec.ATMOSPHERE.sun_scatter
 	result.cloud_silver_strength = Spec.ATMOSPHERE.cloud_silver_strength * smoothstep(-0.8333, 6.0, elevation)
-	result.shadow_strength = smoothstep(0.0, 6.0, apparent) * minf(result.sun_energy, 1.0)
+	# SA-21: one direct-shadow contract with flowing time (FW-MOON-06b): the disc's direct beam share, full from
+	# 0.5 deg apparent elevation. Not scaled by sun energy: a shadow already removes exactly the direct light, so
+	# weighting its opacity by energy too lightened fixed-time daytime shadows (0.81 at 30 deg) against flowing time.
+	result.shadow_strength = SkyState.sun_shadow_strength(apparent)
 	result.disc_cloud_occlusion = true
 	result.solar = solar
 	return result

@@ -14,6 +14,32 @@ const STRIP_TOKENS: Array[String] = ["/pcie/sse2", "(r)", "(tm)", "nvidia corpor
 ## (Iris Xe, 680M/780M, M1/M2, GTX 1050 Ti, MX) Medium; above that High.
 const SCENE_LOW_BELOW := 0.04
 const SCENE_MEDIUM_BELOW := 0.15
+const MSAA_OFF_BELOW := 0.10
+const GENERIC_RADEON_ROW := "radeon_graphics_igpu"
+const REFERENCE_PIXELS := 1920 * 1080
+## Default for mac_render_pixels: render/reconstruction.gd's Automatic MetalFX Spatial Quality (2/3 per axis) when
+## its input keeps at least 1000 rows. Runtime callers pass the scale Reconstruction.auto_mode actually selects,
+## which is Native (1.0) without MetalFX (Intel/Rosetta Macs, Compatibility, a blocked or unsupported scaler).
+const MAC_AUTO_SCALE := 2.0 / 3.0
+const MAC_AUTO_MIN_INPUT_ROWS := 1000
+## Apple GPUs from about M4 Pro class (rel ≥ 0.18: M4 Pro, M2 Max and newer Max/Ultra/Pro) keep 120 Hz on
+## ProMotion panels; slower chips, including M1 Max and M1–M3 Pro, start capped at 60 fps.
+const MAC_120HZ_MIN_REL := 0.18
+
+
+## Pixels the GPU renders for a Mac panel of `screen` pixels; `scale` < 0 assumes Automatic MetalFX.
+static func mac_render_pixels(screen: Vector2i, scale: float = -1.0) -> int:
+	if screen.x <= 0 or screen.y <= 0:
+		return 0
+	if scale < 0.0:
+		scale = MAC_AUTO_SCALE if float(screen.y) * MAC_AUTO_SCALE >= MAC_AUTO_MIN_INPUT_ROWS else 1.0
+	return int(float(screen.x) * scale) * int(float(screen.y) * scale)
+
+
+## A Retina display (backing scale ≥ 2: every MacBook and iMac panel, Retina external displays) targets its
+## native resolution (AGENTS display priorities exception). Godot cannot tell built-in from external panels.
+static func mac_native_target(os_name: String, screen_scale: float) -> bool:
+	return os_name == "macOS" and screen_scale >= 2.0
 
 static var _table: Dictionary = {}
 static var _compiled: Array = []
@@ -36,7 +62,7 @@ static func table() -> Dictionary:
 
 
 static func normalize(adapter: String) -> String:
-	var text := _angle_device(adapter.to_lower())
+	var text := _angle_device(adapter.to_lower()).replace("mesa dri ", "")
 	for token: String in STRIP_TOKENS:
 		text = text.replace(token, " ")
 	var mesa_details := text.find(" (")
@@ -65,15 +91,20 @@ static func _angle_device(text: String) -> String:
 	return inner
 
 
-## Mesa radeonsi names carry the chip: "AMD Radeon Graphics (radeonsi, navi23, LLVM …)" → "navi23".
+## Mesa names carry the chip: "AMD Radeon Graphics (radeonsi, navi23, LLVM …)" or, in older Mesa,
+## "AMD Radeon RX 5500 (navi14, LLVM …)" → "navi23"/"navi14". Unmatched tokens fall through harmlessly.
 static func mesa_codename(adapter: String) -> String:
-	var text := adapter.to_lower()
-	var at := text.find("(radeonsi, ")
+	var text := adapter.to_lower().replace("(tm)", "").replace("(r)", "")
+	var at := text.find(" (")
 	if at < 0:
 		return ""
-	var rest := text.substr(at + "(radeonsi, ".length())
-	var end := rest.find(",")
-	return (rest.substr(0, end) if end >= 0 else rest.trim_suffix(")")).strip_edges()
+	var tokens := text.substr(at + 2).trim_suffix(")").split(",", false)
+	if tokens.is_empty():
+		return ""
+	var first := tokens[0].strip_edges()
+	if first == "radeonsi" and tokens.size() > 1:
+		first = tokens[1].strip_edges()
+	return first
 
 
 ## {matched, id, rel, vram_gb, class, normalized}. `matched` is false for unknown GPUs.
@@ -91,6 +122,10 @@ static func lookup(adapter: String) -> Dictionary:
 		for entry: Array in _compiled:
 			if (entry[0] as RegEx).search(candidate) != null:
 				var row: Dictionary = entry[1]
+				# A Mesa chip we do not know must not fall back to the generic "Radeon Graphics" iGPU row:
+				# newer Mesa names discrete cards that way too. Unknown keeps the safe defaults.
+				if not codename.is_empty() and str(row.get("id", "")) == GENERIC_RADEON_ROW:
+					return result
 				result.matched = true
 				result.id = str(row.get("id", ""))
 				result.rel = float(row.get("rel", 0.0))
@@ -102,14 +137,48 @@ static func lookup(adapter: String) -> Dictionary:
 
 ## Scene detail Automatic from capability: weak integrated parts start Low, mid parts Medium, others High.
 ## Extreme is never automatic. Unknown GPUs return "" so the caller keeps its own fallback.
-static func scene_detail_level(adapter: String) -> Dictionary:
+## `render_pixels` > 1080p (Macs: the native panel after MetalFX, see mac_render_pixels) scales the estimate
+## down by the extra pixel load; other systems pass 0 and keep the 1080p reference (AGENTS display priorities).
+static func scene_detail_level(adapter: String, render_pixels: int = 0) -> Dictionary:
 	var gpu := lookup(adapter)
 	if not bool(gpu.matched):
 		return {"level": "", "reason": "", "gpu": gpu}
-	var rel := float(gpu.rel)
-	var level := "low" if str(gpu["class"]) == "software" or rel < SCENE_LOW_BELOW else (
+	var rel := float(gpu.rel) * minf(1.0, float(REFERENCE_PIXELS) / float(maxi(render_pixels, REFERENCE_PIXELS)))
+	var kind := str(gpu["class"])
+	var level := "low" if kind == "software" or rel < SCENE_LOW_BELOW else (
 		"medium" if rel < SCENE_MEDIUM_BELOW else "high")
-	return {"level": level, "reason": "%s (estimated %.2f× RTX 3090)" % [gpu.id, rel], "gpu": gpu}
+	# `reason` reuses Settings' translated categories; `detail` carries the table entry for logs and tools.
+	var reason := "software renderer" if kind == "software" else ("integrated GPU" if kind == "integrated" else (
+		"entry-level GPU" if level != "high" else "dedicated GPU"))
+	return {"level": level, "reason": reason, "detail": "%s (estimated %.2f× RTX 3090)" % [gpu.id, rel], "gpu": gpu}
+
+
+## First-launch display defaults for this GPU, applied only before any display settings file exists.
+## MSAA evidence (docs/research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18): on the RTX 3090 at 4K,
+## turning 4x MSAA off saves 18-24% GPU time in every renderer while 2x costs the same as 4x, so dedicated GPUs
+## keep the 4x default. Integrated GPUs share memory bandwidth, where vendors report MSAA cost growing with
+## samples: capable ones start at 2x, weak ones (below MSAA_OFF_BELOW) without MSAA. Unknown GPUs get nothing.
+## On a Retina Mac (`mac_native_target`) the game also starts full screen, so it renders at the panel's native
+## resolution with Automatic MetalFX reconstruction instead of a small point-sized window.
+## A ProMotion (120 Hz) panel with a base-class Apple chip is capped at 60 fps: with VSync the GPU would otherwise
+## try to draw 120 frames at the native resolution, doubling power for a chip that cannot sustain it.
+static func first_run_settings(adapter: String, os_name: String = "", screen_scale: float = 1.0,
+		refresh_hz: float = 60.0) -> Dictionary:
+	var settings := {}
+	var gpu := lookup(adapter)
+	# Apple Silicon only: Intel Macs have neither MetalFX nor the GPU for a native Retina frame.
+	if mac_native_target(os_name, screen_scale) and str(gpu.id).begins_with("apple_"):
+		settings["window_mode"] = "borderless"
+		if refresh_hz > 61.0 and float(gpu.rel) < MAC_120HZ_MIN_REL:
+			settings["max_fps"] = 60
+	if not bool(gpu.matched) or str(gpu["class"]) not in ["integrated", "software"]:
+		return settings
+	# Tile-based GPUs (Apple, Adreno) resolve MSAA on chip; the shared-bandwidth argument does not apply.
+	if str(gpu.id).begins_with("apple_") or str(gpu.id).begins_with("adreno_"):
+		return settings
+	settings["msaa_3d"] = Viewport.MSAA_DISABLED if str(gpu["class"]) == "software" \
+		or float(gpu.rel) < MSAA_OFF_BELOW else Viewport.MSAA_2X
+	return settings
 
 
 ## Extrapolated High-profile GPU milliseconds at `pixels` output pixels for a relative throughput `rel`.

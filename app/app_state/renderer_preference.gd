@@ -3,12 +3,13 @@ extends RefCounted
 ## Godot selects its renderer before any script runs, so exported builds read OVERRIDE_PATH through
 ## `application/config/project_settings_override.template` in project.godot. Editor-binary launches
 ## (development, tests, captures, research tools) ignore that key and keep the project renderer.
-## Automatic chooses High on Windows x86_64 when the GPU capability table (data/gpu/capability.json, estimates
+## Automatic chooses High on Windows x86_64 (and Linux x86_64 desktop GPUs) when the GPU capability table (data/gpu/capability.json, estimates
 ## extrapolated from the measured RTX 3090 anchor) predicts enough headroom at the screen's resolution;
 ## every other host starts in Standard. A Forward+ launch that never confirms (RendererGuard) or that the engine
 ## replaced with its OpenGL fallback blocks High for that build, so it cannot become a restart loop.
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
 const OVERRIDE_PATH := "user://renderer.cfg"
 const MODES: Array[String] = ["auto", "standard", "high"]
 const DEFAULT_MODE := "auto"
@@ -72,13 +73,18 @@ static func project_standard_method(effective: String, honored: bool, state: Dic
 
 ## Pure Automatic policy. facts: {os, arm64, adapter, pixels}. Returns {profile, reason, gpu, predicted_ms}.
 static func auto_profile(facts: Dictionary) -> Dictionary:
-	if str(facts.get("os", "")) != "Windows" or bool(facts.get("arm64", false)):
-		return {profile = "standard", reason = "High is chosen automatically only on Windows x86_64"}
+	var os_name := str(facts.get("os", ""))
+	if os_name not in ["Windows", "Linux"] or bool(facts.get("arm64", false)):
+		return {profile = "standard", reason = "High is chosen automatically only on Windows and Linux x86_64"}
 	var gpu := GpuCapability.lookup(str(facts.get("adapter", "")))
 	if not bool(gpu.matched):
 		return {profile = "standard", reason = "GPU not in the capability table", gpu = gpu}
 	if str(gpu["class"]) in ["integrated", "software"]:
 		return {profile = "standard", reason = "%s GPU" % gpu["class"], gpu = gpu}
+	# Linux: desktop GPUs only. Hybrid laptops usually present their integrated GPU to OpenGL anyway, and
+	# Forward+ driver reports on Linux are thinner, so laptop parts keep Standard there.
+	if os_name == "Linux" and str(gpu["class"]) != "discrete":
+		return {profile = "standard", reason = "Linux laptop GPU", gpu = gpu}
 	if int(gpu.vram_gb) < MIN_HIGH_VRAM_GB:
 		return {profile = "standard", reason = "less than %d GB of video memory" % MIN_HIGH_VRAM_GB, gpu = gpu}
 	var pixels := maxi(int(facts.get("pixels", 0)), MIN_PIXELS)
@@ -122,6 +128,10 @@ static func plan(facts: Dictionary, state: Dictionary) -> Dictionary:
 			profile = str(automatic.profile)
 			if result.reason.is_empty():
 				result.reason = "automatic: " + str(automatic.reason)
+			# A measured first flight on this GPU missed the 60 Hz frame in High (render/auto_calibration.gd).
+			if profile == "high" and bool(facts.get("calibration_reject_high", false)):
+				profile = "standard"
+				result.reason = "automatic: measured High GPU time missed the frame on this GPU"
 	if profile == "high" and not build.is_empty() and out.high_blocked_build == build:
 		profile = "standard"
 	result.profile = profile
@@ -157,6 +167,8 @@ static func facts(guard_state: Dictionary = {}, build: String = "") -> Dictionar
 		build = build,
 		guard_failed_method = str((failed as Dictionary).get("method", "")) if failed is Dictionary else "",
 		guard_failed_build = str((failed as Dictionary).get("build", "")) if failed is Dictionary else "",
+		calibration_reject_high = bool(AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
+			AutoCalibration.HIGH_METHOD).get("reject_high", false)),
 	}
 
 

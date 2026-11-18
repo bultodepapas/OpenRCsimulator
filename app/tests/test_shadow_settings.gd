@@ -124,8 +124,15 @@ func _test_cloud_shadow_choice() -> void:
 	unrelated.shader = Atmosphere.SKY_SHADER
 	Atmosphere.update_ground_material(unrelated)
 	var sky_before: Variant = unrelated.get_shader_parameter("cloud_shadow_strength")
+	var water := ShaderMaterial.new()
+	water.shader = Atmosphere.WATER_SHADER
+	Atmosphere.update_ground_material(water)
+	check("SA-16: lake water receives the same cloud shade as the ground", Atmosphere.is_cloud_receiver(water)
+		and is_equal_approx(float(water.get_shader_parameter("cloud_shadow_strength")), weather)
+		and water.get_shader_parameter("cloud_seed") == ground.get_shader_parameter("cloud_seed"))
 	var revision := Settings.revision
 	Settings.apply({shadow_cloud = "off"})
+	check("SA-16: Off removes it from the water too", float(water.get_shader_parameter("cloud_shadow_strength")) == 0.0)
 	check("SA-15: Off applies at once to a live ground material", Settings.revision > revision
 		and float(ground.get_shader_parameter("cloud_shadow_strength")) == 0.0
 		and ground.get_shader_parameter("cloud_shadow_map_enabled") != true)

@@ -1,0 +1,162 @@
+extends SceneTree
+## VQ-07h: first-flight measured calibration of the automatic graphics choice.
+
+const AutoCalibration := preload("res://render/auto_calibration.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
+const TimingLease := preload("res://render/render_timing_lease.gd")
+
+const PRIVATE_PATH := "user://test graphics calibration.cfg"
+
+var _checks := 0
+var _failures := 0
+
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
+	AutoCalibration.calibration_path = PRIVATE_PATH
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PRIVATE_PATH))
+	_test_evaluate()
+	_test_storage()
+	_test_scene_detail()
+	_test_renderer()
+	await _test_lifecycle()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PRIVATE_PATH))
+	AutoCalibration.calibration_path = AutoCalibration.CALIBRATION_PATH
+	SceneDetail.calibration = {}
+	SceneDetail.adapter_override = PackedStringArray()
+	print("auto calibration: %d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)
+
+
+func _check(name: String, ok: bool, detail: Variant = "") -> void:
+	_checks += 1
+	if not ok:
+		_failures += 1
+		printerr("FAIL: %s %s" % [name, str(detail)])
+
+
+func _samples(value: float, count: int = 600) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	for i in count:
+		out.append(value)
+	return out
+
+
+func _test_evaluate() -> void:
+	var short := AutoCalibration.evaluate(_samples(20.0, 100))
+	_check("too few measured frames give a neutral, incomplete verdict", not short.complete and short.scene_offset == 0
+		and not short.reject_high)
+	var slow := AutoCalibration.evaluate(_samples(15.0), true, "forward_plus")
+	_check("a GPU near the 60 Hz frame lowers Scene detail but keeps High", slow.complete and slow.scene_offset == -1
+		and not slow.reject_high, slow)
+	var missing := AutoCalibration.evaluate(_samples(18.0), true, "forward_plus")
+	_check("a High session missing the frame rejects High without also lowering Scene detail",
+		missing.reject_high and missing.scene_offset == 0, missing)
+	var standard := AutoCalibration.evaluate(_samples(18.0), true, "gl_compatibility")
+	_check("a Standard session missing the frame lowers Scene detail and rejects nothing",
+		not standard.reject_high and standard.scene_offset == -1, standard)
+	var fast := AutoCalibration.evaluate(_samples(3.0))
+	_check("a GPU with ample headroom raises Scene detail", fast.scene_offset == 1 and not fast.reject_high, fast)
+	_check("unmeasured SubViewport work forbids raising it", AutoCalibration.evaluate(_samples(3.0), false).scene_offset == 0)
+	var middle := AutoCalibration.evaluate(_samples(8.0))
+	_check("a comfortable GPU keeps the recommendation", middle.scene_offset == 0 and not middle.reject_high, middle)
+	var tail := _samples(5.0, 570)
+	tail.append_array(_samples(30.0, 30))
+	_check("the verdict follows the p95, not the median", AutoCalibration.evaluate(tail, true, "forward_plus").reject_high)
+
+
+func _test_storage() -> void:
+	var uhd := "Intel(R) UHD Graphics 620"
+	_check("a fresh profile still needs a measurement", AutoCalibration.needed(uhd, "forward_plus", 2073600))
+	_check("no adapter never measures", not AutoCalibration.needed("", "forward_plus"))
+	_check("a High verdict is stored", AutoCalibration.save_result({"adapter": uhd, "method": "forward_plus",
+		"scene_offset": 0, "reject_high": true, "complete": true, "gpu_p95_ms": 21.5, "samples": 1200, "pixels": 2073600}))
+	var loaded := AutoCalibration.load_result(uhd, "forward_plus")
+	_check("the verdict reads back", loaded.reject_high and loaded.complete and loaded.pixels == 2073600
+		and absf(float(loaded.gpu_p95_ms) - 21.5) < 0.01, loaded)
+	_check("the Vulkan name of the same GPU finds the same verdict",
+		not AutoCalibration.load_result("Intel(R) UHD Graphics 620 (KBL GT2)", "forward_plus").is_empty())
+	_check("another renderer has its own slot", AutoCalibration.load_result(uhd, "gl_compatibility").is_empty()
+		and AutoCalibration.needed(uhd, "gl_compatibility", 2073600))
+	_check("a Standard verdict for the same GPU keeps the High rejection",
+		AutoCalibration.save_result({"adapter": uhd, "method": "gl_compatibility", "scene_offset": -1, "complete": true,
+			"pixels": 2073600}) and AutoCalibration.load_result(uhd, "forward_plus").reject_high
+		and AutoCalibration.load_result(uhd, "gl_compatibility").scene_offset == -1)
+	_check("only a Forward+ slot can reject High", not AutoCalibration.load_result(uhd, "gl_compatibility").reject_high)
+	_check("another GPU keeps its own verdicts", AutoCalibration.save_result({"adapter": "NVIDIA GeForce RTX 3060",
+		"method": "forward_plus", "scene_offset": 1, "complete": true, "pixels": 2073600})
+		and AutoCalibration.load_result(uhd, "forward_plus").reject_high)
+	_check("a measured GPU at the same size is not measured again", not AutoCalibration.needed(uhd, "forward_plus", 2073600))
+	_check("a very different output size measures again", AutoCalibration.needed(uhd, "forward_plus", 3840 * 2160)
+		and not AutoCalibration.size_matches(loaded, 3840 * 2160) and AutoCalibration.size_matches(loaded, 2560 * 1080))
+	_check("offsets are bounded", AutoCalibration.save_result({"adapter": "Example GPU", "method": "mobile", "scene_offset": 5})
+		and AutoCalibration.load_result("Example GPU", "mobile").scene_offset == 1)
+	AutoCalibration.clear()
+	_check("Restore graphics defaults forgets every verdict", AutoCalibration.load_result(uhd, "forward_plus").is_empty()
+		and AutoCalibration.load_result("NVIDIA GeForce RTX 3060", "forward_plus").is_empty())
+	_check("levels shift within Low..High and never reach Extreme",
+		AutoCalibration.shifted_level("high", 1) == "high" and AutoCalibration.shifted_level("medium", 1) == "high"
+		and AutoCalibration.shifted_level("low", -1) == "low" and AutoCalibration.shifted_level("high", -1) == "medium"
+		and AutoCalibration.shifted_level("extreme", -1) == "extreme")
+
+
+func _test_scene_detail() -> void:
+	var method := RenderingServer.get_current_rendering_method()
+	var pixels := root.size.x * root.size.y
+	SceneDetail.adapter_override = PackedStringArray(["NVIDIA GeForce RTX 3090", "NVIDIA"])
+	SceneDetail.calibration = {}
+	_check("without a verdict Automatic follows the table", SceneDetail.detected().level == "high")
+	var key := AutoCalibration.adapter_key("NVIDIA GeForce RTX 3090")
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1}
+	var shifted := SceneDetail.detected()
+	_check("a measured verdict lowers Automatic one level", shifted.level == "medium" and bool(shifted.get("calibrated", false)), shifted)
+	SceneDetail.calibration = {"adapter": key, "method": "another_renderer", "pixels": pixels, "scene_offset": -1}
+	_check("a verdict from another renderer is ignored", SceneDetail.detected().level == "high")
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": maxi(pixels, 1) * 4, "scene_offset": -1}
+	_check("a verdict from a very different output size is ignored", SceneDetail.detected().level == "high")
+	SceneDetail.calibration = {"adapter": AutoCalibration.adapter_key("Intel(R) Iris(R) Xe Graphics"), "method": method,
+		"pixels": pixels, "scene_offset": -1}
+	_check("a verdict for another GPU is ignored", SceneDetail.detected().level == "high")
+	SceneDetail.set_preference("high")
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1}
+	_check("an explicit level is never changed", SceneDetail.level() == "high")
+	SceneDetail.set_preference(SceneDetail.AUTO)
+	_check("Automatic applies the verdict", SceneDetail.level() == "medium")
+	SceneDetail.set_preference("")
+	SceneDetail.calibration = {}
+
+
+func _test_renderer() -> void:
+	var facts := {os = "Windows", arm64 = false, adapter = "NVIDIA GeForce RTX 3060", headless = false, template = true,
+		cli_renderer = false, session_method = "forward_plus", project_standard = "gl_compatibility", build = "b",
+		guard_failed_method = "", guard_failed_build = "", calibration_reject_high = false}
+	var state := {mode = "auto", renderer = "forward_plus", standard_method = "gl_compatibility", high_blocked_build = ""}
+	_check("Automatic keeps High without a measured rejection", RendererPreference.plan(facts, state).profile == "high")
+	facts.calibration_reject_high = true
+	var rejected := RendererPreference.plan(facts, state)
+	_check("a measured rejection returns Automatic to Standard with one restart", rejected.profile == "standard"
+		and rejected.write and rejected.restart and rejected.state.renderer == "", rejected)
+	state.mode = "high"
+	_check("an explicit High choice is kept despite the measurement", RendererPreference.plan(facts, state).profile == "high")
+
+
+func _test_lifecycle() -> void:
+	var before := TimingLease.holders(root)
+	var session := Node.new()
+	var calibration := AutoCalibration.new(session, "NVIDIA GeForce RTX 3090")
+	root.add_child(calibration)
+	await process_frame
+	var during := TimingLease.holders(root) if is_instance_valid(calibration) else before
+	var gave_up := not is_instance_valid(calibration) or calibration.is_queued_for_deletion()
+	if is_instance_valid(calibration):
+		calibration.free()
+	session.free()
+	if during == before:
+		_check("without a measurable viewport (headless) the measurement removes itself", gave_up)
+	else:
+		_check("the measurement holds a timing lease only while it lives", during == before + 1
+			and TimingLease.holders(root) == before, "%d → %d → %d" % [before, during, TimingLease.holders(root)])
