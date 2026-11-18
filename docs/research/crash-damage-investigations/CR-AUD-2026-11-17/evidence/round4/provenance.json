@@ -1,0 +1,111 @@
+{
+  "format": "openrc-collision-audit-round4-provenance-v1",
+  "date": "2026-11-18",
+  "timezone": "America/Bogota",
+  "branch": "audit/collision-damage-2026-11-17",
+  "application_baseline": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "executed_local_audit_commit": "3a0cd2cb4b85da0f0e4481605da672e8c559749a",
+  "published_equivalent_source_commit": "dc5f7029c74dc56d018c246d6bdc87ab89b8a4b1",
+  "equivalent_source_tree": "c82fd267ef740bba6a33da7dcd65a6a69293aced",
+  "source_trees": {
+    "a7de9b35676d891bc2034cc344b910d9e1ef9c61": {
+      "app": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+      "assets": "3ed558d2a5f37ae24e784436c9def5841d7382ad",
+      "tools": "95d35ed671a2a32919ffadc13036c66e240ab2ec"
+    },
+    "3a0cd2cb4b85da0f0e4481605da672e8c559749a": {
+      "app": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+      "assets": "3ed558d2a5f37ae24e784436c9def5841d7382ad",
+      "tools": "95d35ed671a2a32919ffadc13036c66e240ab2ec"
+    },
+    "dc5f7029c74dc56d018c246d6bdc87ab89b8a4b1": {
+      "app": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+      "assets": "3ed558d2a5f37ae24e784436c9def5841d7382ad",
+      "tools": "95d35ed671a2a32919ffadc13036c66e240ab2ec"
+    }
+  },
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "product_probe_totals": {
+    "probes": 3,
+    "checks": 65,
+    "passes": 58,
+    "desired_behavior_failures": 7,
+    "checked_errors": 0,
+    "checked_warnings": 0
+  },
+  "prior_attempts_excluded": 1,
+  "prior_attempt_classification": "car fixture parse failure, two errors, no simulation assertions",
+  "derived_calculation": "derived/gear-support-projection.json; postprocessing only, excluded from engine assertion totals",
+  "new_existing_suite_runs": 0,
+  "runtime_fixes": false,
+  "runs": [
+    {
+      "name": "quad-disc-box-separation",
+      "source_run": "quad-disc-box-separation-wcz4mvab",
+      "path": "runs/probes/quad-disc-box-separation",
+      "finding": "CR-AUD-25",
+      "probe": "probes/probe_quad_disc_box_separation.gd",
+      "probe_sha256": "e05b0a81c93c8c7860e362da76486aa14db68b9f5c6aa5a6993bee95ecb6f95c",
+      "checks": 29,
+      "passes": 27,
+      "desired_behavior_failures": 2,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 3.062134,
+      "log_sha256": "c87dbe21b9f793f9a3092b28ab4cb44851328c74258b6ebea47ad0599ce5b74a"
+    },
+    {
+      "name": "car-damage-region",
+      "source_run": "car-damage-region-v1-oo2rhza1",
+      "path": "runs/probes/car-damage-region",
+      "finding": "CR-AUD-26",
+      "probe": "probes/probe_car_damage_region.gd",
+      "probe_sha256": "7446cf73ec30f09ac22ccacf56a560b698cc479d3467e29eff784440093fa308",
+      "checks": 22,
+      "passes": 18,
+      "desired_behavior_failures": 4,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 2.286466,
+      "log_sha256": "3e2bcdfdf715ab9efe0931b4ce988acb57f8dd060f287dae69977071d7d9a4a4"
+    },
+    {
+      "name": "fixedwing-gear-scenery",
+      "source_run": "fixedwing-gear-scenery-d44o7a1y",
+      "path": "runs/probes/fixedwing-gear-scenery",
+      "finding": "CR-AUD-27",
+      "probe": "probes/probe_fixedwing_gear_scenery.gd",
+      "probe_sha256": "6de29313d86e466760c0607e55757d77c2a0facf1bdd03d6ad3dd0009da62c7c",
+      "checks": 14,
+      "passes": 13,
+      "desired_behavior_failures": 1,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 5.036899,
+      "log_sha256": "8ea6ae3992c252e74843a99276bf19e340c607a0c4b74aa897a14c4409e44426"
+    }
+  ],
+  "documents_sha256": {
+    "README.md": "40efc211a295408f13ee1bd914bc8e2a1b0a57144271fa2be9622542e1ab3796",
+    "contact-ownership-2026-11-18.md": "790222ac6a11c20ede5c9a52b047a50c72d2c5f4e3a8a8ea10d23d2168997ba9",
+    "contact-ownership-plan-2026-11-18.md": "72496a1104ae46eb9e751974318fd367a85f7f086daf05448f07fc7d2cbb25ac",
+    "contact-ownership-verification-2026-11-18.md": "2a064f8838b94776abe6181e6025b69fc73467623654d518133876bf7ede0576"
+  },
+  "helper_review": "bounded drafts and independent source/evidence review; lead inspected, ran, integrated; no helper engine execution; requested model settings are not runtime attestation",
+  "scope_limits": [
+    "quad direct transition, uncommitted prescribed frames",
+    "cars synthetic road/start, sampled RK stages, no standalone persisted replay",
+    "gear undeformed support reference and separate terrain projection, no finite-wheel geometry",
+    "no native parity, target-hardware performance, rendered dent or high-speed certification"
+  ]
+}

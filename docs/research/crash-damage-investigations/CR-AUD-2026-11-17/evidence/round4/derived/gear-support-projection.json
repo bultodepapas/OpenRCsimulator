@@ -1,0 +1,41 @@
+{
+  "classification": "derived_postprocessing_of_retained_run",
+  "scope": "Vertical terrain projection of nominal undeformed nose support point; no finite wheel or new engine test",
+  "tick": 24,
+  "nominal_point_ned_m": [
+    14.99931202772865,
+    -45.95583360096939,
+    0.02819157023706617
+  ],
+  "runway_amplitude_m": 0.001,
+  "terrain_height_up_m": 0.0005885585122797567,
+  "terrain_up_slopes": [
+    2.3520289544991463e-05,
+    0.004372242892185209
+  ],
+  "recorded_compression_m": 0.028779853657550043,
+  "derived_compression_m": 0.02877985365755007,
+  "compression_absolute_error_m": 2.7755575615628914e-17,
+  "vertical_projection_ned_m": [
+    14.99931202772865,
+    -45.95583360096939,
+    -0.0005885585122797567
+  ],
+  "projection_box_local_m": [
+    0.0001764796199258854,
+    -0.02205929285478286,
+    0.004250590305339358
+  ],
+  "projection_box_linf_gap_m": -0.027940707145217143,
+  "box_top_above_datum_m": 0.0285292656574969,
+  "box_top_above_local_terrain_m": 0.027940707145217143,
+  "observations_sha256": "bab5d1c9790c9e7eb29ad5acdaa6dcbeb1a9099d818df0f66b2e17305773c90a",
+  "source_sha256": {
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/ground_wheels.gd": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+    "app/sim/scenery_collision.gd": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/physics/ground_surfaces.gd": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+    "app/data/ground/surface_friction.json": "6eef216dc77e6e131388ba0646c6180a82b7ae2fe0b01aec604e4262c79180c1"
+  }
+}

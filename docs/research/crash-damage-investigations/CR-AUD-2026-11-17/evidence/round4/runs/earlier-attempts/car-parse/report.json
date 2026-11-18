@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a603402c-c1f5-497d-b53a-7e1da21136e2",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round4/drafts/probe_car_damage_region.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T20:56:48.010057+00:00",
+  "label": "car-damage-region",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round4/runs/car-damage-region-x1p9os7m/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round4/runs/car-damage-region-x1p9os7m/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND4_CAR_REGION_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"front_after\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round4/drafts/probe_car_damage_region.gd:330)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round4/drafts/probe_car_damage_region.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "ROUND4_CAR_REGION_COMPLETE"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.613952,
+  "log_bytes": 563,
+  "log_sha256": "c4535cf2c0a45e620e7332faa958a1d9b06df8a50569c252b9de299fc5cb699d"
+}
