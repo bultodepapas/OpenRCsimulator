@@ -1,0 +1,226 @@
+{
+  "format": "openrc-collision-audit-round3-provenance-v1",
+  "date": "2026-11-18",
+  "timezone": "America/Bogota",
+  "branch": "audit/collision-damage-2026-11-17",
+  "base_commit": "82e715cbe9c8254888c3bc1f7edad739ba4355c9",
+  "application_baseline": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "source_trees": {
+    "a7de9b35676d891bc2034cc344b910d9e1ef9c61": {
+      "app": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+      "assets": "3ed558d2a5f37ae24e784436c9def5841d7382ad",
+      "tools": "95d35ed671a2a32919ffadc13036c66e240ab2ec"
+    },
+    "82e715cbe9c8254888c3bc1f7edad739ba4355c9": {
+      "app": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+      "assets": "3ed558d2a5f37ae24e784436c9def5841d7382ad",
+      "tools": "95d35ed671a2a32919ffadc13036c66e240ab2ec"
+    }
+  },
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "runtime": "headless Linux x86_64; checked runner; isolated XDG profiles; sequential engine jobs",
+  "helper_policy": "Previously created bounded helpers reused under repository policy; helpers supplied drafts/read-only review; lead inspected, ran, and integrated. Requested model settings are not runtime attestation.",
+  "product_probe_totals": {
+    "probes": 4,
+    "checks": 73,
+    "passes": 67,
+    "desired_behavior_failures": 6,
+    "checked_errors": 0,
+    "checked_warnings": 0
+  },
+  "prior_attempts_excluded": 4,
+  "new_existing_suite_runs": 0,
+  "runtime_fixes": false,
+  "runs": [
+    {
+      "path": "runs/probes/quad-prop-strike-energy",
+      "source_run": "quad-prop-strike-energy-hq2ixnly",
+      "classification": "product_probe",
+      "finding": "CR-AUD-21",
+      "probe": "probes/probe_quad_prop_strike_energy.gd",
+      "probe_sha256": "27ddb64229c19f1e4b0a0f94e4efbaa3818abf2a130d792acd95f7324d20d34f",
+      "checks": 16,
+      "reported_failures": 1,
+      "desired_behavior_failures": 1,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 3.613194,
+      "log_sha256": "966f8b3c2de3c75f20dff72623b6a985bf11568fbf39312e8b21d3bc5e0aaf2c"
+    },
+    {
+      "path": "runs/probes/airship-collision-recording",
+      "source_run": "airship-collision-recording-v1-cm0t0igs",
+      "classification": "product_probe",
+      "finding": "CR-AUD-22",
+      "probe": "probes/probe_airship_collision_recording.gd",
+      "probe_sha256": "484ba589dfda7523cb124dea02e4127d93dd5227746c67e0b4dba904b891e490",
+      "checks": 29,
+      "reported_failures": 2,
+      "desired_behavior_failures": 2,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 4.556814,
+      "log_sha256": "0bbb2eba203b656634eec7bb4b4c460bb089661b8db774c39bf81d508f622d93"
+    },
+    {
+      "path": "runs/probes/slow-capsule-entry",
+      "source_run": "slow-capsule-entry-cs03o7qv",
+      "classification": "product_probe",
+      "finding": "CR-AUD-23",
+      "probe": "probes/probe_slow_capsule_entry.gd",
+      "probe_sha256": "e69fa8ffa769e146cc9f1a9f9408eebe8bcbe7dbb8aeba18bf989813f14bb8d3",
+      "checks": 12,
+      "reported_failures": 2,
+      "desired_behavior_failures": 2,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 4.878798,
+      "log_sha256": "dad56d8517873b08155755c81e780b206aa3d80dc2c53648a1efdb4b1f3cb99b"
+    },
+    {
+      "path": "runs/probes/prop-bank-rim",
+      "source_run": "prop-bank-rim-v3-_x9wciet",
+      "classification": "product_probe",
+      "finding": "CR-AUD-24",
+      "probe": "probes/probe_prop_bank_rim.gd",
+      "probe_sha256": "973851af9379f0a1b727e82d42a76f581639b3696a94b4e7b72598ca26524d36",
+      "checks": 16,
+      "reported_failures": 1,
+      "desired_behavior_failures": 1,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 5.114423,
+      "log_sha256": "e07fdf54d5544a5300bb4536a89e3173ce6393d58498886b812080d263c0c2ff"
+    },
+    {
+      "path": "runs/earlier-attempts/airship-parse",
+      "source_run": "airship-collision-recording-_or11t2l",
+      "classification": "authoring_error",
+      "finding": null,
+      "probe": "probe-revisions/airship-recording-v0-invalid-constant.gd",
+      "probe_sha256": "4fbe25edaf974de6201b0bbf0d5b9126b04da601a6ae700d1ceb582586a5811b",
+      "checks": null,
+      "reported_failures": null,
+      "desired_behavior_failures": null,
+      "complete": true,
+      "checked_counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 0.646664,
+      "log_sha256": "961322000159747d2f59f65ea77301c98265766d477e0e4ab39aada23b2526c2"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-legacy-guard",
+      "source_run": "prop-bank-rim-b_74vghq",
+      "classification": "fixture_inconclusive",
+      "finding": null,
+      "probe": "probe-revisions/prop-bank-rim-v0-legacy-hard-guard.gd",
+      "probe_sha256": "467745131e692765da13b744669edc6cd8bc947efa97c1e822c56572de6b6556",
+      "checks": 15,
+      "reported_failures": 4,
+      "desired_behavior_failures": null,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 5.731162,
+      "log_sha256": "3a14287610d3bd918f11a5772b6b1e3bb35661e50bfa0e6fe7ba2895abb2faba"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-initial-overlap",
+      "source_run": "prop-bank-rim-v1-64ah6t36",
+      "classification": "fixture_inconclusive",
+      "finding": null,
+      "probe": "probe-revisions/prop-bank-rim-v1-initial-overlap.gd",
+      "probe_sha256": "8d56ddb259434e5229d16b07900885c6497b47921862ac7392fec0cf9513cad8",
+      "checks": 16,
+      "reported_failures": 1,
+      "desired_behavior_failures": null,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 4.940009,
+      "log_sha256": "1569d0e999d257c71581854c32619d69e499ce3e7b3fb6626bf26a7cbd3a9892"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-mislabeled-roll",
+      "source_run": "prop-bank-rim-v2-iuer38xf",
+      "classification": "superseded_metadata",
+      "finding": null,
+      "probe": "probe-revisions/prop-bank-rim-v2-mislabeled-roll.gd",
+      "probe_sha256": "d8e11896e26be25d89d99bc93b0b0ea6bd857d459339dd3f34b53863672fe26b",
+      "checks": 16,
+      "reported_failures": 1,
+      "desired_behavior_failures": null,
+      "complete": true,
+      "checked_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checked_exit_code": 1,
+      "elapsed_seconds": 4.790986,
+      "log_sha256": "59e8b7ba03ec24f75d7daf9de4b061f6695357f6e4e49c77c3c2f4975292f2da"
+    }
+  ],
+  "documents_sha256": {
+    "README.md": "26178567b977da3aa58c6fecaf415e155d5438753b7536680894324d26769835",
+    "edge-cases-2026-11-18.md": "898b72e665e302b0f0bce66b36c73c13b2b5bb184c7e29701c11aae7e1fc56b6",
+    "edge-case-plan-2026-11-18.md": "ee2693bc866555275d5edf7fce3efda3a181ae27344d067cb04bb1cbfe8fc987",
+    "edge-case-verification-2026-11-18.md": "c1afa81bdf6e928fa4c0368272da3d7145531f26de0d460c0e1a0a7326bbacac"
+  },
+  "packaging_validation": {
+    "raw_log_hashes_and_bytes_match": true,
+    "observation_json_matches_logs": true,
+    "final_scripts_and_revisions_match_executed_drafts": true,
+    "recording_copies_match": true,
+    "bank_v2_v3_numerical_samples_identical": true,
+    "slow_world_no_world_120_tick_histories_identical": true,
+    "launcher_syntax_and_list_checked": true,
+    "launcher_root_and_marker_paths_checked": true,
+    "launcher_all_probes_reexecuted": false,
+    "pinned_source_links_checked": 22,
+    "local_document_links_checked": 54
+  },
+  "limitations": [
+    "Direct quad contact function is not an accepted tick",
+    "Airship world change is public API only, not observed UI flow",
+    "Hard-capsule fixture has submicron initial clearance and prescribed body-only loads",
+    "Bank finite samples prove positive overlap, not global initial clearance or later detection",
+    "No new native parity, target-hardware performance, rendered capture, physical calibration or 300 km/h full-flight certification"
+  ],
+  "publication_history": [
+    {
+      "state": "historical_interrupted_upload_at_close_of_prior_session",
+      "core_local_commit": "b56640c8e93e1086c3ef2964bb8c5389ca1986b3",
+      "last_verified_remote_head": "82e715cbe9c8254888c3bc1f7edad739ba4355c9",
+      "remote_branch_advanced": false,
+      "remote_tree_match_gate": "pending",
+      "portable_bundle": "incremental, requires the existing remote-head ancestor",
+      "scope": "Historical delivery state; not the current remote branch status."
+    }
+  ]
+}

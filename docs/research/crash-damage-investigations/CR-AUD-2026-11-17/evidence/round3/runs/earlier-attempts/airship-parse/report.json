@@ -1,0 +1,63 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "844eba48-b9ec-485b-abea-e2aa60662d7f",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/drafts/probe_airship_collision_recording.gd",
+    "--",
+    "--out=/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/airship-recordings-v0"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T15:16:26.249835+00:00",
+  "label": "airship-collision-recording",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/runs/airship-collision-recording-_or11t2l/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/runs/airship-collision-recording-_or11t2l/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND3_AIRSHIP_COLLISION_RECORDING_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Assigned value for constant \"NEUTRAL\" isn't a constant expression.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/drafts/probe_airship_collision_recording.gd:19)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round3/drafts/probe_airship_collision_recording.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "ROUND3_AIRSHIP_COLLISION_RECORDING_COMPLETE"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.646664,
+  "log_bytes": 558,
+  "log_sha256": "961322000159747d2f59f65ea77301c98265766d477e0e4ab39aada23b2526c2"
+}

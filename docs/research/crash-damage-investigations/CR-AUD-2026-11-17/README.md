@@ -5,7 +5,9 @@
 **Audit branch:** `audit/collision-damage-2026-11-17`.
 **Deliverable:** source audit, reproducible counterexamples, verification record, and a staged improvement plan. This branch does not change application physics or re-record flight goldens.
 
-**18 November continuation:** the [second code investigation](deep-dive-2026-11-18.md) adds **CR-AUD-16 through CR-AUD-20**, with five new executed probes covering delayed rotor reference frames, quad checkpoint consistency, mixed ground/scenery arbitration, persisted crash-pause metadata, and terminal quad obstacle aftermath. Its [verification](deep-dive-verification-2026-11-18.md) and [implementation plan](deep-dive-plan-2026-11-18.md) are separate from the original campaign below. The package now has twenty scoped records; the dated assessment and counts below remain the first investigation's record.
+**18 November continuation:** the [second code investigation](deep-dive-2026-11-18.md) adds **CR-AUD-16 through CR-AUD-20**, with five new executed probes covering delayed rotor reference frames, quad checkpoint consistency, mixed ground/scenery arbitration, persisted crash-pause metadata, and terminal quad obstacle aftermath. Its [verification](deep-dive-verification-2026-11-18.md) and [implementation plan](deep-dive-plan-2026-11-18.md) are separate from the original campaign below. That continuation brought the package to twenty scoped records; the dated assessment and counts below remain the first investigation's record.
+
+**18 November third investigation:** [energy, collision identity, and geometric boundaries](edge-cases-2026-11-18.md) adds **CR-AUD-21 through CR-AUD-24**. Four final probes contain **73 checks, 67 passes and six desired-behavior failures**, with zero checked engine diagnostics. The new records concern quad prop-contact passivity, airship recording identity, a submicron hard-capsule entry, and a small powered-prop rim penetration on a dry bank. The [plan](edge-case-plan-2026-11-18.md) and [verification](edge-case-verification-2026-11-18.md) state their different evidence boundaries. There are now **24 scoped records**, including the earlier capability gaps and stale test assertion; this is not a count of 24 end-to-end flown regressions.
 
 ## Assessment
 
@@ -29,6 +31,9 @@ The audit covers all **13 Home-selectable vehicle IDs**: eight fixed-wing aircra
 | [18 November deep dive](deep-dive-2026-11-18.md) | Five additional evidence-backed findings, adversarial review, and leads deliberately not promoted |
 | [Continuation verification](deep-dive-verification-2026-11-18.md) | Five new probes, 163 checks, 23 desired-behavior failures, one passing 33-check existing control, and retained unsuccessful attempts |
 | [Continuation plan](deep-dive-plan-2026-11-18.md) | Five focused implementation slices with ownership, regression gates, and remaining research |
+| [Third investigation](edge-cases-2026-11-18.md) | Four additional findings with numerical measurements, controls, source anchors and scope limits |
+| [Third-investigation plan](edge-case-plan-2026-11-18.md) | Coupled contact energy, atomic recording boundaries, geometry tolerances and disc/terrain coverage |
+| [Third-investigation verification](edge-case-verification-2026-11-18.md) | Four final probes, three real recordings, four retained earlier revisions and exact reproduction instructions |
 
 ## Findings that should drive the next work
 

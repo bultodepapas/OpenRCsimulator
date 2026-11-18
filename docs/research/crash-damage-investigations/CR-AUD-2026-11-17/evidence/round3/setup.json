@@ -1,0 +1,9 @@
+{
+  "source_commit": "82e715cbe9c8254888c3bc1f7edad739ba4355c9",
+  "application_baseline": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "testpool_config_present": false,
+  "imports_retained_from_round2": true,
+  "graph_and_sim_test_mcp_available": false
+}
