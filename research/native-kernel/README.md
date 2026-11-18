@@ -15,10 +15,14 @@ defines the supported Linux scope and separates backend qualification from displ
 
 The scalar Apple Clang port uses the existing evaluator ABI and float64 state.
 It is a fixed-wing source experiment, with separate source and package receipts;
-the Linux fleet qualification does not transfer to Mac. The automatic source-editor
-route is implemented but requires a matching default-admission marker. Without it,
-or when the selected flight is outside its admitted rows, the session retains the
-reference evaluator. The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
+the Linux fleet qualification does not transfer to Mac. Since the
+[2026-11-16 decision](../../docs/DECISIONS.md#default-to-native-physics-on-supported-apple-silicon-flights)
+the automatic source-editor route needs no admission marker: an ordinary ARM64
+flight inside the screened stock domain (`app/sim/native_macos_domain.gd`) runs
+native, and any other selection retains the reference evaluator. A collision-world
+change requires renewing that domain
+([DT-MAC-04n-R1](../../docs/plans/apple-silicon-performance.md#dt-mac-04n-r1--keep-the-mac-native-default-after-world-changes)).
+The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
 describes earlier candidates, not qualification of the current source.
 The [source-default ledger](../../docs/research/native-kernel/DT-MAC-04n4/README.md)
 records the November 14 adoption on the qualified M1, its actual installed
@@ -31,7 +35,7 @@ route. Companion-enabled automatic sessions retain reference. These choices
 freeze before session setup, and the normal `--physics-backend=gdscript_reference`
 override remains available.
 
-The marker binds the exact installed receipt, binary, sources, domain guard,
+The optional marker, no longer an admission prerequisite, binds the exact installed receipt, binary, sources, domain guard,
 Godot executable, macOS version/build, Apple M1 CPU and `MacBookAir10,1` model.
 The observed test host used macOS 27.0.1 (`26A434`) and official Godot
 `4.8.beta2.official.cafc17a19`; a different binary or OS is not covered by that

@@ -557,17 +557,13 @@ Home/replay technical controls used headless/Dummy with scenery audio disabled;
 audio-enabled shutdown retains four audio objects with both evaluated backends
 and remains open.
 
-**Open blocker, 2026-11-18:** DR-19e (`3c91936ab`) changed the stock collision world
-(round-bale core boxes, stepped pit-shelter roof). `app/sim/native_macos_domain.gd`
-still pins the screened world (`STOCK_WORLD`, 6,092 proxies), so the guarded Mac
-native default refuses the current world and Macs run the reference backend. CI's
-`test_macos_domain_guard.gd` reports "stock collision identity and proxy count match
-the screened world" as failed. Re-screening the new world on the M1 belongs to this
-track. Renewing the pins changes `app/sim`, which also requires companion re-binding
-and native requalification. The Linux fleet pins were renewed separately
-([NK-3 evidence](../research/native-kernel/NK-3/fleet-collision-world-2026-11-18/README.md)). Source-editor physics adoption on this M1 does not qualify
-public signed distribution, physical display/control acceptance, broad Apple
-hardware, energy savings or a stable complete-product performance gain.
+**2026-11-18 regression and repair:** DR-19e (`3c91936ab`) changed the stock collision
+world, so the guarded Mac default refused every ordinary flight and silently ran the
+reference evaluator. [DT-MAC-04n-R1](#dt-mac-04n-r1--keep-the-mac-native-default-after-world-changes)
+renews the domain and adds the gates that would have caught it. Source-editor physics
+adoption on this M1 does not qualify public signed distribution, physical
+display/control acceptance, broad Apple hardware, energy savings or a stable
+complete-product performance gain.
 
 The [2026-11-13 gap audit](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md#16-plan-gap-and-performance-audit--2026-11-13)
 retains the historical work order. The linked source-default ledger distinguishes
@@ -575,6 +571,67 @@ completed implementation from the remaining product and distribution gates.
 Source-editor performance work is independent of deferred public distribution.
 
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
+
+### DT-MAC-04n-R1 — keep the Mac native default after world changes
+
+**Status, 2026-11-18:** source repair and gates implemented; the hosted Mac CI
+result and physical-M1 confirmation are recorded in the
+[R1 evidence](../research/native-kernel/DT-MAC-04n-R1/README.md). Scenery and
+collision owners trigger this procedure; this track owns the Mac pins.
+
+**Cause.** `app/sim/native_macos_domain.gd` pins the macOS ARM64 identity and
+proxy count of the stock collision world. Automatic admission refuses any other
+world and the flight silently keeps the reference evaluator. The identity hashes
+trigonometric results, so **each platform computes a different value**: the old
+world was `8c49e456…` on Windows and `ea0bdec4…` on the Mac. Never copy a
+Linux or Windows identity into the Mac pin.
+
+**Renewal procedure** after any change to collision geometry, scenery layout,
+field lights or their builders:
+
+1. `app/tests/test_native_macos_domain_world.gd` fails on Linux and Windows. It
+   pins the proxy count and a portable quantized geometry fingerprint; its
+   `STOCK_WORLD_PORTABLE` line prints the new values.
+2. Take the Mac identity from the required `native-kernel-macos` job. In the
+   `native-macos-correctness-<run>` artifact, `logs/domain-guard.log` prints
+   `MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC` with `world_identity` and `proxies`, even
+   when the pin check fails. The hosted virtual M1 reproduced the physical M1's
+   old value. A macOS or engine update can also change the identity; the same
+   job reports it.
+3. Update `STOCK_WORLD`, `STOCK_WORLD_PROXIES` and the test's fingerprint in one
+   commit. `research/native-kernel/macos_diagnostics.py` reads the pins from the
+   GDScript source.
+4. The edit changes `app/sim`: run `tools/companions/rebind.py --accept` after
+   committing and commit its three outputs.
+5. Required CI rebuilds the Linux, Windows and Mac native receipts. The Mac job
+   ends with the no-flag default route: `research/native-kernel/test_macos_default.gd`
+   must own and execute the installed stage. Local native installs become stale;
+   requalify them with the [native kernel guide](../../research/native-kernel/README.md).
+6. Record the identities, CI run and rebind receipt in the R1 evidence.
+
+**Gates.** The portable test fails first, on every platform's unit roster. The
+required Mac job fails twice: the domain guard rejects a stale pin, and the
+default route fails when an ordinary flight does not execute native.
+Pause shows `Physics: native`, or `Physics: compatibility…` with the
+technical reason, whenever native was requested; an explicit reference choice
+shows nothing.
+
+**Not covered by R1:**
+
+- Companion flights. `main.gd` still disables automatic Mac admission when
+  companions are enabled, and agents run the reference evaluator. Native player
+  flights with companions need their own interaction qualification.
+- Public Mac package. `app/export.sh` ships the reference-only Mac archive.
+  Native package delivery, the marker-independent `macos_package_default_probe.py
+  --default-only` gate and Developer ID distribution remain under DT-MAC-04n4.
+- Fleet. The production-profile Mac fleet was not re-run on the renewed world.
+  Rows that `screen()` already refuses stay refused.
+- Intel/Rosetta, helicopter, Creator/custom aircraft and RC terrain keep the
+  reference evaluator by design.
+
+**Exit:** the hosted Mac job passes the domain guard and default route on the
+renewed world, and a physical M1 runs the same default-route test. Companion and
+package coverage keep their own exits.
 
 ### DT-MAC-04n1 — math/toolchain feasibility, outside app
 

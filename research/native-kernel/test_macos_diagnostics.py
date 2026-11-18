@@ -36,7 +36,8 @@ def domain_guard_log():
     controls = ["MACOS_DOMAIN_RESIZE " + json.dumps({"kind": kind, "alias_resized": True,
                                                       "live_changed": True})
                 for kind in ("byte", "int32", "int64", "float32", "float64")]
-    profile = {"scope": diag.DOMAIN_GUARD_PROFILE_SCOPE, "world_identity": "a" * 64, "proxies": 6092,
+    identity, proxies = diag.screened_world()
+    profile = {"scope": diag.DOMAIN_GUARD_PROFILE_SCOPE, "world_identity": identity, "proxies": proxies,
                "warmup_calls": 16, "calls": 2400, "elapsed_usec": 12000, "mean_usec": 5.0,
                "all_match": True, "nodes": 10, "packed_leaves": 3, "packed_bytes": 40,
                "cpu": "Apple M1", "model": "MacBookAir10,1"}
@@ -60,7 +61,11 @@ class DiagnosticPolicyTests(unittest.TestCase):
         self.assertEqual(result["stock_profile"]["calls"], 2400)
         self.assertIn("not a performance", result["scope"])
         lines = log.splitlines()
+        identity, proxies = diag.screened_world()
         malformed = [
+            # A guard measured over any other world, such as a stale pin, is not the screened profile.
+            log.replace(identity, "0" * 64),
+            log.replace(f'"proxies": {proxies}', f'"proxies": {proxies - 1}'),
             log.replace("checks=72", "checks=71"),
             log.replace("verdict=pass", "verdict=fail"),
             log + lines[-1] + "\n",
@@ -86,6 +91,24 @@ class DiagnosticPolicyTests(unittest.TestCase):
                        {**passed_checked(), "complete": False}):
             with self.subTest(report=report), self.assertRaises(ValueError):
                 diag.domain_guard_result(report, log)
+
+    def test_screened_world_has_one_source(self):
+        identity, proxies = diag.screened_world()
+        self.assertRegex(identity, r"^[0-9a-f]{64}$")
+        self.assertGreater(proxies, 0)
+        text = diag.DOMAIN_SOURCE.read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "native_macos_domain.gd"
+            for broken in (text.replace("const STOCK_WORLD_PROXIES :=", "const OLD_PROXIES :="),
+                           text.replace(identity, identity[:63]),
+                           text + f'const STOCK_WORLD := "{"0" * 64}"\n'):
+                source.write_text(broken, encoding="utf-8")
+                with self.subTest(broken=broken[-80:]), self.assertRaises(ValueError):
+                    diag.screened_world(source)
+            # The guard log is judged against the domain source it is given, not a copied constant.
+            source.write_text(text.replace(identity, "1" * 64), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                diag.domain_guard_result(passed_checked(), domain_guard_log(), source)
 
     def test_domain_guard_requires_all_three_base_oracles(self):
         args = SimpleNamespace(timeout=60, states=1, variant_states=1, script=["stage_oracle.gd"], domain_guard=True)

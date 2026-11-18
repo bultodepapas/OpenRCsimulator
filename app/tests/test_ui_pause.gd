@@ -123,6 +123,11 @@ func _run() -> void:
 	app._apply_presentation(default_presentation)
 	await ui.settle()
 	_check("Esc opens the pause menu, focus on Continue", app.pause_menu != null and ui.focus_name() == "Continue", ui.focus_name())
+	# DT-MAC-04n-R1: the real flight requests native physics, so Pause names the evaluator that actually runs.
+	_check("Pause names this flight's physics evaluator", app.pause_menu.physics_label.visible
+		and app.pause_menu.physics_label.text.begins_with("Physics: ")
+		and app.pause_menu.physics_label.text == app.pause_menu.physics_backend_text(session),
+		app.pause_menu.physics_label.text)
 	_check("secondary Pause actions use the quiet treatment",
 		app.pause_menu.restart_button.theme_type_variation == "QuietButton"
 		and app.pause_menu.settings_button.theme_type_variation == "QuietButton"

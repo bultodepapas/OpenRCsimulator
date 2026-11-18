@@ -12,9 +12,11 @@ const Scenery := preload("res://scenery/scenery.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 const NativeWeather := preload("res://sim/native/native_weather.gd")
 
-const STOCK_WORLD := "ea0bdec4c9ae6307f0c6a1cac39c89c950526ef4288556169b36a283335e1048"
+## macOS ARM64 identity of the stock collision world; each platform computes a different value.
+## Renewal: docs/plans/apple-silicon-performance.md (DT-MAC-04n-R1); tests/test_native_macos_domain_world.gd.
+const STOCK_WORLD := "4077c4fd3e1d78ef8bb2d612c7206bc397c06df8261b69c3d6b3ca23a8e12d55"
 const STOCK_LAKE := "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa"
-const STOCK_WORLD_PROXIES := 6092
+const STOCK_WORLD_PROXIES := 6139
 const MAX_CONTEXT_BYTES := 64 * 1024 * 1024
 const MAX_START_FIELDS := 64
 const MAX_START_BYTES := 8 * 1024

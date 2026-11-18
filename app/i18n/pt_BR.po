@@ -585,6 +585,15 @@ msgstr "Encerrar voo"
 msgid "This flight cannot continue: %s"
 msgstr "Este voo não pode continuar: %s"
 
+msgid "Physics: native"
+msgstr "Física: nativa"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "Física: compatibilidade. A física nativa não está ativa."
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "Física: compatibilidade. A física nativa não está ativa: %s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr ""
 "Houve uma queda. O voo será reiniciado automaticamente quando você "
