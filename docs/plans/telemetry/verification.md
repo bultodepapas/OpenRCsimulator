@@ -1,6 +1,6 @@
 # Telemetry verification and release gates
 
-Status: only offline contract/prototype checks have run; [actual evidence](../../research/telemetry/TELEM-00/verification.md).
+Status: offline contract checks ([TELEM-00 evidence](../../research/telemetry/TELEM-00/verification.md)) and the client/receiver implementation tests ([TELEM-02 evidence](../../research/telemetry/TELEM-02/README.md)) have run; native, network, hardware and operations checks below remain pending.
 The [follow-up evidence](../../research/telemetry/TELEM-00-R1/verification.md) records added generative/publication checks and their independent review.
 Production UI, packets, exported Godot behavior, database, provider retention, GitHub publishing and hardware performance remain unqualified.
 

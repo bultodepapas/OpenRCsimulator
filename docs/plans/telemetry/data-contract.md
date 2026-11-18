@@ -1,6 +1,6 @@
 # Data, measurement and retention contract
 
-Status: proposed v1. [Schema source](../../../research/telemetry/generate_contracts.py), [generated batch schema](../../../research/telemetry/contracts/batch.schema.json), [synthetic example](../../../research/telemetry/examples/batch.json).
+Status: v1, implemented by [app/telemetry](../../../app/telemetry/) and [services/telemetry](../../../services/telemetry/README.md); not yet active in any build. [Schema source](../../../research/telemetry/generate_contracts.py), [generated batch schema](../../../research/telemetry/contracts/batch.schema.json), [synthetic example](../../../research/telemetry/examples/batch.json).
 Every object is closed. Unknown fields are rejected, not stored for later inspection.
 This document specifies production intent; the [starter](../../../research/telemetry/README.md) lists what its offline model actually covers.
 

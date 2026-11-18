@@ -22,11 +22,11 @@ Godot 4.8-beta2 (`.tools/Godot_v4.8-beta2_win64_console.exe`), headless, run dir
 | `test_telemetry_contract.gd` | 92 checks: schema parity (enums, keys, release pattern, stock vehicles incl. every Home-selectable vehicle), client batch encodes byte-equal to the generated example, rejections, classifiers, windows |
 | `test_telemetry_admission.gd` | 75 checks: policy truth table incl. mistyped facts, route predicate, release gate, endpoint rules, consent file incl. a failed decline leaving no grant |
 | `test_telemetry_queue.gd` | 37 checks: bounds, TTL, cadence, budget, 5/10/20/40/80 s backoff, Retry-After, status outcomes, stale answers |
-| `test_telemetry_service.gd` | 37 checks: nothing before Enable, windows, sealing, sending, errors, activities, off switch and generation fence, locale gate, 410 suspension, session rotation, failed decline |
+| `test_telemetry_service.gd` | 38 checks: nothing before Enable, windows, sealing, sending, errors, activities, off switch and generation fence, locale gate, 410 suspension, session rotation, failed decline |
 | `test_telemetry_sender.gd` | 18 checks against a loopback collector: exact body and headers, 429 Retry-After, refused redirect, silent peer timeout, silent cancel, refused connection |
-| `test_telemetry_app.gd` | 31 checks through the real AppRoot: development run unavailable, notice once, neutral focus, Esc declines and is remembered, Settings switch, preview, German/Spanish gate, Enable button, batch accepted by a collector, a real flight with stock vehicle, simulated clock, accepted classifier and returned-home summary |
+| `test_telemetry_app.gd` | 33 checks through the real AppRoot: development run unavailable, notice once, neutral focus, Esc declines and is remembered, Settings switch, preview, German/Spanish gate, Enable button, batch accepted by a collector, a real flight with stock vehicle, simulated clock, accepted classifier and returned-home summary |
 | Existing UI tests | `test_ui_language` 104 (catalog completeness, formats, glyphs), `test_settings_ui` 113, `test_ui_settings_integration` 51, `test_ui_update_notice` 46, `test_ui_home` 333, `test_ui_home_layout` 2916, `test_startup_loading` 51, `test_ui_home_rebuild` 22 |
-| Receiver suite | 103 tests incl. reference equivalence and the Godot client end to end (`OPENRC_GODOT` set): batches stored once, no CPU/GPU names, paths or user strings in stored bodies |
+| Receiver suite | 106 tests incl. reference equivalence and the Godot client end to end (`OPENRC_GODOT` set): batches stored once, no CPU/GPU names, paths or user strings in stored bodies |
 | Research suite | 124 tests; both generator checks match |
 
 Not run here: the receiver container (Docker is not running on this host; the [contracts workflow](../../../../.github/workflows/telemetry-contracts.yml) builds and smoke-tests it), the full `app/test.sh`, captures, native platforms, rendered/assistive-technology review, TLS against a real endpoint, real GitHub publication.
@@ -51,3 +51,20 @@ Retained as documented limits: the release gate trusts the build identity writte
 ## Earlier fixes found by the tests
 
 The contract test caught a release pattern that accepted a trailing newline (`$` versus `(?![\s\S])`); the service test caught a placeholder `seq` overwriting the session number (the local check dropped the batch instead of sending it); the end-to-end test showed zero-length intervals counted as drops. All three were fixed before review.
+
+## Post-merge audit, 2026-11-18
+
+Hosted CI on the first push showed two integration problems; a lead self-audit and a third independent review (receiver rollup/report/publisher, not read in depth before) found more. All fixed and tested:
+
+| Finding | Fix and proof |
+| --- | --- |
+| `app/app_root.gd` is pinned by the AI-companion behavior manifest; the edit made companion profiles refuse to load (7 of 8 hosted unit shards) | AFC-02 pin renewal (the other track's commit, cherry-picked); renewed again with the audit edit. `test_companions_profiles` 95, `_behavior_manifest` 39, `_airspace` 48, `_external_rejection` 63 |
+| The two Settings telemetry buttons did not fit Spanish at 200 % text or Russian at 960 px (`test_ui_modal_responsive`, which the first battery missed) | One row sharing the width, wrapping inside each button: 3,030 responsive cases, 0 failures; `test_settings_ui` 113 (Interface page still fits 1080p without scrolling) |
+| Each seal or send rewrote the Home note and cleared other notices (launch failures, save/browser errors) | The telemetry status only takes a free note line or replaces its own previous text; tested through AppRoot |
+| Workshop editing was measured as Home, and a "workshop" mode would have become a vehicle activity | Explicit `activity` context flag: Workshop editing is mode `workshop` with no vehicle and no summary (tested) |
+| Stored vehicle rows were not re-validated at publication | Floor, bounds, stock id and non-empty check at the report boundary; four bypass cases tested |
+| A long purge interval could delete raw rows before their day's rollup deadline | Interval limited to 30–1800 s (purge stays after 47 h; tested) |
+| A week could be approved before Sunday was rolled up, then change | Publication waits until Sunday + 47 h |
+| The vehicle cohort floor could be lowered by a direct call; an empty release allowlist published anything | `cohort_floor` refusal; empty allowlist publishes nothing (tested) |
+
+Pre-existing failures on main before this track's runtime code (also present on the docs-only merge `054489491`): an H6 math-guard violation in `app/physics/event_step.gd` (servo work, 2026-11-16), shared-capacity simulation/checkpoint and weather-fixture unit failures, and NK-3 macOS. They belong to their owning tracks.
