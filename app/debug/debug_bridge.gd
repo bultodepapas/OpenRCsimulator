@@ -12,6 +12,7 @@
 extends Node
 
 const DebugLog := preload("res://debug/debug_log.gd")
+const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const ViewportColor := preload("res://render/viewport_color.gd")
 const Spec := preload("res://spec.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -70,6 +71,7 @@ const COMMANDS := {
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
 	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
 	"render": "frames=<n> measure=<bool>: GPU/CPU render ms (root + SubViewports), draw calls per pass, bound-by verdict, render config",
+	"graphics_auto": "automatic graphics decision report: detected GPU/display/RAM/CPU, what Automatic decides and why, saved mode, calibration",
 	"layers": "depth=<n> root=<path>: 3D scene census (geometry, MultiMesh instances, shadow casters, lights per node)",
 	"ablate": "targets=[paths|@flags] depth=<n> frames=<n> warmup=<n> freeze=<bool>: switch each off, measure, restore; GPU ms ranking",
 	"viewmode": "name=normal|unshaded|wireframe|overdraw|lighting|...: viewport debug draw (no name: current and list)",
@@ -2107,6 +2109,11 @@ func _observe() -> void:
 # ---- helpers --------------------------------------------------------------------------------------------------
 
 # ---- render cost and rewind (PT1h-R9) --------------------------------------------------------------------------
+
+## VQ-07h-A0: the same report AppRoot logs at launch (render/auto_graphics_report.gd).
+func _cmd_graphics_auto(_request: Dictionary) -> Dictionary:
+	return _ok(AutoGraphicsReport.runtime())
+
 
 func _cmd_render(request: Dictionary) -> Dictionary:
 	if _ablation != null and request.has("measure"):

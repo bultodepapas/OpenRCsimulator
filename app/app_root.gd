@@ -49,6 +49,7 @@ const WorldResourceHold := preload("res://render/world/world_resource_hold.gd")
 const GpuCapability := preload("res://render/gpu_capability.gd")
 const AutoCalibration := preload("res://render/auto_calibration.gd")
 const FrameDiagnostics := preload("res://render/frame_diagnostics.gd")
+const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -415,6 +416,11 @@ func _ready() -> void:
 	display_preferences = DisplayPreferences.new(display_path)
 	if fresh_install and not DisplayPreferences.first_run_defaults.is_empty() and display_preferences.save(display_preferences.config) != OK:
 		push_warning("Could not store the recommended display settings; they apply to this session only.")
+	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
+	if DisplayServer.get_name() != "headless":
+		var report := AutoGraphicsReport.runtime()
+		print("Graphics auto: %s → %s · %s" % [report.inputs.adapter, AutoGraphicsReport.compact(report.decisions),
+			JSON.stringify(report.decisions.reasons)])
 	menu_audio = MenuSounds.attach(self, func() -> Control:
 		return ScreenStack._surface(screens.top()) if screens.top() != null else null)
 	screens.surface_opened.connect(func(surface: Control, id: String, feedback: bool) -> void:

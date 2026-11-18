@@ -123,6 +123,8 @@ def main() -> int:
     parser.add_argument("--seconds", type=float, default=8.0)
     parser.add_argument("--timeout", type=float, default=900.0)
     args = parser.parse_args()
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace") # Windows consoles default to cp1252
     if args.out.exists():
         parser.error("--out must be a new directory")
     args.out.mkdir(parents=True)

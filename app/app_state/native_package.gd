@@ -4,6 +4,7 @@
 extends RefCounted
 
 const MANIFEST_PATH := "res://native/kernel/package.json"
+const WINDOWS_MANIFEST_PATH := "res://native/kernel/package-windows.json"
 const MANIFEST_FORMAT := "openrc-native-kernel-package v1"
 const ARTIFACT_FORMAT := "openrc-native-kernel-package-artifact v1"
 const RELATIVE_DIRECTORY := "native/kernel"
@@ -24,22 +25,34 @@ static func directory() -> String:
 	return OS.get_executable_path().get_base_dir().path_join(RELATIVE_DIRECTORY)
 
 
+## The package platform of this release template: "linux", "windows" (NK-4, owner decision 2026-11-18) or "".
+static func platform() -> String:
+	if not OS.has_feature("template_release") or Engine.get_architecture_name() != "x86_64":
+		return ""
+	return {"Linux": "linux", "Windows": "windows"}.get(OS.get_name(), "")
+
+
+static func manifest_path(package_platform: String) -> String:
+	return WINDOWS_MANIFEST_PATH if package_platform == "windows" else MANIFEST_PATH
+
+
 static func _inspect() -> Dictionary:
-	if not OS.has_feature("template_release") or OS.get_name() != "Linux" or Engine.get_architecture_name() != "x86_64":
-		return _refuse("native package requires the Linux x86_64 release template")
-	var manifest := _read_object(MANIFEST_PATH)
-	if manifest.get("format") != MANIFEST_FORMAT or manifest.get("platform") != "linux" \
+	var package_platform := platform()
+	if package_platform.is_empty():
+		return _refuse("native package requires the Linux or Windows x86_64 release template")
+	var manifest := _read_object(manifest_path(package_platform))
+	if manifest.get("format") != MANIFEST_FORMAT or manifest.get("platform") != package_platform \
 			or manifest.get("architecture") != "x86_64" or manifest.get("engine_version") != Engine.get_version_info().string \
 			or typeof(manifest.get("native_receipt")) != TYPE_DICTIONARY \
 			or not _sha256(manifest.get("solver_sha256")) or typeof(manifest.get("qualification_sources")) != TYPE_DICTIONARY:
 		return _refuse("native package manifest is missing, malformed or for another engine")
-	if not _complete_manifest(manifest):
+	if not _complete_manifest(manifest, package_platform):
 		return _refuse("native package manifest has incomplete verification identities")
 	var artifact := _read_object(directory().path_join("package-receipt.json"))
 	if artifact.get("format") != ARTIFACT_FORMAT or not _sha256(artifact.get("executable_sha256")) \
 			or not _sha256(artifact.get("manifest_sha256")):
 		return _refuse("native package artifact receipt is missing or malformed")
-	if FileAccess.get_sha256(MANIFEST_PATH) != artifact.manifest_sha256:
+	if FileAccess.get_sha256(manifest_path(package_platform)) != artifact.manifest_sha256:
 		return _refuse("native package manifest differs from its artifact receipt")
 	var executable_hash := FileAccess.get_sha256(OS.get_executable_path())
 	if executable_hash != artifact.executable_sha256:
@@ -47,13 +60,13 @@ static func _inspect() -> Dictionary:
 	return {ok = true, reason = "", manifest = manifest, executable_sha256 = executable_hash}
 
 
-static func _complete_manifest(manifest: Dictionary) -> bool:
+static func _complete_manifest(manifest: Dictionary, package_platform := "linux") -> bool:
 	var receipt: Dictionary = manifest.native_receipt
 	if receipt.get("format") != "openrc-native-kernel-receipt" or not _backend(receipt) \
 			or typeof(receipt.get("platforms")) != TYPE_DICTIONARY:
 		return false
-	var row: Variant = receipt.platforms.get("linux")
-	if typeof(row) != TYPE_DICTIONARY or not _backend(row) or row.get("platform") != "linux" \
+	var row: Variant = receipt.platforms.get(package_platform)
+	if typeof(row) != TYPE_DICTIONARY or not _backend(row) or row.get("platform") != package_platform \
 			or row.get("architecture") != "x86_64" or row.get("engine_version") != manifest.engine_version \
 			or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY or row.mirrored_sources.is_empty():
 		return false

@@ -23,7 +23,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Apple Silicon performance, Metal/MetalFX integration and sustained 1080p qualification | [Technical background](APPLE-SILICON-TECHNICAL-BACKGROUND.md); [master implementation plan](plans/apple-silicon-performance.md); [four-technology MetalFX subplan](plans/apple-metalfx.md) |
 | Connect to the shared M1 and run native development checks | [M1 access and workflow](tools/macos-m1.md) |
 | Linux support, packages, downloads and release qualification | [Linux execution plan](plans/linux-support-distribution.md); [repository audit and primary sources, 2026-10-28](research/desktop-delivery-investigations/DT-LNX-00/README.md) |
-| Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
+| Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [automatic graphics audit and plan (VQ-07h-A0…A7)](plans/automatic-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
 | Detailed shadows, grounding and shadow settings | [VQ-04b shadow plan](plans/shadows.md); [runtime and primary-source audit, 2026-10-31](research/shadows-2026-10-31.md) |
 | AMD FSR completion, latest SDK integration and separate frame generation | [VQ-07d/h FSR completion plan](plans/amd-fsr-completion.md); [release/source audit, 2026-10-28](research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
