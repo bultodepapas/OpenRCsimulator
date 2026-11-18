@@ -71,6 +71,27 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def read_regular_file(path, limit, *, dir_fd=None, nofollow=False):
+    """Capture bounded regular-file bytes once; hash and parse this same buffer.
+
+    Nonblocking open prevents a FIFO from hanging before fstat on supported
+    hosts. This is not an atomic filesystem snapshot or a sandbox. Callers
+    requiring a confined child use an already-open directory and nofollow.
+    """
+    flags = os.O_RDONLY | getattr(os, 'O_NONBLOCK', 0) | getattr(os, 'O_BINARY', 0)
+    if nofollow:
+        if not hasattr(os, 'O_NOFOLLOW'):
+            raise FormatError('no-follow file capture is unavailable on this platform')
+        flags |= os.O_NOFOLLOW
+    with os.fdopen(os.open(path, flags, dir_fd=dir_fd), 'rb') as source:
+        if not stat.S_ISREG(os.fstat(source.fileno()).st_mode):
+            raise FormatError('only regular files are accepted')
+        data = source.read(limit + 1)
+    if len(data) > limit:
+        raise FormatError('input size limit exceeded')
+    return data
+
+
 def json_size_bound(value):
     # At most eight additional indentation spaces per line when nested in the
     # final report. This bounds output before retaining the aggregate report.
@@ -209,15 +230,7 @@ def main():
     try:
         if len(args.sha256) != 64 or any(c not in '0123456789abcdefABCDEF' for c in args.sha256):
             raise FormatError('expected SHA-256 must be 64 hex characters')
-        # Bound the actual read, even if the source changes during capture.
-        # This CLI only handles regular local files; it is not a network reader.
-        flags = os.O_RDONLY | getattr(os, 'O_NONBLOCK', 0) | getattr(os, 'O_BINARY', 0)
-        with os.fdopen(os.open(args.pkg, flags), 'rb') as source:
-            if not stat.S_ISREG(os.fstat(source.fileno()).st_mode):
-                raise FormatError('only regular files are accepted')
-            data = source.read(MAX_INPUT + 1)
-        if len(data) > MAX_INPUT:
-            raise FormatError('input size limit exceeded')
+        data = read_regular_file(args.pkg, MAX_INPUT)
         if sha(data) != args.sha256.lower():
             raise FormatError('input SHA-256 mismatch')
         print(serialized_report(inspect(data)), end='')

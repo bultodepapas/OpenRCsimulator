@@ -1,6 +1,6 @@
 # Phoenix aircraft import
 
-Status: proposed Creator/Workshop subtrack. Dated evidence and a local package-inspection probe are delivered; no Phoenix runtime importer, decoded aircraft mesh, exported application support or flight qualification is delivered by this plan. This file owns `AC-PX-00` through `AC-PX-09` status and acceptance.
+Status: proposed Creator/Workshop subtrack. Dated evidence, bounded local package inspection and an observed MOD data-parser prototype are delivered; no Phoenix runtime importer, decoded aircraft mesh, exported application support or flight qualification is delivered by this plan. This file owns `AC-PX-00` through `AC-PX-09` status and acceptance.
 
 ## 1. Goal and decision
 
@@ -12,7 +12,9 @@ The intended product flow is automatic. Blender and Phoenix Builder may help dev
 
 ## 2. Baselines and ownership
 
-The current implementation audit is pinned to OpenRC `main` at [`3c91936ab8f9064daa798311b5fb3e89e28d3754`](https://github.com/bultodepapas/OpenRCsimulator/tree/3c91936ab8f9064daa798311b5fb3e89e28d3754). This proposed plan is added to the existing research branch whose preceding head was `59a6da558d2f3b68233ba56b3e5ee50b33a772c6`. That branch does not necessarily contain the audited current-main runtime. Re-audit the then-merged implementation before coding.
+The initial implementation audit was pinned to OpenRC `main` at [`3c91936ab8f9064daa798311b5fb3e89e28d3754`](https://github.com/bultodepapas/OpenRCsimulator/tree/3c91936ab8f9064daa798311b5fb3e89e28d3754). This proposed plan was added to the existing research branch whose preceding head was `59a6da558d2f3b68233ba56b3e5ee50b33a772c6`. That branch does not necessarily contain the audited current-main runtime. Re-audit the then-merged implementation before coding.
+
+The [robustness follow-up](../research/aircraft-creator/phoenix-hardening-2026-11-17.md) continues from research commit `7e316b7062c406da8e34e8c894ffe64038c68dc8`. It rechecks current main at [`a7de9b35676d891bc2034cc344b910d9e1ef9c61`](https://github.com/bultodepapas/OpenRCsimulator/tree/a7de9b35676d891bc2034cc344b910d9e1ef9c61); the intervening two commits did not change the reviewed Creator/physics interfaces. Research code and application code remain separate baselines.
 
 [Aircraft Creator](aircraft-creator.md) owns admission, authoring and its numerical gate; [Aircraft Workshop](aircraft-editor.md) owns the host, trial and Store; [the aircraft contract](../AIRCRAFT_CONTRACT.md) and physics owners retain physical capabilities. Coordinate shared work with [ClearView](clearview-aircraft-import.md) and [Flight Simulator](flight-simulator-aircraft-import.md), especially observations, source closure, overrides and lifecycle. Phoenix must not create a parallel authoring system or introduce source-simulator branches into the simulation kernel.
 
@@ -26,7 +28,7 @@ Record support against a content fingerprint, parsed structure and exact specime
 | --- | --- | --- |
 | ZIP containing one or several PKGs | Recent creator ZIPs inspected locally | Bounded ZIP admission; discover candidates without executing or installing anything; do not import images/sites as aircraft |
 | PKG framing and file tree | Seven selected packages decoded by the research probe | A reviewed runtime profile with path, size, count, compression, padding and cancellation rules; no universal compatibility claim |
-| Readable `.mod` | Six selected definitions inspected | Non-evaluating grammar, exact spans and validated object/dependency references; unresolved semantics stay observations |
+| Readable `.mod` | Bounded byte parser and limited preflight pass six pinned definitions | Runtime port/admission, exact spans and validated object/dependency references; unresolved semantics stay observations |
 | Binary `.geo` | Extractable members; full mesh decoding unproven | Independently checked vertices, indices, UVs, transforms, object identity and materials before a visual-support claim |
 | PNG/BMP/JPEG/TGA and `#` scheme files | Mixed types and scheme associations observed | Content inspection, explicit decoder profiles, per-image and total budgets; retain alpha and scheme dependencies |
 | Installed model directory | Author catalog offers folders; package paths show model roots | User-selected scope, bounded capture, symlink/path rules, deterministic dependency resolution and immutable snapshots |
@@ -43,6 +45,8 @@ Every unsupported or malformed input returns a concrete diagnostic and retains t
 
 Capture selected bytes once, hash them and inspect the captured copy. Never reopen a mutable source after approval and assume it is the same input. Directory import needs a bounded, explicit root and a receipt identifying every captured member, any changed/missing member and the chosen resolution policy.
 
+Size and timestamps do not prove a coherent instantaneous directory snapshot, including under same-size replacement. State what the capture mechanism actually guarantees. Reads must refuse unsupported special files before they can block, and bounded report creation must not overwrite source inputs or aliases. The research checker now captures its inventory once, validates specimen IDs, reads children through an open no-follow directory handle where supported, and exclusively creates new report files. These checks do not qualify a cross-platform product capture implementation.
+
 An outer ZIP and an inner PKG are distinct layers. Reuse the existing checked ZIP primitives only after extracting/versioning their generic policy with the ClearView owner. Phoenix PKGs observed in this research use framed zlib blocks and a separate file-tree serialization; they are not ZIP archives. Implement that reader in the Phoenix provider, with little-endian reads, checked arithmetic, bounded recursion and exact input consumption. Treat observed zero padding as a narrowly defined profile rule, not permission to ignore arbitrary trailing bytes.
 
 The source tree contains install paths and author-local source strings. Preserve the original strings as evidence, but never use them as output paths. Resolve allowed relative member identities inside a virtual package root; reject traversal, absolute/drive/UNC names, NUL, path collisions, ambiguous case/Unicode aliases and escapes. Do not strip directories until two different files become indistinguishable. Author-local source strings are not dependencies and must not be followed or included unredacted in public reports by default.
@@ -53,7 +57,11 @@ Proposed first-profile ceilings can start from reviewed existing admission limit
 
 ### 4.2 Static definition parser
 
-Readable `.mod` files resemble Lua assignments such as `modelTypes.<identifier> = { ... }`, including symbol references such as `physics.airplane`. Parse a deliberately restricted data grammar; do not call Lua, `eval`, load libraries or execute package code. Recognize only evidenced literals, tables, comments and allowlisted symbolic values. Preserve key spelling, ordering, source spans and original numeric lexemes; reject duplicate/conflicting keys, unbounded nesting, non-finite values and unsupported expressions with a useful location.
+Readable `.mod` files resemble Lua assignments such as `modelTypes.<identifier> = { ... }`, including symbol references such as `physics.airplane`. Parse a deliberately restricted data grammar; do not call Lua, `eval`, load libraries or execute package code. Recognize only evidenced literals, tables, comments and allowlisted symbolic values. Preserve key spelling, ordering, source spans and original numeric lexemes; reject exact duplicate keys, unbounded nesting, non-finite values and unsupported expressions with a useful location. Preserve case-distinct keys and diagnose ambiguous mapping before adoption; never silently case-fold them together.
+
+The [research parser and checks](../../research/aircraft-creator/phoenix/README.md#inspect-a-readable-definition) now implement `openrc-phoenix-mod-observed-v1`. It accepts captured bytes, preserves exact string bytes, and handles the six observed CRLF definitions without a final newline. The Su-37 has non-UTF-8 bytes in reference strings: UTF-8/Latin-1 display decoding is explicitly separate from identity and is not an encoding specification. Unobserved escapes, exponent notation, mixed keyed/positional tables and bare-CR line endings are outside this narrow profile; supported LF/CRLF comment boundaries must never hide unsupported syntax. This prototype is not general Lua or a production observation provider.
+
+Use the ordered structural path as an object occurrence's identity. Repeated `AILERONS`, `FLAPS` and `RUDDER` names, a mesh used in both visual and collision roles, and empty visual lists are real corpus cases. Preserve their owning context instead of deduplicating by display name, rejecting all empty lists or automatically reparenting/mirroring them. A `nodeCount` declaration is not verified GEO topology. Context also changes field types: `Engine` occurs as a number, string and nested table.
 
 Create a format-specific source representation before any OpenRC mapping. It should retain header identities; physical declarations; airfoils and their separate aerodynamic geometry; surface hinges, inputs, sides and travel; propulsion declarations; gear/wheels; collision descriptors; widgets; tuning, mixes and external names. Geometry lists are exact object references. `ELEBATOR_LEFT...` in one sample demonstrates why guessed English names are not reliable identities.
 
@@ -85,6 +93,8 @@ Inspect alpha, color interpretation, UV orientation, wrap modes, materials and r
 
 Use source-defined `root_pivot`, `tip_pivot`, inputs, side membership, travel, neutral transforms and mirroring. A hinge axis is derived from two endpoints only after their common frame and units are established. Validate finite nonzero axes, neutral/end poses, sign, handedness, duplicate references and shared/overlapping geometry. Do not assume the signs or endpoint meanings of two positive min/max values; establish source behavior with independent endpoint fixtures.
 
+Keep arbitrary three-dimensional pivots and distinguish exact coincidence from an unproven physical tolerance. One observed AW109 hinge separation is about 0.06425 source-coordinate units; a Su-37 axis component is 1.000001. A broad epsilon, exact unit-norm requirement or cardinal-axis snapping would reject or alter source data without evidence. Test exact zero vectors, missing endpoints and distinct exact decimals that collapse under float64 conversion. The prototype diagnoses these conversion blockers while retaining parsed observations; no source-unit conversion or validated motion is implied.
+
 Creator binding v1 currently supports conventional ailerons, elevator, rudder and one propeller with cardinal local axes and limited part counts. Source hinges can be arbitrary. A future adapter may create a validated parent frame that aligns the binding axis and preserves geometry/neutral pose; alternatively a versioned binding extension may be needed. Neither is delivered here. Rig construction must not flatten or silently discard source structure to fit the old schema.
 
 Flaps, retracts, doors, multiple propellers, mixing and moving nozzles require their actual source semantics and their owning presentation/physical capabilities. A static visual fallback is acceptable when labeled. A moving rendered nozzle does not establish a physical thrust vector; one logical elevator animating two parts does not establish two independent servo/force laws.
@@ -99,9 +109,17 @@ Initial observations are read-only. Adopting a source value into an editable air
 
 A provider-specific source/config association and flight guard must exist before exposing the route. Cover trial creation, verification, publication and saved-source resolution. Current ClearView guards recognize their namespace; a Phoenix label does not inherit them. Exact visual, source/report and configuration identities must be checked again on reopen. Do not enable flight by stripping provider metadata or silently substituting an independently estimated trainer.
 
+Within a recognized Phoenix record, a missing or conflicting visual/provider marker must not downgrade the record to generic input. Test marker loss in either direction against the retained closure and receipt. A standalone GLB stripped of every identifying trace and reimported independently is indistinguishable from other generic inputs; do not claim origin authentication or universal detection from hashes/metadata.
+
+Also prove source-to-member-to-report/visual relationships. Pair archive A with valid members or output from B and recompute individual hashes: the trusted path must re-establish membership, selected candidate/scheme and conversion association from captured inputs under the pinned implementation, or mark the relation unverified. Independent blob integrity alone does not establish these joins.
+
 Also prove the semantic relationship between saved authoring and physical data. Regenerate the stored physical bytes using the pinned compiler, packages and conversion profile, or provide an equivalently strong reviewed proof. Independently valid hashes or a forgeable compile-binding association do not prove that a definition produced its paired physical record. Refuse a mixed definition-A/physical-record-B pair even when an attacker recomputes their association hashes. Compiler/profile changes require explicit migration and renewed acceptance where needed; reuse the same shared requirement as AC-FS rather than adding a weaker Phoenix-only shortcut.
 
-Current Store holds one source model of at most 32 MiB per draft/revision. It does not retain a complete Phoenix archive plus extracted files and derived GLB. Coordinate content-addressed source closure with AC-CV-07, AC-FS-02/10 and AC-13/18/19. Store original closure and normalized visual as separate immutable identities, enforce quota/garbage-collection rules, preserve rights metadata and support missing/corrupt-source recovery. Until then, say that originals remain external; a saved visual draft is not a source backup.
+Current Store holds one source model of at most 32 MiB per draft/revision. It does not retain a complete Phoenix archive plus extracted files and derived GLB. Coordinate content-addressed source closure with AC-CV-07, AC-FS-02/10 and AC-13/18/19. Store original closure and normalized visual as separate immutable identities, enforce quota, preserve rights metadata and support missing/corrupt-source recovery. Accepted history is currently append-only: temporary/cache cleanup must not delete accepted objects, and any accepted-object retention change needs the Store owner's explicit contract revision. Until then, say that originals remain external; a saved visual draft is not a source backup.
+
+Invalidate stale worker results at adoption and commit, especially after cancellation, wizard closure, candidate/scheme changes or edits. A delayed non-cancellable inspection must not replace a newer draft or populate a successful cache. Specify the commit race: cancellation before commit preserves the prior accepted state; a commit that already won is reported as completed, with the Store's existing uncertain outcome retained when readback cannot establish completion.
+
+Cache and historical replay inputs include the exact captured closure, selected candidate/scheme, relevant overrides, parser/converter/policy identity and actual compiler/package contents. Filenames, package IDs and profile labels alone are insufficient. Tightened current admission still applies. Never regenerate an accepted historical revision silently under a new profile; preserve stored bytes, report unavailable/unqualified behavior when necessary, and use an explicit new revision for migration.
 
 Reopen/replay/export acceptance must identify the exact aircraft revision, overrides, converter profile and source closure. Store's current recovery promise concerns interrupted processes, not power loss. Platform locking, export and clean-profile behavior require their existing qualification gates.
 
@@ -134,7 +152,7 @@ Keep technical offsets and parse diagnostics in a detailed report. The normal UI
 | --- | --- | --- | --- |
 | AC-PX-00 — Evidence corpus | AC; rights/source owners | Pinned sources, stage matrix, original fixture plan and rights ledger; at least two creator workflows and an unsupported case; correct revision semantics | Initial research recorded; corpus/permission qualification open |
 | AC-PX-01 — Capture and container | AC; generic archive owner | Safe captured input, bounded ZIP/PKG/tree profile, complete member receipts, deterministic candidate selection; adversarial/truncation/cancellation cases | Proposed/open; research probe only |
-| AC-PX-02 — Definition observations | AC; AC-CV-05 / AC-FS observations | Restricted non-executing `.mod` parser, exact references/locations and schema-versioned read-only observations; unknown expressions and missing libraries diagnosed | Proposed/open |
+| AC-PX-02 — Definition observations | AC; AC-CV-05 / AC-FS observations | Restricted non-executing `.mod` parser, exact references/locations and schema-versioned read-only observations; unknown expressions and missing libraries diagnosed | Research parser/preflight delivered on six pinned MODs; runtime provider and semantic/reference qualification open |
 | AC-PX-03 — Geometry feasibility | AC; geometry owners | Owned known-answer exports decoded; independently verified object/topology/frame/material mapping; admitted generated GLB and exact scope | Proposed/open; critical feasibility gate |
 | AC-PX-04 — Appearance and schemes | AC; image/skin owners; PX-03 | Bounded image/material profiles, correct scheme selection/alpha/UVs, missing/opaque image handling; no thumbnails used as diffuse maps | Proposed/open |
 | AC-PX-05 — Articulation | AC-17 / presentation; PX-02/03 | Neutral/endpoint/sign/mirror proof; stable source-to-output IDs; arbitrary pivots handled by an approved binding strategy; explicit unsupported roles | Proposed/open |
@@ -146,6 +164,23 @@ Keep technical offsets and parse diagnostics in a detailed report. The normal UI
 Do not schedule broad UI/flight work on the assumption that PX-03 is solved. PX-01/02 can produce useful inspection output while geometry research proceeds. Once geometry succeeds, finish one narrow visual path and its guard/storage behavior before expanding source versions or aircraft classes. Additional mechanisms enter existing capability tracks, not a growing importer-specific flight engine.
 
 ## 8. Verification and stop conditions
+
+The [robustness investigation](../research/aircraft-creator/phoenix-hardening-2026-11-17.md) records concrete corpus pitfalls, independently reviewed research-tool fixes, reproducible receipts and detailed lifecycle cases. The following obligations belong to the indicated existing steps; research passes do not close product acceptance.
+
+| Acceptance case | Owner step | Required outcome |
+| --- | --- | --- |
+| PX-H-01: mutation, special files, traversal and report aliases | PX-01 | Hash/parse the same bounded captured bytes; reject unsafe reads; preserve input files; report actual capture guarantees |
+| PX-H-02: raw encodings, case, repeated names, empty and asymmetric structures | PX-02/05 | Preserve bytes, field kinds, structural position and order; diagnose unresolved mapping without inventing topology |
+| PX-H-03: unsupported expressions/comments, duplicate keys, resource and numeric limits | PX-02 | Bounded refusal at an exact location; no model-code execution or partial silent interpretation |
+| PX-H-04: zero, oblique, small and precision-collapsed hinge vectors | PX-03/05 | Prevent invalid normalization; preserve nonzero source structure until units/frame and tolerances are proven |
+| PX-H-05: package A with member/report/visual B and recomputed hashes | PX-01/06/08 | Re-establish source membership and conversion relation, or withhold dependent claims; retain the separate definition/physical recompile test |
+| PX-H-06: missing geometry, same name in another aircraft, optional sound absent | PX-01/03/06 | Mandatory or ambiguous dependencies stop the affected stage; optional sound permits only a labeled partial preview; no ambient/network fallback |
+| PX-H-07: removed or conflicting provider metadata in a known source record | PX-06/08 | Every trial/verify/publish/reopen guard preserves the recognized provider restriction; no unsupported origin-authentication claim |
+| PX-H-08: delayed work A completes after cancel, close or selection B | PX-06/08/09 | No stale adoption/cache/publication; distinguish a completed commit from cancellation and uncertain readback |
+| PX-H-09: changed scheme, bytes, policy, converter or package behind the same name | PX-06/08 | Cache/replay uses complete relevant content identities; no reuse of partial results or silent migration |
+| PX-H-10: old revisions, shared closure, quota, interruption and recovery | PX-08/09 | Resolve the exact accepted revision; preserve append-only shared/history data and prior accepted state; no fabricated missing sources |
+| PX-H-11: visual/report-only edits with identical physical inputs | PX-06/07 | Canonical physics remains identical; explicitly adopted physical edits recompile and renew applicable evidence |
+| PX-H-12: verification tool/cache/optimization changes | PX-00/01/02 | Receipts identify captured executed parser sources separately from on-disk checker observations; required checks cannot disappear under optimized Python |
 
 Parser qualification needs owned adversarial fixtures: count/length overflow, truncated zlib streams, declared-size mismatch, unused compressed bytes, tree-depth overflow, path aliases/traversal, duplicate model roots, malformed text/expressions, missing references and opaque protected-looking members. Test aggregate limits across nested wrappers. The delivered research probe is read-only and bounded but is not this production security/cancellation qualification.
 

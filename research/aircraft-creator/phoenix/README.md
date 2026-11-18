@@ -1,8 +1,10 @@
-# Phoenix package research probe
+<a id="phoenix-package-research-probe"></a>
 
-This read-only Python probe accompanies the [dated investigation](../../../docs/research/aircraft-creator/phoenix-2026-11-17.md) and proposed [AC-PX plan](../../../docs/plans/phoenix-aircraft-import.md). It demonstrates a narrow container/file-tree profile on seven pinned PKGs. It is not a Phoenix importer, complete format specification, geometry decoder, image validator or production security qualification.
+# Phoenix package and definition research probes
 
-The code uses Python's standard library. It does not download anything, execute simulator/source code, extract members, follow stored source paths or bypass opaque member encodings. No aircraft binaries are committed here. Obtain a permitted local sample using its original creator/community link and the exact ZIP member listed in the [inventory](../../../docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json).
+These read-only Python tools accompany the [package investigation](../../../docs/research/aircraft-creator/phoenix-2026-11-17.md), [robustness follow-up](../../../docs/research/aircraft-creator/phoenix-hardening-2026-11-17.md) and proposed [AC-PX plan](../../../docs/plans/phoenix-aircraft-import.md). They demonstrate a narrow container/file-tree profile on seven pinned PKGs and a non-executing data grammar on six readable MODs. They are not a Phoenix runtime importer, complete format specification, geometry decoder, image validator or production qualification.
+
+The code uses Python 3.10+ and its standard library; the recorded checks ran on Python 3.12.14 on Linux. It does not download anything, execute simulator/model code, extract members, follow stored source paths or decode opaque members. No aircraft binaries are committed here. Obtain a permitted local sample using its original creator/community link and the exact ZIP member listed in the [inventory](../../../docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json).
 
 ## Inspect one exact package
 
@@ -55,6 +57,64 @@ python3 research/aircraft-creator/phoenix/check_probe.py \
   --report /path/to/phoenix-checks.json
 ```
 
-The checker requires each input hash and full probe result to match the inventory. Its output records Python/zlib versions and probe/checker/inventory identities. [The dated receipt](../../../docs/research/aircraft-creator/phoenix-probe-verification-2026-11-17.json) was generated with this command by the lead review. Regenerate it after changing the probe, checker or inventory. Outer-ZIP CRC and separate PHX/VAR/document observations are recorded research; this checker does not decode their grammars.
+The checker requires each input hash and full probe result to match the inventory. The inventory is captured once, with a 2 MiB byte limit, 64 structural nesting levels, strict finite JSON numbers and duplicate-key refusal. Specimen IDs must be single restricted components. Real-corpus mode opens one directory handle and refuses final symlinks/special files; it requires `dir_fd`, `O_DIRECTORY` and `O_NOFOLLOW` support. Unsupported hosts receive a clear refusal for that mode. This is Linux-tested corpus tooling, not a qualified Windows/macOS directory importer or an atomic directory snapshot.
+
+`--report` exclusively creates a **new file** and refuses any existing destination, including symlink/hardlink aliases. Use a fresh filename on each run. Both checkers refuse optimized Python (`-O`, `-OO` or equivalent `PYTHONOPTIMIZE`) because their verification assertions are required. Verification receipts are limited to 2 MiB.
+
+The [current container/capture receipt](../../../docs/research/aircraft-creator/phoenix-container-hardening-verification-2026-11-17.json) covers the current tools. The [earlier receipt](../../../docs/research/aircraft-creator/phoenix-probe-verification-2026-11-17.json) remains historical evidence for [research commit 7e316b7](https://github.com/bultodepapas/OpenRCsimulator/tree/7e316b7062c406da8e34e8c894ffe64038c68dc8), whose probe/checker hashes differ. Do not rewrite it to claim that it tested newer code. Outer-ZIP CRC and separate PHX/VAR/document observations remain separate research; these checkers do not decode those grammars.
+
+For reproducible source identity, the harness captures and compiles only fixed repository inspector files, ignoring stale timestamp-based `.pyc` files. It never compiles model data. Receipts distinguish captured in-process inspector-source hashes from checker/harness files observed on disk; subprocess checks use their on-disk tool files. These identities do not establish an atomic tool-directory snapshot, signatures or authentication of locally editable tools.
+
+## Inspect a readable definition
+
+`inspect_definition.py` parses captured **bytes**. Its immutable in-memory tree preserves ordered entries, case-sensitive keys, quoted content bytes, exact decimal lexemes and byte spans. The JSON summary deliberately contains selected headers, counts and diagnostics instead of redistributing a complete aircraft definition. Every header distinguishes its value representation from its actual source lexeme. Structural paths, including array indices, identify occurrences; repeated display names do not merge objects.
+
+For the exact readable SU-35 member listed in the inventory:
+
+```bash
+python3 research/aircraft-creator/phoenix/inspect_definition.py '/path/to/SU_35_v23.mod' \
+  --sha256 b43e2a17418525873bad33ede75d4df108203514046e434e9b17bb884ba72681
+```
+
+The `openrc-phoenix-mod-observed-v1` grammar accepts one `modelTypes.<identifier> = {...}` assignment, named tables or positional lists, quoted byte strings, signed fixed-point decimals, trailing commas, `--` line comments and the data symbols `physics.airplane`/`physics.helicopter`. It supports LF and CRLF and permits EOF without a newline. Bare CR is refused everywhere so comment and diagnostic boundaries cannot disagree. String escapes, block comments, exponent/hex numbers, mixed keyed/positional tables, arbitrary expressions and additional assignments are outside this observed profile. Refusal does not prove that another Phoenix dialect is invalid.
+
+Raw string bytes remain authoritative. UTF-8, then Latin-1 fallback, is a display choice and does not establish original encoding. Same-table case variants receive an unresolved diagnostic; exact duplicate keys are rejected before a value can overwrite another. Source units, mirroring, library references and GEO objects are unresolved. Reference strings are never opened as files or fetched as URLs.
+
+Limited preflight checks use **observed structural contexts**, including control/flap and gear/widget pivots and gear-wheel axes. They diagnose malformed vectors, exact coincidence, zero axes and exact decimal endpoints that collapse under direct float64 coordinate conversion. They do not normalize axes, choose a physical epsilon, snap to cardinal directions or establish valid motion. An identically named field in an unknown context stays unclassified. Empty geometry lists and repeated visual/collision references are not automatically corrupt. Counts distinguish recognized geometry references from literal `Airfoil`/`Engine`/`blurTexture`/`node` string fields; a familiar spelling alone establishes no library or asset role. This is not a complete GEO/dependency graph.
+
+| Definition profile budget | Limit |
+| --- | ---: |
+| Actual captured MOD bytes | 512 KiB |
+| Tokens, excluding the EOF sentinel | 60,000 |
+| Value/table nodes | 25,000 |
+| Table depth below the root | 32 |
+| Quoted content | 4,096 bytes |
+| Identifier | 128 bytes |
+| Numeric lexeme | 64 bytes |
+| Diagnostics | 512 |
+| Serialized summary | 1 MiB |
+
+These bound this synchronous research implementation, not peak RSS, elapsed time, native decoders or product cancellation latency. Finite float64 representability is a parser/preflight constraint; exact numeric lexemes remain retained and no physical precision claim follows.
+
+## Reproduce definition checks
+
+Owned synthetic fixtures need no aircraft files:
+
+```bash
+python3 research/aircraft-creator/phoenix/check_definitions.py
+```
+
+For real-file comparison, prepare the six external MODs named `freewing-su35.mod`, `extra300.mod`, `wasp18.mod`, `wasp20.mod`, `su37.mod` and `aw109.mod`. Their hardcoded expected hashes originate in the previous inventory and are checked against both the selected bytes and the inventory's member claim:
+
+```bash
+python3 research/aircraft-creator/phoenix/check_definitions.py \
+  --inventory docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json \
+  --samples-dir /path/to/local-mods \
+  --report /path/to/new-phoenix-definition-checks.json
+```
+
+The [definition receipt](../../../docs/research/aircraft-creator/phoenix-definition-verification-2026-11-17.json) records exact MOD identities, counts and diagnostics. Its package identity/path fields are explicitly **inventory-reported claims**: this command does not recapture PKGs or prove source-to-member membership independently. The separate container check verifies full package inventories against captured PKG bytes. Neither command establishes author authenticity, license scope, GEO reconstruction or flight eligibility.
+
+A successful definition CLI exits 0 for parsed observations, including unresolved or conversion-blocking diagnostics. Consumers must inspect that status and those diagnostics; exit 0 is not conversion permission. A syntax/profile, hash, report-budget or I/O refusal exits 1. The opaque Yak MOD and PHX/VAR forms are outside this grammar; no decoder for them is delivered.
 
 Do not add third-party samples to this directory merely because they are downloadable. New public regression fixtures should be original or explicitly licensed, with independently known geometry/semantic answers. Keep corpus growth separate from compatibility claims.
