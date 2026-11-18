@@ -1,0 +1,166 @@
+import hashlib
+import json
+import os
+import unittest
+
+from openrc_telemetry.cli import main
+from openrc_telemetry.storage import AggStore, RawStore, StorageUnavailable, utc_day
+
+from .support import TempDir, batch, encode, hex32
+
+DAY = 86400
+NOW = 1_800_000_000
+
+
+def put(store, number, receipt, events=(1,), session=None):
+    payload = batch(session if session is not None else number, batch_id=number)
+    body = encode(payload)
+    return store.ingest(payload["batch_id"], hashlib.sha256(body).hexdigest(),
+                        payload["session_id"], list(events), body, receipt)
+
+
+class RawStoreTests(unittest.TestCase):
+    def setUp(self):
+        self._tmp = TempDir()
+        self.dir = self._tmp.__enter__()
+        self.store = RawStore(self.dir / "raw.sqlite")
+
+    def tearDown(self):
+        self.store.close()
+        self._tmp.__exit__()
+
+    def test_pragmas_and_constraints(self):
+        with self.store.connection() as conn:
+            self.assertEqual(conn.execute("PRAGMA journal_mode").fetchone()[0], "wal")
+            self.assertEqual(conn.execute("PRAGMA synchronous").fetchone()[0], 2)  # FULL
+            self.assertEqual(conn.execute("PRAGMA secure_delete").fetchone()[0], 1)
+            self.assertEqual(conn.execute("PRAGMA auto_vacuum").fetchone()[0], 2)  # INCREMENTAL
+            columns = [r[1] for r in conn.execute("PRAGMA table_info(batches)")]
+        self.assertEqual(columns, ["batch_id", "body_sha256", "session_id", "receipt_unix", "receipt_day", "body"])
+
+    def test_dedup_and_conflict_come_from_constraints(self):
+        self.assertEqual(put(self.store, 1, NOW), "accepted")
+        self.assertEqual(put(self.store, 1, NOW + 5), "duplicate")
+        # Same session/seq, different batch id.
+        self.assertEqual(put(self.store, 2, NOW, session=1), "conflict")
+        with self.store.connection() as conn:
+            self.assertEqual(conn.execute("SELECT count(*) FROM batches").fetchone()[0], 1)
+            self.assertEqual(conn.execute("SELECT count(*) FROM events").fetchone()[0], 1)
+
+    def test_duplicate_does_not_extend_expiry(self):
+        put(self.store, 1, NOW)
+        put(self.store, 1, NOW + 40 * 3600)
+        self.assertEqual(self.store.oldest_receipt(), NOW)
+
+    def test_purge_boundary_is_exactly_48_hours(self):
+        put(self.store, 1, NOW)                       # age exactly 48 h at purge time
+        put(self.store, 2, NOW + 1)                   # age 47 h 59 m 59 s
+        purge_at = NOW + 48 * 3600
+        result = self.store.purge(purge_at)
+        self.assertEqual(result["deleted_batches"], 1)
+        self.assertEqual(self.store.count(), 1)
+        with self.store.connection() as conn:
+            self.assertEqual(conn.execute("SELECT count(*) FROM events").fetchone()[0], 1)
+        self.assertEqual(self.store.purge(purge_at)["deleted_batches"], 0)   # idempotent
+        self.assertEqual(self.store.purge(purge_at + 1)["deleted_batches"], 1)
+        self.assertEqual(self.store.count(), 0)
+
+    def test_purge_frees_dedup_keys_and_overwrites_bytes(self):
+        canary_session = "c0ffee" * 5 + "ab"
+        payload = batch(1, batch_id=5)
+        payload["session_id"] = canary_session
+        body = encode(payload)
+        self.store.ingest(payload["batch_id"], "e" * 64, canary_session, [1], body, NOW)
+        raw_file = self.dir / "raw.sqlite"
+        self.assertIn(canary_session.encode(), raw_file.read_bytes() + (self.dir / "raw.sqlite-wal").read_bytes())
+        self.store.purge(NOW + 48 * 3600)
+        wal = self.dir / "raw.sqlite-wal"
+        residue = raw_file.read_bytes() + (wal.read_bytes() if wal.exists() else b"")
+        self.assertNotIn(canary_session.encode(), residue)
+        self.assertNotIn(b"performance_window", residue)
+        self.assertEqual(wal.stat().st_size if wal.exists() else 0, 0)
+        # The deadline also ended dedup protection: the same identity is accepted again.
+        self.assertEqual(self.store.ingest(payload["batch_id"], "e" * 64, canary_session, [1], body, NOW + 49 * 3600),
+                         "accepted")
+
+    def test_records_for_day_in_ingestion_order(self):
+        for number in (3, 1, 2):
+            put(self.store, number, NOW)
+        records = self.store.records_for_day(utc_day(NOW))
+        self.assertEqual([r[0] for r in records], [utc_day(NOW)] * 3)
+        self.assertEqual([json.loads(r[1])["batch_id"] for r in records], [hex32(3), hex32(1), hex32(2)])
+        self.assertEqual(self.store.records_for_day("1999-01-01"), [])
+
+    def test_unavailable_storage_raises(self):
+        broken = RawStore(self.dir / "nodir" / "x" / "raw.sqlite")
+        (self.dir / "nodir").write_text("file")
+        with self.assertRaises(StorageUnavailable):
+            broken.count()
+
+
+class AggStoreTests(unittest.TestCase):
+    def setUp(self):
+        self._tmp = TempDir()
+        self.dir = self._tmp.__enter__()
+        self.store = AggStore(self.dir / "aggregates.sqlite")
+
+    def tearDown(self):
+        self.store.close()
+        self._tmp.__exit__()
+
+    def test_has_no_identifier_columns(self):
+        with self.store.connection() as conn:
+            names = {row[1] for table in ("daily_status", "daily_gpu", "daily_vehicle")
+                     for row in conn.execute(f"PRAGMA table_info({table})")}
+        self.assertFalse({"session_id", "batch_id"} & names)
+
+    def test_put_day_is_an_idempotent_replace(self):
+        row = {"gpu_family": "nvidia_rtx", "session_observations": 20, "interval_sum_us": 600_000_000,
+               "rendered_frames": 36000}
+        self.store.put_day("2027-01-14", "v0.2.7", "gpu", "ready", [row], NOW)
+        self.store.put_day("2027-01-14", "v0.2.7", "gpu", "ready", [row], NOW + 1)
+        self.assertEqual(self.store.get_day("2027-01-14", "v0.2.7", "gpu"), ("ready", [row]))
+        self.store.put_day("2027-01-14", "v0.2.7", "gpu", "suppressed", [], NOW + 2)
+        self.assertEqual(self.store.get_day("2027-01-14", "v0.2.7", "gpu"), ("suppressed", []))
+        self.assertIsNone(self.store.get_day("2027-01-15", "v0.2.7", "gpu"))
+
+    def test_aggregates_expire_after_180_days(self):
+        self.store.put_day("2026-07-18", "v0.2.7", "gpu", "no_data", [], NOW)
+        self.store.put_day("2026-07-19", "v0.2.7", "gpu", "no_data", [], NOW)
+        today = NOW + 1800  # 2027-01-15; cutoff is 180 days earlier = 2026-07-19
+        self.assertEqual(self.store.purge(today)["deleted_aggregate_rows"], 1)
+        self.assertIsNone(self.store.get_day("2026-07-18", "v0.2.7", "gpu"))
+        self.assertIsNotNone(self.store.get_day("2026-07-19", "v0.2.7", "gpu"))
+
+
+class PurgeCliTests(unittest.TestCase):
+    def test_purge_command_runs_against_data_dir(self):
+        with TempDir() as directory:
+            os.environ["OPENRC_TELEMETRY_DATA_DIR"] = str(directory)
+            try:
+                self.assertEqual(main(["purge"]), 0)
+            finally:
+                del os.environ["OPENRC_TELEMETRY_DATA_DIR"]
+            self.assertTrue((directory / "raw.sqlite").exists())
+            self.assertTrue((directory / "aggregates.sqlite").exists())
+
+    def test_serve_purge_cuts_early_enough_that_no_row_outlives_48_hours(self):
+        from openrc_telemetry.cli import purge_margin_s, purge_once
+        from .support import make_config
+        with TempDir() as directory:
+            config = make_config(directory, purge_interval_s=300)
+            raw, agg = RawStore(config.raw_path), AggStore(config.aggregates_path)
+            try:
+                self.assertEqual(put(raw, 1, NOW), "accepted")
+                margin = purge_margin_s(config)
+                self.assertGreater(margin, config.purge_interval_s)
+                # The last purge before the row's 48 h deadline happens at most one interval earlier; it must delete it.
+                last_purge = NOW + 48 * 3600 - config.purge_interval_s
+                self.assertEqual(purge_once(config, last_purge - 1, raw, agg, margin)["deleted_batches"], 1)
+            finally:
+                raw.close()
+                agg.close()
+
+
+if __name__ == "__main__":
+    unittest.main()
