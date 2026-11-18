@@ -287,6 +287,8 @@ var telemetry_release: Dictionary = {}
 var telemetry_route_override: Variant = null
 var telemetry_consent_path := TelemetryConsentStore.DEFAULT_PATH
 var _telemetry_prompted := false
+## The telemetry status line last placed on Home (so it is replaced, but no other notice is).
+var _telemetry_home_note := ""
 ## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
 var window_minimized_probe: Callable = func() -> bool:
 	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
@@ -874,7 +876,8 @@ func _install_home(setup: Dictionary) -> void:
 	if controllers != null: controllers.refresh()
 	_update_controller_home()
 	_update_controller_button_prompts()
-	home.set_note(_settings_note if _settings_note != "" else _telemetry_note())
+	home.set_note(_settings_note)
+	_refresh_telemetry_home_note()
 	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
@@ -1117,7 +1120,8 @@ func set_language(code: String) -> bool:
 	if err != OK:
 		_menu_feedback(&"reject")
 	if home != null:
-		home.set_note(_telemetry_note() if err == OK else tr("Could not save settings (error %d).") % err)
+		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+		_refresh_telemetry_home_note() # the status line in the new language, unless an error took the line
 	return true # a failed save keeps the language for this session
 
 
@@ -3118,8 +3122,24 @@ func _push_telemetry_state() -> void:
 
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
-	if home != null and _settings_note == "":
-		home.set_note(_telemetry_note())
+	_refresh_telemetry_home_note()
+
+
+## Home states the effective telemetry choice on its note line only while that line is free or still shows the
+## previous telemetry status; it never replaces another notice (a launch failure, a save or browser error). State
+## changes call this; sealing and sending do not change the text, so the line is left alone.
+func _refresh_telemetry_home_note() -> void:
+	if home == null or _settings_note != "":
+		return
+	var note := _telemetry_note()
+	var current: String = home.note_label.text
+	if current == note:
+		_telemetry_home_note = note
+		return
+	if current != "" and current != _telemetry_home_note:
+		return
+	_telemetry_home_note = note
+	home.set_note(note)
 
 
 ## Every eligible launch states the effective telemetry choice on Home (unavailable builds say nothing).
@@ -3164,6 +3184,8 @@ func _telemetry_context() -> Dictionary:
 					simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
+	elif not _workshop_screens.is_empty():
+		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
 	elif home != null or home_build_pending:
 		mode = "home"
 	var window := get_window()
@@ -3179,7 +3201,8 @@ func _telemetry_context() -> Dictionary:
 		else:
 			var kind := str(controllers.registry.device_for_id(flight_device).get("kind", ""))
 			input_class = "rc" if kind == "radio" else "gamepad" if kind == "gamepad" else "other"
-	return {"mode": mode, "vehicle": vehicle, "custom": custom, "eligible": eligible, "simulated_seconds": simulated,
+	return {"mode": mode, "activity": activity != null, "vehicle": vehicle, "custom": custom, "eligible": eligible,
+		"simulated_seconds": simulated,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
 		"graphics_profile": "unknown", "input_class": input_class}

@@ -611,6 +611,11 @@ func _build() -> void:
 	_telemetry_notice_button = _button("Privacy notice", "QuietButton", "TelemetryNotice")
 	_telemetry_notice_button.pressed.connect(func() -> void: telemetry_info_requested.emit("notice"))
 	telemetry_links.add_child(_telemetry_notice_button)
+	# One row sharing the width: at 1080p both captions fit on one line; a long translation or large text wraps
+	# inside its button instead of widening the page (Russian at 960 px, Spanish at 200 %).
+	for link: Button in [_telemetry_preview_button, _telemetry_notice_button]:
+		link.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		link.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	interface_page.add_child(telemetry_links)
 	_refresh_telemetry_status_text()
 

@@ -166,6 +166,15 @@ func _enable_button_and_send() -> void:
 	_check("Enable grants and closes the notice", app.telemetry.state == "on" and Store.load_choice(CONSENT).choice == "enabled"
 		and app.screens.is_top("home"))
 	_check("Home states it", app.home.note_label.text == "Telemetry is on · Settings → Interface", app.home.note_label.text)
+	# Sealing and sending emit state_changed about once a minute; another Home notice must survive them.
+	app.home.set_note("Could not open the browser (error 1).")
+	app._on_telemetry_state_changed()
+	_check("telemetry never replaces another Home notice", app.home.note_label.text == "Could not open the browser (error 1).",
+		app.home.note_label.text)
+	app.home.set_note("")
+	app._on_telemetry_state_changed()
+	_check("a free note line shows the telemetry status again", app.home.note_label.text == "Telemetry is on · Settings → Interface",
+		app.home.note_label.text)
 	_check("a headless window counts as minimized: nothing is measured", app._telemetry_context().eligible == false)
 	app.window_minimized_probe = func() -> bool: return false
 	var context: Dictionary = app._telemetry_context()

@@ -30,8 +30,9 @@ var release: Dictionary = {"ok": false, "reason": "unset"}
 var interactive := false
 var consent_path := ConsentStore.DEFAULT_PATH
 var locale := "en"
-## Returns the observation context each frame: {mode, vehicle, custom, eligible, simulated_seconds,
-## fixed_wing_accepted, window_size, vsync, graphics_profile, input_class}. See AppRoot._telemetry_context().
+## Returns the observation context each frame: {mode, activity (a simulated vehicle session), vehicle, custom,
+## eligible, simulated_seconds, fixed_wing_accepted, window_size, vsync, max_fps, graphics_profile, input_class}.
+## See AppRoot._telemetry_context().
 var context_provider := Callable()
 ## Injected clocks for tests.
 var clock_usec: Callable = func() -> int: return Time.get_ticks_usec()
@@ -257,9 +258,12 @@ func _observe(now: int) -> void:
 	var mode := str(ctx.get("mode", "other"))
 	if not mode in Contract.MODES:
 		mode = "other"
-	var vehicle := "none" if mode == "home" else Contract.vehicle_id(str(ctx.get("vehicle", "")), Contract.is_true(ctx.get("custom")))
+	# Only a simulated vehicle session is an activity; Home and Workshop editing are measured with no vehicle.
+	var in_activity := Contract.is_true(ctx.get("activity"))
+	var vehicle := Contract.vehicle_id(str(ctx.get("vehicle", "")), Contract.is_true(ctx.get("custom"))) \
+		if in_activity else "none"
 	var key := mode + "|" + vehicle
-	_track_activity(ctx, mode, vehicle, now)
+	_track_activity(ctx, mode, vehicle, now, in_activity)
 	if not eligible or key != _window_key:
 		_close_window(now, false)
 		_last_usec = -1
@@ -316,8 +320,7 @@ func _close_window(now: int, complete: bool, phase := "") -> void:
 		_append(event, now)
 
 
-func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int) -> void:
-	var active := mode == "flight" or mode == "workshop"
+func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, active: bool) -> void:
 	var key := (mode + "|" + vehicle) if active else ""
 	var simulated := float(ctx.get("simulated_seconds", -1.0))
 	if not _activity.is_empty():

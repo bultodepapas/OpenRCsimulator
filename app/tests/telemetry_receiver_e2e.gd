@@ -13,7 +13,7 @@ const FRAME_US := 16667
 
 var _now := 0
 var _frames := 0
-var _ctx := {"mode": "home", "vehicle": "", "eligible": true, "window_size": Vector2i(1920, 1080), "vsync": 1,
+var _ctx := {"mode": "home", "activity": false, "vehicle": "", "eligible": true, "window_size": Vector2i(1920, 1080), "vsync": 1,
 	"max_fps": 0, "graphics_profile": "unknown", "input_class": "keyboard"}
 
 
@@ -42,9 +42,9 @@ func _initialize() -> void:
 	# Three simulated minutes: home, a fixed-wing flight (no classifier: unsupported) and home again.
 	for second: int in 180:
 		if second == 40:
-			_ctx.merge({"mode": "flight", "vehicle": "f4u-corsair-250", "simulated_seconds": 0.0}, true)
+			_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "simulated_seconds": 0.0}, true)
 		if second == 120:
-			_ctx.merge({"mode": "home", "vehicle": ""}, true)
+			_ctx.merge({"mode": "home", "activity": false, "vehicle": ""}, true)
 			_ctx.erase("simulated_seconds")
 		for frame: int in 60:
 			_now += FRAME_US

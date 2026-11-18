@@ -80,7 +80,7 @@ func _service(release := {}) -> Node:
 		"memory_bytes": 17179869184, "gpu": "NVIDIA GeForce RTX 3060", "renderer": "forward_plus", "driver": "vulkan"}
 	s.context_provider = func() -> Dictionary: return _ctx
 	s.sender = FakeSender.new()
-	_ctx = {"mode": "home", "vehicle": "", "eligible": true, "window_size": Vector2i(1920, 1080), "vsync": 1,
+	_ctx = {"mode": "home", "activity": false, "vehicle": "", "eligible": true, "window_size": Vector2i(1920, 1080), "vsync": 1,
 		"max_fps": 0, "graphics_profile": "unknown", "input_class": "keyboard"}
 	root.add_child(s)
 	return s
@@ -178,11 +178,11 @@ func _activities() -> void:
 	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH) # a saved grant admits at start-up
 	var s := _service()
 	_run(s, 1.0)
-	_ctx.merge({"mode": "flight", "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true, "simulated_seconds": 0.0}, true)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true, "simulated_seconds": 0.0}, true)
 	_run(s, 5.0)
 	s.note_flight_events([{"type": "TAKEOFF"}, {"type": "TOUCHDOWN"}, {"type": "LANDING_SUCCESS"}, {"type": "CRASH"}, "x"])
 	_run(s, 5.0)
-	_ctx.merge({"mode": "home", "vehicle": "", "fixed_wing_accepted": false}, true)
+	_ctx.merge({"mode": "home", "activity": false, "vehicle": "", "fixed_wing_accepted": false}, true)
 	_ctx.erase("simulated_seconds")
 	_run(s, 1.0)
 	var summaries := _events(s, "activity_summary")
@@ -193,13 +193,13 @@ func _activities() -> void:
 			and a.classification == "accepted_fixed_wing" and int(a.takeoffs) == 1 and int(a.landings) == 1
 			and int(a.aircraft_crashes) == 1 and a.outcome == "returned_home" and a.complete_observation == true
 			and int(a.active_seconds) == 9 and int(a.simulated_seconds) == 9, str(a))
-	_ctx.merge({"mode": "flight", "vehicle": "mt8-bisonte", "simulated_seconds": 0.0}, true)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "mt8-bisonte", "simulated_seconds": 0.0}, true)
 	_run(s, 3.0)
 	_ctx.simulated_seconds = 0.0 # restarted
 	_run(s, 2.0)
-	_ctx.merge({"mode": "flight", "vehicle": "my-own-truck", "custom": true}, true)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "my-own-truck", "custom": true}, true)
 	_run(s, 2.0)
-	_ctx.merge({"mode": "home", "vehicle": "", "custom": false}, true)
+	_ctx.merge({"mode": "home", "activity": false, "vehicle": "", "custom": false}, true)
 	_ctx.erase("simulated_seconds")
 	_run(s, 1.0)
 	summaries = _events(s, "activity_summary")
@@ -208,6 +208,15 @@ func _activities() -> void:
 		and summaries[1].takeoffs == null and summaries[1].vehicle_id == "mt8-bisonte", str(summaries))
 	_check("custom content is never named", summaries.size() == 4 and summaries[3].vehicle_id == "custom"
 		and not JSON.stringify(_batches(s)).contains("my-own-truck"))
+	# Workshop editing is measured as its own mode with no vehicle, and is not a vehicle activity.
+	_ctx.merge({"mode": "workshop", "activity": false, "vehicle": "my-draft", "custom": true}, true)
+	_run(s, 12.0)
+	_ctx.merge({"mode": "home", "activity": false, "vehicle": "", "custom": false}, true)
+	_run(s, 1.0)
+	var workshop_windows := _events(s, "performance_window").filter(func(w: Dictionary) -> bool: return w.mode == "workshop")
+	_check("Workshop editing: windows with no vehicle and no activity summary", not workshop_windows.is_empty()
+		and workshop_windows.all(func(w: Dictionary) -> bool: return w.vehicle_id == "none")
+		and _events(s, "activity_summary").size() == 4 and not JSON.stringify(_batches(s)).contains("my-draft"), str(workshop_windows))
 	s.queue_free()
 
 
@@ -246,10 +255,10 @@ func _rotation_and_partial_activity() -> void:
 	_ctx = {}
 	var s := _service()
 	# The saved grant admits at start-up, while a flight is already running: that activity is not complete.
-	_ctx.merge({"mode": "flight", "vehicle": "p51d-mustang-120", "fixed_wing_accepted": true, "simulated_seconds": 0.0}, true)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "p51d-mustang-120", "fixed_wing_accepted": true, "simulated_seconds": 0.0}, true)
 	_check("a saved grant admits at start-up", s.state == "on")
 	_run(s, 3.0)
-	_ctx.merge({"mode": "home", "vehicle": "", "fixed_wing_accepted": false}, true)
+	_ctx.merge({"mode": "home", "activity": false, "vehicle": "", "fixed_wing_accepted": false}, true)
 	_ctx.erase("simulated_seconds")
 	_run(s, 1.0)
 	var summaries := _events(s, "activity_summary")
