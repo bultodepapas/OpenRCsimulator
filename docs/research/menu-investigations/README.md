@@ -6,6 +6,8 @@
 
 Expanded with [twenty targeted loading investigations](vehicle-selection-2026-11-17/techniques/README.md): metadata and virtualization, material reuse, generated preparation, dependency ownership, scheduling/prediction, bounded memory/retention, immutable derivatives, package/texture/mesh delivery, renderer warmup and transactional settings persistence. Each records search terms, primary evidence, application, counterexample and a falsifiable experiment; the plan and benchmark incorporate the resulting decisions.
 
+The [deeper source review at main a7de9b3](vehicle-selection-2026-11-17/deep-code-analysis.md) adds fourteen concrete opportunities, D01–D14, with E19–E32 comparisons: redundant statistics/UI/skin work, restarted pending previews, projected-shadow allocation, late light-layout reuse, worker barriers, repeated validation and unused vehicle-builder preparation. Counts are source-derived; no new runtime speedup is claimed. The implementation plan now screens these smaller changes before broader cache/prefetch experiments.
+
 ## UI-15-JETI-05 — scroll and focus audit, 2026-10-26
 
 [Cross-menu findings and regression evidence](scroll-focus-2026-10-26.md): rejected Workshop lighting edits,

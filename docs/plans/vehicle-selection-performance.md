@@ -1,10 +1,12 @@
 # Responsive vehicle selection and skins
 
-**Status:** proposed implementation plan, expanded with twenty investigations on 2026-11-17. **Owner:** menu/product shell, under UI-05 and UI-39. **Step prefix:** UI-VS-00…12. No step below is delivered merely by adding this plan.
+**Status:** proposed implementation plan, expanded with twenty investigations and a deeper fourteen-finding code review on 2026-11-17. **Owner:** menu/product shell, under UI-05 and UI-39. **Step prefix:** UI-VS-00…12. No step below is delivered merely by adding this plan.
 
 **Baseline:** main [3c91936](https://github.com/bultodepapas/OpenRCsimulator/tree/3c91936ab8f9064daa798311b5fb3e89e28d3754), Godot 4.8-beta2. [Dated audit and source inventory](../research/menu-investigations/vehicle-selection-2026-11-17/README.md). This is the authoritative implementation plan for vehicle catalog scale, skin-selection clarity and Home preview switching; the [menu redesign](menu-redesign.md) continues to own the overall shell and Home-to-flight loading.
 
 The [twenty-investigation index](../research/menu-investigations/vehicle-selection-2026-11-17/techniques/README.md) records search vocabulary, primary evidence, compatibility limits, counterexamples and controlled experiments. Its scoped comparison with newer main `16acd44` found the cited selector/loading seams unchanged. Recommendations below incorporate that work; none is a claimed speedup.
+
+The subsequent [deeper code analysis](../research/menu-investigations/vehicle-selection-2026-11-17/deep-code-analysis.md) audits main `a7de9b35676d891bc2034cc344b910d9e1ef9c61` and adds D01–D14 / E19–E32. It prioritizes removal of repeated UI, history, validation and presentation work before broader caching. Source call/asset counts are verified; their elapsed costs remain unmeasured. Runtime on this documentation branch still uses the baseline above; source links in that new report deliberately pin the newer main.
 
 ## 1. Product outcome
 
@@ -118,6 +120,24 @@ Do not reparent the Home visual into flight. Launch still builds/validates its o
 
 ## 7. Remove work that does not belong on selection
 
+### First remove demonstrated repetition
+
+The deeper review identifies smaller candidates than a new preload/cache layer. Keep each separately reviewable and measured; they do not require a renderer migration or a larger cache.
+
+| Slice | Concrete change to investigate | Boundary and guard |
+| --- | --- | --- |
+| D01 / E19 | Use existing compact statistics summaries and skip unsupported per-activity work | Preserve availability, active-time semantics and service compatibility; refresh the actual selection on Statistics return and translation. Cold reductions remain. |
+| D02–D03 / E20–E21 | Preserve identical valid pending preview work; update selection UI once | Same exact content and live owner only; retain explicit selection/save retries, failure recovery, focus and full locale/roster invalidation. |
+| D04–D05 / E22–E23 | Return the empty/default skin identity without enumeration; initialize Home from one actual snapshot | Keep later admission/validation; avoid default-then-actual replay without exposing an intermediate launch tuple. Measure before the existing loading timestamp. |
+| D07 / E25 | Reuse one Home projector across compatible bindings | Separate renderer retention from mask reuse; old-source signals, light/shape invalidation, policy toggles and retirement remain correct. |
+| D14 / E32 | Apply HX-700 base plus named stock paint in one pass | Model-owner change; keep default/custom routes, independent materials and paint-before-blur ordering. |
+
+After these narrow screens, attribute D06's duplicate alias/archive hashing, D08's late light-layout lookup, D09's unrelated numeric-worker wait and D12's discarded Monster Car driving preparation. For D08, equal hierarchy/transforms and a common manifest are insufficient geometry proof: require exact immutable mesh identity or owner-generated equivalence at both early and late lookup; a late weak-key hit must not overwrite an unproven variant's fresh result. For D09, reserve overlapping worker/candidate memory and preserve the separate flight-scene loader gate. D12's first preview mode keeps rig validation and only omits unused driving samplers/structures; caching validation is a separate experiment.
+
+D10's per-build verified context and D11's package attestation require AS/model/presentation owner design. Public entrypoints, mutable-source invalidation, source/proof checks and post-build scene validation remain authoritative. D13's procedural-paint derivative follows the generated-output and appearance contracts below, including LODs, Extra's original UV attribute and private material ownership. Prefer scoped reuse of exact accepted inputs to a global success cache keyed by path. The [deep report](../research/menu-investigations/vehicle-selection-2026-11-17/deep-code-analysis.md) gives exact call chains, counterexamples and acceptance cases for all fourteen candidates.
+
+### Generate repeated geometry only when attribution justifies it
+
 Use current phase measurements to choose the first expensive stage. Candidate authoring outputs are neutral bounds, parked support pose, propeller clearance, projected-shadow geometry, material-slot tables and default light anchors. They must derive from accepted source geometry and record the input hashes and algorithm version. For a known descriptor, the menu reads compact values instead of repeatedly scanning all vertices.
 
 Keep runtime fallback for older/missing descriptors. Do not publish guessed landing gear, misleading ground capability or an approximate shadow as equivalent without review. Mesh topology, display pose, visibility, relevant material alpha and customization can invalidate different derived values; define keys per output rather than one arbitrary “model cached” flag. Validate generated-versus-runtime arrays/pose and visual output on representative models, including the gearless MoonRunner and helicopter.
@@ -191,11 +211,11 @@ Every row is a separate reviewable change or experiment; no fixed delivery estim
 
 | Step | Work and dependency | Acceptance evidence / current status |
 | --- | --- | --- |
-| UI-VS-00 | Extend existing observers; pin code/assets/imports; inventory current 13 vehicles; attribute hidden dependencies, largest indivisible calls, first draw, persistence and retirement | Native 1080p phase baseline, per-stage uncertainty, RAM/VRAM limits and 100/1,000-entry UI fixture; T06/T20 screening. **Pending** |
-| UI-VS-01 | Explicit desired/effective/displayed skin identity and immediate thumbnail/header; immutable activity launch tuple before drain; conditional persistence pilot only if attributed | Native mouse/key/pad, EN/ES, 100–200% text; Drive/airship/quad changes during drain; missing/replaced skin; full-state save ordering, failure/retry and checkpoint recovery if changed. **Pending; independent of heavy optimizations** |
-| UI-VS-02 | Browsing-aware admission for existing Home preparation; preserve active-job drain | Measured blocked-preview wait and Fly tradeoff; rapid return, cancel, Quit and no competing-resource regressions. Depends 00. **Pending experiment** |
+| UI-VS-00 | Extend existing observers; pin code/assets/imports and fleet/dependency inventory; attribute history copies, pre-feedback work, builder/proof multiplicity, largest calls, allocations, first draw, persistence and retirement | Native 1080p phase baseline, per-stage uncertainty, RAM/VRAM limits and 100/1,000-entry UI fixture; T06/T20 and E19–E32 counters chosen by affected path. **Pending** |
+| UI-VS-01 | Explicit desired/effective/displayed skin identity and immediate thumbnail/header; compact statistics and batched UI; default-skin/initialization fast paths; immutable activity launch tuple | Native mouse/key/pad, EN/ES, 100–200% text; E19/E21/E22/E23, activity changes during drain, missing/replaced skin and save failure/retry. Persistence pilot only if attributed. **Pending; independent of heavy optimizations** |
+| UI-VS-02 | Idempotent exact pending intent; browsing-aware Home preparation; stage-specific numeric barrier experiment with reserved overlap; preserve active-job drain | E20/E27 plus scene-preparation E2; rapid return, cancel, Quit, unchanged loader safety gate and no contention/peak regression. Depends 00; overlap qualification uses 05. **Pending experiment** |
 | UI-VS-03 | Material-only skin transaction pilot on one car then one aircraft | A→B→Default equality, missing-asset rollback, material ownership and no geometry rebuild on proven-compatible changes. Depends 00/01. **Pending** |
-| UI-VS-04 | Trial generated metadata for the dominant fitting/shadow stage; safe phase splitting if needed; optional proxy coordinated with 09 | Equivalence, invalidation, largest indivisible call and visual parity; accepted output or documented rejected/inconclusive experiment with validated runtime fallback. Depends 00, AS/model owners. **Pending experiment** |
+| UI-VS-04 | First screen projector reuse, qualified early light-layout lookup and the Monster Car preview builder; then generated fitting/shadow data or safe phase splitting if attributed | E25/E26/E30; equivalence, invalidation, largest call and visual parity; accepted output or rejected/inconclusive evidence with validated runtime fallback. Depends 00 and relevant model/render owners. **Pending experiment** |
 | UI-VS-05 | Unique-resource ledger and peak admission with count fallback; trace-driven retention policy and retirement/reuse experiments only if needed | Reserved/observed peaks, unknown-size fallback, 20-cycle plateau, unique ownership; equal-cap cache comparison and separate reuse/retirement effects. Depends 00; required before broader retention/prefetch. **Pending** |
 | UI-VS-06 | Shared metadata index and generated stock/skin thumbnails; bounded legacy bootstrap/repair through existing storage | Navigation/query has no synchronous GLB builds/archive scans; reproducible thumbnails; partial/index-repair state; imported invalid/missing/replaced entries remain explicit. Depends 01 and AC seam. **Pending** |
 | UI-VS-07 | Bounded grid, search, type/origin filters, favorites/recent and persistent logical focus | 100/1,000 descriptors, viewport-sized Control/image pool, recycled binding generations, native keyboard/controller and localization checks. Depends 06. **Pending** |
@@ -205,7 +225,7 @@ Every row is a separate reviewable change or experiment; no fixed delivery estim
 | UI-VS-11 | Expand fast appearance route to qualified adapters; optional proven-equivalent GLB extraction | Fleet/material/custom/procedural regressions, generator proofs and matching launch skin; fallback retained. Depends 03/04/05. **Pending** |
 | UI-VS-12 | Integrate stock/import/catalog/appearance/launch and package lifecycle qualification | Native 1080p matrix, above-1080p then 720p, supported renderer/platform evidence and honest remaining limits. Depends accepted preceding slices. **Pending** |
 
-Start with 00 and 01, then run the small 02 experiment and 03 pilot. Do not make a new catalog wait for speculative texture streaming, nor build a complex disk cache before measuring the simpler changes. Stop optional experiments that fail to improve the complete workload or preserve correctness.
+Start with 00 and the small 01 changes: compact statistics, one UI refresh, default-skin resolution and actual-selection initialization. Screen same-intent coalescing in 02, then projector reuse and the owner-reviewed HX-700/Monster Car build slices alongside the 03 appearance pilot. D06/E24 feeds 06; D13/E31 feeds 03/11. D10/E28 and D11/E29 are conditional owner-designed experiments after attribution, with 12 qualifying any accepted change. Keep their prerequisites and separate comparison controls; the table is not authorization to bypass asset/validation owners. Do not make a new catalog wait for speculative texture streaming or a global proof cache. Stop optional experiments that fail to improve the complete workload or preserve correctness.
 
 A resolved experiment can retain the baseline: UI-VS-04 may close with rejected/inconclusive E3 evidence and a qualified runtime fallback. UI-VS-11 then uses that fallback; it does not wait indefinitely for generated metadata to show a benefit. Apply the same explicit accepted/rejected/inconclusive record to conditional mechanisms, without labeling an unimplemented optimization as delivered.
 
@@ -219,6 +239,8 @@ A resolved experiment can retain the baseline: UI-VS-04 may close with rejected/
 | Retained and transient memory | T11 scan resistance, T12 reservations, T13 reuse/retirement | E4; conditional E11/E12 |
 | Rebuildable storage and delivery | T14 content identity/publication, T15 locality, T16 texture encoding, T17 residency, T18 mesh delivery | E9/E13; conditional E14/E6/E16 |
 | Other selection/first-draw costs | T19 shader warmup, T20 persistence | Conditional E8/E17 after E0 |
+| Immediate-path repetition | D01–D05: statistics, identical intent, catalog/layout passes, default resolution, initialization | E19–E23 before expanding caches |
+| Concrete preparation and builder work | D06–D14: alias hashing, projector/layout/worker lifecycle, validation proofs, parked car, paint geometry and double paint | E24–E32, scoped to affected owners and measured stages |
 
 The [twenty notes](../research/menu-investigations/vehicle-selection-2026-11-17/techniques/README.md#the-twenty-investigations) supply per-technique queries and evidence. The [benchmark matrix](../research/menu-investigations/vehicle-selection-2026-11-17/benchmark-protocol.md#5-ordered-experiment-matrix) defines conditional screening and final qualification; the expanded research does not require a Cartesian product of every experiment, vehicle and host.
 

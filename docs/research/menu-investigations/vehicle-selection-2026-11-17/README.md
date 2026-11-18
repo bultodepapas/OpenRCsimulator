@@ -1,8 +1,10 @@
 # Vehicle selection, skins and loading investigation
 
-**Date:** 2026-11-17; expanded with twenty targeted investigations. **Scope:** source audit and implementation planning; no runtime optimization or new performance benchmark is delivered by this branch.
+**Date:** 2026-11-17; expanded with twenty targeted investigations and a subsequent fourteen-finding code review. **Scope:** source audit and implementation planning; no runtime optimization or new performance benchmark is delivered by this branch.
 
 **Audited source:** [OpenRC Simulator main at 3c91936ab8f9064daa798311b5fb3e89e28d3754](https://github.com/bultodepapas/OpenRCsimulator/tree/3c91936ab8f9064daa798311b5fb3e89e28d3754). Engine: Godot 4.8-beta2, cafc17a19; Compatibility by default, Mobile on Apple Silicon. Read the source identities below before comparing this report with a later main branch.
+
+**Latest deep review:** [main at a7de9b35676d891bc2034cc344b910d9e1ef9c61](https://github.com/bultodepapas/OpenRCsimulator/tree/a7de9b35676d891bc2034cc344b910d9e1ef9c61). Its [separate report](deep-code-analysis.md) pins every code claim to that revision and explains the scoped drift. The branch's runtime base remains `3c91936`; the earlier audit and research remain dated evidence.
 
 ## Recommendation
 
@@ -10,11 +12,14 @@ Make browsing a lightweight catalog operation, and make a compatible skin change
 
 The current implementation already has asynchronous selected-resource loading, a three-model preview cache, latest-request ownership, a direct paint gallery, and selected flight preparation during Home idle time. Adding another generic loader would miss the remaining work. Full visual construction, fitting, skin processing and resource ownership after loading are the more useful investigation boundaries. Actual dominance on 4.8-beta2 remains to be measured.
 
+The deeper review now puts narrower fixes first: compact statistics instead of copied histories, one selection UI transaction, preservation of identical pending work, default-skin and initialization fast paths, and renderer/build steps that are unnecessarily repeated. Larger caches and preloading remain measured follow-ups, with exact content and memory ownership.
+
 ## Reading order
 
 | Document | Purpose |
 | --- | --- |
 | [Implementation plan](../../../plans/vehicle-selection-performance.md) | Authoritative proposed steps, ownership, dependencies, architecture and acceptance gates |
+| [Deeper code analysis: D01–D14](deep-code-analysis.md) | Latest source pin, precise redundant-work paths and counts, smaller implementation candidates, correctness risks and E19–E32 screens |
 | [Code audit](code-audit.md) | What exists, exact source locations, fleet and skin inventory, likely costs and evidence limits |
 | [Interface specification](ux-spec.md) | Catalog layout, clear vehicle/skin identity, input behavior and loading/error states |
 | [Loading research](loading-research.md) | Primary engine sources, game loading techniques, RAM/VRAM policy and rejected shortcuts |
@@ -41,6 +46,12 @@ The plan now distinguishes immediate thumbnail, optional proxy and full visible 
 
 During expansion, main advanced to `16acd44`. The [scoped drift check](techniques/README.md#source-pin-and-drift-check) found the cited selector, builder, persistence, importer and sidecar paths unchanged. This branch retains runtime `3c91936`; a newer-main merge is not implied by this documentation update.
 
+## What the deeper code review adds
+
+Fourteen findings at `a7de9b3` identify work that is obscured by a generic “loading” label. Examples: Home deep-copies full statistics histories for five scalar fields; one ready catalog activation visits N rows three times; retained models still rebuild their enabled shadow projector; and default-skin enumeration occurs before the existing Fly feedback timer starts. The Monster Car preview constructs 209 driving samplers it discards, while named HX-700 stock skins receive two paint passes. Scoped alias/hash and manifest/proof counts identify further owner-reviewed experiments. These are source/asset observations, not timings or claims that any particular stage dominates.
+
+The plan and protocol now include E19–E32, with the exact tuple/retry, ledger freshness, shape/geometry proof, mutable-input, package, material, LOD and launch checks required by each change. Counterexamples rule out skipping validation, trusting equal transforms as equal geometry, expanding worker concurrency without memory reservations, or adding viewports for the whole fleet. The new analysis sharpens T01–T20 rather than replacing their primary research.
+
 ## Evidence classification
 
 **Verified current-source fact** means checked against the pinned source above. **Historical measurement** means taken from an existing dated report with its original engine, host and resolution. **Hypothesis** means a code path has a plausible cost that needs attribution. **Proposed target** means a product/engineering acceptance objective, not an achieved result. These categories are kept distinct throughout the packet.
@@ -56,3 +67,7 @@ The expansion adds twenty technique notes and their index, and updates the plan,
 **Expansion verification:** 29 Markdown paths relative to `4b750f4`: 20 technique notes, one research index and eight modified documents. All **146 new local links and anchors** passed; fences are balanced across all 29 paths and `git diff --cached --check` passes. T01–T20 are present exactly once as individual notes and all map into the plan and E0–E18 protocol. The check excludes 395 unchanged link occurrences rather than claiming a repository-wide link repair. No runtime code or assets changed, and no native performance, simulation or package tests were run.
 
 Independent source and architecture reviews checked the loading, identity, launch, memory, persistence and import assumptions. Their corrections include visible-first-draw ordering, incompatible requests for the same engine path, finite retirement/pressure policy, low-tier dependency closure, durable-state checks and generation ordering across settings writers. Runtime suites remain future implementation gates, not tests claimed for this documentation-only review.
+
+**Deeper-review verification:** nine Markdown paths relative to `103ba9e9f3f08e5845c8386c1c15f18b29f15d76`: one new deep analysis and eight updated plan, protocol, UX, audit, research, navigation and decision documents. The candidate Git-tree check passes **21 new local links/anchors**, balanced fences in all nine paths and `git diff --cached --check`; 421 unchanged link occurrences are excluded. **74 pinned source references across 31 files** were checked against Git objects at `a7de9b3` for path existence and line bounds where specified. This is not an HTTP-availability or semantic-proof check. D01–D14 occur once as report sections, map to E19–E32 and appear in the authoritative plan/protocol; E0–E32 and all twenty earlier technique files remain present.
+
+The independent critical review required the D08 geometry qualification at both early and late cache lookup, including direct/no-worker paths; the integrated proposal and E26 now preserve each unproven variant's own fitted layout through attachment and assert the final kit. Rig/companion/paint counts were checked against the pinned tree. These documentation and source checks do not establish measured speedups, and no runtime, native graphics, simulation or exported-package tests were run in this round.

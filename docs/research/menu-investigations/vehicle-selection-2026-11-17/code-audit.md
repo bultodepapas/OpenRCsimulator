@@ -4,6 +4,8 @@
 
 The [twenty-investigation expansion](techniques/README.md) adds F21–F24 below and independently checks exact beta2 engine seams. Its scoped comparison with main `16acd44` found the cited application paths unchanged; the runtime baseline remains `3c91936`.
 
+The later [deep code review, D01–D14](deep-code-analysis.md), reads main `a7de9b3` directly. It adds statistics/history amplification, identical-request restarts, repeated catalog/layout work, pre-feedback skin enumeration, duplicate alias hashing, presentation allocation/cache ordering, validation multiplicity and vehicle-specific unused preparation. Its permanent source links and scoped counts belong to that newer revision; F01–F24 below retain their original identity. No new runtime measurement is implied.
+
 ## 1. Runtime identity and scope
 
 [app/get-godot.sh](../../../../app/get-godot.sh) pins Godot 4.8-beta2 / cafc17a19. [app/project.godot](../../../../app/project.godot#L61-L74) selects Compatibility normally and Mobile for arm64, with 4× MSAA. [STACK](../../../STACK.md) and the renderer guard describe the Apple Silicon route. The project prioritizes native 1080p qualification before larger resolutions and finally 720p.

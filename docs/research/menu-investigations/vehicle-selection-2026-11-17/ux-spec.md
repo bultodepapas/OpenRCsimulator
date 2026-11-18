@@ -6,6 +6,8 @@
 
 At every point the interface must answer: which vehicle is selected, which exact skin will be used, whether the picture matches that choice, and what the main action will start. Vehicle browsing and paint browsing should stay usable while a detailed model is being prepared.
 
+The [deeper code review](deep-code-analysis.md) adds three implementation-backed behavior requirements. Re-activating the same valid pending vehicle/skin keeps useful preparation in progress, while explicit Retry and failed saves remain actionable. Home first presents the actual restored selection, without an intermediate default-aircraft state. Statistics summaries stay tied to the current selected vehicle after translation or returning from Statistics, and reading those summaries must not copy full flight histories into the selection path. These requirements retain the same visible controls and immediate feedback contract.
+
 Keep “Vehicles” as the category-neutral destination. Use the current human-readable names, family and origin, and preserve experimental/surrogate status. The existing main action remains FLY for flight activities and DRIVE for cars. A future boat adapter supplies its own activity semantics only when it exists; do not show an empty Boats destination or imply a boat can launch through the aircraft solver.
 
 ## 2. Expanded Vehicles workspace

@@ -8,6 +8,10 @@ The follow-up [T01–T20 research index](techniques/README.md) contains twenty i
 
 The most consequential new source checks are [F21–F24](code-audit.md#5-loading-findings-and-investigation-priority): synchronous verified settings publication, Creator's compressed-extension restrictions, the jet/F4U BasisU import recipes, and the aggregated pipeline counters. They expose measurement and compatibility boundaries, not established bottlenecks. Scan-resistant caching, cross-Home root carryover, proxy assets, package locality and write coalescing remain conditional; none is added merely because another engine or paper reports a benefit.
 
+## Deeper application-code follow-up
+
+The [D01–D14 review at main a7de9b3](deep-code-analysis.md) turns the broader techniques into smaller source-specific opportunities. Examples include using the existing compact statistics API, retaining identical pending work, coalescing catalog/layout invalidation, avoiding default-skin enumeration, retaining one shadow projector, consulting qualified light-layout evidence before computation, and omitting driving samplers from a parked car preview. Validation/proof reuse and procedural paint derivatives remain separately owned experiments. These are verified operations with unmeasured costs; their [E19–E32 protocol](benchmark-protocol.md#targeted-comparisons-added-by-the-deeper-code-review) measures complete event-to-draw latency and correctness before expanding cache or preload policy.
+
 ## 1. Separate the costs before choosing a technique
 
 A vehicle switch can involve catalog lookup, validation/hash work, disk reads, decompression/transcoding, script loading, scene instantiation, binding/customization, geometry fitting, texture creation/upload, first-use shader/pipeline work, drawing, and retirement of old resources. Some stages overlap. Sum only exclusive phase spans; do not add nested timings or a separate attribution run to total wall time.
