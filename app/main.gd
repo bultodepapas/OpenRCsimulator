@@ -463,6 +463,9 @@ var _shadow: MeshInstance3D
 ## [V] cycles; Gate L decides the default.
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
+## SA-02/SA-04: the last terrain receiving point, reused while the query is skipped so the footprint (and the
+## native handoff measured at it) stays on the terrain instead of jumping to the flat plane.
+var _shadow_receiving := {y = NAN, fit = 1.0}
 var _shadow_cli_override := false
 var _shadow_preference := ""
 var _shadow_settings_revision := -1
@@ -3584,6 +3587,7 @@ func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
 ## and gear retraction instead of keeping the bind-time pose.
 func _bind_aircraft_shadow() -> void:
 	Shadow.Projected.tag_articulation(_airplane)
+	_shadow_receiving = {y = NAN, fit = 1.0}
 	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
 
 
@@ -3599,9 +3603,13 @@ func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vecto
 	var cue_direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	# SA-04: the cue lands on the session's own terrain (read-only) and fades over ground that is far from flat.
 	# Query the terrain only for a cue that can draw (not in Auto/Native-only, Off or at night).
-	var drawn := _shadow.visible and Atmosphere.ShadowSettings.projected_enabled() and session != null
-	var receiving := Shadow.receiving_ground(pose.pos, Vector3.UP if _shadow_mode == "vertical" else cue_direction,
-		Callable(self, "_ground_height") if drawn else Callable(), maxf(_extent.x, _extent.y))
+	# SA-02: nor while a casting native sun owns the shadow here (last frame's footprint decides).
+	var drawn := _shadow.visible and Atmosphere.ShadowSettings.projected_enabled() and session != null \
+		and (_shadow_mode == "vertical" or Shadow.native_handoff(_shadow) > 0.0)
+	if drawn:
+		_shadow_receiving = Shadow.receiving_ground(pose.pos, Vector3.UP if _shadow_mode == "vertical" else cue_direction,
+			Callable(self, "_ground_height"), maxf(_extent.x, _extent.y))
+	var receiving := _shadow_receiving
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, cue_direction, strength * float(receiving.fit),
 		_shadow_mode, float(receiving.y))
 	# CAM-14 keeps its existing light input: the raw sun in fixed time, the bounded direction in flowing time.

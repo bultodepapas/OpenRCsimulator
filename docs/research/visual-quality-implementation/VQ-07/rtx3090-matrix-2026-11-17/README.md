@@ -68,11 +68,53 @@ Wall frame interval in ms. The GPU column is the root-viewport poll, whose fresh
 5. **The live route is CPU-bound by physics, not rendering.** Static rows run 3.5–4.5 ms p50 with fewer draws than scripted. The engine log shows the native kernel was refused (`mirrored source differs from the verified native build: app/app_state/native_package.gd`), so physics ran on the GDScript reference at a median 742 µs per 240 Hz tick, above the ROADMAP's 500 µs Gate P budget. See the native follow-up below.
 6. **VSync pacing:** High Vulkan missed more 120 Hz vblanks (15 intervals >12.5 ms in 20 s) than Standard (1). This is one run per row and needs repeats before any swapchain or frame-queue change.
 
-## Native kernel follow-up: blocked on this enrolled host
+## Native kernel follow-up (2026-11-18)
 
-The Windows NK-4 build ran with `OPENRC_NK_TOOL_ROOT=D:/OpenRCsimulator-native/nk`. The DLL and its mutant were built with MinGW g++ 15.2, linking only `KERNEL32.dll` and `msvcrt.dll`. The exFAT `U:` drive cannot host the root, because Git refuses its ownerless checkout. Every one of the 19 oracle gates then stopped before Godot started: `tools/testqueue/integration.py` refuses checked commands with user arguments (`admitted focused checks do not accept mutable external application inputs`), and no queue preset runs the oracles. Without that evidence `--install-app` correctly refuses, so flights here still use the GDScript reference physics.
+### Build and gates
 
-Running the gates needs an owner decision: an admitted queue route for NK oracles, or a deliberate un-enrolled window for the host. Forging queue admission is not an option. After install, rerun the `static-*` rows to measure the physics change.
+- **Build.** The Windows NK-4 build used `OPENRC_NK_TOOL_ROOT=D:/OpenRCsimulator-native/nk`. The exFAT `U:` drive cannot host the root, because Git refuses its ownerless checkout. MinGW g++ 15.2 built the DLL and its mutant, which link only `KERNEL32.dll` and `msvcrt.dll`.
+- **Why the first attempt stopped.** The enrolled host's queue refuses checked commands that carry user arguments, so the first gate attempt stopped before Godot started.
+- **How the gates ran.** All 19 headless gates ran with `OPENRC_TESTQUEUE_ROOT` set to a private, unenrolled `U:` root. This is the owner-approved convention for this host. No timing gate is involved: `trajectory` uses `skip-timing=true`.
+- **Result.** The 18 oracles were bit-identical to the GDScript reference, for example 128,664 of 128,664 stage states. The negative control diverged as required, with 28,315 of 128,664 states differing.
+
+### Installation
+
+Installation first refused, because `app/.godot` is a junction to the relocated import cache on `D:`. The installer now reads a relocated `extension_list.cfg` and refuses only when it would have to remove this kernel's entry; the change is in `research/native-kernel/build.py` and has a test.
+
+The builder hash is part of the build receipt, so the change required a fresh build, mutant and full gate run, which all passed again before installation.
+
+### Native physics results
+
+The `nk-static-*` rows rerun the live-physics route with the installed backend. Every log reports `"backend":"native"`, every run had no errors, and every diagnosis was valid. In the table, "physics step" is the median `physics_step_usec`.
+
+| Row | Wall p50 (ms) | Wall p99 (ms) | Physics step (µs) |
+| --- | --- | --- | --- |
+| Standard, OpenGL | 4.47 → **3.44** | 10.26 → **5.82** | 742 → **384** |
+| High, Vulkan | 3.79 → **2.72** | 6.88 → **4.78** | 742 → **385** |
+| High, D3D12 | 3.94 → **2.97** | 7.18 → **5.38** | 736 → **400** |
+| Mobile, Vulkan | 3.63 → **2.52** | 6.81 → **4.16** | 742 → **379** |
+| Mobile, D3D12 | 3.51 → **2.60** | 5.92 → **4.48** | 719 → **373** |
+| Standard, 4K | 5.23 → **3.43** | 9.75 → **5.65** | 767 → **380** |
+| High Vulkan, 4K | 4.17 → **2.54** | 8.62 → **3.46** | 755 → **452** |
+
+The physics step halves and now sits inside the ROADMAP's 500 µs Gate P budget. Live-route frame time falls 25–40% at p50 and 30–60% at p99.
+
+### Native follow-up limits
+
+These numbers come from a parked aircraft on one host. The installation is local and ignored by Git. Windows release packages still ship without the native kernel; the [NK guide](../../../../../research/native-kernel/README.md#windows-build-nk-4) keeps releases Linux-only.
+
+## Follow-up: saved graphics mode (VQ-07h, 2026-11-18)
+
+Finding 2 led to the owner's [default-renderer decision](../../../../DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package). The engine behavior it relies on was checked on this host with official 4.8-beta2. A minimal project set `config/project_settings_override.template="user://renderer.cfg"`, and the file selected `forward_plus`:
+
+| Launch | Result |
+| --- | --- |
+| Editor binary, `.template` key | `gl_compatibility`/`opengl3`; the file is ignored |
+| Editor binary, untagged key | `forward_plus`/`vulkan` |
+| Exported release template, `.template` key | `forward_plus`/`vulkan` |
+| Exported template running the real `renderer_preference.gd`, no file | 1st process `gl_compatibility`, detected `NVIDIA GeForce RTX 3090`, saved the file and restarted; 2nd `forward_plus`/`vulkan`, no restart; a 3rd manual launch started directly in `forward_plus` |
+
+`app/tests/test_renderer_preference.gd` covers the GPU policy, every startup transition and the file format. The renderer guard and High-restart tests still pass. A full exported game was not launched, and Automatic's GPU list is extrapolated from this one RTX row: other GPUs need their own rows.
 
 ## Limits
 

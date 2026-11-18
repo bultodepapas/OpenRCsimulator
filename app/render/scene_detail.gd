@@ -7,6 +7,7 @@
 ## saved default) resolves through recommend() at each launch; tools without a preference keep High.
 extends RefCounted
 
+const GpuCapability := preload("res://render/gpu_capability.gd")
 const LEVELS: Array[String] = ["low", "medium", "high", "extreme"]
 const DEFAULT := "high"
 const AUTO := "auto"
@@ -76,6 +77,10 @@ static func recommend(adapter_name: String, vendor: String) -> Dictionary:
 	var gpu := (adapter_name + " " + vendor).strip_edges().to_lower()
 	if gpu.is_empty():
 		return {level = AUTO_FALLBACK, reason = "no GPU reported"}
+	# VQ-07h: known GPUs follow their estimated capability (data/gpu/capability.json); markers cover the rest.
+	var capable: Dictionary = GpuCapability.scene_detail_level(adapter_name)
+	if not str(capable.level).is_empty():
+		return {level = capable.level, reason = capable.reason}
 	for rule: Array in [[SOFTWARE_MARKERS, "low", "software renderer"], [MOBILE_MARKERS, "low", "mobile GPU"],
 			[ENTRY_DISCRETE_MARKERS, "medium", "entry-level GPU"], [DISCRETE_MARKERS, "high", "dedicated GPU"],
 			[INTEGRATED_MARKERS, "medium", "integrated GPU"]]:

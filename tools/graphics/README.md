@@ -1,16 +1,25 @@
 # Graphics modes
 
-VQ-07 uses the existing Godot renderer and accepted assets. Standard remains the
-default in the official-engine build. The [Windows NVIDIA package](native/README.md)
+VQ-07 uses the existing Godot renderer and accepted assets. The official-engine build
+starts in the saved graphics mode. Automatic, the default, chooses High on Windows x86_64 when the GPU
+[capability table](../../app/data/gpu/capability.json) (generator: `build_gpu_capability.py`) predicts that
+High fits its budget at the screen's resolution, and Standard elsewhere
+([decision](../../docs/DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package)). The [Windows NVIDIA package](native/README.md)
 defaults to High and exposes DLSS, DLAA and Reflex in Settings. High is not a
 hardware performance guarantee. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
 Follow-up: [field-cue colors and Windows menu restart](../../docs/research/visual-quality-implementation/VQ-07/high-followup-2026-10-21/README.md).
 
 From Home, open **Settings → Graphics → Enable High (restart)**. Keep pending display
-changes first. **Restart in Standard** returns to Compatibility. Closing the game
-and launching normally returns to the package default; no renderer preference, retry
-marker or automatic restart is saved. Restart is unavailable during a flight or
-Workshop session. If the engine falls back, Settings reports Standard.
+changes first. **Restart in Standard** returns to Compatibility. Exported builds on
+Windows and Linux x86_64 remember that choice in `user://renderer.cfg`, which the engine
+reads before it picks a renderer (`config/project_settings_override.template`), so it
+replaces Automatic. The first Automatic launch that selects High restarts once. Editor-binary
+launches (development, tests, captures, research) ignore the file and use `project.godot`;
+pass `--rendering-method` for a specific renderer. A command-line renderer or driver is
+never overridden. A High launch that does not confirm, or that the engine replaces with
+OpenGL, falls back to Standard and blocks High for that build; a new build retries.
+To reset, delete `renderer.cfg` from the user data folder. Restart is unavailable during a
+flight or Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
 8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.

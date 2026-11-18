@@ -331,10 +331,62 @@ func _check_projector_pose(label: String, projected: Node, model: Node3D, sun: V
 	_check(label + " uses the global source basis", actual.is_equal_approx(model.global_basis))
 
 
+## SA-02: in Auto a casting native sun owns the aircraft's ground shadow; the Sun cue fills only its fade band.
+func _native_handoff() -> void:
+	_select("auto", "sun")
+	var host := Node3D.new()
+	root.add_child(host)
+	var camera := Camera3D.new()
+	camera.far = 5000.0
+	host.add_child(camera)
+	camera.current = true
+	var sun := DirectionalLight3D.new()
+	sun.directional_shadow_max_distance = 300.0
+	sun.directional_shadow_fade_start = 0.8
+	host.add_child(sun)
+	ShadowSettings.apply_sun(sun, true)
+	var model := _model("HandoffAircraft")
+	host.add_child(model)
+	var carrier := Shadow.create(host)
+	Shadow.bind_model(carrier, model)
+	var receiver: MeshInstance3D = carrier.get_node("ProjectedShadow").get("receiver")
+	var material := carrier.material_override as StandardMaterial3D
+	var cue_alpha := func(depth: float, cue: String) -> float:
+		Shadow.update(carrier, Basis.IDENTITY, Vector3(0, 3, -depth), 1.0, 1.0, Vector3.UP, 1.0, cue)
+		return material.albedo_color.a
+	var full := Shadow.alpha(3.0)
+	_check("SA-02: Auto suppresses the Sun cue where the native sun draws the shadow", sun.shadow_enabled
+		and cue_alpha.call(20.0, "sun") == 0.0 and not receiver.visible)
+	var band: float = cue_alpha.call(270.0, "sun")
+	# The engine fades by view depth at the receiving point: the footprint centre, not the aircraft.
+	var depth := -carrier.global_position.z
+	_check("SA-02: the cue complements the engine's fade band", absf(depth - 270.0) < 1.0
+		and is_equal_approx(band, full * smoothstep(240.0, 300.0, depth)) and band > 0.0 and band < full
+		and receiver.visible)
+	_check("SA-02: beyond native range the cue owns the shadow", is_equal_approx(cue_alpha.call(400.0, "sun"), full))
+	_check("SA-02: the Vertical aid is not handed off", is_equal_approx(cue_alpha.call(20.0, "vertical"), full)
+		and receiver.visible)
+	sun.light_energy = 0.0
+	_check("SA-02: a sun without energy casts nothing, so the cue stays", is_equal_approx(cue_alpha.call(20.0, "sun"), full))
+	sun.light_energy = 1.0
+	camera.far = 200.0
+	_check("SA-02: a nearer camera far plane ends the native range first", is_equal_approx(cue_alpha.call(250.0, "sun"), full))
+	camera.far = 5000.0
+	_select("projected", "sun")
+	_check("SA-02: Projected keeps the full cue near the camera", not sun.shadow_enabled
+		and is_equal_approx(cue_alpha.call(20.0, "sun"), full))
+	ShadowSettings.apply_sun(sun, false)
+	_select("auto", "sun")
+	_check("SA-02: a vetoed sun (night, source off) leaves the cue to the projector", not sun.shadow_enabled
+		and is_equal_approx(cue_alpha.call(20.0, "sun"), full))
+	host.free()
+
+
 func _run() -> void:
 	_flight_modes()
 	_main_shadow_presentation()
 	_cue_rules()
+	_native_handoff()
 	_projector_lifecycle()
 	_standalone_projector_entry()
 	_select("auto", "auto")

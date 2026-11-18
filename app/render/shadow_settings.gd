@@ -33,6 +33,8 @@ const LIGHT_BASE := &"openrc_shadow_base"
 const LIGHT_REQUEST := &"openrc_shadow_requested"
 const LIGHT_REVISION := &"openrc_shadow_revision"
 const LIGHT_DISTANCE_CAP := &"openrc_shadow_distance_cap"
+## SA-22: the directional atlas submitted while native shadows are disabled (256² 16-bit, 128 KiB if ever drawn).
+const PARKED_ATLAS_SIZE := 256
 
 static var revision := 0
 static var _requested: Dictionary = DEFAULTS.duplicate(true)
@@ -79,7 +81,7 @@ static func resolve(raw: Dictionary, renderer: String, high_profile: bool,
 			reasons.append("The selected technique suppresses the planar aircraft cue.")
 		cue = "off"
 	if technique == "auto":
-		reasons.append("Current coverage retains both native and projected shadows.")
+		reasons.append("Native shadows own the aircraft's ground shadow in range; the planar cue takes over beyond it.")
 	var softness: String = requested.shadow_softness
 	if softness == "auto":
 		softness = "hard" if int(allocation.filter_quality) == 0 else "soft"
@@ -136,11 +138,19 @@ static func _commit(high_profile: bool) -> void:
 	_receipt = receipt
 	revision += 1
 	var state: Dictionary = _receipt.effective
-	var signature: Array = [state.atlas_size, state.use_16_bits, state.filter_quality]
+	# SA-22: engines allocate the directional atlas on the first native shadow frame and keep it until its size
+	# changes. A disabled native route parks it at the minimum, so turning Native off returns that memory; this runs
+	# before the lights below, so re-enabling restores the selected size before any light casts again.
+	var native := bool(state.native)
+	var signature: Array = [int(state.atlas_size) if native else PARKED_ATLAS_SIZE,
+		bool(state.use_16_bits) if native else true, int(state.filter_quality)]
 	if signature != _global_signature:
 		if DisplayServer.get_name() != "headless":
-			RenderingServer.directional_shadow_atlas_set_size(int(state.atlas_size), bool(state.use_16_bits))
-			RenderingServer.directional_soft_shadow_filter_set_quality(int(state.filter_quality) as RenderingServer.ShadowQuality)
+			if _global_signature.size() != 3 or signature.slice(0, 2) != _global_signature.slice(0, 2):
+				RenderingServer.directional_shadow_atlas_set_size(int(signature[0]), bool(signature[1]))
+			# RD rebuilds its scene-shader specialization on a filter change; submit only real changes.
+			if _global_signature.size() != 3 or signature[2] != _global_signature[2]:
+				RenderingServer.directional_soft_shadow_filter_set_quality(int(signature[2]) as RenderingServer.ShadowQuality)
 		_global_signature = signature
 	var alive: Array[WeakRef] = []
 	for reference in _lights:
@@ -174,11 +184,12 @@ static func effective() -> Dictionary:
 
 ## SA-13: the global atlas/filter values this owner last submitted to the RenderingServer, which live setting changes
 ## never write back to ProjectSettings. `submitted` is false where no renderer accepted them (headless). This is the
-## requested configuration, not a measured GPU allocation.
+## requested configuration, not a measured GPU allocation. `parked` marks the SA-22 minimum while native is disabled.
 static func applied_global() -> Dictionary:
 	ensure_configured(_high_active())
 	var result := {"atlas_size": 0, "use_16_bits": false, "filter_quality": 0,
-		"submitted": DisplayServer.get_name() != "headless", "revision": revision}
+		"submitted": DisplayServer.get_name() != "headless", "revision": revision,
+		"parked": not bool(_receipt.effective.native)}
 	if _global_signature.size() == 3:
 		result.atlas_size = int(_global_signature[0])
 		result.use_16_bits = bool(_global_signature[1])
@@ -245,6 +256,18 @@ static func aircraft_cue() -> String:
 	if _receipt.is_empty():
 		ensure_configured(_high_active())
 	return str(_receipt.effective.aircraft_cue)
+
+
+## SA-02: the registered world sun currently drawing native shadow maps into `world`, or null.
+static func casting_sun(world: World3D) -> DirectionalLight3D:
+	if world == null:
+		return null
+	for reference in _lights:
+		var light := reference.get_ref() as DirectionalLight3D
+		if light != null and light.shadow_enabled and light.light_energy > 0.0 and light.is_inside_tree() \
+				and light.is_visible_in_tree() and light.get_world_3d() == world:
+			return light
+	return null
 
 
 ## Called after the atmosphere/profile has established its original per-light values.

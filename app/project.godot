@@ -12,6 +12,9 @@ run/main_scene="res://ui/startup.tscn"
 boot_splash/show_image=false
 boot_splash/bg_color=Color(0.003, 0.006, 0.012, 1)
 config/features=PackedStringArray("4.8")
+; VQ-07h: exported builds start in the saved graphics mode (app_state/renderer_preference.gd). The
+; .template tag keeps editor-binary development, test, capture and research launches on this file's renderer.
+config/project_settings_override.template="user://renderer.cfg"
 
 [autoload]
 

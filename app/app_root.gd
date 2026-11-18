@@ -44,6 +44,8 @@ const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
+const WorldResourceHold := preload("res://render/world/world_resource_hold.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -139,6 +141,8 @@ var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
 ## DT-MAC-05b: post-initialization recovery marker for the RD Standard renderer (empty outside the Home route).
 var renderer_guard_path := ""
+## A33: the departing activity's disk-backed meshes/materials/textures, held until Home is rebuilt.
+var _departing_world_resources: Array[Resource] = []
 ## UI-FS: tests/headless routes are memory-only unless they explicitly supply an isolated store.
 var statistics_path := ""
 var statistics_service: Node
@@ -384,6 +388,10 @@ func _ready() -> void:
 	renderer_guard_path = preferences_path + ".renderer"
 	if RendererGuard.begin(get_tree(), renderer_guard_path):
 		return # restarting into Compatibility after an unconfirmed RD launch of this build
+	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
+			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
+		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+		return # restarting into the saved graphics mode (exported builds only)
 	has_home = true
 	var ui_window: Window = get_tree().root
 	_automatic_window_size = ui_window.size
@@ -603,6 +611,8 @@ func _show_first_home_staged() -> void:
 func _return_home(after: Callable = Callable()) -> void:
 	if not flight_loading_enabled or home_build_pending or not is_inside_tree():
 		show_home()
+		if not home_build_pending:
+			_departing_world_resources.clear()
 		if after.is_valid():
 			after.call()
 		return
@@ -709,6 +719,7 @@ func _build_home_staged(progress: Callable, before_install: Callable) -> void:
 
 func _finish_home_build() -> void:
 	home_build_pending = false
+	_departing_world_resources.clear() # Home now references what it reused; the rest may unload
 	_home_build_cancelled = false
 	if _home_rebuild_after_build:
 		_home_rebuild_after_build = false
@@ -1039,6 +1050,7 @@ func end_ground_vehicle() -> void:
 
 func _commit_end_ground_vehicle() -> void:
 	_menu_feedback(&"exit")
+	_departing_world_resources = WorldResourceHold.collect(ground_vehicle) # Home reuses them instead of reloading
 	remove_child(ground_vehicle)
 	ground_vehicle.queue_free()
 	ground_vehicle = null
@@ -1900,9 +1912,17 @@ func _perform_graphics_restart(profile: String) -> void:
 	# Only Home can enter here, so no flight log or Workshop draft can be discarded.
 	if not renderer_guard_path.is_empty():
 		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+	# Resolve the target before saving: a saved High override makes this session's project renderer
+	# Forward+, and only the state read before the save still records the host's Standard renderer.
+	var arguments := HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
+		ProjectSettings.globalize_path("res://"))
+	# VQ-07h: exported builds remember the choice; later launches start in it directly.
+	var persistent := preferences_path == Preferences.DEFAULT_PATH
+	if RendererPreference.save_choice(profile, persistent, HighGraphics.standard_rendering_method()) \
+			and profile == "high" and not renderer_guard_path.is_empty():
+		RendererGuard.forget_failure(renderer_guard_path) # an explicit request retries High; the guard re-arms
 	OS.set_environment(HighGraphics.ENVIRONMENT_KEY, profile)
-	OS.set_restart_on_exit(true, HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
-		ProjectSettings.globalize_path("res://")))
+	OS.set_restart_on_exit(true, arguments)
 	get_tree().quit()
 
 
@@ -4332,6 +4352,7 @@ func _commit_end_flight() -> bool:
 	screens.set_session(null)
 	flight.recorder.detach()
 	if controllers != null: controllers.attach_session(null)
+	_departing_world_resources = WorldResourceHold.collect(flight) # Home reuses them instead of reloading
 	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
 	flight.queue_free()
 	flight = null

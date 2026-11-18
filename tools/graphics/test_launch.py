@@ -298,6 +298,8 @@ class GraphicsLauncherTests(unittest.TestCase):
             original.replace("[rendering]", 'config/project_settings_override="user://override.cfg"\n[rendering]'),
             original.replace("[rendering]", 'config/use_hidden_project_data_directory=false\n[rendering]'),
             original.replace("[rendering]", f'config/name="{self.project_name}"\n[rendering]'),
+            original.replace("[rendering]", 'config/project_settings_override.template="user://other.cfg"\n[rendering]'),
+            original.replace("[rendering]", 'config/project_settings_override.windows="user://renderer.cfg"\n[rendering]'),
         )
         for value in variants:
             self.project_file.write_text(value, encoding="utf-8")
@@ -311,6 +313,15 @@ class GraphicsLauncherTests(unittest.TestCase):
             with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
                 launch.main(self.research_args())
             run.assert_not_called()
+
+    def test_research_accepts_the_export_only_graphics_mode_override(self) -> None:
+        original = self.project_file.read_text(encoding="utf-8")
+        self.project_file.write_text(original.replace(
+            "[rendering]", 'config/project_settings_override.template="user://renderer.cfg"\n[rendering]'), encoding="utf-8")
+        settings, _ = launch._research_project_settings(self.research)
+        self.assertEqual(settings.get("application/config/project_settings_override", '""'), '""')
+        live = (launch.APP_DIR / "project.godot").read_text(encoding="utf-8")
+        self.assertIn('config/project_settings_override.template="user://renderer.cfg"', live)
 
     def test_research_rejects_live_project_and_stale_profile(self) -> None:
         with mock.patch.object(launch.subprocess, "run") as run:

@@ -256,7 +256,9 @@ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, 
 	var ground := ground_y if is_finite(ground_y) else 0.0
 	shadow.transform = footprint(b, pos, span, length, direction, ground_y)
 	var height := pos.y - ground
-	var opacity := alpha(height) * clampf(strength, 0.0, 1.0) if enabled else 0.0
+	# SA-02: beside a casting native sun the Sun cue yields to it; the Vertical aid is a declared aid and stays.
+	var handoff := native_handoff(shadow) if enabled and cue != "vertical" else 1.0
+	var opacity := alpha(height) * clampf(strength, 0.0, 1.0) * handoff if enabled else 0.0
 	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
 	var shown := shadow.is_visible_in_tree() if shadow.is_inside_tree() else shadow.visible
 	if enabled and shown and opacity > 0.0:
@@ -270,6 +272,28 @@ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, 
 	if projected != null:
 		projected.receiver_height = ground + Spec.SHADOW.height
 		projected.refresh(height, direction.normalized(), opacity, enabled and shown and opacity > 0.0)
+
+
+## SA-02: the planar Sun cue's share (0..1) of the aircraft-to-ground shadow at its footprint. While a native sun
+## casts into the same world, the engine owns that shadow (with self-shadowing and contact) wherever it draws one;
+## the cue takes over only across the engine's own fade band at the receiving point,
+## smoothstep(fade_start * max, max, view depth), the complement of the native fade, so the two never stack at full
+## strength. 1 without a casting native sun (Projected, Off, night, renderers without maps). Without a camera the
+## carrier is treated as near (a static preview built before its camera). Below the cue's 12° bound the two
+## weighted shadows sit apart within that band only, because the cue keeps its bounded direction.
+static func native_handoff(shadow: Node3D) -> float:
+	if not shadow.is_inside_tree():
+		return 1.0
+	var light := ShadowSettings.casting_sun(shadow.get_world_3d())
+	if light == null:
+		return 1.0
+	var far := light.directional_shadow_max_distance
+	var depth := 0.0
+	var camera := shadow.get_viewport().get_camera_3d()
+	if camera != null:
+		far = minf(far, camera.far)
+		depth = -(camera.global_transform.affine_inverse() * shadow.global_position).z
+	return smoothstep(far * clampf(light.directional_shadow_fade_start, 0.0, 0.999), far, depth)
 
 
 ## SA-04: where a planar cue lands. Follows the light from `pos` to the terrain (`ground` maps render x, z to y, or

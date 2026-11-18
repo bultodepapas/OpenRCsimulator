@@ -151,6 +151,17 @@ func _test_receipts() -> void:
 		applied.atlas_size == 8192 and applied.atlas_size != int(ProjectSettings.get_setting(Settings.ATLAS_SETTING, 0))
 		and applied.revision == Settings.revision)
 	check("SA-13: headless reports that nothing reached a renderer", not applied.submitted)
+	Settings.apply({shadow_quality = "ultra", shadow_technique = "projected"})
+	var parked := Settings.applied_global()
+	check("SA-22: a disabled native route parks the atlas, keeping the saved quality and filter",
+		parked.parked and parked.atlas_size == Settings.PARKED_ATLAS_SIZE and parked.use_16_bits
+		and parked.filter_quality == applied.filter_quality and Settings.effective().atlas_size == 8192)
+	Settings.apply({shadow_quality = "ultra", shadow_technique = "off"})
+	check("SA-22: Off parks the atlas too", Settings.applied_global().atlas_size == Settings.PARKED_ATLAS_SIZE)
+	Settings.apply({shadow_quality = "ultra", shadow_technique = "native"})
+	var restored := Settings.applied_global()
+	check("SA-22: re-enabling Native restores the selected atlas", not restored.parked
+		and restored.atlas_size == 8192 and not restored.use_16_bits)
 	var holder := Node3D.new()
 	root.add_child(holder)
 	var vetoed := DirectionalLight3D.new()

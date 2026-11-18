@@ -1002,8 +1002,7 @@ def prepare_manual_loading(app_dir: Path, destination: Path) -> None:
         ignore.touch(exist_ok=False)
 
     registry = app_dir / ".godot/extension_list.cfg"
-    if registry.parent.is_symlink() or registry.is_symlink() or not registry.resolve().is_relative_to(app_dir):
-        raise SystemExit(f"Refusing to modify an external or symlinked extension list: {registry}")
+    external = registry.parent.is_symlink() or registry.is_symlink() or not registry.resolve().is_relative_to(app_dir)
     if not registry.exists():
         return
     if not registry.is_file():
@@ -1013,7 +1012,9 @@ def prepare_manual_loading(app_dir: Path, destination: Path) -> None:
     retained = b"".join(line for line in original.splitlines(keepends=True)
                         if line.rstrip(b"\r\n") != descriptor)
     if retained == original:
-        return
+        return  # nothing to remove: reading a relocated import cache (e.g. a junction to another drive) is harmless
+    if external:
+        raise SystemExit(f"Refusing to modify an external or symlinked extension list: {registry}")
     # Replace only after a complete write; a failed migration keeps the previous registry.
     temporary = None
     try:
