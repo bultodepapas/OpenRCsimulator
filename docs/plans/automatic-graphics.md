@@ -21,6 +21,7 @@
   - "Restore graphics defaults" says it also measures again. It already acts as the plan's Re-detect action.
   - The text lives in the tooltip because the page must still fit at 1080p; all eight languages are translated.
   - Still open: a Help/Support route to the full report (today `debugctl graphics_auto` and bug reports).
+- **A6 Mac measurements come from the Apple track (2026-11-18).** The [DT-MAC-03b graphics-option ladder](apple-silicon-performance.md#dt-mac-03b--attribution-and-baseline-soak) runs the real Home → Fly route on the M1 at its native panel, sweeping options, resolution, MetalFX and renderer. One owner holds the Mac for rendered measurements, so this plan does not run a separate M1 anchor. Its medians replace the circular M1 row (A3 correction factor) and check the Mac Scene detail and 60 fps rules.
 - **AI companion pins renewed after these edits (2026-11-18).**
   - Behavior manifest: `app_root.gd` and `main.gd`. Their edits are graphics, shadow and update-check only, with no companion admission or launch change.
   - Solver re-bind `5511bbbc → 90499aa6`: all 9 tapes identical ([receipt](../research/ai-companions/AFC-02/rebinds/2026-11-18-5511bbbc-to-90499aa6.json)), run from an LF clone in WSL. A CRLF Windows checkout makes `rebind.py` and `get-godot.sh` fail.

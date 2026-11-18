@@ -763,6 +763,12 @@ class ExportPackaging(unittest.TestCase):
         sidecar.write_bytes(self.linux.read_bytes())
         (self.dist / "linux/libopenrc_ground_vehicle.so").write_bytes(self.linux.read_bytes())
         (self.dist / "windows/OpenRC Simulator.exe").write_bytes(b"fixture exe")
+        # NK-4: the Windows package carries its qualified native kernel beside the executable.
+        windows_kernel = self.dist / "windows/native/kernel"
+        windows_kernel.mkdir(parents=True)
+        (windows_kernel / "openrc_native_kernel.dll").write_bytes(b"fixture native kernel dll")
+        (windows_kernel / "openrc_native_kernel.gdextension").write_text("[configuration]\n", encoding="utf-8")
+        (windows_kernel / "LICENSE.godot-cpp.md").write_text("MIT\n", encoding="utf-8")
         self.handoff = self.root / "github output"
         self.version = "v1.2.3-rc.2"
         repo = Path(__file__).resolve().parents[2]
@@ -773,7 +779,8 @@ class ExportPackaging(unittest.TestCase):
         import manifest
         self.mac_payload = write_fixture_zip(self.dist / "macos/OpenRC Simulator.zip")
         editor, templates, env = prepare_repository(self.root, self.version,
-            hashlib.sha256(self.linux.read_bytes()).hexdigest())
+            hashlib.sha256(self.linux.read_bytes()).hexdigest(),
+            hashlib.sha256((windows_kernel / "openrc_native_kernel.dll").read_bytes()).hexdigest())
         self.captured = manifest.capture(self.root, editor, templates, env)
         manifest.write_new(self.dist / manifest.SNAPSHOT, manifest.json_text(self.captured))
         embedded_manifest = self.root / "app/native/kernel/package.json"
@@ -787,6 +794,17 @@ class ExportPackaging(unittest.TestCase):
             "manifest_sha256": manifest.file_info(embedded_manifest)["sha256"],
         }
         (self.dist / "linux/native/kernel/package-receipt.json").write_text(manifest.json_text(receipt))
+        windows_manifest = self.root / "app/native/kernel/package-windows.json"
+        windows_manifest.write_text('{"fixture": true, "platform": "windows"}\n')
+        windows_receipt = {
+            "format": "openrc-native-kernel-package-artifact v1", "platform": "windows",
+            "executable_sha256": manifest.file_info(self.dist / "windows/OpenRC Simulator.exe")["sha256"],
+            "native_binary_sha256": manifest.file_info(windows_kernel / "openrc_native_kernel.dll")["sha256"],
+            "editor_sha256": "e" * 64,
+            "template_sha256": self.captured["inputs"]["template/windows_release_x86_64.exe"]["sha256"],
+            "manifest_sha256": manifest.file_info(windows_manifest)["sha256"],
+        }
+        (windows_kernel / "package-receipt.json").write_text(manifest.json_text(windows_receipt))
         self.names = [f"openrc-simulator-{self.version}-{suffix}.zip" for suffix in
                       ("linux-x86_64", "windows-x86_64", "macos-universal")]
         source = (Path(__file__).parents[1] / "export.sh").read_text(encoding="utf-8")
@@ -889,8 +907,10 @@ class ExportPackaging(unittest.TestCase):
         self.assertIn("--expected-commit \"$GITHUB_SHA\" --expected-tag \"$GITHUB_REF_NAME\"", workflow)
         self.assertIn('--expected-run-id "$GITHUB_RUN_ID" --expected-repository "$GITHUB_REPOSITORY"', workflow)
         self.assertIn('--notes "docs/releases/$GITHUB_REF_NAME.md"', workflow)
-        self.assertIn('needs: [required, export]', workflow)
-        self.assertIn("needs.required.result == 'success' && needs.export.result == 'success'", workflow)
+        # NK-4: release also waits for the Windows package qualified on Windows.
+        self.assertIn('needs: [required, export, native-kernel-windows-package]', workflow)
+        self.assertIn("needs.required.result == 'success' && needs.export.result == 'success'"
+                      " && needs.native-kernel-windows-package.result == 'success'", workflow)
         self.assertNotIn("dist/openrc-simulator-*.zip", workflow)
 
 

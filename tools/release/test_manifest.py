@@ -137,7 +137,8 @@ class WorktreeIdentityTests(unittest.TestCase):
                 manifest.worktree_identity(self.root)
 
 
-def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64):
+def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64, windows_digest="0" * 64,
+                       windows_engine="e" * 64):
     """Disposable capture inputs; no Godot or native qualification is implied."""
     fixture_sources = manifest.SOURCE_INPUTS + ("tools/release/macos_reference_receipt.py",
                        "app/tests/check_macos_export.py", "research/performance/session_probe.gd")
@@ -156,10 +157,14 @@ def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64):
         '[preset.1]\nname="Linux"\nplatform="Linux"\n[preset.1.options]\n'
         '[preset.2]\nname="Windows"\nplatform="Windows Desktop"\n[preset.2.options]\n')
     (root / "app/get-godot.sh").write_text("ENGINE_VERSION=fixture.engine\n")
-    (root / ".gitignore").write_text("/export with spaces/\n/.cache/\n/app/.godot/\n/app/native/kernel/package.json\n")
+    (root / ".gitignore").write_text("/export with spaces/\n/.cache/\n/app/.godot/\n/app/native/kernel/package.json\n"
+                                     "/app/native/kernel/package-windows.json\n")
     for kind in ("kernel", "ground_vehicle"):
         (root / f"app/native/{kind}/build-receipt.json").write_text(json.dumps(
             {"platforms": {"linux": {"binary_sha256": native_digest}}}))
+    # NK-4: never copy a developer's local Windows install into the fixture.
+    (root / "app/native/kernel/build-receipt-windows.json").write_text(json.dumps(
+        {"platforms": {"windows": {"binary_sha256": windows_digest, "engine_sha256": windows_engine}}}))
     derived = root / "app/.godot/export_templates/fixture.zip"
     derived.parent.mkdir(parents=True)
     derived.write_bytes(b"corrected macOS template")
