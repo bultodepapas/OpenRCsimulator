@@ -311,6 +311,10 @@ Verdicts are stored per normalized GPU name and renderer in `user://graphics_cal
 
 **SC-24-R1 (2026-11-09).** A selected landscape uses the same physical obstacle inventory across scene-detail presets and GPU recommendations. Every collidable placement keeps a visible representation; Low may substitute simpler batched people and tractors. Only noncollidable ornaments may disappear through graphics policy. RC circuit Automatic selects the circuit-free scenario on every machine; explicit On remains a terrain/scenario choice. This replaces the earlier GPU-dependent physical selection. [Current scenery contract](SCENERY-PLAN.md).
 
+### Photographic flying sites: proposed research direction
+
+**SC-PHOTO-00 (2026-11-18), research recommendation only.** Retain Godot and prove one fixed-pilot photo site with calibrated visual/contact proxies, matched lighting and explicit camera/activity capabilities before considering a larger 3D/FPV site. A photograph alone supplies neither physical ground nor obstacle geometry. Native evaluator support does not imply a native scenery renderer; extensions or engine migration require a demonstrated bottleneck or missing capability. No runtime implementation, new dependency or hardware qualification is adopted by this entry. The [SC-PHOTO plan](plans/photorealistic-flying-sites.md) owns status and acceptance; the [dated investigation](research/photorealistic-flying-sites/2026-11-18/README.md) records the evidence and alternatives.
+
 ### One read-only camera rig, with a ground-pilot reference
 
 **CAM.** Cameras share the presented aircraft pose and query the existing collision world for clearance; they do not alter simulation or require a duplicate obstacle scene. Ground-pilot view remains the reference. Auto-zoom and FAR use one size target relative to 1080p, so higher-resolution displays preserve screen-relative readability. Optional aids and magnification retain their own pilot/performance gates. [Camera principles](plans/camera-views.md#3-principles), [clearance](research/camera-views/CAM-09/README.md), [reference-height correction](research/camera-views/CAM-23-27/README.md).

@@ -103,7 +103,7 @@ paired native captures retain the visual behavior, without an FPS claim.
 
 L9d now has a bounded [RC ground close-view plan](plans/rc-ground-closeup.md): the [2026-10-15 audit](research/rc-ground-closeup-2026-10-15/README.md) documents dirt detail, shoulder continuity and grass limitations from native captures. L9d-01…04 now have an RC-local 2K CC0 dirt/grass implementation with shared shoulders and exact mesh/state checks; see the [implementation evidence](research/rc-ground-implementation-2026-10-15/README.md). L9d-05 remains conditional vegetation work; L9d-06 retains lower-end hardware, owner playtest and shared Home/flight qualification. Shared field adoption retains VQ/flight-readability gates.
 
-L8 (near 3D tree models), L16–18 (photo sky, owner's field and Terrain3D), and L20 (sky-grid aid) are optional and start only if a gate justifies them. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).
+L8 (near 3D tree models) and L20 (sky-grid aid) remain optional. The [photorealistic flying-sites plan](plans/photorealistic-flying-sites.md) now develops the L16–18 photo-sky, owner's-field and optional Terrain3D direction under registered SC-PHOTO steps, with [dated research and a source audit](research/photorealistic-flying-sites/2026-11-18/README.md). It owns the proposed work and gates; this is not an implementation claim. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).
 
 ## Gates and evidence
 

@@ -6,6 +6,8 @@
 
 **Owns:** app/scenery, its data and runtime assets, tools and scenery evidence listed in the [track registry](README.md#tracks-plans-and-step-ids). The visual field and physics collision world remain with their owners.
 
+Photorealistic flying sites have a separate [SC-PHOTO plan](plans/photorealistic-flying-sites.md), supported by the [2026-11-18 architecture and source investigation](research/photorealistic-flying-sites/2026-11-18/README.md). It coordinates a fixed-pilot photo-site prototype and a later conditional 3D/FPV path with the existing field, world, camera and physics owners. That plan owns its status and gates; existing scenery acceptance is unchanged.
+
 ## Current implementation
 
 The normal Home and flight routes include the complete club field: parking, open pit shelters, pavilion, people, field boundaries, hay bales, animals, distant landmarks, bushes, flowers, ambience and birds (a mixed vulture and stork kettle, red kites, barn swallows and an evening swift party, chosen by time of day; [birds plan](plans/birds-sky-life.md)). The launch profile may enable the flock and ambience; reference captures can select birds-off explicitly.
