@@ -122,3 +122,15 @@ expectations and tolerances were preserved. The promoted fixture SHA-256 is
 These are bounded 25-frame software comparisons of the named commits, not
 physical validation or evidence for later changes. Artifact IDs and verified
 ZIP digests are recorded in the receipt; GitHub artifact retention is limited.
+
+## 2026-11-18 multi-source renewal
+
+The A35 renewal (`85faa626b`, candidate `5b409a03`) promoted fixture `7b51caf5`. The collector, packer and workflow still required the earlier `d61eb083` identity, so later renewals stopped before capturing. They now anchor to each accepted receipt. Servo (`793f76ccc`, `f5c4b97d1`), Creator (`c5f2ceeff`) and EdgeTX (`f8c4ad8dd`) edits changed seven pinned sources. `test_weather_publication` therefore refused the fixture's source identity.
+
+The [receipt](publication-rebind-2026-11-18.json) binds baseline `5b409a03` and candidate `b4ae37fd` to [run 44397493145](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/44397493145). The cold-import bound rose to 30 minutes after the hosted Windows import exceeded 10.
+
+- All eight Windows and Linux shaft and weather captures reproduced the retained hashes. Each baseline/candidate pair was byte-identical.
+- The packer now binds any changed pinned sources, not only Session; overlays follow their pins. Its tests cover several changed sources with every forged-evidence case.
+- Only the seven source pins, the two overlays, the candidate commit and the helper fixture identity changed. Historical families, numerical expectations and tolerances were preserved.
+
+The promoted fixture SHA-256 is `24bffa86e373599f4c105873d8e791d976d793672010a673200e8d37c669e85a`. Weather and shaft publication then passed 313/313 and 214/214 on Windows. As before, these are bounded 25-frame software comparisons, not physical validation.

@@ -17,12 +17,14 @@ ROOT = HERE.parents[1]
 
 class CanonicalBaselineTests(unittest.TestCase):
     def test_packer_anchors_to_the_last_qualified_fixture(self):
-        receipt = json.loads((ROOT / 'docs/research/project-audit-2026-11-09/remediation/publication-rebind.json').read_text())
+        receipt = json.loads((ROOT / 'docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-18.json').read_text())
         self.assertEqual(pack.SOURCE_REBIND_BASE, receipt['candidate_commit'])
         self.assertEqual(pack.SOURCE_REBIND_PRIOR, receipt['candidate_fixture_sha256'])
 
 
 class PublicationSourceRebindTests(unittest.TestCase):
+    CHANGED = (pack.SOURCE_REBIND_SESSION,)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='publication-source-rebind-')
         self.addCleanup(self.temp.cleanup)
@@ -39,9 +41,10 @@ class PublicationSourceRebindTests(unittest.TestCase):
             if item['mode'] == 'script-lf':
                 current = current.replace(b'\r\n', b'\n')
             self.new_bytes[name] = current
-            self.old_bytes[name] = current + b'\n# historical Session\n' if name == pack.SOURCE_REBIND_SESSION else current
+            self.old_bytes[name] = current + b'\n# historical source\n' if name in self.CHANGED else current
             item['sha256'] = pack.digest(self.old_bytes[name])
-        self.prior['candidate_overlays'][pack.SOURCE_REBIND_SESSION] = self.prior['source_pins'][pack.SOURCE_REBIND_SESSION]['sha256']
+        for path in self.prior['candidate_overlays']:
+            self.prior['candidate_overlays'][path] = self.prior['source_pins'][path]['sha256']
         self.pins = {
             'baseline': {name: pack.digest(value) for name, value in self.old_bytes.items()},
             'candidate': {name: pack.digest(value) for name, value in self.new_bytes.items()},
@@ -219,6 +222,27 @@ class PublicationSourceRebindTests(unittest.TestCase):
         raw = json.dumps(capture, sort_keys=True).encode()
         with self.assertRaisesRegex(ValueError, 'typed frames or events differ'):
             pack.source_rebind_capture(raw, pack.digest(raw), 'Windows', 'shaft', self.prior)
+
+
+class PublicationMultiSourceRebindTests(PublicationSourceRebindTests):
+    """Several pinned sources change together (2026-11-18: servo, Creator and EdgeTX edits); every forged-evidence
+    case above still applies, and overlays follow their pins."""
+    CHANGED = (pack.SOURCE_REBIND_SESSION, 'sim/simulation.gd', 'sim/electric_contact_step.gd')
+
+    def test_every_changed_pin_and_its_overlay_are_bound(self):
+        self.run_rebind()
+        actual = json.loads(self.out.read_text())
+        receipt = json.loads(self.receipt.read_text())
+        self.assertEqual(sorted(receipt['source_pin_changes']), sorted(self.CHANGED))
+        for path in self.CHANGED:
+            self.assertEqual(actual['source_pins'][path]['sha256'], self.pins['candidate'][path])
+            self.assertEqual(receipt['source_pin_changes'][path],
+                             {'before': self.pins['baseline'][path], 'after': self.pins['candidate'][path]})
+        for path, value in actual['candidate_overlays'].items():
+            self.assertEqual(value, actual['source_pins'][path]['sha256'])
+        unchanged = set(self.prior['source_pins']) - set(self.CHANGED)
+        for path in unchanged:
+            self.assertEqual(actual['source_pins'][path], self.prior['source_pins'][path])
 
 
 if __name__ == '__main__':
