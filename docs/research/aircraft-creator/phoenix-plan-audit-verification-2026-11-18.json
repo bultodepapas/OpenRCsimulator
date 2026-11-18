@@ -1,0 +1,826 @@
+{
+  "schema": "openrc-phoenix-documentation-audit-verification-v1",
+  "audit_date": "2026-11-18",
+  "audit_timezone": "America/Bogota",
+  "assembled_at_utc": "2026-11-18T13:25:51.936483+00:00",
+  "scope": "Documentation audit; executed original synthetic research fixtures only. No application runtime, GEO conversion, real model recapture, exported build, or flight qualification.",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "plan/flight-simulator-aircraft-import-2026-11-16",
+  "research_commit": "3619c19362064a0a51b6fda360adce0bfeb38b3d",
+  "application_commit": "39fa2746ae4f4ba8698b87db279adcfe84ef5d17",
+  "engine_pin_observed_not_executed": "4.8.beta2.official.cafc17a19",
+  "additional_boundary_source_identity_scope": "The five-fixture script imports trusted copied modules normally, then hashes their files on disk. These are post-import file observations, distinct from the existing harness receipts for captured executed parser source. The recorded lead reproduction used a fresh isolated directory with no pre-existing bytecode cache. PYTHONDONTWRITEBYTECODE prevents cache writes, not reads.",
+  "documentation_validation": {
+    "new_local_links_checked": 34,
+    "new_pinned_repository_links_checked": 26,
+    "audit_findings": 18,
+    "proposed_acceptance_rows_unique": 65,
+    "markdown_fences_and_inline_delimiters_checked": true,
+    "embedded_reproducer_matches_executed_script": true,
+    "json_receipts_and_source_hashes_checked": true,
+    "tetrahedron_normals_and_alpha_threshold_arithmetic_checked": true,
+    "errors": [],
+    "scope": "Focused documentation validation, not application tests or CI. Local-link and anchor helpers reused from the audited repository; Git objects checked for pinned source links."
+  },
+  "summary": {
+    "existing_container_synthetic_checks": 31,
+    "existing_capture_receipt_checks": 26,
+    "existing_definition_synthetic_checks": 61,
+    "existing_total": 118,
+    "additional_owned_fixture_cases": 5,
+    "real_samples_executed_this_audit": 0,
+    "application_tests_executed": 0,
+    "proposed_runtime_acceptance_rows": 65
+  },
+  "proposed_runtime_acceptance_ids": [
+    "PX-C01",
+    "PX-C02",
+    "PX-C03",
+    "PX-C04",
+    "PX-C05",
+    "PX-C06",
+    "PX-C07",
+    "PX-C08",
+    "PX-C09",
+    "PX-C10",
+    "PX-C11",
+    "PX-C12",
+    "PX-C13",
+    "PX-C14",
+    "PX-C15",
+    "PX-D01",
+    "PX-D02",
+    "PX-D03",
+    "PX-D04",
+    "PX-D05",
+    "PX-D06",
+    "PX-D07",
+    "PX-D08",
+    "PX-D09",
+    "PX-D10",
+    "PX-G01",
+    "PX-G02",
+    "PX-G03",
+    "PX-G04",
+    "PX-G05",
+    "PX-G06",
+    "PX-G07",
+    "PX-G08",
+    "PX-G09",
+    "PX-G10",
+    "PX-G11",
+    "PX-G12",
+    "PX-G13",
+    "PX-G14",
+    "PX-G15",
+    "PX-R01",
+    "PX-R02",
+    "PX-R03",
+    "PX-R04",
+    "PX-R05",
+    "PX-R06",
+    "PX-R07",
+    "PX-R08",
+    "PX-R09",
+    "PX-R10",
+    "PX-R11",
+    "PX-R12",
+    "PX-R13",
+    "PX-R14",
+    "PX-R15",
+    "PX-R16",
+    "PX-R17",
+    "PX-R18",
+    "PX-R19",
+    "PX-R20",
+    "PX-F01",
+    "PX-F02",
+    "PX-F03",
+    "PX-F04",
+    "PX-F05"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "research/aircraft-creator/phoenix/check_probe.py",
+        "--report",
+        "<new-private-receipt>"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "research/aircraft-creator/phoenix/check_definitions.py",
+        "--report",
+        "<new-private-receipt>"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "reproduce.py",
+        "--report",
+        "<new-private-receipt>"
+      ],
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "isolation": "Fresh disposable directory containing exact copied trusted research sources; no repository parser edits."
+    }
+  ],
+  "original_receipt_byte_sha256": {
+    "package_baseline": "db792ee61cabff72652a601f638561f2c76a70c7411ac303a0cd3ecb17f5a504",
+    "definition_baseline": "8a118841dc708792bb1fc72beddcc6e28b3798a48e1d26bc3107cacf2648b602",
+    "additional_boundaries": "f6f519d7afff6f7ad9414c776c020a313f4985d6fbf46ff2d08721a237c21085"
+  },
+  "embedded_receipts": {
+    "package_baseline": {
+      "schema": "openrc-phoenix-research-probe-checks-v2",
+      "generated_at_utc": "2026-11-18T13:02:44.331252+00:00",
+      "python": "3.12.14",
+      "python_optimization": 0,
+      "zlib_runtime": "1.3.2",
+      "probe_source_sha256": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+      "checker_on_disk_sha256": "f1adb8a59ee981a82e1c70e684fe8ebc7ef3dbdc49999baef71e440fc4d191fc",
+      "identity_scope": "In-process probe source is captured before execution; checker hash observes its on-disk file. Subprocess checks use on-disk tool files. Neither authenticates local tools.",
+      "scope": "Research framing/tree inspection only; no mesh, simulator, runtime security or flight qualification.",
+      "synthetic_checks": [
+        {
+          "name": "known single-file tree, offset, hash and private-path omission",
+          "result": "passed"
+        },
+        {
+          "name": "numeric label is reported without version interpretation",
+          "result": "passed"
+        },
+        {
+          "name": "path-like name stays JSON data; no extraction API exists",
+          "result": "passed"
+        },
+        {
+          "name": "equal displayed names retain distinct source bytes and decoding",
+          "result": "passed"
+        },
+        {
+          "name": "empty input",
+          "result": "rejected",
+          "reason": "truncated at 0, wanted 1 bytes"
+        },
+        {
+          "name": "wrong marker",
+          "result": "rejected",
+          "reason": "unrecognized package marker"
+        },
+        {
+          "name": "nonnumeric header",
+          "result": "rejected",
+          "reason": "unrecognized package header numeric string: 'not-a-label'"
+        },
+        {
+          "name": "malformed decimal header b'.'",
+          "result": "rejected",
+          "reason": "unrecognized package header numeric string: '.'"
+        },
+        {
+          "name": "malformed decimal header b'..'",
+          "result": "rejected",
+          "reason": "unrecognized package header numeric string: '..'"
+        },
+        {
+          "name": "malformed decimal header b'1..2'",
+          "result": "rejected",
+          "reason": "unrecognized package header numeric string: '1..2'"
+        },
+        {
+          "name": "truncated compressed input",
+          "result": "rejected",
+          "reason": "truncated at 21, wanted 76 bytes"
+        },
+        {
+          "name": "zlib checksum corruption",
+          "result": "rejected",
+          "reason": "zlib failure in chunk 0: Error -3 while decompressing data: incorrect data check"
+        },
+        {
+          "name": "declared inflated size mismatch",
+          "result": "rejected",
+          "reason": "invalid zlib or declared size in chunk 0"
+        },
+        {
+          "name": "extra compressed stream",
+          "result": "rejected",
+          "reason": "invalid zlib or declared size in chunk 0"
+        },
+        {
+          "name": "extra package bytes",
+          "result": "rejected",
+          "reason": "unexpected bytes following package chunks"
+        },
+        {
+          "name": "unknown body prefix",
+          "result": "rejected",
+          "reason": "unrecognized body prefix"
+        },
+        {
+          "name": "unknown tree record kind",
+          "result": "rejected",
+          "reason": "unknown entry kind 2"
+        },
+        {
+          "name": "file with children",
+          "result": "rejected",
+          "reason": "nonzero file child count outside observed profile"
+        },
+        {
+          "name": "nonzero trailing body byte",
+          "result": "rejected",
+          "reason": "unexpected nonzero data following observed tree"
+        },
+        {
+          "name": "padding outside probe profile",
+          "result": "rejected",
+          "reason": "zero padding limit exceeded"
+        },
+        {
+          "name": "oversized name",
+          "result": "rejected",
+          "reason": "string limit exceeded"
+        },
+        {
+          "name": "oversized member before content allocation",
+          "result": "rejected",
+          "reason": "member size limit exceeded"
+        },
+        {
+          "name": "tree depth limit",
+          "result": "rejected",
+          "reason": "tree depth limit exceeded"
+        },
+        {
+          "name": "actual captured input limit",
+          "result": "rejected",
+          "reason": "input size limit exceeded"
+        },
+        {
+          "name": "aggregate inflated-body limit",
+          "result": "rejected",
+          "reason": "body size limit exceeded"
+        },
+        {
+          "name": "entry-count limit",
+          "result": "rejected",
+          "reason": "child count limit exceeded"
+        },
+        {
+          "name": "cumulative entries across sibling lists",
+          "result": "rejected",
+          "reason": "total entry limit exceeded"
+        },
+        {
+          "name": "deep long-name output amplification",
+          "result": "rejected",
+          "reason": "cumulative reported-path byte limit exceeded"
+        },
+        {
+          "name": "report metadata output budget",
+          "result": "rejected",
+          "reason": "report metadata limit exceeded"
+        },
+        {
+          "name": "CLI exact hash",
+          "result": "passed"
+        },
+        {
+          "name": "CLI wrong hash",
+          "result": "passed"
+        }
+      ],
+      "capture_checks": [
+        {
+          "name": "optimized Python cannot emit passing verification receipts",
+          "result": "passed"
+        },
+        {
+          "name": "inventory parse and identity use the same captured bytes",
+          "result": "passed"
+        },
+        {
+          "name": "bounded regular capture",
+          "result": "rejected"
+        },
+        {
+          "name": "directory is not a regular file",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID '../outside'",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID '/absolute'",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID 'a/b'",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID 'a\\\\b'",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID '.'",
+          "result": "rejected"
+        },
+        {
+          "name": "unsafe inventory ID 'C:drive'",
+          "result": "rejected"
+        },
+        {
+          "name": "duplicate inventory keys",
+          "result": "rejected"
+        },
+        {
+          "name": "non-finite inventory value",
+          "result": "rejected"
+        },
+        {
+          "name": "overflowing JSON exponent is not a finite inventory number",
+          "result": "rejected"
+        },
+        {
+          "name": "excessive inventory nesting has a controlled refusal",
+          "result": "rejected"
+        },
+        {
+          "name": "empty inventory",
+          "result": "rejected"
+        },
+        {
+          "name": "verification receipt output budget",
+          "result": "rejected"
+        },
+        {
+          "name": "executed probe source capture has recorded hash",
+          "result": "passed"
+        },
+        {
+          "name": "stale equal-size timestamp pyc cannot replace captured probe source",
+          "result": "passed"
+        },
+        {
+          "name": "report cannot replace a source file",
+          "result": "rejected"
+        },
+        {
+          "name": "confined exact sample capture",
+          "result": "passed"
+        },
+        {
+          "name": "CLI receipt keeps inventory capture hash after on-disk mutation",
+          "result": "passed"
+        },
+        {
+          "name": "sample symlink is refused",
+          "result": "rejected"
+        },
+        {
+          "name": "report symlink cannot overwrite source",
+          "result": "rejected"
+        },
+        {
+          "name": "report hardlink cannot overwrite source",
+          "result": "rejected"
+        },
+        {
+          "name": "FIFO rejected without waiting for a writer",
+          "result": "passed"
+        },
+        {
+          "name": "fixed repository tool source also refuses FIFO capture",
+          "result": "passed"
+        }
+      ],
+      "real_samples": []
+    },
+    "definition_baseline": {
+      "schema": "openrc-phoenix-definition-checks-v1",
+      "generated_at_utc": "2026-11-18T13:02:44.338693+00:00",
+      "python": "3.12.14",
+      "parser_profile": "openrc-phoenix-mod-observed-v1",
+      "python_optimization": 0,
+      "definition_source_sha256": "678268321579b34ef75662102fba1b734deb9421b59d39f3f314c24057402550",
+      "probe_source_sha256": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+      "checker_on_disk_sha256": "f3b8f8302b205a3a406c55eb13831cac777aa8152a8dcf930cc3010b61fe72b1",
+      "harness_on_disk_sha256": "f1adb8a59ee981a82e1c70e684fe8ebc7ef3dbdc49999baef71e440fc4d191fc",
+      "identity_scope": "In-process parser/probe identities cover captured executed repository source; checker/harness hashes observe on-disk files. Subprocess checks use on-disk tool files. No authentication claim.",
+      "scope": "Observed MOD data grammar and limited preflight only; no dependency resolution, GEO conversion, runtime admission or flight qualification.",
+      "synthetic_checks": [
+        {
+          "name": "CRLF, absent final newline, literal comment marker, exact numeric lexemes and source spans",
+          "result": "passed"
+        },
+        {
+          "name": "helicopter symbol retained as data",
+          "result": "passed"
+        },
+        {
+          "name": "canonical symbolic value is separate from its exact source lexeme",
+          "result": "passed"
+        },
+        {
+          "name": "equal displayed strings retain distinct bytes and display decoding",
+          "result": "passed"
+        },
+        {
+          "name": "key case retained; same-table case variants diagnosed without overwriting",
+          "result": "passed"
+        },
+        {
+          "name": "repeated role names and empty geometry preserve separate structural identities",
+          "result": "passed"
+        },
+        {
+          "name": "one object may have separate geometry and collision roles",
+          "result": "passed"
+        },
+        {
+          "name": "Engine field kind and context remain distinct",
+          "result": "passed"
+        },
+        {
+          "name": "reference strings remain data; parser has no dependency I/O",
+          "result": "passed"
+        },
+        {
+          "name": "empty input",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "opaque binary prefix",
+          "result": "rejected",
+          "code": "UNSUPPORTED_BYTE"
+        },
+        {
+          "name": "variant root is not an entire model",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "second root assignment",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "root scalar",
+          "result": "rejected",
+          "code": "ROOT_SHAPE"
+        },
+        {
+          "name": "root array",
+          "result": "rejected",
+          "code": "ROOT_SHAPE"
+        },
+        {
+          "name": "duplicate exact key",
+          "result": "rejected",
+          "code": "DUPLICATE_KEY"
+        },
+        {
+          "name": "mixed table",
+          "result": "rejected",
+          "code": "MIXED_TABLE"
+        },
+        {
+          "name": "arbitrary function expression",
+          "result": "rejected",
+          "code": "UNSUPPORTED_BYTE"
+        },
+        {
+          "name": "arbitrary qualified symbol",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYMBOL"
+        },
+        {
+          "name": "extra field after allowed symbol",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "identifier literal",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "NaN identifier",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "exponent number outside observed grammar",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "hex number outside observed grammar",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "number suffix",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "partial decimal",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "string escape outside observed grammar",
+          "result": "rejected",
+          "code": "UNSUPPORTED_ESCAPE"
+        },
+        {
+          "name": "control byte in string",
+          "result": "rejected",
+          "code": "STRING_CONTROL"
+        },
+        {
+          "name": "string newline",
+          "result": "rejected",
+          "code": "STRING_CONTROL"
+        },
+        {
+          "name": "unterminated string",
+          "result": "rejected",
+          "code": "UNTERMINATED_STRING"
+        },
+        {
+          "name": "block comment outside observed grammar",
+          "result": "rejected",
+          "code": "UNSUPPORTED_COMMENT"
+        },
+        {
+          "name": "bare CR cannot extend a line comment over unsupported syntax",
+          "result": "rejected",
+          "code": "UNSUPPORTED_LINE_ENDING"
+        },
+        {
+          "name": "bare CR locations need a separate profile",
+          "result": "rejected",
+          "code": "UNSUPPORTED_LINE_ENDING"
+        },
+        {
+          "name": "non-ASCII identifier",
+          "result": "rejected",
+          "code": "UNSUPPORTED_BYTE"
+        },
+        {
+          "name": "missing comma",
+          "result": "rejected",
+          "code": "UNSUPPORTED_SYNTAX"
+        },
+        {
+          "name": "truncated nested table",
+          "result": "rejected",
+          "code": "UNSUPPORTED_VALUE"
+        },
+        {
+          "name": "unexpected punctuation",
+          "result": "rejected",
+          "code": "UNSUPPORTED_BYTE"
+        },
+        {
+          "name": "captured byte budget",
+          "result": "rejected",
+          "code": "INPUT_LIMIT"
+        },
+        {
+          "name": "token budget",
+          "result": "rejected",
+          "code": "TOKEN_LIMIT"
+        },
+        {
+          "name": "node budget",
+          "result": "rejected",
+          "code": "NODE_LIMIT"
+        },
+        {
+          "name": "table depth budget",
+          "result": "rejected",
+          "code": "DEPTH_LIMIT"
+        },
+        {
+          "name": "string byte budget",
+          "result": "rejected",
+          "code": "STRING_LIMIT"
+        },
+        {
+          "name": "identifier byte budget",
+          "result": "rejected",
+          "code": "IDENTIFIER_LIMIT"
+        },
+        {
+          "name": "number byte budget",
+          "result": "rejected",
+          "code": "NUMBER_LIMIT"
+        },
+        {
+          "name": "diagnostic budget",
+          "result": "rejected",
+          "code": "DIAGNOSTIC_LIMIT"
+        },
+        {
+          "name": "serialized report budget",
+          "result": "passed"
+        },
+        {
+          "name": "finite float range after lexical budget",
+          "result": "rejected",
+          "code": "NUMBER_RANGE"
+        },
+        {
+          "name": "nonzero decimal underflow",
+          "result": "rejected",
+          "code": "NUMBER_RANGE"
+        },
+        {
+          "name": "exact coincident hinge is a conversion blocker, not a parser crash",
+          "result": "passed"
+        },
+        {
+          "name": "small nonzero oblique hinge is retained without arbitrary epsilon or cardinal snapping",
+          "result": "passed"
+        },
+        {
+          "name": "distinct exact pivots collapsing in float64 are diagnosed",
+          "result": "passed"
+        },
+        {
+          "name": "missing hinge endpoint is a conversion blocker",
+          "result": "passed"
+        },
+        {
+          "name": "zero vector blocked; approximate unit vector preserved",
+          "result": "passed"
+        },
+        {
+          "name": "axis shape and numeric fields checked",
+          "result": "passed"
+        },
+        {
+          "name": "geometry role requires an ordered string list",
+          "result": "passed"
+        },
+        {
+          "name": "unrecognized structural contexts do not acquire roles from field names alone",
+          "result": "passed"
+        },
+        {
+          "name": "diagnostic line and byte column match CRLF and raw byte offsets",
+          "result": "passed"
+        },
+        {
+          "name": "optimized Python cannot emit passing definition receipts",
+          "result": "passed"
+        },
+        {
+          "name": "definition CLI exact input hash",
+          "result": "passed"
+        },
+        {
+          "name": "definition CLI wrong input hash",
+          "result": "passed"
+        },
+        {
+          "name": "malformed inventory member shapes produce controlled refusals",
+          "result": "passed"
+        }
+      ],
+      "real_samples": []
+    },
+    "additional_boundaries": {
+      "scope": "Synthetic research-tool behavior only; no production importer or security qualification.",
+      "research_commit": "3619c19362064a0a51b6fda360adce0bfeb38b3d",
+      "python": "3.12.14",
+      "zlib": "1.3.2",
+      "source_sha256": {
+        "inspect_pkg.py": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+        "inspect_definition.py": "678268321579b34ef75662102fba1b734deb9421b59d39f3f314c24057402550"
+      },
+      "reproducer_sha256": "b2605ff3ac02aecf558100d0c2fb6965d8f57e4ad68fcda88934b82567ba1e1e",
+      "inputs": {
+        "report-limit.mod": {
+          "bytes": 8421,
+          "sha256": "ce3903fee8800c5f6f80008ac679cce928d2ddf33082b6fc6b48d786dbcfa3c3"
+        },
+        "file-directory-collision.pkg": {
+          "bytes": 51,
+          "sha256": "0d8ef8c7bf3a944046cec31bb99f04385395cbb79290e9b0350b48a542f3bcc4"
+        },
+        "duplicate-file-path.pkg": {
+          "bytes": 65,
+          "sha256": "d3849a2519e3a294d9dd4afefeb34dc08d6db3deae0def425cb5bdb75aa6f35e"
+        },
+        "empty-filename.pkg": {
+          "bytes": 39,
+          "sha256": "5487da0f313dfc0f0a88371c15886758d8604149c4fe85be1e244b53d835c729"
+        },
+        "long-nonzero-trailer.pkg": {
+          "bytes": 51,
+          "sha256": "e77226b5072acb634449941ce7e2c2356a5b4936ca0065d49ad7171fbca64939"
+        }
+      },
+      "report_limit": {
+        "default_max_bytes": 1048576,
+        "refusal": {
+          "class": "ValueError",
+          "message": "definition report byte limit exceeded",
+          "code": null,
+          "offset": null
+        },
+        "diagnostics_after_in_memory_cap_increase": 512,
+        "rendered_bytes_after_in_memory_cap_increase": 2278748
+      },
+      "package_tree_cases": {
+        "file-directory-collision.pkg": {
+          "result": "research probe accepted as inert data",
+          "directory_count": 1,
+          "member_paths": [
+            [
+              "foo"
+            ]
+          ],
+          "member_raw_paths": [
+            [
+              "666f6f"
+            ]
+          ],
+          "member_sha256": [
+            "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881"
+          ]
+        },
+        "duplicate-file-path.pkg": {
+          "result": "research probe accepted as inert data",
+          "directory_count": 0,
+          "member_paths": [
+            [
+              "foo"
+            ],
+            [
+              "foo"
+            ]
+          ],
+          "member_raw_paths": [
+            [
+              "666f6f"
+            ],
+            [
+              "666f6f"
+            ]
+          ],
+          "member_sha256": [
+            "a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e",
+            "16367aacb67a4a017c8da8ab95682ccb390863780f7114dda0a0e0c55644c7c4"
+          ]
+        },
+        "empty-filename.pkg": {
+          "result": "research probe accepted as inert data",
+          "directory_count": 0,
+          "member_paths": [
+            [
+              ""
+            ]
+          ],
+          "member_raw_paths": [
+            [
+              ""
+            ]
+          ],
+          "member_sha256": [
+            "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881"
+          ]
+        }
+      },
+      "nonzero_trailer_case": {
+        "class": "FormatError",
+        "message": "zero padding limit exceeded",
+        "actual_trailer_bytes": 513,
+        "all_trailer_bytes_nonzero": true
+      }
+    }
+  },
+  "interpretation_limits": [
+    "Passing existing research checks does not qualify a production importer.",
+    "The report exceeding 1 MiB was measured only after temporarily increasing an in-memory research constant; the default run refused it.",
+    "Intentional inert path-name acceptance is not filesystem extraction.",
+    "Hash and checksum consistency do not authenticate authors, rights, toolchains, physical truth or derivation.",
+    "Reserved glTF index, caller-buffer aliasing and warm Store-cache mutation remain inspection-derived tests, not reproduced application failures."
+  ]
+}
