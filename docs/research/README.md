@@ -30,6 +30,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 ## Product telemetry
 
 - [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; no runtime collection or receiving service is active.
+- [Adaptive telemetry follow-up, 2026-11-18](telemetry/TELEM-00-R1/README.md): 30 additional investigations in ten/review/ten/ten sequence, including eight non-English source languages; revised operational and publication contracts, test-only generative coverage and a frozen-intent reference. The method record discloses corrected discovery-query deviations.
 
 ## Whole-project audit
 

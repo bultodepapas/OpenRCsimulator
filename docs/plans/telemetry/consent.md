@@ -104,6 +104,8 @@ Declining telemetry sends no “declined” event. Turning off sends no final se
 
 The separate GitHub update checker has its own setting. Telemetry off means no telemetry requests, not a claim that every other application network feature is off.
 
+Keep separately initiated local flight/diagnostic recording distinct from this switch. Off must not imply that all local logs are erased. A notice being shown is not a notice being accepted; preserve explicit denial across stable, preview and future release channels. No candidate-build override may silently turn it back on. Follow-up F26–F29 in the [research register](../../research/telemetry/TELEM-00-R1/README.md) supply concrete versioned-choice and local-log counterexamples.
+
 ## Manual diagnostics and crash reporting
 
 A separate local export may include exact CPU/GPU details only after preview and explicit selection. Show before opening GitHub:
@@ -112,6 +114,10 @@ A separate local export may include exact CPU/GPU details only after preview and
 
 Never put the full report in a URL, auto-submit an issue or automatically attach local logs. Sentry or any crash SDK requires a separate design/notice, default-disabled initialization and verified cache/opt-out behavior; base telemetry consent does not cover memory dumps.
 
+Generate the manual artifact from a fresh typed allowlist, never by dumping a diagnostic object and hoping a warning is sufficient. Keep preview/copy/export inert, show the actual destination and ensure the reviewed bytes are the exported bytes; an edit or regenerated payload requires a new preview. Test private path, username, environment, exception and arbitrary-key canaries. Missing end-of-session/crash reports remain unknown and cannot be used as evidence of zero failures. These transfer lessons come from F21/F23/F24/F27/F30, not from a tested OpenRC UI.
+
 ## Accessibility and acceptance
 
 Equal action prominence; logical focus order; no automatically focused acceptance activated by an unrelated controller button; screen-reader names; non-color status indicators; scrolling text at large scale; no countdown. Test at 1920×1080 first, then higher resolutions, then 1280×720. Test EN and ES plus the existing localization workflow. The offline contract tests do not qualify any rendered UI.
+
+Add a pseudolocalized expansion fixture, keyboard/controller traversal, held input as the panel appears, visible focus after hiding/reopening it and actual assistive-technology checks. Verify both actions remain reachable at large text/UI scales. Expansion testing does not prove CJK/RTL glyph support; qualify only languages actually offered. The Japanese Godot tutorial in F22 informs focus/minimum-size checks without adding a new promised product language.

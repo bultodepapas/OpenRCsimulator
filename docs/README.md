@@ -7,7 +7,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Need | Authoritative home |
 | --- | --- |
 | Display resolution priorities: 1080p first, above 1080p second, 720p last | [Shared resolution policy](../AGENTS.md#display-resolution-priorities) |
-| Transparent runtime telemetry, consent and GitHub summaries | [TELEM implementation plan](plans/telemetry.md); [38 investigations and prototype evidence](research/telemetry/TELEM-00/README.md) |
+| Transparent runtime telemetry, consent and GitHub summaries | [TELEM implementation plan](plans/telemetry.md); [68 investigations across both research rounds and offline preparation](research/telemetry/TELEM-00-R1/README.md) |
 | Project overview and downloads | [README](../README.md) |
 | Launch, controls, calibration and player diagnostics | [FIRST-LAUNCH](FIRST-LAUNCH.md); release notes describe each download separately |
 | Developer setup, commands, tests, captures and exports | [TOOLS](TOOLS.md) |

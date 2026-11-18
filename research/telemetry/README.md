@@ -3,6 +3,7 @@
 **Offline reference only.** These files make the proposed telemetry contracts reviewable and testable before a Godot/client/backend implementation. Nothing here opens a socket, reads hardware/player data, deploys a service, schedules a workflow or writes a GitHub issue.
 
 [Phased plan](../../docs/plans/telemetry.md) · [data contract](../../docs/plans/telemetry/data-contract.md) · [actual evidence](../../docs/research/telemetry/TELEM-00/verification.md).
+[Adaptive follow-up and new checks](../../docs/research/telemetry/TELEM-00-R1/README.md) · [publication protocol](../../docs/plans/telemetry/publication-protocol.md) · [planned validation laboratory](../../docs/plans/telemetry/validation-lab.md).
 
 ## Contents
 
@@ -14,6 +15,9 @@
 | [contracts/openapi.json](contracts/openapi.json) | HTTPS batch API/status proposal; example.invalid is not a live endpoint |
 | [reference.py](reference.py) | Strict decoding, semantic checks, frame reducer, in-memory consent/queue/request model, fake ingress and conservative daily disclosure gate |
 | [test_reference.py](test_reference.py) | Adversarial privacy, race, transport-policy, metric and disclosure tests |
+| [test_properties.py](test_properties.py) | Test-only Hypothesis hostile encodings, valid short bodies, idempotency expiry and generated consent/request sequences |
+| [publication.py](publication.py) | Sequential frozen-intent model, public inventory reservations and uncertain remote outcomes; no GitHub client or durable database |
+| [test_publication.py](test_publication.py) | Publication identity, stale approvals, conflict persistence, remote audit and metric-interpretation counterexamples |
 | [generate_examples.py](generate_examples.py) | Reproducible synthetic fixture/report source |
 | [examples/batch.json](examples/batch.json) | One synthetic 30-second, 60-FPS cadence report; no real measurement |
 | [examples/aggregate.json](examples/aggregate.json) | Twenty synthetic temporary-session observations in one day |
@@ -39,9 +43,13 @@ The model demonstrates strict UTF-8 JSON, duplicate-key/depth/nonfinite rejectio
 
 The fake ingress models whole-batch acceptance, same-body dedup, conflicting identity, sequence overlap, approved release IDs, storage backpressure and a finite replay-protection horizon. It is not durable or concurrent database code.
 
+Hypothesis generates bounded synthetic payloads and consent/request action sequences. Settings cap each data property at 80 examples and the state machine at 120 examples of up to 50 steps; these are configured bounds, not a claim that every possible sequence or that exact many cases ran. The package and sortedcontainers are exact test-only pins. No example database is persisted by these tests.
+
+The publication model normalizes repository casing, checks an explicit release allowlist/requested report identity, freezes the exact body and preserves unknown outcomes. A public approval must match the current inventory of known public intents; a new reservation invalidates older approvals. Missing/edited/duplicated published artifacts create a sticky review-required state. The model has no automatic conflict resolution, real reviewer authentication, immutable repository-ID/visibility lookup, durable/multi-process coordinator, complete remote inventory or provider request. Its small state machine must not be shipped as a ready publisher.
+
 The reducer takes trusted server receipt-day/body tuples plus a trusted UTC as-of instant. It rejects mixed days/releases and runs only from day close +1 hour until day start +47 hours. It counts temporary session tokens, caps each at 120 eligible windows, suppresses the whole fixed GPU table if a cell has fewer than 20, and removes identifiers before rendering. Its output includes the specific UTC day and containing ISO week.
 
-Weekly pooling, aircraft popularity tables, arbitrary-dimension suppression, provider deletion, real authentication/roles, GitHub upserts and schedules are **not implemented**. Do not claim this daily prototype verifies those features. The deployment plan owns those next steps.
+Weekly pooling, aircraft popularity tables, arbitrary-dimension suppression, provider deletion, real authentication/roles, actual GitHub writes and schedules are **not implemented**. Do not claim these offline models verify those features. The deployment plan owns those next steps.
 
 ## Limits that matter when porting
 

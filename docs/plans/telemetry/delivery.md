@@ -27,6 +27,14 @@ Proposed logical records:
 
 Use one transaction for all event inserts plus dedup receipt. Acknowledge 202 only after commit. A DB timeout before commit returns retryable failure; an uncertain commit is resolved by the same retry identity. Unique constraints protect concurrent submissions. A full queue/database returns 429/503 before acknowledgment. Do not silently drop an acknowledged batch and still call it delivered.
 
+The small-pilot candidate uses ordinary logged, unpartitioned tables with non-null global uniqueness on batch ID and session/sequence plus indexed receipt expiry. Time-partitioned uniqueness must include the partition key and therefore cannot alone prevent an identity recurring across receipt buckets. Do not put a generic relay between this transaction and the client acknowledgment: the inspected Vector pipeline can acknowledge disk buffering or intentional transform drops before this database contract is satisfied. See follow-up F05/F07 in the [evidence register](../../research/telemetry/TELEM-00-R1/README.md).
+
+### Transaction specification to qualify
+
+At READ COMMITTED, insert the immutable batch receipt with ON CONFLICT DO NOTHING RETURNING. If inserted, insert every event in the same transaction; an overlapping session/sequence rolls back the whole batch and produces 409. Use synchronous durable commit before 202. If no receipt is returned, a concurrent conflicting row may have been invisible to that statement's snapshot: perform a separate locked read, check actual current database time after acquiring the lock, then compare the original digest/length. An identical, unexpired retry has no new events and does not extend expiry. End the transaction promptly before responding.
+
+If cleanup removed the receipt, restart within a bounded budget. If the receipt is at or too near expiry, release locks and return a bounded retryable failure until cleanup; never refresh the deadline. Bound lock/transaction duration and preserve a measured purge margin. PostgreSQL now()/transaction_timestamp() is fixed at transaction start; it cannot alone decide expiry after a long wait. Hash equality relies on the stated cryptographic collision assumption. These are design requirements from F15, not executed SQL or proof of real concurrency/durability.
+
 Schema is independent of the client. Treat all inputs as hostile, including valid-but-fabricated values. Never log body bytes or jsonschema exception reprs: error messages can contain rejected personal data. Reject diagnostic attachment content types, arbitrary destinations and compressed bombs. The [OpenAPI proposal](../../../research/telemetry/contracts/openapi.json) has no live server.
 
 ## Anonymous ingress and abuse limits
@@ -47,9 +55,11 @@ Use a trusted default-branch workflow in the report repository:
 2. OIDC obtains short-lived read access to the aggregate-only endpoint when supported. Restrict audience, repository, workflow, trusted ref and environment. Otherwise use a narrowly scoped server credential with a documented rotation process.
 3. Validate the aggregate schema, release allowlist, exact period, row/size caps and publication status. No ad hoc dimension query or raw storage permission is available to the job.
 4. Render deterministic Markdown with a fixed renderer. Do not interpolate player/API text into shell or JavaScript source.
-5. Upsert one report issue per period/release. A trusted store owns the issue number, content digest and report key; verify repository, marker and expected bot author when reconciling.
-6. On an ambiguous create timeout, find/reconcile the original report before another create. Serialize by report key. Ignore an unchanged digest. Use bounded retry for rate limiting and transient errors.
+5. Create or reconcile one frozen report per approved identity. The prepared model supports a daily GPU report keyed by day/release/destination; future weekly reports need a distinct reviewed identity. A trusted store owns intent, issue number and exact body digest; verify repository, issue kind, complete body/marker and expected bot author.
+6. Persist intent before writing. On an ambiguous create timeout, retain unknown and reconcile rather than automatically creating again. Serialize by report key. Incomplete discovery, zero inconclusive matches or multiple matches cannot authorize a blind retry. Ignore an unchanged published digest; a changed digest or audience requires disclosure review. Bound retries of operations with established safe semantics.
 7. Record the issue URL/digest and status privately. A failed update preserves the previous report; monitoring marks it stale.
+
+The [publication protocol](publication-protocol.md) owns these transitions and their offline tests. Repository concurrency and a durable workflow engine do not make an arbitrary remote create exactly-once. An approval hash is not reviewer authentication, and frozen bodies do not prove that overlapping public disclosures are safe.
 
 For a same-repository job, GITHUB_TOKEN needs issues:write and contents:read only if checking out the renderer. id-token:write is needed only for OIDC. No administration, workflows, packages or repository contents write is required to update an issue. For an external service/cross-repository route, install a GitHub App only on the selected report repository, with Issues write and the mandatory read-only metadata permission. Keep its private key server-side; mint short-lived installation tokens.
 
@@ -70,6 +80,18 @@ The prepared [synthetic report](../../../research/telemetry/examples/github-repo
 Do not say “20 users” when the count is 20 temporary sessions. Do not average p99s or FPS values. Do not post raw session examples, arbitrary exceptions, report IDs, exact hardware strings or rare cross-products. Freeze a period's published table to limit differencing; handle later corrections as a reviewed replacement with a disclosure check. Do not expose public filter APIs for arbitrary slice queries.
 
 Regression alerts are hypotheses. A useful starting investigation rule is a ≥10% worsening of a comparable frame-interval metric with adequate eligible exposure in each release; set sample/coverage requirements before launch and confirm on a controlled benchmark. No baseline or significance level is invented by this design. The offline model tests only a fixed GPU table; aircraft tables and statistical comparison are explicitly pending.
+
+The [validation laboratory](validation-lab.md#statistical-interpretation-and-follow-through) adds a concrete population-mix counterexample and comparison requirements. Opt-in participation, repeated sessions, unavailable measurements and lost uploads constrain the denominator; pooled FPS can fall even if every observed hardware stratum is unchanged. New exposure breakdowns must themselves pass the disclosure gate.
+
+## Retention and logging feasibility
+
+The 48-hour maximum is a deployment requirement across readable raw copies, not an achieved property of the prototype or a SQL cleanup job. Ordinary DELETE/VACUUM, raw backups, WAL, replicas and restored volumes need separate treatment. pgBackRest's chain retention and restore exclusions are not per-record erasure; a separate database within one physical PostgreSQL cluster shares its backup/WAL boundary. A 48-hour-old snapshot may already contain a record almost 48 hours old.
+
+Prefer isolating raw ingestion from the longer-lived aggregate backup domain, then qualify the remaining raw storage/WAL/provider copies. Aggregate-only logical exports or separate clusters are candidates, not demonstrated solutions. If every raw-bearing copy cannot be removed or rendered irrecoverable by its oldest contained record's deadline, choose another arrangement or explicitly revisit the requirement and notice before release. Do not relabel restore filtering as deletion, or choose unlogged tables while promising crash-durable acceptance. Any cryptographic-erasure proposal needs its own reviewed standard, plaintext/key-copy inventory and failure evidence.
+
+Maintain a surface inventory with owner, maximum lifetime, purge mechanism, failure monitoring and restore behavior. Synthetic tests must cover stalled replicas, failed backup/expiry jobs, retained WAL, locks and deadline races. Stopping new ingestion does not purge existing data; an emergency deadline procedure must address both.
+
+Logging qualification includes reverse-proxy error paths, body temp files, application-server error loggers, validation exceptions, stderr/journals, libraries and APM. Disabling access logs is insufficient. Use fixed error responses and safe category counters, and prove no input canary reaches persistent sinks. The [laboratory](validation-lab.md#request-and-error-canaries) owns the detailed experiment; F06/F16/F17 record its source evidence.
 
 ## Capacity and budget model
 

@@ -97,6 +97,10 @@ Prime the clock; reset at pause, minimized/undrawable/focus-loss and known suspe
 
 Vsync, frame cap, window state and software renderer influence the result. Main-loop cadence is not GPU utilization or display presentation. Frame generation and native render cadence require separate future instruments. Automatic performance-based graphics tuning is outside this data-collection change.
 
+Independent tools use different definitions: PresentMon separates present calls and display changes; the inspected MangoHud percentile is not the reciprocal mean of the slowest fraction. Do not relabel the fixed histogram as either statistic. Coordinated-omission correction adds modeled samples and must not change v1's observed interval counts or duration. The [validation laboratory](validation-lab.md#measurement-qualification) defines the cross-checks and synthetic counterexamples from F01–F04/F13.
+
+Known focus/drawable signals do not establish complete physical visibility on every compositor. Qualify focus and occlusion separately; label coverage unknown when the engine/platform cannot distinguish them. Do not infer visibility or remove a real hitch from interval length alone. A changed hardware/context exposure mix can change pooled FPS without a within-context slowdown; compare only with the limitations in [statistical interpretation](validation-lab.md#statistical-interpretation-and-follow-through).
+
 ## GPU and memory truthfulness
 
 Base mode leaves GPU timing off and sends not_measured with null. If a later cost-qualified adapter opts into the existing shared timing lease, preserve the source statuses: not_measured, zero_ambiguous, positive_freshness_unverified, invalid_reading. Only the positive-unverified state carries a positive value; do not claim per-frame freshness or align it with a particular interval. Invalid/nonfinite values are never serialized as numeric zero.
@@ -132,6 +136,10 @@ The daily job removes session IDs from its output. For public GPU tables, requir
 The weekly report pools only eligible, already gated daily cells and labels counts **contributing session-day observations**. It excludes suppressed/missing days and must say so. Do not call the sum unique sessions, players, devices or the whole week's population. A session spanning receipt days, re-enabling, token rotation and repeat players can add observations. The threshold is a disclosure mitigation, not k-anonymity, differential privacy or resistance to a Sybil attack.
 
 The executable reducer takes trusted receipt-day/body pairs, rejects mixed or open days and models this one-day GPU gate. Weekly orchestration, other tables, late-window coverage and database deletion remain TELEM-09/10 implementation work. Published aircraft popularity can start with manually reviewed aggregates; do not copy the private session table to GitHub.
+
+The threshold, status changes and overlapping/corrected reports still have inference channels. A 19-to-20 token transition changes suppressed output into visible output under strong auxiliary knowledge. Public release review must consider the whole inventory and previous versions, not only each table in isolation. The [publication protocol](publication-protocol.md) freezes exact reviewed bodies and refuses an automatic changed-digest publication; it does not prove formal privacy.
+
+Ordinary PostgreSQL deletion is logical expiry, not demonstrated physical erasure. WAL, dead tuples, replicas and backup chains may preserve readable data. A backup age measured from snapshot creation can exceed the oldest included record's 48-hour deadline. The [operational specification](delivery.md#retention-and-logging-feasibility) keeps this requirement explicit; no row-TTL test, restore filter or ordinary backup setting closes it.
 
 ## Never collect automatically
 

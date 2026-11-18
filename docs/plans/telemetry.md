@@ -23,6 +23,9 @@ This plan implements the user's requested default-enabled experience as a recomm
 | Receiving data, GitHub reports, abuse and operational ownership | [Delivery and operations](telemetry/delivery.md) |
 | Acceptance tests and hardware qualification | [Verification](telemetry/verification.md) |
 | 38 independent research questions, alternatives and source audit | [TELEM-00 evidence](../research/telemetry/TELEM-00/README.md) |
+| Adaptive follow-up: ten, review, ten targeted, ten unconventional | [TELEM-00-R1 evidence](../research/telemetry/TELEM-00-R1/README.md) |
+| Established test tools, fault experiments and measurement counterexamples | [Validation laboratory](telemetry/validation-lab.md) |
+| Frozen disclosures, review receipts and uncertain GitHub writes | [Publication protocol](telemetry/publication-protocol.md) |
 | Schemas, fixtures and executable offline reference | [Implementation starter](../../research/telemetry/README.md) |
 
 ## Decisions ready for implementation
@@ -34,6 +37,8 @@ This plan implements the user's requested default-enabled experience as a recomm
 5. Base mode has coarse hardware categories, frame-cadence summaries, stock aircraft/activity usage and bounded error categories. Crash dumps, exact hardware diagnostics and user-provided text belong to a separate reviewed manual flow.
 6. Source/editor, headless, technical/direct-argument and automation runs are off by default and cannot use production ingestion. A no-argument exported GUI launched from a terminal is indistinguishable from the same GUI launched by a shortcut.
 7. No disk spool in v1. A small memory queue favors privacy and simple revocation over guaranteed event delivery. All reports are best-effort observations, never a census.
+8. Use unpartitioned logged raw/dedup tables for the small pilot candidate, with global uniqueness and indexed expiry. A receipt-day partition key must not weaken cross-day deduplication. SQL deletion and backup age alone cannot qualify the 48-hour storage promise; raw-copy isolation and erasure feasibility remain explicit deployment gates.
+9. Freeze a reviewed report snapshot. Persist publication intent before a remote write, preserve an unknown outcome and reconcile it; never blindly repeat an ambiguous create. Public review binds the exact destination, body digest and relevant disclosure inventory. The offline model does not authenticate reviewers or provide durable coordination.
 
 The [decision record](../DECISIONS.md#transparent-telemetry-as-a-separate-product-data-boundary) records the credible alternatives and revisit conditions.
 
@@ -43,7 +48,7 @@ Effort ranges are planning estimates for one experienced engineer with timely re
 
 | Phase / estimate | Step | Work | Dependency | Proof / present status |
 | --- | --- | --- | --- | --- |
-| 0 — evidence and contract, 2–3 days | TELEM-00 | Source audit and at least 20 external investigations; privacy and GitHub alternatives | Baseline repository | **Delivered:** 38 investigations and repository integration audit |
+| 0 — evidence and contract, 2–3 days | TELEM-00 | Source audit and external investigations; privacy and GitHub alternatives | Baseline repository | **Delivered:** original 38 plus the adaptive follow-up; see its register and integration evidence |
 | 0 | TELEM-01 | Versioned data/consent/API contracts, adversarial fixtures and offline reference | TELEM-00 | **Delivered as prototype:** see test evidence; no production integration |
 | 1 — local consent and measurement, 4–6 days | TELEM-02 | Consent store, forced-off policy, generation fencing, no-network stub | TELEM-01; UI/DT | Unit/packet tests prove zero telemetry before grant and after decline; pending |
 | 1 | TELEM-03 | First-launch panel, startup state, Settings privacy page, exact preview, translations | TELEM-02; UI/i18n | EN/ES keyboard/controller and scale review at 1080p; pending |
@@ -52,15 +57,15 @@ Effort ranges are planning estimates for one experienced engineer with timely re
 | 2 — bounded delivery, 3–5 days | TELEM-06 | Memory queue, one-request sender, deadlines, retry budget and revocation races | TELEM-02/04/05 | Silent peer, TLS, redirects, 429, offline and shutdown harness; pending |
 | 2 | TELEM-07 | Sanitized export/preview, separate manual GitHub report route | TELEM-03/06 | No automatic browser upload, no payload in URL; GitHub identity warning; pending |
 | 3 — receiving service, 4–7 days | TELEM-08 | Private ingestion, schema/semantic validation, idempotent transaction, overload limits | TELEM-01/06; operator choices | Fault injection + duplicate/conflict/race tests against selected database; pending |
-| 3 | TELEM-09 | Day partitions, expiry, restricted roles, privacy-safe logs and service monitoring | TELEM-08 | Retention/backup restore and log-canary evidence; pending |
+| 3 | TELEM-09 | Indexed expiry, raw/aggregate storage separation, restricted roles, safe error logs and service monitoring | TELEM-08 | Physical-copy/backup feasibility, boundary races and log-canary evidence; pending |
 | 4 — useful GitHub feedback, 3–5 days | TELEM-10 | Daily rollups and fixed weekly aggregate tables with disclosure gates | TELEM-09 | Correct weighting, suppressed cells, missing periods and late batches; pending |
-| 4 | TELEM-11 | Deterministic report renderer and idempotent GitHub publisher | TELEM-10 | Synthetic sandbox report + permission/rate/timeout/concurrency tests; pending |
+| 4 | TELEM-11 | Deterministic renderer, frozen review record and recoverable GitHub publisher | TELEM-10 | Offline intent/disclosure model prepared; durable state, real permission/rate/timeout/concurrency tests pending |
 | 5 — qualification and rollout, 4–7 days plus beta time | TELEM-12 | Cross-platform release-package consent, network and performance qualification | TELEM-02…11 | Windows/Linux/macOS, 1080p-first evidence; pending |
 | 5 | TELEM-13 | Small volunteer preview cohort and maintenance runbook rehearsal | TELEM-12 | Observed payloads, bounded costs, real off-switch, operator response; pending |
 | 5 | TELEM-14 | Enable the approved release configuration and publish the notice | TELEM-13; completed deployment/privacy gates | Release owner accepts exact build, endpoint and notice; pending |
 | 5 | TELEM-15 | First release comparison, metric review, deletion drill and quarterly pruning | TELEM-14 | Actionable regression report and unused-field removal; pending |
 
-Expected implementation effort after this design: roughly **18–30 engineering days**, plus review and beta observation. Consent/UI and backend preparation can proceed in parallel after TELEM-01. Do not gate gameplay on ingestion availability.
+Expected implementation effort after this design: roughly **18–30 engineering days**, plus review and beta observation. This estimate assumes a hosting/storage arrangement that can actually meet the declared retention contract; a new erasure mechanism or provider redesign requires re-estimation. Consent/UI and backend preparation can proceed in parallel after TELEM-01. Do not gate gameplay on ingestion availability.
 
 ## First three implementation PRs
 
@@ -88,6 +93,7 @@ Done means both sides enforce the contract under malformed traffic and outages; 
 | --- | --- | --- |
 | Operator, contact and processing region | Project-maintained notice with named contact | Not present in the task; never invent legal identity |
 | Hosting and operational budget | One small managed service/database; reviewed cost ceiling | Actual vendor logs, region, deletion and billing must be checked |
+| Raw-copy retention feasibility | Isolate raw records from longer-lived aggregate backups; prove all readable copies meet their original deadlines | SQL TTL, pgBackRest retention, a separate database in the same cluster and restore filtering do not establish erasure |
 | GitHub destination | Separate private operations repository initially | Current project repository is public; its audience is broader |
 | Public report release | Manual review of each early report | Small cohorts and linked dimensions can reveal more than intended |
 | Optional exact-hardware/crash support | Manual preview/export first; Sentry only after separate audit | Broader data and native crash paths need separate disclosure |

@@ -1,6 +1,7 @@
 # Telemetry verification and release gates
 
 Status: only offline contract/prototype checks have run; [actual evidence](../../research/telemetry/TELEM-00/verification.md).
+The [follow-up evidence](../../research/telemetry/TELEM-00-R1/verification.md) records added generative/publication checks and their independent review.
 Production UI, packets, exported Godot behavior, database, provider retention, GitHub publishing and hardware performance remain unqualified.
 
 ## Test layers
@@ -19,6 +20,7 @@ Production UI, packets, exported Godot behavior, database, provider retention, G
 | Privacy operations | Log canaries, all retention surfaces, raw access denied to publisher, backup restore | Actual provider/configuration evidence, not serializer-only assertions |
 | Reporting | Closed receipt day, mixed days/builds, 19/20 threshold, repeated windows, small-cell totals, partial/missing days, weighted FPS | No false unique-user/whole-population claim; conservative publication gate |
 | GitHub | Permission/rate/schedule failures, timeout after create, duplicate concurrent runs, malicious Markdown, untrusted PR | One report identity, least privileges, no raw data/token exposure |
+| Publication history | Changed digest/status/audience, missing review receipt, incomplete/zero/multiple reconciliation matches | Frozen approved body; unknown outcome never becomes blind create; no formal anonymity claim |
 | Accessibility | EN/ES, focus, controller back/accept, screen reader, scale and contrast, large fonts | Equal usable choices and persistent effective state |
 
 ## Offline prototype reproduction
@@ -36,6 +38,10 @@ python3 -m venv .venv-telemetry
 On Windows, use the corresponding Scripts/python.exe in the created environment. These commands do not read hardware, player data or credentials, and perform no telemetry/GitHub networking. Dependency installation is a separate package download.
 
 The prototype does not implement persistent consent, HTTP sockets, secure random lifecycle rotation by time/day, threaded races, actual database transactions or weekly scheduling. IngressModel is in-memory; “202” in that model proves state-machine expectations only, not production durability. Unit tests cannot qualify a consent window or an exported game.
+
+The follow-up adds Hypothesis 6.170.15 with bounded deterministic generated examples and a 120-example, up-to-50-step consent state machine. It checks independently stated observable invariants, without sockets or a player dataset. Public review receipts and discovery completeness are trusted inputs to the sequential publication model, not authenticated services. Deliberate faults are applied only to disposable copies to verify that the new tests can detect selected regressions. See the [starter](../../../research/telemetry/README.md) for the scope.
+
+The [validation laboratory](validation-lab.md) specifies later Toxiproxy/mitmproxy/Schemathesis, error-canary, visibility, PresentMon/MangoHud/Perfetto and paired-hardware experiments. Those tools are research selections; their compatibility and experiment results remain pending. The [publication protocol](publication-protocol.md) owns the detailed provider-recovery and whole-history review cases.
 
 ## Focused Godot integration tests to add
 
@@ -75,6 +81,8 @@ No-network assertions concern telemetry. Local renderer detection and gameplay s
 Priority: **1920×1080 first**, then 1440p/4K, then 720p fallback. Compare the same clean exported build, renderer, effective settings, aircraft/field, warmup, input tape and power/thermal conditions. Use existing frame capture/GOD TEST/replay tools; no ad hoc physics benchmark. Collect at least five alternating off/on runs after an initial cold-run record and report variation rather than a single favorable number.
 
 Required fleet: modest Windows integrated GPU, Windows discrete GPU, Linux integrated/discrete, Apple Silicon native path and Intel macOS if still supported. A software renderer or this container does not qualify those targets.
+
+Include focus and occlusion as independent states where possible, preserve unknown coverage, and verify the metric definition and clock domain before comparing external profilers. A matched benchmark must retain build/context identity, all run outcomes and variation. Pooled voluntary telemetry is supporting evidence, not a substitute for the controlled off/on campaign.
 
 Proposed budgets to verify:
 

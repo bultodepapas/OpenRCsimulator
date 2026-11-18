@@ -12,6 +12,8 @@ Branch: design/transparent-telemetry-2026-11-18.
 
 No production telemetry, hosted service, scheduled publisher or GitHub issue was activated. Reports/examples are synthetic. Research versions are observations on this date, not production dependency approval.
 
+The [adaptive follow-up](../TELEM-00-R1/README.md) adds 30 new investigations, revised decisions and expanded offline tests. This original package remains the dated 38-investigation baseline; the current master plan owns the integrated requirements.
+
 ## Investigation register
 
 | ID | Question / investigated mechanism | Evidence and decision |
