@@ -1,0 +1,57 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1fbefa6e-7b23-4e40-9656-9a258641d094",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/audit_drafts/fixedwing/test_staggered_hull_crossing_event.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T02:27:41.117292+00:00",
+  "label": "staggered",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/probes/staggered/staggered-4tgai71b/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/probes/staggered/staggered-4tgai71b/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"names_earliest\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/audit_drafts/fixedwing/test_staggered_hull_crossing_event.gd:75)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"/workspace/scratch/d5b4d44f201e/audit_drafts/fixedwing/test_staggered_hull_crossing_event.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.595509,
+  "log_bytes": 533,
+  "log_sha256": "adf5f48e074f4b29a093acbdc7466f3451a9b760d550bc0c31af8617dd52bd99"
+}

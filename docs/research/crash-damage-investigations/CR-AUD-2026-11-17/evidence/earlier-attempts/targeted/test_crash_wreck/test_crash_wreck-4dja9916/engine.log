@@ -1,0 +1,124 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/stik-electric-6s/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/stik-electric-6s/customization-bindings.json", "authoring source is missing: assets/aircraft/stik-electric-6s/runtime-proof.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/extra-300s-60/geometry.json", "authoring source is missing: assets/aircraft/extra-300s-60/geometry.json", "authoring source is missing: assets/aircraft/extra-300s-60/appearance.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json", "authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json", "authoring source is missing: assets/aircraft/p51d-mustang-120/source.json", "authoring source is missing: assets/aircraft/p51d-mustang-120/appearance.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/model-geometry.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/model-geometry.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/source-manifest.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/gear-samples.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/wing-fold-r59.json", "authoring source is missing: assets/aircraft/f4u-corsair-250/mechanisms-r59.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/avanti-s-a200/blender-geometry.json", "authoring source is missing: assets/aircraft/avanti-s-a200/blender-geometry.json", "authoring source is missing: assets/aircraft/avanti-s-a200/source-manifest.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/source-manifest.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/mesh-measurements.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/manual.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/moonrunner-x99-overlay/model-bindings.json", "authoring source is missing: assets/aircraft/moonrunner-x99-overlay/model-geometry.json", "authoring source is missing: assets/aircraft/moonrunner-x99-overlay/model-geometry.json", "authoring source is missing: assets/aircraft/skywalker-x8/source-manifest.json", "authoring source is missing: assets/aircraft/moonrunner-x99-overlay/customization-bindings.json", "authoring source is missing: assets/aircraft/moonrunner-x99-overlay/runtime-proof.json", "authoring source is missing: assets/aircraft/skywalker-x8/model-geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+30 checks, 0 failed

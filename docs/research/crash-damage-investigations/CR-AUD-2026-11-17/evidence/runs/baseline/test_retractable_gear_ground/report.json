@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ea5e156a-138b-4bbb-bd23-779fb9b1b47f",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_retractable_gear_ground.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:31:55.841347+00:00",
+  "label": "test_retractable_gear_ground",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_retractable_gear_ground/test_retractable_gear_ground-oa9afq73/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_retractable_gear_ground/test_retractable_gear_ground-oa9afq73/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.230904,
+  "log_bytes": 4477,
+  "log_sha256": "d8ff0abb8dada0d3c392570321bb8c223e4127be07ca519f1b08c29728606e23"
+}

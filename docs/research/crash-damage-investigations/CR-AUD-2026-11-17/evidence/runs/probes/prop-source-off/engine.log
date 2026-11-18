@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   source on, spinning: loaded glow flight 
+ok   source on, spinning: airborne disc before coast 
+ok   source on, spinning: airborne tick accepted while spinning 
+ok   source on, spinning: disc-only intersection fixture 
+ok   source on, spinning: intersection body accepted 
+ok   source on, spinning: RPM and source mode preserved at guard 
+PROP STRIKE at 8114 rpm, 0.0 m/s: engine stopped
+OBSERVED source on, spinning source_on=true rpm=8113.92741804402 depth=0.001 struck=true crash=false
+ok   source on, spinning: documented strike result 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   source cut, spinning: loaded glow flight 
+ok   source cut, spinning: actual glow cut accepted 
+ok   source cut, spinning: airborne disc before coast 
+ok   source cut, spinning: airborne tick accepted while spinning 
+ok   source cut, spinning: disc-only intersection fixture 
+ok   source cut, spinning: intersection body accepted 
+ok   source cut, spinning: RPM and source mode preserved at guard 
+OBSERVED source cut, spinning source_on=false rpm=8089.71073353637 depth=0.001 struck=false crash=false
+FAIL source cut, spinning: documented strike result 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   source cut, stopped: loaded glow flight 
+ok   source cut, stopped: actual glow cut accepted 
+ok   source cut, stopped: airborne disc before coast 
+ok   source cut, stopped: airborne tick accepted while spinning 
+ok   source cut, stopped: disc-only intersection fixture 
+ok   source cut, stopped: intersection body accepted 
+ok   source cut, stopped: RPM and source mode preserved at guard 
+OBSERVED source cut, stopped source_on=false rpm=0.0 depth=0.001 struck=false crash=false
+ok   source cut, stopped: documented strike result 
+PROBE spinning source-off ground strike: 23 checks, 1 failures

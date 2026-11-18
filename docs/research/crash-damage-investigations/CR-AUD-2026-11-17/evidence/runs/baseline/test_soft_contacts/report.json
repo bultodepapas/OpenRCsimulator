@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "bd9fb8dc-41ca-4822-8847-b521d2dfa5f3",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_soft_contacts.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:31:39.534736+00:00",
+  "label": "test_soft_contacts",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_soft_contacts/test_soft_contacts-ocdqc6ng/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_soft_contacts/test_soft_contacts-ocdqc6ng/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.942126,
+  "log_bytes": 2682,
+  "log_sha256": "e59e618a5be38d16493b7060ae7140b143bdbf36b6d2dbe76ae9d88274940d67"
+}

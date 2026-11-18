@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "dd32eb9e-6be4-4ead-9f45-0c269cf03922",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_mr_rotor_strike_slope.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:32:10.651843+00:00",
+  "label": "test_mr_rotor_strike_slope",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_mr_rotor_strike_slope/test_mr_rotor_strike_slope-8c65v6r4/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_mr_rotor_strike_slope/test_mr_rotor_strike_slope-8c65v6r4/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.88568,
+  "log_bytes": 3185,
+  "log_sha256": "a6aaa94bb49f6577f09ead9f8d4219224af3a79f8777afac5d00a375e32c195c"
+}

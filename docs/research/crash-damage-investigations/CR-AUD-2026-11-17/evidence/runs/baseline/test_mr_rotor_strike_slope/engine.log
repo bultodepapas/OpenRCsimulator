@@ -1,0 +1,32 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   fixture plane h=0.5n, yaw 0: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   fixture plane h=0.5n, yaw 90: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   fixture plane h=0.5n, yaw 135: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   fixture plane h=0.5n, yaw 200: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   fixture plane: a rim just under the slope strikes, 3 mm clear of it does not 0.009715 / -0.003000 m
+ok   fixture flat ground, pitch +30 deg: rim under the ground strikes, 7.6 mm clear does not 
+ok   fixture flat ground, roll -30 deg: rim under the ground strikes, 7.6 mm clear does not 
+ok   fixture disc parallel to the slope, hubs 10 mm clear: no strike; hub 5 mm under the surface: strike -0.010000 m
+ok   fixture level quad 21.5 mm over the flat pad: no strike below the threshold or at 1000 rad/s 
+ok   fixture stopped rotors never strike; the threshold speed itself does not, just above it does 
+ok   fixture only the intersecting rotors' own speeds decide 
+ok   fixture clear hover at 0.2 m and 1 m: no strike 
+ok   fixture clear hover 0.3 m above the 0.5 slope: no strike 
+ok   shipped plane h=0.5n, yaw 0: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   shipped plane h=0.5n, yaw 90: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   shipped plane h=0.5n, yaw 135: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   shipped plane h=0.5n, yaw 200: the uphill rim penetrates by r·0.5−0.02 and is a propeller strike brute 0.012385 m, expected 0.012385, 'Propeller strike'
+ok   shipped plane: a rim just under the slope strikes, 3 mm clear of it does not 0.009715 / -0.003000 m
+ok   shipped flat ground, pitch +30 deg: rim under the ground strikes, 7.6 mm clear does not 
+ok   shipped flat ground, roll -30 deg: rim under the ground strikes, 7.6 mm clear does not 
+ok   shipped disc parallel to the slope, hubs 10 mm clear: no strike; hub 5 mm under the surface: strike -0.010000 m
+ok   shipped level quad 21.5 mm over the flat pad: no strike below the threshold or at 1000 rad/s 
+ok   shipped stopped rotors never strike; the threshold speed itself does not, just above it does 
+ok   shipped only the intersecting rotors' own speeds decide 
+ok   shipped clear hover at 0.2 m and 1 m: no strike 
+ok   shipped clear hover 0.3 m above the 0.5 slope: no strike 
+ok   RC ramp premise: hubs 5 mm clear, a rim point penetrates by more than 2 cm (audit: 0.0283 m) 0.028316 m
+ok   RC ramp: the uphill rim is a propeller strike 
+ok   RC ramp: hubs 50 mm clear is no strike -0.016684 m
+rotor strike on slopes: 29 checks, 0 failed

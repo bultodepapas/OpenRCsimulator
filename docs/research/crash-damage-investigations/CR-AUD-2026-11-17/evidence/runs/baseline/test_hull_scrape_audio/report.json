@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ee5fc4d4-9c47-4094-9c22-5cbbc7a65a80",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_hull_scrape_audio.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:28:03.138082+00:00",
+  "label": "test_hull_scrape_audio",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_hull_scrape_audio/test_hull_scrape_audio-uxorua21/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_hull_scrape_audio/test_hull_scrape_audio-uxorua21/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.56453,
+  "log_bytes": 136,
+  "log_sha256": "d114e35fd02cc356455264bfc82c6f1f175275e01be7d9dd46a2e222f58a345d"
+}

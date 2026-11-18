@@ -1,0 +1,65 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ENGINE_IDENTITY {"physics_3d_setting":"DEFAULT","platform":"Linux","tick_hz":240,"version":{"build":"official","hash":"cafc17a192acf67903910a68aeb3c076c0907a4b","hex":264192,"major":4,"minor":8,"patch":0,"status":"beta2","string":"4.8-beta2 (official)","timestamp":0}}
+PROBE jensen-das-ugly-stik-60 data admitted PASS 
+PROBE jensen-das-ugly-stik-60 wing brush PASS mass=2.87866 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE jensen-das-ugly-stik-60 belly slide PASS mass=2.87866 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE jensen-das-ugly-stik-60 300 kph frontal PASS mass=2.87866 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE jensen-das-ugly-stik-60 300 kph grazing PASS mass=2.87866 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE stik-glow-61fx-2t data admitted PASS 
+PROBE stik-glow-61fx-2t wing brush PASS mass=3.02862 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE stik-glow-61fx-2t belly slide PASS mass=3.02862 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE stik-glow-61fx-2t 300 kph frontal PASS mass=3.02862 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE stik-glow-61fx-2t 300 kph grazing PASS mass=3.02862 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE stik-glow-55ax-2t data admitted PASS 
+PROBE stik-glow-55ax-2t wing brush PASS mass=2.76646 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE stik-glow-55ax-2t belly slide PASS mass=2.76646 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE stik-glow-55ax-2t 300 kph frontal PASS mass=2.76646 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE stik-glow-55ax-2t 300 kph grazing PASS mass=2.76646 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE stik-glow-fs64v-4t data admitted PASS 
+PROBE stik-glow-fs64v-4t wing brush PASS mass=2.62554 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE stik-glow-fs64v-4t belly slide PASS mass=2.62554 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE stik-glow-fs64v-4t 300 kph frontal PASS mass=2.62554 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE stik-glow-fs64v-4t 300 kph grazing PASS mass=2.62554 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE stik-electric-6s data admitted PASS 
+PROBE stik-electric-6s wing brush PASS mass=2.60008 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE stik-electric-6s belly slide PASS mass=2.60008 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE stik-electric-6s 300 kph frontal PASS mass=2.60008 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE stik-electric-6s 300 kph grazing PASS mass=2.60008 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE gp-extra-300s-60 data admitted PASS 
+PROBE gp-extra-300s-60 wing brush PASS mass=3.81955 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE gp-extra-300s-60 belly slide PASS mass=3.81955 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE gp-extra-300s-60 300 kph frontal PASS mass=3.81955 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE gp-extra-300s-60 300 kph grazing PASS mass=3.81955 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE p51d-mustang-120 data admitted PASS 
+PROBE p51d-mustang-120 wing brush PASS mass=21.50000 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE p51d-mustang-120 belly slide PASS mass=21.50000 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE p51d-mustang-120 300 kph frontal PASS mass=21.50000 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE p51d-mustang-120 300 kph grazing PASS mass=21.50000 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE f4u-corsair-250 data admitted PASS 
+PROBE f4u-corsair-250 wing brush PASS mass=21.50000 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE f4u-corsair-250 belly slide PASS mass=21.50000 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE f4u-corsair-250 300 kph frontal PASS mass=21.50000 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE f4u-corsair-250 300 kph grazing PASS mass=21.50000 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE sebart-avanti-s-a200-p100rx data admitted PASS 
+PROBE sebart-avanti-s-a200-p100rx wing brush PASS mass=11.43858 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE sebart-avanti-s-a200-p100rx belly slide PASS mass=11.43858 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE sebart-avanti-s-a200-p100rx 300 kph frontal PASS mass=11.43858 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE sebart-avanti-s-a200-p100rx 300 kph grazing PASS mass=11.43858 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE turbo-lumber-evolution data admitted PASS 
+PROBE turbo-lumber-evolution wing brush PASS mass=2.19000 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE turbo-lumber-evolution belly slide PASS mass=2.19000 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE turbo-lumber-evolution 300 kph frontal PASS mass=2.19000 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE turbo-lumber-evolution 300 kph grazing PASS mass=2.19000 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE moonrunner-x99 data admitted PASS 
+PROBE moonrunner-x99 wing brush PASS mass=3.13164 class=0 normal_specific=0.006825 abrasion=0.236250
+PROBE moonrunner-x99 belly slide PASS mass=3.13164 class=1 normal_specific=0.366600 abrasion=10.575000
+PROBE moonrunner-x99 300 kph frontal PASS mass=3.13164 class=4 normal_specific=2708.333333 abrasion=0.000000
+PROBE moonrunner-x99 300 kph grazing PASS mass=3.13164 class=1 normal_specific=0.006825 abrasion=1.312476
+PROBE all registered fixed-wing configurations covered PASS 11
+PROBE C4 cold kerosene has no ignition PASS 
+PROBE C4 glow produces stain without a fireball PASS 
+PROBE C4 LiPo is delayed venting without ignition flash PASS 
+PROBE live fuel outcome uses remaining mass PASS 
+PROBE visible kerosene duration agrees with live fuel outcome FAIL declared_kg=1.28 live_kg=0.035 report_duration_s=1.000000 visible_duration_s=36.571429
+SCENARIO_FUEL_PROBE: 61 checks, 1 failed

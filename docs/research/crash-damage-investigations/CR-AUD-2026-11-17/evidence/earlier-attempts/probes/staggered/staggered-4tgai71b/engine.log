@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "names_earliest" variable because the value doesn't have a set type.
+          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/audit_drafts/fixedwing/test_staggered_hull_crossing_event.gd:75)
+ERROR: Failed to load script "/workspace/scratch/d5b4d44f201e/audit_drafts/fixedwing/test_staggered_hull_crossing_event.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)

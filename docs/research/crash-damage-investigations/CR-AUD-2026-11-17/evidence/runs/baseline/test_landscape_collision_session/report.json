@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "787943f5-482f-4509-9e23-c9829d8031a9",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_landscape_collision_session.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:31:05.103794+00:00",
+  "label": "test_landscape_collision_session",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_landscape_collision_session/test_landscape_collision_session-ymbb2r85/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_landscape_collision_session/test_landscape_collision_session-ymbb2r85/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.414592,
+  "log_bytes": 2083,
+  "log_sha256": "7eaa1d1b278ba0aa0c9a7e5b6b4585990aa7fc7b7e2f50bc01982cfb02d932cb"
+}

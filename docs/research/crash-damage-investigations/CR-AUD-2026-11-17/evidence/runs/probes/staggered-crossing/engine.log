@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   prepared two-point fixture 
+ok   independent early crossing is 0.2 
+ok   independent selected crossing is 0.8 
+ok   faster second point is selected by terminal policy { &"index": 1, &"rule": "impact", &"specific_j_per_kg": 83.1493069306931, &"normal_speed_mps": 12.96, &"depth_m": 0.0108061371574 }
+ok   typed snapshot retains earliest point separately 
+ok   terminal event serializes and validates 
+OBSERVED selected_id=selected_probe selected_index=1 crossing_index=0 event_fraction=0.2 independent_selected_fraction=0.8 event={ "format": "openrc-aircraft-contact-events v1", "event_type": "impact", "event_id": "as13:impact:hull:1:new:14:selected_probe", "tick": 1, "source": "hull", "contact_id": "selected_probe", "lifecycle": "new", "policy": "soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground", "response": "terminal", "point_index": 1, "rule": "impact", "point_ned": [0.0, 0.10084821761307, 0.0108061371574], "velocity_ned": [0.0, 0.18426108328898, 12.9681428890854], "normal_ned": [0.0, 0.0, -1.0], "measure": { "speed_mps": 12.969451882734, "down_speed_mps": 12.9681428890854 }, "crossing_fraction": 0.2 }
+FAIL flattened crossing is unambiguous about its point 
+PROBE staggered hull crossing: 7 checks, 1 failures

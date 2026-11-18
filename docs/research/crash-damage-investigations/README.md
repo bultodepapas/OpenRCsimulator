@@ -4,6 +4,8 @@
 
 ## Reports
 
+[CR-AUD-2026-11-17: cross-fleet collision and damage audit](CR-AUD-2026-11-17/README.md) records the source-pinned fleet inventory, controlled counterexamples, checked execution evidence, numerical and visual limits, and a staged improvement plan. It separates collision defects, cosmetic aftermath inconsistencies, and explicitly incomplete physical-damage capabilities.
+
 [CR-31b repair planning](CR-31b/README.md), [CR-31c explicit inspection integration](CR-31c/README.md) and [CR-36c fleet valuation](CR-36c/README.md) record the 2026-10-15 extension: compatible repair choices, guarded salvage updates and independent electric/warbird/jet component prices.
 
 [CR-36b: independent Extra 300S costs](CR-36b/README.md) records partial aircraft-specific inventory coverage, five servo proxies, prop-strike valuation and guarded independent dossier authoring.

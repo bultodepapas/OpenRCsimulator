@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PASS stock field and RC track load field=[] track=[]
+PASS shared scenery world builds []
+PASS tyre stack and axis-aligned field building proxies exist tyre=rc_track:tyres:01 building=building:church:00:church world_count=6156
+PASS mt8-bisonte stock airfield session prepares 
+PASS mt8-bisonte road has no nearby wall on the runway []
+PASS mt8-bisonte stock slalom wall is provided [{ "id": "slalom_1", "north_min_m": 43.3, "north_max_m": 44.7, "east_min_m": -6.15, "east_max_m": -5.85, "bottom_up_m": -0.03, "top_up_m": 0.55, "mu": 0.65 }]
+PASS mt8-bisonte normal dry start accepts a finite tick 
+PASS mt8-bisonte tyre stack actual road omits an existing solid proxy id=rc_track:tyres:01 position=(34.900, 3.400) road_walls=[]
+PASS mt8-bisonte tyre stack static overlap is absent from actual solver, detected by injected box state down=-0.175 actual count/load=0/0.0 injected count/load=10/14295.7566154659 errors=/
+PASS mt8-bisonte field building actual road omits an existing solid proxy id=building:church:00:church position=(-164.750, -2093.500) road_walls=[]
+PASS mt8-bisonte field building static overlap is absent from actual solver, detected by injected box state down=-0.174 actual count/load=0/0.0 injected count/load=10/25653.6681894478 errors=/
+PASS monster-car-2 stock airfield session prepares 
+PASS monster-car-2 road has no nearby wall on the runway []
+PASS monster-car-2 stock slalom wall is provided [{ "id": "slalom_1", "north_min_m": 43.3, "north_max_m": 44.7, "east_min_m": -6.15, "east_max_m": -5.85, "bottom_up_m": -0.03, "top_up_m": 0.55, "mu": 0.65 }]
+PASS monster-car-2 normal dry start accepts a finite tick 
+PASS monster-car-2 tyre stack actual road omits an existing solid proxy id=rc_track:tyres:01 position=(34.900, 3.400) road_walls=[]
+PASS monster-car-2 tyre stack static overlap is absent from actual solver, detected by injected box state down=-0.118 actual count/load=0/0.0 injected count/load=13/13379.3704570966 errors=/
+PASS monster-car-2 field building actual road omits an existing solid proxy id=building:church:00:church position=(-164.750, -2093.500) road_walls=[]
+PASS monster-car-2 field building static overlap is absent from actual solver, detected by injected box state down=-0.117 actual count/load=0/0.0 injected count/load=13/25765.0349481964 errors=/
+GROUND_SCENERY_PROBE: 19 checks, 0 failed

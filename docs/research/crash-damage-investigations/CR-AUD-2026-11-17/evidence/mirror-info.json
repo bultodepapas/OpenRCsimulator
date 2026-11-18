@@ -1,0 +1,9 @@
+{
+  "source": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "mirror": "/tmp/openrc-collision-audit-source",
+  "copied_files": 7626,
+  "linked_large_binary_files": 449,
+  "copied_bytes": 367701389,
+  "unchanged_content": true,
+  "copy_rule": "All source/config/data, external authoring assets, fonts and files <=1MiB copied; remaining large immutable binaries symlink to original tree."
+}

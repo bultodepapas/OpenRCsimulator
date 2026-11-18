@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9f464ad3-449b-4d7e-ab43-fa9cd83b963d",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_hull_crossing.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:27:44.138584+00:00",
+  "label": "test_hull_crossing",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_hull_crossing/test_hull_crossing-gyg3m3w1/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_hull_crossing/test_hull_crossing-gyg3m3w1/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.920953,
+  "log_bytes": 1921,
+  "log_sha256": "17b81c05cdbbdcd0d39514576daa91902b805dbf9c95bca955cf130bb32755f5"
+}

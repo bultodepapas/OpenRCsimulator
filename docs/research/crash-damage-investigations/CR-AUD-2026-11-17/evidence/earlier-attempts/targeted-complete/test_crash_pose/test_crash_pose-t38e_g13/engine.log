@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   ordinary pose comparison rejects a real attitude change
+ok   ordinary pose comparison rejects a nonfinite attitude

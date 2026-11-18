@@ -1,0 +1,54 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   armed idle on the pad: no damage and no impact event [1.0, 1.0, 1.0, 1.0]
+ok   graded: a 3 m disarmed drop is a hard landing, not a crash; the flight goes on [{ &"type": "impact", &"time_s": 0.95416666666667, &"surface": "ground", &"part": "frame", &"normal_speed_mps": 7.22462690741084, &"point_ned": [12.0949671790704, 0.07259158215661, 0.0159556752428] }, { &"type": "impact", &"time_s": 0.96666666666667, &"surface": "ground", &"part": "frame", &"normal_speed_mps": 7.48491201132792, &"point_ned": [11.9550382696722, 0.07259158215661, 0.01831139786368] }]
+ok   graded: stopped props are not chipped by a hard landing 
+ok   strict: the same drop still ends the flight (the original law) 
+ok   graded: a 20 m drop (about 20 m/s) is a hard impact that ends the flight 
+ok   graded: identical tapes give bit-identical frames (deterministic law) 
+ok   the impact law is part of the model identity 
+ok   one tick in the ground at hover speed wears the digging props by 10 % (terrain 0.5 × 20 %), not terminal [0.9, 1.0, 0.9, 1.0]
+ok   DR-19d: the strike also brakes the digging prop's shaft by half (the ground stops the blade) 
+ok   DR-19d: a lone striking prop kicks the airframe (body rates change), with no energy gained 
+ok   two mirror-image counter-rotating strikes cancel (no net kick) 
+ok   grinding breaks the prop after twelve ticks (0.9^12 < 0.3), health 0 12 ticks
+ok   wear scales with shaft speed (half speed: 5 %) 
+ok   props below the strike speed are never worn 
+ok   the frame box's front face is the front hubs 
+ok   a 3 m/s frame hit on a wall bounces the contact point back, at most 0.2 × 3 m/s, and is not terminal v -0.5491
+ok   the bounce leaves the frame outside the wall 
+ok   the bounce dissipates energy 
+ok   a frame resting on a wall raises no impact event and no frame chip (only its touching props grind) [{ &"type": "prop_damage", &"time_s": 0.0, &"rotor": 1, &"health": 0.8, &"cause": "obstacle", &"point_ned": [0.06601397897755, 0.07601397897755, -5.0], &"broken": false, &"first": true }, { &"type": "prop_damage", &"time_s": 0.0, &"rotor": 3, &"health": 0.8, &"cause": "obstacle", &"point_ned": [0.06601397897755, -0.07601397897755, -5.0], &"broken": false, &"first": true }]
+ok   a 9 m/s frame hit on a hard solid is an obstacle strike 
+ok   the same 9 m/s into foliage bounces (foliage ends the flight from 12 m/s) 
+ok   9 m/s into frangible_impulse bounces; 10.5 m/s ends the flight 
+ok   9 m/s into light_airframe_impulse bounces; 11.5 m/s ends the flight 
+ok   9 m/s into gate_frame bounces; 10.5 m/s ends the flight 
+ok   a 2 m/s prop clip wears the front props only and is never terminal 2 damaged, v 0.574
+ok   a 7 m/s prop clip (above 6 m/s) breaks the front props, still not terminal 
+ok   broken props spinning at the wall no longer push or bounce the quad []
+ok   strict: the 2 m/s prop clip is the original obstacle strike 
+ok   a roof 2 cm above the body is not touched (box, not a 10 cm sphere) []
+ok   a roof 5 mm into the body's top is a frame contact: pushed out below it, rising no more 0.0100 0.2000
+ok   a frame edge hit on a wall spins the quad about its vertical axis r -5.378 rad/s
+ok   half-health props make half the thrust -3.18716125 vs -6.3743225
+ok   run 0: full throttle with a broken prop keeps the flight valid (no fault), shafts inside the domain 600 ticks, top 0 rad/s, fault ''
+ok   run 1: full throttle with a broken prop keeps the flight valid (no fault), shafts inside the domain 600 ticks, top 0 rad/s, fault ''
+ok   the damaged flight replays bit for bit from the same checkpoint and tape 
+ok   a level 10 m/s touchdown sinks under 6 mm, never flips (tilt < 35°) and settles on its feet sink 0.3 mm, max tilt 25.5°, final up 1.000
+ok   a 15 m/s graze survives, slows along the wall (friction) and yaws the quad v_e 14.416 r -5.249
+ok   the graze's friction impulse stays within mu × the normal impulse (hard surface 0.5) 0.3798 vs 0.7596
+ok   the graze only removes energy 
+ok   a graze raises one scrape event at about the sliding speed and chips no prop [{ &"type": "impact", &"time_s": 0.0, &"surface": "hard_terminal", &"part": "frame", &"normal_speed_mps": 1.0, &"slip_speed_mps": 15.0, &"point_ned": [0.07601397897755, 0.0, -5.0115] }, { &"type": "scrape", &"time_s": 0.0, &"surface": "hard_terminal", &"part": "frame", &"slip_speed_mps": 15.0, &"point_ned": [0.07601397897755, 0.0, -5.0115] }]
+ok   after the graze the contact still separates (friction never turns the rebound back into closing) 
+ok   a receding overlap keeps its velocity and raises no scrape 
+ok   a 4 m/s battery hit on a roof is an impact that chips no prop (v2 chipped the two nearest) [{ &"type": "impact", &"time_s": 0.0, &"surface": "hard_terminal", &"part": "frame", &"normal_speed_mps": 4.0, &"slip_speed_mps": 0.0, &"point_ned": [0.0, 0.0, -5.045] }]
+ok   a 4 m/s nose hit damages the front props only { 1: true, 3: true }
+ok   a prop tip brushing leaves 4.5 mm deep loses 0.2 × 0.15 × (4.5 / 15) = 0.9 % (a full bite into a wall: 20 %) 0.991
+ok   the brushing prop is braked and kicks the airframe (an obstacle prop strike) 
+ok   a 7 m/s prop strike into leaves wears the prop; into a hard wall it breaks it 0.980 0.000
+ok   an 8 m/s skid on the ground raises a ground scrape event [{ &"type": "scrape", &"time_s": 0.0, &"surface": "ground", &"part": "frame", &"slip_speed_mps": 8.0, &"point_ned": [-0.07601397897755, 0.07601397897755, 0.002] }]
+ok   a one-second skid reports ten scrapes, not 240 (bounded event and flight-log volume) 10
+ok   a 6 m/s skid-landing at 10 m/s loses forward speed to ground friction and only energy v_n 4.960
+ok   a world installed after prepare refreshes the class query (a hedge reads as foliage) 
+graded crashes: 51 checks, 0 failed

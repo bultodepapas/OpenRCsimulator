@@ -1,0 +1,3341 @@
+{
+  "format": "openrc-collision-audit-evidence-v1",
+  "audit_local_date": "2026-11-17",
+  "audit_timezone": "America/Bogota",
+  "baseline_commit": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "audit_branch": "audit/collision-damage-2026-11-17",
+  "bundled_utc": "2026-11-18T03:40:11.852588+00:00",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "revision": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "binary_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "binary_locations": [
+      ".tools/Godot_v4.8-beta2_linux.x86_64",
+      "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64"
+    ],
+    "copy_identity": "Local executable copy SHA-512 equals the repository-downloaded pinned binary.",
+    "platform": "Linux x86_64, headless, Dummy audio",
+    "physics_3d_setting_observed": "DEFAULT; no explicit backend selected by project setting",
+    "project_physics_tick_hz_observed": 240
+  },
+  "probe_runs": [
+    {
+      "name": "prop-source-off",
+      "probe": "evidence/probes/test_spinning_source_off_prop_strike.gd",
+      "probe_sha256": "a5ac01aa5d05466eb2ad76e4ba59afa3ae6a0dc521c019fc19243686868b970f",
+      "interpretation": "desired-behavior counterexample",
+      "report": "evidence/runs/probes/prop-source-off/report.json",
+      "log": "evidence/runs/probes/prop-source-off/engine.log",
+      "original_capture": "tmp/collision-audit/probes/prop-source-off/prop-source-off-4tc5mtht/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 5.687485,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        23,
+        1
+      ],
+      "original_log_sha256": "33be8ba7f95fa4e50b0f1dffea1c8b611ce22a6596c0996d4dc3a2381e55d783"
+    },
+    {
+      "name": "staggered-crossing",
+      "probe": "evidence/probes/test_staggered_hull_crossing_event.gd",
+      "probe_sha256": "cdd9783fa472a32af486e6e1e2b9bbbf19629d60454a1e43110f2841c638c515",
+      "interpretation": "desired-behavior counterexample",
+      "report": "evidence/runs/probes/staggered-crossing/report.json",
+      "log": "evidence/runs/probes/staggered-crossing/engine.log",
+      "original_capture": "tmp/collision-audit/probes/staggered-corrected/staggered-corrected-idytptf0/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 1.661354,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        7,
+        1
+      ],
+      "original_log_sha256": "1ef9256bff813dee3582e7ef73b0373097483c6fe904fa0448b9f3d8636f69f4"
+    },
+    {
+      "name": "wreck-adversarial",
+      "probe": "evidence/probes/crash_adversarial_probe.gd",
+      "probe_sha256": "f3b270da7ad89bcb7be5fa038e06c1d21e3d99dc6d6cf509ebd41b02fbe687be",
+      "interpretation": "desired-behavior counterexamples; direct visual-body properties",
+      "report": "evidence/runs/probes/wreck-adversarial/report.json",
+      "log": "evidence/runs/probes/wreck-adversarial/engine.log",
+      "original_capture": "tmp/collision-audit/probes/wreck-adversarial/wreck-adversarial-u_jwe6t0/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 2.057179,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        18,
+        12
+      ],
+      "original_log_sha256": "e3d44d99c999f838ce5fbbdcb0e39d42f95721ad99dba6df383187f7e01f818c"
+    },
+    {
+      "name": "lake-session",
+      "probe": "evidence/probes/lake_session_probe.gd",
+      "probe_sha256": "188bcde71ec17e20dbaea905cceb60330cc0390b1ddb7c4d9114b10a5e6542f7",
+      "interpretation": "baseline characterization of a collision-world mismatch",
+      "report": "evidence/runs/probes/lake-session/report.json",
+      "log": "evidence/runs/probes/lake-session/engine.log",
+      "original_capture": "tmp/collision-audit/probes/lake-session/lake-session-n_l1m4ly/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 3.383226,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        13,
+        0
+      ],
+      "original_log_sha256": "e964b584b50caa23efa546af6b2ecd7a7ef81cc7e60d3a9c1105f10824b71874"
+    },
+    {
+      "name": "heli-soft-contact",
+      "probe": "evidence/probes/heli_soft_contact_probe.gd",
+      "probe_sha256": "cb782a65f872faadd68e771335d0dfc510aa062255acdd35e1169aae5808ffc1",
+      "interpretation": "baseline characterization of candidate filtering",
+      "report": "evidence/runs/probes/heli-soft-contact/report.json",
+      "log": "evidence/runs/probes/heli-soft-contact/engine.log",
+      "original_capture": "tmp/collision-audit/probes/heli-soft/heli-soft-hobb6gwg/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 1.594092,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        8,
+        0
+      ],
+      "original_log_sha256": "7ce6ba05ac3c90f2082f16503efbd1a9cafe1da3424226ef24cc8088418fcba5"
+    },
+    {
+      "name": "scenario-fuel",
+      "probe": "evidence/probes/scenario_and_fuel_probe.gd",
+      "probe_sha256": "ce3a6d63ddad339a412bca533da0cacbb6942984381dd76de46be39923726b01",
+      "interpretation": "synthetic severity controls plus desired fuel-duration counterexample",
+      "report": "evidence/runs/probes/scenario-fuel/report.json",
+      "log": "evidence/runs/probes/scenario-fuel/engine.log",
+      "original_capture": "tmp/collision-audit/probes-final/scenario-fuel/scenario-fuel-7mw33fdz/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 42.555224,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        61,
+        1
+      ],
+      "original_log_sha256": "234ee0553e4f719a541c1a967f11bbab31ee9fd4cc9a923077d82226b028a806"
+    },
+    {
+      "name": "ground-scenery",
+      "probe": "evidence/probes/ground_scenery_probe.gd",
+      "probe_sha256": "88d42f3255a5217667fb14893b4f5f559d8a0f06b3749be843ad1a20bae35289",
+      "interpretation": "baseline characterization with injected-box controls",
+      "report": "evidence/runs/probes/ground-scenery/report.json",
+      "log": "evidence/runs/probes/ground-scenery/engine.log",
+      "original_capture": "tmp/collision-audit/probes-final/ground-scenery/ground-scenery-sb8uct21/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 68.437537,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        19,
+        0
+      ],
+      "original_log_sha256": "2ad8a5ead1ce4b8c1fbc6d91c9bd864043f001c35d8741e59b1b6ed9fcbf80dc"
+    },
+    {
+      "name": "engine-com",
+      "probe": "evidence/probes/engine_com_probe.gd",
+      "probe_sha256": "f969780440796ce3fc1622406faee667d8cfa03a2e8f9e45791f31173043d7c7",
+      "interpretation": "independent pinned-engine point-velocity semantics control",
+      "report": "evidence/runs/probes/engine-com/report.json",
+      "log": "evidence/runs/probes/engine-com/engine.log",
+      "original_capture": "tmp/collision-audit/probes-final/engine-com-corrected/engine-com-corrected-0q1k8oa7/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 41.882652,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        1,
+        0
+      ],
+      "original_log_sha256": "20bc7861adba8df2587e8132b4578c0d17562479c7db972c5ac4538be30be978"
+    }
+  ],
+  "diagnostic_runs": [
+    {
+      "name": "parked-aircraft",
+      "script": "evidence/diagnostics/parked_aircraft_diagnostic.gd",
+      "interpretation": "Repeat of the existing 45-check test with one predicate print; not added to assertion totals.",
+      "base_test_sha256": "5d767dfecfff5779012863c80a0ea5e53d5780ab345f69e973d4603984e9babd",
+      "change_verified": "Only one predicate print added; all original assertions retained.",
+      "report": "evidence/runs/diagnostics/parked-aircraft/report.json",
+      "log": "evidence/runs/diagnostics/parked-aircraft/engine.log",
+      "original_capture": "tmp/collision-audit/parked-diagnostic/parked-diagnostic-n1wh7viz/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 1.914076,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        45,
+        1
+      ],
+      "original_log_sha256": "b522cc100d33b14aebcba132cce53aef4b5c695e26ba6be0008caa2eeb668f4c"
+    }
+  ],
+  "baseline_suite_runs": [
+    {
+      "test": "test_crash",
+      "test_path": "app/tests/test_crash.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash/test_crash-q1g_xtye/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash/report.json",
+      "log": "evidence/runs/baseline/test_crash/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash/test_crash-q1g_xtye/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 8.858081,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        13,
+        0
+      ],
+      "original_log_sha256": "961eab1ce853a72dea318eecf65a06bdebcefa9144450556052da3f8139e74af"
+    },
+    {
+      "test": "test_crash_proportional",
+      "test_path": "app/tests/test_crash_proportional.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_proportional/test_crash_proportional-47txqqqr/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_proportional/report.json",
+      "log": "evidence/runs/baseline/test_crash_proportional/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_proportional/test_crash_proportional-47txqqqr/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 1.208226,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        49,
+        0
+      ],
+      "original_log_sha256": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42"
+    },
+    {
+      "test": "test_crash_severity",
+      "test_path": "app/tests/test_crash_severity.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_severity/test_crash_severity-kisn5bvb/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_severity/report.json",
+      "log": "evidence/runs/baseline/test_crash_severity/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_severity/test_crash_severity-kisn5bvb/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.463778,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3"
+    },
+    {
+      "test": "test_crash_snapshot",
+      "test_path": "app/tests/test_crash_snapshot.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_snapshot/test_crash_snapshot-vie61scc/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_snapshot/report.json",
+      "log": "evidence/runs/baseline/test_crash_snapshot/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_snapshot/test_crash_snapshot-vie61scc/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 4.208967,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        42,
+        0
+      ],
+      "original_log_sha256": "f6b57a5cd5aaf5e6ea2c8464233e8d1c85b5dd527c15e03f8516de6384f0cee5"
+    },
+    {
+      "test": "test_crash_pose",
+      "test_path": "app/tests/test_crash_pose.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_pose/test_crash_pose-ophihqdl/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_pose/report.json",
+      "log": "evidence/runs/baseline/test_crash_pose/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_pose/test_crash_pose-ophihqdl/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 41.704986,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        343,
+        0
+      ],
+      "original_log_sha256": "bb3b4af859bf13af1a3dc23252fb2e3396cda4aabd7abaab02c58fb9663159f2"
+    },
+    {
+      "test": "test_crash_hull_labels",
+      "test_path": "app/tests/test_crash_hull_labels.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_hull_labels/test_crash_hull_labels-vi8r2ss4/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_hull_labels/report.json",
+      "log": "evidence/runs/baseline/test_crash_hull_labels/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_hull_labels/test_crash_hull_labels-vi8r2ss4/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 6.663003,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        289,
+        0
+      ],
+      "original_log_sha256": "d3ff1666a1642dd6bcc46acb010cbbacd2ce3730aae0a586ed260fbfb201eb9a"
+    },
+    {
+      "test": "test_crash_integration",
+      "test_path": "app/tests/test_crash_integration.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_integration/test_crash_integration-irdw7qm0/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_integration/report.json",
+      "log": "evidence/runs/baseline/test_crash_integration/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_integration/test_crash_integration-irdw7qm0/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 63.044777,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        246,
+        0
+      ],
+      "original_log_sha256": "335a58102b711286041132b8df709424cca1d5dfee747c89f948bfb6310fcaf7"
+    },
+    {
+      "test": "test_crash_breakup",
+      "test_path": "app/tests/test_crash_breakup.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_breakup/test_crash_breakup-ap83xhae/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_breakup/report.json",
+      "log": "evidence/runs/baseline/test_crash_breakup/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_breakup/test_crash_breakup-ap83xhae/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 4.323973,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        30,
+        0
+      ],
+      "original_log_sha256": "b8fc14250e20c36e0277edc2a71c01632c646af35dcf1e05503b9193f3b18949"
+    },
+    {
+      "test": "test_crash_masses",
+      "test_path": "app/tests/test_crash_masses.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_masses/test_crash_masses-wprbqpl2/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_masses/report.json",
+      "log": "evidence/runs/baseline/test_crash_masses/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_masses/test_crash_masses-wprbqpl2/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 16.300983,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        34,
+        0
+      ],
+      "original_log_sha256": "419e432bee4838611ec260ec6d55ea7c19e408fd531189ef68491a4c556db08c"
+    },
+    {
+      "test": "test_crash_fracture",
+      "test_path": "app/tests/test_crash_fracture.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_fracture/test_crash_fracture-rqe05zpy/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_fracture/report.json",
+      "log": "evidence/runs/baseline/test_crash_fracture/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_fracture/test_crash_fracture-rqe05zpy/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 6.180024,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        24,
+        0
+      ],
+      "original_log_sha256": "117d1d1ef4e7e38cd63c1b7a81a146843ebb0a2bddc1d0b486fc9e74aa0112f6"
+    },
+    {
+      "test": "test_crash_sections",
+      "test_path": "app/tests/test_crash_sections.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_sections/test_crash_sections-ncku3gpr/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 2
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_sections/report.json",
+      "log": "evidence/runs/baseline/test_crash_sections/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_sections/test_crash_sections-ncku3gpr/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.665463,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 2
+      },
+      "assertions_total_failed": [
+        37,
+        0
+      ],
+      "original_log_sha256": "b745f0692c8d306c2895f10733d67693bab3a6b71c7c79f8f15ca96771887d7c"
+    },
+    {
+      "test": "test_crash_wreck",
+      "test_path": "app/tests/test_crash_wreck.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_wreck/test_crash_wreck-yi9zz939/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_wreck/report.json",
+      "log": "evidence/runs/baseline/test_crash_wreck/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_wreck/test_crash_wreck-yi9zz939/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 116.018104,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        361,
+        0
+      ],
+      "original_log_sha256": "0da6687f26737b044a72cabb4cbc78c318e5f804ef504b8325ddc58564f6ca1d"
+    },
+    {
+      "test": "test_crash_wreck_surface",
+      "test_path": "app/tests/test_crash_wreck_surface.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_wreck_surface/test_crash_wreck_surface-d090qt6g/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_wreck_surface/report.json",
+      "log": "evidence/runs/baseline/test_crash_wreck_surface/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_wreck_surface/test_crash_wreck_surface-d090qt6g/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 11.671472,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        11,
+        0
+      ],
+      "original_log_sha256": "fd9bfad7561bc2c80f02b5463403af31c31ff74db454c5d085533cbf634140d3"
+    },
+    {
+      "test": "test_crash_presentation_ladder",
+      "test_path": "app/tests/test_crash_presentation_ladder.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_presentation_ladder/test_crash_presentation_ladder-4hrgnjts/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_presentation_ladder/report.json",
+      "log": "evidence/runs/baseline/test_crash_presentation_ladder/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_presentation_ladder/test_crash_presentation_ladder-4hrgnjts/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 14.024106,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        48,
+        0
+      ],
+      "original_log_sha256": "3e9995d0be9d783d6a7e2f63270d59869be662e1849ab44c2c659c22045ad347"
+    },
+    {
+      "test": "test_crash_effects",
+      "test_path": "app/tests/test_crash_effects.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_effects/test_crash_effects-ii7cc18s/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_effects/report.json",
+      "log": "evidence/runs/baseline/test_crash_effects/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_effects/test_crash_effects-ii7cc18s/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.645328,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        66,
+        0
+      ],
+      "original_log_sha256": "ff4e4469c1f4d27c3421c07f18c85866e45aa33e0911b05f9a6f080300289c68"
+    },
+    {
+      "test": "test_crash_energy",
+      "test_path": "app/tests/test_crash_energy.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_energy/test_crash_energy-0n3rj_ko/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_energy/report.json",
+      "log": "evidence/runs/baseline/test_crash_energy/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_energy/test_crash_energy-0n3rj_ko/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.249371,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        251,
+        0
+      ],
+      "original_log_sha256": "3698b460172ac9959df7a29553d3c9e09618e061f1f8258813df031ed178effe"
+    },
+    {
+      "test": "test_crash_audio",
+      "test_path": "app/tests/test_crash_audio.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 3,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_crash_audio/test_crash_audio-yzzzaxuw/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_crash_audio/report.json",
+      "log": "evidence/runs/baseline/test_crash_audio/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_crash_audio/test_crash_audio-yzzzaxuw/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.483465,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        12,
+        0
+      ],
+      "original_log_sha256": "59b769e82d15c66c984f30bca84575be7ae4e3cf05ba545726c336a703c22828"
+    },
+    {
+      "test": "test_airframe_contacts",
+      "test_path": "app/tests/test_airframe_contacts.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 2,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_airframe_contacts/test_airframe_contacts-xm3tg_oh/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_airframe_contacts/report.json",
+      "log": "evidence/runs/baseline/test_airframe_contacts/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_airframe_contacts/test_airframe_contacts-xm3tg_oh/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 8.379175,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        46,
+        0
+      ],
+      "original_log_sha256": "b77ab4529375f91d6dd256a545eaa733b1944e14f4877f82383d6c2cc27d2701"
+    },
+    {
+      "test": "test_ground_contact",
+      "test_path": "app/tests/test_ground_contact.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 2,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_ground_contact/test_ground_contact-6soikbct/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_ground_contact/report.json",
+      "log": "evidence/runs/baseline/test_ground_contact/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_ground_contact/test_ground_contact-6soikbct/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 5.589525,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        23,
+        0
+      ],
+      "original_log_sha256": "d5403a600c09d892632da4c1ed0ee0c5e396d9c2ea5b7b6442f9e97b5e9365a8"
+    },
+    {
+      "test": "test_hull_crossing",
+      "test_path": "app/tests/test_hull_crossing.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_hull_crossing/test_hull_crossing-gyg3m3w1/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_hull_crossing/report.json",
+      "log": "evidence/runs/baseline/test_hull_crossing/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_hull_crossing/test_hull_crossing-gyg3m3w1/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 3.920953,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        40,
+        0
+      ],
+      "original_log_sha256": "17b81c05cdbbdcd0d39514576daa91902b805dbf9c95bca955cf130bb32755f5"
+    },
+    {
+      "test": "test_hull_support_normal",
+      "test_path": "app/tests/test_hull_support_normal.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_hull_support_normal/test_hull_support_normal-yx1mjcog/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_hull_support_normal/report.json",
+      "log": "evidence/runs/baseline/test_hull_support_normal/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_hull_support_normal/test_hull_support_normal-yx1mjcog/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.565274,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        70,
+        0
+      ],
+      "original_log_sha256": "434e21456b6377f39ccdbbc92c45f32ebecd55ac17081474fe480852517604e8"
+    },
+    {
+      "test": "test_hull_friction_observation",
+      "test_path": "app/tests/test_hull_friction_observation.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_hull_friction_observation/test_hull_friction_observation-jznvz4io/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_hull_friction_observation/report.json",
+      "log": "evidence/runs/baseline/test_hull_friction_observation/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_hull_friction_observation/test_hull_friction_observation-jznvz4io/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.896743,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        388,
+        0
+      ],
+      "original_log_sha256": "ca96e30f68e272f95062a3473ff938ca0f2863fa1a108491e4a2daa20704bc55"
+    },
+    {
+      "test": "test_hull_scrape_session",
+      "test_path": "app/tests/test_hull_scrape_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_hull_scrape_session/test_hull_scrape_session-j431ly5_/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_hull_scrape_session/report.json",
+      "log": "evidence/runs/baseline/test_hull_scrape_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_hull_scrape_session/test_hull_scrape_session-j431ly5_/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 13.438967,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        56,
+        0
+      ],
+      "original_log_sha256": "69639ea6de62c4c5fc91062f26e59643424c485a5f03ef3e920445aad382b687"
+    },
+    {
+      "test": "test_hull_scrape_audio",
+      "test_path": "app/tests/test_hull_scrape_audio.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_hull_scrape_audio/test_hull_scrape_audio-uxorua21/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_hull_scrape_audio/report.json",
+      "log": "evidence/runs/baseline/test_hull_scrape_audio/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_hull_scrape_audio/test_hull_scrape_audio-uxorua21/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.56453,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        60,
+        0
+      ],
+      "original_log_sha256": "d114e35fd02cc356455264bfc82c6f1f175275e01be7d9dd46a2e222f58a345d"
+    },
+    {
+      "test": "test_prop_strike",
+      "test_path": "app/tests/test_prop_strike.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_prop_strike/test_prop_strike-k9j5el1p/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_prop_strike/report.json",
+      "log": "evidence/runs/baseline/test_prop_strike/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_prop_strike/test_prop_strike-k9j5el1p/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 21.198373,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "14c9bc6a153d8aa634b966e2d8d2400c59199498967868583a386e0e1fec0711"
+    },
+    {
+      "test": "test_prop_strike_feedback",
+      "test_path": "app/tests/test_prop_strike_feedback.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_prop_strike_feedback/test_prop_strike_feedback-6ri2x9p1/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_prop_strike_feedback/report.json",
+      "log": "evidence/runs/baseline/test_prop_strike_feedback/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_prop_strike_feedback/test_prop_strike_feedback-6ri2x9p1/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 13.445019,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        16,
+        0
+      ],
+      "original_log_sha256": "4a7f1d5d0e437a7d44469591fb7e4e68612535ce14071a6c1203f30b12a8ece8"
+    },
+    {
+      "test": "test_gear_damage",
+      "test_path": "app/tests/test_gear_damage.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_gear_damage/test_gear_damage-s14dwsjv/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_gear_damage/report.json",
+      "log": "evidence/runs/baseline/test_gear_damage/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_gear_damage/test_gear_damage-s14dwsjv/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.664775,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        113,
+        0
+      ],
+      "original_log_sha256": "d1905e8e82ad97b3217f17b1d5dccf09ef673480ce0f3aaa758ee8dd7fe04561"
+    },
+    {
+      "test": "test_aircraft_ground_damage",
+      "test_path": "app/tests/test_aircraft_ground_damage.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_aircraft_ground_damage/test_aircraft_ground_damage-ykltty7n/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_aircraft_ground_damage/report.json",
+      "log": "evidence/runs/baseline/test_aircraft_ground_damage/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_aircraft_ground_damage/test_aircraft_ground_damage-ykltty7n/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 39.322711,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        125,
+        0
+      ],
+      "original_log_sha256": "16c7b20ef9f7772e91cc1da652ad9160b40327c2eebfcdc96185c6179712f05d"
+    },
+    {
+      "test": "test_damage_flight_events",
+      "test_path": "app/tests/test_damage_flight_events.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_damage_flight_events/test_damage_flight_events-nshrevj2/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_damage_flight_events/report.json",
+      "log": "evidence/runs/baseline/test_damage_flight_events/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_damage_flight_events/test_damage_flight_events-nshrevj2/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 32.050811,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        197,
+        0
+      ],
+      "original_log_sha256": "2e68d55e59c28b0bf821e463cb1a8edb4565755e06cd9ee965ca5b024a3c10a9"
+    },
+    {
+      "test": "test_heli_crash_presentation",
+      "test_path": "app/tests/test_heli_crash_presentation.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_presentation/test_heli_crash_presentation-do517pfg/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_heli_crash_presentation/report.json",
+      "log": "evidence/runs/baseline/test_heli_crash_presentation/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_presentation/test_heli_crash_presentation-do517pfg/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 3.008125,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "5cb23eb31313b95bc84ee55aa9bf7e58a4dc47d1124605148713c7365ed843e7"
+    },
+    {
+      "test": "test_heli_crash_visual",
+      "test_path": "app/tests/test_heli_crash_visual.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_visual/test_heli_crash_visual-0zac0l66/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_heli_crash_visual/report.json",
+      "log": "evidence/runs/baseline/test_heli_crash_visual/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_visual/test_heli_crash_visual-0zac0l66/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 1.407022,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        33,
+        0
+      ],
+      "original_log_sha256": "562f2c971c8916e4f321c770854771043eeecb46b01e910b5421ecc48aa23ffa"
+    },
+    {
+      "test": "test_heli_crash_relaunch",
+      "test_path": "app/tests/test_heli_crash_relaunch.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_relaunch/test_heli_crash_relaunch-pvey3bp3/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_heli_crash_relaunch/report.json",
+      "log": "evidence/runs/baseline/test_heli_crash_relaunch/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_heli_crash_relaunch/test_heli_crash_relaunch-pvey3bp3/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.166763,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        66,
+        0
+      ],
+      "original_log_sha256": "7c80f7677d51c088cf809770a26319627efa4b857b72b4d9871368a0bed68097"
+    },
+    {
+      "test": "test_rcv_damage",
+      "test_path": "app/tests/test_rcv_damage.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_rcv_damage/test_rcv_damage-kgm6xbev/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_rcv_damage/report.json",
+      "log": "evidence/runs/baseline/test_rcv_damage/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_rcv_damage/test_rcv_damage-kgm6xbev/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.665293,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        175,
+        0
+      ],
+      "original_log_sha256": "0ff93c35d7bab7ba40843a645aa4a1882c1cacb77e759fca62a87cc2699358bf"
+    },
+    {
+      "test": "test_rcv_damage_session",
+      "test_path": "app/tests/test_rcv_damage_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_rcv_damage_session/test_rcv_damage_session-exj_yiv3/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_rcv_damage_session/report.json",
+      "log": "evidence/runs/baseline/test_rcv_damage_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_rcv_damage_session/test_rcv_damage_session-exj_yiv3/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 13.691617,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        19,
+        0
+      ],
+      "original_log_sha256": "7249f7814981876aadb1ed4f46713af02230c4822a92022e62e75a23ad767de1"
+    },
+    {
+      "test": "test_rcv_airfield_course",
+      "test_path": "app/tests/test_rcv_airfield_course.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_rcv_airfield_course/test_rcv_airfield_course-9sd6fmi0/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_rcv_airfield_course/report.json",
+      "log": "evidence/runs/baseline/test_rcv_airfield_course/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_rcv_airfield_course/test_rcv_airfield_course-9sd6fmi0/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 19.84138,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "e88c3b7d7bf134e19918ae2e730929693fd1a0e897886d4eba967331621d3bab"
+    },
+    {
+      "test": "test_mr_graded_crashes",
+      "test_path": "app/tests/test_mr_graded_crashes.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_mr_graded_crashes/test_mr_graded_crashes-jo0mu4ty/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_mr_graded_crashes/report.json",
+      "log": "evidence/runs/baseline/test_mr_graded_crashes/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_mr_graded_crashes/test_mr_graded_crashes-jo0mu4ty/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 6.66239,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        51,
+        0
+      ],
+      "original_log_sha256": "5e56b878f2b538a75a035ab9ecc7781f39ce3de4661f9827878e9e54f9aa2e30"
+    },
+    {
+      "test": "test_mr_crash_presentation",
+      "test_path": "app/tests/test_mr_crash_presentation.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_mr_crash_presentation/test_mr_crash_presentation-dv5znpyt/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_mr_crash_presentation/report.json",
+      "log": "evidence/runs/baseline/test_mr_crash_presentation/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_mr_crash_presentation/test_mr_crash_presentation-dv5znpyt/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 5.70279,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        21,
+        0
+      ],
+      "original_log_sha256": "b580b48e85ab57b00266703858dd1b263bc54b1a75f9b8b16f2f011c241b0021"
+    },
+    {
+      "test": "test_airship_session",
+      "test_path": "app/tests/test_airship_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_airship_session/test_airship_session-i9bpgl1b/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_airship_session/report.json",
+      "log": "evidence/runs/baseline/test_airship_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_airship_session/test_airship_session-i9bpgl1b/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 16.988173,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        43,
+        0
+      ],
+      "original_log_sha256": "9b60d4495dc2745e2dba24c57e24e6f8c020f606615d02034629f729d2afee7f"
+    },
+    {
+      "test": "test_lake_collision",
+      "test_path": "app/tests/test_lake_collision.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 2,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_lake_collision/test_lake_collision-di5jvth8/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_lake_collision/report.json",
+      "log": "evidence/runs/baseline/test_lake_collision/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_lake_collision/test_lake_collision-di5jvth8/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 1.088274,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e"
+    },
+    {
+      "test": "test_lake_ground_contact",
+      "test_path": "app/tests/test_lake_ground_contact.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 2,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_lake_ground_contact/test_lake_ground_contact-fzlayezp/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_lake_ground_contact/report.json",
+      "log": "evidence/runs/baseline/test_lake_ground_contact/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_lake_ground_contact/test_lake_ground_contact-fzlayezp/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.886591,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "2bcc58193c32938f05ecf1966b11daa79cfde9df1927255df29c0b05f2021eb9"
+    },
+    {
+      "test": "test_landscape_collision",
+      "test_path": "app/tests/test_landscape_collision.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision/test_landscape_collision-ykfyzfha/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_landscape_collision/report.json",
+      "log": "evidence/runs/baseline/test_landscape_collision/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision/test_landscape_collision-ykfyzfha/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.117579,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        52,
+        0
+      ],
+      "original_log_sha256": "4e4f53e85e511d92caeef731833ae18af851773550fe731ee49752c320e66829"
+    },
+    {
+      "test": "test_landscape_collision_session",
+      "test_path": "app/tests/test_landscape_collision_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision_session/test_landscape_collision_session-ymbb2r85/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_landscape_collision_session/report.json",
+      "log": "evidence/runs/baseline/test_landscape_collision_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision_session/test_landscape_collision_session-ymbb2r85/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 4.414592,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        25,
+        0
+      ],
+      "original_log_sha256": "7eaa1d1b278ba0aa0c9a7e5b6b4585990aa7fc7b7e2f50bc01982cfb02d932cb"
+    },
+    {
+      "test": "test_landscape_collision_oracle",
+      "test_path": "app/tests/test_landscape_collision_oracle.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision_oracle/test_landscape_collision_oracle-4j1ovx2r/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_landscape_collision_oracle/report.json",
+      "log": "evidence/runs/baseline/test_landscape_collision_oracle/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_landscape_collision_oracle/test_landscape_collision_oracle-4j1ovx2r/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 6.791845,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        339,
+        0
+      ],
+      "original_log_sha256": "de9d417437b294af37b3bc45e03dc131b406bd03a7ad8387ecffcfa0e9b22176"
+    },
+    {
+      "test": "test_landscape_runtime",
+      "test_path": "app/tests/test_landscape_runtime.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_landscape_runtime/test_landscape_runtime-hee39oo8/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_landscape_runtime/report.json",
+      "log": "evidence/runs/baseline/test_landscape_runtime/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_landscape_runtime/test_landscape_runtime-hee39oo8/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 13.266616,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        76,
+        0
+      ],
+      "original_log_sha256": "b0f355d7099e88da168d047f899b6bbe7014e8c24152c3e4353f131b7834676b"
+    },
+    {
+      "test": "test_power_line_collisions",
+      "test_path": "app/tests/test_power_line_collisions.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_power_line_collisions/test_power_line_collisions-fiz5ik1s/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_power_line_collisions/report.json",
+      "log": "evidence/runs/baseline/test_power_line_collisions/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_power_line_collisions/test_power_line_collisions-fiz5ik1s/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.192867,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        15,
+        0
+      ],
+      "original_log_sha256": "3715467ae567cf6de3c74a8a8734447108ece6b0b58505f5f2e0e4799fb7ba52"
+    },
+    {
+      "test": "test_parked_aircraft_collision",
+      "test_path": "app/tests/test_parked_aircraft_collision.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 2,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-original-confirmation/test_parked_aircraft_collision/parked-original-1irx8jbt/report.json",
+        "ok": false,
+        "reason": "process_exit",
+        "process_exit": 1,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-original-confirmation",
+      "report": "evidence/runs/baseline/test_parked_aircraft_collision/report.json",
+      "log": "evidence/runs/baseline/test_parked_aircraft_collision/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-original-confirmation/test_parked_aircraft_collision/parked-original-1irx8jbt/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 2.020664,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        45,
+        1
+      ],
+      "original_log_sha256": "9a459db88c6bf4ff0dda4d2ab2705334c898b8cba03d7c7fa503190f3d449555"
+    },
+    {
+      "test": "test_scenery_damage_session",
+      "test_path": "app/tests/test_scenery_damage_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_scenery_damage_session/test_scenery_damage_session-1cp3ovo7/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_scenery_damage_session/report.json",
+      "log": "evidence/runs/baseline/test_scenery_damage_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_scenery_damage_session/test_scenery_damage_session-1cp3ovo7/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 5.915149,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        51,
+        0
+      ],
+      "original_log_sha256": "211e9f9b39882a7fee9572802455b1ad86ddd5ca564353cab4f35e560035e28d"
+    },
+    {
+      "test": "test_soft_contacts",
+      "test_path": "app/tests/test_soft_contacts.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_soft_contacts/test_soft_contacts-ocdqc6ng/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_soft_contacts/report.json",
+      "log": "evidence/runs/baseline/test_soft_contacts/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_soft_contacts/test_soft_contacts-ocdqc6ng/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 10.942126,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        36,
+        0
+      ],
+      "original_log_sha256": "e59e618a5be38d16493b7060ae7140b143bdbf36b6d2dbe76ae9d88274940d67"
+    },
+    {
+      "test": "test_aircraft_contact_session",
+      "test_path": "app/tests/test_aircraft_contact_session.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_aircraft_contact_session/test_aircraft_contact_session-usybrt6w/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_aircraft_contact_session/report.json",
+      "log": "evidence/runs/baseline/test_aircraft_contact_session/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_aircraft_contact_session/test_aircraft_contact_session-usybrt6w/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 5.259978,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        83,
+        0
+      ],
+      "original_log_sha256": "9bf8dae84b8a7cb8aa7fc1edd3be6da31370d2294005146e8a86fd20cb8a811e"
+    },
+    {
+      "test": "test_retractable_gear_ground",
+      "test_path": "app/tests/test_retractable_gear_ground.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_retractable_gear_ground/test_retractable_gear_ground-oa9afq73/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_retractable_gear_ground/report.json",
+      "log": "evidence/runs/baseline/test_retractable_gear_ground/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_retractable_gear_ground/test_retractable_gear_ground-oa9afq73/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 13.230904,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        30,
+        0
+      ],
+      "original_log_sha256": "d8ff0abb8dada0d3c392570321bb8c223e4127be07ca519f1b08c29728606e23"
+    },
+    {
+      "test": "test_integration_receipt",
+      "test_path": "app/tests/test_integration_receipt.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_integration_receipt/test_integration_receipt-l4xuo5x5/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_integration_receipt/report.json",
+      "log": "evidence/runs/baseline/test_integration_receipt/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_integration_receipt/test_integration_receipt-l4xuo5x5/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.585194,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        36,
+        0
+      ],
+      "original_log_sha256": "2d8ad91ebdb2ee2ee5f597be7d3405ab206018295bb3e184dcc69cf749d0d5e0"
+    },
+    {
+      "test": "test_endpoint_transition",
+      "test_path": "app/tests/test_endpoint_transition.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_endpoint_transition/test_endpoint_transition-8gxl48ym/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_endpoint_transition/report.json",
+      "log": "evidence/runs/baseline/test_endpoint_transition/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_endpoint_transition/test_endpoint_transition-8gxl48ym/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.853937,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        274,
+        0
+      ],
+      "original_log_sha256": "441c8172d3f6935f1077df05ba6c05b323aac013d0df8a628471f4643d59d8cf"
+    },
+    {
+      "test": "test_mr_rotor_strike_slope",
+      "test_path": "app/tests/test_mr_rotor_strike_slope.gd",
+      "selection_rule": "Most recent checked pass when present; otherwise latest completed capture. All attempts retained.",
+      "attempts_count": 1,
+      "latest_attempt": {
+        "original_capture": "tmp/collision-audit/targeted-local/test_mr_rotor_strike_slope/test_mr_rotor_strike_slope-8c65v6r4/report.json",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "selected_phase": "targeted-local",
+      "report": "evidence/runs/baseline/test_mr_rotor_strike_slope/report.json",
+      "log": "evidence/runs/baseline/test_mr_rotor_strike_slope/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_mr_rotor_strike_slope/test_mr_rotor_strike_slope-8c65v6r4/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.88568,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        29,
+        0
+      ],
+      "original_log_sha256": "a6aaa94bb49f6577f09ead9f8d4219224af3a79f8777afac5d00a375e32c195c"
+    }
+  ],
+  "baseline_not_run": [],
+  "earlier_attempts": [
+    {
+      "attempt": "targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9",
+      "report": "evidence/earlier-attempts/targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 121.00218,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "targeted/test_crash/test_crash-cvq6ircs",
+      "report": "evidence/earlier-attempts/targeted/test_crash/test_crash-cvq6ircs/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash/test_crash-cvq6ircs/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash/test_crash-cvq6ircs/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 9.86317,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        13,
+        0
+      ],
+      "original_log_sha256": "961eab1ce853a72dea318eecf65a06bdebcefa9144450556052da3f8139e74af"
+    },
+    {
+      "attempt": "targeted/test_crash_audio/test_crash_audio-tmzo0bpc",
+      "report": "evidence/earlier-attempts/targeted/test_crash_audio/test_crash_audio-tmzo0bpc/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_audio/test_crash_audio-tmzo0bpc/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_audio/test_crash_audio-tmzo0bpc/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.944671,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "targeted/test_crash_breakup/test_crash_breakup-u81bsdil",
+      "report": "evidence/earlier-attempts/targeted/test_crash_breakup/test_crash_breakup-u81bsdil/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_breakup/test_crash_breakup-u81bsdil/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_breakup/test_crash_breakup-u81bsdil/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.081501,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "b227d84bc65f14b0ad55bfcafde58fdc6e17e4fcb0a8e1de287df9f2d4e57353"
+    },
+    {
+      "attempt": "targeted/test_crash_effects/test_crash_effects-w79siu2z",
+      "report": "evidence/earlier-attempts/targeted/test_crash_effects/test_crash_effects-w79siu2z/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_effects/test_crash_effects-w79siu2z/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_effects/test_crash_effects-w79siu2z/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 121.276671,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted/test_crash_energy/test_crash_energy-grmirwgu",
+      "report": "evidence/earlier-attempts/targeted/test_crash_energy/test_crash_energy-grmirwgu/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_energy/test_crash_energy-grmirwgu/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_energy/test_crash_energy-grmirwgu/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.732478,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted/test_crash_fracture/test_crash_fracture-6zjzuox4",
+      "report": "evidence/earlier-attempts/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.033176,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "94ac4c7d48854cea42631b4e956f85f090d7e15ae06f83ef3b05476762c2a6f2"
+    },
+    {
+      "attempt": "targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_",
+      "report": "evidence/earlier-attempts/targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 6.154926,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        289,
+        0
+      ],
+      "original_log_sha256": "d3ff1666a1642dd6bcc46acb010cbbacd2ce3730aae0a586ed260fbfb201eb9a"
+    },
+    {
+      "attempt": "targeted/test_crash_integration/test_crash_integration-i8o04ylm",
+      "report": "evidence/earlier-attempts/targeted/test_crash_integration/test_crash_integration-i8o04ylm/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_integration/test_crash_integration-i8o04ylm/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_integration/test_crash_integration-i8o04ylm/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 30,
+      "runner_exit": 30,
+      "elapsed_seconds": 9.161007,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "7aea9ef65d7594d95c853c768031b2c4f0f8c56d1f9a0dd308a601226d706c9c"
+    },
+    {
+      "attempt": "targeted/test_crash_masses/test_crash_masses-q35v5f_s",
+      "report": "evidence/earlier-attempts/targeted/test_crash_masses/test_crash_masses-q35v5f_s/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_masses/test_crash_masses-q35v5f_s/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_masses/test_crash_masses-q35v5f_s/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 30,
+      "runner_exit": 30,
+      "elapsed_seconds": 9.804758,
+      "engine_diagnostics": {
+        "error": 5,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "684d47eaf6761a6656801355ebfc4b5ee56fe3589c4d35df2e0459d753485131"
+    },
+    {
+      "attempt": "targeted/test_crash_pose/test_crash_pose-13d898oi",
+      "report": "evidence/earlier-attempts/targeted/test_crash_pose/test_crash_pose-13d898oi/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_pose/test_crash_pose-13d898oi/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_pose/test_crash_pose-13d898oi/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 30,
+      "runner_exit": 30,
+      "elapsed_seconds": 9.957666,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "b2e07903ededa5943d125f2a4c230a4f7830850d1f2f5dc5dcec93c051186a18"
+    },
+    {
+      "attempt": "targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z",
+      "report": "evidence/earlier-attempts/targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.070431,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn",
+      "report": "evidence/earlier-attempts/targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.310363,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        49,
+        0
+      ],
+      "original_log_sha256": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42"
+    },
+    {
+      "attempt": "targeted/test_crash_sections/test_crash_sections-lmjf24gi",
+      "report": "evidence/earlier-attempts/targeted/test_crash_sections/test_crash_sections-lmjf24gi/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_sections/test_crash_sections-lmjf24gi/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_sections/test_crash_sections-lmjf24gi/report.json",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 0.747511,
+      "engine_diagnostics": {
+        "error": 1,
+        "warning": 3
+      },
+      "assertions_total_failed": [
+        19,
+        0
+      ],
+      "original_log_sha256": "28942bcf368b088b17b1d1ad178a1dbe25328f2e0c518e6ed44e2afc7b7fe933"
+    },
+    {
+      "attempt": "targeted/test_crash_severity/test_crash_severity-l517samc",
+      "report": "evidence/earlier-attempts/targeted/test_crash_severity/test_crash_severity-l517samc/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_severity/test_crash_severity-l517samc/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_severity/test_crash_severity-l517samc/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 0.890255,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3"
+    },
+    {
+      "attempt": "targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7",
+      "report": "evidence/earlier-attempts/targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 5.77297,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        42,
+        0
+      ],
+      "original_log_sha256": "f6b57a5cd5aaf5e6ea2c8464233e8d1c85b5dd527c15e03f8516de6384f0cee5"
+    },
+    {
+      "attempt": "targeted/test_crash_wreck/test_crash_wreck-4dja9916",
+      "report": "evidence/earlier-attempts/targeted/test_crash_wreck/test_crash_wreck-4dja9916/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_wreck/test_crash_wreck-4dja9916/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_wreck/test_crash_wreck-4dja9916/report.json",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 11.461403,
+      "engine_diagnostics": {
+        "error": 22,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        30,
+        0
+      ],
+      "original_log_sha256": "156d948dbbd1e2af5e4a3d3a6a913fa1a6d96fc9c241737ca88528f1dd730811"
+    },
+    {
+      "attempt": "targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e",
+      "report": "evidence/earlier-attempts/targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.255455,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "3f74e37b6c6e5e104fe858bdad421ca2ce720b89bb7233a0b992e6b71024c207"
+    },
+    {
+      "attempt": "targeted/test_ground_contact/test_ground_contact-iv0hcr6f",
+      "report": "evidence/earlier-attempts/targeted/test_ground_contact/test_ground_contact-iv0hcr6f/report.json",
+      "log": "evidence/earlier-attempts/targeted/test_ground_contact/test_ground_contact-iv0hcr6f/engine.log",
+      "original_capture": "tmp/collision-audit/targeted/test_ground_contact/test_ground_contact-iv0hcr6f/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.013782,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "targeted-complete/test_crash/test_crash-su9u_ejv",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash/test_crash-su9u_ejv/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash/test_crash-su9u_ejv/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash/test_crash-su9u_ejv/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.625375,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 62.763597,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        12,
+        0
+      ],
+      "original_log_sha256": "59b769e82d15c66c984f30bca84575be7ae4e3cf05ba545726c336a703c22828"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 114.937849,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        30,
+        0
+      ],
+      "original_log_sha256": "b8fc14250e20c36e0277edc2a71c01632c646af35dcf1e05503b9193f3b18949"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 51.654082,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        66,
+        0
+      ],
+      "original_log_sha256": "ff4e4469c1f4d27c3421c07f18c85866e45aa33e0911b05f9a6f080300289c68"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 121.58809,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "cc0bd43455bd3e8419bec0adf4333da2887795f3ef434d4fae51aba796e8540c"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 88.519542,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        24,
+        0
+      ],
+      "original_log_sha256": "117d1d1ef4e7e38cd63c1b7a81a146843ebb0a2bddc1d0b486fc9e74aa0112f6"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 121.178949,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": -9,
+      "runner_exit": 1,
+      "elapsed_seconds": 195.2597,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.345239,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_pose/test_crash_pose-t38e_g13",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_pose/test_crash_pose-t38e_g13/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_pose/test_crash_pose-t38e_g13/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_pose/test_crash_pose-t38e_g13/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.479062,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "67612768fabb1cae6c96f03f3b1a22e94956b808dc8624161b1676d682761318"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.440094,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 52.877639,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        49,
+        0
+      ],
+      "original_log_sha256": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 58.560638,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 2
+      },
+      "assertions_total_failed": [
+        37,
+        0
+      ],
+      "original_log_sha256": "b745f0692c8d306c2895f10733d67693bab3a6b71c7c79f8f15ca96771887d7c"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 2.758795,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.865971,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 240.52977,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz",
+      "report": "evidence/earlier-attempts/targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz/report.json",
+      "log": "evidence/earlier-attempts/targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.203416,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "targeted-local/test_lake_collision/test_lake_collision-go1ecbh0",
+      "report": "evidence/earlier-attempts/targeted-local/test_lake_collision/test_lake_collision-go1ecbh0/report.json",
+      "log": "evidence/earlier-attempts/targeted-local/test_lake_collision/test_lake_collision-go1ecbh0/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_lake_collision/test_lake_collision-go1ecbh0/report.json",
+      "ok": false,
+      "reason": "missing_required_text",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 0.767807,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e"
+    },
+    {
+      "attempt": "targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n",
+      "report": "evidence/earlier-attempts/targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n/report.json",
+      "log": "evidence/earlier-attempts/targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n/report.json",
+      "ok": false,
+      "reason": "missing_required_text",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 0.77057,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "2bcc58193c32938f05ecf1966b11daa79cfde9df1927255df29c0b05f2021eb9"
+    },
+    {
+      "attempt": "targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds",
+      "report": "evidence/earlier-attempts/targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds/report.json",
+      "log": "evidence/earlier-attempts/targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds/engine.log",
+      "original_capture": "tmp/collision-audit/targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 1.513462,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        45,
+        1
+      ],
+      "original_log_sha256": "9a459db88c6bf4ff0dda4d2ab2705334c898b8cba03d7c7fa503190f3d449555"
+    },
+    {
+      "attempt": "probes/engine-com/engine-com-u3qemjl8",
+      "report": "evidence/earlier-attempts/probes/engine-com/engine-com-u3qemjl8/report.json",
+      "log": "evidence/earlier-attempts/probes/engine-com/engine-com-u3qemjl8/engine.log",
+      "original_capture": "tmp/collision-audit/probes/engine-com/engine-com-u3qemjl8/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 90.493947,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "probes/ground-scenery/ground-scenery-_047b6w3",
+      "report": "evidence/earlier-attempts/probes/ground-scenery/ground-scenery-_047b6w3/report.json",
+      "log": "evidence/earlier-attempts/probes/ground-scenery/ground-scenery-_047b6w3/engine.log",
+      "original_capture": "tmp/collision-audit/probes/ground-scenery/ground-scenery-_047b6w3/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 3.754382,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        3,
+        1
+      ],
+      "original_log_sha256": "54734caf126c5256bfea1fc3d4a9152a4fe220108f8c219d23128c26b305932d"
+    },
+    {
+      "attempt": "probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q",
+      "report": "evidence/earlier-attempts/probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q/report.json",
+      "log": "evidence/earlier-attempts/probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q/engine.log",
+      "original_capture": "tmp/collision-audit/probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 121.140334,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "0c65cfad5175ce4925ee0537bf56fe588e9d473fccffadda0df7cac54a0b2c93"
+    },
+    {
+      "attempt": "probes/scenario-fuel/scenario-fuel-78apnyn8",
+      "report": "evidence/earlier-attempts/probes/scenario-fuel/scenario-fuel-78apnyn8/report.json",
+      "log": "evidence/earlier-attempts/probes/scenario-fuel/scenario-fuel-78apnyn8/engine.log",
+      "original_capture": "tmp/collision-audit/probes/scenario-fuel/scenario-fuel-78apnyn8/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 90.350227,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw",
+      "report": "evidence/earlier-attempts/probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw/report.json",
+      "log": "evidence/earlier-attempts/probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw/engine.log",
+      "original_capture": "tmp/collision-audit/probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 120.626334,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "probes/staggered/staggered-4tgai71b",
+      "report": "evidence/earlier-attempts/probes/staggered/staggered-4tgai71b/report.json",
+      "log": "evidence/earlier-attempts/probes/staggered/staggered-4tgai71b/engine.log",
+      "original_capture": "tmp/collision-audit/probes/staggered/staggered-4tgai71b/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 0.595509,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "adf5f48e074f4b29a093acbdc7466f3451a9b760d550bc0c31af8617dd52bd99"
+    },
+    {
+      "attempt": "probes-final/engine-com/engine-com-7ww1a8qa",
+      "report": "evidence/earlier-attempts/probes-final/engine-com/engine-com-7ww1a8qa/report.json",
+      "log": "evidence/earlier-attempts/probes-final/engine-com/engine-com-7ww1a8qa/engine.log",
+      "original_capture": "tmp/collision-audit/probes-final/engine-com/engine-com-7ww1a8qa/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "runner_exit": 1,
+      "elapsed_seconds": 20.059567,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        1,
+        1
+      ],
+      "original_log_sha256": "b33a193c2759fa87a0b55bf1c72bbf04aa53c36146a4819e813237940316c8a4"
+    },
+    {
+      "attempt": "startup-control/startup-control-dqria41w",
+      "report": "evidence/earlier-attempts/startup-control/startup-control-dqria41w/report.json",
+      "log": "evidence/earlier-attempts/startup-control/startup-control-dqria41w/engine.log",
+      "original_capture": "tmp/collision-audit/startup-control/startup-control-dqria41w/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 30.195732,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "local-engine-control/local-engine-control-4zn_1p1c",
+      "report": "evidence/earlier-attempts/local-engine-control/local-engine-control-4zn_1p1c/report.json",
+      "log": "evidence/earlier-attempts/local-engine-control/local-engine-control-4zn_1p1c/engine.log",
+      "original_capture": "tmp/collision-audit/local-engine-control/local-engine-control-4zn_1p1c/report.json",
+      "ok": false,
+      "reason": "missing_required_text",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 4.791456,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": [
+        44,
+        0
+      ],
+      "original_log_sha256": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3"
+    },
+    {
+      "attempt": "mirror-control/mirror-control-iubrvs70",
+      "report": "evidence/earlier-attempts/mirror-control/mirror-control-iubrvs70/report.json",
+      "log": "evidence/earlier-attempts/mirror-control/mirror-control-iubrvs70/engine.log",
+      "original_capture": "tmp/collision-audit/mirror-control/mirror-control-iubrvs70/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 90.653206,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    {
+      "attempt": "local-source-log-control/local-source-and-log-control-u31rvy4j",
+      "report": "evidence/earlier-attempts/local-source-log-control/local-source-and-log-control-u31rvy4j/report.json",
+      "log": "evidence/earlier-attempts/local-source-log-control/local-source-and-log-control-u31rvy4j/engine.log",
+      "original_capture": "tmp/collision-audit/local-source-log-control/local-source-and-log-control-u31rvy4j/report.json",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "runner_exit": 124,
+      "elapsed_seconds": 60.563991,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    }
+  ],
+  "imports": [
+    {
+      "attempt": "import",
+      "report": "evidence/imports/import/report.json",
+      "log": "evidence/imports/import/engine.log",
+      "original_capture": "tmp/collision-audit/import/collision-audit-import-4y11lp_d/report.json",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "runner_exit": 1,
+      "elapsed_seconds": 9.604192,
+      "engine_diagnostics": {
+        "error": 61,
+        "warning": 0
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "888bdebc3af73ecf312bfe88648b780bdf37f8a19ffcce460ca86477807cbc7a"
+    },
+    {
+      "attempt": "import-complete",
+      "report": "evidence/imports/import-complete/report.json",
+      "log": "evidence/imports/import-complete/engine.log.gz",
+      "original_capture": "tmp/collision-audit/import-complete/collision-audit-complete-import-fqnsmj5e/report.json",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "runner_exit": 0,
+      "elapsed_seconds": 287.872507,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 8
+      },
+      "assertions_total_failed": null,
+      "original_log_sha256": "b64cb3247385132815984fb2f0716e5baab380558eea7f573af1a97574a0e87f"
+    }
+  ],
+  "audited_source_sha256": {
+    ".github/workflows/ci.yml": "511c17904e10c6eafb6783eee4bc740973fb306a2e9c63256aadb7c47571a7fc",
+    "app/app_state/aircraft_catalog.gd": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
+    "app/app_state/vehicle_roster.gd": "b1238de2c62f72843461a94c57c2f3f67d569854009cb1b50769230c65e87a86",
+    "app/data/aircraft/f4u_corsair_250.json": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
+    "app/data/aircraft/gp_extra_300s_60.json": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+    "app/data/aircraft/hx700_electric_3d_experimental.json": "b1d07c3c8a5e9e196f218fa3f049fb084f286dd262ac1aa317408311ecfb115a",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+    "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+    "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+    "app/data/aircraft/stik_electric_6s.json": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "a71cf12e61a511a868b6e7ff005e116f1fe6cc57633c47850b9ae02d1838d0b9",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "19b319f1e0a2b29112b72fff2f62dac244c8b543ea82437a189e5161f7619e94",
+    "app/data/aircraft/stik_glow_61fx_2t.json": "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "877cd05d0669822a2a68021858334d1c73380d95d2d58660be75f655b72c4a0e",
+    "app/data/aircraft/synthetic_stik_electric_4s.json": "87a182fb8aa68a15d07dd0b20785e8d9ff21f0f30813a17b57533cf53ae24b01",
+    "app/data/aircraft/synthetic_stik_electric_4s_battery.json": "d6efdbba275c3a04755d591ce37ae11a3d1e461fe31de4927fb105cab8f9a0a1",
+    "app/data/aircraft/synthetic_stik_electric_6s.json": "4683006bbebeacb1977bff8ac3448ef0b1af995db567df147c9606004785c858",
+    "app/data/aircraft/synthetic_stik_electric_6s_battery.json": "0ceb94706dff1414f75bddb58ead3e361c9d316314b699751b93f3b9a8cdb635",
+    "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+    "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+    "app/data/ground_vehicle/airfield_track.json": "31ee093d4fc968d8bfb083a7ee89315030373ce886f87195b78115000e680e29",
+    "app/data/ground_vehicle/practice.json": "e73d770799791cf8dafeb22c77c78cfd4d4adca3450093c140cb485233141d1c",
+    "app/get-godot.sh": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+    "app/main.gd": "2fc67f478ab14cb8d124d3321eaafdc27788a2967320dd1a0b1b35643a461a07",
+    "app/physics/aircraft_data.gd": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497",
+    "app/physics/aircraft_ground_step.gd": "7142280d140cad06cf3ea1faa4e4b8ec612dc4b9588eb49abe6e0c603124c6b4",
+    "app/physics/ground_contact.gd": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+    "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+    "app/physics/ground_vehicle/vehicle_damage.gd": "f1a939c74c39df847b6c5c9bc26b51aa85c052d3baef8bd8e22a3844c8f2a319",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+    "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "app/physics/impact_snapshot.gd": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/multirotor/controlled_plant.gd": "e8c3ad8b39041b45eecabfa78222dbd75e72c72bc549698f7b898148a7f8049f",
+    "app/physics/retractable_gear.gd": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+    "app/physics/rotorcraft/impact_detector.gd": "5e9eb9676e34e62da0617c490733dc6abb398ec764688c8853f1a1f83a32f0a7",
+    "app/project.godot": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+    "app/render/crash/director.gd": "d6388634e5dce814904cb274bd274c90d49d6e34761fee3352e77324272c099c",
+    "app/render/crash/effects.gd": "1b9880d2e87a32d5f4a39bca5a3e2ae58745ae052f8ed115e167166c43218e63",
+    "app/render/crash/severity.gd": "3fad51fc5bc3d85a7d1ffcac12b9da4a355ace8268f31ac9e600e86e41cf4ed9",
+    "app/render/crash/wreck.gd": "8a1ba2ac1ad4ed7bcff59f07d92da494f1ec7b21fa5735db7df9f87508609127",
+    "app/render/landscape_upgrade/scenery_bodies.gd": "4d63ce4e50953e14471645082f452033d82ea30be4dfb307f8eda1d70b7a3b9f",
+    "app/scenery/collision_world.gd": "ef91c3944b2e0cac4d650d5513a696e8b6d5ad6b3d23a6a232f2196dda972274",
+    "app/sim/aircraft_contact_events.gd": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+    "app/sim/airship/session.gd": "38273a350b3783861e2427810f36d5a066641e9ff76c7dddf4b853a771e5f69b",
+    "app/sim/flight_session.gd": "83a47286921fb721945160c3191680f65211f672058c9364f794738b8393d5d5",
+    "app/sim/ground_vehicle/session.gd": "784394997afc55a14b2ccd92ded2f274600f8401d031aaa32f291a09fb98aad9",
+    "app/sim/helicopter_flight_session.gd": "7952c84c97788287936b96f71f77c0e4a6b14b2b580ef2243c712b8212c21f05",
+    "app/sim/multirotor/session.gd": "d9fdc1df58f5b5da7ab858b7474ae5956138857c8881853befd6dff2cc14bb04",
+    "app/sim/scenery_collision.gd": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+    "app/sim/scenery_damage.gd": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+    "app/sim/simulation.gd": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+    "app/sim/vehicle_model.gd": "d9cb12ae11bac4724661f4f4faf16c2f15c7e9f6a2365c1b7ed3a205b5e474bc",
+    "app/tests/test_aircraft_contact_session.gd": "74c22df6a9a4b0ca88cd87e6fb7ed7ced8d234667479a90c7d0c25998c7d04e0",
+    "app/tests/test_aircraft_ground_damage.gd": "73a7afaaa6a6767036b7603bfccdaedbfb9ca4f23225c67a72e3fd423d6a91f2",
+    "app/tests/test_airframe_contacts.gd": "4a4a3c5c93e788a9106ab4a85f25d1c8a929fa029a042c885a15b2b1e40ec808",
+    "app/tests/test_airship_session.gd": "68f8ca76d82e2229cee96b8487e78bbe533f24dcbdc6e55f8b24664250aa549d",
+    "app/tests/test_crash.gd": "570b19ae92e922e10b1b21693fb0fe704f02799dc4649041df2d166deb711846",
+    "app/tests/test_crash_audio.gd": "0712ca5272074046f5ac6209774152d27047988200580a344955c128ba72fc78",
+    "app/tests/test_crash_breakup.gd": "74a812fd42bce2201b35d72f48aa6de31b5668fc25665f6cb848b99554a2e5ef",
+    "app/tests/test_crash_effects.gd": "882a1d0933d2a9afd1500fd11ec9dd976040bd3d8062d3fd8d2359791b1b0b8c",
+    "app/tests/test_crash_energy.gd": "4db0144a6c0865a8928c61a222d2bb1541d0d7d91abe138321db72be75732bc6",
+    "app/tests/test_crash_fracture.gd": "9215d3797d662047448dcfa26603f5543a564021fe510097278e34b92f8a19a7",
+    "app/tests/test_crash_hull_labels.gd": "760736d5a4dc86784922121a5f37f27c0b1c8e23a4110954b61ce5861c2be6e1",
+    "app/tests/test_crash_integration.gd": "b02a3ab0359176b5ea49753cd9914e41673d98ec93d592541679c6a27f5f62ae",
+    "app/tests/test_crash_masses.gd": "693b6492ada7227169b3a2c29df0214ad893e39685e73a30b09baca8a103411a",
+    "app/tests/test_crash_pose.gd": "b34f48fcb65d25acbdf25a5640ffbabbf0e0de5da8c4c015a414eebe00083db4",
+    "app/tests/test_crash_presentation_ladder.gd": "90ab8eac38d2759db93cb2299641f6bc97a19a7694ddf074ac1d4d18b001773e",
+    "app/tests/test_crash_proportional.gd": "cce14ed122360cd26b9bbc123ed9b3bb8d36c6fe63234513f367839786668659",
+    "app/tests/test_crash_sections.gd": "672b2c7a5502c73c914a44b29cbeab5ef525823a8c04ae473f373c6587c8d181",
+    "app/tests/test_crash_severity.gd": "aa987d697586d5e02c2b821204b1c58351144ee238d41f9ff7505a25bf392023",
+    "app/tests/test_crash_snapshot.gd": "61d1a3829a9b3ac15c01214c2290fab1b90820eca7b08e68691ef2070b0cf83f",
+    "app/tests/test_crash_wreck.gd": "4c35d0e95d7a61a06565c97511558678c782a97200378a57fe01177acef9a7a8",
+    "app/tests/test_crash_wreck_surface.gd": "ccaf09a6654da6683cfddc2461c6089abf105c19bef12a2b93fd746ded7f96b7",
+    "app/tests/test_damage_flight_events.gd": "d3478807e76993dd4f14eb8a36797fbe5252740988745c964fea96720a568473",
+    "app/tests/test_endpoint_transition.gd": "69b86a8568b6b0496bbdc608f216ffead56fbef3ef791468514a0252dc3909ab",
+    "app/tests/test_gear_damage.gd": "47b8c856446c88b33bd3bb9ca585facc62d3525a29497ce9825d5864e6701669",
+    "app/tests/test_ground_contact.gd": "382c80742309df30f7460f68b2adbac38da034b95a074e375301d88f6ecca36f",
+    "app/tests/test_heli_crash_presentation.gd": "802650e94224cf013c6806f9bb013725eb9e50c02d10badade75d114fefc6291",
+    "app/tests/test_heli_crash_relaunch.gd": "41f6e8ae585d4d4dc3a291d280de3cd685540e08cbd25c072f27d0549720464e",
+    "app/tests/test_heli_crash_visual.gd": "f20da66f9bd3245553694945b8af3f6a6b0d9b09fe8ba1296756c4362dcb1720",
+    "app/tests/test_hull_crossing.gd": "ae8a5755b6c8892230c84364de6257509a95a08c0447bfc7e8cde51d9ace7012",
+    "app/tests/test_hull_friction_observation.gd": "cc836d383c04c87a38dea01a425aef6b43cf3ffae9a5af93a4af7dc2482136bc",
+    "app/tests/test_hull_scrape_audio.gd": "61dce56560d0439c8bca6219b976685c50c16dc034d668feee5ab14b8a2afa5c",
+    "app/tests/test_hull_scrape_session.gd": "e7113d413a2e56425059a62a4a0425182c6f60f3f2eddf23a00112d6fd6808e6",
+    "app/tests/test_hull_support_normal.gd": "8f776a03eac2a8de653404f365fc7fe02525c102d42410e783fa7350b5867c03",
+    "app/tests/test_integration_receipt.gd": "18997421be06f7a4633ac9f7ec2f11b6509ea2a20023f1bb71dbde14d2837f99",
+    "app/tests/test_lake_collision.gd": "f68a9ea82506a405fdbdd5f95609436b5a6e95458fa9dfe492b704c8ee2e06b4",
+    "app/tests/test_lake_ground_contact.gd": "e7b8f35d5aebda553395dfc36115afcf9c4bccf098fa60db11931546bb3e4f70",
+    "app/tests/test_landscape_collision.gd": "1ee621dce936969435c4a147c958fb88b3064cb4ded5b2fe56bbac6e0350afe9",
+    "app/tests/test_landscape_collision_oracle.gd": "c5638cb9a3530ecc77b0a6fe87b441ff39227193e29f7501d1720cc4c08a1145",
+    "app/tests/test_landscape_collision_session.gd": "75f4631a41a0c00b85636f3642780bbd64023be8a3d585859df8a6be902cc62b",
+    "app/tests/test_landscape_runtime.gd": "60b6bebab17a78950b1d0dd016b85639e19cf9de161f657342df949a91b594b5",
+    "app/tests/test_mr_crash_presentation.gd": "8e4d9bfb14e58960e11d9e1bb36d4d1ddb150e51022714df260c35d404066b7d",
+    "app/tests/test_mr_graded_crashes.gd": "d84aeb2ca172e554f472c8318fda39f0a9a7e6ca0b477a81907ac0e94dde6833",
+    "app/tests/test_mr_rotor_strike_slope.gd": "02c732df173dd1f218f34c35e1d3b92321046b1958649fc08a74036823e55e42",
+    "app/tests/test_parked_aircraft_collision.gd": "5d767dfecfff5779012863c80a0ea5e53d5780ab345f69e973d4603984e9babd",
+    "app/tests/test_power_line_collisions.gd": "aae9cd14477b88b8a23c68d3100bd2cad853e7e66bebcdce43dcc8252517894e",
+    "app/tests/test_prop_strike.gd": "d019c7f3c741276ecbb383327b72c8e7c230f747275eb7bc680c22ecbeabf765",
+    "app/tests/test_prop_strike_feedback.gd": "9d4bf4f688c65cd19c4f93301fbb20bd24759680a9803b60078affa5077200d7",
+    "app/tests/test_rcv_airfield_course.gd": "e9246063686fa8760eb24320c0982f6ecf13a5e9a501dfc35dad82893d319091",
+    "app/tests/test_rcv_damage.gd": "58e64a0fdf8cce748b1a9f0cef8083619937aeb061d743da020544e7acc8143e",
+    "app/tests/test_rcv_damage_session.gd": "ef80701bc92cb962527f1863b1e49ad17884768a453d41a27e2abce0f7a305a9",
+    "app/tests/test_retractable_gear_ground.gd": "51e189e715c1f3bca63cef023fc39a9c435476f6d2683bd76a160a3ec7ff5d1f",
+    "app/tests/test_scenery_damage_session.gd": "84265e19e0f652b6255cd3f477ff2a1fc071d7c182f51af631a83dcaf9cb0058",
+    "app/tests/test_soft_contacts.gd": "daad6e1d76cca1e349d43f22ca2e6206ac4ea1bd61417d4bb1d3c964cddb872f",
+    "app/vehicles/multirotor/quad_crash_fx.gd": "b73aa87f2c9f7881a263de176fd7f59e60a8def905d4d8cfbf1fad65f9ef2e76",
+    "tools/godot/run_checked.py": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+  },
+  "baseline_completion": {
+    "selected_suites": 53,
+    "attempted_unique_suites": 53,
+    "not_run_after_environment_stop": 0,
+    "checked_passes": 52,
+    "unique_suites_without_a_checked_pass": 1,
+    "latest_captures_not_passing": 1,
+    "assertions_in_checked_passes": 4576,
+    "checked_passes_without_printed_assertion_total": [
+      "test_rcv_airfield_course",
+      "test_lake_collision",
+      "test_lake_ground_contact"
+    ]
+  },
+  "evidence_file_sha256": {
+    "evidence/diagnostics/parked_aircraft_diagnostic.gd": "8642615126f055d151d0c152700b1cec693ae52df3266f8af9bc6416482c0f4f",
+    "evidence/document-link-check.json": "414bbf2adca2afd1a20c8b1d75966a9557f0e29c57fa1c8fe22da483ce4543a6",
+    "evidence/earlier-attempts/engine_com_probe_first_attempt.gd": "e2931d5a7a103d07350947efef0e0e2a39c368ec32aea40cd1da956109be9bc3",
+    "evidence/earlier-attempts/local-engine-control/local-engine-control-4zn_1p1c/engine.log": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3",
+    "evidence/earlier-attempts/local-engine-control/local-engine-control-4zn_1p1c/report.json": "c5dfba77d7ff420abb9e1ef8863719c59b8f3bd2f3ff52068d4a4c352db424bf",
+    "evidence/earlier-attempts/local-source-log-control/local-source-and-log-control-u31rvy4j/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/local-source-log-control/local-source-and-log-control-u31rvy4j/report.json": "e94232ed87b6c4cc121e207cdbc16a30e918b1a68eb2143d8360b19881ca2a5f",
+    "evidence/earlier-attempts/mirror-control/mirror-control-iubrvs70/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/mirror-control/mirror-control-iubrvs70/report.json": "3c6137b25b0ac9cc50fcfa39218b1b07e418e00f79c599edb061e654a05f6e0f",
+    "evidence/earlier-attempts/probes/engine-com/engine-com-u3qemjl8/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/probes/engine-com/engine-com-u3qemjl8/report.json": "0360dd3ae69b225bef73849725ed928097c23178b784e59922de13ee34f5060b",
+    "evidence/earlier-attempts/probes/ground-scenery/ground-scenery-_047b6w3/engine.log": "54734caf126c5256bfea1fc3d4a9152a4fe220108f8c219d23128c26b305932d",
+    "evidence/earlier-attempts/probes/ground-scenery/ground-scenery-_047b6w3/report.json": "a1b995b1a772e51a5fcd7f63a849c26acc4060418ff93b42d710785f976dba80",
+    "evidence/earlier-attempts/probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q/engine.log": "0c65cfad5175ce4925ee0537bf56fe588e9d473fccffadda0df7cac54a0b2c93",
+    "evidence/earlier-attempts/probes/ground-scenery-corrected/ground-scenery-corrected-2e_4ih1q/report.json": "1f73441a0e55f0e46c2d237aac24e56c0aa856b517901f755cd273d89003086d",
+    "evidence/earlier-attempts/probes/scenario-fuel/scenario-fuel-78apnyn8/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/probes/scenario-fuel/scenario-fuel-78apnyn8/report.json": "db6b7f0cfce8b82ee0fc71a05cc472614f1a8d59bc9a878a9c313f07ab53a165",
+    "evidence/earlier-attempts/probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/probes/scenario-fuel-retry/scenario-fuel-retry-urrqoklw/report.json": "6baed926b69d39591822a0acddc97eb2dfdae5df8688c49e3f486b7deeb2db7e",
+    "evidence/earlier-attempts/probes/staggered/staggered-4tgai71b/engine.log": "adf5f48e074f4b29a093acbdc7466f3451a9b760d550bc0c31af8617dd52bd99",
+    "evidence/earlier-attempts/probes/staggered/staggered-4tgai71b/report.json": "13a32b4594d72cd1ed6937c76eccdff2caa5f1b10c08cdb30bacf1507b6d534e",
+    "evidence/earlier-attempts/probes-final/engine-com/engine-com-7ww1a8qa/engine.log": "b33a193c2759fa87a0b55bf1c72bbf04aa53c36146a4819e813237940316c8a4",
+    "evidence/earlier-attempts/probes-final/engine-com/engine-com-7ww1a8qa/report.json": "55361fbac2f838496f1874ebd7bdbf4a037b0ee2b04b8467500f336247b91c6d",
+    "evidence/earlier-attempts/startup-control/startup-control-dqria41w/engine.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/earlier-attempts/startup-control/startup-control-dqria41w/report.json": "ac991f18d521d2db026ddd9b5e82f9d9ef9c7a1597de5f3f81bd221236087954",
+    "evidence/earlier-attempts/targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9/engine.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/earlier-attempts/targeted/test_airframe_contacts/test_airframe_contacts-98w1mze9/report.json": "2d6bdaa74b6c4c858b2c51d1eea232ac2caefe8034ed7d28b19fef0cad789d91",
+    "evidence/earlier-attempts/targeted/test_crash/test_crash-cvq6ircs/engine.log": "961eab1ce853a72dea318eecf65a06bdebcefa9144450556052da3f8139e74af",
+    "evidence/earlier-attempts/targeted/test_crash/test_crash-cvq6ircs/report.json": "8c79272a0398858692ab37ce913e547769fcb48ec8b747f77d3c0fd620a6ce6a",
+    "evidence/earlier-attempts/targeted/test_crash_audio/test_crash_audio-tmzo0bpc/engine.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/earlier-attempts/targeted/test_crash_audio/test_crash_audio-tmzo0bpc/report.json": "302fe6919dc6980f7172fdd568cb220e9ad1c0c3598fcf60f406a8c5670f7a77",
+    "evidence/earlier-attempts/targeted/test_crash_breakup/test_crash_breakup-u81bsdil/engine.log": "b227d84bc65f14b0ad55bfcafde58fdc6e17e4fcb0a8e1de287df9f2d4e57353",
+    "evidence/earlier-attempts/targeted/test_crash_breakup/test_crash_breakup-u81bsdil/report.json": "facc887675198a5a76bf6ed27163e8f8ef28c3f02372f0c9bd7ebe9e5406e29b",
+    "evidence/earlier-attempts/targeted/test_crash_effects/test_crash_effects-w79siu2z/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted/test_crash_effects/test_crash_effects-w79siu2z/report.json": "719f7adaf33d797e3882c63f6ea4ac5f45afc60951a61d1fa8c5bdcfb71aaaa3",
+    "evidence/earlier-attempts/targeted/test_crash_energy/test_crash_energy-grmirwgu/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted/test_crash_energy/test_crash_energy-grmirwgu/report.json": "d66d5e9b275ed54d3322ef9af0e70070508bf711e8bfa73a14cdb8f17cfc8110",
+    "evidence/earlier-attempts/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/engine.log": "94ac4c7d48854cea42631b4e956f85f090d7e15ae06f83ef3b05476762c2a6f2",
+    "evidence/earlier-attempts/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/report.json": "5e920bcfc6dbe2e3b203586791e478444b162f7ca6cd42503760996c2e3c983c",
+    "evidence/earlier-attempts/targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_/engine.log": "d3ff1666a1642dd6bcc46acb010cbbacd2ce3730aae0a586ed260fbfb201eb9a",
+    "evidence/earlier-attempts/targeted/test_crash_hull_labels/test_crash_hull_labels-cwee98n_/report.json": "584726b807f0696832e0ae53b477878ec994f94aba6cddd8c58e11d1ba8aa7f4",
+    "evidence/earlier-attempts/targeted/test_crash_integration/test_crash_integration-i8o04ylm/engine.log": "7aea9ef65d7594d95c853c768031b2c4f0f8c56d1f9a0dd308a601226d706c9c",
+    "evidence/earlier-attempts/targeted/test_crash_integration/test_crash_integration-i8o04ylm/report.json": "855c5e05cab7563bc1ced7fbb55175768290d2a4eae624a72e0b847887b0abe8",
+    "evidence/earlier-attempts/targeted/test_crash_masses/test_crash_masses-q35v5f_s/engine.log": "684d47eaf6761a6656801355ebfc4b5ee56fe3589c4d35df2e0459d753485131",
+    "evidence/earlier-attempts/targeted/test_crash_masses/test_crash_masses-q35v5f_s/report.json": "d53519f1194d5bf9ea5bbe73483833294507b8ea2819b5a00496e25134676538",
+    "evidence/earlier-attempts/targeted/test_crash_pose/test_crash_pose-13d898oi/engine.log": "b2e07903ededa5943d125f2a4c230a4f7830850d1f2f5dc5dcec93c051186a18",
+    "evidence/earlier-attempts/targeted/test_crash_pose/test_crash_pose-13d898oi/report.json": "b516d81af788e113d630cc222404a39e76128571d489cc4ed48490cdfb1eba76",
+    "evidence/earlier-attempts/targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted/test_crash_presentation_ladder/test_crash_presentation_ladder-t6qiln9z/report.json": "6bf05933646336fb78c7d06ada5060fa4fe29da5e0bdb54d52af6f0e032a82f3",
+    "evidence/earlier-attempts/targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn/engine.log": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42",
+    "evidence/earlier-attempts/targeted/test_crash_proportional/test_crash_proportional-mq_qb8yn/report.json": "d87c3a67b63c8c067a1810fe150ab9d1653f9320afd81bc5b347d5083cfec3d1",
+    "evidence/earlier-attempts/targeted/test_crash_sections/test_crash_sections-lmjf24gi/engine.log": "28942bcf368b088b17b1d1ad178a1dbe25328f2e0c518e6ed44e2afc7b7fe933",
+    "evidence/earlier-attempts/targeted/test_crash_sections/test_crash_sections-lmjf24gi/report.json": "0bc823636f2fc493006815cd66f8a51788dca2798cb546e96c42484c84dd951b",
+    "evidence/earlier-attempts/targeted/test_crash_severity/test_crash_severity-l517samc/engine.log": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3",
+    "evidence/earlier-attempts/targeted/test_crash_severity/test_crash_severity-l517samc/report.json": "cb61f5ea56509fb51244fff5439fb62f21fc478410596f1dfd9bad174533acbe",
+    "evidence/earlier-attempts/targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7/engine.log": "f6b57a5cd5aaf5e6ea2c8464233e8d1c85b5dd527c15e03f8516de6384f0cee5",
+    "evidence/earlier-attempts/targeted/test_crash_snapshot/test_crash_snapshot-b0fkspa7/report.json": "b6b12291662ad801134be8c60ad54a2cee3bebb0723b1d413de60e85df642b03",
+    "evidence/earlier-attempts/targeted/test_crash_wreck/test_crash_wreck-4dja9916/engine.log": "156d948dbbd1e2af5e4a3d3a6a913fa1a6d96fc9c241737ca88528f1dd730811",
+    "evidence/earlier-attempts/targeted/test_crash_wreck/test_crash_wreck-4dja9916/report.json": "6ecd615ea7147b7e34eb35ca7c1560937addefa48f216451cb4f3aa601ece558",
+    "evidence/earlier-attempts/targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e/engine.log": "3f74e37b6c6e5e104fe858bdad421ca2ce720b89bb7233a0b992e6b71024c207",
+    "evidence/earlier-attempts/targeted/test_crash_wreck_surface/test_crash_wreck_surface-8c8eaj5e/report.json": "157248445f3e956e8882072dd1fecdc9b10b443aa96f508d288080e146c4a9b2",
+    "evidence/earlier-attempts/targeted/test_ground_contact/test_ground_contact-iv0hcr6f/engine.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/earlier-attempts/targeted/test_ground_contact/test_ground_contact-iv0hcr6f/report.json": "1f7d5f001206c7c3f1b7102e4c0438c87a77a8a86994669108d2bf0c167ffa25",
+    "evidence/earlier-attempts/targeted-complete/test_crash/test_crash-su9u_ejv/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash/test_crash-su9u_ejv/report.json": "2779837a31525948a06f8e818071495bc66474c732b1a1cc16b5f55b7c8adec6",
+    "evidence/earlier-attempts/targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2/engine.log": "59b769e82d15c66c984f30bca84575be7ae4e3cf05ba545726c336a703c22828",
+    "evidence/earlier-attempts/targeted-complete/test_crash_audio/test_crash_audio-cp4ytme2/report.json": "5ee31b8e8beb635c0e94708d44180e3ef28e75861343c0309b359a270e7a0121",
+    "evidence/earlier-attempts/targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489/engine.log": "b8fc14250e20c36e0277edc2a71c01632c646af35dcf1e05503b9193f3b18949",
+    "evidence/earlier-attempts/targeted-complete/test_crash_breakup/test_crash_breakup-fqgjz489/report.json": "ec837054877a35a86ace93154026a27e594e9df2e91d848d811ec459af70169c",
+    "evidence/earlier-attempts/targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1/engine.log": "ff4e4469c1f4d27c3421c07f18c85866e45aa33e0911b05f9a6f080300289c68",
+    "evidence/earlier-attempts/targeted-complete/test_crash_effects/test_crash_effects-yqluxmg1/report.json": "794d3923155c732d33b131cfc584fcaf9d4a9c95ab875180bf63ec1a41042ea5",
+    "evidence/earlier-attempts/targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0/engine.log": "cc0bd43455bd3e8419bec0adf4333da2887795f3ef434d4fae51aba796e8540c",
+    "evidence/earlier-attempts/targeted-complete/test_crash_energy/test_crash_energy-55v8pwl0/report.json": "96f6f97a6eb5912caaf9d28bbc9275a7b934bdb6de235676d82ae759d81129ab",
+    "evidence/earlier-attempts/targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn/engine.log": "117d1d1ef4e7e38cd63c1b7a81a146843ebb0a2bddc1d0b486fc9e74aa0112f6",
+    "evidence/earlier-attempts/targeted-complete/test_crash_fracture/test_crash_fracture-q3lh26fn/report.json": "7f11a6a02bb541cc87c71c66c307880b19d6b467b4fdf974d31ac2b288ab6e9d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_hull_labels/test_crash_hull_labels-zxihvrew/report.json": "8a07d91f4b665672312354d9a9c878f57b0358a2ee6e5df38fdf4d373ca49d8a",
+    "evidence/earlier-attempts/targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_integration/test_crash_integration-7cls0uy1/report.json": "e58357efa538062a010cac9a5c42309a99e9adceaee889fe49a47c44c164cc34",
+    "evidence/earlier-attempts/targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_masses/test_crash_masses-94r1vs3d/report.json": "3ea572569cc4fc0f609bc751b613c68f13c9cd41848151d10dfb7fd31fb19b62",
+    "evidence/earlier-attempts/targeted-complete/test_crash_pose/test_crash_pose-t38e_g13/engine.log": "67612768fabb1cae6c96f03f3b1a22e94956b808dc8624161b1676d682761318",
+    "evidence/earlier-attempts/targeted-complete/test_crash_pose/test_crash_pose-t38e_g13/report.json": "e93de92226a656f842bab11ae00ec318a20518c06c9b19f70934a831c67c9b7d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_presentation_ladder/test_crash_presentation_ladder-jfm64a4b/report.json": "9dc0777a4ea7101a3e643f0904e37f47274ac4618a72bd5a31d46a73c8ebef1b",
+    "evidence/earlier-attempts/targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj/engine.log": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42",
+    "evidence/earlier-attempts/targeted-complete/test_crash_proportional/test_crash_proportional-oirf6elj/report.json": "3fd871fce6a0f199497a47638e019737af33da3f375c3b4587e0d52488f670d2",
+    "evidence/earlier-attempts/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/engine.log": "b745f0692c8d306c2895f10733d67693bab3a6b71c7c79f8f15ca96771887d7c",
+    "evidence/earlier-attempts/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/report.json": "9794700ebdf7e5ac0209ca22fe39871c8d139b645f8cf054d4ada9e93b23ca16",
+    "evidence/earlier-attempts/targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y/engine.log": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3",
+    "evidence/earlier-attempts/targeted-complete/test_crash_severity/test_crash_severity-0cb3ve_y/report.json": "df3f931574255577fe50150a4bf450be982f9dedb63643210e327c1b40cf3e39",
+    "evidence/earlier-attempts/targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_snapshot/test_crash_snapshot-3g7gscrt/report.json": "708356fd097eda1d49245bdc0afb90b700a4b6b9b64e89eee75ee8a3910c3718",
+    "evidence/earlier-attempts/targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_wreck/test_crash_wreck-yekrhod0/report.json": "d259b8573ad431de18380806776625a22fc47fadcf43809a230a7e6b9d7d6c40",
+    "evidence/earlier-attempts/targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz/engine.log": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+    "evidence/earlier-attempts/targeted-complete/test_crash_wreck_surface/test_crash_wreck_surface-_oe1i8lz/report.json": "2c4721414c75043d84c71c76d4164ba5a9b0da69275b3be9cb455f01fae06d4a",
+    "evidence/earlier-attempts/targeted-local/test_lake_collision/test_lake_collision-go1ecbh0/engine.log": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e",
+    "evidence/earlier-attempts/targeted-local/test_lake_collision/test_lake_collision-go1ecbh0/report.json": "34077c60e6d79f5b68d4aaacf916961fabb147adcb05e336760f7778d011f8bd",
+    "evidence/earlier-attempts/targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n/engine.log": "2bcc58193c32938f05ecf1966b11daa79cfde9df1927255df29c0b05f2021eb9",
+    "evidence/earlier-attempts/targeted-local/test_lake_ground_contact/test_lake_ground_contact-jnxtwk9n/report.json": "f3fdabecbbbc9c237d5b29533eadf2f26bbc602d466f50cee44016396911282e",
+    "evidence/earlier-attempts/targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds/engine.log": "9a459db88c6bf4ff0dda4d2ab2705334c898b8cba03d7c7fa503190f3d449555",
+    "evidence/earlier-attempts/targeted-local/test_parked_aircraft_collision/test_parked_aircraft_collision-p5c5gwds/report.json": "bcf615f913fd74f8f58520aac755801a6e7b4ffcd313645d566e02143c54291d",
+    "evidence/imports/import/engine.log": "888bdebc3af73ecf312bfe88648b780bdf37f8a19ffcce460ca86477807cbc7a",
+    "evidence/imports/import/report.json": "c2b1d3e2e95fda02f7953619e7efd3a3f90f6d74961fb8ef0bb6336edefd1e5c",
+    "evidence/imports/import-complete/engine.log.gz": "b2e36265299111e2fc8343f6db4aaaa4904a5fd9f368b73f84efc236ff36b029",
+    "evidence/imports/import-complete/report.json": "f2a4f1478f96b31ab68fdb4c5fc8c2da013b37e147e4fda88451835e6f98a9d1",
+    "evidence/mirror-info.json": "1b0d39ea245cc17be733285f5393915f8ea73e3515d2878a66d084f567047159",
+    "evidence/mirror-source-identity.json": "21496dc7a678e6b47aabd25c65913e5256c2fdd5008e04102c62492063c0252b",
+    "evidence/probes/crash_adversarial_probe.gd": "f3b270da7ad89bcb7be5fa038e06c1d21e3d99dc6d6cf509ebd41b02fbe687be",
+    "evidence/probes/engine_com_probe.gd": "f969780440796ce3fc1622406faee667d8cfa03a2e8f9e45791f31173043d7c7",
+    "evidence/probes/ground_scenery_probe.gd": "88d42f3255a5217667fb14893b4f5f559d8a0f06b3749be843ad1a20bae35289",
+    "evidence/probes/heli_soft_contact_probe.gd": "cb782a65f872faadd68e771335d0dfc510aa062255acdd35e1169aae5808ffc1",
+    "evidence/probes/lake_session_probe.gd": "188bcde71ec17e20dbaea905cceb60330cc0390b1ddb7c4d9114b10a5e6542f7",
+    "evidence/probes/scenario_and_fuel_probe.gd": "ce3a6d63ddad339a412bca533da0cacbb6942984381dd76de46be39923726b01",
+    "evidence/probes/test_spinning_source_off_prop_strike.gd": "a5ac01aa5d05466eb2ad76e4ba59afa3ae6a0dc521c019fc19243686868b970f",
+    "evidence/probes/test_staggered_hull_crossing_event.gd": "cdd9783fa472a32af486e6e1e2b9bbbf19629d60454a1e43110f2841c638c515",
+    "evidence/run_probes.py": "467b72648eda944f4af8628855291d236b248c0299a3d19fc0a6ac15d55f7c48",
+    "evidence/runs/baseline/test_aircraft_contact_session/engine.log": "9bf8dae84b8a7cb8aa7fc1edd3be6da31370d2294005146e8a86fd20cb8a811e",
+    "evidence/runs/baseline/test_aircraft_contact_session/report.json": "6f7df17c221e00ec5afca6d66bcd10b67c85a32f45c1b51c82578ef7b340addd",
+    "evidence/runs/baseline/test_aircraft_ground_damage/engine.log": "16c7b20ef9f7772e91cc1da652ad9160b40327c2eebfcdc96185c6179712f05d",
+    "evidence/runs/baseline/test_aircraft_ground_damage/report.json": "9b51dc92c8b5f8c2bdfbbb362a3c91ce9c8c3efc2d5153dda0ed30ddf0e7fb19",
+    "evidence/runs/baseline/test_airframe_contacts/engine.log": "b77ab4529375f91d6dd256a545eaa733b1944e14f4877f82383d6c2cc27d2701",
+    "evidence/runs/baseline/test_airframe_contacts/report.json": "13a99b3f5605b1ee2d5b2bf284ea3ed18d02cb7576896d8f5e2842c104a1a311",
+    "evidence/runs/baseline/test_airship_session/engine.log": "9b60d4495dc2745e2dba24c57e24e6f8c020f606615d02034629f729d2afee7f",
+    "evidence/runs/baseline/test_airship_session/report.json": "06a5c096be200d3b16e23625d60316793e691341f43aed7fb114e9758e366bfc",
+    "evidence/runs/baseline/test_crash/engine.log": "961eab1ce853a72dea318eecf65a06bdebcefa9144450556052da3f8139e74af",
+    "evidence/runs/baseline/test_crash/report.json": "b72406cfe328ddb2e2c9781dcfb3cd0eec9cff61a5dfc2858541cce1e10756c0",
+    "evidence/runs/baseline/test_crash_audio/engine.log": "59b769e82d15c66c984f30bca84575be7ae4e3cf05ba545726c336a703c22828",
+    "evidence/runs/baseline/test_crash_audio/report.json": "58a7cddc9f2c1467846385cb860a28f23a8ffedd708457f4043ced8b49959996",
+    "evidence/runs/baseline/test_crash_breakup/engine.log": "b8fc14250e20c36e0277edc2a71c01632c646af35dcf1e05503b9193f3b18949",
+    "evidence/runs/baseline/test_crash_breakup/report.json": "292b2724f64035bae803330096b1931ec1f764ec63421715451d9586878c3f03",
+    "evidence/runs/baseline/test_crash_effects/engine.log": "ff4e4469c1f4d27c3421c07f18c85866e45aa33e0911b05f9a6f080300289c68",
+    "evidence/runs/baseline/test_crash_effects/report.json": "b4a15a802ef27e473196a0ae829a12555808a48a4f353bf760ef038d09174229",
+    "evidence/runs/baseline/test_crash_energy/engine.log": "3698b460172ac9959df7a29553d3c9e09618e061f1f8258813df031ed178effe",
+    "evidence/runs/baseline/test_crash_energy/report.json": "75e22fb8b4714dd6d4a8748eaffd6efb0fc8ba6badd9414499df614e1b8605db",
+    "evidence/runs/baseline/test_crash_fracture/engine.log": "117d1d1ef4e7e38cd63c1b7a81a146843ebb0a2bddc1d0b486fc9e74aa0112f6",
+    "evidence/runs/baseline/test_crash_fracture/report.json": "1b2885a5c0b5adfb82612367a947fb12aec5b1e7ea590e30ce5feaf4efb50bd0",
+    "evidence/runs/baseline/test_crash_hull_labels/engine.log": "d3ff1666a1642dd6bcc46acb010cbbacd2ce3730aae0a586ed260fbfb201eb9a",
+    "evidence/runs/baseline/test_crash_hull_labels/report.json": "fb11ba138636d0f996d8fdebe7e52374aa81f6567a14b1cfceb3a8f7e7ed963b",
+    "evidence/runs/baseline/test_crash_integration/engine.log": "335a58102b711286041132b8df709424cca1d5dfee747c89f948bfb6310fcaf7",
+    "evidence/runs/baseline/test_crash_integration/report.json": "00c1d6dbb5a215020db6935fea69fb3c834ccc47d2b0614ff5b00bdd95ef3fd9",
+    "evidence/runs/baseline/test_crash_masses/engine.log": "419e432bee4838611ec260ec6d55ea7c19e408fd531189ef68491a4c556db08c",
+    "evidence/runs/baseline/test_crash_masses/report.json": "9abcb85a37bfc8751321ac56fdf800a3f2a85f34108bc958d1e53b48d543b853",
+    "evidence/runs/baseline/test_crash_pose/engine.log": "bb3b4af859bf13af1a3dc23252fb2e3396cda4aabd7abaab02c58fb9663159f2",
+    "evidence/runs/baseline/test_crash_pose/report.json": "beddc3020a0d22597fe51fee98650c21f8363b966641f0f7506755e1a6f9fc02",
+    "evidence/runs/baseline/test_crash_presentation_ladder/engine.log": "3e9995d0be9d783d6a7e2f63270d59869be662e1849ab44c2c659c22045ad347",
+    "evidence/runs/baseline/test_crash_presentation_ladder/report.json": "805b743fe1436cd35efa843361c7fa6ab8d3936f4f53a42fd963e540319e2aa0",
+    "evidence/runs/baseline/test_crash_proportional/engine.log": "8d4ec6a57f25bea3e2ee23f562f9cabd37e874e721f9baabf005fc1c15a5dc42",
+    "evidence/runs/baseline/test_crash_proportional/report.json": "61470ec86d973f78f836c80e6710ff1ee59c7dff6d3f59b41b91767e95abca2c",
+    "evidence/runs/baseline/test_crash_sections/engine.log": "b745f0692c8d306c2895f10733d67693bab3a6b71c7c79f8f15ca96771887d7c",
+    "evidence/runs/baseline/test_crash_sections/report.json": "36a22a42620b3c39aa5298add41e86a53507735d68e08db28601d5cf97aa6c7a",
+    "evidence/runs/baseline/test_crash_severity/engine.log": "6e535fa3990672913b5e52bfec3c7f2d774247d54ad6eb20611f7e4fe58876d3",
+    "evidence/runs/baseline/test_crash_severity/report.json": "a6f93e53108a494c5de66be4730e7917075e9e3c7643265b5ea2fe65a5a8752c",
+    "evidence/runs/baseline/test_crash_snapshot/engine.log": "f6b57a5cd5aaf5e6ea2c8464233e8d1c85b5dd527c15e03f8516de6384f0cee5",
+    "evidence/runs/baseline/test_crash_snapshot/report.json": "d15642460a6b3a3e78b1b93781eff111106bc1d85081d64bad5dcee1b0cfb976",
+    "evidence/runs/baseline/test_crash_wreck/engine.log": "0da6687f26737b044a72cabb4cbc78c318e5f804ef504b8325ddc58564f6ca1d",
+    "evidence/runs/baseline/test_crash_wreck/report.json": "f9c0fb6c56c07b1beb9cde1c607dd794170da15401b3804478c8d7706d906813",
+    "evidence/runs/baseline/test_crash_wreck_surface/engine.log": "fd9bfad7561bc2c80f02b5463403af31c31ff74db454c5d085533cbf634140d3",
+    "evidence/runs/baseline/test_crash_wreck_surface/report.json": "592f0d5e41bde2dbbde241aa39e19d85bd98e87385b82f4ab014484e2694c8cb",
+    "evidence/runs/baseline/test_damage_flight_events/engine.log": "2e68d55e59c28b0bf821e463cb1a8edb4565755e06cd9ee965ca5b024a3c10a9",
+    "evidence/runs/baseline/test_damage_flight_events/report.json": "d18da9250966d0704fe844542b200f9fac46ac8365ba38d224ee7d4f6cf11d8c",
+    "evidence/runs/baseline/test_endpoint_transition/engine.log": "441c8172d3f6935f1077df05ba6c05b323aac013d0df8a628471f4643d59d8cf",
+    "evidence/runs/baseline/test_endpoint_transition/report.json": "7d691b02f002e422958ae275ca09eaa1853f8aeee90523bb2943753e10d92dae",
+    "evidence/runs/baseline/test_gear_damage/engine.log": "d1905e8e82ad97b3217f17b1d5dccf09ef673480ce0f3aaa758ee8dd7fe04561",
+    "evidence/runs/baseline/test_gear_damage/report.json": "860d5b37157d186bfcacfe97f01a1a36ad12e53392542a6face541688cf4bc51",
+    "evidence/runs/baseline/test_ground_contact/engine.log": "d5403a600c09d892632da4c1ed0ee0c5e396d9c2ea5b7b6442f9e97b5e9365a8",
+    "evidence/runs/baseline/test_ground_contact/report.json": "ddbd7fd1b0d131f63f70834f47c229c418c57ad88494c385b986c3513304779b",
+    "evidence/runs/baseline/test_heli_crash_presentation/engine.log": "5cb23eb31313b95bc84ee55aa9bf7e58a4dc47d1124605148713c7365ed843e7",
+    "evidence/runs/baseline/test_heli_crash_presentation/report.json": "4f72dab6f7721f0da2cc36718be6a6cb49972537db25d2da89f70a1a23ce534d",
+    "evidence/runs/baseline/test_heli_crash_relaunch/engine.log": "7c80f7677d51c088cf809770a26319627efa4b857b72b4d9871368a0bed68097",
+    "evidence/runs/baseline/test_heli_crash_relaunch/report.json": "c9b3cb8a5250095744711846941227f81fa21235dbfe598fa00b0e0b582caa8e",
+    "evidence/runs/baseline/test_heli_crash_visual/engine.log": "562f2c971c8916e4f321c770854771043eeecb46b01e910b5421ecc48aa23ffa",
+    "evidence/runs/baseline/test_heli_crash_visual/report.json": "d6af9f3eef17c16c3e445024a24e76221b33cd9b7f10d86e9bacd0b247f041b1",
+    "evidence/runs/baseline/test_hull_crossing/engine.log": "17b81c05cdbbdcd0d39514576daa91902b805dbf9c95bca955cf130bb32755f5",
+    "evidence/runs/baseline/test_hull_crossing/report.json": "3489fbf7dbb1cbaf2c9f05d76ba73969e02762f554f7e17378d9d19277e20927",
+    "evidence/runs/baseline/test_hull_friction_observation/engine.log": "ca96e30f68e272f95062a3473ff938ca0f2863fa1a108491e4a2daa20704bc55",
+    "evidence/runs/baseline/test_hull_friction_observation/report.json": "c627dd72139797ef4f06432768895e74f29f461edc0cb8f90b54cf89a2064841",
+    "evidence/runs/baseline/test_hull_scrape_audio/engine.log": "d114e35fd02cc356455264bfc82c6f1f175275e01be7d9dd46a2e222f58a345d",
+    "evidence/runs/baseline/test_hull_scrape_audio/report.json": "5955e85864dde002a7c5b5af5b3dad3ddbf675bb93d5f386b66bd62739a345b4",
+    "evidence/runs/baseline/test_hull_scrape_session/engine.log": "69639ea6de62c4c5fc91062f26e59643424c485a5f03ef3e920445aad382b687",
+    "evidence/runs/baseline/test_hull_scrape_session/report.json": "33bf6131f35720e68e458607ac78df1920bbed47fee09329d969eca8e6284b65",
+    "evidence/runs/baseline/test_hull_support_normal/engine.log": "434e21456b6377f39ccdbbc92c45f32ebecd55ac17081474fe480852517604e8",
+    "evidence/runs/baseline/test_hull_support_normal/report.json": "44309cd77c4fd3c525f1d4bd31653bb5751f6a8c4a8deac1ea19d74527b7f032",
+    "evidence/runs/baseline/test_integration_receipt/engine.log": "2d8ad91ebdb2ee2ee5f597be7d3405ab206018295bb3e184dcc69cf749d0d5e0",
+    "evidence/runs/baseline/test_integration_receipt/report.json": "39d82caef5f6af36e692756d6a19ee98fc70062467a34db469244c203161475d",
+    "evidence/runs/baseline/test_lake_collision/engine.log": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e",
+    "evidence/runs/baseline/test_lake_collision/report.json": "3fac4f4d3f2b328d57cf3faf12f6ebb2b6a7b7df9a29b403272618c376f93002",
+    "evidence/runs/baseline/test_lake_ground_contact/engine.log": "2bcc58193c32938f05ecf1966b11daa79cfde9df1927255df29c0b05f2021eb9",
+    "evidence/runs/baseline/test_lake_ground_contact/report.json": "b97a11ead4b0594ce8990332ec7abd573d9340ddf86f712b8d2254a39cf6d9f7",
+    "evidence/runs/baseline/test_landscape_collision/engine.log": "4e4f53e85e511d92caeef731833ae18af851773550fe731ee49752c320e66829",
+    "evidence/runs/baseline/test_landscape_collision/report.json": "8f8b7cf153a6378d02b839f4dc9de8546c3e44d682277a24a1733250c714283b",
+    "evidence/runs/baseline/test_landscape_collision_oracle/engine.log": "de9d417437b294af37b3bc45e03dc131b406bd03a7ad8387ecffcfa0e9b22176",
+    "evidence/runs/baseline/test_landscape_collision_oracle/report.json": "740e5ebbd955d87150c19b07e3b08bc4cd70d3aa1ce28d3f2eba33d48bc44a8f",
+    "evidence/runs/baseline/test_landscape_collision_session/engine.log": "7eaa1d1b278ba0aa0c9a7e5b6b4585990aa7fc7b7e2f50bc01982cfb02d932cb",
+    "evidence/runs/baseline/test_landscape_collision_session/report.json": "d3b42fa0bd0d11f0d8695cf113340dd24a6a2ae920d961f9140e96f640fa8b94",
+    "evidence/runs/baseline/test_landscape_runtime/engine.log": "b0f355d7099e88da168d047f899b6bbe7014e8c24152c3e4353f131b7834676b",
+    "evidence/runs/baseline/test_landscape_runtime/report.json": "15afba3aec49a22b51be21d1b1d6d8d0e0bbd9d5d191a1d383ae64604e99aed8",
+    "evidence/runs/baseline/test_mr_crash_presentation/engine.log": "b580b48e85ab57b00266703858dd1b263bc54b1a75f9b8b16f2f011c241b0021",
+    "evidence/runs/baseline/test_mr_crash_presentation/report.json": "e88f3b7923cadedf479442ae97394d180bb3c89d13e3dc7fb3de4655679bb5c7",
+    "evidence/runs/baseline/test_mr_graded_crashes/engine.log": "5e56b878f2b538a75a035ab9ecc7781f39ce3de4661f9827878e9e54f9aa2e30",
+    "evidence/runs/baseline/test_mr_graded_crashes/report.json": "d37a3d2dd9eb19cec3d3dc91e91d910b90a68f885099f9465d02b8a77da8f9b9",
+    "evidence/runs/baseline/test_mr_rotor_strike_slope/engine.log": "a6aaa94bb49f6577f09ead9f8d4219224af3a79f8777afac5d00a375e32c195c",
+    "evidence/runs/baseline/test_mr_rotor_strike_slope/report.json": "6da1213caed85b0489db89ce02704f4f1605d448208cb81525615bf451cd9a1c",
+    "evidence/runs/baseline/test_parked_aircraft_collision/engine.log": "9a459db88c6bf4ff0dda4d2ab2705334c898b8cba03d7c7fa503190f3d449555",
+    "evidence/runs/baseline/test_parked_aircraft_collision/report.json": "12c26a395cd64ea70ec83d3346349c64b7cb1d867bac8948e8e126407d3dfce9",
+    "evidence/runs/baseline/test_power_line_collisions/engine.log": "3715467ae567cf6de3c74a8a8734447108ece6b0b58505f5f2e0e4799fb7ba52",
+    "evidence/runs/baseline/test_power_line_collisions/report.json": "c7d7614ded6aabbc9bccaefd615c7b62cf68fc90349c434ca9463f336e464bdb",
+    "evidence/runs/baseline/test_prop_strike/engine.log": "14c9bc6a153d8aa634b966e2d8d2400c59199498967868583a386e0e1fec0711",
+    "evidence/runs/baseline/test_prop_strike/report.json": "7f0ff962891a5850c2e9404f6900186136578e28df5fbaf1cd7a34b878bcaff9",
+    "evidence/runs/baseline/test_prop_strike_feedback/engine.log": "4a7f1d5d0e437a7d44469591fb7e4e68612535ce14071a6c1203f30b12a8ece8",
+    "evidence/runs/baseline/test_prop_strike_feedback/report.json": "936fbaa2cb01a28f4296a123d590aa3be6707281d07bfea306fe353034e66996",
+    "evidence/runs/baseline/test_rcv_airfield_course/engine.log": "e88c3b7d7bf134e19918ae2e730929693fd1a0e897886d4eba967331621d3bab",
+    "evidence/runs/baseline/test_rcv_airfield_course/report.json": "d8d67f8d179e4dee859d6fa258f6002878678c912dc6f93a8cec5394b7e81c5d",
+    "evidence/runs/baseline/test_rcv_damage/engine.log": "0ff93c35d7bab7ba40843a645aa4a1882c1cacb77e759fca62a87cc2699358bf",
+    "evidence/runs/baseline/test_rcv_damage/report.json": "c02dfcabb976b6cd983204459c0fc8a541613e5ab2202a4cb499457f19eb6468",
+    "evidence/runs/baseline/test_rcv_damage_session/engine.log": "7249f7814981876aadb1ed4f46713af02230c4822a92022e62e75a23ad767de1",
+    "evidence/runs/baseline/test_rcv_damage_session/report.json": "885d3a7e1aa3da1fd9d1f77761e53f6cb9f524bb81e9d6f592cd4e20bf3bdbaf",
+    "evidence/runs/baseline/test_retractable_gear_ground/engine.log": "d8ff0abb8dada0d3c392570321bb8c223e4127be07ca519f1b08c29728606e23",
+    "evidence/runs/baseline/test_retractable_gear_ground/report.json": "3f31e0500153a351b91beba1f9e23eeb18376abc5deb700c4cb2677bc0616b08",
+    "evidence/runs/baseline/test_scenery_damage_session/engine.log": "211e9f9b39882a7fee9572802455b1ad86ddd5ca564353cab4f35e560035e28d",
+    "evidence/runs/baseline/test_scenery_damage_session/report.json": "477ed4261060f4d14deb89de3335bcad245a724c0f8686c4d42789c3e773d640",
+    "evidence/runs/baseline/test_soft_contacts/engine.log": "e59e618a5be38d16493b7060ae7140b143bdbf36b6d2dbe76ae9d88274940d67",
+    "evidence/runs/baseline/test_soft_contacts/report.json": "6a76b188e14410553e8e5fa41e463b304fd7d98cec98baff008e8c70694d34e5",
+    "evidence/runs/diagnostics/parked-aircraft/engine.log": "b522cc100d33b14aebcba132cce53aef4b5c695e26ba6be0008caa2eeb668f4c",
+    "evidence/runs/diagnostics/parked-aircraft/report.json": "7e26267b852219d6badcc251efc0b0d393e63699cf4a191c8ff8907faa63900b",
+    "evidence/runs/probes/engine-com/engine.log": "20bc7861adba8df2587e8132b4578c0d17562479c7db972c5ac4538be30be978",
+    "evidence/runs/probes/engine-com/report.json": "f32d6a5aed8202d0fc57a8cedecd98c0c3295ec4fb9d7438941106060d57d1c5",
+    "evidence/runs/probes/ground-scenery/engine.log": "2ad8a5ead1ce4b8c1fbc6d91c9bd864043f001c35d8741e59b1b6ed9fcbf80dc",
+    "evidence/runs/probes/ground-scenery/report.json": "a760394c199b0c91ae69b7e7974a5609425756a554b5bcf271ac558c35f57ea6",
+    "evidence/runs/probes/heli-soft-contact/engine.log": "7ce6ba05ac3c90f2082f16503efbd1a9cafe1da3424226ef24cc8088418fcba5",
+    "evidence/runs/probes/heli-soft-contact/report.json": "cfaf6f92f63bc00c62b93417ec10c44958d84f987922b886eef643d92d69ac97",
+    "evidence/runs/probes/lake-session/engine.log": "e964b584b50caa23efa546af6b2ecd7a7ef81cc7e60d3a9c1105f10824b71874",
+    "evidence/runs/probes/lake-session/report.json": "661cb06f5da06827ac8609047f638972bb88f4ba17a45d0eb831a6cef66c2663",
+    "evidence/runs/probes/prop-source-off/engine.log": "33be8ba7f95fa4e50b0f1dffea1c8b611ce22a6596c0996d4dc3a2381e55d783",
+    "evidence/runs/probes/prop-source-off/report.json": "5cd95df38f36dc7cb2259abf621c23854548c6b742af9c84dc3dde9817676c1a",
+    "evidence/runs/probes/scenario-fuel/engine.log": "234ee0553e4f719a541c1a967f11bbab31ee9fd4cc9a923077d82226b028a806",
+    "evidence/runs/probes/scenario-fuel/report.json": "03ced62202f20a7becf3362845c8b87f7bba30fdc962217e89a96e82fbf7b540",
+    "evidence/runs/probes/staggered-crossing/engine.log": "1ef9256bff813dee3582e7ef73b0373097483c6fe904fa0448b9f3d8636f69f4",
+    "evidence/runs/probes/staggered-crossing/report.json": "1f09e19894c53e5a1543057d03e62d824d686356159d3380d4bc64212e8a3aa6",
+    "evidence/runs/probes/wreck-adversarial/engine.log": "e3d44d99c999f838ce5fbbdcb0e39d42f95721ad99dba6df383187f7e01f818c",
+    "evidence/runs/probes/wreck-adversarial/report.json": "f9898e2462bf246b334486f50e613e81ffa0167e62c61ba4d286d4c540dd3edb"
+  }
+}

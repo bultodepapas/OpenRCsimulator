@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _build_world (res://main.gd:3454)
+       [2] _prepare_flight (res://main.gd:964)
+       [3] _ready (res://main.gd:579)
+       [4] _make_main (res://tests/test_crash_integration.gd:239)
+       [5] _test_aircraft (res://tests/test_crash_integration.gd:36)
+       [6] _run (res://tests/test_crash_integration.gd:28)
+Aircraft model failed its manifest and scene binding checks: jensen-das-ugly-stik-60
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _build_world (res://main.gd:3454)
+       [2] _prepare_flight (res://main.gd:964)
+       [3] _ready (res://main.gd:579)
+       [4] _make_main (res://tests/test_crash_integration.gd:239)
+       [5] _test_aircraft (res://tests/test_crash_integration.gd:37)
+       [6] _run (res://tests/test_crash_integration.gd:28)
+Aircraft model failed its manifest and scene binding checks: jensen-das-ugly-stik-60
+FAIL jensen-das-ugly-stik-60: both production sessions initialize

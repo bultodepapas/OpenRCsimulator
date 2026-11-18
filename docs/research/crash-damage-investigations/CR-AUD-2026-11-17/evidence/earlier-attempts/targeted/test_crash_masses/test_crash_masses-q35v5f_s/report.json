@@ -1,0 +1,98 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fceb069f-8292-4944-9b26-2ae7a9138df8",
+  "command": [
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_masses.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T02:27:40.497857+00:00",
+  "label": "test_crash_masses",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_masses/test_crash_masses-q35v5f_s/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_masses/test_crash_masses-q35v5f_s/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 30,
+  "complete": true,
+  "counts": {
+    "error": 5,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 12,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 19,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _aircraft (res://tests/test_crash_masses.gd:216)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _aircraft (res://tests/test_crash_masses.gd:216)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 25,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/source-manifest.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/mesh-measurements.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/manual.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 32,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _aircraft (res://tests/test_crash_masses.gd:216)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _aircraft (res://tests/test_crash_masses.gd:216)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 38,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 30,
+  "ok": false,
+  "elapsed_seconds": 9.804758,
+  "log_bytes": 3837,
+  "log_sha256": "684d47eaf6761a6656801355ebfc4b5ee56fe3589c4d35df2e0459d753485131"
+}

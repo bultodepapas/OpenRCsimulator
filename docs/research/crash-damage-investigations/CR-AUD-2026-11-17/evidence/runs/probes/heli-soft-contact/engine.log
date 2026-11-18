@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PASS stock helicopter data loads []
+PASS stock helicopter collision probes prepare 
+PASS a lower-front fuselage point is available [0.38699999, -0.08359559, 0.01460664]
+PASS shared hull sweep finds the frangible crossing as nonterminal events=1 point=[0.38699999, -0.08359559, 0.01460664] speed=2.0
+PASS shared nonterminal response has a finite impulse { &"ok": true, &"state": [4.99266666566667, 5.0, -10.0, 0.01620215187507, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -0.69884791824339, -4.85664772410292], &"restitution": 0.2, &"kinetic_before_j": 16.4, &"kinetic_after_j": 3.38628611630047, &"dissipated_energy_j": 13.0137138836995 }
+PASS helicopter detector discards the frangible body contact { "ok": true, "impact": {  }, "error": "" }
+PASS same hard box yields a terminal helicopter body impact { "ok": true, "impact": { "component": "fuselage", "reason": "rc track impact (fixture), normal speed 2.0 m/s", "body": [5.00266666566667, 5.0, -10.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "point_body_frd": [0.38699999, -0.08359559, 0.01460664], "point_world_ned": [5.38966665566667, 4.91640441, -9.98539336], "normal_world_ned": [-1.0, 0.0, 0.0], "velocity_world_ned": [2.0, 0.0, 0.0], "point_velocity_world_ned": [2.0, 0.0, 0.0], "body_angular_velocity": [0.0, 0.0, 0.0], "normal_speed_mps": 2.0, "tangent_speed_mps": 0.0, "effective_mass_kg": 6.77797598109351, "normal_energy_j": 13.555951962187, "surface": "rc_track", "surface_detail": { "kind": "rc_track", "id": "fixture", "part": "tyre_stack", "aircraft_part": "fuselage_bounds" }, "obstacle_kind": "rc_track", "obstacle_id": "fixture", "obstacle_part": "tyre_stack", "aircraft_part": "fuselage_bounds", "main_omega_rad_s": 0.0, "tail_omega_rad_s": 0.0, "time_fraction": 0.31999987999996, "time_fraction_uncertainty": 0.31999987999996, "penetration_m": 0.0, "contact_method": "swept_static_scenery_proxy_v1", "estimated_proxy": true, "conservative_envelope": false }, "error": "" }
+PASS open-air control is clear { "ok": true, "impact": {  }, "error": "" }
+fixture: part=fuselage start=[5.0, 5.0, -10.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] end=[5.00833333333333, 5.0, -10.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] obstacle=(5.391166657, 4.916404410, -9.985393360)
+HELI_SOFT_CONTACT_PROBE: 8 checks, 0 failed

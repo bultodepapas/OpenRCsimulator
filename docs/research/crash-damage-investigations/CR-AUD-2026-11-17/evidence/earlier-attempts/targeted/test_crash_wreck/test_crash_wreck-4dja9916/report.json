@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "dd2843c7-c493-46a2-ba78-7f1d21f17eaf",
+  "command": [
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_wreck.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T02:27:51.167616+00:00",
+  "label": "test_crash_wreck",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_wreck/test_crash_wreck-4dja9916/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_wreck/test_crash_wreck-4dja9916/report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 22,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 14,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 20,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 25,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 31,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 36,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 42,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 47,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/stik-electric-6s/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/stik-electric-6s/customization-bindings.json\", \"authoring source is missing: assets/aircraft/stik-electric-6s/runtime-proof.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 53,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 58,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/extra-300s-60/geometry.json\", \"authoring source is missing: assets/aircraft/extra-300s-60/geometry.json\", \"authoring source is missing: assets/aircraft/extra-300s-60/appearance.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 64,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 69,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/source.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/appearance.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 75,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 80,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/model-geometry.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/model-geometry.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/source-manifest.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/gear-samples.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/wing-fold-r59.json\", \"authoring source is missing: assets/aircraft/f4u-corsair-250/mechanisms-r59.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 86,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 91,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/avanti-s-a200/blender-geometry.json\", \"authoring source is missing: assets/aircraft/avanti-s-a200/blender-geometry.json\", \"authoring source is missing: assets/aircraft/avanti-s-a200/source-manifest.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 97,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 102,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/source-manifest.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/mesh-measurements.json\", \"authoring source is missing: assets/aircraft/turbo-lumber-evolution/manual.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 108,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 11.461403,
+  "log_bytes": 11227,
+  "log_sha256": "156d948dbbd1e2af5e4a3d3a6a913fa1a6d96fc9c241737ca88528f1dd730811"
+}

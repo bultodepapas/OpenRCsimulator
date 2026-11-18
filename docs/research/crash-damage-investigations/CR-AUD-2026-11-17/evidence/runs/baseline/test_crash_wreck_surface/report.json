@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b024393-d429-4d28-8e95-67edf8df4ce3",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_wreck_surface.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:27:00.738996+00:00",
+  "label": "test_crash_wreck_surface",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_crash_wreck_surface/test_crash_wreck_surface-d090qt6g/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_crash_wreck_surface/test_crash_wreck_surface-d090qt6g/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.671472,
+  "log_bytes": 747,
+  "log_sha256": "fd9bfad7561bc2c80f02b5463403af31c31ff74db454c5d085533cbf634140d3"
+}

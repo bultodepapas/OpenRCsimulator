@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PASS stock field and RC track load field=[] track=[]
+PASS shared scenery world builds []
+FAIL tyre stack and axis-aligned field building proxies exist tyre= building=building:church:00:church world_count=6156
+GROUND_SCENERY_PROBE: 3 checks, 1 failed

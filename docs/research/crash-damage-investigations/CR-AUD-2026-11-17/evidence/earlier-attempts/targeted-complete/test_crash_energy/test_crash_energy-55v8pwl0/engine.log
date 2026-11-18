@@ -1,0 +1,80 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   a hot turbine with a ruptured kerosene tank burns
+ok   cold kerosene only stains
+ok   glow fuel never shows a fire, only a wet stain
+ok   an intact glow tank leaves nothing
+ok   a destroyed gasoline airplane with the engine running burns briefly  7.4
+ok   a structural (not destroyed) gasoline crash only stains
+ok   a stopped gasoline engine does not ignite
+ok   a wing-tip gasoline crash does not ignite
+ok   a central C3 hit makes a damaged pack vent later
+ok   a harder hit vents sooner  7.5 < 22.5 s
+ok   venting delay stays inside its bounds
+ok   only the worst destroyed band flares
+ok   a wing-tip hit leaves the pack alone
+ok   a damage-class hit leaves the pack alone
+ok   a kerosene fire starts with a flash of the Roberts size  0.68 m
+ok   a gasoline fire flashes smaller than the jet's
+ok   a flash lasts at least the perceptible minimum
+ok   glow fuel never flashes
+ok   a LiPo flare is not a fuel flash
+ok   cold kerosene never flashes
+ok   no tagged energy, no fire, stain or smoke
+ok   particle budget holds with the venting emitter  700
+ok   no smoke and no flame right after the impact
+ok   still quiet just before the venting delay
+ok   the pack vents after the delay
+ok   the worst band flares as venting starts
+ok   the flare is short
+ok   venting ends
+ok   a glow spill leaves one dark wet stain
+ok   ignition throws a fireball
+ok   the flash lights the scene far brighter than the fire  6.9
+ok   the flash is over, the fire burns on  1.73
+ok   reset clears pending venting
+ok   catalog vehicle type is supported: jensen-das-ugly-stik-60
+ok   catalog vehicle flag agrees with its data class: jensen-das-ugly-stik-60
+ok   catalog data path is unique: jensen-das-ugly-stik-60  res://data/aircraft/jensen_ugly_stik_60.json
+ok   catalog vehicle type is supported: stik-glow-61fx-2t
+ok   catalog vehicle flag agrees with its data class: stik-glow-61fx-2t
+ok   catalog data path is unique: stik-glow-61fx-2t  res://data/aircraft/stik_glow_61fx_2t.json
+ok   catalog vehicle type is supported: stik-glow-55ax-2t
+ok   catalog vehicle flag agrees with its data class: stik-glow-55ax-2t
+ok   catalog data path is unique: stik-glow-55ax-2t  res://data/aircraft/stik_glow_55ax_2t.json
+ok   catalog vehicle type is supported: stik-glow-fs64v-4t
+ok   catalog vehicle flag agrees with its data class: stik-glow-fs64v-4t
+ok   catalog data path is unique: stik-glow-fs64v-4t  res://data/aircraft/stik_glow_fs64v_4t.json
+ok   catalog vehicle type is supported: stik-electric-6s
+ok   catalog vehicle flag agrees with its data class: stik-electric-6s
+ok   catalog data path is unique: stik-electric-6s  res://data/aircraft/stik_electric_6s.json
+ok   catalog vehicle type is supported: gp-extra-300s-60
+ok   catalog vehicle flag agrees with its data class: gp-extra-300s-60
+ok   catalog data path is unique: gp-extra-300s-60  res://data/aircraft/gp_extra_300s_60.json
+ok   catalog vehicle type is supported: p51d-mustang-120
+ok   catalog vehicle flag agrees with its data class: p51d-mustang-120
+ok   catalog data path is unique: p51d-mustang-120  res://data/aircraft/p51d_mustang_120.json
+ok   catalog vehicle type is supported: f4u-corsair-250
+ok   catalog vehicle flag agrees with its data class: f4u-corsair-250
+ok   catalog data path is unique: f4u-corsair-250  res://data/aircraft/f4u_corsair_250.json
+ok   catalog vehicle type is supported: sebart-avanti-s-a200-p100rx
+ok   catalog vehicle flag agrees with its data class: sebart-avanti-s-a200-p100rx
+ok   catalog data path is unique: sebart-avanti-s-a200-p100rx  res://data/aircraft/sebart_avanti_s_a200.json
+ok   catalog vehicle type is supported: turbo-lumber-evolution
+ok   catalog vehicle flag agrees with its data class: turbo-lumber-evolution
+ok   catalog data path is unique: turbo-lumber-evolution  res://data/aircraft/turbo_lumber_evolution.json
+ok   catalog vehicle type is supported: moonrunner-x99
+ok   catalog vehicle flag agrees with its data class: moonrunner-x99
+ok   catalog data path is unique: moonrunner-x99  res://data/aircraft/moonrunner_x99.json
+ok   catalog vehicle type is supported: xcell-60-research
+ok   catalog vehicle flag agrees with its data class: xcell-60-research
+ok   catalog data path is unique: xcell-60-research  res://data/aircraft/xcell_60_research.json
+ok   data-only airplane configuration stays outside the catalog: stik_glow_55ax_2t_apc_13x6.json
+ok   data-only airplane configuration stays outside the catalog: stik_glow_fs64v_4t_apc_13x6.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_4s.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_4s_battery.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_6s.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_6s_battery.json
+ok   laboratory rotorcraft remains outside the playable catalog: hx700_electric_3d_experimental.json
+ok   aircraft data file has an explicit energy-test classification: f4u_corsair_250.json
+ok   catalog airplane has an explicit expected energy classification: f4u-corsair-250

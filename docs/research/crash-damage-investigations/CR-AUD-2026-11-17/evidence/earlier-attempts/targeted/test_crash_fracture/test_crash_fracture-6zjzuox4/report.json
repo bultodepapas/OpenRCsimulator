@@ -1,0 +1,65 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4c841157-cff9-4c9e-bc0b-de97ee9f7721",
+  "command": [
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_fracture.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T02:27:46.608621+00:00",
+  "label": "test_crash_fracture",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_fracture/test_crash_fracture-6zjzuox4/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": -9,
+  "complete": false,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 8,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _run (res://tests/test_crash_fracture.gd:29)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _run (res://tests/test_crash_fracture.gd:29)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 120.033176,
+  "log_bytes": 801,
+  "log_sha256": "94ac4c7d48854cea42631b4e956f85f090d7e15ae06f83ef3b05476762c2a6f2"
+}

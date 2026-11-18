@@ -1,0 +1,64 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   authored lake definition loads
+ok   empty lake context has no collision
+ok   invalid lake definition fails closed
+ok   flight outside the bounded bank keeps the no-event result
+ok   path inside lake bounds but outside the irregular bank polygon remains clear
+ok   high-speed airborne hull path stays above water and bank without a false event
+ok   rotating probe whose conservative radius stays above the bank remains clear
+ok   high-speed hull sweep enters water
+ok   water event carries shared wave surface and sim-clock time
+ok   water event reports local water depth and contact kinematics
+ok   water sweep normal is orthogonal to both positive-down surface tangents
+ok   simultaneous hull and gear water contact deterministically favors hull
+ok   undeformed gear bottom independently reports water contact
+ok   grazing point on the water plane remains a deterministic contact
+ok   soft low-speed bank touch remains a ground contact
+ok   terminal bank mode reports a dry-bank hull strike
+ok   gear traversing dry bank does not become a terminal water event
+ok   rotating wing probe sweeps through water
+ok   rotating wing event preserves point angular velocity
+ok   rotating point impact speed projects its complete velocity
+ok   optional propeller disc is a swept water probe
+ok   HullContact lake context keeps outside-bank loads bit-identical
+ok   HullContact lake context keeps outside-bank terminal result identical
+ok   HullContact lake context keeps outside-bank contacts identical
+ok   HullContact soft load, contact, and crash thresholds use basin bed
+ok   prop depth is measured from the moving lake surface, avoiding false wet prop strikes
+ok   swept normal follows independent down-plane tangents [0.2, 0.0]
+ok   swept normal follows independent down-plane tangents [-0.2, 0.0]
+ok   swept normal follows independent down-plane tangents [0.0, 0.3]
+ok   swept normal follows independent down-plane tangents [0.0, -0.3]
+ok   swept normal follows independent down-plane tangents [0.2, -0.3]
+ok   swept normal follows independent down-plane tangents [-0.2, 0.3]
+ok   invalid swept gradients reject
+ok   fixed/sampled bank energy boundary 2.5 / 2.49999
+ok   fixed/sampled bank energy boundary 2.5 / 2.50001
+ok   bank severity uses the geometric normal and coherent mass
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.07999 / 0.07999
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.07999 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.08001 / 0.08001
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.08001 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.11999 / 0.11999
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.11999 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.12001 / 0.12001
+ok   fixed/sampled separating and fallback bank depth 0.08 / 0.12001 / 0.001
+ok   aircraft bank tolerance retains terminal water contact
+ok   aircraft tolerance retains non-soft bank terminal policy
+ok   non-soft separating depth retains its shared policy in both APIs
+ok   fixed/sampled bank energy boundary 12.5 / 12.49999
+ok   fixed/sampled bank energy boundary 12.5 / 12.50001
+ok   bank severity uses the geometric normal and coherent mass
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.07999 / 0.07999
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.07999 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.08001 / 0.08001
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.08001 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.11999 / 0.11999
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.11999 / 0.001
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.12001 / 0.12001
+ok   fixed/sampled separating and fallback bank depth 0.12 / 0.12001 / 0.001
+ok   aircraft bank tolerance retains terminal water contact
+ok   aircraft tolerance retains non-soft bank terminal policy
+ok   non-soft separating depth retains its shared policy in both APIs
+all lake collision checks passed

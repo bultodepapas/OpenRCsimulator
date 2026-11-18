@@ -1,0 +1,63 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0bd1c2f7-4ce7-4890-a0c6-9ac40b992f85",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_sections.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:08:47.170917+00:00",
+  "label": "test_crash_sections",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted-complete/test_crash_sections/test_crash_sections-of8zkkyr/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 16,
+      "message": "Wreck.prepare: crash section map ignored: surface 0: runs cover 3 of 4 triangles",
+      "context": [
+        "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] prepare (res://render/crash/wreck.gd:211)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 22,
+      "message": "Wreck: unknown crash section 'rudder_blade' on rudder",
+      "context": [
+        "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] _section_of (res://render/crash/wreck.gd:813)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 58.560638,
+  "log_bytes": 4055,
+  "log_sha256": "b745f0692c8d306c2895f10733d67693bab3a6b71c7c79f8f15ca96771887d7c"
+}

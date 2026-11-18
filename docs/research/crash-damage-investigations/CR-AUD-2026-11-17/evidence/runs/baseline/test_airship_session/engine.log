@@ -1,0 +1,49 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   generated data is admitted 
+ok   prepare {  } 
+ok   default weigh-off is 80 g heavy 0.08
+ok   ballast is physical (0 < ballast < max) 0.433846221
+mass 3.145 kg, ballast 0.434 kg, helium 0.423 kg, envelope 1.031 kg, volume 2.502 m3
+CG [0.28127304009786, -0.00134209076645, 0.22320555219556]  CB [0.281273, 0.0, 0.0]
+ok   CG below CB (pendulum stability) [0.28127304009786, -0.00134209076645, 0.22320555219556] vs [0.281273, 0.0, 0.0]
+ok   resume refuses raised throttle 
+ok   resume refuses a deflected yaw stick (stern lateral motor) 
+ok   80 g heavy, motors off: gentle sink -0.578 m/s
+ok   full throttle cruise 3-10 m/s 6.37 m/s
+ok   cruise draws plausible current 7.09 A
+ok   cruise attitude stays moderate pitch 16.6 roll -0.5
+cruise: 6.37 m/s, 86.7 W, AGL 22.49 m, per tick 391.0 us
+ok   tick cost bounded (reference GDScript; real time needs < 4167 us) 391 us
+ok   untrimmed full-throttle climb stays gentle (hull dynamic lift) 1.61 m/s
+ok   full back stick brakes 6.37 -> 0.99 m/s
+ok   vectored climb 1.12 m/s at 12.9 m
+ok   right yaw turns the nose right at zero speed 161.0 deg
+ok   tape flight accepted 
+ok   session tape equals the flown sticks 
+ok   exact replay 
+ok   prepare { &"start": "ground" } 
+ok   heavy ground start rests on the gear AGL 0.680 -> 0.679, gear 0.77 N
+ok   vectored lift-off from the wheels AGL 5.45 m
+ok   prepare { &"altitude_m": 1.2 } 
+ok   fast envelope strike ends the flight Hard envelope impact (1.9 m/s)
+ok   default field obstacle inventory builds []
+ok   obstacle inventory installs 
+ok   open start clear of obstacles 
+ok   thin fixture through the envelope is an obstacle strike Obstacle strike: fixture (hard_terminal)
+ok   12 mm wire through the envelope away from the centre 
+ok   off-axis quadrant intrusion 
+ok   box clear of the envelope is not a strike R max 0.489
+ok   hovering 35 mm under a beam is clear 
+ok   climbing into the beam within one tick is a strike (swept inflation) 
+ok   prepare {  } 
+ok   focus loss pauses the flight 
+ok   explicit resume clears the kernel pause 
+ok   prepare { &"altitude_m": 30.0 } 
+ok   a gentle pilot holds heading and height at full-throttle cruise heading 0.2 deg, climb 0.26 m/s, 6.72 m/s
+ok   prepare {  } 
+ok   contact terrain skips are exact against an unskipped reference 0 mismatches, 410 of 600 states touching
+ok   gusty/strong wind outside the admitted domain is refused 
+ok   prepare { &"wind_speed_mps": 2.0, &"wind_from_deg": 270.0, &"heaviness_kg": 0.0 } 
+ok   released in a steady breeze, drifts with the air ground 2.00 air 0.00
+43 checks, 0 failed

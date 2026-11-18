@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PROBE FIXTURE_PREPARED PASS prepared=true groups=["core", "propeller"]
+PROBE ALT_EFFECT_ORIGIN FAIL impact_y=10.000 effect_y=0.040
+PROBE ALT_DUST_EMITTER FAIL impact_y=10.000 dust_y=0.040
+PROBE ALT_CHIP_SPAWN FAIL impact_y=10.000 chip_y=[0.191,0.735] count=99
+PROBE DT_EFFECT_ELAPSED FAIL same_total_input_s=1.000 age_60hz=1.000000 age_10hz=0.500000
+PROBE FLAT_PLANE_INFO normal=(0.0, 1.0, 0.0) distance=0.0 impact_y=10.0
+PROBE FIXTURE_COM PASS model_com=(0.8125, 0.0, 0.0) expected=(0.8125,0,0) body_box_center=(1.25, 0.0, 0.0)
+PROBE COM_LAUNCH_VELOCITY FAIL incoming_CG_velocity=(1.0, 0.0, 0.0) launched_linear_velocity=(1.0, 0.875, 0.0) omega=(0.0, 0.0, 2.0)
+PROBE CALLBACK_CONTROL_GROUND PASS ground_signals=1 obstacle_layer=524288 core_mask=524288
+PROBE CALLBACK_SCENERY FAIL direct_ground_signals=1 after_valid_static_scenery=1
+PROBE DELAYED_RELEASE_MASS FAIL aircraft_mass=4.000 visible_active_mass=3.000 scheduled_delay_s=0.040
+PROBE DELAYED_RELEASE_MASS_CONTROL PASS after_release_visible_mass=4.000
+PROBE C3_RELEASE_CONTROL PASS visible=true mass_before=4.000 mass_after=4.000
+PROBE C3_RELEASE_FIRST_MOMENT FAIL before=(3.25, 40.0, 0.0) after=(5.4375, 40.0, 0.0) core_com=(0.8125, 10.0, 0.0) section_com=(3.0, 10.0, 0.0)
+PROBE C3_RELEASE_POINT_VELOCITY FAIL expected_inventory_COM_v=(1.0, 3.25, 0.0) actual_v=(1.0, 4.375, 0.0)
+PROBE C3_RELEASE_LINEAR_MOMENTUM FAIL before=(4.0, -6.5, 0.0) after=(4.0, -0.5, 0.0)
+PROBE SHAPE_FIXTURE_PREPARED PASS groups=["core", "wing_left", "wing_right", "propeller"]
+PROBE C3_ATTACHED_RIGHT_WING_PROXY FAIL right_attached=true right_center=(3.0, 10.0, 0.0) core_box_covers=false
+PROBE C2_DETACHED_PROP_PROXY FAIL prop_detached=true original_center=(0.0, 10.0, -3.0) core_box_still_covers=true
+PROBE RESULT 18 checks, 12 failed

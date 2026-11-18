@@ -1,0 +1,24 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   damage bands: intact, damaged, badly damaged, broken 
+ok   nothing is allocated before the first event 
+ok   a grinding prop is presented once per damage step (2 of 4 reports here) 
+ok   touches are paced and the pause freezes the pacing clock 
+ok   scrapes are paced (a sliding contact reports every tick) 
+ok   scrape strength: sqrt(v / 15), floored at 0.1 and saturated at 1 
+ok   a pad restart forgets the presented damage 
+ok   an earlier scuff mark stays put when a later touch lands on higher ground 0.0122 -> 0.0122 (frame 1.000)
+ok   the touch curve: (v / 12)^0.6, floored at 0.05 and saturated at 1 
+ok   every crash voice uses the motor loop's distance law (2 m unit size) 8/8
+ok   a broken prop's blades leave the model and its motor bell stays 
+ok   a damaged prop's disc wobbles; an intact one does not 0.00022554397583 vs 0.0
+ok   restored health brings the blades back 
+ok   the activity owns a crash presentation that follows the world and sound switches 
+ok   only the first damage of a prop is announced Prop damaged: rear right (85%)
+ok   an unresolved gate crossing is announced once, not at a new attempt's start 
+ok   an impact jolts the camera 
+ok   the jolt fades within a second 
+ok   the pilot view does not shake 
+ok   with sound on, the crash voices are built while loading (no first-touch hitch) 
+ok   a broken prop rattles in flight and the rattle stops with the motors on pause 
+crash presentation: 21 checks, 0 failed

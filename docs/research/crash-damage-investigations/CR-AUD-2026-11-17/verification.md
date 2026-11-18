@@ -1,0 +1,188 @@
+# Verification and reproduction record
+
+This record distinguishes completed checks, deliberate counterexamples, source-confirmed findings, and inconclusive attempts. **There is no claim that the full application CI, every vehicle/scenario combination, physical realism, or target-hardware performance passed.** The [manifest](evidence/manifest.json) retains exact per-run outcomes and hashes; the raw checked reports are authoritative if a summary is ambiguous.
+
+## Identity and execution method
+
+| Item | Recorded value |
+|---|---|
+| Application baseline | `a7de9b35676d891bc2034cc344b910d9e1ef9c61` |
+| Branch | `audit/collision-damage-2026-11-17` |
+| User-facing audit date | 17 November 2026, America/Bogota; capture timestamps retain UTC |
+| Pinned engine | `4.8.beta2.official.cafc17a19` |
+| Engine revision observed | `cafc17a192acf67903910a68aeb3c076c0907a4b` |
+| Engine binary SHA-512 | `428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9` |
+| Execution | Linux x86_64, headless, Dummy audio, repository checked runner |
+| Project tick setting observed | 240 Hz |
+| 3D engine project setting observed | `DEFAULT`; no backend-specific parity claim |
+| Download | Repository `app/get-godot.sh`; pinned archive and binary checks verified |
+| Engine-copy identity | Later runs used a temporary local copy with the same SHA-512; no system-engine substitution |
+
+Each recorded engine launch used [`tools/godot/run_checked.py`](../../../../tools/godot/run_checked.py), which checks process status, timeout, and engine diagnostics. Existing-suite orchestration additionally required each script's completion text. A printed `0 failed` alone is insufficient if the engine also reports an exception or the expected completion record is absent.
+
+The compatible test pool was investigated first. Its CLI could not discover the local pool configuration (`/tmp/OpenRC/testpool/config.json` was absent), and no usable pool MCP launch surface was available in this session. Local checked execution was used. This is a test-environment limit, not an application collision defect.
+
+Later existing-suite retries used a temporary source mirror and local log directories, with sequential engine launches. A [mirror identity receipt](evidence/mirror-source-identity.json) compares **3,193 source/configuration/data/import-descriptor files with zero mismatches**; 449 large binary-resource links point back to the original hydrated tree. Generated import caches are not treated as source. These changes address execution isolation and file access; they do not establish a diagnosed cause for the earlier stalls or signal 9. The engine copy retains the same SHA-512.
+
+The worktree inherited sparse checkout. Initial launches lacked authoring resources outside `app/`; later hydration included the full application, CI configuration, and tracked JSON/CFG authoring inputs. The completed checked import reported **zero errors and eight warnings** in about **287.87 seconds**. That elapsed time is an execution record, not a performance benchmark. The original import and unsuccessful attempts remain in `evidence/imports/` and `evidence/earlier-attempts/`.
+
+## New audit probes
+
+All eight selected final probes completed with **zero checked engine errors**. Seven product probes execute **149 assertions**, including **15 desired-behavior failures**; the additional engine semantics control executes one passing assertion. Those 15 failures are not 15 independent defects: several test different manifestations of the same visual-aftermath cause. Passing characterization checks can establish a gap rather than healthy product behavior.
+
+| Probe | Checks / failures | Meaning of result | Retained evidence |
+|---|---:|---|---|
+| Source-off spinning propeller | 23 / 1 | Desired behavior fails after a real coast tick and injected disc-only boundary pose; source-on spinning and source-off stopped controls pass | [Script](evidence/probes/test_spinning_source_off_prop_strike.gd), [log](evidence/runs/probes/prop-source-off/engine.log), [checked report](evidence/runs/probes/prop-source-off/report.json) |
+| Staggered hull crossing | 7 / 1 | Typed snapshot preserves separate witnesses, flattened event does not identify the exported fraction's witness | [Script](evidence/probes/test_staggered_hull_crossing_event.gd), [log](evidence/runs/probes/staggered-crossing/engine.log), [report](evidence/runs/probes/staggered-crossing/report.json) |
+| Wreck/effects adversarial fixture | 18 / 12 | Altitude, update-time, COM, release accounting, shape coverage, and callback counterexamples; direct properties/callbacks, not a flown crash | [Script](evidence/probes/crash_adversarial_probe.gd), [log](evidence/runs/probes/wreck-adversarial/engine.log), [report](evidence/runs/probes/wreck-adversarial/report.json) |
+| Quad/blimp lake sessions | 13 / 0 | Characterization confirms absent water context and dry terrain at a lake interior; ordinary dry tick/reset controls pass | [Script](evidence/probes/lake_session_probe.gd), [log](evidence/runs/probes/lake-session/engine.log), [report](evidence/runs/probes/lake-session/report.json) |
+| Helicopter soft scenery | 8 / 0 | Characterization confirms filtered nonterminal fuselage candidate; independent shared-response, hard-box and clear controls pass | [Script](evidence/probes/heli_soft_contact_probe.gd), [log](evidence/runs/probes/heli-soft-contact/engine.log), [report](evidence/runs/probes/heli-soft-contact/report.json) |
+| Fleet severity and live fuel | 61 / 1 | Synthetic presentation classifications pass; live kerosene outcome and actual effect-duration field disagree | [Script](evidence/probes/scenario_and_fuel_probe.gd), [log](evidence/runs/probes/scenario-fuel/engine.log), [report](evidence/runs/probes/scenario-fuel/report.json) |
+| Both cars against shared scenery | 19 / 0 | Characterization confirms missing ordinary wall response at two stock proxy locations; injected-box and stock-wall controls pass | [Script](evidence/probes/ground_scenery_probe.gd), [log](evidence/runs/probes/ground-scenery/engine.log), [report](evidence/runs/probes/ground-scenery/report.json) |
+| Pinned-engine COM semantics | 1 / 0 | Query at the observed rotated COM equals stored linear velocity; origin-point velocity includes the angular offset | [Script](evidence/probes/engine_com_probe.gd), [log](evidence/runs/probes/engine-com/engine.log), [report](evidence/runs/probes/engine-com/report.json) |
+
+### Important fixture limits
+
+The source-off prop probe uses a hidden technical glow configuration, calls the real source cut and accepts an airborne tick, then injects a controlled ground-intersecting boundary pose. It proves the production ground-strike gate's source-state dependency. It is not a natural flown landing, all-propulsion parity result, or a stopped-blade phase simulation.
+
+The two-point crossing fixture has independently constructed 0.2/0.8 crossing fractions. Its oracle explicitly permits the typed snapshot to keep the earliest whole-hull crossing and selected terminal contact separately. Only the loss of that distinction in the flat event is flagged.
+
+The wreck probe uses synthetic geometry and inventory. Its 1 kg delayed section out of a 4 kg total is deliberately extreme. It directly sums visible-body mass; the pending body's frozen/hidden/noncolliding state is corroborated by source. The C3 momentum/first-moment comparison inspects assigned body properties without a physics frame or scatter impulse. The section's centered-box automatic COM is a fixture assumption. Shape checks establish point coverage, and direct signal emission tests callback admission; neither is a solver-generated collision measurement. No angular-momentum conservation claim is inferred from a linear-momentum check.
+
+The corrected engine control queries `state.center_of_mass` in the API's observed frame after rotation. It returns COM velocity `(2, 3, 4) m/s`; origin velocity matches `linear_velocity + angular_velocity.cross(-center_of_mass)`. The earlier fixture incorrectly queried the original unrotated point and is retained as an audit-fixture error.
+
+The scenario/fuel probe loads **all 11 fixed-wing registry routes**, including the three hidden technical configurations. It applies four **synthetic presentation-estimator inputs** to each: wing brush, belly slide, 300 km/h frontal normal input, and 300 km/h grazing input. Effective-mass ratios are assumed inputs, not measured contact results. Normalized mass largely cancels, so repeated class outputs do not establish independent geometric coverage. The observed outputs are C0/C1/C4/C1; the grazing assertion admits C0 or C1. These assertions pass, as do cold-kerosene, glow-stain and delayed-LiPo controls. This is neither eleven full-flight crash tests nor certification that any stock aircraft can reach or collide reliably at 300 km/h.
+
+The car probe directly evaluates static overlapping boundary poses against the production provider and an equivalent injected wall. It does not drive a car through the church or tyre stack. Its contact counts are solver witnesses, not a count of physical impacts or a force calibration.
+
+CR-AUD-11's ground-triggered wreck-scenery provisioning difference remains **source-confirmed**. No rendered high-speed fragment/obstacle reproduction is claimed for that branch.
+
+## Existing regression scripts
+
+The selected campaign contains 53 existing collision, contact, damage, scenery, lifecycle, and integration scripts. Selection follows the inspected behavior and family dependencies, not the entire application test catalog. The table below is generated from completed checked reports; missing completions or timeouts do not count as passes. Earlier runs are retained separately and are never summed again as additional unique suites.
+
+<!-- BASELINE_RESULTS_START -->
+**53 suites selected; 53 have completed checked captures; 52 have a checked passing completion, with 4576 explicitly reported assertions plus 3 passing suite(s) that do not print a total.** 1 attempted suites have no checked pass; 0 selected suites were not run. Counts are per unique existing script, not a sum of repeated attempts.
+
+The evidence column links the most recent checked pass when one exists, otherwise the latest completed capture. The latest-outcome column exposes a later inconclusive result rather than hiding it. All other captures remain in the manifest and earlier-attempts directory.
+
+| Existing suite | Checks / failures in linked capture | Latest checked outcome | Linked capture phase | Evidence |
+|---|---:|---|---|---|
+| [`test_crash`](../../../../app/tests/test_crash.gd) | 13 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash/engine.log), [report](evidence/runs/baseline/test_crash/report.json) |
+| [`test_crash_proportional`](../../../../app/tests/test_crash_proportional.gd) | 49 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_proportional/engine.log), [report](evidence/runs/baseline/test_crash_proportional/report.json) |
+| [`test_crash_severity`](../../../../app/tests/test_crash_severity.gd) | 44 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_severity/engine.log), [report](evidence/runs/baseline/test_crash_severity/report.json) |
+| [`test_crash_snapshot`](../../../../app/tests/test_crash_snapshot.gd) | 42 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_snapshot/engine.log), [report](evidence/runs/baseline/test_crash_snapshot/report.json) |
+| [`test_crash_pose`](../../../../app/tests/test_crash_pose.gd) | 343 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_pose/engine.log), [report](evidence/runs/baseline/test_crash_pose/report.json) |
+| [`test_crash_hull_labels`](../../../../app/tests/test_crash_hull_labels.gd) | 289 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_hull_labels/engine.log), [report](evidence/runs/baseline/test_crash_hull_labels/report.json) |
+| [`test_crash_integration`](../../../../app/tests/test_crash_integration.gd) | 246 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_integration/engine.log), [report](evidence/runs/baseline/test_crash_integration/report.json) |
+| [`test_crash_breakup`](../../../../app/tests/test_crash_breakup.gd) | 30 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_breakup/engine.log), [report](evidence/runs/baseline/test_crash_breakup/report.json) |
+| [`test_crash_masses`](../../../../app/tests/test_crash_masses.gd) | 34 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_masses/engine.log), [report](evidence/runs/baseline/test_crash_masses/report.json) |
+| [`test_crash_fracture`](../../../../app/tests/test_crash_fracture.gd) | 24 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_fracture/engine.log), [report](evidence/runs/baseline/test_crash_fracture/report.json) |
+| [`test_crash_sections`](../../../../app/tests/test_crash_sections.gd) | 37 / 0; 2 warning(s) | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_sections/engine.log), [report](evidence/runs/baseline/test_crash_sections/report.json) |
+| [`test_crash_wreck`](../../../../app/tests/test_crash_wreck.gd) | 361 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_wreck/engine.log), [report](evidence/runs/baseline/test_crash_wreck/report.json) |
+| [`test_crash_wreck_surface`](../../../../app/tests/test_crash_wreck_surface.gd) | 11 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_wreck_surface/engine.log), [report](evidence/runs/baseline/test_crash_wreck_surface/report.json) |
+| [`test_crash_presentation_ladder`](../../../../app/tests/test_crash_presentation_ladder.gd) | 48 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_presentation_ladder/engine.log), [report](evidence/runs/baseline/test_crash_presentation_ladder/report.json) |
+| [`test_crash_effects`](../../../../app/tests/test_crash_effects.gd) | 66 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_effects/engine.log), [report](evidence/runs/baseline/test_crash_effects/report.json) |
+| [`test_crash_energy`](../../../../app/tests/test_crash_energy.gd) | 251 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_energy/engine.log), [report](evidence/runs/baseline/test_crash_energy/report.json) |
+| [`test_crash_audio`](../../../../app/tests/test_crash_audio.gd) | 12 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_crash_audio/engine.log), [report](evidence/runs/baseline/test_crash_audio/report.json) |
+| [`test_airframe_contacts`](../../../../app/tests/test_airframe_contacts.gd) | 46 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_airframe_contacts/engine.log), [report](evidence/runs/baseline/test_airframe_contacts/report.json) |
+| [`test_ground_contact`](../../../../app/tests/test_ground_contact.gd) | 23 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_ground_contact/engine.log), [report](evidence/runs/baseline/test_ground_contact/report.json) |
+| [`test_hull_crossing`](../../../../app/tests/test_hull_crossing.gd) | 40 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_hull_crossing/engine.log), [report](evidence/runs/baseline/test_hull_crossing/report.json) |
+| [`test_hull_support_normal`](../../../../app/tests/test_hull_support_normal.gd) | 70 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_hull_support_normal/engine.log), [report](evidence/runs/baseline/test_hull_support_normal/report.json) |
+| [`test_hull_friction_observation`](../../../../app/tests/test_hull_friction_observation.gd) | 388 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_hull_friction_observation/engine.log), [report](evidence/runs/baseline/test_hull_friction_observation/report.json) |
+| [`test_hull_scrape_session`](../../../../app/tests/test_hull_scrape_session.gd) | 56 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_hull_scrape_session/engine.log), [report](evidence/runs/baseline/test_hull_scrape_session/report.json) |
+| [`test_hull_scrape_audio`](../../../../app/tests/test_hull_scrape_audio.gd) | 60 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_hull_scrape_audio/engine.log), [report](evidence/runs/baseline/test_hull_scrape_audio/report.json) |
+| [`test_prop_strike`](../../../../app/tests/test_prop_strike.gd) | 44 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_prop_strike/engine.log), [report](evidence/runs/baseline/test_prop_strike/report.json) |
+| [`test_prop_strike_feedback`](../../../../app/tests/test_prop_strike_feedback.gd) | 16 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_prop_strike_feedback/engine.log), [report](evidence/runs/baseline/test_prop_strike_feedback/report.json) |
+| [`test_gear_damage`](../../../../app/tests/test_gear_damage.gd) | 113 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_gear_damage/engine.log), [report](evidence/runs/baseline/test_gear_damage/report.json) |
+| [`test_aircraft_ground_damage`](../../../../app/tests/test_aircraft_ground_damage.gd) | 125 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_aircraft_ground_damage/engine.log), [report](evidence/runs/baseline/test_aircraft_ground_damage/report.json) |
+| [`test_damage_flight_events`](../../../../app/tests/test_damage_flight_events.gd) | 197 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_damage_flight_events/engine.log), [report](evidence/runs/baseline/test_damage_flight_events/report.json) |
+| [`test_heli_crash_presentation`](../../../../app/tests/test_heli_crash_presentation.gd) | 44 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_heli_crash_presentation/engine.log), [report](evidence/runs/baseline/test_heli_crash_presentation/report.json) |
+| [`test_heli_crash_visual`](../../../../app/tests/test_heli_crash_visual.gd) | 33 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_heli_crash_visual/engine.log), [report](evidence/runs/baseline/test_heli_crash_visual/report.json) |
+| [`test_heli_crash_relaunch`](../../../../app/tests/test_heli_crash_relaunch.gd) | 66 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_heli_crash_relaunch/engine.log), [report](evidence/runs/baseline/test_heli_crash_relaunch/report.json) |
+| [`test_rcv_damage`](../../../../app/tests/test_rcv_damage.gd) | 175 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_rcv_damage/engine.log), [report](evidence/runs/baseline/test_rcv_damage/report.json) |
+| [`test_rcv_damage_session`](../../../../app/tests/test_rcv_damage_session.gd) | 19 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_rcv_damage_session/engine.log), [report](evidence/runs/baseline/test_rcv_damage_session/report.json) |
+| [`test_rcv_airfield_course`](../../../../app/tests/test_rcv_airfield_course.gd) | Total not printed; 0 failed | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_rcv_airfield_course/engine.log), [report](evidence/runs/baseline/test_rcv_airfield_course/report.json) |
+| [`test_mr_graded_crashes`](../../../../app/tests/test_mr_graded_crashes.gd) | 51 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_mr_graded_crashes/engine.log), [report](evidence/runs/baseline/test_mr_graded_crashes/report.json) |
+| [`test_mr_crash_presentation`](../../../../app/tests/test_mr_crash_presentation.gd) | 21 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_mr_crash_presentation/engine.log), [report](evidence/runs/baseline/test_mr_crash_presentation/report.json) |
+| [`test_airship_session`](../../../../app/tests/test_airship_session.gd) | 43 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_airship_session/engine.log), [report](evidence/runs/baseline/test_airship_session/report.json) |
+| [`test_lake_collision`](../../../../app/tests/test_lake_collision.gd) | Total not printed; 0 failed | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_lake_collision/engine.log), [report](evidence/runs/baseline/test_lake_collision/report.json) |
+| [`test_lake_ground_contact`](../../../../app/tests/test_lake_ground_contact.gd) | Total not printed; 0 failed | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_lake_ground_contact/engine.log), [report](evidence/runs/baseline/test_lake_ground_contact/report.json) |
+| [`test_landscape_collision`](../../../../app/tests/test_landscape_collision.gd) | 52 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_landscape_collision/engine.log), [report](evidence/runs/baseline/test_landscape_collision/report.json) |
+| [`test_landscape_collision_session`](../../../../app/tests/test_landscape_collision_session.gd) | 25 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_landscape_collision_session/engine.log), [report](evidence/runs/baseline/test_landscape_collision_session/report.json) |
+| [`test_landscape_collision_oracle`](../../../../app/tests/test_landscape_collision_oracle.gd) | 339 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_landscape_collision_oracle/engine.log), [report](evidence/runs/baseline/test_landscape_collision_oracle/report.json) |
+| [`test_landscape_runtime`](../../../../app/tests/test_landscape_runtime.gd) | 76 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_landscape_runtime/engine.log), [report](evidence/runs/baseline/test_landscape_runtime/report.json) |
+| [`test_power_line_collisions`](../../../../app/tests/test_power_line_collisions.gd) | 15 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_power_line_collisions/engine.log), [report](evidence/runs/baseline/test_power_line_collisions/report.json) |
+| [`test_parked_aircraft_collision`](../../../../app/tests/test_parked_aircraft_collision.gd) | 45 / 1 | process_exit | Original-project confirmation | [Log](evidence/runs/baseline/test_parked_aircraft_collision/engine.log), [report](evidence/runs/baseline/test_parked_aircraft_collision/report.json) |
+| [`test_scenery_damage_session`](../../../../app/tests/test_scenery_damage_session.gd) | 51 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_scenery_damage_session/engine.log), [report](evidence/runs/baseline/test_scenery_damage_session/report.json) |
+| [`test_soft_contacts`](../../../../app/tests/test_soft_contacts.gd) | 36 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_soft_contacts/engine.log), [report](evidence/runs/baseline/test_soft_contacts/report.json) |
+| [`test_aircraft_contact_session`](../../../../app/tests/test_aircraft_contact_session.gd) | 83 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_aircraft_contact_session/engine.log), [report](evidence/runs/baseline/test_aircraft_contact_session/report.json) |
+| [`test_retractable_gear_ground`](../../../../app/tests/test_retractable_gear_ground.gd) | 30 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_retractable_gear_ground/engine.log), [report](evidence/runs/baseline/test_retractable_gear_ground/report.json) |
+| [`test_integration_receipt`](../../../../app/tests/test_integration_receipt.gd) | 36 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_integration_receipt/engine.log), [report](evidence/runs/baseline/test_integration_receipt/report.json) |
+| [`test_endpoint_transition`](../../../../app/tests/test_endpoint_transition.gd) | 274 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_endpoint_transition/engine.log), [report](evidence/runs/baseline/test_endpoint_transition/report.json) |
+| [`test_mr_rotor_strike_slope`](../../../../app/tests/test_mr_rotor_strike_slope.gd) | 29 / 0 | Pass | Sequential local mirror | [Log](evidence/runs/baseline/test_mr_rotor_strike_slope/engine.log), [report](evidence/runs/baseline/test_mr_rotor_strike_slope/report.json) |
+
+The checked runner permits warnings unless `--warnings-as-errors` is requested. `test_crash_sections` deliberately exercises malformed/unknown section-map fallback and can emit the two retained warnings about incomplete triangle coverage and `rudder_blade`; its zero-error passing result is not described as warning-free. Other warning counts remain explicit in their reports.
+<!-- BASELINE_RESULTS_END -->
+
+The final selected campaign has one genuine assertion failure: the parked-aircraft test's obsolete shelter-proxy count. An original-project rerun and a predicate-only diagnostic reproduce 45 checks/one failure and show that the 19-versus-24 count is the failing condition. The diagnostic reruns are not added to the unique-suite or new-probe assertion totals. See [CR-AUD-15](findings.md#cr-aud-15--a-parked-aircraft-regression-expects-the-old-shelter-geometry).
+
+The existing tests remain valuable even when a new adversarial probe fails. Many existing wreck fixtures check boundedness, geometric-center behavior, zero angular velocity, or mass after forcing delayed release; those are different assertions from asymmetric COM conservation at the instant of release. A test suite can be green while a missing independent invariant is wrong.
+
+## Unsuccessful and inconclusive attempts
+
+These attempts are not hidden or reclassified as product defects:
+
+| Attempt | What happened | Treatment |
+|---|---|---|
+| Initial sparse import | Required application resources were not hydrated | Invalid environment preparation; subsequent complete-app import succeeded |
+| Initial existing-suite batch | Several scripts lacked `assets/aircraft/model-bindings.json` and geometry authoring JSON; some printed a success summary alongside engine errors | Checked runner correctly refused a pass; inputs were hydrated and the campaign was retried |
+| First staggered-crossing probe | GDScript could not infer a local boolean type | Audit probe corrected with an explicit type; only the clean completed run establishes the finding |
+| First car-scenery probe | Looked for `tyres:01` instead of actual `rc_track:tyres:01` | Audit fixture ID corrected; final 19-check characterization completed |
+| Production crash-integration run | Process was killed by signal 9 after 195.26 s, below its 240 s runner deadline; banner only, zero engine diagnostics | Earlier inconclusive external termination; later exact-source sequential retry passes 246 checks. Signal source and memory-pressure hypothesis remain unproven |
+| Several startup/control/probe launches | Timed out with no useful script completion, sometimes after only the engine banner | Inconclusive execution evidence; retained checked reports, not collision findings |
+| First two lake-suite launches in the serial campaign | Both scripts completed successfully, but the generic harness expected `0 failed` instead of their explicit `all lake … checks passed` markers | Harness marker corrected; both checked reruns pass. Original rejected receipts retained |
+| Local-engine startup control | Script completed 44 checks with zero failures/errors, but the launch required the wrong literal `0 failures` instead of `0 failed` | Audit harness marker error; checked result remains nonpassing and is not counted as a clean runner pass |
+| First completed engine-COM control | Used an unrotated reference point after the body had already rotated | Audit oracle corrected to query the observed COM and compare the origin with the correct angular offset; final control passes |
+
+Some diagnostic attempts, such as unavailable process tracing, produced no product result and are not counted as tests. The original invalid crossing and car fixture bytes were not separately archived before correction; their checked logs are retained. The first engine-COM fixture bytes are retained. Final selected probe files are exact copies of the corresponding completed scripts and have hashes in the manifest.
+
+## Reproduce the selected probes
+
+Use a complete checkout of the audited base plus this audit directory. Do not omit model authoring JSON or imported application resources through sparse checkout. From the repository root:
+
+```bash
+bash app/get-godot.sh
+python tools/godot/run_checked.py --timeout 600 --out-dir tmp/collision-audit/reproduction-import --label collision-audit-import -- .tools/Godot_v4.8-beta2_linux.x86_64 --headless --editor --path app --audio-driver Dummy --import
+python docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/run_probes.py --list
+python docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/run_probes.py
+```
+
+The final command intentionally returns nonzero while desired-behavior counterexamples remain. Read each raw checked report and completion record. The launcher does not invert a known failure into a pass. Run a subset by appending probe names, for example `prop-source-off scenario-fuel`. A verified copy of the pinned executable can be supplied using `--engine /absolute/path/to/Godot_v4.8-beta2_linux.x86_64`.
+
+The parked-aircraft predicate diagnostic can be rerun with the same checked runner and `--script docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/diagnostics/parked_aircraft_diagnostic.gd` (use an absolute script path if your engine requires it). It preserves the original 45 assertions and adds only the predicate print.
+
+For an existing suite, use the same checked runner and that script's actual completion marker:
+
+```bash
+python tools/godot/run_checked.py --timeout 120 --out-dir tmp/collision-audit/reproduction-severity --label test_crash_severity --require-text '0 failed' -- .tools/Godot_v4.8-beta2_linux.x86_64 --headless --path app --audio-driver Dummy --script res://tests/test_crash_severity.gd
+```
+
+Use isolated per-run user-profile directories for stateful suites. Respect the repository's test-pool/admission rules on enrolled hosts. Do not compare elapsed times from this shared audit environment as if they were controlled performance measurements.
+
+## Final publication checks and remaining gates
+
+<!-- PUBLICATION_CHECKS_START -->
+- The source-mirror identity receipt compares 3193 source/configuration/data/import-descriptor files with zero mismatches.
+- The reproduction launcher was parsed as Python and its `--list` route executed successfully. Its Linux binary hash gate, isolated profiles, and checked-runner completion markers preserve the intended reproduction boundary.
+- Independent reviewers reconciled fleet IDs, source locations, equations, controls, and the selected probe scripts/logs against the retained evidence; causal and scope corrections are incorporated.
+- The link check validates **430 local/pinned source links**, including 47 baseline-pinned links and one sparse target verified directly from Git, with zero errors. The [receipt](evidence/document-link-check.json) records reuse of the repository's parser without claiming a CI policy-selection receipt.
+- The integrated evidence check validates **242 retained evidence-file hashes and 110 audited-source hashes**, with zero mismatches. Raw logs retain their original bytes; log whitespace is not rewritten for document style.
+- Authored-text whitespace and staged path scope are checked before committing. Only the audit package and its owning research index are included; application code, vehicle data, and goldens remain unchanged. The final GitHub commit identifies the integrated package; this dated report does not claim a required-CI receipt.
+<!-- PUBLICATION_CHECKS_END -->
+
+No production code was changed, no physics golden was re-recorded, and no implementation fix is claimed. A dedicated audit branch preserves the base and reviewable evidence without merging changes into main.
+
+Required follow-up qualification includes accepted-tick/integrated reproductions where only function fixtures exist; all-family terrain/scenery/water policy matrices; native/reference and checkpoint/replay parity for actual fixes; target-hardware 1080p visual/performance work; and independent material/contact measurements before structural realism claims. The observed `DEFAULT` engine setting and a headless Linux run do not establish named-backend or cross-platform parity.
+
+GitHub CI configuration and baseline metadata were inspected. An empty combined-status response is not evidence that CI is absent or passing. No full production-CI completion receipt is claimed by this audit; branch publication and local checks do not replace required CI for subsequent implementation PRs.

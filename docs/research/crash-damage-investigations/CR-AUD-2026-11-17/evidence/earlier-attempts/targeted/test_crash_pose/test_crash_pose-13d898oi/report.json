@@ -1,0 +1,65 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3163577f-74d0-4d5d-bf06-a1bb4b34608f",
+  "command": [
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_pose.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T02:27:29.967863+00:00",
+  "label": "test_crash_pose",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_pose/test_crash_pose-13d898oi/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit/targeted/test_crash_pose/test_crash_pose-13d898oi/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 30,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 14,
+      "message": "Cannot call method 'set_physics_process' on a null value.",
+      "context": [
+        "          at: _run (res://tests/test_crash_pose.gd:95)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _run (res://tests/test_crash_pose.gd:95)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 30,
+  "ok": false,
+  "elapsed_seconds": 9.957666,
+  "log_bytes": 1102,
+  "log_sha256": "b2e07903ededa5943d125f2a4c230a4f7830850d1f2f5dc5dcec93c051186a18"
+}

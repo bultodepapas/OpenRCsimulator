@@ -1,0 +1,48 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   prepare succeeds on a mapped merged mesh
+ok   the map's wing halves become wreck groups  ["core", "wing_left", "wing_right", "horizontal_tail"]
+ok   the named tail frame still groups by name
+ok   the flying model keeps its merged mesh
+ok   the twin no longer has the merged mesh
+ok   no triangle is lost or duplicated  22 vs 22
+ok   a section keeps one surface per source material
+ok   a section holds only its own region
+ok   section vertices keep their UVs
+ok   core triangles stay with the body
+ok   splitting repeats exactly
+ok   a C3 left-tip hit releases the real left wing section  ["wing_left"]
+ok   a mismatched map is rejected before any change
+WARNING: Wreck.prepare: crash section map ignored: surface 0: runs cover 3 of 4 triangles
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] prepare (res://render/crash/wreck.gd:211)
+         [1] _splitter (res://tests/test_crash_sections.gd:145)
+ok   a rejected map leaves the twin's merged mesh whole
+WARNING: Wreck: unknown crash section 'rudder_blade' on rudder
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] _section_of (res://render/crash/wreck.gd:813)
+         [1] _collect_candidate_nodes (res://render/crash/wreck.gd:773)
+         [2] _collect_fragment_groups (res://render/crash/wreck.gd:619)
+         [3] prepare (res://render/crash/wreck.gd:223)
+         [4] _resolution (res://tests/test_crash_sections.gd:186)
+ok   glTF extras name a section regardless of the node name
+ok   builder meta attaches a control hinge to its wing
+ok   a core-tagged parent still lets a tagged child break away
+ok   an unknown explicit name falls back to the name rules
+ok   a wing-tip C3 hit on a model without wings releases its legacy sections  ["horizontal_tail", "vertical_tail"]
+WARNING: Lumber model manifest: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/geometry.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/source-manifest.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/mesh-measurements.json", "authoring source is missing: assets/aircraft/turbo-lumber-evolution/manual.json"]
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] build (res://aircraft/timber_model.gd:17)
+         [1] _timber_tagged_parts (res://tests/test_crash_sections.gd:231)
+         [2] _run (res://tests/test_crash_sections.gd:21)
+         [3] _no_wing_fallback (res://tests/test_crash_sections.gd:227)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _timber_tagged_parts (res://tests/test_crash_sections.gd:232)
+          GDScript backtrace (most recent call first):
+              [0] _timber_tagged_parts (res://tests/test_crash_sections.gd:232)
+              [1] _run (res://tests/test_crash_sections.gd:21)
+              [2] _no_wing_fallback (res://tests/test_crash_sections.gd:227)
+19 checks, 0 failed

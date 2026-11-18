@@ -1,0 +1,11 @@
+{
+  "checked_links": 430,
+  "pinned_source_links": 47,
+  "sparse_checkout_targets_verified_from_git": 1,
+  "errors": [],
+  "evidence_hashes_checked": 242,
+  "source_hashes_checked": 110,
+  "hash_errors": [],
+  "launcher_python_parse": "passed",
+  "implementation": "Repository check_docs link/anchor parser against working tree with Git-object fallback; not a CI policy receipt."
+}

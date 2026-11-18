@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "08a019d2-f79d-49b9-8a2e-2a6908efce5b",
+  "command": [
+    "/tmp/openrc-collision-audit-engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-collision-audit-source/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_endpoint_transition.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T03:32:09.750345+00:00",
+  "label": "test_endpoint_transition",
+  "log": "/tmp/openrc-collision-audit-runs/baseline/test_endpoint_transition/test_endpoint_transition-8gxl48ym/engine.log",
+  "report": "/tmp/openrc-collision-audit-runs/baseline/test_endpoint_transition/test_endpoint_transition-8gxl48ym/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.853937,
+  "log_bytes": 113,
+  "log_sha256": "441c8172d3f6935f1077df05ba6c05b323aac013d0df8a628471f4643d59d8cf"
+}
