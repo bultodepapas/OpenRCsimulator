@@ -8,7 +8,7 @@ from hashlib import sha256
 from openrc_telemetry import report
 from openrc_telemetry.cli import main
 from openrc_telemetry.contract import ContractError, load_contracts
-from openrc_telemetry.storage import AggStore
+from openrc_telemetry.storage import AggStore, StorageUnavailable
 
 from .support import RELEASE, SCHEMA_DIR, TempDir, unix
 
@@ -98,6 +98,22 @@ class ReportTests(ReportCase):
         with self.assertRaises(ContractError):
             report.material(contracts, self.agg, WEEK, RELEASE)
 
+    def test_vehicle_rows_that_bypassed_the_rollup_are_refused_at_publication(self):
+        good = {"vehicle_id": "f4u-corsair-250", "session_observations": 20, "activity_summaries": 20,
+                "active_seconds": 600}
+        for broken in ({**good, "session_observations": 3, "activity_summaries": 3},   # small cell
+                       {**good, "vehicle_id": "my-own|plane"},                          # not a stock id
+                       {**good, "active_seconds": 20 * 1800 + 1},                       # implausible exposure
+                       {**good, "activity_summaries": 20 * 120 + 1}):                   # over the per-token cap
+            self.agg.put_day("2027-01-11", RELEASE, "vehicle", "ready", [broken], NOW)
+            with self.assertRaises(ContractError):
+                report.material(contracts, self.agg, WEEK, RELEASE)
+        with self.assertRaises(StorageUnavailable):  # a duplicate cell is refused by the primary key at storage
+            self.agg.put_day("2027-01-11", RELEASE, "vehicle", "ready", [good, good], NOW)
+        self.agg.put_day("2027-01-11", RELEASE, "vehicle", "ready", [], NOW)
+        with self.assertRaises(ContractError):  # "ready" with no rows is not a valid stored day
+            report.material(contracts, self.agg, WEEK, RELEASE)
+
     def test_input_validation(self):
         for week in ("2027-W00", "2027-W54", "2027W02", "27-W02", "2027-W2", "", None):
             with self.assertRaises(ContractError, msg=week):
@@ -108,9 +124,9 @@ class ReportTests(ReportCase):
         self.assertEqual(report.parse_week("2026-W53")[0].isoformat(), "2026-12-28")
 
     def test_week_closed_boundary(self):
-        # Sunday 2027-01-17 closes at 2027-01-18T00:00Z; allowed +1 h.
-        self.assertFalse(report.week_closed(WEEK, unix("2027-01-18T00:59:59Z")))
-        self.assertTrue(report.week_closed(WEEK, unix("2027-01-18T01:00:00Z")))
+        # Sunday 2027-01-17 can be rolled up until 2027-01-18T23:00Z; publication waits for that.
+        self.assertFalse(report.week_closed(WEEK, unix("2027-01-18T22:59:59Z")))
+        self.assertTrue(report.week_closed(WEEK, unix("2027-01-18T23:00:00Z")))
 
 
 class ReportCliTests(ReportCase):

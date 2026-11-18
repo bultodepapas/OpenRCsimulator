@@ -72,6 +72,10 @@ class Contracts:
         self.schema_dir = Path(schema_dir)
         self.batch_validator = self._validator("batch.schema.json")
         self.report_validator = self._validator("report.schema.json")
+        # Vehicle ids an activity_summary may carry (the canonical enum), for checks at the publication boundary.
+        events = self.batch_validator.schema["properties"]["events"]["items"]["oneOf"]
+        activity = next(e for e in events if e["properties"]["name"].get("const") == "activity_summary")
+        self.activity_vehicles = frozenset(activity["properties"]["vehicle_id"]["enum"])
 
     def _validator(self, filename):
         schema = json.loads((self.schema_dir / filename).read_text(encoding="utf-8"))

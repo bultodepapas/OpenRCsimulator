@@ -17,7 +17,7 @@ from openrc_telemetry.storage import AggStore
 from .support import RELEASE, SCHEMA_DIR, TempDir, unix
 
 WEEK = "2027-W02"
-NOW = unix("2027-01-18T02:00:00Z")
+NOW = unix("2027-01-19T00:00:00Z")  # after Sunday 2027-01-17 + 47 h
 REPO = "Owner/telemetry-ops"
 BOT = "openrc-bot[bot]"
 TOKEN = "ghp_FAKE_TOKEN_for_tests_0123456789"
@@ -155,7 +155,7 @@ class GuardTests(PublisherCase):
         self.assertEqual(self.fake.requests, [])
 
     def test_open_week_refused(self):
-        result = self.go(now=unix("2027-01-18T00:59:59Z"))
+        result = self.go(now=unix("2027-01-18T22:59:59Z"))
         self.assertEqual(result.outcome, "not_closed")
         self.assertEqual(self.fake.requests, [])
 
@@ -164,6 +164,9 @@ class GuardTests(PublisherCase):
             self.go(releases=frozenset({"v9.9.9"}))
         with self.assertRaises(ContractError):
             publish(self.agg, contracts, week=WEEK, release=RELEASE, repository="not a repo",
+                    approved_digest=self.digest, execute=False, now=NOW, releases=frozenset())
+        with self.assertRaises(ContractError):  # an empty allowlist publishes nothing
+            publish(self.agg, contracts, week=WEEK, release=RELEASE, repository=REPO,
                     approved_digest=self.digest, execute=False, now=NOW, releases=frozenset())
         self.assertEqual(self.go(bot="", github=self.github).outcome, "config_error")
         self.assertEqual(self.go(github=None).outcome, "config_error")

@@ -73,8 +73,10 @@ class Config:
         suspended = frozenset(x.strip() for x in env.get("OPENRC_TELEMETRY_SUSPEND_RELEASES", "").split(",") if x.strip())
         defaults = cls()
         interval = _int(env, "OPENRC_TELEMETRY_PURGE_INTERVAL_S", defaults.purge_interval_s)
-        if not 30 <= interval <= 3600:
-            raise SystemExit("OPENRC_TELEMETRY_PURGE_INTERVAL_S must be between 30 and 3600")
+        # serve purges interval + 60 s before 48 h; up to 1800 s that stays after the 47 h rollup deadline, so no
+        # raw row is deleted while its day can still be rolled up.
+        if not 30 <= interval <= 1800:
+            raise SystemExit("OPENRC_TELEMETRY_PURGE_INTERVAL_S must be between 30 and 1800")
         return cls(
             data_dir=Path(env.get("OPENRC_TELEMETRY_DATA_DIR") or "./data"),
             raw_dir=Path(env["OPENRC_TELEMETRY_RAW_DIR"]) if env.get("OPENRC_TELEMETRY_RAW_DIR") else None,

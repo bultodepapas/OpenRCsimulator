@@ -168,7 +168,7 @@ def publish(agg, contracts, *, week, release, repository, approved_digest, execu
     repo = canonical_repository(repository)
     report_mod.parse_week(week)
     report_mod.check_release(release)
-    if releases and release not in releases:
+    if release not in releases:  # an empty allowlist publishes nothing (fail closed, like ingestion)
         raise ContractError("unapproved_release")
     title, body, digest = report_mod.material(contracts, agg, week, release)
     if digest != approved_digest:

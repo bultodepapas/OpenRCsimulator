@@ -47,7 +47,7 @@ The default schema directory resolves `../../research/telemetry/contracts` relat
 | `OPENRC_TELEMETRY_RELEASES` | empty | Comma list of accepted `build.release_id` values |
 | `OPENRC_TELEMETRY_SUSPEND_RELEASES` | empty | Releases answered with `410`: clients stop collecting for the rest of their process; nothing is stored |
 | `OPENRC_TELEMETRY_SUSPEND_ALL` | unset | `1` answers every batch with `410` (operator off switch) |
-| `OPENRC_TELEMETRY_PURGE_INTERVAL_S` | `300` | `serve` purges raw rows this often, cutting interval + 60 s before 48 h so no row outlives 48 h |
+| `OPENRC_TELEMETRY_PURGE_INTERVAL_S` | `300` (30–1800) | `serve` purges raw rows this often, cutting interval + 60 s before 48 h so no row outlives 48 h and none is deleted before its day's 47 h rollup deadline |
 | `OPENRC_TELEMETRY_TRUST_PROXY` | `0` | `1`: use the right-most `X-Forwarded-For` entry. Set only when every request passes the trusted proxy, which must append the peer address |
 | `OPENRC_TELEMETRY_CLIENT_BURST` / `_CLIENT_REFILL_PER_S` | `20` / `0.1667` | Per-client bucket (about 10 requests/min sustained) |
 | `OPENRC_TELEMETRY_GLOBAL_BURST` / `_GLOBAL_REFILL_PER_S` | `200` / `50` | Global ingress cap |
@@ -86,7 +86,7 @@ Error bodies are `{"code": "<fixed category>"}` and never echo input. Request bo
 | --- | --- | --- |
 | Purge (second line of defence) | hourly; alert if the oldest raw row nears 48 h | `python -m openrc_telemetry purge` |
 | Daily rollup | every day 01:30 | `python -m openrc_telemetry rollup --day yesterday` |
-| Weekly report | Monday, after the Sunday rollup | `python -m openrc_telemetry report --week 2026-W47 --release v0.2.7` |
+| Weekly report | Monday after 23:00 UTC (Sunday + 47 h, when no day of the week can change) | `python -m openrc_telemetry report --week 2026-W47 --release v0.2.7` |
 
 Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation; a missed deadline yields a missing day, never extended raw retention. It is an idempotent upsert keyed by (day, release, table). Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens; each token counts at most 120 windows (or activity summaries).
 
@@ -133,3 +133,7 @@ Back up only the `telemetry-aggregates` volume (`sqlite3 aggregates.sqlite ".bac
 - Rate limiting is in memory per process.
 - Publisher approval is a digest supplied by the operator, not an authenticated review. Issues from other authors with the same title are ignored by design, as in the publication protocol.
 - Weekly output is the private-operations form only; a public release needs the inventory review in `docs/plans/telemetry/publication-protocol.md`.
+- The stock-vehicle table is new relative to the reference reducer: approving a digest is also the explicit disclosure review of that table. It is suppressed whenever any vehicle (including `custom`/`unknown`) has 1–19 session tokens, so at pilot volume it will usually be suppressed.
+- Days on which ingestion answered 503 (storage full) or a release was suspended are still rolled up as `ready`; there is no coverage flag yet. Check service logs for those days before approving a report.
+- A rollup aborts the whole day if any stored body no longer validates (for example after a stricter schema); rerunning after a fix is idempotent.
+- Vehicle rows are re-validated at publication (floor, bounds, stock id) in addition to the rollup.

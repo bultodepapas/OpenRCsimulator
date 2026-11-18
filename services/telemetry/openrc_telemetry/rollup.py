@@ -98,6 +98,8 @@ def gpu_report(contracts, payloads, day, release_id, period, minimum=MIN_TOKENS)
 
 def vehicle_report(payloads, day, release_id, period, minimum=MIN_TOKENS):
     """Stock vehicle usage: activity_summary count and summed active_seconds per vehicle_id."""
+    if minimum < MIN_TOKENS:
+        raise ContractError("cohort_floor")  # the disclosure floor can be raised, never lowered
     groups, counts = {}, {}
     for payload, event in unique_events(payloads):
         if event["name"] != "activity_summary":

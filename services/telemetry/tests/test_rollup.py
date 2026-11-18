@@ -166,6 +166,17 @@ class VehicleTests(RollupCase):
         self.roll()
         self.assertEqual(self.table("vehicle")[0], "ready")
 
+    def test_vehicle_floor_cannot_be_lowered_and_custom_rows_count_like_stock(self):
+        from openrc_telemetry.rollup import vehicle_report
+        with self.assertRaises(ContractError):
+            vehicle_report([], "2027-01-11", RELEASE, "2027-W02", minimum=1)
+        custom = {**activity_event(1, vehicle="custom"), "classification": "unsupported",
+                  "takeoffs": None, "landings": None, "aircraft_crashes": None}
+        self.sessions(20, 1, events=[custom])
+        self.roll()
+        status, rows = self.table("vehicle")
+        self.assertEqual((status, [r["vehicle_id"] for r in rows]), ("ready", ["custom"]))
+
     def test_vehicle_table_has_no_identifiers(self):
         self.sessions(20, 1, events=[activity_event(1)])
         self.roll()

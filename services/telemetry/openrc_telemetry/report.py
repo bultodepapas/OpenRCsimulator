@@ -7,12 +7,14 @@ import json
 import re
 
 from .contract import ContractError
-from .rollup import VEHICLE_BASIS
+from .rollup import EXPIRES_AFTER_H, MIN_TOKENS, VEHICLE_BASIS, WINDOW_CAP
 
 WEEK_RE = re.compile(r"^[0-9]{4}-W[0-9]{2}$")
 RELEASE_RE = re.compile(r"^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)\.?[0-9]{1,3})?\Z")
 MAX_REPORT_BYTES = 32 * 1024
-PUBLISH_AFTER_H = 25  # Sunday (last day) closed + 1 h
+# Publish only once Sunday can no longer be rolled up (its eligibility window has ended), so an approved digest
+# cannot be overtaken by a later rollup of a day that was still missing.
+PUBLISH_AFTER_H = EXPIRES_AFTER_H
 
 
 def parse_week(week):
@@ -34,10 +36,27 @@ def check_release(release_id):
 
 
 def week_closed(week, now):
-    """True once the final Sunday has closed (+1 h) so that every day could be rolled up."""
+    """True once the final Sunday's rollup window has ended: no day of the week can change any more."""
     sunday = parse_week(week)[-1]
     start = datetime.combine(sunday, datetime.min.time(), tzinfo=timezone.utc)
     return datetime.fromtimestamp(now, tz=timezone.utc) >= start + timedelta(hours=PUBLISH_AFTER_H)
+
+
+def validate_vehicle_rows(contracts, rows):
+    """The disclosure floor and bounds again at the publication boundary: a stored row that bypassed the rollup
+    (corrupt, edited or from another version) is refused instead of published."""
+    if not rows:
+        raise ContractError("vehicle_rows")
+    seen = set()
+    for row in rows:
+        vehicle, sessions = row.get("vehicle_id"), row.get("session_observations")
+        summaries, seconds = row.get("activity_summaries"), row.get("active_seconds")
+        if (vehicle not in contracts.activity_vehicles or vehicle in seen
+                or any(type(v) is not int for v in (sessions, summaries, seconds))
+                or sessions < MIN_TOKENS or not sessions <= summaries <= sessions * WINDOW_CAP
+                or not 0 <= seconds <= summaries * 1800):
+            raise ContractError("vehicle_rows")
+        seen.add(vehicle)
 
 
 def report_key(week, release_id):
@@ -72,6 +91,7 @@ def collect(contracts, agg, week, release_id):
                     for name in cell:
                         cell[name] += row[name]
             else:
+                validate_vehicle_rows(contracts, rows)
                 for row in rows:
                     cell = vehicle_pool.setdefault(row["vehicle_id"], {"session_observations": 0,
                                                                        "activity_summaries": 0, "active_seconds": 0})

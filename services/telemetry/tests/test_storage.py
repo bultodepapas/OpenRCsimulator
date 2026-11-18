@@ -144,6 +144,16 @@ class PurgeCliTests(unittest.TestCase):
             self.assertTrue((directory / "raw.sqlite").exists())
             self.assertTrue((directory / "aggregates.sqlite").exists())
 
+    def test_purge_interval_cannot_delete_rows_before_their_day_closes_for_rollup(self):
+        from openrc_telemetry.config import Config
+        from openrc_telemetry.cli import purge_margin_s
+        for bad in ("29", "1801", "3600"):
+            with self.assertRaises(SystemExit):
+                Config.from_env({"OPENRC_TELEMETRY_PURGE_INTERVAL_S": bad})
+        widest = Config.from_env({"OPENRC_TELEMETRY_PURGE_INTERVAL_S": "1800"})
+        # The earliest serve purge (48 h minus the margin) still comes after the 47 h rollup deadline.
+        self.assertGreater(48 * 3600 - purge_margin_s(widest), 47 * 3600)
+
     def test_serve_purge_cuts_early_enough_that_no_row_outlives_48_hours(self):
         from openrc_telemetry.cli import purge_margin_s, purge_once
         from .support import make_config
