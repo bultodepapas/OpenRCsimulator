@@ -1,0 +1,615 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "notice_version",
+    "session_id",
+    "batch_id",
+    "build",
+    "context",
+    "events"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "notice_version": {
+      "const": "2026-11-18"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "batch_id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "channel",
+        "engine_minor"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "maxLength": 32,
+          "pattern": "^v[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}(-(alpha|beta|rc)[0-9]{1,3})?(?![\\s\\S])"
+        },
+        "channel": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "preview"
+          ]
+        },
+        "engine_minor": {
+          "const": "4.8"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os_family",
+        "architecture",
+        "cpu_family",
+        "logical_threads_bucket",
+        "ram_gib_bucket",
+        "gpu_family",
+        "renderer",
+        "driver",
+        "resolution_class",
+        "resolution_basis",
+        "vsync",
+        "fps_cap_bucket",
+        "graphics_profile",
+        "input_class"
+      ],
+      "properties": {
+        "os_family": {
+          "type": "string",
+          "enum": [
+            "windows",
+            "macos",
+            "linux",
+            "other",
+            "unknown"
+          ]
+        },
+        "architecture": {
+          "type": "string",
+          "enum": [
+            "x86_64",
+            "arm64",
+            "other",
+            "unknown"
+          ]
+        },
+        "cpu_family": {
+          "type": "string",
+          "enum": [
+            "intel_core",
+            "amd_ryzen",
+            "apple_silicon",
+            "other",
+            "unknown"
+          ]
+        },
+        "logical_threads_bucket": {
+          "type": "string",
+          "enum": [
+            "le4",
+            "5_8",
+            "9_16",
+            "17_plus",
+            "unknown"
+          ]
+        },
+        "ram_gib_bucket": {
+          "type": "string",
+          "enum": [
+            "le4",
+            "5_8",
+            "9_16",
+            "17_32",
+            "33_64",
+            "65_plus",
+            "unknown"
+          ]
+        },
+        "gpu_family": {
+          "type": "string",
+          "enum": [
+            "nvidia_gtx",
+            "nvidia_rtx",
+            "amd_radeon",
+            "intel_arc",
+            "intel_integrated",
+            "apple_silicon",
+            "software",
+            "other",
+            "unknown"
+          ]
+        },
+        "renderer": {
+          "type": "string",
+          "enum": [
+            "gl_compatibility",
+            "mobile",
+            "forward_plus",
+            "unknown"
+          ]
+        },
+        "driver": {
+          "type": "string",
+          "enum": [
+            "opengl3",
+            "opengl3_es",
+            "opengl3_angle",
+            "metal",
+            "vulkan",
+            "d3d12",
+            "unknown"
+          ]
+        },
+        "resolution_class": {
+          "type": "string",
+          "enum": [
+            "below1080p",
+            "1080p",
+            "1440p",
+            "2160p",
+            "above2160p",
+            "other",
+            "unknown"
+          ]
+        },
+        "resolution_basis": {
+          "type": "string",
+          "enum": [
+            "viewport_coordinates",
+            "native_drawable_verified",
+            "unknown"
+          ]
+        },
+        "vsync": {
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "adaptive",
+            "mailbox",
+            "unknown"
+          ]
+        },
+        "fps_cap_bucket": {
+          "type": "string",
+          "enum": [
+            "unlimited",
+            "le30",
+            "31_60",
+            "61_120",
+            "121_plus",
+            "unknown"
+          ]
+        },
+        "graphics_profile": {
+          "type": "string",
+          "enum": [
+            "current_default",
+            "custom",
+            "unknown"
+          ]
+        },
+        "input_class": {
+          "type": "string",
+          "enum": [
+            "keyboard",
+            "gamepad",
+            "rc",
+            "other",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "seq"
+            ],
+            "properties": {
+              "name": {
+                "const": "session_started"
+              },
+              "seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "seq",
+              "mode",
+              "vehicle_id",
+              "phase",
+              "window_complete",
+              "interval_count",
+              "interval_sum_us",
+              "rendered_frames",
+              "draw_counter_status",
+              "interval_histogram",
+              "excluded_gap_count",
+              "gpu_status",
+              "gpu_ms"
+            ],
+            "properties": {
+              "name": {
+                "const": "performance_window"
+              },
+              "seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "home",
+                  "flight",
+                  "workshop",
+                  "other"
+                ]
+              },
+              "vehicle_id": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "custom",
+                  "unknown",
+                  "jensen-das-ugly-stik-60",
+                  "stik-electric-6s",
+                  "gp-extra-300s-60",
+                  "p51d-mustang-120",
+                  "f4u-corsair-250",
+                  "sebart-avanti-s-a200-p100rx",
+                  "turbo-lumber-evolution",
+                  "moonrunner-x99",
+                  "xcell-60-research",
+                  "openrc-fpv5-x1",
+                  "rc-blimp-5m",
+                  "mt8-bisonte",
+                  "monster-car-2"
+                ]
+              },
+              "phase": {
+                "type": "string",
+                "enum": [
+                  "warmup",
+                  "steady"
+                ]
+              },
+              "window_complete": {
+                "type": "boolean"
+              },
+              "interval_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60000
+              },
+              "interval_sum_us": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60000000
+              },
+              "rendered_frames": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 60000
+              },
+              "draw_counter_status": {
+                "type": "string",
+                "enum": [
+                  "observed",
+                  "unavailable"
+                ]
+              },
+              "interval_histogram": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60000
+                }
+              },
+              "excluded_gap_count": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "gpu_status": {
+                "type": "string",
+                "enum": [
+                  "not_measured",
+                  "zero_ambiguous",
+                  "positive_freshness_unverified",
+                  "invalid_reading"
+                ]
+              },
+              "gpu_ms": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "exclusiveMinimum": 0,
+                "maximum": 10000
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "draw_counter_status": {
+                      "const": "observed"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "rendered_frames": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "rendered_frames": {
+                      "type": "null"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "gpu_status": {
+                      "const": "positive_freshness_unverified"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "gpu_ms": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "gpu_ms": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "seq",
+              "vehicle_id",
+              "active_seconds",
+              "simulated_seconds",
+              "outcome",
+              "complete_observation",
+              "classification",
+              "takeoffs",
+              "landings",
+              "aircraft_crashes"
+            ],
+            "properties": {
+              "name": {
+                "const": "activity_summary"
+              },
+              "seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              },
+              "vehicle_id": {
+                "type": "string",
+                "enum": [
+                  "custom",
+                  "unknown",
+                  "jensen-das-ugly-stik-60",
+                  "stik-electric-6s",
+                  "gp-extra-300s-60",
+                  "p51d-mustang-120",
+                  "f4u-corsair-250",
+                  "sebart-avanti-s-a200-p100rx",
+                  "turbo-lumber-evolution",
+                  "moonrunner-x99",
+                  "xcell-60-research",
+                  "openrc-fpv5-x1",
+                  "rc-blimp-5m",
+                  "mt8-bisonte",
+                  "monster-car-2"
+                ]
+              },
+              "active_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1800
+              },
+              "simulated_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3600
+              },
+              "outcome": {
+                "type": "string",
+                "enum": [
+                  "returned_home",
+                  "reset",
+                  "interrupted",
+                  "slice",
+                  "unknown"
+                ]
+              },
+              "complete_observation": {
+                "type": "boolean"
+              },
+              "classification": {
+                "type": "string",
+                "enum": [
+                  "accepted_fixed_wing",
+                  "unsupported"
+                ]
+              },
+              "takeoffs": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "landings": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "aircraft_crashes": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1000
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "classification": {
+                      "const": "unsupported"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "takeoffs": {
+                      "type": "null"
+                    },
+                    "landings": {
+                      "type": "null"
+                    },
+                    "aircraft_crashes": {
+                      "type": "null"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "takeoffs": {
+                      "type": "integer"
+                    },
+                    "landings": {
+                      "type": "integer"
+                    },
+                    "aircraft_crashes": {
+                      "type": "integer"
+                    },
+                    "vehicle_id": {
+                      "enum": [
+                        "jensen-das-ugly-stik-60",
+                        "stik-electric-6s",
+                        "gp-extra-300s-60",
+                        "p51d-mustang-120",
+                        "f4u-corsair-250",
+                        "sebart-avanti-s-a200-p100rx",
+                        "turbo-lumber-evolution",
+                        "moonrunner-x99"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "seq",
+              "category",
+              "count"
+            ],
+            "properties": {
+              "name": {
+                "const": "error_count"
+              },
+              "seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "renderer_unavailable",
+                  "asset_load_failed",
+                  "aircraft_validation_failed",
+                  "simulation_fault"
+                ]
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openrc:telemetry:batch:1",
+  "title": "OpenRC proposed telemetry batch v1"
+}

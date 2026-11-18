@@ -50,6 +50,7 @@ Folder names can differ between tools and reports. Use this map rather than rena
 
 | Tools and inputs | Evidence / authoritative home |
 | --- | --- |
+| [telemetry](telemetry/README.md) | Proposed schemas, synthetic fixtures, generated consent tests and offline delivery/publication models; [adaptive TELEM evidence](../docs/research/telemetry/TELEM-00-R1/README.md), [implementation plan](../docs/plans/telemetry.md) |
 | [input](input/) | [Radio/input evidence](../docs/research/radio-input/) |
 | [testqueue/resilience](testqueue/resilience/README.md) | [MCP queue resilience audit and recorded probes, 2026-11-15](../docs/research/testqueue/2026-11-15-resilience/README.md); assertions reproduce baseline limitations, not desired production behavior |
 | [radio-latency](radio-latency/README.md) | [F6b latency reduction](../docs/research/radio-input/F6b/README.md) |

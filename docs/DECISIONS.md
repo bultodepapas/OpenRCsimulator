@@ -496,3 +496,18 @@ This is a product-default policy, not a claim of higher FPS or a passed performa
 campaign. Preserve the failed performance screen and the separate qualification
 tools. Public Developer ID distribution remains deferred. Measurement and package
 limits belong in [DT-MAC-11a](research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+
+### Transparent telemetry as a separate product data boundary
+
+**TELEM-00/01, 2026-11-18; proposed implementation, offline contracts only.**
+Use a small Godot adapter around existing measurements, with affirmative first-run enablement, a persistent off choice and transparent startup/settings status. A recommended enabled choice is not permission to send before acceptance. Keep product telemetry separate from local flight history, raw developer traces and the independent update checker.
+
+Receive closed minimized batches at a project-controlled service; send disclosure-filtered engineering summaries to GitHub through a trusted server/workflow identity. Direct client-to-GitHub writes expose credentials or player account identity. Broad analytics SDK defaults add unnecessary identity/enrichment and off-state behavior; optional crash diagnostics require separate scope and consent.
+
+Use memory-only queues, temporary session tokens and receipt-based expiry. Describe raw data as potentially identifiable and public counts as observations, not unique players or guaranteed anonymity. The daily-to-weekly aggregation contract deliberately trades low-volume coverage for short identifier retention and conservative disclosure control.
+
+The [adaptive follow-up](research/telemetry/TELEM-00-R1/README.md) retains the direct receiver and chooses ordinary logged, globally unique raw/dedup tables as the small-pilot candidate. Generic relay acknowledgments, time-partitioned keys and backup retention do not automatically satisfy atomic receipt or physical-copy expiry. Do not activate the raw store until its all-copy lifetime is feasible and qualified; ordinary SQL deletion is insufficient evidence.
+
+Freeze a reviewed publication title and body and preserve an unknown remote-write outcome. A changed public disclosure needs a fresh inventory-bound review that also binds the expected bot; known duplicate/edited/missing artifacts stop for explicit reconciliation, including altered same-key artifacts alongside an exact original. Repository aliases, actual visibility, durable inventory reservations and stale-ledger recovery are production responsibilities. The [offline protocol](plans/telemetry/publication-protocol.md) prepares these boundaries without claiming a ready publisher or formal anonymity.
+
+[Architecture and alternatives](plans/telemetry/architecture.md), [data contract](plans/telemetry/data-contract.md), [original 38-source-question review](research/telemetry/TELEM-00/README.md). Revisit the adapter/backend choice only when a qualified existing SDK can satisfy the exact consent, identity, logging, retention and performance contracts with less maintained code. Hosting, notice, hardware and publication gates remain open.

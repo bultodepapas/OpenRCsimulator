@@ -27,6 +27,11 @@ Keep four identities distinct: publication/dataset, exact downloaded file, deriv
 
 Use the existing library generator for its CSV/BibTeX outputs rather than editing them directly. Other source manifests retain their owning formats and generators. Historical hashes identify their recorded snapshots, even when a linked guide has since changed.
 
+## Product telemetry
+
+- [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; no runtime collection or receiving service is active.
+- [Adaptive telemetry follow-up, 2026-11-18](telemetry/TELEM-00-R1/README.md): 30 additional investigations in ten/review/ten/ten sequence, including eight non-English source languages; revised operational and publication contracts, test-only generative coverage and a frozen-intent reference. The method record discloses corrected discovery-query deviations.
+
 ## Whole-project audit
 
 - [MCP queue and resource-pool resilience, 2026-11-15](testqueue/2026-11-15-resilience/README.md) records 14 prioritized findings and baseline reproductions. The [implementation handoff](testqueue/2026-11-15-resilience/implementation.md) adds a tested review candidate, migration rules and remaining limits. The [TQ-04-R1…R9 subplan](../plans/mcp-queue-resilience.md) separates these repairs from open guardian continuity, physical-host budgets, measured concurrency and native fleet qualification.
