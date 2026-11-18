@@ -19,14 +19,16 @@ Drive the app (any bridge command; `help` asks the app for its list). Agents: st
   fly aircraft=<id> start=airborne | home | restart | key name=Shift+C | control name=gear_toggle
   sticks pitch=0.3 throttle=0.8 for_s=2 | drive throttle=0.6 for_s=1 | pause | step ticks=240
 Observe and hunt bugs
-  state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
+  state | logs [--since N] [--level …] [--follow] [--summary] | objects [baseline|diff=true]
+  frames [target_fps=60] [reset=true] [window=N]  stutters, FPS lows, budget; configure/reset before reproduction
+  frames [window=N] --out NEW_DIR               preserve one capture as HTML, CSV, JSON and Perfetto
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
   render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
   rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
   gizmos show=all | gizmos off=true                          flight-model lines: velocity, air, wind, forces, trail
   bugit [--note TEXT] [--out DIR] | bugitgo DIR [--resume]   a reproducible report folder / restore its exact flight
   watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
-  timeline [--hitch] [--since N] [--until N] [--top N]         where a long frame's time went (launch --verbose)
+  timeline [--hitch|--stutter] [--since N] [--until N] [--top N]  log gaps around a recorded event (launch --verbose)
 Scripts and checks
   run FILE|- [--keep-going] [--fail-on-error]                  a repro script, one command per line
   crawl [--shots]                                              open/list/close every screen; report errors
@@ -744,16 +746,30 @@ def timeline(argv: list[str]) -> int:
     if refuse_ambiguous():
         return 2
     option = lambda name, default: int(argv[argv.index(name) + 1]) if name in argv else default  # noqa: E731
-    records = [r for r in result_of("logs", {"since": option("--since", 0), "limit": 2000})["records"]
-               if r["level"] != "event" and r["seq"] <= option("--until", 1 << 62)]
-    if "--hitch" in argv:  # only the lines printed during the longest recorded hitch frame
-        hitches = result_of("frames")["hitches"]
-        if not hitches:
-            print("no hitch recorded yet (frames lists them)", file=sys.stderr)
+    if "--hitch" in argv and "--stutter" in argv:
+        raise ValueError("choose --hitch or --stutter")
+    longest = None
+    since, until = option("--since", 0), option("--until", 1 << 62)
+    if "--hitch" in argv or "--stutter" in argv:
+        key = "stutters" if "--stutter" in argv else "hitches"
+        frame_report = result_of("frames", {"events": 200})
+        events = frame_report.get(key, [])
+        if "--stutter" in argv:
+            # The compatibility hitch ring can retain older details than the combined ring.
+            events = list({(event.get("epoch"), event.get("sequence", event["frame"])): event
+                           for event in frame_report.get("hitches", []) + events}.values())
+        if not events:
+            print(f"no {key} retained in the current window (frames lists them)", file=sys.stderr)
             return 1
-        longest = max(hitches, key=lambda h: h["ms"])
+        longest = max(events, key=lambda h: h["ms"])
+        since = option("--since", longest.get("log_since", 0))
+        until = option("--until", longest.get("log_until", 1 << 62))
+    records = [r for r in result_of("logs", {"since": since, "limit": 2000})["records"]
+               if r["level"] != "event" and r["seq"] <= until]
+    if longest is not None:
         records = [r for r in records if longest["frame"] - 1 <= r["frame"] <= longest["frame"]]
-        print(f"# hitch at frame {longest['frame']}: {longest['ms']} ms; {', '.join(longest['causes']) or 'no counter changed'}")
+        print(f"# longest retained event at frame {longest['frame']}: {longest['ms']} ms; "
+              f"{', '.join(longest['causes']) or 'no counter evidence'}")
     if len(records) < 2:
         print("timeline needs at least two log lines after the cursor (launch --verbose for resource loads)", file=sys.stderr)
         return 1
@@ -763,6 +779,37 @@ def timeline(argv: list[str]) -> int:
     for gap, before, after in gaps[:option("--top", 12)]:
         print(f"{gap:>7} ms  {gap * 100 / max(span, 1):4.1f} %  after: {before['text'][:100]}")
         print(f"{'':>17}  next:  {after['text'][:100]}")
+    return 0
+
+
+def capture_frames(argv: list[str]) -> int:
+    """Fetch the bounded ring once; serialize files outside the simulator's frame loop."""
+    if argv.count("--out") != 1 or argv.index("--out") + 1 >= len(argv):
+        raise ValueError("frames --out requires one new output directory")
+    index = argv.index("--out")
+    destination = Path(argv[index + 1]).expanduser().resolve()
+    if destination.exists():
+        raise ValueError(f"capture directory already exists: {destination}")
+    rest = argv[:index] + argv[index + 2:]
+    flags = [value for value in rest if value in ("--pretty", "--json")]
+    args = parse_args([value for value in rest if value not in flags])
+    configuration = {"reset", "target_fps", "budget_tolerance_ms", "stutter_factor",
+                     "stutter_min_extra_ms", "stall_ms", "hitch_ms", "factor"}
+    if configuration.intersection(args):
+        raise ValueError("frames --out cannot reset or configure the recorder; configure frames first, "
+                         "reproduce the problem, then export to preserve the recorded history")
+    args.update(samples=True, events=200)
+    report = result_of("frames", args)
+    from tools.debug.frame_capture import write_capture
+    paths = write_capture(report, destination)
+    if "--json" in flags:
+        print(json.dumps({"capture": paths, "frames": report.get("frames"), "capture_id": report.get("capture_id")},
+                         ensure_ascii=False))
+    else:
+        show("frames", report, "--pretty" in flags, False)
+        print("Capture: " + str(destination))
+        for name, path in paths.items():
+            print(f"  {name}: {path}")
     return 0
 
 
@@ -1503,10 +1550,29 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
         for action in result:
             print(f"{action['id']:<20} {action['context']:<7} {action['mode']:<6} {action['label']}")
     elif command == "frames" and not raw_json and isinstance(result, dict) and "p50_ms" in result:
-        print(f"{result['frames']} frames: mean {result['mean_ms']} ms, p50 {result['p50_ms']}, p95 {result['p95_ms']}, "
-              f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
-              f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
-              f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
+        if result.get("format") == "openrc-debug-frames v1":
+            print(f"{result['frames']} frames / {result['duration_s']:.2f} s; target {result['target_fps']:g} FPS "
+                  f"({result['budget_ms']:.2f} ms), epoch {result['epoch']}")
+            print(f"FPS {result['fps_mean']}; 1% low {result['fps_1pct_low']} (tail n={result['low_1pct_frames']}); "
+                  f"0.1% low {result['fps_01pct_low']} (tail n={result['low_01pct_frames']})")
+            if result["frames"] < 1000:
+                print("  Short sample: 0.1% low needs at least 1000 frames for a full 0.1% tail; inspect the tail count.")
+            print(f"Frame ms: p50 {result['p50_ms']}, p95 {result['p95_ms']}, p99 {result['p99_ms']}, "
+                  f"p99.9 {result['p999_ms']}, max {result['max_ms']}; adjacent-change p95 {result['adjacent_delta_p95_ms']}")
+            print(f"Stutters {result['relative_stutter_frames']}; stalls >{result['stall_ms']:g} ms: {result['stall_frames']}; "
+                  f"legacy hitches {result['hitch_frames']} in window / {result['hitch_total']} since reset")
+            print(f"Over {result['slow_threshold_ms']:.2f} ms (budget + tolerance): {result['over_budget_frames']} frames "
+                  f"({result['over_budget_percent']:.1f}%); {result['slow_time_percent']:.1f}% of observed time; "
+                  f"{result['budget_excess_ms']:.1f} ms excess")
+            print(f"Longest slow run: {result['longest_slow_run_frames']} frames / {result['longest_slow_run_ms']:.1f} ms; "
+                  f"physics catch-up {result['physics_catch_up_frames']}; diagnostic-query intervals {result['diagnostic_query_frames']}")
+            print(f"Event details: {result['event_returned']} returned, {result['event_details_omitted_in_window']} omitted "
+                  "in window; exact detections remain in samples=true / --out. Wall intervals are not presentation timing.")
+        else:
+            print(f"{result['frames']} frames: mean {result['mean_ms']} ms, p50 {result['p50_ms']}, p95 {result['p95_ms']}, "
+                  f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
+                  f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
+                  f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
         if isinstance(result.get("gpu"), dict):
             gpu = result["gpu"]
             print(f"GPU root ({_gpu_status(gpu.get('status', result.get('gpu_timing_status')))}): "
@@ -1514,7 +1580,7 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
                   f"p99 {_gpu_reading(gpu.get('p99_ms'))}, max {_gpu_reading(gpu.get('max_ms'))} ms")
         else:
             print("GPU root: unavailable")
-        for hitch in result["hitches"]:
+        for hitch in result.get("stutters", result["hitches"]):
             causes = ", ".join(f"{cause} [legacy claim; freshness unverified]" if cause.startswith("GPU-bound") else cause
                                for cause in hitch["causes"]) or "no counter changed"
             print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
@@ -1792,6 +1858,8 @@ def main(argv: list[str]) -> int:
             return bugit(rest)
         if command == "bugitgo":
             return bugitgo(rest)
+        if command == "frames" and "--out" in rest:
+            return capture_frames(rest)
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:

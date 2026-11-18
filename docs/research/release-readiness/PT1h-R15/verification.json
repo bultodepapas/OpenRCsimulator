@@ -1,0 +1,422 @@
+{
+  "format": "openrc-stutter-diagnostics-verification v1",
+  "review_date": "2026-11-17",
+  "base_commit": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "branch": "perf/stutter-diagnostics-2026-11-17",
+  "candidate_identity": "SHA-256 of final source/test/document bytes; the publishing commit binds this record.",
+  "source_sha256": {
+    "app/debug/debug_bridge.gd": "2502710bb5f4b7ab18c112d9777f1d16155b6a441f1ee0fae05d55a50b454688",
+    "app/debug/frame_statistics.gd": "a84e1aa382bd7bbb94587a51d97b393067857bf9c3968eeff9c8c16649bec37f",
+    "app/debug/frame_statistics.gd.uid": "337a7a67cfc42cbac7c681790475391086e4f998b1f9d6d6eb1f277a9e1f20f3",
+    "app/tests/test_debug_frame_history.gd": "70c600a7c7e44541989519ecde9ac753a3536c2885f0caaacff5507dae5d60fb",
+    "app/tests/test_debug_frame_history.gd.uid": "93067152ac39ab485f68c2c0b0238928e9d83b05f73b0ffd6c1ec07db737f9ca",
+    "tools/debug/debugctl.py": "d15631678178f7817466bcd7149d7f14fdb4945232cd9b73b1a84f5785fc79b8",
+    "tools/debug/mcp_server.py": "13c9a5a3622ca412e0b5a704a0f15c8506a3ea846ec01c74eb9697fe62e3a80a",
+    "tools/debug/frame_capture.py": "dc76529f43b412d9e4805c5bd688a2c03db9cbe0f9f57c64705c9942809410ca",
+    "tools/debug/test_frame_capture.py": "7b2757c8a5b032a7679672b1ad31ac0ff34b70ee5fa79c89b3179a9c7da0480b",
+    "tools/debug/test_debugctl.py": "354501936eb302719587e2cdbb863d48232df6d83c06113283a6f20c67288c9a",
+    "tools/debug/test_mcp_server.py": "a69f674cd48048764a4238e89d3193bae0168ee11960df5ad7ba983cd68009ed",
+    "tools/debug/README.md": "437ebfcb2f16a0293901a06503a76a685d67decdc289d0fa4e7a93e3bf062a46",
+    "docs/tools/README.md": "00bdc3415033b8fb8bcc3528fd6f60717f243ee08c5b2d5129f481a39a64793a",
+    "docs/research/release-readiness/PT1h-R15/README.md": "80a98c49de96fce0483bdf6676aa74a2dd74b4bcb7a7a166c9ba22fceb06442c"
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "source": "app/get-godot.sh; identical verified executable copied to /tmp for local standalone checks"
+  },
+  "fixture_scope": {
+    "missing": [],
+    "substitutions": {
+      "landscapes/catalog.gd": "extends RefCounted\nconst DEFAULT_ID := \"club_field\"\nstatic func ids() -> Array:\n\treturn [\"club_field\"]\nstatic func has(id: String) -> bool:\n\treturn id == \"club_field\"\n",
+      "app_state/preferences.gd": "extends RefCounted\nconst LANGUAGES := {en = \"English\"}\n"
+    },
+    "config": "Production project settings minus main scene, asset-dependent autoload, internationalization and editor plugins; isolated debug units only.",
+    "dependency_scope": "Static preloads and extends; runtime aircraft support requires separate real-app checks.",
+    "project_sha256": "541141fa09304b12da10878917d792bbf4066bac31aaa8648888a59d3e12e945",
+    "production_project_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+    "dependency_sha256": {
+      "app_state/aircraft_catalog.gd": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
+      "app_state/preferences.gd": "3de4172be019eb2c755ccf0314b12187f0aa628096c2b58011425c43d3e53641",
+      "app_state/vehicle_roster.gd": "b1238de2c62f72843461a94c57c2f3f67d569854009cb1b50769230c65e87a86",
+      "debug/debug_bridge.gd": "2502710bb5f4b7ab18c112d9777f1d16155b6a441f1ee0fae05d55a50b454688",
+      "debug/debug_log.gd": "12823f0f904ad7d2b4b9f6c70401e6b5b68dff0c9cf60e525984b85b5f60d587",
+      "debug/flight_gizmos.gd": "3eaf6fddecaced7d3f7f90cd7f3f86db3c878b5e5ae07c9ab80891a86f237831",
+      "debug/frame_statistics.gd": "a84e1aa382bd7bbb94587a51d97b393067857bf9c3968eeff9c8c16649bec37f",
+      "debug/render_probe.gd": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+      "debug/rewind_ring.gd": "b6ceda17f9214f3484409cc5f61e0da121085951867467379cccd9f3493f2cee",
+      "input/controller_actions.gd": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "input/smoke_aux.gd": "f0a0e54b59ce541fe380531d4432e916004c61a0e69503aec0a8c4d6387208f7",
+      "landscapes/catalog.gd": "d8869f01f195f2309ea7a2d7b340a858e4e4ee139c15ffb944d3ef7134c3f61e",
+      "physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+      "physics/multirotor/actuator_map.gd": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+      "physics/multirotor/allocator.gd": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+      "physics/multirotor/flight_controller.gd": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+      "physics/multirotor/rates.gd": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+      "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+      "render/scene_detail.gd": "f09958c92dd99d5e2404d47fac0a97f449095448a2a94b25db2a06742973d3c8",
+      "render/vehicle_paint.gd": "f656bf1b93c65cea6ccb6ba5426e6cb6ace522a27eb1a6e54c62cf49c4966611",
+      "render/viewport_color.gd": "2cf819867bd3323e0b2f94496b680f744d8b37bc049a6ed25a50b6222141e4ad",
+      "render/world/conditions.gd": "faf3049c59aab90b9eb497bd48e865b072439bebf316873ebbb4b187d181435b",
+      "render/world/ephemeris.gd": "2ddff868db43ea4e3803b2df9fe3d8bb85d1f84e41d9a4b25bdaac28b6b700a6",
+      "render/world/lunar.gd": "e7bd23f9306129c1994b7897432400c14c69520754755c38a67db59227e98302",
+      "spec.gd": "8d5f216cb6dab23a366c92d17150f0379a06019f86ae24478b9fda778b5f0ef5",
+      "tests/test_debug_bridge.gd": "754530e9bb747b4cbb59f3bbf11464132ec94273de5e5f291489bdcc5d577d3f",
+      "tests/test_debug_bridge_contracts.gd": "f71ce00fe9d0fa8de3d4c8ed7845dc108683be67f5493d3f2b7c739920a5137e",
+      "tests/test_debug_observers.gd": "799f33d4d3781cac1c3f9ffb70eaaea01a3cceac681fc8e158ed977c2958c8d0",
+      "tests/test_debug_step.gd": "67380437963b077bb7cf1982955f379159b3a5905d1f7b2dbdc49a93450efbe3",
+      "ui/controls_reference.gd": "2de2316639554115fed9f5510569966e46686a80a78ed1157fb40095b5ff64b2",
+      "ui/crystal_surface.gd": "62ccb53c5761250dd07442237bf96cfdfc9e53778b6345079ff9fdb3f854d1ac",
+      "ui/screen.gd": "25c6628037a746fcaa8e069473e673325ff5b81917b6048114d66cb2257ced2c",
+      "ui/screen_stack.gd": "e2065fe6ae21579546a38d9469ba3f94a67bbfc9e1d7c2ce747e83c414b43915",
+      "ui/shaders/crystal.gdshader": "00a82730ed8ff21caa43e781c309dac41ccef299299a2af44d33e125e303adea",
+      "ui/ui_theme.gd": "80530912874851144e3773f4a8206eef0bd233b94ceb4fabeb0da23fa7c08ae1",
+      "ui/widgets.gd": "2aa4dfbf4c99ebbc589895af2d364b7c713a4746dbfba8bec607878fd2d9758f",
+      "vehicles/airship/airship_catalog.gd": "e9694796601189f1d5cf3c90bdd46762dab2178580eb993b574f3bc7608f7cdc",
+      "vehicles/ground/vehicle_catalog.gd": "34ac3ecf1155755bd2dafb565e5b66ab73d9184b023ee276ca58da728b2af372",
+      "vehicles/multirotor/multirotor_catalog.gd": "cd0edf499fbad26472c2870617e791090858c6c033af69c5ecf72a9699791d86"
+    },
+    "broad_bridge_wrapper": "extends \"res://tests/test_debug_bridge.gd\"\nconst FixtureCatalog := preload(\"res://app_state/aircraft_catalog.gd\")\nfunc _initialize() -> void:\n\tfor id in FixtureCatalog.ids():\n\t\tFixtureCatalog._ground_start_cache[id] = {runway = true, hand_launch = false}\n\tsuper._initialize()\n",
+    "import_status": "Editor imports did not complete in this environment. Source-only standalone checks need no imported binary assets and passed."
+  },
+  "godot_checked_runs": {
+    "tests/test_debug_frame_history.gd": {
+      "started_utc": "2026-11-18T03:21:17.109331+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "51 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.907244,
+      "log_bytes": 2795,
+      "log_sha256": "9b1a18d8142406e50401059c34196f74ca5d701b9de4890bba84286c9509831d",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_frame_history.gd",
+        "--",
+        "--sample-out=$FIXTURE/synthetic-frames.json"
+      ],
+      "assertions_passed": 51
+    },
+    "tests/test_debug_bridge_contracts.gd": {
+      "started_utc": "2026-11-18T03:21:37.153423+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.205717,
+      "log_bytes": 2202,
+      "log_sha256": "2f1573396d62068644c0c9581508298e3be06cd546e17280d217d826b9578516",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_bridge_contracts.gd"
+      ],
+      "assertions_passed": 26
+    },
+    "tests/test_debug_step.gd": {
+      "started_utc": "2026-11-18T03:22:31.468098+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "24 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.995857,
+      "log_bytes": 1288,
+      "log_sha256": "22b62ed5d4772b66795204ad4bf5ea710c4246dbabd77f14def7c334668cf8fb",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_step.gd"
+      ],
+      "assertions_passed": 24
+    },
+    "tests/test_debug_observers.gd": {
+      "started_utc": "2026-11-18T03:22:32.528721+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "36 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.282865,
+      "log_bytes": 1714,
+      "log_sha256": "3b8f202631986b7a5af71119721920f49f254caf56f911ae9de1840e3651569a",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_observers.gd"
+      ],
+      "assertions_passed": 36
+    },
+    "bridge_isolated_suite.gd": {
+      "started_utc": "2026-11-18T03:22:32.856804+00:00",
+      "warnings_as_errors": false,
+      "required_text": [
+        "all debug bridge checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 8,
+          "message": "bridge-test warning",
+          "context": [
+            "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "     GDScript backtrace (most recent call first):",
+            "         [0] _protocol (res://tests/test_debug_bridge.gd:214)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 86,
+          "message": "gap-test kept warning",
+          "context": [
+            "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "     GDScript backtrace (most recent call first):",
+            "         [0] _gap_tools (res://tests/test_debug_bridge.gd:586)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.802215,
+      "log_bytes": 202137,
+      "log_sha256": "500c711bc9288ba52fc5d23754f69cf219c24151228e021b50b690ca761598ba",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://bridge_isolated_suite.gd"
+      ],
+      "assertions_passed": 114
+    },
+    "wire_probe.gd": {
+      "started_utc": "2026-11-18T03:25:51.331099+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "Live stutter wire probe ready"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.42242,
+      "log_bytes": 151,
+      "log_sha256": "caf3d67da75ed3257cf0a6efc729e43cce4ac666ee83f59e6cc4f5e1e1c03b19",
+      "command": [
+        "$GODOT_PINNED",
+        "--headless",
+        "--path",
+        "$FIXTURE",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://wire_probe.gd"
+      ],
+      "assertions_passed": 0
+    }
+  },
+  "godot_assertions_passed": 251,
+  "python_tests": {
+    "modules": [
+      "tools.debug.test_frame_capture",
+      "tools.debug.test_debugctl",
+      "tools.debug.test_mcp_server",
+      "tools.debug.test_mcp_registration",
+      "tools.debug.test_mcp_transport"
+    ],
+    "tests": 116,
+    "passed": 115,
+    "failures": [],
+    "errors": [],
+    "skipped": [
+      [
+        "test_windows_contender_recovers_when_lock_owner_is_killed (tools.debug.test_debugctl.DebugctlTests.test_windows_contender_recovers_when_lock_owner_is_killed)",
+        "needs native Windows locking"
+      ]
+    ],
+    "ok": true,
+    "log_sha256": "66531db3eeeb01fa8463d1efc7226c90749521b8d82101923eb327f55fb31834",
+    "later_report_only_exporter_rerun": {
+      "tests": 11,
+      "passed": 11,
+      "errors": 0,
+      "failures": 0,
+      "command": "python3 -m unittest tools.debug.test_frame_capture -q"
+    }
+  },
+  "live_wire_capture": {
+    "ok": true,
+    "workload": "Owned empty headless scene with 25 ms and 80 ms injected main-thread sleeps; software integration only",
+    "frames": 150,
+    "relative_stutters": 2,
+    "absolute_stalls": 1,
+    "query_marked_frames": 1,
+    "export_command": "python3 tools/debug/debugctl.py frames --out NEW_DIR --json",
+    "artifacts": [
+      "csv",
+      "html",
+      "json",
+      "perfetto"
+    ],
+    "source": {
+      "pid": 7,
+      "godot": "4.8-beta2 (official)",
+      "display_server": "headless",
+      "rendering_method": "gl_compatibility",
+      "rendering_driver": "opengl3",
+      "os": "Linux",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "gpu_adapter": "",
+      "viewport_size": [
+        64.0,
+        64.0
+      ],
+      "vsync_mode": null,
+      "max_fps": 60,
+      "runtime_revision": "not_observed"
+    },
+    "renderer_performance_qualified": false,
+    "checked_runner_exit": 0,
+    "probe_script": "extends SceneTree\nconst Bridge := preload(\"res://debug/debug_bridge.gd\")\nvar frames := 0\nfunc _initialize() -> void:\n\tEngine.max_fps = 60\n\tcall_deferred(\"start\")\nfunc start() -> void:\n\tvar app := Node.new()\n\tapp.name = \"WireProbe\"\n\troot.add_child(app)\n\tapp.add_child(Bridge.new())\n\tprocess_frame.connect(frame)\n\tprint(\"Live stutter wire probe ready\")\nfunc frame() -> void:\n\tframes += 1\n\tif frames == 40:\n\t\tOS.delay_msec(25)\n\tif frames == 100:\n\t\tOS.delay_msec(80)\n\tif frames > 1800:\n\t\tquit(1)\n"
+  },
+  "godot_serialized_snapshot_export": {
+    "frames": 126,
+    "flagged_events": 1,
+    "serializer": "Default Godot JSON.stringify, same settings as bridge replies",
+    "artifacts": [
+      "json",
+      "csv",
+      "perfetto",
+      "html"
+    ],
+    "synthetic": true,
+    "ok": true
+  },
+  "chart": {
+    "syntax_check": "node --check on the exact integrated inline script",
+    "mocked_canvas": {
+      "small": {
+        "bars": 108,
+        "minHeight": 36.47394858515884,
+        "maxHeight": 192
+      },
+      "desktop": {
+        "bars": 2572,
+        "minHeight": 36.47394858515884,
+        "maxHeight": 192
+      },
+      "retina": {
+        "bars": 216,
+        "minHeight": 36.47394858515884,
+        "maxHeight": 192
+      },
+      "toggle": "bitmap drawing commands changed",
+      "resize": "backing dimensions updated"
+    },
+    "extreme_positive_fps": "Public exporter preserves explicit <0.1 FPS display for long-stall tails.",
+    "browser_visual_qa": "Blocked: Chromium requires AF_UNIX sockets, denied with EPERM in this environment. No screenshots or real-browser rendering pass claimed."
+  },
+  "independent_review": {
+    "mode": "Read-only adversarial source review",
+    "resolved": [
+      "Reject frame capture policy/reset options before contacting app",
+      "Pair longest episode frame count and duration",
+      "Count/select distinct retained details across both event buffers",
+      "Preserve legacy reset boolean spellings"
+    ],
+    "recheck": "No residual defect found in the four fixes; reviewer did not execute tests."
+  },
+  "qualification": {
+    "focused_software": true,
+    "full_application_ci": false,
+    "rendered_flight": false,
+    "target_gpu_performance": false,
+    "native_windows": false,
+    "presented_frame_timing": false,
+    "fps_improvement_claimed": false
+  }
+}

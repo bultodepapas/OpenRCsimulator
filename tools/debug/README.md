@@ -25,6 +25,7 @@ can use the [checked runner](../godot/README.md). Claude Code and Codex find thi
 Contents: [agents and MCP](#agents-and-mcp-pt1h-r11) · [quick start](#quick-start) · [I want to…](#i-want-to) ·
 [commands](#commands) ·
 [stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) ·
+[frame-pacing captures](#frame-pacing-and-stutter-captures-pt1h-r15) ·
 [GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) ·
 [flight gizmos and BugIt](#flight-gizmos-and-bugit-pt1h-r10) · [recipes](#recipes) ·
 [how it works and limits](#how-it-works-and-limits) · [performance](#performance) · [verification](#verification).
@@ -52,7 +53,7 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Take a picture | `$D screenshot max_width=960 format=jpg` (not under `--headless`) |
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
-| Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
+| Find a stutter / FPS drop / slow load / hot script | `$D frames`; `$D frames --out tmp/stutter-01` saves HTML/CSV/Perfetto; `launch --verbose` + `$D timeline --stutter`; `launch --script-profile` + `$D profile seconds=20` |
 | Inspect render costs | `$D render` (raw GPU/CPU observations, draw calls), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
 | Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
 | See the forces, velocities and wind on the aircraft | `$D gizmos show=all`, then `$D screenshot` |
@@ -229,7 +230,7 @@ Launch options:
 | Time | `pause`, `resume`, `step ticks=<n>`, `rewind arm=\|list=\|seconds=\|tick= [attempt=] [pause=] [inputs=pilot\|recorded]`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
 | Flight debugging | `gizmos [show=] [off=true] [auto_scale=] …`, `checkpoint action=save\|load path=`; client `bugit [--note] [--out]`, `bugitgo DIR [--resume]` |
 | Render cost | `render [frames=] [measure=]`, `layers [depth=] [root=]`, `ablate [targets=] [depth=] [frames=] [warmup=] [freeze=]`, `viewmode [name=]` |
-| Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
+| Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames` ([pacing and export options](#frame-pacing-and-stutter-captures-pt1h-r15)), `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
 | Scripts | `smoke [--seed S] [--steps N] [--cycles N] [--app DIR]`, `run FILE\|- [--keep-going] [--fail-on-error]`, `repl`, `crawl [--shots]`, `timeline [--since N] [--top N]`, `soak FILE [--cycles N] [--warmup N] [--tolerance N]`, `monkey [--steps N] [--seed S] [--keys] [--out FILE]` |
@@ -277,15 +278,10 @@ Notes on the commands:
 
 Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-gaps-2026-10-24.md):
 
-- **Stutter: `frames`.**
-  - Every frame's wall time goes into a 7,200-frame ring, with the physics ticks the frame ran.
-  - `frames` gives the mean, p50/p95/p99, max, mean fps, 1 % low fps and the frames that hit the
-    `max_physics_steps_per_frame` limit.
-  - A frame longer than `max(hitch_ms, factor × median of the last 60)` (defaults 50 ms and 3) becomes a
-    `hitch` log event. The event carries what changed during that frame (pipeline compilations, objects, nodes,
-    resources, orphans, static memory), the physics ticks, the route, and the log lines printed in it. It also names
-    likely causes: pipeline/shader compilation, physics catch-up, scene/resource construction.
-  - Example: Home → Fly is one 3.6 s frame, with "scene/resource construction (+1,482 objects, +64 MiB)".
+- **Stutter: `frames`.** Every wall callback interval goes into a 7,200-frame ring. The
+  [frame-pacing workflow below](#frame-pacing-and-stutter-captures-pt1h-r15) separates brief relative stutters,
+  absolute stalls and sustained target-FPS overruns, with 1%/0.1% lows, raw samples and bounded event evidence.
+  Pipeline, memory and scene counters are correlated observations; their freshness does not establish a cause.
 - **Simulation watchpoints: `break`.**
   - `break expr="-s[2] < 2" wait=true` checks the expression before every flight tick (inputs: `session`, `sim`,
     `s`, `app`, singletons). It pauses at the exact tick it becomes true, logs a `break` event and returns the state.
@@ -324,10 +320,12 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
     time per sample, with call counts.
   - Profiling adds overhead, and it attributes GDScript, not rendering.
 - **Load phases: `timeline`.** Launch with `--verbose`, act, then run `timeline --hitch`: it keeps only the lines
-  printed during the longest recorded hitch frame and lists the largest wall-time gaps between them (a resource load
+  printed during the longest retained hitch in the selected frame ring and lists the largest wall-time gaps between them (a resource load
   is a line under `--verbose`), with what had just finished. `--since <seq>` / `--until <seq>` choose any other
   window. The gaps name what finished before the time went, not the work inside it. This is the phase breakdown inside
   one long frame, where the script-profile samples miss it.
+  `timeline --stutter` also includes the more sensitive relative-stutter and absolute-stall events. Both selectors
+  ask for up to 200 retained details and use the event's log cursors; missing/evicted log lines remain unavailable.
 - **One-command regression pass: `smoke`.**
   - It runs its own headless session on its own port: `crawl` from Home, every scenario in
     `tools/debug/scenarios/*.txt` with `--fail-on-error`, a flight and `crawl` from its pause menu, a seeded
@@ -403,6 +401,106 @@ key from a copy of the baseline makes the matching warning new (exit 1).
 - It could not parse 9 files.
 
 The engine's own warnings are the better signal.
+
+## Frame pacing and stutter captures (PT1h-R15)
+
+Use a rendered 1920×1080 session on the target machine for performance investigation; a headless run checks
+software behavior only. Set `OPENRC_DEBUG_BRIDGE` to the port of your owned session as described in
+[Quick start](#quick-start). These commands change diagnostics settings, not the simulator's FPS cap or physics.
+
+```sh
+# Start a fresh measurement after reaching the flight/scene you want to investigate.
+python3 tools/debug/debugctl.py frames target_fps=60 reset=true
+# Fly normally; allow several seconds of steady flight and reproduce the problem.
+python3 tools/debug/debugctl.py frames --out tmp/stutter-60fps-01
+# Optional: inspect log gaps around the worst retained event (launch with --verbose).
+python3 tools/debug/debugctl.py timeline --stutter
+```
+
+The destination must be new. Configure/reset in a separate command before reproducing the problem;
+`frames --out` refuses policy/reset options before contacting the app, protecting the recorded history.
+It takes **one bounded snapshot**, then creates `report.html`,
+`frames.csv`, `frames.json` and `frames.perfetto.json` in the client process. Open the HTML for a timeline,
+FPS lows, worst frames and retained context. Its logarithmic vertical scale keeps smaller spikes visible beside
+long loading stalls; switching it off gives a linear scale. Open the trace in [Perfetto](https://ui.perfetto.dev/)
+for frame slices, counters and event markers. Trace times use a local origin and do not align independent processes.
+The snapshot includes the retained lead-up and recovery already observed; it does not wait for future frames.
+At 60 FPS the full ring covers about two minutes; at 120 FPS, about one minute. Capture promptly after a problem.
+
+For a summary without files, use `frames`; `window=600` selects the newest 600 available samples.
+`frames samples=true events=200 --json` exposes the versioned `openrc-debug-frames v1` snapshot directly.
+The typed MCP tool `sim_frames` exposes the same settings and observations. Empty captures cannot be exported;
+wait for a complete interval after reset. Do not poll large raw snapshots every frame.
+
+### Three independent signals
+
+| Signal | Default rule | What it reveals |
+| --- | --- | --- |
+| Relative stutter | More than 1.5× the preceding median **and** more than 4 ms above it | A 33 ms interruption among 16 ms frames, or a 16.7 ms interruption among 8.3 ms frames |
+| Absolute stall | More than 50 ms, independently of the adaptive baseline | Long frames even when the overall workload is already slow |
+| Target-budget overrun | More than `1000 / target_fps + budget_tolerance_ms`; tolerance defaults to 0.5 ms | Persistent FPS drops and uneven pacing that a relative detector can adapt to |
+
+Relative detection waits for eight preceding samples. Its upper median uses up to 60 previous samples,
+refreshed every 15 frames; each event and raw sample retains the baseline used at that moment. This is a causal
+live heuristic, not a reproduction of an offline surrounding-window algorithm or a universal perceptual threshold.
+`stutter_factor`, `stutter_min_extra_ms`, `stall_ms`, `target_fps` and `budget_tolerance_ms` are configurable.
+`budget_tolerance_ms=0` requests a strict budget comparison, which is sensitive to tiny timing jitter.
+
+The older hitch condition remains `ms > max(hitch_ms, factor × baseline)`, with defaults 50 ms and 3.
+Its `hitch` log events and report fields remain available alongside the more sensitive signals. No detector
+proves a GPU bottleneck or counts actual dropped display frames.
+
+### Statistics and scope
+
+- FPS is measured frames divided by elapsed wall time. p50/p95/p99/p99.9 use nearest-rank frame-time percentiles.
+- `fps_1pct_low` preserves the existing formula: `1000 / mean(slowest max(1, floor(N × .01)) durations in ms)`.
+  `fps_01pct_low` uses `.001`. These are tail averages, not reciprocals of p99/p99.9. Reports include tail counts;
+  windows below 100/1,000 samples are explicitly short. Even a one-frame tail is weak descriptive evidence.
+- Budget reporting includes affected frame count/share, time occupied by slow frames, excess above the ideal
+  budget, and the longest consecutive slow run (most frames, then greatest duration on ties).
+  The run's frame count and duration describe the same episode. Slow-time share and excess time are different quantities.
+- Adjacent-frame-change p95 and standard deviation make alternating fast/slow cadence visible even when a
+  median-relative detector has adapted. Percentiles are percentages of samples, not percentages of elapsed time.
+- `samples=true` returns chronological packed columns: exact monotonic end/duration microseconds, engine frame,
+  physics ticks, baseline, flags, route at interval start, prior recorder cost and optional last-read GPU time.
+  `first_sequence` identifies the first row; all rows and event details share one `epoch`/`capture_id`.
+- Headless or zero/unavailable GPU readings remain unavailable. Positive readings retain **unverified freshness**.
+  Runtime source revision is reported as `not_observed`; a client checkout is not assumed to identify the running app.
+
+### Retention, reset and observer effects
+
+`hitch_total`, `relative_stutter_total`, `stall_total` and `event_total` count since the latest reset/policy change.
+Window counts are separate. Each of the legacy-hitch and combined-event detail buffers holds at most 200 records;
+their union can retain up to 400 distinct events. Counts of retained, returned, evicted and omitted details use
+that union, without double-counting. `events` defaults to 20 and is capped at 200 per buffer.
+New non-legacy details are limited to ten per second, with events larger than the previous retained event captured immediately;
+new non-legacy log events are limited to one per second. Exact per-frame flags/counts are retained regardless.
+Suppressed, evicted, returned and omitted details are reported separately. The HTML/trace still marks detected
+frames with no retained detail. Raw frames overwritten by ring rollover cannot be recovered.
+
+**Compatibility corrections:** old `hitch_total` saturated at 200; it is now the cumulative count, with
+`hitch_retained` reporting storage. `hitches` and `stutters` now belong to the requested frame window; older session
+events do not leak into a short-window report. The legacy aggregate `deltas.pipelines` remains available, while
+separate canvas/mesh/surface/draw/specialization deltas distinguish foreground observations from background work.
+
+Options are validated together before any mutation. A detector-policy change automatically starts a fresh epoch,
+so one report cannot mix thresholds. Reset clears counters, median, clock, tick accumulator, event history and
+monitor/log baselines; the next callback establishes a fresh origin, and the following complete interval is the
+first sample. Concurrent clients should check the epoch/capture ID and avoid resetting each other's measurements.
+
+Querying and JSON-encoding a large snapshot still does work on the game thread. The next interval carries flag
+16 (`diagnostic_query`); it is preserved rather than silently subtracted. The capture's own final query affects a
+later interval outside that snapshot. This flag indicates coincidence, not cause. `observer_mean_usec` and
+`observer_max_usec` measure prior recorder work only; they exclude other bridge operations and detailed profiling.
+Use script profiling for a targeted follow-up, not every ordinary flight.
+
+Event context includes route transitions, available pause/focus state, physics catch-up, individual pipeline and
+memory/object deltas, monitor CPU observations, raw GPU status and nearby log cursors. Godot monitors can lag, so
+these observations guide the next experiment. For display pacing or GPU causality, correlate a controlled native
+capture with PresentMon/Nsight or the platform profiler. A clean timing trace does not rule out interpolation,
+camera or physics/render cadence jitter.
+
+Research, decisions and software verification: [PT1h-R15 evidence](../../docs/research/release-readiness/PT1h-R15/README.md).
 
 ## GPU cost and rewind (PT1h-R9)
 

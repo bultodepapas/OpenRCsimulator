@@ -38,6 +38,18 @@ class McpServerTests(unittest.TestCase):
     def rpc(self, method, params=None, id_=1):
         return mcp_server.handle({"jsonrpc": "2.0", "id": id_, "method": method, "params": params or {}})
 
+    def test_frames_is_a_typed_observation_without_extra_look(self):
+        calls = []
+        args = {"window": 600, "target_fps": 120, "samples": False, "events": 20}
+        with patch.object(debugctl, "result_of", side_effect=fake_bridge(calls)):
+            result = self.rpc("tools/call", {"name": "sim_frames", "arguments": args})
+        self.assertEqual(calls, [("frames", args)])
+        self.assertFalse(result["result"]["isError"])
+        with patch.object(debugctl, "result_of") as bridge:
+            result = self.rpc("tools/call", {"name": "sim_frames", "arguments": {"samples": "false"}})
+        bridge.assert_not_called()
+        self.assertTrue(result["result"]["isError"])
+
     def test_pool_tools_discovered_and_launch_returns_durable_ticket(self):
         from tools.testqueue import pool_mcp
         names = {tool["name"] for tool in self.rpc("tools/list")["result"]["tools"]}
