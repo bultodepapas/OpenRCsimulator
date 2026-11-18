@@ -4,7 +4,11 @@ extends SceneTree
 
 const TimingLease := preload("res://render/render_timing_lease.gd")
 const Probe := preload("res://debug/render_probe.gd")
-const FrameDiagnostics := preload("res://render/frame_diagnostics.gd")
+
+class GateOpenDiagnostics extends "res://render/frame_diagnostics.gd":
+	func _timing_gate(_display_server: String, _os_name: String, _rendering_method: String) -> String:
+		return ""
+
 
 var _checks := 0
 var _failures := 0
@@ -131,20 +135,44 @@ func _run() -> void:
 	_check("the last observer turns the root off", not _on(a))
 	nested.free()
 
-	# FrameDiagnostics releases through the lease and never writes after its viewport is freed.
+	# FrameDiagnostics (timing gate opened for headless) acquires and releases through the lease.
 	_fresh()
 	var observed := SubViewport.new()
 	root.add_child(observed)
 	await process_frame
-	var observer = FrameDiagnostics.new()
+	var observer := GateOpenDiagnostics.new()
 	observer.start(observed)
+	_check("diagnostics start takes a lease", TimingLease.owners(observed) == ["frame_diagnostics"] and _on(observed) \
+		and observer.metadata().viewport_measurement_enabled, str(observer.metadata()))
 	var probe_lease := TimingLease.acquire(observed, "render_probe")
-	observer.stop()
-	_check("diagnostics stop leaves a probe's lease measuring", TimingLease.holders(observed) == 1 and _on(observed))
 	TimingLease.release(probe_lease)
+	_check("a probe stopping first keeps diagnostics measuring", _on(observed) and TimingLease.holders(observed) == 1)
+	probe_lease = TimingLease.acquire(observed, "render_probe")
 	observer.stop()
-	_check("diagnostics stop is idempotent through the lease", not _on(observed))
+	_check("diagnostics stop leaves a probe's lease measuring", TimingLease.owners(observed) == ["render_probe"] and _on(observed))
+	observer.stop()
+	_check("repeated diagnostics stop does not release another lease", TimingLease.holders(observed) == 1)
+	TimingLease.release(probe_lease)
+	_check("the last release turns the viewport off", not _on(observed))
 	observed.free()
+
+	# A viewport freed under FrameDiagnostics is dropped from the lease without writing its stale RID.
+	_fresh()
+	var transient := SubViewport.new()
+	root.add_child(transient)
+	await process_frame
+	var transient_rid := transient.get_viewport_rid()
+	var transient_observer := GateOpenDiagnostics.new()
+	transient_observer.start(transient)
+	transient.free()
+	transient_observer.sample()
+	transient_observer.stop()
+	var transient_off := 0
+	for write: Array in _writes:
+		if write[0] == transient_rid and not write[1]:
+			transient_off += 1
+	_check("freed diagnostics viewport is never written off", _writes.size() == 1 and transient_off == 0 \
+		and not transient_observer.metadata().viewport_measurement_enabled)
 
 	a.free()
 	b.free()

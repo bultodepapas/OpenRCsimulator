@@ -10,6 +10,27 @@ records paired 1080p Standard/High captures, range/ownership checks and the rema
 Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects.
 Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
 
+The [strict audit of 17 November 2026](https://github.com/bultodepapas/OpenRCsimulator/blob/audit/shadows-2026-11-17/docs/research/shadow-audit-2026-11-17/findings.md)
+(branch `audit/shadows-2026-11-17`) lists 26 findings. Its source-level defects are corrected on main:
+
+| Finding | Correction | Evidence |
+| --- | --- | --- |
+| SA-03 | The projected cue follows `*_hinge` nodes and nodes tagged by `ProjectedShadow.tag_articulation()` (control hinges, wing folds, mechanisms, gear retraction; not wheel spin or propellers). Each part draws with its live transform; the Corsair LOD proxy keeps the same parts. | `test_projected_shadow.gd`; GPU probe on Forward+ and Compatibility: folding a hinged wing changes the mask from 6336 to 2916 covered texels in both |
+| SA-07 | Mask reuse is bounded by the largest projected corner shift instead of 0.25°. The limit is half the blur (at most 4 cm), or one mask texel when that is coarser. | The audit counterexample now redraws. In a golden-hour sweep at time scale 20 on the default field: 0.03–0.10 field-map redraws per frame (old rule 0.02–0.03) |
+| SA-06, SA-09 | Home and flight use the bounded `shadow_direction()` for the Sun cue in fixed and flowing time, and one `Shadow.cue_strength()` rule. Vertical is a pilot aid at full strength; the camera keeps the raw sun. | `test_shadow_cue_controls.gd` |
+| SA-10 | A full cloud-tile cache reclaims an unreferenced tile (failed, then pending, then ready). Abandoned pending bakes are released, and refused consumers retry. | `test_cloud_shadow_map.gd` |
+| SA-12 | Field scenery collection stops before collecting faces once no map slot or 256² target remains. | `test_field_projected_shadows.gd` |
+| SA-13, SA-14 | `ShadowSettings.applied_global()` and `light_receipts()` report the submitted atlas and each light's actual state (source veto, activity cap, technique). The render probe and visual evidence include them. | `test_shadow_settings.gd` |
+| SA-04 | `Shadow.receiving_ground()` follows the light to the session's own terrain (read-only), so the aircraft and vehicle cues land on banks, ramps and lakes with terrain-relative fade and blur. The cue fades out where the terrain under its footprint departs 0.15–0.6 m from one plane. Roofs and other nearer surfaces still have no receiver query. | `test_vehicle_shadow_cue.gd` |
+| SA-08 | `VehicleShadowCue` gives the helicopter, RC cars, quad and blimp a moving planar cue when native maps are off (Projected, or a renderer without native shadows); spinning rotors are excluded. In Auto/Native they keep native shadows only, so SA-02's overlap is not widened. | `test_vehicle_shadow_cue.gd`; activity suites |
+| SA-11 | Field casters release their render target (2×2, the engine minimum) while hidden — Off/Native and night — and reallocate and redraw when shown. Collected geometry and caster selection are kept. | `test_projected_shadow.gd`; `test_field_integration.gd` |
+| SA-15 | Saved **Cloud shadows** On/Off (`shadow_cloud`, `[shadows] clouds`). Off zeroes the spatial cloud shade on live ground/near-grass materials, so their shaders skip the cloud sampling, and releases their noise tile; clouds and weather are unchanged. | `test_shadow_settings.gd`; `test_display_preferences.gd` |
+| SA-01, SA-24 | Settings states that Projected cannot self-shadow aircraft (tooltip and receipt), and Softness names its resolved filter, for example "Soft (PCF)". | `test_shadow_settings_ui.gd` |
+
+Still open, needing rendered/GPU evidence or a design decision: SA-02, SA-05, SA-16–SA-23, SA-25 and SA-26.
+SA-01's structural limit remains: only native maps can self-shadow.
+Two SA-03 gaps remain: procedural aircraft parts that move without a `*_hinge` name are not tagged, and geometry hidden when the shadow binds never enters the mask.
+
 This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#phase-11-owner-authorized-48-improvements) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
 
 [Section 13](#13-targeted-c-efficiency-work) incorporates six additional internet investigations into C++ efficiency. It selects a small optional geometry-preparation helper for consideration after current profiling, while reusing Godot's existing native rendering/import operations.

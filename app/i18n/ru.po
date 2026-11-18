@@ -9227,6 +9227,15 @@ msgstr "Встроенные тени недоступны в этой граф�
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "Покрытие встроенных теней экспериментально; некоторые объекты не отбрасывают тени."
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "Проецируемые тени — лишь ориентиры на земле: летательные аппараты не затеняют сами себя, а крыши и другие приподнятые поверхности их не получают."
+
+msgid "Cloud shadows"
+msgstr "Тени облаков"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "Убирает движущуюся тень облаков с земли. Облака остаются видимыми."
+
 msgid "Activities may use a shorter range."
 msgstr "В некоторых занятиях дальность может быть меньше."
 

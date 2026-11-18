@@ -29,7 +29,7 @@ func run() -> void:
 	var high := Settings.resolve({}, "forward_plus", true)
 	check("current High preserves allocation and PCSS", high.effective.atlas_size == 8192 and high.effective.cascades == 4 and not high.effective.use_16_bits and high.effective.angular_distance == 0.53)
 	check("malformed selections independently fall back", Settings.normalize({shadow_technique = "native", shadow_quality = 99, shadow_distance = "distant", shadow_softness = null}) == {
-		shadow_technique = "native", shadow_quality = "current", shadow_distance = "auto", shadow_softness = "auto", shadow_aircraft_cue = "auto"})
+		shadow_technique = "native", shadow_quality = "current", shadow_distance = "auto", shadow_softness = "auto", shadow_aircraft_cue = "auto", shadow_cloud = "on"})
 	for technique: String in Settings.TECHNIQUES:
 		var result: Dictionary = Settings.resolve({shadow_technique = technique}, "forward_plus", true).effective
 		check(technique + " native ownership", result.native == (technique in ["auto", "native"]))
@@ -102,12 +102,83 @@ func run() -> void:
 	Settings.apply({})
 	check("destroyed lights are not retained", Settings._lights.is_empty())
 	_test_lighting_compensation()
+	_test_receipts()
+	_test_cloud_shadow_choice()
 	check("atmosphere spec remains byte-identical", Spec.ATMOSPHERE == original_spec)
 	Atmosphere.state = original_state
 	Atmosphere.engine_shadows = original_engine
 	Settings.apply(previous)
 	print("Shadow settings: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+## SA-15: the saved Cloud shadows choice removes and restores the spatial cloud shade on live ground materials,
+## without touching the weather/sky strength it was built with.
+func _test_cloud_shadow_choice() -> void:
+	Settings.apply({})
+	check("SA-15: cloud shadows default on", Settings.cloud_shadows_enabled() and Settings.describe().effective.cloud_shadows)
+	var grass := ImageTexture.create_from_image(Image.create(2, 2, false, Image.FORMAT_RGB8))
+	var ground: ShaderMaterial = Atmosphere.ground_material(grass)
+	var weather := float(ground.get_shader_parameter("cloud_shadow_strength"))
+	var unrelated := ShaderMaterial.new()
+	unrelated.shader = Atmosphere.SKY_SHADER
+	Atmosphere.update_ground_material(unrelated)
+	var sky_before: Variant = unrelated.get_shader_parameter("cloud_shadow_strength")
+	var revision := Settings.revision
+	Settings.apply({shadow_cloud = "off"})
+	check("SA-15: Off applies at once to a live ground material", Settings.revision > revision
+		and float(ground.get_shader_parameter("cloud_shadow_strength")) == 0.0
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	check("SA-15: Off leaves other shader kinds and the direct-shadow technique alone",
+		unrelated.get_shader_parameter("cloud_shadow_strength") == sky_before and Settings.effective().technique == "auto")
+	var built_off: ShaderMaterial = Atmosphere.ground_material(grass)
+	check("SA-15: ground built while Off starts without the cloud shade",
+		float(built_off.get_shader_parameter("cloud_shadow_strength")) == 0.0)
+	var copy := ground.duplicate() as ShaderMaterial
+	Atmosphere.track_shadow_material_copy(copy, ground)
+	Settings.apply({})
+	check("SA-15: On restores the weather strength on every live material, including copies",
+		is_equal_approx(float(ground.get_shader_parameter("cloud_shadow_strength")), weather)
+		and is_equal_approx(float(built_off.get_shader_parameter("cloud_shadow_strength")), weather)
+		and is_equal_approx(float(copy.get_shader_parameter("cloud_shadow_strength")), weather) and weather > 0.0)
+
+
+## SA-13/14: report what the owner submitted and what each light does, not the project default or global policy.
+func _test_receipts() -> void:
+	Settings.apply({shadow_quality = "ultra", shadow_technique = "native"})
+	var applied := Settings.applied_global()
+	check("SA-13: the applied atlas is the selected one, not the project default",
+		applied.atlas_size == 8192 and applied.atlas_size != int(ProjectSettings.get_setting(Settings.ATLAS_SETTING, 0))
+		and applied.revision == Settings.revision)
+	check("SA-13: headless reports that nothing reached a renderer", not applied.submitted)
+	var holder := Node3D.new()
+	root.add_child(holder)
+	var vetoed := DirectionalLight3D.new()
+	holder.add_child(vetoed)
+	Settings.apply_sun(vetoed, false)
+	var capped := DirectionalLight3D.new()
+	holder.add_child(capped)
+	Settings.apply_sun(capped, true)
+	Settings.set_distance_cap(capped, 35.0)
+	var rows := {}
+	for row: Dictionary in Settings.light_receipts():
+		rows[row.path] = row
+	var vetoed_row: Dictionary = rows.get(str(vetoed.get_path()), {})
+	var capped_row: Dictionary = rows.get(str(capped.get_path()), {})
+	check("SA-14: an explicit source veto is not reported as casting despite effective.native",
+		Settings.effective().native and not vetoed_row.is_empty() and not vetoed_row.casting
+		and vetoed_row.inactive_reason == "source_disabled")
+	check("SA-14: an activity cap is visible beside the configured range", not capped_row.is_empty()
+		and capped_row.casting and capped_row.distance_cap_m == 35.0 and capped_row.max_distance_m <= 35.0)
+	Settings.apply({shadow_technique = "projected"})
+	var off_row: Dictionary = {}
+	for row: Dictionary in Settings.light_receipts():
+		if row.path == str(capped.get_path()):
+			off_row = row
+	check("SA-14: a technique without native maps names its reason", not off_row.is_empty() and not off_row.casting
+		and off_row.inactive_reason == "technique")
+	holder.free()
+	Settings.apply({})
 
 
 func _test_lighting_compensation() -> void:

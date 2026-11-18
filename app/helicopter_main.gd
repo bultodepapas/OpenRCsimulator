@@ -133,6 +133,9 @@ func _ready() -> void:
  _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
  add_child(_airplane.root)
+ # SA-08: a Projected shadow selection also gives the helicopter its planar shadow; spinning rotors stay out.
+ var shadow_cue: Script=preload("res://render/vehicle_shadow_cue.gd")
+ shadow_cue.attach(self,_airplane.root,_lighting_snapshot,Callable(self,"_ground_height"),shadow_cue.helicopter_excluded(_airplane))
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).

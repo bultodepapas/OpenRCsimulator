@@ -8427,6 +8427,15 @@ msgstr "当前图形会话不支持原生阴影；投影阴影已启用。"
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "原生阴影覆盖仍处于试验阶段；部分物体不会投射阴影。"
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "投影阴影仅作为地面参考：飞行器不会在自身投下阴影，屋顶和其他高出地面的表面也不会接收阴影。"
+
+msgid "Cloud shadows"
+msgstr "云影"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "移除地面上移动的云影。云仍然可见。"
+
 msgid "Activities may use a shorter range."
 msgstr "某些活动可能使用更短的距离。"
 

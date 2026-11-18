@@ -230,6 +230,9 @@ func _ready() -> void:
 		_disable()
 		return
 	add_child(visual.root)
+	# SA-08: a Projected shadow selection also gives the quad its planar shadow; spinning rotors stay out of it.
+	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting, _ground_height_render,
+		visual.rotors.map(func(rotor: Dictionary) -> Variant: return rotor.get("pivot")))
 	var derived: Variant = session.data.get("derived", {})
 	_hover_speed = float(derived.get("hover_speed_rad_s", 0.0)) if typeof(derived) == TYPE_DICTIONARY else 0.0
 	if not is_finite(_hover_speed) or _hover_speed <= 0.0:

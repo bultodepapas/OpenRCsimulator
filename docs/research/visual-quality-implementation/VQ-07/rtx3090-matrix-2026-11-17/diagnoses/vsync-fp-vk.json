@@ -1,0 +1,838 @@
+{
+  "claims": {
+    "active_flight_qualification": "not_assessed",
+    "causal_attribution": "not_established",
+    "gpu_hardware_acceptance": "not_claimed",
+    "memory_leak": "not_claimed"
+  },
+  "format": "openrc-frame-diagnosis v1",
+  "interpretation_hints": [
+    "Frame-budget observations describe wall intervals and do not qualify active flight.",
+    "When present, render_cpu_ms and render_gpu_ms are root-viewport context. Render timing may be delayed or describe a previous render frame, so same-index values do not prove the cause of a wall-frame hitch.",
+    "A positive GPU poll is a cached last reading with unverified freshness. Observed render-server progress is a separate gate; it does not bind a reading to a frame or prove presentation or GPU completion.",
+    "A render_gpu_ms value of zero is unavailable_or_zero, not evidence of zero GPU cost.",
+    "Observer-reported invalid numeric readings are preserved as an explicit measurement issue; sanitized zero values must not be treated as valid measurements.",
+    "Memory start/end/max deltas describe this sample only and do not establish a memory leak.",
+    "This report does not establish GPU hardware acceptance or causal attribution.",
+    "Optional source frame_diagnostics metadata is preserved separately; observer polls and capability scopes are not counted as measured sample frames."
+  ],
+  "log_validation": {
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "diagnostics_omitted": 0,
+    "errors": [],
+    "readable": true
+  },
+  "measurement_hints": [
+    "The observer substitutes zero for invalid numeric readings; any positive invalid-value count invalidates this measurement set.",
+    "render_gpu_ms values are interpretable only when the declared timing capability allows them; missing capability metadata means scope is unknown."
+  ],
+  "measurement_issues": [],
+  "measurement_status": "no_detected_invalid_measurements",
+  "observations": {
+    "budget_comparison": "strictly greater than budget; equality is within budget",
+    "budget_ms": 16.667,
+    "frame_count": 2401,
+    "frame_ms_nearest_rank": {
+      "max": 20.834,
+      "p50": 8.334,
+      "p95": 8.528,
+      "p99": 9.598
+    },
+    "memory_sample_trends": {
+      "memory_static_bytes": {
+        "end": 506842868.0,
+        "end_delta": -874952.0,
+        "max": 507727880.0,
+        "max_delta_from_start": 10060.0,
+        "start": 507717820.0
+      },
+      "orphan_node_count": {
+        "end": 0.0,
+        "end_delta": 0.0,
+        "max": 0.0,
+        "max_delta_from_start": 0.0,
+        "start": 0.0
+      },
+      "render_buffer_memory_bytes": {
+        "end": 149224610.0,
+        "end_delta": 0.0,
+        "max": 149224610.0,
+        "max_delta_from_start": 0.0,
+        "start": 149224610.0
+      },
+      "render_texture_memory_bytes": {
+        "end": 1015175168.0,
+        "end_delta": 12374016.0,
+        "max": 1015175168.0,
+        "max_delta_from_start": 12374016.0,
+        "start": 1002801152.0
+      },
+      "render_video_memory_bytes": {
+        "end": 1225107936.0,
+        "end_delta": 12374016.0,
+        "max": 1225107936.0,
+        "max_delta_from_start": 12374016.0,
+        "start": 1212733920.0
+      },
+      "resource_count": {
+        "end": 1255.0,
+        "end_delta": 0.0,
+        "max": 1255.0,
+        "max_delta_from_start": 0.0,
+        "start": 1255.0
+      }
+    },
+    "over_budget_burst_count": 8,
+    "over_budget_bursts": {
+      "items": [
+        {
+          "duration_ms": 20.834,
+          "end_frame_index": 473,
+          "end_frame_number": 474,
+          "end_ms": 3961.832,
+          "frame_count": 1,
+          "peak_frame_ms": 20.834,
+          "start_frame_index": 473,
+          "start_frame_number": 474,
+          "start_ms": 3940.998,
+          "total_excess_ms": 4.166999999999998
+        },
+        {
+          "duration_ms": 20.391,
+          "end_frame_index": 459,
+          "end_frame_number": 460,
+          "end_ms": 3844.942,
+          "frame_count": 1,
+          "peak_frame_ms": 20.391,
+          "start_frame_index": 459,
+          "start_frame_number": 460,
+          "start_ms": 3824.551,
+          "total_excess_ms": 3.7239999999999966
+        },
+        {
+          "duration_ms": 20.347,
+          "end_frame_index": 40,
+          "end_frame_number": 41,
+          "end_ms": 353.936,
+          "frame_count": 1,
+          "peak_frame_ms": 20.347,
+          "start_frame_index": 40,
+          "start_frame_number": 41,
+          "start_ms": 333.589,
+          "total_excess_ms": 3.6799999999999997
+        },
+        {
+          "duration_ms": 19.796,
+          "end_frame_index": 300,
+          "end_frame_number": 301,
+          "end_ms": 2519.055,
+          "frame_count": 1,
+          "peak_frame_ms": 19.796,
+          "start_frame_index": 300,
+          "start_frame_number": 301,
+          "start_ms": 2499.259,
+          "total_excess_ms": 3.128999999999998
+        },
+        {
+          "duration_ms": 18.227,
+          "end_frame_index": 403,
+          "end_frame_number": 404,
+          "end_ms": 3375.773,
+          "frame_count": 1,
+          "peak_frame_ms": 18.227,
+          "start_frame_index": 403,
+          "start_frame_number": 404,
+          "start_ms": 3357.546,
+          "total_excess_ms": 1.5599999999999987
+        },
+        {
+          "duration_ms": 17.221,
+          "end_frame_index": 189,
+          "end_frame_number": 190,
+          "end_ms": 1591.802,
+          "frame_count": 1,
+          "peak_frame_ms": 17.221,
+          "start_frame_index": 189,
+          "start_frame_number": 190,
+          "start_ms": 1574.581,
+          "total_excess_ms": 0.5539999999999985
+        },
+        {
+          "duration_ms": 16.986,
+          "end_frame_index": 175,
+          "end_frame_number": 176,
+          "end_ms": 1474.859,
+          "frame_count": 1,
+          "peak_frame_ms": 16.986,
+          "start_frame_index": 175,
+          "start_frame_number": 176,
+          "start_ms": 1457.873,
+          "total_excess_ms": 0.31899999999999906
+        },
+        {
+          "duration_ms": 16.929,
+          "end_frame_index": 168,
+          "end_frame_number": 169,
+          "end_ms": 1416.826,
+          "frame_count": 1,
+          "peak_frame_ms": 16.929,
+          "start_frame_index": 168,
+          "start_frame_number": 169,
+          "start_ms": 1399.897,
+          "total_excess_ms": 0.2619999999999969
+        }
+      ],
+      "returned": 8,
+      "truncated": false
+    },
+    "over_budget_count": 8,
+    "over_budget_share": 0.003331945022907122,
+    "over_budget_share_percent": 0.3331945022907122,
+    "render_gpu_ms_status": {
+      "contradictory_positive_samples": 0,
+      "freshness": "unverified",
+      "interpretation": "positive_freshness_unverified",
+      "measured_positive_samples": 2401,
+      "positive_freshness_unverified_samples": 2401,
+      "render_progress": {
+        "eligible": true,
+        "reason": "render-server progress observed; actual presentation is not measured",
+        "status": "observed"
+      },
+      "reported": true,
+      "scope": "provided viewport only",
+      "status_counts": {
+        "invalid_reading": 0,
+        "malformed": 0,
+        "not_measured": 0,
+        "positive_freshness_unverified": 2401,
+        "zero_ambiguous": 0
+      },
+      "timing_available": true,
+      "unverified_positive_samples": 0,
+      "zero_samples": 0
+    },
+    "top_frames": [
+      {
+        "context": {
+          "draw_calls": 192.0,
+          "frame_setup_cpu_ms": 0.143,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 22.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 5.1e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 259083.0,
+          "process_time_s": 0.019695,
+          "render_cpu_ms": 0.397000014781952,
+          "render_gpu_ms": 1.50399994850159,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.50399994850159,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 3961.832,
+        "frame_index": 473,
+        "frame_ms": 20.834,
+        "frame_number": 474,
+        "over_budget": true,
+        "start_ms": 3940.998
+      },
+      {
+        "context": {
+          "draw_calls": 190.0,
+          "frame_setup_cpu_ms": 0.14,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 22.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 5.1e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 216711.0,
+          "process_time_s": 0.019695,
+          "render_cpu_ms": 0.538999974727631,
+          "render_gpu_ms": 1.48199999332428,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.48199999332428,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 3844.942,
+        "frame_index": 459,
+        "frame_ms": 20.391,
+        "frame_number": 460,
+        "over_budget": true,
+        "start_ms": 3824.551
+      },
+      {
+        "context": {
+          "draw_calls": 309.0,
+          "frame_setup_cpu_ms": 0.13,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 22.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 4.5e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 336474.0,
+          "process_time_s": 0.020268,
+          "render_cpu_ms": 0.518999993801117,
+          "render_gpu_ms": 2.17700004577637,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 2.17700004577637,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 353.936,
+        "frame_index": 40,
+        "frame_ms": 20.347,
+        "frame_number": 41,
+        "over_budget": true,
+        "start_ms": 333.589
+      },
+      {
+        "context": {
+          "draw_calls": 191.0,
+          "frame_setup_cpu_ms": 0.137,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 23.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 5.2e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 260788.0,
+          "process_time_s": 0.017142,
+          "render_cpu_ms": 0.526000022888184,
+          "render_gpu_ms": 1.29799997806549,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.29799997806549,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 2519.055,
+        "frame_index": 300,
+        "frame_ms": 19.796,
+        "frame_number": 301,
+        "over_budget": true,
+        "start_ms": 2499.259
+      },
+      {
+        "context": {
+          "draw_calls": 187.0,
+          "frame_setup_cpu_ms": 0.142,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 21.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 5.1e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 216654.0,
+          "process_time_s": 0.019695,
+          "render_cpu_ms": 0.352999985218048,
+          "render_gpu_ms": 1.45799994468689,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.45799994468689,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 3375.773,
+        "frame_index": 403,
+        "frame_ms": 18.227,
+        "frame_number": 404,
+        "over_budget": true,
+        "start_ms": 3357.546
+      },
+      {
+        "context": {
+          "draw_calls": 187.0,
+          "frame_setup_cpu_ms": 0.143,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 23.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 4.6e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 235722.0,
+          "process_time_s": 0.01629,
+          "render_cpu_ms": 0.400999993085861,
+          "render_gpu_ms": 1.46099996566772,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.46099996566772,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 1591.802,
+        "frame_index": 189,
+        "frame_ms": 17.221,
+        "frame_number": 190,
+        "over_budget": true,
+        "start_ms": 1574.581
+      },
+      {
+        "context": {
+          "draw_calls": 251.0,
+          "frame_setup_cpu_ms": 0.129,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 21.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 4.6e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 254695.0,
+          "process_time_s": 0.01629,
+          "render_cpu_ms": 0.533999979496002,
+          "render_gpu_ms": 1.59599995613098,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.59599995613098,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 1474.859,
+        "frame_index": 175,
+        "frame_ms": 16.986,
+        "frame_number": 176,
+        "over_budget": true,
+        "start_ms": 1457.873
+      },
+      {
+        "context": {
+          "draw_calls": 280.0,
+          "frame_setup_cpu_ms": 0.129,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 20.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 4.6e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 306068.0,
+          "process_time_s": 0.01629,
+          "render_cpu_ms": 0.638000011444092,
+          "render_gpu_ms": 1.97699999809265,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 1.97699999809265,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 1416.826,
+        "frame_index": 168,
+        "frame_ms": 16.929,
+        "frame_number": 169,
+        "over_budget": true,
+        "start_ms": 1399.897
+      },
+      {
+        "context": {
+          "draw_calls": 294.0,
+          "frame_setup_cpu_ms": 0.12,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 22.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 4.5e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 317635.0,
+          "process_time_s": 0.020268,
+          "render_cpu_ms": 0.667999982833862,
+          "render_gpu_ms": 2.0,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 2.0,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 1332.971,
+        "frame_index": 158,
+        "frame_ms": 16.369,
+        "frame_number": 159,
+        "over_budget": false,
+        "start_ms": 1316.602
+      },
+      {
+        "context": {
+          "draw_calls": 192.0,
+          "frame_setup_cpu_ms": 0.138,
+          "invalid_value_count": 0.0,
+          "node_count": 735.0,
+          "object_count": 4894.0,
+          "observer_poll_usec": 21.0,
+          "physics_3d_active_objects": 0.0,
+          "physics_3d_collision_pairs": 0.0,
+          "physics_process_time_s": 5.1e-05,
+          "physics_step_usec": 0.0,
+          "primitives": 259083.0,
+          "process_time_s": 0.019695,
+          "render_cpu_ms": 0.418999999761581,
+          "render_gpu_ms": 2.76900005340576,
+          "render_gpu_ms_interpretation": "positive_freshness_unverified",
+          "render_gpu_ms_reported": 2.76900005340576,
+          "render_gpu_status": "positive_freshness_unverified",
+          "sim_tick": 0,
+          "sim_tick_delta": 0,
+          "sim_time_delta_s": 0.0,
+          "sim_time_s": 0.0
+        },
+        "end_ms": 4075.702,
+        "frame_index": 487,
+        "frame_ms": 16.298,
+        "frame_number": 488,
+        "over_budget": false,
+        "start_ms": 4059.404
+      }
+    ],
+    "total_excess_ms": 17.394999999999985
+  },
+  "report_validation": {
+    "errors": [],
+    "valid": true
+  },
+  "source": {
+    "combined_input_bytes": 1284254,
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-07\\rtx3090-matrix-2026-11-17\\logs\\vsync-fp-vk.log",
+    "log_bytes": 1255,
+    "log_sha256": "e9036cbb96bcf13f2517706a5939e0e5c8d5e470b9428a55a127c995c804f059",
+    "max_input_bytes": 67108864,
+    "report": "U:\\rtx3090-matrix\\vsync-fp-vk.json",
+    "report_bytes": 1282999,
+    "report_sha256": "6a58e8b4cd17008848beb9e3f48c4adbc80096c8e166816de870fb787c4da294"
+  },
+  "source_metadata": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "api": "1.4.351",
+    "backend": "forward_plus",
+    "camera": {
+      "autozoom": true,
+      "far_m": 21000.0,
+      "fov_deg": 50.0,
+      "keep_aspect": 1,
+      "mode": "pilot",
+      "near_m": 0.5,
+      "projection": 0,
+      "transform": {
+        "basis_columns": [
+          [
+            0.995343506336212,
+            0.0,
+            0.0963913202285767
+          ],
+          [
+            -0.0648205578327179,
+            0.740121781826019,
+            0.669341564178467
+          ],
+          [
+            -0.0713413134217262,
+            -0.672472953796387,
+            0.736675381660461
+          ]
+        ],
+        "position": [
+          0.0,
+          1.70000004768372,
+          0.0
+        ]
+      },
+      "viewport": [
+        1920.0,
+        1080.0
+      ]
+    },
+    "case_id": "scripted-fixed",
+    "frame_diagnostics": {
+      "active": false,
+      "adapter_api_version": "1.4.351",
+      "adapter_name": "NVIDIA GeForce RTX 3090",
+      "adapter_vendor": "NVIDIA",
+      "architecture": "x86_64",
+      "cpu_logical_thread_count": 24,
+      "cpu_model": "AMD Ryzen 9 5900X 12-Core Processor",
+      "display_server": "Windows",
+      "enabled": true,
+      "format": "openrc-frame-diagnostics",
+      "frame_setup_cpu_scope": "Engine-wide rendering setup CPU time, shared across viewports.",
+      "gpu_polls_including_warmup": 2996,
+      "gpu_positive_polls": 2996,
+      "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+      "headless": false,
+      "invalid_numeric_value_count": 0,
+      "max_fps": 0,
+      "metal_command_backend": "not_observed",
+      "native_display": true,
+      "os_name": "Windows",
+      "os_version": "10.0.26100",
+      "presentation_timing": "not_collected; viewport timers and process intervals are not presentation timestamps",
+      "reconstruction_at_report": {
+        "effective": "native",
+        "effective_provider": "native",
+        "execution_status": "policy_selected",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "logical_canvas_size": [
+          1920.0,
+          1080.0
+        ],
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "selected": "native",
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      },
+      "reconstruction_at_start": {
+        "effective": "native",
+        "effective_provider": "native",
+        "execution_status": "policy_selected",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "",
+          "notifications": 0,
+          "submitted": 0
+        },
+        "logical_canvas_size": [
+          1920.0,
+          1080.0
+        ],
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "selected": "native",
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      },
+      "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+      "render_gpu_freshness": "unverified: no completed render identity or sample age is exposed by the viewport timer",
+      "render_gpu_status_codebook": {
+        "0": "not_measured",
+        "1": "zero_ambiguous",
+        "2": "positive_freshness_unverified",
+        "3": "invalid_reading"
+      },
+      "render_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+      "render_timing_available": true,
+      "render_timing_other_owners_at_start": 0,
+      "render_timing_owner": "shared viewport lease",
+      "render_timing_unavailable_reason": "",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "started": true,
+      "static_memory_note": "Godot static memory may be unavailable in release builds and can report zero.",
+      "stopped": true,
+      "version": 2,
+      "viewport_measurement_enabled": false,
+      "viewport_scope": "provided viewport only",
+      "viewport_size": [
+        1920.0,
+        1080.0
+      ],
+      "viewport_size_scope": "viewport coordinates; native drawable pixels require platform verification",
+      "vsync_mode": 1
+    },
+    "godot": "4.8-beta2 (official)",
+    "os": "Windows",
+    "preset": "high-experimental",
+    "render_settings": {
+      "lake_reflections": {
+        "capture_size_at_report": [
+          0,
+          0
+        ],
+        "mode": "probe",
+        "planar_active_at_report": false,
+        "requested": ""
+      },
+      "msaa_3d": 2,
+      "projected_aircraft_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 165296,
+        "triangles": 165296
+      },
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "execution_status": "policy_selected",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "logical_canvas_size": [
+          1920.0,
+          1080.0
+        ],
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "selected": "native",
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      },
+      "scaling_3d_mode": 0,
+      "scaling_3d_scale": 1.0,
+      "screen_space_aa": 0,
+      "use_hdr_2d": false
+    },
+    "rendering_driver": "vulkan",
+    "route": "scripted-fixed",
+    "scene_at_report": {
+      "collision_world_identity": "",
+      "collision_world_status": "absent",
+      "field_tree_detail_instances": 127,
+      "installed_scenery_quality": "high",
+      "landscape_id": "club_field",
+      "mesh_lod_threshold_px": 1.0,
+      "requested_scene_detail": "high",
+      "runway_meadow": {
+        "plants": 4478,
+        "present": true,
+        "source_triangles": 153346
+      },
+      "scenery_present": true,
+      "scope": "end of collection only; not settings or visibility history"
+    },
+    "vsync": true,
+    "window": "1920x1080",
+    "window_size_at_report": [
+      1920,
+      1080
+    ]
+  },
+  "valid": true,
+  "validity_reasons": [],
+  "version": 1
+}

@@ -64,6 +64,20 @@ func _test_target_budget_rejection() -> void:
 			and (manager.get("projectors") as Array).is_empty()
 			and manager.get_child_count() == 0,
 		"pixels=%d children=%d" % [int(manager.get("target_pixels")), manager.get_child_count()])
+	# SA-12: the preflight stops collection only when no cell could be admitted at all.
+	manager.set("target_pixels", FieldShadows.MAX_TARGET_PIXELS - 256 * 256)
+	_check("SA-12: room for the smallest target still admits collection", manager.call("can_admit_more"))
+	manager.set("target_pixels", FieldShadows.MAX_TARGET_PIXELS - 256 * 256 + 1)
+	_check("SA-12: less room than the smallest target stops collection", not manager.call("can_admit_more"))
+	manager.set("target_pixels", 0)
+	var slots: Array[Node] = []
+	for i in FieldShadows.MAX_MAPS:
+		slots.append(Node.new())
+	manager.set("projectors", slots)
+	_check("SA-12: every map slot taken stops collection", not manager.call("can_admit_more"))
+	for slot in slots:
+		slot.free()
+	manager.set("projectors", [] as Array[Node])
 	manager.free()
 	caster.free()
 

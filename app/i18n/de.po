@@ -9372,6 +9372,15 @@ msgstr "Native Schatten sind in dieser Grafiksitzung nicht verfügbar; projizier
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "Die Abdeckung nativer Schatten ist experimentell; manche Objekte werfen keine Schatten."
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "Projizierte Schatten sind nur Bodenhinweise: Flugzeuge verschatten sich nicht selbst, und Dächer und andere erhöhte Flächen empfangen sie nicht."
+
+msgid "Cloud shadows"
+msgstr "Wolkenschatten"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "Entfernt den wandernden Wolkenschatten vom Boden. Die Wolken bleiben sichtbar."
+
 msgid "Activities may use a shorter range."
 msgstr "Einzelne Aktivitäten können eine kürzere Reichweite verwenden."
 

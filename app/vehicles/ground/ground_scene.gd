@@ -210,6 +210,9 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
+	# SA-08: a Projected shadow selection also gives the car its planar shadow, on the drawn course surface.
+	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting,
+		func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
 	if _vehicle_entry.nitro: visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
 	_damage_view = DamageView.new()
 	if not _damage_view.prepare(visual):

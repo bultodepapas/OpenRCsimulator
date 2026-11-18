@@ -11,15 +11,26 @@ const HEIGHT: float = Spec.SHADOW.height
 ## silhouette (165,398 triangles for the Ugly Stik, MSAA 4x) every frame: about 0.9 ms of GPU on an RTX 3090,
 ## a third of the frame's GPU time. The drawn mask is reused while it stays close to the current shape.
 ## SA-07: "close" is a geometric bound, not an angle: the largest projected displacement of any bounds corner
-## (attitude, light and articulated parts together) must stay within half the blur or one mask texel, and never
-## beyond REUSE_MAX_M, the fixed framing margin, so a reused mask can neither visibly lag nor clip.
+## (attitude, light and articulated parts together) must stay within half the blur, at most REUSE_MAX_M, or within
+## one mask texel when that is coarser: a mask cannot show finer detail than its texel, so never redraw for less.
 const REUSE_MAX_M := 0.04
 const REUSE_BLUR_M := 0.002
 ## SA-03: a mesh under a node named `*_hinge`, or tagged with this meta, follows that node's live transform in the
 ## mask; the rest of the model is one static merged mesh. Gear wheels and propellers are not articulated parts.
 const ARTICULATED_META := &"shadow_articulated"
+## A subtree tagged with this meta never enters the mask, like `propeller` (e.g. spinning quad rotors).
+const EXCLUDED_META := &"shadow_excluded"
 
 var source: Node3D
+## SA-04: world height of the receiving plane. Field casters keep the fixed datum; the aircraft and vehicle cues
+## move it to the terrain under their shadow.
+var receiver_height: float = HEIGHT
+## SA-11: set before setup() for projectors that can stay hidden for long (field casters while Off/Native or at
+## night). While hidden they keep their collected geometry but not their render target; showing reallocates it.
+## The aircraft cue keeps its target: it toggles often (V, pilot view), and its 256² MSAA target is small.
+var release_when_hidden := false
+var _resolution := RESOLUTION
+const RELEASED_SIZE := Vector2i(2, 2) # the smallest SubViewport the engine allows
 var viewport: SubViewport
 var receiver: MeshInstance3D
 var mask_material: ShaderMaterial
@@ -35,6 +46,7 @@ var _frame_blur := 0.0
 var _parts: Array[Dictionary] = []
 var _drawn_parts: Array[Transform3D] = []
 var _drawn_part_visibility: Array[bool] = []
+var _drawn_box := AABB() # bind bounds plus visible parts at their drawn poses
 ## Masks drawn since setup (diagnostics: compare with frames elapsed to see how often the cache is reused).
 var redraw_count := 0
 
@@ -69,7 +81,7 @@ static func mesh_entries(model: Node3D, articulate: bool = true) -> Array[Dictio
 		var include := true
 		while node != model and node != null:
 			if node is Node3D:
-				include = include and node.visible and node.name != &"propeller"
+				include = include and node.visible and node.name != &"propeller" and not bool(node.get_meta(EXCLUDED_META, false))
 				if articulate and part == null and articulated(node as Node3D):
 					part = node as Node3D
 					to_part = transform
@@ -78,6 +90,34 @@ static func mesh_entries(model: Node3D, articulate: bool = true) -> Array[Dictio
 		if include:
 			entries.append({instance = mi, to_model = transform, part = part, to_part = to_part})
 	return entries
+
+
+## SA-03: mark the nodes a built aircraft moves (control hinges, wing folds, mechanisms and gear retraction) before
+## its shadow is collected. Wheel spin/steering and propellers stay static: they do not change the silhouette, and
+## a spinning part would force a redraw every frame. Builders stay untouched; this only sets node metadata.
+static func tag_articulation(airplane: Dictionary) -> void:
+	var moving: Array = [] # untyped: entries are checked below
+	for key: Variant in airplane.get("hinges", {}):
+		var hinge: Variant = airplane.hinges[key]
+		moving.append(hinge.get("node") if hinge is Dictionary else hinge)
+	for key: Variant in airplane.get("folds", {}):
+		for member: Dictionary in airplane.folds[key].get("members", []):
+			moving.append(member.get("node"))
+	for key: Variant in airplane.get("mechanisms", {}):
+		for part: Dictionary in airplane.mechanisms[key].get("parts", []):
+			for member: Dictionary in part.get("members", []):
+				moving.append(member.get("node"))
+	var rig: Dictionary = airplane.get("gear_retraction", {})
+	if not rig.is_empty():
+		var spinning: Array = (rig.get("gear", {}) as Dictionary).values()
+		var samples: Array = rig.get("data", {}).get("retraction", {}).get("samples", [])
+		for name: Variant in (samples[0].get("nodes", {}) if not samples.is_empty() else {}):
+			var node: Variant = rig.get("nodes", {}).get(name)
+			if not spinning.has(node):
+				moving.append(node)
+	for node: Variant in moving:
+		if node is Node3D and is_instance_valid(node):
+			(node as Node3D).set_meta(ARTICULATED_META, true)
 
 
 static func articulated(node: Node3D) -> bool:
@@ -100,10 +140,12 @@ static func assemble(model: Node3D, entries: Array[Dictionary], faces: Array[Pac
 		if part != null and min_height == -INF:
 			if model_faces.is_empty():
 				continue
-			if not part_vertices.has(part):
-				part_vertices[part] = PackedVector3Array()
+			if not part_rest.has(part):
 				part_rest[part] = entry.to_model * (entry.to_part as Transform3D).affine_inverse()
-			(part_vertices[part] as PackedVector3Array).append_array(entry.to_part * faces[index])
+			# Packed arrays are values: append to a local copy and store it back.
+			var local: PackedVector3Array = part_vertices.get(part, PackedVector3Array())
+			local.append_array(entry.to_part * faces[index])
+			part_vertices[part] = local
 			total += model_faces.size()
 			var part_box := _mesh_box(_mesh(model_faces), model_faces)
 			box = part_box if not has_box else box.merge(part_box)
@@ -197,9 +239,10 @@ static func max_shift(box: AABB, drawn_basis: Basis, drawn_direction: Vector3, n
 	return worst
 
 
-## Half the blur width, or one mask texel when that is coarser; capped by the framing margin against clipping.
+## Half the blur width (at most REUSE_MAX_M), or one mask texel when that is coarser. A reused mask is shown
+## exactly as drawn inside its own margin, so this bounds visible lag, not clipping.
 func reuse_tolerance(blur: float, frame_side: float) -> float:
-	return minf(maxf(0.5 * blur, frame_side / float(maxi(viewport.size.x, 1))), REUSE_MAX_M)
+	return maxf(minf(0.5 * blur, REUSE_MAX_M), frame_side / float(maxi(viewport.size.x, 1)))
 
 
 static func project(point: Vector3, direction: Vector3) -> Vector2:
@@ -226,7 +269,9 @@ func setup(model: Node3D, shape: Dictionary, resolution: int = RESOLUTION, antia
 	triangle_count = shape.triangles
 	viewport = SubViewport.new()
 	viewport.name = "Silhouette256"
-	viewport.size = Vector2i(resolution, resolution)
+	_resolution = resolution
+	# A releasing projector starts without a full target; its first shown refresh allocates it.
+	viewport.size = RELEASED_SIZE if release_when_hidden else Vector2i(resolution, resolution)
 	viewport.own_world_3d = true
 	viewport.transparent_bg = true
 	viewport.msaa_3d = antialias as Viewport.MSAA
@@ -318,7 +363,11 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	if not shown:
 		viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		_last_signature.clear()
+		if release_when_hidden:
+			viewport.size = RELEASED_SIZE # SA-11: no full render target while hidden
 		return
+	if viewport.size.x != _resolution:
+		viewport.size = Vector2i(_resolution, _resolution) # reallocated; the cleared signature forces a draw
 	# Artistic area-light approximation, bounded to keep the RC height cue readable.
 	var blur := clampf(0.018 + maxf(height, 0.0) * 0.0093, 0.018, 0.45)
 	var pose := source.global_transform if source.is_inside_tree() else source.transform
@@ -330,18 +379,23 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	var frame: Rect2
 	# Reuse the drawn mask while every corner stays within what the blurred shadow cannot show (SA-07).
 	# The error is measured from the last DRAWN mask, so it never accumulates past the tolerance.
-	var reuse := _last_signature.size() == 3 and bounds == _frame_bounds 			and absf(blur - _frame_blur) <= REUSE_BLUR_M and part_visibility == _drawn_part_visibility 			and same_scale(pose.basis, _last_signature[0]) 			and _within_tolerance(pose.basis, direction, part_poses, part_visibility,
+	var reuse := _last_signature.size() == 3 and bounds == _frame_bounds \
+			and absf(blur - _frame_blur) <= REUSE_BLUR_M and part_visibility == _drawn_part_visibility \
+			and same_scale(pose.basis, _last_signature[0]) \
+			and _within_tolerance(pose.basis, direction, part_poses, part_visibility,
 				reuse_tolerance(blur, (_last_signature[2] as Rect2).size.x))
+	var live_box := AABB()
 	if reuse:
 		frame = _last_signature[2]
 	else:
-		frame = framing(_live_bounds(part_poses, part_visibility), pose.basis, direction, blur)
+		live_box = _live_bounds(part_poses, part_visibility)
+		frame = framing(live_box, pose.basis, direction, blur)
 		_frame_bounds = bounds
 		_frame_blur = blur
 	var center := frame.get_center()
-	var ground_origin := project(pose.origin - Vector3(0, HEIGHT, 0), direction) + center
+	var ground_origin := project(pose.origin - Vector3(0, receiver_height, 0), direction) + center
 	receiver.transform = Transform3D(Basis.from_scale(Vector3(frame.size.x, 1, frame.size.y)),
-		Vector3(ground_origin.x, HEIGHT, ground_origin.y))
+		Vector3(ground_origin.x, receiver_height, ground_origin.y))
 	var material := receiver.material_override as ShaderMaterial
 	material.set_shader_parameter("opacity", opacity)
 	material.set_shader_parameter("blur_uv", blur / frame.size.x)
@@ -363,6 +417,7 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 		_last_signature = signature
 		_drawn_parts = part_poses
 		_drawn_part_visibility = part_visibility
+		_drawn_box = live_box
 
 
 func _set_mask_parameter(parameter: String, value: Variant) -> void:
@@ -373,11 +428,10 @@ func _set_mask_parameter(parameter: String, value: Variant) -> void:
 
 ## The part node's live transform in the model frame (SA-03).
 func _part_pose(part: Dictionary) -> Transform3D:
-	var node: Node3D = part.node
-	if not is_instance_valid(node):
+	if not is_instance_valid(part.node):
 		return part.rest
 	var transform := Transform3D.IDENTITY
-	var walk: Node = node
+	var walk: Node = part.node
 	while walk != source and walk != null:
 		if walk is Node3D:
 			transform = (walk as Node3D).transform * transform
@@ -387,9 +441,9 @@ func _part_pose(part: Dictionary) -> Transform3D:
 
 ## A bound part that was freed or detached from the model no longer casts.
 func _part_visible(part: Dictionary) -> bool:
-	var walk: Node = part.node
-	if not is_instance_valid(walk):
+	if not is_instance_valid(part.node):
 		return not bool(part.bound)
+	var walk: Node = part.node
 	while walk != source and walk != null:
 		if walk is Node3D and not (walk as Node3D).visible:
 			return false
@@ -401,11 +455,14 @@ func _within_tolerance(basis: Basis, direction: Vector3, part_poses: Array[Trans
 		part_visibility: Array[bool], tolerance: float) -> bool:
 	var drawn_basis: Basis = _last_signature[0]
 	var drawn_direction: Vector3 = _last_signature[1]
-	if max_shift(bounds, drawn_basis, drawn_direction, basis, direction) > tolerance:
+	# One check covers the static mesh and every part still at its drawn pose (all inside the drawn live box);
+	# only parts that moved since the draw need their own corner check.
+	if max_shift(_drawn_box, drawn_basis, drawn_direction, basis, direction) > tolerance:
 		return false
 	for index in _parts.size():
-		if part_visibility[index] and max_shift(_parts[index].bounds, drawn_basis, drawn_direction, basis, direction,
-				_drawn_parts[index], part_poses[index]) > tolerance:
+		if part_visibility[index] and part_poses[index] != _drawn_parts[index] \
+				and max_shift(_parts[index].bounds, drawn_basis, drawn_direction, basis, direction,
+					_drawn_parts[index], part_poses[index]) > tolerance:
 			return false
 	return true
 

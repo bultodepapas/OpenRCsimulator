@@ -86,6 +86,10 @@ static var engine_shadows: bool = engine_shadows_enabled()
 ## alive while the current world's global time/appearance state changes.
 const SHADOW_LIGHTING_SWEEP_INTERVAL := 64
 static var _shadow_lighting_resources: Dictionary = {}
+## SA-15: live ground/near-grass materials (weak) and the weather strength each one would use.
+const CLOUD_SHADOW_META := &"openrc_cloud_shadow_strength"
+const CLOUD_RECEIVER_SWEEP := 64
+static var _cloud_receivers: Dictionary = {}
 static var _shadow_lighting_registrations := 0
 
 
@@ -494,7 +498,12 @@ static func track_shadow_material_copy(material: ShaderMaterial, source: ShaderM
 		_remember_shadow_lighting(material, entry.duplicate(true))
 	# Copies made before an asynchronous bake need their own publication binding.
 	# Otherwise their copied disabled flag would remain analytic indefinitely.
-	_set_cloud_shadow_map(material)
+	if material.shader == GROUND_SHADER or material.shader == NEAR_GRASS_SHADER:
+		if not material.has_meta(CLOUD_SHADOW_META):
+			material.set_meta(CLOUD_SHADOW_META, source.get_meta(CLOUD_SHADOW_META,
+				material.get_shader_parameter("cloud_shadow_strength")))
+		_register_cloud_receiver(material)
+	_apply_cloud_shadow_choice(material)
 
 
 static func _refresh_shadow_lighting(native_enabled: bool) -> void:
@@ -914,7 +923,48 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 		mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
 	_set_haze_uniforms(mat, lighting)
 	_set_profile_shadow_uniforms(mat, lighting)
-	_set_cloud_shadow_map(mat)
+	if mat.shader == GROUND_SHADER or mat.shader == NEAR_GRASS_SHADER:
+		# SA-15: remember the weather's strength so the saved Cloud shadows choice can restore it.
+		mat.set_meta(CLOUD_SHADOW_META, mat.get_shader_parameter("cloud_shadow_strength"))
+		_register_cloud_receiver(mat)
+	_apply_cloud_shadow_choice(mat)
+
+
+## SA-15: Off removes the spatial cloud shade from ground and near grass. Their shaders skip the cloud sampling at
+## zero strength, and the cached noise tile is released; visible clouds, sky and weather are unchanged.
+static func _apply_cloud_shadow_choice(mat: ShaderMaterial) -> void:
+	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+		return
+	if ShadowSettings.cloud_shadows_enabled():
+		mat.set_shader_parameter("cloud_shadow_strength", mat.get_meta(CLOUD_SHADOW_META,
+			mat.get_shader_parameter("cloud_shadow_strength")))
+		_set_cloud_shadow_map(mat)
+	else:
+		mat.set_shader_parameter("cloud_shadow_strength", 0.0)
+		CloudShadowMap.clear_ground(mat)
+
+
+static func _register_cloud_receiver(mat: ShaderMaterial) -> void:
+	var id := mat.get_instance_id()
+	var existing: WeakRef = _cloud_receivers.get(id)
+	if existing != null and existing.get_ref() == mat:
+		return
+	if _cloud_receivers.size() >= CLOUD_RECEIVER_SWEEP:
+		for key: int in _cloud_receivers.keys():
+			if (_cloud_receivers[key] as WeakRef).get_ref() == null:
+				_cloud_receivers.erase(key)
+	_cloud_receivers[id] = weakref(mat)
+	ShadowSettings.set_cloud_refresh(_refresh_cloud_shadow_choice)
+
+
+## A changed Cloud shadows preference applies at once to every live ground/near-grass material.
+static func _refresh_cloud_shadow_choice() -> void:
+	for key: int in _cloud_receivers.keys():
+		var mat := (_cloud_receivers[key] as WeakRef).get_ref() as ShaderMaterial
+		if mat == null:
+			_cloud_receivers.erase(key)
+		else:
+			_apply_cloud_shadow_choice(mat)
 
 
 ## DT-MAC-06b C2 candidate: the periodic noise tile for the seed this material's shadow uses.

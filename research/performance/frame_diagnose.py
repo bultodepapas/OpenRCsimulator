@@ -63,6 +63,15 @@ MEMORY_METRICS = (
     "resource_count",
     "orphan_node_count",
 )
+# app/render/frame_diagnostics.gd v2 per-sample render_gpu_status codebook. No code means a fresh GPU result.
+GPU_STATUS_POSITIVE_UNVERIFIED = 2
+GPU_STATUS_INVALID = 3
+GPU_STATUS_CODEBOOK = {
+    0: "not_measured",
+    1: "zero_ambiguous",
+    GPU_STATUS_POSITIVE_UNVERIFIED: "positive_freshness_unverified",
+    GPU_STATUS_INVALID: "invalid_reading",
+}
 IDENTITY_FIELDS = (
     "case_id",
     "route",
@@ -84,7 +93,7 @@ IDENTITY_FIELDS = (
 GENERAL_HINTS = [
     "Frame-budget observations describe wall intervals and do not qualify active flight.",
     "When present, render_cpu_ms and render_gpu_ms are root-viewport context. Render timing may be delayed or describe a previous render frame, so same-index values do not prove the cause of a wall-frame hitch.",
-    "A positive GPU poll has unverified freshness unless render-server progress is observed throughout the sample; progress still does not prove presentation or GPU completion.",
+    "A positive GPU poll is a cached last reading with unverified freshness. Observed render-server progress is a separate gate; it does not bind a reading to a frame or prove presentation or GPU completion.",
     "A render_gpu_ms value of zero is unavailable_or_zero, not evidence of zero GPU cost.",
     "Observer-reported invalid numeric readings are preserved as an explicit measurement issue; sanitized zero values must not be treated as valid measurements.",
     "Memory start/end/max deltas describe this sample only and do not establish a memory leak.",
@@ -232,8 +241,50 @@ def _frame_context(raw_metrics: dict[str, Any], index: int,
         elif unverified:
             context["render_gpu_ms_interpretation"] = "unverified_render_progress"
         else:
-            context["render_gpu_ms_interpretation"] = "positive_sample" if gpu_value > 0.0 else "unavailable_or_zero"
+            # A positive stock viewport poll is a cached last reading: render progress does not bind it to this frame.
+            context["render_gpu_ms_interpretation"] = (
+                "positive_freshness_unverified" if gpu_value > 0.0 else "unavailable_or_zero")
+    statuses = raw_metrics.get("render_gpu_status")
+    if statuses is not None:
+        context["render_gpu_status"] = GPU_STATUS_CODEBOOK.get(_status_code(statuses[index]), "malformed")
     return context
+
+
+def _status_code(value: Any) -> int | None:
+    """Exact integer status code from a FrameSamples float64 value, or None."""
+    if not _finite_number(value) or float(value) != int(value):
+        return None
+    return int(value)
+
+
+def _gpu_status_issues(raw_metrics: dict[str, Any]) -> list[str]:
+    """Fail closed on unknown codes or codes that contradict the raw reading (frame_diagnostics v2)."""
+    statuses = raw_metrics.get("render_gpu_status")
+    if statuses is None:
+        return []
+    gpu_values = raw_metrics.get("render_gpu_ms")
+    if not isinstance(statuses, (list, array)) or not isinstance(gpu_values, (list, array)) \
+            or len(statuses) != len(gpu_values):
+        return ["render_gpu_status is present without a matching render_gpu_ms series"]
+    malformed: list[int] = []
+    inconsistent: list[int] = []
+    for index, (raw_status, raw_gpu) in enumerate(zip(statuses, gpu_values)):
+        code = _status_code(raw_status)
+        if code not in GPU_STATUS_CODEBOOK:
+            malformed.append(index)
+            continue
+        gpu = float(raw_gpu) if _finite_number(raw_gpu) else -1.0
+        expected_positive = code == GPU_STATUS_POSITIVE_UNVERIFIED
+        if (gpu > 0.0) != expected_positive or gpu < 0.0:
+            inconsistent.append(index)
+    issues = []
+    if malformed:
+        issues.append("unknown render_gpu_status codes at sampled frames: "
+                      + ", ".join(str(index) for index in malformed[:20]))
+    if inconsistent:
+        issues.append("render_gpu_status contradicts render_gpu_ms at sampled frames: "
+                      + ", ".join(str(index) for index in inconsistent[:20]))
+    return issues
 
 
 def _memory_trends(raw_metrics: dict[str, Any]) -> dict[str, Any]:
@@ -343,7 +394,9 @@ def analyze_frames(report: dict[str, Any], derived: dict[str, Any], budget_ms: f
         available_positive_count = positive_count - contradictory_count - unverified_count
         gpu_status = {
             "reported": True,
+            # Legacy key name: these are progress-gated positive polls, never fresh GPU measurements.
             "measured_positive_samples": available_positive_count,
+            "positive_freshness_unverified_samples": available_positive_count,
             "zero_samples": zero_count,
             "contradictory_positive_samples": contradictory_count,
             "unverified_positive_samples": unverified_count,
@@ -351,10 +404,20 @@ def analyze_frames(report: dict[str, Any], derived: dict[str, Any], budget_ms: f
                 "positive_samples_unavailable_without_render_progress" if contradictory_count and render_progress["status"] not in ("observed", "unknown", "headless")
                 else "invalid_positive_samples_with_timing_unavailable" if contradictory_count
                 else "positive_samples_with_render_progress_unverified" if unverified_count
-                else "positive_samples_with_zero_sentinels" if available_positive_count
+                else "positive_freshness_unverified_with_zero_sentinels" if available_positive_count and zero_count
+                else "positive_freshness_unverified" if available_positive_count
                 else "unavailable_or_zero"
             ),
+            # Stock viewport timers expose no completed-render identity or age; no reading is fresh-associated.
+            "freshness": "unverified",
         }
+        statuses = raw_metrics.get("render_gpu_status")
+        if isinstance(statuses, (list, array)):
+            counts = {label: 0 for label in GPU_STATUS_CODEBOOK.values()}
+            counts["malformed"] = 0
+            for value in statuses:
+                counts[GPU_STATUS_CODEBOOK.get(_status_code(value), "malformed")] += 1
+            gpu_status["status_counts"] = counts
     gpu_status["scope"] = (
         frame_diagnostics.get("viewport_scope", "unknown")
         if isinstance(frame_diagnostics, dict) else "unknown"
@@ -444,6 +507,11 @@ def _measurement_issues(report: dict[str, Any]) -> list[str]:
             issues.append("positive render_gpu_ms samples are unavailable without verified render progress")
         else:
             issues.append("positive render_gpu_ms samples contradict frame_diagnostics.render_timing_available=false")
+    issues.extend(_gpu_status_issues(raw_metrics))
+    if (isinstance(metadata, dict) and metadata.get("format") == "openrc-frame-diagnostics"
+            and _finite_number(metadata.get("version")) and metadata["version"] >= 2
+            and gpu_values is not None and "render_gpu_status" not in raw_metrics):
+        issues.append("frame_diagnostics v2 report lacks its render_gpu_status column")
     return issues
 
 

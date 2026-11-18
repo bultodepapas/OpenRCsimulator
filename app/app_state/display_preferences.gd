@@ -59,6 +59,7 @@ const DEFAULTS := {
 	"shadow_aircraft_cue": ShadowSettings.DEFAULTS.shadow_aircraft_cue,
 	"shadow_distance": ShadowSettings.DEFAULTS.shadow_distance,
 	"shadow_softness": ShadowSettings.DEFAULTS.shadow_softness,
+	"shadow_cloud": ShadowSettings.DEFAULTS.shadow_cloud,
 	"ui_scale": 1.0,
 	"opaque_panels": false,
 	"reduced_motion": false,
@@ -94,7 +95,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
-	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
+	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness", "shadow_cloud",
 	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
@@ -117,6 +118,7 @@ const SHADOW_FILE_KEYS := {
 	"shadow_aircraft_cue": "aircraft_cue",
 	"shadow_distance": "distance",
 	"shadow_softness": "softness",
+	"shadow_cloud": "clouds", # SA-15; absent in older files, which keep the default (on)
 }
 ## LENS-01: additive choices retain the defaults when absent from a schema-1 file.
 const LENS_FILE_KEYS := {
@@ -442,6 +444,7 @@ static func _valid_shadow_value(key: String, value: Variant) -> bool:
 		"shadow_aircraft_cue": return value in ShadowSettings.AIRCRAFT_CUES
 		"shadow_distance": return value in ShadowSettings.DISTANCES
 		"shadow_softness": return value in ShadowSettings.SOFTNESS
+		"shadow_cloud": return value in ShadowSettings.CLOUD
 	return false
 
 

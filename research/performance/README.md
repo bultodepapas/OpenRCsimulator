@@ -428,8 +428,21 @@ if ($captureExit -ne 0 -or $LASTEXITCODE -ne 0) { throw "Capture or diagnosis fa
 physics replay. Omit it to investigate a controlled physical flight. Use the
 matching native engine on Linux/macOS. Headless runs retain counters but explicitly
 report render timing unavailable. macOS Compatibility timing is conservatively
-disabled. Observer timing is disabled when collection ends or the scene exits;
-do not run this observer together with another owner of viewport timing.
+disabled. Viewport timing is shared through
+[`render_timing_lease.gd`](../../app/render/render_timing_lease.gd): the observer, the
+debug bridge probe and GOD TEST each hold a lease, and timing stops only when the
+last one ends. Standalone capture tools that write the flag directly own their
+process and must not run beside another observer.
+
+Diagnostics metadata v2 adds a per-sample integer `render_gpu_status` with the
+codebook in `frame_diagnostics.render_gpu_status_codebook`: 0 `not_measured`,
+1 `zero_ambiguous`, 2 `positive_freshness_unverified`, 3 `invalid_reading` (raw
+value recorded as 0.0). No code means a fresh GPU result: the stock viewport timer
+returns a cached last reading with no completed-frame identity or age, so it cannot
+drive dynamic resolution. The diagnoser counts the codes, labels positive polls
+`positive_freshness_unverified` even with observed render progress, and refuses a
+report with unknown codes or codes that contradict `render_gpu_ms`. v1 reports
+remain readable without the column.
 
 Every new frame report also records render-server draw progress and main-window
 drawability, including the first measured interval, without requiring

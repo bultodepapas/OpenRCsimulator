@@ -31,6 +31,8 @@ const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const NATIVE_SHADOW_LIMITATION := "Native shadow coverage is experimental; some objects do not cast shadows."
+## SA-01: Projected suppresses native maps, so it cannot give aircraft self-shadowing.
+const PROJECTED_SHADOW_LIMITATION := "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -114,6 +116,7 @@ var _shadow_technique_picker: OptionButton
 var _shadow_cue_picker: OptionButton
 var _shadow_distance_picker: OptionButton
 var _shadow_softness_picker: OptionButton
+var _shadow_cloud_picker: OptionButton
 var _shadow_info: Label
 var _lighting_quality_picker: OptionButton
 var _lighting_vfx_toggle: CheckButton
@@ -415,6 +418,9 @@ func _build() -> void:
 	_shadow_softness_picker = _shadow_picker("ShadowSoftness", "shadow_softness", ShadowSettings.SOFTNESS)
 	_add_row(_shadow_group, "Shadow softness", _shadow_softness_picker)
 	_set_localized_tooltip(_shadow_softness_picker, "Softness changes native shadows; the projected blur stays the same.")
+	_shadow_cloud_picker = _shadow_picker("ShadowCloud", "shadow_cloud", ShadowSettings.CLOUD)
+	_add_row(_shadow_group, "Cloud shadows", _shadow_cloud_picker)
+	_set_localized_tooltip(_shadow_cloud_picker, "Removes the moving cloud shade from the ground. Clouds stay visible.")
 	_shadow_info = _label("", "SecondaryLabel", true)
 	_shadow_info.name = "ShadowInfo"
 	_shadow_group.add_child(_shadow_info)
@@ -830,6 +836,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"shadow_distance": return {auto = tr("Automatic"), near = tr("Near (100 m)"), field = tr("Field (300 m)"),
 			far = tr("Far (600 m)")}.get(value, str(value))
 		"shadow_softness": return {auto = tr("Automatic"), hard = tr("Hard"), soft = tr("Soft")}.get(value, str(value))
+		"shadow_cloud": return {on = tr("On"), off = tr("Off")}.get(value, str(value))
 		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
 		"lens_effects": return {off = tr("Off"), auto = tr("Automatic"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
@@ -1077,6 +1084,8 @@ func _refresh_shadow_technique_tooltip() -> void:
 	for index: int in _shadow_technique_picker.item_count:
 		if _shadow_technique_picker.get_item_metadata(index) == "native":
 			_shadow_technique_picker.set_item_tooltip(index, tr(NATIVE_SHADOW_LIMITATION))
+		elif _shadow_technique_picker.get_item_metadata(index) == "projected":
+			_shadow_technique_picker.set_item_tooltip(index, tr(PROJECTED_SHADOW_LIMITATION))
 
 
 func _refresh_shadow_info() -> void:
@@ -1097,6 +1106,10 @@ func _refresh_shadow_info() -> void:
 	var quality := _choice_caption("shadow_quality", effective.get("quality", "current")) if native else inactive
 	var distance := tr("%.0f m") % float(effective.get("distance_m", 0.0)) if native else inactive
 	var softness := _choice_caption("shadow_softness", effective.get("softness", "auto")) if native else inactive
+	# SA-24: name the filter Soft actually resolves to (PCF in Standard, solar PCSS only with High graphics).
+	var filter := str(effective.get("filter_technique", ""))
+	if native and filter in ["pcf", "pcss"]:
+		softness += " (%s)" % filter.to_upper()
 	_shadow_info.text = tr("Active technique: %s · Quality: %s") % [
 		_choice_caption("shadow_technique", effective.get("technique", "auto")),
 		quality]
@@ -1107,6 +1120,8 @@ func _refresh_shadow_info() -> void:
 		_shadow_info.text += "\n" + tr("Activities may use a shorter range.")
 	if effective.get("technique", "") == "native":
 		_shadow_info.text += "\n" + tr(NATIVE_SHADOW_LIMITATION)
+	elif effective.get("technique", "") == "projected":
+		_shadow_info.text += "\n" + tr(PROJECTED_SHADOW_LIMITATION)
 	if requested.shadow_technique in ["auto", "native"] and not native and bool(effective.get("projected", false)):
 		_shadow_info.text += "\n" + tr("Native shadows are unavailable in this graphics session; projected shadows are active.")
 
@@ -1350,6 +1365,7 @@ func _sync_controls() -> void:
 	_select_metadata(_shadow_cue_picker, _draft.get("shadow_aircraft_cue", DisplayPreferences.DEFAULTS.shadow_aircraft_cue))
 	_select_metadata(_shadow_distance_picker, _draft.get("shadow_distance", DisplayPreferences.DEFAULTS.shadow_distance))
 	_select_metadata(_shadow_softness_picker, _draft.get("shadow_softness", DisplayPreferences.DEFAULTS.shadow_softness))
+	_select_metadata(_shadow_cloud_picker, _draft.get("shadow_cloud", DisplayPreferences.DEFAULTS.shadow_cloud))
 	_refresh_shadow_info()
 	_select_metadata(_lighting_quality_picker, _draft.get("aircraft_lighting_quality", "standard"))
 	_lighting_vfx_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_show_vfx", true)))
@@ -1630,7 +1646,7 @@ func _refresh_translated_text() -> void:
 	_refresh_update_status_text()
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
-			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
+			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]

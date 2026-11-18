@@ -369,8 +369,39 @@ func _test_error_bounded_reuse() -> void:
 	projected.refresh(0.0, sun, 0.5, true)
 	_check("SA-07: a sub-tolerance 0.02° change reuses the mask",
 		projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
-	_check("SA-07: the tolerance never exceeds the framing margin",
-		projected.reuse_tolerance(0.45, 1000.0) == Projected.REUSE_MAX_M)
+	_check("SA-07: the blur arm is capped at REUSE_MAX_M for a fine mask",
+		projected.reuse_tolerance(0.45, 1.0) == Projected.REUSE_MAX_M)
+	_check("SA-07: a coarse mask never redraws for less than one texel",
+		is_equal_approx(projected.reuse_tolerance(0.018, 40.0), 40.0 / 256.0))
+	host.free()
+
+
+## SA-11: a releasing (field) projector holds no full render target while hidden and redraws when shown again.
+func _test_release_when_hidden() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	host.add_child(model)
+	var mesh := BoxMesh.new()
+	var projected := Projected.new()
+	projected.release_when_hidden = true
+	host.add_child(projected)
+	projected.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 512, Viewport.MSAA_DISABLED)
+	_check("SA-11: a releasing projector starts without a full target", projected.viewport.size == Projected.RELEASED_SIZE)
+	projected.refresh(0.0, Vector3.UP, 0.4, true)
+	var drawn := projected.redraw_count
+	_check("SA-11: showing allocates the full target and draws", projected.viewport.size == Vector2i(512, 512)
+		and drawn == 1 and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
+	projected.refresh(0.0, Vector3.UP, 0.4, false)
+	_check("SA-11: hiding releases the target", projected.viewport.size == Projected.RELEASED_SIZE)
+	projected.refresh(0.0, Vector3.UP, 0.4, true)
+	_check("SA-11: showing again reallocates and redraws the same pose", projected.viewport.size == Vector2i(512, 512)
+		and projected.redraw_count == drawn + 1)
+	var kept := Projected.new()
+	host.add_child(kept)
+	kept.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 256, Viewport.MSAA_DISABLED)
+	kept.refresh(0.0, Vector3.UP, 0.4, false)
+	_check("SA-11: the aircraft cue keeps its target while hidden", kept.viewport.size == Vector2i(256, 256))
 	host.free()
 
 
@@ -461,6 +492,7 @@ func _run() -> void:
 	_test_framing_reuse_inputs()
 	_test_error_bounded_reuse()
 	_test_articulated_parts()
+	_test_release_when_hidden()
 	_test_neutral_geometry_on_catalog_models()
 	_test_binding_lifecycle_and_hidden_updates()
 	print("Projected shadow regression: %d checks, %d failed" % [_checks, _failures])
@@ -514,6 +546,7 @@ func _test_framing_reuse_inputs() -> void:
 	# PT1h-R12/SA-07: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the
 	# drawn mask; the corner shift is measured from the last drawn mask, so small steps cannot accumulate past it.
 	height = 3.0
+	direction = Vector3(0.3, 1, -0.2) # above the projector's 0.05 grazing clamp, so the ray oracle is exact
 	model.rotation = Vector3.ZERO
 	projected.refresh(height, direction, 0.5, true)
 	var drawn := var_to_bytes(projected._last_signature)
@@ -521,11 +554,11 @@ func _test_framing_reuse_inputs() -> void:
 		(projected._last_signature[2] as Rect2).size.x)
 	var redraws: Array[bool] = []
 	var predicted: Array[bool] = []
-	for step in 24:
+	for step in 40:
 		projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		var drawn_basis: Basis = projected._last_signature[0]
 		var drawn_direction: Vector3 = projected._last_signature[1]
-		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.1))
+		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.5)) # the 32² fixture mask has a ~0.11 m texel
 		model.position.x += 0.5
 		# Independent corner-shift oracle: ray/plane projections of all eight corners, before and after.
 		var worst := 0.0
@@ -537,9 +570,9 @@ func _test_framing_reuse_inputs() -> void:
 		predicted.append(worst > tolerance)
 		projected.refresh(height, direction, 0.5, true)
 		redraws.append(projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
-	_check("0.1° steps reuse the mask exactly until the corner shift passes the tolerance, then redraw",
+	_check("0.5° steps reuse the mask exactly until the corner shift passes the tolerance, then redraw",
 		redraws == predicted and redraws.has(true) and not redraws[0] and var_to_bytes(projected._last_signature) != drawn,
-		"%s tolerance %.4f" % [str(redraws), tolerance])
+		"%s predicted %s tolerance %.4f" % [str(redraws), str(predicted), tolerance])
 	var moved_transform: Transform3D = projected.receiver.transform
 	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	model.position.x += 1.0

@@ -8,13 +8,15 @@ const TECHNIQUES: Array[String] = ["auto", "native", "projected", "off"]
 const AIRCRAFT_CUES: Array[String] = ["auto", "sun", "vertical", "off"]
 const DISTANCES: Array[String] = ["auto", "near", "field", "far"]
 const SOFTNESS: Array[String] = ["auto", "hard", "soft"]
+## SA-15: spatial cloud occlusion of the ground, independent of the direct-shadow technique (plans/shadows.md §6).
+const CLOUD: Array[String] = ["on", "off"]
 const DEFAULTS := {
 	"shadow_quality": "current", "shadow_technique": "auto", "shadow_aircraft_cue": "auto",
-	"shadow_distance": "auto", "shadow_softness": "auto",
+	"shadow_distance": "auto", "shadow_softness": "auto", "shadow_cloud": "on",
 }
 const CHOICES := {
 	"shadow_quality": QUALITY, "shadow_technique": TECHNIQUES, "shadow_aircraft_cue": AIRCRAFT_CUES,
-	"shadow_distance": DISTANCES, "shadow_softness": SOFTNESS,
+	"shadow_distance": DISTANCES, "shadow_softness": SOFTNESS, "shadow_cloud": CLOUD,
 }
 const DISTANCE_METRES := {"auto": 300.0, "near": 100.0, "field": 300.0, "far": 600.0}
 # Candidate allocations are opt-in; Current reproduces the installed renderer profile.
@@ -38,6 +40,7 @@ static var _receipt: Dictionary = {}
 static var _global_signature: Array = []
 static var _lights: Array[WeakRef] = []
 static var _lighting_refresh := Callable()
+static var _cloud_refresh := Callable()
 
 
 static func normalize(raw: Dictionary) -> Dictionary:
@@ -94,7 +97,8 @@ static func resolve(raw: Dictionary, renderer: String, high_profile: bool,
 	var effective := {"technique": technique, "quality": quality, "native": native, "projected": projected,
 		"aircraft_cue": cue, "distance_m": float(DISTANCE_METRES[requested.shadow_distance]),
 		"softness": softness, "filter_technique": filter_technique, "angular_distance": angular_distance,
-		"renderer": renderer, "high_profile": high_profile, "contact_shadows": false}
+		"renderer": renderer, "high_profile": high_profile, "contact_shadows": false,
+		"cloud_shadows": requested.shadow_cloud == "on"}
 	effective.merge(allocation)
 	return {"requested": requested, "effective": effective, "reasons": reasons}
 
@@ -128,6 +132,7 @@ static func _commit(high_profile: bool) -> void:
 	if receipt == _receipt:
 		return
 	var previous_native := bool(_receipt.effective.native) if not _receipt.is_empty() else bool(receipt.effective.native)
+	var previous_cloud := bool(_receipt.effective.cloud_shadows) if not _receipt.is_empty() else bool(receipt.effective.cloud_shadows)
 	_receipt = receipt
 	revision += 1
 	var state: Dictionary = _receipt.effective
@@ -146,6 +151,8 @@ static func _commit(high_profile: bool) -> void:
 	_lights = alive
 	if previous_native != bool(state.native) and _lighting_refresh.is_valid():
 		_lighting_refresh.call(bool(state.native))
+	if previous_cloud != bool(state.cloud_shadows) and _cloud_refresh.is_valid():
+		_cloud_refresh.call()
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null:
 		tree.call_group(&"shadow_policy_consumers", &"apply_shadow_policy")
@@ -207,6 +214,17 @@ static func light_receipts() -> Array:
 
 
 ## Atmosphere registers the owner of existing light/fog/material compensation.
+## SA-15: Atmosphere re-applies the cloud-shadow choice to its live ground materials.
+static func set_cloud_refresh(callback: Callable) -> void:
+	_cloud_refresh = callback
+
+
+static func cloud_shadows_enabled() -> bool:
+	if _receipt.is_empty():
+		ensure_configured(_high_active())
+	return bool(_receipt.effective.cloud_shadows)
+
+
 static func set_lighting_refresh(callback: Callable) -> void:
 	_lighting_refresh = callback
 

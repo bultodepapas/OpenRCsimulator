@@ -49,43 +49,31 @@ static func collect(model: Node3D, max_lod_distance: float) -> Dictionary:
 		return full
 	if not is_finite(max_lod_distance) or max_lod_distance <= 0.0:
 		return _full(full, "invalid LOD criterion")
-	var vertices := PackedVector3Array()
+	# SA-03: the same entries as the full collection, so hinged/tagged parts stay articulated in the proxy.
+	var entries := Projected.mesh_entries(model)
+	var faces: Array[PackedVector3Array] = []
 	var lod_surfaces := 0
-	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
-	if model is MeshInstance3D:
-		meshes.push_front(model)
-	for item in meshes:
-		var instance := item as MeshInstance3D
-		if instance.mesh == null:
-			continue
-		var transform := Transform3D.IDENTITY
-		var node: Node = instance
-		var include := true
-		while node != model and node != null:
-			if node is Node3D:
-				include = include and node.visible and node.name != &"propeller"
-				transform = node.transform * transform
-			node = node.get_parent()
-		if not include:
-			continue
-		var faces: PackedVector3Array = instance.mesh.get_faces()
-		var selected := _mesh_faces(instance.mesh, faces, max_lod_distance)
-		vertices.append_array(transform * (selected.faces as PackedVector3Array))
+	var vertex_count := 0
+	for entry: Dictionary in entries:
+		var instance := entry.instance as MeshInstance3D
+		var selected := _mesh_faces(instance.mesh, instance.mesh.get_faces(), max_lod_distance)
+		faces.append(selected.faces)
+		vertex_count += (selected.faces as PackedVector3Array).size()
 		lod_surfaces += int(selected.lod_surfaces)
-	if lod_surfaces == 0 or vertices.size() >= int(full.triangles) * 3:
+	if lod_surfaces == 0 or vertex_count >= int(full.triangles) * 3:
 		return _full(full, "no smaller usable imported LOD")
 	var guarded_bounds: AABB = full.bounds.grow(0.0001)
-	for point: Vector3 in vertices:
-		if not point.is_finite() or not guarded_bounds.has_point(point):
-			return _full(full, "LOD extends outside the original silhouette bounds")
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return {mesh = mesh, bounds = full.bounds, triangles = vertices.size() / 3,
-		source_triangles = full.triangles, representation = "imported-lod-proxy",
-		lod_surfaces = lod_surfaces, max_lod_distance = max_lod_distance}
+	for index in entries.size():
+		for point: Vector3 in (entries[index].to_model as Transform3D) * faces[index]:
+			if not point.is_finite() or not guarded_bounds.has_point(point):
+				return _full(full, "LOD extends outside the original silhouette bounds")
+	var shape := Projected.assemble(model, entries, faces)
+	shape.bounds = full.bounds
+	shape.source_triangles = full.triangles
+	shape.representation = "imported-lod-proxy"
+	shape.lod_surfaces = lod_surfaces
+	shape.max_lod_distance = max_lod_distance
+	return shape
 
 
 static func _full(shape: Dictionary, reason: String) -> Dictionary:

@@ -1029,7 +1029,7 @@ func _prepare_flight() -> void:
 		return
 	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
 		_sync_shadow_preference()
-		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+		_bind_aircraft_shadow()
 	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
 	# --rates selects the high/low starting profile; radios retain transmitter rates.
 	var rates := str(args.get("rates", "sport"))
@@ -1601,7 +1601,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 		return true
 	_extent = Shadow.model_extent(_airplane.root)
 	_sync_shadow_preference()
-	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+	_bind_aircraft_shadow()
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
 	return true
@@ -3484,7 +3484,7 @@ func _build_world() -> bool:
 	_shadow = Shadow.create(self, _shadow_mode)
 	# Bind the aircraft silhouette before fitting luminous geometry.
 	if not startup_checkpoint.is_valid():
-		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+		_bind_aircraft_shadow()
 	# Legacy profiles keep the established lazy kit and imported-material behavior.
 	var lighting_profile: Dictionary = workshop_trial.get("presentation_profile", {}).get("lighting", LightingProfile.defaults())
 	if lighting_profile.get("selection", "inherit") != "inherit":
@@ -3580,6 +3580,13 @@ func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
 	return ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg())
 
 
+## SA-03: tag the nodes this aircraft moves, then bind, so the projected cue follows hinges, folds, mechanisms
+## and gear retraction instead of keeping the bind-time pose.
+func _bind_aircraft_shadow() -> void:
+	Shadow.Projected.tag_articulation(_airplane)
+	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+
+
 ## Apply the current flight-local cue to the presentation carrier.
 func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vector3:
 	_sync_shadow_preference()
@@ -3590,7 +3597,13 @@ func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vecto
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
 	# SA-06: fixed and flowing time both project the Sun cue along the bounded planar direction, as the field cues do.
 	var cue_direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, cue_direction, strength, _shadow_mode)
+	# SA-04: the cue lands on the session's own terrain (read-only) and fades over ground that is far from flat.
+	# Query the terrain only for a cue that can draw (not in Auto/Native-only, Off or at night).
+	var drawn := _shadow.visible and Atmosphere.ShadowSettings.projected_enabled() and session != null
+	var receiving := Shadow.receiving_ground(pose.pos, Vector3.UP if _shadow_mode == "vertical" else cue_direction,
+		Callable(self, "_ground_height") if drawn else Callable(), maxf(_extent.x, _extent.y))
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, cue_direction, strength * float(receiving.fit),
+		_shadow_mode, float(receiving.y))
 	# CAM-14 keeps its existing light input: the raw sun in fixed time, the bounded direction in flowing time.
 	return Atmosphere.sun_direction(_lighting) if snapshot_lighting else cue_direction
 

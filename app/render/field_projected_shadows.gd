@@ -106,6 +106,7 @@ func add_caster(model: Node3D, collected_shape: Dictionary = {}) -> bool:
 		return false
 	var projector: Node = WindsockProjected.new() if moving_sock else Projected.new()
 	projector.name = "Caster_" + str(model.name)
+	projector.set("release_when_hidden", true) # SA-11: Off/Native and night keep no field render targets
 	add_child(projector)
 	projector.setup(model, shape, resolution, Viewport.MSAA_DISABLED)
 	projector.set_meta("soft_height", maxf(shape.bounds.size.y * 0.5, 0.0))

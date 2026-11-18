@@ -5,6 +5,7 @@ const Main := preload("res://main.gd")
 const Shadow := preload("res://render/shadow.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Projected := preload("res://render/projected_shadow.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
 
 var _checks := 0
 var _failures := 0
@@ -128,6 +129,47 @@ func _main_shadow_presentation() -> void:
 	sun = flight._update_aircraft_shadow(pose, false)
 	_check("Main renders Sun when V follows saved Off", flight._shadow_mode == "sun" and receiver.visible
 		and (mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(sun.normalized()))
+	flight.free()
+	host.free()
+
+
+## SA-06/SA-09: one Vertical-strength rule for Home and flight, and the bounded Sun direction in fixed time.
+func _cue_rules() -> void:
+	_select("auto", "vertical")
+	_check("SA-09: the saved Vertical aid keeps full strength without celestial light", Shadow.cue_strength("auto", 0.0) == 1.0)
+	_select("auto", "sun")
+	_check("SA-09: Sun follows the celestial strength", Shadow.cue_strength("auto", 0.4) == 0.4
+		and Shadow.cue_strength("sun", 0.0) == 0.0)
+	_check("SA-09: a flight-local Vertical overrides a saved Sun", Shadow.cue_strength("vertical", 0.0) == 1.0)
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := _model("LowSunAircraft")
+	host.add_child(model)
+	var carrier := Shadow.create(host)
+	Shadow.bind_model(carrier, model)
+	var projected: Node = carrier.get_node("ProjectedShadow")
+	var receiver: MeshInstance3D = projected.get("receiver")
+	var mask: ShaderMaterial = projected.get("mask_material")
+	var flight := Main.new()
+	flight.interactive_start = true
+	flight._initialize_shadow_mode({})
+	flight._airplane = {"root": model}
+	flight._shadow = carrier
+	flight._lighting = {"sun_elevation_deg": 2.0, "sun_azimuth_deg": 250.0, "shadow_strength": 1.0}
+	var pose := {"basis": Basis.IDENTITY, "pos": Vector3(1, 3, 2)}
+	var returned: Vector3 = flight._update_aircraft_shadow(pose, true)
+	var bounded := Atmosphere.shadow_direction(flight._lighting)
+	_check("SA-06: a fixed 2° sun projects the cue along the field cues' bounded direction",
+		(mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(bounded.normalized())
+		and bounded.y >= sin(deg_to_rad(Atmosphere.SHADOW_MIN_ELEVATION_DEG)) - 1e-6)
+	_check("SA-06: the camera keeps the raw fixed-time sun", returned.is_equal_approx(Atmosphere.sun_direction(flight._lighting)))
+	flight._lighting.shadow_strength = 0.0
+	flight._update_aircraft_shadow(pose, true)
+	_check("SA-09: a Sun cue disappears without celestial light", not flight._shadow.visible)
+	_select("auto", "vertical")
+	flight._update_aircraft_shadow(pose, true)
+	_check("SA-09: the Vertical aid stays visible without celestial light, as in Home",
+		flight._shadow_mode == "vertical" and flight._shadow.visible and receiver.visible)
 	flight.free()
 	host.free()
 
@@ -292,6 +334,7 @@ func _check_projector_pose(label: String, projected: Node, model: Node3D, sun: V
 func _run() -> void:
 	_flight_modes()
 	_main_shadow_presentation()
+	_cue_rules()
 	_projector_lifecycle()
 	_standalone_projector_entry()
 	_select("auto", "auto")
