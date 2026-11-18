@@ -234,7 +234,9 @@ func _exit_tree() -> void:
 	if _ablation != null:
 		_ablation.abort()
 		_ablation = null
-	if _ablation_owned_measure and _render != null:
+	# Release the bridge's own GPU-timing interest (regular and ablation-owned); a frame-diagnostics or GOD TEST
+	# observer of the same viewport keeps its shared lease.
+	if _render != null:
 		_render.set_measure(false)
 	_ablation_owned_measure = false
 	_finish_ablation_pause()

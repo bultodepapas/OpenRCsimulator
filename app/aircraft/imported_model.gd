@@ -126,6 +126,17 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary, li
 	if not errors.is_empty():
 		root.free()
 		return _failure(errors)
+	# SA-03: the projected shadow follows nodes that hinges, folds, mechanisms and the gear retraction move.
+	# Wheel spin and propellers stay out: their rotation does not change the silhouette.
+	for node: Node3D in moving:
+		node.set_meta(&"shadow_articulated", true)
+	if not retract.get("rig", {}).is_empty():
+		var rig: Dictionary = retract.rig
+		var spinning: Array = (retract.get("gear", {}) as Dictionary).values()
+		for name: String in rig.data.retraction.samples[0].nodes:
+			var gear_node: Node3D = rig.nodes.get(name)
+			if gear_node != null and not spinning.has(gear_node):
+				gear_node.set_meta(&"shadow_articulated", true)
 
 	root.name = "airplane"
 	# Wreck duplication must copy the constructed hierarchy, not re-instantiate the original GLB.

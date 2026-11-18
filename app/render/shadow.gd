@@ -228,6 +228,14 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 	return t
 
 
+## SA-09: one cue-strength rule for Home and flight. The Vertical cue is a pilot height aid and keeps full strength
+## whatever the celestial light; every other cue (Sun, Auto) follows the celestial direct-shadow strength.
+## `cue` is a flight-local mode or "auto", which resolves to the saved cue.
+static func cue_strength(cue: String, celestial_strength: float) -> float:
+	var resolved := cue if cue in ["sun", "vertical", "off"] else ShadowSettings.aircraft_cue()
+	return 1.0 if resolved == "vertical" else clampf(celestial_strength, 0.0, 1.0)
+
+
 ## The flight's local cue can override the saved cue; the global projected route
 ## still decides whether any cue may be drawn. Other callers use the saved policy.
 static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float,

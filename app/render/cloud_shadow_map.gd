@@ -26,6 +26,7 @@ static var _settings: Dictionary = {}
 static var _generation := 0
 static var _registrations := 0
 static var _bake_serial := 0
+static var _capacity_waiting := false # a consumer was refused a slot; retried once one is free
 const PRUNE_EVERY := 64
 
 
@@ -88,10 +89,17 @@ static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground", slot:
 		_consumers[id] = entry
 		_generation += 1
 	elif int(entry.seed) != seed or str(entry.mode) != mode:
+		var previous_seed := int(entry.seed)
 		entry.seed = seed
 		entry.mode = mode
 		_generation += 1
+		# SA-10: an abandoned bake is wasted GPU work and blocks a cache slot; ready/failed tiles stay warm
+		# until a new seed needs their slot (_reclaim_unreferenced).
+		if previous_seed != seed and _tiles.get(previous_seed, {}).get("status", "") == "pending" \
+				and not _seed_referenced(previous_seed):
+			_release_tile(previous_seed)
 	_sync_consumer(id)
+	_retry_capacity()
 
 
 ## Bind up to MAX_TILES distinct eligible sky-layer seeds. Extra layers remain analytic.
@@ -247,6 +255,8 @@ static func _sync_consumer(id: Variant) -> void:
 	var texture: Texture2D = null
 	var tile := _ensure_tile(seed)
 	status = str(tile.get("status", "capacity"))
+	if status == "capacity":
+		_capacity_waiting = true
 	if status == "ready":
 		texture = tile.texture
 	var changed := str(entry.status) != status
@@ -308,13 +318,55 @@ static func _ensure_tile(seed: int) -> Dictionary:
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree == null or tree.root == null:
 		return {status = "unavailable"}
-	if _tiles.size() >= MAX_TILES:
-		return {}
+	if _tiles.size() >= MAX_TILES and not _reclaim_unreferenced(seed):
+		return {} # every retained tile is still required: capacity, analytic fallback
 	var tile := {status = "pending", attempts = 0, failure = "", texture = null}
 	_tiles[seed] = tile
 	_generation += 1
 	_start_bake(tree, seed)
 	return tile
+
+
+static func _seed_referenced(seed: int) -> bool:
+	for entry: Dictionary in _consumers.values():
+		if int(entry.seed) == seed and entry.material.get_ref() != null:
+			return true
+	return false
+
+
+## SA-10: free one tile no live consumer requires, so obsolete seeds cannot hold every slot. Failed tiles go first,
+## then pending bakes (still costing GPU work), then ready textures (a warm cache worth keeping longest).
+static func _reclaim_unreferenced(requested_seed: int) -> bool:
+	for status: String in ["failed", "pending", "ready"]:
+		for seed: int in _tiles.keys():
+			if seed != requested_seed and str(_tiles[seed].get("status", "")) == status and not _seed_referenced(seed):
+				_release_tile(seed)
+				return true
+	return false
+
+
+## Consumers refused for capacity retry admission once a slot is free (bounded by MAX_TILES admissions).
+static func _retry_capacity() -> void:
+	if not _capacity_waiting or _tiles.size() >= MAX_TILES:
+		return
+	_capacity_waiting = false
+	for id in _consumers.keys():
+		if _consumers.has(id) and str(_consumers[id].status) == "capacity":
+			_sync_consumer(id)
+			if _tiles.size() >= MAX_TILES:
+				return
+
+
+## Remove one tile. Its unique bake token disappears with it, so a deferred or awaiting bake cannot publish late.
+static func _release_tile(seed: int) -> void:
+	var tile: Dictionary = _tiles.get(seed, {})
+	if tile.is_empty():
+		return
+	var viewport: Variant = tile.get("viewport")
+	if is_instance_valid(viewport):
+		viewport.queue_free()
+	_tiles.erase(seed)
+	_generation += 1
 
 
 static func _start_bake(tree: SceneTree, seed: int) -> void:

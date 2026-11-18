@@ -248,9 +248,11 @@ func show_aircraft(id: String, livery := "") -> bool:
 			HeliNightLights.attach(airplane)
 	_update_aircraft_lights()
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
-	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
+	var celestial: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
+	var strength := Shadow.cue_strength("auto", celestial) # SA-09: the saved Vertical aid matches flight
 	_shadow.visible = strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	# SA-06: the same bounded planar direction as flight and the field cues, in fixed and flowing time.
+	var direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength * 0.65)
 	_frame_aircraft()
 

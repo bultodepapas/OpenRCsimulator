@@ -165,6 +165,47 @@ static func effective() -> Dictionary:
 	return _receipt.effective.duplicate(true)
 
 
+## SA-13: the global atlas/filter values this owner last submitted to the RenderingServer, which live setting changes
+## never write back to ProjectSettings. `submitted` is false where no renderer accepted them (headless). This is the
+## requested configuration, not a measured GPU allocation.
+static func applied_global() -> Dictionary:
+	ensure_configured(_high_active())
+	var result := {"atlas_size": 0, "use_16_bits": false, "filter_quality": 0,
+		"submitted": DisplayServer.get_name() != "headless", "revision": revision}
+	if _global_signature.size() == 3:
+		result.atlas_size = int(_global_signature[0])
+		result.use_16_bits = bool(_global_signature[1])
+		result.filter_quality = int(_global_signature[2])
+	return result
+
+
+## SA-14: what each registered world sun actually does, beside the global policy. A source veto (`source_requested`
+## false) or an activity cap explains why a light casts less than the configured technique and distance suggest.
+static func light_receipts() -> Array:
+	var rows: Array = []
+	for reference in _lights:
+		var light := reference.get_ref() as DirectionalLight3D
+		if light == null:
+			continue
+		var source_requested := bool(light.get_meta(LIGHT_REQUEST, light.shadow_enabled))
+		var cap := float(light.get_meta(LIGHT_DISTANCE_CAP, INF))
+		var visible := light.is_visible_in_tree() if light.is_inside_tree() else light.visible
+		var reason := ""
+		if not source_requested:
+			reason = "source_disabled"
+		elif not bool(_receipt.get("effective", {}).get("native", false)):
+			reason = "technique"
+		elif not visible:
+			reason = "hidden"
+		rows.append({"path": str(light.get_path()) if light.is_inside_tree() else str(light.name),
+			"casting": light.shadow_enabled and light.light_energy > 0.0 and reason.is_empty(),
+			"shadow_enabled": light.shadow_enabled, "source_requested": source_requested,
+			"max_distance_m": light.directional_shadow_max_distance, "distance_cap_m": cap if is_finite(cap) else null,
+			"opacity": light.shadow_opacity, "energy": light.light_energy,
+			"policy_revision": int(light.get_meta(LIGHT_REVISION, -1)), "inactive_reason": reason})
+	return rows
+
+
 ## Atmosphere registers the owner of existing light/fog/material compensation.
 static func set_lighting_refresh(callback: Callable) -> void:
 	_lighting_refresh = callback

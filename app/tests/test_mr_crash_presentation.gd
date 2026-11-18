@@ -77,6 +77,17 @@ func _pacing() -> void:
 	_check("an earlier scuff mark stays put when a later touch lands on higher ground", first.visible
 		and is_equal_approx(first.global_position.y, drawn_y) and absf(hill.effects.position.y - 1.0) < 1.0e-6,
 		"%.4f -> %.4f (frame %.3f)" % [drawn_y, first.global_position.y, hill.effects.position.y])
+	# Review of these fixes: an emitter still running from an earlier event keeps its place when a later event lands
+	# on other ground; the emitter that event places sits over its own ground.
+	hill.prop_damage({rotor = 2, health = 0.4, point_ned = PackedFloat64Array([0.0, 20.0, -2.05])}, Vector3.ZERO)
+	var chips: CPUParticles3D = hill.effects.blade_chips
+	var chips_at: Vector3 = chips.global_position
+	hill.update(Fx.TOUCH_INTERVAL_S + 0.01, false)
+	hill.impact({surface = "ground", normal_speed_mps = 6.0, point_ned = PackedFloat64Array([0.0, 5.0, -0.5])}, Vector3.ZERO)
+	var dust: CPUParticles3D = hill.effects.touch_dust
+	_check("a running emitter stays put when a later event lands lower; the new one sits over its ground",
+		absf(chips_at.y - 2.05) < 1.0e-6 and chips.global_position.is_equal_approx(chips_at)
+		and absf(dust.global_position.y - 0.53) < 1.0e-6, "chips %s -> %s, dust %s" % [chips_at, chips.global_position, dust.global_position])
 	hill.free()
 
 

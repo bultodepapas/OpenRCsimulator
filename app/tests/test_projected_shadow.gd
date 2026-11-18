@@ -340,6 +340,116 @@ func _test_binding_lifecycle_and_hidden_updates() -> void:
 	host.free()
 
 
+## Audit SA-07 counterexample: 0.2° of pitch on a 6 m model at a 12° sun moves its end ~49 mm on the ground,
+## which the old 0.25° angular rule reused. The bounded rule must redraw it and still reuse a sub-tolerance change.
+func _test_error_bounded_reuse() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	host.add_child(model)
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(1.0, 0.4, 6.0)
+	var projected := Projected.new()
+	host.add_child(projected)
+	projected.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 256, Viewport.MSAA_DISABLED)
+	var sun := Vector3(0.0, sin(deg_to_rad(12.0)), cos(deg_to_rad(12.0)))
+	projected.refresh(0.0, sun, 0.5, true)
+	var drawn_basis := model.global_basis
+	var tolerance: float = projected.reuse_tolerance(0.018, (projected._last_signature[2] as Rect2).size.x)
+	model.rotation.x = deg_to_rad(0.2)
+	var end_shift := _ray_to_ground(model.global_basis * Vector3(0, 0, 3), sun).distance_to(
+		_ray_to_ground(drawn_basis * Vector3(0, 0, 3), sun))
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	projected.refresh(0.0, sun, 0.5, true)
+	_check("SA-07: a 0.2° change that moves the 6 m model's end %.1f mm redraws at a 12° sun" % (end_shift * 1000.0),
+		end_shift > 0.045 and end_shift > tolerance
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE, "tolerance %.4f" % tolerance)
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	model.rotation.x = deg_to_rad(0.2 + 0.02)
+	projected.refresh(0.0, sun, 0.5, true)
+	_check("SA-07: a sub-tolerance 0.02° change reuses the mask",
+		projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	_check("SA-07: the tolerance never exceeds the framing margin",
+		projected.reuse_tolerance(0.45, 1000.0) == Projected.REUSE_MAX_M)
+	host.free()
+
+
+## SA-03: control surfaces and tagged mechanisms follow their live hinge in the projected mask.
+func _test_articulated_parts() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	model.name = "airplane"
+	host.add_child(model)
+	var body := MeshInstance3D.new()
+	var body_mesh := BoxMesh.new()
+	body_mesh.size = Vector3(1.0, 0.2, 2.0)
+	body.mesh = body_mesh
+	model.add_child(body)
+	var hinge := Node3D.new()
+	hinge.name = "elevator_hinge"
+	hinge.position = Vector3(0, 0, 1)
+	model.add_child(hinge)
+	var surface := MeshInstance3D.new()
+	var surface_mesh := BoxMesh.new()
+	surface_mesh.size = Vector3(1.0, 0.02, 0.4)
+	surface.mesh = surface_mesh
+	surface.position = Vector3(0, 0, 0.2)
+	hinge.add_child(surface)
+	var canopy_mount := Node3D.new()
+	canopy_mount.name = "canopy"
+	canopy_mount.set_meta(Projected.ARTICULATED_META, true)
+	model.add_child(canopy_mount)
+	var canopy := MeshInstance3D.new()
+	canopy.mesh = BoxMesh.new()
+	canopy.position = Vector3(0, 0.5, -0.5)
+	canopy_mount.add_child(canopy)
+	var shape := Projected.collect(model)
+	var parts: Array = shape.get("parts", [])
+	var expected := body_mesh.get_aabb().merge(Transform3D(Basis(), Vector3(0, 0, 1.2)) * surface_mesh.get_aabb()) \
+		.merge(Transform3D(Basis(), Vector3(0, 0.5, -0.5)) * (canopy.mesh as BoxMesh).get_aabb())
+	_check("SA-03: hinged and tagged meshes become parts; whole-model bounds and triangles are unchanged",
+		parts.size() == 2 and int(shape.triangles) == 36 and (shape.bounds as AABB).is_equal_approx(expected)
+		and shape.mesh != null and shape.mesh.get_faces().size() == 36, str(shape.bounds))
+	_check("SA-03: a cropped (scenery) collection never articulates", not Projected.collect(model, -1.0).has("parts"))
+	var projected := Projected.new()
+	host.add_child(projected)
+	projected.setup(model, shape, 64, Viewport.MSAA_DISABLED)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	var redraws := projected.redraw_count
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: an unchanged pose reuses the mask", projected.redraw_count == redraws
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	hinge.rotation.x = deg_to_rad(35.0)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	var elevator: Dictionary = {}
+	for part: Dictionary in projected._parts:
+		if part.node == hinge:
+			elevator = part
+	_check("SA-03: a 35° hinge deflection redraws the mask with the live hinge transform",
+		projected.redraw_count == redraws + 1 and not elevator.is_empty()
+		and (elevator.material as ShaderMaterial).get_shader_parameter("part_basis") == hinge.transform.basis
+		and (elevator.material as ShaderMaterial).get_shader_parameter("part_origin") == hinge.transform.origin)
+	_check("SA-03: parts share the projection uniforms", (elevator.material as ShaderMaterial).get_shader_parameter(
+		"frame_size") == projected.mask_material.get_shader_parameter("frame_size"))
+	canopy_mount.position = Vector3(0, 0, -0.4)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a tagged mechanism slide redraws and widens the framing", projected.redraw_count == redraws + 2
+		and (projected._last_signature[2] as Rect2).size.y >= 2.0 + 0.4)
+	surface.visible = false
+	hinge.visible = false
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a hidden part stops casting", projected.redraw_count == redraws + 3
+		and not (elevator.proxy as MeshInstance3D).visible)
+	hinge.visible = true
+	model.remove_child(hinge)
+	hinge.free()
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a freed part stays out of the mask", not (elevator.proxy as MeshInstance3D).visible)
+	host.free()
+
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -349,6 +459,8 @@ func _run() -> void:
 	_test_collection_excludes_hidden_and_propeller()
 	_test_conservative_framing()
 	_test_framing_reuse_inputs()
+	_test_error_bounded_reuse()
+	_test_articulated_parts()
 	_test_neutral_geometry_on_catalog_models()
 	_test_binding_lifecycle_and_hidden_updates()
 	print("Projected shadow regression: %d checks, %d failed" % [_checks, _failures])
@@ -399,23 +511,35 @@ func _test_framing_reuse_inputs() -> void:
 	_check("height changes above the blur cap retain the same mask framing",
 		var_to_bytes(projected._last_signature) == capped_signature
 		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
-	# PT1h-R12: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the drawn
-	# mask; the error is measured from the last drawn mask, so small steps cannot accumulate past the tolerance.
-	_check("the reuse cosine is cos(REUSE_ANGLE_DEG)",
-		is_equal_approx(Projected.REUSE_COS, cos(deg_to_rad(Projected.REUSE_ANGLE_DEG))))
+	# PT1h-R12/SA-07: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the
+	# drawn mask; the corner shift is measured from the last drawn mask, so small steps cannot accumulate past it.
 	height = 3.0
 	model.rotation = Vector3.ZERO
 	projected.refresh(height, direction, 0.5, true)
 	var drawn := var_to_bytes(projected._last_signature)
+	var tolerance: float = projected.reuse_tolerance(clampf(0.018 + height * 0.0093, 0.018, 0.45),
+		(projected._last_signature[2] as Rect2).size.x)
 	var redraws: Array[bool] = []
-	for step in 3:
+	var predicted: Array[bool] = []
+	for step in 24:
 		projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		var drawn_basis: Basis = projected._last_signature[0]
+		var drawn_direction: Vector3 = projected._last_signature[1]
 		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.1))
 		model.position.x += 0.5
+		# Independent corner-shift oracle: ray/plane projections of all eight corners, before and after.
+		var worst := 0.0
+		for i in 8:
+			var corner := projected.bounds.get_endpoint(i)
+			var now := model.global_basis * corner
+			var then := drawn_basis * corner
+			worst = maxf(worst, _ray_to_ground(now, direction).distance_to(_ray_to_ground(then, drawn_direction)))
+		predicted.append(worst > tolerance)
 		projected.refresh(height, direction, 0.5, true)
 		redraws.append(projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
-	_check("rotations under 0.25° from the drawn mask reuse it; the third 0.1° step (0.3° in total) redraws",
-		redraws == [false, false, true] and var_to_bytes(projected._last_signature) != drawn, str(redraws))
+	_check("0.1° steps reuse the mask exactly until the corner shift passes the tolerance, then redraw",
+		redraws == predicted and redraws.has(true) and not redraws[0] and var_to_bytes(projected._last_signature) != drawn,
+		"%s tolerance %.4f" % [str(redraws), tolerance])
 	var moved_transform: Transform3D = projected.receiver.transform
 	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	model.position.x += 1.0

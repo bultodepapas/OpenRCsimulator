@@ -203,9 +203,15 @@ func _render_point(event: Dictionary) -> Vector3:
 ## The shared effects assume their ground at y = 0: run `call` in a frame lifted to the local ground height, then lift
 ## the emitters (which the kit places in global coordinates) by the same height. Audit: the marks already on the
 ## ground are children of the lifted frame; they are lowered by the same step so they stay where they were drawn
-## (on rolling terrain they used to jump to each new touch's height).
+## (on rolling terrain they used to jump to each new touch's height). Likewise only the emitters this event places
+## are lifted: one still running from an earlier event keeps its place in the world (it used to be lifted again by
+## every later event and dragged by the frame).
 func _at_ground(point: Vector3, call: Callable) -> void:
 	var height := float(ground_height.call(point.x, point.z)) if ground_height.is_valid() else 0.0
+	var emitters: Array[CPUParticles3D] = effects.emitters
+	var before: Array[Vector3] = []
+	for emitter: CPUParticles3D in emitters:
+		before.append(emitter.global_position)
 	var step := height - effects.position.y
 	if step != 0.0:
 		for item: MeshInstance3D in effects.marks:
@@ -213,6 +219,11 @@ func _at_ground(point: Vector3, call: Callable) -> void:
 		for decal: Decal in effects.mark_decals:
 			decal.position.y -= step
 	effects.position = Vector3(0.0, height, 0.0)
+	for i in emitters.size():
+		emitters[i].global_position = before[i]
 	call.call(Vector3(point.x, point.y - height, point.z))
-	for emitter: CPUParticles3D in effects.emitters:
-		emitter.global_position.y += height
+	# The kit places its emitters in global coordinates over ground at y = 0. An emitter it left alone is unchanged;
+	# one placed again at its old position can only be at the same spot, where the lift is the same height.
+	for i in emitters.size():
+		if emitters[i].global_position != before[i]:
+			emitters[i].global_position.y += height

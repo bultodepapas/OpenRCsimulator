@@ -638,7 +638,7 @@ Obstacle queries cost 1.7–7.7 µs each, and the default field has no index-wid
 | Input | A refused arm (high throttle, an arm block) used up the turtle request. | The activity reports the controller's motor state after each tick; only an arm cycle the controller accepted consumes the request. `test_mr_turtle` |
 | Input | After the flight pad was unplugged, a second connected controller was not adopted (the direct route did adopt it). | Another connected controller takes over with ControllerService's priority (a saved profile, then a radio, then a known gamepad). A keyboard the pilot chose, also during the activity, stays chosen; the lost pad returning finds the role taken. `test_mr_activity` |
 | Presentation | The crash kit was built on the first touch: about 20 ms (10 ms particles, 10 ms voices), a visible hitch. | Built while loading; disabled parts stay unallocated. `test_mr_crash_presentation` |
-| Presentation | On rolling terrain every earlier scuff mark jumped to the latest touch's height. | Marks are lowered by the frame's lift. `test_mr_crash_presentation` |
+| Presentation | On rolling terrain every earlier scuff mark jumped to the latest touch's height, and an emitter still running (blade chips, dust) was lifted again by every later event. | Marks are lowered by the frame's lift; only the emitters an event places are lifted. `test_mr_crash_presentation` |
 
 ### 21.3 Checked and kept
 
@@ -663,4 +663,3 @@ Obstacle queries cost 1.7–7.7 µs each, and the default field has no index-wid
 - **Presentation:**
   - The quad activity builds its world without the display preferences (`World.build` gets no graphics options): quality presets reach neither the field nor the gate shadows and halos. This is a cross-track integration with the graphics settings owners.
   - The help panel is measured only with the keyboard source.
-  - Each ground event lifts every crash-kit emitter by the local ground height, including emitters still running from an earlier event, which then jump (pre-existing; found by the review of these fixes).

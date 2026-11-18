@@ -4,6 +4,8 @@
 # Guide: tools/debug/README.md#render-cost-pt1h-r9.
 extends RefCounted
 
+const ShadowSettings = preload("res://render/shadow_settings.gd")
+
 const PASSES := {visible = RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE,
 	shadow = RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW, canvas = RenderingServer.VIEWPORT_RENDER_INFO_TYPE_CANVAS}
 const FLAG_HELP := {
@@ -16,10 +18,11 @@ const FLAG_HELP := {
 	"@canvas": "every visible CanvasLayer (HUD, overlays, menus)",
 }
 const MAX_TARGETS := 48
+const TimingLease := preload("res://render/render_timing_lease.gd")
 
 var viewport: Viewport
 var measuring := false
-var _measured: Dictionary = {} # viewport RID -> true, measurement already enabled
+var _leases: Dictionary = {} # viewport RID -> TimingLease token held by this probe
 
 
 func _init(target: Viewport) -> void:
@@ -30,20 +33,43 @@ static func available() -> bool:
 	return DisplayServer.get_name() != "headless" and RenderingServer.get_current_rendering_method() != "dummy"
 
 
+## Measurement is shared through TimingLease: turning the probe off releases only its own interest, so a running
+## `--frame-diagnostics` or GOD TEST observer of the same viewport keeps its GPU timing.
 func set_measure(on: bool) -> void:
 	measuring = on and available()
-	_measured.clear()
-	_enable(viewport.get_viewport_rid())
-	for sub: SubViewport in subviewports():
-		_enable(sub.get_viewport_rid())
-
-
-func _enable(rid: RID) -> void:
-	if not rid.is_valid():
+	if not measuring:
+		_release_all()
 		return
-	RenderingServer.viewport_set_measure_render_time(rid, measuring)
-	if measuring:
-		_measured[rid] = true
+	_hold(viewport)
+	for sub: SubViewport in subviewports():
+		_hold(sub)
+
+
+## Releases every lease this probe holds, including detached or freed SubViewports. Idempotent.
+func _release_all() -> void:
+	for token: int in _leases.values():
+		TimingLease.release(token)
+	_leases.clear()
+
+
+func _hold(target: Viewport) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	var rid := target.get_viewport_rid()
+	if not rid.is_valid() or (_leases.has(rid) and TimingLease.is_held(_leases[rid])):
+		return
+	var token := TimingLease.acquire(target, "render_probe")
+	if token != 0:
+		_leases[rid] = token
+
+
+## Drops leases on SubViewports that left the probed tree (detached or freed) since the last sample.
+func _release_departed(current: Dictionary) -> void:
+	var root_rid := viewport.get_viewport_rid()
+	for rid: RID in _leases.keys():
+		if rid != root_rid and not current.has(rid):
+			TimingLease.release(_leases[rid])
+			_leases.erase(rid)
 
 
 ## Root-viewport GPU time of the last measured frame (ms), or -1 when not measuring. Cheap: used every frame.
@@ -92,13 +118,15 @@ func sample() -> Dictionary:
 		elif pass_name == "canvas":
 			out.canvas_draw_calls = calls
 	if measuring:
+		var current := {}
 		for sub: SubViewport in subviewports():
 			var sub_rid := sub.get_viewport_rid()
-			if not _measured.has(sub_rid):
-				_enable(sub_rid)
+			current[sub_rid] = true
+			_hold(sub)
 			if sub.render_target_update_mode != SubViewport.UPDATE_DISABLED:
 				var sub_gpu := RenderingServer.viewport_get_measured_render_time_gpu(sub_rid)
 				if is_finite(sub_gpu) and sub_gpu > 0.0: out.sub_gpu_ms += sub_gpu
+		_release_departed(current)
 	return out
 
 
@@ -141,7 +169,12 @@ func config() -> Dictionary:
 			mode = light.get("directional_shadow_mode") if light is DirectionalLight3D else null,
 			max_distance = light.get("directional_shadow_max_distance") if light is DirectionalLight3D else null})
 	out.lights = lights
-	out.directional_shadow_size = ProjectSettings.get_setting("rendering/lights_and_shadows/directional_shadow/size", 0)
+	# SA-13/14: live shadow changes go straight to the RenderingServer, so the project setting is only the default.
+	# Report the owner's submitted values, the per-light state and the default separately.
+	var applied: Dictionary = ShadowSettings.applied_global()
+	out.directional_shadow_size = applied.atlas_size
+	out.shadows = {applied = applied, effective = ShadowSettings.effective(), lights = ShadowSettings.light_receipts(),
+		project_default_atlas_size = ProjectSettings.get_setting(ShadowSettings.ATLAS_SETTING, 0)}
 	return out
 
 

@@ -3584,12 +3584,15 @@ func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
 func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vector3:
 	_sync_shadow_preference()
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
-	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
-		if _shadow_mode == "sun" else 1.0
+	# SA-09: the Vertical aid keeps full strength (Shadow.cue_strength), as in Home.
+	var celestial: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()
+	var strength := Shadow.cue_strength(_shadow_mode, celestial)
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction, strength, _shadow_mode)
-	return direction
+	# SA-06: fixed and flowing time both project the Sun cue along the bounded planar direction, as the field cues do.
+	var cue_direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, cue_direction, strength, _shadow_mode)
+	# CAM-14 keeps its existing light input: the raw sun in fixed time, the bounded direction in flowing time.
+	return Atmosphere.sun_direction(_lighting) if snapshot_lighting else cue_direction
 
 
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_camera_cut := false) -> void:
@@ -3864,7 +3867,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 				plants = meadow.get_meta("plants", 0) if meadow != null else 0,
 				source_triangles = meadow.get_meta("source_triangles", 0) if meadow != null else 0},
 		},
-		shadows = Atmosphere.ShadowSettings.describe(),
+		shadows = Atmosphere.ShadowSettings.describe().merged({applied = Atmosphere.ShadowSettings.applied_global(),
+			lights = Atmosphere.ShadowSettings.light_receipts()}), # SA-13/14: configured, submitted and per-light state
 		backend = RenderingServer.get_current_rendering_method(),
 		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,

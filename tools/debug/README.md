@@ -421,8 +421,11 @@ machine, renderer and view only.
   - `gpu_ms` and `root_gpu_ms` are root-viewport observations (`gpu_ms_scope=root_only_freshness_unverified`).
     `sub_gpu_ms` sums separate last SubViewport readings and is **not** included in `gpu_ms`. A SubViewport may
     not have drawn for the sampled frame, so neither its last reading nor the sum is a per-frame cost.
-  - `render measure=false` stops timestamp collection. When positive readings exist, `frames` reports root GPU
-    percentiles as unverified last readings; a hitch's GPU reading is context, not a GPU-bound verdict.
+  - `render measure=false` stops the bridge's own timestamp collection. Measurement is shared per viewport through
+    [`render_timing_lease.gd`](../../app/render/render_timing_lease.gd): a `--frame-diagnostics` or GOD TEST
+    observer of the same viewport keeps its timing until it stops, and the bridge releases its interest when it
+    exits. When positive readings exist, `frames` reports root GPU percentiles as unverified last readings; a
+    hitch's GPU reading is context, not a GPU-bound verdict.
   - `--json` retains the bridge's raw values and status fields. Responses from older bridges have unknown timing and
     scope semantics; the client labels them as legacy rather than upgrading them to the current contract.
 - **`layers [depth=2] [root=<path>]`** is a census of the 3D scene below the active camera's top Node3D: visible

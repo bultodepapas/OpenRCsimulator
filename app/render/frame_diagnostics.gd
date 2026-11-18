@@ -2,6 +2,7 @@ extends RefCounted
 ## Opt-in rendering and memory observations for one viewport.
 
 const Reconstruction := preload("res://render/reconstruction.gd")
+const TimingLease := preload("res://render/render_timing_lease.gd")
 
 const GPU_TIMING_NOTE := "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time."
 const RENDER_MEMORY_NOTE := "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM."
@@ -11,6 +12,7 @@ var _started: bool = false
 var _stopped: bool = false
 var _headless: bool = false
 var _measurement_enabled: bool = false
+var _timing_lease: int = 0
 var _viewport_rid: RID
 var _viewport_ref: WeakRef
 var _gpu_poll_count: int = 0
@@ -70,7 +72,7 @@ func start(viewport: Viewport) -> void:
 		_metadata["viewport_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
 		_metadata["viewport_size_scope"] = "viewport coordinates; native drawable pixels require platform verification"
 		_metadata["reconstruction_at_start"] = Reconstruction.describe(viewport)
-	var unavailable_reason: String = _timing_unavailable_reason(display_server, _metadata["os_name"], _metadata["rendering_method"])
+	var unavailable_reason: String = _timing_gate(display_server, _metadata["os_name"], _metadata["rendering_method"])
 	if not unavailable_reason.is_empty():
 		_metadata["render_timing_unavailable_reason"] = unavailable_reason
 		return
@@ -85,7 +87,15 @@ func start(viewport: Viewport) -> void:
 		_metadata["render_timing_unavailable_reason"] = "provided viewport has no valid render RID"
 		return
 	_viewport_ref = weakref(viewport)
-	RenderingServer.viewport_set_measure_render_time(_viewport_rid, true)
+	# Shared with other consumers of this viewport (debug bridge probe, ablation): stopping one cannot switch
+	# timing off under another.
+	_timing_lease = TimingLease.acquire(viewport, "frame_diagnostics")
+	if _timing_lease == 0:
+		_metadata["render_timing_available"] = false
+		_metadata["render_timing_unavailable_reason"] = "viewport measurement lease unavailable"
+		return
+	_metadata["render_timing_owner"] = "shared viewport lease"
+	_metadata["render_timing_other_owners_at_start"] = TimingLease.owners(viewport).size() - 1
 	_measurement_enabled = true
 
 
@@ -105,6 +115,8 @@ func sample() -> Dictionary:
 			result["frame_setup_cpu_ms"] = _finite_nonnegative(RenderingServer.get_frame_setup_time_cpu())
 		else:
 			_measurement_enabled = false
+			TimingLease.release(_timing_lease)
+			_timing_lease = 0
 			_metadata["render_timing_available"] = false
 			_metadata["render_timing_unavailable_reason"] = "provided viewport was freed before sampling"
 	result["memory_static_bytes"] = _monitor_value(Performance.MEMORY_STATIC)
@@ -138,8 +150,10 @@ func stop() -> void:
 	_stopped = true
 	if _has_live_viewport():
 		_metadata["reconstruction_at_report"] = Reconstruction.describe(_viewport_ref.get_ref())
-	if _measurement_enabled and _has_live_viewport():
-		RenderingServer.viewport_set_measure_render_time(_viewport_rid, false)
+	# Turns the engine flag off only when no other consumer still holds this viewport; a freed viewport's RID is
+	# never written.
+	TimingLease.release(_timing_lease)
+	_timing_lease = 0
 	_measurement_enabled = false
 	_metadata["viewport_measurement_enabled"] = false
 	_viewport_ref = null
@@ -166,6 +180,11 @@ func _has_live_viewport() -> bool:
 		return false
 	var viewport: Object = _viewport_ref.get_ref()
 	return is_instance_valid(viewport)
+
+
+## Instance seam over the static policy so headless tests can exercise the timing-lease wiring.
+func _timing_gate(display_server: String, os_name: String, rendering_method: String) -> String:
+	return _timing_unavailable_reason(display_server, os_name, rendering_method)
 
 
 static func _timing_unavailable_reason(display_server: String, os_name: String, rendering_method: String) -> String:
