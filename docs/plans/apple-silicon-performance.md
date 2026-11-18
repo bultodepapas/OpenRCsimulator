@@ -555,7 +555,17 @@ Mac/Linux/Windows CI passed. The canonical automatic route and exact replay,
 technical Home lifecycle and full marked native/reference candidate tape passed.
 Home/replay technical controls used headless/Dummy with scenery audio disabled;
 audio-enabled shutdown retains four audio objects with both evaluated backends
-and remains open. Source-editor physics adoption on this M1 does not qualify
+and remains open.
+
+**Open blocker, 2026-11-18:** DR-19e (`3c91936ab`) changed the stock collision world
+(round-bale core boxes, stepped pit-shelter roof). `app/sim/native_macos_domain.gd`
+still pins the screened world (`STOCK_WORLD`, 6,092 proxies), so the guarded Mac
+native default refuses the current world and Macs run the reference backend. CI's
+`test_macos_domain_guard.gd` reports "stock collision identity and proxy count match
+the screened world" as failed. Re-screening the new world on the M1 belongs to this
+track. Renewing the pins changes `app/sim`, which also requires companion re-binding
+and native requalification. The Linux fleet pins were renewed separately
+([NK-3 evidence](../research/native-kernel/NK-3/fleet-collision-world-2026-11-18/README.md)). Source-editor physics adoption on this M1 does not qualify
 public signed distribution, physical display/control acceptance, broad Apple
 hardware, energy savings or a stable complete-product performance gain.
 

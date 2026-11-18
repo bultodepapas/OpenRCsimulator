@@ -149,8 +149,10 @@ def source_pins(project_root: Path, pins: dict) -> dict[str, str]:
 def checked(project: Path, engine: Path, out: Path, label: str, script: Path | None,
             marker: str, capture: Path | None, profile: Path) -> tuple[Path, Path]:
     check_dir = out / (label + "-checked")
+    # A cold import of the whole app now exceeds 10 minutes on hosted Windows (run 44394589486); CI's own
+    # pre-import allows 30. Captures keep the 10-minute bound.
     command = [sys.executable, str(ROOT / "tools/godot/run_checked.py"), "--out-dir", str(check_dir),
-               "--label", label, "--timeout", "600"]
+               "--label", label, "--timeout", "1800" if script is None else "600"]
     if script is not None:
         command.append("--warnings-as-errors")
     if marker:
