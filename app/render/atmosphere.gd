@@ -88,7 +88,9 @@ static var engine_shadows: bool = engine_shadows_enabled()
 ## alive while the current world's global time/appearance state changes.
 const SHADOW_LIGHTING_SWEEP_INTERVAL := 64
 static var _shadow_lighting_resources: Dictionary = {}
-## SA-15: live ground/near-grass materials (weak) and the weather strength each one would use.
+## SA-15: live ground/near-grass materials and the weather strength each one would use. The registry keeps instance
+## ids only (validated by instance_from_id), never WeakRef objects: a released or cancelled world leaves no object
+## behind (test_field_staged_build counts them).
 const CLOUD_SHADOW_META := &"openrc_cloud_shadow_strength"
 const CLOUD_RECEIVER_SWEEP := 64
 static var _cloud_receivers: Dictionary = {}
@@ -954,21 +956,20 @@ static func is_cloud_receiver(mat: Material) -> bool:
 
 static func _register_cloud_receiver(mat: ShaderMaterial) -> void:
 	var id := mat.get_instance_id()
-	var existing: WeakRef = _cloud_receivers.get(id)
-	if existing != null and existing.get_ref() == mat:
+	if _cloud_receivers.has(id):
 		return
 	if _cloud_receivers.size() >= CLOUD_RECEIVER_SWEEP:
 		for key: int in _cloud_receivers.keys():
-			if (_cloud_receivers[key] as WeakRef).get_ref() == null:
+			if not is_instance_id_valid(key):
 				_cloud_receivers.erase(key)
-	_cloud_receivers[id] = weakref(mat)
+	_cloud_receivers[id] = true
 	ShadowSettings.set_cloud_refresh(_refresh_cloud_shadow_choice)
 
 
 ## A changed Cloud shadows preference applies at once to every live ground/near-grass/water material.
 static func _refresh_cloud_shadow_choice() -> void:
 	for key: int in _cloud_receivers.keys():
-		var mat := (_cloud_receivers[key] as WeakRef).get_ref() as ShaderMaterial
+		var mat := instance_from_id(key) as ShaderMaterial
 		if mat == null:
 			_cloud_receivers.erase(key)
 		else:
