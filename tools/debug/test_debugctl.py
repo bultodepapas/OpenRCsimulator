@@ -320,9 +320,15 @@ class DebugctlTests(unittest.TestCase):
                   "frames": {"p50_ms": 8.33, "p95_ms": 8.47, "max_ms": 16.6, "hitch_total": 1},
                   "render": {"measuring": True, "gpu_ms": 2.3, "draw_calls": 797.0, "bound": "frame cap"},
                   "problems": {"groups": [{"count": 3, "level": "warning", "text": "slow shader", "script": "x.gd"}]},
+                  "graphics": {"inputs": {"adapter": "NVIDIA GeForce RTX 3090", "rendering_method": "forward_plus",
+                                          "gpu": {"id": "rtx_3090", "provenance": "measured: lab"}},
+                               "decisions": {"renderer": "forward_plus", "scene_detail": "high"},
+                               "applied": {"calibration": {}}},
                   "checkpoint": {"path": str(folder / "checkpoint.json")}}
         text = debugctl._bugit_markdown(report, folder)
         self.assertIn("wing drop on landing", text)
+        self.assertIn("Graphics: NVIDIA GeForce RTX 3090 (`rtx_3090`, measured: lab), running forward_plus", text)
+        self.assertIn("not calibrated", text)
         self.assertIn("`jensen-das-ugly-stik-60` tick 799", text)
         self.assertIn("3× warning: slow shader", text)
         self.assertIn("bugitgo", text)

@@ -9,6 +9,11 @@
 - **Legacy snapshot.** [`auto_graphics_snapshot.json`](../../app/tests/data/auto_graphics_snapshot.json) holds 1,558 decisions generated from the pre-refactor code: Steam GPUs, Mesa and Apple names × Windows, Linux and macOS × 720p–4K and MacBook panels. `test_auto_graphics_snapshot.gd` guards it.
 - **A1 delivered, output-identical.** [`auto_graphics_policy.gd`](../../app/render/auto_graphics_policy.gd) holds every threshold and decision: renderer, Scene detail, first-launch values and calibration limits. `renderer_preference.gd`, `scene_detail.gd`, `auto_calibration.gd`, `auto_graphics_report.gd` and AppRoot delegate to it; their old constant names alias it. The snapshot reproduces all 1,558 decisions, and the test fails if a threshold copy reappears. The hardware profile is still the report's input dictionary; a separate `HardwareProfile` class waits until A4 adds CPU and RAM terms.
 - **A3 step 1 delivered.** Every capability row states its `provenance` (`measured`, `measured-circular`, `benchmark-derived` or `extrapolated`) and a `correction` factor, 1.0 until A5 evidence exists. Today: the RTX 3090 is measured, the M1 circular, 46 rows benchmark-derived (2026 iGPUs, Arc, RDNA 4, Apple M) and 269 extrapolated. `lookup()` applies the correction and returns the provenance, so the runtime report shows how far each estimate is trusted. Decisions are unchanged.
+- **A5 partly delivered (software and the 3090 only).**
+  - Calibration now classifies CPU-bound frames from the renderer's CPU time and real frame intervals against a refresh- and cap-aware floor. A CPU-bound frame never raises Scene detail; GPU verdicts stay GPU-only. The verdict stores the CPU p95, the interval p95, refresh and SubViewport state as evidence.
+  - `debugctl bugit` now includes the `graphics_auto` report and a one-line graphics summary.
+  - The [worst-case protocol](../research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) ran on the 3090 at 1080p, 1440p and 4K.
+  - Still open: process and physics CPU in the classification, GPU clock state, the integrated-GPU Mobile/Compatibility measurement, the flying live route and the lab machines.
 
 **Goal:** on first launch, any supported computer starts with the highest graphical quality it can sustain smoothly, with no player configuration. The examples range from an RTX 5090 to an integrated laptop GPU and a MacBook at its native panel.
 
@@ -115,7 +120,7 @@ The M1 cannot validate the model: its `rel` (0.053–0.055) was derived from the
    - **Ultra shadows.** These add only filter 4 over High's current 8192 atlas, which is small.
    - **The optional planar reflections**, which need their own qualification.
 
-**Limits.** These numbers come from one scripted view; worst-case scenes such as night lights, rain and the planar lake are not covered. GPU polls are cached readings, and their freshness is unverified.
+**Limits.** These numbers come from one scripted view. GPU polls are cached readings, and their freshness is unverified. The [worst-case protocol](../research/visual-quality-implementation/VQ-07/worst-case-2026-11-18/README.md) (night lights, storm, lens rain, planar lake, Extreme) has since been measured on the 3090 only: +13–25% GPU over the base scene, and about 1 ms of planar-mirror wall time outside the root GPU query.
 
 ## 3. Renderer strategy (Forward+, Mobile, Compatibility)
 

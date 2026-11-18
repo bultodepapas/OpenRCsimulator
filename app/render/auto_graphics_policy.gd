@@ -41,9 +41,14 @@ const CALIBRATION_FRAME_BUDGET_MS := 1000.0 / 60.0
 const CALIBRATION_DOWN_ABOVE := 0.85
 const CALIBRATION_UP_BELOW := 0.30
 const CALIBRATION_HIGH_REJECT_ABOVE := 1.0
-## A5: a frame whose CPU p95 (render CPU, frame setup, process and one physics step) uses more than this share of
-## the 60 Hz budget is CPU-bound. More Scene detail adds draw calls, so such a machine never moves up.
-const CALIBRATION_CPU_BLOCK_UP_ABOVE := 0.5
+## A5: CPU-bound frames never move Scene detail up, because more detail adds draw calls and instances. A frame is
+## CPU-bound when the renderer's CPU p95 (root viewport render CPU + frame setup) exceeds this share of the 60 Hz
+## budget, or when the real frame interval p95 exceeds CALIBRATION_INTERVAL_MISS × its floor (60 Hz, or a slower
+## VSync display or frame cap), and at least CALIBRATION_INTERVAL_MARGIN_MS over it, while the GPU is below the down
+## threshold. Provisional: only the Ryzen 9 5900X + RTX 3090 host has measured render CPU so far.
+const CALIBRATION_CPU_BLOCK_UP_ABOVE := 0.4
+const CALIBRATION_INTERVAL_MISS := 1.1
+const CALIBRATION_INTERVAL_MARGIN_MS := 2.0
 
 
 ## Automatic High. facts: {os, arm64, adapter, pixels}. Returns {profile, reason, gpu, predicted_ms}.

@@ -1634,6 +1634,7 @@ def bugit(argv: list[str]) -> int:
     grab("render", "render", {"frames": 30})
     grab("objects", "objects", {"top": 15})
     grab("prefs", "prefs")
+    grab("graphics", "graphics_auto")  # VQ-07h-A5: detected hardware, Automatic's decisions and calibration
     grab("rewind", "rewind", {"list": True})
     if isinstance(state, dict) and state.get("route") == "flight":
         grab("view", "view")
@@ -1688,6 +1689,16 @@ def _bugit_markdown(report: dict, folder: Path) -> str:
     render = report.get("render", {})
     if render.get("measuring"):
         lines.append(f"- Render: GPU {render['gpu_ms']} ms, {render['draw_calls']:g} draw calls; {render['bound']}")
+    graphics = report.get("graphics", {})
+    if isinstance(graphics, dict) and isinstance(graphics.get("inputs"), dict):
+        inputs, decisions = graphics["inputs"], graphics.get("decisions", {}) or {}
+        gpu = inputs.get("gpu", {}) or {}
+        calibration = (graphics.get("applied", {}) or {}).get("calibration", {}) or {}
+        measured = (f"; calibrated GPU p95 {calibration.get('gpu_p95_ms')} ms, offset {calibration.get('scene_offset')}"
+                    if calibration else "; not calibrated")
+        lines.append(f"- Graphics: {inputs.get('adapter')} (`{gpu.get('id') or 'unknown'}`, {gpu.get('provenance')}), "
+                     f"running {inputs.get('rendering_method')}; Automatic → {decisions.get('renderer')}, "
+                     f"Scene detail {decisions.get('scene_detail')}{measured}")
     problems = report.get("problems", {})
     groups = problems.get("groups", []) if isinstance(problems, dict) else []
     lines.append(f"- Errors and warnings: {len(groups)} distinct")

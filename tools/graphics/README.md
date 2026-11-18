@@ -11,8 +11,8 @@ Retina Macs start full screen at the native panel resolution, and base chips on 
 Each row states its `provenance` (measured, measured-circular, benchmark-derived or extrapolated) and a measured
 `correction` factor (1.0 until evidence exists); thresholds live in `app/render/auto_graphics_policy.gd`, and
 `app/tests/data/auto_graphics_snapshot.json` freezes every decision (regenerate it only for a reviewed policy change).
-The first eligible flight on each GPU measures GPU time once and corrects Automatic by one Scene detail level,
-or rejects automatic High (`app/render/auto_calibration.gd`; verdict in `user://graphics_calibration.cfg`)
+The first eligible flight on each GPU measures GPU time once and corrects Automatic by one Scene detail level
+(never upward when the frame is CPU-bound), or rejects automatic High (`app/render/auto_calibration.gd`; verdict in `user://graphics_calibration.cfg`)
 ([decision](../../docs/DECISIONS.md#compatibility-baseline-and-a-windows-nvidia-package)). The [Windows NVIDIA package](native/README.md)
 defaults to High and exposes DLSS, DLAA and Reflex in Settings. High is not a
 hardware performance guarantee. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).

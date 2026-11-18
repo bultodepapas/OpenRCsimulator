@@ -8,8 +8,8 @@ extends Node
 ##   GPU work);
 ## - in Forward+, an automatically chosen High mode is rejected when the p95 misses the frame (the scene offset of
 ##   that verdict is then 0, so the cheaper Standard renderer is not penalised twice);
-## - a CPU-bound frame (CPU p95 above CPU_BLOCK_UP_ABOVE of the budget) never moves up: more detail adds draw calls.
-##   GPU verdicts use GPU time only, so a slow CPU never rejects High or lowers detail by itself.
+## - a CPU-bound frame (see evaluate) never moves up: more detail adds draw calls. GPU verdicts use GPU time only,
+##   so a slow CPU never rejects High or lowers detail by itself.
 ## A verdict applies only to its GPU, renderer and a similar output size (within 1.5x pixels); otherwise the next
 ## flight measures again. It never changes an explicit choice and never adapts continuously.
 ## "Restore graphics defaults" (once kept) deletes all verdicts.
@@ -28,6 +28,8 @@ const DOWN_ABOVE := AutoGraphicsPolicy.CALIBRATION_DOWN_ABOVE # lower Automatic 
 const UP_BELOW := AutoGraphicsPolicy.CALIBRATION_UP_BELOW # raise it one level (never to Extreme)
 const HIGH_REJECT_ABOVE := AutoGraphicsPolicy.CALIBRATION_HIGH_REJECT_ABOVE # reject automatic High
 const CPU_BLOCK_UP_ABOVE := AutoGraphicsPolicy.CALIBRATION_CPU_BLOCK_UP_ABOVE # CPU-bound: never raise detail
+const INTERVAL_MISS := AutoGraphicsPolicy.CALIBRATION_INTERVAL_MISS
+const INTERVAL_MARGIN_MS := AutoGraphicsPolicy.CALIBRATION_INTERVAL_MARGIN_MS
 const PIXEL_TOLERANCE := 1.5
 const HIGH_METHOD := "forward_plus"
 
@@ -42,6 +44,8 @@ var _token := 0
 var _active_s := 0.0
 var _samples: PackedFloat64Array = []
 var _cpu_samples: PackedFloat64Array = []
+var _interval_samples: PackedFloat64Array = []
+var _last_frame_usec := 0
 
 
 func _init(session: Node, adapter: String) -> void:
@@ -60,6 +64,7 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
+	_last_frame_usec = 0 # the Workshop detaches the flight; time spent outside the tree is not a frame
 	if _token != 0:
 		TimingLease.release(_token)
 		_token = 0
@@ -67,7 +72,11 @@ func _exit_tree() -> void:
 
 func _process(delta: float) -> void:
 	if _token == 0 or not _flight_active():
+		_last_frame_usec = 0 # a pause or lost focus must not count as a slow frame
 		return
+	var now := Time.get_ticks_usec()
+	var interval_ms := float(now - _last_frame_usec) / 1000.0 if _last_frame_usec > 0 else 0.0
+	_last_frame_usec = now
 	_active_s += delta
 	if _active_s < WARMUP_S:
 		return
@@ -75,12 +84,16 @@ func _process(delta: float) -> void:
 	var gpu_ms := RenderingServer.viewport_get_measured_render_time_gpu(rid)
 	if gpu_ms > 0.0 and is_finite(gpu_ms):
 		_samples.append(gpu_ms)
-		_cpu_samples.append(frame_cpu_ms(rid))
+		_cpu_samples.append(render_cpu_ms(rid))
+		if interval_ms > 0.0:
+			_interval_samples.append(interval_ms)
 	if _active_s >= WARMUP_S + SAMPLE_S:
 		var size := get_viewport().get_visible_rect().size
+		var refresh := DisplayServer.screen_get_refresh_rate()
+		var vsync := DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED
 		var result := evaluate(_samples, not _subviewports_active(), RenderingServer.get_current_rendering_method(),
-			_cpu_samples)
-		result["refresh_hz"] = DisplayServer.screen_get_refresh_rate()
+			_cpu_samples, _interval_samples, interval_floor_ms(refresh, vsync, Engine.max_fps))
+		result["refresh_hz"] = refresh
 		result["adapter"] = _adapter
 		result["method"] = RenderingServer.get_current_rendering_method()
 		result["pixels"] = int(size.x) * int(size.y)
@@ -105,12 +118,24 @@ func _subviewports_active() -> bool:
 	return false
 
 
-## CPU milliseconds of the last frame: viewport render CPU, frame setup, process and the longest physics step.
-static func frame_cpu_ms(viewport_rid: RID) -> float:
+## CPU milliseconds the renderer spent on the last frame: root viewport render CPU plus frame setup (culling,
+## instance updates). Both scale with Scene detail and exclude the VSync wait. Performance.TIME_PROCESS is not
+## used: Godot publishes it once per second as the maximum, and it includes the draw and VSync wait.
+static func render_cpu_ms(viewport_rid: RID) -> float:
 	var total := RenderingServer.viewport_get_measured_render_time_cpu(viewport_rid) \
-		+ RenderingServer.get_frame_setup_time_cpu() \
-		+ 1000.0 * (Performance.get_monitor(Performance.TIME_PROCESS) + Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS))
+		+ RenderingServer.get_frame_setup_time_cpu()
 	return total if is_finite(total) and total >= 0.0 else 0.0
+
+
+## The shortest frame interval the display or the frame cap allows (ms). A 50 Hz VSync display or a 30 fps cap
+## cannot reach 60 fps, which must not count as CPU-bound.
+static func interval_floor_ms(refresh_hz: float, vsync: bool, max_fps: int) -> float:
+	var floor_ms := FRAME_BUDGET_MS
+	if vsync and refresh_hz > 0.0:
+		floor_ms = maxf(floor_ms, 1000.0 / refresh_hz)
+	if max_fps > 0:
+		floor_ms = maxf(floor_ms, 1000.0 / float(max_fps))
+	return floor_ms
 
 
 static func _p95(samples: PackedFloat64Array) -> float:
@@ -119,16 +144,28 @@ static func _p95(samples: PackedFloat64Array) -> float:
 	return sorted[mini(sorted.size() - 1, int(0.95 * sorted.size()))]
 
 
-## Pure verdict from GPU frame times (ms), and CPU frame times when measured. `complete` is false when too few
-## GPU frames were measured; too few CPU samples leave the CPU unclassified (never CPU-bound).
+## The interval p95 above which a frame misses its floor: INTERVAL_MISS × floor, and at least INTERVAL_MARGIN_MS
+## over it, so frame-limiter sleep jitter at a 60 fps cap is not a miss.
+static func interval_limit_ms(interval_floor: float) -> float:
+	return maxf(INTERVAL_MISS * interval_floor, interval_floor + INTERVAL_MARGIN_MS)
+
+
+## Pure verdict from GPU frame times (ms), plus render CPU times and real frame intervals when measured.
+## `complete` is false when too few GPU frames were measured; too few CPU or interval samples leave that signal
+## unclassified. The frame is CPU-bound when the renderer's own CPU p95 is heavy, or when the frame interval p95
+## misses its floor (60 Hz, or slower display/cap) while the GPU is not near its budget. The interval clause needs
+## `allow_up`: SubViewport GPU work (a planar lake) also slows frames without showing in the root GPU time.
 static func evaluate(samples: PackedFloat64Array, allow_up: bool = true, method: String = "",
-		cpu_samples: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
+		cpu_samples: PackedFloat64Array = PackedFloat64Array(), interval_samples: PackedFloat64Array = PackedFloat64Array(),
+		interval_floor: float = FRAME_BUDGET_MS) -> Dictionary:
 	if samples.size() < MIN_SAMPLES:
 		return {"complete": false, "samples": samples.size(), "scene_offset": 0, "reject_high": false, "gpu_p95_ms": 0.0,
-			"cpu_p95_ms": 0.0, "cpu_bound": false}
+			"cpu_p95_ms": 0.0, "interval_p95_ms": 0.0, "cpu_bound": false, "subviewports": not allow_up}
 	var p95 := _p95(samples)
 	var cpu_p95 := _p95(cpu_samples) if cpu_samples.size() >= MIN_SAMPLES else 0.0
-	var cpu_bound := cpu_p95 > CPU_BLOCK_UP_ABOVE * FRAME_BUDGET_MS
+	var interval_p95 := _p95(interval_samples) if interval_samples.size() >= MIN_SAMPLES else 0.0
+	var cpu_bound := cpu_p95 > CPU_BLOCK_UP_ABOVE * FRAME_BUDGET_MS or (allow_up
+		and interval_p95 > interval_limit_ms(interval_floor) and p95 <= DOWN_ABOVE * FRAME_BUDGET_MS)
 	var reject_high := method in ["", HIGH_METHOD] and p95 > HIGH_REJECT_ABOVE * FRAME_BUDGET_MS
 	var offset := 0
 	if not reject_high:
@@ -137,7 +174,8 @@ static func evaluate(samples: PackedFloat64Array, allow_up: bool = true, method:
 		elif allow_up and not cpu_bound and p95 < UP_BELOW * FRAME_BUDGET_MS:
 			offset = 1
 	return {"complete": true, "samples": samples.size(), "gpu_p95_ms": p95, "scene_offset": offset,
-		"reject_high": reject_high, "cpu_p95_ms": cpu_p95, "cpu_bound": cpu_bound}
+		"reject_high": reject_high, "cpu_p95_ms": cpu_p95, "interval_p95_ms": interval_p95, "cpu_bound": cpu_bound,
+		"subviewports": not allow_up}
 
 
 ## GPUs are keyed by their normalized name: OpenGL and Vulkan report the same GPU differently
@@ -166,7 +204,9 @@ static func load_result(adapter: String, method: String) -> Dictionary:
 		"pixels": maxi(int(cfg.get_value(section, "pixels", 0)), 0),
 		"gpu_p95_ms": float(cfg.get_value(section, "gpu_p95_ms", 0.0)),
 		"cpu_p95_ms": float(cfg.get_value(section, "cpu_p95_ms", 0.0)),
+		"interval_p95_ms": float(cfg.get_value(section, "interval_p95_ms", 0.0)),
 		"cpu_bound": bool(cfg.get_value(section, "cpu_bound", false)),
+		"subviewports": bool(cfg.get_value(section, "subviewports", false)),
 		"refresh_hz": float(cfg.get_value(section, "refresh_hz", 0.0))}
 
 
@@ -184,7 +224,9 @@ static func save_result(result: Dictionary) -> bool:
 	cfg.set_value(section, "gpu_p95_ms", float(result.get("gpu_p95_ms", 0.0)))
 	cfg.set_value(section, "samples", int(result.get("samples", 0)))
 	cfg.set_value(section, "cpu_p95_ms", float(result.get("cpu_p95_ms", 0.0)))
+	cfg.set_value(section, "interval_p95_ms", float(result.get("interval_p95_ms", 0.0)))
 	cfg.set_value(section, "cpu_bound", bool(result.get("cpu_bound", false)))
+	cfg.set_value(section, "subviewports", bool(result.get("subviewports", false)))
 	cfg.set_value(section, "refresh_hz", float(result.get("refresh_hz", 0.0)))
 	return cfg.save(calibration_path) == OK
 

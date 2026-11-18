@@ -70,6 +70,9 @@ func _initialize() -> void:
 		[RendererPreference.MIN_HIGH_VRAM_GB, Policy.MIN_HIGH_VRAM_GB], [RendererPreference.MIN_PIXELS, Policy.MIN_PIXELS],
 		[AutoCalibration.DOWN_ABOVE, Policy.CALIBRATION_DOWN_ABOVE], [AutoCalibration.UP_BELOW, Policy.CALIBRATION_UP_BELOW],
 		[AutoCalibration.HIGH_REJECT_ABOVE, Policy.CALIBRATION_HIGH_REJECT_ABOVE],
+		[AutoCalibration.CPU_BLOCK_UP_ABOVE, Policy.CALIBRATION_CPU_BLOCK_UP_ABOVE],
+		[AutoCalibration.INTERVAL_MISS, Policy.CALIBRATION_INTERVAL_MISS],
+		[AutoCalibration.INTERVAL_MARGIN_MS, Policy.CALIBRATION_INTERVAL_MARGIN_MS],
 		[SceneDetail.DISCRETE_MARKERS, Policy.DISCRETE_MARKERS], [SceneDetail.SOFTWARE_MARKERS, Policy.SOFTWARE_MARKERS]]
 	for pair: Array in aliases:
 		checks += 1

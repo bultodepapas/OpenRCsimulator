@@ -553,9 +553,9 @@ into that exact flight.
 
 - **`bugit [--note "what went wrong"] [--out DIR]`** writes `tmp/debug-bridge/bugit/<time>/`:
   - `REPORT.md`, a short summary: source revision and changed files, engine, route, flight pose, frame and render
-    numbers, and the grouped errors and warnings;
+    numbers, the detected GPU with Automatic's graphics choice and calibration, and the grouped errors and warnings;
   - `report.json`, every reading: state, perf, frames, the problems summary, the last 200 log records, render,
-    objects, preferences, rewind, view, gizmo values and git status;
+    objects, preferences, the `graphics_auto` report, rewind, view, gizmo values and git status;
   - `screenshot.jpg` (rendered sessions only);
   - `checkpoint.json`, the session's exact flight checkpoint (in flight).
   - Nothing is written into the repository.
