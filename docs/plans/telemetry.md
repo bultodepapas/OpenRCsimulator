@@ -1,6 +1,6 @@
 # Transparent product telemetry — implementation plan
 
-Status: **design and offline contract prototype, merged into main; no product-telemetry collection, service, or publisher deployed**.
+Status: **client, receiver, rollup, report and publisher implemented and tested (TELEM-02…11); inactive in every build until the [activation steps](#merge-readiness-versus-activation) (TELEM-12…14)**. No receiving service is deployed and no build offers telemetry yet.
 Dated 2026-11-18. Telemetry design baseline: [39fa2746](https://github.com/bultodepapas/OpenRCsimulator/commit/39fa2746ae4f4ba8698b87db279adcfe84ef5d17). TELEM-00/01 was merged into main the same day; current-main interface references were re-checked against main [35787fb5](https://github.com/bultodepapas/OpenRCsimulator/commit/35787fb583f3b654b28381c951783be7a85be0e0) ([main integration](../research/telemetry/TELEM-00-R1/verification.md#main-integration)). The merge is not a runtime-qualified build.
 Track: **TELEM-00…15**. Owner: product telemetry lead; UI, PT/VQ, UI-FS, DT and infrastructure maintainers own their existing interfaces.
 
@@ -32,7 +32,7 @@ The requested enabled-by-default experience is represented by a visibly recommen
 
 1. Reuse Godot HTTPRequest and the existing monotonic measurement semantics, catalogs, accepted lifecycle receipts and UI shell. Build a small GDScript policy/serialization adapter. Do not copy raw diagnostic dictionaries or the local flight-history database.
 2. Send bounded JSON over HTTPS to an operator-controlled collector. Use established schema validation and database software; do not develop authentication, a database engine, or an analytics SDK.
-3. Prefer a small Python/FastAPI ingress plus jsonschema and PostgreSQL for the pilot. Choose hosting only after its IP/logging, retention, region and cost controls are documented. The offline prototype uses jsonschema, not a custom schema validator. No server dependency is installed or selected as a production pin by this branch.
+3. The pilot receiver is a small Python Starlette/uvicorn service with jsonschema and SQLite: one raw database that is never backed up and expires within 48 hours, one ID-free aggregate database ([delivery](telemetry/delivery.md#receiver-implementation)). PostgreSQL remains the documented path if one node cannot carry the admitted volume. Choose hosting only after its IP/logging, retention, region and cost controls are documented.
 4. GitHub receives periodic summaries. A trusted workflow uses its own GITHUB_TOKEN for a same-repository report; a GitHub App is the alternative for an external/cross-repository publisher. Never embed a GitHub token in the game.
 5. Base mode has coarse hardware categories, frame-cadence summaries, stock aircraft/activity usage and bounded error categories. Crash dumps, exact hardware diagnostics and user-provided text belong to a separate reviewed manual flow.
 6. Source/editor, headless, technical/direct-argument and automation runs are off by default and cannot use production ingestion. A no-argument exported GUI launched from a terminal is indistinguishable from the same GUI launched by a shortcut.
@@ -50,50 +50,47 @@ Effort ranges are planning estimates for one experienced engineer with timely re
 | --- | --- | --- | --- | --- |
 | 0 — evidence and contract, 2–3 days | TELEM-00 | Source audit and external investigations; privacy and GitHub alternatives | Baseline repository | **Delivered:** original 38 plus the adaptive follow-up; see its register and integration evidence |
 | 0 | TELEM-01 | Versioned data/consent/API contracts, adversarial fixtures and offline reference | TELEM-00 | **Delivered as prototype:** see test evidence; no production integration |
-| 1 — local consent and measurement, 4–6 days | TELEM-02 | Consent store, forced-off policy, generation fencing, no-network stub | TELEM-01; UI/DT | Unit/packet tests prove zero telemetry before grant and after decline; pending |
-| 1 | TELEM-03 | First-launch panel, startup state, Settings privacy page, exact preview, translations | TELEM-02; UI/i18n | Reviewed notices and keyboard/controller/scale review in each enabled locale; 1080p-first except native Retina target; pending |
-| 1 | TELEM-04 | Read-only frame observer, hardware classifier and effective graphics snapshot | TELEM-02; PT/VQ | Known-trace calculations, availability matrix and overhead campaign; pending |
-| 1 | TELEM-05 | Accepted activity summaries and allowlisted aircraft/context projection | TELEM-04; UI-FS/vehicle owners | Rejected launch, restart, pause, custom aircraft and unsupported classifier tests; pending |
-| 2 — bounded delivery, 3–5 days | TELEM-06 | Memory queue, one-request sender, deadlines, retry budget and revocation races | TELEM-02/04/05 | Silent peer, TLS, redirects, 429, offline and shutdown harness; pending |
-| 2 | TELEM-07 | Sanitized export/preview, separate manual GitHub report route | TELEM-03/06 | No automatic browser upload, no payload in URL; GitHub identity warning; pending |
-| 3 — receiving service, 4–7 days | TELEM-08 | Private ingestion, schema/semantic validation, idempotent transaction, overload limits | TELEM-01/06; operator choices | Fault injection + duplicate/conflict/race tests against selected database; pending |
-| 3 | TELEM-09 | Indexed expiry, raw/aggregate storage separation, restricted roles, safe error logs and service monitoring | TELEM-08 | Physical-copy/backup feasibility, boundary races and log-canary evidence; pending |
-| 4 — useful GitHub feedback, 3–5 days | TELEM-10 | Daily rollups and fixed weekly aggregate tables with disclosure gates | TELEM-09 | Correct weighting, suppressed cells, missing periods and late batches; pending |
-| 4 | TELEM-11 | Deterministic renderer, frozen review record and recoverable GitHub publisher | TELEM-10 | Offline intent/disclosure model prepared; durable state, real permission/rate/timeout/concurrency tests pending |
+| 1 — local consent and measurement, 4–6 days | TELEM-02 | Consent store, forced-off policy, generation fencing, no-network stub | TELEM-01; UI/DT | **Implemented:** policy, release/route gating, consent file, generation fence; admission and service tests |
+| 1 | TELEM-03 | First-launch panel, startup state, Settings privacy controls, exact preview, translations | TELEM-02; UI/i18n | **Implemented:** notice, Home status, Settings → Interface, preview; all nine languages translated, EN/ES reviewed. Rendered, controller, large-scale and screen-reader review pending |
+| 1 | TELEM-04 | Read-only frame observer, hardware classifier and effective graphics snapshot | TELEM-02; PT/VQ | **Implemented:** windows and classifier (graphics profile sent as unknown). Target-hardware overhead campaign pending |
+| 1 | TELEM-05 | Accepted activity summaries and allowlisted aircraft/context projection | TELEM-04; UI-FS/vehicle owners | **Implemented:** summaries with accepted fixed-wing counts, reset, slice and custom; real AppRoot flight test |
+| 2 — bounded delivery, 3–5 days | TELEM-06 | Memory queue, one-request sender, deadlines, retry budget and revocation races | TELEM-02/04/05 | **Implemented:** loopback HTTP tests (202, 429 Retry-After, redirect, silent peer, refused, cancel). TLS against the deployed endpoint pending |
+| 2 | TELEM-07 | Sanitized export/preview, separate manual GitHub report route | TELEM-03/06 | Exact preview implemented; manual GitHub report route pending |
+| 3 — receiving service, 4–7 days | TELEM-08 | Private ingestion, schema/semantic validation, idempotent transaction, overload limits | TELEM-01/06; operator choices | **Implemented:** [services/telemetry](../../services/telemetry/README.md); status, dedup, conflict and rate tests, reference equivalence, Godot end-to-end |
+| 3 | TELEM-09 | Indexed expiry, raw/aggregate storage separation, restricted roles, safe error logs and service monitoring | TELEM-08 | **Implemented:** separate raw/aggregate files, purge with secure delete and WAL truncation, category-only logs. Host backup/log configuration evidence pending deployment |
+| 4 — useful GitHub feedback, 3–5 days | TELEM-10 | Daily rollups and fixed weekly aggregate tables with disclosure gates | TELEM-09 | **Implemented:** daily GPU and vehicle tables with whole-table suppression below 20 sessions; weekly pooling. Real-volume review pending |
+| 4 | TELEM-11 | Deterministic renderer, frozen review record and recoverable GitHub publisher | TELEM-10 | **Implemented:** digest-bound publisher with durable intent and reconcile (fake GitHub tests). Real repository and permission run pending |
 | 5 — qualification and rollout, 4–7 days plus beta time | TELEM-12 | Cross-platform release-package consent, network and performance qualification | TELEM-02…11 | Windows/Linux/macOS, 1080p-first except Apple Silicon Retina native-panel evidence; pending |
 | 5 | TELEM-13 | Small volunteer preview cohort and maintenance runbook rehearsal | TELEM-12 | Observed payloads, bounded costs, real off-switch, operator response; pending |
 | 5 | TELEM-14 | Enable the approved release configuration and publish the notice | TELEM-13; completed deployment/privacy gates | Release owner accepts exact build, endpoint and notice; pending |
 | 5 | TELEM-15 | First release comparison, metric review, deletion drill and quarterly pruning | TELEM-14 | Actionable regression report and unused-field removal; pending |
 
-Expected implementation effort after this design: roughly **18–30 engineering days**, plus review and beta observation. This estimate assumes a hosting/storage arrangement that can actually meet the declared retention contract; a new erasure mechanism or provider redesign requires re-estimation. Consent/UI and backend preparation can proceed in parallel after TELEM-01. Do not gate gameplay on ingestion availability.
+Do not gate gameplay on ingestion availability. Remaining work (TELEM-07 manual reports, TELEM-12…15) is operational qualification, not new architecture.
 
-## First three implementation PRs
+## Implementation (TELEM-02…11)
 
-### PR 1 — local consent foundation
+| Part | Where | Verification |
+| --- | --- | --- |
+| Client contract, policy, release gate, consent file, classifier, windows, queue, sender, service | [app/telemetry/](../../app/telemetry/) | `test_telemetry_contract`, `_admission`, `_queue`, `_service`, `_sender` (golden byte equality with the generated example, schema parity, loopback HTTP) |
+| First-launch notice, Home status, Settings → Interface, preview, privacy notice, translations | [telemetry_screen.gd](../../app/ui/telemetry_screen.gd), [settings_screen.gd](../../app/ui/settings_screen.gd), `app/i18n/*.po` | `test_telemetry_app` through the real AppRoot, including a flight round trip; existing Settings, Home, language and update tests unchanged |
+| Release configuration | [export_plugin.gd](../../app/addons/build_info/export_plugin.gd) packs `res://telemetry_release.json` from `OPENRC_TELEMETRY_ENDPOINT/_OPERATOR/_CONTACT`; [CI](../../.github/workflows/ci.yml) passes repository variables of those names | Runtime refuses development, debug-template, dirty, untagged and manual exports and partial configuration |
+| Receiver, rollup, weekly report, GitHub publisher | [services/telemetry](../../services/telemetry/README.md) | Receiver suite, reference equivalence, Godot client end to end; [contracts CI](../../.github/workflows/telemetry-contracts.yml) |
 
-Add proposed app/telemetry/consent_store.gd, policy.gd and a no-op service; wire only the interactive exported route in app/app_root.gd. Add the first-launch choice and startup/Settings effective-state controls, using reviewed notices for enabled locales. Add a separate versioned user://telemetry_consent.cfg instead of overloading display/flight preferences. Test corrupt, future, unwritable and revoked states. Keep the compiled endpoint empty and collection off until policy admits it. Do not activate third-party autoloads.
-
-Done means startup/Settings report the effective state correctly, a denial survives a successful restart/save, and a failed save is visible without resuming current-session collection. No live transport exists in this PR. Qualify the current notice in all offered locales or force effective telemetry off in locales without reviewed notices; an unreviewed language change cannot silently reactivate a saved grant.
-
-### PR 2 — local data path and preview
-
-Implement the catalog projection, hardware buckets, fixed histogram and post-consent activity projection. Port the portable fixtures and reference invariants to focused GDScript tests. Add a local readable preview generated from the exact pending wire object. Keep memory bounds and reset-on-context-change semantics. No backfill.
-
-Done means known input traces produce the specified measurements, custom strings cannot cross the allowlist, and local preview works with the transport stub. Existing simulation/checkpoint tests remain unchanged.
-
-### PR 3 — controlled transport and receiving spike
-
-Use an isolated local test collector and exported release builds. Implement cancellation/epoch fences, status-specific retry and the strict server schema. Prove silent-peer shutdown and queue behavior before any operator endpoint is configured. Use synthetic fixtures for transport failure tests; the separately admitted native qualification route can capture controlled tester timings and coarse hardware categories.
-
-Done means both sides enforce the contract under malformed traffic and outages; no test depends on real player data. A non-shipped, explicitly admitted qualification build may run the same adapter against a compiled local-only test origin for controlled native measurements; ordinary shipped-route off-state checks remain separate. Promotion requires the remaining operations/consent/hardware gates.
+Evidence and limits: [TELEM-02…11 verification](../research/telemetry/TELEM-02/README.md).
 
 ## Merge readiness versus activation
 
-The design and offline starter are reviewable as preparation when their generated artifacts and focused tests pass on the candidate and the source diff is reviewed. The [isolated CI job](../../.github/workflows/telemetry-contracts.yml) runs both generator checks and the offline suite for pull requests and pushes that touch research/telemetry or the workflow, and on manual dispatch. It is not a required check. It uses a fresh pinned-dependency environment, read-only repository permission and no publisher credential. Its hosted result and the repository's existing required CI must be checked on the proposed merge; this job does not replace the existing gates. A merge does not make collection or a receiver available and does not satisfy the pending implementation, privacy, provider, hardware, publication or volunteer-preview gates in TELEM-02…15.
+Merged code collects nothing: no build carries a release configuration, so every build reports telemetry as unavailable and creates no service node. Activation is an operator decision, in this order:
 
-The first implementation sequence remains the three PRs above: local consent foundation, local data path and preview, then isolated transport and receiver. Their stated acceptance, including locale and qualification-build boundaries, is required before each next integration; later phases keep their own owners and evidence.
+1. **Operator and notice (owner).** Name the operator, a contact and the processing region; confirm the notice text in [consent](telemetry/consent.md) still matches the deployment.
+2. **Deploy the receiver (TELEM-12).** Follow [services/telemetry](../../services/telemetry/README.md): TLS proxy, `OPENRC_TELEMETRY_RELEASES` allowlist with the next tag, hourly `purge`, daily `rollup`, back up `aggregates.sqlite` only, and proxy/host logs without IP addresses or bodies (or deleted within 15 minutes). Check `/healthz` and send the canonical example once.
+3. **Configure releases.** Set the repository variables `OPENRC_TELEMETRY_ENDPOINT` (the HTTPS `/v1/batches` URL), `OPENRC_TELEMETRY_OPERATOR` and `OPENRC_TELEMETRY_CONTACT`. The next exact-tag export offers telemetry; untagged builds still do not. Unset variables turn it off again for later builds.
+4. **Qualify a release candidate (TELEM-12/13).** On Windows, Linux and macOS: the notice at 1920×1080 first (Apple Silicon Retina at native panel resolution), Enable/decline/off, preview contents, receiver rows, frame-time overhead with telemetry on and off. A small volunteer preview precedes a stable release (TELEM-14).
+5. **Weekly report (TELEM-11).** `rollup` each closed day, `report` the closed week, review it, then `publish --approved-digest <digest> --execute` to a private operations repository first.
 
-Integration: the preparation was merged as TELEM-00/01 on 2026-11-18 after the [final finding dispositions](../research/telemetry/TELEM-00-R1/review.md#final-merge-preparation-review), [branch verification](../research/telemetry/TELEM-00-R1/verification.md#final-candidate-verification) and a [main-integration review and re-check](../research/telemetry/TELEM-00-R1/verification.md#main-integration). Next: assign named owners to the first three implementation PRs and the deployment decisions below; PR 1 (local consent foundation) starts TELEM-02. No production endpoint, telemetry secret or public-report destination exists. Enabling a live release remains TELEM-14, after its explicit gates.
+Players can always turn telemetry off in Settings → Interface; `OPENRC_TELEMETRY_DISABLE=1` forces it off for a launch. Other languages become available only after a reviewed notice ([languages](telemetry/consent.md#languages)).
+
+History: the design preparation merged as TELEM-00/01 after the [final finding dispositions](../research/telemetry/TELEM-00-R1/review.md#final-merge-preparation-review) and a [main-integration re-check](../research/telemetry/TELEM-00-R1/verification.md#main-integration).
 
 ## Decisions that remain before deployment
 

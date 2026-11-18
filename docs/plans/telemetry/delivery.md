@@ -1,6 +1,6 @@
 # Receiving telemetry and delivering it through GitHub
 
-Status: architecture and operational specification; no endpoint, account, app, workflow schedule or issue was created.
+Status: receiver, rollup, report and publisher **implemented and tested locally** ([services/telemetry](../../../services/telemetry/README.md)); no endpoint, hosting account, GitHub App, workflow schedule or issue exists yet.
 Sources: [15 GitHub investigations](../../research/telemetry/TELEM-00/github-delivery.md), [backend reuse](../../research/telemetry/TELEM-00/README.md#additional-implementation-references).
 
 ## Recommended route
@@ -13,7 +13,11 @@ The game never creates an issue or invokes repository_dispatch. GitHub's write A
 
 ## Receiver implementation
 
-Prefer a small Python/FastAPI service using the same JSON Schema 2020-12 contract and PostgreSQL transactions. FastAPI is a routing/validation framework, not a privacy control by itself. Enforce raw body and depth limits before model parsing; return fixed error categories. Use prepared statements/typed columns and separately restricted database roles. Avoid a generic “anything goes” event table.
+**Implemented** in [services/telemetry](../../../services/telemetry/README.md): a Starlette/uvicorn ASGI service validated against the canonical JSON Schema 2020-12 contract plus the reference semantic rules (an equivalence test runs both over the same mutations), storing in SQLite. Commands: `serve`, `purge` (48 h raw, 180 days aggregates), `rollup` (closed UTC day), `report` (weekly Markdown and digest) and `publish` (frozen-digest GitHub issue, dry run by default). A Godot end-to-end test sends real client batches to it. Deployment, hosting, backups and the operator's notice remain TELEM-12…14.
+
+The pilot deliberately uses **SQLite instead of PostgreSQL**: one container, two database files. `raw.sqlite` (batches and session/sequence dedup keys, `secure_delete`, WAL truncated after each purge) must never be backed up; `aggregates.sqlite` holds only ID-free daily tables and publication intents. Uniqueness is enforced by primary keys inside one `BEGIN IMMEDIATE` transaction, and 202 is sent only after commit. This makes the 48-hour raw lifetime a property of one file the operator excludes from backups, which is simpler to qualify than PostgreSQL WAL, replica and backup chains. Revisit with PostgreSQL only when one node cannot carry the admitted volume. The PostgreSQL notes below remain the specification for that move.
+
+Original design (retained for a future PostgreSQL move): a small Python service with prepared statements/typed columns and separately restricted database roles. Avoid a generic "anything goes" event table.
 
 Proposed logical records:
 

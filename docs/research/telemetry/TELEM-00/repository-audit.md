@@ -26,7 +26,7 @@ This is a source audit, not an executed game/packet/performance campaign. No exi
 
 Register TELEM in [docs/README](../../../README.md#tracks-plans-and-step-ids) before runtime implementation. Own new telemetry modules/schemas/tests, while coordinating changes in AppRoot/Settings/i18n with UI, measurement helpers with PT/VQ, accepted activity semantics with UI-FS/vehicle owners, and export flags with DT. Do not change the simulation kernel or generated aircraft sources.
 
-Runtime candidates are listed in the [architecture](../../../plans/telemetry/architecture.md#proposed-module-interfaces). They are proposed paths, not implemented APIs. This branch owns only planning/research, synthetic contracts/prototype and narrow documentation indexes.
+Runtime candidates were listed in the architecture as proposed paths, not implemented APIs, at the time of this audit; the [implemented modules](../../../plans/telemetry/architecture.md#implemented-modules) replaced them in TELEM-02…11. This branch owns only planning/research, synthetic contracts/prototype and narrow documentation indexes.
 
 ## Integration hazards to carry into implementation
 

@@ -1,6 +1,6 @@
 # Telemetry architecture and integration
 
-Status: proposed production design; the standalone contract model is the only executable work in this branch.
+Status: **implemented** client and receiver; inactive until a release is configured (TELEM-14). The offline contract model in research/telemetry remains the executable reference.
 Baseline and phase status: [master plan](../telemetry.md).
 Sources: [tool evaluation](../../research/telemetry/TELEM-00/tools.md), [repository audit](../../research/telemetry/TELEM-00/repository-audit.md).
 
@@ -39,23 +39,26 @@ The first gate owns collection, queue creation and transmission. A hidden SDK, c
 
 The original baseline had no universal whole-graphics presets. Current main has renderer modes Automatic/Standard/High and separate scene-detail levels (including an Extreme level that Automatic can choose), but they are not whole-settings presets. The v1 wire context records renderer/driver, coarse resolution, vsync/cap and current_default/custom only. It does not capture those detailed settings; custom can represent materially different configurations. Do not claim comparable graphics configurations or explain individual graphics-setting effects from this context alone.
 
-## Proposed module interfaces
+## Implemented modules
 
-New runtime modules remain outside app/ until a later implementation PR passes parsing and focused tests. This branch adds documentation, the research prototype and an offline contract-test workflow; it adds no runtime adapter or receiver.
+Client modules live in [app/telemetry/](../../../app/telemetry/); the receiver in [services/telemetry/](../../../services/telemetry/README.md). Tests: `app/tests/test_telemetry_*.gd` and `services/telemetry/tests/`.
 
-| Module | Proposed interface | Responsibility |
-| --- | --- | --- |
-| policy.gd | effective_state(build, route, consent, local_off) | Pure admission result; no network or hardware calls |
-| consent_store.gd | load(), grant(notice), disable(), save_outcome() | Versioned local choice; unknown state is closed |
-| service.gd | start_after_grant(), observe_frame(...), observe_activity(...), disable() | Sole owner of the consent generation and session lifetime |
-| hardware_profile.gd | classify_approved_sources() | Read after grant; exact strings are transient inputs, enums are outputs |
-| frame_aggregate.gd | observe(wall_us, draws), close(reason) | Fixed-size histogram/counters; no simulation mutation or frame log |
-| event_projector.gd | approved_context(...), approved_activity(...) | Construct a fresh finite-key object, never sanitize by deleting known bad keys |
-| queue.gd | enqueue(bytes, epoch, created_monotonic), expire(now), purge() | Bounded memory FIFO, exact immutable bytes for preview/retries |
-| sender.gd | tick(now), cancel(epoch), completion(token, result) | One asynchronous request, retry/deadline/size/host limits |
-| privacy_screen.gd | render_effective_state(), preview(), choice_signal | Explanations and choices; never owns a second collection flag |
+| Module | Responsibility |
+| --- | --- |
+| telemetry_contract.gd | Closed v1 wire builders and a local check mirroring the schema plus semantic rules; a batch that fails it is dropped locally, never sent. Parity with the generated schema is tested |
+| telemetry_policy.gd | Pure admission decision (on / ask / off / unavailable) and the interactive-route predicate; mistyped facts fail closed |
+| telemetry_release.gd | Whether this build may offer telemetry: exact clean release tag, release template, engine 4.8 and a packed endpoint/operator/contact; or a debug-only loopback qualification receiver |
+| telemetry_consent_store.gd | `user://telemetry_consent.cfg`: choice and notice only; strict fail-closed load; temporary file, read-back, replace; no backup |
+| telemetry_hardware.gd | Post-grant classification of engine strings into the context enums; strings are dropped |
+| telemetry_frame_window.gd | Fixed histogram and counters for one window; refuses overflow without mutating |
+| telemetry_queue.gd | Memory-only sealed batches, cadence, hourly budget, full-jitter retries and status outcomes |
+| telemetry_sender.gd | One unthreaded HTTPRequest: 5 s monotonic deadline, no redirects, 4 KiB answer cap, fixed user agent, silent cancel |
+| telemetry_service.gd | The only owner: consent generation, session rotation, windows, activity summaries, sealing, sending, preview |
+| app/ui/telemetry_screen.gd | First-launch choice, privacy notice and exact pending-data view |
 
-Use a single service under AppRoot for eligible product runs, not a global analytics autoload. Pass already accepted context from app/session adapters; no callback may add forces, alter inputs, step simulation, or affect replay.
+AppRoot adds one service node only when the release and route admit telemetry (`_start_telemetry`, at the same "Home exists" moment as the update check). Everywhere else there is no node, consent-file read, probe or request. AppRoot supplies a read-only context provider (`_telemetry_context`): mode, stock vehicle or custom, eligibility (not loading, no menu over an activity, not paused, focused, not minimized), the activity's simulated clock (`session.time_s()` or `session.sim.time()`), whether the statistics service observes the session (`observing()`), window size, vsync, frame cap and the flight controller class. No callback adds forces, alters inputs, steps simulation or affects replay. `graphics_profile` is sent as `unknown`: no graphics subsystem yet answers "current default or custom" authoritatively.
+
+Interactive route as implemented: Home exists, no user arguments, no engine arguments other than macOS `-psn_`, a real display, the player's own settings file, and none of `OPENRC_PACKAGE_DEFAULT_PROBE`, `OPENRC_GODTEST_CONFIG`, `OPENRC_DEBUG_BRIDGE`, `OPENRC_UPDATE_URL`, `OPENRC_TELEMETRY_DISABLE` set. `OPENRC_TELEMETRY_DISABLE=1` is the local force-off. A debug/editor qualification run (`OPENRC_TELEMETRY_QUALIFICATION_URL=http://127.0.0.1:<port>/v1/batches`) ignores engine arguments because source runs always have `--path`; release templates ignore that variable.
 
 ## Admission and lifecycle
 
