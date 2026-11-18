@@ -1,0 +1,548 @@
+{
+  "format": "openrc-update-survey-evidence-v1",
+  "review_date": "2026-11-17",
+  "branch": "research/github-updates-20261117",
+  "continued_from": "67645ef810c2e6d6844a27cdb8c0343d4f3446fc",
+  "openrc_source_baseline": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "case_repository_count": 27,
+  "game_or_engine_cases": 20,
+  "tool_cases": 7,
+  "distinct_pinned_source_file_count": 115,
+  "method": "Primary code, workflow, documentation and license inspection; all third-party execution and OpenRC native/delta experiments unrun. Case statements describe the cited flow, not repository-wide absence. Main case repositories are distinct; supporting feed/dependency repositories do not increase the case count.",
+  "cases": [
+    {
+      "id": "G01",
+      "name": "DDNet",
+      "category": "game",
+      "repository": "ddnet/ddnet",
+      "reviewed_commit": "07693dc68335798c06e15c73a9102656cf8ce8e3",
+      "mechanism": "Optional in-game per-file application",
+      "license_observation": "zlib-style code license; asset terms differ.",
+      "evidence": [
+        "https://github.com/ddnet/ddnet/blob/07693dc68335798c06e15c73a9102656cf8ce8e3/src/engine/client/updater.cpp#L47",
+        "https://github.com/ddnet/ddnet/blob/07693dc68335798c06e15c73a9102656cf8ce8e3/src/game/client/components/menus_start.cpp#L182",
+        "https://github.com/ddnet/ddnet/blob/07693dc68335798c06e15c73a9102656cf8ce8e3/CMakeLists.txt#L119",
+        "https://github.com/ddnet/ddnet/blob/07693dc68335798c06e15c73a9102656cf8ce8e3/license.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g01-ddnet"
+    },
+    {
+      "id": "G02",
+      "name": "Mindustry",
+      "category": "game",
+      "repository": "Anuken/Mindustry",
+      "reviewed_commit": "c2f74b91a7f2591c5bb795c987f09988558d4d6b",
+      "mechanism": "Bleeding-edge Java self-update",
+      "license_observation": "GPLv3 code license.",
+      "evidence": [
+        "https://github.com/Anuken/Mindustry/blob/c2f74b91a7f2591c5bb795c987f09988558d4d6b/core/src/mindustry/net/BeControl.java#L23",
+        "https://github.com/Anuken/Mindustry/blob/c2f74b91a7f2591c5bb795c987f09988558d4d6b/core/src/mindustry/ui/fragments/MenuFragment.java#L98",
+        "https://github.com/Anuken/Mindustry/blob/c2f74b91a7f2591c5bb795c987f09988558d4d6b/core/src/mindustry/core/Version.java#L10",
+        "https://github.com/Anuken/Mindustry/blob/c2f74b91a7f2591c5bb795c987f09988558d4d6b/LICENSE"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g02-mindustry"
+    },
+    {
+      "id": "G03",
+      "name": "Unciv",
+      "category": "game",
+      "repository": "yairm210/Unciv",
+      "reviewed_commit": "82edba7216ae98319be36f09acc3661ede23c6c4",
+      "mechanism": "GitHub archives and native Windows installer upgrades",
+      "license_observation": "MPL-2.0 except separately noted components.",
+      "evidence": [
+        "https://github.com/yairm210/Unciv/blob/82edba7216ae98319be36f09acc3661ede23c6c4/.github/workflows/buildAndDeploy.yml#L192",
+        "https://github.com/yairm210/Unciv/blob/82edba7216ae98319be36f09acc3661ede23c6c4/.github/workflows/unciv.wxs#L5",
+        "https://github.com/yairm210/Unciv/blob/82edba7216ae98319be36f09acc3661ede23c6c4/desktop/src/com/unciv/app/desktop/DesktopLauncher.kt#L88",
+        "https://github.com/yairm210/Unciv/blob/82edba7216ae98319be36f09acc3661ede23c6c4/README.md#L29"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g03-unciv"
+    },
+    {
+      "id": "G04",
+      "name": "Warzone 2100",
+      "category": "game",
+      "repository": "Warzone2100/warzone2100",
+      "reviewed_commit": "a954eb2f1873eb20e510be67e6c01628ed387c36",
+      "mechanism": "Signed expiring announcement feed with GitHub Pages publication",
+      "license_observation": "Game licensing varies by file (GPL family); independent EmbeddedJSONSignature verifier is MIT.",
+      "evidence": [
+        "https://github.com/Warzone2100/warzone2100/blob/a954eb2f1873eb20e510be67e6c01628ed387c36/src/updatemanager.cpp#L388",
+        "https://github.com/Warzone2100/warzone2100/blob/a954eb2f1873eb20e510be67e6c01628ed387c36/src/urlhelpers.cpp#L75",
+        "https://github.com/Warzone2100/update-data/blob/8a8c40f850ef134c607d402002d9a3ced85b8f06/ci/generate_updates_json.py#L140",
+        "https://github.com/Warzone2100/update-data/blob/8a8c40f850ef134c607d402002d9a3ced85b8f06/.github/workflows/generate_updates_json.yml#L38",
+        "https://github.com/past-due/EmbeddedJSONSignature/blob/2a571b0cbe8f8bdeacb02361fcf8be7c687f7778/src/EmbeddedJSONSignature.cpp#L144",
+        "https://github.com/past-due/EmbeddedJSONSignature/blob/2a571b0cbe8f8bdeacb02361fcf8be7c687f7778/include/EmbeddedJSONSignature.h#L1",
+        "https://github.com/Warzone2100/update-data/blob/8a8c40f850ef134c607d402002d9a3ced85b8f06/.github/workflows/schedued_updates.yml#L1",
+        "https://github.com/Warzone2100/warzone2100/blob/a954eb2f1873eb20e510be67e6c01628ed387c36/README-LICENSING.md"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g04-warzone-2100"
+    },
+    {
+      "id": "G05",
+      "name": "OpenTTD",
+      "category": "game",
+      "repository": "OpenTTD/OpenTTD",
+      "reviewed_commit": "8164fde864149aba7d8eef0ff294c871717725f3",
+      "mechanism": "Release orchestration and checksums",
+      "license_observation": "GPL-2.0 code license; inspect applicable component notices.",
+      "evidence": [
+        "https://github.com/OpenTTD/OpenTTD/blob/8164fde864149aba7d8eef0ff294c871717725f3/docs/releasing_openttd.md#L41",
+        "https://github.com/OpenTTD/OpenTTD/blob/8164fde864149aba7d8eef0ff294c871717725f3/.github/workflows/release.yml#L13",
+        "https://github.com/OpenTTD/OpenTTD/blob/8164fde864149aba7d8eef0ff294c871717725f3/.github/workflows/upload-cdn.yml#L23",
+        "https://github.com/OpenTTD/OpenTTD/blob/8164fde864149aba7d8eef0ff294c871717725f3/COPYING.md",
+        "https://github.com/OpenTTD/OpenTTD/blob/8164fde864149aba7d8eef0ff294c871717725f3/.github/workflows/release-windows.yml#L94"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g05-openttd"
+    },
+    {
+      "id": "G06",
+      "name": "OpenRCT2",
+      "category": "game",
+      "repository": "OpenRCT2/OpenRCT2",
+      "reviewed_commit": "683f454670c5776a6d6e9e8966b6762f7c4b42dd",
+      "mechanism": "Cached GitHub check, changelog and browser handoff",
+      "license_observation": "GPLv3 source headers.",
+      "evidence": [
+        "https://github.com/OpenRCT2/OpenRCT2/blob/683f454670c5776a6d6e9e8966b6762f7c4b42dd/src/openrct2/Version.cpp#L74",
+        "https://github.com/OpenRCT2/OpenRCT2/blob/683f454670c5776a6d6e9e8966b6762f7c4b42dd/src/openrct2/Context.cpp#L1194",
+        "https://github.com/OpenRCT2/OpenRCT2/blob/683f454670c5776a6d6e9e8966b6762f7c4b42dd/src/openrct2-ui/windows/Changelog.cpp#L146",
+        "https://github.com/OpenRCT2/OpenRCT2/blob/683f454670c5776a6d6e9e8966b6762f7c4b42dd/licence.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g06-openrct2"
+    },
+    {
+      "id": "G07",
+      "name": "SuperTux",
+      "category": "game",
+      "repository": "SuperTux/supertux",
+      "reviewed_commit": "2975428aef94fdc3d6b6ec04cc94ec7a98b116eb",
+      "mechanism": "Configurable small GitHub version notice",
+      "license_observation": "GPL-3.0-or-later in inspected source.",
+      "evidence": [
+        "https://github.com/SuperTux/supertux/blob/2975428aef94fdc3d6b6ec04cc94ec7a98b116eb/src/supertux/main.cpp#L858",
+        "https://github.com/SuperTux/supertux/blob/2975428aef94fdc3d6b6ec04cc94ec7a98b116eb/src/supertux/gameconfig.cpp#L99",
+        "https://github.com/SuperTux/supertux/blob/2975428aef94fdc3d6b6ec04cc94ec7a98b116eb/.github/workflows/windows.yml#L179",
+        "https://github.com/SuperTux/addons/blob/54937b677232e66746c07e799ac9d571892eba81/ver_info.nfo",
+        "https://github.com/SuperTux/supertux/blob/2975428aef94fdc3d6b6ec04cc94ec7a98b116eb/LICENSE.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g07-supertux"
+    },
+    {
+      "id": "G08",
+      "name": "SuperTuxKart",
+      "category": "game",
+      "repository": "supertuxkart/stk-code",
+      "reviewed_commit": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+      "mechanism": "Consent-gated news and platform release packaging",
+      "license_observation": "GPL-3.0-or-later code; media have separate terms.",
+      "evidence": [
+        "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/addons/news_manager.cpp#L76",
+        "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/addons/news_manager.cpp#L545",
+        "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/.github/workflows/windows.yml#L151",
+        "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/COPYING"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g08-supertuxkart"
+    },
+    {
+      "id": "G09",
+      "name": "Luanti",
+      "category": "engine",
+      "repository": "luanti-org/luanti",
+      "reviewed_commit": "8bb14e85d21a09d37961ed97548f6a9f71349422",
+      "mechanism": "Asynchronous ContentDB content updates",
+      "license_observation": "LGPL-2.1-or-later in updater files; media terms differ.",
+      "evidence": [
+        "https://github.com/luanti-org/luanti/blob/8bb14e85d21a09d37961ed97548f6a9f71349422/builtin/mainmenu/content/update_detector.lua#L16",
+        "https://github.com/luanti-org/luanti/blob/8bb14e85d21a09d37961ed97548f6a9f71349422/builtin/mainmenu/content/contentdb.lua#L29",
+        "https://github.com/luanti-org/luanti/blob/8bb14e85d21a09d37961ed97548f6a9f71349422/builtin/mainmenu/content/pkgmgr.lua#L613"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g09-luanti"
+    },
+    {
+      "id": "G10",
+      "name": "OpenRA",
+      "category": "engine",
+      "repository": "OpenRA/OpenRA",
+      "reviewed_commit": "b4d95a56717d8d0070f195e343f6c2728ce87900",
+      "mechanism": "Optional version notice and separate content installer",
+      "license_observation": "GPL-3.0-or-later source headers.",
+      "evidence": [
+        "https://github.com/OpenRA/OpenRA/blob/b4d95a56717d8d0070f195e343f6c2728ce87900/OpenRA.Mods.Common/WebServices.cs#L17",
+        "https://github.com/OpenRA/OpenRA/blob/b4d95a56717d8d0070f195e343f6c2728ce87900/OpenRA.Mods.Common/Widgets/Logic/MainMenuLogic.cs#L235",
+        "https://github.com/OpenRA/OpenRA/blob/b4d95a56717d8d0070f195e343f6c2728ce87900/OpenRA.Mods.Common/Widgets/Logic/Installation/DownloadPackageLogic.cs#L162",
+        "https://github.com/OpenRA/OpenRA/blob/b4d95a56717d8d0070f195e343f6c2728ce87900/packaging/windows/buildpackage.sh#L67"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g10-openra"
+    },
+    {
+      "id": "G11",
+      "name": "Endless Sky",
+      "category": "game",
+      "repository": "endless-sky/endless-sky",
+      "reviewed_commit": "0ccd5b9af613dc6da179763eb3beeb4208852af0",
+      "mechanism": "Mutable continuous release and separate platform packaging",
+      "license_observation": "GPL-3.0-or-later source headers.",
+      "evidence": [
+        "https://github.com/endless-sky/endless-sky/blob/0ccd5b9af613dc6da179763eb3beeb4208852af0/.github/workflows/cd.yaml#L182",
+        "https://github.com/endless-sky/endless-sky/blob/0ccd5b9af613dc6da179763eb3beeb4208852af0/.github/workflows/cd_release.yaml#L69",
+        "https://github.com/endless-sky/endless-sky/blob/0ccd5b9af613dc6da179763eb3beeb4208852af0/source/Files.cpp#L145",
+        "https://github.com/endless-sky/endless-sky/blob/0ccd5b9af613dc6da179763eb3beeb4208852af0/docs/CONTRIBUTING.md#L85"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g11-endless-sky"
+    },
+    {
+      "id": "G12",
+      "name": "Cataclysm Dark Days Ahead",
+      "category": "game",
+      "repository": "CleverRaven/Cataclysm-DDA",
+      "reviewed_commit": "81697c422b6246c6bee5779064c04f4186e488aa",
+      "mechanism": "Per-build prerelease publication and save-risk guidance",
+      "license_observation": "Repository states CC BY-SA 3.0, with separately licensed components.",
+      "evidence": [
+        "https://github.com/CleverRaven/Cataclysm-DDA/blob/81697c422b6246c6bee5779064c04f4186e488aa/.github/workflows/release.yml#L1",
+        "https://github.com/CleverRaven/Cataclysm-DDA/blob/81697c422b6246c6bee5779064c04f4186e488aa/data/motd/en.motd#L24",
+        "https://github.com/CleverRaven/Cataclysm-DDA/blob/81697c422b6246c6bee5779064c04f4186e488aa/build-scripts/windist.ps1#L56",
+        "https://github.com/CleverRaven/Cataclysm-DDA/blob/81697c422b6246c6bee5779064c04f4186e488aa/LICENSE.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g12-cataclysm-dark-days-ahead"
+    },
+    {
+      "id": "G13",
+      "name": "Cataclysm Bright Nights",
+      "category": "game",
+      "repository": "cataclysmbn/Cataclysm-BN",
+      "reviewed_commit": "9c0b7e7c9efa0153e0903aa36d0683bf41211a25",
+      "mechanism": "Nightly publication retry and manual update guidance",
+      "license_observation": "Repository lists CC BY-SA 3.0; component/script terms require specific inspection.",
+      "evidence": [
+        "https://github.com/cataclysmbn/Cataclysm-BN/blob/9c0b7e7c9efa0153e0903aa36d0683bf41211a25/.github/workflows/release.yml#L1",
+        "https://github.com/cataclysmbn/Cataclysm-BN/blob/9c0b7e7c9efa0153e0903aa36d0683bf41211a25/.github/workflows/build.yml#L26",
+        "https://github.com/cataclysmbn/Cataclysm-BN/blob/9c0b7e7c9efa0153e0903aa36d0683bf41211a25/docs/en/install/install.md#L3",
+        "https://github.com/cataclysmbn/Cataclysm-BN/blob/9c0b7e7c9efa0153e0903aa36d0683bf41211a25/LICENSE.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g13-cataclysm-bright-nights"
+    },
+    {
+      "id": "G14",
+      "name": "Battle for Wesnoth",
+      "category": "game",
+      "repository": "wesnoth/wesnoth",
+      "reviewed_commit": "d95858d3638d87c89a415aeb7ce02997179a8b90",
+      "mechanism": "Versioned add-on full/update packs",
+      "license_observation": "GPL-2.0-or-later source headers.",
+      "evidence": [
+        "https://github.com/wesnoth/wesnoth/blob/d95858d3638d87c89a415aeb7ce02997179a8b90/src/addon/state.cpp#L28",
+        "https://github.com/wesnoth/wesnoth/blob/d95858d3638d87c89a415aeb7ce02997179a8b90/src/addon/client.cpp#L470",
+        "https://github.com/wesnoth/wesnoth/blob/d95858d3638d87c89a415aeb7ce02997179a8b90/src/gui/dialogs/addon/manager.cpp#L863"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g14-battle-for-wesnoth"
+    },
+    {
+      "id": "G15",
+      "name": "OpenMW",
+      "category": "engine",
+      "repository": "OpenMW/openmw",
+      "reviewed_commit": "77eec0471802676324fb014d4d465ea652a8ec27",
+      "mechanism": "Side-by-side installs with shared player data",
+      "license_observation": "Project identifies GPLv3; check individual files before reuse.",
+      "evidence": [
+        "https://github.com/OpenMW/openmw/blob/77eec0471802676324fb014d4d465ea652a8ec27/docs/source/manuals/installation/install-openmw.rst#L4",
+        "https://github.com/OpenMW/openmw/blob/77eec0471802676324fb014d4d465ea652a8ec27/.github/workflows/windows.yml#L159",
+        "https://github.com/OpenMW/openmw/blob/77eec0471802676324fb014d4d465ea652a8ec27/components/files/windowspath.cpp#L83",
+        "https://github.com/OpenMW/openmw/blob/77eec0471802676324fb014d4d465ea652a8ec27/LICENSE"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g15-openmw"
+    },
+    {
+      "id": "G16",
+      "name": "ScummVM",
+      "category": "engine",
+      "repository": "scummvm/scummvm",
+      "reviewed_commit": "ed3502c5216cc244c0428eff255cffb57bc96ee8",
+      "mechanism": "Native Sparkle and WinSparkle integration",
+      "license_observation": "GPL-3.0-or-later source headers; framework terms are separate.",
+      "evidence": [
+        "https://github.com/scummvm/scummvm/blob/ed3502c5216cc244c0428eff255cffb57bc96ee8/backends/updates/win32/win32-updates.cpp#L37",
+        "https://github.com/scummvm/scummvm/blob/ed3502c5216cc244c0428eff255cffb57bc96ee8/backends/updates/macosx/macosx-updates.mm#L37",
+        "https://github.com/scummvm/scummvm/blob/ed3502c5216cc244c0428eff255cffb57bc96ee8/dists/macosx/Info.plist#L73",
+        "https://github.com/scummvm/scummvm/blob/ed3502c5216cc244c0428eff255cffb57bc96ee8/common/updates.h#L37"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g16-scummvm"
+    },
+    {
+      "id": "G17",
+      "name": "The Powder Toy",
+      "category": "game",
+      "repository": "The-Powder-Toy/The-Powder-Toy",
+      "reviewed_commit": "dc5de9c0aa345a2b5e02e08a1111c2d0565de485",
+      "mechanism": "Whole-executable replacement with OS-specific handoff",
+      "license_observation": "GPLv3 license file; component notices apply.",
+      "evidence": [
+        "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/dc5de9c0aa345a2b5e02e08a1111c2d0565de485/src/gui/update/UpdateActivity.cpp#L27-L111",
+        "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/dc5de9c0aa345a2b5e02e08a1111c2d0565de485/src/common/platform/PosixProc.cpp#L40-L68",
+        "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/dc5de9c0aa345a2b5e02e08a1111c2d0565de485/src/common/platform/Windows.cpp#L313-L395",
+        "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/dc5de9c0aa345a2b5e02e08a1111c2d0565de485/LICENSE"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g17-the-powder-toy"
+    },
+    {
+      "id": "G18",
+      "name": "Shattered Pixel Dungeon",
+      "category": "game",
+      "repository": "00-Evan/shattered-pixel-dungeon",
+      "reviewed_commit": "57a4e06a4caf162446d1c28caa7983f0493fecf0",
+      "mechanism": "GitHub release discovery and browser handoff",
+      "license_observation": "GPLv3 license file; asset/dependency terms differ.",
+      "evidence": [
+        "https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/services/updates/githubUpdates/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/updates/GitHubUpdates.java#L38-L151",
+        "https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/desktop/build.gradle#L112-L128",
+        "https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/LICENSE.txt"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g18-shattered-pixel-dungeon"
+    },
+    {
+      "id": "G19",
+      "name": "Naev",
+      "category": "game",
+      "repository": "naev/naev",
+      "reviewed_commit": "65cf3a39b892614c003ac13d24e43855e98fa36b",
+      "mechanism": "Separate internal data artifact and platform assembly",
+      "license_observation": "Generally GPLv3 code with contribution-specific later-version terms; assets separately licensed.",
+      "evidence": [
+        "https://github.com/naev/naev/blob/65cf3a39b892614c003ac13d24e43855e98fa36b/LICENSE",
+        "https://github.com/naev/naev/blob/65cf3a39b892614c003ac13d24e43855e98fa36b/.forgejo/workflows/naev_release.yml#L211-L254",
+        "https://github.com/naev/naev/blob/65cf3a39b892614c003ac13d24e43855e98fa36b/utils/ci/itch/ItchDeploy.sh#L110-L124",
+        "https://github.com/naev/naev/blob/65cf3a39b892614c003ac13d24e43855e98fa36b/meson.build#L83-L98"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g19-naev"
+    },
+    {
+      "id": "G20",
+      "name": "Hedgewars",
+      "category": "game",
+      "repository": "hedgewars/hw",
+      "reviewed_commit": "8923d31ee92c115154a0aa30167fe38969535f1d",
+      "mechanism": "Protocol compatibility notice and separate macOS Sparkle adapter",
+      "license_observation": "GPLv2 code per README; assets have separate terms.",
+      "evidence": [
+        "https://github.com/hedgewars/hw/blob/8923d31ee92c115154a0aa30167fe38969535f1d/README.md#L113-L138",
+        "https://github.com/hedgewars/hw/blob/8923d31ee92c115154a0aa30167fe38969535f1d/gameServer/CoreTypes.hs#L289-L319",
+        "https://github.com/hedgewars/hw/blob/8923d31ee92c115154a0aa30167fe38969535f1d/gameServer/Actions.hs#L86-L105",
+        "https://github.com/hedgewars/hw/blob/8923d31ee92c115154a0aa30167fe38969535f1d/QTfrontend/util/platform/SparkleAutoUpdater.mm#L21-L54"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#g20-hedgewars"
+    },
+    {
+      "id": "U01",
+      "name": "Wharf",
+      "category": "tool",
+      "repository": "itchio/wharf",
+      "reviewed_commit": "c844818e4eba2bafea8b054063a95c9b2e06ef7f",
+      "mechanism": "Block-based cross-file delta and output validation",
+      "license_observation": "MIT; inspect its dependency graph before redistribution.",
+      "evidence": [
+        "https://github.com/itchio/wharf/blob/c844818e4eba2bafea8b054063a95c9b2e06ef7f/LICENSE",
+        "https://github.com/itchio/wharf/blob/c844818e4eba2bafea8b054063a95c9b2e06ef7f/wsync/algo.go#L1-L39",
+        "https://github.com/itchio/wharf/blob/c844818e4eba2bafea8b054063a95c9b2e06ef7f/pwr/sign.go#L18-L27",
+        "https://github.com/itchio/wharf/blob/c844818e4eba2bafea8b054063a95c9b2e06ef7f/pwr/validator.go#L243-L250"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u01-wharf"
+    },
+    {
+      "id": "U02",
+      "name": "Butler",
+      "category": "tool",
+      "repository": "itchio/butler",
+      "reviewed_commit": "c0e529f2e31c82b0d6e785d2a6be908390b05ecc",
+      "mechanism": "Offline diff/apply with checkpointed staging",
+      "license_observation": "MIT; binary and dependency notices still need qualification.",
+      "evidence": [
+        "https://github.com/itchio/butler/blob/c0e529f2e31c82b0d6e785d2a6be908390b05ecc/LICENSE",
+        "https://github.com/itchio/butler/blob/c0e529f2e31c82b0d6e785d2a6be908390b05ecc/go.mod#L1-L38",
+        "https://github.com/itchio/butler/blob/c0e529f2e31c82b0d6e785d2a6be908390b05ecc/docs/offline.md#L2-L109",
+        "https://github.com/itchio/butler/blob/c0e529f2e31c82b0d6e785d2a6be908390b05ecc/cmd/apply/apply.go#L196-L248"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u02-butler"
+    },
+    {
+      "id": "U03",
+      "name": "librsync",
+      "category": "tool",
+      "repository": "librsync/librsync",
+      "reviewed_commit": "271744de428c0177e993f95c045d70b8cf2558f2",
+      "mechanism": "Detached basis signature, delta and output file",
+      "license_observation": "LGPL-2.1-or-later in inspected library header; integration obligations depend on use.",
+      "evidence": [
+        "https://github.com/librsync/librsync/blob/271744de428c0177e993f95c045d70b8cf2558f2/src/librsync.h#L1-L11",
+        "https://github.com/librsync/librsync/blob/271744de428c0177e993f95c045d70b8cf2558f2/doc/rdiff.md#L104-L119",
+        "https://github.com/librsync/librsync/blob/271744de428c0177e993f95c045d70b8cf2558f2/src/patch.c#L93-L105",
+        "https://github.com/librsync/librsync/blob/271744de428c0177e993f95c045d70b8cf2558f2/.github/workflows/check.yml#L13-L69"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u03-librsync"
+    },
+    {
+      "id": "U04",
+      "name": "casync",
+      "category": "tool",
+      "repository": "systemd/casync",
+      "reviewed_commit": "b4b7e5606f785572b78a43626a27a45fe3df2fbd",
+      "mechanism": "Content-defined chunk index and reusable store",
+      "license_observation": "LGPL-family notices; verify chosen files/dependencies.",
+      "evidence": [
+        "https://github.com/systemd/casync/blob/b4b7e5606f785572b78a43626a27a45fe3df2fbd/meson.build#L1-L13",
+        "https://github.com/systemd/casync/blob/b4b7e5606f785572b78a43626a27a45fe3df2fbd/README.md#L18-L45",
+        "https://github.com/systemd/casync/blob/b4b7e5606f785572b78a43626a27a45fe3df2fbd/src/castore.c#L134-L217",
+        "https://github.com/systemd/casync/blob/b4b7e5606f785572b78a43626a27a45fe3df2fbd/src/cachunk.c#L446-L460"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u04-casync"
+    },
+    {
+      "id": "U05",
+      "name": "HDiffPatch",
+      "category": "tool",
+      "repository": "sisong/HDiffPatch",
+      "reviewed_commit": "06961361340085ddb2a551775dc402172b8ca67c",
+      "mechanism": "Streaming binary/file-tree delta engine",
+      "license_observation": "MIT plus included component notices.",
+      "evidence": [
+        "https://github.com/sisong/HDiffPatch/blob/06961361340085ddb2a551775dc402172b8ca67c/README.md",
+        "https://github.com/sisong/HDiffPatch/blob/06961361340085ddb2a551775dc402172b8ca67c/libHDiffPatch/HPatch/patch.h",
+        "https://github.com/sisong/HDiffPatch/blob/06961361340085ddb2a551775dc402172b8ca67c/hpatchz.c",
+        "https://github.com/sisong/HDiffPatch/blob/06961361340085ddb2a551775dc402172b8ca67c/CHANGELOG.md",
+        "https://github.com/sisong/HDiffPatch/blob/06961361340085ddb2a551775dc402172b8ca67c/LICENSE"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u05-hdiffpatch"
+    },
+    {
+      "id": "U06",
+      "name": "tough",
+      "category": "tool",
+      "repository": "awslabs/tough",
+      "reviewed_commit": "98d8eb8b2ce63515d9b4981c938ef6453c5b5771",
+      "mechanism": "Native Rust TUF client and tuftool publisher",
+      "license_observation": "MIT OR Apache-2.0.",
+      "evidence": [
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/tough/Cargo.toml",
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/tough/src/lib.rs",
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/tough/src/datastore.rs",
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/tuftool/README.md",
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/LICENSE-MIT",
+        "https://github.com/awslabs/tough/blob/98d8eb8b2ce63515d9b4981c938ef6453c5b5771/LICENSE-APACHE"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u06-tough"
+    },
+    {
+      "id": "U07",
+      "name": "python-tuf",
+      "category": "tool",
+      "repository": "theupdateframework/python-tuf",
+      "reviewed_commit": "d7b4f7c3e3399f2343636a3f1f439d0ed35e317c",
+      "mechanism": "Reference TUF metadata/client and maintainer tooling",
+      "license_observation": "MIT OR Apache-2.0, reflected in source headers and license files.",
+      "evidence": [
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/README.md",
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/tuf/ngclient/updater.py",
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/tuf/ngclient/_internal/trusted_metadata_set.py",
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/examples/manual_repo/basic_repo.py",
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/LICENSE",
+        "https://github.com/theupdateframework/python-tuf/blob/d7b4f7c3e3399f2343636a3f1f439d0ed35e317c/LICENSE-MIT"
+      ],
+      "executed": false,
+      "analysis_section": "game-update-survey.md#u07-python-tuf"
+    }
+  ],
+  "additional_guidance": [
+    {
+      "id": "N01",
+      "url": "https://aws.amazon.com/security/security-bulletins/2026-019-aws/",
+      "claim": "tough/tuftool affected and patched versions"
+    },
+    {
+      "id": "N02",
+      "url": "https://github.com/awslabs/tough/security/advisories/GHSA-4v58-8p28-2rq3",
+      "claim": "delegated metadata validation vulnerability and fix"
+    },
+    {
+      "id": "N03",
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule",
+      "claim": "delayed/dropped schedules and inactivity disablement"
+    },
+    {
+      "id": "N04",
+      "url": "https://theupdateframework.io/docs/metadata/",
+      "claim": "roles and consistent metadata relationships"
+    },
+    {
+      "id": "N05",
+      "url": "https://github.com/theupdateframework/python-tuf/releases/tag/v7.0.1",
+      "claim": "published client fixes; source HEAD and release are distinct"
+    },
+    {
+      "id": "N06",
+      "url": "https://github.com/awslabs/tough/releases/tag/tuftool-v0.17.0",
+      "claim": "published tuftool candidate and tough 0.24.0 dependency"
+    },
+    {
+      "id": "N07",
+      "url": "https://github.com/sisong/HDiffPatch/releases/tag/v5.1.3",
+      "claim": "published patch-tool candidate version"
+    }
+  ],
+  "main_drift_check": {
+    "baseline": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+    "compared_main": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+    "result": "Reviewed updater/delivery boundaries unchanged; nearby queue-only test trigger/runner changes do not qualify an updater. Research branch not merged/rebased.",
+    "release_tools_tree": "76754390558960c7e8fa20fe8497264a83e906f2"
+  },
+  "candidate_release_refs": [
+    {
+      "repo": "awslabs/tough",
+      "tags": [
+        "tough-v0.24.0",
+        "tuftool-v0.17.0"
+      ],
+      "commit": "98d8eb8b2ce63515d9b4981c938ef6453c5b5771"
+    },
+    {
+      "repo": "theupdateframework/python-tuf",
+      "tags": [
+        "v7.0.1"
+      ],
+      "commit": "49eb1da48c58cf0cbb0f2e490f7ad39fbd8c1f15"
+    },
+    {
+      "repo": "sisong/HDiffPatch",
+      "tags": [
+        "v5.1.3"
+      ],
+      "commit": "3b9dca715ca492873bf2c49e22e5d5b7d2a78620"
+    }
+  ]
+}

@@ -35,6 +35,7 @@ const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd"
 const RB = preload("res://physics/rigid_body.gd")
 const M = preload("res://physics/math3d.gd")
 const ControllerService = preload("res://input/controller_service.gd")
+const JetiRadio = preload("res://input/jeti_radio.gd")
 const ControllerActions = preload("res://input/controller_actions.gd")
 const UiInput = preload("res://ui/ui_input.gd")
 const QuadCrashFx = preload("res://vehicles/multirotor/quad_crash_fx.gd")
@@ -125,6 +126,11 @@ var _audio_level := 0.0
 ## DR-19d: the damaged-prop rattle layered on the motor loop (same stream, detuned), and the crash presentation.
 var _rattle: AudioStreamPlayer3D
 var crash_fx: Node3D
+## Refresh interval (ms) of the cached control names shown by the OSD and help.
+const BINDINGS_REFRESH_MS := 250
+var _bindings_cache: Dictionary = {}
+var _bindings_at := 0
+var _bindings_generation := -1
 ## Shortest interval (ms) between two impact messages; prop messages come once per prop and damage step.
 const IMPACT_MESSAGE_INTERVAL_MS := 1200
 var _impact_message_at := -100000
@@ -143,6 +149,9 @@ var _rc_track := {}
 var _race_action := 0
 var _gate_views: Array = []
 var _gate_next := -1
+## Audit: the race attempt and its unresolved-crossing count last seen by the notice (_notice_unresolved).
+var _unresolved_attempt := -1
+var _unresolved_seen := 0
 ## DR-32 race course presentation (gates, numbers, start pad); null in free flight without a course.
 var course_visual: RefCounted
 ## Telemetry of the last accepted tick (one plant evaluation per tick, not per rendered frame); emptied by the
@@ -251,7 +260,8 @@ func _ready() -> void:
 	session.crashed.connect(_on_crashed)
 	session.depleted.connect(_on_depleted)
 	session.race_event.connect(_on_race_event)
-	session.race_result.connect(_on_race_result)
+	# Audit: saving writes, verifies and renames files; deferred so the finishing tick does not stall on disk I/O.
+	session.race_result.connect(_on_race_result, CONNECT_DEFERRED)
 	session.resetting.connect(_invalidate_telemetry)
 	session.impact.connect(_on_impact)
 	_build_gates()
@@ -272,6 +282,7 @@ func _ready() -> void:
 	crash_fx.enable_effects = enable_world
 	crash_fx.ground_height = _ground_height_render
 	add_child(crash_fx)
+	crash_fx.warm() # about 20 ms while loading instead of a hitch on the first touch; disabled parts stay unallocated
 	_start_lens()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
@@ -420,6 +431,7 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 			if input.radio.connected and int(input.radio.device_id) == id:
 				_lost_device_key = str(input.radio.device_key)
 			input.on_connection_changed(id, false)
+			_adopt_fallback_device.call_deferred(id)
 		else:
 			_adopt_returning_device.call_deferred(id)
 		_sync_selected_controller.call_deferred()
@@ -444,6 +456,39 @@ func _adopt_returning_device(id: int) -> void:
 	var returning := not _lost_device_key.is_empty() and RcInput.key_for(id, info) == _lost_device_key
 	if returning or not _keyboard_by_choice:
 		controller_registry.select_device("flight", id)
+
+
+## Audit: when the flight device is unplugged, another controller still connected takes over with ControllerService's
+## automatic priority: a device with a matching saved profile, then a radio, then a known gamepad, then anything else,
+## lowest connection ID first; an ambiguous Jeti identity without a matching profile is skipped. A keyboard the pilot
+## chose stays chosen. The flight is held either way, and the lost device returning later finds the role taken
+## (switching back mid-flight would disarm again).
+func _adopt_fallback_device(lost_id: int) -> void:
+	if not is_inside_tree() or not _has_registry() or _keyboard_by_choice 		or int(controller_registry.selected_device_id("flight")) >= 0 or not controller_registry.has_method("get_devices"):
+		return
+	var store: Variant = _controller_service.get("store") if is_instance_valid(_controller_service) else null
+	var devices: Array = controller_registry.get_devices()
+	var best_id := -1
+	var best_priority := 100
+	for info: Dictionary in devices:
+		var id := int(info.get("id", -1))
+		if id < 0 or id == lost_id or not bool(info.get("connected", false)):
+			continue
+		var matching: Dictionary = store.match_profile(info, devices) if store is Object and store.has_method("match_profile") else {}
+		if bool(info.get("ambiguous", false)) and JetiRadio.has_jeti_identity_claim(info) and matching.is_empty():
+			continue
+		var priority := 3
+		if not matching.is_empty():
+			priority = 0
+		elif str(info.get("kind", "")) == "radio":
+			priority = 1
+		elif bool(info.get("known", false)) and str(info.get("kind", "")) == "gamepad":
+			priority = 2
+		if priority < best_priority:
+			best_priority = priority
+			best_id = id
+	if best_id >= 0:
+		controller_registry.select_device("flight", best_id)
 
 
 ## A connected known gamepad is confirmed by its live connection (ControllerService through AppRoot, or the direct
@@ -595,9 +640,17 @@ func _sync_selected_controller() -> void:
 	_announce_source_change(before, tr(RECONNECTED_TEXT) if same_device else "")
 
 
-func _on_controller_selection_changed(role: String, _id: int) -> void:
-	if role == "flight":
-		_sync_selected_controller.call_deferred()
+func _on_controller_selection_changed(role: String, id: int) -> void:
+	if role != "flight":
+		return
+	# Audit: track the pilot's keyboard choice during the activity. A cleared selection while the device in use is still
+	# connected is a choice (a disconnect clears it with the device already marked disconnected); a device selection
+	# ends it. Fallback and returning-device adoption respect it.
+	if id >= 0:
+		_keyboard_by_choice = false
+	elif input.radio.connected and bool(controller_registry.device_for_id(int(input.radio.device_id)).get("connected", false)):
+		_keyboard_by_choice = true
+	_sync_selected_controller.call_deferred()
 
 
 func _announce_source_change(before: int, reason: String = "") -> void:
@@ -893,13 +946,14 @@ func _after_pad_reset() -> void:
 	view.snap()
 	if crash_fx != null:
 		crash_fx.reset()
+	hud.dismiss_stats()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
 
 
 func _on_crashed(reason: String) -> void:
 	_crash_cause = reason
-	_terminal_text = tr("Crashed: %s. Press R to reset.") % reason
+	_terminal_text = tr("Crashed: %s. Press R to reset.") % tr(reason)
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
 	# The OSD hint already names the cause (no duplicate flash).
 	_lens_crash(reason)
@@ -1002,6 +1056,11 @@ func _on_impact(event: Dictionary) -> void:
 			if crash_fx != null:
 				crash_fx.impact(event, velocity)
 			view.shake(clampf(speed / 12.0, 0.15, 1.0))
+		"scrape":
+			# DR-19f: a graze or skid: a paced scrape and a light, speed-scaled buzz of the camera; no message.
+			if crash_fx != null:
+				crash_fx.scrape(event, velocity)
+			view.shake(clampf(float(event.get("slip_speed_mps", 0.0)) / 50.0, 0.04, 0.25))
 
 
 ## The accepted CG velocity in render axes (presentation).
@@ -1077,7 +1136,10 @@ func _physics_process(_delta: float) -> void:
 		elif not session.paused:
 			_open_menu(tr("The input frame was refused."))
 		return
-	if session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED:
+	var motor_armed: bool = session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED
+	if not scripted_pilot.is_valid():
+		input.note_motor_state(motor_armed) # a refused arm leaves a turtle request pending
+	if motor_armed:
 		if _arm_time < 0.0:
 			_arm_time = float(session.sim.time())
 		_armed_ticks += 1
@@ -1116,6 +1178,7 @@ func _process(delta: float) -> void:
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad(), upside_down = _upside_down()})
 	_update_gates(t.get("race", {}), delta)
+	_notice_unresolved(t.get("race", {}))
 	_update_audio(t, delta)
 
 
@@ -1137,7 +1200,14 @@ func _osd_gate(index: int) -> Variant:
 
 ## The source's OSD bindings plus whether its latest sample is ready (a connected controller may not be yet).
 func _osd_bindings() -> Dictionary:
-	var bindings: Dictionary = input.bindings()
+	# Audit: input.bindings() builds a nested dictionary of control names; they change only through menus and device
+	# changes, so the copy is refreshed four times a second (and at once on a source generation change), not per frame.
+	var now := Time.get_ticks_msec()
+	if _bindings_cache.is_empty() or now - _bindings_at >= BINDINGS_REFRESH_MS or _bindings_generation != input.source_generation:
+		_bindings_cache = input.bindings()
+		_bindings_at = now
+		_bindings_generation = input.source_generation
+	var bindings: Dictionary = _bindings_cache.duplicate()
 	bindings.ready = bool(_last_input.get("ready", true))
 	return bindings
 
@@ -1217,6 +1287,8 @@ func _update_audio(t: Dictionary, delta: float) -> void:
 	var silent: bool = session.paused or _audio_level < 0.02
 	_audio.stream_paused = silent
 	if silent:
+		if _rattle != null:
+			_rattle.stream_paused = true # audit: the rattle stops with the motors
 		return
 	_audio.pitch_scale = clampf(n, 0.35, 2.5)
 	_audio.volume_db = linear_to_db(clampf(_audio_level, 0.001, 1.0)) - 4.0
@@ -1526,6 +1598,22 @@ func _build_gates() -> void:
 	var night: float = 1.0 - clampf(float(_lighting.get("sun_energy", 1.0)), 0.0, 1.0)
 	course_visual.build(self, session.course, night)
 	_gate_views = course_visual.gate_views
+
+
+## Audit: a crossing of the next gate the director could not resolve (oblique or under 1 m/s through the plane, or
+## bounced back by an impact) scores nothing; the pilot is told once per such crossing instead of a silent miss.
+func _notice_unresolved(race: Variant) -> void:
+	if typeof(race) != TYPE_DICTIONARY:
+		return
+	var attempt := int((race as Dictionary).get("attempt", 0))
+	var count := int((race as Dictionary).get("unresolved", 0))
+	if attempt != _unresolved_attempt:
+		_unresolved_attempt = attempt
+		_unresolved_seen = count
+		return
+	if count > _unresolved_seen and str((race as Dictionary).get("phase", "")) == "RACING":
+		hud.flash(tr("Gate not counted: fly straight through it"), 3.0)
+	_unresolved_seen = count
 
 
 ## Highlight the next required gate (and the one after it) while a race is counting down or under way.

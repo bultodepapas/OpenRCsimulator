@@ -273,6 +273,10 @@ var update_running_version := ""
 var open_url: Callable = OS.shell_open
 var update_checker: Node
 var _update_info := {}
+## DT-UPD-04a: the tag the player put off with Later; not offered again until the next launch.
+var _update_later_tag := ""
+## The last update-preferences save error shown in Settings (OK after a successful save).
+var _update_save_error: int = OK
 ## The editor and previous flight stay detached while a trial runs; return restores their exact state.
 var _workshop_screens: Array[Dictionary] = []
 var _workshop_previous_flight: Node
@@ -814,6 +818,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.companions_requested.connect(open_companions_settings)
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
+	home.update_later.connect(_on_update_later)
 	screens.push("home", home)
 	if controllers != null: controllers.refresh()
 	_update_controller_home()
@@ -1872,6 +1877,10 @@ func open_settings(from: Control = null) -> void:
 		elif route == "about": open_help(opener))
 	settings.set_graphics_restart_available(_can_restart_graphics())
 	settings.graphics_restart_requested.connect(_request_graphics_restart)
+	_update_save_error = OK
+	settings.set_update_state(_update_settings_state())
+	settings.update_preferences_changed.connect(set_update_preferences)
+	settings.update_check_requested.connect(check_updates_now)
 	screens.push("settings", settings, from)
 
 
@@ -2915,29 +2924,101 @@ func _on_first_flight_hint_done() -> void:
 
 ## UI-16: one update check per launch, only on the interactive route, only in exported builds (a development run
 ## checks when OPENRC_UPDATE_URL names a source) and only while the preference allows it. Home never waits for it.
+## One checker serves the whole session: a Home rebuilt after a flight reuses it and its announced release.
 func _start_update_check() -> void:
-	if home == null or not bool(preferences.get("check_updates", true)):
-		return # no Home (field errors) or the player said no
+	if home == null or is_instance_valid(update_checker) or not bool(preferences.get("check_updates", true)):
+		return # no Home (field errors), already running, or the player said no
+	var url := _update_source_url()
+	if url != "":
+		_create_update_checker(url, true)
+
+
+## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).
+func _update_source_url() -> String:
 	var url := update_check_url
 	if url == "":
 		url = OS.get_environment("OPENRC_UPDATE_URL")
 		if url == "" and BuildInfo.current().source == "export":
 			url = UpdateCheck.RELEASES_URL
-	if url == "":
-		return
-	if not (url.begins_with("https://") or url.begins_with("http://")):
+	if url != "" and not (url.begins_with("https://") or url.begins_with("http://")):
 		print("update check: ignoring a source that is not http(s): ", url)
-		return
+		return ""
+	return url
+
+
+func _create_update_checker(url: String, automatic: bool) -> void:
 	update_checker = UpdateChecker.new()
 	update_checker.url = url
 	update_checker.state_path = update_state_path
 	update_checker.running_version = update_running_version
+	update_checker.channel = str(preferences.get("update_channel", ""))
+	update_checker.automatic = automatic
 	update_checker.update_available.connect(_on_update_available)
 	update_checker.update_withdrawn.connect(_on_update_withdrawn)
+	update_checker.check_started.connect(_push_update_state)
+	update_checker.check_finished.connect(func(_status: String) -> void: _push_update_state())
 	add_child(update_checker)
 
 
+## DT-UPD-04a: Settings' automatic-check and channel choices, saved at once like the language. Turning checks on
+## starts the session's checker when Home is up; a channel change asks for that channel's releases.
+func set_update_preferences(check_automatically: bool, channel: String) -> void:
+	preferences.check_updates = check_automatically
+	preferences.update_channel = channel if channel in UpdateCheck.CHANNELS else ""
+	_update_save_error = Preferences.save_to(preferences_path, preferences)
+	if is_instance_valid(update_checker):
+		update_checker.set_channel(preferences.update_channel)
+		update_checker.set_automatic(check_automatically)
+	elif check_automatically:
+		_start_update_check()
+	_push_update_state()
+
+
+## Check now from Settings: creates the session's checker if automatic checks are off, then asks unless a request
+## is running or the cooldown has not passed (Settings says so).
+func check_updates_now() -> void:
+	var url := _update_source_url()
+	if url == "":
+		_push_update_state()
+		return
+	if not is_instance_valid(update_checker):
+		# Automatic only when the preference says so (its start-up check is then this one: check_now waits).
+		_create_update_checker(url, bool(preferences.get("check_updates", true)))
+	var started: bool = update_checker.check_now()
+	_push_update_state(not started and not update_checker.is_checking())
+
+
+## What Settings shows about updates: the two preferences, the status (UpdateCheck.status() kinds, plus
+## "unavailable" in a development run) and whether Check now was just refused by the cooldown.
+func _update_settings_state(cooldown := false) -> Dictionary:
+	var channel := str(preferences.get("update_channel", ""))
+	var status := {}
+	if is_instance_valid(update_checker):
+		status = update_checker.status()
+	elif _update_source_url() != "":
+		var running := update_running_version if update_running_version != "" else str(BuildInfo.current().parsed.semver)
+		var effective := UpdateCheck.effective_channel(channel, UpdateCheck.parse_version(running))
+		status = UpdateCheck.status(running, UpdateCheck.state_for(UpdateCheck.load_state(update_state_path), running, effective), channel)
+	else:
+		status = { kind = "unavailable", channel = UpdateCheck.effective_channel(channel, {}) }
+	return {
+		check_automatically = bool(preferences.get("check_updates", true)),
+		channel = channel,
+		status = status,
+		cooldown = cooldown,
+		save_error = _update_save_error,
+	}
+
+
+func _push_update_state(cooldown := false) -> void:
+	var active_settings: Node = screens.get_screen("settings") if screens != null else null
+	if active_settings != null and active_settings.has_method("set_update_state"):
+		active_settings.set_update_state(_update_settings_state(cooldown))
+
+
 func _on_update_available(info: Dictionary) -> void:
+	if str(info.get("tag", "")) == _update_later_tag:
+		return # put off with Later in this session
 	_update_info = info
 	if home != null:
 		home.show_update(info)
@@ -2947,6 +3028,12 @@ func _on_update_hidden(tag: String) -> void:
 	_update_info = {}
 	if update_checker != null:
 		update_checker.hide(tag)
+
+
+## Later: the card goes away for this session; the rebuilt Home after a flight does not bring it back.
+func _on_update_later(tag: String) -> void:
+	_update_info = {}
+	_update_later_tag = tag
 
 
 ## A fresh answer says nothing newer is published: the card from the cache goes away.

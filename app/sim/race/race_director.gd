@@ -7,7 +7,7 @@
 #     of the accepted path piece, terminal adjudication and ONE ordered event list (physical and race events).
 # No state outside the arguments, no clock other than the supplied times, no randomness.
 #
-# Accepted-path policy `openrc-chord-path-v1`: the plant integrates each 1/240 s tick with one RK4 step and publishes
+# Accepted-path policy `openrc-chord-path-v2` (v2: impact ticks, see _score): the plant integrates each 1/240 s tick with one RK4 step and publishes
 # only accepted endpoints, so the accepted piece of a tick is the straight chord between the previous and the candidate
 # accepted CG positions, valid only when the endpoint did not jump (no legacy body filter, no endpoint body correction).
 # Its in-plane uncertainty is eps = A·dt²/8 with the declared envelope A = 250 m/s² (about 0.54 mm at 240 Hz). A chord
@@ -289,6 +289,8 @@ static func _score(aux: PackedFloat64Array, modes: PackedInt64Array, piece: Dict
 		var status: String = found.status
 		if not piece.qualified or not (float(found.normal_speed_mps) >= float(rules.min_normal_speed_mps)):
 			status = Gates.STATUS_UNRESOLVED
+		elif piece.has("p1_accepted") and Gates._dot_offset(gates[index].n, piece.p1_accepted, gates[index].c) < 0.0:
+			status = Gates.STATUS_UNRESOLVED # DR-19g: an impact bounced the quad back before the plane
 		items.append({time_s = float(found.time_s), kind = 1, gate = index, seq = items.size(), status = status,
 			u_m = float(found.u_m), v_m = float(found.v_m)})
 	items.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return _before(a, b))

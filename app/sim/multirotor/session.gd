@@ -68,7 +68,8 @@ signal resetting
 ## DR-25/26 (race sessions only): every accepted race event, and the terminal record of a finished or aborted attempt.
 signal race_event(event: Dictionary)
 signal race_result(result: Dictionary)
-## DR-19c: a non-terminal impact or prop damage of an accepted tick ({type = "impact" | "prop_damage", ...}).
+## DR-19c: a non-terminal impact, prop damage or (DR-19f) sliding scrape of an accepted tick
+## ({type = "impact" | "prop_damage" | "scrape", ...}).
 signal impact(event: Dictionary)
 
 var sim: Node
@@ -613,7 +614,7 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 					crashed.emit(str(crash.reason))
 			"pack_depleted":
 				depleted.emit()
-			"impact", "prop_damage":
+			"impact", "prop_damage", "scrape":
 				impact.emit(event.duplicate(true))
 		if race != null and kind in RACE_EVENT_TYPES:
 			race_event.emit(event.duplicate(true))
@@ -652,8 +653,11 @@ func set_collision_world(world: Dictionary) -> bool:
 	_collision_world = world.duplicate(true)
 	if prepared:
 		var gate_frames: Array = _frame_proxies(course.get("frames", []))
-		plant.obstacle = Callable() if _collision_world.is_empty() and gate_frames.is_empty() \
-			else _obstacle_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		var empty: bool = _collision_world.is_empty() and gate_frames.is_empty()
+		plant.obstacle = Callable() if empty else _obstacle_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		# The class query follows the same world (the graded law reads terminal speed, friction and material from it).
+		plant.obstacle_class = Callable() if empty \
+			else _obstacle_class_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
 	return true
 
 

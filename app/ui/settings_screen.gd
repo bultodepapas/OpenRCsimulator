@@ -41,9 +41,14 @@ signal route_requested(route: String, from: Control)
 signal sound_preview_requested
 signal feedback_requested(cue: StringName)
 signal graphics_restart_requested(profile: String)
+## DT-UPD-04a: the Updates rows on the Interface page; saved at once by AppRoot, like the language. `channel`
+## "" keeps following the running build until the player picks a channel.
+signal update_preferences_changed(check_automatically: bool, channel: String)
+signal update_check_requested
 
 const DISPLAY_TEST_SECONDS := 15
 const Languages := preload("res://i18n/languages.gd")
+const UpdateCheck := preload("res://app_state/update_check.gd")
 const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
@@ -143,6 +148,12 @@ var _language_save_error: int = OK
 var _language_save_protected := false
 var _keep_button: Button
 var _revert_button: Button
+var _update_auto_toggle: CheckButton
+var _update_channel_picker: OptionButton
+var _update_check_button: Button
+var _update_status: Label
+## AppRoot's _update_settings_state(): { check_automatically, channel, status, cooldown, save_error }.
+var _update_state := {}
 
 
 func _init(store: DisplayPreferences = null, initial_language: String = "en") -> void:
@@ -533,6 +544,32 @@ func _build() -> void:
 	_language_picker.item_selected.connect(_language_selected)
 	_add_row(interface_page, "Language", _language_picker)
 	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
+
+	_update_auto_toggle = CheckButton.new()
+	_update_auto_toggle.name = "CheckUpdates"
+	_update_auto_toggle.theme_type_variation = "SettingsToggle"
+	_update_auto_toggle.button_pressed = true
+	_set_localized_tooltip(_update_auto_toggle, "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically.")
+	_update_auto_toggle.toggled.connect(func(_enabled: bool) -> void: _emit_update_preferences(false))
+	_add_row(interface_page, "Check for updates automatically", _update_auto_toggle)
+	_update_channel_picker = OptionButton.new()
+	_update_channel_picker.name = "UpdateChannel"
+	for channel: String in UpdateCheck.CHANNELS:
+		_update_channel_picker.add_item(_update_channel_caption(channel))
+		_update_channel_picker.set_item_metadata(_update_channel_picker.item_count - 1, channel)
+	_set_localized_tooltip(_update_channel_picker, "Stable offers final releases only. Preview also offers test versions before their final release.")
+	_update_channel_picker.item_selected.connect(func(_index: int) -> void: _emit_update_preferences(true))
+	_add_row(interface_page, "Update channel", _update_channel_picker)
+	_update_status = Widgets.label("", "SecondaryLabel", true)
+	_update_status.name = "UpdateStatus"
+	_update_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	interface_page.add_child(_update_status)
+	_update_check_button = _button("Check now", "QuietButton", "CheckUpdatesNow")
+	_update_check_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_update_check_button.pressed.connect(func() -> void: update_check_requested.emit())
+	interface_page.add_child(_update_check_button)
+	interface_page.add_child(_label("Update preferences are saved immediately.", "SecondaryLabel", true))
+	_refresh_update_status_text()
 
 	var master_control := _volume_control("MasterVolumeControl", "MasterVolume", "MasterVolumeValue", _master_volume_changed)
 	_master_slider = master_control.get_child(0) as HSlider
@@ -1587,6 +1624,10 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
+	if _update_channel_picker != null:
+		for index: int in _update_channel_picker.item_count:
+			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
+	_refresh_update_status_text()
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
@@ -1614,6 +1655,72 @@ func _refresh_translated_text() -> void:
 		_refresh_status_text()
 	_refresh_volume_text()
 	_refresh_language_save_text()
+
+
+## DT-UPD-04a: AppRoot's update preferences and status (see _update_state); never emits a change.
+func set_update_state(state: Dictionary) -> void:
+	_update_state = state.duplicate(true)
+	var status: Dictionary = _update_state.get("status", {})
+	_update_auto_toggle.set_pressed_no_signal(bool(_update_state.get("check_automatically", true)))
+	var channel := str(_update_state.get("channel", ""))
+	if not channel in UpdateCheck.CHANNELS:
+		channel = str(status.get("channel", UpdateCheck.CHANNEL_STABLE))
+	_select_metadata(_update_channel_picker, channel)
+	_update_check_button.disabled = str(status.get("kind", "")) == "unavailable" or bool(status.get("checking", false))
+	_refresh_update_status_text()
+
+
+func _emit_update_preferences(channel_changed: bool) -> void:
+	var channel := str(_update_state.get("channel", ""))
+	if channel_changed and _update_channel_picker.selected >= 0:
+		channel = str(_update_channel_picker.get_item_metadata(_update_channel_picker.selected))
+	_update_state.channel = channel
+	_update_state.check_automatically = _update_auto_toggle.button_pressed
+	update_preferences_changed.emit(_update_auto_toggle.button_pressed, channel)
+
+
+func _update_channel_caption(channel: String) -> String:
+	return tr("Preview releases") if channel == UpdateCheck.CHANNEL_PREVIEW else tr("Stable releases")
+
+
+func _refresh_update_status_text() -> void:
+	if _update_status == null:
+		return
+	var status: Dictionary = _update_state.get("status", {})
+	var version := str(status.get("version", ""))
+	var size := int(status.get("size", 0))
+	var last := int(status.get("last_success_unix", 0))
+	var kind := str(status.get("kind", UpdateCheck.STATUS_NOT_CHECKED))
+	var lines := PackedStringArray()
+	if bool(status.get("checking", false)):
+		lines.append(tr("Checking for updates…"))
+	elif kind == "unavailable":
+		lines.append(tr("Update checks are only available in released builds."))
+	elif kind == UpdateCheck.STATUS_CURRENT:
+		lines.append(tr("You're using the latest version on this channel. Last checked: %s.") % _local_time(last) if last > 0
+			else tr("You're using the latest version on this channel."))
+	elif kind == UpdateCheck.STATUS_AVAILABLE:
+		lines.append(tr("Version %s is available (%s download).") % [version, UpdateCheck.format_bytes(size)] if size > 0
+			else tr("Version %s is available.") % version)
+	elif kind == UpdateCheck.STATUS_NO_PACKAGE:
+		lines.append(tr("Version %s is available, but it has no package for this system.") % version)
+	elif kind == UpdateCheck.STATUS_FAILED:
+		lines.append(tr("Could not check for updates. Last successful check: %s.") % _local_time(last) if last > 0
+			else tr("Could not check for updates. No check has succeeded yet."))
+	else:
+		lines.append(tr("Updates have not been checked yet."))
+	if bool(_update_state.get("cooldown", false)):
+		lines.append(tr("Wait a moment before checking again."))
+	var save_error := int(_update_state.get("save_error", OK))
+	if save_error != OK:
+		lines.append(tr("Could not save update preferences (error %d).") % save_error)
+	_update_status.text = "\n".join(lines)
+
+
+## "2026-11-17 14:03" in the system's time zone.
+static func _local_time(unix: int) -> String:
+	var bias_s := int(Time.get_time_zone_from_system().get("bias", 0)) * 60
+	return Time.get_datetime_string_from_unix_time(unix + bias_s, true).substr(0, 16)
 
 
 func _set_localized_tooltip(control: Control, source: String) -> void:

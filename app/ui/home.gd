@@ -83,6 +83,8 @@ signal time_requested(preset: String)
 ## UI-16: the player pressed Download on the update notice (a trusted release page URL) or hid it (its tag).
 signal update_download_requested(url: String)
 signal update_hidden(tag: String)
+## DT-UPD-04a: Later on the notice: hidden for this session only (its tag).
+signal update_later(tag: String)
 
 const SIDEBAR_WIDTH := 320
 const HOME_AUTOWRAP_META := "_home_authored_autowrap_mode"
@@ -1947,6 +1949,7 @@ func show_update(info: Dictionary) -> void:
 		update_notice = UpdateNotice.new()
 		update_notice.download_requested.connect(func(url: String) -> void: update_download_requested.emit(url))
 		update_notice.hide_requested.connect(_on_update_hidden)
+		update_notice.later_requested.connect(_on_update_later)
 		add_child(update_notice)
 		update_notice.offset_top = maxf(112.0, _header_actions.get_global_rect().end.y + 16.0)
 	update_notice.show_release(info)
@@ -1960,6 +1963,11 @@ func hide_update() -> void:
 ## Hide leaves no focused control behind: the keyboard goes back to Fly (or the next arrow for a preview).
 func _on_update_hidden(tag: String) -> void:
 	update_hidden.emit(tag)
+	(fly_button if not fly_button.disabled else next_button).grab_focus()
+
+
+func _on_update_later(tag: String) -> void:
+	update_later.emit(tag)
 	(fly_button if not fly_button.disabled else next_button).grab_focus()
 
 

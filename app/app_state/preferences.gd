@@ -42,6 +42,9 @@ const DEFAULTS := {
 	first_flight_hint_seen = false,
 	# UI-16: Home may ask GitHub once a day whether a newer release is published ([updates] check in the file).
 	check_updates = true,
+	# DT-UPD-04a: additive [updates] channel: "stable", "preview" or "" (follow the running build). An older build
+	# rewrites the file without it, which only returns the choice to "".
+	update_channel = "",
 	aircraft = Catalog.DEFAULT_ID,
 	# UI-39: additive [flight] keys. Home's selected RC vehicle (a VehicleRoster activity id; "" = the aircraft above)
 	# and the RC blimp's skin. Older builds ignore them; `aircraft` always stays an aircraft.
@@ -134,6 +137,9 @@ static func _load_locked(path: String) -> Dictionary:
 	var check_updates: Variant = cfg.get_value("updates", "check", DEFAULTS.check_updates)
 	if typeof(check_updates) == TYPE_BOOL:
 		prefs.check_updates = check_updates
+	var update_channel: Variant = cfg.get_value("updates", "channel", DEFAULTS.update_channel)
+	if typeof(update_channel) == TYPE_STRING and update_channel in ["", "stable", "preview"]:
+		prefs.update_channel = update_channel
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = Catalog.canonical_id(aircraft)
@@ -345,6 +351,8 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("updates", "check", prefs.get("check_updates", DEFAULTS.check_updates))
+	var update_channel := str(prefs.get("update_channel", DEFAULTS.update_channel))
+	cfg.set_value("updates", "channel", update_channel if update_channel in ["stable", "preview"] else "")
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft) if commit_aircraft \
 		else prefs.get("_retained_aircraft", prefs.get("aircraft", DEFAULTS.aircraft)))
 	var home_vehicle := str(prefs.get("home_vehicle", DEFAULTS.home_vehicle))

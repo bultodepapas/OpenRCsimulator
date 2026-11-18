@@ -1,0 +1,43 @@
+{
+  "format": "openrc-update-payload-draft-v1",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "channel": "stable",
+  "sequence": 1,
+  "issued_at": 1794873600,
+  "expires_at": 1794960000,
+  "minimum_updater": 1,
+  "tag": "v0.0.1",
+  "source_commit": "0000000000000000000000000000000000000000",
+  "release_manifest": {
+    "name": "release-manifest.json",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.0.1/release-manifest.json",
+    "bytes": 2048,
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "targets": {
+    "windows-x86_64": {
+      "name": "openrc-simulator-v0.0.1-windows-x86_64.zip",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.0.1/openrc-simulator-v0.0.1-windows-x86_64.zip",
+      "bytes": 4096,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expanded_bytes": 8192,
+      "file_count": 10
+    },
+    "linux-x86_64": {
+      "name": "openrc-simulator-v0.0.1-linux-x86_64.zip",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.0.1/openrc-simulator-v0.0.1-linux-x86_64.zip",
+      "bytes": 4096,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expanded_bytes": 8192,
+      "file_count": 10
+    },
+    "macos-universal": {
+      "name": "openrc-simulator-v0.0.1-macos-universal.zip",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.0.1/openrc-simulator-v0.0.1-macos-universal.zip",
+      "bytes": 4096,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expanded_bytes": 8192,
+      "file_count": 10
+    }
+  }
+}

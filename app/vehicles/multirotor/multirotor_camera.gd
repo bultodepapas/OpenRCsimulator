@@ -225,6 +225,8 @@ func update(pose: PackedFloat64Array, mount_frd: PackedFloat64Array, delta: floa
 				camera.look_at(target, Vector3.UP)
 			camera.fov = pilot_vfov_deg(eye.distance_to(target))
 	_snap = false
+	if _shake > 1.0e-4 and str(VIEWS[view]) == "pilot":
+		_shake = 0.0 # audit: the pilot's eye on the ground does not feel the quad's impacts
 	if _shake > 1.0e-4:
 		_shake_time += maxf(delta, 0.0)
 		# Two incommensurate frequencies per axis: an irregular jolt, not a regular wobble.

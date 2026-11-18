@@ -277,6 +277,24 @@ func _unresolved() -> void:
 		banded.race.modes[Director.D_UNRESOLVED] == 1 and banded.race.modes[Director.D_NEXT_GATE] == 0
 		and clear.race.modes[Director.D_NEXT_GATE] == 1, "eps %.6f m" % epsilon)
 	_check("an unresolved crossing does not abort the attempt", unqualified.race.modes[Director.D_PHASE] == Director.PHASE_RACING)
+	# DR-19g (path policy v2): a graded impact on the crossing tick (a gate clip). The integrator chord crosses inside the
+	# aperture; the gate scores when the accepted endpoint is also past the plane, and not when the bounce threw the quad
+	# back before it.
+	var clipped_piece: Dictionary = _through(0, 900)
+	var gate: Dictionary = _course.gates[0]
+	var past := PackedFloat64Array()
+	var back := PackedFloat64Array()
+	for i in 3:
+		past.append(float(gate.c[i]) + 0.01 * float(gate.n[i]))
+		back.append(float(gate.c[i]) - 0.01 * float(gate.n[i]))
+	clipped_piece.p1_accepted = past
+	var clipped: Dictionary = _advance(race, clipped_piece)
+	var bounced_piece: Dictionary = _through(0, 900)
+	bounced_piece.p1_accepted = back
+	var bounced: Dictionary = _advance(race, bounced_piece)
+	_check("DR-19g a gate clipped while flying through scores; a bounce back before the plane is unresolved",
+		clipped.race.modes[Director.D_NEXT_GATE] == 1 and clipped.race.modes[Director.D_UNRESOLVED] == 0
+		and bounced.race.modes[Director.D_NEXT_GATE] == 0 and bounced.race.modes[Director.D_UNRESOLVED] == 1)
 
 
 func _facts(armed := true, throttle := 0.0, ready := true) -> Dictionary:

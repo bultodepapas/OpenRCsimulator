@@ -12652,3 +12652,84 @@ msgstr "Modo tortuga (darse la vuelta tras un choque): %s desarmado, arma y empu
 
 msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
 msgstr "Boca abajo: modo tortuga (%s), arma y empuja el stick para darte la vuelta, o R para volver a la plataforma."
+
+msgid "Download: %s"
+msgstr "Descarga: %s"
+
+msgid "Skip this version"
+msgstr "Omitir esta versión"
+
+msgid "Hides this notice until you open the game again."
+msgstr "Oculta este aviso hasta que vuelvas a abrir el juego."
+
+msgid "Check for updates automatically"
+msgstr "Buscar actualizaciones automáticamente"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "Consulta a GitHub como máximo una vez al día si hay una versión más reciente. No se descarga ni se instala nada automáticamente."
+
+msgid "Update channel"
+msgstr "Canal de actualizaciones"
+
+msgid "Stable releases"
+msgstr "Versiones estables"
+
+msgid "Preview releases"
+msgstr "Versiones preliminares"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "Estable ofrece solo versiones finales. Preliminar también ofrece versiones de prueba antes de su versión final."
+
+msgid "Check now"
+msgstr "Buscar ahora"
+
+msgid "Update preferences are saved immediately."
+msgstr "Las preferencias de actualización se guardan de inmediato."
+
+msgid "Update checks are only available in released builds."
+msgstr "La búsqueda de actualizaciones solo está disponible en las versiones publicadas."
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "Usas la versión más reciente de este canal. Última comprobación: %s."
+
+msgid "You're using the latest version on this channel."
+msgstr "Usas la versión más reciente de este canal."
+
+msgid "Version %s is available (%s download)."
+msgstr "La versión %s está disponible (descarga de %s)."
+
+msgid "Version %s is available."
+msgstr "La versión %s está disponible."
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "La versión %s está disponible, pero no tiene paquete para este sistema."
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "No se pudo buscar actualizaciones. Última comprobación correcta: %s."
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "No se pudo buscar actualizaciones. Todavía no ha habido ninguna comprobación correcta."
+
+msgid "Updates have not been checked yet."
+msgstr "Todavía no se han buscado actualizaciones."
+
+msgid "Checking for updates…"
+msgstr "Buscando actualizaciones…"
+
+msgid "Wait a moment before checking again."
+msgstr "Espera un momento antes de volver a buscar."
+
+msgid "Could not save update preferences (error %d)."
+msgstr "No se pudieron guardar las preferencias de actualización (error %d)."
+
+msgid "Obstacle strike"
+msgstr "Choque contra un obstáculo"
+
+msgid "Propeller strike"
+msgstr "Golpe de hélice"
+
+msgid "Hard impact"
+msgstr "Impacto fuerte"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "Puerta no contada: crúzala de frente"

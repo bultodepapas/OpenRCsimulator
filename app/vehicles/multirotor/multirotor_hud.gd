@@ -1012,7 +1012,7 @@ func arm_text(t: Dictionary, arm_requested: bool, controller := false) -> String
 ## throttle_up}); "" while flying.
 func hint_text(t: Dictionary, arm_requested: bool, bindings: Dictionary, crash_reason: String) -> String:
 	if bool(t.get("crashed", false)) or not crash_reason.is_empty():
-		return _tr("Crashed: %s. Press R to reset.") % (crash_reason if not crash_reason.is_empty() else "—")
+		return _tr("Crashed: %s. Press R to reset.") % (_tr(crash_reason) if not crash_reason.is_empty() else "—")
 	if bool(t.get("depleted", false)):
 		return _tr("The battery is depleted. Restart on the pad to fly again.")
 	var arm := str(bindings.get("arm", "E"))
@@ -1195,6 +1195,11 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 ## A severity's colour in the configured style: HD goggles colour it, an analog character OSD is all white.
 func _tone(severity: int) -> Color:
 	return OSD_TEXT if str(osd_config.style) == "analog" else Paint.SEVERITY[severity]
+
+
+## Audit: a pad restart starts a new flight, so the last flight's statistics leave the screen.
+func dismiss_stats() -> void:
+	_stats_ready = false
 
 
 ## Home, the armed notice and the statistics follow the arm state like a flight controller: arming sets home, resets

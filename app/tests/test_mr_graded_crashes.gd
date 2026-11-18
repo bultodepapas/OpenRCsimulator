@@ -13,6 +13,7 @@ const FC := preload("res://physics/multirotor/flight_controller.gd")
 const Rates := preload("res://physics/multirotor/rates.gd")
 const Session := preload("res://sim/multirotor/session.gd")
 const Fixtures := preload("res://tests/mr_fixtures.gd")
+const CollisionWorld := preload("res://scenery/collision_world.gd")
 
 var _count := 0
 var _failures := 0
@@ -39,6 +40,8 @@ func _run() -> void:
 	_thrust_scaling()
 	_broken_prop_flight()
 	_flat_touchdown()
+	_grazes()
+	_world_swap()
 	print("graded crashes: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -137,13 +140,14 @@ func _prop_wear() -> void:
 	var body := RB.make_state(M.v3(0.0, 0.0, -0.02), M.v3(0.0, 0.0, 0.0), tilt, M.v3(0.0, 0.0, 0.0))
 	var hover: float = p._hover_speed
 	var continuous := _speeds(p, body, hover)
-	var expected := 1.0 - Plant.PROP_WEAR_PER_TICK
+	# Terrain (grass and soil) is half as hard on a blade as wood or concrete; this prop bites deeper than a full bite.
+	var expected := 1.0 - Plant.PROP_WEAR_PER_TICK * float(Plant.PROP_MATERIAL.ground)
 	var once: Dictionary = p._graded_impacts(body, body, continuous, 0.0)
 	var worn: Array = []
 	for i in 4:
 		if once.continuous[Plant.C_HEALTH + i] < 1.0:
 			worn.append(i)
-	_check("one tick in the ground at hover speed wears the digging props by 20 %, not terminal", once.reason == ""
+	_check("one tick in the ground at hover speed wears the digging props by 10 % (terrain 0.5 × 20 %), not terminal", once.reason == ""
 		and not worn.is_empty() and worn.size() < 4 and absf(once.continuous[Plant.C_HEALTH + int(worn[0])] - expected) < 1.0e-12,
 		str(once.continuous.slice(Plant.C_HEALTH, Plant.C_HEALTH + 4)))
 	_check("DR-19d: the strike also brakes the digging prop's shaft by half (the ground stops the blade)",
@@ -157,18 +161,18 @@ func _prop_wear() -> void:
 	# A motor that keeps driving the prop back to speed (as in flight) grinds it away.
 	var state: PackedFloat64Array = once.continuous
 	var ticks := 1
-	while state[Plant.C_HEALTH + int(worn[0])] > 0.0 and ticks < 20:
+	while state[Plant.C_HEALTH + int(worn[0])] > 0.0 and ticks < 40:
 		for i in 4:
 			state[i] = hover
 		state = p._graded_impacts(body, body, state, 0.0).continuous
 		ticks += 1
 	# 0.8^n < 0.3 first at n = 6: the prop breaks on the sixth tick of grinding.
-	_check("grinding breaks the prop after six ticks (0.8^6 < 0.3), health 0", state[Plant.C_HEALTH + int(worn[0])] == 0.0 and ticks == 6,
+	_check("grinding breaks the prop after twelve ticks (0.9^12 < 0.3), health 0", state[Plant.C_HEALTH + int(worn[0])] == 0.0 and ticks == 12,
 		"%d ticks" % ticks)
 	var slow := _speeds(p, body, 0.5 * hover)
 	var half: Dictionary = p._graded_impacts(body, body, slow, 0.0)
 	# (the half-speed case starts from intact props)
-	_check("wear scales with shaft speed (half speed: 10 %)", absf(half.continuous[Plant.C_HEALTH + int(worn[0])] - 0.9) < 1.0e-12)
+	_check("wear scales with shaft speed (half speed: 5 %)", absf(half.continuous[Plant.C_HEALTH + int(worn[0])] - 0.95) < 1.0e-12)
 	var idle := _speeds(p, body, float(p.prepared.contacts.rotor_strike_speed_rad_s) - 1.0)
 	_check("props below the strike speed are never worn", p._graded_impacts(body, body, idle, 0.0).events.is_empty())
 
@@ -225,8 +229,9 @@ func _obstacles() -> void:
 	# Restitution acts at the contact point (the box face's centre, a few mm off the CG: some of the impulse pitches).
 	var contact: PackedFloat64Array = p._box_support(M.v3(-1.0, 0.0, 0.0)).point
 	var vn: float = p._closing_speed(hit.body, contact, M.v3(-1.0, 0.0, 0.0)) # negative: separating
-	_check("a 3 m/s frame hit on a wall bounces the contact point back (-0.2 × 3 m/s) and is not terminal",
-		hit.reason == "" and absf(vn + 0.6) < 0.01 and hit.body[RB.VEL] < 0.0, "v %.4f" % vn)
+	# DR-19f: the pitch the off-centre hit induces makes the contact point slide, so friction takes a little more.
+	_check("a 3 m/s frame hit on a wall bounces the contact point back, at most 0.2 × 3 m/s, and is not terminal",
+		hit.reason == "" and vn < -0.4 and vn >= -0.6 - 1.0e-9 and hit.body[RB.VEL] < 0.0, "v %.4f" % vn)
 	_check("the bounce leaves the frame outside the wall", _wall_north - hit.body[RB.POS] >= frame_radius - 1.0e-9)
 	_check("the bounce dissipates energy", hit.body[RB.VEL] * hit.body[RB.VEL] < 9.0)
 	# Resting against the wall (no closing speed): pushed out, but no chipped props and no impact event.
@@ -400,3 +405,146 @@ func _flat_touchdown() -> void:
 		s.crash.is_empty() and rest - lowest < 0.006 and max_tilt < 35.0 and up_end > 0.95,
 		"sink %.1f mm, max tilt %.1f°, final up %.3f" % [1000.0 * (rest - lowest), max_tilt, up_end])
 	s.free()
+
+
+## Kinetic energy of the airframe (J).
+func _energy(p: RefCounted, body: PackedFloat64Array) -> float:
+	var energy := 0.0
+	var inertia: PackedFloat64Array = p.prepared.inertia_kg_m2
+	for k in 3:
+		energy += 0.5 * float(p.prepared.mass_kg) * body[RB.VEL + k] * body[RB.VEL + k] \
+			+ 0.5 * inertia[k] * body[RB.RATE + k] * body[RB.RATE + k]
+	return energy
+
+
+func _events_of(result: Dictionary, kind: String) -> Array:
+	var out: Array = []
+	for event: Dictionary in result.events:
+		if event.type == kind:
+			out.append(event)
+	return out
+
+
+## DR-19f (§20): grazes and material. Expected values are closed forms and the declared constants.
+func _grazes() -> void:
+	var p := _plant()
+	p.obstacle = Callable(self, "_wall")
+	p.obstacle_class = Callable(self, "_class_hard")
+	var level := M.q_identity()
+	var front: float = p._frame_box_centre[0] + p._frame_box_half[0]
+	var hover: float = p._hover_speed
+	# A high-speed graze: 15 m/s along a wall, 1 m/s into it, props stopped (the frame alone).
+	_wall_north = front - 0.005
+	var graze := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(1.0, 15.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var grazed: Dictionary = p._graded_impacts(graze, graze, _speeds(p, graze, 0.0), 0.0)
+	var scrapes := _events_of(grazed, "scrape")
+	_check("a 15 m/s graze survives, slows along the wall (friction) and yaws the quad", grazed.reason == ""
+		and grazed.body[RB.VEL + 1] < 15.0 and grazed.body[RB.VEL + 1] > 13.0 and absf(grazed.body[RB.RATE + 2]) > 0.1,
+		"v_e %.3f r %.3f" % [grazed.body[RB.VEL + 1], grazed.body[RB.RATE + 2]])
+	# Coulomb bound: the friction impulse is at most mu × the normal impulse (≈ m × (1 + e) × 1 m/s at the CG).
+	var mass: float = p.prepared.mass_kg
+	var normal_impulse: float = mass * (1.0 - grazed.body[RB.VEL])
+	var friction_impulse: float = mass * (15.0 - grazed.body[RB.VEL + 1])
+	_check("the graze's friction impulse stays within mu × the normal impulse (hard surface 0.5)",
+		friction_impulse <= float(Plant.OBSTACLE_FRICTION.hard_terminal) * normal_impulse * (1.0 + 1.0e-9) + 1.0e-12,
+		"%.4f vs %.4f" % [friction_impulse, normal_impulse])
+	_check("the graze only removes energy", _energy(p, grazed.body) < _energy(p, graze))
+	_check("a graze raises one scrape event at about the sliding speed and chips no prop", scrapes.size() == 1
+		and absf(float(scrapes[0].slip_speed_mps) - 15.0) < 0.5 and _events_of(grazed, "prop_damage").is_empty(), str(grazed.events))
+	var contact_after: PackedFloat64Array = p._box_support(M.v3(-1.0, 0.0, 0.0)).point
+	_check("after the graze the contact still separates (friction never turns the rebound back into closing)",
+		p._closing_speed(grazed.body, contact_after, M.v3(-1.0, 0.0, 0.0)) <= 1.0e-12)
+	# Overlapping but moving away from the wall (no normal force): no friction, no scrape.
+	var receding := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(-1.0, 15.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var left: Dictionary = p._graded_impacts(receding, receding, _speeds(p, receding, 0.0), 0.0)
+	_check("a receding overlap keeps its velocity and raises no scrape", _events_of(left, "scrape").is_empty()
+		and left.body.slice(RB.VEL, RB.RATE + 3) == receding.slice(RB.VEL, RB.RATE + 3))
+	# A frame hit away from the props (the battery top on a roof at 4 m/s): an impact, but no prop is chipped.
+	p.obstacle = Callable(self, "_ceiling")
+	var top: float = p._frame_box_centre[2] - p._frame_box_half[2]
+	_ceiling_down = -5.0 + top + 0.003
+	var climb := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(0.0, 0.0, -4.0), level, M.v3(0.0, 0.0, 0.0))
+	var roofed: Dictionary = p._graded_impacts(climb, climb, _speeds(p, climb, hover), 0.0)
+	_check("a 4 m/s battery hit on a roof is an impact that chips no prop (v2 chipped the two nearest)",
+		roofed.reason == "" and _events_of(roofed, "impact").size() == 1 and _events_of(roofed, "prop_damage").is_empty(),
+		str(roofed.events))
+	# The same speed into the front face (at the front hubs' discs) chips the front props only.
+	p.obstacle = Callable(self, "_wall")
+	_wall_north = front - 0.005
+	var nose := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(4.0, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var nosed: Dictionary = p._graded_impacts(nose, nose, _speeds(p, nose, hover), 0.0)
+	var damaged := {}
+	for event: Dictionary in _events_of(nosed, "prop_damage"):
+		damaged[int(event.rotor)] = true
+	var front_only := true
+	for i: int in damaged:
+		front_only = front_only and float(p.prepared.rotors[i].hub_frd[0]) > 0.0
+	_check("a 4 m/s nose hit damages the front props only", nosed.reason == "" and damaged.size() == 2 and front_only, str(damaged))
+	# Material and bite: a prop tip brushing foliage 3 mm deep at hover speed against a full bite into a hard wall.
+	var rotor: Dictionary = p.prepared.rotors[0]
+	for rotor_index in 4:
+		if float(p.prepared.rotors[rotor_index].hub_frd[0]) > 0.0:
+			rotor = p.prepared.rotors[rotor_index]
+	var radius: float = 0.5 * float(rotor.diameter_m)
+	var reach: float = float(rotor.hub_frd[0]) + radius
+	var still := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(0.0, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var lone := _speeds(p, still, 0.0)
+	var lone_index: int = p.prepared.rotors.find(rotor)
+	lone[lone_index] = hover
+	_class = "soft_foliage_impulse"
+	p.obstacle_class = Callable(self, "_class_named")
+	_wall_north = reach - 0.0045
+	var brushed: Dictionary = p._graded_impacts(still, still, lone, 0.0)
+	var expected_brush := 1.0 - Plant.PROP_WEAR_PER_TICK * float(Plant.PROP_MATERIAL.soft_foliage_impulse) * 0.0045 / Plant.PROP_FULL_BITE_M
+	_check("a prop tip brushing leaves 4.5 mm deep loses 0.2 × 0.15 × (4.5 / 15) = 0.9 % (a full bite into a wall: 20 %)",
+		absf(brushed.continuous[Plant.C_HEALTH + lone_index] - expected_brush) < 1.0e-9,
+		str(brushed.continuous[Plant.C_HEALTH + lone_index]))
+	_check("the brushing prop is braked and kicks the airframe (an obstacle prop strike)", brushed.continuous[lone_index] < hover
+		and _kick_ok(p, still, brushed.body))
+	# Break speed by material: 7 m/s into leaves keeps the prop (breaks above 6 / sqrt(0.15) = 15.5 m/s), into a hard
+	# wall it breaks (above 6 m/s).
+	_wall_north = reach - 0.01
+	var fast := RB.make_state(M.v3(0.0, 0.0, -5.0), M.v3(7.0, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var leaves: Dictionary = p._graded_impacts(fast, fast, lone, 0.0)
+	p.obstacle_class = Callable(self, "_class_hard")
+	var hard: Dictionary = p._graded_impacts(fast, fast, lone, 0.0)
+	_check("a 7 m/s prop strike into leaves wears the prop; into a hard wall it breaks it",
+		leaves.continuous[Plant.C_HEALTH + lone_index] > 0.0 and hard.continuous[Plant.C_HEALTH + lone_index] == 0.0,
+		"%.3f %.3f" % [leaves.continuous[Plant.C_HEALTH + lone_index], hard.continuous[Plant.C_HEALTH + lone_index]])
+	# A skid on the ground: a contact point already touching and sliding at 8 m/s raises a scrape event.
+	var q := _plant()
+	var rest_height: float = q._frame_box_centre[2] + q._frame_box_half[2] # the lowest foot (FRD z)
+	var skid := RB.make_state(M.v3(0.0, 0.0, -rest_height + 0.002), M.v3(8.0, 0.0, 0.0), level, M.v3(0.0, 0.0, 0.0))
+	var skidded: Dictionary = q._graded_impacts(skid, skid, _speeds(q, skid, 0.0), 0.0)
+	var ground_scrapes := _events_of(skidded, "scrape")
+	_check("an 8 m/s skid on the ground raises a ground scrape event", ground_scrapes.size() == 1
+		and str(ground_scrapes[0].surface) == "ground" and absf(float(ground_scrapes[0].slip_speed_mps) - 8.0) < 0.1, str(skidded.events))
+	# A sustained skid reports once per SCRAPE_EVENT_PERIOD_S: 24 ticks at 240 Hz give one event per 0.1 s.
+	var reported := 0
+	for tick in range(1, 241):
+		reported += _events_of(q._graded_impacts(skid, skid, _speeds(q, skid, 0.0), float(tick) / 240.0), "scrape").size()
+	_check("a one-second skid reports ten scrapes, not 240 (bounded event and flight-log volume)", reported == 10, str(reported))
+	# A fast skid-landing: the touchdown impulse carries ground friction (contacts.friction), slowing the slide.
+	var above := RB.make_state(M.v3(0.0, 0.0, -rest_height - 0.05), M.v3(10.0, 0.0, 6.0), level, M.v3(0.0, 0.0, 0.0))
+	var landing := RB.make_state(M.v3(0.0, 0.0, -rest_height + 0.004), M.v3(10.0, 0.0, 6.0), level, M.v3(0.0, 0.0, 0.0))
+	var landed: Dictionary = q._graded_impacts(above, landing, _speeds(q, landing, 0.0), 0.0)
+	_check("a 6 m/s skid-landing at 10 m/s loses forward speed to ground friction and only energy",
+		landed.reason == "" and landed.body[RB.VEL] < 10.0 and landed.body[RB.VEL] > 0.0 and _energy(q, landed.body) < _energy(q, landing),
+		"v_n %.3f" % landed.body[RB.VEL])
+
+
+## Audit 2026-11-17: a collision world installed after prepare (paused) also replaces the class query, so the graded
+## law reads the new world's terminal speeds, friction and materials.
+func _world_swap() -> void:
+	var s := _session("graded")
+	var before: bool = s.plant.obstacle_class.is_valid()
+	s.pause()
+	var proxies: Array[Dictionary] = []
+	CollisionWorld._add_box_at_down(proxies, "hedge", "hedge", "hedge", "soft_foliage_impulse", 3.0, 0.0, -1.0, 4.0, 2.0, 0.5, 0.0)
+	var world := {format = CollisionWorld.FORMAT, identity = "graded-swap", cell_size_m = CollisionWorld.CELL_SIZE_M,
+		proxies = proxies, bins = CollisionWorld._build_bins(proxies)}
+	var installed: bool = s.set_collision_world(world)
+	_check("a world installed after prepare refreshes the class query (a hedge reads as foliage)", not before and installed
+		and s.plant.obstacle_class.is_valid() and str(s.plant.obstacle_class.call(3.0, 0.0, -1.0)) == "soft_foliage_impulse")
+	s.free()
+

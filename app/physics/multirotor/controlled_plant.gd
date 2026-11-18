@@ -697,14 +697,28 @@ func substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: floa
 	if graded_impacts:
 		# DR-19d: a fast approach takes pieces short enough that no RK4 stage overshoots deep into the stiff pad springs
 		# (at 12.5 m/s four pieces let one stage sink 13 mm and kicked a flat landing into a 136 rad/s pitch).
-		var descent: float = M.q_rotate(RB._att(body), M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2]))[2]
-		if descent > 0.0 and height < CONTACT_SUBSTEP_HEIGHT + descent * PARKED_CHECK_DT:
-			var fine: int = int(ceilf(descent * PARKED_CHECK_DT / IMPACT_PIECE_TRAVEL_M))
+		var attitude := RB._att(body)
+		var descent: float = M.q_rotate(attitude, M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2]))[2]
+		var travel: float = descent * PARKED_CHECK_DT
+		# Audit 2026-11-17: only the tick in which a contact point can reach the ground needs the fine pieces (before it
+		# the quad is in free flight); refining every tick below 0.25 m cost up to 11 ms per tick on a 12 m/s dive.
+		if descent > 0.0 and height < CONTACT_SUBSTEP_HEIGHT + travel \
+				and _lowest_point_height(attitude, height) < travel + IMPACT_REFINE_MARGIN_M:
+			var fine: int = int(ceilf(travel / IMPACT_PIECE_TRAVEL_M))
 			if fine > CONTACT_SUBSTEPS:
 				return mini(fine, IMPACT_MAX_PIECES)
 	if not (height < CONTACT_SUBSTEP_HEIGHT):
 		return 1
 	return CONTACT_SUBSTEPS if contact_is_moving(body, continuous) else parked_pieces
+
+
+## Height (m) above the terrain under the CG of the lowest foot or hull point at `attitude`, for a CG `height` above
+## it (the local slope is covered by IMPACT_REFINE_MARGIN_M).
+func _lowest_point_height(attitude: PackedFloat64Array, height: float) -> float:
+	var deepest := 0.0
+	for point: PackedFloat64Array in _points:
+		deepest = maxf(deepest, M.q_rotate(attitude, point)[2])
+	return height - deepest
 
 
 ## Whether a contact near the terrain needs the refined pieces (see substeps): CG speed, body rate or a turning
@@ -819,7 +833,10 @@ func _disc_ground_hit(i: int, position: PackedFloat64Array, attitude: PackedFloa
 const IMPACT_STRICT := "multirotor-strict-impact-v1"
 ## v2 (DR-19e §19.4): the frame is a box and each spinning prop a thin disc (v1: spheres of the hub and prop radii,
 ## which reached 7.7 cm above and below the 4.9 cm body and 6.5 cm above and below each prop disc).
-const IMPACT_GRADED := "multirotor-graded-impact-v2"
+## v3 (DR-19f §20): grazes and material. Coulomb friction on obstacle and touchdown impulses; props chip only when a
+## frame hit lands at their disc; prop wear and breaks follow the material and the blade's bite; an obstacle prop strike
+## brakes and kicks like a ground strike; sliding contacts raise scrape events.
+const IMPACT_GRADED := "multirotor-graded-impact-v3"
 ## A ground touchdown faster than this multiple of contacts.crash_speed ends the flight ("Hard impact").
 const HARD_IMPACT_FACTOR := 3.0
 ## Prop health lost per accepted tick while a spinning prop is in contact, at the hover shaft speed (scales with speed).
@@ -835,13 +852,17 @@ const TOUCHDOWN_IMPULSE_SPEED_MPS := 3.0
 ## DR-19d: graded law only, the longest travel (m) of one RK4 piece toward the ground, and the piece cap per tick.
 const IMPACT_PIECE_TRAVEL_M := 0.004
 const IMPACT_MAX_PIECES := 16
+## Slack (m) on the lowest point's height when deciding that a contact can begin this tick (slopes, rounding).
+const IMPACT_REFINE_MARGIN_M := 0.03
 const TOUCHDOWN_RESTITUTION := 0.15
 ## DR-19d: a spinning prop that digs into the ground loses this share of its shaft speed per tick, and the ground's
 ## reaction on the blade (the rotor's lost angular momentum over the prop radius) kicks the quad at the hub: the
 ## prop "walks" and flips the quad, as real prop strikes do.
 const PROP_STRIKE_BRAKE := 0.5
 ## DR-19e: thrust and drag-torque share of a prop driven backwards (turtle mode); a pitched blade run in reverse is
-## far less efficient (declared estimate).
+## far less efficient (declared estimate). A reverse-spinning prop is exempt from the strike laws (wear, brake, kick):
+## those are tuned for brief forward strikes, and the per-tick strike brake would stall any crash flip on grass (audit
+## 2026-11-17; a declared simplification, so turtle mode never damages props).
 const REVERSE_PROP_EFFICIENCY := 0.35
 ## Share of the intact prop's aerodynamic torque and rotor drag a broken prop still has (hub and blade stubs).
 const BROKEN_PROP_LOAD := 0.3
@@ -868,6 +889,30 @@ const PROP_DISC_HALF_THICKNESS_M := 0.003
 ## Normal component (body axes) below which a box contact point blends from an edge to the face centre, so a face that
 ## is nearly parallel to the surface does not jump between its edges.
 const BOX_EDGE_BLEND := 0.05
+## DR-19f (§20): Coulomb friction coefficient of a frame contact by obstacle class (declared estimates: carbon and
+## plastic on wood, metal, fabric and leaves). Terrain uses the data's contacts.friction.
+const OBSTACLE_FRICTION := {"soft_foliage_impulse": 0.3, "light_airframe_impulse": 0.4, "frangible_impulse": 0.5,
+	"gate_frame": 0.4, "hard_terminal": 0.5}
+const OBSTACLE_FRICTION_DEFAULT := 0.5
+## A frame hit chips only the spinning props whose disc reaches within this margin (m) of the contact point, and only
+## above PROP_CHIP_SPEED_MPS along the normal: a scrape of the battery, the belly or a far corner leaves them alone. A
+## ground touchdown chips from contacts.crash_speed.
+const PROP_CHIP_REACH_M := 0.02
+const PROP_CHIP_SPEED_MPS := 3.0
+## How hard a surface is on a spinning blade (wear share and break speed): leaves 0.15, gate fabric 0.4, terrain (grass
+## and soil) 0.5, a foam airframe 0.5, stakes, lamps and bales 0.6, buildings, trunks and benches 1. A prop breaks on an
+## obstacle above PROP_BREAK_SPEED_MPS / sqrt(material).
+const PROP_MATERIAL := {"soft_foliage_impulse": 0.15, "gate_frame": 0.4, "ground": 0.5, "light_airframe_impulse": 0.5,
+	"frangible_impulse": 0.6, "hard_terminal": 1.0}
+const PROP_MATERIAL_DEFAULT := 1.0
+## Blade bite (m into the surface) of a full-strength strike; a lighter tip brush counts in proportion, at least
+## PROP_MIN_BITE of it (wear and the strike brake).
+const PROP_FULL_BITE_M := 0.015
+const PROP_MIN_BITE := 0.25
+## Sliding speed (m/s) of a touching frame or contact point above which a scrape event is raised (presentation only).
+## A sustained ground skid reports once per SCRAPE_EVENT_PERIOD_S of simulation time (a frame graze on its bounce ticks).
+const SCRAPE_EVENT_SPEED_MPS := 2.0
+const SCRAPE_EVENT_PERIOD_S := 0.1
 
 
 ## The frame box from the hubs (x, y) and the hull and feet heights (z).
@@ -931,7 +976,9 @@ func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array
 
 ## Frame (the box over the hubs, hull top and feet) against an obstacle: the endpoint, else the tick's midpoint (a thin
 ## solid crossed within the tick). The obstacle is judged by its clearance and normal at the box centre (exact for a
-## wall, roof or bar wider than the box; never wider than a sphere around the box for a thinner one).
+## wall, roof or bar wider than the box; never wider than a sphere around the box for a thinner one). DR-19f: the bounce
+## carries Coulomb friction (a graze drags and spins the quad), only a hit at a prop's disc chips it, and a sliding
+## contact raises a scrape event.
 func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
 	var body: PackedFloat64Array = out.body
 	var attitude := RB._att(body)
@@ -954,28 +1001,37 @@ func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, 
 		if speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS)):
 			out.reason = "Obstacle strike"
 			return
-		# Survivable: back to this contact position, out of the solid, then a bounded bounce; the nearest props chip.
+		var point_ned := M.sub(centre, M.scale(normal, float(support.extent)))
+		var slip := _slip_speed(body, contact_body, normal)
+		# Survivable: back to this contact position, out of the solid, then a bounded bounce with friction.
 		var moved := body.duplicate()
 		for k in 3:
 			moved[RB.POS + k] = centre[k] - offset[k] + normal[k] * depth
-		out.body = _bounce(moved, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE)
+		out.body = _bounce(moved, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE,
+			float(OBSTACLE_FRICTION.get(kind, OBSTACLE_FRICTION_DEFAULT)))
+		var surface := kind if not kind.is_empty() else "obstacle"
+		if speed > PROP_CHIP_SPEED_MPS:
+			_chip_near(out, contact_body, t, "frame")
 		if speed > IMPACT_EVENT_SPEED_MPS:
-			_chip_nearest(out, contact_body, t, "frame")
-			out.events.append({type = "impact", time_s = t, surface = kind if not kind.is_empty() else "obstacle",
-				part = "frame", normal_speed_mps = speed, point_ned = M.sub(centre, M.scale(normal, float(support.extent)))})
+			out.events.append({type = "impact", time_s = t, surface = surface, part = "frame", normal_speed_mps = speed,
+				slip_speed_mps = slip, point_ned = point_ned})
+		if slip > SCRAPE_EVENT_SPEED_MPS and speed > 0.0:
+			out.events.append({type = "scrape", time_s = t, surface = surface, part = "frame", slip_speed_mps = slip,
+				point_ned = point_ned})
 		return
 
 
 ## Spinning prop discs (thin discs of the prop radius at their hubs, judged by the clearance and normal at the hub)
-## against obstacles, all judged on the same pose: each touching prop wears, or breaks above PROP_BREAK_SPEED_MPS; then
-## one push-out and one bounce at the deepest contact.
+## against obstacles, all judged on the same pose. DR-19f: each touching prop wears by the obstacle's material and the
+## blade's bite, or breaks above PROP_BREAK_SPEED_MPS / sqrt(material); the blade is braked and kicks the airframe as
+## on the ground; then one push-out and one bounce at the deepest contact.
 func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	var body: PackedFloat64Array = out.body
 	var attitude := RB._att(body)
 	var deepest := {}
 	for i in 4:
-		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0:
+		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0: # forward spin only (see REVERSE_PROP_EFFICIENCY)
 			continue
 		var rotor: Dictionary = prepared.rotors[i]
 		var radius: float = 0.5 * float(rotor.diameter_m)
@@ -988,20 +1044,28 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 		var depth: float = float(support.extent) - float(clearance)
 		if not (depth >= 0.0 and is_finite(depth)):
 			continue
+		var kind := str(obstacle_class.call(hub[0], hub[1], hub[2])) if obstacle_class.is_valid() else ""
+		var material := float(PROP_MATERIAL.get(kind, PROP_MATERIAL_DEFAULT))
 		var contact_body := M.add(rotor.hub_frd, support.point)
 		var speed := _closing_speed(body, contact_body, normal)
-		if speed > PROP_BREAK_SPEED_MPS:
+		if speed > PROP_BREAK_SPEED_MPS / sqrt(material):
 			_set_health(out, i, 0.0, t, "obstacle")
 		else:
-			_wear(out, i, t, "obstacle")
+			_wear(out, i, t, "obstacle", material, depth)
+		# The blade's in-plane direction from the hub to the contact (none for a face-on touch of the disc).
+		var rim := M.v3(support.point[0], support.point[1], 0.0)
+		var rim_norm := M.norm(rim)
+		if rim_norm > 1.0e-9:
+			_prop_strike_kick(out, i, M.q_rotate(attitude, M.scale(rim, 1.0 / rim_norm)), _bite(depth))
 		if deepest.is_empty() or depth > float(deepest.depth):
-			deepest = {depth = depth, normal = normal, contact = contact_body, speed = speed}
+			deepest = {depth = depth, normal = normal, contact = contact_body}
 	if deepest.is_empty():
 		return
-	var moved := body.duplicate()
+	var moved: PackedFloat64Array = out.body.duplicate()
 	for k in 3:
 		moved[RB.POS + k] += deepest.normal[k] * maxf(0.0, float(deepest.depth))
-	out.body = _bounce(moved, deepest.contact, deepest.normal, float(deepest.speed), SOLID_RESPONSE)
+	out.body = _bounce(moved, deepest.contact, deepest.normal, _closing_speed(moved, deepest.contact, deepest.normal),
+		SOLID_RESPONSE)
 
 
 ## Terrain: a new touchdown of a foot or hull point (severity: the faster of its arrival and endpoint closing speeds)
@@ -1025,6 +1089,8 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 	var patch_weight := 0.0
 	var patch_normal := M.v3(0.0, 0.0, -1.0)
 	var deepest := 0.0
+	var slide_speed := 0.0
+	var slide_point := PackedFloat64Array()
 	for point: PackedFloat64Array in _points:
 		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
 		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + offset[0], body[RB.POS + 1] + offset[1])
@@ -1033,9 +1099,14 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 		var previous_offset: PackedFloat64Array = M.q_rotate(previous_attitude, point)
 		var previous_surface: PackedFloat64Array = _ground_at(previous_body[RB.POS] + previous_offset[0],
 			previous_body[RB.POS + 1] + previous_offset[1])
-		if previous_body[RB.POS + 2] + previous_offset[2] + previous_surface[0] > 0.0:
-			continue # already resting or sliding: not a new touchdown
 		var normal: PackedFloat64Array = Terrain.normal_from_up_slopes(surface[1], surface[2])
+		if previous_body[RB.POS + 2] + previous_offset[2] + previous_surface[0] > 0.0:
+			# Already touching: sliding, not a new touchdown (DR-19f: a fast skid raises a scrape event).
+			var skid := _slip_speed(body, point, normal)
+			if skid > slide_speed:
+				slide_speed = skid
+				slide_point = point
+			continue
 		var v_world: PackedFloat64Array = M.q_rotate(attitude, M.add(velocity, M.cross(rates, point)))
 		var v_before: PackedFloat64Array = M.q_rotate(previous_attitude, M.add(previous_velocity, M.cross(previous_rates, point)))
 		var speed: float = maxf(-M.dot(v_world, normal), -M.dot(v_before, normal))
@@ -1051,8 +1122,12 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 	if hardest > HARD_IMPACT_FACTOR * crash_speed:
 		out.reason = "Hard impact"
 		return
+	if slide_speed > SCRAPE_EVENT_SPEED_MPS \
+			and floori(t / SCRAPE_EVENT_PERIOD_S) != floori((t - PARKED_CHECK_DT) / SCRAPE_EVENT_PERIOD_S):
+		out.events.append({type = "scrape", time_s = t, surface = "ground", part = "frame", slip_speed_mps = slide_speed,
+			point_ned = M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, slide_point))})
 	if hardest > crash_speed:
-		_chip_nearest(out, hardest_point, t, "ground")
+		_chip_near(out, hardest_point, t, "ground")
 		out.events.append({type = "impact", time_s = t, surface = "ground", part = "frame", normal_speed_mps = hardest,
 			point_ned = M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, hardest_point))})
 	if hardest > TOUCHDOWN_IMPULSE_SPEED_MPS and patch_weight > 0.0:
@@ -1063,7 +1138,8 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 		var lifted := body.duplicate()
 		for k in 3:
 			lifted[RB.POS + k] += patch_normal[k] * deepest * -patch_normal[2]
-		out.body = _bounce(lifted, centroid, patch_normal, closing, TOUCHDOWN_RESPONSE) if closing > 0.0 else lifted
+		out.body = _bounce(lifted, centroid, patch_normal, closing, TOUCHDOWN_RESPONSE, float(prepared.contacts.friction)) \
+			if closing > 0.0 else lifted
 		body = out.body
 		attitude = RB._att(body)
 	var axis: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
@@ -1071,22 +1147,25 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 	var position: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	for i in 4:
-		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0:
+		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0: # forward spin only (see REVERSE_PROP_EFFICIENCY)
 			continue
 		var hit := _disc_ground_hit(i, position, attitude, axis, lowest, M.norm(lowest))
 		if hit.is_empty():
 			continue
-		_wear(out, i, t, "ground")
-		_prop_strike_kick(out, i, hit)
+		var hub: PackedFloat64Array = M.add(position, M.q_rotate(attitude, prepared.rotors[i].hub_frd))
+		var bite := maxf(0.0, _rim_depth(hub, hit, 0.5 * float(prepared.rotors[i].diameter_m)))
+		_wear(out, i, t, "ground", float(PROP_MATERIAL.ground), bite)
+		_prop_strike_kick(out, i, hit, _bite(bite))
 
 
 ## DR-19d: a spinning prop digging into the ground. The ground stops the blade (the shaft loses PROP_STRIKE_BRAKE of its
 ## speed this tick) and pushes back on it: an impulse I_r·Δω / r against the blade tip's motion at the contact, applied
 ## at the hub (its rim lever cancels the rotor's own momentum change). Bounded by the rotor's lost momentum; energy only
-## leaves the system (the rotor's lost kinetic energy far exceeds what the kick gives the airframe).
-func _prop_strike_kick(out: Dictionary, i: int, hit_world: PackedFloat64Array) -> void:
+## leaves the system (the rotor's lost kinetic energy far exceeds what the kick gives the airframe). DR-19f: a lighter
+## bite (`engagement` in [PROP_MIN_BITE, 1]) brakes and kicks in proportion; obstacles strike the same way.
+func _prop_strike_kick(out: Dictionary, i: int, hit_world: PackedFloat64Array, engagement: float = 1.0) -> void:
 	var omega: float = out.continuous[i]
-	var lost: float = omega * PROP_STRIKE_BRAKE
+	var lost: float = omega * PROP_STRIKE_BRAKE * engagement
 	out.continuous[i] = omega - lost
 	var rotor: Dictionary = prepared.rotors[i]
 	var radius: float = 0.5 * float(rotor.diameter_m)
@@ -1137,9 +1216,10 @@ func _closing_speed(body: PackedFloat64Array, contact_body: PackedFloat64Array, 
 
 
 ## The shared, energy-bounded scenery normal impulse (scenery_collision.gd) at a body point; a separating contact keeps
-## its velocity.
+## its velocity. DR-19f: then a Coulomb friction impulse against the contact point's sliding, at most `friction` × the
+## normal impulse and at most what stops the sliding (so it only removes energy).
 func _bounce(body: PackedFloat64Array, contact_body: PackedFloat64Array, normal: PackedFloat64Array, speed: float,
-		response_class: String) -> PackedFloat64Array:
+		response_class: String, friction: float = 0.0) -> PackedFloat64Array:
 	if not (speed > 0.0):
 		return body
 	var event := SceneryCollision.Event.new()
@@ -1149,26 +1229,93 @@ func _bounce(body: PackedFloat64Array, contact_body: PackedFloat64Array, normal:
 	event.response_class = response_class
 	event.terminal = false
 	var response: Dictionary = SceneryCollision.apply_response(body, event, float(prepared.mass_kg), prepared.inertia_kg_m2)
-	return response.state if bool(response.get("ok", false)) else body
+	if not bool(response.get("ok", false)):
+		return body
+	return _friction(body, response.state, contact_body, normal, friction)
 
 
-## Chip the two spinning props nearest a body point (a hard landing or a frame bounce).
-func _chip_nearest(out: Dictionary, contact_body: PackedFloat64Array, t: float, cause: String) -> void:
+## DR-19f: the Coulomb friction impulse of a contact (body axes throughout). The normal impulse actually applied is read
+## from the velocity change (the shared response may have fallen back to restitution 0). Capped at mu × that impulse, at
+## what stops the sliding and at what keeps the contact separating.
+func _friction(before: PackedFloat64Array, after: PackedFloat64Array, contact_body: PackedFloat64Array,
+		normal: PackedFloat64Array, coefficient: float) -> PackedFloat64Array:
+	if not (coefficient > 0.0):
+		return after
+	var mass: float = prepared.mass_kg
+	var normal_body := M.q_rotate(M.q_conj(RB._att(after)), normal)
+	var normal_impulse: float = mass * M.dot(M.sub(RB._slice3(after, RB.VEL), RB._slice3(before, RB.VEL)), normal_body)
+	if not (normal_impulse > 0.0):
+		return after
+	var v_contact := M.add(RB._slice3(after, RB.VEL), M.cross(RB._slice3(after, RB.RATE), contact_body))
+	var tangential := M.sub(v_contact, M.scale(normal_body, M.dot(v_contact, normal_body)))
+	var slip := M.norm(tangential)
+	if not (slip > 1.0e-9):
+		return after
+	var direction := M.scale(tangential, 1.0 / slip)
+	var inverse_inertia: PackedFloat64Array = RB.inertia_inverse(prepared.inertia_kg_m2)
+	var arm := M.cross(contact_body, direction)
+	var inverse_mass: float = 1.0 / mass + M.dot(arm, RB.inertia_mul(inverse_inertia, arm))
+	if not (inverse_mass > 0.0):
+		return after
+	var magnitude := minf(coefficient * normal_impulse, slip / inverse_mass)
+	# Off the CG the friction impulse also changes the contact's normal velocity (the inertia couples them): it may
+	# shorten the rebound but never turn it back into closing (a separating contact stays separating).
+	var separating := M.dot(v_contact, normal_body) # > 0 after the normal impulse
+	var normal_change := M.dot(M.add(M.scale(direction, -1.0 / mass),
+		M.cross(RB.inertia_mul(inverse_inertia, M.cross(contact_body, M.scale(direction, -1.0))), contact_body)), normal_body)
+	if normal_change < 0.0 and separating >= 0.0:
+		magnitude = minf(magnitude, separating / -normal_change)
+	var impulse := M.scale(direction, -magnitude)
+	var rate_change: PackedFloat64Array = RB.inertia_mul(inverse_inertia, M.cross(contact_body, impulse))
+	var out := after.duplicate()
+	for k in 3:
+		out[RB.VEL + k] += impulse[k] / mass
+		out[RB.RATE + k] += rate_change[k]
+	if not (_kinetic_energy(out) <= _kinetic_energy(after) * (1.0 + 1.0e-12) + 1.0e-12):
+		return after
+	return out
+
+
+func _kinetic_energy(body: PackedFloat64Array) -> float:
+	var energy := 0.0
+	var rates: PackedFloat64Array = RB._slice3(body, RB.RATE)
+	var momentum: PackedFloat64Array = RB.inertia_mul(prepared.inertia_kg_m2, rates)
+	for k in 3:
+		energy += 0.5 * float(prepared.mass_kg) * body[RB.VEL + k] * body[RB.VEL + k] + 0.5 * rates[k] * momentum[k]
+	return energy
+
+
+## DR-19f: sliding speed (m/s) of the body point `contact_body` across a surface with world normal `normal`.
+func _slip_speed(body: PackedFloat64Array, contact_body: PackedFloat64Array, normal: PackedFloat64Array) -> float:
+	var velocity: PackedFloat64Array = M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2])
+	var rates: PackedFloat64Array = M.v3(body[RB.RATE], body[RB.RATE + 1], body[RB.RATE + 2])
+	var v_world: PackedFloat64Array = M.q_rotate(RB._att(body), M.add(velocity, M.cross(rates, contact_body)))
+	return M.norm(M.sub(v_world, M.scale(normal, M.dot(v_world, normal))))
+
+
+## DR-19f: chip the spinning props whose disc reaches the contact point (within PROP_CHIP_REACH_M of the prop
+## radius from the hub): a hit on an arm tip chips that prop, a belly, battery or far-corner contact chips none.
+func _chip_near(out: Dictionary, contact_body: PackedFloat64Array, t: float, cause: String) -> void:
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
-	var order: Array = []
 	for i in 4:
-		if out.continuous[i] > strike_speed and out.continuous[C_HEALTH + i] > 0.0:
-			order.append([M.norm(M.sub(prepared.rotors[i].hub_frd, contact_body)), i])
-	order.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
-	for k in mini(2, order.size()):
-		var i: int = order[k][1]
-		_set_health(out, i, out.continuous[C_HEALTH + i] * PROP_CHIP_FACTOR, t, cause)
+		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0: # forward spin only (see REVERSE_PROP_EFFICIENCY)
+			continue
+		var rotor: Dictionary = prepared.rotors[i]
+		if M.norm(M.sub(rotor.hub_frd, contact_body)) <= 0.5 * float(rotor.diameter_m) + PROP_CHIP_REACH_M:
+			_set_health(out, i, out.continuous[C_HEALTH + i] * PROP_CHIP_FACTOR, t, cause)
 
 
-## One tick of contact wears a spinning prop in proportion to its shaft speed.
-func _wear(out: Dictionary, i: int, t: float, cause: String) -> void:
-	var share := PROP_WEAR_PER_TICK * absf(out.continuous[i]) / _hover_speed if _hover_speed > 0.0 else 1.0
+## One tick of contact wears a spinning prop in proportion to its shaft speed, the surface's material (PROP_MATERIAL)
+## and the blade's bite (DR-19f: a tip brushing leaves or grass loses far less than a full bite into wood or concrete).
+func _wear(out: Dictionary, i: int, t: float, cause: String, material: float = 1.0, depth_m: float = PROP_FULL_BITE_M) -> void:
+	var speed_share := absf(out.continuous[i]) / _hover_speed if _hover_speed > 0.0 else 1.0
+	var share := PROP_WEAR_PER_TICK * speed_share * material * _bite(depth_m)
 	_set_health(out, i, out.continuous[C_HEALTH + i] * (1.0 - clampf(share, 0.0, 1.0)), t, cause)
+
+
+## Engagement of a blade biting `depth_m` into a surface, in [PROP_MIN_BITE, 1].
+static func _bite(depth_m: float) -> float:
+	return clampf(depth_m / PROP_FULL_BITE_M, PROP_MIN_BITE, 1.0) if is_finite(depth_m) else 1.0
 
 
 func _set_health(out: Dictionary, i: int, value: float, t: float, cause: String) -> void:

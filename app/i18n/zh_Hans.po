@@ -13062,3 +13062,84 @@ msgstr "乌龟模式（坠机后翻正）：未解锁时按 %s，解锁后将摇
 
 msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
 msgstr "机身倒扣：乌龟模式（%s），解锁并推动摇杆翻正，或按 R 回到起飞台。"
+
+msgid "Download: %s"
+msgstr "下载大小：%s"
+
+msgid "Skip this version"
+msgstr "跳过此版本"
+
+msgid "Hides this notice until you open the game again."
+msgstr "在下次打开游戏前隐藏此通知。"
+
+msgid "Check for updates automatically"
+msgstr "自动检查更新"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "每天最多向 GitHub 查询一次是否发布了新版本。不会自动下载或安装任何内容。"
+
+msgid "Update channel"
+msgstr "更新通道"
+
+msgid "Stable releases"
+msgstr "稳定版"
+
+msgid "Preview releases"
+msgstr "预览版"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "稳定版只提供正式版本。预览版还会在正式发布前提供测试版本。"
+
+msgid "Check now"
+msgstr "立即检查"
+
+msgid "Update preferences are saved immediately."
+msgstr "更新偏好设置会立即保存。"
+
+msgid "Update checks are only available in released builds."
+msgstr "仅在正式发布的版本中可以检查更新。"
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "你正在使用此通道的最新版本。上次检查：%s。"
+
+msgid "You're using the latest version on this channel."
+msgstr "你正在使用此通道的最新版本。"
+
+msgid "Version %s is available (%s download)."
+msgstr "版本 %s 可用（下载 %s）。"
+
+msgid "Version %s is available."
+msgstr "版本 %s 可用。"
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "版本 %s 可用，但没有适用于此系统的安装包。"
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "无法检查更新。上次成功检查：%s。"
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "无法检查更新。尚未有过成功的检查。"
+
+msgid "Updates have not been checked yet."
+msgstr "尚未检查更新。"
+
+msgid "Checking for updates…"
+msgstr "正在检查更新…"
+
+msgid "Wait a moment before checking again."
+msgstr "请稍候再检查。"
+
+msgid "Could not save update preferences (error %d)."
+msgstr "无法保存更新偏好设置（错误 %d）。"
+
+msgid "Obstacle strike"
+msgstr "撞上障碍物"
+
+msgid "Propeller strike"
+msgstr "螺旋桨触地"
+
+msgid "Hard impact"
+msgstr "剧烈撞击"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "未计入此门：请正对穿过"

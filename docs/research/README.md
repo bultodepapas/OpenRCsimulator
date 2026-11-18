@@ -150,6 +150,15 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Desktop delivery
 
+[DT-UPD-00, 2026-11-17](desktop-delivery-investigations/DT-UPD-00/README.md)
+investigates GitHub-only game updates: current-source audit, framework comparison,
+authenticated metadata and native recovery design, zero-budget constraints, 82 future
+acceptance cases and an offline protocol draft. The
+[27 additional game/component studies](desktop-delivery-investigations/DT-UPD-00/game-update-survey.md)
+add 115 pinned primary files, reusable-component spikes and player help drafts. The
+[update system plan](../plans/github-updates.md) owns implementation; no installed
+updater, delta savings or native recovery is claimed.
+
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
 [DT-LNX-00, 2026-10-28](desktop-delivery-investigations/DT-LNX-00/README.md) audits current Linux exports/native sidecars, the pinned Wayland fallback risk, ARM64 gaps, AppImage/Flatpak/DEB/RPM policy, update/removal, GitHub promotion and download UX against primary sources. The [Linux execution plan](../plans/linux-support-distribution.md) assigns DT-LNX-01…13; no new Linux hardware, package or performance acceptance is claimed.

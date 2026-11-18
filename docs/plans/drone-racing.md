@@ -432,7 +432,7 @@ Deliberate consequences:
 
 ### 17.2 DR-19c: graded crashes
 
-A declared, deterministic gameplay law (`multirotor-graded-impact-v2` since §19.4) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
+A declared, deterministic gameplay law (`multirotor-graded-impact-v3` since §20) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
 
 - Each rotor's prop health h ∈ [0, 1] is checkpointed state (electrical law, layout v2). Thrust, aerodynamic torque and rotor drag scale with h. h = 1 is bit-identical to the undamaged law.
 - Severity is the closing speed along the contact normal, at the contact point.
@@ -563,3 +563,104 @@ An independent review of turtle mode and the v2 shapes found no energy gain, NaN
 - A non-finite contact depth could pass the contact guard.
 
 Accepted limits: only the nearest obstacle is tested at the box centre (as in v1); a prop disc has no midpoint check, so at about 10 m/s of axial travel it can skip a bar thinner than 4 cm; the terminal speed uses the edge-blended contact point; quad and airplane terminal speeds per class are separate tables by design.
+
+## 20. Grazes and material (DR-19f, 2026-11-17)
+
+**Owner request:** keep improving crashes: grazes, not everything gets damaged, more realism, grazes at high speed, damaged props.
+
+### 20.1 Audit of v2
+
+| ID | Finding | Evidence |
+| --- | --- | --- |
+| G1 | Obstacle contacts had no friction: the shared response is a normal impulse only, so a graze along a wall kept all its tangential speed and gave no drag or spin. | `SceneryCollision.apply_response` |
+| G2 | Every frame contact above 0.5 m/s chipped the two nearest props, even a battery or belly scrape. | `_chip_nearest` |
+| G3 | Prop wear ignored the surface and the bite: a tip brushing leaves cost the same 20 % per tick as a full bite into concrete. | `_wear` |
+| G4 | A prop clipping an obstacle neither braked nor kicked the quad, unlike a ground strike. | `_graded_prop_obstacles` |
+| G5 | No event for a sliding contact: grazes and skids were silent. | Event list |
+| G6 | In a session (Acro, throttle 0.5, 1 s), a 1 m/s graze along a wall at 8–25 m/s destroyed all four props, and leaves were as hard on them as concrete. | Graze probe, v2 |
+
+### 20.2 Law v3 (`multirotor-graded-impact-v3`)
+
+- **Friction:** a Coulomb impulse follows the normal impulse of a frame-obstacle bounce (μ: leaves 0.3, gate fabric and foam airframes 0.4, others 0.5) and of a touchdown (the data's `contacts.friction`). It is at most μ × the normal impulse, at most what stops the sliding and at most what keeps the contact separating, so it only removes energy; an off-centre graze yaws the quad.
+- **Local chips:** a frame hit chips only the spinning props whose disc reaches the contact (hub within prop radius + 2 cm), and only above 3 m/s along the normal; a ground touchdown from `crash_speed`.
+- **Material and bite:** wear per tick = 0.2 × ω/ω_hover × material × bite. Material: leaves 0.15, gate fabric 0.4, terrain and foam airframes 0.5, stakes, lamps and bales 0.6, hard 1. Bite: depth / 15 mm, at least 0.25. A prop breaks on an obstacle above 6 / √material m/s (leaves 15.5, hard 6).
+- **Obstacle prop strikes** brake the shaft and kick the airframe like ground strikes, scaled by the bite.
+- **Scrapes:** a pressed (approaching) frame-obstacle contact sliding above 2 m/s raises a `scrape` event on its bounce tick; a ground skid above 2 m/s reports once per 0.1 s of simulation time, bounding the event and flight-log volume. The presentation plays a paced scrape grain (strength √(v/15), one per 0.15 s), throws dust on the ground and buzzes the camera lightly; no message.
+
+### 20.3 Evidence
+
+| Graze (Acro, throttle 0.5, 1 s) | v2 prop health | v3 prop health |
+| --- | --- | --- |
+| Hard wall, 8 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.61, 0.65, 0.62, 0.85 |
+| Hard wall, 25 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.67, 0.59, 0.61, 0.85 |
+| Leaves, 15 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.93, 0.79, 0.61, 0.85 |
+| Hard wall, 12 m/s along, 7 m/s in | 0, 0, 0, 0.85 | 0, 0, 0.48, 1.0 |
+
+- `test_mr_graded_crashes` (50 checks) adds closed-form graze checks: survival, drag within μ × the normal impulse, yaw, energy loss, one scrape and no chip; a battery hit on a roof chips nothing; a nose hit chips the front props only; leaves against a hard wall for wear and breaks; an obstacle prop strike brakes and kicks; a ground skid scrapes; a skid-landing loses speed to friction.
+- `test_mr_crash_presentation` (16 checks) adds scrape pacing and strength.
+- **Not established:** measured friction and damage data, and listening tests.
+- **Review:** an independent review found no blocking defect. Fixed with regressions: friction off the CG could shorten a rebound into a closing contact; a receding overlap raised a scrape without friction; a sustained skid raised one event per tick. Accepted: a prop can be struck by an obstacle and the ground in the same tick, and a prop that breaks still kicks (as on the ground).
+- **Flight logs:** `multirotor-graded-impact-v3` is part of the model identity, so graded logs recorded under v2 no longer replay as exact (identity mismatch, by design). No golden flight uses the graded law.
+- **Known limit:** the airframe has no rotational aerodynamic damping. With both props on one side broken and throttle held, the quad rolls up without bound (v2 and v3 alike); the pilot disarms.
+
+## 21. Full audit (2026-11-17)
+
+**Owner request:** an exhaustive audit for bugs, gaps, improvements and optimizations. Three independent read-only reviews covered physics and the flight controller, session, race and input, and the presentation layer. The lead verified each claim in code or with a probe before acting.
+
+### 21.1 Measured performance
+
+Headless tick cost at 240 Hz on the development PC, with the real field's collision world (6,139 proxies):
+
+| Case | Before | After |
+| --- | --- | --- |
+| Open-air flight, graded or strict | about 1.0 ms per tick | unchanged |
+| Ground skid at 8 m/s (4 contact pieces) | about 2.4 ms per tick | unchanged |
+| 12 m/s dive into the ground, worst tick | 11.0 ms | 4.6 ms |
+| 12 m/s dive, first 40 ticks | 110 ms | 67 ms |
+| 6 m/s dive, worst tick | 4.9 ms | 2.9 ms |
+
+Obstacle queries cost 1.7–7.7 µs each, and the default field has no index-wide proxies. The fine graded pieces now run only on the tick in which a foot or hull point can reach the ground, not on every tick below 0.25 m.
+
+### 21.2 Fixed with regressions
+
+| Area | Defect | Fix |
+| --- | --- | --- |
+| Race | A gate clipped while flying through it never scored: every crossing on a graded impact tick was unresolved. | Path policy `openrc-chord-path-v2`: the integrator chord is judged and the accepted endpoint must be past the plane. Records under v1 stay historical. `test_race_director` |
+| Physics | Fine contact pieces ran up to 0.3 m above the ground: an 11 ms tick at impact. | Refine only when a contact can begin this tick (§21.1). |
+| Session | A collision world installed after prepare kept the old class query (terminal speeds, friction, materials). | Both queries are rebuilt. `test_mr_graded_crashes` |
+| Scene | Race results were written, verified and renamed inside the finishing physics tick. | The handler runs deferred. |
+| Audio | The damaged-prop rattle kept playing while paused, crashed or in the restart menu. | It stops with the motors. `test_mr_crash_presentation` |
+| Visual | A broken prop hid its whole motor bell. | Only the ION R5 blades break. `test_mr_crash_presentation` |
+| Camera | The pilot's ground view shook with the quad's impacts. | Shake applies to FPV and chase only. `test_mr_crash_presentation` |
+| HUD | The crash cause was shown in English in every language; the last flight's statistics stayed after a pad restart. | Translated causes (8 catalogs); statistics dismissed on restart. |
+| HUD cost | The control names were rebuilt every frame. | Refreshed 4 times a second and on a source change. |
+| Race HUD | A crossing of the next gate that the director could not resolve (oblique, under 1 m/s through the plane, or bounced back) scored nothing, silently. | "Gate not counted: fly straight through it", once per crossing (8 catalogs). `test_mr_crash_presentation` |
+| Input | A refused arm (high throttle, an arm block) used up the turtle request. | The activity reports the controller's motor state after each tick; only an arm cycle the controller accepted consumes the request. `test_mr_turtle` |
+| Input | After the flight pad was unplugged, a second connected controller was not adopted (the direct route did adopt it). | Another connected controller takes over with ControllerService's priority (a saved profile, then a radio, then a known gamepad). A keyboard the pilot chose, also during the activity, stays chosen; the lost pad returning finds the role taken. `test_mr_activity` |
+| Presentation | The crash kit was built on the first touch: about 20 ms (10 ms particles, 10 ms voices), a visible hitch. | Built while loading; disabled parts stay unallocated. `test_mr_crash_presentation` |
+| Presentation | On rolling terrain every earlier scuff mark jumped to the latest touch's height. | Marks are lowered by the frame's lift. `test_mr_crash_presentation` |
+
+### 21.3 Checked and kept
+
+- **Reverse-spinning props are exempt from the strike laws.** Counting them made the per-tick strike brake stall every crash flip on grass (`test_mr_turtle` failed). This is now a documented simplification at `REVERSE_PROP_EFFICIENCY`.
+- **A 160 V bus readout after a throttle chop on a full pack** was not reproduced. The pack has already discharged by the time of the chop; the peak was 25.7 V on 6S.
+- **Event identity:** `crash_model` is in the flight-log header and the impact law is in the model identity.
+- **Gate bounce-back** cannot double count.
+- **`restore_checkpoint` replaces the result outbox.** A restore is a full rewind: `test_race_session` relies on it. The scene saves each result as it arrives, so the outbox is normally empty, and a record that is re-added after it was saved is saved again with no effect (same publication id, same bytes).
+- **`prepare` in mid-attempt leaves no aborted record.** The scene aborts the attempt before it prepares.
+- **The pilot tape** restarts at every reset, prepare and restore, and is bounded at 30 minutes.
+- **`RcInput.poll` reads 128 buttons.** Measured at 17 µs per tick, about 0.4 % of one core at 240 Hz. Radios expose 32 or more buttons, so the scan stays.
+- **Every gate is tested on every racing tick.** The cost is a few dot products per gate on a course of a few gates.
+- **Statistics and the G-meter sample the latest accepted tick once per rendered frame.** Telemetry is evaluated once per tick, and sampling every tick would quadruple it at 60 fps for marginally higher peaks.
+- **Help panel at 1080p (keyboard source):** it fits in all 9 languages. German reaches lowest, 1017 of 1080 px.
+
+### 21.4 Open (not fixed)
+
+- **Physics:**
+  - A touching point closing fast (a belly skid into a bank) is not judged as an impact.
+  - There is no rotational aerodynamic damping.
+  - Ground lookups per stage (up to 10) and the per-call terrain memo miss are the next CPU targets; any change there alters results bit for bit and needs a re-record.
+- **Presentation:**
+  - The quad activity builds its world without the display preferences (`World.build` gets no graphics options): quality presets reach neither the field nor the gate shadows and halos. This is a cross-track integration with the graphics settings owners.
+  - The help panel is measured only with the keyboard source.
+  - Each ground event lifts every crash-kit emitter by the local ground height, including emitters still running from an earlier event, which then jump (pre-existing; found by the review of these fixes).

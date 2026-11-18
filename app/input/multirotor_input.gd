@@ -73,6 +73,12 @@ var _turtle_button := -1
 ## The turtle request was engaged on an arming edge: the following disarm ends it (one flip per request; the next arm
 ## flies). A request made while armed (after a crash, still armed) waits: the pilot's mode keeps flying until the disarm.
 var _turtle_used := false
+## Audit: the controller's motor state, reported after each accepted tick (note_motor_state). Once reported, only an
+## arming edge the controller accepted consumes the request; a refused arm leaves it pending. Without reports (a bare
+## input driven by a test) the arming edge alone consumes it, as before.
+var _motor_reported := false
+var _motor_armed := false
+var _turtle_engaged := false
 var _actions := 0
 var _keyboard_sticks := {roll = 0.0, pitch = 0.0, yaw = 0.0}
 var _source_key := ""
@@ -381,6 +387,7 @@ func reset_for_restart() -> void:
 	_arm_latch = false
 	_turtle = false
 	_turtle_used = false
+	_turtle_engaged = false
 	_end_arm_continuity(false)
 	_continuity_lost = false
 	_last_arm_level = false
@@ -396,6 +403,15 @@ func flight_mode() -> int:
 ## DR-19e: whether turtle mode (the crash flip) is requested.
 func turtle_requested() -> bool:
 	return _turtle
+
+
+## The activity reports the controller's motor state after each accepted tick: an armed motor during a turtle arm cycle
+## marks the request as engaged (its disarm consumes it).
+func note_motor_state(armed: bool) -> void:
+	_motor_reported = true
+	_motor_armed = armed
+	if armed and _turtle_used:
+		_turtle_engaged = true
 
 
 func _current_source_key() -> String:
@@ -414,6 +430,7 @@ func _source_changed() -> void:
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 	_turtle = false
 	_turtle_used = false
+	_turtle_engaged = false
 	_end_arm_continuity(_arm_continuity)
 	_last_arm_level = false
 	_refresh_shortcuts()
@@ -582,11 +599,17 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 		_last_arm_level = arm_level and ready
 		if _turtle and arm_level and ready and not was_armed_level:
 			_turtle_used = true
+			# A new arming edge while the motors are still armed (a source that was not ready for a moment) is the same
+			# arm cycle: a flip already engaged stays engaged.
+			_turtle_engaged = _turtle_engaged and _motor_armed
 		elif _turtle_used and not arm_level:
-			_turtle = false
+			# The disarm ends the request only if the controller armed in turtle; a refused arm leaves it pending.
+			_turtle = _motor_reported and not _turtle_engaged
 			_turtle_used = false
+			_turtle_engaged = false
 		elif not _turtle:
 			_turtle_used = false
+			_turtle_engaged = false
 	var mode_source := "toggle"
 	if mode_switch:
 		mode_source = "switch:" + MODE_AUX

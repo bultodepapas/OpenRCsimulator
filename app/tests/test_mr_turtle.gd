@@ -201,6 +201,21 @@ func _input_request() -> void:
 	_press(input, keys, "turtle")
 	input.reset_for_restart()
 	_check("a pad restart clears the request", not input.turtle_requested())
+	# Audit: with the controller's motor state reported (the activity does after each tick), a refused arm (high
+	# throttle, an arm block) leaves the request pending; the next arm the controller accepts consumes it.
+	_press(input, keys, "turtle")
+	_press(input, keys, "arm") # the arming edge: the controller refuses it
+	input.note_motor_state(false)
+	_press(input, keys, "arm")
+	input.note_motor_state(false)
+	sample = input.sample(1.0 / 240.0, true)
+	var pending: bool = input.turtle_requested() and int(sample.pilot[FC.IN_MODE]) == FC.FLIGHT_TURTLE
+	_press(input, keys, "arm") # accepted: the controller arms in turtle
+	input.note_motor_state(true)
+	_press(input, keys, "arm")
+	input.note_motor_state(false)
+	_check("a refused arm keeps the turtle request; an accepted arm cycle consumes it", pending
+		and not input.turtle_requested() and input.flight_mode() != FC.FLIGHT_TURTLE)
 
 
 ## One key press and release (two integrating samples); the reader returns a copy of `keys`.

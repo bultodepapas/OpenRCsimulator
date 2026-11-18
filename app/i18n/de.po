@@ -14007,3 +14007,84 @@ msgstr "Schildkrötenmodus (nach einem Absturz umdrehen): %s im entschärften Zu
 
 msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
 msgstr "Kopfüber: Schildkrötenmodus (%s), scharf schalten und den Stick drücken, um umzudrehen, oder R für das Startfeld."
+
+msgid "Download: %s"
+msgstr "Downloadgröße: %s"
+
+msgid "Skip this version"
+msgstr "Diese Version überspringen"
+
+msgid "Hides this notice until you open the game again."
+msgstr "Blendet diesen Hinweis bis zum nächsten Spielstart aus."
+
+msgid "Check for updates automatically"
+msgstr "Automatisch nach Updates suchen"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "Fragt GitHub höchstens einmal täglich, ob eine neuere Version veröffentlicht wurde. Es wird nichts automatisch heruntergeladen oder installiert."
+
+msgid "Update channel"
+msgstr "Update-Kanal"
+
+msgid "Stable releases"
+msgstr "Stabile Versionen"
+
+msgid "Preview releases"
+msgstr "Vorabversionen"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "Stabil bietet nur endgültige Versionen. Vorab bietet zusätzlich Testversionen vor der endgültigen Veröffentlichung."
+
+msgid "Check now"
+msgstr "Jetzt suchen"
+
+msgid "Update preferences are saved immediately."
+msgstr "Update-Einstellungen werden sofort gespeichert."
+
+msgid "Update checks are only available in released builds."
+msgstr "Die Update-Suche ist nur in veröffentlichten Versionen verfügbar."
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "Du verwendest die neueste Version dieses Kanals. Zuletzt geprüft: %s."
+
+msgid "You're using the latest version on this channel."
+msgstr "Du verwendest die neueste Version dieses Kanals."
+
+msgid "Version %s is available (%s download)."
+msgstr "Version %s ist verfügbar (Download: %s)."
+
+msgid "Version %s is available."
+msgstr "Version %s ist verfügbar."
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "Version %s ist verfügbar, aber es gibt kein Paket für dieses System."
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "Die Update-Suche ist fehlgeschlagen. Letzte erfolgreiche Prüfung: %s."
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "Die Update-Suche ist fehlgeschlagen. Bisher war keine Prüfung erfolgreich."
+
+msgid "Updates have not been checked yet."
+msgstr "Es wurde noch nicht nach Updates gesucht."
+
+msgid "Checking for updates…"
+msgstr "Suche nach Updates…"
+
+msgid "Wait a moment before checking again."
+msgstr "Warte einen Moment, bevor du erneut suchst."
+
+msgid "Could not save update preferences (error %d)."
+msgstr "Update-Einstellungen konnten nicht gespeichert werden (Fehler %d)."
+
+msgid "Obstacle strike"
+msgstr "Aufprall auf ein Hindernis"
+
+msgid "Propeller strike"
+msgstr "Propellerschlag"
+
+msgid "Hard impact"
+msgstr "Harter Aufprall"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "Tor nicht gezählt: gerade hindurchfliegen"

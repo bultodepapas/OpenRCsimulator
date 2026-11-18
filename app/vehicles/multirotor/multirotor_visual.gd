@@ -210,6 +210,9 @@ func _import_rotor(rotor: Dictionary) -> Dictionary:
 		assembly.remove_child(child)
 		pivot.add_child(child)
 		child.transform = pivot.transform.affine_inverse() * at
+		# Audit: only the blades break; the motor bell stays (PropBreak hides the whole pivot without this mark).
+		if "blades" in str(child.name):
+			child.set_meta(PropBreak.BREAKS_META, true)
 	return {spin = signf(float(rotor.spin)), pivot = pivot, base = base, phase = 0.0, blur = null, speed = 0.0}
 
 

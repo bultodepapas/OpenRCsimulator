@@ -13863,3 +13863,84 @@ msgstr "Режим черепахи (перевернуться после ав�
 
 msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
 msgstr "Вверх ногами: режим черепахи (%s), арм и стик, чтобы перевернуться, или R для возврата на площадку."
+
+msgid "Download: %s"
+msgstr "Размер загрузки: %s"
+
+msgid "Skip this version"
+msgstr "Пропустить эту версию"
+
+msgid "Hides this notice until you open the game again."
+msgstr "Скрывает это уведомление до следующего запуска игры."
+
+msgid "Check for updates automatically"
+msgstr "Автоматически проверять обновления"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "Не чаще раза в день спрашивает GitHub, вышла ли более новая версия. Ничего не загружается и не устанавливается автоматически."
+
+msgid "Update channel"
+msgstr "Канал обновлений"
+
+msgid "Stable releases"
+msgstr "Стабильные версии"
+
+msgid "Preview releases"
+msgstr "Предварительные версии"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "Стабильный канал предлагает только финальные версии. Предварительный также предлагает тестовые версии до финального выпуска."
+
+msgid "Check now"
+msgstr "Проверить сейчас"
+
+msgid "Update preferences are saved immediately."
+msgstr "Настройки обновлений сохраняются сразу."
+
+msgid "Update checks are only available in released builds."
+msgstr "Проверка обновлений доступна только в опубликованных сборках."
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "У вас последняя версия в этом канале. Последняя проверка: %s."
+
+msgid "You're using the latest version on this channel."
+msgstr "У вас последняя версия в этом канале."
+
+msgid "Version %s is available (%s download)."
+msgstr "Доступна версия %s (загрузка %s)."
+
+msgid "Version %s is available."
+msgstr "Доступна версия %s."
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "Доступна версия %s, но для этой системы нет пакета."
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "Не удалось проверить обновления. Последняя успешная проверка: %s."
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "Не удалось проверить обновления. Успешных проверок ещё не было."
+
+msgid "Updates have not been checked yet."
+msgstr "Обновления ещё не проверялись."
+
+msgid "Checking for updates…"
+msgstr "Проверка обновлений…"
+
+msgid "Wait a moment before checking again."
+msgstr "Подождите немного перед повторной проверкой."
+
+msgid "Could not save update preferences (error %d)."
+msgstr "Не удалось сохранить настройки обновлений (ошибка %d)."
+
+msgid "Obstacle strike"
+msgstr "Удар о препятствие"
+
+msgid "Propeller strike"
+msgstr "Удар винтом"
+
+msgid "Hard impact"
+msgstr "Сильный удар"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "Ворота не засчитаны: пролетайте прямо через них"

@@ -13113,3 +13113,84 @@ msgstr "タートルモード（墜落後に起き上がる）：ディスアー
 
 msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
 msgstr "逆さま：タートルモード（%s）、アームしてスティックを倒すと起き上がります。R でパッドに戻ります。"
+
+msgid "Download: %s"
+msgstr "ダウンロードサイズ：%s"
+
+msgid "Skip this version"
+msgstr "このバージョンをスキップ"
+
+msgid "Hides this notice until you open the game again."
+msgstr "次にゲームを開くまでこの通知を非表示にします。"
+
+msgid "Check for updates automatically"
+msgstr "アップデートを自動的に確認"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "新しいバージョンが公開されているかを、1日に最大1回GitHubに問い合わせます。自動でダウンロードやインストールは行いません。"
+
+msgid "Update channel"
+msgstr "アップデートチャンネル"
+
+msgid "Stable releases"
+msgstr "安定版"
+
+msgid "Preview releases"
+msgstr "プレビュー版"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "安定版は正式リリースのみを提供します。プレビュー版では正式リリース前のテスト版も提供されます。"
+
+msgid "Check now"
+msgstr "今すぐ確認"
+
+msgid "Update preferences are saved immediately."
+msgstr "アップデート設定はすぐに保存されます。"
+
+msgid "Update checks are only available in released builds."
+msgstr "アップデートの確認は公開ビルドでのみ利用できます。"
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "このチャンネルの最新バージョンを使用しています。最終確認：%s。"
+
+msgid "You're using the latest version on this channel."
+msgstr "このチャンネルの最新バージョンを使用しています。"
+
+msgid "Version %s is available (%s download)."
+msgstr "バージョン %s が利用可能です（ダウンロード %s）。"
+
+msgid "Version %s is available."
+msgstr "バージョン %s が利用可能です。"
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "バージョン %s が利用可能ですが、このシステム用のパッケージはありません。"
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "アップデートを確認できませんでした。最後に成功した確認：%s。"
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "アップデートを確認できませんでした。まだ一度も確認に成功していません。"
+
+msgid "Updates have not been checked yet."
+msgstr "アップデートはまだ確認されていません。"
+
+msgid "Checking for updates…"
+msgstr "アップデートを確認しています…"
+
+msgid "Wait a moment before checking again."
+msgstr "もう一度確認する前に少しお待ちください。"
+
+msgid "Could not save update preferences (error %d)."
+msgstr "アップデート設定を保存できませんでした（エラー %d）。"
+
+msgid "Obstacle strike"
+msgstr "障害物に衝突"
+
+msgid "Propeller strike"
+msgstr "プロペラ接触"
+
+msgid "Hard impact"
+msgstr "激しい衝突"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "ゲート未通過扱い：正面からまっすぐ通過してください"

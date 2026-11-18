@@ -1,8 +1,8 @@
 ## DR-19d (docs/plans/drone-racing.md §18): the FPV quad's crash presentation. Reuses the project's crash kit: the
 ## synthetic MIT crash sounds (render/crash/crash_audio.gd) and the dust, blade-chip, mark and debris effects
 ## (render/crash/effects.gd), scaled for a 0.6 kg quad. Presentation only: it reads accepted impact, prop-damage and
-## crash events and never writes simulation state. Nothing is allocated before the first event of a flight, and the
-## kit stays disabled while effects or sound are off. Grinding props report damage every tick; sounds and effects are
+## crash events and never writes simulation state. Nothing is allocated before the first event or the activity's
+## warm-up (warm()), and the kit stays disabled while effects or sound are off. Grinding props report damage every tick; sounds and effects are
 ## paced (one per prop per band, one touch per TOUCH_INTERVAL_S) so a scrape is a scrape, not a machine gun.
 extends Node3D
 
@@ -20,6 +20,10 @@ const BAND_LIMITS := [1.0, 0.75, 0.0]
 ## under 5 m/s buried 10 to 20 dB under the motors).
 const FULL_TOUCH_SPEED_MPS := 12.0
 const TOUCH_EXPONENT := 0.6
+## DR-19f: sliding speed (m/s) of a full-strength scrape (a graze or skid) and the shortest interval (s) between two
+## scrape grains. Strength sqrt(v / 15): a 2 m/s scrape sits about 11 dB under the motors, 15 m/s about 5 dB under.
+const FULL_SCRAPE_SPEED_MPS := 15.0
+const SCRAPE_INTERVAL_S := 0.15
 ## Strength of the blade-chip tick of a damaged (not yet broken) prop: about 8 dB under the motors.
 const CHIP_STRENGTH := 0.7
 ## The kit's voices take the motor loop's distance law (unit size and range of the quad's motor player), so the crash
@@ -36,6 +40,7 @@ var audio: Node3D
 ## Rotor index -> last presented damage band (pacing).
 var _bands: Dictionary = {}
 var _touch_cooldown := 0.0
+var _scrape_cooldown := 0.0
 var _crashed := false
 ## Optional ground sampler (render x, z) -> render height; flat 0 when unset.
 var ground_height: Callable = Callable()
@@ -66,6 +71,13 @@ func _ensure() -> void:
 				voice.max_distance = VOICE_MAX_DISTANCE_M
 
 
+## Audit: build the enabled parts of the kit now (the activity calls it while loading). The first allocation costs
+## about 20 ms (particles, synthesized voices), a visible hitch on the first touch if paid mid-flight. Disabled parts
+## stay unallocated.
+func warm() -> void:
+	_ensure()
+
+
 ## A survivable impact event ({surface, normal_speed_mps, point_ned}); `velocity` is the quad's render velocity.
 func impact(event: Dictionary, velocity: Vector3) -> void:
 	if _crashed or _touch_cooldown > 0.0:
@@ -75,11 +87,32 @@ func impact(event: Dictionary, velocity: Vector3) -> void:
 	var point := _render_point(event)
 	var strength := touch_strength(float(event.get("normal_speed_mps", 0.0)))
 	var on_ground := str(event.get("surface", "")) == "ground"
-	var sliding := Vector2(velocity.x, velocity.z).length() > 2.0
+	var sliding := float(event.get("slip_speed_mps", Vector2(velocity.x, velocity.z).length())) > 2.0
 	if audio != null:
 		audio.touch(point, strength, sliding, "grass" if on_ground else "hard")
 	if effects != null and on_ground:
 		_at_ground(point, func(local: Vector3) -> void: effects.touch(local, velocity, strength, "grass"))
+
+
+## DR-19f: a sliding contact ({surface, slip_speed_mps, point_ned}), a graze along an obstacle or a skid on the
+## ground: a paced scrape grain, and a little dust on the ground.
+func scrape(event: Dictionary, velocity: Vector3) -> void:
+	if _crashed or _scrape_cooldown > 0.0:
+		return
+	_ensure()
+	_scrape_cooldown = SCRAPE_INTERVAL_S
+	var point := _render_point(event)
+	var strength := scrape_strength(float(event.get("slip_speed_mps", 0.0)))
+	var on_ground := str(event.get("surface", "")) == "ground"
+	if audio != null:
+		audio.touch(point, strength, true, "grass" if on_ground else "hard")
+	if effects != null and on_ground:
+		_at_ground(point, func(local: Vector3) -> void: effects.touch(local, velocity, 0.6 * strength, "grass"))
+
+
+## Scrape strength [0.1, 1] of a sliding speed (m/s).
+static func scrape_strength(slip_mps: float) -> float:
+	return clampf(sqrt(maxf(slip_mps, 0.0) / FULL_SCRAPE_SPEED_MPS), 0.1, 1.0)
 
 
 ## A prop-damage event ({rotor, health, point_ned}): sound and blade chips once per damage band of that prop.
@@ -126,6 +159,7 @@ func crash(reason: String, position: Vector3, velocity: Vector3) -> void:
 
 func update(delta: float, paused: bool) -> void:
 	_touch_cooldown = maxf(0.0, _touch_cooldown - (0.0 if paused else delta))
+	_scrape_cooldown = maxf(0.0, _scrape_cooldown - (0.0 if paused else delta))
 	if effects != null:
 		effects.update(delta, paused)
 	if audio != null:
@@ -136,6 +170,7 @@ func update(delta: float, paused: bool) -> void:
 func reset() -> void:
 	_bands.clear()
 	_touch_cooldown = 0.0
+	_scrape_cooldown = 0.0
 	_crashed = false
 	if effects != null:
 		effects.reset()
@@ -166,9 +201,17 @@ func _render_point(event: Dictionary) -> Vector3:
 
 
 ## The shared effects assume their ground at y = 0: run `call` in a frame lifted to the local ground height, then lift
-## the emitters (which the kit places in global coordinates) by the same height.
+## the emitters (which the kit places in global coordinates) by the same height. Audit: the marks already on the
+## ground are children of the lifted frame; they are lowered by the same step so they stay where they were drawn
+## (on rolling terrain they used to jump to each new touch's height).
 func _at_ground(point: Vector3, call: Callable) -> void:
 	var height := float(ground_height.call(point.x, point.z)) if ground_height.is_valid() else 0.0
+	var step := height - effects.position.y
+	if step != 0.0:
+		for item: MeshInstance3D in effects.marks:
+			item.position.y -= step
+		for decal: Decal in effects.mark_decals:
+			decal.position.y -= step
 	effects.position = Vector3(0.0, height, 0.0)
 	call.call(Vector3(point.x, point.y - height, point.z))
 	for emitter: CPUParticles3D in effects.emitters:
