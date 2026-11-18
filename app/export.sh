@@ -150,6 +150,12 @@ python3 "$ROOT/tools/release/manifest.py" capture --root "$ROOT" --editor "$GODO
 
 echo "== prepare verified NK-3 export identity"
 python3 "$ROOT/research/native-kernel/package.py" prepare
+# NK-4 (owner decision 2026-11-18, native kernel always): Windows packages carry the verified DLL as well. CI's
+# native-kernel-windows job supplies the DLL, its receipt and the oracle evidence it cites in this tool root;
+# native-kernel-windows-package then qualifies the exported executable on Windows.
+NK4_TOOL_ROOT="${OPENRC_NK4_TOOL_ROOT:-$ROOT/tmp/native-kernel-windows}"
+echo "== prepare verified NK-4 Windows export identity ($NK4_TOOL_ROOT)"
+python3 "$ROOT/research/native-kernel/package.py" prepare-windows --tool-root "$NK4_TOOL_ROOT"
 for preset in Linux Windows macOS; do
   case "$preset" in
     Linux) out="$DIST/linux/openrc-simulator.x86_64" ;;
@@ -164,6 +170,10 @@ for preset in Linux Windows macOS; do
     echo "== stage verified NK-3 sidecars for the exact exported executable"
     python3 "$ROOT/research/native-kernel/package.py" finalize \
       --executable "$out" --template "$TEMPLATE_DIR/linux_release.x86_64"
+  elif [[ "$preset" == Windows ]]; then
+    echo "== stage verified NK-4 sidecars for the exact exported Windows executable"
+    python3 "$ROOT/research/native-kernel/package.py" finalize-windows --executable "$out" \
+      --template "$TEMPLATE_DIR/windows_release_x86_64.exe" --tool-root "$NK4_TOOL_ROOT"
   fi
 done
 

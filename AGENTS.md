@@ -53,8 +53,6 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 - [STACK.md](docs/STACK.md): current architecture and dependencies.
 - [docs/TOOLS.md](docs/TOOLS.md): setup, commands, tests, captures and exports.
 - [docs/README.md](docs/README.md#tracks-plans-and-step-ids): track ownership and documentation homes.
-- [ROADMAP.md](ROADMAP.md): main-line steps and acceptance gates.
-- [AIRCRAFT_CONTRACT.md](docs/AIRCRAFT_CONTRACT.md): aircraft authoring and extension rules.
 - [LEARNINGS.md](docs/LEARNINGS.md): reusable technical lessons.
 
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.

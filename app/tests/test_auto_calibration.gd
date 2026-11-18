@@ -165,8 +165,48 @@ func _test_storage() -> void:
 		and AutoCalibration.load_result("NVIDIA GeForce RTX 3060", "forward_plus").is_empty())
 	_check("levels shift within Low..High and never reach Extreme",
 		AutoCalibration.shifted_level("high", 1) == "high" and AutoCalibration.shifted_level("medium", 1) == "high"
-		and AutoCalibration.shifted_level("low", -1) == "low" and AutoCalibration.shifted_level("high", -1) == "medium"
-		and AutoCalibration.shifted_level("extreme", -1) == "extreme")
+		and AutoCalibration.shifted_level("low", -1) == "low" and AutoCalibration.shifted_level("high", -1) == "medium")
+	_check("an Automatic Extreme that misses the frame drops to High and never rises",
+		AutoCalibration.shifted_level("extreme", -1) == "high" and AutoCalibration.shifted_level("extreme", 1) == "extreme"
+		and AutoCalibration.shifted_level("extreme", 0) == "extreme")
+	_test_measured_level()
+
+
+## VQ-07h-A4: a verdict is relative to the level it measured (format 3).
+func _test_measured_level() -> void:
+	var gpu := "NVIDIA GeForce RTX 3060"
+	_check("the measured level is stored", AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus",
+		"scene_offset": 0, "complete": true, "pixels": 2073600, "level": "high"})
+		and AutoCalibration.load_result(gpu, "forward_plus").level == "high")
+	_check("a policy update to Extreme measures again", AutoCalibration.needed(gpu, "forward_plus", 2073600, "extreme")
+		and not AutoCalibration.needed(gpu, "forward_plus", 2073600, "high")
+		and not AutoCalibration.needed(gpu, "forward_plus", 2073600, "medium")
+		and not AutoCalibration.needed(gpu, "forward_plus", 2073600))
+	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "scene_offset": -1, "complete": true,
+		"pixels": 2073600, "level": "high"})
+	_check("a down verdict below the new level needs no new measurement",
+		not AutoCalibration.needed(gpu, "forward_plus", 2073600, "extreme"))
+	var down_high := {"scene_offset": -1, "level": "high"}
+	_check("a down verdict at High caps a later Automatic Extreme at Medium",
+		AutoCalibration.apply_verdict("extreme", down_high) == "medium"
+		and AutoCalibration.apply_verdict("high", down_high) == "medium"
+		and AutoCalibration.apply_verdict("medium", down_high) == "medium"
+		and AutoCalibration.apply_verdict("low", down_high) == "low")
+	_check("a down verdict at Extreme leaves High", AutoCalibration.apply_verdict("extreme",
+		{"scene_offset": -1, "level": "extreme"}) == "high")
+	var up_medium := {"scene_offset": 1, "level": "medium"}
+	_check("an up verdict raises only the level it measured", AutoCalibration.apply_verdict("medium", up_medium) == "high"
+		and AutoCalibration.apply_verdict("low", up_medium) == "low"
+		and AutoCalibration.apply_verdict("high", up_medium) == "high")
+	_check("a verdict without a measured level changes nothing",
+		AutoCalibration.apply_verdict("high", {"scene_offset": -1}) == "high")
+	var stale := ConfigFile.new()
+	stale.set_value("meta", "format", 2)
+	stale.set_value("gpu %s | forward_plus" % AutoCalibration.adapter_key(gpu), "scene_offset", -1)
+	stale.save(AutoCalibration.calibration_path)
+	_check("a format 2 verdict is discarded and measured again", AutoCalibration.load_result(gpu, "forward_plus").is_empty()
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600))
+	AutoCalibration.clear()
 
 
 func _test_scene_detail() -> void:
@@ -176,18 +216,18 @@ func _test_scene_detail() -> void:
 	SceneDetail.calibration = {}
 	_check("without a verdict Automatic follows the table", SceneDetail.detected().level == "high")
 	var key := AutoCalibration.adapter_key("NVIDIA GeForce RTX 3090")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high"}
 	var shifted := SceneDetail.detected()
 	_check("a measured verdict lowers Automatic one level", shifted.level == "medium" and bool(shifted.get("calibrated", false)), shifted)
-	SceneDetail.calibration = {"adapter": key, "method": "another_renderer", "pixels": pixels, "scene_offset": -1}
+	SceneDetail.calibration = {"adapter": key, "method": "another_renderer", "pixels": pixels, "scene_offset": -1, "level": "high"}
 	_check("a verdict from another renderer is ignored", SceneDetail.detected().level == "high")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": maxi(pixels, 1) * 4, "scene_offset": -1}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": maxi(pixels, 1) * 4, "scene_offset": -1, "level": "high"}
 	_check("a verdict from a very different output size is ignored", SceneDetail.detected().level == "high")
 	SceneDetail.calibration = {"adapter": AutoCalibration.adapter_key("Intel(R) Iris(R) Xe Graphics"), "method": method,
-		"pixels": pixels, "scene_offset": -1}
+		"pixels": pixels, "scene_offset": -1, "level": "high"}
 	_check("a verdict for another GPU is ignored", SceneDetail.detected().level == "high")
 	SceneDetail.set_preference("high")
-	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1}
+	SceneDetail.calibration = {"adapter": key, "method": method, "pixels": pixels, "scene_offset": -1, "level": "high"}
 	_check("an explicit level is never changed", SceneDetail.level() == "high")
 	SceneDetail.set_preference(SceneDetail.AUTO)
 	_check("Automatic applies the verdict", SceneDetail.level() == "medium")

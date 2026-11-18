@@ -189,6 +189,66 @@ def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64):
     return editor, templates, env
 
 
+class WindowsPayloadTests(unittest.TestCase):
+    """NK-4: the final Windows ZIP must carry the exact executable and DLL its package receipt names."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="openrc windows payload ")
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.exe, self.dll = b"fixture windows executable", b"fixture native kernel dll"
+        manifest_path = self.root / "app/native/kernel/package-windows.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text('{"platform": "windows"}\n')
+        self.build_receipt = self.root / "build-receipt-windows.json"
+        self.engine = "e" * 64
+        self.build_receipt.write_text(json.dumps({"platforms": {"windows": {
+            "binary_sha256": hashlib.sha256(self.dll).hexdigest(), "engine_sha256": self.engine}}}))
+        self.template = "7" * 64
+        self.captured = {"paths": {"app/native/kernel/build-receipt-windows.json": str(self.build_receipt)},
+                         "inputs": {"template/windows_release_x86_64.exe": {"sha256": self.template}}}
+        self.receipt = {"format": "openrc-native-kernel-package-artifact v1", "platform": "windows",
+                        "executable_sha256": hashlib.sha256(self.exe).hexdigest(),
+                        "native_binary_sha256": hashlib.sha256(self.dll).hexdigest(),
+                        "editor_sha256": self.engine, "template_sha256": self.template,
+                        "manifest_sha256": manifest.file_info(manifest_path)["sha256"]}
+
+    def archive(self, receipt=None, omit=(), dll=None):
+        path = self.root / "openrc-simulator-v1-windows-x86_64.zip"
+        members = {manifest.WINDOWS_EXECUTABLE: self.exe, manifest.WINDOWS_KERNEL: self.dll if dll is None else dll,
+                   "native/kernel/openrc_native_kernel.gdextension": b"[configuration]\n",
+                   "native/kernel/LICENSE.godot-cpp.md": b"MIT\n",
+                   "native/kernel/package-receipt.json": json.dumps(receipt or self.receipt).encode()}
+        with zipfile.ZipFile(path, "w") as archive:
+            for name, data in members.items():
+                if name not in omit:
+                    archive.writestr(name, data)
+        return {"filename": path.name}
+
+    def validate(self, artifact):
+        manifest.validate_windows_payload(self.root, self.root, self.captured, artifact)
+
+    def test_matching_archive_passes(self):
+        self.validate(self.archive())
+
+    def test_missing_kernel_or_receipt_fails(self):
+        for member in (manifest.WINDOWS_KERNEL, "native/kernel/package-receipt.json", manifest.WINDOWS_EXECUTABLE):
+            with self.subTest(member=member), self.assertRaises((ValueError, KeyError)):
+                self.validate(self.archive(omit=(member,)))
+
+    def test_every_receipt_binding_is_checked(self):
+        for key in ("executable_sha256", "native_binary_sha256", "editor_sha256", "template_sha256",
+                    "manifest_sha256", "platform", "format"):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.validate(self.archive(receipt={**self.receipt, key: "f" * 64}))
+
+    def test_dll_must_match_the_captured_build_receipt(self):
+        other = b"another native kernel"
+        receipt = {**self.receipt, "native_binary_sha256": hashlib.sha256(other).hexdigest()}
+        with self.assertRaises(ValueError):
+            self.validate(self.archive(receipt=receipt, dll=other))
+
+
 @unittest.skipUnless(sys.platform.startswith("linux") and shutil.which("readelf") and shutil.which("zip"),
                      "capture/export fixtures require Linux tools")
 class ManifestTests(unittest.TestCase):
@@ -222,6 +282,10 @@ class ManifestTests(unittest.TestCase):
         self.payload_validator = mock.patch.object(manifest, "validate_linux_payload")
         self.payload_validator.start()
         self.addCleanup(self.payload_validator.stop)
+        # WindowsPayloadTests covers the Windows archive binding with a real ZIP.
+        self.windows_validator = mock.patch.object(manifest, "validate_windows_payload")
+        self.windows_validator.start()
+        self.addCleanup(self.windows_validator.stop)
         self.write_report()
 
     def check_binding(self, report, linux):

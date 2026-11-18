@@ -196,10 +196,11 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(receipt["reason"], "changed paths")
         self.assertEqual(receipt["recommended"], dict(production=False, prototype=True, site=False))
         self.assertTrue(all(receipt["required"][job] for job in (*policy.PRODUCTION, "three")))
-        self.assertFalse(receipt["required"]["export"])
+        self.assertFalse(any(receipt["required"][job] for job in policy.EXPORT_JOBS))
         self.assertFalse(receipt["required"]["site"])
         needs = {name: {"result": "success"} for name in ("scope", *policy.JOBS)}
-        needs["site"]["result"] = needs["export"]["result"] = "skipped"
+        for job in ("site", *policy.EXPORT_JOBS):
+            needs[job]["result"] = "skipped"
         policy.verify(receipt, needs, self.root, merge, "pull_request", "refs/pull/1/merge", payload)
         for field, value in (("head", merge), ("base", head),
                              ("required", {**receipt["required"], "visuals": False})):
@@ -387,6 +388,55 @@ class PolicyTests(unittest.TestCase):
         needs = re.search(r"(?m)^    needs: \[([^\]]+)\]$", required)
         self.assertIsNotNone(needs)
         self.assertIn("native-kernel-macos", [name.strip() for name in needs.group(1).split(",")])
+
+    def test_windows_native_kernel_and_package_gates_are_required(self):
+        receipt = self.receipt(self.commit("app/change.gd", "runtime"))
+        self.assertIn("native-kernel-windows", policy.PRODUCTION)
+        self.assertIs(receipt["required"].get("native-kernel-windows"), True)
+        self.assertIn("native-kernel-windows-package", policy.EXPORT_JOBS)
+        self.assertEqual(receipt["required"].get("native-kernel-windows-package"), receipt["required"]["export"])
+        needs = {name: {"result": "success"} for name in ("scope", *policy.JOBS)}
+        self.verify(receipt, needs)
+        for job in ("native-kernel-windows", "native-kernel-windows-package"):
+            for outcome in ("failure", "cancelled", None):
+                with self.subTest(job=job, outcome=outcome), self.assertRaises(ValueError):
+                    broken = copy.deepcopy(needs)
+                    broken[job]["result"] = outcome
+                    self.verify(receipt, broken)
+            missing = copy.deepcopy(needs)
+            del missing[job]
+            with self.subTest(job=job, removed=True), self.assertRaises(ValueError):
+                self.verify(receipt, missing)
+        skipped = copy.deepcopy(needs)
+        skipped["native-kernel-windows"]["result"] = "skipped"
+        with self.assertRaises(ValueError):
+            self.verify(receipt, skipped)
+
+    def test_workflow_wires_the_windows_package_into_export_required_and_release(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        jobs = dict(re.findall(r"^  ([\w-]+):\n(.*?)(?=^  [\w-]+:|\Z)", workflow, re.M | re.S))
+        self.assertRegex(jobs["native-kernel-windows"], r"(?m)^    if: needs\.scope\.outputs\.app == 'true'$")
+        # Receipts hash sources byte for byte; Windows checkouts must keep Linux's LF bytes.
+        for name in ("native-kernel-windows", "native-kernel-windows-package"):
+            self.assertRegex(jobs[name], r"(?m)^      GIT_CONFIG_KEY_0: core\.autocrlf\n      GIT_CONFIG_VALUE_0: 'false'$")
+        self.assertIn("name: nk4-native-windows-build", jobs["native-kernel-windows"])
+        export_needs = re.search(r"(?m)^    needs: \[([^\]]+)\]$", jobs["export"])
+        self.assertIn("native-kernel-windows", [name.strip() for name in export_needs.group(1).split(",")])
+        self.assertIn("name: nk4-native-windows-build", jobs["export"])
+        gate = jobs["native-kernel-windows-package"]
+        self.assertRegex(gate, r"(?m)^    needs: \[scope, export\]$")
+        self.assertRegex(gate, r"(?m)^    if: needs\.scope\.outputs\.export == 'true'$")
+        self.assertNotRegex(gate, r"(?m)^\s*continue-on-error:")
+        for mode in ("stage", "lifecycle", "replay", "helicopter", "helicopter-radio"):
+            self.assertIn(mode, gate)
+        self.assertIn("NK3_DEFAULT_ROUTE verdict=pass", gate)
+        for name in ("required", "release"):
+            needs = re.search(r"(?m)^    needs: \[([^\]]+)\]$", jobs[name])
+            listed = [item.strip() for item in needs.group(1).split(",")]
+            self.assertIn("native-kernel-windows-package", listed, name)
+        required_needs = re.search(r"(?m)^    needs: \[([^\]]+)\]$", jobs["required"]).group(1)
+        self.assertIn("native-kernel-windows", [item.strip() for item in required_needs.split(",")])
+        self.assertIn("needs.native-kernel-windows-package.result == 'success'", jobs["release"])
 
     def test_intentional_site_skip_and_no_export_on_pr(self):
         receipt = self.receipt(self.commit("docs/TOOLS.md", "docs"))

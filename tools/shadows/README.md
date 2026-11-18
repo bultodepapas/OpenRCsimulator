@@ -193,6 +193,10 @@ python tools/shadows/shadow_cost.py --godot .tools/Godot_v4.8-beta2_win64_consol
 python -m unittest tools.shadows.test_shadow_cost -v
 ```
 
+`--renderer mobile --driver metal` (or `forward_plus`, `gl_compatibility`) runs the engine directly with that rendering
+method instead of the product launcher, for example macOS's product Standard (Mobile on Metal); the graphics
+profile still selects High's settings, which apply only on Forward+.
+
 Run it alone on the GPU. The root delta contains native shadow passes plus anything else a technique switches;
 cold bakes before the warm-up are excluded. Results apply to the recorded hardware, renderer, resolution and
 static fixture, not to moving flights or minimum hardware.

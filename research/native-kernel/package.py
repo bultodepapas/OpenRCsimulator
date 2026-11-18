@@ -176,6 +176,18 @@ def _windows_builder():
     return windows
 
 
+def windows_engine_identity(windows, row: dict) -> tuple[str, str] | None:
+    """None: hash the pinned Windows editor and wrapper on this host. A Linux release export (CI) has neither, so the
+    oracle evidence must cite the (wrapper, editor) identities the receipt recorded; the Windows package gate then
+    qualifies the exported executable itself."""
+    if windows.ENGINE_EXECUTABLE.is_file() and windows.ENGINE_WRAPPER.is_file():
+        return None
+    engine = (str(row.get("engine_wrapper_sha256", "")), str(row.get("engine_sha256", "")))
+    if not all(len(value) == 64 and all(c in "0123456789abcdef" for c in value) for value in engine):
+        raise ValueError("Windows installation receipt lacks the qualified editor identities")
+    return engine
+
+
 def verified_windows_install(tool_root: Path) -> dict:
     """NK-4 (owner decision 2026-11-18, native kernel always): revalidate the installed Windows build against its
     receipt, current sources and the exact oracle evidence it cites in `tool_root`, as --install-app recorded it."""
@@ -202,8 +214,9 @@ def verified_windows_install(tool_root: Path) -> dict:
         raise ValueError("mirrored sources changed; qualify and reinstall the Windows build before exporting")
     if windows.ENGINE_EXECUTABLE.is_file() and sha(windows.ENGINE_EXECUTABLE) != row.get("engine_sha256"):
         raise ValueError("the pinned Windows editor differs from the one the Windows build was qualified with")
+    engine = windows_engine_identity(windows, row)
     for key, pattern in builder.VERIFICATIONS.items():
-        current = windows.find_verification(tool_root, key, pattern, row["binary_sha256"], sources)
+        current = windows.find_verification(tool_root, key, pattern, row["binary_sha256"], sources, engine)
         if current != row["verification"].get(key):
             raise ValueError("Windows installation does not cite the current " + key + " verification")
     return receipt

@@ -4,8 +4,9 @@
 ## Existing sessions keep their installed collision world; field-tree collision is unchanged.
 ## Precedence: --scene_detail=<level> after --, then OPENRC_SCENE_DETAIL, then the player's saved
 ## preference, then the default. The scene parts apply when the world is next built. "auto" (the
-## saved default) resolves through recommend() at each launch; tools without a preference keep High.
-## VQ-07h: recommend() first asks the GPU capability table (render/gpu_capability.gd); markers cover unknown GPUs.
+## saved default) resolves through detected() at each launch; tools without a preference keep High.
+## VQ-07h: AutoGraphicsPolicy first asks the GPU capability table (render/gpu_capability.gd); markers cover unknown
+## GPUs. detected() adds this host's Extreme facts (A4) and the measured first-flight verdict.
 extends RefCounted
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
@@ -18,7 +19,8 @@ const AUTO := "auto"
 const AUTO_FALLBACK := "medium"
 # VQ-06b-R1: Godot 4.7.2's Compatibility driver reports no device type (always DEVICE_TYPE_OTHER),
 # so Automatic classifies the GL renderer/vendor strings. Discrete markers are checked before
-# integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs start at Medium; Extreme is never automatic.
+# integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs start at Medium. Extreme is automatic only for
+# GPUs running High with worst-case headroom (VQ-07h-A4, AutoGraphicsPolicy.extreme); recommend() never picks it.
 const SOFTWARE_MARKERS := AutoGraphicsPolicy.SOFTWARE_MARKERS
 const ENTRY_DISCRETE_MARKERS := AutoGraphicsPolicy.ENTRY_DISCRETE_MARKERS
 const DISCRETE_MARKERS := AutoGraphicsPolicy.DISCRETE_MARKERS
@@ -71,8 +73,32 @@ static var adapter_override: PackedStringArray = []
 static func detected() -> Dictionary:
 	if adapter_override.size() == 2:
 		return calibrated(recommend(adapter_override[0], adapter_override[1]), adapter_override[0])
-	var adapter := RenderingServer.get_video_adapter_name()
-	return calibrated(recommend(adapter, RenderingServer.get_video_adapter_vendor(), _native_render_pixels()), adapter)
+	return calibrated(automatic(), RenderingServer.get_video_adapter_name())
+
+
+## The Automatic recommendation for this host before any measured verdict.
+static func automatic() -> Dictionary:
+	if adapter_override.size() == 2:
+		return recommend(adapter_override[0], adapter_override[1])
+	return AutoGraphicsPolicy.scene_detail(RenderingServer.get_video_adapter_name(),
+		RenderingServer.get_video_adapter_vendor(), _native_render_pixels(), extreme_facts())
+
+
+static var _extreme_facts: Dictionary = {}
+
+
+## VQ-07h-A4: this host's facts for Automatic Extreme (AutoGraphicsPolicy.extreme): the screen judged as by
+## Automatic High, the CPU's logical threads and whether High (Forward+) is actually running. Read once per
+## launch, so moving the window to another screen cannot flip the level between the world build and Settings.
+static func extreme_facts() -> Dictionary:
+	if DisplayServer.get_name() == "headless":
+		return {}
+	if _extreme_facts.is_empty():
+		var screen := DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
+		_extreme_facts = {os = OS.get_name(), arm64 = OS.has_feature("arm64"), pixels = screen.x * screen.y,
+			cpu_threads = OS.get_processor_count(),
+			forward_plus = RenderingServer.get_current_rendering_method() == AutoCalibration.HIGH_METHOD}
+	return _extreme_facts
 
 
 ## VQ-07h: the measured first-flight verdict for this GPU (render/auto_calibration.gd), set by AppRoot.
@@ -95,7 +121,7 @@ static func calibrated(recommendation: Dictionary, adapter: String) -> Dictionar
 			or not AutoCalibration.size_matches(calibration, _output_pixels()):
 		return recommendation
 	var shifted := recommendation.duplicate()
-	shifted.level = AutoCalibration.shifted_level(str(recommendation.level), offset)
+	shifted.level = AutoCalibration.apply_verdict(str(recommendation.level), calibration)
 	shifted["calibrated"] = shifted.level != recommendation.level
 	return shifted
 

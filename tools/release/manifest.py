@@ -35,7 +35,12 @@ SOURCE_INPUTS = (
     "research/native-kernel/toolchain-lock.json", "research/native-kernel/package.py",
     "research/rc-monster-truck/native/toolchain-lock.json",
     "app/native/kernel/build-receipt.json", "app/native/ground_vehicle/build-receipt.json",
+    "app/native/kernel/build-receipt-windows.json",
 )
+WINDOWS_EXECUTABLE = "OpenRC Simulator.exe"
+WINDOWS_KERNEL = "native/kernel/openrc_native_kernel.dll"
+WINDOWS_KERNEL_FILES = (WINDOWS_KERNEL, "native/kernel/openrc_native_kernel.gdextension",
+                        "native/kernel/package-receipt.json", "native/kernel/LICENSE.godot-cpp.md")
 TEMPLATES = ("linux_release.x86_64", "windows_release_x86_64.exe", "macos.zip", "version.txt")
 MACOS_OFFICIAL = "template/macos-selected.zip"
 MACOS_CUSTOM = {"template/macos-derived.zip", "template/macos-derived.receipt.json"}
@@ -335,6 +340,39 @@ def validate_linux_payload(directory, root, captured, report):
                 f"final Linux native library differs from captured build receipt: {member}")
 
 
+def validate_windows_payload(directory, root, captured, windows):
+    """NK-4 (native kernel always): bind the final Windows executable and native kernel to the receipts checked
+    before packaging. The Windows package gate in CI then runs this exact archive on Windows."""
+    with zipfile.ZipFile(directory / windows["filename"]) as archive:
+        names = set(archive.namelist())
+        require({WINDOWS_EXECUTABLE, *WINDOWS_KERNEL_FILES} <= names,
+                "final Windows ZIP omitted the executable or its native kernel")
+        info = archive.getinfo("native/kernel/package-receipt.json")
+        require(info.file_size <= 1024 * 1024, "oversized Windows native package receipt")
+        receipt = json.loads(archive.read(info), object_pairs_hook=unique_object)
+        digests = {}
+        for member in (WINDOWS_EXECUTABLE, WINDOWS_KERNEL):
+            digest = hashlib.sha256()
+            with archive.open(member) as stream:
+                for chunk in iter(lambda: stream.read(1 << 20), b""):
+                    digest.update(chunk)
+            digests[member] = digest.hexdigest()
+    require(isinstance(receipt, dict) and receipt.get("format") == "openrc-native-kernel-package-artifact v1"
+            and receipt.get("platform") == "windows", "invalid packaged Windows native receipt")
+    native = read_json(Path(captured["paths"]["app/native/kernel/build-receipt-windows.json"]))
+    row = native.get("platforms", {}).get("windows", {}) if isinstance(native, dict) else {}
+    require(isinstance(row, dict) and isinstance(row.get("engine_sha256"), str),
+            "captured Windows native build receipt is invalid")
+    expected = {"executable_sha256": digests[WINDOWS_EXECUTABLE], "native_binary_sha256": digests[WINDOWS_KERNEL],
+                "editor_sha256": row["engine_sha256"],
+                "template_sha256": captured["inputs"]["template/windows_release_x86_64.exe"]["sha256"],
+                "manifest_sha256": file_info(root / "app/native/kernel/package-windows.json")["sha256"]}
+    require(all(receipt.get(key) == value for key, value in expected.items()),
+            "final Windows ZIP differs from the qualified native package receipt")
+    require(row.get("binary_sha256") == digests[WINDOWS_KERNEL],
+            "final Windows native kernel differs from the captured build receipt")
+
+
 def validate_macos_payload(directory, artifact, source, *, snapshot_hash=None, probe_hash=None, staged_zip=None):
     path = directory / artifact["filename"]
     identity = macos_reference_receipt.verify_zip(path, source=source, snapshot_hash=snapshot_hash,
@@ -363,6 +401,7 @@ def finalize(directory, root, snapshot):
     report = read_json(directory / ABI_REPORT)
     validate_abi(report, artifacts[0])
     validate_linux_payload(directory, root, captured, report)
+    validate_windows_payload(directory, root, captured, artifacts[1])
     mac_identity = validate_macos_payload(directory, artifacts[2], source, snapshot_hash=file_info(snapshot)["sha256"],
                                           probe_hash=file_info(root / "research/performance/session_probe.gd")["sha256"],
                                           staged_zip=directory / "macos/OpenRC Simulator.zip")

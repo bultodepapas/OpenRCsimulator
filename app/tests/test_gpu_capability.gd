@@ -3,6 +3,7 @@ extends SceneTree
 
 const GpuCapability := preload("res://render/gpu_capability.gd")
 const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 
 var _checks := 0
@@ -17,6 +18,7 @@ func _initialize() -> void:
 	_test_first_run()
 	_test_steam_coverage()
 	_test_mac_native()
+	_test_extreme()
 	print("gpu capability: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -132,6 +134,56 @@ func _test_lookup() -> void:
 
 
 ## AGENTS display exception: Retina Macs target the native panel; other systems keep the 1080p reference.
+## VQ-07h-A4: Automatic Extreme only where Automatic High has worst-case headroom, enough VRAM and CPU threads.
+func _test_extreme() -> void:
+	var p1080 := 1920 * 1080
+	var p1440 := 2560 * 1440
+	var p2160 := 3840 * 2160
+	var facts := func(adapter: String, pixels: int, threads: int = 12, os_name: String = "Windows") -> Dictionary:
+		return {os = os_name, arm64 = false, adapter = adapter, pixels = pixels, cpu_threads = threads}
+	var extreme := func(adapter: String, pixels: int, threads: int = 12, os_name: String = "Windows") -> bool:
+		return bool(AutoGraphicsPolicy.extreme(facts.call(adapter, pixels, threads, os_name)).extreme)
+	_check("an RTX 5090 runs Extreme at 4K", extreme.call("NVIDIA GeForce RTX 5090", p2160))
+	_check("the measured RTX 3090 runs Extreme at 4K", extreme.call("NVIDIA GeForce RTX 3090", p2160))
+	_check("an RTX 4070 runs Extreme at 1440p but not at 4K",
+		extreme.call("NVIDIA GeForce RTX 4070", p1440) and not extreme.call("NVIDIA GeForce RTX 4070", p2160))
+	_check("an RTX 3060 runs Extreme at 1080p but not at 1440p",
+		extreme.call("NVIDIA GeForce RTX 3060", p1080) and not extreme.call("NVIDIA GeForce RTX 3060", p1440))
+	_check("6 GB cards stay at High", not extreme.call("NVIDIA GeForce GTX 1660 SUPER", p1080)
+		and AutoGraphicsPolicy.renderer(facts.call("NVIDIA GeForce GTX 1660 SUPER", p1080)).profile == "high")
+	_check("a 4-thread CPU keeps High even with an RTX 5090", not extreme.call("NVIDIA GeForce RTX 5090", p1080, 4))
+	_check("the CPU floor is 8 threads", extreme.call("NVIDIA GeForce RTX 5090", p1080, 8)
+		and not extreme.call("NVIDIA GeForce RTX 5090", p1080, 7))
+	_check("8 GB cards qualify", extreme.call("NVIDIA GeForce RTX 3070", p1080))
+	_check("unknown CPU threads never choose Extreme", not extreme.call("NVIDIA GeForce RTX 5090", p1080, 0))
+	_check("integrated GPUs never choose Extreme", not extreme.call("Intel(R) Iris(R) Xe Graphics", p1080)
+		and not extreme.call("AMD Radeon 890M", p1080))
+	_check("Linux desktop GPUs qualify like Windows", extreme.call("NVIDIA GeForce RTX 4080", p1440, 16, "Linux"))
+	_check("Linux laptop GPUs keep Standard and no Extreme",
+		not extreme.call("NVIDIA GeForce RTX 4090 Laptop GPU", p1080, 16, "Linux"))
+	_check("Macs never choose Extreme automatically", not extreme.call("Apple M5 Max (Apple10)", p1080, 16, "macOS"))
+	var not_running: Dictionary = facts.call("NVIDIA GeForce RTX 5090", p1080)
+	not_running["forward_plus"] = false
+	_check("Extreme needs High actually running", not bool(AutoGraphicsPolicy.extreme(not_running).extreme))
+	var scene := AutoGraphicsPolicy.scene_detail("NVIDIA GeForce RTX 5090", "NVIDIA Corporation", 0,
+		facts.call("", p2160))
+	_check("scene detail reports Extreme with its reason", scene.level == "extreme" and scene.reason == "dedicated GPU"
+		and str(scene.detail).contains("worst-case"), scene)
+	var standard_saved := AutoGraphicsPolicy.decide({adapter = "NVIDIA GeForce RTX 5090", os = "Windows", arm64 = false,
+		screen = Vector2i(3840, 2160), cpu_threads = 16, forward_plus = false})
+	_check("the report keeps High while High is not running", standard_saved.scene_detail == "high", standard_saved)
+	_check("headless hosts report no Extreme facts", DisplayServer.get_name() != "headless"
+		or SceneDetail.extreme_facts().is_empty())
+	_check("scene detail without host facts never chooses Extreme",
+		AutoGraphicsPolicy.scene_detail("NVIDIA GeForce RTX 5090", "NVIDIA Corporation").level == "high")
+	# The 4K boundary: the RTX 3080 (0.87x) still runs High there, but 1.25x its estimate exceeds the budget.
+	var rtx_3080_4k := GpuCapability.predicted_high_ms(0.87, p2160)
+	_check("an RTX 3080 runs High but just misses Extreme at 4K", rtx_3080_4k <= AutoGraphicsPolicy.HIGH_BUDGET_MS
+		and rtx_3080_4k * AutoGraphicsPolicy.EXTREME_WORST_CASE_FACTOR > AutoGraphicsPolicy.HIGH_BUDGET_MS
+		and not extreme.call("NVIDIA GeForce RTX 3080", p2160)
+		and AutoGraphicsPolicy.renderer(facts.call("NVIDIA GeForce RTX 3080", p2160)).profile == "high")
+
+
 func _test_mac_native() -> void:
 	for raw: String in ["Apple M5 Pro (Apple10)", "Apple M6", "Apple M5 Max (Apple10)", "Apple A18 Pro"]:
 		_check("Apple row for %s" % raw, GpuCapability.lookup(raw).id == "apple_" + GpuCapability.normalize(raw)

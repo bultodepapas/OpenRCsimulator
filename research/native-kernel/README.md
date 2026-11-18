@@ -800,7 +800,7 @@ loader checks the exact `Godot_v4.8-beta2_win64.exe`, the descriptor, binary and
 relocated through a junction or link, installation reads its `extension_list.cfg` and refuses only when it would
 have to remove this kernel's registration there. CI job
 `native-kernel-windows` repeats the build, every gate and the native production markers with the pinned nuwen
-MinGW archive (informational until it has run green).
+MinGW archive. It ran green on the hosted runner on 2026-11-18 and is now required.
 
 ### Windows release packages (NK-4, owner decision 2026-11-18: native kernel always)
 
@@ -831,5 +831,25 @@ anything else selects the reference backend.
 modes as the Linux gate in `app/export.sh`, then `test_default_route.py --release-executable` (Windows aware).
 The DLL was qualified against the editor, and the shipped template is a different binary. Only this gate shows
 they agree. The [first local Windows package](../../docs/research/native-kernel/NK-4/windows-package-2026-11-18.md)
-passed all five modes. The CI release path (a windows-2025 package gate after the Linux cross-export) is the
-remaining release step in the [automatic graphics plan](../../docs/plans/automatic-graphics.md) (A6).
+passed all five modes.
+
+**CI release path (2026-11-18).** `native-kernel-windows` is required and uploads `nk4-native-windows-build`:
+the DLL, `build-receipt-windows.json`, the oracle evidence and the mutant. The Linux `export` job restores it
+beside the Linux install, and `app/export.sh` runs `prepare-windows` and `finalize-windows`. The tool root is
+`OPENRC_NK4_TOOL_ROOT`, default `tmp/native-kernel-windows`. A Linux exporter has no Windows editor, so
+`prepare-windows` checks the evidence against the editor and wrapper identities the receipt recorded.
+`tools/release/manifest.py` binds the final ZIP's executable and DLL to that receipt. The required
+`native-kernel-windows-package` job (windows-2025) then runs the five modes and the default route on the
+exact released archive, and `release` waits for it. An export without a qualified Windows install now fails.
+
+Both Windows jobs check out LF bytes (`core.autocrlf=false`), because receipts hash sources byte for byte. The
+hosted runner's default had produced CRLF hashes for 127 of 138 mirrored sources, which a Linux export cannot
+match. Known limits:
+
+- On a Linux exporter the editor identities come from the same run's artifact, so a forged receipt and evidence set
+  would require compromising CI itself.
+- The Windows gate omits Linux's player-CLI replay, production pair and trace smoke; `replay` mode and the default
+  route cover native selection.
+
+Cross-mode acceptance was checked in WSL against requalified evidence: 19 gates accepted, a wrong wrapper identity
+refused.

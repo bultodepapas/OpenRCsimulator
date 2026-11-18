@@ -51,10 +51,12 @@ Every run reported `NATIVE_QUALIFICATION preloaded=false` and `verdict=pass`. Ca
 
 The main risk was that the DLL is qualified against the editor while the release template is a different binary. On this host the template runs the kernel identically to the reference.
 
-## Not yet done
+## CI release path (same day, later)
 
-- The CI release path: upload the Windows DLL, receipt and evidence from `native-kernel-windows`, then run `prepare-windows` and `finalize-windows` in `app/export.sh`.
-- A windows-2025 package-gate job that runs the steps above on the cross-exported executable and gates `release`.
-- Adding the Windows payload to `tools/release/manifest.py`.
+The three remaining steps are wired; [the native kernel guide](../../../../research/native-kernel/README.md#windows-release-packages-nk-4-owner-decision-2026-11-18-native-kernel-always) describes them:
 
-Until then, published Windows ZIPs still ship without the kernel. Raw logs stayed outside the repository (`U:/OpenRC/winpkg-3-evidence`).
+- `native-kernel-windows` uploads the qualified build, and `app/export.sh` runs `prepare-windows` and `finalize-windows`.
+- `native-kernel-windows-package` (windows-2025) qualifies the cross-exported archive and gates `release`.
+- `tools/release/manifest.py` validates the Windows payload.
+
+They have not yet run on hosted runners. Raw logs stayed outside the repository (`U:/OpenRC/winpkg-3-evidence`).

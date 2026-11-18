@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 import statistics
 import subprocess
@@ -37,17 +38,28 @@ def run_one(args: argparse.Namespace, out: Path, profile: str, technique: str, v
             repeat: int) -> dict:
     label = f"{profile}-{view}-{width}-{technique}-r{repeat}"
     target = out / "runs" / label
-    command = [sys.executable, str(LAUNCH), "--godot", args.godot, "--profile", profile,
-               "--script", "../tools/graphics/capture.gd", "--",
-               f"--out={target.as_posix()}", f"--width={width}", f"--view={view}",
-               f"--shadow-technique={technique}", f"--seconds={args.seconds}"]
+    user_args = [f"--out={target.as_posix()}", f"--width={width}", f"--view={view}",
+                 f"--shadow-technique={technique}", f"--seconds={args.seconds}"]
     if view == "aircraftground":
-        command += ["--aircraft-cue=on", "--aircraft-motion=spin"]
+        user_args += ["--aircraft-cue=on", "--aircraft-motion=spin"]
+    environment = None
+    if args.renderer == "profile":
+        # The product launcher: High is Forward+, Standard is Compatibility (Windows and Linux products).
+        command = [sys.executable, str(LAUNCH), "--godot", args.godot, "--profile", profile,
+                   "--script", "../tools/graphics/capture.gd", "--", *user_args]
+    else:
+        # An explicit renderer, e.g. macOS's product Standard (Mobile on Metal). The graphics profile still
+        # selects High's settings, which apply only on Forward+.
+        command = [args.godot, "--path", str(ROOT / "app"), "--rendering-method", args.renderer]
+        if args.driver:
+            command += ["--rendering-driver", args.driver]
+        command += ["--script", "../tools/graphics/capture.gd", "--", *user_args]
+        environment = dict(os.environ, OPENRC_GRAPHICS_PROFILE=profile)
     log = out / "logs" / f"{label}.log"
     log.parent.mkdir(parents=True, exist_ok=True)
     with log.open("w", encoding="utf-8") as handle:
         status = subprocess.run(command, cwd=ROOT, stdout=handle, stderr=subprocess.STDOUT,
-                                timeout=args.timeout).returncode
+                                timeout=args.timeout, env=environment).returncode
     report_path = target / "report.json"
     if status != 0 or not report_path.exists():
         return {"label": label, "ok": False, "status": status, "log": str(log)}
@@ -122,6 +134,10 @@ def main() -> int:
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--seconds", type=float, default=8.0)
     parser.add_argument("--timeout", type=float, default=900.0)
+    parser.add_argument("--renderer", default="profile", choices=["profile", "gl_compatibility", "mobile", "forward_plus"],
+                        help="profile = the product launcher (High Forward+, Standard Compatibility); otherwise run the "
+                             "engine with this rendering method, e.g. mobile on macOS")
+    parser.add_argument("--driver", choices=["opengl3", "metal", "vulkan", "d3d12"], help="rendering driver for --renderer")
     args = parser.parse_args()
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace") # Windows consoles default to cp1252

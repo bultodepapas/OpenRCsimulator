@@ -21,6 +21,8 @@ const MAC_ADAPTERS: Array[String] = ["Apple M1 (Apple7)", "Apple M1 Pro (Apple7)
 	"Apple M4 (Apple9)", "Apple M4 Pro (Apple9)", "Apple M4 Max (Apple9)", "Apple M5 (Apple10)", "Apple M5 Pro (Apple10)",
 	"Apple M5 Max (Apple10)", "Apple M6 (Apple10)", "Apple A18 Pro", "Intel(R) Iris(TM) Plus Graphics 655",
 	"AMD Radeon Pro 5500M"]
+## The Steam survey's most common desktop CPU class (6 cores / 12 threads); Extreme needs AutoGraphicsPolicy's floor.
+const TYPICAL_CPU_THREADS := 12
 const LINUX_EXTRA: Array[String] = ["AMD Radeon RX 6600 (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)",
 	"AMD Radeon Graphics (radeonsi, gfx1201, LLVM 19.1.7, DRM 3.61, 6.14.0)",
 	"AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)", "Mesa Intel(R) UHD Graphics 620 (WHL GT2)",
@@ -106,13 +108,13 @@ static func build_table() -> Dictionary:
 		for adapter: String in adapters:
 			for screen: Vector2i in PC_SCREENS:
 				var decision := Report.decide({adapter = adapter, os = os_name, arm64 = false, screen = screen,
-					scale = 1.0, refresh = 60.0})
+					scale = 1.0, refresh = 60.0, cpu_threads = TYPICAL_CPU_THREADS})
 				table["%s|%dx%d|%s" % [os_name, screen.x, screen.y, adapter]] = Report.compact(decision)
 	for adapter: String in MAC_ADAPTERS:
 		var arm := adapter.begins_with("Apple")
 		for entry: Array in MAC_SCREENS:
 			var screen: Vector2i = entry[0]
 			var decision := Report.decide({adapter = adapter, os = "macOS", arm64 = arm, screen = screen,
-				scale = entry[1], refresh = entry[2]})
+				scale = entry[1], refresh = entry[2], cpu_threads = TYPICAL_CPU_THREADS})
 			table["macOS|%dx%d@%dx%dHz|%s" % [screen.x, screen.y, int(entry[1]), int(entry[2]), adapter]] = Report.compact(decision)
 	return table

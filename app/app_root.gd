@@ -1711,9 +1711,10 @@ func _attach_graphics_calibration() -> void:
 	var automatic_scene := str(display_preferences.config.get("scene_detail", SceneDetail.AUTO)) == SceneDetail.AUTO
 	var automatic_high := str(RendererPreference.load_state().mode) == "auto" and HighGraphics.active()
 	var pixels := get_window().size.x * get_window().size.y
-	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels):
+	var automatic_level := str(SceneDetail.automatic().level) if automatic_scene else ""
+	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels, automatic_level):
 		return
-	var calibration := AutoCalibration.new(flight.session, adapter)
+	var calibration := AutoCalibration.new(flight.session, adapter, SceneDetail.level())
 	calibration.finished.connect(func(result: Dictionary) -> void:
 		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
 		print("Graphics calibration: ", JSON.stringify(result)))

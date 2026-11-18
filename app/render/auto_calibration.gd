@@ -19,7 +19,10 @@ const GpuCapability := preload("res://render/gpu_capability.gd")
 const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 
 const CALIBRATION_PATH := "user://graphics_calibration.cfg"
-const FORMAT := 2
+## 3 (VQ-07h-A4): verdicts record the Scene detail level they measured. Older verdicts are discarded and measured
+## again once, because Automatic can now start at Extreme and an offset only means something for its own level.
+const FORMAT := 3
+const LEVEL_ORDER: Array[String] = ["low", "medium", "high", "extreme"]
 const WARMUP_S := 10.0
 const SAMPLE_S := 20.0
 const MIN_SAMPLES := 300
@@ -40,6 +43,7 @@ signal finished(result: Dictionary)
 
 var _session: Node
 var _adapter := ""
+var _level := ""
 var _token := 0
 var _active_s := 0.0
 var _samples: PackedFloat64Array = []
@@ -48,10 +52,12 @@ var _interval_samples: PackedFloat64Array = []
 var _last_frame_usec := 0
 
 
-func _init(session: Node, adapter: String) -> void:
+## `level` is the Scene detail level this flight renders (SceneDetail.level()); the verdict is relative to it.
+func _init(session: Node, adapter: String, level: String = "") -> void:
 	name = "GraphicsAutoCalibration"
 	_session = session
 	_adapter = adapter
+	_level = level
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
@@ -94,6 +100,7 @@ func _process(delta: float) -> void:
 		var result := evaluate(_samples, not _subviewports_active(), RenderingServer.get_current_rendering_method(),
 			_cpu_samples, _interval_samples, interval_floor_ms(refresh, vsync, Engine.max_fps))
 		result["refresh_hz"] = refresh
+		result["level"] = _level
 		result["adapter"] = _adapter
 		result["method"] = RenderingServer.get_current_rendering_method()
 		result["pixels"] = int(size.x) * int(size.y)
@@ -197,7 +204,8 @@ static func load_result(adapter: String, method: String) -> Dictionary:
 	var section := _section(adapter, method)
 	if not cfg.has_section(section):
 		return {}
-	return {"adapter": adapter_key(adapter), "method": method,
+	var level := str(cfg.get_value(section, "level", ""))
+	return {"adapter": adapter_key(adapter), "method": method, "level": level if level in LEVEL_ORDER else "",
 		"scene_offset": clampi(int(cfg.get_value(section, "scene_offset", 0)), -1, 1),
 		"reject_high": bool(cfg.get_value(section, "reject_high", false)) and method == HIGH_METHOD,
 		"complete": bool(cfg.get_value(section, "complete", false)),
@@ -218,6 +226,7 @@ static func save_result(result: Dictionary) -> bool:
 	cfg.set_value("meta", "format", FORMAT)
 	var section := _section(str(result.get("adapter", "")), str(result.get("method", "")))
 	cfg.set_value(section, "scene_offset", clampi(int(result.get("scene_offset", 0)), -1, 1))
+	cfg.set_value(section, "level", str(result.get("level", "")))
 	cfg.set_value(section, "reject_high", bool(result.get("reject_high", false)))
 	cfg.set_value(section, "complete", bool(result.get("complete", false)))
 	cfg.set_value(section, "pixels", maxi(int(result.get("pixels", 0)), 0))
@@ -240,12 +249,32 @@ static func size_matches(verdict: Dictionary, pixels: int) -> bool:
 	return ratio <= PIXEL_TOLERANCE
 
 
-## Whether a flight on this GPU and renderer at `pixels` should be measured.
-static func needed(adapter: String, method: String, pixels: int = 0) -> bool:
+## Whether a flight on this GPU and renderer at `pixels` should be measured. `automatic_level` is the uncalibrated
+## Automatic Scene detail when Automatic decides it: a verdict measured below it, without a "down" result that
+## already caps it, leaves that level unmeasured (for example after a policy update starts Automatic at Extreme).
+static func needed(adapter: String, method: String, pixels: int = 0, automatic_level: String = "") -> bool:
 	if adapter.is_empty():
 		return false
 	var verdict := load_result(adapter, method)
-	return verdict.is_empty() or not size_matches(verdict, pixels)
+	if verdict.is_empty() or not size_matches(verdict, pixels):
+		return true
+	var measured := LEVEL_ORDER.find(str(verdict.get("level", "")))
+	return LEVEL_ORDER.find(automatic_level) > measured and int(verdict.get("scene_offset", 0)) >= 0
+
+
+## The level a stored verdict leaves of an uncalibrated Automatic `level`. A "down" verdict caps every level at or
+## above the one it measured; a "up" verdict raises only the level it measured (never to Extreme); a verdict
+## for another level changes nothing else.
+static func apply_verdict(level: String, verdict: Dictionary) -> String:
+	var offset := int(verdict.get("scene_offset", 0))
+	var measured := str(verdict.get("level", ""))
+	if offset == 0:
+		return level
+	if measured == level:
+		return shifted_level(level, offset)
+	if offset < 0 and LEVEL_ORDER.has(measured) and LEVEL_ORDER.find(level) >= LEVEL_ORDER.find(measured):
+		return shifted_level(measured, offset)
+	return level
 
 
 ## Deletes every verdict ("Restore graphics defaults").
@@ -254,8 +283,11 @@ static func clear() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(calibration_path))
 
 
-## Applies a stored offset to an Automatic level: Low ↔ Medium ↔ High, never Extreme.
+## Applies a stored offset to an Automatic level: Low ↔ Medium ↔ High. A measurement never raises a level to
+## Extreme; an Automatic Extreme (VQ-07h-A4) that misses the frame drops to High.
 static func shifted_level(level: String, offset: int) -> String:
+	if level == "extreme":
+		return "high" if offset < 0 else level
 	var order: Array[String] = ["low", "medium", "high"]
 	var index := order.find(level)
 	if index < 0 or offset == 0:

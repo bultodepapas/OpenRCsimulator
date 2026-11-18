@@ -473,7 +473,8 @@ jobs:
   native-kernel-windows:
     needs: scope
     if: needs.scope.outputs.app == 'true'
-    # NK-4: informational until it has run green on the hosted runner; not yet a release dependency.
+    # NK-4 (owner decision 2026-11-18, native kernel always): required. Its qualified DLL, receipt and oracle
+    # evidence feed the release export; native-kernel-windows-package qualifies the exported executable.
     name: NK-4 native kernel qualification (Windows)
     runs-on: windows-2025
     timeout-minutes: 180
@@ -483,6 +484,14 @@ jobs:
     env:
       OPENRC_NK_TOOL_ROOT: ${{ github.workspace }}/tmp/native-kernel-windows
       PYTHONIOENCODING: utf-8 # Match redirected oracle output to the UTF-8 log reader.
+      # Check out LF bytes, as on Linux (set before checkout). The receipt hashes the C++ and mirrored GDScript
+      # sources byte for byte; with the runner's default autocrlf they were CRLF hashes (127 of 138 differed),
+      # which the Linux release export and the exported pack's LF sources can never match.
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -598,6 +607,18 @@ jobs:
           python tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk4-ci/checks --label nk4-native-helicopter \
             --require-text 'NK3_NATIVE_HELICOPTER_NATIVE verdict=pass' -- \
             "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_helicopter_session.gd
+      # The release export (Linux) revalidates this exact DLL against its receipt and the oracle evidence it cites.
+      # Paths keep their repository layout (the artifact root is the workspace, their common ancestor).
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nk4-native-windows-build
+          path: |
+            app/native/kernel/openrc_native_kernel.dll
+            app/native/kernel/build-receipt-windows.json
+            tmp/native-kernel-windows/*.json
+            tmp/native-kernel-windows/lib/openrc_native_kernel_mutant.dll
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
@@ -934,7 +955,7 @@ jobs:
     name: Release builds (Windows, Linux, macOS)
     if: needs.scope.outputs.export == 'true'
     # Package in parallel with app/visual/RC runtime checks; publication requires every check.
-    needs: [scope, native-linux, native-windows, native-kernel-linux]
+    needs: [scope, native-linux, native-windows, native-kernel-linux, native-kernel-windows]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -984,6 +1005,12 @@ jobs:
           "$godot" --version
           tar -xzf tmp/native-kernel/godot-cpp-pinned.tar.gz -C tmp/native-kernel
           python3 research/native-kernel/build.py --install-app
+      # NK-4: the qualified Windows DLL, receipt and oracle evidence, beside (never over) the Linux install.
+      # app/export.sh revalidates them (package.py prepare-windows) before exporting Windows.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: nk4-native-windows-build
+          path: .
       - id: packages
         run: app/export.sh # exact successful run path and build identity are step outputs
       - name: Preserve failed export log and changed source paths
@@ -1024,10 +1051,78 @@ jobs:
             ${{ steps.packages.outputs.package_dir }}/SHA256SUMS
           if-no-files-found: error
 
+  native-kernel-windows-package:
+    needs: [scope, export]
+    if: needs.scope.outputs.export == 'true'
+    # NK-4 (owner decision 2026-11-18, native kernel always): the Windows executable exported on Linux must load and
+    # pass the native kernel on Windows before any release. Mirrors app/export.sh's Linux package gate.
+    name: NK-4 Windows package qualification
+    runs-on: windows-2025
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONIOENCODING: utf-8
+      GIT_CONFIG_COUNT: '2' # LF checkout, as in native-kernel-windows
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-builds
+          path: tmp/nk4-package/dist
+      - name: Unpack the exact Windows release archive
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          archives=(tmp/nk4-package/dist/openrc-simulator-*-windows-x86_64.zip)
+          [ "${#archives[@]}" -eq 1 ] || { echo "expected exactly one Windows release archive" >&2; exit 1; }
+          python -m zipfile -e "${archives[0]}" tmp/nk4-package/app
+          for file in "OpenRC Simulator.exe" native/kernel/openrc_native_kernel.dll \
+              native/kernel/openrc_native_kernel.gdextension native/kernel/package-receipt.json; do
+            test -s "tmp/nk4-package/app/$file" || { echo "Windows archive lacks $file" >&2; exit 1; }
+          done
+      - name: Require the native kernel in every package qualification mode and the default route
+        run: |
+          set -euo pipefail
+          exe="$(cygpath -w "$PWD/tmp/nk4-package/app/OpenRC Simulator.exe")"
+          evidence="$PWD/tmp/nk4-package/evidence"
+          mkdir -p "$evidence/appdata"
+          for mode in stage lifecycle replay helicopter helicopter-radio; do
+            markers=(--require-text "NATIVE_QUALIFICATION preloaded=false"
+                     --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass")
+            case "$mode" in
+              helicopter) markers+=(--require-text "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass") ;;
+              helicopter-radio) markers+=(--require-text "NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass") ;;
+            esac
+            APPDATA="$(cygpath -w "$evidence/appdata")" python tools/godot/run_checked.py --timeout 600 \
+              --out-dir "$evidence/checks" --label "nk4-package-$mode" "${markers[@]}" -- \
+              "$exe" --headless --audio-driver Dummy -- --quick-flight "--native-qualification=$mode"
+          done
+          python research/native-kernel/test_default_route.py --release-executable "$exe" \
+            --out "$evidence/default-route" 2>&1 | tee "$evidence/default-route.log"
+          grep -q "NK3_DEFAULT_ROUTE verdict=pass" "$evidence/default-route.log"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: nk4-package-diagnostics
+          path: |
+            tmp/nk4-package/evidence/checks/
+            tmp/nk4-package/evidence/default-route.log
+            tmp/nk4-package/evidence/default-route/checks/
+            tmp/nk4-package/evidence/default-route/*.json
+            tmp/nk4-package/app/native/kernel/package-receipt.json
+          if-no-files-found: ignore
+          retention-days: 7
+
   required:
     name: CI required
     if: always()
-    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-macos, native-rc-runtime, export]
+    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-windows, native-kernel-macos, native-rc-runtime, export, native-kernel-windows-package]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -1052,8 +1147,8 @@ jobs:
 
   release:
     name: GitHub release (v* tags)
-    if: startsWith(github.ref, 'refs/tags/v') && needs.required.result == 'success' && needs.export.result == 'success'
-    needs: [required, export]
+    if: startsWith(github.ref, 'refs/tags/v') && needs.required.result == 'success' && needs.export.result == 'success' && needs.native-kernel-windows-package.result == 'success'
+    needs: [required, export, native-kernel-windows-package]
     concurrency:
       group: publish-${{ github.ref }}
       cancel-in-progress: false

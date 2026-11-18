@@ -8,6 +8,7 @@ import re
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -64,6 +65,30 @@ class WindowsPackageContract(unittest.TestCase):
         self.assertIn('for directory in ["res://physics", "res://sim", "res://failures"]', block)
         extras = re.findall(r'"res://([^"]+\.gd)"', block.split("for source in", 1)[1].split("\n", 1)[0])
         self.assertEqual(tuple(extras), package.SOLVER_EXTRA_SOURCES)
+
+    def test_a_linux_exporter_uses_the_receipt_editor_identities(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "absent.exe"
+            present = Path(directory) / "present.exe"
+            present.write_bytes(b"editor")
+            row = {"engine_wrapper_sha256": "a" * 64, "engine_sha256": "b" * 64}
+            linux = SimpleNamespace(ENGINE_EXECUTABLE=missing, ENGINE_WRAPPER=missing)
+            self.assertEqual(package.windows_engine_identity(linux, row), ("a" * 64, "b" * 64))
+            partial = SimpleNamespace(ENGINE_EXECUTABLE=present, ENGINE_WRAPPER=missing)
+            self.assertEqual(package.windows_engine_identity(partial, row), ("a" * 64, "b" * 64))
+            windows_host = SimpleNamespace(ENGINE_EXECUTABLE=present, ENGINE_WRAPPER=present)
+            self.assertIsNone(package.windows_engine_identity(windows_host, row))
+            for broken in ({}, {"engine_wrapper_sha256": "a" * 64}, {**row, "engine_sha256": "B" * 64},
+                           {**row, "engine_wrapper_sha256": "a" * 63}):
+                with self.subTest(broken=broken), self.assertRaises(ValueError):
+                    package.windows_engine_identity(linux, broken)
+
+    def test_windows_evidence_accepts_forward_and_back_slash_harness_paths(self):
+        """run.py records harness paths with the host separator; a Linux exporter must still find the files."""
+        source = (HERE / "build_windows.py").read_text(encoding="utf-8")
+        self.assertIn('recorded = {str(name).replace("\\\\", "/"): digest', source)
+        self.assertIn("for name, digest in recorded.items():", source)
+        self.assertNotIn('for name, digest in data["harness_sources"].items():', source)
 
     def test_cli_exposes_windows_commands(self):
         source = (HERE / "package.py").read_text(encoding="utf-8")

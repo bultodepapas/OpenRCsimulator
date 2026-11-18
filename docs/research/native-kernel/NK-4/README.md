@@ -119,7 +119,9 @@ variant of these fixtures is an NK-track decision.
 CI: `.github/workflows/ci.yml` job `native-kernel-windows` (windows-2025) installs the pinned nuwen MinGW
 `components-20.0.7z` by SHA-256, builds the library and mutant, runs every installer gate, accepts them through
 `build_windows.py`'s evidence rules, installs, and requires the stage, session, replay and helicopter native
-markers. It remains informational and outside the required/release set; promotion remains a separate decision.
+markers. It ran green on the hosted runner on 2026-11-18 (run 44347959178, 21 minutes). Under the owner's
+"native kernel always" decision it is now required, and it feeds the Windows release package
+([CI release path](../../../../research/native-kernel/README.md#windows-release-packages-nk-4-owner-decision-2026-11-18-native-kernel-always)).
 
 The v0.2.6 release preparation renewed the separate companion behavior manifest after the Home/Main changes.
 Its [Linux admission receipt](../../ai-companions/AFC-02/rebinds/2026-11-12-60b34346-to-75317347-behavior.json)
@@ -128,11 +130,8 @@ by the separate nine-tape rebind; these checks do not qualify Windows native com
 
 ## Open
 
-- Decide whether the green hosted NK-4 job joins the required set
-  (`tools/ci/policy.py` `PRODUCTION`) and the release dependencies.
-- Windows release packages: the export plugin, embedded manifest and package receipt are Linux-only, and the
-  4.8-beta2 Windows release template is not installed on this host. Packaged qualification belongs with the
-  export job (DT), as for Linux.
+- The first CI release run with the Windows package: the cross-export, the `native-kernel-windows-package` gate
+  and the published archive are wired but not yet observed on hosted runners.
 - Windows observed-start fixtures for `test_fleet.gd --require-runtime-domain` (see above).
 - Signaling-NaN inputs: inline `sqrtsd` quiets them; the engine's path may not. Ordinary arithmetic produces only
   quiet NaNs, so this is reachable only by injected bit patterns; it is not covered by the oracles.

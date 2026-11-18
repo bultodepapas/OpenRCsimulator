@@ -26,7 +26,8 @@ omitted() {
 
 if [[ "$MODE" == release ]]; then
   # Check before starting the expensive suite. Export applies the full receipt and package gates.
-  for receipt in app/native/ground_vehicle/build-receipt.json app/native/kernel/build-receipt.json; do
+  for receipt in app/native/ground_vehicle/build-receipt.json app/native/kernel/build-receipt.json \
+      app/native/kernel/build-receipt-windows.json; do
     [[ -s "$receipt" ]] || { echo "Release preflight missing required native receipt: $receipt" >&2; exit 1; }
   done
   python3 - <<'PY'
@@ -49,8 +50,12 @@ for platform in ("linux", "windows"):
     ground.validate_platform_receipt(platform, row, lock, ground.source_digest())
     if row.get("binary_sha256") != ground.sha256_file(directory / ground.expected_library_name(platform)):
         raise SystemExit(f"{platform} ground-native binary does not match its receipt")
-load("nk3_preflight", "research/native-kernel/package.py").verified_install()
-print("Installed Windows/Linux ground and NK-3 receipts match current inputs; export remains required.")
+package = load("nk3_preflight", "research/native-kernel/package.py")
+package.verified_install()
+# NK-4 (native kernel always): Windows packages need the qualified DLL and the oracle evidence its receipt cites.
+import os
+package.verified_windows_install(Path(os.environ.get("OPENRC_NK4_TOOL_ROOT", root / "tmp/native-kernel-windows")))
+print("Installed Windows/Linux ground, NK-3 and NK-4 receipts match current inputs; export remains required.")
 PY
 fi
 

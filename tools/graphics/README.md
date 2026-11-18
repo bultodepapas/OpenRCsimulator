@@ -4,7 +4,8 @@ VQ-07 uses the existing Godot renderer and accepted assets. The official-engine 
 starts in the saved graphics mode. Automatic, the default, chooses High on Windows x86_64 when the GPU
 [capability table](../../app/data/gpu/capability.json) (generator: `build_gpu_capability.py`) predicts that
 High fits its budget at the screen's resolution, Linux x86_64 desktop GPUs likewise, and Standard elsewhere. The same
-table sets Scene detail Automatic (Low/Medium/High by estimated throughput) and, on a fresh install only,
+table sets Scene detail Automatic (Low/Medium/High by estimated throughput; Extreme where High runs with
+worst-case headroom, at least 8 GB and 8 CPU threads) and, on a fresh install only,
 the first MSAA level for integrated GPUs ([knob costs](../../docs/research/visual-quality-implementation/VQ-07/knob-costs-2026-11-18/README.md)).
 Retina Macs start full screen at the native panel resolution, and base chips on 120 Hz panels start at 60 fps.
 `app/tests/data/steam_gpus_2026_10.json` requires every named Steam-survey GPU to resolve to a table row.

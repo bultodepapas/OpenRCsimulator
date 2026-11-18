@@ -14,7 +14,8 @@ const AutoCalibration := preload("res://render/auto_calibration.gd")
 const FORMAT := "openrc-auto-graphics-report v1"
 
 
-## inputs: {adapter, os, arm64, screen: Vector2i, scale, refresh}. Returns {renderer, scene_detail, first_run, reasons}.
+## inputs: {adapter, os, arm64, screen: Vector2i, scale, refresh, cpu_threads, forward_plus}. Returns {renderer,
+## scene_detail, first_run, reasons}.
 static func decide(inputs: Dictionary) -> Dictionary:
 	return AutoGraphicsPolicy.decide(inputs)
 
@@ -33,7 +34,8 @@ static func runtime() -> Dictionary:
 	var screen := Vector2i.ZERO if headless else DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
 	var inputs := {adapter = adapter, os = OS.get_name(), arm64 = OS.has_feature("arm64"), screen = screen,
 		scale = 1.0 if headless else DisplayServer.screen_get_scale(),
-		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate()}
+		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate(), cpu_threads = OS.get_processor_count(),
+		forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"}
 	var memory := OS.get_memory_info()
 	var method := RenderingServer.get_current_rendering_method()
 	var gpu := GpuCapability.lookup(adapter)
