@@ -22,6 +22,8 @@ Proposed format-specific code belongs under `app/workshop/creator/phoenix/`; foc
 
 ## 3. Support is recorded by stage
 
+The [corpus discovery round](../research/aircraft-creator/phoenix-corpus-catalog-2026-11-17.md) adds six bulk archive directory indexes, creator/source-OBJ and forum links, and 25 package observations (20 accepted by the observed container profile, 13 MOD definitions parsed). These include earlier baseline cases and unsupported profiles; 1,289 directory candidate occurrences are not a count of unique aircraft or successful imports. AC-PX-00 must retain the short `1.0` header, padding-limit and opaque-definition cases for explicit qualification.
+
 Record support against a content fingerprint, parsed structure and exact specimen, not the `.pkg` extension or a marketing version. At minimum preserve these distinct identifiers: archive wrapper, observed PKG framing profile, PKG header numeric string, model `revision`, `.mod` `formatVersion`, `.mod` `minProgramVersion`, Builder version when evidenced, and source simulator version when actually tested. In the inspected readable examples the PKG numeric string matches model revision; it is not proven to be a container-format version and does not establish Phoenix 7.
 
 | Input or result | Research status | Product acceptance requirement |

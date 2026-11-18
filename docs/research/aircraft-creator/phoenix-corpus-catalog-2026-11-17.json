@@ -1,0 +1,2226 @@
+{
+  "schema": "openrc-phoenix-corpus-catalog-v1",
+  "research_date_local": "2026-11-17",
+  "research_timezone": "America/Bogota",
+  "observation_date_utc": "2026-11-18",
+  "scope": "Discovery links and reproducible evidence for the AC-PX-00 specimen corpus. No production importer is added.",
+  "evidence_levels": {
+    "host_link": "Exact source-page link observed; no validated archive payload.",
+    "creator_page": "Original creator release page and links observed; package content remains unverified unless separately stated.",
+    "captured_post": "Release and attachment URL observed in a saved public forum post; current payload availability remains unverified.",
+    "index_link": "Title and exact post URL observed in an index; destination post, author, attachments and format not established.",
+    "zip_directory": "Bounded HTTP Range retrieval and ZIP directory parse; names/counts and reported sizes/CRCs only.",
+    "captured_pkg_mod": "Complete selected archive bytes and hashes, ZIP-member CRC reads, and existing PKG/MOD probe observations."
+  },
+  "counts": {
+    "core_bulk_archive_indexes": 6,
+    "core_candidate_entry_occurrences": 1289,
+    "unique_aircraft_count": null,
+    "creator_release_records_including_aw109": 20,
+    "creator_pages_with_explicit_obj_companion": 2,
+    "forum_indices": 13,
+    "forum_index_only_post_leads": 51,
+    "captured_forum_release_links": 1,
+    "actual_package_observations_this_round": 25
+  },
+  "archive_index_file": "phoenix-corpus-archive-index-2026-11-17.json",
+  "inspection_file": "phoenix-corpus-inspection-2026-11-17.json",
+  "pack_and_standalone_sources": [
+    {
+      "id": "rct-113",
+      "title": "Andy 113 model collection",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/Phoenix_113_Models.zip",
+      "advertised_size": "209Mb",
+      "advertised_count": "113 advertised; not independently counted",
+      "suggested_test_value": "Broad historical collection; sample multiple aircraft and path layouts.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Phoenix_113_Models.zip",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "204,94 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/zip response; no payload or equality checked"
+        }
+      ],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "rct-113"
+    },
+    {
+      "id": "rct-63",
+      "title": "Andries 63 model collection",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/Phoenix_63_Models.zip",
+      "advertised_size": "208Mb",
+      "advertised_count": "63 advertised; not independently counted",
+      "suggested_test_value": "Additional curated bulk set for diversity and version coverage.",
+      "alternate_hosts": [],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "rct-63"
+    },
+    {
+      "id": "rct-planes",
+      "title": "All planes",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/AllPlanes.zip",
+      "advertised_size": "62Mb",
+      "advertised_count": null,
+      "suggested_test_value": "Baseline official fixed-wing coverage; inspect archive inventory before inferring individual entries.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Planes.zip",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "60,24 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/zip response; no payload or equality checked"
+        }
+      ],
+      "evidence_level": "host_link",
+      "access_observation": "Host page link exists; an ordinary HTTP Range request returned 403 in this environment. Alternative host links have separate evidence.",
+      "redistribution_clearance": "Not established by this catalog."
+    },
+    {
+      "id": "rct-helis",
+      "title": "All helicopters",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/AllChoppers.zip",
+      "advertised_size": "34Mb",
+      "advertised_count": null,
+      "suggested_test_value": "Rotorcraft importer coverage against the plane corpus.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Helis.zip",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "33,30 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/zip response; no payload or equality checked"
+        }
+      ],
+      "evidence_level": "host_link",
+      "access_observation": "Host page link exists; an ordinary HTTP Range request returned 403 in this environment. Alternative host links have separate evidence.",
+      "redistribution_clearance": "Not established by this catalog."
+    },
+    {
+      "id": "rct-public",
+      "title": "640+ community models",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "advertised_size": "1.2Gb",
+      "advertised_count": "640+ advertised; not independently counted",
+      "suggested_test_value": "High-diversity community models; use directory metadata or a sampled subset instead of full download.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/UserModelle.zip",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "1202,49 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/zip response; no payload or equality checked"
+        }
+      ],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "rct-public"
+    },
+    {
+      "id": "rct-jets",
+      "title": "Steve jet collection",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/Jets.zip",
+      "advertised_size": "138Mb",
+      "advertised_count": null,
+      "suggested_test_value": "Jet-focused stress cases including possible complex retracts and controls; inspect actual members first.",
+      "alternate_hosts": [],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "rct-jets"
+    },
+    {
+      "id": "swiss-models",
+      "title": "Models.zip",
+      "landing_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/",
+      "download_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "advertised_size": "1.1G",
+      "advertised_count": null,
+      "suggested_test_value": "Independent-host corpus discovery; inspect members and deduplicate.",
+      "alternate_hosts": [],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "swiss-models"
+    },
+    {
+      "id": "swiss-official",
+      "title": "OfficialPhoenixModels.zip",
+      "landing_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/",
+      "download_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/OfficialPhoenixModels.zip",
+      "advertised_size": "246M",
+      "advertised_count": null,
+      "suggested_test_value": "Potential official-model breadth and alternate source; compare contents with AllPlanes and AllChoppers.",
+      "alternate_hosts": [],
+      "evidence_level": "zip_directory",
+      "access_observation": "central directory inspected; member contents and CRCs not verified",
+      "redistribution_clearance": "Not established by this catalog.",
+      "archive_id": "swiss-official"
+    },
+    {
+      "id": "rct-goblin",
+      "title": "SAB Goblin 700",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/phoenixRC_goblin700.phx",
+      "advertised_size": "1,99 MB (freakware listing)",
+      "advertised_count": "1 named model",
+      "suggested_test_value": "Small standalone rotorcraft PHX sample; test direct model files separately from ZIP/PKG workflows.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/phoenixRC_goblin700.phx",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "1,99 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/octet-stream response; bytes not compared"
+        }
+      ],
+      "evidence_level": "host_link",
+      "access_observation": "Link observed on the host page; unsupported binary MIME in the web reader does not establish a verified download.",
+      "redistribution_clearance": "Not established by this catalog."
+    },
+    {
+      "id": "rct-tdr",
+      "title": "Henseleit TDR",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/phoenixRC_henseleitTDR.phx",
+      "advertised_size": "2,64 MB (freakware listing)",
+      "advertised_count": "1 named model",
+      "suggested_test_value": "Small standalone rotorcraft PHX sample; test direct model files separately from ZIP/PKG workflows.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/phoenixRC_henseleitTDR.phx",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "2,64 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/octet-stream response; bytes not compared"
+        }
+      ],
+      "evidence_level": "host_link",
+      "access_observation": "Link observed on the host page; unsupported binary MIME in the web reader does not establish a verified download.",
+      "redistribution_clearance": "Not established by this catalog."
+    },
+    {
+      "id": "rct-trex",
+      "title": "Align T-Rex 700 with 3G",
+      "landing_url": "https://rc-thoughts.com/phoenix-sim/index.html",
+      "download_url": "https://rc-thoughts.com/phx/phoenixRC_trex700e3G.phx",
+      "advertised_size": "1,62 MB (freakware listing)",
+      "advertised_count": "1 named model",
+      "suggested_test_value": "Small standalone rotorcraft PHX sample; test direct model files separately from ZIP/PKG workflows.",
+      "alternate_hosts": [
+        {
+          "host": "freakware",
+          "direct_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/phoenixRC_trex700e3G.phx",
+          "listing_page_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+          "advertised_size": "1,62 MB",
+          "evidence_status": "Direct corrected URL returned an unsupported application/octet-stream response; bytes not compared"
+        }
+      ],
+      "evidence_level": "host_link",
+      "access_observation": "Link observed on the host page; unsupported binary MIME in the web reader does not establish a verified download.",
+      "redistribution_clearance": "Not established by this catalog."
+    },
+    {
+      "id": "freakware-planes",
+      "title": "Planes.zip",
+      "landing_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+      "download_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Planes.zip",
+      "evidence_level": "captured_pkg_mod",
+      "inspection_archive_sha256": "e59a722798df2d024fe60b93238ace6099e96f669f7fbedb2991423cdf3fdeca",
+      "archive_bytes": 63166915,
+      "access_observation": "Complete archive captured; all 22 PKG members read with ZIP CRC checking; 17 accepted by the observed PKG profile."
+    },
+    {
+      "id": "freakware-helis",
+      "title": "Helis.zip",
+      "landing_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+      "download_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Helis.zip",
+      "evidence_level": "host_link",
+      "access_observation": "Host listing advertises 33.30 MB. Archive member contents not inspected."
+    },
+    {
+      "id": "freakware-public",
+      "title": "UserModelle.zip",
+      "landing_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+      "download_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/UserModelle.zip",
+      "evidence_level": "zip_directory",
+      "access_observation": "The freakware UserModelle.zip central-directory bytes and reported total length match RC-Thoughts AllPublic.zip. This supports a mirror hypothesis, not proof of whole-file identity; it is excluded from the core count."
+    }
+  ],
+  "creator_install_source": {
+    "url": "https://www.supermotoxl.com/resources/guides-tutorial/3d-models-creation-and-simulator/how-to-install-custom-models-in-phoenix-rc.html",
+    "note": "Creator says ZIPs contain .pkg and its custom models require at least Phoenix RC 5.5.l; this research did not validate archives."
+  },
+  "creator_releases": [
+    {
+      "name": "Wing Wing Z-84",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/wing-wing-z-84-phoenix-rc-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_wing_wing_z84_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 2.05,
+      "release_date": "2018-06-18",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Flying wing, elevon and pusher; creator reports 912 vertices / 1,026 faces including collision meshes.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Durafly Zephyr V-70",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/durafly-zephyr-v-70-phoenix-rc-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_zephyrv70_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 2.14,
+      "release_date": "2018-06-25",
+      "revision": "v2.0 (fix 2018-07-07)",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Electric ducted fan glider with V-tail, crash breakaways, and a documented revision.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS DELTA VF-31J Siegfried",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-delta-vf-31j-siegfried-phoenix-rc-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf31j_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 12.6,
+      "release_date": "2018-07-05",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "One of two creator-labeled simulator/OBJ pairs; two packaged size variants are described.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "source_mesh_url": "https://www.supermotoxl.com/images/downloads/sdk/OBJ%20files%20only%20-%20Macross%20Delta%20VF-31J.zip",
+      "source_mesh_note": "Creator labels separate link OBJ model files only; contents not inspected. Shell HEAD of both simulator and OBJ ZIP returned HTTP 403 in this environment.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS VF-1S Valkyrie",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-vf-1s-valkyrie-phoenix-rc-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf1s_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 7.72,
+      "release_date": "2018-07-15",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Two size variants in a package, 2m and 4m, with retracts, wing flaps, airbrakes and complex landing gear.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS VF-31A Kairos",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-vf-31a-kairos-phoenix-rc-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf31a_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 11.7,
+      "release_date": "2018-07-25",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Two package variants 2m and 3m; related to the VF-31J base, useful for variant comparisons.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Durafly P-51D Mustang Ferocious Frankie",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/durafly-p-51d-mustang-ferocious-frankie-phoenix-rc-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_p51d_ff_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 18.5,
+      "release_date": "2018-07-31",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Conventional propeller warbird with two scales, a documented 1.1m and 5.4m; reported ZIP exceeds the 16 MiB download cap.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS FRONTIER VF-25F Messiah",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-frontier-vf-25f-messiah-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf25f_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 11.4,
+      "release_date": "2019-09-18",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Two turbine aircraft variants, 2m and 3m, with separate named .pkg files according to the author.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS PLUS YF-19 Excalibur",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-plus-yf-19-excalibur-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_yf19_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 14.7,
+      "release_date": "2019-10-02",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Forward swept wing with two size variants, each described as a .pkg file.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS VF-4 Lightning III",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-vf-4-lightning-iii-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf4_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 13.5,
+      "release_date": "2019-10-22",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Two size variants with canards, twin turbines, airbrakes and retracts.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS PLUS VF-11B Thunderbolt",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-plus-vf-11b-thunderbolt-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf11b_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 11.9,
+      "release_date": "2019-11-06",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Twin-scale 2m/3m fictional turbine aircraft for comparison against related models.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS PLUS XF-20A Switchblade",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-plus-xf-20a-switchblade-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_xf20a_xl_3m.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 5.58,
+      "release_date": "2020-01-09",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "A distinct 3m fictional turbine aircraft ZIP; useful for mesh, pivot and material diversity.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "MACROSS PLUS YF-21 Sturmvogel",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-plus-yf-21-sturmvogel-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_yf21_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 11.94,
+      "release_date": "2020-06-17",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Two 2m and 3m variants with separate named .pkg files according to the author.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "De Havilland Canada DHC-6 Twin Otter",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/de-havilland-canada-dhc-6-twin-otter-phoenix-r-c-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_dehavilland_dhc6_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 5.57,
+      "release_date": "2021-04-03",
+      "revision": "v2.0 (fix 2022-07-25)",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Conventional twin-engine scale aircraft and a second documented revision.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Dancing Wings Hobby E19 Eagle II",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/dancing-wings-hobby-eagle-ii-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_eagleii_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 9.81,
+      "release_date": "2021-06-03",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Bird-shaped electric glider with a distinctive silhouette and texture.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Align T-REX 100s",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/align-t-rex-100s-micro-helicopter-phoenix-r-c-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_aligntrex100s_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 10.9,
+      "release_date": "2021-08-08",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Rotorcraft boundary case: main and tail rotors, fixed pitch, flybar and breakable parts; author reports 6,114 vertices / 6,715 faces including collision meshes.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Hobby King Pitts Special",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/hobby-king-pitts-special-bi-plane-phoenix-r-c-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_hk_pittsspecial_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 14.8,
+      "release_date": "2021-11-12",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Aerobatic biplane; second creator-labeled simulator/OBJ pair, valuable for comparing model and source mesh if obtained.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "source_mesh_url": "https://supermotoxl.com/images/downloads/sdk/OBJ%20files%20only%20-%20Hobby%20King%20Pitts%20Special.zip",
+      "source_mesh_note": "Creator labels separate link OBJ model files only; contents not inspected. Simulator ZIP shell HEAD timed out in this environment.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Zeta Ultra-Z Blaze",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/zeta-ultra-z-blaze-pusher-jet-phoenix-r-c-simulator.html",
+      "download_url": "https://www.supermotoxl.com/images/downloads/sim_models/phoenix_rc_ultrazblaze_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 5.61,
+      "release_date": "2023-06-15",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Hand-launched delta/pusher with elevons; author reports 4,119 vertices / 5,052 faces including collision.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Sky Flight Hobby / LanXiang SR-71 Blackbird",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/sky-flight-hobby-lanxiang-sr-71-blackbird-phoenix-r-c-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_sr71_blackbird_xl.zip",
+      "format_reported": "ZIP of Phoenix .pkg model(s), per creator install guide; actual archive not inspected",
+      "reported_zip_mb": 7.02,
+      "release_date": "2024-07-01",
+      "revision": "v1.0",
+      "access_evidence": "Web click produced 400 Unsupported content-type: application/zip; this identifies a ZIP content type in that fetcher but does not verify archive content or end-user accessibility.",
+      "expected_test_value": "Twin electric ducted fans, narrow dark fuselage, and distinctive control-surface geometry.",
+      "rights_statement_on_page": "The creator says models are available for free distribution and non-commercial purposes; named product marks are reserved to their owners.",
+      "evidence_level": "creator_page"
+    },
+    {
+      "name": "Agusta Westland AW 109 Da Vinci REGA",
+      "creator": "cpt sunday flyer (publisher page thanks @naga)",
+      "landing_url": "https://www.flugsimulatoren.ch/Phoenix-RC.php",
+      "download_url": "https://www.flugsimulatoren.ch/Files/AW-109-Davinci-REGA.zip",
+      "format_reported": "ZIP with PKG and turbine sound instructions, according to publisher page",
+      "release_date": "2024-06 (listed as new)",
+      "revision": null,
+      "access_evidence": "Direct shell HEAD HTTP 200 application/zip, Content-Length 8,020,104 bytes; archive downloaded successfully and central directory inspected without extracting paths or executing anything.",
+      "expected_test_value": "Three PKGs (v3, v4 and v4 Skids) match the observed container profile and their MOD definitions parse. Use for revision identity, repeated display names and rotorcraft boundaries; geometry and behavior remain unqualified.",
+      "archive_members_inspected": [
+        {
+          "name": "Agusta AW109 v4 Skids.pkg",
+          "uncompressed_bytes": 2601760,
+          "sha256": "80fd6321f07ad713848a529ec0c81b0e7dfd84a19e23d46cd6d68791525f8ff3",
+          "prefix_hex": "000800312e323030303030",
+          "is_zip_by_magic": false
+        },
+        {
+          "name": "Agusta AW109 v4.pkg",
+          "uncompressed_bytes": 2595163,
+          "sha256": "7072023bb8425cd8c703a287219397f35a4fc819cc370674ebaaec12030ff597",
+          "prefix_hex": "000800312e323030303030",
+          "is_zip_by_magic": false
+        },
+        {
+          "name": "Agusta AW109 v3.pkg",
+          "uncompressed_bytes": 2624182,
+          "sha256": "8dd55094804792f8a277aebf024040b4e866e20fea72730fc13f61be8cacb3ac",
+          "prefix_hex": "000800312e323030303030",
+          "is_zip_by_magic": false
+        },
+        {
+          "name": "Turbine Engine Sounds/Chopper_Rotor.wav",
+          "uncompressed_bytes": 287202
+        },
+        {
+          "name": "Turbine Engine Sounds/heli_Jet_Chopper.pxe",
+          "uncompressed_bytes": 606
+        },
+        {
+          "name": "Turbine Engine Sounds/Jet Copter Sound Instructions.txt",
+          "uncompressed_bytes": 191
+        }
+      ],
+      "local_archive": "/tmp/px_corpus_authors/AW-109-Davinci-REGA.zip",
+      "evidence_level": "captured_pkg_mod",
+      "inspection_archive_sha256": "9c4aa7b935fbea92cc208ac183a248f7bcebebfd66013dbe1e526119c8e3f196"
+    },
+    {
+      "name": "MACROSS VF-1EX Walkure",
+      "creator": "David L. / SupermotoXL Designs",
+      "landing_url": "https://supermotoxl.com/projects-articles/ready-to-drive-fly-models/macross-delta-vf-1ex-walkure-valkyrie-phoenix-r-c-simulator.html",
+      "download_url": "https://supermotoxl.com/images/downloads/sim_models/phoenix_rc_macross_vf1ex_xl.zip",
+      "evidence_level": "creator_page",
+      "access_evidence": "Creator-page model ZIP link recorded; archive bytes not captured or inspected.",
+      "expected_test_value": "Creator-described variant bundle; inspect internal packages and distinguish variants from unique airframes."
+    }
+  ],
+  "additional_collection_leads": [
+    {
+      "landing_url": "https://www.frcfoamies.com/simdownloads",
+      "source_observations": [
+        {
+          "name": "FRCFoamies Phoenix simulator download page",
+          "url": "https://www.frcfoamies.com/simdownloads",
+          "evidence": "Host advertises all its Phoenix planes, updated 22 January 2019, including Lancaster, Highlander and MiG-29 Fulcrum; installation page discusses PKG files. The download button is not exposed by the web retriever, so no direct archive URL or current binary access was verified.",
+          "deduplication_note": "Unknown overlap with existing baseline SU-37 and large community packs."
+        },
+        {
+          "name": "FRCFoamies Phoenix collection",
+          "landing_url": "https://www.frcfoamies.com/simdownloads",
+          "creator": "Rick P, credited on FRCFoamies install page",
+          "download_button_target": "https://www.e-junkie.com/ecom/gb.php?c=cart&ejc=2&cl=232610&i=1522506",
+          "access_evidence": "Page text is visible, but its image button is omitted by web search extraction; raw HTTP 200 page HTML exposes an e-junkie shopping-cart URL. The cart action was not followed, so price and actual download are unverified.",
+          "revision": "Updated 2019-01-22",
+          "format_reported": ".pkg, per https://www.frcfoamies.com/howtoinstall",
+          "expected_test_value": "Collection explicitly includes Lancaster, Highlander, MiG-29 as of update; potentially broader distinct creator corpus."
+        }
+      ]
+    },
+    {
+      "landing_url": "https://flugsimulatoren.ch/Files/UltimatePhoenixPlanePack.zip",
+      "source_observations": [
+        {
+          "name": "Historical Ultimate Phoenix Plane Pack",
+          "url": "https://flugsimulatoren.ch/Files/UltimatePhoenixPlanePack.zip",
+          "evidence": "A pilot index associates this link with an F-35 Lightning user-made aircraft. Web retriever reports this exact historical link is not accessible; do not present it as a verified working download. No size or count found.",
+          "deduplication_note": "No verified relationship to the currently indexed Swiss Models.zip."
+        }
+      ]
+    },
+    {
+      "landing_url": "https://forum.flitetest.com/index.php?threads/flitetest-in-phoenix-rc-model-index.27096/",
+      "source_observations": [
+        {
+          "name": "FliteTest Phoenix model index, historical lead",
+          "url": "https://forum.flitetest.com/index.php?threads/flitetest-in-phoenix-rc-model-index.27096/",
+          "evidence": "2018 third-party guide links the index and describes Phoenix model ZIP files. A contemporary user claimed approximately 40 planes; not independently counted. Web retrieval currently leads to the forum home page rather than the model index, and no direct attachment was checked.",
+          "deduplication_note": "Unknown overlap with community collections."
+        },
+        {
+          "name": "FliteTest in Phoenix RC model index",
+          "landing_url": "https://forum.flitetest.com/index.php?threads/flitetest-in-phoenix-rc-model-index.27096/",
+          "access_evidence": "The search web fetcher rewrites this URL and returns the forum homepage rather than the thread. Individual archives not reached. Historical third-party forum instructions describe modelxx.zip folder contents, and another discussion describes several Bloody Baron versions and about 40 aircraft; do not treat counts or present access as verified.",
+          "expected_test_value": "Potential loose model-folder cases, with historical reports saying these are not standard .pkg installs."
+        }
+      ]
+    },
+    {
+      "landing_url": "https://deliastephens.github.io/aeroastro/maja/",
+      "source_observations": [
+        {
+          "name": "Bormatec MAJA",
+          "creator": "Delia Stephens",
+          "landing_url": "https://deliastephens.github.io/aeroastro/maja/",
+          "source_mesh_url": "https://www.dropbox.com/s/bznlgwdsif3fj17/blend_attempt_3.obj?dl=0",
+          "assembly_url": "https://www.dropbox.com/s/2xbmynz6k4qe7sc/assemb3.SLDASM?dl=0",
+          "access_evidence": "Both creator-linked Dropbox URLs returned Dropbox Error with no readable file in web fetcher. No Phoenix package was linked on page or inspected.",
+          "release_date": "2019-08-31",
+          "format_reported": "Creator describes OBJ Blender mesh and SolidWorks assembly, used to create an untextured PhoenixRC model.",
+          "expected_test_value": "A separately authored pusher UAV geometry source and PhoenixBuilder workflow; use as a lead only unless files can be obtained."
+        }
+      ]
+    }
+  ],
+  "forum": {
+    "research_date_utc": "2026-11-18",
+    "scope": "RCGroups forum categories, captured release posts and exact index links; no code or downloaded archives executed.",
+    "retrieval_status": "Prior HTML was fetched publicly on 2026-11-17. On 2026-11-18 ordinary GET of five exact thread/post URLs returned HTTP 202 and a JavaScript challenge. No access gate was bypassed.",
+    "counts": {
+      "index_only_leads_recent": 39,
+      "index_only_leads_military": 12,
+      "category_or_master_indices": 13,
+      "aircraft_pack_counts_claimed": "Not assessed; index link counts must not be interpreted as unique verified downloadable aircraft.",
+      "captured_post_release_links": 1
+    },
+    "master_category_indices": [
+      {
+        "title": "User-Built Models for PhoenixRC — main thread",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?2382571-User-Built-Models-for-PhoenixRC",
+        "index_curator": "rickp",
+        "source_evidence": "Captured first thread post states that the index of aircraft is in the next post."
+      },
+      {
+        "title": "Recent New Models",
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Amphibious Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041553-PhoenixRC-Amphibious-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Cartoon Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4214147-PhoenixRC-Cartoon-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Civilian Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041561-PhoenixRC-Civilian-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Flying Wing Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041549-PhoenixRC-Flying-Wing-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Glider Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041551-PhoenixRC-Glider-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Helicopter Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041547-PhoenixRC-Helicopter-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Military:  WW-I Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041559-PhoenixRC-WW-I-Military-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Military:  WW-II Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041557-PhoenixRC-WW-II-Military-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Military:  Post WW-II  Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Miscellaneous Model Index",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4040147-PhoenixRC-Miscellaneous-Models-Index",
+        "index_curator": "rickp",
+        "source_evidence": "Link in post #2 of the captured master thread. Its current contents were not checked, except the captured recent and Post-WWII indices."
+      },
+      {
+        "title": "Paint Scheme Index (schemes, not independent aircraft)",
+        "source_url": "https://www.rcgroups.com/forums/showthread.php?4358919-Paint-Scheme-Index-A-through-F",
+        "index_curator": "rickp",
+        "source_evidence": "Link in captured master index post #2; included for avoiding duplicates."
+      }
+    ],
+    "index_only_leads": [
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Airship Rolife",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55254099&postcount=22675",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Bristol Type 72 Amphib",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55232701&postcount=22635",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "amphibious",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Related racer/indoor/amphibious versions indexed separately; do not count as independent airframes without package inspection."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "P-51D \"Big Beautiful Doll\" Glider",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55218781&postcount=22614",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "glider",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Same named aircraft family as the other P-51D entry in this index; a glider entry and a non-glider entry, not proven identical packages."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "P-51D \"Big Beautiful Doll\"",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55216631&postcount=22609",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Same named aircraft family as the other P-51D entry in this index; a glider entry and a non-glider entry, not proven identical packages."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Bristol Type 72 Racer Indoor Version",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55214575&postcount=22596",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Related racer/indoor/amphibious versions indexed separately; do not count as independent airframes without package inspection."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Bristol Type 72 Racer",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55185859&postcount=22562",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Related racer/indoor/amphibious versions indexed separately; do not count as independent airframes without package inspection."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "BigNasty 3d Model",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55182501&postcount=22556",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "C-141 Starlifter",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55173957&postcount=22545",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Westland Widgeon",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55162435&postcount=22532",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Skywing Yak-54 v3",
+        "revision": "v3",
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55151369&postcount=22523",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Breguet Br693",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55142397&postcount=22502",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Mig-9 Jet",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55119335&postcount=22476",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "jet",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Focke-Wulf F 19 Ente",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55112049&postcount=22467",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Grumman FF \"Fifi\"",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55084815&postcount=22444",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Stakken Flitzer Bipe",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55070373&postcount=22420",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "biplane",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Breguet Br.1050 v2",
+        "revision": "v2",
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55056947&postcount=22409",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "FliteTest Retro Rocket",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55041649&postcount=22385",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Wright F2W Amphib.",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55037217&postcount=22376",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "amphibious",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Amphibious and regular entries are separately linked; relationship and unique content not inspected."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Wright F2W",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55036443&postcount=22370",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Amphibious and regular entries are separately linked; relationship and unique content not inspected."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Auniscaphe Uni-blade Prop Glider",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55032123&postcount=22361",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "glider",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Hongdu JL-8",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55027723&postcount=22360",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "BAC Strikemaster",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55013941&postcount=22352",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Eflite Eratix 3D SWS",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55005621&postcount=22342",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Convair Model 48",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55001431&postcount=22335",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "F4U Phoenix Models",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55001397&postcount=22333",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": [
+          "Could be an index or collection rather than an individual release."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "CAC Kangaroo",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=55001379&postcount=22332",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "ShinMaywa US-2",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54994991&postcount=22316",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Gros Water Flea, 2m",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54976795&postcount=22282",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Swift S1, Hacker",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54972519&postcount=22260",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Water Flea",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54970925&postcount=22252",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "SPAD XI",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54968117&postcount=22235",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Chekker",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54967799&postcount=22233",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Bristol Bulldog IIa",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54945613&postcount=22177",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Graupner Sky Hero III",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54947071&postcount=22183",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Caudron Racer, 1911",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54940167&postcount=22168",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Caudron C.460",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54940183&postcount=22169",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Eflite Conscendo 2.0m",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54926663&postcount=22159",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Saab 21",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54861199&postcount=22022",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Promavia Jet Squalus",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=54859953&postcount=22020",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: the index does not show the destination post, its attachments, or file formats.",
+        "features": [
+          {
+            "category": "jet",
+            "evidence": "Explicit in indexed title; actual target post was not retrieved."
+          }
+        ],
+        "access_status": "Exact URL recorded in public HTML captured 2026-11-17; target post not verified. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=53763271&postcount=1",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "rolling newest-model index and link text"
+          }
+        ],
+        "notes": []
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "A-4 Skyhawk",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=35759550&postcount=572",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "A-6 Intruder",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=33200332&postcount=155",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Aermacchi M-346",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=52323769&postcount=16748",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Avro Vulcan",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=46195453&postcount=5321",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "B-1B Lancer",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=53939413&postcount=20155",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "B-2 Spirit",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=43680077&postcount=3872",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [
+          {
+            "category": "flying wing",
+            "evidence": "Inference from the named aircraft type; indexed target and model configuration not yet inspected."
+          }
+        ],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "high after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "B-36 Peacemaker",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=36974548&postcount=1271",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "B-58 Hustler",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=46047761&postcount=5253",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "C-123",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=53555267&postcount=19554",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "C-27J",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=53555283&postcount=19555",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "C-17A Globemaster III",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=50041621&postcount=8123",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      },
+      {
+        "record_type": "index_link_only_unverified_release",
+        "title": "Saab 105",
+        "revision": null,
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=52408989&postcount=17063",
+        "direct_urls": [],
+        "author": null,
+        "index_curator": "rickp",
+        "format_evidence": "None: index shows a target post link only; attachment and format not inspected.",
+        "features": [],
+        "access_status": "Index HTML captured 2026-11-17; target post not examined. Sample anonymous GETs on 2026-11-18 returned HTTP 202 JavaScript challenge.",
+        "test_priority": "medium after confirming package",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showthread.php?4041555-PhoenixRC-Post-WW-II-Military-Model-Index",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "post-WWII military model index and linked title"
+          }
+        ],
+        "notes": [
+          "Target may be a model, revision, repaint, or discussion until the actual post is examined."
+        ]
+      }
+    ],
+    "excluded_or_ambiguous": [
+      {
+        "title": "Airspeed Queen Wasp geared/amphibious",
+        "reason": "Already sampled baseline; not counted as new."
+      },
+      {
+        "title": "Pau Extra 300SP v07",
+        "reason": "Already sampled baseline; not counted as new."
+      },
+      {
+        "title": "Freewing SU-35 v23",
+        "reason": "Already sampled baseline; distinct from FRCFoamies SU-35 v30."
+      },
+      {
+        "title": "SCCMAS",
+        "reason": "Flying site; not an aircraft model."
+      },
+      {
+        "title": "CAC Boomerang",
+        "reason": "Recent index link is malformed: httphttps://www.rcgroups.com/forums/showpost.php?p=54962801&postcount=22213; no corrected URL has been independently verified."
+      }
+    ],
+    "notes": [
+      "Exact links to index-listed posts are leads only, not established downloadable releases or verified package endpoints.",
+      "Recent index names and category labels may include variants, revisions, schemes or duplicates; no total should be equated with unique airframes.",
+      "The curator of an index is not necessarily the author of each linked post.",
+      "Attachments displayed as img or attachmentNew on index pages are preview images, not model ZIP or PKG links."
+    ],
+    "captured_post_release_links": [
+      {
+        "record_type": "individual_release_from_captured_post",
+        "title": "FRCFoamies Su-35",
+        "revision": "v30 (archive filename)",
+        "source_url": "https://www.rcgroups.com/forums/showpost.php?p=43938699&postcount=3975",
+        "direct_urls": [
+          "https://www.rcgroups.com/forums/showatt.php?attachmentid=13222785"
+        ],
+        "author": "rickp",
+        "format_evidence": "Post says unzip and install PKG; attached file is SU-35 v30.zip, shown as 293.0 KB in the captured HTML. No binary was downloaded in this research pass.",
+        "features": [
+          {
+            "category": "pusher prop",
+            "evidence": "Author explicitly calls it a quick repaint of the FRC SU-37 with pusher prop."
+          },
+          {
+            "category": "jet-style aircraft",
+            "evidence": "SU-35 visual subject only; actual propulsion is explicitly pusher prop."
+          }
+        ],
+        "access_status": "Individual post and attachment link captured 2026-11-17; current individual-post availability not rechecked due to HTTP 202 challenge on other exact forum URLs; attachment URL not tested on 2026-11-18.",
+        "test_priority": "high: compare a repainted pusher with baseline Freewing EDF model; verify unique package contents before deduplicating",
+        "source_refs": [
+          {
+            "url": "https://www.rcgroups.com/forums/showpost.php?p=43938699&postcount=3975",
+            "capture_date_utc": "2026-11-17",
+            "evidence": "Author statement, instructions, ZIP filename, attachment ID"
+          }
+        ],
+        "notes": [
+          "Separate from rickp Freewing SU-35 v23 (baseline); author says this is a quick repaint of FRC SU-37 while Freewing EDF work continued."
+        ]
+      }
+    ]
+  },
+  "priority_archive_candidates": [
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "Tiny Trainer 3CH V07.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "Tiny Trainer 4CH V08.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "FT Simple Cub Floatplane v10.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "FT Corsair v08.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "Discus 2c v06.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "Twin Otter v15.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "FRC Highlander v10.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "Pitts S2 PKG.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-public",
+      "archive_url": "https://rc-thoughts.com/phx/AllPublic.zip",
+      "archive_etag_observed": "\"5e4d3076-4b27e8f0\"",
+      "zip_member": "F4U Super Corsair v24.pkg",
+      "central_directory_sha256": "0bf483cf00a931dcf943a4483ed432600551d80e5c183487cd70404357571f73",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-jets",
+      "archive_url": "https://rc-thoughts.com/phx/Jets.zip",
+      "archive_etag_observed": "\"61b6244d-86f94ee\"",
+      "zip_member": "Jets/AV_8B_Harrier_turbine/AV_8B_Harrier_turbine.mod",
+      "central_directory_sha256": "ec5a579a5d35a3b9449e32e339cbdbe052eff0f64f445d6e50edbbdecadbec8c",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-jets",
+      "archive_url": "https://rc-thoughts.com/phx/Jets.zip",
+      "archive_etag_observed": "\"61b6244d-86f94ee\"",
+      "zip_member": "Jets/Turbine_F_14A_Tomcat/Turbine_F_14A_Tomcat.mod",
+      "central_directory_sha256": "ec5a579a5d35a3b9449e32e339cbdbe052eff0f64f445d6e50edbbdecadbec8c",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-jets",
+      "archive_url": "https://rc-thoughts.com/phx/Jets.zip",
+      "archive_etag_observed": "\"61b6244d-86f94ee\"",
+      "zip_member": "Jets/Dassault_Rafale_M_turbine/Dassault_Rafale_M_turbine.mod",
+      "central_directory_sha256": "ec5a579a5d35a3b9449e32e339cbdbe052eff0f64f445d6e50edbbdecadbec8c",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "rct-jets",
+      "archive_url": "https://rc-thoughts.com/phx/Jets.zip",
+      "archive_etag_observed": "\"61b6244d-86f94ee\"",
+      "zip_member": "Jets/FT_Sportster_Skinned/FT_Sportster_Skinned_Mini_Sportster.var",
+      "central_directory_sha256": "ec5a579a5d35a3b9449e32e339cbdbe052eff0f64f445d6e50edbbdecadbec8c",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Airplanes/FT_Tiny_Trainer_3ch/FT_Tiny_Trainer_3ch.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Airplanes/FT_Tiny_Trainer_4ch/FT_Tiny_Trainer_4ch.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Airplanes/Cessna_Caravan_Amphibious_V2/Cessna_Caravan_Amphibious_V2.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Airplanes/TH_Full_Big_Beaver/TH_Full_Big_Beaver.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Gliders/Swift_S1_v11/Swift_S1_v11.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Gliders/SNIPE_V13/SNIPE_V13.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Gliders/SNIPE_V14_mh43/SNIPE_V14_mh43.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Helicopters/Agusta_AW109_v4_Skids/Agusta_AW109_v4_Skids.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Helicopters/BO105_Red_Bull_v12/BO105_Red_Bull_v12.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Others/Osprey_Marines_v16/Osprey_Marines_v16.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/Official/Airplanes/cessna182/cessna182.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/Official/Others/BA609/BA609.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    {
+      "archive_id": "swiss-models",
+      "archive_url": "https://flugsimulatoren.schraemli.net/Files/PhoenixRC/Models.zip",
+      "archive_etag_observed": "\"461532b3-655ba0dec1fb7\"",
+      "zip_member": "Models/User-made/Others/Catamaran_V07/Catamaran_V07.mod",
+      "central_directory_sha256": "4d7aaa1c1201de27459da5d9e59254439cb6621499e7820516a48e4a55c6c995",
+      "method": "Attempted HTTP range capture; request returned 403 before member capture. No local-header or payload verification was reached.",
+      "status": "directory candidate only; member capture failed",
+      "error": "HTTPError: HTTP Error 403: Forbidden"
+    }
+  ],
+  "access_limits": [
+    "Six core ZIP directories and one probable mirror were read by bounded HTTP Range. These are not seven full downloads.",
+    "All 26 recorded attempts to capture selected member payloads from AllPublic, Jets and Swiss Models returned HTTP 403; the directory-only evidence remains valid and no member hash is claimed for these attempts.",
+    "RCGroups returned an HTTP 202 JavaScript challenge to sampled ordinary requests in this round. Existing public captures dated 2026-11-17 supplied the listed indices and links; no challenge was bypassed.",
+    "SupermotoXL ZIP links were observed on creator pages. Binary MIME responses, 403 responses and a timeout do not verify their contents or ongoing end-user availability.",
+    "FRCFoamies exposes a cart target, not a verified direct archive URL. No cart action was performed.",
+    "Historical FliteTest and Ultimate Phoenix Plane Pack links remain leads, not verified current downloads."
+  ]
+}
