@@ -29,6 +29,7 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
+const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
 const ShadowSettings := preload("res://render/shadow_settings.gd")
@@ -450,6 +451,7 @@ func _build() -> void:
 	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
+	defaults_button.tooltip_text = tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight.")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
 	var graphics_actions := HFlowContainer.new()
 	graphics_page.add_child(graphics_actions)
@@ -1137,7 +1139,7 @@ func _refresh_graphics_info() -> void:
 	# SC-BIRD: one line (the renderer name moved to the tooltip) so the Graphics page, with its Birds row, still fits
 	# at 1080p; it ends with the effective VSync state.
 	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.") + "\n" \
-		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method()
+		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method() + "\n" + _automatic_graphics_text()
 	_graphics_info.text = tr("Graphics mode: %s") % (tr("High") if HighGraphics.active() else tr("Standard")) \
 		+ " · " + tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
@@ -1168,6 +1170,22 @@ func _refresh_graphics_info() -> void:
 		_graphics_info.text += "\n" + _reflex_unavailable_text(str(reflex.reason))
 	elif reflex.pending:
 		_graphics_info.text += "\n" + tr("Reflex mode change is waiting for the next frame.")
+
+
+## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
+## Tooltip only: the Graphics page must still fit at 1080p.
+func _automatic_graphics_text() -> String:
+	var summary := AutoGraphicsReport.player_summary(AutoGraphicsReport.runtime())
+	var estimate: String = {"measured": "measured on this GPU model", "benchmarks": "from benchmark data",
+		"extrapolated": "extrapolated from a measured GPU"}.get(str(summary.estimate), "GPU not in the table")
+	var text := tr("Automatic for this GPU: %s mode, %s scene detail.") % [
+		tr("High") if summary.mode == "high" else tr("Standard"), tr(str(summary.scene_detail).capitalize())]
+	text += "\n" + tr("GPU estimate: %s.") % tr(estimate)
+	if float(summary.measured_p95_ms) > 0.0:
+		text += "\n" + tr("Measured in flight: %.1f ms of GPU time per frame (95th percentile).") % float(summary.measured_p95_ms)
+	else:
+		text += "\n" + tr("The next flight measures this GPU once and adjusts Automatic if needed.")
+	return text
 
 
 func _refresh_scene_detail_tooltip() -> void:

@@ -14124,3 +14124,30 @@ msgstr "Impact violent"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "Porte non comptée : traversez-la bien en face"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "Automatique pour ce GPU : mode %s, détails de la scène %s."
+
+msgid "GPU estimate: %s."
+msgstr "Estimation du GPU : %s."
+
+msgid "measured on this GPU model"
+msgstr "mesurée sur ce modèle de GPU"
+
+msgid "from benchmark data"
+msgstr "d'après des données de benchmarks"
+
+msgid "extrapolated from a measured GPU"
+msgstr "extrapolée d'un GPU mesuré"
+
+msgid "GPU not in the table"
+msgstr "GPU absent du tableau"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "Mesuré en vol : %.1f ms de GPU par image (95e centile)."
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "Le prochain vol mesure ce GPU une fois et ajuste le mode automatique si nécessaire."
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "Rétablit les graphismes recommandés pour ce GPU et le mesure de nouveau au prochain vol."

@@ -13953,3 +13953,30 @@ msgstr "Сильный удар"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "Ворота не засчитаны: пролетайте прямо через них"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "Автоматически для этой GPU: режим %s, детализация сцены %s."
+
+msgid "GPU estimate: %s."
+msgstr "Оценка GPU: %s."
+
+msgid "measured on this GPU model"
+msgstr "измерена на этой модели GPU"
+
+msgid "from benchmark data"
+msgstr "по данным бенчмарков"
+
+msgid "extrapolated from a measured GPU"
+msgstr "экстраполирована от измеренной GPU"
+
+msgid "GPU not in the table"
+msgstr "GPU нет в таблице"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "Измерено в полёте: %.1f мс GPU на кадр (95-й процентиль)."
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "Следующий полёт один раз измерит эту GPU и при необходимости скорректирует автоматический выбор."
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "Возвращает графику к рекомендации для этой GPU и измеряет её снова в следующем полёте."

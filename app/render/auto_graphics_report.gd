@@ -27,6 +27,28 @@ static func compact(decision: Dictionary) -> String:
 		str(first_run.get("msaa_3d", "-")), str(first_run.get("window_mode", "-")), str(first_run.get("max_fps", "-"))])
 
 
+## VQ-07h-A7: what Settings tells the player about Automatic on this host: the mode and Scene detail it picks, how
+## far the GPU estimate is trusted, and the first-flight measurement when one exists. Pure; input is runtime().
+## estimate: "measured", "benchmarks", "extrapolated" or "unknown"; measured_p95_ms is 0 until a complete verdict.
+static func player_summary(report: Dictionary) -> Dictionary:
+	var inputs: Dictionary = report.get("inputs", {})
+	var decisions: Dictionary = report.get("decisions", {})
+	var applied: Dictionary = report.get("applied", {})
+	var gpu: Dictionary = inputs.get("gpu", {})
+	var provenance := str(gpu.get("provenance", "unknown")).get_slice(":", 0) if bool(gpu.get("matched", false)) \
+		else "unknown"
+	var estimate: String = {"measured": "measured", "benchmark-derived": "benchmarks", "extrapolated": "extrapolated",
+		"measured-circular": "extrapolated"}.get(provenance, "unknown")
+	var automatic: Dictionary = applied.get("scene_detail_automatic", {})
+	var calibration: Dictionary = applied.get("calibration", {})
+	return {
+		"mode": "high" if str(decisions.get("renderer", "")) == "high" else "standard",
+		"scene_detail": str(automatic.get("level", decisions.get("scene_detail", ""))),
+		"estimate": estimate,
+		"measured_p95_ms": float(calibration.get("gpu_p95_ms", 0.0)) if bool(calibration.get("complete", false)) else 0.0,
+	}
+
+
 ## The actual host and what Automatic decided for it, including saved and measured state.
 static func runtime() -> Dictionary:
 	var adapter := RenderingServer.get_video_adapter_name()

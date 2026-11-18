@@ -87,6 +87,29 @@ func _initialize() -> void:
 		if text.contains("SCENE_LOW_BELOW := 0") or text.contains("MSAA_OFF_BELOW := 0") or text.contains("HIGH_BUDGET_MS := 4"):
 			failures += 1
 			printerr("FAIL: %s holds its own copy of a policy threshold" % source)
+	# A7: the player-facing summary Settings shows.
+	var measured_report := {"inputs": {"gpu": {"matched": true, "provenance": "measured: lab"}},
+		"decisions": {"renderer": "high", "scene_detail": "extreme"},
+		"applied": {"scene_detail_automatic": {"level": "high"}, "calibration": {"complete": true, "gpu_p95_ms": 9.25}}}
+	var cases := [
+		[Report.player_summary(measured_report), {"mode": "high", "scene_detail": "high", "estimate": "measured",
+			"measured_p95_ms": 9.25}],
+		[Report.player_summary({"inputs": {"gpu": {"matched": false, "provenance": "unknown"}},
+			"decisions": {"renderer": "standard", "scene_detail": "medium"}, "applied": {}}),
+			{"mode": "standard", "scene_detail": "medium", "estimate": "unknown", "measured_p95_ms": 0.0}],
+		[Report.player_summary({"inputs": {"gpu": {"matched": true, "provenance": "measured-circular: m1"}},
+			"decisions": {"renderer": "standard", "scene_detail": "medium"},
+			"applied": {"calibration": {"complete": false, "gpu_p95_ms": 30.0}}}),
+			{"mode": "standard", "scene_detail": "medium", "estimate": "extrapolated", "measured_p95_ms": 0.0}],
+		[Report.player_summary({"inputs": {"gpu": {"matched": true, "provenance": "benchmark-derived"}},
+			"decisions": {"renderer": "standard", "scene_detail": "high"}, "applied": {}}),
+			{"mode": "standard", "scene_detail": "high", "estimate": "benchmarks", "measured_p95_ms": 0.0}],
+	]
+	for pair: Array in cases:
+		checks += 1
+		if pair[0] != pair[1]:
+			failures += 1
+			printerr("FAIL: player summary %s != %s" % [pair[0], pair[1]])
 	checks += 1
 	if table.size() < 1500:
 		failures += 1

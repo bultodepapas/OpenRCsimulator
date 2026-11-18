@@ -13152,3 +13152,30 @@ msgstr "剧烈撞击"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "未计入此门：请正对穿过"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "此 GPU 的自动设置：%s 模式，场景细节 %s。"
+
+msgid "GPU estimate: %s."
+msgstr "GPU 估算：%s。"
+
+msgid "measured on this GPU model"
+msgstr "在此 GPU 型号上实测"
+
+msgid "from benchmark data"
+msgstr "来自基准测试数据"
+
+msgid "extrapolated from a measured GPU"
+msgstr "由已实测的 GPU 外推"
+
+msgid "GPU not in the table"
+msgstr "GPU 不在表中"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "飞行中实测：每帧 GPU 时间 %.1f 毫秒（第 95 百分位）。"
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "下次飞行会对此 GPU 测量一次，并在需要时调整自动设置。"
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "将图形设置恢复为此 GPU 的推荐值，并在下次飞行时重新测量。"

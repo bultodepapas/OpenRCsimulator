@@ -13203,3 +13203,30 @@ msgstr "激しい衝突"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "ゲート未通過扱い：正面からまっすぐ通過してください"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "このGPUの自動設定：%sモード、シーンの描画品質 %s。"
+
+msgid "GPU estimate: %s."
+msgstr "GPUの推定：%s。"
+
+msgid "measured on this GPU model"
+msgstr "このGPUモデルで測定"
+
+msgid "from benchmark data"
+msgstr "ベンチマークデータに基づく"
+
+msgid "extrapolated from a measured GPU"
+msgstr "測定済みGPUからの推定"
+
+msgid "GPU not in the table"
+msgstr "表にないGPU"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "飛行中の測定：1フレームあたりのGPU時間 %.1f ms（95パーセンタイル）。"
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "次の飛行でこのGPUを一度測定し、必要に応じて自動設定を調整します。"
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "グラフィック設定をこのGPUの推奨値に戻し、次の飛行で再測定します。"

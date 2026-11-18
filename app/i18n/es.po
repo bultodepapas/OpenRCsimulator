@@ -12742,3 +12742,30 @@ msgstr "Impacto fuerte"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "Puerta no contada: crúzala de frente"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "Automática para esta GPU: modo %s, detalle de escena %s."
+
+msgid "GPU estimate: %s."
+msgstr "Estimación de la GPU: %s."
+
+msgid "measured on this GPU model"
+msgstr "medida en este modelo de GPU"
+
+msgid "from benchmark data"
+msgstr "a partir de datos de benchmarks"
+
+msgid "extrapolated from a measured GPU"
+msgstr "extrapolada de una GPU medida"
+
+msgid "GPU not in the table"
+msgstr "GPU no incluida en la tabla"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "Medido en vuelo: %.1f ms de GPU por fotograma (percentil 95)."
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "El próximo vuelo mide esta GPU una vez y ajusta la opción automática si hace falta."
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "Devuelve los gráficos a la recomendación para esta GPU y la vuelve a medir en el próximo vuelo."

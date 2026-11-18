@@ -14097,3 +14097,30 @@ msgstr "Harter Aufprall"
 
 msgid "Gate not counted: fly straight through it"
 msgstr "Tor nicht gezählt: gerade hindurchfliegen"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "Automatisch für diese GPU: Modus %s, Szenendetails %s."
+
+msgid "GPU estimate: %s."
+msgstr "GPU-Schätzung: %s."
+
+msgid "measured on this GPU model"
+msgstr "an diesem GPU-Modell gemessen"
+
+msgid "from benchmark data"
+msgstr "aus Benchmark-Daten"
+
+msgid "extrapolated from a measured GPU"
+msgstr "von einer gemessenen GPU hochgerechnet"
+
+msgid "GPU not in the table"
+msgstr "GPU nicht in der Tabelle"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "Im Flug gemessen: %.1f ms GPU-Zeit pro Bild (95. Perzentil)."
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "Der nächste Flug misst diese GPU einmal und passt Automatisch bei Bedarf an."
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "Setzt die Grafik auf die Empfehlung für diese GPU zurück und misst sie beim nächsten Flug erneut."
