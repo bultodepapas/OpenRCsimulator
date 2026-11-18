@@ -114,7 +114,8 @@ def schemas():
         "batch_id": {"type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$"},
         "build": closed({
             "release_id": {"type": "string", "maxLength": 32,
-                           "pattern": r"^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)[0-9]{1,3})?(?![\s\S])"},
+                           # Repository preview tags use both v0.1.0-rc2 and v0.1.9-beta.1.
+                           "pattern": r"^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)\.?[0-9]{1,3})?(?![\s\S])"},
             "channel": enum("stable", "preview"),
             "engine_minor": {"const": "4.8"},
         }),

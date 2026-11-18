@@ -30,6 +30,14 @@ class PayloadTests(unittest.TestCase):
     def test_canonical_fixture_accepted(self):
         self.assertEqual(validate_body(encode(self.payload)), self.payload)
 
+    def test_release_identities_match_repository_tags(self):
+        # Both preview tag styles in this repository's history are release identities; build metadata is not.
+        for tag, valid in [("v0.2.8", True), ("v0.1.0-rc2", True), ("v0.1.9-beta.1", True), ("v0.2.0-rc.10", True),
+                           ("v0.2.8+3.gabc1234", False), ("v0.2.8-dirty", False), ("v0.2.8\n", False)]:
+            candidate = deepcopy(self.payload)
+            candidate["build"]["release_id"] = tag
+            self.assertEqual(BATCH_VALIDATOR.is_valid(candidate), valid, tag)
+
     def test_generated_schemas_match_source(self):
         from generate_contracts import schemas
         for name, schema in schemas().items():
