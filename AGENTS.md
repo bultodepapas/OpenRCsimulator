@@ -3,6 +3,8 @@
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable.
 
 Use U drive as cache and temp.
+you are allowed to make commit or push or merge if you want to.
+
 
 ## Lead agent and subagents
 
