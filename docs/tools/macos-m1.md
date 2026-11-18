@@ -16,6 +16,15 @@ reused engine and new frozen evidence. This does not qualify a native evaluator
 or renew the historical rendered campaign. The separate `angel` mDNS alias did
 not resolve in that session.
 
+**2026-11-18 ANGEL rendered use:** `angel-setup-20261107` is gone. The verified official engine
+(`4.8.beta2.official.cafc17a19`, `codesign` strict OK) is now
+`/Users/g/OpenRC-m1-work/display-probe-20261118/engine/Godot.app/Contents/MacOS/Godot`. A
+source archive of `04d6cde2c` imported with zero errors into `shadows-20261118/`, and rendered
+Mobile/Metal and Forward+/Metal runs worked over SSH with the console session logged in. Metal's
+per-viewport GPU timers overlap on this tile-based GPU; compare wall time per frame. Results:
+[shadow audit closure](../research/visual-quality-implementation/VQ-04b/shadow-audit-closure-2026-11-18/README.md#apple-m1-angel-19201080).
+Only `/usr/bin/python3` 3.9 is present; the venv path below is absent.
+
 **2026-11-14 connection refresh:** both Macs are reachable directly from Windows
 over Tailscale using retained SSH keys. ANGEL's new Tailscale route matches its
 previously trusted LAN host key. The permanent aliases and current tool paths

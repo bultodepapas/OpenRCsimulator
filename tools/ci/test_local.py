@@ -132,6 +132,14 @@ exit 0
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("kernel/build-receipt.json", result.stdout)
         self.assertFalse(self.log.exists())
+        # NK-4 (native kernel always): Windows packages need the qualified Windows kernel receipt too.
+        kernel = self.root / "app/native/kernel"
+        kernel.mkdir(parents=True)
+        (kernel / "build-receipt.json").write_text("{}")
+        result = self.run_mode("release")
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("kernel/build-receipt-windows.json", result.stdout)
+        self.assertFalse(self.log.exists())
 
     @unittest.skipUnless(Path("/usr/bin/python3").exists(), "Linux Python required")
     def test_release_refuses_absent_platform_rows_and_invalid_nk3_receipt(self):
@@ -158,6 +166,7 @@ def expected_library_name(platform): return platform + ".bin"
         nk3 = self.root / "app/native/kernel"
         nk3.mkdir(parents=True)
         (nk3 / "build-receipt.json").write_text("{}")
+        (nk3 / "build-receipt-windows.json").write_text("{}")
         receipt = {"format": "openrc-ground-vehicle-native-receipt", "platforms": {}}
         (ground / "build-receipt.json").write_text(json.dumps(receipt))
         self.assertIn("missing linux", self.run_mode("release").stdout)
@@ -171,6 +180,12 @@ def expected_library_name(platform): return platform + ".bin"
         result = self.run_mode("release")
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("invalid NK-3 receipt", result.stdout)
+        self.assertNotIn("quick checks", result.stdout)
+        (kernel / "package.py").write_text('def verified_install(): return {}\n'
+                                           'def verified_windows_install(tool_root): raise ValueError("invalid NK-4 receipt")\n')
+        result = self.run_mode("release")
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("invalid NK-4 receipt", result.stdout)
         self.assertNotIn("quick checks", result.stdout)
 
 

@@ -46,6 +46,29 @@ Two repeats each, same method:
 - On Compatibility, Auto is not cheaper than Native in the static pavilion: Auto keeps the projected field receivers next to the native sun (its documented ownership), and these rows also have the largest spread.
 - Compatibility's moving-aircraft mask (0.38 ms; 165k triangles into a 256² target, so probably vertex-bound, not tested) is the one measured efficiency opportunity: a decimated silhouette for every aircraft, like the Corsair's admitted LOD proxy, would remove most of it. It is not implemented here (it needs its own visual-parity gate).
 
+### Apple M1 (ANGEL), 1920×1080
+
+Same tool and method on ANGEL (MacBook Air M1, 8 GiB, macOS 27.0, same official engine `cafc17a19`), source archive of commit `04d6cde2c` (SHA-256 `2b8d2ac7…ccbb7a`) plus the `--renderer`/`--driver` option of `shadow_cost.py`, fresh checked import with zero errors, three repeats:
+
+| Renderer (profile) | View | Off | Projected | Native | Auto | Aircraft mask | Spread |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Mobile / Metal (Standard, the Mac product) | aircraft, moving | 10.853 | −2.818 root, mask 3.874 | +1.860 | +2.236 | 3.874 | ≤ 0.082 |
+| Mobile / Metal (Standard) | pavilion | 14.372 | +0.593 | +2.285 | +2.765 | — | ≤ 0.411 |
+| Forward+ / Metal (High) | aircraft, moving | 21.746 | +0.756 | +8.015 | +8.397 | 0.621 | ≤ 0.116 |
+| Forward+ / Metal (High) | pavilion | 23.982 | +0.867 | +11.061 | +10.459 | — | ≤ 0.116 |
+
+Metal's per-viewport GPU timers overlap on this tile-based GPU (the 3.9 ms mask plus an 8.0 ms root exceed the 8.5 ms frame), so the Mac verdict uses each run's median **wall time per frame** (GPU-bound here; CPU ≤ 2.1 ms):
+
+| Renderer | View | Off wall | Projected | Native | Auto |
+| --- | --- | --- | --- | --- | --- |
+| Mobile / Metal (Standard) | aircraft, moving | 7.631 | +0.856 | +1.213 | +1.619 |
+| Mobile / Metal (Standard) | pavilion | 9.120 | +0.466 | +1.436 | +1.792 |
+| Forward+ / Metal (High) | aircraft, moving | 21.857 | +1.393 | +8.008 | +8.384 |
+| Forward+ / Metal (High) | pavilion | 24.051 | +0.900 | +11.057 | +10.495 |
+
+- On the Mac's product renderer the default Auto costs +1.6–1.8 ms and Native +1.2–1.4 ms of a 16.7 ms 60 Hz frame; Projected +0.5–0.9 ms. Auto exceeds Native by the field's projected receivers for sources without native casters. High's settings on the M1 cost +8–11 ms; High is not the Mac default.
+- Mask experiment on Mobile/Metal (two runs each, wall per frame): current 8.47/8.50 ms; meshoptimizer silhouettes at 42.5k/21.6k/10.5k triangles 8.34–8.39/8.34/8.33–8.36 ms; MSAA off 8.47 ms. Simplification saves about 0.14 ms (0.8% of the frame), MSAA nothing: not adopted on either machine.
+
 ## Native caster semantics (SA-05)
 
 A floating box per material over a lit plane, straight-down sun, ground luminance under each box relative to lit ground (1.0 = no shadow), both renderers:
