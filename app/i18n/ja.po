@@ -13230,3 +13230,78 @@ msgstr "次の飛行でこのGPUを一度測定し、必要に応じて自動設
 
 msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
 msgstr "グラフィック設定をこのGPUの推奨値に戻し、次の飛行で再測定します。"
+
+msgid "Help improve OpenRC Simulator"
+msgstr "OpenRC Simulator の改善にご協力ください"
+
+msgid "Recommended: share technical telemetry."
+msgstr "推奨：技術テレメトリーを共有する。"
+
+msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
+msgstr "「有効にする」を選ぶと、FPS やフレーム時間の範囲などのパフォーマンス概要、CPU/GPU とメモリの大まかな区分、OS、グラフィックスのレンダラーと API、解像度の範囲、VSync/フレームレート上限、グラフィック設定を変更しているかどうか、使用した付属の機体とアクティビティを送信します。また、大まかな入力方法、アクティビティの時間と結果、対応する離陸・着陸回数と模型機の墜落回数、ソフトウェアエラーの固定区分も送信します。模型機の墜落回数はアプリのクラッシュダンプではありません。これらのレポートは、動作の遅い構成を見つけてシミュレーターを改善するために使います。"
+
+msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
+msgstr "名前、メールアドレス、アカウント、デバイスのシリアル番号、カスタム機体の名前、保存された飛行履歴、操作入力、ファイル、スクリーンショット、ログ全体は送信しません。一時的なランダムのセッションコードでレポートをまとめます。このコードはこのデバイスには保存されず、起動のたびに新しく作られ、受信サービスでは受信から最大 48 時間保持されます。受信サービスは接続を受けるために IP アドレスを処理しますが、分析データベースには保存しません。それでもハードウェアやセッションのデータが識別につながる可能性があるため、完全な匿名性は約束しません。"
+
+msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
+msgstr "レポートは %s が運営する受信サービスに送られます。GitHub に公開されるのは確認済みの概要だけです。データの確認やテレメトリーの停止は、いつでも 設定 → インターフェース で行えます。テレメトリーをオフにしてもシミュレーターは同じように動作します。"
+
+msgid "See exactly what we send"
+msgstr "送信内容を正確に見る"
+
+msgid "Privacy notice"
+msgstr "プライバシーに関するお知らせ"
+
+msgid "Continue without telemetry"
+msgstr "テレメトリーなしで続ける"
+
+msgid "Enable telemetry and continue"
+msgstr "テレメトリーを有効にして続ける"
+
+msgid "Pending data stays only in memory, for at most ten minutes. The session code changes at least every four hours and at the UTC day boundary. Raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt. Summary tables without codes expire within 180 days. Reviewed public summaries on GitHub can remain indefinitely. Any temporary IP-based abuse protection is kept only in memory, for at most 15 minutes. Telemetry is separate from update checks, which you can turn off on the same Settings page."
+msgstr "送信待ちのデータはメモリ上にのみ、最長 10 分間保持されます。セッションコードは少なくとも 4 時間ごと、および UTC の日付が変わるときに切り替わります。生のレポート、一時コード、重複確認用のキーは受信から 48 時間以内に失効します。コードを含まない集計表は 180 日以内に失効します。GitHub に公開された確認済みの概要は無期限に残る場合があります。IP に基づく一時的な不正防止情報はメモリ上にのみ、最長 15 分間保持されます。テレメトリーはアップデート確認とは別の設定で、同じ設定ページでオフにできます。"
+
+msgid "Operator: %s · Contact: %s · Receiving service: %s"
+msgstr "運営者：%s · 連絡先：%s · 受信サービス：%s"
+
+msgid "Data waiting to be sent"
+msgstr "送信待ちのデータ"
+
+msgid "Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on."
+msgstr "送信待ちのデータはありません。テレメトリーがオンのとき、データはおよそ 1 分ごとにまとめられます。"
+
+msgid "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks."
+msgstr "パフォーマンス概要、ハードウェアの大まかな区分、飛行した付属機体を、この設定がオンの間だけ送信します。アップデート確認とは別の設定です。"
+
+msgid "Share technical telemetry"
+msgstr "技術テレメトリーを共有"
+
+msgid "Telemetry is not available in this build."
+msgstr "このビルドではテレメトリーを利用できません。"
+
+msgid "Telemetry is on. Batches sent this session: %d."
+msgstr "テレメトリーはオンです。このセッションで送信したまとまり：%d。"
+
+msgid "Telemetry is off until you choose."
+msgstr "選択するまでテレメトリーはオフです。"
+
+msgid "Telemetry is not offered in this language yet."
+msgstr "この言語ではテレメトリーをまだ提供していません。"
+
+msgid "The receiving service paused telemetry for this session."
+msgstr "受信サービスがこのセッションのテレメトリーを一時停止しました。"
+
+msgid "The saved telemetry choice could not be read, so telemetry is off."
+msgstr "保存されたテレメトリーの選択を読み取れなかったため、テレメトリーはオフです。"
+
+msgid "Telemetry is off."
+msgstr "テレメトリーはオフです。"
+
+msgid "Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting."
+msgstr "テレメトリーの選択を保存できませんでした（エラー %d）。このセッションには適用されます。再起動後にもう一度確認してください。"
+
+msgid "Telemetry is on · Settings → Interface"
+msgstr "テレメトリー：オン · 設定 → インターフェース"
+
+msgid "Telemetry is off · Settings → Interface"
+msgstr "テレメトリー：オフ · 設定 → インターフェース"

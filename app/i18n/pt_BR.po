@@ -14018,3 +14018,78 @@ msgstr "O próximo voo mede esta GPU uma vez e ajusta a opção automática se n
 
 msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
 msgstr "Restaura os gráficos recomendados para esta GPU e a mede novamente no próximo voo."
+
+msgid "Help improve OpenRC Simulator"
+msgstr "Ajude a melhorar o OpenRC Simulator"
+
+msgid "Recommended: share technical telemetry."
+msgstr "Recomendado: compartilhar telemetria técnica."
+
+msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
+msgstr "Se você escolher Ativar, enviaremos resumos de desempenho, como faixas de FPS e de tempo de quadro, categorias gerais de CPU/GPU e memória, sistema operacional, renderizador e API gráfica, faixa de resolução, VSync/limite de taxa de quadros, se as configurações gráficas estão personalizadas e as aeronaves e atividades incluídas que você usa. Também enviamos o tipo geral de controle, a duração e o resultado da atividade, as contagens compatíveis de decolagens, pousos e acidentes do aeromodelo e categorias fixas de erros do software. As contagens de acidentes do aeromodelo não são despejos de falhas do aplicativo. Usamos esses relatórios para encontrar configurações lentas e melhorar o simulador."
+
+msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
+msgstr "Não enviamos seu nome, e-mail, conta, número de série do dispositivo, nomes de aeronaves personalizadas, histórico de voos salvo, comandos, arquivos, capturas de tela ou registros completos. Um código de sessão aleatório e temporário agrupa os relatórios. Ele não é salvo neste dispositivo, um novo código é criado a cada inicialização e o serviço de recebimento o mantém por no máximo 48 horas após o recebimento. Nosso serviço de recebimento processa seu endereço IP para receber a conexão, mas o banco de dados de análise não o armazena. Os dados de hardware e de sessão ainda podem ser distintivos, por isso não prometemos anonimato completo."
+
+msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
+msgstr "Os relatórios vão para o serviço de recebimento operado por %s. Somente resumos revisados podem ser publicados no GitHub. Você pode consultar os dados e desativar a telemetria a qualquer momento em Configurações → Interface. O simulador funciona da mesma forma com a telemetria desativada."
+
+msgid "See exactly what we send"
+msgstr "Ver exatamente o que enviamos"
+
+msgid "Privacy notice"
+msgstr "Aviso de privacidade"
+
+msgid "Continue without telemetry"
+msgstr "Continuar sem telemetria"
+
+msgid "Enable telemetry and continue"
+msgstr "Ativar telemetria e continuar"
+
+msgid "Pending data stays only in memory, for at most ten minutes. The session code changes at least every four hours and at the UTC day boundary. Raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt. Summary tables without codes expire within 180 days. Reviewed public summaries on GitHub can remain indefinitely. Any temporary IP-based abuse protection is kept only in memory, for at most 15 minutes. Telemetry is separate from update checks, which you can turn off on the same Settings page."
+msgstr "Os dados pendentes ficam apenas na memória, por no máximo dez minutos. O código de sessão muda pelo menos a cada quatro horas e na virada do dia UTC. Relatórios brutos, códigos temporários e chaves de verificação de duplicatas expiram em até 48 horas após o recebimento. Tabelas de resumo sem códigos expiram em até 180 dias. Resumos públicos revisados no GitHub podem permanecer indefinidamente. Qualquer proteção temporária contra abuso baseada no IP fica apenas na memória, por no máximo 15 minutos. A telemetria é separada da verificação de atualizações, que você pode desativar na mesma página de Configurações."
+
+msgid "Operator: %s · Contact: %s · Receiving service: %s"
+msgstr "Operador: %s · Contato: %s · Serviço de recebimento: %s"
+
+msgid "Data waiting to be sent"
+msgstr "Dados aguardando envio"
+
+msgid "Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on."
+msgstr "Nada está aguardando envio. Com a telemetria ativada, os lotes são fechados cerca de uma vez por minuto."
+
+msgid "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks."
+msgstr "Resumos de desempenho, categorias gerais de hardware e as aeronaves incluídas que você pilota, enviados apenas enquanto esta opção estiver ativada. Separada da verificação de atualizações."
+
+msgid "Share technical telemetry"
+msgstr "Compartilhar telemetria técnica"
+
+msgid "Telemetry is not available in this build."
+msgstr "A telemetria não está disponível nesta versão."
+
+msgid "Telemetry is on. Batches sent this session: %d."
+msgstr "A telemetria está ativada. Lotes enviados nesta sessão: %d."
+
+msgid "Telemetry is off until you choose."
+msgstr "A telemetria fica desativada até você escolher."
+
+msgid "Telemetry is not offered in this language yet."
+msgstr "A telemetria ainda não é oferecida neste idioma."
+
+msgid "The receiving service paused telemetry for this session."
+msgstr "O serviço de recebimento pausou a telemetria nesta sessão."
+
+msgid "The saved telemetry choice could not be read, so telemetry is off."
+msgstr "Não foi possível ler a escolha de telemetria salva, então a telemetria está desativada."
+
+msgid "Telemetry is off."
+msgstr "A telemetria está desativada."
+
+msgid "Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting."
+msgstr "Não foi possível salvar a escolha de telemetria (erro %d). Ela vale para esta sessão; confira-a novamente após reiniciar."
+
+msgid "Telemetry is on · Settings → Interface"
+msgstr "Telemetria ativada · Configurações → Interface"
+
+msgid "Telemetry is off · Settings → Interface"
+msgstr "Telemetria desativada · Configurações → Interface"

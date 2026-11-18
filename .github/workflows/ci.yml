@@ -1013,6 +1013,12 @@ jobs:
           path: .
       - id: packages
         run: app/export.sh # exact successful run path and build identity are step outputs
+        env:
+          # TELEM-14: repository variables (not secrets) let exact-tag release builds offer telemetry. Unset, every
+          # build keeps it unavailable; app/telemetry/telemetry_release.gd also refuses untagged or dirty builds.
+          OPENRC_TELEMETRY_ENDPOINT: ${{ vars.OPENRC_TELEMETRY_ENDPOINT }}
+          OPENRC_TELEMETRY_OPERATOR: ${{ vars.OPENRC_TELEMETRY_OPERATOR }}
+          OPENRC_TELEMETRY_CONTACT: ${{ vars.OPENRC_TELEMETRY_CONTACT }}
       - name: Preserve failed export log and changed source paths
         if: always() && steps.packages.outcome == 'failure'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

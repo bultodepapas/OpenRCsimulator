@@ -104,6 +104,12 @@ func _recover() -> void:
 		flush()
 
 
+## TELEM-05: whether accepted fixed-wing classifier output for `session` flows through this service (a writable
+## store took the activity). Read-only; product telemetry uses it to label counts as observed rather than unknown.
+func observing(session: Node) -> bool:
+	return session != null and _session == session and not _closed
+
+
 func _ensure_session() -> void:
 	if not str(data.get("current_session", "")).is_empty():
 		return

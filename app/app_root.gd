@@ -42,6 +42,11 @@ const RadioMenuInput := preload("res://ui/radio_menu_input.gd")
 const RadioMenuSetup := preload("res://ui/radio_menu_setup.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
+const TelemetryService := preload("res://telemetry/telemetry_service.gd")
+const TelemetryRelease := preload("res://telemetry/telemetry_release.gd")
+const TelemetryPolicy := preload("res://telemetry/telemetry_policy.gd")
+const TelemetryConsentStore := preload("res://telemetry/telemetry_consent_store.gd")
+const TelemetryScreen := preload("res://ui/telemetry_screen.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
@@ -274,6 +279,17 @@ var window_focus_probe: Callable = func() -> bool: return DisplayServer.window_i
 var natural_random_screen: CanvasLayer:
 	get:
 		return screens.get_screen("natural_random") as CanvasLayer
+## TELEM-02 product telemetry: the session's service (null unless this build and route offer telemetry) and its
+## test seams. `telemetry_release` {} reads TelemetryRelease.current(); `telemetry_route_override` null applies the
+## interactive-route policy, a bool replaces it (tests only).
+var telemetry: Node
+var telemetry_release: Dictionary = {}
+var telemetry_route_override: Variant = null
+var telemetry_consent_path := TelemetryConsentStore.DEFAULT_PATH
+var _telemetry_prompted := false
+## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
+var window_minimized_probe: Callable = func() -> bool:
+	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
 ## UI-16 update notice seams. `update_check_url` "" means the default policy (_start_update_check); tests point it
 ## at a local server, give the cache its own file and name the running version. `open_url` is what Download calls.
 var update_check_url := ""
@@ -475,6 +491,7 @@ func _process(_delta: float) -> void:
 	_tick_radio_menu(_delta)
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
+	_tick_telemetry_prompt()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
 			_flush_home_scene_rebuild()
@@ -857,7 +874,7 @@ func _install_home(setup: Dictionary) -> void:
 	if controllers != null: controllers.refresh()
 	_update_controller_home()
 	_update_controller_button_prompts()
-	home.set_note(_settings_note)
+	home.set_note(_settings_note if _settings_note != "" else _telemetry_note())
 	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
@@ -1091,6 +1108,8 @@ func set_language(code: String) -> bool:
 		return false
 	TranslationServer.set_locale(code)
 	preferences.language = code
+	if is_instance_valid(telemetry):
+		telemetry.set_locale(code) # TELEM-03: a language without a reviewed notice turns collection off
 	var err := Preferences.save_to(preferences_path, preferences)
 	var active_settings: Node = screens.get_screen("settings") if screens != null else null
 	if active_settings != null:
@@ -1098,7 +1117,7 @@ func set_language(code: String) -> bool:
 	if err != OK:
 		_menu_feedback(&"reject")
 	if home != null:
-		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+		home.set_note(_telemetry_note() if err == OK else tr("Could not save settings (error %d).") % err)
 	return true # a failed save keeps the language for this session
 
 
@@ -1941,6 +1960,9 @@ func open_settings(from: Control = null) -> void:
 	settings.set_update_state(_update_settings_state())
 	settings.update_preferences_changed.connect(set_update_preferences)
 	settings.update_check_requested.connect(check_updates_now)
+	settings.set_telemetry_state(_telemetry_settings_state())
+	settings.telemetry_choice_changed.connect(set_telemetry_choice)
+	settings.telemetry_info_requested.connect(func(kind: String) -> void: open_telemetry_info(kind))
 	screens.push("settings", settings, from)
 
 
@@ -2994,11 +3016,173 @@ func _on_first_flight_hint_done() -> void:
 ## checks when OPENRC_UPDATE_URL names a source) and only while the preference allows it. Home never waits for it.
 ## One checker serves the whole session: a Home rebuilt after a flight reuses it and its announced release.
 func _start_update_check() -> void:
+	_start_telemetry() # TELEM-02: the same once-per-session "Home exists" moment; independent of the update choice
 	if home == null or is_instance_valid(update_checker) or not bool(preferences.get("check_updates", true)):
 		return # no Home (field errors), already running, or the player said no
 	var url := _update_source_url()
 	if url != "":
 		_create_update_checker(url, true)
+
+
+## TELEM-02: product telemetry exists only on the ordinary interactive route of an approved release export (or a
+## debug qualification run against a loopback receiver). Everywhere else there is no service, consent-file read,
+## hardware probe or request. One service serves the whole session, like the update checker.
+func _start_telemetry() -> void:
+	if home == null or is_instance_valid(telemetry):
+		return
+	var release: Dictionary = telemetry_release if not telemetry_release.is_empty() else TelemetryRelease.current()
+	var qualification := release.get("qualification") is bool and bool(release.get("qualification"))
+	var environment := {}
+	for key: String in TelemetryPolicy.TECHNICAL_ENVIRONMENT:
+		environment[key] = OS.get_environment(key)
+	# A qualification run starts from the source tree, whose engine arguments (--path) are expected.
+	var interactive: bool = telemetry_route_override if telemetry_route_override is bool else \
+		TelemetryPolicy.interactive_route(has_home, user_args,
+			PackedStringArray() if qualification else OS.get_cmdline_args(), DisplayServer.get_name(),
+			preferences_path == Preferences.DEFAULT_PATH or qualification, environment)
+	if not (release.get("ok") is bool and bool(release.get("ok"))) or not interactive:
+		return
+	telemetry = TelemetryService.new()
+	telemetry.release = release
+	telemetry.interactive = true
+	telemetry.consent_path = telemetry_consent_path
+	telemetry.locale = TranslationServer.get_locale()
+	telemetry.context_provider = _telemetry_context
+	add_child(telemetry)
+	telemetry.state_changed.connect(_on_telemetry_state_changed)
+	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
+		statistics_service.flight_events_accepted.connect(telemetry.note_flight_events)
+	_on_telemetry_state_changed()
+
+
+## The first-launch choice appears once per session over a ready Home: AppRoot only processes after the branded
+## intro has faded and every held skip input was released, so neither can answer it.
+func _tick_telemetry_prompt() -> void:
+	if _telemetry_prompted or not is_instance_valid(telemetry) or telemetry.state != TelemetryPolicy.ASK:
+		return
+	if home_build_pending or _loading_active or not screens.is_top("home"):
+		return
+	_telemetry_prompted = true
+	open_telemetry_consent()
+
+
+func open_telemetry_consent() -> void:
+	if not is_instance_valid(telemetry) or not screens.is_top("home"):
+		return
+	var screen := TelemetryScreen.new("consent", telemetry.release)
+	screen.chosen.connect(func(enabled: bool) -> void:
+		if screens.is_top("telemetry_consent") and screens.get_screen("telemetry_consent") == screen:
+			screens.pop()
+		set_telemetry_choice(enabled))
+	screen.info_requested.connect(func(kind: String) -> void: open_telemetry_info(kind, screen.decline_button))
+	if not screens.push("telemetry_consent", screen, home):
+		screen.free() # nothing collects until a later launch asks again
+
+
+## Settings switch and first-launch answer. Enable is the only path that grants.
+func set_telemetry_choice(enabled: bool) -> void:
+	if not is_instance_valid(telemetry):
+		_push_telemetry_state()
+		return
+	if enabled:
+		telemetry.enable()
+	else:
+		telemetry.disable()
+	_push_telemetry_state()
+
+
+func open_telemetry_info(kind: String, from: Control = null) -> void:
+	var release: Dictionary = telemetry.release if is_instance_valid(telemetry) else {}
+	var preview: String = telemetry.preview_text() if is_instance_valid(telemetry) else ""
+	var screen := TelemetryScreen.new(kind, release, preview)
+	screen.closed.connect(func() -> void:
+		if screens.is_top("telemetry_info") and screens.get_screen("telemetry_info") == screen:
+			screens.pop())
+	if not screens.push("telemetry_info", screen, from):
+		screen.free() # rejected (one already open): the caller keeps nothing
+
+
+## What Settings shows: {state, reason, save_error, sent}.
+func _telemetry_settings_state() -> Dictionary:
+	if not is_instance_valid(telemetry):
+		return {"state": TelemetryPolicy.UNAVAILABLE, "reason": "build", "save_error": OK, "sent": 0}
+	var status: Dictionary = telemetry.status()
+	return {"state": status.state, "reason": status.reason, "save_error": status.save_error, "sent": status.sent}
+
+
+func _push_telemetry_state() -> void:
+	var active_settings: Node = screens.get_screen("settings") if screens != null else null
+	if active_settings != null and active_settings.has_method("set_telemetry_state"):
+		active_settings.set_telemetry_state(_telemetry_settings_state())
+
+
+func _on_telemetry_state_changed() -> void:
+	_push_telemetry_state()
+	if home != null and _settings_note == "":
+		home.set_note(_telemetry_note())
+
+
+## Every eligible launch states the effective telemetry choice on Home (unavailable builds say nothing).
+func _telemetry_note() -> String:
+	if not is_instance_valid(telemetry):
+		return ""
+	match str(telemetry.state):
+		TelemetryPolicy.ON:
+			return tr("Telemetry is on · Settings → Interface")
+		TelemetryPolicy.OFF:
+			return tr("Telemetry is off · Settings → Interface")
+	return ""
+
+
+## TELEM-04: what the telemetry service may observe this frame, from state AppRoot already owns. Never inputs,
+## forces or replay data. Loading, menus over an activity, a paused tree and an unfocused or minimized window are
+## not eligible (the service closes its open window and re-primes its clock).
+func _telemetry_context() -> Dictionary:
+	var mode := "other"
+	var vehicle := ""
+	var custom := false
+	var simulated := -1.0
+	var fixed_wing := false
+	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
+	if activity != null:
+		var trial: Variant = activity.get("workshop_trial") if _has_property(activity, "workshop_trial") else {}
+		custom = not _workshop_screens.is_empty() or (trial is Dictionary and not trial.is_empty())
+		mode = "workshop" if not _workshop_screens.is_empty() else "flight"
+		if activity == flight:
+			vehicle = str(flight.get("aircraft_id")) if _has_property(flight, "aircraft_id") else ""
+		elif _has_property(activity, "vehicle_id"):
+			vehicle = str(activity.get("vehicle_id"))
+		elif str(activity.get_script().resource_path if activity.get_script() != null else "").contains("/airship/"):
+			vehicle = "rc-blimp-5m"
+		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
+		if session is Object and is_instance_valid(session):
+			if session.has_method("time_s"):
+				simulated = float(session.call("time_s"))
+			else:
+				var sim: Variant = session.get("sim")
+				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+					simulated = float(sim.call("time"))
+			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
+				and statistics_service.observing(session)
+	elif home != null or home_build_pending:
+		mode = "home"
+	var window := get_window()
+	var minimized := bool(window_minimized_probe.call())
+	var menu_over_activity := activity != null and screens.top() != null
+	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
+		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+	var input_class := "unknown"
+	if controllers != null and controllers.get("registry") != null:
+		var flight_device: int = controllers.registry.selected_device_id("flight")
+		if flight_device < 0:
+			input_class = "keyboard"
+		else:
+			var kind := str(controllers.registry.device_for_id(flight_device).get("kind", ""))
+			input_class = "rc" if kind == "radio" else "gamepad" if kind == "gamepad" else "other"
+	return {"mode": mode, "vehicle": vehicle, "custom": custom, "eligible": eligible, "simulated_seconds": simulated,
+		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
+		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
+		"graphics_profile": "unknown", "input_class": input_class}
 
 
 ## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).

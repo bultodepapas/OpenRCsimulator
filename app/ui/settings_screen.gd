@@ -50,6 +50,10 @@ signal graphics_restart_requested(profile: String)
 ## "" keeps following the running build until the player picks a channel.
 signal update_preferences_changed(check_automatically: bool, channel: String)
 signal update_check_requested
+## TELEM-03: the telemetry switch on the Interface page (a deliberate, telemetry-specific choice); AppRoot owns it.
+signal telemetry_choice_changed(enabled: bool)
+## "notice" or "preview": AppRoot opens the telemetry notice or the exact pending data.
+signal telemetry_info_requested(kind: String)
 
 const DISPLAY_TEST_SECONDS := 15
 const Languages := preload("res://i18n/languages.gd")
@@ -161,6 +165,12 @@ var _update_check_button: Button
 var _update_status: Label
 ## AppRoot's _update_settings_state(): { check_automatically, channel, status, cooldown, save_error }.
 var _update_state := {}
+var _telemetry_toggle: CheckButton
+var _telemetry_status: Label
+var _telemetry_preview_button: Button
+var _telemetry_notice_button: Button
+## AppRoot's _telemetry_settings_state(): { state, reason, save_error, sent }.
+var _telemetry_state := {"state": "unavailable", "reason": "build"}
 
 
 func _init(store: DisplayPreferences = null, initial_language: String = "en") -> void:
@@ -581,6 +591,28 @@ func _build() -> void:
 	interface_page.add_child(_update_check_button)
 	interface_page.add_child(_label("Update preferences are saved immediately.", "SecondaryLabel", true))
 	_refresh_update_status_text()
+
+	# TELEM-03: telemetry is a separate choice from update checks, saved at once by AppRoot.
+	_telemetry_toggle = CheckButton.new()
+	_telemetry_toggle.name = "ShareTelemetry"
+	_telemetry_toggle.theme_type_variation = "SettingsToggle"
+	_set_localized_tooltip(_telemetry_toggle, "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks.")
+	_telemetry_toggle.toggled.connect(func(enabled: bool) -> void: telemetry_choice_changed.emit(enabled))
+	_add_row(interface_page, "Share technical telemetry", _telemetry_toggle)
+	_telemetry_status = Widgets.label("", "SecondaryLabel", true)
+	_telemetry_status.name = "TelemetryStatus"
+	_telemetry_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	interface_page.add_child(_telemetry_status)
+	var telemetry_links := BoxContainer.new()
+	telemetry_links.add_theme_constant_override("separation", 12)
+	_telemetry_preview_button = _button("See exactly what we send", "QuietButton", "TelemetryPreview")
+	_telemetry_preview_button.pressed.connect(func() -> void: telemetry_info_requested.emit("preview"))
+	telemetry_links.add_child(_telemetry_preview_button)
+	_telemetry_notice_button = _button("Privacy notice", "QuietButton", "TelemetryNotice")
+	_telemetry_notice_button.pressed.connect(func() -> void: telemetry_info_requested.emit("notice"))
+	telemetry_links.add_child(_telemetry_notice_button)
+	interface_page.add_child(telemetry_links)
+	_refresh_telemetry_status_text()
 
 	var master_control := _volume_control("MasterVolumeControl", "MasterVolume", "MasterVolumeValue", _master_volume_changed)
 	_master_slider = master_control.get_child(0) as HSlider
@@ -1672,6 +1704,7 @@ func _refresh_translated_text() -> void:
 		for index: int in _update_channel_picker.item_count:
 			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
 	_refresh_update_status_text()
+	_refresh_telemetry_status_text()
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
@@ -1759,6 +1792,45 @@ func _refresh_update_status_text() -> void:
 	if save_error != OK:
 		lines.append(tr("Could not save update preferences (error %d).") % save_error)
 	_update_status.text = "\n".join(lines)
+
+
+## TELEM-03: AppRoot's telemetry state (see _telemetry_state); never emits a change.
+func set_telemetry_state(state: Dictionary) -> void:
+	_telemetry_state = state.duplicate(true)
+	var current := str(_telemetry_state.get("state", "unavailable"))
+	var reason := str(_telemetry_state.get("reason", ""))
+	_telemetry_toggle.set_pressed_no_signal(current == "on")
+	# Unavailable builds, unreviewed languages and a suspended service cannot be switched on from here.
+	_telemetry_toggle.disabled = current == "unavailable" or reason in ["locale", "suspended"]
+	_telemetry_preview_button.disabled = current == "unavailable"
+	_telemetry_notice_button.disabled = current == "unavailable"
+	_refresh_telemetry_status_text()
+
+
+func _refresh_telemetry_status_text() -> void:
+	if _telemetry_status == null:
+		return
+	var current := str(_telemetry_state.get("state", "unavailable"))
+	var reason := str(_telemetry_state.get("reason", ""))
+	var lines := PackedStringArray()
+	if current == "unavailable":
+		lines.append(tr("Telemetry is not available in this build."))
+	elif current == "on":
+		lines.append(tr("Telemetry is on. Batches sent this session: %d.") % int(_telemetry_state.get("sent", 0)))
+	elif current == "ask":
+		lines.append(tr("Telemetry is off until you choose."))
+	elif reason == "locale":
+		lines.append(tr("Telemetry is not offered in this language yet."))
+	elif reason == "suspended":
+		lines.append(tr("The receiving service paused telemetry for this session."))
+	elif reason == "unreadable":
+		lines.append(tr("The saved telemetry choice could not be read, so telemetry is off."))
+	else:
+		lines.append(tr("Telemetry is off."))
+	var save_error := int(_telemetry_state.get("save_error", OK))
+	if save_error != OK:
+		lines.append(tr("Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting.") % save_error)
+	_telemetry_status.text = "\n".join(lines)
 
 
 ## "2026-11-17 14:03" in the system's time zone.
