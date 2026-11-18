@@ -2,6 +2,8 @@
 
 Status: proposed implementation contract, audited on 2026-11-18. No production Phoenix reader, GEO decoder, schema migration or flight support is delivered by this document. The [parent plan](../phoenix-aircraft-import.md) alone owns AC-PX status. The [verification guide](verification.md) defines fixtures and acceptance; the [dated audit](../../research/aircraft-creator/phoenix-plan-audit-2026-11-18.md) separates reproduced findings from source inspection and proposals.
 
+The [second audit](../../research/aircraft-creator/phoenix-port-audit-2026-11-18.md) extends this contract with transitive closure, deterministic directory identities and discovery coverage. Use the [runtime port contract](runtime-port.md) for byte cursors, zlib, decimal conversion and failure mapping, and the [GEO feasibility protocol](geo-feasibility.md) before proposing binary geometry offsets. Those documents elaborate this pipeline, not separate support milestones.
+
 ## 1. Baselines and how to use this guide
 
 Application baseline: [main `39fa2746ae4f4ba8698b87db279adcfe84ef5d17`](https://github.com/bultodepapas/OpenRCsimulator/tree/39fa2746ae4f4ba8698b87db279adcfe84ef5d17). Research baseline: [`3619c19362064a0a51b6fda360adce0bfeb38b3d`](https://github.com/bultodepapas/OpenRCsimulator/tree/3619c19362064a0a51b6fda360adce0bfeb38b3d). These are different code lines. Rebase and check interfaces before implementation; do not copy runtime assumptions from the research branch into current main.
@@ -64,6 +66,13 @@ Candidate {
   root_occurrence_id, definition_occurrence_id,
   geometry_occurrence_ids[], scheme_id, dependency_manifest,
   source_fingerprint, discovery_diagnostics[]
+}
+DiscoveryReport {
+  capture_fingerprint, discovery_profile,
+  coverage: COMPLETE_PROFILE | INCOMPLETE_LIMIT | CANCELLED,
+  visited_occurrence_ids[], classified_candidates[],
+  unsupported_occurrence_ids[], unchecked_occurrence_ids[],
+  competing_format_matches[], bounded_diagnostics[]
 }
 Observation {
   id, source_fingerprint, definition_member_sha256,
@@ -130,7 +139,9 @@ capture(selection, profile, ticket):
         capture each allowed regular member with the same rules
         charge actual member bytes to the shared aggregate original-capture limit
         record exact observed membership and change/missing/refusal results
-        seal the manifest and each member
+        validate complete membership/type/alias rules before any candidate selection
+        canonically order raw component tuples under the versioned directory policy
+        seal the complete manifest and each member
     return exact captured bytes + declared capture guarantee
 ```
 
@@ -138,11 +149,19 @@ Before/after size or timestamps do not prove a coherent multi-file instant; same
 
 Privately own/copy the caller's byte buffer before hashing and parsing. Source inspection shows current `inspect_bytes` passes caller bytes onward without an explicit initial duplicate; this audit did not execute a pinned-engine aliasing test. Add mutation of the original argument, not merely of a returned accessor copy, to the boundary tests before relying on its ownership semantics.
 
+Current `ClearView Archive.inspect` duplicates for indexing but hashes the original argument, so generic ZIP reuse needs the same test. Hash/index/decode one private capture as specified by the [port contract](runtime-port.md#2-owned-bytes-checked-arithmetic-and-honest-locations). This is an inspection-derived seam, not an executed race result.
+
+Directory enumeration order is not source order. After bounded complete capture and collision checks, order component tuples lexicographically by unsigned raw bytes, with explicit component lengths and kinds in the canonical encoding. Derive the semantic capture fingerprint from that versioned manifest, member byte hashes and relevant policy; exclude enumeration order, wall-clock time, job ID and absolute user paths. Derive directory occurrence IDs from the capture fingerprint and unambiguous raw component/kind identity, never the order returned by the OS. A separately recorded operation ID can change without changing those semantic identities. Unsupported raw-name access/encoding is a capture-policy refusal, not permission to silently normalize names. In contrast, preserve the actual occurrence order inside a captured archive/MOD/GEO; that order belongs to fixed source bytes. Identical captured directory content enumerated A/B or B/A must produce the same identity and the same ambiguity result.
+
 ### 3.2 Content discovery
 
 Capture once; apply a bounded discriminator without speculative decompression of every possible format. A filename is a user hint. Discovery must distinguish ZIP, the admitted PKG profile, supported installed directory, existing GLB/STL, and unsupported/ambiguous data. A reader receives only its frozen slice/handle and shared budget.
 
 For ZIP, validate the outer index before provider discovery. A mixed ClearView/Phoenix ZIP can expose separate explicit candidates after its shared namespace passes; neither provider may claim the whole archive simply because the suffix is `.zip`. An ambiguous complete candidate is a review/refusal state. A standalone VAR, PHX, thumbnail, scenery or paint-only package does not become a complete aircraft.
+
+Content matching itself can be ambiguous. Two [original 134/184-byte fixtures](../../research/aircraft-creator/phoenix-port-reference-vectors-2026-11-18.json) pass the research PKG reader while satisfying source-derived binary-STL structural checks; the larger includes a syntactically readable empty MOD. Neither is a complete Phoenix aircraft or an executed Godot test. Collect competing trusted-reader matches within one shared work budget and report ambiguity. A first successful probe, file suffix or later Phoenix failure cannot silently switch to a less restrictive route. An explicit provider interpretation binds the selection and must still pass that route's entire admission contract.
+
+Discovery coverage is separate from candidate validity. If a three-PKG archive hits its work limit after the first candidate, return `INCOMPLETE_LIMIT` plus bounded visited/unchecked occurrence identities; do not advertise that candidate as the only aircraft or cache the census as complete. Cancellation returns `CANCELLED`. `COMPLETE_PROFILE` means all relevant occurrences were classified under that precise profile; retain unsupported/opaque counts and never infer universal format coverage. A full namespace/index failure blocks the enclosing scope. An unsupported unselected inner package does not automatically invalidate an independently selected sibling. Explicit selection may proceed only after the shared enclosing namespace and that selection's entire required closure are independently validated; it does not convert an incomplete census into a complete one.
 
 ### 3.3 Initial limits and what they measure
 
@@ -156,6 +175,8 @@ Numbers below are **proposed first-profile ceilings**, not measured product perf
 | One member | 32 MiB | Checked declared and actual payload; a model can have multiple bounded members |
 | PKG body | 128 MiB | Additional bound for one decompressed observed PKG body |
 | Archive/tree occurrences | 4,096 shared; observed PKG has its narrower 2,048 bound | Charge directories and unselected entries too |
+| Entered container layers | 4 proposed, counting the outer container as 1 | Check before each entered ZIP/PKG decoder; ordinary body/MOD parsing is not a new container layer. Never reset the shared work budget. |
+| Dependency graph | 4,096 semantic nodes, 16,384 logical edges, depth 32 proposed | Charge before retaining nodes/edges or pushing traversal frames; shared payload bytes do not erase logical edges |
 | Virtual path | 512 raw bytes per complete path; maximum depth 16 for first runtime namespace | Explicit runtime policy, narrower than some research limits; never silently truncate |
 | MOD/report/string/depth limits | See pinned parser profile and separate output budget | Must be reviewed for port, not inherited from the archive byte ceiling |
 
@@ -224,6 +245,8 @@ The research profile additionally caps its own tree at depth 32, 2,048 entries, 
 
 Each chunk requires a valid stream checksum, complete stream end, exact output length, no unconsumed/unused input and no concatenated second stream. Python reference checks use `decompressobj` with output bounds and explicit `eof`/`unused_data`/`unconsumed_tail`; consult the [versioned Python 3.12 API](https://docs.python.org/3.12/library/zlib.html) and [zlib manual](https://zlib.net/manual.html). Do not equate this API with Godot's stream behavior. Port tests must exercise the pinned engine's zlib wrapper, small-window behavior, empty progress and truncation. The application pin at this audit is `4.8.beta2.official.cafc17a19`.
 
+The existing image inflater's small-window policy is stricter than general zlib: output may legally exceed the history window. The [port contract](runtime-port.md#3-pkg-framing-and-the-zlib-adapter-decision) defines the adapter decision, required wrapper/checksum/EOF facts and why a raw-DEFLATE helper is insufficient. It also distinguishes PKG-input, inflated-body and MOD-member location spaces; chunk boundaries may bisect tree fields.
+
 The current research implementation retains chunks and then joins a body: its byte limits do not establish peak memory. For runtime, select a bounded spool or a genuinely bounded retained representation, record every copy, and do not join unbounded output in memory.
 
 For a remaining trailer longer than 512 bytes, use `TRAILING_DATA_LIMIT` before assigning a zero-padding interpretation. For a within-bound nonzero byte, use `NONZERO_TRAILING_DATA` with its real span. Do not call unexamined bytes zero, infer a new version or silently discard them.
@@ -264,20 +287,54 @@ Determine model roots using the admitted definition/root profile and observed de
 
 ```text
 resolve_candidate(index, selection, profiles):
-    definition = exact selected occurrence, with checked captured bytes
-    parsed = parse_definition(definition.bytes, profiles.mod)
-    root = the evidenced owning root of that occurrence
-    for reference in schema_pass(parsed).references:
-        identity = interpret reference only using its established field/path semantics
-        matches = lookup within the allowed captured root/dependency scope
-        if matches.count > 1: fail AMBIGUOUS_DEPENDENCY
-        if matches.count == 0:
-            if required: fail MISSING_DEPENDENCY
-            retain a typed optional omission
-        else: read/check the unique member, recording raw occurrence and hash
-    manifest = ordered exact closure, including selected scheme and base dependencies
-    return candidate bound to manifest and policy/profile fingerprints
+    require shared enclosing index and complete namespace admitted
+    stage = exact requested capability; policy = profiles.dependencies_for(stage)
+    seeds = exact definition and any policy-permitted explicit scheme/base selection
+    colors = empty map; heights = empty map
+    graph = bounded ordered nodes/edges; omissions = bounded list
+
+    visit(occurrence, role, owning_scope, depth):
+        ticket.check_active(); charge traversal work
+        require depth <= policy.max_depth
+        reader = trusted qualified dependency reader for role and requested stage
+        if reader cannot establish required dependency semantics: fail UNRESOLVED_DEPENDENCIES
+        key = (capture_fingerprint, owning_scope, occurrence.id, role, reader.profile)
+        if colors[key] == GRAY: fail DEPENDENCY_CYCLE
+        if colors[key] == BLACK:
+            require heights[key] <= policy.max_depth - depth
+            return key  # already checked subtree; retain each caller's edge
+        reserve node and frame before retention; colors[key] = GRAY
+        heights[key] = 0  # maximum resolved descendant-edge distance; a leaf has zero
+        bytes = verify exact member membership, captured bytes and hash
+        parsed = reader.check_and_read(bytes, shared_budget, ticket)
+        for reference in parsed.references_in_source_order:
+            reserve one logical edge before lookup/retention
+            interpret only established field/path semantics within owning scope
+            matches = lookup in the allowed captured dependency scope
+            if matches.count > 1: fail AMBIGUOUS_DEPENDENCY
+            if matches.count == 0:
+                if policy.requires(reference): fail MISSING_DEPENDENCY
+                retain typed optional omission with source occurrence/span
+                continue
+            child = unique match, with its policy-established role and owning scope
+            target = visit(child.occurrence, child.role, child.scope, depth + 1)
+            retain logical edge from key to target, including requiredness/context
+            heights[key] = max(heights[key], 1 + heights[target])
+        require heights[key] <= policy.max_depth - depth
+        colors[key] = BLACK
+        return key
+
+    for seed in seeds: visit(seed.occurrence, seed.role, seed.scope, 0)
+    require every entered node finished and no pending work or unresolved mandatory edge
+    manifest = exact nodes, edges, omissions and selection under the canonical receipt policy
+    return candidate bound to manifest, capability and all policy/profile fingerprints
 ```
+
+The recursive notation requires bounded frames or an explicit work stack; it does not authorize unbounded native recursion. Choose the reader/profile from the trusted role/stage registry before constructing the key. The initial profile refuses cycles in the entered dependency graph. A future role that admits cycles needs its own semantics and test; a previously finished shared leaf is not a cycle. Charge nodes, logical edges, depth, decoding/copies and traversal work independently. Hash-based byte deduplication can reuse checked immutable payloads but cannot merge different occurrence/role/root identities or erase incoming edges.
+
+Checking the cached node's current depth alone is insufficient: with limit 2, visiting `R→X→Y` first can cache X at depth 1, then `R→A→X` reaches X at depth 2 while its child Y would lie at depth 3. Cache the maximum descendant-edge distance only after all children finish and compare it with remaining depth on every reuse. Both edge orders must refuse at limit 2 and pass at limit 3, preserving both incoming X edges. This induction over a completed acyclic graph makes depth acceptance independent of traversal order; node/edge and work accounting still apply.
+
+For example, an established definition→material→image relation must fail when the required image is absent, even if the material exists; restoring that exact captured image is the positive control. This is an algorithm fixture, not a claim that a specific Phoenix GEO material encoding has been decoded. Two materials pointing to the same image keep both edges and one reusable byte payload. A schema pass over direct MOD references alone does not close the graph. If GEO's dependency semantics are unresolved, report the narrower definition/known-reference stage; do not label a visual closure complete. An optional reference with multiple matches still refuses before omission logic.
 
 Do not infer a diffuse image from a nearby thumbnail or an alternate aircraft from identical PNG hashes. Byte deduplication preserves distinct logical candidates, source roots, schemes and configurations. Optional sound may be absent for static visual preview only if that stage's policy explicitly allows it. Missing geometry blocks visual conversion.
 
@@ -296,6 +353,8 @@ If an association cannot be re-established, withhold its dependent claims. A com
 Use `openrc-phoenix-mod-observed-v1` as the starting research profile. Its parser consumes captured bytes and recognizes only observed assignments/tables/literals/comments and allowed symbols. It does not run Lua. Keep decimal lexemes, raw string bytes, ordering, exact spans and line boundaries. No `eval`, arbitrary expressions, includes, function calls, script engines or package-specified library loads.
 
 Define the runtime grammar and all limits explicitly before porting. Preserve the narrow profile's refusal of unobserved escapes/exponents, mixed keyed/positional tables and bare-CR line endings; accept evidenced LF/CRLF and absent final newline. Exact duplicate keys fail. Case-distinct keys survive the syntax tree and require an ambiguity decision before mapping. Comments must not hide unsupported syntax. Use half-open byte spans; line and byte-column display must be derived consistently from the captured bytes, not Unicode character counts.
+
+The [runtime port guide](runtime-port.md#5-mod-is-an-explicit-byte-grammar) fixes the positive syntax edges, table-depth boundary and raw display identity, then specifies bounded exact-decimal equality and nearest-even binary64 projection. The 64-byte fixed-decimal grammar cannot overflow binary64; do not use an impossible overflow token as its acceptance oracle or substitute the canonical JSON writer's recovery helper for an arbitrary-decimal parser.
 
 ```text
 parse_mod(bytes, policy, ticket):
@@ -359,6 +418,8 @@ The failure envelope has its own small fixed ceiling and cannot recursively incl
 No full GEO grammar or independently proven decoder was established by this audit. Do not treat an unrelated project called “Phoenix Builder” as simulator documentation. Recognizable object names or plausible float sequences are investigation leads, not a record layout.
 
 AC-PX-03 needs owned source/export pairs from a documented legitimate Builder workflow. Record exact Builder generation, export settings, editable source, expected vertices/corners/UVs/materials/hierarchy, hinge endpoints, raw exported bytes and hashes. Hold out an independent fixture; require a second author/workflow before generalizing. A screenshot can corroborate appearance, but cannot establish exact topology or source physics.
+
+Follow the [GEO feasibility protocol](geo-feasibility.md) for the original asymmetric OBJ, four separately captured truth stages, repeated-export controls, E00–E15 experiments and frozen held-out predictions. Authored OBJ hierarchy/normals are not assumed to survive Builder import; compare its actual characterized post-import state before assigning binary semantics.
 
 For each proposed GEO profile, document discriminants and every record's type, length, byte order, scalar encoding, index/reference scope, permitted optional data and exact end condition. Every unrecognized record stops the affected capability unless the qualified profile explicitly establishes that exact record as safely skippable; unknown cannot be assumed optional. Review the grammar against independently encoded malformed cases before using external assets.
 
