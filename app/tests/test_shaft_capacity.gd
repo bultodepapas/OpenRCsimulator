@@ -175,6 +175,12 @@ func _shaft_certificate(state: PackedFloat64Array, at: float, h: float, point: D
 	result.capacity_identity = shaft_context.identity
 	return result
 
+## AC-12 (793f76ccc): the kernel derivative takes an optional piece origin, so its argument count is 3.
+## AircraftGroundStep requires exactly two arguments; the policy passes the zero-origin (whole-tick) form.
+static func _two_argument(derivative: Callable) -> Callable:
+	return func(values: PackedFloat64Array, at: float) -> Variant: return derivative.call(values, at)
+
+
 func _runtime_sim(initial: PackedFloat64Array, quality_profile := false) -> Node:
 	var sim := Sim.new()
 	sim.mass = electric.properties.mass_kg
@@ -203,7 +209,7 @@ func _runtime_sim(initial: PackedFloat64Array, quality_profile := false) -> Node
 		if not point.ok: return {}
 		return {loads = point.loads, body_derivative = point.rate.slice(0, RB.SIZE), derivative = point.rate.slice(RB.SIZE), rotor_momentum = M.v3(0, 0, 0)}
 	var gate: Callable = _runtime_quality_gate if quality_profile else _runtime_error_gate
-	vehicle.step_policy = func(state, at, dt, f, first): return NewStep.advance(state, at, dt, f, first, sample, _shaft_certificate, {operator_law = NewStep.INTEGRATED_CAPACITY_LAW}, gate)
+	vehicle.step_policy = func(state, at, dt, f, first): return NewStep.advance(state, at, dt, _two_argument(f), first, sample, _shaft_certificate, {operator_law = NewStep.INTEGRATED_CAPACITY_LAW}, gate)
 	vehicle.state_validator = func(frame, _context): return frame.continuous[electric.rotor_index] >= 0.0
 	vehicle.endpoint_transition = func(_previous, candidate, context):
 		if context.body_filtered or not context.has("integration_receipt"): return {}
