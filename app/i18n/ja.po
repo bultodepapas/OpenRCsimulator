@@ -546,6 +546,15 @@ msgstr "フライトを終了"
 msgid "This flight cannot continue: %s"
 msgstr "このフライトは続行できません：%s"
 
+msgid "Physics: native"
+msgstr "物理演算：ネイティブ"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "物理演算：互換モード。ネイティブ物理演算は動作していません。"
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "物理演算：互換モード。ネイティブ物理演算は動作していません：%s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "墜落しました。続行するとフライトが自動的に再開します。"
 

@@ -584,6 +584,15 @@ msgstr "Flug beenden"
 msgid "This flight cannot continue: %s"
 msgstr "Dieser Flug kann nicht fortgesetzt werden: %s"
 
+msgid "Physics: native"
+msgstr "Physik: nativ"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "Physik: Kompatibilität. Native Physik ist nicht aktiv."
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "Physik: Kompatibilität. Native Physik ist nicht aktiv: %s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "Abgestürzt. Wenn du fortsetzt, startet der Flug automatisch neu."
 

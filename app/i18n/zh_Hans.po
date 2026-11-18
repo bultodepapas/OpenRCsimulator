@@ -462,6 +462,15 @@ msgstr "结束飞行"
 msgid "This flight cannot continue: %s"
 msgstr "此飞行无法继续：%s"
 
+msgid "Physics: native"
+msgstr "物理：原生"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "物理：兼容模式。原生物理未运行。"
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "物理：兼容模式。原生物理未运行：%s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "发生坠机。继续后将自动重新开始飞行。"
 
