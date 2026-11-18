@@ -2,6 +2,8 @@
 
 **Status:** proposed work from the audit of baseline `a7de9b35676d891bc2034cc344b910d9e1ef9c61`. This branch records an audit and evidence; it makes no production fixes. Read [findings](findings.md) for the scope, evidence and severity of each issue and [verification](verification.md) for the actual commands, results and limitations. This plan describes acceptance work, not a claim that any item is complete.
 
+The [18 November continuation plan](deep-dive-plan-2026-11-18.md) adds five focused slices for CR-AUD-16 through CR-AUD-20, preserving the priorities and physical-validation gates in this original plan.
+
 **Owners:** simulation framework and physics (SF), ground/contact physics (GP), crash and damage (CR), aircraft contract/data (AS) and vehicle owners jointly own their boundaries. Landscape/scenery (LU/SC), helicopter (HELI), drone racing (DR), ground vehicles (RCV), airship (BL), propulsion owners, rendering/camera/audio (VQ/CAM/AUD), UI and test/performance owners participate as listed below. The [track registry](../../../README.md#tracks-plans-and-step-ids) determines actual file ownership and step IDs. Agree shared interfaces before editing them; add accepted work to the owning plans instead of making this audit a second permanent implementation backlog.
 
 ## Priorities and boundaries

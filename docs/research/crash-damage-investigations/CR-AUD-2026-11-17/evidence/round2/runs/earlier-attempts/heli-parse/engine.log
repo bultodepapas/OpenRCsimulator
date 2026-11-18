@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Expected expression as dictionary key.
+          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd:59)
+ERROR: Failed to load script "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)

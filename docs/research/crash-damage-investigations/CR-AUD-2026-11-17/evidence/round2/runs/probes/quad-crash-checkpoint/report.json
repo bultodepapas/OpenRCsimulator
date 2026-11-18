@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "488269b5-b86f-461b-a9ae-7b3f3fd19af6",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_quad_crash_checkpoint.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:20:20.797555+00:00",
+  "label": "quad-crash-checkpoint",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/quad-crash-checkpoint-fzaic8zl/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/quad-crash-checkpoint-fzaic8zl/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND2_QUAD_CHECKPOINT_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.200176,
+  "log_bytes": 1750,
+  "log_sha256": "a7b880f3f7d733d348fcf82a5637b44b8a97ec09f297d26e347ba2666f40056f"
+}

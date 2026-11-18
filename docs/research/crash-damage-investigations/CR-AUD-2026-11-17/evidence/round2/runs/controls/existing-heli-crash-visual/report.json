@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0ef261b2-95e3-4330-b722-0f9954db6b69",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_crash_visual.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:18:46.385189+00:00",
+  "label": "existing-heli-crash-visual",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/existing-heli-crash-visual-4fn9kcfs/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/existing-heli-crash-visual-4fn9kcfs/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "HELI-33 visual:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.471978,
+  "log_bytes": 2311,
+  "log_sha256": "562f2c971c8916e4f321c770854771043eeecb46b01e910b5421ecc48aa23ffa"
+}

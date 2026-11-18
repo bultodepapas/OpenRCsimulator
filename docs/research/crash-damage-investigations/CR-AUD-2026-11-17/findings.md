@@ -4,6 +4,8 @@ Audit date: **17 November 2026, America/Bogota**. Audited application source: [`
 
 Read [verification](verification.md) for the exact execution record, fixture limitations, unsuccessful attempts, and commands. A deliberately failing assertion in an audit probe is evidence of a counterexample; it is not a passing regression test. Conversely, a characterization probe can pass while demonstrating undesirable current behavior.
 
+The [18 November continuation](deep-dive-2026-11-18.md) adds records **CR-AUD-16 through CR-AUD-20** against the same application source. This page preserves the original fifteen-record register and its dated evidence.
+
 ## Classification
 
 - **P1 — collision-world or response consistency:** a supported vehicle consumes materially different obstacle/terrain semantics, or silently drops a detected contact candidate. Address before claiming consistent collision behavior across the fleet.

@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "dcfa25b4-f75f-40cf-a4e5-fedaf1af7e8e",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:17:19.640438+00:00",
+  "label": "heli-delayed-frames",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/heli-delayed-frames-le7cfyzk/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/heli-delayed-frames-le7cfyzk/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND2_HELI_DELAYED_FRAMES_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Expected expression as dictionary key.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd:59)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "ROUND2_HELI_DELAYED_FRAMES_COMPLETE"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.646929,
+  "log_bytes": 514,
+  "log_sha256": "999fa338578cbcacc0da6461dabdf439ac8fbd2b182abdc93a504959f24fd7be"
+}

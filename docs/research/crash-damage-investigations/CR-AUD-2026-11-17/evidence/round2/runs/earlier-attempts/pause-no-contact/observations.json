@@ -1,0 +1,96 @@
+{
+  "check_count": 15,
+  "checks": [
+    {
+      "name": "synthetic wire world and fixed-wing session prepared",
+      "passed": true
+    },
+    {
+      "name": "disclosed synthetic start accepted",
+      "passed": true
+    },
+    {
+      "name": "fixture starts unpaused",
+      "passed": true
+    },
+    {
+      "name": "real flight logger starts",
+      "passed": true
+    },
+    {
+      "name": "ordinary pause/resume leaves the fixture running",
+      "passed": true
+    },
+    {
+      "name": "first accepted tick is clear of the wire",
+      "passed": true
+    },
+    {
+      "name": "real swept wire strike reaches a terminal accepted tick",
+      "passed": false
+    },
+    {
+      "name": "terminal hit commits wire damage and a contact event",
+      "passed": false
+    },
+    {
+      "name": "ordinary pause callback receives its staged reason",
+      "passed": true
+    },
+    {
+      "name": "crash pause callback sees final crash reason",
+      "passed": false
+    },
+    {
+      "name": "crash pause callback sees committed contact and scenery damage",
+      "passed": false
+    },
+    {
+      "name": "real flight logger closes without error",
+      "passed": true
+    },
+    {
+      "name": "flight log is complete and readable",
+      "passed": true
+    },
+    {
+      "name": "saved ordinary pause reason matches",
+      "passed": true
+    },
+    {
+      "name": "saved crash pause reason matches the final crash reason",
+      "passed": false
+    }
+  ],
+  "failures": 5,
+  "observations": {
+    "crash": {
+      "callback": {},
+      "final_contact_event_count": 0,
+      "final_damage_count": 0,
+      "final_reason": "",
+      "log_error": "",
+      "log_ok": true,
+      "log_path": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/pause-recording-v0/fixedwing-crash-pause.orfl",
+      "logged_crash_found": false,
+      "logged_crash_reason": "",
+      "logged_manual_reason": "manual pause control",
+      "manual_callback": {
+        "contact_event_count": 0,
+        "crashed": false,
+        "reason": "manual pause control",
+        "scenery_damage_count": 0,
+        "tick": 0
+      },
+      "tick": 5
+    },
+    "fixture": {
+      "initial_down_m": -10.0,
+      "initial_forward_mps": 100.0,
+      "initial_north_m": -1.0,
+      "synthetic_cg_probe": true,
+      "world": "single hard-terminal wire proxy",
+      "zero_loads_and_gravity": true
+    }
+  }
+}

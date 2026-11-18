@@ -5,6 +5,8 @@
 **Audit branch:** `audit/collision-damage-2026-11-17`.
 **Deliverable:** source audit, reproducible counterexamples, verification record, and a staged improvement plan. This branch does not change application physics or re-record flight goldens.
 
+**18 November continuation:** the [second code investigation](deep-dive-2026-11-18.md) adds **CR-AUD-16 through CR-AUD-20**, with five new executed probes covering delayed rotor reference frames, quad checkpoint consistency, mixed ground/scenery arbitration, persisted crash-pause metadata, and terminal quad obstacle aftermath. Its [verification](deep-dive-verification-2026-11-18.md) and [implementation plan](deep-dive-plan-2026-11-18.md) are separate from the original campaign below. The package now has twenty scoped records; the dated assessment and counts below remain the first investigation's record.
+
 ## Assessment
 
 **The baseline has substantial collision infrastructure, but it is not ready to claim uniform collision behavior across the fleet or physically validated progressive fracture.** The most urgent gaps are inconsistent world composition and dropped nonterminal contact candidates. The visual aftermath also has independently reproducible coordinate, mass-property, shape-ownership, and clock inconsistencies. Existing plans already disclose several larger capability limits; this audit distinguishes those from newly demonstrated counterexamples.
@@ -24,6 +26,9 @@ The audit covers all **13 Home-selectable vehicle IDs**: eight fixed-wing aircra
 | [Verification](verification.md) | Exact engine/source identities, executed suites and probes, failed/inconclusive attempts, reproduction commands, and limits |
 | [References](references.md) | Primary technical sources, repository research, equations, and evidence boundaries |
 | [Evidence manifest](evidence/manifest.json) | Machine-readable provenance, retained logs/reports, probe hashes, and execution classifications |
+| [18 November deep dive](deep-dive-2026-11-18.md) | Five additional evidence-backed findings, adversarial review, and leads deliberately not promoted |
+| [Continuation verification](deep-dive-verification-2026-11-18.md) | Five new probes, 163 checks, 23 desired-behavior failures, one passing 33-check existing control, and retained unsuccessful attempts |
+| [Continuation plan](deep-dive-plan-2026-11-18.md) | Five focused implementation slices with ownership, regression gates, and remaining research |
 
 ## Findings that should drive the next work
 

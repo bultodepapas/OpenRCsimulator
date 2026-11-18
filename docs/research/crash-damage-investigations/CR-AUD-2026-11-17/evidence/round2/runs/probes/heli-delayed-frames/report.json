@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a1db3d8b-c5d7-40fd-9c0c-ef2c55de09ee",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_heli_delayed_frames.gd"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:17:48.830453+00:00",
+  "label": "heli-delayed-frames",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/heli-delayed-frames-lsx3338p/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/heli-delayed-frames-lsx3338p/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND2_HELI_DELAYED_FRAMES_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 1.349872,
+  "log_bytes": 12614,
+  "log_sha256": "3e99be505fec1f20d697bffa6d64edff4fc9a6d043ec17b2d689eb38342f6f4a"
+}

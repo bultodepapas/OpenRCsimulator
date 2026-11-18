@@ -1,0 +1,225 @@
+{
+  "format": "openrc-collision-audit-round2-manifest-v1",
+  "date": "2026-11-18",
+  "base_commit": "1effa267c519526156e9aefbef63d344102bc989",
+  "application_baseline": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "entries": [
+    {
+      "path": "../../deep-dive-2026-11-18.md",
+      "bytes": 33091,
+      "sha256": "c833275a71140f1a7ba4e58d4f9e482677d5e50bd2a851e12346910830448a38"
+    },
+    {
+      "path": "../../deep-dive-plan-2026-11-18.md",
+      "bytes": 11809,
+      "sha256": "1429ec64355273784880e7c5ac73684f488d324855f39508d8430220c4ba091d"
+    },
+    {
+      "path": "../../deep-dive-verification-2026-11-18.md",
+      "bytes": 14917,
+      "sha256": "a098c68ad4a124dec96fad207ecc64486ca7097f21efe2d9421bc1c7119dd4f5"
+    },
+    {
+      "path": "earlier-attempts/crash-pause-log-v0-no-contact.gd",
+      "bytes": 8158,
+      "sha256": "d1a073c63cce45298fc8f3bff4430e94728829f68040e63ca1b63bcc337c3cc0"
+    },
+    {
+      "path": "earlier-attempts/heli-delayed-frames-v0-parse-failure.gd",
+      "bytes": 7223,
+      "sha256": "4f507447521ac4d246cb7587c159c757162ed0b63e64483009bc6754eb0b5f55"
+    },
+    {
+      "path": "earlier-attempts/pause-recording-v0/fixedwing-crash-pause.orfl",
+      "bytes": 34092,
+      "sha256": "08c6232e2ecea15fd7eaefdb31738a2a0c5b52ab66bf93c12fe21a740c4746b9"
+    },
+    {
+      "path": "earlier-attempts/pause-recording-v0/reader-report.json",
+      "bytes": 6350,
+      "sha256": "42f664e58ff5c5ed8fccd1d07654d3e9a9f6b9f5e98019d315e342bec8638373"
+    },
+    {
+      "path": "earlier-attempts/pause-recording-v0/trace.csv",
+      "bytes": 5007,
+      "sha256": "ead27d6f0fd2f1cd938d5cbaf56f6f839425d172ad966e8c48f20d19f36b6f4a"
+    },
+    {
+      "path": "probes/probe_contact_order.gd",
+      "bytes": 13625,
+      "sha256": "89a8c341cef16f877bbd4b3a49b1d1e6ce671e784f95a1485ced2420cce2b8e9"
+    },
+    {
+      "path": "probes/probe_crash_pause_log.gd",
+      "bytes": 8208,
+      "sha256": "10772fa68559f8e90ea47d3ec9c8e928901d380052dde48fdd24074002effdd6"
+    },
+    {
+      "path": "probes/probe_heli_delayed_frames.gd",
+      "bytes": 7230,
+      "sha256": "9daf83168d09cbaff5310b14ab441838e971161903b214db7fc1b11c67f639f8"
+    },
+    {
+      "path": "probes/probe_quad_crash_checkpoint.gd",
+      "bytes": 6437,
+      "sha256": "419dc5b6ecd998d35916d36c53bcf933c7031df1d6bf1c8b3e67060af674b398"
+    },
+    {
+      "path": "probes/probe_quad_obstacle_aftermath.gd",
+      "bytes": 10258,
+      "sha256": "5a15858875c64ea70fcf95ebe053a397edfbc5e57b819f8b2731daf830a0bec2"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 6002,
+      "sha256": "4650057547f34d935af8946ecb3f85eb6ae343ef16140a398d0f1760719ac251"
+    },
+    {
+      "path": "recordings/fixedwing-crash-pause.orfl",
+      "bytes": 34240,
+      "sha256": "73fad9b197f65f2611f892dc65b397bdf1ce5bb89b26f66084c3a741cab2c7a9"
+    },
+    {
+      "path": "run_probes.py",
+      "bytes": 4592,
+      "sha256": "20ff5ee025545415500e8ab7a6608f228ea83f8107366fcbabe86a452fdc5125"
+    },
+    {
+      "path": "runs/controls/existing-heli-crash-visual/engine.log",
+      "bytes": 2311,
+      "sha256": "562f2c971c8916e4f321c770854771043eeecb46b01e910b5421ecc48aa23ffa"
+    },
+    {
+      "path": "runs/controls/existing-heli-crash-visual/report.json",
+      "bytes": 1220,
+      "sha256": "fe1190a708adf900ca0a88f6dfa44696aa5f8c90ef5c0ffe4d0fd820763f0bf7"
+    },
+    {
+      "path": "runs/diagnostics/pause-v0-csv/engine.log",
+      "bytes": 106,
+      "sha256": "3ac15feac040edaa516524faef1388d7b6e294eb71e32a062cd3d6759c69995e"
+    },
+    {
+      "path": "runs/diagnostics/pause-v0-csv/report.json",
+      "bytes": 1567,
+      "sha256": "beb178f9de1de3c561860ebafc3d8016ed5522a26348e20efcc8a468e9dc1189"
+    },
+    {
+      "path": "runs/earlier-attempts/heli-parse/engine.log",
+      "bytes": 514,
+      "sha256": "999fa338578cbcacc0da6461dabdf439ac8fbd2b182abdc93a504959f24fd7be"
+    },
+    {
+      "path": "runs/earlier-attempts/heli-parse/report.json",
+      "bytes": 2053,
+      "sha256": "f1fb1c774744a3f7ffd9c740877f0557c20889ac909ab234eab6c2a19df9aa54"
+    },
+    {
+      "path": "runs/earlier-attempts/pause-no-contact/engine.log",
+      "bytes": 2260,
+      "sha256": "0db0abc843f2a8534cfe84d2546de6cba16a3c48e15f450950ccd2110e655c55"
+    },
+    {
+      "path": "runs/earlier-attempts/pause-no-contact/observations.json",
+      "bytes": 2415,
+      "sha256": "843230c2be4e3b8fc4d6888c8f3f904ef0f0fcb7baa68904eb6cd60f77a0d7d8"
+    },
+    {
+      "path": "runs/earlier-attempts/pause-no-contact/report.json",
+      "bytes": 1396,
+      "sha256": "00c8fcd991fd361ea2c06cbc7400fc74ed674970524f95fbeb02eab45a11f563"
+    },
+    {
+      "path": "runs/probes/contact-order/engine.log",
+      "bytes": 8992,
+      "sha256": "1e7cedca3487f8cb60a62cc3df7a07e88133f460d53a9d0377ce7e740ba198d7"
+    },
+    {
+      "path": "runs/probes/contact-order/observations.json",
+      "bytes": 15397,
+      "sha256": "f7ea2ae4836cda9419bc76a38906043fed444ed4d423f7a87fb86661f49b046a"
+    },
+    {
+      "path": "runs/probes/contact-order/report.json",
+      "bytes": 1269,
+      "sha256": "175db5b60491279f3c46758c605eaaa27f2932f99021dc4e6ba0b8aaa613bbee"
+    },
+    {
+      "path": "runs/probes/crash-pause-log/engine.log",
+      "bytes": 2562,
+      "sha256": "10f246506b4beb999301699d285674c26aa53274871ecbaca167b9d451638e7f"
+    },
+    {
+      "path": "runs/probes/crash-pause-log/observations.json",
+      "bytes": 2684,
+      "sha256": "c92407e975a00085a4f4e843b2088c84cccc1ca7011c3e8db1cc8822f17e7f78"
+    },
+    {
+      "path": "runs/probes/crash-pause-log/report.json",
+      "bytes": 1405,
+      "sha256": "052f4cdb16be91a9ace528516162481835b200f93b61cd5f0754fe1d2f071a5a"
+    },
+    {
+      "path": "runs/probes/heli-delayed-frames/engine.log",
+      "bytes": 12614,
+      "sha256": "3e99be505fec1f20d697bffa6d64edff4fc9a6d043ec17b2d689eb38342f6f4a"
+    },
+    {
+      "path": "runs/probes/heli-delayed-frames/observations.json",
+      "bytes": 13380,
+      "sha256": "8c29f98bed73af46fb40a2913a9f3aece3289d7a50fdd4f423318da193c93697"
+    },
+    {
+      "path": "runs/probes/heli-delayed-frames/report.json",
+      "bytes": 1300,
+      "sha256": "a964ee726d8cf4589adede1a3e57985049ce1a0744da85369547805d77c73678"
+    },
+    {
+      "path": "runs/probes/quad-crash-checkpoint/engine.log",
+      "bytes": 1750,
+      "sha256": "a7b880f3f7d733d348fcf82a5637b44b8a97ec09f297d26e347ba2666f40056f"
+    },
+    {
+      "path": "runs/probes/quad-crash-checkpoint/observations.json",
+      "bytes": 2227,
+      "sha256": "36d34e7bb7c6bfa78bbc4d590ebfd26a1534518f931743acb167ba64b29f41d7"
+    },
+    {
+      "path": "runs/probes/quad-crash-checkpoint/report.json",
+      "bytes": 1303,
+      "sha256": "71f2a70fdf9e82b3cfc98cd5af7b27e72ef966003f41ff22756f4858c3924c45"
+    },
+    {
+      "path": "runs/probes/quad-obstacle-aftermath/engine.log",
+      "bytes": 23459,
+      "sha256": "2cbbe7f4363b9c28574eb6a1c2dcf67b15857597845e69bff56da5adbcf8ac85"
+    },
+    {
+      "path": "runs/probes/quad-obstacle-aftermath/observations.json",
+      "bytes": 36977,
+      "sha256": "d2a31705987efc59403ce64b4a37ba9f76bc6add57c55903bba74720b40dc882"
+    },
+    {
+      "path": "runs/probes/quad-obstacle-aftermath/report.json",
+      "bytes": 1320,
+      "sha256": "942d20d3cb89af4fc4edec4e6707a41452957b8b76d51189ae1f24a8cdbce24b"
+    },
+    {
+      "path": "runs/setup/import/engine.log",
+      "bytes": 276655,
+      "sha256": "1bc6c541ff0d95356d80974b2387a5a88f06ba4921463740fc2744c28c2ec2de"
+    },
+    {
+      "path": "runs/setup/import/report.json",
+      "bytes": 3628,
+      "sha256": "ddb49966873726e156a213f930864362ed62f4ec1ffaf7414337ef1d00d5cf93"
+    },
+    {
+      "path": "setup.json",
+      "bytes": 522,
+      "sha256": "878517b64dc4cd91793ef6a244d982668038d270ca776a1c1f2a5b23f7b621fb"
+    }
+  ],
+  "entry_count": 43,
+  "note": "Paths relative to this manifest; excludes itself. Original reports retain execution paths."
+}

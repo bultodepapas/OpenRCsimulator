@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "922159c2-aa15-461e-8712-8a5b566b6cf3",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/drafts/probe_crash_pause_log.gd",
+    "--",
+    "--out=/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/pause-recording-v1"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:30:00.474791+00:00",
+  "label": "crash-pause-log-v1",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/crash-pause-log-v1-kxz_y6mo/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/crash-pause-log-v1-kxz_y6mo/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND2_CRASH_PAUSE_LOG_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.899904,
+  "log_bytes": 2562,
+  "log_sha256": "10f246506b4beb999301699d285674c26aa53274871ecbaca167b9d451638e7f"
+}

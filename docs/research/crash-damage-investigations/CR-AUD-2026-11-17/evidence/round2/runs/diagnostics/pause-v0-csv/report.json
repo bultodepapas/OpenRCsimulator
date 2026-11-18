@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d0d0c814-7b6c-4543-9c83-69851bed2203",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tools/flight_log_cli.gd",
+    "--",
+    "--log=/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/pause-recording-v0/fixedwing-crash-pause.orfl",
+    "--csv=/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/pause-recording-v0/trace.csv",
+    "--report=/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/pause-recording-v0/reader-report.json"
+  ],
+  "cwd": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator",
+  "started_utc": "2026-11-18T13:25:12.308091+00:00",
+  "label": "pause-v0-csv-diagnostic",
+  "log": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/pause-v0-csv-diagnostic-c5y34xg0/engine.log",
+  "report": "/workspace/scratch/d5b4d44f201e/OpenRCsimulator/tmp/collision-audit-round2/runs/pause-v0-csv-diagnostic-c5y34xg0/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.026784,
+  "log_bytes": 106,
+  "log_sha256": "3ac15feac040edaa516524faef1388d7b6e294eb71e32a062cd3d6759c69995e"
+}
