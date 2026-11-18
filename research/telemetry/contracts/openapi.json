@@ -1,0 +1,328 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenRC proposed telemetry ingress",
+    "version": "0.1.0",
+    "description": "Design only. No live service; anonymous ingestion is untrusted input."
+  },
+  "servers": [
+    {
+      "url": "https://telemetry.example.invalid",
+      "description": "Non-routable documentation placeholder"
+    }
+  ],
+  "paths": {
+    "/v1/batches": {
+      "post": {
+        "operationId": "ingestBatch",
+        "security": [],
+        "description": "Accept a closed whole batch only after durable idempotent commit. No client credentials, cookies or redirect.",
+        "x-max-body-bytes": 32768,
+        "x-max-response-bytes": 4096,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "batch.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Whole batch durably accepted or identical retry. Empty response body."
+          },
+          "400": {
+            "description": "Malformed request; drop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicting retry/event identity; drop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body too large; drop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported media/compression; drop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid schema, semantics or unapproved build; drop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Misconfigured endpoint; suspend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Endpoint refuses collection; suspend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Collection disabled; suspend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No durable acceptance; bounded retry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "No acceptance; bounded retry subject to consent and queue expiry",
+            "headers": {
+              "Retry-After": {
+                "description": "Delay seconds or HTTP date; never shorten to fit queue TTL",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "code"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "invalid_request",
+                        "conflict",
+                        "too_large",
+                        "unsupported_media",
+                        "rate_limited",
+                        "unavailable",
+                        "suspended"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

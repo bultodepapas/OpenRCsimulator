@@ -1,0 +1,123 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "aggregation_scope",
+    "day",
+    "release_id",
+    "period",
+    "status",
+    "basis",
+    "rows"
+  ],
+  "properties": {
+    "report_version": {
+      "const": 1
+    },
+    "aggregation_scope": {
+      "const": "closed_day"
+    },
+    "day": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "release_id": {
+      "type": "string",
+      "maxLength": 32,
+      "pattern": "^v[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}(-(alpha|beta|rc)[0-9]{1,3})?(?![\\s\\S])"
+    },
+    "period": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 8,
+      "pattern": "^[0-9]{4}-W[0-9]{2}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "suppressed",
+        "no_data"
+      ]
+    },
+    "basis": {
+      "const": "eligible_daily_session_observations"
+    },
+    "rows": {
+      "type": "array",
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gpu_family",
+          "session_observations",
+          "interval_sum_us",
+          "rendered_frames"
+        ],
+        "properties": {
+          "gpu_family": {
+            "type": "string",
+            "enum": [
+              "nvidia_gtx",
+              "nvidia_rtx",
+              "amd_radeon",
+              "intel_arc",
+              "intel_integrated",
+              "apple_silicon",
+              "software",
+              "other",
+              "unknown"
+            ]
+          },
+          "session_observations": {
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 1000000000
+          },
+          "interval_sum_us": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000000000000000
+          },
+          "rendered_frames": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "minItems": 1
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "rows": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openrc:telemetry:report:1",
+  "title": "OpenRC proposed fixed GPU aggregate report"
+}
