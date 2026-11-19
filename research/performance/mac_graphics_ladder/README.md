@@ -12,7 +12,7 @@ owns acceptance; results live in the dated
 | `ladder.py` | Orchestrator. Per run: seeds `user://settings.cfg.display` (the file AppRoot reads), launches the app through `tools/debug/debugctl.py`, checks the saved and effective settings, measures Home, flies, measures two-lap windows, dives at the pilot station and measures the crash. |
 | `circle_pilot.py` | Closed-loop pilot over the bridge's `state`/`sticks`: a clockwise orbit of 90 m radius centred 68 m north of the pilot, at 40 m, passing over the clubhouse (one lap ≈ 24 s); then a guided dive at the pilot station. The stick is a rate command, so a fixed deflection rolls the aircraft over. |
 | `make_plan.py` | Writes the 139-run plan: cumulative ladder L00 (every option at minimum) to L15 (everything at maximum on Forward+) in five passes of alternating direction, a reference run every ten runs, a resolution/MetalFX/renderer sweep, VSync, landscape, night and two soaks. Pass 5 is appended after the soaks, so the first 101 run indices match the original four-pass plan. |
-| `analyze.py` | Per-config means, per-pass values, ascending-minus-descending gap, step deltas, crash results and reference drift, as JSON and Markdown. With `<runs>/conditions.json` (`{"external_cooling_from_run": N, "note": …}`) the headline means use only runs from index N on and report earlier runs as "before cooling". |
+| `analyze.py` | Per-config headline values, per-segment values, REF-normalised fps, ascending-minus-descending gap, step deltas paired within each pass with a 95 % interval, crash results and reference drift, as JSON and Markdown. Host changes during a campaign go in `<runs>/conditions.json` as `segments` (`name`, `from_run`, `note`), a `primary` segment for the headline values and the `normalize` segments pooled by scaling each to the primary segment's REF mean; the module docstring has the format. |
 
 ## Run
 
@@ -57,3 +57,7 @@ Between runs the orchestrator idles at least `--cooldown` seconds (45) and then 
   run can lose a quarter of its frame rate without a state change. Cool the Mac externally to measure option
   cost; measure fanless separately for the sustained player experience, and record any change in
   `conditions.json`.
+- Disconnect remote-desktop viewers before a campaign. An attached RustDesk session cost the M1 8 % of its
+  frame rate (`pmset -g log` shows its assertions); the REF runs are what expose such a change.
+- The effective-setting check compares MSAA, size, VSync and renderer, not the scaling mode: confirm that a
+  requested reconstruction is available (MetalFX Temporal is trial-gated and Forward+-only).
