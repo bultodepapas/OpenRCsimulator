@@ -6,6 +6,11 @@ native simulator session, OpenRC runtime test or physical transmitter test was
 executed.** The [active plan](../../../plans/radio-display-edgetx.md) owns work,
 acceptance and remaining decisions.
 
+**Follow-up, 2026-11-19:** [Code reuse, licensing and integration](code-reuse-licensing-2026-11-19.md)
+compares reusable units, permission requirements and independent implementation.
+It also records a synchronization limitation in development channel copies and
+why configuration inspection should begin with real menus of a copied model.
+
 ## Source identities
 
 | Source | Inspected identity | Evidence scope |
@@ -321,10 +326,12 @@ prove that the WASM/browser implementation exists; they are not proof of OpenRC
 compatibility or a released stable backend.
 
 OpenRC declares MIT [O14]; core EdgeTX declares GPL-2.0 [E20]; package-tools
-declares GPL-3.0-only [P2]. Keep provenance and assess the actual redistribution
-and combination before including code/binaries. The helper boundary is an
-engineering choice, not an automatic license exception. New radio images also
-need their own provenance and redistribution permission.
+declares GPL-3.0-only [P2]. The [2026-11-19 license and reuse review](code-reuse-licensing-2026-11-19.md)
+checks candidate-file headers, compatible reuse, notices, source delivery and
+specific dependency exceptions. It is the authoritative follow-up for these
+questions. The helper boundary remains an engineering choice, not an automatic
+license exception; the development copy API also remains subject to a coherent
+snapshot and timing proof.
 
 ## Verification status and next experiments
 

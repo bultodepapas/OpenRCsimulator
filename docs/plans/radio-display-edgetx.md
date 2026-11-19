@@ -1,9 +1,10 @@
 # On-screen radios and EdgeTX integration
 
 Status: **planned; initial source inspection complete; runtime, device and further research gates open**.
-Research date: **2026-11-18 (America/Bogota)**.
+Research dates: **2026-11-18 and 2026-11-19 (America/Bogota)**.
 Baseline: [OpenRC cf03e40](https://github.com/bultodepapas/OpenRCsimulator/commit/cf03e401fdb3e2af5eb32f91a56462f2ca69ff1c).
 [Dated findings and primary sources](../research/radio-input/D6-RADIO-00/README.md).
+[Code reuse, licensing and integration follow-up](../research/radio-input/D6-RADIO-00/code-reuse-licensing-2026-11-19.md).
 
 The request's “HTX” is interpreted as **EdgeTX**. This plan extends the existing
 [flight overlays](flight-overlays.md) and [EdgeTX controls](edgetx-airplane-controls.md).
@@ -17,8 +18,8 @@ It does not claim that firmware simulation or the new radio artwork already ship
    Let the pilot enlarge the screen.
 3. **Operate EdgeTX.** Run the actual T18-H7 firmware simulator in a local helper
    and place its real LCD image inside the radio.
-4. **Understand configurations.** Import a copy of an EdgeTX model, explain its
-   settings, and add small verified setup exercises.
+4. **Understand configurations.** Load a copied EdgeTX model and inspect its
+   real menus first; add a structured settings report and verified exercises next.
 5. **Extend support.** Add other EdgeTX targets through the same interface; give
    other firmware families their own verified capabilities.
 
@@ -93,13 +94,17 @@ including the Apple Retina exception, and EN/ES readability.
 Evaluate the **stable 2.12.5 T18-H7 native simulator** first. Source code defines
 the target and loader, but no native build or runtime smoke has been executed
 for this investigation. The first gate is to boot that exact target, copy its
-LCD, move one control, read one channel and inject one telemetry value.
+LCD, move one control and read one channel. Configure/discover a sensor, inject
+telemetry and verify the expected value and units on the actual firmware LCD,
+including stream validity and a stale-data case.
 
 The stable Companion adapter emits changed channel values on a nominal 50 ms
 cadence. It is a useful screen/training starting point, but that signal path is
 not yet qualified for flight control. Measure freshness and latency; evaluate a
 coherent faster snapshot API or the development WASM channel-copy interface
-before admitting virtual-radio flight.
+before admitting virtual-radio flight. The latter currently copies shared values
+without synchronization in the copy function; its existence does not prove a
+coherent or lower-latency control path.
 
 A proposed local helper owns the EdgeTX runtime, its event loop and a private
 copy of SD/settings data. Godot exchanges versioned control, channel, telemetry,
@@ -150,11 +155,18 @@ do not label development-only behavior as stable 2.12.5.
 
 ## Configurations and learning
 
-First add a **read-only** viewer for copied .etx/model YAML data. Keep source
-radio, firmware version and file identity. Explain inputs, mixes, outputs,
-rates/expo, endpoints, trims, flight modes and switches; mark unsupported settings.
+First prepare a matching model in a private SD/settings layout and prove that the
+real EdgeTX runtime loads that fixture. Its radio-data read/write methods are
+no-ops in the inspected stable implementation; direct .etx archive import is a
+separate unproven path. Let users inspect the menus on the enlarged LCD. This
+supplies useful configuration visibility before duplicating a model interpreter.
+Next add a **read-only**
+structured report for copied .etx/model YAML data, keeping source radio, firmware
+version and file identity. Explain verified inputs, mixes, outputs, rates/expo,
+endpoints, trims, flight modes and switches; mark unsupported settings.
 Viewing a model does not certify flight compatibility. Bare model YAML may not
-identify its source board, so require the missing context before conversion.
+identify its source board; fields can contain version-dependent references rather
+than simple numbers. Require the missing context before conversion.
 
 Extend the existing setup assistant, which already calibrates sticks and learns
 switches by movement. Add four small lessons: reverse a channel, change expo,
@@ -164,12 +176,41 @@ screen/configuration and channel behavior. Version lessons by target/firmware.
 EdgeTX package-tools' scripted simulator is a reference for this observe–act–check
 loop. It is not an existing Godot integration. Development EdgeTX additionally
 exposes a color-screen UI tree; stable training can use screenshots and channel
-observations. Start with copied models; changes stay in the training copy.
+observations. Package-tools downloads firmware separately, so a pinned tool
+commit does not establish a matching simulator module. Record module and SD
+identities. Start with copied models; changes stay in the training copy.
 
 RadioLink USB model backups provide a later read-only import research lead.
 Their .dat schema and a PC-to-physical-LCD telemetry API are unverified. USB
 joystick support alone establishes neither. Physical transmitter updates or
 telemetry return are outside this delivery.
+
+## Code reuse and licensing
+
+Reuse the pinned firmware simulator as a component; write the OpenRC transport,
+radio presentation and lessons around it. Keep upstream changes small and
+explicit. Use the actual LCD and model-loading behavior before extracting a
+standalone parser. General ZIP/YAML libraries can be reused under their own MIT
+licenses; the surrounding EdgeTX interpretation code has separate GPL terms.
+
+The inspected EdgeTX candidate-file headers specify GPL version 2 without an
+“or later” option. The existing license grants compliant reuse without a separate
+permission request. A covered combined distribution must meet GPLv2, with the
+required notices and corresponding source; attribution alone does not make it
+MIT. OpenRC's original MIT grant can remain, but the actual combination's scope
+must be settled before release. A helper process is not an automatic exception.
+
+Package-tools specifies GPL-3.0-only; do not combine it with GPLv2-only code,
+in source or compiled form, as one covered work without a valid compatible grant.
+Inspect the chosen Qt,
+WAMR, asset and other dependency terms individually. If the integration cannot
+meet the selected distribution terms, use the upstream simulator independently
+or deliver an original limited radio UI while resolving that boundary. This plan
+does not change OpenRC's license or include upstream runtime code.
+
+The [2026-11-19 follow-up](../research/radio-input/D6-RADIO-00/code-reuse-licensing-2026-11-19.md)
+owns the component inventory, permission distinctions, alternatives and proposed
+source-release record.
 
 ## Work and acceptance
 
@@ -178,12 +219,13 @@ All implementation rows are pending.
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | D6-RADIO-00 | Current-source and upstream feasibility research | This plan and linked dated evidence; source inspection only |
+| D6-RADIO-00a | Selected-code licenses and distribution boundary | Targeted inventory recorded; exact dependency/asset review and covered-work decision remain open before release |
 | HUD-RADIO-01 | Catalog and existing selector extension | Saved choices survive; all four appearances work; calibration/bindings unchanged |
 | HUD-RADIO-02 | Telemetry display and enlarged view | Accepted values/units, unavailable-data/reset cases, readable EN/ES captures; no input or physics change |
-| D6-RADIO-01 | Exact T18-H7 runtime spike | Boot, LCD, input→channel, telemetry→LCD, stop/restart; record source/build/OS identity |
+| D6-RADIO-01 | Exact T18-H7 runtime spike | Boot named private-settings fixture, LCD, input→channel, configured telemetry→LCD with units/stale case, stop/restart; record source/build/OS identity |
 | D6-RADIO-01b | Channel freshness and runtime choice | Measure native event cadence; qualify a coherent snapshot path and input latency before flight admission |
 | D6-RADIO-02 | Helper transport and admitted virtual control path | Single rate/mix owner; reject mixed-surface misuse; bounded queues, stale-data pause and lifecycle/replay checks |
-| UI-15-RADIO-01 | Copied-model configuration viewer | Matching-board/version fixtures, unsupported data clearly reported, original files untouched |
+| UI-15-RADIO-01 | Copied-model menus, then structured viewer | Real-menu inspection first; matching-board/version reports, unsupported data clearly reported, original files untouched |
 | UI-15-RADIO-02 | Guided EdgeTX lessons | Four reproducible lessons with screen/configuration and channel assertions |
 | F4-RADIO-01 | Native/package/device qualification | Separate Windows, Linux and macOS receipts; physical T18-H7/T16D/T12D mapping checked per OS/firmware |
 
@@ -205,10 +247,9 @@ Shared files remain with their existing track owners. Proposed helpers belong
 under a dedicated tools/runtime directory selected at D6-RADIO-01; this plan
 does not introduce a new physics kernel or replace ControllerService.
 
-Use original or redistributable radio artwork. OpenRC is MIT; core EdgeTX is
-GPL-2.0 and package-tools declares GPL-3.0-only. Keep code provenance and resolve
-distribution obligations before bundling; a separate process alone is not a
-license-compatibility conclusion.
+Use original or redistributable radio artwork. DT / release owns the selected
+component and asset inventory, exact source/binary identities and source-delivery
+record from D6-RADIO-00a. Runtime and physical evidence remain separate gates.
 
 **Next implementation increment:** HUD-RADIO-01 and HUD-RADIO-02, with the
 D6-RADIO-01 runtime spike kept separately reviewable.

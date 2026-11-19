@@ -302,6 +302,19 @@ servo control requires an explicit aircraft/session/replay contract; it is not a
 skin feature. Native/device qualification and redistribution obligations remain
 open, and the helper boundary does not by itself settle licensing.
 
+**D6-RADIO-00a, 2026-11-19; proposed reuse and release policy.** Reuse a pinned
+EdgeTX simulator as a cohesive component and write the OpenRC adapter around it.
+Show a copied model's real menus before building structured configuration reports.
+Do not treat copied or translated firmware routines as MIT-only, or combine the
+GPLv2-only candidate code with GPL-3.0-only package-tools in source or compiled
+form as one covered work under an unsupported license claim. Compliant GPL reuse
+needs no separate permission;
+the selected combination's scope, dependencies, notices and corresponding-source
+delivery still need resolution before release. The helper is a technical boundary,
+not proof of independent works. Retain original HUD delivery and an independently
+used upstream simulator as fallbacks. This proposal changes no license and adds
+no upstream runtime code. [Source and alternatives](research/radio-input/D6-RADIO-00/code-reuse-licensing-2026-11-19.md).
+
 ### Compatibility baseline and a Windows NVIDIA package
 
 **VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
