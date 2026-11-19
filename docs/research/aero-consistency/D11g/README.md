@@ -201,6 +201,7 @@ Option 2 of the brief now, option 3 later as held-out validation (DECISIONS.md, 
 ### 2026-11-18 source renewal after servo, Creator, crash and EdgeTX edits
 
 The comparison ran on Linux x86_64 (WSL2, LF clone) with pinned Godot 4.8 beta2. Baseline was `e488ef765`; candidate was `fe296f1c3`.
+
 - **Inventory:** it grew from 149 to 151 inputs. `slew_interval.gd` and `slew_trajectory.gd` were added.
 - **Changes:** eight inputs changed, seven physics sources and `app/project.godot`.
 - **Aggregate:** the new normalized value is `006037e924b555b79fd92243a415b3926823eeebf4b4424ff62a67f8de19807e`.
@@ -208,3 +209,9 @@ The comparison ran on Linux x86_64 (WSL2, LF clone) with pinned Godot 4.8 beta2.
 The baseline generator passed, and the unrenewed candidate refused exactly the three historical-source leaves. Aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance matched exactly.
 
 After the two inventory guards were renewed, the generator and the updater passed. Both refused a physics-comment mutation and a project-version mutation; both were restored, and the checks passed again. Aircraft bytes and historical source strings are unchanged. The [receipt](2026-11-18-source-renewal.json) binds the six reports. This is a Linux software provenance renewal, not a Windows reconstruction or physical validation.
+
+### 2026-11-19 v0.2.9 release renewal
+
+On Windows 11 with pinned Godot 4.8 beta2, a disposable sparse worktree of baseline `894357de8` compared `config/version` `0.2.8` with `0.2.9`. Of the 151 aggregated inputs, 150 were unchanged; only `app/project.godot` changed. The new aggregate is `2062c5d835be9f84482632da33fdd712808da70877b742a919052fe4c02ad313`.
+
+The baseline passed both guards, and the unrenewed candidate refused exactly the three historical-source leaves. Every other report field, including the normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance, matched exactly. After renewal, both guards passed; a physics-comment mutation and a version mutation were each refused and restored, and the checks passed again. The [receipt](2026-11-19-release-v029-qualification.json) binds the six reports. This is a Windows software provenance renewal, not a Linux reconstruction or physical validation.

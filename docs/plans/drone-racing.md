@@ -17,7 +17,7 @@ Add one identified **5-inch-class, fixed-pitch electric quad-X racer**: select i
 
 M2 is **EXPERIMENTAL**, with explicit aerodynamic limits. Racing geometry does not establish accurate high-speed handling. M4 can run alongside product work, but M1–M3 grant no claim of validated propwash, VRS, exact Betaflight behavior or physical realism. Data from another quad does not validate this build.
 
-Deferred: multiplayer, online rankings, GPS rescue/autopilots, turtle/reverse-thrust mode, whoops, 7-inch vehicles, track editor, structural damage, thermal fidelity and RF/video simulation. Horizon mode, ghosts, extra tracks, night effects and elaborate particles are not first-flight dependencies.
+Deferred: multiplayer, online rankings, GPS rescue/autopilots, whoops, 7-inch vehicles, track editor, structural damage, thermal fidelity and RF/video simulation. Horizon mode, ghosts, extra tracks, night effects and elaborate particles are not first-flight dependencies.
 
 ## 2. Repository baseline and ownership
 
