@@ -193,6 +193,9 @@ func _run() -> void:
 	observed = []
 	service = service_for(observed)
 	var spy := SpyStore.new(PATH, PATH + ".legacy")
+	# Files written in the last 3 s are "hot" and never cached; this clock makes them look old unless reset.
+	var clock := {"now": Time.get_unix_time_from_system() + 100.0}
+	spy.unix_now = func() -> float: return clock.now
 	service.store = spy
 	service.refresh()
 	check("keyboard-only startup keeps keyboard roles", roles(service, -1, -1))
@@ -205,7 +208,69 @@ func _run() -> void:
 	check("hot-plug still takes the lease and applies defaults", spy.claims > 0 and roles(service, 9, 9))
 	spy.claims = 0
 	service.refresh()
-	check("a menu device keeps its locked eligibility recheck", spy.claims > 0 and roles(service, 9, 9))
+	service.refresh()
+	check("an unchanged menu pad needs no new lease", spy.claims == 0 and roles(service, 9, 9))
+	var pad_profile := Profile.defaults()
+	pad_profile.association = {"serial_number": "auto-serial-9", "vendor_id": 700, "product_id": 9}
+	check("own profile commit fixture saves", spy.save_profile(pad_profile).ok)
+	spy.claims = 0
+	service.refresh()
+	check("this store's own commit rechecks menu eligibility", spy.claims > 0 and roles(service, 9, 9))
+	spy.claims = 0
+	service.refresh()
+	check("the recheck is cached again", spy.claims == 0)
+	check("same-content own rewrite fixture saves", spy.save_profile(pad_profile).ok)
+	spy.claims = 0
+	service.refresh()
+	check("a same-second own rewrite is caught by the commit count", spy.claims > 0)
+	var other_process := Service.Store.new(PATH, PATH + ".legacy")
+	var other_profile := Profile.defaults("joystick", "radio_custom")
+	other_profile.association = {"serial_number": "other-serial", "vendor_id": 701, "product_id": 1}
+	check("another writer's commit fixture saves", other_process.save_profile(other_profile).ok)
+	clock.now = Time.get_unix_time_from_system()
+	spy.claims = 0
+	service.refresh()
+	service.refresh()
+	check("another writer's fresh commit is never cached while hot", spy.claims >= 2 and roles(service, 9, 9))
+	clock.now = Time.get_unix_time_from_system() + 100.0
+	service.refresh()
+	spy.claims = 0
+	service.refresh()
+	check("once the files cool the verdict is cached again", spy.claims == 0)
+	# A verdict-changing write by another process: the pad's saved profile now claims to be a radio.
+	var radio_claim := Profile.defaults("radio", "radio_custom")
+	radio_claim.profile_id = pad_profile.profile_id
+	radio_claim.association = pad_profile.association.duplicate()
+	check("radio claim fixture saves", other_process.save_profile(radio_claim).ok)
+	clock.now = Time.get_unix_time_from_system()
+	service.refresh()
+	check("another writer's radio claim removes the pad from menus", service.registry.selected_device_id("ui") == -1)
+	clock.now = Time.get_unix_time_from_system() + 100.0
+	check("radio claim reverts", other_process.save_profile(pad_profile).ok)
+	clock.now = Time.get_unix_time_from_system()
+	check("restoring the pad selection succeeds", service.select_devices(9, 9))
+	service.refresh()
+	clock.now = Time.get_unix_time_from_system() + 100.0
+	service.refresh()
+	spy.claims = 0
+	service.refresh()
+	check("restored menu pad is cached", spy.claims == 0 and roles(service, 9, 9))
+	# A busy lease (another process mid-transaction) clears the cached verdict instead of trusting it.
+	check("another process holds the lease", other_process.acquire_write().ok)
+	clock.now = Time.get_unix_time_from_system() # the revert above is still hot: the key cannot match
+	spy.claims = 0
+	service.refresh()
+	check("a busy lease is attempted and refused", spy.claims == 1 and roles(service, 9, 9))
+	other_process.release_write()
+	clock.now = Time.get_unix_time_from_system() + 100.0
+	spy.claims = 0
+	service.refresh()
+	check("after a busy lease the next refresh rechecks", spy.claims > 0 and roles(service, 9, 9))
+	# A twin with the same identity makes the saved association ambiguous: a device change rechecks.
+	spy.claims = 0
+	observed.append(device(9).merged({"id": 10}, true))
+	service.refresh()
+	check("a device change rechecks menu eligibility", spy.claims > 0)
 	observed.clear()
 	service.refresh()
 	check("unplugging the pad restores keyboard roles", roles(service, -1, -1))
