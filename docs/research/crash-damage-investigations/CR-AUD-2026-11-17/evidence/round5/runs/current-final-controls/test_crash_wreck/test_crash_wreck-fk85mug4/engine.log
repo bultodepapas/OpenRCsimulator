@@ -1,0 +1,124 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "bundled resource is missing", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "dependency is not reachable from the registered builder", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "bundled resource is missing", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "bundled resource is missing", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+ERROR: Aircraft model contract: ["bundled resource is missing", "bundled resource is missing", "dependency is not reachable from the registered builder"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:24)
+       [2] _run (res://tests/test_crash_wreck.gd:18)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _check_aircraft (res://tests/test_crash_wreck.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] _check_aircraft (res://tests/test_crash_wreck.gd:25)
+              [1] _run (res://tests/test_crash_wreck.gd:18)
+30 checks, 0 failed

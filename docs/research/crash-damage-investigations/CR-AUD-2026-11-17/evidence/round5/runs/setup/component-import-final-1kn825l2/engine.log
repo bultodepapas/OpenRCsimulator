@@ -1,0 +1,112 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (46 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | grass_roll.wav[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | gravel_roll.wav[39m[0m
+[   4% ] [90m[1m_update_scan_actions[22m | hard_roll.wav[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | touchdown.wav[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | electric_quad.wav[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | thunder_01.ogg[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | NotoSansCJKjp-Regular.otf[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | NotoSansCJKsc-Regular.otf[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | river_small_rocks_Diffuse_2k.jpg[39m[0m
+[  19% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_arm_1k.jpg[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_diff_1k.jpg[39m[0m
+[  23% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_nor_gl_1k.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | roof_slates_03_arm_1k.jpg[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | roof_slates_03_diff_1k.jpg[39m[0m
+[  29% ] [90m[1m_update_scan_actions[22m | roof_slates_03_nor_gl_1k.png[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | aerial_asphalt_01_diff_1k.jpg[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | aerial_grass_rock_diff_1k.jpg[39m[0m
+[  36% ] [90m[1m_update_scan_actions[22m | aerial_rocks_01_diff_1k.jpg[39m[0m
+[  38% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_arm_2k.jpg[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_diff_2k.jpg[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_nor_gl_2k.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | dirt-albedo.jpg[39m[0m
+[  46% ] [90m[1m_update_scan_actions[22m | dirt-normal.jpg[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | dirt-roughness.jpg[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | grass-albedo.jpg[39m[0m
+[  53% ] [90m[1m_update_scan_actions[22m | grass-normal.jpg[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | grass-roughness.jpg[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | ion_r5.glb[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | accept.ogg[39m[0m
+[  61% ] [90m[1m_update_scan_actions[22m | back.ogg[39m[0m
+[  63% ] [90m[1m_update_scan_actions[22m | exit.ogg[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | navigation.ogg[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | navigation_2.ogg[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | navigation_3.ogg[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | open.ogg[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | pause.ogg[39m[0m
+[  76% ] [90m[1m_update_scan_actions[22m | press.ogg[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | range_tick.ogg[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | reject.ogg[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | restart.ogg[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | resume.ogg[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | selection.ogg[39m[0m
+[  89% ] [90m[1m_update_scan_actions[22m | jeti_ds24_ii_orange.png[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | radiolink_t16d.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | monster_truck_nitro_1.glb[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | MT8_Bisonte.glb[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (19 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   5% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  10% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  20% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  25% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  35% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  40% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  45% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  55% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  70% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  80% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  85% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  90% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | grass-roughness.jpg[39m[0m
+[   5% ] [90m[1mreimport[22m | grass-normal.jpg[39m[0m
+[  10% ] [90m[1mreimport[22m | grass-albedo.jpg[39m[0m
+[  15% ] [90m[1mreimport[22m | dirt-roughness.jpg[39m[0m
+[  20% ] [90m[1mreimport[22m | dirt-normal.jpg[39m[0m
+[  25% ] [90m[1mreimport[22m | dirt-albedo.jpg[39m[0m
+[  30% ] [90m[1mreimport[22m | corrugated_iron_02_nor_gl_2k.png[39m[0m
+[  35% ] [90m[1mreimport[22m | corrugated_iron_02_diff_2k.jpg[39m[0m
+[  40% ] [90m[1mreimport[22m | corrugated_iron_02_arm_2k.jpg[39m[0m
+[  45% ] [90m[1mreimport[22m | aerial_rocks_01_diff_1k.jpg[39m[0m
+[  50% ] [90m[1mreimport[22m | aerial_grass_rock_diff_1k.jpg[39m[0m
+[  55% ] [90m[1mreimport[22m | aerial_asphalt_01_diff_1k.jpg[39m[0m
+[  60% ] [90m[1mreimport[22m | roof_slates_03_nor_gl_1k.png[39m[0m
+[  65% ] [90m[1mreimport[22m | roof_slates_03_diff_1k.jpg[39m[0m
+[  70% ] [90m[1mreimport[22m | roof_slates_03_arm_1k.jpg[39m[0m
+[  75% ] [90m[1mreimport[22m | clay_roof_tiles_nor_gl_1k.png[39m[0m
+[  80% ] [90m[1mreimport[22m | clay_roof_tiles_diff_1k.jpg[39m[0m
+[  85% ] [90m[1mreimport[22m | clay_roof_tiles_arm_1k.jpg[39m[0m
+[  90% ] [90m[1mreimport[22m | river_small_rocks_Diffuse_2k.jpg[39m[0m
+[  95% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (19 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

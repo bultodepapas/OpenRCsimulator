@@ -1,0 +1,18 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok synthetic collision world builds
+ok synthetic collision world builds
+ok repeated build succeeds
+ok collision-world identity is deterministic
+ok proxy IDs are stable and sorted
+FAIL each placement has a distinct stable fleet ID
+FAIL aircraft are represented by separate authored parts
+ok none damage profile cannot stage scenery destruction
+FAIL P-51 collision snapshot exposes individual parts
+FAIL shelter aircraft metadata has collision parts
+FAIL P-51 geometry has an empty wing clearance witness
+FAIL P-51 central body proxy stays within half the full wingspan
+FAIL P-51 geometry has an empty outboard clearance witness
+FAIL Vantage Jet central body proxy does not fill the wing span
+FAIL Vantage Jet geometry has an empty wing-clearance witness
+parked aircraft collision: 15 checks, 9 failures

@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PROBE stock field and circuit load PASS 
+PROBE stock electric Stik model loads PASS 
+PROBE stock field and circuit are installed before the query PASS 
+PROBE complete stock hull and constant-mass CG are available PASS hull_points=26 finite_fuel=false
+SEARCH attempted=5 refused=5 missed=0 selected=false
+PROBE stock hull query produces a sloped RC-track witness FAIL 
+STOCK_SLOPE_PRODUCER_PROBE: 5 checks, 1 failed; direct producer and prescribed poses only

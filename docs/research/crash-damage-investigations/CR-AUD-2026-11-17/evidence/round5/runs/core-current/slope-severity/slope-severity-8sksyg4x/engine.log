@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PROBE snapshot carries the prescribed point and velocity PASS 
+PROBE constant live mass sample is available PASS 
+CRASH CAUSE: Crash no flight history
+CRASH CAUSE: Crash no flight history
+PROBE both starts reach the report and presentation handoff PASS 
+PROBE both cases retain rough surface, component and mass PASS 
+PROBE flat control uses vertical effective mass and normal energy PASS flat eff=0.666667 energy=17.280000 class=2; slope eff=0.666667 energy=17.280000 class=2
+PROBE slope report uses effective mass along the supplied slope normal FAIL flat eff=0.666667 energy=17.280000 class=2; slope eff=0.666667 energy=17.280000 class=2
+PROBE slope report uses the contact-normal energy FAIL flat eff=0.666667 energy=17.280000 class=2; slope eff=0.666667 energy=17.280000 class=2
+PROBE nearly tangent slope input does not reuse the flat C2 grade FAIL flat eff=0.666667 energy=17.280000 class=2; slope eff=0.666667 energy=17.280000 class=2
+SLOPE_SEVERITY_PROBE: 8 checks, 3 failed

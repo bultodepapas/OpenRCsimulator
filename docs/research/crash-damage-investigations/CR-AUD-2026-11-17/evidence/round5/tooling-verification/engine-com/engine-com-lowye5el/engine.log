@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ENGINE_COM_IDENTITY { "major": 4, "minor": 8, "patch": 0, "hex": 264192, "status": "beta2", "build": "official", "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b", "timestamp": 0, "string": "4.8-beta2 (official)" } setting=DEFAULT
+ENGINE_COM_OBSERVATION { "linear": (2.0, 3.0, 4.0), "angular": (0.0, 0.0, 2.0), "com": (0.999965, 0.008333, 0.0), "com_local": (1.0, 0.0, 0.0), "at_com": (2.0, 3.0, 4.0), "at_origin": (2.016666, 1.000069, 4.0), "expected_origin": (2.016666, 1.000069, 4.0) }
+ENGINE_COM_PROBE: 1 checks, 0 failed

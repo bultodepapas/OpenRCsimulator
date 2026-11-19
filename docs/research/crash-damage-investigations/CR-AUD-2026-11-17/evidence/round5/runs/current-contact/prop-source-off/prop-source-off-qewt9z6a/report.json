@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0b8b9538-f53e-4360-9c56-983c5670906d",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/test_spinning_source_off_prop_strike.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:01:44.572293+00:00",
+  "label": "prop-source-off",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/prop-source-off/prop-source-off-qewt9z6a/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/prop-source-off/prop-source-off-qewt9z6a/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PROBE spinning source-off ground strike:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 6.771039,
+  "log_bytes": 2206,
+  "log_sha256": "33be8ba7f95fa4e50b0f1dffea1c8b611ce22a6596c0996d4dc3a2381e55d783"
+}

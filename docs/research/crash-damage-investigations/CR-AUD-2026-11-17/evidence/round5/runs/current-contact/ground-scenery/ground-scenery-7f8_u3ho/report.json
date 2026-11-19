@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0440d60d-1fdd-417f-b45d-fce459c48a46",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/ground_scenery_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:02:00.906533+00:00",
+  "label": "ground-scenery",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/ground-scenery/ground-scenery-7f8_u3ho/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/ground-scenery/ground-scenery-7f8_u3ho/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "GROUND_SCENERY_PROBE:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.760893,
+  "log_bytes": 2416,
+  "log_sha256": "2ad8a5ead1ce4b8c1fbc6d91c9bd864043f001c35d8741e59b1b6ed9fcbf80dc"
+}

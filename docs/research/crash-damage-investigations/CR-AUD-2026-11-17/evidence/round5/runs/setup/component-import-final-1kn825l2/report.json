@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "85377b76-f8d8-4bf4-9da0-04ee33749365",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--editor",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:00:58.882306+00:00",
+  "label": "component-import-final",
+  "log": "/workspace/scratch/40820211f477/collision-runs/setup/component-import-final-1kn825l2/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/setup/component-import-final-1kn825l2/report.json",
+  "timeout_seconds": 180,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.037781,
+  "log_bytes": 7780,
+  "log_sha256": "658252beb216419dc8871f52c98a582d1edd5ed9bccb46bc5ffda7bb04e465b0"
+}

@@ -1,0 +1,16 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   asphalt contact uses the abrasion friction and paving restitution
+ok   the runway strip rebounds like the mown field
+ok   turf absorbs more than paving
+ok   an unknown surface uses the explicit fallback
+ok   every friction surface has a restitution
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _run (res://tests/test_crash_wreck_surface.gd:21)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+          at: _run (res://tests/test_crash_wreck_surface.gd:21)
+          GDScript backtrace (most recent call first):
+              [0] _run (res://tests/test_crash_wreck_surface.gd:21)

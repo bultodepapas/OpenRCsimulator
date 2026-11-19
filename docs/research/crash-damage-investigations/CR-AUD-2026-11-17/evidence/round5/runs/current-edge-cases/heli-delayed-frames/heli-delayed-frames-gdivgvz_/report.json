@@ -1,0 +1,85 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "42317387-0d52-4bc0-a1e0-333119a8a638",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:05:14.238176+00:00",
+  "label": "heli-delayed-frames",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-edge-cases/heli-delayed-frames/heli-delayed-frames-gdivgvz_/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-edge-cases/heli-delayed-frames/heli-delayed-frames-gdivgvz_/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND2_HELI_DELAYED_FRAMES_COMPLETE:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 4,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_albedo.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _texture (res://render/vehicle_paint.gd:229)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_normal.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _texture (res://render/vehicle_paint.gd:229)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _texture (res://render/vehicle_paint.gd:229)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Resource file not found: res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _texture (res://render/vehicle_paint.gd:229)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 1.495444,
+  "log_bytes": 15049,
+  "log_sha256": "c3e1cce0eb8e0df46b2f63e969b6d2512cc9938abb31a255473d769c823b3d28"
+}

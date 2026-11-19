@@ -1,0 +1,16 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+PASS default field loads []
+PASS default-field lake policy resolves an enabled lake []
+PASS sample point is submerged stock lake interior { "covered": true, "region": "bed", "ground_down_m": 5.45, "slope_north": 0.0, "slope_east": 0.0, "blend_fraction": 1.0, "blend_slope_north": 0.0, "blend_slope_east": 0.0, "bed_depth_m": 5.0, "bed_depth_slope_north": 0.0, "bed_depth_slope_east": 0.0, "signed_shore_distance_m": 27.5181536533214, "signed_bank_distance_m": 32.014702504796, "water_down_m": 0.45, "depth_m": 5.0 }
+PASS quad and blimp prepare with stock field quad= blimp=
+PASS quad finite ground-query controls 
+PASS quad prepared environment has no water provider 
+PASS quad sees dry rather than lake-composed ground at the interior n=110.0 e=125.0 actual=[-0.00368975488487, 0.0069694582555, 0.01819365396164] dry=[-0.00368975488487, 0.0069694582555, 0.01819365396164] lake=[-5.45, 0.0, 0.0]
+PASS blimp finite ground-query controls 
+PASS blimp prepared environment has no water provider 
+PASS blimp sees dry rather than lake-composed ground at the interior n=110.0 e=125.0 actual=[-0.00368975488487, 0.0069694582555, 0.01819365396164] dry=[-0.00368975488487, 0.0069694582555, 0.01819365396164] lake=[-5.45, 0.0, 0.0]
+PASS vehicle contact callbacks use their dry session environment quad_contact=[-0.00368975506289, 0.00697140605632, 0.01819882732668] blimp_contact=[-0.00368975488487, 0.0069694582555, 0.01819365396164]
+PASS normal dry starts accept an ordinary tick quad_fault= blimp_fault=
+PASS normal session resets succeed 
+LAKE_SESSION_PROBE: 13 checks, 0 failed

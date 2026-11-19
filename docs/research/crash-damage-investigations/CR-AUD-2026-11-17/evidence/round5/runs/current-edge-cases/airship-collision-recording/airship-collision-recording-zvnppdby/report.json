@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "647e6551-80a3-4430-af9b-bf0b5c437d0f",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round3/probes/probe_airship_collision_recording.gd",
+    "--",
+    "--out=/workspace/scratch/40820211f477/collision-runs/current-edge-cases/airship-collision-recording/recording"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:05:39.331499+00:00",
+  "label": "airship-collision-recording",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-edge-cases/airship-collision-recording/airship-collision-recording-zvnppdby/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-edge-cases/airship-collision-recording/airship-collision-recording-zvnppdby/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROUND3_AIRSHIP_COLLISION_RECORDING_COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.045579,
+  "log_bytes": 12125,
+  "log_sha256": "2ade745f85a989beda35eaf2d9011bbdcd9f98d79cd991a0cc2ded9623d5243a"
+}

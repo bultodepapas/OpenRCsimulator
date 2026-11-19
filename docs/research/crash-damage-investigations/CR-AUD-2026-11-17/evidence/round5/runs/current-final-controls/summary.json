@@ -1,0 +1,98 @@
+{
+  "source_commit": "372053ac9448942e154801e3299cf77669161d08",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "project": "/workspace/scratch/40820211f477/collision-fixture/app",
+  "runs": [
+    {
+      "name": "stock-slope-producer",
+      "script": "/workspace/scratch/40820211f477/probe_stock_slope_producer_draft.gd",
+      "script_sha256": "f2d791c15008cd85aae69a562ed0184ffe8683db7772b08024a59a1f4b730e74",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 0.606642,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/stock-slope-producer/stock-slope-producer-1eye5miy/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/stock-slope-producer/stock-slope-producer-1eye5miy/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "heli-delayed-frames",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd",
+      "script_sha256": "9daf83168d09cbaff5310b14ab441838e971161903b214db7fc1b11c67f639f8",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 1.223438,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/heli-delayed-frames/heli-delayed-frames-944o5fmv/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/heli-delayed-frames/heli-delayed-frames-944o5fmv/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "test_crash_wreck",
+      "script": "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_crash_wreck.gd",
+      "script_sha256": "4c35d0e95d7a61a06565c97511558678c782a97200378a57fe01177acef9a7a8",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 11.770456,
+      "counts": {
+        "error": 22,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck/test_crash_wreck-fk85mug4/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck/test_crash_wreck-fk85mug4/engine.log",
+      "assertion_summary": [
+        "30",
+        "0"
+      ]
+    },
+    {
+      "name": "test_crash_wreck_surface",
+      "script": "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_crash_wreck_surface.gd",
+      "script_sha256": "ccaf09a6654da6683cfddc2461c6089abf105c19bef12a2b93fd746ded7f96b7",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": -9,
+      "complete": false,
+      "elapsed_seconds": 90.035402,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck_surface/test_crash_wreck_surface-avgnhr0e/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck_surface/test_crash_wreck_surface-avgnhr0e/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "test_heli_crash_visual",
+      "script": "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_heli_crash_visual.gd",
+      "script_sha256": "f20da66f9bd3245553694945b8af3f6a6b0d9b09fe8ba1296756c4362dcb1720",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 1.495898,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_heli_crash_visual/test_heli_crash_visual-jvo_0ybp/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_heli_crash_visual/test_heli_crash_visual-jvo_0ybp/engine.log",
+      "assertion_summary": [
+        "33",
+        "0"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "14a9ad1d-b1dd-4d6e-b0ce-0ea7aa3087c3",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/probe_stock_slope_producer_draft.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:07:39.474215+00:00",
+  "label": "stock-slope-producer",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/stock-slope-producer/stock-slope-producer-1eye5miy/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/stock-slope-producer/stock-slope-producer-1eye5miy/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "STOCK_SLOPE_PRODUCER_PROBE:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"half_drop\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/40820211f477/probe_stock_slope_producer_draft.gd:158)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"/workspace/scratch/40820211f477/probe_stock_slope_producer_draft.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "STOCK_SLOPE_PRODUCER_PROBE:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.606642,
+  "log_bytes": 479,
+  "log_sha256": "1e2ce0c89aa3b1393e1c1822873ff74329a9e495a30f38aa6fbffda924adcdcc"
+}

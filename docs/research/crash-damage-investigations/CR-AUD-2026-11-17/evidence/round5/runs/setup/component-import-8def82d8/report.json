@@ -1,0 +1,59 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f2e06e44-cf89-4913-8c42-3e3d34c94041",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--editor",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T17:55:38.073303+00:00",
+  "label": "component-import",
+  "log": "/workspace/scratch/40820211f477/collision-runs/setup/component-import-8def82d8/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/setup/component-import-8def82d8/report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1164,
+      "message": "Can't open file from path 'res://assets/landscape/night-lighting/Textures/colormap.png'.",
+      "context": [
+        "   at: get_file_as_bytes (core/io/file_access.cpp:907)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 1166,
+      "message": "glTF: Image index '0' couldn't be loaded as a buffer of MIME type 'image/png' from URI: res://assets/landscape/night-lighting/Textures/colormap.png because there was no data to load. Skipping it.",
+      "context": [
+        "     at: _parse_images (modules/gltf/gltf_document.cpp:2415)",
+        "[   1% ] import | Running Custom Script...",
+        "[  99% ] import | Saving..."
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 40.049289,
+  "log_bytes": 81071,
+  "log_sha256": "0a0cdefe184706a00338e68e6b26051c707399d0facb99c564a3dade2836a265"
+}

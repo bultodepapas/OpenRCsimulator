@@ -1,0 +1,175 @@
+{
+  "source_commit": "372053ac9448942e154801e3299cf77669161d08",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "project": "/workspace/scratch/40820211f477/collision-fixture/app",
+  "runs": [
+    {
+      "name": "test_parked_aircraft_collision",
+      "script": "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_parked_aircraft_collision.gd",
+      "script_sha256": "2db8f3010790f7d1a08c5a6bbb83cd459ed6b1dd399a738713833b4d38f1512e",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 2.512352,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/test_parked_aircraft_collision/test_parked_aircraft_collision-4l7hbet7/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/test_parked_aircraft_collision/test_parked_aircraft_collision-4l7hbet7/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "quad-severity",
+      "script": "/workspace/scratch/40820211f477/probe_quad_severity_draft.gd",
+      "script_sha256": "43f2785aaf12e3d63f19be3050b669c81d31466ca8d659ca751fd6f3ebef7dd5",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 7.548656,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/quad-severity/quad-severity-kqr0i6ev/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/quad-severity/quad-severity-kqr0i6ev/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "prop-source-off",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/test_spinning_source_off_prop_strike.gd",
+      "script_sha256": "a5ac01aa5d05466eb2ad76e4ba59afa3ae6a0dc521c019fc19243686868b970f",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 6.771039,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/prop-source-off/prop-source-off-qewt9z6a/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/prop-source-off/prop-source-off-qewt9z6a/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "staggered-crossing",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/test_staggered_hull_crossing_event.gd",
+      "script_sha256": "cdd9783fa472a32af486e6e1e2b9bbbf19629d60454a1e43110f2841c638c515",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 1.132714,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/staggered-crossing/staggered-crossing-96t2vwnh/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/staggered-crossing/staggered-crossing-96t2vwnh/engine.log",
+      "assertion_summary": null
+    },
+    {
+      "name": "lake-session",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/lake_session_probe.gd",
+      "script_sha256": "188bcde71ec17e20dbaea905cceb60330cc0390b1ddb7c4d9114b10a5e6542f7",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 4.201086,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/lake-session/lake-session-f2i7xcau/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/lake-session/lake-session-f2i7xcau/engine.log",
+      "assertion_summary": [
+        "13",
+        "0"
+      ]
+    },
+    {
+      "name": "heli-soft-contact",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/heli_soft_contact_probe.gd",
+      "script_sha256": "cb782a65f872faadd68e771335d0dfc510aa062255acdd35e1169aae5808ffc1",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 1.876454,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/heli-soft-contact/heli-soft-contact-16x6qgox/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/heli-soft-contact/heli-soft-contact-16x6qgox/engine.log",
+      "assertion_summary": [
+        "8",
+        "0"
+      ]
+    },
+    {
+      "name": "scenario-fuel",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/scenario_and_fuel_probe.gd",
+      "script_sha256": "ce3a6d63ddad339a412bca533da0cacbb6942984381dd76de46be39923726b01",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "elapsed_seconds": 2.343434,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/scenario-fuel/scenario-fuel-m8ix6r6e/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/scenario-fuel/scenario-fuel-m8ix6r6e/engine.log",
+      "assertion_summary": [
+        "61",
+        "1"
+      ]
+    },
+    {
+      "name": "ground-scenery",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/ground_scenery_probe.gd",
+      "script_sha256": "88d42f3255a5217667fb14893b4f5f559d8a0f06b3749be843ad1a20bae35289",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 4.760893,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/ground-scenery/ground-scenery-7f8_u3ho/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/ground-scenery/ground-scenery-7f8_u3ho/engine.log",
+      "assertion_summary": [
+        "19",
+        "0"
+      ]
+    },
+    {
+      "name": "engine-com",
+      "script": "/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/probes/engine_com_probe.gd",
+      "script_sha256": "f969780440796ce3fc1622406faee667d8cfa03a2e8f9e45791f31173043d7c7",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "elapsed_seconds": 0.283068,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/collision-runs/current-contact/engine-com/engine-com-cbc_7x67/report.json",
+      "log": "/workspace/scratch/40820211f477/collision-runs/current-contact/engine-com/engine-com-cbc_7x67/engine.log",
+      "assertion_summary": [
+        "1",
+        "0"
+      ]
+    }
+  ]
+}

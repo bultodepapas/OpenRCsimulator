@@ -1,0 +1,126 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_albedo.jpg (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] _texture (res://render/vehicle_paint.gd:229)
+       [1] _paint (res://render/vehicle_paint.gd:151)
+       [2] apply (res://render/vehicle_paint.gd:114)
+       [3] build (res://aircraft/hx700_model.gd:86)
+       [4] _run (/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd:17)
+ERROR: Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_normal.jpg (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] _texture (res://render/vehicle_paint.gd:229)
+       [1] _paint (res://render/vehicle_paint.gd:196)
+       [2] apply (res://render/vehicle_paint.gd:114)
+       [3] build (res://aircraft/hx700_model.gd:86)
+       [4] _run (/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd:17)
+ERROR: Resource file not found: res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] _texture (res://render/vehicle_paint.gd:229)
+       [1] _paint (res://render/vehicle_paint.gd:202)
+       [2] apply (res://render/vehicle_paint.gd:114)
+       [3] build (res://aircraft/hx700_model.gd:86)
+       [4] _run (/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd:17)
+ERROR: Resource file not found: res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] _texture (res://render/vehicle_paint.gd:229)
+       [1] _paint (res://render/vehicle_paint.gd:202)
+       [2] apply (res://render/vehicle_paint.gd:114)
+       [3] build (res://aircraft/hx700_model.gd:86)
+       [4] _run (/workspace/scratch/40820211f477/OpenRCsimulator/docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round2/probes/probe_heli_delayed_frames.gd:17)
+ok   stock model and context load
+ok   stock wreck prepares
+ok   delayed_unchanged_control starts C4
+ok   delayed_unchanged_control rotor is delayed
+ok   delayed_unchanged_control initial reference agrees
+ok   delayed_unchanged_control rotor is delayed
+ok   delayed_unchanged_control initial reference agrees
+ok   delayed_unchanged_control rotor is delayed
+ok   delayed_unchanged_control initial reference agrees
+ok   delayed_unchanged_control rotor is delayed
+ok   delayed_unchanged_control initial reference agrees
+ok   delayed_unchanged_control has four authored rotor blades
+ok   delayed_unchanged_control spin transports with main
+ok   delayed_unchanged_control spin transports with main
+ok   delayed_unchanged_control spin transports with tail
+ok   delayed_unchanged_control spin transports with tail
+ok   delayed_unchanged_control scheduler activates main
+ok   delayed_unchanged_control released velocity follows frame main
+ok   delayed_unchanged_control scheduler activates main
+ok   delayed_unchanged_control released velocity follows frame main
+ok   delayed_unchanged_control scheduler activates tail
+ok   delayed_unchanged_control released velocity follows frame tail
+ok   delayed_unchanged_control scheduler activates tail
+ok   delayed_unchanged_control released velocity follows frame tail
+ok   delayed_translation starts C4
+ok   delayed_translation rotor is delayed
+ok   delayed_translation initial reference agrees
+ok   delayed_translation rotor is delayed
+ok   delayed_translation initial reference agrees
+ok   delayed_translation rotor is delayed
+ok   delayed_translation initial reference agrees
+ok   delayed_translation rotor is delayed
+ok   delayed_translation initial reference agrees
+ok   delayed_translation has four authored rotor blades
+FAIL delayed_translation spin transports with main
+FAIL delayed_translation spin transports with main
+FAIL delayed_translation spin transports with tail
+FAIL delayed_translation spin transports with tail
+ok   delayed_translation scheduler activates main
+FAIL delayed_translation released velocity follows frame main
+ok   delayed_translation scheduler activates main
+FAIL delayed_translation released velocity follows frame main
+ok   delayed_translation scheduler activates tail
+FAIL delayed_translation released velocity follows frame tail
+ok   delayed_translation scheduler activates tail
+FAIL delayed_translation released velocity follows frame tail
+ok   delayed_rotation starts C4
+ok   delayed_rotation rotor is delayed
+ok   delayed_rotation initial reference agrees
+ok   delayed_rotation rotor is delayed
+ok   delayed_rotation initial reference agrees
+ok   delayed_rotation rotor is delayed
+ok   delayed_rotation initial reference agrees
+ok   delayed_rotation rotor is delayed
+ok   delayed_rotation initial reference agrees
+ok   delayed_rotation has four authored rotor blades
+FAIL delayed_rotation spin transports with main
+FAIL delayed_rotation spin transports with main
+FAIL delayed_rotation spin transports with tail
+FAIL delayed_rotation spin transports with tail
+ok   delayed_rotation scheduler activates main
+FAIL delayed_rotation released velocity follows frame main
+ok   delayed_rotation scheduler activates main
+FAIL delayed_rotation released velocity follows frame main
+ok   delayed_rotation scheduler activates tail
+FAIL delayed_rotation released velocity follows frame tail
+ok   delayed_rotation scheduler activates tail
+FAIL delayed_rotation released velocity follows frame tail
+ok   zero_spin_transport_control starts C4
+ok   zero_spin_transport_control rotor is delayed
+ok   zero_spin_transport_control initial reference agrees
+ok   zero_spin_transport_control rotor is delayed
+ok   zero_spin_transport_control initial reference agrees
+ok   zero_spin_transport_control rotor is delayed
+ok   zero_spin_transport_control initial reference agrees
+ok   zero_spin_transport_control rotor is delayed
+ok   zero_spin_transport_control initial reference agrees
+ok   zero_spin_transport_control has four authored rotor blades
+ok   zero_spin_transport_control spin transports with main
+ok   zero_spin_transport_control spin transports with main
+ok   zero_spin_transport_control spin transports with tail
+ok   zero_spin_transport_control spin transports with tail
+ok   zero_spin_transport_control scheduler activates main
+ok   zero_spin_transport_control released velocity follows frame main
+ok   zero_spin_transport_control scheduler activates main
+ok   zero_spin_transport_control released velocity follows frame main
+ok   zero_spin_transport_control scheduler activates tail
+ok   zero_spin_transport_control released velocity follows frame tail
+ok   zero_spin_transport_control scheduler activates tail
+ok   zero_spin_transport_control released velocity follows frame tail
+ROUND2_HELI_DELAYED_FRAMES_OBSERVATIONS [{"bodies":[{"actual_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"actual_release_mps":[-2.33432149887085,0.0,-3.44921159744263],"due_s":0.0360546628634135,"expected_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"expected_release_mps":[-2.33432149887085,0.0,-3.44921159744263],"family":"main","group_mass_kg":0.162183538079262,"index":1,"initial_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"release_error_mps":0.0,"spin_budget_j":1.9},{"actual_raw_mps":[2.33432078361511,0.0,3.44921159744263],"actual_release_mps":[2.33432078361511,0.0,3.44921159744263],"due_s":0.0360546588897705,"expected_raw_mps":[2.33432078361511,0.0,3.44921159744263],"expected_release_mps":[2.33432078361511,0.0,3.44921159744263],"family":"main","group_mass_kg":0.162183552980423,"index":2,"initial_raw_mps":[2.33432078361511,0.0,3.44921159744263],"release_error_mps":0.0,"spin_budget_j":1.9},{"actual_raw_mps":[0.0,1.74211263656616,2.96745300292969],"actual_release_mps":[0.0,0.67891263961792,1.15643584728241],"due_s":0.0627018650372823,"expected_raw_mps":[0.0,1.74211263656616,2.96745300292969],"expected_release_mps":[0.0,0.67891263961792,1.15643572807312],"family":"tail","group_mass_kg":0.0778480544686317,"index":7,"initial_raw_mps":[0.0,1.74211263656616,2.96745300292969],"release_error_mps":0.000000119209289550781,"spin_budget_j":0.069995763414316},{"actual_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"actual_release_mps":[0.0,-0.678925216197968,-1.15642750263214],"due_s":0.0663405934969584,"expected_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"expected_release_mps":[0.0,-0.678925216197968,-1.15642750263214],"family":"tail","group_mass_kg":0.0778481513261795,"index":8,"initial_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"release_error_mps":0.0,"spin_budget_j":0.069995763414316}],"case":"delayed_unchanged_control","elapsed_supplied_s":0.0673405934969584,"rotation_radians":0.0,"scatter_j":0.0,"shaft_speed_main_rad_s":10.0,"shaft_speed_tail_rad_s":40.0,"translation_m":[0.0,0.0,0.0]},{"bodies":[{"actual_raw_mps":[-10.3343210220337,0.0,6.55078840255737],"actual_release_mps":[-4.08830690383911,0.0,2.59152317047119],"due_s":0.0360546628634135,"expected_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"expected_release_mps":[-2.33432149887085,0.0,-3.44921159744263],"family":"main","group_mass_kg":0.162183538079262,"index":1,"initial_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"release_error_mps":6.29022598266602,"spin_budget_j":1.9},{"actual_raw_mps":[-5.66567897796631,0.0,13.4492111206055],"actual_release_mps":[-1.879185795784,0.0,4.46081876754761],"due_s":0.0360546588897705,"expected_raw_mps":[2.33432078361511,0.0,3.44921159744263],"expected_release_mps":[2.33432078361511,0.0,3.44921159744263],"family":"main","group_mass_kg":0.162183552980423,"index":2,"initial_raw_mps":[2.33432078361511,0.0,3.44921159744263],"release_error_mps":4.33324241638184,"spin_budget_j":1.9},{"actual_raw_mps":[0.0,-30.257884979248,14.9674606323242],"actual_release_mps":[0.0,-1.20197689533234,0.594573676586151],"due_s":0.0627018650372823,"expected_raw_mps":[0.0,1.74211263656616,2.96745300292969],"expected_release_mps":[0.0,0.67891263961792,1.15643572807312],"family":"tail","group_mass_kg":0.0778480544686317,"index":7,"initial_raw_mps":[0.0,1.74211263656616,2.96745300292969],"release_error_mps":1.96301674842834,"spin_budget_j":0.069995763414316},{"actual_raw_mps":[0.0,-33.7421112060547,9.03263092041016],"actual_release_mps":[0.0,-1.29538238048553,0.346768796443939],"due_s":0.0663405934969584,"expected_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"expected_release_mps":[0.0,-0.678925216197968,-1.15642750263214],"family":"tail","group_mass_kg":0.0778481513261795,"index":8,"initial_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"release_error_mps":1.62469029426575,"spin_budget_j":0.069995763414316}],"case":"delayed_translation","elapsed_supplied_s":0.0673405934969584,"rotation_radians":0.0,"scatter_j":0.0,"shaft_speed_main_rad_s":10.0,"shaft_speed_tail_rad_s":40.0,"translation_m":[1.0,0.300000011920929,0.800000011920929]},{"bodies":[{"actual_raw_mps":[-3.22587966918945,0.0,-4.34077310562134],"actual_release_mps":[-2.88724708557129,0.0,-3.88510584831238],"due_s":0.0360546628634135,"expected_raw_mps":[-2.46540904045105,0.507866621017456,-3.31812405586243],"expected_release_mps":[-2.46540904045105,0.507866621017456,-3.31812405586243],"family":"main","group_mass_kg":0.162183538079262,"index":1,"initial_raw_mps":[-2.33432149887085,0.0,-3.44921159744263],"release_error_mps":0.8702552318573,"spin_budget_j":1.9},{"actual_raw_mps":[0.0827199220657349,0.0,1.19760775566101],"actual_release_mps":[0.0827199220657349,0.0,1.19760775566101],"due_s":0.0360546588897705,"expected_raw_mps":[2.46540832519531,-0.507866978645325,3.31812381744385],"expected_release_mps":[2.46540832519531,-0.507866978645325,3.31812381744385],"family":"main","group_mass_kg":0.162183552980423,"index":2,"initial_raw_mps":[2.33432078361511,0.0,3.44921159744263],"release_error_mps":3.22981762886047,"spin_budget_j":1.9},{"actual_raw_mps":[0.0,0.734729766845703,-14.8244857788086],"actual_release_mps":[0.0,0.0663807690143585,-1.33935058116913],"due_s":0.0627018650372823,"expected_raw_mps":[-0.444675892591476,-0.0193245410919189,3.41212892532349],"expected_release_mps":[-0.173293113708496,-0.0075309001840651,1.32972884178162],"family":"tail","group_mass_kg":0.0778480544686317,"index":7,"initial_raw_mps":[0.0,1.74211263656616,2.96745300292969],"release_error_mps":2.67571997642517,"spin_budget_j":0.069995763414316},{"actual_raw_mps":[0.0,0.36367654800415,-20.9508895874023],"actual_release_mps":[0.0,0.0232741646468639,-1.34079158306122],"due_s":0.0663405934969584,"expected_raw_mps":[0.444684863090515,0.0192897319793701,-3.4120614528656],"expected_release_mps":[0.173299819231033,0.00751747423782945,-1.32972729206085],"family":"tail","group_mass_kg":0.0778481513261795,"index":8,"initial_raw_mps":[0.0,-1.74211263656616,-2.96737670898438],"release_error_mps":0.174366042017937,"spin_budget_j":0.069995763414316}],"case":"delayed_rotation","elapsed_supplied_s":0.0673405934969584,"rotation_radians":0.7,"scatter_j":0.0,"shaft_speed_main_rad_s":10.0,"shaft_speed_tail_rad_s":40.0,"translation_m":[0.0,0.0,0.0]},{"bodies":[{"actual_raw_mps":[0.0,0.0,0.0],"actual_release_mps":[0.0,0.0,0.0],"due_s":0.0360546628634135,"expected_raw_mps":[0.0,0.0,0.0],"expected_release_mps":[0.0,0.0,0.0],"family":"main","group_mass_kg":0.162183538079262,"index":1,"initial_raw_mps":[0.0,0.0,0.0],"release_error_mps":0.0,"spin_budget_j":0.0},{"actual_raw_mps":[0.0,0.0,0.0],"actual_release_mps":[0.0,0.0,0.0],"due_s":0.0360546588897705,"expected_raw_mps":[0.0,0.0,0.0],"expected_release_mps":[0.0,0.0,0.0],"family":"main","group_mass_kg":0.162183552980423,"index":2,"initial_raw_mps":[0.0,0.0,0.0],"release_error_mps":0.0,"spin_budget_j":0.0},{"actual_raw_mps":[0.0,0.0,0.0],"actual_release_mps":[0.0,0.0,0.0],"due_s":0.0627018650372823,"expected_raw_mps":[0.0,0.0,0.0],"expected_release_mps":[0.0,0.0,0.0],"family":"tail","group_mass_kg":0.0778480544686317,"index":7,"initial_raw_mps":[0.0,0.0,0.0],"release_error_mps":0.0,"spin_budget_j":0.0},{"actual_raw_mps":[0.0,0.0,0.0],"actual_release_mps":[0.0,0.0,0.0],"due_s":0.0663405934969584,"expected_raw_mps":[0.0,0.0,0.0],"expected_release_mps":[0.0,0.0,0.0],"family":"tail","group_mass_kg":0.0778481513261795,"index":8,"initial_raw_mps":[0.0,0.0,0.0],"release_error_mps":0.0,"spin_budget_j":0.0}],"case":"zero_spin_transport_control","elapsed_supplied_s":0.0673405934969584,"rotation_radians":0.7,"scatter_j":0.0,"shaft_speed_main_rad_s":0.0,"shaft_speed_tail_rad_s":0.0,"translation_m":[1.0,0.300000011920929,0.800000011920929]}]
+ROUND2_HELI_DELAYED_FRAMES_COMPLETE: 90 checks, 16 failures

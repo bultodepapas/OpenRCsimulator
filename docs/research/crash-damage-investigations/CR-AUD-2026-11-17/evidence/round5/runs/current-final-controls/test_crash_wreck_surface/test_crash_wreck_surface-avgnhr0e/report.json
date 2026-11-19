@@ -1,0 +1,65 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d4ba47ff-30ef-4171-8fca-9de1c64b778b",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_crash_wreck_surface.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T18:07:53.082095+00:00",
+  "label": "test_crash_wreck_surface",
+  "log": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck_surface/test_crash_wreck_surface-avgnhr0e/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/current-final-controls/test_crash_wreck_surface/test_crash_wreck_surface-avgnhr0e/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": -9,
+  "complete": false,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 8,
+      "message": "Aircraft model contract: [\"bundled resource is missing\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "          at: _run (res://tests/test_crash_wreck_surface.gd:21)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _run (res://tests/test_crash_wreck_surface.gd:21)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 90.035402,
+  "log_bytes": 883,
+  "log_sha256": "74c7fdbc622cfffc1ae69c6691bb3b9f99f9ccb8d7356a20d9825641420aa15d"
+}

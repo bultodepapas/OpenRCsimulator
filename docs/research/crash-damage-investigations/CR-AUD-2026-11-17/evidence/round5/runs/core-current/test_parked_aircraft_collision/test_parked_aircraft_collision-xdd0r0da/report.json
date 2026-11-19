@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "912bef76-6c9f-4f49-8920-0a3ee603a4b0",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/collision-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/collision-fixture/app/tests/test_parked_aircraft_collision.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-19T17:59:07.998438+00:00",
+  "label": "test_parked_aircraft_collision",
+  "log": "/workspace/scratch/40820211f477/collision-runs/core-current/test_parked_aircraft_collision/test_parked_aircraft_collision-xdd0r0da/engine.log",
+  "report": "/workspace/scratch/40820211f477/collision-runs/core-current/test_parked_aircraft_collision/test_parked_aircraft_collision-xdd0r0da/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 2.319262,
+  "log_bytes": 872,
+  "log_sha256": "0a08b8a1cc4f4fc07216c60c25bc72a9e6bba8126acaf94ca2c20c4fc961a55f"
+}

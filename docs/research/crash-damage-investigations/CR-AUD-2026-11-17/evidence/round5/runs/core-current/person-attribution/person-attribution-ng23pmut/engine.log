@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   default interactive lens setup is configured
+ok   the three real collision worlds build
+ok   separate spectator is selected by the production 1.2 m AABB query
+ok   prescribed terrain impact point is outside the spectator capsule signed_clearance_m=1.015009
+ok   characterization: nearby spectator is presented as struck by the ground impact person_events=1 blood=true
+FAIL desired: terrain-only impact does not announce a separate spectator
+ok   far spectator control produces no person event or blood
+ok   positive control point lies inside the person capsule
+ok   prescribed actual-person impact produces one spectator event and blood
+helicopter person attribution: 9 checks, 1 failed; prescribed presentation input only
