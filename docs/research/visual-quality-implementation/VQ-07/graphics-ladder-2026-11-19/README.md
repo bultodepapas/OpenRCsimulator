@@ -216,11 +216,23 @@ windowed (240.8 vs 284.2), where nothing else limits.
 - Forward+ crashes were compiled by the smoke run and earlier passes. Standard and Mobile compiled crash
   pipelines at first impact for up to 4.2 s.
 - The night crash compiled once for 181 ms.
+- **Correction (re-measured cold the same afternoon).** These freezes were mostly the shader cache being written to
+  the USB flash drive. With a fresh profile on a system drive:
+
+  | Profile | First crash | First Home → Fly |
+  | --- | --- | --- |
+  | Mobile | 33–48 ms | 3.6–4.4 s |
+  | Forward+ | 20 ms | 4.2 s |
+  | Standard L13 | 405–766 ms | 12.5 s |
+  | Standard L00 | 116–574 ms | |
+  | Standard L09 | 47–48 ms | |
+
+  See the [cross-platform analysis](../ladder-analysis-2026-11-19/README.md#8-implementation-results).
 
 **Load.**
 - Warm launches took about 16 s to Home, and Home → Fly took 3.4 s.
-- First use of a profile is far slower. Standard's first Home → Fly took 19.6–40.9 s and Mobile's 10.9–11.8 s, while
-  shader caches filled on the USB drive.
+- First use of a profile was slower: Standard's first Home → Fly took 19.6–40.9 s and Mobile's 10.9–11.8 s. Most of
+  that was the USB drive, per the correction above.
 
 **Automatic and fresh install.**
 - Every Automatic choice on High at 4K borderless (AUTO) picked Scene detail High and ran at 265.1 fps; its second
