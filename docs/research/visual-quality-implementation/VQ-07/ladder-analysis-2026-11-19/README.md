@@ -117,8 +117,8 @@ a taxi or a low chase view costs. No such view has been measured in flight yet (
 | D5 | Crash frames reach p99 29–30 ms from L06 on at 4K, GPU-bound; at 60 Hz such frames miss a refresh | 3090 | crash ladder | Open: crash with VQ |
 | D6 | Projected shadows and the planar cue cost 6.6 % of flight fps in the ladder, with no draw-call change | 3090 | ladder L03 | Re-measured at about 2 % with no runtime culprit (I5, [§8](#8-implementation-results)) |
 | D7 | Product code reads RenderingServer GPU/CPU timing every frame ([`auto_calibration.gd`](../../../../../app/render/auto_calibration.gd), `frame_diagnostics.gd`). Under the separate render thread each read is a blocking sync | latent | engine warning, [Godot server wrappers](https://github.com/godotengine/godot/blob/master/servers/server_wrap_mt_common.h) | Open: VQ-07h before any thread-model change |
-| D8 | FSR2 adds about 2.3 GB of process RSS at 4K in every mode, while its VRAM report drops | 3090 | report §4 | Unexplained (T12) |
-| D9 | Native physics still costs 0.41 ms per 240 Hz tick, about 10 % of the main thread in flight (GDScript: 0.74 ms) | 3090 | `perf.sim_step_usec` | Open: physics/PT profiling (T15) |
+| D8 | FSR2 adds about 2.3 GB of process RSS at 4K in every mode, while its VRAM report drops | 3090 | report §4 | Located (T12, [§8](#8-implementation-results)): private memory outside Godot's heap from FSR2 set-up |
+| D9 | Native physics still costs 0.41 ms per 240 Hz tick, about 10 % of the main thread in flight (GDScript: 0.74 ms) | 3090 | `perf.sim_step_usec` | Profiled (T15, [§8](#8-implementation-results)): a third is GDScript glue in pinned files; physics owners |
 | D10 | Host freezes of 1.0–1.7 s outside `_process`, and a −10 % REF transient | 3090 | A/B and REF tables | Unexplained (T10) |
 | D11 | D3D12 is 5–11 % slower in flight but 15–17 % faster at Home than Vulkan | 3090 | report §4 | Unexplained (T11) |
 | D12 | Harness defects: leaked `nvidia-smi` streams after a kill; `host_activity` checked only at launch; the bridge's `render measure=true` stalls (77–89 ms frames) under the separate render thread | tools | this campaign | Open: harness (I10) |
@@ -280,6 +280,48 @@ and the profile on a system drive, A against B (warm-up also on Mobile):
 - The Mobile warm-up showed no measurable benefit on either host, so it was not added.
 - What remains is Compatibility's 0.4 s first crash in spite of its warm-up, an open item for the crash owners.
 - Apple's own Metal cache stayed warm on the M1, so a first launch after an OS update is not covered.
+
+**Compatibility first crash, bisected (cold, fresh profile per run, 4K).** Where the first crash's longest
+frame goes:
+
+| Configuration | First crash, longest frame | Impact |
+| --- | --- | --- |
+| L09 | 48 ms, 47 ms | lamp mast, fence |
+| L00 | 116 ms, 574 ms | airframe contact, prop strike and nose gear |
+| L13 | 405 ms, 766 ms | prop strike and nose gear, lamp mast |
+
+- The stall is rendering work: `process_ms` ≤ 29 ms and physics ≤ 2.6 ms in those frames, and nothing is logged
+  even with `--verbose`. That fits OpenGL compiling shaders on the main thread.
+- The lens stack and the CR-22c crash warm-up both run on Compatibility, yet a gap remains. It depends on the
+  settings and the impact type, and possibly on NVIDIA's own GL shader cache, which runs share.
+- **Hand-off to the crash owners:** a deterministic crash (`checkpoint` + replay) and a per-effect check under each
+  settings level.
+
+**I9: main-thread physics and audio (GDScript profile, circling flight, native kernel, L09 4K).**
+
+- **Physics.** `simulation.gd` `step` is about 10 % of the frame at 275 fps. About a third of each tick is GDScript
+  glue around the native kernel: `_kernel_pre_step`, `_array_is_finite` (≈400 calls per tick),
+  `lake_surface.is_valid_definition`, and the terrain micro-relief sampling. Those files are in the pinned
+  `app/physics`/`app/sim` set, so this is a candidate for the physics owners (solver identity renewal), not done
+  here.
+- **Audio.** The glow engine's procedural voice (`glow_voice.gd` `render_telemetry`, `_exhaust_wave` about 24,000
+  calls a second) runs on its own worker thread (`glow_audio_pump.gd`). It costs about 6 % of another core, which
+  is the second-busiest thread in every ladder run, and takes nothing from the frame. It also runs when the app is
+  muted.
+
+**I8: FSR2's memory (L13 4K, two pairs, MSAA 4× against FSR2 Quality).**
+
+| Flight, after 8 s | MSAA 4× | FSR2 Quality |
+| --- | --- | --- |
+| Process private bytes | 5.1–5.3 GB | 7.4–7.7 GB |
+| Godot static memory | 565 MiB | 620–630 MiB |
+| Godot video memory | 2.32–2.36 GB | 2.02 GB |
+| `nvidia-smi` memory used | 5.8–5.9 GB | 5.59 GB |
+
+- FSR2 adds 2.3–2.5 GB of private memory outside Godot's heap, while GPU memory falls.
+- It is already there at Home, so it comes with FSR2's set-up: driver-side pipelines or shader permutations, to
+  confirm with a minimal project.
+- Until explained, Automatic should not choose FSR2 on hosts with 16 GB or less.
 
 **I10: harness, partly done.** `ladder.py` now:
 
