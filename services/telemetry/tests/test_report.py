@@ -18,9 +18,13 @@ NOW = unix("2027-01-18T02:00:00Z")
 
 
 def gpu_row(family="nvidia_rtx", sessions=20, seconds=600, fps=60):
+    intervals = sessions * seconds * fps
+    # 60 FPS: every interval in bucket 1; 30 FPS: a 2:1 mix of buckets 2 and 3 around the 33.3 ms mean.
+    histogram = ([0, intervals, 0, 0, 0, 0, 0, 0] if fps == 60
+                 else [0, 0, intervals * 2 // 3, intervals // 3, 0, 0, 0, 0])
     return {"gpu_family": family, "session_observations": sessions,
             "interval_sum_us": sessions * seconds * 1_000_000,
-            "rendered_frames": sessions * seconds * fps}
+            "rendered_frames": sessions * seconds * fps, "interval_histogram": histogram, "excluded_gap_count": 0}
 
 
 class ReportCase(unittest.TestCase):
@@ -51,11 +55,11 @@ class ReportTests(ReportCase):
     def test_weekly_pooling_and_wording(self):
         self.fill()
         title, body, digest = report.material(contracts, self.agg, WEEK, RELEASE)
-        self.assertEqual(title, "OpenRC telemetry: 2027-W02 / v0.2.7 / weekly GPU and vehicle v1")
-        self.assertTrue(body.startswith("<!-- openrc-telemetry:weekly-v1/2027-W02/v0.2.7 -->\n"))
+        self.assertEqual(title, "OpenRC telemetry: 2027-W02 / v0.2.7 / weekly GPU and vehicle v2")
+        self.assertTrue(body.startswith("<!-- openrc-telemetry:weekly-v2/2027-W02/v0.2.7 -->\n"))
         self.assertIn("contributing session-day observations", body.lower())
-        self.assertIn("| nvidia_rtx | 50 | 60.00 |", body)
-        self.assertIn("| amd_radeon | 25 | 30.00 |", body)
+        self.assertIn("| nvidia_rtx | 50 | 60.00 | 0.0% | 0.0% | 0.00 |", body)
+        self.assertIn("| amd_radeon | 25 | 30.00 | 33.3% | 0.0% | 0.00 |", body)
         self.assertIn("| f4u-corsair-250 | 42 | 62 | 3.00 |", body)
         self.assertIn("| 2027-01-13 | suppressed | suppressed |", body)
         self.assertIn("| 2027-01-14 | no_data | missing |", body)
@@ -88,15 +92,35 @@ class ReportTests(ReportCase):
                          ["ready", "ready", "suppressed", "no_data", "missing", "missing", "missing"])
         self.assertEqual(data["gpu_rows"][0], {"gpu_family": "amd_radeon", "session_observations": 25,
                                                "interval_sum_us": 25 * 600_000_000,
-                                               "rendered_frames": 25 * 600 * 30})
+                                               "rendered_frames": 25 * 600 * 30,
+                                               "interval_histogram": [0, 0, 300000, 150000, 0, 0, 0, 0],
+                                               "excluded_gap_count": 0})
         json.dumps(data)
 
     def test_implausible_daily_rows_are_refused(self):
         self.agg.put_day("2027-01-11", RELEASE, "gpu", "ready",
                          [{"gpu_family": "nvidia_rtx", "session_observations": 20, "interval_sum_us": 1,
-                           "rendered_frames": 0}], NOW)
+                           "rendered_frames": 0, "interval_histogram": [1, 0, 0, 0, 0, 0, 0, 0],
+                           "excluded_gap_count": 0}], NOW)
         with self.assertRaises(ContractError):
             report.material(contracts, self.agg, WEEK, RELEASE)
+
+    def test_slow_frame_shares_come_from_the_summed_histogram(self):
+        def row(sessions, histogram):
+            return {"gpu_family": "nvidia_rtx", "session_observations": sessions,
+                    "interval_sum_us": sessions * 600_000_000, "rendered_frames": sum(histogram),
+                    "interval_histogram": histogram, "excluded_gap_count": 4}
+        self.agg.put_day("2027-01-11", RELEASE, "gpu", "ready", [row(20, [0, 700000, 20000, 8000, 2000, 400, 90, 10])],
+                         NOW)
+        self.agg.put_day("2027-01-12", RELEASE, "gpu", "ready",
+                         [row(30, [0, 1000000, 30000, 12000, 3000, 600, 140, 60])], NOW)
+        cell = report.collect(contracts, self.agg, WEEK, RELEASE)["gpu_rows"][0]
+        self.assertEqual(cell["interval_histogram"], [0, 1700000, 50000, 20000, 5000, 1000, 230, 70])
+        self.assertEqual(cell["excluded_gap_count"], 8)
+        _, body, _ = report.material(contracts, self.agg, WEEK, RELEASE)
+        # 1,776,300 intervals: 26,300 over 33.3 ms (1.48%), 6,300 over 50 ms (0.35%), 1,300 over 100 ms in
+        # 500 minutes (2.60 per minute); 1,776,300 frames / 30,000 s = 59.21 FPS.
+        self.assertIn("| nvidia_rtx | 50 | 59.21 | 1.5% | 0.4% | 2.60 |", body)
 
     def test_vehicle_rows_that_bypassed_the_rollup_are_refused_at_publication(self):
         good = {"vehicle_id": "f4u-corsair-250", "session_observations": 20, "activity_summaries": 20,

@@ -114,9 +114,26 @@ class AggStoreTests(unittest.TestCase):
                      for row in conn.execute(f"PRAGMA table_info({table})")}
         self.assertFalse({"session_id", "batch_id"} & names)
 
+    def test_an_aggregates_file_from_before_the_histogram_columns_is_refused(self):
+        import sqlite3
+        path = self.dir / "old.sqlite"
+        legacy = sqlite3.connect(str(path))
+        legacy.execute("CREATE TABLE daily_gpu(day TEXT NOT NULL, release_id TEXT NOT NULL, gpu_family TEXT NOT NULL, "
+                       "session_observations INTEGER NOT NULL, interval_sum_us INTEGER NOT NULL, "
+                       "rendered_frames INTEGER NOT NULL, PRIMARY KEY(day, release_id, gpu_family)) WITHOUT ROWID")
+        legacy.commit()
+        legacy.close()
+        old = AggStore(path)
+        try:
+            with self.assertRaises(StorageUnavailable):
+                old.get_day("2027-01-14", "v0.2.7", "gpu")
+        finally:
+            old.close()
+
     def test_put_day_is_an_idempotent_replace(self):
         row = {"gpu_family": "nvidia_rtx", "session_observations": 20, "interval_sum_us": 600_000_000,
-               "rendered_frames": 36000}
+               "rendered_frames": 36000, "interval_histogram": [0, 35000, 800, 150, 40, 8, 2, 0],
+               "excluded_gap_count": 7}
         self.store.put_day("2027-01-14", "v0.2.7", "gpu", "ready", [row], NOW)
         self.store.put_day("2027-01-14", "v0.2.7", "gpu", "ready", [row], NOW + 1)
         self.assertEqual(self.store.get_day("2027-01-14", "v0.2.7", "gpu"), ("ready", [row]))

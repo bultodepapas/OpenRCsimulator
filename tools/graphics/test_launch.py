@@ -388,6 +388,7 @@ class GraphicsLauncherTests(unittest.TestCase):
                 launch.subprocess, "run", return_value=SimpleNamespace(returncode=0)) as run:
             self.assertEqual(launch.main(["--godot", str(self.engine)]), 0)
         self.assertNotIn(launch.RESEARCH_ENV, run.call_args.kwargs["env"])
+        self.assertEqual(run.call_args.kwargs["env"][launch.TELEMETRY_DISABLE_ENV], "1")
 
     @unittest.skipUnless(os.environ.get("OPENRC_RESEARCH_TEST_GODOT"), "set OPENRC_RESEARCH_TEST_GODOT for the real-engine check")
     def test_research_identity_in_real_headless_engine(self) -> None:

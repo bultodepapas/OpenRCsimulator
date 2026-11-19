@@ -31,9 +31,12 @@ var interactive := false
 var consent_path := ConsentStore.DEFAULT_PATH
 var locale := "en"
 ## Returns the observation context each frame: {mode, activity (a simulated vehicle session), vehicle, custom,
-## eligible, simulated_seconds, fixed_wing_accepted, window_size, vsync, max_fps, graphics_profile, input_class}.
+## eligible, simulated_seconds, fixed_wing_accepted, window_size, vsync, max_fps, input_class}.
 ## See AppRoot._telemetry_context().
 var context_provider := Callable()
+## Returns "current_default", "custom" or "unknown"; asked when an event is recorded, never every frame. Unset, the
+## context's own graphics_profile (tests) or "unknown" applies.
+var graphics_profile_provider := Callable()
 ## Injected clocks for tests.
 var clock_usec: Callable = func() -> int: return Time.get_ticks_usec()
 var frames_drawn: Callable = func() -> int: return Engine.get_frames_drawn()
@@ -444,7 +447,9 @@ func _context() -> Dictionary:
 	out.resolution_basis = "viewport_coordinates" if live.window_size != Vector2i.ZERO else "unknown"
 	out.vsync = Hardware.vsync(live.vsync)
 	out.fps_cap_bucket = Hardware.fps_cap(int(live.get("max_fps", Engine.max_fps)))
-	var profile := str(ctx.get("graphics_profile", "unknown"))
+	var source: Variant = graphics_profile_provider.call() if graphics_profile_provider.is_valid() \
+		else ctx.get("graphics_profile", "unknown")
+	var profile := str(source)
 	out.graphics_profile = profile if profile in Contract.CONTEXT_VALUES.graphics_profile else "unknown"
 	var input := str(ctx.get("input_class", "unknown"))
 	out.input_class = input if input in Contract.CONTEXT_VALUES.input_class else "unknown"

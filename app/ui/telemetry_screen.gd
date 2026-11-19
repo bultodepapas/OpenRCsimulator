@@ -72,9 +72,11 @@ func _init(screen_mode := "consent", release: Dictionary = {}, preview := "") ->
 	scroll.add_child(body)
 	match mode:
 		"consent":
-			shell.add_child(_text("Help improve OpenRC Simulator", "TitleLabel"))
-			shell.add_child(_text("Recommended: share technical telemetry.", ""))
+			# Everything but the two choices scrolls (title included), so both choices stay on screen and the notice
+			# keeps room even at 200 % text in a 960×540 window.
 			shell.add_child(scroll)
+			body.add_child(_text("Help improve OpenRC Simulator", "TitleLabel"))
+			body.add_child(_text("Recommended: share technical telemetry.", ""))
 			for source: String in [SENT, NOT_SENT]:
 				body.add_child(_text(source, "SecondaryLabel"))
 			body.add_child(_text(WHERE, "SecondaryLabel", [_operator()]))
@@ -85,7 +87,7 @@ func _init(screen_mode := "consent", release: Dictionary = {}, preview := "") ->
 			var notice_button := _choice("Privacy notice", "QuietButton", "TelemetryNotice")
 			notice_button.pressed.connect(func() -> void: info_requested.emit("notice"))
 			links.add_child(notice_button)
-			shell.add_child(links)
+			body.add_child(links)
 			var actions := Widgets.button_row()
 			decline_button = _choice("Continue without telemetry", "", "TelemetryDecline")
 			decline_button.pressed.connect(_answer.bind(false))
@@ -228,6 +230,9 @@ func _choice(source: String, variation: String, node_name: String) -> Button:
 	var button := Widgets.button(tr(source), variation, node_name)
 	button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# A wrapping button needs a width share: in a row without one it wraps word by word, grows taller than the
+	# window and collapses the notice text. Both buttons of a row get equal, equally visible halves.
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_texts.append({"control": button, "source": source, "args": []})
 	return button
 

@@ -41,8 +41,8 @@ def closed(properties):
     }
 
 
-def histogram():
-    return {"type": "array", "minItems": 8, "maxItems": 8, "items": integer(0, 60000)}
+def histogram(maximum=60000):
+    return {"type": "array", "minItems": 8, "maxItems": 8, "items": integer(0, maximum)}
 
 
 def event(name, properties):
@@ -136,9 +136,12 @@ def schemas():
         # Keep every reported integer exactly representable by common JSON consumers.
         "interval_sum_us": integer(1, 2**53 - 1),
         "rendered_frames": integer(0, 10**12),
+        # Per-bucket interval counts and the excluded-gap total, summed over the cell's eligible windows.
+        "interval_histogram": histogram(10**12),
+        "excluded_gap_count": integer(0, 10**12),
     })
     report = closed({
-        "report_version": {"const": 1},
+        "report_version": {"const": 2},
         "aggregation_scope": {"const": "closed_day"},
         "day": {"type": "string", "minLength": 10, "maxLength": 10, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
         "release_id": batch["properties"]["build"]["properties"]["release_id"],
@@ -152,7 +155,7 @@ def schemas():
          "then": {"properties": {"rows": {"minItems": 1}}},
          "else": {"properties": {"rows": {"maxItems": 0}}}},
     ]
-    report.update({"$schema": SCHEMA_URI, "$id": "urn:openrc:telemetry:report:1",
+    report.update({"$schema": SCHEMA_URI, "$id": "urn:openrc:telemetry:report:2",
                    "title": "OpenRC proposed fixed GPU aggregate report"})
     error = closed({"code": enum("invalid_request", "conflict", "too_large", "unsupported_media", "rate_limited", "unavailable", "suspended")})
     openapi = {

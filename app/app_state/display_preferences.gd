@@ -185,6 +185,35 @@ static func recommended_defaults() -> Dictionary:
 	return _with_first_run_defaults(DEFAULTS.duplicate(true))
 
 
+## The graphics choices Settings → "Restore graphics defaults" resets. TELEM-04 telemetry reports whether they all
+## still equal recommended_defaults() (graphics_profile), so both use this one list.
+static func graphics_default_keys() -> Array[String]:
+	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
+		"runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+	for key: String in SHADOW_FILE_KEYS:
+		keys.append(key)
+	return keys
+
+
+## TELEM-04: "current_default" when every graphics_default_keys() value equals this GPU's recommended_defaults(),
+## "custom" when any differs, "unknown" when `candidate` cannot be compared. Not a settings snapshot.
+static func graphics_profile(candidate: Variant) -> String:
+	if not candidate is Dictionary:
+		return "unknown"
+	var recommended := recommended_defaults()
+	for key: String in graphics_default_keys():
+		if not candidate.has(key) or not recommended.has(key):
+			return "unknown"
+		var value: Variant = candidate[key]
+		var expected: Variant = recommended[key]
+		if typeof(value) in [TYPE_INT, TYPE_FLOAT] and typeof(expected) in [TYPE_INT, TYPE_FLOAT]:
+			if not is_equal_approx(float(value), float(expected)):
+				return "custom"
+		elif typeof(value) != typeof(expected) or value != expected:
+			return "custom"
+	return "current_default"
+
+
 static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
 	for key: String in first_run_defaults:
 		var value: Variant = first_run_defaults[key]

@@ -19,6 +19,13 @@ const UNAVAILABLE := "unavailable"
 
 ## Engine/user arguments a desktop launcher may add without changing the route (old macOS Finder launches).
 const BENIGN_ARGUMENT_PREFIXES: Array[String] = ["-psn_"]
+## Renderer selections the game's own restarts add (RendererGuard's Compatibility fallback after a renderer failure,
+## a Settings graphics-mode change) or a player's renderer shortcut uses. They choose how the same interactive
+## session draws, so those sessions are measured too; any other argument still closes the route.
+const RENDERER_ARGUMENTS := {
+	"--rendering-method": ["gl_compatibility", "mobile", "forward_plus"],
+	"--rendering-driver": ["opengl3", "opengl3_angle", "opengl3_es", "vulkan", "d3d12", "metal"],
+}
 ## Environment variables that make a run technical or automated even with no arguments.
 const TECHNICAL_ENVIRONMENT: Array[String] = ["OPENRC_PACKAGE_DEFAULT_PROBE", "OPENRC_GODTEST_CONFIG",
 	"OPENRC_DEBUG_BRIDGE", "OPENRC_UPDATE_URL", "OPENRC_TELEMETRY_DISABLE"]
@@ -57,7 +64,8 @@ static func evaluate(facts: Variant) -> Dictionary:
 	return _result(OFF, "unknown")
 
 
-## The ordinary interactive route: Home exists, no user or engine arguments (beyond launcher noise), a real
+## The ordinary interactive route: Home exists, no user or engine arguments (beyond launcher noise and a renderer
+## selection), a real
 ## display, the player's own settings file and no automation/diagnostic environment. Everything else is off.
 static func interactive_route(has_home: Variant, user_args: Variant, engine_args: Variant, display: Variant,
 		default_settings: Variant, environment: Variant) -> bool:
@@ -66,12 +74,19 @@ static func interactive_route(has_home: Variant, user_args: Variant, engine_args
 		return false
 	if not user_args is PackedStringArray or not user_args.is_empty() or not engine_args is PackedStringArray:
 		return false
-	for argument: String in engine_args:
+	var index := 0
+	while index < engine_args.size():
+		var argument: String = engine_args[index]
 		var benign := false
 		for prefix: String in BENIGN_ARGUMENT_PREFIXES:
 			benign = benign or argument.begins_with(prefix)
+		if not benign and RENDERER_ARGUMENTS.has(argument) and index + 1 < engine_args.size() \
+				and engine_args[index + 1] in RENDERER_ARGUMENTS[argument]:
+			benign = true
+			index += 1 # the value
 		if not benign:
 			return false
+		index += 1
 	if not environment is Dictionary:
 		return false
 	for key: String in TECHNICAL_ENVIRONMENT:

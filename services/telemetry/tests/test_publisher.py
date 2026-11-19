@@ -120,7 +120,8 @@ class PublisherCase(unittest.TestCase):
         self.github = GitHub(self.fake.url, TOKEN, timeout=0.4)
         self.agg.put_day("2027-01-11", RELEASE, "gpu", "ready",
                          [{"gpu_family": "nvidia_rtx", "session_observations": 20,
-                           "interval_sum_us": 20 * 600_000_000, "rendered_frames": 20 * 600 * 60}], NOW)
+                           "interval_sum_us": 20 * 600_000_000, "rendered_frames": 20 * 600 * 60,
+                           "interval_histogram": [0, 20 * 600 * 60, 0, 0, 0, 0, 0, 0], "excluded_gap_count": 0}], NOW)
         self.title, self.body, self.digest = report.material(contracts, self.agg, WEEK, RELEASE)
         self.key = report.report_key(WEEK, RELEASE)
 
@@ -356,7 +357,8 @@ class CliTests(PublisherCase):
     def past_digest(self):
         self.agg.put_day("2026-09-29", RELEASE, "gpu", "ready",
                          [{"gpu_family": "nvidia_rtx", "session_observations": 20,
-                           "interval_sum_us": 20 * 600_000_000, "rendered_frames": 20 * 600 * 60}], NOW)
+                           "interval_sum_us": 20 * 600_000_000, "rendered_frames": 20 * 600 * 60,
+                           "interval_histogram": [0, 20 * 600 * 60, 0, 0, 0, 0, 0, 0], "excluded_gap_count": 0}], NOW)
         return report.material(contracts, self.agg, self.PAST_WEEK, RELEASE)
 
     def test_default_dry_run_then_execute_posts_once(self):

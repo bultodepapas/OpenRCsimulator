@@ -57,7 +57,18 @@ class GpuTests(RollupCase):
         status, rows = self.table("gpu")
         self.assertEqual(status, "ready")
         self.assertEqual(rows, [{"gpu_family": "nvidia_rtx", "session_observations": 20,
-                                 "interval_sum_us": 20 * 30_000_000, "rendered_frames": 20 * 1800}])
+                                 "interval_sum_us": 20 * 30_000_000, "rendered_frames": 20 * 1800,
+                                 "interval_histogram": [0, 20 * 1800, 0, 0, 0, 0, 0, 0], "excluded_gap_count": 0}])
+
+    def test_histogram_and_gap_counts_are_summed_per_cell(self):
+        mixed = [0, 1700, 60, 30, 8, 2, 0, 0]
+        self.sessions(20, 1, events=[perf_event(1, histogram=mixed, gaps=3), perf_event(2, gaps=1)])
+        self.roll()
+        status, rows = self.table("gpu")
+        self.assertEqual(status, "ready")
+        self.assertEqual(rows[0]["interval_histogram"], [0, 70000, 1200, 600, 160, 40, 0, 0])
+        self.assertEqual(rows[0]["excluded_gap_count"], 80)
+        self.assertEqual(sum(rows[0]["interval_histogram"]), 20 * 2 * 1800)
 
     def test_one_small_cell_suppresses_the_whole_table(self):
         self.sessions(25, 1, gpu="nvidia_rtx")
@@ -92,6 +103,7 @@ class GpuTests(RollupCase):
         self.assertEqual(rows[0]["session_observations"], 20)
         self.assertEqual(rows[0]["interval_sum_us"], (19 + 120) * 30_000_000)
         self.assertEqual(rows[0]["rendered_frames"], (19 + 120) * 1800)
+        self.assertEqual(rows[0]["interval_histogram"], [0, (19 + 120) * 1800, 0, 0, 0, 0, 0, 0])
 
     def test_only_complete_observed_steady_flight_windows_count(self):
         ignored = [

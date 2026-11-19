@@ -1,6 +1,6 @@
 """Daily rollup of one closed day. Ports reference.aggregate_daily_gpu and adds a stock vehicle table.
 
-Output rows are ID-free. Whole tables are suppressed when any cell has fewer than 20 distinct
+Output rows are ID-free. GPU rows also sum the 8-bucket frame-interval histogram and excluded gaps. Whole tables are suppressed when any cell has fewer than 20 distinct
 ephemeral session tokens.
 """
 from __future__ import annotations
@@ -8,7 +8,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta, timezone
 from hashlib import sha256
 
-from .contract import ContractError, encode
+from .contract import HISTOGRAM_UPPER_US, ContractError, encode
 
 MIN_TOKENS = 20
 WINDOW_CAP = 120
@@ -78,18 +78,27 @@ def gpu_report(contracts, payloads, day, release_id, period, minimum=MIN_TOKENS)
         if counts.get(session, 0) >= WINDOW_CAP:
             continue
         counts[session] = counts.get(session, 0) + 1
-        group = groups.setdefault(payload["context"]["gpu_family"], {"sessions": set(), "time": 0, "frames": 0})
+        group = groups.setdefault(payload["context"]["gpu_family"], {
+            "sessions": set(), "time": 0, "frames": 0, "intervals": 0, "gaps": 0,
+            "histogram": [0] * len(HISTOGRAM_UPPER_US)})
         group["sessions"].add(session)
         group["time"] += event["interval_sum_us"]
         group["frames"] += event["rendered_frames"]
+        group["intervals"] += event["interval_count"]
+        group["gaps"] += event["excluded_gap_count"]
+        group["histogram"] = [a + b for a, b in zip(group["histogram"], event["interval_histogram"])]
     status = "no_data" if not groups else "ready"
     if any(len(group["sessions"]) < minimum for group in groups.values()):
         status = "suppressed"
-    rows = [] if status != "ready" else [
-        {"gpu_family": family, "session_observations": len(group["sessions"]),
-         "interval_sum_us": group["time"], "rendered_frames": group["frames"]}
-        for family, group in sorted(groups.items())]
-    report = {"report_version": 1, "aggregation_scope": "closed_day", "day": day, "period": period,
+    rows = []
+    if status == "ready":
+        for family, group in sorted(groups.items()):
+            if sum(group["histogram"]) != group["intervals"]:
+                raise ContractError("report_histogram")  # validate_body already guarantees it per window
+            rows.append({"gpu_family": family, "session_observations": len(group["sessions"]),
+                         "interval_sum_us": group["time"], "rendered_frames": group["frames"],
+                         "interval_histogram": group["histogram"], "excluded_gap_count": group["gaps"]})
+    report = {"report_version": 2, "aggregation_scope": "closed_day", "day": day, "period": period,
               "release_id": release_id, "status": status, "basis": "eligible_daily_session_observations",
               "rows": rows}
     contracts.validate_report(report)
@@ -148,7 +157,7 @@ def aggregate_daily_gpu(contracts, records, day, release_id, minimum=MIN_TOKENS,
         raise ContractError("cohort_floor")
     _, period = check_eligible(day, as_of_utc)
     # Validate even a no-data request before consuming any record iterator.
-    contracts.validate_report({"report_version": 1, "aggregation_scope": "closed_day", "day": day,
+    contracts.validate_report({"report_version": 2, "aggregation_scope": "closed_day", "day": day,
                                "period": period, "release_id": release_id, "status": "no_data",
                                "basis": "eligible_daily_session_observations", "rows": []})
     return gpu_report(contracts, _validated(contracts, records, day, release_id), day, release_id, period, minimum)

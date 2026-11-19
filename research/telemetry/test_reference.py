@@ -94,6 +94,11 @@ class PayloadTests(unittest.TestCase):
         self.assertEqual(hardware_family("Intel(R) Xeon(R) CPU", "cpu"), "other")
         self.assertEqual(hardware_family("Intel(R) Core(TM) i7-13700", "cpu"), "intel_core")
         self.assertEqual(hardware_family("Intel(R) Arc(TM) Graphics", "gpu"), "intel_arc")
+        self.assertEqual(hardware_family("Intel(R) Arc(TM) A770 Graphics", "gpu"), "intel_arc")
+        self.assertEqual(hardware_family("Intel(R) Graphics", "gpu"), "intel_integrated")
+        self.assertEqual(hardware_family("Mesa Intel(R) Xe Graphics (TGL GT2)", "gpu"), "intel_integrated")
+        self.assertEqual(hardware_family("AMD Custom GPU 0405 (RADV VANGOGH)", "gpu"), "amd_radeon")
+        self.assertEqual(hardware_family("AMD Radeon RX 7800 XT (RADV NAVI32)", "gpu"), "amd_radeon")
 
     def test_ambiguous_family_does_not_choose_first_match(self):
         cases = [
@@ -618,6 +623,41 @@ class IngressAndPublicationTests(unittest.TestCase):
         report = daily_report(bodies, "v0.2.7")
         self.assertEqual(report["rows"][0]["session_observations"], 20)
         self.assertEqual(report["rows"][0]["rendered_frames"], (19 + 120) * 1800)
+        self.assertEqual(report["rows"][0]["interval_histogram"], [0, (19 + 120) * 1800, 0, 0, 0, 0, 0, 0])
+
+    def test_daily_rows_sum_histograms_and_gap_counts(self):
+        bodies = []
+        for body in cohort(20):
+            payload = json.loads(body)
+            payload["events"][0].update(interval_histogram=[0, 1700, 60, 30, 8, 2, 0, 0], excluded_gap_count=3)
+            bodies.append(encode(payload))
+        row = daily_report(bodies, "v0.2.7")["rows"][0]
+        self.assertEqual(row["interval_histogram"], [0, 34000, 1200, 600, 160, 40, 0, 0])
+        self.assertEqual(row["excluded_gap_count"], 60)
+        self.assertEqual(sum(row["interval_histogram"]), 20 * 1800)
+
+    def test_report_histogram_and_gap_bounds(self):
+        report = daily_report(cohort(20), "v0.2.7")
+        row = report["rows"][0]
+        for impossible in ([0, 0, 0, 0, 0, 0, 0, 36000],  # needs at least 36,000 s; 600 s were observed
+                           [36000, 0, 0, 0, 0, 0, 0, 0]):  # at most 300 s
+            row["interval_histogram"] = impossible
+            with self.subTest(histogram=impossible), self.assertRaisesRegex(ContractError, "^report_histogram$"):
+                validate_report(report)
+        row["interval_histogram"] = [0, 36000, 0, 0, 0, 0, 0, 0]
+        row["excluded_gap_count"] = 20 * 120 * 1000
+        validate_report(report)
+        row["excluded_gap_count"] += 1
+        with self.assertRaisesRegex(ContractError, "^report_gaps$"):
+            validate_report(report)
+        row["excluded_gap_count"] = 0
+        del row["interval_histogram"]
+        with self.assertRaisesRegex(ContractError, "^report_schema$"):
+            validate_report(report)
+        row["interval_histogram"] = [0, 36000, 0, 0, 0, 0, 0, 0]
+        report["report_version"] = 1
+        with self.assertRaisesRegex(ContractError, "^report_schema$"):
+            validate_report(report)
 
     def test_threshold_19_suppressed_20_ready(self):
         for count, status in [(19, "suppressed"), (20, "ready")]:
@@ -714,7 +754,8 @@ class IngressAndPublicationTests(unittest.TestCase):
             with self.subTest(exposure=exposure), self.assertRaisesRegex(ContractError, "^report_exposure$"):
                 validate_report(report)
         for exposure in [minimum, maximum]:
-            row.update(interval_sum_us=exposure, rendered_frames=max_frames)
+            row.update(interval_sum_us=exposure, rendered_frames=max_frames,
+                       interval_histogram=[0] * 7 + [exposure // 5_000_000])
             with self.subTest(exposure=exposure):
                 validate_report(report)
         row["rendered_frames"] = max_frames + 1
@@ -724,7 +765,8 @@ class IngressAndPublicationTests(unittest.TestCase):
     def test_report_scalar_capacity_rejects_whole_report_without_truncation(self):
         report = daily_report(cohort(20), "v0.2.7")
         stress = {"gpu_family": "amd_radeon", "session_observations": 300_000_000,
-                  "interval_sum_us": 2**53 - 1, "rendered_frames": 0}
+                  "interval_sum_us": 2**53 - 1, "rendered_frames": 0,
+                  "interval_histogram": [0] * 7 + [2_000_000_000], "excluded_gap_count": 0}
         report["rows"].append(stress)
         # The stress row is feasible under the per-session duration bounds.
         validate_report(report)
@@ -735,7 +777,7 @@ class IngressAndPublicationTests(unittest.TestCase):
         self.assertEqual(report, original)
 
         stress.update(session_observations=140_000, interval_sum_us=140_000 * 30_000_000,
-                      rendered_frames=10**12)
+                      rendered_frames=10**12, interval_histogram=[0] * 7 + [2_000_000])
         validate_report(report)
         stress["rendered_frames"] += 1
         original = deepcopy(report)

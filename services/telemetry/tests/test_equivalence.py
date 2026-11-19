@@ -266,8 +266,9 @@ class EquivalenceTests(unittest.TestCase):
 
     def test_report_validator_matches_reference(self):
         row = {"gpu_family": "nvidia_rtx", "session_observations": 20, "interval_sum_us": 600_000_000,
-               "rendered_frames": 36000}
-        good = {"report_version": 1, "aggregation_scope": "closed_day", "day": "2027-01-14", "period": "2027-W02",
+               "rendered_frames": 36000, "interval_histogram": [0, 36000, 0, 0, 0, 0, 0, 0], "excluded_gap_count": 0}
+        short_row = {key: value for key, value in row.items() if key != "excluded_gap_count"}
+        good = {"report_version": 2, "aggregation_scope": "closed_day", "day": "2027-01-14", "period": "2027-W02",
                 "release_id": RELEASE, "status": "ready", "basis": "eligible_daily_session_observations",
                 "rows": [row]}
         cases = [good, {**good, "period": "2027-W03"}, {**good, "status": "suppressed"},
@@ -275,7 +276,13 @@ class EquivalenceTests(unittest.TestCase):
                  {**good, "rows": [{**row, "interval_sum_us": 1}]},
                  {**good, "rows": [{**row, "rendered_frames": 10**12}]},
                  {**good, "rows": [row, row]}, {**good, "day": "2027-02-30"}, {**good, "extra": 1},
-                 {**good, "status": "no_data", "rows": []}, {**good, "rows": []}]
+                 {**good, "status": "no_data", "rows": []}, {**good, "rows": []},
+                 {**good, "report_version": 1},
+                 {**good, "rows": [{**row, "interval_histogram": [0, 0, 0, 0, 0, 0, 0, 36000]}]},
+                 {**good, "rows": [{**row, "interval_histogram": [36000, 0, 0, 0, 0, 0, 0, 0]}]},
+                 {**good, "rows": [{**row, "excluded_gap_count": 20 * 120 * 1000 + 1}]},
+                 {**good, "rows": [{**row, "interval_histogram": [0, 36000, 0, 0, 0, 0, 0]}]},
+                 {**good, "rows": [short_row]}]
         for case in cases:
             expected = actual = "ok"
             try:

@@ -1104,7 +1104,7 @@ func _trial_preview_ready() -> bool:
 
 func _restore_graphics_defaults() -> void:
 	var recommended := DisplayPreferences.recommended_defaults() # VQ-07h: this GPU's first-launch values
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
+	for key: String in DisplayPreferences.graphics_default_keys(): # the set telemetry's graphics_profile compares
 		_draft[key] = recommended[key]
 	_calibration_reset_pending = true # VQ-07h: kept restores also forget the measured first-flight verdicts
 	_on_graphics_option_changed()
@@ -1825,9 +1825,9 @@ func _refresh_telemetry_status_text() -> void:
 	elif current == "ask":
 		lines.append(tr("Telemetry is off until you choose."))
 	elif reason == "locale":
-		lines.append(tr("Telemetry is not offered in this language yet."))
+		lines.append(tr("Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."))
 	elif reason == "suspended":
-		lines.append(tr("The receiving service paused telemetry for this session."))
+		lines.append(tr("The receiving service paused telemetry, so it is off until you restart the simulator."))
 	elif reason == "unreadable":
 		lines.append(tr("The saved telemetry choice could not be read, so telemetry is off."))
 	else:

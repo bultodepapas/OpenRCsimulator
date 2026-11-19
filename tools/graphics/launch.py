@@ -25,6 +25,9 @@ from typing import Mapping, Optional, Sequence
 
 
 PROFILE_ENV = "OPENRC_GRAPHICS_PROFILE"
+# TELEM-02: benchmark and research launches are technical runs; they never send product telemetry, even from a
+# packaged release on a developer's own consented profile (app/telemetry/telemetry_policy.gd TECHNICAL_ENVIRONMENT).
+TELEMETRY_DISABLE_ENV = "OPENRC_TELEMETRY_DISABLE"
 RESEARCH_ENV = "OPENRC_GRAPHICS_RESEARCH"
 RECONSTRUCTION_ENV = "OPENRC_RECONSTRUCTION"
 METALFX_TRIAL_ENV = "OPENRC_METALFX_TRIAL"
@@ -335,6 +338,7 @@ def _child_environment(
             child.pop(key, None)
         else:
             child[key] = value
+    child[TELEMETRY_DISABLE_ENV] = "1"
     return child
 
 

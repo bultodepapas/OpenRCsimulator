@@ -15,7 +15,7 @@ func run() -> void:
 		TranslationServer.set_locale(lang)
 		for scale in [1.0, 2.0]:
 			ThemeSpec.text_scale = scale
-			for route in ["settings", "help", "failures", "random", "workshop", "overlays"]:
+			for route in ["settings", "help", "failures", "random", "workshop", "overlays", "telemetry_consent", "telemetry_notice"]:
 				vp.size = Vector2i(1920,1080)
 				ThemeSpec.compact_layout = false
 				var screen: CanvasLayer
@@ -29,6 +29,8 @@ func run() -> void:
 					"overlays":
 						manager = load("res://render/overlays/overlay_manager.gd").new()
 						screen = load("res://ui/overlays_dialog.gd").new(manager)
+					"telemetry_consent", "telemetry_notice": # TELEM-03 first-launch choice and privacy notice
+						screen = load("res://ui/telemetry_screen.gd").new(route.trim_prefix("telemetry_"), {"operator": "Example operator", "contact": "privacy@example.org", "endpoint": "https://telemetry.example.org/v1/batches"}, '{"events":[]}')
 				if route == "random": screen.set_repeat_available(true)
 				vp.add_child(screen)
 				await settle()

@@ -5,6 +5,7 @@
 extends EditorExportPlugin
 
 const FORMAT := "openrc-build v1"
+const TelemetryRelease := preload("res://telemetry/telemetry_release.gd")
 
 
 func _get_name() -> String:
@@ -36,9 +37,11 @@ func _add_telemetry_release() -> void:
 	var contact := OS.get_environment("OPENRC_TELEMETRY_CONTACT").strip_edges()
 	if endpoint == "" and operator == "" and contact == "":
 		return
-	if endpoint == "" or operator == "" or contact == "" or not endpoint.begins_with("https://") \
-			or endpoint.contains("?") or endpoint.contains("#") or endpoint.contains("@"):
-		push_error("telemetry: OPENRC_TELEMETRY_ENDPOINT (https, no query), _OPERATOR and _CONTACT must all be set; this build will not offer telemetry")
+	# The same rules the game applies at run time, so a packed configuration is one the release can actually use
+	# (export.sh refuses an invalid set before exporting; this guards exports started another way).
+	if not TelemetryRelease.valid_endpoint(endpoint, false) or not TelemetryRelease.valid_text(operator) \
+			or not TelemetryRelease.valid_text(contact):
+		push_error("telemetry: OPENRC_TELEMETRY_ENDPOINT (https://host/path, not loopback, no query), _OPERATOR and _CONTACT must all be set; this build will not offer telemetry")
 		return
 	var release := {format = "openrc-telemetry-release v1", endpoint = endpoint, operator = operator, contact = contact}
 	add_file("res://telemetry_release.json", (JSON.stringify(release, "  ") + "\n").to_utf8_buffer(), false)

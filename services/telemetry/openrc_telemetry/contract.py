@@ -149,6 +149,17 @@ class Contracts:
                 raise ContractError("report_exposure")
             if row["rendered_frames"] > sessions * 120 * 60000:
                 raise ContractError("report_frames")
+            # The summed interval histogram must bracket the observed time by its bucket bounds, like each window.
+            histogram = row["interval_histogram"]
+            lower, shortest, longest = 1, 0, 0
+            for count, upper in zip(histogram, HISTOGRAM_UPPER_US):
+                shortest += count * lower
+                longest += count * upper
+                lower = upper + 1
+            if not shortest <= row["interval_sum_us"] <= longest or sum(histogram) > sessions * 120 * 60000:
+                raise ContractError("report_histogram")
+            if row["excluded_gap_count"] > sessions * 120 * 1000:
+                raise ContractError("report_gaps")
 
 
 @lru_cache(maxsize=4)

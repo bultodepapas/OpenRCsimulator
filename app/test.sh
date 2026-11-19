@@ -511,7 +511,7 @@ for t in "${unit_tests[@]}"; do
     test_flight_loading.gd|test_ui_pause.gd|test_ui_screen_stack.gd|test_ui_time_of_day.gd|test_landing_variations.gd|test_input_report_cli.gd|test_latency_patch_cli.gd) test_timeout=180 ;;
     test_ui_home_preview_cache.gd) test_timeout=180 ;; # F4U-20-R2: all 13 imported paints, fresh/cached light parity and eviction; 46 s natively.
     test_ui_home_layout.gd) test_timeout=180 ;; # Nine-locale layout matrix: 3,564 checks, measured 66 s on Linux.
-    test_ui_modal_responsive.gd) test_timeout=600 ;; # Nine-locale modal matrix: 3,024 cases, measured 249 s under shared-host load.
+    test_ui_modal_responsive.gd) test_timeout=600 ;; # Nine-locale modal matrix: 3,534 cases (incl. the telemetry notice), measured 309 s under shared-host load.
     test_heli_session.gd|test_heli_ground_session.gd|test_heli_ground_heading.gd) test_timeout=300 ;; # Actual hover/landing, signed ground-heading tapes, liftoff and checkpoint replay.
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions

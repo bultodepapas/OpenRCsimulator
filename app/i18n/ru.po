@@ -14000,7 +14000,7 @@ msgid "If you choose Enable, we will send performance summaries such as FPS and 
 msgstr "Если вы выберете «Включить», мы будем отправлять сводки производительности, например диапазоны FPS и времени кадра, общие категории процессора, видеокарты и памяти, операционную систему, графический рендерер и API, диапазон разрешения, VSync и ограничение частоты кадров, сведения о том, изменены ли настройки графики, а также встроенные модели и занятия, которыми вы пользуетесь. Мы также отправляем общий тип управления, длительность и итог занятия, поддерживаемые счётчики взлётов, посадок и аварий модели, а также фиксированные категории программных ошибок. Счётчики аварий модели не являются дампами сбоев приложения. Мы используем эти отчёты, чтобы находить медленные конфигурации и улучшать симулятор."
 
 msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
-msgstr "Мы не отправляем ваше имя, адрес электронной почты, учётную запись, серийный номер устройства, названия пользовательских моделей, сохранённую историю полётов, команды управления, файлы, снимки экрана или полные журналы. Временный случайный код сеанса группирует отчёты. Он не сохраняется на этом устройстве, создаётся заново при каждом запуске, а принимающая служба хранит его не более 48 часов после получения. Наша принимающая служба обрабатывает ваш IP-адрес, чтобы принять соединение, но аналитическая база данных его не хранит. Данные об оборудовании и сеансе всё же могут быть узнаваемыми, поэтому мы не обещаем полной анонимности."
+msgstr "Мы не отправляем ваше имя, адрес электронной почты, учётную запись, серийный номер устройства, названия пользовательских моделей, сохранённую историю полётов, команды управления, файлы, снимки экрана или необработанные журналы. Временный случайный код сеанса группирует отчёты. Он не сохраняется на этом устройстве, создаётся заново при каждом запуске, а принимающая служба хранит его не более 48 часов после получения. Наша принимающая служба обрабатывает ваш IP-адрес, чтобы принять соединение, но аналитическая база данных его не хранит. Данные об оборудовании и сеансе всё же могут быть узнаваемыми, поэтому мы не обещаем полной анонимности."
 
 msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
 msgstr "Отчёты поступают в принимающую службу, которой управляет %s. На GitHub могут публиковаться только проверенные сводки. Вы можете в любой момент просмотреть данные и отключить телеметрию в разделе Настройки → Интерфейс. С отключённой телеметрией симулятор работает так же."
@@ -14044,11 +14044,11 @@ msgstr "Телеметрия включена. Пакетов отправлен
 msgid "Telemetry is off until you choose."
 msgstr "Телеметрия отключена, пока вы не сделаете выбор."
 
-msgid "Telemetry is not offered in this language yet."
-msgstr "Телеметрия пока не предлагается на этом языке."
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "Телеметрия отключена: она пока не предлагается на этом языке. Переключитесь на английский или испанский, чтобы сделать выбор."
 
-msgid "The receiving service paused telemetry for this session."
-msgstr "Принимающая служба приостановила телеметрию в этом сеансе."
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "Принимающая служба приостановила телеметрию; она отключена до перезапуска симулятора."
 
 msgid "The saved telemetry choice could not be read, so telemetry is off."
 msgstr "Не удалось прочитать сохранённый выбор телеметрии, поэтому телеметрия отключена."

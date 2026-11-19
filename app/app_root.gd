@@ -289,6 +289,8 @@ var telemetry_consent_path := TelemetryConsentStore.DEFAULT_PATH
 var _telemetry_prompted := false
 ## The telemetry status line last placed on Home (so it is replaced, but no other notice is).
 var _telemetry_home_note := ""
+## The renderer_unavailable session fact was checked (once per session, when collection is first on).
+var _telemetry_renderer_noted := false
 ## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
 var window_minimized_probe: Callable = func() -> bool:
 	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
@@ -1521,6 +1523,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			return
 		var reason := "Flight scene could not be created."
 		var route_path := flight_script_path_for_aircraft(route_aircraft_id)
+		_note_telemetry_error("asset_load_failed")
 		if is_random:
 			natural_random_screen.show_error(tr("Could not start flight: %s") % tr(reason))
 		elif has_home and departing_home != null:
@@ -1926,6 +1929,8 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 		home_scene.resume_preview()
 	_remove_flight_loading_screen()
 	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % tr(error)
+	if not error.is_empty():
+		_note_telemetry_error("asset_load_failed") # the flight scene could not be loaded or created
 	departing_home.cancel_start() if error.is_empty() else departing_home.fail_start(error)
 	if natural_random_screen != null:
 		if error.is_empty():
@@ -3052,6 +3057,7 @@ func _start_telemetry() -> void:
 	telemetry.consent_path = telemetry_consent_path
 	telemetry.locale = TranslationServer.get_locale()
 	telemetry.context_provider = _telemetry_context
+	telemetry.graphics_profile_provider = _telemetry_graphics_profile
 	add_child(telemetry)
 	telemetry.state_changed.connect(_on_telemetry_state_changed)
 	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
@@ -3123,6 +3129,35 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
+	if not _telemetry_renderer_noted and is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON:
+		_telemetry_renderer_noted = true # a session fact: checked once, counted once, when collection is on
+		if _telemetry_renderer_unavailable():
+			telemetry.note_error("renderer_unavailable")
+
+
+## TELEM-04 error categories, counted only while telemetry is on (the service ignores them otherwise).
+func _note_telemetry_error(category: String) -> void:
+	if is_instance_valid(telemetry):
+		telemetry.note_error(category)
+
+
+## This session draws with Compatibility because RendererGuard recorded that this build's RenderingDevice renderer
+## failed (it restarted into the fallback); not a player's own renderer choice.
+func _telemetry_renderer_unavailable() -> bool:
+	if renderer_guard_path.is_empty() or RenderingServer.get_current_rendering_method() != RendererGuard.FALLBACK_METHOD:
+		return false
+	# Only the guard's own restart carries this argument; a later deliberate Compatibility session does not count.
+	var arguments := OS.get_cmdline_args()
+	var index := arguments.find("--rendering-method")
+	if index < 0 or index + 1 >= arguments.size() or arguments[index + 1] != RendererGuard.FALLBACK_METHOD:
+		return false
+	var failed: Variant = RendererGuard.load_state(renderer_guard_path).get("failed", {})
+	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
+
+
+## "current_default", "custom" or "unknown" for the graphics choices Restore graphics defaults resets.
+func _telemetry_graphics_profile() -> String:
+	return DisplayPreferences.graphics_profile(display_preferences.config) if display_preferences != null else "unknown"
 
 
 ## Home states the effective telemetry choice on its note line only while that line is free or still shows the
@@ -3164,6 +3199,11 @@ func _telemetry_context() -> Dictionary:
 	var simulated := -1.0
 	var fixed_wing := false
 	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
+	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
+	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
+	if activity != null and (_loading_active or not _has_property(activity, "session") \
+			or not (activity.get("session") is Object and is_instance_valid(activity.get("session")))):
+		activity = null
 	if activity != null:
 		var trial: Variant = activity.get("workshop_trial") if _has_property(activity, "workshop_trial") else {}
 		custom = not _workshop_screens.is_empty() or (trial is Dictionary and not trial.is_empty())
@@ -3205,7 +3245,7 @@ func _telemetry_context() -> Dictionary:
 		"simulated_seconds": simulated,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
-		"graphics_profile": "unknown", "input_class": input_class}
+		"input_class": input_class}
 
 
 ## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).

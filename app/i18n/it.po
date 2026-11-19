@@ -14026,7 +14026,7 @@ msgid "If you choose Enable, we will send performance summaries such as FPS and 
 msgstr "Se scegli Attiva, invieremo riepiloghi delle prestazioni come FPS e intervalli dei tempi di frame, categorie generali di CPU/GPU e memoria, sistema operativo, renderer e API grafica, fascia di risoluzione, VSync/limite di frame rate, se le impostazioni grafiche sono personalizzate e gli aerei e le attività inclusi che usi. Inviamo anche il tipo generale di comando, la durata e l'esito dell'attività, i conteggi supportati di decolli, atterraggi e incidenti del modello e categorie fisse di errori del software. I conteggi degli incidenti del modello non sono dump di arresti anomali dell'applicazione. Usiamo questi report per trovare configurazioni lente e migliorare il simulatore."
 
 msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
-msgstr "Non inviamo il tuo nome, l'email, l'account, il numero di serie del dispositivo, i nomi degli aerei personalizzati, la cronologia dei voli salvata, i comandi, i file, gli screenshot o i log completi. Un codice di sessione casuale e temporaneo raggruppa i report. Non viene salvato su questo dispositivo, ne viene creato uno nuovo a ogni avvio e il servizio di ricezione lo conserva al massimo per 48 ore dalla ricezione. Il nostro servizio di ricezione elabora il tuo indirizzo IP per ricevere la connessione, ma il database di analisi non lo memorizza. I dati hardware e di sessione possono comunque essere distintivi, quindi non promettiamo l'anonimato completo."
+msgstr "Non inviamo il tuo nome, l'email, l'account, il numero di serie del dispositivo, i nomi degli aerei personalizzati, la cronologia dei voli salvata, i comandi, i file, gli screenshot o i log grezzi. Un codice di sessione casuale e temporaneo raggruppa i report. Non viene salvato su questo dispositivo, ne viene creato uno nuovo a ogni avvio e il servizio di ricezione lo conserva al massimo per 48 ore dalla ricezione. Il nostro servizio di ricezione elabora il tuo indirizzo IP per ricevere la connessione, ma il database di analisi non lo memorizza. I dati hardware e di sessione possono comunque essere distintivi, quindi non promettiamo l'anonimato completo."
 
 msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
 msgstr "I report vanno al servizio di ricezione gestito da %s. Su GitHub possono essere pubblicati solo riepiloghi verificati. Puoi controllare i dati e disattivare la telemetria in qualsiasi momento in Impostazioni → Interfaccia. Il simulatore funziona allo stesso modo senza telemetria."
@@ -14070,11 +14070,11 @@ msgstr "La telemetria è attiva. Lotti inviati in questa sessione: %d."
 msgid "Telemetry is off until you choose."
 msgstr "La telemetria resta disattivata finché non scegli."
 
-msgid "Telemetry is not offered in this language yet."
-msgstr "La telemetria non è ancora disponibile in questa lingua."
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "La telemetria è disattivata: non è ancora disponibile in questa lingua. Passa all'inglese o allo spagnolo per scegliere."
 
-msgid "The receiving service paused telemetry for this session."
-msgstr "Il servizio di ricezione ha sospeso la telemetria per questa sessione."
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "Il servizio di ricezione ha sospeso la telemetria, quindi resta disattivata finché non riavvii il simulatore."
 
 msgid "The saved telemetry choice could not be read, so telemetry is off."
 msgstr "Impossibile leggere la scelta di telemetria salvata, quindi la telemetria è disattivata."

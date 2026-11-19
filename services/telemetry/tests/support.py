@@ -30,12 +30,12 @@ def hex32(number):
 
 
 def perf_event(seq, *, vehicle="f4u-corsair-250", sum_us=30_000_000, frames=1800, complete=True,
-               mode="flight", phase="steady", draws="observed"):
-    histogram = [0, 1800, 0, 0, 0, 0, 0, 0]
+               mode="flight", phase="steady", draws="observed", histogram=None, gaps=0):
+    histogram = [0, 1800, 0, 0, 0, 0, 0, 0] if histogram is None else histogram
     return {"name": "performance_window", "seq": seq, "mode": mode, "vehicle_id": vehicle, "phase": phase,
             "window_complete": complete, "interval_count": 1800, "interval_sum_us": sum_us,
             "rendered_frames": frames if draws == "observed" else None, "draw_counter_status": draws,
-            "interval_histogram": histogram, "excluded_gap_count": 0, "gpu_status": "not_measured",
+            "interval_histogram": histogram, "excluded_gap_count": gaps, "gpu_status": "not_measured",
             "gpu_ms": None}
 
 

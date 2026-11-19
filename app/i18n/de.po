@@ -14144,7 +14144,7 @@ msgid "If you choose Enable, we will send performance summaries such as FPS and 
 msgstr "Wenn du Aktivieren wählst, senden wir Leistungszusammenfassungen wie FPS- und Frametime-Bereiche, grobe CPU-/GPU- und Speicherkategorien, Betriebssystem, Grafik-Renderer und -API, Auflösungsbereich, VSync/Bildratenbegrenzung, ob die Grafikeinstellungen angepasst sind, sowie die mitgelieferten Flugzeuge und Aktivitäten, die du nutzt. Außerdem senden wir die grobe Eingabemethode, Dauer und Ergebnis der Aktivität, unterstützte Zählungen von Starts, Landungen und Modellflugzeug-Abstürzen sowie feste Kategorien von Softwarefehlern. Modellflugzeug-Abstürze sind keine Absturzabbilder der Anwendung. Wir nutzen diese Berichte, um langsame Konfigurationen zu finden und den Simulator zu verbessern."
 
 msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
-msgstr "Wir senden nicht deinen Namen, deine E-Mail-Adresse, dein Konto, die Seriennummer deines Geräts, Namen eigener Flugzeuge, gespeicherte Flugverläufe, Steuereingaben, Dateien, Screenshots oder vollständige Protokolle. Ein temporärer Zufallscode fasst Berichte zusammen. Er wird nicht auf diesem Gerät gespeichert, bei jedem Start neu erzeugt und vom empfangenden Dienst höchstens 48 Stunden nach Empfang aufbewahrt. Unser empfangender Dienst verarbeitet deine IP-Adresse, um die Verbindung anzunehmen, die Analysedatenbank speichert sie aber nicht. Hardware- und Sitzungsdaten können dennoch unverwechselbar sein, daher versprechen wir keine vollständige Anonymität."
+msgstr "Wir senden nicht deinen Namen, deine E-Mail-Adresse, dein Konto, die Seriennummer deines Geräts, Namen eigener Flugzeuge, gespeicherte Flugverläufe, Steuereingaben, Dateien, Screenshots oder Rohprotokolle. Ein temporärer Zufallscode fasst Berichte zusammen. Er wird nicht auf diesem Gerät gespeichert; bei jedem Start wird ein neuer Code erzeugt, und der empfangende Dienst bewahrt ihn höchstens 48 Stunden nach Empfang auf. Unser empfangender Dienst verarbeitet deine IP-Adresse, um die Verbindung anzunehmen, die Analysedatenbank speichert sie aber nicht. Hardware- und Sitzungsdaten können dennoch unverwechselbar sein, daher versprechen wir keine vollständige Anonymität."
 
 msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
 msgstr "Berichte gehen an den empfangenden Dienst, betrieben von %s. Auf GitHub dürfen nur geprüfte Zusammenfassungen veröffentlicht werden. Du kannst die Daten jederzeit unter Einstellungen → Oberfläche einsehen und die Telemetrie ausschalten. Der Simulator funktioniert ohne Telemetrie genauso."
@@ -14188,11 +14188,11 @@ msgstr "Telemetrie ist aktiviert. In dieser Sitzung gesendete Pakete: %d."
 msgid "Telemetry is off until you choose."
 msgstr "Telemetrie bleibt aus, bis du dich entscheidest."
 
-msgid "Telemetry is not offered in this language yet."
-msgstr "Telemetrie wird in dieser Sprache noch nicht angeboten."
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "Telemetrie ist aus: Sie wird in dieser Sprache noch nicht angeboten. Wechsle zu Englisch oder Spanisch, um zu wählen."
 
-msgid "The receiving service paused telemetry for this session."
-msgstr "Der empfangende Dienst hat die Telemetrie für diese Sitzung pausiert."
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "Der empfangende Dienst hat die Telemetrie pausiert; sie bleibt aus, bis du den Simulator neu startest."
 
 msgid "The saved telemetry choice could not be read, so telemetry is off."
 msgstr "Die gespeicherte Telemetrie-Auswahl konnte nicht gelesen werden, daher ist die Telemetrie aus."

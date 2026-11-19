@@ -138,11 +138,13 @@ def hardware_family(raw, kind):
             matches.add("nvidia_rtx")
         if "geforce" in words and "gtx" in words:
             matches.add("nvidia_gtx")
-        if "radeon" in words:
+        # Mesa's RADV names some AMD GPUs without "Radeon" (Steam Deck: "AMD Custom GPU 0405 (RADV VANGOGH)").
+        if "radeon" in words or ("amd" in words and "radv" in words):
             matches.add("amd_radeon")
         if "intel" in words and "arc" in words:
             matches.add("intel_arc")
-        if "intel" in words and words.intersection({"iris", "uhd", "hd"}):
+        # Newer integrated names: "Intel(R) Graphics", "Mesa Intel(R) Xe Graphics (TGL GT2)".
+        if "intel" in words and "arc" not in words and words.intersection({"iris", "uhd", "hd", "xe", "graphics"}):
             matches.add("intel_integrated")
     return next(iter(matches)) if len(matches) == 1 else "other"
 
@@ -387,7 +389,7 @@ def aggregate_daily_gpu(records, day, release_id, minimum=20, *, as_of_utc):
     iso = closed.isocalendar()
     period = f"{iso.year:04d}-W{iso.week:02d}"
     # Validate even a no-data request before consuming any record iterator.
-    validate_report({"report_version": 1, "aggregation_scope": "closed_day", "day": day,
+    validate_report({"report_version": 2, "aggregation_scope": "closed_day", "day": day,
                      "period": period, "release_id": release_id, "status": "no_data",
                      "basis": "eligible_daily_session_observations", "rows": []})
     groups, seen, counts = {}, {}, {}
@@ -414,19 +416,27 @@ def aggregate_daily_gpu(records, day, release_id, minimum=20, *, as_of_utc):
             if counts.get(session, 0) >= 120:
                 continue
             counts[session] = counts.get(session, 0) + 1
-            group = groups.setdefault(family, {"sessions": set(), "time": 0, "frames": 0})
+            group = groups.setdefault(family, {
+                "sessions": set(), "time": 0, "frames": 0, "intervals": 0, "gaps": 0,
+                "histogram": [0] * len(HISTOGRAM_UPPER_US)})
             group["sessions"].add(session)
             group["time"] += event["interval_sum_us"]
             group["frames"] += event["rendered_frames"]
+            group["intervals"] += event["interval_count"]
+            group["gaps"] += event["excluded_gap_count"]
+            group["histogram"] = [a + b for a, b in zip(group["histogram"], event["interval_histogram"])]
     status = "no_data" if not groups else "ready"
     if any(len(group["sessions"]) < minimum for group in groups.values()):
         status = "suppressed"
-    rows = [] if status != "ready" else [
-        {"gpu_family": family, "session_observations": len(group["sessions"]),
-         "interval_sum_us": group["time"], "rendered_frames": group["frames"]}
-        for family, group in sorted(groups.items())
-    ]
-    report = {"report_version": 1, "aggregation_scope": "closed_day", "day": day,
+    rows = []
+    if status == "ready":
+        for family, group in sorted(groups.items()):
+            if sum(group["histogram"]) != group["intervals"]:
+                raise ContractError("report_histogram")  # validate_body already guarantees it per window
+            rows.append({"gpu_family": family, "session_observations": len(group["sessions"]),
+                         "interval_sum_us": group["time"], "rendered_frames": group["frames"],
+                         "interval_histogram": group["histogram"], "excluded_gap_count": group["gaps"]})
+    report = {"report_version": 2, "aggregation_scope": "closed_day", "day": day,
               "period": period, "release_id": release_id,
               "status": status, "basis": "eligible_daily_session_observations", "rows": rows}
     validate_report(report)
@@ -455,6 +465,17 @@ def validate_report(report):
             raise ContractError("report_exposure")
         if row["rendered_frames"] > sessions * 120 * 60000:
             raise ContractError("report_frames")
+        # The summed interval histogram must bracket the observed time by its bucket bounds, like each window.
+        histogram = row["interval_histogram"]
+        lower, shortest, longest = 1, 0, 0
+        for count, upper in zip(histogram, HISTOGRAM_UPPER_US):
+            shortest += count * lower
+            longest += count * upper
+            lower = upper + 1
+        if not shortest <= row["interval_sum_us"] <= longest or sum(histogram) > sessions * 120 * 60000:
+            raise ContractError("report_histogram")
+        if row["excluded_gap_count"] > sessions * 120 * 1000:
+            raise ContractError("report_gaps")
 
 
 def render_report(report):

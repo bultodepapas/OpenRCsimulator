@@ -13199,7 +13199,7 @@ msgid "If you choose Enable, we will send performance summaries such as FPS and 
 msgstr "如果选择“启用”，我们将发送性能摘要，例如 FPS 和帧时间范围、CPU/GPU 和内存的大致类别、操作系统、图形渲染器和 API、分辨率范围、垂直同步/帧率上限、图形设置是否经过自定义，以及你使用的内置飞机和活动。我们还会发送大致的输入方式、活动时长和结果、支持统计的起飞/着陆次数和模型飞机坠毁次数，以及固定类别的软件错误。模型飞机坠毁次数不是应用程序崩溃转储。我们使用这些报告来找出运行缓慢的配置并改进模拟器。"
 
 msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
-msgstr "我们不会发送你的姓名、电子邮件、账户、设备序列号、自定义飞机名称、已保存的飞行记录、操作输入、文件、截图或完整日志。一个临时的随机会话代码用于对报告分组。它不会保存在此设备上，每次启动都会重新生成；接收服务最多在收到后保留 48 小时。我们的接收服务会为接收连接而处理你的 IP 地址，但分析数据库不会存储它。硬件和会话数据仍可能具有辨识度，因此我们不承诺完全匿名。"
+msgstr "我们不会发送你的姓名、电子邮件、账户、设备序列号、自定义飞机名称、已保存的飞行记录、操作输入、文件、截图或原始日志。一个临时的随机会话代码用于对报告分组。它不会保存在此设备上，每次启动都会重新生成；接收服务最多在收到后保留 48 小时。我们的接收服务会为接收连接而处理你的 IP 地址，但分析数据库不会存储它。硬件和会话数据仍可能具有辨识度，因此我们不承诺完全匿名。"
 
 msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
 msgstr "报告会发送到由 %s 运营的接收服务。只有经过审核的摘要才可能发布到 GitHub。你可以随时在 设置 → 界面 中查看数据并关闭遥测。关闭遥测后，模拟器的功能完全相同。"
@@ -13238,16 +13238,16 @@ msgid "Telemetry is not available in this build."
 msgstr "此版本不提供遥测功能。"
 
 msgid "Telemetry is on. Batches sent this session: %d."
-msgstr "遥测已开启。本次会话已发送的数据包：%d。"
+msgstr "遥测已开启。本次会话已发送的批次：%d。"
 
 msgid "Telemetry is off until you choose."
 msgstr "在你做出选择之前，遥测保持关闭。"
 
-msgid "Telemetry is not offered in this language yet."
-msgstr "此语言暂不提供遥测功能。"
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "遥测已关闭：此语言暂不提供遥测功能。请切换到英语或西班牙语后再选择。"
 
-msgid "The receiving service paused telemetry for this session."
-msgstr "接收服务已在本次会话中暂停遥测。"
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "接收服务已暂停遥测；在重新启动模拟器之前将保持关闭。"
 
 msgid "The saved telemetry choice could not be read, so telemetry is off."
 msgstr "无法读取已保存的遥测选择，因此遥测已关闭。"

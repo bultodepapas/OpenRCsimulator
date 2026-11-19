@@ -52,7 +52,8 @@ class _Db:
             for pragma in self.pragmas:
                 conn.execute(pragma)
             conn.executescript(self.schema)
-        except sqlite3.Error:
+            self._verify(conn)
+        except (sqlite3.Error, StorageUnavailable):
             conn.close()
             raise
         if fresh:
@@ -61,6 +62,9 @@ class _Db:
             except OSError:
                 pass
         return conn
+
+    def _verify(self, conn):
+        """Run after the schema script; a store may refuse a file from an older layout."""
 
     def _get(self):
         if self._conn is None:
@@ -197,7 +201,10 @@ class AggStore(_Db):
     CREATE TABLE IF NOT EXISTS daily_gpu(
         day TEXT NOT NULL, release_id TEXT NOT NULL, gpu_family TEXT NOT NULL,
         session_observations INTEGER NOT NULL, interval_sum_us INTEGER NOT NULL,
-        rendered_frames INTEGER NOT NULL, PRIMARY KEY(day, release_id, gpu_family)) WITHOUT ROWID;
+        rendered_frames INTEGER NOT NULL, excluded_gap_count INTEGER NOT NULL,
+        hist0 INTEGER NOT NULL, hist1 INTEGER NOT NULL, hist2 INTEGER NOT NULL, hist3 INTEGER NOT NULL,
+        hist4 INTEGER NOT NULL, hist5 INTEGER NOT NULL, hist6 INTEGER NOT NULL, hist7 INTEGER NOT NULL,
+        PRIMARY KEY(day, release_id, gpu_family)) WITHOUT ROWID;
     CREATE TABLE IF NOT EXISTS daily_vehicle(
         day TEXT NOT NULL, release_id TEXT NOT NULL, vehicle_id TEXT NOT NULL,
         session_observations INTEGER NOT NULL, activity_summaries INTEGER NOT NULL,
@@ -209,9 +216,33 @@ class AggStore(_Db):
         created_unix INTEGER NOT NULL, updated_unix INTEGER NOT NULL,
         PRIMARY KEY(repository, key)) WITHOUT ROWID;
     """
-    TABLES = {"gpu": ("daily_gpu", ("gpu_family", "session_observations", "interval_sum_us", "rendered_frames")),
+    # hist0..hist7: per-bucket frame-interval counts (upper bounds contract.HISTOGRAM_UPPER_US, in µs).
+    HISTOGRAM_COLUMNS = tuple(f"hist{i}" for i in range(8))
+    TABLES = {"gpu": ("daily_gpu", ("gpu_family", "session_observations", "interval_sum_us", "rendered_frames",
+                                    "excluded_gap_count", *HISTOGRAM_COLUMNS)),
               "vehicle": ("daily_vehicle", ("vehicle_id", "session_observations", "activity_summaries",
                                             "active_seconds"))}
+
+    def _verify(self, conn):
+        have = {row[1] for row in conn.execute("PRAGMA table_info(daily_gpu)")}
+        if not set(self.TABLES["gpu"][1]) <= have:
+            raise StorageUnavailable("aggregates_schema")  # an older layout: there is no migration
+
+    @classmethod
+    def _flatten(cls, row):
+        if "interval_histogram" not in row:
+            return row
+        histogram = row["interval_histogram"]
+        if len(histogram) != len(cls.HISTOGRAM_COLUMNS):
+            raise ValueError("histogram")
+        return {**row, **dict(zip(cls.HISTOGRAM_COLUMNS, histogram))}
+
+    @classmethod
+    def _nest(cls, values):
+        row = dict(values)
+        if cls.HISTOGRAM_COLUMNS[0] in row:
+            row["interval_histogram"] = [row.pop(column) for column in cls.HISTOGRAM_COLUMNS]
+        return row
 
     def put_day(self, day, release_id, table, status, rows, now):
         """Idempotent replace keyed by (day, release_id, table)."""
@@ -220,7 +251,7 @@ class AggStore(_Db):
             conn.execute(f"DELETE FROM {sql_table} WHERE day=? AND release_id=?", (day, release_id))
             conn.executemany(
                 f"INSERT INTO {sql_table}(day, release_id, {', '.join(columns)}) VALUES(?,?,{','.join('?' * len(columns))})",
-                [(day, release_id, *(row[c] for c in columns)) for row in rows])
+                [(day, release_id, *(flat[c] for c in columns)) for flat in map(self._flatten, rows)])
             conn.execute(
                 "INSERT INTO daily_status(day, release_id, tbl, status, computed_unix) VALUES(?,?,?,?,?) "
                 "ON CONFLICT(day, release_id, tbl) DO UPDATE SET status=excluded.status, "
@@ -237,7 +268,7 @@ class AggStore(_Db):
             rows = conn.execute(
                 f"SELECT {', '.join(columns)} FROM {sql_table} WHERE day=? AND release_id=? ORDER BY {columns[0]}",
                 (day, release_id)).fetchall()
-        return row[0], [dict(zip(columns, values)) for values in rows]
+        return row[0], [self._nest(zip(columns, values)) for values in rows]
 
     def purge(self, now, days=AGGREGATE_DAYS):
         """Remove aggregate rows older than the 180-day maximum lifetime."""

@@ -6,12 +6,16 @@ from hashlib import sha256
 import json
 import re
 
-from .contract import ContractError
+from .contract import HISTOGRAM_UPPER_US, ContractError
 from .rollup import EXPIRES_AFTER_H, MIN_TOKENS, VEHICLE_BASIS, WINDOW_CAP
 
 WEEK_RE = re.compile(r"^[0-9]{4}-W[0-9]{2}$")
 RELEASE_RE = re.compile(r"^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)\.?[0-9]{1,3})?\Z")
 MAX_REPORT_BYTES = 32 * 1024
+# Histogram buckets from these indices up lie wholly above 33.333 / 50 / 100 ms (lower bound = previous upper + 1).
+FIRST_ABOVE_33_MS = HISTOGRAM_UPPER_US.index(33333) + 1
+FIRST_ABOVE_50_MS = HISTOGRAM_UPPER_US.index(50000) + 1
+FIRST_ABOVE_100_MS = HISTOGRAM_UPPER_US.index(100000) + 1
 # Publish only once Sunday can no longer be rolled up (its eligibility window has ended), so an approved digest
 # cannot be overtaken by a later rollup of a day that was still missing.
 PUBLISH_AFTER_H = EXPIRES_AFTER_H
@@ -60,11 +64,11 @@ def validate_vehicle_rows(contracts, rows):
 
 
 def report_key(week, release_id):
-    return f"weekly-v1/{week}/{release_id}"
+    return f"weekly-v2/{week}/{release_id}"
 
 
 def report_title(week, release_id):
-    return f"OpenRC telemetry: {week} / {release_id} / weekly GPU and vehicle v1"
+    return f"OpenRC telemetry: {week} / {release_id} / weekly GPU and vehicle v2"
 
 
 def collect(contracts, agg, week, release_id):
@@ -82,14 +86,17 @@ def collect(contracts, agg, week, release_id):
             rows = found[1]
             if table == "gpu":
                 contracts.validate_report({
-                    "report_version": 1, "aggregation_scope": "closed_day", "day": day.isoformat(),
+                    "report_version": 2, "aggregation_scope": "closed_day", "day": day.isoformat(),
                     "period": week, "release_id": release_id, "status": "ready",
                     "basis": "eligible_daily_session_observations", "rows": rows})
                 for row in rows:
-                    cell = gpu_pool.setdefault(row["gpu_family"], {"session_observations": 0,
-                                                                   "interval_sum_us": 0, "rendered_frames": 0})
-                    for name in cell:
+                    cell = gpu_pool.setdefault(row["gpu_family"], {
+                        "session_observations": 0, "interval_sum_us": 0, "rendered_frames": 0,
+                        "excluded_gap_count": 0, "interval_histogram": [0] * len(HISTOGRAM_UPPER_US)})
+                    for name in ("session_observations", "interval_sum_us", "rendered_frames", "excluded_gap_count"):
                         cell[name] += row[name]
+                    cell["interval_histogram"] = [a + b for a, b in zip(cell["interval_histogram"],
+                                                                        row["interval_histogram"])]
             else:
                 validate_vehicle_rows(contracts, rows)
                 for row in rows:
@@ -99,7 +106,7 @@ def collect(contracts, agg, week, release_id):
                         cell[name] += row[name]
         daily.append(entry)
     return {
-        "report_version": 1, "aggregation_scope": "closed_week", "week": week, "release_id": release_id,
+        "report_version": 2, "aggregation_scope": "closed_week", "week": week, "release_id": release_id,
         "first_day": days[0].isoformat(), "last_day": days[-1].isoformat(), "vehicle_basis": VEHICLE_BASIS,
         "days": daily,
         "gpu_rows": [{"gpu_family": k, **v} for k, v in sorted(gpu_pool.items())],
@@ -132,11 +139,23 @@ def render(data):
         lines.append(f"| {entry['day']} | {entry['gpu']} | {entry['vehicle']} |")
     lines.extend(["", "## GPU summary", ""])
     if data["gpu_rows"]:
-        lines.extend(["| GPU family | Contributing session-day observations | Weighted FPS estimate |",
-                      "| --- | ---: | ---: |"])
+        lines.extend(["| GPU family | Contributing session-day observations | Weighted FPS estimate "
+                      "| Intervals > 33.3 ms | Intervals > 50 ms | Intervals > 100 ms per minute |",
+                      "| --- | ---: | ---: | ---: | ---: | ---: |"])
         for row in data["gpu_rows"]:
             fps = row["rendered_frames"] * 1_000_000 / row["interval_sum_us"]
-            lines.append(f"| {row['gpu_family']} | {row['session_observations']} | {fps:.2f} |")
+            histogram = row["interval_histogram"]
+            total = sum(histogram) or 1  # validated daily rows always have intervals
+            slow = f"{100 * sum(histogram[FIRST_ABOVE_33_MS:]) / total:.1f}%"
+            slower = f"{100 * sum(histogram[FIRST_ABOVE_50_MS:]) / total:.1f}%"
+            hitches = sum(histogram[FIRST_ABOVE_100_MS:]) * 60_000_000 / row["interval_sum_us"]
+            lines.append(f"| {row['gpu_family']} | {row['session_observations']} | {fps:.2f} "
+                         f"| {slow} | {slower} | {hitches:.2f} |")
+        lines.append("")
+        lines.append("Interval shares are the fraction of measured frame intervals longer than the stated bound, from "
+                     "the summed 8-bucket interval histogram (a 30 FPS cap alone puts about half its intervals over "
+                     "33.3 ms); the last column counts intervals over 100 ms per minute of observed time. Intervals "
+                     "over 5 s are excluded, so these figures understate freezes.")
     else:
         lines.append("No GPU cells are published. This status is not a claim of zero players or zero FPS.")
     lines.extend(["", "## Stock vehicle usage", ""])

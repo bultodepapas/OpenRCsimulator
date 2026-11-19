@@ -9,6 +9,7 @@ const UiDriver := preload("res://tests/ui_driver.gd")
 const Collector := preload("res://tests/fake_telemetry_collector.gd")
 const Store := preload("res://telemetry/telemetry_consent_store.gd")
 const Contract := preload("res://telemetry/telemetry_contract.gd")
+const RendererGuard := preload("res://app_state/renderer_guard.gd")
 
 const PREFS := "user://test_telemetry_app_settings.cfg"
 const STATE := "user://test_telemetry_app_update.cfg"
@@ -139,7 +140,7 @@ func _settings_switch_and_language() -> void:
 	app.set_language("de")
 	await ui.settle()
 	_check("a language without a reviewed notice turns telemetry off", app.telemetry.state == "off" and app.telemetry.reason == "locale"
-		and toggle.disabled and status.text == "Telemetrie wird in dieser Sprache noch nicht angeboten.", status.text)
+		and toggle.disabled and status.text == "Telemetrie ist aus: Sie wird in dieser Sprache noch nicht angeboten. Wechsle zu Englisch oder Spanisch, um zu wählen.", status.text)
 	app.set_language("es")
 	await ui.settle()
 	_check("Spanish has a reviewed notice: on again", app.telemetry.state == "on"
@@ -176,6 +177,20 @@ func _enable_button_and_send() -> void:
 	_check("a free note line shows the telemetry status again", app.home.note_label.text == "Telemetry is on · Settings → Interface",
 		app.home.note_label.text)
 	_check("a headless window counts as minimized: nothing is measured", app._telemetry_context().eligible == false)
+	_check("default graphics choices report current_default", app._telemetry_graphics_profile() == "current_default",
+		app._telemetry_graphics_profile())
+	var msaa: Variant = app.display_preferences.config.msaa_3d
+	app.display_preferences.config.msaa_3d = 0 if int(msaa) != 0 else 2
+	_check("a changed graphics choice reports custom", app._telemetry_graphics_profile() == "custom")
+	app.display_preferences.config.msaa_3d = msaa
+	_check("an ordinary renderer session is not reported as unavailable", not app._telemetry_renderer_unavailable())
+	RendererGuard.save_state(app.renderer_guard_path, {"failed": {"method": "mobile", "build": RendererGuard.build_identity()}})
+	_check("a failed record alone, without the guard's restart argument, is not renderer_unavailable",
+		not app._telemetry_renderer_unavailable())
+	RendererGuard.save_state(app.renderer_guard_path, {})
+	app._note_telemetry_error("asset_load_failed")
+	_check("a flight-start failure is counted while telemetry is on", int(app.telemetry._errors.get("asset_load_failed", 0)) == 1,
+		str(app.telemetry._errors))
 	app.window_minimized_probe = func() -> bool: return false
 	var context: Dictionary = app._telemetry_context()
 	_check("AppRoot's context on a visible Home", context.mode == "home" and context.vehicle == "" and context.eligible == true
@@ -199,15 +214,24 @@ func _enable_button_and_send() -> void:
 				names.append(event.name if event.name != "performance_window" else "%s/%s/%s" % [event.name, event.mode, event.phase])
 		_check("it carries the session start and Home cadence windows", body is Dictionary and names[0] == "session_started"
 			and names.has("performance_window/home/warmup") and names.has("performance_window/home/steady")
-			and body.build.release_id == "v0.0.0" and body.context.resolution_class == "1080p", str(names))
-	# A real flight: AppRoot names the stock aircraft, its simulated clock and the accepted fixed-wing classifier.
+			and body.build.release_id == "v0.0.0" and body.context.resolution_class == "1080p"
+			and body.context.graphics_profile == "current_default", str(names) + str(body.context if body is Dictionary else ""))
+	# A real flight through the staged loading screen, as the rendered game starts it: AppRoot names the stock
+	# aircraft, its simulated clock and the accepted fixed-wing classifier once the session runs.
+	app.flight_loading_enabled = true
 	app.home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
-	var flying: bool = await ui.wait_until(func() -> bool: return app.flight != null, 20000)
+	var flying: bool = await ui.wait_until(func() -> bool: return (app.flight != null and not app._loading_active
+		and app.flight.session != null), 30000)
 	for i: int in 20:
 		await process_frame
 	var in_flight: Dictionary = app._telemetry_context()
+	# Behind the loading screen the flight exists but its session and statistics do not run yet: no activity starts.
+	app._loading_active = true
+	var loading: Dictionary = app._telemetry_context()
+	app._loading_active = false
+	_check("a loading flight is not yet an activity", loading.activity == false and loading.mode != "flight", str(loading))
 	_check("AppRoot's context in a flight", flying and in_flight.mode == "flight" and in_flight.vehicle in Contract.STOCK_VEHICLES
 		and in_flight.fixed_wing_accepted == true and float(in_flight.simulated_seconds) >= 0.0 and in_flight.eligible == true, str(in_flight))
 	app.open_pause()

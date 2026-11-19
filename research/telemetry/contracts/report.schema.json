@@ -13,7 +13,7 @@
   ],
   "properties": {
     "report_version": {
-      "const": 1
+      "const": 2
     },
     "aggregation_scope": {
       "const": "closed_day"
@@ -56,7 +56,9 @@
           "gpu_family",
           "session_observations",
           "interval_sum_us",
-          "rendered_frames"
+          "rendered_frames",
+          "interval_histogram",
+          "excluded_gap_count"
         ],
         "properties": {
           "gpu_family": {
@@ -84,6 +86,21 @@
             "maximum": 9007199254740991
           },
           "rendered_frames": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "interval_histogram": {
+            "type": "array",
+            "minItems": 8,
+            "maxItems": 8,
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            }
+          },
+          "excluded_gap_count": {
             "type": "integer",
             "minimum": 0,
             "maximum": 1000000000000
@@ -118,6 +135,6 @@
     }
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:openrc:telemetry:report:1",
+  "$id": "urn:openrc:telemetry:report:2",
   "title": "OpenRC proposed fixed GPU aggregate report"
 }

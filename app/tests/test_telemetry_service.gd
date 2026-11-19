@@ -156,6 +156,11 @@ func _lifecycle() -> void:
 	_check("the preview shows the exact pending bytes", s.preview_text().contains(s.queue.items[0].body.get_string_from_utf8()))
 	s.sender.answer(202)
 	_check("202 removes it", s.queue.items.is_empty() and s.queue.sent_ok == 1 and s.status().sent == 1)
+	_check("without a graphics provider the context's own value applies", batch.context.graphics_profile == "unknown")
+	var profile_asks := [0]
+	s.graphics_profile_provider = func() -> String:
+		profile_asks[0] += 1
+		return "custom"
 	s.note_error("asset_load_failed")
 	s.note_error("asset_load_failed")
 	s.note_error("not_a_category")
@@ -163,6 +168,10 @@ func _lifecycle() -> void:
 	var errors := _events(s, "error_count")
 	_check("errors are coalesced counters", errors.size() == 1 and int(errors[0].count) == 2
 		and errors[0].category == "asset_load_failed", str(errors))
+	var later: Dictionary = _batches(s).back()
+	_check("the graphics profile comes from its provider, asked per recorded event, not per frame",
+		later.context.graphics_profile == "custom" and int(profile_asks[0]) >= 1 and int(profile_asks[0]) <= 10,
+		"%s asks=%d" % [later.context, profile_asks[0]])
 	_ctx.eligible = false
 	_run(s, 1.0)
 	_check("a pause closes the open window as partial", _events(s, "performance_window").back().window_complete == false)

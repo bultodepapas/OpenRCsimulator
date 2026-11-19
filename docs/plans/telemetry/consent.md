@@ -25,6 +25,8 @@ The English source strings live in [telemetry_screen.gd](../../../app/ui/telemet
 
 **Enable telemetry and continue** · **Continue without telemetry** · links **See exactly what we send** · **Privacy notice**
 
+Layout: the title, recommendation, notice text and the two links scroll; only the two choices stay fixed at the bottom, side by side with equal width, so both remain on screen at 200 % text in a 960×540 window (`test_ui_modal_responsive` covers the consent, notice and preview screens in nine languages).
+
 The **Privacy notice** adds: pending data stays only in memory for at most ten minutes; the session code changes at least every four hours and at the UTC day boundary; raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt; code-free summary tables within 180 days; reviewed public GitHub summaries can remain indefinitely; any IP-based abuse protection is memory-only for at most 15 minutes; telemetry is separate from update checks. It ends with "Operator · Contact · Receiving service (origin)" from the release configuration.
 
 Spanish (reviewed with the owner's language): **Ayúdanos a mejorar OpenRC Simulator** — Recomendado: compartir telemetría técnica. The paragraphs follow the English meaning exactly; see `app/i18n/es.po`. Actions: **Activar la telemetría y continuar** · **Continuar sin telemetría** · **Ver exactamente lo que enviamos** · **Aviso de privacidad**; location **Ajustes → Interfaz**.
@@ -33,7 +35,7 @@ The deployed retention and IP statements are **targets the operator must verify*
 
 ## Languages
 
-[REVIEWED_NOTICE_LOCALES](../../../app/telemetry/telemetry_policy.gd) is `en`, `es`. All nine offered languages carry translations of every telemetry string (the catalog test requires it), but in German, French, Italian, Brazilian Portuguese, Russian, Japanese and Simplified Chinese telemetry is **off** and Settings says "Telemetry is not offered in this language yet." Switching to such a language closes the gate and drops pending data without changing the saved choice; switching back to a reviewed language resumes with a new session. To offer another language: a fluent reviewer checks its notice text and layout at 1920×1080 and large text, then add the code to `REVIEWED_NOTICE_LOCALES` in one reviewed change.
+[REVIEWED_NOTICE_LOCALES](../../../app/telemetry/telemetry_policy.gd) is `en`, `es`. All nine offered languages carry translations of every telemetry string (the catalog test requires it), but in German, French, Italian, Brazilian Portuguese, Russian, Japanese and Simplified Chinese telemetry is **off** and Settings says "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose." Switching to such a language closes the gate and drops pending data without changing the saved choice; switching back to a reviewed language resumes with a new session. To offer another language: a fluent reviewer checks its notice text and layout at 1920×1080 and large text, then add the code to `REVIEWED_NOTICE_LOCALES` in one reviewed change.
 
 ## Settings → Interface
 

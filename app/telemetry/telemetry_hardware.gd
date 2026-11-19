@@ -65,9 +65,13 @@ static func family(raw: String, kind: String) -> String:
 		if words.has("apple"): matches.append("apple_silicon")
 		if words.has("geforce") and words.has("rtx"): matches.append("nvidia_rtx")
 		if words.has("geforce") and words.has("gtx"): matches.append("nvidia_gtx")
-		if words.has("radeon"): matches.append("amd_radeon")
+		# Mesa's RADV names some AMD GPUs without "Radeon" (Steam Deck: "AMD Custom GPU 0405 (RADV VANGOGH)").
+		if words.has("radeon") or (words.has("amd") and words.has("radv")): matches.append("amd_radeon")
 		if words.has("intel") and words.has("arc"): matches.append("intel_arc")
-		if words.has("intel") and (words.has("iris") or words.has("uhd") or words.has("hd")): matches.append("intel_integrated")
+		# Newer integrated names: "Intel(R) Graphics", "Mesa Intel(R) Xe Graphics (TGL GT2)".
+		if words.has("intel") and not words.has("arc") and (words.has("iris") or words.has("uhd") or words.has("hd")
+				or words.has("xe") or words.has("graphics")):
+			matches.append("intel_integrated")
 	return matches[0] if matches.size() == 1 else "other"
 
 

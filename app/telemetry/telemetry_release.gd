@@ -44,7 +44,7 @@ static func from_export(build: Dictionary, packed: Variant, release_template: bo
 	var endpoint := str(packed.get("endpoint", ""))
 	var operator := str(packed.get("operator", ""))
 	var contact := str(packed.get("contact", ""))
-	if not valid_endpoint(endpoint, false) or not _text_ok(operator) or not _text_ok(contact):
+	if not valid_endpoint(endpoint, false) or not valid_text(operator) or not valid_text(contact):
 		return _refuse("not_configured")
 	return {"ok": true, "reason": "release", "endpoint": endpoint, "operator": operator, "contact": contact,
 		"release_id": tag, "channel": "preview" if str(parsed.get("prerelease", "")) != "" else "stable",
@@ -91,7 +91,8 @@ static func _engine_minor() -> String:
 	return "%d.%d" % [int(version.get("major", 0)), int(version.get("minor", 0))]
 
 
-static func _text_ok(text: String) -> bool:
+## Operator name or contact: one non-blank line of at most MAX_TEXT characters.
+static func valid_text(text: String) -> bool:
 	return text.strip_edges() != "" and text.length() <= MAX_TEXT and not text.contains("\n")
 
 

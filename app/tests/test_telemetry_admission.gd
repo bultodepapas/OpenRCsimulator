@@ -71,10 +71,19 @@ func _route() -> void:
 	var none := PackedStringArray()
 	_check("an ordinary launch is interactive", Policy.interactive_route(true, none, none, "Windows", true, {}))
 	_check("Finder's -psn_ argument is ignored", Policy.interactive_route(true, none, PackedStringArray(["-psn_0_12345"]), "macOS", true, {}))
+	_check("the renderer guard's Compatibility restart is still the player's session", Policy.interactive_route(true,
+		none, PackedStringArray(["--rendering-method", "gl_compatibility"]), "Windows", true, {}))
+	_check("a renderer and driver shortcut is still the player's session", Policy.interactive_route(true, none,
+		PackedStringArray(["--rendering-driver", "vulkan", "--rendering-method", "forward_plus"]), "Linux", true, {}))
 	var refused := [
 		["no Home", [false, none, none, "Windows", true, {}]],
 		["user arguments", [true, PackedStringArray(["--quick-flight"]), none, "Windows", true, {}]],
 		["engine arguments", [true, none, PackedStringArray(["--write-movie", "x.avi"]), "Windows", true, {}]],
+		["an unknown renderer", [true, none, PackedStringArray(["--rendering-method", "custom"]), "Windows", true, {}]],
+		["a renderer option without a value", [true, none, PackedStringArray(["--rendering-method"]), "Windows", true, {}]],
+		["a renderer plus another argument", [true, none, PackedStringArray(["--rendering-method", "mobile", "--headless"]),
+			"Windows", true, {}]],
+		["a renderer value on its own", [true, none, PackedStringArray(["gl_compatibility"]), "Windows", true, {}]],
 		["headless", [true, none, none, "headless", true, {}]],
 		["a test settings file", [true, none, none, "Windows", false, {}]],
 		["the debug bridge", [true, none, none, "Windows", true, {"OPENRC_DEBUG_BRIDGE": "1"}]],

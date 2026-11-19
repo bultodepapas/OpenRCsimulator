@@ -12786,13 +12786,13 @@ msgid "Recommended: share technical telemetry."
 msgstr "Recomendado: compartir telemetría técnica."
 
 msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
-msgstr "Si eliges Activar, enviaremos resúmenes de rendimiento, como FPS y rangos de tiempo por fotograma, categorías generales de CPU/GPU y memoria, sistema operativo, renderizador y API gráfica, rango de resolución, VSync/límite de FPS, si los ajustes gráficos están personalizados, y los aviones y actividades incluidos que utilizas. También enviamos el tipo general de control, la duración y el resultado de la actividad, los conteos disponibles de despegues, aterrizajes y accidentes del aeromodelo, y categorías fijas de errores del programa. Los conteos de accidentes del aeromodelo no son volcados de memoria por fallos de la aplicación. Usamos estos informes para encontrar configuraciones lentas y mejorar el simulador."
+msgstr "Si eliges Activar, enviaremos resúmenes de rendimiento, como FPS y rangos de tiempo por fotograma, categorías generales de CPU/GPU y memoria, sistema operativo, renderizador y API gráfica, rango de resolución, VSync/límite de FPS, si los ajustes gráficos están personalizados, y las aeronaves y actividades incluidas que utilizas. También enviamos el método de entrada general, la duración y el resultado de la actividad, los conteos de despegues, aterrizajes y accidentes del aeromodelo cuando se admiten, y categorías fijas de errores del programa. Los conteos de accidentes del aeromodelo no son volcados de memoria por fallos de la aplicación. Usamos estos informes para encontrar configuraciones lentas y mejorar el simulador."
 
 msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
-msgstr "No enviamos tu nombre, correo, cuenta, número de serie del equipo, nombres de aviones personalizados, historial de vuelos guardado, movimientos de los controles, archivos, capturas ni registros completos. Un código aleatorio temporal agrupa los informes. No se guarda en este dispositivo y se crea uno nuevo al iniciar; el servicio receptor lo conserva como máximo 48 horas desde su recepción. Nuestro servicio receptor procesa tu IP para recibir la conexión, pero la base de datos de análisis no la almacena. La combinación de hardware y sesión puede ser distintiva, por lo que no prometemos anonimato completo."
+msgstr "No enviamos tu nombre, correo electrónico, cuenta, número de serie del dispositivo, nombres de aviones personalizados, historial de vuelos guardado, movimientos de los controles, archivos, capturas ni registros sin procesar. Un código aleatorio temporal agrupa los informes. No se guarda en este dispositivo y se crea uno nuevo en cada inicio; el servicio receptor lo conserva como máximo 48 horas desde su recepción. Nuestro servicio receptor procesa tu IP para recibir la conexión, pero la base de datos de análisis no la almacena. Aun así, los datos de hardware y de sesión pueden ser distintivos, por lo que no prometemos anonimato completo."
 
 msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
-msgstr "Los informes llegan al servicio receptor operado por %s. En GitHub solo podrán publicarse resúmenes revisados. Puedes consultar los datos y apagar la telemetría cuando quieras en Ajustes → Interfaz. El simulador funciona igual con la telemetría apagada."
+msgstr "Los informes llegan al servicio receptor operado por %s. En GitHub solo podrán publicarse resúmenes revisados. Puedes consultar los datos y desactivar la telemetría cuando quieras en Ajustes → Interfaz. El simulador funciona igual con la telemetría desactivada."
 
 msgid "See exactly what we send"
 msgstr "Ver exactamente lo que enviamos"
@@ -12833,11 +12833,11 @@ msgstr "La telemetría está activada. Lotes enviados en esta sesión: %d."
 msgid "Telemetry is off until you choose."
 msgstr "La telemetría está desactivada hasta que elijas."
 
-msgid "Telemetry is not offered in this language yet."
-msgstr "La telemetría todavía no se ofrece en este idioma."
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "La telemetría está desactivada: todavía no se ofrece en este idioma. Cambia a inglés o español para elegir."
 
-msgid "The receiving service paused telemetry for this session."
-msgstr "El servicio receptor ha pausado la telemetría durante esta sesión."
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "El servicio receptor ha pausado la telemetría, así que estará desactivada hasta que reinicies el simulador."
 
 msgid "The saved telemetry choice could not be read, so telemetry is off."
 msgstr "No se pudo leer la elección de telemetría guardada, así que la telemetría está desactivada."
