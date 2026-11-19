@@ -5,6 +5,12 @@ performed for this plan. The [source register](sources.md) records tool evidence
 and [validation](validation-and-budgets.md) separates survey accuracy from visual
 and software acceptance.
 
+The [2026-11-19 contracts](../2026-11-19/implementation-contracts.md) and
+[qualification protocol](../2026-11-19/qualification-protocol.md) now define the
+precise projection, held-out depth/color evidence, static-object damage policy,
+runtime/export identity and delivery budgets. They supersede less specific
+acceptance wording in this initial workflow.
+
 The [24 free-resource investigations](free-resources.md) add concrete asset,
 processing and inspection options. Their [search/audit record](resource-search-record.md)
 distinguishes newly assessed tools from existing repository dependencies. Use
@@ -50,6 +56,12 @@ final fitted numbers.
 | Level reference and compass/geographic basis | Separate actual horizontal from the irregular skyline and avoid flipped/mirrored axes |
 | Time, location, sun/shadow direction and lighting references | Match dynamic aircraft light to the captured image, with estimated values labeled |
 | For geospatial work: CRS and vertical datum | Preserve map coordinates/elevation before conversion to local NED metres |
+
+Separate fitting points from held-out bearings and independently measured
+near/far obstacle ranges before optimization. Admit nearest visible proxy
+clearance at the rig's widest view before choosing the final station. Use Q02's
+actual zoom/output residuals for critical landing and occlusion features; a
+good wide-angle fit does not qualify the existing 1° telephoto view.
 
 Keep absolute geographic coordinates out of ordinary Godot render positions.
 Use the declared local NED origin and the existing render conversion. If the
@@ -103,8 +115,10 @@ target. A TIFF master must be converted to a format supported by the chosen
 Godot importer; copying a competitor's authoring format is not a runtime design
 ([G04](sources.md#g04)).
 
-If a target cannot load the larger image, choose a smaller variant before
-allocation. Tiling/cubemap conversion is a separate measured option, with
+If conservative target admission rejects the larger image, select a smaller
+variant before loading; a later reported allocation failure still needs safe
+retirement/recovery. C07 distinguishes estimates from free-memory guarantees.
+Tiling/cubemap conversion is a separate measured option, with
 face orientation, mip gutters and seams checked. It can solve a dimension limit
 without solving total-memory cost. Keep visible background resolution separate
 from a smaller illumination/reflection resource when appropriate.
@@ -128,6 +142,11 @@ Preserve the photograph's baked static shadows. Add only the dynamic aircraft
 shadow and intentional new-object shadows through the qualified composition
 method. Reject double structures, visible proxy edges, hidden physical obstacles
 or false collision across open fence/foliage gaps.
+
+Photo-baked physical obstacles use nondestructible scenery damage policy in
+the first pilot, retaining normal impact response. Independently check the
+aircraft shadow crossing an already photographed shadow; disabling static
+casters does not solve that overlap. See C04–C05 and Q05–Q06.
 
 ## 6. Additional pipeline for the 3D site
 
@@ -186,6 +205,13 @@ sample a frame-dependent GPU-displaced mesh as the physics definition.
 Content hashes and generator/tool configuration make changes traceable. A hash
 does not prove that a photo is licensed or a runway is accurate. Keep those
 independent evidence fields.
+
+Also separate pre-import derivative hashes from imported runtime resources:
+resolve images/models through ResourceLoader, and verify physical JSON/notices
+through their proper file contract. Inspect all export presets and actual
+offline inventories. Only variants earned by the target belong in the runtime
+project; one resident variant does not prevent other resources from shipping.
+C07/Q10 add separate peak-memory, compressed-package and installed-size limits.
 
 ## 8. Review the result in the simulator
 

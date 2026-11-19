@@ -10,6 +10,13 @@ sites, including Godot and native alternatives, on a new OpenRC branch. The
 SC-PHOTO step ledger. This directory preserves dated evidence and design
 reasoning; it does not claim runtime implementation or device qualification.
 
+**Follow-up, 2026-11-19:** the [adversarial review and strengthened contracts](../2026-11-19/README.md)
+supersede the corresponding initial design/acceptance choices below. It adds
+zoom-aware calibration, independent depth/color oracles, shadow/damage policy,
+cold-start recovery, bounded loading and export/performance qualification.
+The original research, ordered searches and free-resource dossiers remain
+preserved; implementation status still belongs only to the canonical plan.
+
 ## Read the research
 
 | Document | Question it answers |

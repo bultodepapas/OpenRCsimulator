@@ -1,0 +1,175 @@
+{
+  "kind": "analytical-only; not runtime qualification",
+  "inputs": {
+    "output_px": [
+      1920,
+      1080
+    ],
+    "old_horizontal_fov_deg": 90,
+    "panorama_px": [
+      16384,
+      8192
+    ],
+    "station_ned_m": [
+      12.0,
+      -7.0,
+      -1.65
+    ],
+    "ned_to_photo_rotation_rows": [
+      [
+        0.8130186879010576,
+        -0.45375913575998295,
+        0.36483319453963614
+      ],
+      [
+        0.5112918471750422,
+        0.856168221462352,
+        -0.07454276336658207
+      ],
+      [
+        -0.2785341274170473,
+        0.24714089761175967,
+        0.928084110731176
+      ]
+    ]
+  },
+  "coordinate_fixture": {
+    "cardinal_uv": {
+      "north": [
+        0.5,
+        0.5
+      ],
+      "east": [
+        0.75,
+        0.5
+      ],
+      "south": [
+        0,
+        0.5
+      ],
+      "west": [
+        0.25,
+        0.5
+      ],
+      "up": [
+        0.5,
+        0
+      ],
+      "down": [
+        0.5,
+        1
+      ]
+    },
+    "rotated_direction_cases": 10,
+    "max_direction_roundtrip_error": 6.256024412160284e-16
+  },
+  "old_wide_error_deg": {
+    "4px": 0.238731033,
+    "8px": 0.477453777
+  },
+  "zoom_projection": [
+    {
+      "vertical_fov_deg": 120,
+      "horizontal_fov_deg_16_by_9": 144.016602229,
+      "old_4px_wide_error_at_optical_axis_px": 1.299038106,
+      "old_8px_wide_error_at_optical_axis_px": 2.598076211,
+      "16k_panorama_vertical_source_texels_in_view": 5461.333333333,
+      "16k_panorama_center_output_px_per_latitude_texel": 0.11956197
+    },
+    {
+      "vertical_fov_deg": 75,
+      "horizontal_fov_deg_16_by_9": 107.512376895,
+      "old_4px_wide_error_at_optical_axis_px": 2.932257089,
+      "old_8px_wide_error_at_optical_axis_px": 5.864514178,
+      "16k_panorama_vertical_source_texels_in_view": 3413.333333333,
+      "16k_panorama_center_output_px_per_latitude_texel": 0.269881562
+    },
+    {
+      "vertical_fov_deg": 45,
+      "horizontal_fov_deg_16_by_9": 72.73435141,
+      "old_4px_wide_error_at_optical_axis_px": 5.431980515,
+      "old_8px_wide_error_at_optical_axis_px": 10.863961031,
+      "16k_panorama_vertical_source_texels_in_view": 2048.0,
+      "16k_panorama_center_output_px_per_latitude_texel": 0.499953225
+    },
+    {
+      "vertical_fov_deg": 30,
+      "horizontal_fov_deg_16_by_9": 50.94197513,
+      "old_4px_wide_error_at_optical_axis_px": 8.397114317,
+      "old_8px_wide_error_at_optical_axis_px": 16.794228634,
+      "16k_panorama_vertical_source_texels_in_view": 1365.333333333,
+      "16k_panorama_center_output_px_per_latitude_texel": 0.772860722
+    },
+    {
+      "vertical_fov_deg": 15,
+      "horizontal_fov_deg_16_by_9": 26.345794694,
+      "old_4px_wide_error_at_optical_axis_px": 17.090446754,
+      "old_8px_wide_error_at_optical_axis_px": 34.180893507,
+      "16k_panorama_vertical_source_texels_in_view": 682.666666667,
+      "16k_panorama_center_output_px_per_latitude_texel": 1.572985019
+    },
+    {
+      "vertical_fov_deg": 6,
+      "horizontal_fov_deg_16_by_9": 10.645692674,
+      "old_4px_wide_error_at_optical_axis_px": 42.932557547,
+      "old_8px_wide_error_at_optical_axis_px": 85.865115095,
+      "16k_panorama_vertical_source_texels_in_view": 273.066666667,
+      "16k_panorama_center_output_px_per_latitude_texel": 3.951463107
+    },
+    {
+      "vertical_fov_deg": 1,
+      "horizontal_fov_deg_16_by_9": 1.777680289,
+      "old_4px_wide_error_at_optical_axis_px": 257.824462791,
+      "old_8px_wide_error_at_optical_axis_px": 515.648925582,
+      "16k_panorama_vertical_source_texels_in_view": 45.511111111,
+      "16k_panorama_center_output_px_per_latitude_texel": 23.729866354
+    }
+  ],
+  "four_output_pixels_at_1deg": {
+    "angular_error_deg": 0.003703798,
+    "16k_panorama_latitude_texels": 0.16856395
+  },
+  "transverse_5cm_offset_at_1deg": [
+    {
+      "range_m": 10,
+      "optical_axis_error_px": 309.389355349
+    },
+    {
+      "range_m": 100,
+      "optical_axis_error_px": 30.938935535
+    },
+    {
+      "range_m": 1000,
+      "optical_axis_error_px": 3.093893553
+    }
+  ],
+  "memory_estimates": [
+    {
+      "width": 4096,
+      "height": 2048,
+      "rgba8_mipped_mib_estimate": 42.666666667,
+      "8bpp_mipped_mib_estimate": 10.666666667
+    },
+    {
+      "width": 8192,
+      "height": 4096,
+      "rgba8_mipped_mib_estimate": 170.666666667,
+      "8bpp_mipped_mib_estimate": 42.666666667
+    },
+    {
+      "width": 16384,
+      "height": 8192,
+      "rgba8_mipped_mib_estimate": 682.666666667,
+      "8bpp_mipped_mib_estimate": 170.666666667
+    }
+  ],
+  "three_8k_8bpp_mipped_panorama_copies_mib_estimate": 128,
+  "limitations": [
+    "Ideal pinhole and full 2:1 equirectangular assumptions",
+    "Vertical texel spans assume a level/equatorial optical axis",
+    "Center displacement is not a whole-frame residual bound",
+    "Five-centimetre transverse displacement is not a ground-height error model",
+    "Mips use the 4/3 approximation; no CPU, upload, lighting or driver overhead",
+    "Three panorama copies illustrate overlap, not an observed or admitted loader"
+  ]
+}

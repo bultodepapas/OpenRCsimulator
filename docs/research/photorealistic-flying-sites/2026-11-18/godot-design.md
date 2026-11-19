@@ -4,6 +4,12 @@
 No interfaces in this document are implemented unless explicitly identified as
 existing in the [source audit](current-architecture.md).
 
+**Strengthened 2026-11-19:** [implementation contracts](../2026-11-19/implementation-contracts.md)
+now own the precise coordinate, shadow, static-damage, coverage, loading/recovery
+and identity choices. [Qualification](../2026-11-19/qualification-protocol.md)
+owns their acceptance details. This initial design retains its rationale; the
+new contracts take precedence where a choice was previously left open.
+
 ## One admitted site, separate responsibilities
 
 ```mermaid
@@ -37,13 +43,13 @@ data and assume the current strict loader accepts it.
 | --- | --- |
 | Identity | Unique landscape/site ID, descriptor version, field path/hash, presentation revision, source/derivative manifest |
 | Capture station | Surveyed NED station, actual lens entrance-pupil/eye height, units, source and uncertainty; station must agree with the field pilot |
-| Projection | Full 360° × 180° equirectangular source or a separately supported projection; image dimensions, longitude-zero/seam convention, orientation matrix/quaternion and its documented direction |
-| Runtime variants | Relative allowlisted resource paths, source/output hashes, dimensions, encoding/color space, alpha use, mip/compression settings and estimated resident-size limits |
-| Registration | Non-collinear landmark coordinates/bearings, held-out validation points, runway corners and geometric tolerances |
+| Projection | Full 360° × 180° equirectangular source; C01 defines the row-major `R_photo_from_ned`, image axes and per-fragment lookup; alternate projections require separate proof |
+| Runtime variants | Allowlisted resource paths, dimensions/color/mips/compression and estimates; C07 separates source/derivative hashes from runtime imported resources and export identity |
+| Registration | Separate fitting/held-out bearings and independent feature ranges; critical per-view pixel limits and uncertainty under C02/Q02–03 |
 | Lighting | Captured sun direction, exposure/white-balance intent, ambient approximation or separately captured HDR lighting resource, static-shadow ownership |
 | Capability policy | Permitted camera views, fixed translation, admitted activities/starts, whether dynamic time/sky/weather appearance are available, magnifier/reflection policy |
 | Occlusion/contact relationship | Stable IDs linking surveyed features to render silhouette proxies and independent physical shapes; decorative/distant exclusions stated |
-| Limits | Physical flight envelope, outside-area policy, unavailable camera modes, source detail, known seam/foliage/ground approximations |
+| Limits | Surveyed physical coverage and visual envelope, C05 accepted-state warning policy, unavailable modes and known detail/seam/foliage approximations |
 | Rights | Author/source, license evidence, permitted redistribution, required attribution, modifications and capture permission record |
 
 Reject nonfinite coordinates, zero/invalid transforms, duplicate IDs, unsupported
@@ -94,7 +100,8 @@ visible. A sky image alone cannot decide that. Physical collision and visual
 occlusion are separate: a canopy silhouette may hide an aircraft without being
 an accurately modeled solid collision volume.
 
-Evaluate these candidates on the same small fixture:
+Use the opaque per-fragment photo-projected proxy as the first C01 candidate.
+Compare alternatives on the same fixture only when it has a demonstrated limit:
 
 | Candidate | Mechanism | Required evidence / tradeoff |
 | --- | --- | --- |
@@ -216,12 +223,18 @@ scene if an image, sidecar or stage fails.
 
 Detaching nodes does not isolate current World/Atmosphere globals. Include
 appearance, sky/cloud transport, active owner, live/time-flow and related shared
-presentation state in the transaction. Prefer prepare-without-publication;
-otherwise design a complete validated snapshot/restore that runs on every
-failure, cancellation and stale/superseded build. The existing partial World
-presentation context alone is not sufficient evidence. After rejection, the
+presentation state in the transaction. C06 now selects preparation without
+publication, one candidate load group and serialized owner-checked activation.
+An unavoidable activation rollback may restore only the state it still owns;
+a stale candidate must never overwrite a newer commit. The existing partial
+World presentation context alone is not sufficient evidence. After rejection, the
 old scene must continue updating, refreshing and flowing time with its original
 ownership, not merely remain visible.
+
+Cold startup has no old scene to restore. C06/Q08 require explicit Retry,
+Choose another site and Quit recovery, with no silent physical-field substitution.
+Threaded requests drain before another large candidate starts; generation checks
+alone do not stop decoding or free allocations.
 
 Test both synchronous and staged routes; current consumers do not uniformly
 treat a null adapter result as a recoverable error. Bind camera/world policy

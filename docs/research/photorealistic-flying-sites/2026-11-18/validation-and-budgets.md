@@ -5,6 +5,11 @@ not measurements or guarantees.** Confirm the device/scene envelope before the
 implementation experiment. Existing [Gate P](../../../../ROADMAP.md) and
 [SC/VQ](../../../SCENERY-PLAN.md) ownership remain authoritative.
 
+**Strengthened 2026-11-19:** the [Q01–Q12 protocol](../2026-11-19/qualification-protocol.md)
+supersedes the corresponding E1–E5 acceptance details. It retains the calculations
+and platform boundaries here, while defining independent oracles, zoom-specific
+limits, cold recovery, loader retirement and an unambiguous GPU statistic.
+
 ## Evidence must answer different questions
 
 | Question | Required evidence | Insufficient substitute |
@@ -95,16 +100,21 @@ selected host baseline in SC-PHOTO-01; no new default is admitted without it.
 
 Only one site's full-resolution variants should be resident during normal
 flight. A transition can temporarily need old and candidate resources; budget
-that peak and fail before allocation when it cannot fit. A bounded low-resolution
+that peak using conservative admission estimates and handle reported allocation
+failure. Preflight cannot reserve free VRAM, and Compatibility lacks a global
+RenderingDevice. [C06–C07](../2026-11-19/implementation-contracts.md#c07--four-identities-and-four-resource-budgets)
+define bounded requests, stale retirement and separate package/install budgets.
+A bounded low-resolution
 preview is a separate allocation. On return to a nonphoto site, no photo
 rendering work continues and retained resources fit the declared cache budget.
 
 For frame pacing, propose **60 fps / 16.67 ms** as the first full-flight target
 on named supported configurations, with p95/p99, worst hitches and frame
 distribution reported. This is not a claim about current OpenRC performance.
-Allocate no more than **1.0 ms p95 incremental GPU cost** to the initial photo
-background/proxy/shadow layer at the accepted output, subject to full-scene
-headroom. Compare paired runs and report measurement noise. A baseline already
+Retain the proposed **1.0 ms incremental GPU budget** for the initial photo
+layer, using [Q11's defined paired difference of run-level GPU p95s](../2026-11-19/qualification-protocol.md#q11--timing-noise-and-resource-qualification),
+regime matching and empirical noise/inconclusive rule. It is not a p95 of
+unmatched frame deltas or a V-sync present interval. A baseline already
 missing its target cannot qualify a release merely because the photo adds little.
 
 Physics retains the existing **500 µs per 240 Hz tick target**, with p50/p95
@@ -123,10 +133,13 @@ Test nonzero yaw/pitch/roll, the wrap and poles, serialization and reload.
 Repeat on each admitted renderer/format with identical station/orientation.
 Inspect background/proxy edges for color, filtering, fog and exposure changes.
 
-For the real capture, propose **4-pixel median / 8-pixel maximum** error on
+For the real capture, retain **4-pixel median / 8-pixel maximum** as an initial survey screen on
 held-out hard landmarks at a specified 90° horizontal FOV, with capture/survey
-uncertainty reported. At other FOV/output dimensions, use the corresponding
-angular error rather than silently reusing pixel thresholds. Natural foliage
+uncertainty reported. It is not the final zoom gate: its four-pixel allowance
+can become about 258 output pixels at 1° vertical FOV. [Q02](../2026-11-19/qualification-protocol.md#q02--real-site-calibration-and-optical-detail)
+now requires actual per-view errors and independent uncertainty/critical-feature
+limits. [Q04](../2026-11-19/qualification-protocol.md#q04--independent-color-reference-and-world-refresh)
+compares background and proxy separately to a color reference. Natural foliage
 silhouettes have a separately documented approximation; do not average a failed
 runway corner away with distant easy points.
 
@@ -137,6 +150,11 @@ intentional gaps. Test low/high speed, tangent hits, just-missing trajectories,
 obstacle edges, landing and taxi. Compare physical contact time/position/normal
 against independently calculated box/capsule/support cases and show debug
 overlays. Verify that visual-only masks do not introduce physical barriers.
+
+The authored proxy cannot be its own depth oracle: [Q03](../2026-11-19/qualification-protocol.md#q03--independent-visibility-clipping-and-contact-geometry)
+adds independently measured feature ranges, uncertain-boundary cases and
+near/far clipping checks. [Q06](../2026-11-19/qualification-protocol.md#q06--static-scenery-surfaces-state-identity-and-replay)
+adds the nondestructible photo-obstacle policy and its impact/reset/restore tests.
 
 For the initial flat runway, propose a **5 cm maximum visual/support surface
 misregistration** across its admitted landing area, separately from the existing
@@ -231,6 +249,7 @@ during each implementation slice, through the existing checked runner/test queue
 | `app/tests/test_camera_route.gd` / `test_camera_settings.gd` | All selection paths, fixed eye and restoration of saved preferences |
 | `app/tests/test_world_presentation_refresh.gd` / `test_world_flow.gd` | Photo policy, captured lighting and retained normal 3D behavior |
 | `app/tests/test_world_staged_build.gd` | Successful parity plus cancelled/stale/failed candidate global-state restoration |
+| `app/tests/test_optional_resource_loading.gd` | Unselected, failed, superseded and released photo-resource cache lifecycle, alongside measured process/GPU settling |
 | `app/tests/test_native_macos_domain_world.gd` | New-site refusal/fallback remains truthful; stock-domain evidence is not silently broadened |
 | `app/tests/test_native_replay.gd` | Required if backend/contact identity changes; same-backend numerical evidence |
 | `app/tests/check_field_pack.gd` | Sidecar/asset/notices resolution from clean exports, beyond existing field JSON coverage |

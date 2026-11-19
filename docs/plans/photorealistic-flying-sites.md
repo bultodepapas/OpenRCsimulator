@@ -1,6 +1,7 @@
 # Photorealistic flying sites
 
-Date: 2026-11-18. **Status: research complete; implementation proposed.**
+Initial study: 2026-11-18. Strengthened: 2026-11-19.
+**Status: research and adversarial review complete; implementation proposed.**
 Owner: scenery, with landscape, camera, field-world/time-of-day, UI, ground/contact,
 native-backend, replay, graphics and desktop-delivery co-owners.
 Prefix: **SC-PHOTO-00…15**. Parent gates: SC/VQ and the existing platform gates;
@@ -41,6 +42,14 @@ Their source-specific licensing, existing-tool reuse and proposed trials refine
 the workflow below. The research pack now contains 86 stable source records;
 this does not mean 86 websites or 24 adopted dependencies.
 
+The [2026-11-19 adversarial review](../research/photorealistic-flying-sites/2026-11-19/README.md)
+checks that plan against main `1188f1d4a1e31fd8263336b645db86535bca062f` and
+adds 18 concrete corrections, 25 retained web queries and a reproducible optical
+calculation. Its [implementation contracts](../research/photorealistic-flying-sites/2026-11-19/implementation-contracts.md)
+and [qualification protocol](../research/photorealistic-flying-sites/2026-11-19/qualification-protocol.md)
+take precedence over the corresponding initial design and E1–E5 details. No
+runtime, import/export or hardware test is implied by this stronger plan.
+
 ## Product scope
 
 | Site type | Intended experience | Camera and lighting contract |
@@ -76,7 +85,7 @@ admitted flight area need corresponding contact semantics.
 
 ## Ownership and proposed paths
 
-This branch owns documentation only. Future implementation paths below are
+This branch owns research documentation and analytical fixtures only. Future implementation paths below are
 proposals and do not indicate that these files or interfaces already exist.
 
 | Area | Proposed work and owner boundary |
@@ -91,8 +100,29 @@ proposals and do not indicate that these files or interfaces already exist.
 
 The [architecture audit](../research/photorealistic-flying-sites/2026-11-18/current-architecture.md)
 names existing methods and consumers. The [Godot design](../research/photorealistic-flying-sites/2026-11-18/godot-design.md)
-defines the proposed metadata and rendering decisions without changing the
-simulation kernel.
+records the initial metadata and rendering choices. The strengthened
+[contracts](../research/photorealistic-flying-sites/2026-11-19/implementation-contracts.md)
+define the current proposal without changing the simulation kernel.
+
+## Decisions from the adversarial review
+
+| Decision | Intended result and required proof |
+| --- | --- |
+| First composition: same-eye panorama plus per-fragment photo-projected opaque proxies | One declared NED/image convention; synthetic cardinal/rotation/seam tests before real capture |
+| Calibration depends on zoom and independently measured depth | The old four-pixel wide-view error can become 258 pixels at 1°; critical occlusion/landing features need per-view limits and held-out range evidence |
+| Projected cue initially owns the photo-ground shadow | No fade toward an unqualified native receiver; preserve requested settings and qualify native aircraft self-shadow separately |
+| Independent color reference | Background and proxy must each match the intended output transform, not merely match each other |
+| Static photo obstacles remain nondestructible | Existing `none` scenery damage policy retains normal contacts; breakable photo objects need a later synchronized representation |
+| Separate runway-start and Natural Random capabilities | A valid new runway must not expose the default-field-only random scenario route |
+| Warn outside surveyed coverage | Observe accepted state, preserve flight physics and make unqualified area explicit; no automatic world swap |
+| One preparation group and one activation owner | Coalesce requests, drain stale work and prevent a stale rollback from overwriting a newer World owner |
+| Explicit cold-start recovery | Retry, choose another validated site or quit; no hidden field substitution and no requirement for a previous Home |
+| Separate authoring, physical and export identities/budgets | Imported resources, required notices, peak memory, package size and installed size each have their own check |
+| Defined GPU comparison and inconclusive result | Real GPU timing, matched workloads and a named paired statistic; normal live-flight pacing remains a separate gate |
+
+The review's [finding-to-contract-to-test map](../research/photorealistic-flying-sites/2026-11-19/qualification-protocol.md#traceability)
+assigns all 18 findings to existing steps. Research findings are addressed in the
+plan; their implementation proof remains pending below.
 
 ## Delivery sequence and authoritative status
 
@@ -101,19 +131,19 @@ and evidence requirements, not duplicate implementation status.
 
 | ID | Work and dependency | Required proof / status |
 | --- | --- | --- |
-| SC-PHOTO-00 | Audit current source, official simulator precedent, engines, tools, rights and implementation seams; register subtrack | **Research complete.** Initial pack, twenty technique investigations from two ordered rounds of ten searches, and 24 additional free-resource investigations with 78 retained query strings; 86 source records. Documentation checks recorded in its README; runtime and hardware evidence remain absent |
-| SC-PHOTO-01 | Select pilot site, capture rights, camera station, runway measurements and platform baseline; depends on 00 | Pending. Rights/provenance record, measured versus estimated quantities, held-out landmarks, named hardware and agreed acceptance envelope |
-| SC-PHOTO-02 | Disposable panorama + occlusion + shadow rendering spike on synthetic geometry; depends on 00, real photos optional | Pending. Same fixture in Compatibility, Mobile/Metal and applicable Forward+ configurations; choose a supported composition method before building a complete site |
-| SC-PHOTO-03 | Validate a separate site descriptor and catalog capability lookup; depends on 01–02 | Pending. Existing adapters retain their contract; unknown versions, bad paths/transforms and mismatched field identities fail before scene replacement; bounded memory admission |
-| SC-PHOTO-04 | Register the first field and calibrated contact inventory; depends on 01,03. Choose a representable existing prefab inventory or implement an SC/GP-owned validated measured-box/capsule input/builder | Pending. Explicit dimensions, transforms, stable response/damage IDs, duplicate/malformed rejection, bounded deterministic bins/hash, runway/landmark overlays, analytical hit/miss/contact fixtures, quality-invariant physical hashes, no inherited Club obstacles or lake |
-| SC-PHOTO-04a | Admit the new field's validated runway starts through Home and session start rules; depends on 04 | Pending. Replace the relevant legacy-ID assumption with an owned capability; takeoff, reset, landing, launch choice and stale preferences work without forging a stock identity |
-| SC-PHOTO-04b | Extend runway orientation, site-specific surface-table wiring or ground representation if the chosen real site cannot fit field v1 and current turf assumptions; depends on 01 and GP/AS/NK design | Conditional prerequisite to that site's physical acceptance. Versioned data, bearing/material/normal/start/replay semantics and backend parity, including material mismatch rejection; otherwise select a representable pilot site |
-| SC-PHOTO-05 | Integrate photo lighting, aircraft grounding, occlusion and shadow policy with `World`; depends on 02–04 | Pending. No duplicate sun/clouds/static shadows; front/behind visibility and contact shadows survive refresh, pause and reset; no unsupported dynamic relighting |
-| SC-PHOTO-06 | Admit fixed-pilot camera and supported activities across every entry point; depends on 03 | Pending. Keyboard cycling, direct selection, saved views, CLI/debug routes, crash camera, magnifier, Home and live restore paths cannot move the eye accidentally; clear recovery to a supported view/site |
-| SC-PHOTO-07 | Reproducible capture/import, 4K/8K/16K variants and export resources; depends on 01–03 | Pending. Provenance, source/output hashes, import settings, dimensions/formats, memory checks, repeat conversion and clean-package asset resolution |
-| SC-PHOTO-08 | Complete Home → flight → pause/reset → Home, technical restore/offline numerical replay checks and failure cleanup; depends on 04–07, including 04a and any required 04b | Pending. Club → photo → Green → Club; synchronous/staged/cancelled/superseded loads preserve nodes, selection and shared World/Atmosphere/appearance/cloud transport ownership; previous scene still updates and refreshes; resources release; no camera/reflection/contact residue |
-| SC-PHOTO-09 | Target-device, pilot and backend qualification; depends on 08 | Pending. [Validation matrix](../research/photorealistic-flying-sites/2026-11-18/validation-and-budgets.md), readable aircraft/landings, native/reference admission receipts, full-session frame pacing and memory, independently scoped platform results |
-| SC-PHOTO-10 | Package one usable photographic site and contributor recipe; depends on 09 | Pending. Offline export/install smoke, redistributable asset set, documented site limits and rollback; normal release gates still apply |
+| SC-PHOTO-00 | Audit source, simulator precedent, engines, tools, rights and implementation seams; register subtrack and challenge the plan | **Research complete.** Initial study, ordered 10+10 technique searches, 24 resource dossiers/78 retained queries/86 source records; 2026-11-19 review adds 18 findings, 25 retained queries and an analytical fixture. Verification belongs in the dated READMEs; runtime/hardware proof is absent |
+| SC-PHOTO-01 | Select site, rights, fixed station, runway and named hardware; depends on 00 | Pending. Representable simple turf field; separate fitting/held-out bearings/independent ranges; measured uncertainty, critical-feature visual envelope, survey coverage and per-host memory baseline under C02/Q02–03 |
+| SC-PHOTO-02 | Synthetic panorama/proxy/color/shadow spike; depends on 00, real photos optional | Pending. C01/Q01 plus the synthetic disposable subsets of Q03–05: projection, seam/mips, clipping/depth, independent color and receiver-aware shadows on exact Compatibility, Mobile/Metal and applicable Forward+; real-site survey and full lifecycle proof remain in 04/05/09 |
+| SC-PHOTO-03 | Separate validated descriptor, physical/presentation binding and catalog capabilities; depends on 01–02 | Pending. Strict versions/paths/transforms, named identity domains, conservative tier admission and stale-request rejection; define pure preparation, serialized activation and cold-start recovery seams under C05–07 |
+| SC-PHOTO-04 | Register field and surveyed contacts; depends on 01,03. Choose supported prefabs or an SC/GP-owned measured-box/capsule builder | Pending. Deterministic bounded inventory/hash, normal impact response with nondestructible photo-baked obstacles, independent range/contact fixtures, coverage definition and reset/restore proof; no inherited Club/lake contacts, no quality-dependent physical data |
+| SC-PHOTO-04a | Admit validated runway starts through Home/session; depends on 04 | Pending. Separate runway-start from Natural Random capability at UI and route boundaries; Q09 ordinary photo start succeeds, unsupported random briefing is refused, Club behavior and stale preferences remain correct |
+| SC-PHOTO-04b | Extend bearing, material or ground if a real site cannot fit v1/turf assumptions; depends on 01 and GP/AS/NK design | Conditional prerequisite. Independently version material response and relief, plus bearing/normal/start/hash/replay/backend semantics; Q06 friction changes must not silently change support geometry. Otherwise choose a representable turf site |
+| SC-PHOTO-05 | Integrate captured world, grounding and occlusion; depends on 02–04 | Pending. C03–04/Q04–05: independent color reference, one photo-ground shadow owner, explicit native fallback, pre-shadowed-ground crossing, refresh/pause/reset and restored preferences; no duplicate static lighting or unsupported relighting |
+| SC-PHOTO-06 | Fixed-pilot and activity admission across entry points; depends on 03 | Pending. C02/C05/Q03 and Q09's camera/activity-refusal/coverage subset: fixed eye, near/far clearance, direct/saved/CLI/crash/secondary/Workshop guards and coverage notice; combined runway-start/scenario proof closes in 04a/08, camera laws unchanged |
+| SC-PHOTO-07 | Reproducible capture/import and selected export variants; depends on 01–03 | Pending. C07/Q10: distinct source/derivative/physical/export identities, loader/format, notices in all presets, repeat conversion and steady/peak/download/install budgets; prequalified lowest tier (initially 4K where supported), 8K only where qualified, 16K after justification; clear refusal if no tier fits |
+| SC-PHOTO-08 | Complete normal use, cold recovery, numerical replay and failure retirement; depends on 04–07, including 04a and required 04b | Pending. Q06–09: Club → photo → Green → Club, one activation owner, drained stale loads, correct continued World flow after rejection, explicit cold-start choices, save-failure handling, no residue; numerical equivalence does not claim identical material-report provenance |
+| SC-PHOTO-09 | Named target-device, pilot and backend qualification; depends on 08 | Pending. [Q01–Q12 protocol](../research/photorealistic-flying-sites/2026-11-19/qualification-protocol.md): critical zoom/depth/readability, defined GPU paired statistic/noise verdict, normal live-flight pacing, peak/retired memory, native/reference admission and independently scoped platform receipts |
+| SC-PHOTO-10 | Package one usable site and contributor recipe; depends on 09 | Pending. Q08/Q10/Q12: clean offline package and negative missing-resource cases, measured installed/download deltas, rights/notices, explicit supported site/device envelope and recovery; ordinary release gates remain |
 | SC-PHOTO-11 | Build one small 3D photographic site; compare ordinary meshes against Terrain3D 1.1.0; follows successful pilot or a documented early need for moving views | Conditional. Same measured ground/obstacle dataset; no arbitrary heightfield is admitted until GP/NK/replay contracts exist. Exact Metal, export, physics and renderer evidence required |
 | SC-PHOTO-12 | Integrate the accepted 3D site into multirotor FPV and other selected activity routes; depends on 11 | Conditional. Explicit route plumbing, spawn/reset/race/contact/replay checks and rapid low-altitude traversal; a landscape catalog entry alone is insufficient |
 | SC-PHOTO-13 | Multiple photo stations, additional captures/conditions and optional restricted panorama VR | Deferred. Each station calibrated; explicit switching and memory policy. VR has a separately accepted mono/stereo and head-translation design; no six-degree-of-freedom claim from one panorama |
@@ -129,6 +159,14 @@ opaque proxies and the shadow receiver together. A transparent object with alpha
 zero is not proof of a correct depth-only pass. `OccluderInstance3D` for culling
 is not a substitute for pixels that hide the aircraft.
 
+Use the synthetic disposable subsets of the
+[Q01/Q03–Q05 fixtures](../research/photorealistic-flying-sites/2026-11-19/qualification-protocol.md)
+with independent color and known-depth oracles. Real-site Q02/Q03 evidence and
+full World/lifecycle/pilot checks close later in 04/05/09. Exercise the current 1°–120°
+vertical range, clipping and photographed-shadow overlap; a wide-view screenshot
+cannot qualify telephoto occlusion. The analytical fixture in this branch is
+only a convention/calculation check, not this renderer proof.
+
 Advance only with captures and measured errors at the specified eye, seam, poles,
 view headings and zooms. If one renderer fails, either implement and prove a
 supported composition path or explicitly limit site availability. Dropping
@@ -137,8 +175,12 @@ essential occlusion while retaining invisible physical obstacles is unacceptable
 ### Milestone B: make one site correct through normal use
 
 Complete 03–08 in small reviewable changes. Attach one immutable descriptor to
-the selected landscape, validate before allocating high-resolution resources,
-and keep contact data under its existing owner. Introduce a deliberate photo
+the selected landscape, validate metadata and conservative resource estimates
+before large loads, handle reported allocation failures, and keep contact data
+under its existing owner. Preflight is not a free-VRAM guarantee. Prepare one
+candidate group without publishing shared state; serialize activation and retire
+stale requests without restoring over a newer owner. Add cold-start recovery
+explicitly because no previous scene may exist. Introduce a deliberate photo
 presentation policy in `World`; replacing a sky material only inside an adapter
 will not survive the existing sky/exposure/time updates.
 
@@ -174,6 +216,12 @@ admitted. Conversely, a native numerical pass is not a visual or frame-rate pass
 Same-physical-scene visual toggles must preserve accepted simulation state and
 contact inventory; comparisons between different physical sites are not expected
 to produce identical trajectories.
+
+Use Q11's defined paired GPU statistic and noise/inconclusive decision, separately
+from complete live-flight frame pacing. Q10 measures actual package and installed
+size as well as resource residency. A texture variant can remain unloaded yet
+still ship through the current all-resources presets. Required notices and
+physical metadata must survive a clean export without developer originals.
 
 ### Milestone D: add moving-camera realism
 
@@ -236,14 +284,18 @@ reproducible and redistributable.
 
 ## Planning ranges and staffing
 
-These ranges retain the original scope. The resource choices above add optional
-comparisons within the existing steps, not a requirement to adopt every tool.
+The ranges below are retained **2026-11-18 baseline estimates, now low confidence**.
+They have not been re-estimated for the strengthened World preparation,
+cold-start recovery, load retirement, optical or device/export evidence work.
+Re-estimate after SC-PHOTO-01/02 resolve site and rendering feasibility; do not
+use the old totals as a delivery commitment. Optional resource comparisons do
+not make every researched tool a prerequisite.
 
 These are engineering estimates, not measured delivery dates or vendor quotes.
 Assume one experienced Godot developer and part-time photo/3D support, access to
 a modest flat site, and access to the stated test devices.
 
-| Work package | Initial effort range | Main uncertainty |
+| Work package | Earlier effort range, not revalidated | Main uncertainty |
 | --- | --- | --- |
 | Synthetic rendering/capability proof | 4–8 developer days | Cross-renderer occlusion/shadow/color behavior |
 | Usable one-site pilot after that proof | Another 10–20 developer days, plus 2–5 capture/asset days | Field survey quality, lifecycle integration and platform fixes |
