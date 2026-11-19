@@ -122,6 +122,8 @@ The bounded experiment evaluator supports static reports, fixed-tick input-tape 
 
 ## Aircraft Creator (experimental)
 
+For ClearView downloads and a three-step import workflow, see the [quick guide](../site/clearview-import-en.md), available in all eleven website languages.
+
 **Create aircraft…** in the Workshop header opens the Aircraft Creator: a wizard that imports a player's own model and builds a new airplane around it, instead of varying a shipped one. The stock build stays loaded underneath and is untouched. Owner, steps and gates: [Aircraft Creator plan](plans/aircraft-creator.md) (prefix AC); results and limits: [Creator evidence](research/aircraft-creator/README.md).
 
 1. **Import** a local STL (binary or text), a self-contained GLB, or a ClearView aircraft ZIP (up to 64 MiB). Choose one aircraft when the ZIP contains a pack. The file is read once, size-checked and refused with a reason if it is damaged, too large or outside the supported subset. A picture is not a 3D model.

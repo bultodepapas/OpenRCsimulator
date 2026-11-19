@@ -40,6 +40,8 @@ The [browser model pipeline](MODELS.md) exports the six actual visual hierarchie
 
 ## Preview and maintain
 
+The **ClearView quick guide** at `#clearview` is linked beside the downloads. Its three-step instructions, model sources and preview/draft limitations are present in all eleven languages without JavaScript. `build_locales.py` also generates one `clearview-import-<locale>.md` per language from the same copy; each page links its matching Markdown edition, and `publish.py` includes all eleven files. Edit the existing Spanish/English/JSON sources, then regenerate both editions together. [English manual](clearview-import-en.md) · [Spanish manual](clearview-import-es.md) · [Importer scope](../docs/AIRCRAFT-WORKSHOP.md#aircraft-creator-experimental).
+
 From the repository root: `python -m http.server 4173 --bind 127.0.0.1 --directory site`. Open `http://127.0.0.1:4173/`. The page uses relative asset URLs and works at GitHub's project subpath.
 
 Regenerate images with Pillow 12.3.0 and `python site/prepare_assets.py`. Edit Spanish body copy in `index.html`, English copy in `content.js`, and the nine additional dictionaries in `locales/{pt,zh-Hans,de,ru,fr,it,ja,ko,ar}.json`, then run `python3 site/build_locales.py`. Never hand-edit the ten translated HTML pages or `sitemap.xml`. The generator also refreshes the language menu, alternate links, initial aircraft labels and embedded runtime dictionary in `index.html`. Update platform download links, version, checksums and sizes together after a release. Keep source-state claims separate from release contents and preserve experimental labels.

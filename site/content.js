@@ -125,6 +125,29 @@ const englishAttributes = {
   'Acercar': 'Zoom in', 'Alejar': 'Zoom out'
 };
 
+// ClearView quick guide: also generates the matching Markdown editions.
+Object.assign(translations, {
+  "clearviewLink": "ClearView import guide",
+  "clearviewKicker": "QUICK GUIDE / MODEL IMPORT",
+  "clearviewHeading": "Import a ClearView model",
+  "clearviewAvailability": "Use a development build with <strong>ClearView aircraft ZIP</strong> in the file picker. The website’s v0.2.7 download does not include ZIP import.",
+  "clearviewStatus": "<strong>Preview and drafts only.</strong> Imported models cannot yet fly or be saved as flyable aircraft.",
+  "clearviewDownloadsTitle": "Where to download",
+  "clearviewOfficial": "<a href=\"https://rcflightsim.com/models.html\">ClearView community models</a>: airplane ZIPs and Ken Northup’s Plane Packs.",
+  "clearviewCommunity": "<a href=\"https://gunnerson.homestead.com/files/clearview_models.htm\">Gary Gunnerson’s models</a>: choose the ClearView downloads.",
+  "clearviewExample": "Tested example: <a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>.",
+  "clearviewStepsTitle": "Three steps",
+  "clearviewStep1": "Download the model’s <code>.zip</code> and keep it zipped.",
+  "clearviewStep2": "Open <strong>Workshop → Create aircraft… → Import → Choose model…</strong>. Select the ZIP; for a pack, choose one aircraft.",
+  "clearviewStep3": "Check the preview and messages, name it, then select <strong>Save draft</strong>. Reopen it with <strong>Open…</strong>. Keep the original ZIP.",
+  "clearviewFilesTitle": "Which files work?",
+  "clearviewFiles": "Complete <strong>ClearView v5/v6 airplane ZIPs</strong>, up to <strong>64 MiB</strong>: <code>params.txt</code>, its referenced <code>.ac</code> model and textures in their original folders. Repaints need the complete model.",
+  "clearviewLimitsTitle": "Limits",
+  "clearviewLimits": "ClearView flight physics is not transferred. Helicopters, scenery, raw FMS files and <code>.lst</code> lists are outside this workflow. Missing textures or unsupported images/geometry can block preview; read the message and try another complete ZIP.",
+  "clearviewRights": "Keep the author’s credits and respect each model’s license.",
+  "clearviewMarkdown": "Markdown guide"
+});
+
 // A complete, page-specific dictionary is embedded at build time; no locale fetch.
 const localeCopy = typeof document === "undefined" ? null : JSON.parse(document.querySelector("#locale-data").textContent);
 const siteText = localeCopy?.ui;
