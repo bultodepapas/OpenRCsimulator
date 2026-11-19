@@ -359,6 +359,19 @@ between sessions. The same loop ran with the default model (Safe) as a baseline.
   written. Track it (PR [#123391](https://github.com/godotengine/godot/pull/123391)) before adoption.
 - **Not covered:** input latency, Compatibility and D3D12, and macOS.
 
+**T7: weaker CPU, not measurable this way.** Capping the Balanced plan's maximum processor state at 70 % and 50 %
+(restored to 100 %) left L09 fps at 4K and 1080p unchanged. The 50 % runs matched the 100 % ones, so this Ryzen
+under Windows 11 does not honour the cap. A weaker-CPU point needs another method or another machine (T13).
+
+The series did show drift: fps rose about 10 % (L09 4K 254–267 → 285–305) when the RustDesk session ended midway.
+All afternoon A/B comparisons kept both arms under the same remote-session conditions, but their absolute fps are
+about 10 % low. This is the M1's lesson again (RustDesk −8 %).
+
+**T8: presentation path, no difference.** At 4K/120 Hz with VSync (L13 orbit, clean host), the product's borderless
+full screen and exclusive full screen were identical, A-B-A-B-A in one launch: 120.0 fps, p99 9.3–9.6 ms, longest
+frame ≤ 11.9 ms, 1 % low 100–106. Exclusive full screen buys nothing. With the controller fix the orbit missed no
+refresh.
+
 **I10: harness, partly done.** `ladder.py` now:
 
 - kills orphaned `nvidia-smi` streams at start;
