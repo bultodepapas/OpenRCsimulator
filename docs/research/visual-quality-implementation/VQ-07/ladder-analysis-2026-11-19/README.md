@@ -264,6 +264,14 @@ and the profile on a system drive, A against B (warm-up also on Mobile):
 - samples competing engines and remote sessions every 10 s during each window;
 - continues once, and records it, when a cold load lost focus and AppRoot opened Pause.
 
+One real Windows run checked these changes:
+
+- the orphan kill ran (it found none);
+- the in-window sampling recorded the active RustDesk session;
+- the Home budget's decision was recorded.
+
+The resume-after-Pause path has not yet triggered in a real run.
+
 Learned on the way:
 
 - The Microsoft Store Python redirects new folders under `%APPDATA%` to its package `LocalCache`. A profile there
