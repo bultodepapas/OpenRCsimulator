@@ -783,6 +783,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--work", required=True, type=Path, help="task directory holding src/ and host-build/")
     parser.add_argument("--src", type=Path, help="renamed source snapshot (default: <work>/src)")
+    parser.add_argument("--profile", type=Path, help="Windows: APPDATA for user:// (default: <work>/profile); keep it on "
+                        "the system drive like a player's, since user:// file I/O runs on the main thread")
     parser.add_argument("--godot", help="engine executable (default: contents of <work>/engine-path.txt)")
     parser.add_argument("--plan", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
@@ -798,6 +800,9 @@ def main() -> int:
     src = (args.src or work / "src").resolve()
     godot = args.godot or (work / "engine-path.txt").read_text().strip()
     campaign = Campaign(work, src, godot)
+    if args.profile and WINDOWS:
+        campaign.profile = args.profile.resolve()
+        campaign.user_dir = isolated_user_dir(src, campaign.profile)
     plan = json.loads(args.plan.read_text())
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)

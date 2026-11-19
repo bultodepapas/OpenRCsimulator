@@ -7,8 +7,8 @@ which cannot apply the player's saved shadow, lens, bird, flag or meadow setting
 which time one view rather than flight. Evidence:
 [M1, DT-MAC-03b](../../../docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md) (owned by the
 [Apple plan](../../../docs/plans/apple-silicon-performance.md#dt-mac-03b--attribution-and-baseline-soak)) and
-RTX 3090 at 4K, VQ-07h (campaign 2026-11-19, owned by the
-[automatic graphics plan](../../../docs/plans/automatic-graphics.md)).
+[RTX 3090 at 4K, VQ-07h](../../../docs/research/visual-quality-implementation/VQ-07/graphics-ladder-2026-11-19/README.md)
+(owned by the [automatic graphics plan](../../../docs/plans/automatic-graphics.md)).
 
 | File | Role |
 | --- | --- |
@@ -28,7 +28,9 @@ the player's profile; `ladder.py` refuses `OpenRC Simulator`. The snapshot needs
 - **macOS:** follow the [M1 guide](../../../docs/tools/macos-m1.md) and build the
   [host-state helper](../../../tools/godot/README.md#optional-macos-host-state-companion-dt-mac-02e) at
   `<work>/host-build/host-state`. `user://` lives under `~/Library/Application Support/Godot/app_userdata/<name>`.
-- **Windows:** `user://` follows `--profile <work>/profile` (APPDATA). The local native kernel's receipt hashes the
+- **Windows:** `user://` follows `--profile` (APPDATA, default `<work>/profile`). Keep it on the system drive, like a
+  player's profile: the app does some `user://` file I/O on the main thread, and a profile on a USB flash drive
+  turned a periodic controller-store lock into a 26 ms stall twice a second (VQ-07h). The local native kernel's receipt hashes the
   main working tree's exact bytes, which mix CRLF and LF there; a fresh checkout with either line-ending setting
   silently runs the GDScript reference physics. Copy the tracked `app/`, `assets/` and `AGENTS.md` bytes from the
   main tree into the snapshot, copy `app/native/`, and confirm `physics_backend` reads `native` in the smoke results.
@@ -49,10 +51,11 @@ python3 ladder/analyze.py runs plan.json summary
 # Windows, at the unlocked desktop; the orchestrator keeps the display awake
 python ladder/make_plan.py --windows plan.json plan-smoke.json
 $env:OPENRC_TESTQUEUE_ROOT = 'U:\OpenRC\testqueue'   # an unenrolled directory
-python ladder/ladder.py --work <work> --plan plan-smoke.json --out smoke --cooldown 10 --thermal-wait 60 `
-  --expect-screen "(3840, 2160)" --expect-refresh 120
-python ladder/ladder.py --work <work> --plan plan.json --out runs --cooldown 10 --thermal-wait 60 `
-  --expect-screen "(3840, 2160)" --expect-refresh 120
+$ladderProfile = "$env:APPDATA\OpenRC-ladder-profile"   # user:// on the system drive
+python ladder/ladder.py --work <work> --profile $ladderProfile --plan plan-smoke.json --out smoke --cooldown 10 `
+  --thermal-wait 60 --expect-screen "(3840, 2160)" --expect-refresh 120
+python ladder/ladder.py --work <work> --profile $ladderProfile --plan plan.json --out runs --cooldown 10 `
+  --thermal-wait 60 --expect-screen "(3840, 2160)" --expect-refresh 120
 python ladder/analyze.py runs plan.json summary
 ```
 
@@ -77,6 +80,9 @@ Keep these outside Git.
   threads are listed too, and a thread near 100 % is the frame-rate limit. Metal's per-viewport GPU timers
   undercount on Apple's tile GPU, so Mac windows run with the bridge's GPU timing off.
 - The pilot adds about 24 bridge requests per second (~0.1 ms each) to every configuration.
+- Count long frames per second before comparing smoothness. A rate that is identical in every configuration is
+  periodic work, not an option's cost: the Windows campaign's exactly 2.0 frames over 25 ms per second were the
+  controller service's 0.5 s refresh. The bridge's `frames hitch_ms=15` records each with its `process_ms`.
 - Uncapped runs (VSync off) measure render throughput, not what the display shows; the VSync and frame-cap
   runs measure that. A cumulative step's delta is the marginal cost on top of the earlier steps, not the
   option's standalone cost. Neither is a sustained product qualification, and a run on one computer qualifies
