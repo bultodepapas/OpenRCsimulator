@@ -20,6 +20,7 @@ func _run() -> void:
 	AutoCalibration.calibration_path = PRIVATE_PATH
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PRIVATE_PATH))
 	_test_evaluate()
+	_test_read_rate()
 	_test_storage()
 	_test_scene_detail()
 	_test_renderer()
@@ -37,6 +38,28 @@ func _check(name: String, ok: bool, detail: Variant = "") -> void:
 	if not ok:
 		_failures += 1
 		printerr("FAIL: %s %s" % [name, str(detail)])
+
+
+## VQ-07h T5: with a separate render thread each timing read is a render-thread sync, so reads are rate-limited
+## there; the default thread model reads every frame exactly as before.
+func _test_read_rate() -> void:
+	_check("this project renders with the default (Safe) thread model", not AutoCalibration.uses_separate_render_thread())
+	var every_frame := true
+	for frame in 10:
+		every_frame = every_frame and AutoCalibration.reads_timings(false, 1000 + frame * 3000, 1000 + (frame - 1) * 3000)
+	_check("Safe reads the timings every frame", every_frame)
+	var step := AutoCalibration.SEPARATE_READ_INTERVAL_USEC
+	_check("Separate reads the first frame", AutoCalibration.reads_timings(true, 5000, 0))
+	_check("Separate skips frames inside the read interval", not AutoCalibration.reads_timings(true, 5000 + step - 1, 5000))
+	_check("Separate reads again once the interval has passed", AutoCalibration.reads_timings(true, 5000 + step, 5000))
+	var reads := 0
+	var last := 0
+	for frame in 300 * 20: # 300 fps for SAMPLE_S = 20 s
+		var now := 1_000_000 + frame * 3333
+		if AutoCalibration.reads_timings(true, now, last):
+			reads += 1
+			last = now
+	_check("Separate still gathers MIN_SAMPLES over SAMPLE_S", reads >= AutoCalibration.MIN_SAMPLES and reads <= 420, reads)
 
 
 func _samples(value: float, count: int = 600) -> PackedFloat64Array:

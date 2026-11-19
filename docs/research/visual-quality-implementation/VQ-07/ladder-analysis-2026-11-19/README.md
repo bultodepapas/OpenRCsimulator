@@ -116,7 +116,7 @@ a taxi or a low chase view costs. No such view has been measured in flight yet (
 | D4 | First use of a profile is slow: Compatibility's first Home → Fly took 20–41 s and Mobile's 11–12 s. Caches were on USB flash, so this is unverified on NVMe | Windows | report §5 | Re-measured on NVMe (T4): Compatibility 12.5 s, Mobile 3.6–4.4 s |
 | D5 | Crash frames reach p99 29–30 ms from L06 on at 4K, GPU-bound; at 60 Hz such frames miss a refresh | 3090 | crash ladder | Open: crash with VQ |
 | D6 | Projected shadows and the planar cue cost 6.6 % of flight fps in the ladder, with no draw-call change | 3090 | ladder L03 | Re-measured at about 2 % with no runtime culprit (I5, [§8](#8-implementation-results)) |
-| D7 | Product code reads RenderingServer GPU/CPU timing every frame ([`auto_calibration.gd`](../../../../../app/render/auto_calibration.gd), `frame_diagnostics.gd`). Under the separate render thread each read is a blocking sync | latent | engine warning, [Godot server wrappers](https://github.com/godotengine/godot/blob/master/servers/server_wrap_mt_common.h) | Open: VQ-07h before any thread-model change |
+| D7 | Product code reads RenderingServer GPU/CPU timing every frame ([`auto_calibration.gd`](../../../../../app/render/auto_calibration.gd), `frame_diagnostics.gd`). Under the separate render thread each read is a blocking sync | latent | engine warning, [Godot server wrappers](https://github.com/godotengine/godot/blob/master/servers/server_wrap_mt_common.h) | Fixed for the separate render thread: calibration reads every 50 ms there ([§8](#8-implementation-results)) |
 | D8 | FSR2 adds about 2.3 GB of process RSS at 4K in every mode, while its VRAM report drops | 3090 | report §4 | Located (T12, [§8](#8-implementation-results)): private memory outside Godot's heap from FSR2 set-up |
 | D9 | Native physics still costs 0.41 ms per 240 Hz tick, about 10 % of the main thread in flight (GDScript: 0.74 ms) | 3090 | `perf.sim_step_usec` | Profiled (T15, [§8](#8-implementation-results)): a third is GDScript glue in pinned files; physics owners |
 | D10 | Host freezes of 1.0–1.7 s outside `_process`, and a −10 % REF transient | 3090 | A/B and REF tables | Unexplained (T10) |
@@ -339,10 +339,21 @@ between sessions. The same loop ran with the default model (Safe) as a baseline.
 
 - **Stable in this soak.** The documented crash paths (particles in the crash effects, window resizes) caused no
   failure in 24 cycles.
-- **Our calibration is a blocker (D7).** It runs on the first eligible flight of a session and after each Home →
+- **Our calibration was a blocker (D7).** It runs on the first eligible flight of a session and after each Home →
   Fly. It reads `viewport_get_measured_render_time_gpu/cpu` every frame (`auto_calibration.gd:90` and `:132`), and
   each read becomes a render-thread sync: about 500 warnings per cycle, with the flight at 19–73 fps. Before any
   thread-model change, it must read timings without a per-frame sync.
+- **D7 fixed.** With a separate render thread, calibration now reads its timings at most every 50 ms; the default
+  model still reads every frame, as before. Each run deleted the stored verdict and flew a 45 s orbit at 4K L09:
+
+  | Calibration run | fps while calibrating | GPU p95 | Frame-interval p95 |
+  | --- | --- | --- | --- |
+  | Safe (unchanged path) | 267 | 2.99 ms | 5.1 ms |
+  | Separate, before the fix | 62.9 | 5.13 ms | 19.4 ms |
+  | Separate, after the fix | 328 | 2.94 ms | 4.6 ms |
+
+  Before the fix, the syncs inflated the measured GPU time by 70 %. A weaker GPU could have been calibrated down
+  wrongly.
 - **The engine's exit error is the other blocker:** Godot
   [#119000](https://github.com/godotengine/godot/issues/119000), reported to stop the pipeline cache from being
   written. Track it (PR [#123391](https://github.com/godotengine/godot/pull/123391)) before adoption.

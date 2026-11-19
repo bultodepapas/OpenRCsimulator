@@ -35,6 +35,11 @@ const INTERVAL_MISS := AutoGraphicsPolicy.CALIBRATION_INTERVAL_MISS
 const INTERVAL_MARGIN_MS := AutoGraphicsPolicy.CALIBRATION_INTERVAL_MARGIN_MS
 const PIXEL_TOLERANCE := 1.5
 const HIGH_METHOD := "forward_plus"
+## Under a separate render thread (rendering/driver/threads/thread_model = 2) every RenderingServer timing read is
+## a render-thread sync: reading each frame took a 4K RTX 3090 flight from ~320 to 19-73 fps (VQ-07h T5). There
+## the GPU/CPU timings are read at most every 50 ms (about 400 samples in SAMPLE_S); frame intervals need no read
+## and stay per frame. With the default model (Safe) every frame is read, as before.
+const SEPARATE_READ_INTERVAL_USEC := 50000
 
 ## Test seam: tests point this at a private file.
 static var calibration_path := CALIBRATION_PATH
@@ -50,6 +55,8 @@ var _samples: PackedFloat64Array = []
 var _cpu_samples: PackedFloat64Array = []
 var _interval_samples: PackedFloat64Array = []
 var _last_frame_usec := 0
+var _separate_render_thread := uses_separate_render_thread()
+var _last_read_usec := 0
 
 
 ## `level` is the Scene detail level this flight renders (SceneDetail.level()); the verdict is relative to it.
@@ -86,13 +93,17 @@ func _process(delta: float) -> void:
 	_active_s += delta
 	if _active_s < WARMUP_S:
 		return
-	var rid := get_viewport().get_viewport_rid()
-	var gpu_ms := RenderingServer.viewport_get_measured_render_time_gpu(rid)
-	if gpu_ms > 0.0 and is_finite(gpu_ms):
-		_samples.append(gpu_ms)
-		_cpu_samples.append(render_cpu_ms(rid))
-		if interval_ms > 0.0:
-			_interval_samples.append(interval_ms)
+	if reads_timings(_separate_render_thread, now, _last_read_usec):
+		_last_read_usec = now
+		var rid := get_viewport().get_viewport_rid()
+		var gpu_ms := RenderingServer.viewport_get_measured_render_time_gpu(rid)
+		if gpu_ms > 0.0 and is_finite(gpu_ms):
+			_samples.append(gpu_ms)
+			_cpu_samples.append(render_cpu_ms(rid))
+			if interval_ms > 0.0:
+				_interval_samples.append(interval_ms)
+	elif interval_ms > 0.0:
+		_interval_samples.append(interval_ms) # no timing read this frame (separate render thread)
 	if _active_s >= WARMUP_S + SAMPLE_S:
 		var size := get_viewport().get_visible_rect().size
 		var refresh := DisplayServer.screen_get_refresh_rate()
@@ -115,6 +126,16 @@ func _flight_active() -> bool:
 		return false
 	var sim: Variant = _session.get("sim")
 	return sim is Node and is_instance_valid(sim) and not bool(sim.get("paused")) and int(sim.get("tick")) > 0
+
+
+static func uses_separate_render_thread() -> bool:
+	return int(ProjectSettings.get_setting("rendering/driver/threads/thread_model", 1)) == 2
+
+
+## Whether this frame reads the RenderingServer timings: always with the default thread model, at most every
+## SEPARATE_READ_INTERVAL_USEC with a separate render thread.
+static func reads_timings(separate: bool, now_usec: int, last_read_usec: int) -> bool:
+	return not separate or last_read_usec == 0 or now_usec - last_read_usec >= SEPARATE_READ_INTERVAL_USEC
 
 
 ## Planar reflections and other SubViewports render outside the root viewport's GPU time.
