@@ -1,0 +1,70 @@
+{
+  "kind": "analytical planning receipt; no Godot execution",
+  "date": "2026-11-19",
+  "assumptions": {
+    "output_height_px": 1080,
+    "camera_transverse_translation_m": 0.25,
+    "illustrative_screen_error_limit_px": 2.0,
+    "limit_status": "planning example, not a new release threshold",
+    "projection": "ideal pinhole; centered feature; unchanged orientation; square pixels",
+    "depth": "forward optical-axis depth, not general radial survey range",
+    "background": "direction-only panorama with no translation response",
+    "equations": [
+      "f = H / (2 tan(v / 2))",
+      "pixel_shift = f * T / D",
+      "D_min = f * T / pixel_limit"
+    ]
+  },
+  "rows": [
+    {
+      "vertical_fov_deg": 120,
+      "focal_pixels": 311.769145362,
+      "minimum_forward_depth_for_2px_m": 38.97114317,
+      "missing_parallax_at_1000m_px": 0.077942286,
+      "transverse_5cm_representation_error_at_100m_px": 0.155884573
+    },
+    {
+      "vertical_fov_deg": 60,
+      "focal_pixels": 935.307436087,
+      "minimum_forward_depth_for_2px_m": 116.913429511,
+      "missing_parallax_at_1000m_px": 0.233826859,
+      "transverse_5cm_representation_error_at_100m_px": 0.467653718
+    },
+    {
+      "vertical_fov_deg": 30,
+      "focal_pixels": 2015.307436087,
+      "minimum_forward_depth_for_2px_m": 251.913429511,
+      "missing_parallax_at_1000m_px": 0.503826859,
+      "transverse_5cm_representation_error_at_100m_px": 1.007653718
+    },
+    {
+      "vertical_fov_deg": 15,
+      "focal_pixels": 4101.707220872,
+      "minimum_forward_depth_for_2px_m": 512.713402609,
+      "missing_parallax_at_1000m_px": 1.025426805,
+      "transverse_5cm_representation_error_at_100m_px": 2.05085361
+    },
+    {
+      "vertical_fov_deg": 6,
+      "focal_pixels": 10303.813811373,
+      "minimum_forward_depth_for_2px_m": 1287.976726422,
+      "missing_parallax_at_1000m_px": 2.575953453,
+      "transverse_5cm_representation_error_at_100m_px": 5.151906906
+    },
+    {
+      "vertical_fov_deg": 1,
+      "focal_pixels": 61877.871069827,
+      "minimum_forward_depth_for_2px_m": 7734.733883728,
+      "missing_parallax_at_1000m_px": 15.469467767,
+      "transverse_5cm_representation_error_at_100m_px": 30.938935535
+    }
+  ],
+  "interpretation": [
+    "The fixed-pilot proposal has zero eye translation; these are moving-view examples.",
+    "Adding real foreground geometry does not remove missing parallax in the remaining panorama.",
+    "A screen-error distance does not establish hidden surface content, depth ordering or physical coverage.",
+    "For native Mac and other outputs, recompute using actual projection/output and inspect the final upscale.",
+    "The 5cm example is an imposed transverse silhouette error, not a measured LOD error.",
+    "General camera translation/rotation, off-axis points and disocclusion require full projection and scene evidence."
+  ]
+}

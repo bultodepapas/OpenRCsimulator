@@ -13,8 +13,12 @@ The [canonical plan](../../../plans/photorealistic-flying-sites.md) owns status.
 **Proposed first method:** a full 2:1 equirectangular background plus opaque
 photo-projected geometry for a small number of measured foreground objects and
 ground. Compute the same lookup per fragment in both paths. Start with opaque,
-simple shapes. Alpha-cutout foliage, a depth-only compositor and layered-depth
-representations are later comparisons if a demonstrated defect requires them.
+simple shapes. Alpha-cutout **photo-occlusion proxies**, a depth-only compositor
+and layered-depth representations are later comparisons if a demonstrated
+defect requires them. Existing real 3D foliage is a different material role and
+may enter the bounded [fixed-eye hybrid comparison](hybrid-experiments.md#hx01--fixed-eye-hybrid-control)
+after the opaque projection/color fixture. That does not admit moving cameras
+or imply that photographic crown depth has already been solved.
 Do not interpret an alpha-zero material as a guaranteed depth writer.
 
 Use existing float64 NED metres for survey and physical data. Let `s` be the
@@ -168,12 +172,21 @@ capture transform for all comparisons and record color-management assumptions.
 Q04 owns thresholds and fixtures. The existing Compatibility conversion helper
 is a candidate to verify on the pin, not a formula to copy indiscriminately.
 
-Freeze captured sky, sun appearance, clouds, exposure and static vegetation for
-the photo representation. Wind may still change through the existing physical
-weather contract, with a clear static-scene explanation. Bind this policy before
+Freeze captured sky, sun appearance, clouds, exposure and **photo-baked
+vegetation** for the photo representation. Wind may still change through the
+existing physical weather contract. Admitted real 3D trees may use the existing
+accepted-time wind within source-specific material/transform/collision limits;
+captured trees remain static. A replacement requires a clean background over
+its visible/moving silhouette and an explicit shadow treatment. Bind this policy before
 the first visible Home/flight frame and during every World refresh. Do not write
 restricted values into the player's saved settings. On a normal 3D site, restore
 its existing world policy and requested controls. Sources: H08 and H09.
+
+The [hybrid lighting design](hybrid-scenery.md#renderer-and-color-boundaries)
+separates captured-appearance proxies from genuinely lit local assets. A
+different visible/radiance sky lookup is an optional exact-renderer experiment,
+not an implemented capability. Keep one World owner and avoid needless radiance
+updates or an independent wall-clock animation path.
 
 ## C04 — one aircraft-to-ground shadow owner
 
@@ -203,6 +216,15 @@ openings. A photo-projected opaque ground surface can visually reconstruct the
 photo while receiving the projected overlay; that whole composition still
 needs exact-renderer proof.
 
+For real 3D additions/replacements, qualify their ground shadows, shadows onto
+the aircraft and reflection/probe appearance separately. The projected aircraft
+cue is not a general tree-shadow receiver. A real local patch may contain the
+new shadow footprint, but transitions to photographic ground must pass Q05.
+Photo-baked occluders affecting real geometry can require special proxy lighting
+without double-darkening the photograph; start with a clear corridor when that
+interaction is not qualified. The [hybrid interaction table](hybrid-scenery.md#shadows-reflections-and-animation-need-their-own-composition)
+and HX03 define the additional comparisons under this same owner.
+
 The dynamic shadow crossing an existing photographic shadow is a separate
 test. A bounded authored sunlight/strength mask may reduce the projected
 contribution over a known static shadow; it is an artistic approximation with
@@ -225,6 +247,12 @@ its ordinary collision response. Do not confuse “no scenery destruction” wit
 “no collision” or “aircraft cannot be damaged.” Reject a destructible profile
 bound to static pixels during site validation. A later destructible representation
 needs an explicit synchronized background/proxy/contact state machine.
+
+The initial hybrid experiment also keeps its selected real 3D obstacles
+nondestructible. A future fully 3D damage policy must account for the cleaned
+background, shadows and reset as well as contact state; visual quality tiers
+never remove the physical obstacle or make it invisible. The appearance-role
+manifest belongs to the proposed sidecar, not an unvalidated field-v1 extension.
 
 Choose maintained turf fitting existing support, bearing and start contracts.
 SC-PHOTO-04b is necessary for a materially different site: independently define

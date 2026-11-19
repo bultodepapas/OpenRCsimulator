@@ -1,4 +1,4 @@
-# Photorealistic flying sites: strengthened plan and adversarial review
+# Photorealistic flying sites: strengthened plan and hybrid scenery
 
 2026-11-19. Follow-up to the [2026-11-18 research pack](../2026-11-18/README.md),
 reviewing planning commit `0dac71fc8a829a8a9ea33fd62c4e45703f4021ca` against
@@ -14,6 +14,28 @@ The [canonical implementation plan](../../../plans/photorealistic-flying-sites.m
 still owns all 18 step IDs and their status. This pack adds design requirements,
 not completed runtime work or another status ledger.
 
+## Hybrid follow-up: photographs plus existing 3D assets
+
+The next study reviews planning commit
+`f5dbf743f3e5229687688149fcda3215b8228a70` and the relevant paths on main
+`99e5a5ac024935c32028e5332d31a3e09da4dc42`. It adds **12 hybrid technique
+investigations, 12 precedent dossiers, 47 retained search strings, 30 grouped
+source records and six proposed comparison cases**.
+
+The revised recommendation compares a fixed-eye hybrid during SC-PHOTO-02:
+photographic distance plus a few existing real trees, props and local ground.
+Photo-baked objects, 3D additions and cleaned 3D replacements have separate
+appearance/shadow roles while keeping stable physical identity. Supported real
+trees may use accepted-time wind; photographed trees stay static. Moving views
+still require real geometry and their own camera-volume/parallax proof.
+
+The asset audit finds 30 current vegetation assets/13 tree forms and reuses the
+existing Blender/generator, tree-card, ground and wind workflows. Source checks
+also resolve two misleading examples: the Godot forest demo really composes
+photographic sky with procedural terrain and real trees, while the separate
+Navier8 panorama demo hides its matching glTF. Neither supplies OpenRC runtime
+qualification or blanket rights to its assets.
+
 ## Read in this order
 
 | Document | Purpose |
@@ -23,10 +45,18 @@ not completed runtime work or another status ledger.
 | [Qualification protocol](qualification-protocol.md) | Twelve concrete case groups with independent oracles, proposed limits, failure paths, hardware scope and existing tools |
 | [Research log](research-log.md) | Twenty-five retained queries, 25 primary-source records, repository/main comparison and retrieval limits |
 | [Optics analysis](../../../../research/photorealistic-flying-sites/optics_review.py) and [receipt](../../../../research/photorealistic-flying-sites/optics_review_receipt.json) | Reproducible dependency-free geometry/memory calculations; no Godot runtime claim |
+| [Hybrid design](hybrid-scenery.md) | Twelve techniques, appearance ownership, renderer limits, local/photo ground and shadow/reflection interfaces |
+| [Hybrid precedents](hybrid-precedents.md) | Named RC simulators, creators, production accounts and source-inspected Godot examples, with evidence boundaries |
+| [Existing-asset reuse audit](hybrid-reuse-audit.md) | Current source formats, trees/cards, wind/filtering, ground/props, stale documentation and missing integration |
+| [Hybrid experiments](hybrid-experiments.md) | Six concrete comparisons mapped to existing steps and Q groups, including independent controls and failure decisions |
+| [Hybrid search/source record](hybrid-search-log.md) | Forty-seven retained queries, 30 grouped source records, pinned external code and retrieval corrections |
+| [Hybrid parallax analysis](../../../../research/photorealistic-flying-sites/hybrid_parallax_review.py) and [receipt](../../../../research/photorealistic-flying-sites/hybrid_parallax_receipt.json) | Reproducible centered-point calculation explaining why a foreground mesh does not admit a moving panorama |
 
 The new contracts and protocol take precedence over the corresponding initial
 design/acceptance choices. The older techniques, free resources, citations,
 historical measurements and search logs remain useful and are preserved.
+The hybrid follow-up refines those same contracts; it introduces no duplicate
+implementation-status table.
 
 ## What changed the decision
 
@@ -61,15 +91,16 @@ plus second ten searches, 78 resource-search strings and 86 source records remai
 present. This review's 25 source entries include revisited pages; the counts
 are not a claim of 111 unique sources or adopted tools.
 
-Only the analytical script ran. Its maximum direction round-trip error for
+At the adversarial-review commit, only the optics analysis ran. Its maximum direction round-trip error for
 the ten rotated cases was approximately 6.26e-16 using Python float arithmetic.
 That verifies the proposed convention and reproduces the calculations; it does
 not verify Godot shader compilation, imported images, live flight or GPU memory.
 All new performance, size and visual thresholds are explicit proposals.
 
-## Verification record
+## Verification record — adversarial-review commit
 
-The integrated candidate was checked on 2026-11-19:
+The candidate published as `f5dbf743f3e5229687688149fcda3215b8228a70` was
+checked on 2026-11-19. Counts below describe that earlier candidate:
 
 - All **500 relative link occurrences and 248 linked heading anchors** resolved
   across 17 complete plan/research documents and the photographic-site links in
@@ -102,3 +133,38 @@ The integrated candidate was checked on 2026-11-19:
 Runtime/import/export, simulator capture, pilot and hardware qualification
 remain unexecuted and belong to SC-PHOTO-02…10. The analytical result and stronger
 requirements do not close those gates.
+
+## Verification record — hybrid follow-up
+
+The integrated follow-up was checked on 2026-11-19:
+
+- All **597 relative link occurrences and 286 linked heading anchors** resolved
+  across 22 complete plan/research documents and the photographic-site links in
+  three shared guides. This is a local scoped check using the existing document
+  parser and Git-backed sparse targets, not a CI event receipt.
+- The canonical ledger retains 18 unique SC-PHOTO steps. The follow-up contains
+  12 HM technique dossiers, 12 HP precedent dossiers, six HX comparison cases,
+  30 HS grouped source records and 47 distinct retained query strings. The prior
+  20 techniques, 24 resource dossiers, 86 source entries and original search
+  logs remain unchanged. The earlier review retains 18 findings, nine contracts,
+  twelve Q groups, 25 queries and 25 source records.
+- Both analytical receipts reproduce on the same Python 3.12.14 runtime. The
+  hybrid calculation uses an ideal centered point, a hypothetical 25 cm transverse
+  translation and an illustrative 2-pixel limit; at 1° vertical FOV/1080 px high,
+  missing parallax for a point at 1 km is 15.469467767 pixels. It is not a new
+  camera allowance, an independent renderer oracle or a hardware result.
+- Three read-only reviews checked source evidence, repository reuse and the
+  method/experiment design. Integrated corrections include a render-only direct
+  factory fixture for close trees rejected by the existing treeline loader;
+  explicit factory-versus-wrapper shadow policy; a specified distant reference
+  and constant lighting/probe conditions in A/B; pre-reset damage checks;
+  controlled representation overlap during dither; and precise source-license
+  and resource-chain attribution.
+- The follow-up is confined to 12 Markdown documents and two small analytical
+  files. It changes no runtime source, engine pin, dependency or binary asset.
+  Whitespace and balanced-code-fence checks passed. It does not mark an
+  implementation or device gate complete.
+
+The remaining work is to build and qualify the selected synthetic method, then
+integrate one surveyed field under the canonical steps. No simulator, Blender
+render, image/model import, exported application or GPU test ran in this follow-up.

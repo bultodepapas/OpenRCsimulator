@@ -6,6 +6,12 @@ its memory arithmetic, platform boundaries and Gate P ownership remain applicabl
 [Contracts](implementation-contracts.md) define the design.
 [The plan](../../../plans/photorealistic-flying-sites.md) is the only status ledger.
 
+The [hybrid comparison plan](hybrid-experiments.md) adds HX01–HX06 fixtures for
+existing real trees, clean replacements, local ground, shadows/reflections and
+moving-view limits. Its table maps them to these Q groups and existing steps;
+it does not add another status ledger or waive a Q gate. Fixed-eye hybrids can
+be compared during SC-PHOTO-02; moving-camera admission remains separate.
+
 ## Admission sheet before an experiment
 
 Record source commit, clean/dirty state, Godot version and binary hash, import
