@@ -1,0 +1,9 @@
+assets/*.png -text
+assets/*.webp -text
+assets/*.svg -text
+fixtures/*.svg -text
+*.json text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.py text eol=lf
+*.html text eol=lf

@@ -1,0 +1,111 @@
+{
+  "format": "openrc-decal-stack-proposal",
+  "version": 1,
+  "coordinate_policy": "receiver_bind_local_metres",
+  "visual_base": {
+    "kind": "factory",
+    "visual_family": "fixture-aircraft",
+    "model_sha256": "58ee01bfdb72af98c761b620920990d05bc614479ecb3f8b4d17c73628b39fa5",
+    "appearance_id": "factory",
+    "appearance_sha256": "02047c4b70cf3e016eb0eb907992d44331b43e1d7ee982f170c1fdc7ae7fd711"
+  },
+  "receiver_bindings_sha256": "58ee01bfdb72af98c761b620920990d05bc614479ecb3f8b4d17c73628b39fa5",
+  "layers": [
+    {
+      "id": "decal-001",
+      "asset_id": "test-race-stripes",
+      "asset_sha256": "e5bdf7fa514a46e502153734b4a4122c35203b1c33885311abfefa69a53d5be9",
+      "receiver_id": "fixture.fuselage.top",
+      "position_m": [
+        0,
+        0,
+        -0.35
+      ],
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "tangent": [
+        1,
+        0,
+        0
+      ],
+      "size_m": [
+        0.25,
+        0.1
+      ],
+      "rotation_deg": 15,
+      "flip_u": false,
+      "flip_v": false,
+      "opacity": 1,
+      "visible": true,
+      "locked": false,
+      "aspect_locked": true
+    },
+    {
+      "id": "decal-002",
+      "asset_id": "test-race-stripes",
+      "asset_sha256": "e5bdf7fa514a46e502153734b4a4122c35203b1c33885311abfefa69a53d5be9",
+      "receiver_id": "fixture.fuselage.top",
+      "position_m": [
+        0,
+        0,
+        0.1
+      ],
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "tangent": [
+        1,
+        0,
+        0
+      ],
+      "size_m": [
+        0.25,
+        0.1
+      ],
+      "rotation_deg": -15,
+      "flip_u": true,
+      "flip_v": false,
+      "opacity": 1,
+      "visible": true,
+      "locked": false,
+      "aspect_locked": true
+    },
+    {
+      "id": "decal-003",
+      "asset_id": "test-direction-arrow",
+      "asset_sha256": "4a7728bc291366f6b9c03e359c8d40d253ef752eff91f29a0ca5afb4d5f821ce",
+      "receiver_id": "fixture.wing.left",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "tangent": [
+        1,
+        0,
+        0
+      ],
+      "size_m": [
+        0.25,
+        0.1
+      ],
+      "rotation_deg": 90,
+      "flip_u": false,
+      "flip_v": false,
+      "opacity": 1,
+      "visible": true,
+      "locked": false,
+      "aspect_locked": true
+    }
+  ]
+}

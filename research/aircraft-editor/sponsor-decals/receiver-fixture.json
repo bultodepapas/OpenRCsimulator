@@ -1,0 +1,126 @@
+{
+  "format": "openrc-decal-receiver-fixture",
+  "version": 1,
+  "status": "synthetic_contract_fixture_not_a_registered_aircraft",
+  "visual_family": "fixture-aircraft",
+  "coordinate_units": "receiver_bind_local_metres",
+  "receivers": [
+    {
+      "id": "fixture.fuselage.top",
+      "minimum_m": [
+        -0.5,
+        -0.01,
+        -1.0
+      ],
+      "maximum_m": [
+        0.5,
+        0.01,
+        1.0
+      ],
+      "bind_to_model": {
+        "origin_m": [
+          0,
+          0,
+          0
+        ],
+        "basis_columns": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fixture.wing.left",
+      "minimum_m": [
+        -0.3,
+        -0.01,
+        -0.5
+      ],
+      "maximum_m": [
+        0.3,
+        0.01,
+        0.5
+      ],
+      "bind_to_model": {
+        "origin_m": [
+          -0.9,
+          0,
+          0
+        ],
+        "basis_columns": [
+          [
+            0,
+            0,
+            -1
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fixture.aileron.left",
+      "minimum_m": [
+        -0.3,
+        -0.01,
+        -0.1
+      ],
+      "maximum_m": [
+        0.3,
+        0.01,
+        0.1
+      ],
+      "bind_to_model": {
+        "origin_m": [
+          -0.9,
+          0,
+          0.2
+        ],
+        "basis_columns": [
+          [
+            0,
+            0,
+            -1
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            0
+          ]
+        ]
+      },
+      "fixture_hinge_axis": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "factory_paint_identity": "fixture-neutral-white-v1"
+}

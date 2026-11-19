@@ -1,0 +1,14 @@
+{
+  "format": "openrc-decal-stack-proposal",
+  "version": 1,
+  "coordinate_policy": "receiver_bind_local_metres",
+  "visual_base": {
+    "kind": "factory",
+    "visual_family": "fixture-aircraft",
+    "model_sha256": "58ee01bfdb72af98c761b620920990d05bc614479ecb3f8b4d17c73628b39fa5",
+    "appearance_id": "factory",
+    "appearance_sha256": "02047c4b70cf3e016eb0eb907992d44331b43e1d7ee982f170c1fdc7ae7fd711"
+  },
+  "receiver_bindings_sha256": "58ee01bfdb72af98c761b620920990d05bc614479ecb3f8b4d17c73628b39fa5",
+  "layers": []
+}

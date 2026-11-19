@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AE-24e research-only decal stack, not current presentation profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "coordinate_policy",
+    "visual_base",
+    "receiver_bindings_sha256",
+    "layers"
+  ],
+  "properties": {
+    "format": {
+      "const": "openrc-decal-stack-proposal"
+    },
+    "version": {
+      "const": 1
+    },
+    "coordinate_policy": {
+      "const": "receiver_bind_local_metres"
+    },
+    "visual_base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "visual_family",
+        "model_sha256",
+        "appearance_id",
+        "appearance_sha256"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "factory",
+            "stock",
+            "custom_skin"
+          ]
+        },
+        "visual_family": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "model_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "appearance_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$"
+        },
+        "appearance_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "factory"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "appearance_id": {
+                "const": "factory"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "custom_skin"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "appearance_id": {
+                "pattern": "^custom_[0-9a-f]{24}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "receiver_bindings_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "layers": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "asset_id",
+          "asset_sha256",
+          "receiver_id",
+          "position_m",
+          "normal",
+          "tangent",
+          "size_m",
+          "rotation_deg",
+          "flip_u",
+          "flip_v",
+          "opacity",
+          "visible",
+          "locked",
+          "aspect_locked"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "asset_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "asset_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "receiver_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "position_m": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "number",
+              "minimum": -100,
+              "maximum": 100
+            }
+          },
+          "normal": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1
+            }
+          },
+          "tangent": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1
+            }
+          },
+          "size_m": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 10
+            }
+          },
+          "rotation_deg": {
+            "type": "number",
+            "minimum": -180,
+            "exclusiveMaximum": 180
+          },
+          "flip_u": {
+            "type": "boolean"
+          },
+          "flip_v": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "aspect_locked": {
+            "const": true
+          }
+        }
+      }
+    }
+  }
+}
