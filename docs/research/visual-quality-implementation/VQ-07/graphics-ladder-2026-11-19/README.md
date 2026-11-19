@@ -66,6 +66,32 @@ stall: mean fps is about 5 % low, and the 1 % low (≈ 39–45 fps), p99 and the
 not the renderer. The stall is the same in every configuration, so the comparisons below stand; the absolute
 smoothness numbers are those of the A/B.
 
+### Clean baseline after the fixes (same day, 14:15–14:45)
+
+This baseline is the reference for absolute values on this host. It ran the snapshot with `main`'s `app/` files at
+`349958a4b`, with:
+
+- the controller fixes and the Home render budget;
+- `user://` on C: (outside AppData);
+- no remote session;
+- the 4K TV at 120 Hz;
+- two passes in alternating order, with the window `host_activity` empty throughout.
+
+| Configuration | Flight fps | 1 % low | p99 | >12.5 ms | Home fps (scale) | Crash: fps, longest frame |
+| --- | --- | --- | --- | --- | --- | --- |
+| L00 | 388.6–389.7 | 240–242 | 3.7–3.8 ms | 0 % | 239–240 (1.0) | 289–290, 10–12 ms |
+| L09 | 317.2–321.1 | 206–211 | 4.3–4.4 ms | 0 % | 136 (1.0) | 203–204, 17–25 ms |
+| L13 | 310.8–315.6 | 187–213 | 4.4–4.7 ms | 0 % | 135–137 (×0.85) | 182, 14–16 ms |
+| L13, VSync 120 Hz | 120.0 | 108 | 9.0 ms | 0 % | 120.0 (×0.85) | 119.5–119.8, 16–17 ms |
+| L09, windowed 1080p | 343.2–348.5 | 204–208 | 4.3–4.4 ms | 0 % | 357 (1.0) | 325–328, 11–12 ms |
+
+- Against the campaign, flight fps is about 17 % higher and the 1 % low is about five times higher.
+- The crash's longest frames fell from 38–83 ms to 10–25 ms.
+- With the profile on a USB flash drive, every main-thread `user://` write was slower, not only the controller lock:
+  flight statistics and the accident record are written at the crash.
+- The campaign's comparisons between configurations stand. Its absolute values do not.
+- The main thread is still the limit (95 % busy).
+
 ## 2. The 3090 at 4K is CPU-bound
 
 | Measure (L09, 4K) | Value |
