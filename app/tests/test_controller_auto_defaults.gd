@@ -7,6 +7,14 @@ var checks := 0
 var failures := 0
 
 
+class SpyStore extends "res://input/controller_profile_store.gd":
+	var claims := 0
+
+	func acquire_write() -> Dictionary:
+		claims += 1
+		return super()
+
+
 func check(label: String, passed: bool) -> void:
 	checks += 1
 	if not passed:
@@ -177,6 +185,38 @@ func _run() -> void:
 	service = service_for([device(6)])
 	service.refresh()
 	check("corrupt storage cannot silently activate a factory flight profile", roles(service, 6, 6) and service.profile_for_device(6).is_empty())
+	service.free()
+	clean()
+
+	# The periodic refresh reads storage only for a menu device or a pending default. Without either it must not
+	# take the cross-process lease, whose lock directory and owner file stall the main thread on Windows.
+	observed = []
+	service = service_for(observed)
+	var spy := SpyStore.new(PATH, PATH + ".legacy")
+	service.store = spy
+	service.refresh()
+	check("keyboard-only startup keeps keyboard roles", roles(service, -1, -1))
+	spy.claims = 0
+	service.refresh()
+	service.refresh()
+	check("keyboard-only refresh takes no storage lease", spy.claims == 0)
+	observed.append(device(9))
+	service.refresh()
+	check("hot-plug still takes the lease and applies defaults", spy.claims > 0 and roles(service, 9, 9))
+	spy.claims = 0
+	service.refresh()
+	check("a menu device keeps its locked eligibility recheck", spy.claims > 0 and roles(service, 9, 9))
+	observed.clear()
+	service.refresh()
+	check("unplugging the pad restores keyboard roles", roles(service, -1, -1))
+	spy.claims = 0
+	service.session = Node.new()
+	observed.append(device(3, "radio"))
+	service.refresh()
+	check("a radio arriving in flight takes no lease", spy.claims == 0 and roles(service, -1, -1))
+	service.session.free()
+	service.refresh()
+	check("the deferred default applies once the session ends", spy.claims > 0 and roles(service, 3, -1))
 	service.free()
 	clean()
 	print("Controller automatic defaults: %d/%d checks passed" % [checks - failures, checks])

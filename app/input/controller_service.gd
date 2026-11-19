@@ -64,6 +64,12 @@ func refresh() -> void:
 	_profile_misses.clear()
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
+	# Storage is read below only for a menu device or a pending default. Without either, skip the
+	# cross-process lease: its lock directory and owner file cost ~7 ms per refresh on a Windows NVMe
+	# profile (26 ms on USB flash), a main-thread stall twice a second in Home and in flight.
+	if registry.selected_device_id("ui") < 0 and (not _defaults_pending or is_instance_valid(session)):
+		_refreshing = false
+		return
 	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
 	if not held.ok:
 		_refreshing = false
