@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import csv
+import hashlib
 import io
 import json
 import math
@@ -87,9 +88,11 @@ class FrameCaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="openrc-frame-capture-") as temp:
             out = Path(temp) / "capture"
             paths = capture.write_capture(report, out)
-            self.assertEqual(set(paths), {"json", "csv", "perfetto", "html"})
+            self.assertEqual(set(paths), {"json", "analysis", "csv", "perfetto", "html"})
             self.assertEqual(report, before)
             self.assertEqual(json.loads(Path(paths["json"]).read_text()), before)
+            analysis = json.loads(Path(paths["analysis"]).read_text())
+            self.assertEqual(analysis["frames_json_sha256"], hashlib.sha256(Path(paths["json"]).read_bytes()).hexdigest())
             rows = list(csv.DictReader(io.StringIO(Path(paths["csv"]).read_text())))
             self.assertEqual([int(r["sequence"]) for r in rows], [7198, 7199, 7200, 7201])
             self.assertEqual([int(r["end_usec"]) for r in rows], before["samples"]["end_usec"])
@@ -107,7 +110,7 @@ class FrameCaptureTests(unittest.TestCase):
         report["event_returned"] = 2
         report["event_details_omitted_in_window"] = 0
         trace = capture.build_trace(report)
-        slices = [e for e in trace if e["ph"] == "X"]
+        slices = [e for e in trace if e["ph"] == "X" and e["tid"] == 1]
         self.assertEqual([e["ts"] for e in slices], [0, 16_000, 76_000, 176_000])
         self.assertEqual([e["dur"] for e in slices], [16_000, 60_000, 100_000, 18_000])
         self.assertEqual([e["args"]["flags"] for e in slices], report["samples"]["flags"])
@@ -286,6 +289,109 @@ class FrameCaptureTests(unittest.TestCase):
         metadata = next(e for e in trace if e["name"] == "capture_metadata")
         metadata["args"]["flag_bits"]["relative_stutter"] = 99
         self.assertEqual(capture.FLAG_BITS["relative_stutter"], 1)
+
+    def test_sustained_slowdown_without_stutter_details_is_visible(self):
+        report = make_report(walls=[16_000] + [33_333] * 30 + [16_000], flags=[0] + [8] * 30 + [0])
+        report["samples"]["route"][16:] = ["flight"] * 16
+        report["samples"]["flags"][17] |= 16
+        report["diagnostic_query_frames"] = 1
+        analysis = capture.analyze_capture(report)
+        self.assertEqual(analysis["summary"]["sustained_episode_count"], 1)
+        self.assertEqual(analysis["summary"]["over_budget_frames"], 30)
+        episode, = analysis["episodes"]
+        self.assertEqual((episode["first_sequence"], episode["last_sequence"]), (42, 71))
+        self.assertEqual(episode["duration_ms"], 999.99)
+        self.assertAlmostEqual(episode["fps_mean"], 30.000300003)
+        self.assertFalse(episode["left_censored"] or episode["right_censored"])
+        self.assertEqual(episode["route_changes"], 1)
+        self.assertEqual(episode["diagnostic_query_frames"], 1)
+        self.assertEqual(episode["relative_stutter_frames"], 0)
+        trace_episode, = [e for e in capture.build_trace(report) if e.get("cat") == "budget_episode"]
+        self.assertEqual((trace_episode["tid"], trace_episode["ts"], trace_episode["dur"]), (4, 16_000, 999_990))
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = capture.write_capture(report, Path(tmp) / "out")
+            text = Path(paths["html"]).read_text()
+            self.assertIn("Sustained slowdown", text)
+            self.assertIn("42–71", text)
+            self.assertIn("999.990", text)
+
+    def test_slow_time_is_time_weighted_and_runs_do_not_join(self):
+        report = make_report(walls=[20_000, 10_000, 20_000], flags=[8, 0, 8])
+        summary = capture.analyze_capture(report)["summary"]
+        self.assertEqual(summary["episode_count"], 2)
+        self.assertAlmostEqual(summary["over_budget_percent"], 200 / 3)
+        self.assertEqual(summary["slow_time_percent"], 80)
+        self.assertEqual(summary["fps_mean"], 60)
+        self.assertAlmostEqual(summary["budget_excess_ms"], 40 - 2 * 1000 / 60)
+
+    def test_window_edges_and_frame_threshold_are_explicit(self):
+        for n in (1, 29, 30, 7200):
+            with self.subTest(n=n):
+                value = capture.analyze_capture(make_report(walls=[33_000] * n, flags=[8] * n, first=1))
+                episode, = value["episodes"]
+                self.assertTrue(episode["left_censored"] and episode["right_censored"])
+                self.assertEqual(episode["observed_sustained"], n >= 30)
+                self.assertEqual(episode["full_episode_sustained"], True if n >= 30 else None)
+        report = make_report(walls=[16_000, 20_000, 20_000, 16_000], flags=[0, 8, 8, 0], first=7199)
+        value = capture.analyze_capture(report, sustained_frames=2)
+        self.assertEqual(value["summary"]["sustained_episode_count"], 1)
+        self.assertEqual(value["coverage"]["ring_frames_evicted"], 2)
+        self.assertEqual(value["coverage"]["retained_frames_not_selected"], 7196)
+        for invalid in (True, 0, -1, 1.5, 7201):
+            with self.subTest(invalid=invalid), self.assertRaises(capture.CaptureError):
+                capture.analyze_capture(report, sustained_frames=invalid)
+
+    def test_longest_by_frames_and_duration_are_distinct_real_episodes(self):
+        report = make_report(walls=[20_000, 20_000, 10_000, 30_000, 30_000, 10_000, 100_000], flags=[8, 8, 0, 8, 8, 0, 8])
+        summary = capture.analyze_capture(report)["summary"]
+        self.assertEqual(summary["longest_by_frames_id"], 2)
+        self.assertEqual(summary["longest_by_duration_id"], 3)
+        fast = capture.analyze_capture(make_report(walls=[16_000], flags=[0]))
+        self.assertEqual(fast["episodes"], [])
+        self.assertIsNone(fast["summary"]["longest_by_frames_id"])
+
+    def test_original_flags_survive_threshold_disagreement(self):
+        report = make_report(walls=[1000, 50_000], flags=[8, 0])
+        value = capture.analyze_capture(report)
+        self.assertEqual(value["quality"]["threshold_cross_check_disagreements"], 2)
+        self.assertEqual(value["quality"]["screening_status"], "uncertain_policy_disagreement")
+        self.assertEqual(value["episodes"][0]["first_sequence"], report["first_sequence"])
+        self.assertIsNone(value["episodes"][0]["budget_excess_ms"])
+        self.assertIsNone(value["summary"]["budget_excess_ms"])
+        trace = capture.build_trace(report)
+        metadata = next(e["args"] for e in trace if e["name"] == "capture_metadata")
+        self.assertEqual(metadata["analysis_quality"]["threshold_cross_check_disagreements"], 2)
+        self.assertEqual(metadata["analysis_policy"]["slow_threshold_ms"], report["slow_threshold_ms"])
+        episode = next(e for e in trace if e.get("cat") == "budget_episode")
+        self.assertIn("policy uncertain", episode["name"])
+        self.assertEqual(episode["args"]["screening_status"], "uncertain_policy_disagreement")
+
+    def test_exact_policy_boundary_and_intermittent_slowdown(self):
+        report = make_report(walls=[20_000, 20_001, 20_000], flags=[0, 8, 0])
+        report.update(target_fps=50, budget_ms=20, budget_tolerance_ms=0, slow_threshold_ms=20)
+        value = capture.analyze_capture(report)
+        self.assertEqual(value["quality"]["threshold_cross_check_disagreements"], 0)
+        self.assertFalse(value["episodes"][0]["full_episode_sustained"])
+        report = make_report(walls=[33_000]*29 + [16_000] + [33_000]*29, flags=[8]*29 + [0] + [8]*29)
+        value = capture.analyze_capture(report)
+        self.assertEqual(value["summary"]["sustained_episode_count"], 0)
+        self.assertGreater(value["summary"]["slow_time_percent"], 99)
+        self.assertTrue(all(e["full_episode_sustained"] is None for e in value["episodes"]))
+
+    def test_offline_reader_rejects_ambiguous_oversized_or_incomplete_input(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "frames.json"
+            report = make_report()
+            path.write_text(json.dumps(report))
+            self.assertEqual(capture.read_capture(path), report)
+            cases = ['{"frames":1,"frames":2}', '{"value":NaN}', '[', '[' * 2000, '{}']
+            for text in cases:
+                path.write_text(text)
+                with self.subTest(text=text[:30]), self.assertRaises(capture.CaptureError):
+                    capture.read_capture(path)
+            path.write_bytes(b'x' * 101)
+            with mock.patch.object(capture, "MAX_JSON_BYTES", 100), self.assertRaisesRegex(capture.CaptureError, "byte limit"):
+                capture.read_capture(path)
 
 
 if __name__ == "__main__":

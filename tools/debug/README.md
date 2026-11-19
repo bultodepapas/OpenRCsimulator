@@ -420,10 +420,10 @@ python3 tools/debug/debugctl.py timeline --stutter
 The destination must be new. Configure/reset in a separate command before reproducing the problem;
 `frames --out` refuses policy/reset options before contacting the app, protecting the recorded history.
 It takes **one bounded snapshot**, then creates `report.html`,
-`frames.csv`, `frames.json` and `frames.perfetto.json` in the client process. Open the HTML for a timeline,
-FPS lows, worst frames and retained context. Its logarithmic vertical scale keeps smaller spikes visible beside
+`frames.csv`, `frames.json`, `analysis.json` and `frames.perfetto.json` in the client process. Open the HTML for a timeline,
+FPS lows, sustained slowdown episodes, worst frames and retained context. Its logarithmic vertical scale keeps smaller spikes visible beside
 long loading stalls; switching it off gives a linear scale. Open the trace in [Perfetto](https://ui.perfetto.dev/)
-for frame slices, counters and event markers. Trace times use a local origin and do not align independent processes.
+for frame slices, counters, event markers and a separate over-budget episode track. Trace times use a local origin and do not align independent processes.
 The snapshot includes the retained lead-up and recovery already observed; it does not wait for future frames.
 At 60 FPS the full ring covers about two minutes; at 120 FPS, about one minute. Capture promptly after a problem.
 
@@ -467,6 +467,57 @@ proves a GPU bottleneck or counts actual dropped display frames.
 - Headless or zero/unavailable GPU readings remain unavailable. Positive readings retain **unverified freshness**.
   Runtime source revision is reported as `not_observed`; a client checkout is not assumed to identify the running app.
 
+### Offline slowdown analysis (PT1h-R15-S3a)
+
+The exporter groups maximal consecutive **recorded** over-budget flags. A stable
+30-FPS callback cadence against a 60-FPS target can therefore appear as one long
+budget episode even without relative-stutter or absolute-stall details. All rows,
+including diagnostic queries and sampled route changes, stay in their original order.
+
+`analysis.json` (`openrc-debug-frame-analysis v1`) adds episode sequence/time ranges,
+observed duration, callback FPS, peak interval, sampled route changes and query
+counts. It includes affected-frame share, slow-wall-time share, nominal-budget
+excess, and IDs for the longest episodes by frame count and duration separately.
+An episode's mean callback FPS is `frames / observed_seconds`; slow-time share is
+`sum(flagged wall durations) / sum(all selected wall durations)`. Neither is a
+presentation metric. Excess subtracts the ideal budget, not the tolerance threshold.
+
+The default descriptive screen is **30 consecutive recorded slow frames**. Override
+it locally with `sustained_frames=K` (integer 1–7,200) on an export. It is not sent
+to the simulator, changes no flags, and is not a perceptual or fixed-duration rule.
+`observed_sustained` means the retained run meets K. `full_episode_sustained` is
+true for an observed qualifying run, false for a shorter run with both boundaries
+observed, and null for a shorter run with an unobserved boundary. At a window edge,
+including sequence 1, onset or recovery is unknown and length is a lower bound.
+No result establishes absence of slowdowns outside the selected window.
+
+The exact `wall_usec / 1000 > slow_threshold_ms` cross-check is diagnostic; it does
+not rewrite original flags or tighten v1 import compatibility. Disagreements make
+policy screening uncertain and total budget excess unavailable. JSON, HTML and
+Perfetto retain this warning. The longest K-run screen complements slow-time and
+tail statistics: 29 slow frames, one fast frame and another 29 slow frames do not
+meet K=30, despite substantial slowdown. Routes describe interval-start samples;
+the report does not infer exact transition timestamps or causes.
+
+Rebuild a report from an existing raw snapshot without contacting a running app:
+
+```sh
+python3 tools/debug/debugctl.py frames --input tmp/stutter-60fps-01/frames.json --out tmp/stutter-review-02 sustained_frames=30
+```
+
+Offline input is UTF-8 JSON, capped at 16 MiB before decoding, then subject to the
+existing v1 row/depth/text/continuity limits. Duplicate keys and non-finite numbers
+are refused. Window/policy/reset options are refused; the destination must be new.
+The input file stays unchanged. Exported `frames.json` preserves its JSON values,
+not original whitespace/byte layout; `analysis.frames_json_sha256` binds the newly
+written `frames.json` bytes. This hash is not runtime build or launch identity.
+
+[GOD TEST](../godtest/README.md#measurements-and-reports) reduces its own verified
+phase stream; native [frame diagnosis](../../docs/tools/graphics.md#frame-diagnosis)
+uses fixed-duration `openrc-frametimes` evidence. Their thresholds, phase assignment
+and completion contracts differ. Use the [integration map](../../docs/plans/stutter-diagnostics.md#existing-tool-integration)
+before combining artifacts. Automatic lead-up/recovery collection remains planned.
+
 ### Retention, reset and observer effects
 
 `hitch_total`, `relative_stutter_total`, `stall_total` and `event_total` count since the latest reset/policy change.
@@ -504,7 +555,7 @@ Research, decisions and software verification: [PT1h-R15 evidence](../../docs/re
 
 ### Choose the next investigation
 
-Preserve the four exported files first, then use the observed symptom to choose
+Preserve the five exported files first, then use the observed symptom to choose
 one follow-up. Keep scenario, source/build, renderer/driver, cap/VSync/refresh,
 output/internal resolution and cold/warm state with the report. The running
 revision is currently `not_observed`; the checkout used by the client cannot fill

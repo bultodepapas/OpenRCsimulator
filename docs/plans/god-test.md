@@ -259,6 +259,16 @@ Resource-sampler peaks are sampled peaks. Short phases emphasize raw intervals,
 maxima and events rather than a poorly supported p99. Keep first-use hitches visible;
 warmup is separately labeled and never silently erases the user experience.
 
+**PT1h-R15-S3a implemented offline:** the existing phase reducer now reports callback
+FPS, slow-wall share, run counts and maximum run durations at strict 16.667/33.333/50/100 ms
+thresholds. Phase changes break consecutive runs across chunks. It requires the
+phase-index channel and derives percentiles from verified samples; missing completed
+requested-phase samples remain unavailable/ineligible instead of zero-ms passes.
+Assigned interval durations, not event-bounded phase duration, supply FPS/share
+denominators. This adds no runtime observer and does not close campaign gates.
+The [integration follow-up](../research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
+records source contracts, proof and pending native adapters.
+
 Inherit owning-track targets, preserving their definitions and stricter limits:
 
 | Existing target | Definition/limit |

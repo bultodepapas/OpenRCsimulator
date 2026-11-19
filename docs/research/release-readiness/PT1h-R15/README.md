@@ -6,6 +6,9 @@ Branch: `perf/stutter-diagnostics-2026-11-17`.
 Follow-up: [24 investigations, 2026-11-19](research-2026-11-19.md) inform the
 [remaining implementation plan](../../../plans/stutter-diagnostics.md). That
 documentation update preserves the historical verification scope below.
+The later [tool integration follow-up](tools-integration-2026-11-19.md) adds eight
+investigations and PT1h-R15-S3a offline tools; its proof is separate from these
+2026-11-17 runtime/bridge checks.
 
 ## Purpose and boundary
 

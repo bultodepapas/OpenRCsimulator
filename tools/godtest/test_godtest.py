@@ -36,6 +36,28 @@ def artifacts(directory: Path, *, rendered=True, complete=True):
     return frames
 
 
+def replace_stream(directory, frames, walls, phases, split=512):
+    """Build real framed inputs with matching receipts for reducer boundary tests."""
+    ends, end = [], 1_000_000
+    for wall in walls:
+        end += wall
+        ends.append(end)
+    rows = [dict(type="header", format="openrc-frame-stream v1")]
+    for start in range(0, len(walls), split):
+        stop = min(start + split, len(walls))
+        metrics = {} if phases is None else {"phase_index": phases[start:stop]}
+        rows.append(dict(type="chunk", sequence=len(rows)-1, start_frame=start, frames=stop-start,
+                         wall_usec=walls[start:stop], end_usec=ends[start:stop],
+                         engine_delta_s=[w/1_000_000 for w in walls[start:stop]], metrics=metrics))
+    chunks = len(rows)-1
+    rows.append(dict(type="trailer", complete=True, frames=len(walls), chunks=chunks))
+    raw = b"".join((json.dumps(row) + "\n").encode() for row in rows)
+    (directory / frames["stream"]["file"]).write_bytes(raw)
+    frames["frames"] = len(walls)
+    frames["stream"].update(frames=len(walls), chunks=chunks, bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
+    write_json(directory / "frametimes.json", frames)
+
+
 class ManifestTests(unittest.TestCase):
     def test_enrolled_resume_is_refused_before_reading_or_retrying_cases(self):
         import godtest
@@ -87,6 +109,73 @@ class ManifestTests(unittest.TestCase):
 
 
 class ArtifactTests(unittest.TestCase):
+    def test_phase_pacing_uses_assigned_intervals_and_breaks_runs_at_phase_changes(self):
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "run"
+            frames = artifacts(directory)
+            replace_stream(directory, frames, [20_000, 20_000, 10_000, 20_000], [0, 0, 1, 0], split=2)
+            value = validate_stream(directory, frames)
+            phase = value["phase_pacing"]["0"]
+            self.assertEqual((phase["frames"], phase["sample_wall_ms"], phase["fps_mean"]), (3, 60, 50))
+            slow = value["phase_hitches"]["0"]["16.667"]
+            self.assertEqual((slow["frames"], slow["runs"], slow["max_consecutive"]), (3, 2, 2))
+            self.assertEqual((slow["max_run_ms"], slow["slow_time_ms"], slow["slow_time_percent"]), (40, 60, 100))
+            self.assertEqual(value["phase_hitches"]["1"]["16.667"]["frames"], 0)
+
+    def test_phase_slow_share_is_time_weighted_and_equality_is_within_budget(self):
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "run"
+            frames = artifacts(directory)
+            replace_stream(directory, frames, [20_000, 10_000, 20_000], [0, 0, 0])
+            value = validate_stream(directory, frames)
+            slow = value["phase_hitches"]["0"]["16.667"]
+            self.assertEqual(slow["slow_time_percent"], 80)
+            self.assertAlmostEqual(slow["over_budget_percent"], 200/3)
+            self.assertEqual(value["phase_pacing"]["0"]["fps_mean"], 60)
+            replace_stream(directory, frames, [16_667, 16_668], [0, 0])
+            self.assertEqual(validate_stream(directory, frames)["phase_hitches"]["0"]["16.667"]["frames"], 1)
+
+    def test_missing_phase_channel_never_becomes_zero_ms_or_a_pass(self):
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "run"
+            frames = artifacts(directory)
+            replace_stream(directory, frames, [16_000, 17_000], None)
+            with self.assertRaisesRegex(ValueError, "phase_index"):
+                validate_stream(directory, frames)
+            runtime = json.loads((directory / "runtime.json").read_text())
+            runtime["phases"][0].update(name="takeoff", frame_statistics="offline_from_verified_stream")
+            write_json(directory / "runtime.json", runtime)
+            value = report(directory)
+            self.assertEqual(value["data"], "ineligible")
+            self.assertIsNone(value["phases"][0]["frame_ms"]["p95"])
+            self.assertIsNone(value["targets"][0]["p95_within_18ms"])
+            self.assertEqual(value["targets"][0]["pacing_target"], "unavailable")
+            self.assertIn("unavailable", (directory / "report.html").read_text())
+            self.assertFalse(compare(directory, directory, "startup")["eligible"])
+
+    def test_completed_phase_without_samples_is_ineligible(self):
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "run"
+            artifacts(directory)
+            runtime = json.loads((directory / "runtime.json").read_text())
+            runtime["phases"][0].update(index=1, frames=0, frame_statistics="offline_from_verified_stream")
+            write_json(directory / "runtime.json", runtime)
+            value = report(directory)
+            self.assertEqual(value["data"], "ineligible")
+            self.assertEqual(value["phases"][0]["pacing"], {})
+            self.assertTrue(any("no verified frame samples" in issue for issue in value["issues"]))
+
+    def test_report_uses_verified_reduction_instead_of_supplied_zero_statistics(self):
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "run"
+            frames = artifacts(directory)
+            replace_stream(directory, frames, [40_000, 50_000], [0, 0])
+            runtime = json.loads((directory / "runtime.json").read_text())
+            runtime["phases"][0]["frame_ms"] = dict(p50=0, p95=0, p99=0, max=0)
+            write_json(directory / "runtime.json", runtime)
+            value = report(directory)
+            self.assertEqual(value["phases"][0]["frame_ms"]["p95"], 50)
+
     def test_runway_excursion_is_visible_without_erasing_performance(self):
         with tempfile.TemporaryDirectory() as root:
             directory = Path(root) / "run"

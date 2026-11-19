@@ -1646,7 +1646,67 @@ class FrameDiagnosticsTests(unittest.TestCase):
                     patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(debugctl.capture_frames(["window=120", "--out", str(destination)]), 0)
             request.assert_called_once_with("frames", {"window": 120, "samples": True, "events": 200})
-            write.assert_called_once_with(report, destination)
+            write.assert_called_once_with(report, destination, sustained_frames=30)
+
+    def test_saved_capture_is_reanalyzed_without_discovering_live_sessions(self):
+        from tools.debug.test_frame_capture import make_report
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "frames.json"
+            source.write_text(json.dumps(make_report()), encoding="utf-8")
+            original = source.read_bytes()
+            destination = Path(folder) / "offline"
+            with patch.object(debugctl, "ambiguous_target", side_effect=AssertionError("must remain offline")), \
+                    patch.object(debugctl, "result_of", side_effect=AssertionError("no bridge")), \
+                    contextlib.redirect_stdout(io.StringIO()) as stdout:
+                self.assertEqual(debugctl.main(["frames", "--input", str(source), "--out", str(destination),
+                                               "sustained_frames=2", "--json"]), 0)
+            self.assertEqual(source.read_bytes(), original)
+            result = json.loads(stdout.getvalue())
+            analysis = json.loads(Path(result["capture"]["analysis"]).read_text())
+            self.assertEqual(analysis["policy"]["sustained_min_frames"], 2)
+
+    def test_offline_usage_errors_never_discover_or_contact_sessions(self):
+        cases = [["--input", "missing"], ["--input"],
+                 ["--out", "--input"], ["--input", "--out", "unused"],
+                 ["--input", "missing", "--out", "unused", "window=20"],
+                 ["--input", "missing", "--out", "unused", "reset=true"],
+                 ["--input", "a", "--input", "b", "--out", "unused"]]
+        for args in cases:
+            with self.subTest(args=args), \
+                    patch.object(debugctl, "ambiguous_target", side_effect=AssertionError("offline")), \
+                    patch.object(debugctl, "result_of", side_effect=AssertionError("offline")), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(debugctl.main(["frames", *args]), 2)
+
+    def test_offline_text_output_accepts_partial_optional_live_summary(self):
+        from tools.debug.test_frame_capture import make_report
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "frames.json"
+            report = make_report()
+            report["p50_ms"] = 16.0  # Optional live formatter fields need not be complete.
+            source.write_text(json.dumps(report))
+            destination = Path(folder) / "out"
+            with patch.object(debugctl, "result_of", side_effect=AssertionError("offline")), \
+                    contextlib.redirect_stdout(io.StringIO()) as stdout:
+                self.assertEqual(debugctl.main(["frames", "--input", str(source), "--out", str(destination)]), 0)
+            self.assertIn("Offline analysis: 4 frames", stdout.getvalue())
+            self.assertTrue((destination / "analysis.json").is_file())
+
+    def test_sustained_policy_is_validated_and_not_sent_to_bridge(self):
+        from tools.debug import frame_capture
+        with tempfile.TemporaryDirectory() as folder:
+            destination = Path(folder) / "capture"
+            for option in ("sustained_frames=true", "sustained_frames=0", "sustained_frames=7201", "sustained_frames=1.5"):
+                with self.subTest(option=option), patch.object(debugctl, "result_of") as request:
+                    with self.assertRaises(ValueError):
+                        debugctl.capture_frames([option, "--out", str(destination)])
+                    request.assert_not_called()
+            with patch.object(debugctl, "result_of", return_value={}) as request, \
+                    patch.object(frame_capture, "write_capture", return_value={}) as write, \
+                    patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
+                debugctl.capture_frames(["sustained_frames=2", "--out", str(destination)])
+            request.assert_called_once_with("frames", {"samples": True, "events": 200})
+            write.assert_called_once_with({}, destination, sustained_frames=2)
 
     def test_existing_capture_is_refused_before_contacting_app(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(debugctl, "result_of") as request:

@@ -3,13 +3,15 @@
 Owner: PT debug tooling, coordinated with VQ/DT performance, GOD TEST, UI loading,
 CAM and simulation owners. Prefix: **PT1h-R15-S0…S7**, subordinate to PT1h-R15.
 Updated: **2026-11-19**. Branch: `perf/stutter-diagnostics-2026-11-17`.
-Inspected baseline: `594c15b5ad7fe1828ffc7a05e3ce7e288dc1e948`.
+Initial baseline: `594c15b5ad7fe1828ffc7a05e3ce7e288dc1e948`; tool-integration baseline: `717b1ccc57603ce8d7d04003574a7fe4fcd2b52f`.
 
-**Status:** S0 research and planning are complete. S1–S7 are proposed work; this
-revision changes documentation only. Existing commands and metric definitions
+**Status:** S0 research is complete. **S3a offline tool integration is implemented**
+with focused software checks; the remaining S1–S7 work is still proposed. S3a adds
+no simulator-loop work and does not complete automatic incident capture. Commands and metric definitions
 remain in the [debug guide](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15).
 The [24 investigations](../research/release-readiness/PT1h-R15/research-2026-11-19.md)
-own dated evidence and source limitations. The [global performance plan](global-performance-visual-quality.md#4-measurement-and-acceptance-contract)
+own initial dated evidence and source limitations. The [eight follow-up investigations](../research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
+record tool integration, implementation and verification. The [global performance plan](global-performance-visual-quality.md#4-measurement-and-acceptance-contract)
 owns product gates; this plan does not replace them.
 
 ## 1. Outcome and existing foundation
@@ -42,16 +44,18 @@ retain their own admission and qualification. Physics remains float64 at 240 Hz,
 with 12 maximum engine physics steps per frame and the existing custom interpolation.
 See [runtime configuration](../../app/project.godot) and [engine pin](../../app/get-godot.sh).
 
-At research time, this branch was one commit ahead of and 55 behind `main`
-(`99e5a5ac024935c32028e5332d31a3e09da4dc42`); the merge base was
-`a7de9b35676d891bc2034cc344b910d9e1ef9c61`. Before a later integration, compare
-the then-current heads and shared bridge/GOD TEST interfaces again. This is a
-dated integration dependency, not a requirement to mix unrelated changes into this update.
+Before this integration follow-up, GitHub reported the branch **2 commits ahead and
+60 behind** `main` (`372053ac9448942e154801e3299cf77669161d08`), with merge base
+`a7de9b35676d891bc2034cc344b910d9e1ef9c61`. Upstream changes touch `debug_bridge.gd`,
+`render_probe.gd` and `frame_diagnostics.gd`; the changed Python debug/GOD TEST files
+were absent from that upstream changed-file list. Recheck current heads before
+merging. This update extends the branch without importing unrelated main-line work.
 
 ## 2. Scope and ownership
 
-The implementation boundary is `app/debug/debug_bridge.gd`, `frame_statistics.gd`,
-`render_probe.gd`, `tools/debug/`, their focused tests, this plan and R15 research.
+The runtime boundary is `app/debug/debug_bridge.gd`, `frame_statistics.gd` and
+`render_probe.gd`. Client integration also owns `tools/debug/` and narrow offline
+changes in `tools/godtest/analysis.py`, with their focused tests, guides and R15 research.
 UI loading and camera markers need their owners' narrow integration seams. GOD TEST
 owns full-session orchestration and its comparison reports. PT/VQ/DT own metric
 meaning and hardware qualification; SF/FL retain simulation and replay contracts.
@@ -63,11 +67,42 @@ change, physics-rate reduction, automatic graphics downgrade, or engine fork is
 part of these initial deliveries. An external tool's availability does not establish
 compatibility with the running engine/API/hardware.
 
+### Existing tool integration
+
+| Owner / existing path | Use and integration boundary |
+| --- | --- |
+| `tools/debug/debugctl.py`, `frame_capture.py` | One live ring snapshot or offline reanalysis; original flags, selected-window episodes, separate analysis JSON/HTML/Perfetto. S3a implemented; S2 collection pending |
+| `tools/godtest/analysis.py`, `runner.py` | Owned scenario runs, frozen inputs, verified event-bounded streams and phase reports. S3a adds slow-time/FPS/run observations and missing-data guards; campaign comparison stays here |
+| `research/performance/frame_diagnose.py` | Existing native fixed-duration diagnosis and bounded top bursts; strict 16.667 ms default and peak-first ranking differ from debug target plus tolerance |
+| `app/render/frame_samples.gd`, `frame_diagnostics.gd` | Existing native/GOD TEST frame stream and scoped metric channels. Reuse them for benchmarks; do not add a parallel full-flight recorder |
+| `tools/godot/run_checked.py`, `resource_samples.py` | Checked completion and optional process CPU/RSS/I/O observations. Sparse resource cadence cannot explain a single frame by itself |
+| `tools/godot/incident_bundle.py`, `perfetto_export.py` | Native checked-run packaging and timelines; debug/GOD TEST formats require explicit adapters, original-file receipts and clock correspondence |
+| `tools/testqueue/`, debug launcher | Admission, session handle, isolated process/profile and owned teardown; an analyzer does not acquire live control |
+| `tools/graphics/`, bridge `render` / `ablate` | Backend-specific launch and targeted rendering experiments, separate from acceptance timing and simulation state |
+
+**S3a delivered early:** source-local analysis of one existing snapshot does not
+need new launch identity or channel instrumentation. It adds episode coordinates,
+window-edge uncertainty, selected-versus-evicted coverage and flag-policy disagreement
+reporting, plus bounded offline import. GOD TEST retains interval-end phase assignment
+and fixed thresholds; the debug route remains interval-start context. No common
+format is manufactured. No API/runtime detector policy changes in this slice.
+
+**Next integration order:** S1 provenance and reader capability receipts → S2 owned
+one-shot incident collection → S3 phase markers → S4 comparable-run/attachment
+adapters → S5 optional platform evidence → S6 rendered qualification. Before S4,
+define a sidecar attachment contract for original debug captures beside GOD TEST
+runs, and separately an adapter for the native incident bundle. Each must state
+input format, identity, interval coverage, channel semantics and clock alignment.
+Absent any of those, show separate evidence rather than a joined timeline or delta.
+Reuse each tool's existing validation before adding a format-aware adapter; do not
+route debug/GOD TEST documents through native fixed-duration validators.
+
 ## 3. Ordered deliveries and proof
 
 | ID | Work and dependency | Required proof / status |
 | --- | --- | --- |
 | **PT1h-R15-S0** | Audit branch behavior; research 24 questions; reconcile plans, guide and decisions | **Complete, documentation only:** dated source register and explicit dispositions; no new performance result |
+| **PT1h-R15-S3a** | Offline debug episodes/import and GOD TEST phase slow-time integration; independent of new live capture | **Implemented:** bounded v1 analysis, three-state episode completion, strict JSON input, verified phase statistics and no zero-ms fallback; software checks in the follow-up record; hardware/UI qualification open |
 | **PT1h-R15-S1** | Capture provenance, capability/freshness dictionary, comparison identity; first slice | Old v1 fixtures still import; unknown runtime revision stays unknown; absent, stale and zero values remain distinct; engine source and rendered availability receipts agree |
 | **PT1h-R15-S2** | Owned automatic incident collection with lead-up/recovery and coverage accounting; depends on S1 | One explicit arming yields at most one incident; sampled budget detection and cumulative event triggers retain their different coverage; epoch changes, storms, late polling and rollover cannot silently lose or duplicate rows |
 | **PT1h-R15-S3** | Scoped phase/marker context and detector characterization; S1, with S2 for incident fixtures | Loading/camera/physics/render symptoms stay distinct; periodic monitors are not frame-local; retained live flags stay unchanged; exact threshold and alternating-cadence cases documented |
@@ -76,7 +111,7 @@ compatibility with the running engine/API/hardware.
 | **PT1h-R15-S6** | Rendered incident, observer-cost and package qualification; S2–S5 as applicable | 1080p-first matched campaigns, real UI/flight/first-use incidents, report/Perfetto import review, and separate native platform outcomes; unsupported sidecars do not block core qualification |
 | **PT1h-R15-S7** | Conditional deeper attribution or long recording | **Deferred:** native Tracy/signposts, vendor GPU captures, JSONL streaming or MAD labels require a named unresolved incident and their own bounded experiment |
 
-The first implementation should deliver S1 and one S2 incident end to end before
+The next live implementation should deliver S1 and one S2 incident end to end before
 adding more diagnostic channels. Each step is separately reviewable. None closes
 product performance gates merely by producing a report.
 

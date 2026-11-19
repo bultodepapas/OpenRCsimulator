@@ -363,6 +363,16 @@ The [24 investigations](research/release-readiness/PT1h-R15/research-2026-11-19.
 justify this sequence and its deferred alternatives. The [active plan](plans/stutter-diagnostics.md)
 owns pending S1–S7 work. This decision adds no runtime feature or performance qualification.
 
+**PT1h-R15-S3a, 2026-11-19; offline implementation.** Extend existing debug captures
+and GOD TEST phase reports with observed slow episodes/time, without another recorder
+or runtime instrumentation. Preserve original debug flags and mark disagreement;
+window-edge episodes have unknown boundaries. GOD TEST reduces verified phase
+samples and cannot substitute zero for a missing measurement. The three capture
+formats retain their different thresholds, completion rules and clocks; future
+attachment adapters must preserve originals and prove any joins. The
+[tool integration evidence](research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
+records the eight follow-up investigations and software-only verification.
+
 ### Qualify exported artifacts separately from their source tree
 
 **DT / PT1.** Desktop ZIP exports carry one build identity and their actual resources; package inspection, native launch, signing trust and sustained hardware performance are separate checks. Updating remains manual, and installer/web/mobile expansion is not implied by available export templates. Promote the verified artifact bytes rather than rebuilding an assumed equivalent after acceptance. [Delivery contract](DESKTOP-DELIVERY-PLAN.md#current-delivery), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).

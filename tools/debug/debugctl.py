@@ -22,6 +22,7 @@ Observe and hunt bugs
   state | logs [--since N] [--level …] [--follow] [--summary] | objects [baseline|diff=true]
   frames [target_fps=60] [reset=true] [window=N]  stutters, FPS lows, budget; configure/reset before reproduction
   frames [window=N] --out NEW_DIR               preserve one capture as HTML, CSV, JSON and Perfetto
+  frames --input frames.json --out NEW_DIR [sustained_frames=30]  analyze a saved capture offline
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
   render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
   rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
@@ -783,30 +784,51 @@ def timeline(argv: list[str]) -> int:
 
 
 def capture_frames(argv: list[str]) -> int:
-    """Fetch the bounded ring once; serialize files outside the simulator's frame loop."""
-    if argv.count("--out") != 1 or argv.index("--out") + 1 >= len(argv):
+    """Export one live or saved snapshot; analyze outside the simulator's frame loop."""
+    if (argv.count("--out") != 1 or argv.index("--out") + 1 >= len(argv)
+            or argv[argv.index("--out") + 1].startswith("--")):
         raise ValueError("frames --out requires one new output directory")
     index = argv.index("--out")
     destination = Path(argv[index + 1]).expanduser().resolve()
     if destination.exists():
         raise ValueError(f"capture directory already exists: {destination}")
     rest = argv[:index] + argv[index + 2:]
+    source = None
+    if "--input" in rest:
+        if (rest.count("--input") != 1 or rest.index("--input") + 1 >= len(rest)
+                or rest[rest.index("--input") + 1].startswith("--")):
+            raise ValueError("frames --input requires one raw frames.json file")
+        index = rest.index("--input")
+        source = Path(rest[index + 1]).expanduser()
+        rest = rest[:index] + rest[index + 2:]
     flags = [value for value in rest if value in ("--pretty", "--json")]
     args = parse_args([value for value in rest if value not in flags])
+    from tools.debug.frame_capture import DEFAULT_SUSTAINED_FRAMES, MAX_FRAMES, read_capture, write_capture
+    sustained = args.pop("sustained_frames", DEFAULT_SUSTAINED_FRAMES)
+    if type(sustained) is not int or not 1 <= sustained <= MAX_FRAMES:
+        raise ValueError(f"sustained_frames must be an integer in [1, {MAX_FRAMES}]")
     configuration = {"reset", "target_fps", "budget_tolerance_ms", "stutter_factor",
                      "stutter_min_extra_ms", "stall_ms", "hitch_ms", "factor"}
     if configuration.intersection(args):
         raise ValueError("frames --out cannot reset or configure the recorder; configure frames first, "
                          "reproduce the problem, then export to preserve the recorded history")
-    args.update(samples=True, events=200)
-    report = result_of("frames", args)
-    from tools.debug.frame_capture import write_capture
-    paths = write_capture(report, destination)
+    if source is not None:
+        if args:
+            raise ValueError("offline capture accepts sustained_frames only; the recorded window and policy are preserved")
+        report = read_capture(source)
+    else:
+        args.update(samples=True, events=200)
+        report = result_of("frames", args)
+    paths = write_capture(report, destination, sustained_frames=sustained)
     if "--json" in flags:
         print(json.dumps({"capture": paths, "frames": report.get("frames"), "capture_id": report.get("capture_id")},
                          ensure_ascii=False))
     else:
-        show("frames", report, "--pretty" in flags, False)
+        if source is None:
+            show("frames", report, "--pretty" in flags, False)
+        else:
+            print(f"Offline analysis: {report['frames']} frames, sequences "
+                  f"{report['first_sequence']}–{report['last_sequence']}; sustained screen {sustained} frames")
         print("Capture: " + str(destination))
         for name, path in paths.items():
             print(f"  {name}: {path}")
@@ -1849,6 +1871,8 @@ def main(argv: list[str]) -> int:
             timeout = float(rest[rest.index("--timeout") + 1]) if "--timeout" in rest else 60.0
             print(json.dumps(wait_ready(timeout)["result"]))
             return 0
+        if command == "frames" and "--input" in rest:
+            return capture_frames(rest)  # Offline: never discover or contact live sessions.
         others = ambiguous_target()
         if others:
             print(f"debugctl: {len(others)} live sessions on ports {others}: which one is yours? Repeat with "

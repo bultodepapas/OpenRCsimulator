@@ -7,6 +7,7 @@ clocks, presentation timestamps, CPU slices, or GPU execution intervals.
 from __future__ import annotations
 
 import csv
+import hashlib
 import html
 import io
 import json
@@ -17,6 +18,8 @@ import re
 from typing import Any
 
 FORMAT = "openrc-debug-frames v1"
+ANALYSIS_FORMAT = "openrc-debug-frame-analysis v1"
+DEFAULT_SUSTAINED_FRAMES = 30
 MAX_FRAMES = 7200
 MAX_EVENTS = 200
 MAX_SAFE_INTEGER = (1 << 53) - 1
@@ -243,7 +246,116 @@ def _flag_names(flags: int) -> list[str]:
     return [name for name, bit in FLAG_BITS.items() if flags & bit]
 
 
-def _build_trace(report: dict[str, Any]) -> list[dict[str, Any]]:
+def read_capture(path: Path) -> dict[str, Any]:
+    """Read one bounded raw snapshot, refusing ambiguous JSON before validation."""
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise CaptureError("duplicate JSON object key")
+            result[key] = value
+        return result
+
+    def reject_constant(value):
+        raise CaptureError(f"non-finite JSON value: {value}")
+
+    if not Path(path).is_file():
+        raise CaptureError("capture input must be a regular JSON file")
+    with Path(path).open("rb") as source:
+        raw = source.read(MAX_JSON_BYTES + 1)
+    if len(raw) > MAX_JSON_BYTES:
+        raise CaptureError("capture input exceeds the JSON byte limit")
+    try:
+        report = json.loads(raw.decode("utf-8"), object_pairs_hook=unique_object,
+                            parse_constant=reject_constant)
+    except (UnicodeError, ValueError, RecursionError) as error:
+        raise CaptureError(f"invalid capture JSON: {error}") from error
+    copied, _ = _snapshot(report)
+    _validate(copied)
+    return copied
+
+
+def _analyze_slowdowns(report: dict[str, Any], sustained_frames: int) -> dict[str, Any]:
+    """Reduce validated rows only; an edge episode has an unobserved boundary."""
+    s, n = report["samples"], report["frames"]
+    first, budget = report["first_sequence"], report["budget_ms"]
+    disagreements = [bool(f & 8) != (w / 1000 > report["slow_threshold_ms"])
+                     for w, f in zip(s["wall_usec"], s["flags"])]
+    episodes = []
+    start = None
+    for i in range(n + 1):
+        if i < n and s["flags"][i] & FLAG_BITS["over_budget"]:
+            if start is None:
+                start = i
+            continue
+        if start is None:
+            continue
+        walls, flags = s["wall_usec"][start:i], s["flags"][start:i]
+        count, elapsed = i - start, sum(walls)
+        episodes.append({
+            "id": len(episodes) + 1, "first_sequence": first + start,
+            "last_sequence": first + i - 1, "frames": count,
+            "start_usec": s["end_usec"][start] - walls[0], "end_usec": s["end_usec"][i - 1],
+            "duration_ms": elapsed / 1000, "fps_mean": count * 1_000_000 / elapsed,
+            "worst_ms": max(walls) / 1000,
+            "budget_excess_ms": None if any(disagreements[start:i]) else elapsed / 1000 - count * budget,
+            "left_censored": start == 0, "right_censored": i == n,
+            "observed_sustained": count >= sustained_frames,
+            "full_episode_sustained": True if count >= sustained_frames else (None if start == 0 or i == n else False),
+            "route_first": s["route"][start], "route_last": s["route"][i - 1],
+            "route_changes": sum(s["route"][j] != s["route"][j - 1] for j in range(start + 1, i)),
+            "diagnostic_query_frames": sum(bool(f & 16) for f in flags),
+            "relative_stutter_frames": sum(bool(f & 1) for f in flags),
+            "stall_frames": sum(bool(f & 2) for f in flags),
+        })
+        start = None
+    elapsed = sum(s["wall_usec"])
+    slow_us = sum(w for w, f in zip(s["wall_usec"], s["flags"]) if f & 8)
+    over = sum(e["frames"] for e in episodes)
+    by_frames = max(episodes, key=lambda e: (e["frames"], e["duration_ms"], -e["id"]), default=None)
+    by_time = max(episodes, key=lambda e: (e["duration_ms"], e["frames"], -e["id"]), default=None)
+    return {
+        "format": ANALYSIS_FORMAT, "version": 1,
+        "capture_id": report["capture_id"], "epoch": report["epoch"],
+        "timing_scope": report["timing_scope"],
+        "quality": {"threshold_cross_check_disagreements": sum(disagreements),
+                    "screening_status": "uncertain_policy_disagreement" if any(disagreements) else "recorded_flags_consistent",
+                    "cross_check": "exact wall_usec / 1000 > reported threshold; diagnostic only; original flags preserved"},
+        "policy": {"target_fps": report["target_fps"], "budget_ms": budget,
+                   "budget_tolerance_ms": report["budget_tolerance_ms"],
+                   "slow_threshold_ms": report["slow_threshold_ms"],
+                   "sustained_min_frames": sustained_frames,
+                   "episode_method": "maximal consecutive original over_budget flags; all rows retained",
+                   "sustained_method": "observed frame count, not a fixed-duration or perceptual threshold"},
+        "coverage": {"scope": "selected_window_only", "first_sequence": first,
+                     "last_sequence": report["last_sequence"],
+                     "sample_start_usec": report["sample_start_usec"], "sample_end_usec": report["sample_end_usec"],
+                     "ring_frames_evicted": report["frames_evicted"],
+                     "retained_frames_not_selected": report["retained_frames"] - n,
+                     "boundary_method": "window-edge episodes have unobserved boundaries, including sequence 1"},
+        "summary": {"frames": n, "duration_ms": elapsed / 1000, "fps_mean": n * 1_000_000 / elapsed,
+                    "over_budget_frames": over, "over_budget_percent": 100 * over / n,
+                    "slow_time_ms": slow_us / 1000, "slow_time_percent": 100 * slow_us / elapsed,
+                    "budget_excess_ms": None if any(disagreements) else slow_us / 1000 - over * budget,
+                    "episode_count": len(episodes),
+                    "sustained_episode_count": sum(e["observed_sustained"] for e in episodes),
+                    "longest_by_frames_id": by_frames["id"] if by_frames else None,
+                    "longest_by_duration_id": by_time["id"] if by_time else None},
+        "episodes": episodes,
+    }
+
+
+def analyze_capture(report: dict[str, Any], *, sustained_frames: int = DEFAULT_SUSTAINED_FRAMES) -> dict[str, Any]:
+    """Produce separate offline analysis; never alter the runtime snapshot or flags."""
+    _integer(sustained_frames, "sustained_frames", 1, MAX_FRAMES)
+    copied, encoded = _snapshot(report)
+    _validate(copied)
+    analysis = _analyze_slowdowns(copied, sustained_frames)
+    analysis["frames_json_sha256"] = hashlib.sha256((encoded + "\n").encode("utf-8")).hexdigest()
+    return analysis
+
+
+def _build_trace(report: dict[str, Any], analysis: dict[str, Any]) -> list[dict[str, Any]]:
     s = report["samples"]
     n = report["frames"]
     first = report["first_sequence"]
@@ -258,6 +370,8 @@ def _build_trace(report: dict[str, Any]) -> list[dict[str, Any]]:
          "args": {"name": "Frame sampled counters"}},
         {"pid": 1, "tid": 3, "ph": "M", "name": "thread_name",
          "args": {"name": "Detection and diagnostic markers"}},
+        {"pid": 1, "tid": 4, "ph": "M", "name": "thread_name",
+         "args": {"name": "Observed over-budget episodes (not CPU work)"}},
         {"pid": 1, "tid": 1, "ph": "M", "name": "capture_metadata", "args": {
             "format": FORMAT, "capture_id": report["capture_id"], "epoch": report["epoch"],
             "first_sequence": first, "last_sequence": report["last_sequence"],
@@ -266,6 +380,7 @@ def _build_trace(report: dict[str, Any]) -> list[dict[str, Any]]:
             "gpu": "optional last-read context, freshness unverified; not proof of a GPU bottleneck",
             "event_details": "bounded and possibly missing; flags are per-frame; correlations are not causes",
             "source": report["source"], "flag_bits": dict(FLAG_BITS),
+            "analysis_policy": dict(analysis["policy"]), "analysis_quality": dict(analysis["quality"]),
         }},
     ]
     for i in range(n):
@@ -297,6 +412,15 @@ def _build_trace(report: dict[str, Any]) -> list[dict[str, Any]]:
             events.append({"pid": 1, "tid": 3, "ts": relative_end, "ph": "I", "s": "t",
                            "cat": "diagnostics", "name": "diagnostic query coincidence",
                            "args": {"sequence": seq, "flags": flags}})
+    for episode in analysis["episodes"]:
+        events.append({"pid": 1, "tid": 4, "ph": "X", "cat": "budget_episode",
+                       "name": ("recorded slow flags (policy uncertain)" if analysis["quality"]["threshold_cross_check_disagreements"]
+                                else "sustained slow callbacks" if episode["observed_sustained"] else "over-budget callbacks"),
+                       "ts": episode["start_usec"] - origin,
+                       "dur": episode["end_usec"] - episode["start_usec"],
+                       "args": {**episode, "sustained_min_frames": analysis["policy"]["sustained_min_frames"],
+                                "slow_threshold_ms": analysis["policy"]["slow_threshold_ms"],
+                                "screening_status": analysis["quality"]["screening_status"]}})
     return events
 
 
@@ -304,7 +428,7 @@ def build_trace(report: dict[str, Any]) -> list[dict[str, Any]]:
     """Build bounded Perfetto/Chrome trace events on one local clock, in microseconds."""
     copied, _ = _snapshot(report)
     _validate(copied)
-    return _build_trace(copied)
+    return _build_trace(copied, _analyze_slowdowns(copied, DEFAULT_SUSTAINED_FRAMES))
 
 
 def _build_csv(report: dict[str, Any]) -> str:
@@ -351,7 +475,7 @@ def _detail_text(item: dict[str, Any] | None, flagged: bool) -> str:
     return " | ".join(pieces) if pieces else "No additional context returned"
 
 
-def _build_html(report: dict[str, Any]) -> str:
+def _build_html(report: dict[str, Any], analysis: dict[str, Any]) -> str:
     s = report["samples"]
     n = report["frames"]
     origin = s["end_usec"][0] - s["wall_usec"][0]
@@ -378,6 +502,19 @@ def _build_html(report: dict[str, Any]) -> str:
              ("Query-marked", str(sum(bool(f & 16) for f in flags)))]
     card_html = "".join(f'<div class="card"><span>{_escape(label)}</span><strong>{_escape(value)}</strong></div>'
                         for label, value in cards)
+    episode_rows = []
+    for item in sorted(analysis["episodes"], key=lambda e: (-e["duration_ms"], e["id"]))[:20]:
+        boundary = ", ".join(side for side in ("start unobserved" if item["left_censored"] else "",
+                                             "end unobserved" if item["right_censored"] else "") if side) or "both observed"
+        values = (f"{item['first_sequence']}–{item['last_sequence']}", item["frames"],
+                  f"{(item['start_usec'] - origin) / 1_000_000:.3f}–{(item['end_usec'] - origin) / 1_000_000:.3f}",
+                  f"{item['duration_ms']:.3f}", _fps_text(item["fps_mean"]),
+                  "observed" if item["observed_sustained"] else ("not established" if item["left_censored"] or item["right_censored"] else "no"), boundary,
+                  f"{item['route_first']} → {item['route_last']} ({item['route_changes']} changes)",
+                  item["diagnostic_query_frames"])
+        episode_rows.append("<tr>" + "".join(f"<td>{_escape(value)}</td>" for value in values) + "</tr>")
+    if not episode_rows:
+        episode_rows.append('<tr><td colspan="9">No over-budget episode observed in this selected window.</td></tr>')
     worst_rows = []
     for i in sorted(range(n), key=lambda index: (-s["wall_usec"][index], index))[:12]:
         sequence = report["first_sequence"] + i
@@ -416,6 +553,16 @@ def _build_html(report: dict[str, Any]) -> str:
         "@@LOW01@@": _escape(_fps_text(low01)), "@@TAIL01@@": str(tail01), "@@TAIL01NOTE@@": tail01_note,
         "@@MISSING@@": str(missing), "@@DETAILCOUNT@@": str(len(details)),
         "@@WORST@@": "".join(worst_rows), "@@DETAILROWS@@": "".join(detail_rows), "@@DATA@@": json_data,
+        "@@EPISODEROWS@@": "".join(episode_rows),
+        "@@EPISODES@@": str(analysis["summary"]["episode_count"]),
+        "@@SUSTAINED@@": str(analysis["summary"]["sustained_episode_count"]),
+        "@@MINFRAMES@@": str(analysis["policy"]["sustained_min_frames"]),
+        "@@SLOWTIME@@": f"{analysis['summary']['slow_time_percent']:.2f}",
+        "@@EXCESS@@": (f"{analysis['summary']['budget_excess_ms']:.3f} ms"
+                       if analysis['summary']['budget_excess_ms'] is not None else "unavailable (policy disagreement)"),
+        "@@DISAGREEMENTS@@": str(analysis["quality"]["threshold_cross_check_disagreements"]),
+        "@@EVICTED@@": str(report["frames_evicted"]),
+        "@@UNSELECTED@@": str(report["retained_frames"] - n),
     }
     # A single pass avoids interpreting placeholder-looking text in a route,
     # capture ID, or log as a second template substitution.
@@ -445,6 +592,12 @@ label{display:inline-block;padding:8px 0} .note{border-left:3px solid #ffc86b;pa
 <p>The dashed white line is the target budget (@@BUDGET@@ ms); the dashed yellow line is the flag threshold (@@THRESHOLD@@ ms, including tolerance). Query marks indicate coincidence only. Relative times are local to this capture and cannot establish cross-process correlation.</p></div>
 <h2>Distribution</h2><p>Frame-time percentiles (nearest rank): p50 @@P50@@ ms · p95 @@P95@@ ms · p99 @@P99@@ ms · p99.9 @@P999@@ ms.</p>
 <p>The slowest 1% average corresponds to @@LOW1@@ FPS using @@TAIL1@@ frame(s) (@@TAIL1NOTE@@). The slowest 0.1% average corresponds to @@LOW01@@ FPS using @@TAIL01@@ frame(s) (@@TAIL01NOTE@@). Tail counts use max(1, floor(N × fraction)); short tails are descriptive.</p>
+<h2>Sustained slowdown and over-budget episodes</h2>
+<p>@@EPISODES@@ observed episode(s), including @@SUSTAINED@@ with at least @@MINFRAMES@@ consecutive slow callbacks. This is a frame-count screen, not a fixed duration or a perceptual threshold. Flagged slow callbacks occupy @@SLOWTIME@@% of selected wall time; their excess above the ideal budget totals @@EXCESS@@.</p>
+<p>Threshold cross-check disagreements: @@DISAGREEMENTS@@. Original flags are preserved; any disagreement makes policy screening uncertain and the total budget excess unavailable.</p>
+<p>Showing up to 20 episodes by observed duration; all are in <code>analysis.json</code>. FPS is callbacks divided by their elapsed time. Boundary labels mean the onset or recovery is unobserved and may lie outside the window; censored lengths are lower bounds. Query-marked rows and route changes remain inside episodes. Routes describe interval-start observations, not exact transition times or causes.</p>
+<div class="table"><table><thead><tr><th>Sequences</th><th>Frames</th><th>Relative interval (s)</th><th>Duration (ms)</th><th>Mean callback FPS</th><th>Sustained</th><th>Boundaries</th><th>Route context</th><th>Query frames</th></tr></thead><tbody>@@EPISODEROWS@@</tbody></table></div>
+<p>Coverage is this selected window only: @@EVICTED@@ earlier frames were evicted from the ring; @@UNSELECTED@@ retained frames were not selected. No absence claim applies outside this window. This analysis does not identify a CPU or GPU cause.</p>
 <h2>Worst observed intervals</h2><p>Exact flags remain available for every frame. Event details are bounded and can be suppressed, evicted, or omitted from a query: @@MISSING@@ flagged frame(s) have no detail in either returned detail list.</p>
 <div class="table"><table><thead><tr><th>Sequence</th><th>Relative end (s)</th><th>Wall (ms)</th><th>Flags</th><th>Route</th><th>Physics ticks</th><th>Retained context</th></tr></thead><tbody>@@WORST@@</tbody></table></div>
 <h2>Recent returned event details</h2><p>Showing up to 20 of @@DETAILCOUNT@@ distinct returned event details. Any logged observations are correlations and may lag; they do not establish causality.</p>
@@ -565,21 +718,26 @@ draw();
 </script></body></html>'''
 
 
-def write_capture(report: dict[str, Any], out: Path) -> dict[str, str]:
+def write_capture(report: dict[str, Any], out: Path, *, sustained_frames: int = DEFAULT_SUSTAINED_FRAMES) -> dict[str, str]:
     """Write a new standalone capture directory, returning JSON-serializable paths.
 
     Validation and artifact construction happen before directory creation. An
     existing path is never overwritten. On an I/O failure, remove only files
     that this call created and still have the same filesystem identity.
     """
+    _integer(sustained_frames, "sustained_frames", 1, MAX_FRAMES)
     copied, encoded = _snapshot(report)
     _validate(copied)
+    analysis = _analyze_slowdowns(copied, sustained_frames)
+    analysis["frames_json_sha256"] = hashlib.sha256((encoded + "\n").encode("utf-8")).hexdigest()
     payloads = {
         "json": ("frames.json", encoded + "\n"),
+        "analysis": ("analysis.json", json.dumps(analysis, ensure_ascii=True, allow_nan=False,
+                                                 separators=(",", ":")) + "\n"),
         "csv": ("frames.csv", _build_csv(copied)),
-        "perfetto": ("frames.perfetto.json", json.dumps(_build_trace(copied), ensure_ascii=True,
+        "perfetto": ("frames.perfetto.json", json.dumps(_build_trace(copied, analysis), ensure_ascii=True,
                                                         allow_nan=False, separators=(",", ":")) + "\n"),
-        "html": ("report.html", _build_html(copied)),
+        "html": ("report.html", _build_html(copied, analysis)),
     }
     destination = Path(out)
     destination.mkdir(mode=0o700, parents=True, exist_ok=False)
