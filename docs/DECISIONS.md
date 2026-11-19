@@ -78,7 +78,7 @@ audio-enabled shutdown remains open and was not silently accepted as clean.
 
 ### Replay binds complete state and execution identity
 
-**H8 / H9 / H6–7 / FL.** Checkpoints and logs include the continuous, sampled and discrete state needed for continuation, plus source/configuration, timestep and backend identity. Exact replay and a changed-solver candidate are different operations; tolerance qualification is explicit and platform-scoped. Transcendentals retain the `math3d` routing policy, with the adopted built-in `sqrt` exception; this does not promise universal cross-platform byte equality. [Flight-log contract](FLIGHT-LOGGING.md#recorded-data-and-timing), [H8](research/simulation-state/H8/README.md), [H9](research/simulation-state/H9/README.md), [NK-1](../research/native-math-spike/README.md).
+**H8 / H9 / H6–7 / FL.** Checkpoints and logs include the continuous, sampled and discrete state needed for continuation, plus source/configuration, timestep and backend identity. Exact replay and a changed-solver candidate are different operations; tolerance qualification is explicit and platform-scoped. Transcendentals retain the `math3d` routing policy, with the adopted built-in `sqrt` exception and, since 2026-11-18, constant normal powers of two (`pow(2.0, n)`, integer literal `n` in −1022…1023, exactly representable like `math3d.MIN_NORMAL_FLOAT64`); this does not promise universal cross-platform byte equality. [Flight-log contract](FLIGHT-LOGGING.md#recorded-data-and-timing), [H8](research/simulation-state/H8/README.md), [H9](research/simulation-state/H9/README.md), [NK-1](../research/native-math-spike/README.md).
 
 ## Physical models
 
