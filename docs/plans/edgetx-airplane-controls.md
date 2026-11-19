@@ -136,6 +136,12 @@ Applying rates in `app/input/` instead was rejected: it duplicates `shape_sticks
 
 Radio firmware changes, EdgeTX mixer features inside OpenRC (curves, custom mixes, channel reorder, failsafe), per-vehicle profile storage, branded radio art, telemetry to the radio, trainer/buddy-box links, F1 help in helicopter, airship and ground scenes.
 
+Related follow-up: [on-screen radios and EdgeTX integration](radio-display-edgetx.md)
+owns proposed radio artwork, LCD telemetry, firmware simulation and copied-model
+inspection/training. The exclusions above remain the scope of this controls plan;
+the follow-up does not claim physical-radio telemetry return or a new live bridge
+is already implemented.
+
 ## Risks
 
 - **OS mapping:** CH7/CH8 order and Linux gamepad remapping are inferred. Mitigation: bind by movement; intent-only preset until F1-ETX-01.

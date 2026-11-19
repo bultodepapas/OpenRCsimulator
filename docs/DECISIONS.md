@@ -279,6 +279,29 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Presentation
 
+### Separate radio appearance, firmware execution and flight admission
+
+**D6-RADIO / HUD-RADIO, 2026-11-18; proposed design, implementation pending.**
+Extend the existing radio selector and sensor-backed LCD first. Keep appearance,
+physical USB calibration and optional firmware execution independent so choosing
+RadioLink artwork cannot imply EdgeTX firmware support or change control mappings.
+The [radio integration plan](plans/radio-display-edgetx.md) owns scope and gates;
+the [source investigation](research/radio-input/D6-RADIO-00/README.md) pins evidence.
+
+Evaluate the stable T18-H7 native simulator in a local helper, with a separate
+latency gate before virtual flight. Current channel-change notifications are not
+a physics-clock contract. Revisit the backend after a measured comparison with
+the development WASM interface; do not make a browser runtime a prerequisite for
+the first native HUD delivery.
+
+Admit verified logical AETR configurations first. OpenRC's existing surface
+allocation cannot transparently consume arbitrary final servo outputs. Preserve
+one owner for pilot trim/rates/mixes and the aircraft's solved launch trim and
+rigging offsets. Viewing a configuration does not admit it for flight. Independent
+servo control requires an explicit aircraft/session/replay contract; it is not a
+skin feature. Native/device qualification and redistribution obligations remain
+open, and the helper boundary does not by itself settle licensing.
+
 ### Compatibility baseline and a Windows NVIDIA package
 
 **VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
