@@ -6,6 +6,15 @@
 **Scope:** developer preparation, source images, proposed contracts and a runnable
 flat interaction study. Runtime code and shipped behavior are unchanged.
 
+## Expanded research — 2026-11-19
+
+The [R1 research index](../AE-24e-00-R1/README.md) adds **60 sequential investigations**
+in batches of 10, 20 and 30, with synthesis after each stage, pinned repository
+follow-ups and 37 executable offline cases. Architecture, interaction, plan and
+validation documents now incorporate those findings. The source follow-ups use
+branch commit `0d251cb`; original asset and study results below retain their date.
+No runtime decal editor or native rendering/performance result is claimed.
+
 ## Handoff in five minutes
 
 1. Read the [plan and implementation sequence](../../../plans/sponsor-decal-workshop.md).

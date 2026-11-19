@@ -1,8 +1,13 @@
 # Verification and production acceptance
 
-**AE-24e-00 · 2026-11-18 · baseline `cf03e401`.** This branch prepares the feature;
-it does not integrate image decals into Godot. Offline checks are bounded evidence.
-The production matrix remains open even when a schema/arithmetic example passes.
+**AE-24e-00 · baseline `cf03e401` · R1 review 2026-11-19.** This branch prepares
+the feature; it does not integrate image decals into Godot. Offline checks are
+bounded evidence. The production matrix remains open even when a
+schema/arithmetic example passes. The [R1 research](../AE-24e-00-R1/README.md)
+records 60 sequential investigations and three syntheses; see the batch reports
+for [01–10](../AE-24e-00-R1/investigations-01-10.md),
+[11–30](../AE-24e-00-R1/investigations-11-30.md), and
+[31–60](../AE-24e-00-R1/investigations-31-60.md).
 
 ## Reproduce the offline checks
 
@@ -14,7 +19,18 @@ and Node 18+:
 python research/aircraft-editor/sponsor-decals/build_catalog.py --check
 python research/aircraft-editor/sponsor-decals/validate_pack.py --self-test
 node research/aircraft-editor/sponsor-decals/check_study.cjs
+python research/aircraft-editor/sponsor-decals/projection_exercises.py --check
 ```
+
+The first three commands reproduce the original pack and study checks; their
+results below are the **historical 2026-11-18 record**, not a claim that they
+were rerun for R1. The last command runs 37 closed-form synthetic exercises;
+the [recorded results](../AE-24e-00-R1/exercise-results.json) are 37/37 for
+that offline exercise only. They do not execute Godot, the GPU, a browser,
+native geometry, real resource lifetimes or performance workloads. The small,
+well-conditioned examples do not establish production tolerances or a
+near-singular cutoff. Finite in-range UVs do not prove nonzero projected area
+or correct semantic surface selection.
 
 | Check | Scope |
 | --- | --- |
@@ -27,6 +43,7 @@ node research/aircraft-editor/sponsor-decals/check_study.cjs
 | Capacity | 64 layers accepted structurally and the 65th refused. This does not qualify memory, latency, GPU layer order or rendering at that count |
 | Study state/events | Catalog readiness, repeated placement, transforms/flips, layer actions, one-gesture history, cancellation, field focus, export shape, reload and the 64-instance boundary in a deliberately small DOM/event simulation |
 | Draft preservation | Exact raw originals retained when catalog/images are missing or data is malformed, oversized, future-version, has unknown fields, invalid dimensions or duplicate instance IDs. Pending image checks block mutation/export; valid key order differences remain accepted |
+| R1 synthetic exercises | Six-plane clipping, degeneracy/zero-UV-area counterexample, normal transforms/reflection, linear-light alpha arithmetic, texture-budget arithmetic and abstract output ownership. No engine or GPU qualification |
 
 The validator does not prove full footprint clipping, real receiver binding,
 GPU composition, runtime admission or migration. The synthetic fixture is a
@@ -34,7 +51,18 @@ concrete handoff contract, not a replacement for GDScript tests against the
 actual Workshop paths. The study harness simulates image completion/failure;
 it does not exercise a browser decoder, native pointer capture or download UI.
 
-## Browser attempt and restored-file verification
+## R1 package verification — 2026-11-19
+
+The lead verified consecutive investigation IDs 01–60, the 10/20/30 batch counts,
+three synthesis boundaries and complete evidence/decision/limitation fields.
+All 60 query records are distinct; the ledger contains 95 source URLs, without
+claiming independent corroboration. The generated exercise result exactly matches
+a fresh execution of all 37 cases. All 103 local Markdown links and 15 referenced
+heading anchors resolve against the proposed files and the audited branch tree.
+The R1 update contains seven new and six modified handoff files. These checks do
+not rerun the historical asset/study suite or establish any native result.
+
+## Historical browser attempt and restored-file verification
 
 A real Playwright attempt could not open a page. The installed package's bundled
 headless browser was absent. System Chromium then failed at startup with
@@ -51,7 +79,8 @@ files were restored from the reviewed design/test material. The restored code an
 fixtures are not claimed byte-identical to their lost draft. The final branch's
 own commands and image lock govern its verification and reproducibility.
 
-**Final restored package: PASS.** The lead reran all three commands: 12 exact
+**2026-11-18 restored-package record: PASS.** At that time the lead reran the
+original three commands: 12 exact
 image outputs / 14 generated files; two examples; 27 refusal cases; five appearance
 selector cases; six coordinate cases; two nonuniform frame cases; and 24 simulated
 interaction/recovery checks. Images total 233,118 bytes. Seven raster files passed
@@ -102,29 +131,43 @@ whole editor. Retain failed comparisons as well as the chosen path's captures.
 
 | Dimension | Required cases / acceptance |
 | --- | --- |
-| Count/order | 0, 1, 8, 9, 32 and 64 instances; repeated and distinct images; nine overlapping on one receiver; dense separated logos across the model. No missing or camera-dependent layers |
-| Surface | Flat wing, curved body, thin fin, top/bottom, seam, hinge edge, disconnected panel behind the selected part, transparent canopy. Clip to the intended opaque receiver and refuse unsupported surfaces |
-| Transform | Tiny/large proportional copies, arbitrary rotation and canonical boundaries, both flips, readable opposite-side copy, mirrored imported nodes, nonuniform source transforms and 10/100/500% virtual size. No double scale or reversed normal |
-| View/material | Front/back/top/bottom, grazing view, close/far mips, representative day/night. No projection bleed, hovering edges, z-fighting, unintended emission or lost base material channels |
+| Count/order | 0, 1, 2, 8, 9, 32, 33 and 64 instances; repeated and distinct images, overlapping on one receiver as well as separated across the model. Preserve ordered overlap while moving the camera; no missing, regrouped or camera-dependent layers |
+| Surface | Flat wing, curved body, thin fin, top/bottom, hinge edge, nearby disconnected or opposite panel and transparent canopy. Test an authored, connected face region split by a UV seam: permitted crossing must remain continuous. Separately refuse crossing a real gap, opposite skin or different rigid owner; do not globally weld coincident vertices. Clip to the intended opaque receiver and refuse unsupported surfaces |
+| Transform/geometry | Tiny/large proportional copies, arbitrary rotation and canonical boundaries, both flips, readable opposite-side copy, nonuniform transforms with negative determinant/reflection, and 10/100/500% virtual size. Check normal/tangent direction and winding, singular and near-degenerate cases, 3D area **and projected UV area** independently; reject an unusable zero-area projection even when 3D area is nonzero. No double scale or reversed normal |
+| View/material | Front/back/top/bottom, grazing view, close/far mips, representative day/night. Compare unlit color and alpha against the independent linear-light oracle below. No projection bleed, hovering edges, z-fighting, unintended emission or lost base material channels |
 | Motion | Control deflection limits and intermediate angles, whole-aircraft plus hinge motion, propeller/blur excluded. No bridging a moving gap or attachment to an old rest pose |
-| Renderer/LOD | Compatibility on supported desktop hosts; Apple Silicon Mobile/Metal; every admitted model LOD and Low/Normal/High route. Lower texture quality preserves composition |
+| Renderer/LOD | Compatibility on supported desktop hosts; Apple Silicon Mobile/Metal; every admitted model LOD and Low/Normal/High route. Test automatic LOD thresholds in both directions and secondary viewports. Verify a shared LOD owner/selection or geometry invariance across all admitted LODs: matching thresholds, labels or bias alone do not prove the receiver and separately rendered overlay choose the same LOD. Lower texture quality preserves composition |
 | Other effects | Ground-mark pool, scenery and concurrent effects share native budgets. Cosmetic meshes must not affect bounds, contact, or wreck grouping |
 | Isolation | Two instances with different designs; source geometry/UVs/materials/custom archives unchanged. Picking adds no flight physics bodies |
 
 Use the step's normal evidence home. Keep large raw videos/captures in ignored
 temporary output; retain compact representative comparisons and measurements.
 
+### Independent color and alpha oracle
+
+For red then blue half-alpha layers, use linear-light RGB and straight inputs;
+composite source-over in premultiplied form and convert to straight output once.
+Over opaque white the expected straight RGBA is `(1/2, 1/4, 3/4, 1)`; reversing
+the order gives `(3/4, 1/4, 1/2, 1)`. Over transparent, the corresponding
+results are `(1/3, 0, 2/3, 3/4)` and `(2/3, 0, 1/3, 3/4)`. Check zero-alpha
+edges too. Compare unlit native captures using a declared readback encoding and
+renderer tolerance: convert sRGB-encoded RGB to linear before comparing with
+these values, while coverage alpha stays linear. A linear RGB value of `0.5`
+encodes to approximately `0.735357` in sRGB; raw encoded pixels are not the
+linear oracle. Test lighting and tone mapping separately. The exercise is a
+mathematical reference, not a passed native pixel test.
+
 ## Integration and lifecycle acceptance
 
 | Owner / step | Proof still required |
 | --- | --- |
-| AE-24e-02/03: contract/migration | Real valid/stale/missing receiver maps; strict malformed input; real v1–v4 historical profiles and changed companion-source pins. Appending empty fields must not silently alter legacy identity |
-| AE-24e-03/05: physical separation | Same compiled bytes, model/dependency hashes, physical trial ID and fixed-tick solver results with decals off/on. Visual identity changes when image/transform/order/base changes |
+| AE-24e-02/03: contract/migration | Test real valid/stale/missing receiver maps, strict malformed input and representative **baseline-admitted** v1–v4 profiles with their exact proof-covered source files and companions. Verify actual source against the trusted registry **before** the profile validator; preserve the existing one-proof-version marker, add a separate v5 marker/facade, and check unchanged legacy rendering in source and exported PCKs. Changed/missing source dependencies remain explicit; never silently rehash, rebind or assume smoke-bearing records can all be rebound. The proposed first v5 envelope caps the **whole profile at 64 KiB (65,536 bytes)**, including its embedded legacy profile. Verify baseline-admitted old profiles in the new implementation; forward compatibility of older apps with v5 is not promised |
+| AE-24e-03/05: physical separation | With physical recipe and aircraft scale fixed, metamorphic off/on cases change decal image, position, size, rotation, flip, order or compatible visual base while retaining identical compiled bytes, model/dependency hashes, physical trial ID and fixed-tick solver results. Compare crash bounds, collision inputs and wreck grouping too, before and after breakup; matching hashes alone cannot rule out scene-derived changes. A changed canonical visual document changes composite identity. Require pixel changes only with discriminating visible asymmetric art, differently colored overlapping alpha layers or a genuinely different base; symmetric flips, nonoverlapping order and hidden edits may look unchanged |
 | AE-24e-04: interaction | Place/select/move/scale/rotate/flip/reorder/hide/lock/delete; repeats; one gesture = one shared undo; Escape/focus-loss cancellation; numeric editing; camera arbitration; UI input consumption; keyboard/controller and EN/ES review |
 | AE-24e-05: one result | Factory/stock/custom bases agree across preview, immutable save, thumbnail, Test Flight, restart, return and admitted ordinary flight. Missing custom bytes remain recoverable |
-| AE-24e-06: storage | Save/reopen/copy, detached invalid buffer, failed/partial writes and process boundaries retain last accepted revisions. Undo/recovery retain reachable image bytes; originals remain intact |
-| AE-24e-07: portability | Fresh-install round-trip includes admitted nonbuilt-in bytes. Renamed/missing files, bad signatures, enormous decoded dimensions, animation, hostile SVG/path and duplicate package entries cannot partially publish a design |
-| AE-24e-08: lifecycle | LOD switches, breakup/section following, bounds/groups/contact comparison, repair/reset and aircraft switch. No ghost, doubled, stale-parent or leaked overlay |
+| AE-24e-06: storage and jobs | Save/reopen/copy, detached invalid buffer, failed/partial writes and process boundaries retain last accepted revisions. Give each asynchronous job owned output storage: accept B, freeze/undo-retain B, finish stale A and then accept C; verify actual pixels and handles show that A can neither publish nor write over B or C. Retire resources only after current, undo/redo, recovery, frozen-trial and in-flight consumers release them. Revision-token rejection alone does not protect a shared mutable GPU target |
+| AE-24e-07: portability and admission | A clean-install round-trip includes every distributable required byte: exact custom `.orskin` base archive, admitted unique sticker assets and referenced built-in revisions, with content hashes; otherwise identify an explicit external dependency. Missing/modified base bytes remain recoverable, never silently become factory paint. Check the complete encoded package and decode peak before export/import, including JSON and the base. Reuse/extract the existing `StrictJSON` and custom-skin PNG pre-decode admission with regression parity; add bounded still-image/APNG, chunk/CRC and aggregate sticker limits without silently changing legacy skin limits. Renamed/missing files, bad signatures, oversized decoded dimensions, animation, hostile SVG/path and duplicate package entries cannot partially publish a design |
+| AE-24e-08: lifecycle | Qualified LOD owner changes, breakup/section mapping and re-clipping, unchanged crash bounds/groups/contact, repair/reset and aircraft switch. No ghost, doubled, stale-parent or leaked overlay; retain one logical layer identity when a wreck section splits its fragments |
 | AE-24e-09/10: release | Target hardware/native captures and interface acceptance; admitted source/scope/credit/transform flags; exact package manifest; required final brand previews; player docs describe the delivered subset |
 
 ## Measurement record and proposed budgets
@@ -136,13 +179,42 @@ output size, drawable size and internal 3D size. Start ordinary desktop review a
 the repository instructions; report all three pixel sizes. Use existing
 debug-bridge/testqueue/capture entry points from [TOOLS](../../../TOOLS.md).
 
-After warmup compare zero decals with the same scene at each count. Measure
-CPU/GPU separately, p50/p95/p99 frame time, worst placement/commit/save/load hitch,
-draw calls, triangles, textures and actual steady/peak CPU/GPU memory. Initial
-normal-tier targets are **+1 ms p95**, **+64 MiB steady CPU**, and **+32 MiB steady
-GPU** on each declared host. These are proposed targets, not measurements.
-Revise texture tiers or the 64-instance/16-image candidate bounds only with
-evidence while preserving player designs.
+Compare matched zero-decal and decorated scenes at every listed count. Include
+tiny separated marks, large separated marks and large stacked marks at fixed
+**actual output pixels** so overdraw and screen coverage are measured separately
+from instance count. Fix camera path, assets, lighting and renderer; record cold
+construction separately from warmed runs, repeat/interleave alternatives and
+retain samples and captures. Measure CPU/GPU separately, p50/p95/p99 frame time,
+worst placement/commit/save/load hitch, draw calls, triangles, textures and
+actual steady/peak CPU/GPU memory. Mark unavailable GPU timing as unavailable,
+not zero.
+
+Initial normal-tier targets on each declared host are **+1 ms p95**, **+64 MiB
+steady CPU**, and **+32 MiB aggregate feature GPU peak** over the matched empty
+scene. The GPU target includes artwork, outputs, concurrent or retained/frozen
+revisions and GPU-side staging; record CPU staging and temporary copies in the
+CPU measurements too. These are proposed targets, not measurements or native
+acceptance. All native performance qualification remains pending. Revise texture
+tiers or the 64-instance/16-image candidate bounds only with evidence while
+preserving player designs.
+
+The [R1 arithmetic](../AE-24e-00-R1/exercise-results.json) calculates full square
+RGBA8 mip payloads for 16 unique images. It excludes alignment, metadata, staging,
+retained outputs, other resources and driver behavior; fitting this column alone
+does not prove the aggregate target fits.
+
+| Image size | Mip levels | Bytes per image | Bytes for 16 images | Payload alone vs. 32 MiB |
+| --- | ---: | ---: | ---: | --- |
+| 256 × 256 | 9 | 349,524 | 5,592,384 | Below |
+| 512 × 512 | 10 | 1,398,100 | 22,369,600 | Below, with 11,184,832 bytes before other allocations |
+| 1024 × 1024 | 11 | 5,592,404 | 89,478,464 | Exceeds by 55,924,032 bytes |
+
+Sixteen full-resolution 1024-square RGBA8 mip chains therefore cannot meet the
+proposed aggregate 32 MiB target. Measure the actual resident formats and bounded
+active set instead of assuming PNG file compression reduces GPU memory. For
+portability, 16 separately Base64-encoded 1 MiB files alone take 22,369,664 bytes;
+the candidate 24 MiB bundle cap would leave 2,796,160 bytes for JSON, the custom
+base and everything else, before accounting for decode peaks.
 
 Check post-warmup stability over 20 Workshop/flight/return/reset cycles,
 cancellation and stale callbacks. Existing broader 50-cycle/30-minute release

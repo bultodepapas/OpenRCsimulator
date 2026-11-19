@@ -4,6 +4,9 @@
 
 Start with the [implementation plan](../../../docs/plans/sponsor-decal-workshop.md)
 and [dated audit](../../../docs/research/aircraft-editor/AE-24e-00/README.md).
+The [2026-11-19 research expansion](../../../docs/research/aircraft-editor/AE-24e-00-R1/README.md)
+adds 60 sequential investigations and the executable exercises below; the source
+image pack and flat study retain their original scope.
 
 ## Review the interaction
 
@@ -28,6 +31,7 @@ From the repository root, with Python 3.11+ and Node 18+:
 python research/aircraft-editor/sponsor-decals/build_catalog.py --check
 python research/aircraft-editor/sponsor-decals/validate_pack.py --self-test
 node research/aircraft-editor/sponsor-decals/check_study.cjs
+python research/aircraft-editor/sponsor-decals/projection_exercises.py --check
 ```
 
 The builder uses the standard library. It copies existing official logo bytes
@@ -59,6 +63,7 @@ retains the blocked browser attempt and remaining native review.
 | `examples/` | Valid empty and layered proposals against `receiver-fixture.json` |
 | `receiver-fixture.json` | Synthetic receiver bind-local bounds, model transforms and identity |
 | `fixtures/` | Original MIT geometric artwork, unrelated to sponsor marks |
+| `projection_exercises.py` | 37 stdlib-only synthetic clipping, normal, linear-alpha, exact-byte and owned-job cases; [recorded results](../../../docs/research/aircraft-editor/AE-24e-00-R1/exercise-results.json) |
 | `check_study.cjs` | Reproducible nonbrowser event/state and exact draft-preservation checks |
 
 The study's draft/export format is separate from `openrc-decal-stack-proposal`.
@@ -74,3 +79,8 @@ directory creates no additional permission. OpenRC's own mark is reused from its
 existing master. No private messages, contacts, addresses, shipment details or
 mailbox IDs are included. Only the small source-card pack is duplicated; no
 website screenshots, model archives or stock paint atlases are added.
+
+The projection exercises use closed-form/rational expected cases and the declared
+receiver UV convention. They include a zero-UV-area projection and unsafe shared
+output as counterexamples. Passing them is not native Godot, GPU, browser,
+threading/lifetime, real-aircraft geometry or performance qualification.

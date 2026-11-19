@@ -1,0 +1,1367 @@
+{
+  "format": "openrc-sponsor-decal-research-ledger",
+  "version": 1,
+  "date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "branch": "plan/sponsor-decal-workshop-2026-11-18",
+  "baseline_commit": "0d251cb070a280bab6d6a3251af7955ed0bbec74",
+  "method": "Sequential questions, batches 10+20+30; follow-up reads and final review verification are part of existing questions, not extra counts.",
+  "source_url_count": 95,
+  "investigation_count": 60,
+  "batch_counts": [
+    10,
+    20,
+    30
+  ],
+  "syntheses": [
+    {
+      "stage": 1,
+      "after": 10,
+      "title": "Choose the canonical data model before choosing a renderer",
+      "conclusions": [
+        "Preserve the ordered editable sticker stack as authoritative; meshes and atlases are derived caches.",
+        "Keep clipped receiver-local geometry as the first candidate, with deterministic overlap and thin-part isolation as explicit pass/fail gates.",
+        "Use native decals as a bounded comparison or placement ghost; do not promise dense saved stacks from native capacity alone.",
+        "Start with lit color and alpha on qualified rigid opaque receivers; defer material-channel authoring and deforming receivers.",
+        "Build receiver topology once, update affected geometry and commit each gesture as one shared-history action.",
+        "Keep the compositor fallback conditional on unique charts, measurable bake cost and retained editability."
+      ],
+      "revisions": [
+        "Add topology/connected-region filters beyond normal rejection.",
+        "Add common-world-distance hit comparison for nonuniformly scaled receivers.",
+        "Add independent capacity, order, quality and latency gates.",
+        "Make compositor updates revisioned and event driven."
+      ],
+      "next_questions": "Investigations 11–30 will challenge edge/corner distortion, normals and reflection, transparent receivers, alpha/color correctness, atlas layout and padding, deformation/LOD, input capture, asset limits, portable persistence and measurement. These are gaps exposed by 01–10, not twenty unrelated searches.",
+      "review_corrections": [
+        "Semantic paintable regions must be authored/versioned; adjacency alone neither joins every valid seam nor excludes every unwanted panel.",
+        "Ordered data does not prove ordered pixels. Keep overlay geometry conditional until target renderer capture passes.",
+        "Job tokens must accompany owned outputs and safe target lifetime; one changed layer can invalidate more than one cache."
+      ]
+    },
+    {
+      "stage": 2,
+      "after": 30,
+      "title": "Turn promising algorithms into explicit contracts and falsifiable gates",
+      "conclusions": [
+        "A semantic receiver region precedes geometric adjacency, normal and depth tests; reject unsafe wrapping rather than distort logos.",
+        "Color/alpha correctness needs an independent oracle and declared conversion boundaries, not a visual guess.",
+        "Unique charts require source correspondence, mip-safe gutters and LOD identities; a stock mirrored paint atlas cannot substitute.",
+        "Each accepted revision owns immutable outputs. Workers must not write into newer or frozen textures.",
+        "64 saved instances/16 unique images remain capacity targets. Sixteen 1024-square RGBA8 mip chains already contradict a 32 MiB GPU target; admission needs aggregate budgets.",
+        "Portable saves need complete bytes, content hashes and atomic publication. Preserve old readers/identity and raw recovery state.",
+        "Game-like interaction includes fine adjustment, readable opposite-side copy, explicit flips, camera ownership and non-drag alternatives."
+      ],
+      "revisions": [
+        "Separate accepted source images, runtime texture tiers, per-receiver render caches and peak staging budgets.",
+        "Add 33-instance ordering case, negative-determinant/nonuniform transforms and unlit half-alpha fixtures.",
+        "Add pre-decode image envelope validation, full-bundle Base64 sizing and unchanged legacy visual/physics identity gates.",
+        "Add adversarial asynchronous job schedule and independent two-instance ownership checks."
+      ],
+      "next_questions": "Investigations 31–60 will narrow backend-specific math and ordering, transparent overdraw and compression, parser/cache/garbage-collection behavior, actual OpenRC livery/profile/breakup integration, practical game-editor controls, catalog/brand asset handling, and executable validation methods. Searches will continue one question at a time; none of the unresolved native gates will be reported as passed.",
+      "review_corrections": [
+        "Portable visual dependencies include a custom .orskin base, not only logo PNGs; total admission must include all serialized overhead and staging.",
+        "Preserving old JSON bytes is insufficient when installed source/companion proofs change. Resolve a concrete versioned compatibility route before integration.",
+        "Matching LOD identifiers or bias values does not synchronize independent mesh instances; require a shared owner or qualified geometry-invariant output.",
+        "Version-specific docs and firsthand issue reports are scoped evidence. Verify pinned-engine behavior; do not import another backend's limits.",
+        "Use linear-light alpha oracles and reuse the existing custom-skin admission/StrictJSON foundations."
+      ]
+    },
+    {
+      "stage": 3,
+      "after": 60,
+      "title": "Converge on a bounded, versioned, editable feature with explicit integration gates",
+      "conclusions": [
+        "Retain clipped overlay geometry as the first candidate for qualified opaque rigid receivers; no renderer is accepted until ordered-overlap, surface isolation, lighting and lifecycle gates pass on the pinned engine.",
+        "The canonical stack owns semantic placements, order and source-image identities. Visible selection, trimming, atlases, residency and LOD representations are derived behavior with explicit contracts.",
+        "Separate file bytes, decoded images, resident textures and peak staging budgets. The 1024 tier needs admission against the whole active visual state, including custom base, frozen trial and job outputs.",
+        "Use owned output generations and immutable cache keys; reject stale publication and prevent stale writes into shared/frozen resources.",
+        "Preserve baseline legacy source proof sets. Prototype v5 as a separate facade/envelope with an unchanged admitted legacy profile, independent new proofs/receivers and explicit call-site routing.",
+        "Portable exports include every permitted required visual byte or declare an exact external dependency; missing or oversized bases stay recoverable and never turn silently into factory paint.",
+        "Deliver direct layer actions, readable opposite-side copy, explicit artwork flips, fine/numeric/digital controls and stable focus; per-brand asset capabilities remain a catalog concern.",
+        "Use existing strict JSON and PNG admission helpers, and compare backends through reproducible native workloads rather than advertised demo counts."
+      ],
+      "revisions": [
+        "Add pre-clip semantic region membership, zero projected-area rejection and deterministic orientation transport.",
+        "Add cache replacement, producer lifetime, atlas repack and GC roots covering undo/recovery/in-flight/frozen consumers.",
+        "Specify trusted registry/source verification before legacy facade validation; preserve existing export proof marker and add a separate new marker.",
+        "Expand native validation to transparent hit picking, complete custom-base export, automatic LOD mismatch, wreck remapping and unchanged physical identities.",
+        "Add executable closed-form geometry/normal/alpha/budget/ownership exercises and record their synthetic scope."
+      ],
+      "next_questions": "External research is complete. Remaining work is implementation qualification: audit facade call sites and export proofs, build the two-receiver native spike, capture ordered overlap/LOD/wreck behavior, then admit actual device budgets. No further searches are needed to inflate this count."
+    }
+  ],
+  "investigations": [
+    {
+      "id": 1,
+      "batch": 1,
+      "title": "Native decal limits across the actual renderer family",
+      "query": "Godot 4.8 Compatibility decals GH-118070 eight surface 64 limit",
+      "question": "Can the current native node satisfy persistent dense sponsor stacks?",
+      "sources": [
+        {
+          "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-dev-4/",
+          "type": "official release notes",
+          "ref": "turn476584619view0"
+        },
+        {
+          "url": "https://github.com/godotengine/godot-proposals/discussions/12903",
+          "type": "upstream maintainer discussion",
+          "ref": "turn476584619view1"
+        }
+      ],
+      "finding": "Compatibility support was introduced in 4.8 dev 4, with a hard eight-per-surface bound and hardware-constrained view capacity, defaulting to 64. An upstream maintainer clarifies that additional decals on one mesh are culled; Mobile has the same receiver limit.",
+      "decision": "Retain native decals as a bounded comparison/placement ghost. Do not evict a player's saved stickers like temporary bullet holes, split aircraft geometry merely to evade the cap, or change global renderer to qualify the feature.",
+      "limit": "This confirms the engine-family constraint; it is not a runtime/performance measurement of OpenRC's pinned beta.",
+      "next": "Investigate whether ordering is stable even below those capacity limits."
+    },
+    {
+      "id": 2,
+      "batch": 1,
+      "title": "Layer ordering is a separate qualification gate",
+      "query": "Godot decals sorting camera AABB order overlapping decals render priority issue",
+      "question": "Does selecting a layer order guarantee that order under camera motion?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/using_decals.html",
+          "ref": "turn622252139search0",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/3d_rendering_limitations.html",
+          "ref": "turn557506248view1",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://github.com/godotengine/godot/issues/108248",
+          "ref": "turn557506248view0",
+          "type": "upstream reproduced issue"
+        }
+      ],
+      "finding": "Native decal sorting depends on camera distance and bounds. Transparent mesh ordering also has limitations. Issue 108248 reports and confirms a Forward+ ordering failure above 32 scene decals in older engine builds, even when only two overlap on the affected mesh.",
+      "decision": "Make deterministic layer order a release gate independent of capacity. Compare 2, 8, 9, 32, 33 and 64 overlapping instances under camera motion; never treat a sorting offset alone as proof.",
+      "limit": "The issue is an older-version reproduction, not a confirmed defect in the pinned beta. Mesh overlays need their own ordering qualification.",
+      "next": "Inspect a real clipped-geometry implementation to learn which guarantees it actually supplies."
+    },
+    {
+      "id": 3,
+      "batch": 1,
+      "title": "Six-plane clipping from three.js",
+      "query": "site:github.com/mrdoob/three.js DecalGeometry.js clipGeometry plane projectorMatrixInverse normalMatrix",
+      "question": "What reusable algorithm actually turns a projector into attached mesh geometry?",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/geometries/DecalGeometry.js",
+          "type": "upstream source",
+          "blob_sha": "c5d139ff563b001c356ccc40bb5ef74215cec60a"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/webgl_decals.html",
+          "ref": "turn830119982search1",
+          "type": "upstream example"
+        }
+      ],
+      "finding": "The implementation transforms indexed or unindexed triangles into projector space, clips against six planes, interpolates positions and normals, derives UVs, then emits world-space geometry. Its example uses explicit render order and disables depth writes. The geometry routine alone does not select a connected surface region.",
+      "decision": "Use the algorithm as a reference for an original receiver-local implementation. Add topology/normal filtering before clipping, re-normalize interpolated normals, and test winding, finite output and nonuniform transforms. Keep any adapted-code license notices if code is later ported.",
+      "limit": "The example is not a persistent livery editor and does not establish Godot layer sorting or frame costs.",
+      "next": "Look for an implementation that explicitly handles rear-facing triangles and local attachment."
+    },
+    {
+      "id": 4,
+      "batch": 1,
+      "title": "Local attachment and backface rejection in Babylon.js",
+      "query": "Babylon.js CreateDecal cullBackFaces localMode captureUVS source decalBuilder",
+      "question": "How can a decal move with its receiver without appearing on the back of a thin part?",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/decals",
+          "ref": "turn690036062view0",
+          "type": "official documentation and examples"
+        }
+      ],
+      "finding": "Babylon separates local attachment from backface rejection. Its texture-map alternative requires unique UVs and offers no selective erase without reconstructing the texture; UV-island edge blending adds work.",
+      "decision": "Persist editable instances as the source of truth. Filter candidate triangles by qualified receiver, connected region, facing and bounded depth; backface rejection alone cannot distinguish two nearby forward-facing surfaces. Treat baked images only as rebuildable caches.",
+      "limit": "Babylon's performance claims and skinning support are not measurements or supported features of OpenRC's proposed rigid-receiver implementation.",
+      "next": "Compare another production engine's receiver filters and rendering-method costs."
+    },
+    {
+      "id": 5,
+      "batch": 1,
+      "title": "Receiver filtering has a rendering cost",
+      "query": "Unity 6 URP Decal Renderer Feature reference DBuffer Screen Space DepthNormal prepass",
+      "question": "Can a screen-space projector be adopted without platform or receiver-filter costs?",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-feature-decal-reference.html",
+          "ref": "turn211281362view0",
+          "type": "official versioned documentation"
+        }
+      ],
+      "finding": "Unity URP distinguishes DBuffer and screen-space methods. DBuffer requires a depth/normal prepass and does not support OpenGL/ES; enabling decal rendering layers can also introduce a prepass.",
+      "decision": "Do not copy a screen-space technique while assuming its mask is free or portable to OpenRC's Compatibility path. Qualify receiver selection and total pass cost together, including native-resolution Apple Silicon runs.",
+      "limit": "These are Unity constraints; they motivate questions and do not directly describe Godot's implementation.",
+      "next": "Check how a production engine treats overlapping material channels and sort order."
+    },
+    {
+      "id": 6,
+      "batch": 1,
+      "title": "Material channels and explicit order in Unreal",
+      "query": "site:dev.epicgames.com documentation decal materials DBuffer overlapping sort order only one decal displayed",
+      "question": "Which parts of a production decal system should the first sponsor implementation include?",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/decal-materials-in-unreal-engine",
+          "ref": "turn346619626search1",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/decal-actors-in-unreal-engine?lang=en-US",
+          "ref": "turn346619626search3",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "Unreal exposes receiver material responses and explicit actor sort order, while warning that many distinct orders impede state sorting. Its custom DBuffer material-expression reconstruction has a specific overlap limitation; this is not a blanket claim that all Unreal decals cannot blend.",
+      "decision": "Start with lit color/alpha sponsor art and an explicit ordered stack. Defer normal/metallic/emission authoring. Benchmark worst-case overlapping layers rather than assuming material batching preserves the player's order.",
+      "limit": "Godot's overlay must implement and qualify its own material behavior; Unreal's renderer features are comparisons, not drop-in APIs.",
+      "next": "Determine how to obtain the right receiver triangles efficiently in Godot."
+    },
+    {
+      "id": 7,
+      "batch": 1,
+      "title": "Build topology once, update only affected decals",
+      "query": "site:docs.godotengine.org MeshDataTool ArrayMesh slower edges faces surface arrays triangle mesh procedural",
+      "question": "Should each pointer movement reconstruct the complete receiver topology?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/3d/procedural_geometry/meshdatatool.html",
+          "ref": "turn449133446search0",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/3d/procedural_geometry/index.html",
+          "ref": "turn449133446search2",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "MeshDataTool calculates face and edge relationships and supports triangle meshes. Godot recommends direct ArrayMesh arrays when the additional topology is unnecessary.",
+      "decision": "Cache validated CPU triangle arrays and adjacency per receiver revision. Use adjacency for connected-region selection, then emit only the changed decal's clipped ArrayMesh. Do not rebuild the entire aircraft or every saved decal during a drag.",
+      "limit": "The relative API guidance is not an OpenRC latency measurement; memory and rebuild cost still need instrumentation.",
+      "next": "Check how an established acceleration library invalidates its spatial index when geometry changes."
+    },
+    {
+      "id": 8,
+      "batch": 1,
+      "title": "Spatial-query acceleration and cache invalidation",
+      "query": "site:github.com/gkjohnson/three-mesh-bvh README raycastFirst local space refit index buffer changes",
+      "question": "When can a local-space picking acceleration structure be reused safely?",
+      "sources": [
+        {
+          "url": "https://github.com/gkjohnson/three-mesh-bvh/blob/master/README.md",
+          "ref": "turn170880854search1",
+          "type": "upstream repository documentation"
+        },
+        {
+          "url": "https://github.com/gkjohnson/three-mesh-bvh/blob/master/API.md",
+          "ref": "turn170880854search3",
+          "type": "upstream API documentation"
+        }
+      ],
+      "finding": "The library supports nearest-hit and spatial queries in geometry-local coordinates. Building its BVH may modify indices; refitting changed positions is distinct from changing indexed topology.",
+      "decision": "Key any OpenRC picking index by receiver geometry revision and build it from owned snapshot arrays. Invalidate on topology changes. Transform rays into receiver space and compare candidate hits in a common world-distance metric, especially with nonuniform scale.",
+      "limit": "No new JavaScript dependency is proposed for Godot. Start with bounded triangle queries, then add a BVH only if measured drag latency requires it.",
+      "next": "Resolve how one drag becomes one undo action without replaying every pointer event."
+    },
+    {
+      "id": 9,
+      "batch": 1,
+      "title": "Gesture transactions and runtime undo",
+      "query": "site:docs.godotengine.org UndoRedo create_action MERGE_ENDS execute commit_action runtime drag",
+      "question": "How should a long drag remain one reversible player operation?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/classes/class_undoredo.html",
+          "ref": "turn379327097search0",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "Godot supports grouped do/undo operations, explicit action commits and optional execution on commit. EditorUndoRedoManager is specifically for editor-plugin history rather than an in-game Workshop.",
+      "decision": "Keep OpenRC's shared Workshop history authoritative. Capture before-state on gesture start, preview transient state during movement, validate on release and commit one before/after action. Cancel restores the original without a history entry; a no-op does not consume history.",
+      "limit": "Do not replace the project's existing history implementation just to use this API. Preserve the existing 32-entry product policy, distinct from the 2D study's history.",
+      "next": "Find whether a bake fallback can run on demand without GPU readback on every edit."
+    },
+    {
+      "id": 10,
+      "batch": 1,
+      "title": "Event-driven baking without continuous readback",
+      "query": "Godot SubViewport UPDATE_ONCE ViewportTexture get_image GPU performance every frame",
+      "question": "How can a future compositor update without creating a permanent per-frame bake cost?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/rendering/viewports.html",
+          "ref": "turn557794491search0",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/4.7/classes/class_texture2d.html",
+          "ref": "turn251851715search3",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "SubViewport can render once and retain its texture. Texture2D.get_image creates a CPU copy from GPU data and is explicitly discouraged every frame.",
+      "decision": "If the compositor is needed, dirty only the changed receiver chart, debounce its rebuild, reuse GPU textures and reserve readback for explicit export or measured checkpoints. Use revision tokens so an old bake cannot overwrite newer edits.",
+      "limit": "A SubViewport does not generate a unique UV layout or solve alpha blending by itself; those remain separate qualifications.",
+      "next": "Synthesize the first ten findings, then investigate failure boundaries before expanding feature scope."
+    },
+    {
+      "id": 11,
+      "batch": 2,
+      "title": "Corner distortion is not solved by clipping",
+      "query": "site:github.com/mrdoob/three.js/issues/21187 decal projections without distortions corners",
+      "question": "Will clipping alone preserve a sponsor's shape around a sharp edge?",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/issues/21187",
+          "ref": "turn318074455search0",
+          "type": "upstream firsthand reproduction"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/docs/pages/DecalGeometry.html.md",
+          "ref": "turn318074455search1",
+          "type": "upstream documentation"
+        }
+      ],
+      "finding": "A three.js reproduction shows duplicated/distorted projection around a shoulder; the current addon documentation still warns about corner distortion. A clipped projector can include an adjacent face and its planar UV mapping can stretch at oblique angles.",
+      "decision": "Define receiver-specific maximum facing angle and sharp-edge/connected-region rules. Show a placement boundary and refuse invalid scale/depth rather than silently wrapping a wordmark. Add a curved-versus-creased geometry exercise with an independent distortion metric.",
+      "limit": "This is evidence against an unconditional wrap-anywhere promise, not proof that every curved body is unsuitable.",
+      "next": "Verify normal transforms and reflected orientation before defining those facing tests."
+    },
+    {
+      "id": 12,
+      "batch": 2,
+      "title": "Nonuniform transforms and reflected winding",
+      "query": "glTF negative determinant winding normals inverse transpose transform; Godot Basis inverse transposed normal non uniform scale",
+      "question": "Can point, direction and normal transforms share the same formula?",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "ref": "turn495225113search0",
+          "type": "official specification"
+        },
+        {
+          "url": "https://registry.khronos.org/OpenGL/specs/es/1.1/es_full_spec_1.1.pdf",
+          "ref": "turn495225113search25",
+          "type": "official specification"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/4.7/classes/class_basis.html",
+          "ref": "turn495225113search6",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "The glTF specification ties reflected transforms to winding. Normal vectors use inverse-transpose transformation, unlike positions or tangents; singular bases cannot be inverted.",
+      "decision": "For receiver linear basis B: local normal to world is normalize(B^-T n); world normal to local is normalize(B^T n). Transform tangents with the corresponding direction matrix, orthogonalize, and account for determinant sign in emitted winding. Refuse near-singular transforms and store positive sizes with separate UV flips.",
+      "limit": "These equations are a mathematical contract; imported engine winding conventions and actual scene parenting still require tests.",
+      "next": "Determine whether transparent receivers can preserve a sticker's intended opacity."
+    },
+    {
+      "id": 13,
+      "batch": 2,
+      "title": "Transparent canopies require a separate feature contract",
+      "query": "site:docs.godotengine.org Decal cannot affect underlying material transparency opaque alpha canopy",
+      "question": "Can an opaque sticker simply inherit the behavior of a transparent canopy?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/4.5/classes/class_decal.html",
+          "ref": "turn749071354search2",
+          "type": "official versioned API documentation"
+        }
+      ],
+      "finding": "Godot documents that native decals do not change the receiving material's transparency. A nominally opaque image can therefore remain translucent when applied to a transparent receiver.",
+      "decision": "Keep the first playable receiver allowlist opaque. Mark canopy/glass, propeller blur and deforming surfaces unavailable with a clear UI explanation. Transparent receiver support must later prove independent sticker opacity and front/back sorting.",
+      "limit": "The documented behavior is a specific native-decal constraint; an overlay could behave differently but is not qualified merely by choosing a different node.",
+      "next": "Define the exact alpha-compositing reference for layered sponsor artwork."
+    },
+    {
+      "id": 14,
+      "batch": 2,
+      "title": "An independent alpha-order oracle",
+      "query": "site:w3.org TR compositing source over premultiplied alpha formula co alpha",
+      "question": "What numerical result should overlapping semi-transparent stickers produce?",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/2024/CRD-compositing-1-20240321/",
+          "ref": "turn477267052search0",
+          "type": "official specification"
+        }
+      ],
+      "finding": "Source-over compositing has explicit premultiplied color and alpha equations. Order generally changes the result, so a layer-order check can compare actual pixels with independently calculated values.",
+      "decision": "Add a small mathematical exercise using distinct red/blue half-alpha inputs, transparent edges and an opaque base. Declare straight-versus-premultiplied boundaries and apply alpha once. Use the resulting expected values for an unlit native render fixture before lighting comparisons.",
+      "limit": "The equations do not choose the working color space or prove a GPU implementation. Native readback comparisons must allow only a declared quantization tolerance.",
+      "next": "Choose and verify the color-space boundary so correct alpha math does not still change sponsor colors."
+    },
+    {
+      "id": 15,
+      "batch": 2,
+      "title": "Explicit color-space boundaries",
+      "query": "site:docs.godotengine.org shading language source_color Compatibility Forward Mobile sRGB textures washed out",
+      "question": "How do we avoid washed-out or double-converted sponsor colors?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/shading_language.html",
+          "ref": "turn417417625search2",
+          "type": "official versioned documentation"
+        }
+      ],
+      "finding": "Godot distinguishes color textures from data textures with source_color. The requirement varies by renderer and HDR 2D, but the documentation recommends retaining the hint across configurations.",
+      "decision": "Declare source artwork as sRGB color plus linear coverage alpha. Record each conversion in the derivative pipeline. Compare unlit swatches and half-alpha edges across Compatibility/Mobile and 2D/3D previews; never use a browser screenshot alone as the native color oracle.",
+      "limit": "Lighting and tone mapping legitimately change displayed colors. Qualification must separate texture decoding/compositing errors from expected scene illumination.",
+      "next": "Check transparent borders and mip generation, where correct colors can still acquire dark fringes."
+    },
+    {
+      "id": 16,
+      "batch": 2,
+      "title": "Transparent edges and mipmaps",
+      "query": "site:docs.godotengine.org importing images fix alpha border premult alpha mipmaps memory 33 percent",
+      "question": "How can small or oblique logos stay clean without black outlines or excess memory?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/assets_pipeline/importing_images.html",
+          "ref": "turn741974967search6",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "Godot documents alpha-border repair, a distinct premultiplied-alpha path and mipmap overhead. Alpha-test coverage preservation is intended for scissor materials, not arbitrary alpha blending.",
+      "decision": "Generate derivatives from preserved originals with a declared border/alpha policy and matching material blend mode. Check light/dark backgrounds and oblique views. Include mip levels in memory estimates; do not apply alpha-test coverage correction to the proposed blended sticker path.",
+      "limit": "A source-image importer setting does not automatically apply to runtime Image loading. Runtime admission must reproduce the chosen processing explicitly.",
+      "next": "Investigate unique UV generation for a compositor without modifying the stock paint atlas."
+    },
+    {
+      "id": 17,
+      "batch": 2,
+      "title": "Separate decal charts from the original paint UVs",
+      "query": "site:github.com/jpcy/xatlas README new vertices same number indices chart packing original vertex xref",
+      "question": "Can unique decal UVs be generated while retaining source correspondence?",
+      "sources": [
+        {
+          "url": "https://github.com/jpcy/xatlas/blob/master/README.md",
+          "ref": "turn191428656search0",
+          "type": "upstream repository documentation"
+        },
+        {
+          "url": "https://github.com/jpcy/xatlas/blob/master/source/xatlas/xatlas.h",
+          "ref": "turn191428656search2",
+          "type": "upstream source contract"
+        }
+      ],
+      "finding": "xatlas separates chart generation from packing and returns source-vertex references. Adding unique UV seams can increase vertex count even while index count remains the same.",
+      "decision": "If a compositor is selected, generate a versioned decal-only mesh/UV companion offline through the aircraft source pipeline. Preserve original material UVs and verify source correspondence and unique coverage; do not unwrap during a pointer gesture or silently repack an accepted cache.",
+      "limit": "This is a candidate tool and data strategy, not an installed dependency or proof that the project's custom materials accept another UV channel.",
+      "next": "Determine what chart padding must protect against at distant mip levels."
+    },
+    {
+      "id": 18,
+      "batch": 2,
+      "title": "Atlas gutters are part of the sampling contract",
+      "query": "site:developer.nvidia.com texture atlas mipmaps bleeding gutters padding texture atlas",
+      "question": "Is a tightly packed base-level atlas sufficient for distant sticker quality?",
+      "sources": [
+        {
+          "url": "https://developer.nvidia.com/docs/drive/drive-os/archives/6.0.4/linux/sdk/common/topics/graphics_content/Textures124.html",
+          "ref": "turn272617406search0",
+          "type": "hardware vendor documentation"
+        }
+      ],
+      "finding": "NVIDIA's atlas guidance requires borders wide enough that mip generation does not mix neighboring subimages. Atlas packing reduces some state changes but introduces sampling constraints.",
+      "decision": "Specify chart-edge dilation and per-mip isolation, permitted mip range and anisotropic footprint together. Add saturated neighboring-chart fixtures and inspect every retained mip, including tiny lettering. A universal one-pixel gutter is not an acceptance rule.",
+      "limit": "No fixed padding size is claimed before chart resolution, filtering and maximum mip level are selected.",
+      "next": "Check how LOD simplification changes the geometry onto which a cached sticker was projected."
+    },
+    {
+      "id": 19,
+      "batch": 2,
+      "title": "LOD topology cannot reuse arbitrary triangle IDs",
+      "query": "site:github.com/zeux/meshoptimizer README simplification seams borders attributes LOD topology",
+      "question": "Will a sticker projected on the high-detail mesh still match a simplified receiver?",
+      "sources": [
+        {
+          "url": "https://github.com/zeux/meshoptimizer/blob/master/README.md",
+          "ref": "turn281004685search0",
+          "type": "upstream algorithm documentation"
+        },
+        {
+          "url": "https://github.com/zeux/meshoptimizer/blob/master/src/meshoptimizer.h",
+          "ref": "turn281004685search2",
+          "type": "upstream source contract"
+        }
+      ],
+      "finding": "Simplification changes index topology and treats attribute seams according to algorithm/options. Some modes may merge disconnected nearby features; even preserved source vertices do not imply preserved triangle identity.",
+      "decision": "Bind saved placements to semantic receiver IDs and canonical local frames, with explicit geometry/LOD revisions. Regenerate or load a qualified decal representation for each LOD; never persist a transient triangle number as the sole attachment identity.",
+      "limit": "No meshoptimizer option is being changed in OpenRC. The lesson applies to any generated/imported topology change.",
+      "next": "Verify that per-aircraft appearance resources can remain isolated when meshes or materials are shared."
+    },
+    {
+      "id": 20,
+      "batch": 2,
+      "title": "Per-instance material and texture ownership",
+      "query": "site:docs.godotengine.org Resource resource_local_to_scene duplicate deep shared materials runtime instances",
+      "question": "Can editing an appearance accidentally mutate another aircraft or a frozen trial?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_resource.html",
+          "ref": "turn250459140search0",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "Godot resources can be shared. Scene-local duplication happens during instantiation, and shallow copies retain nested references; toggling scene-local behavior after instantiation does not retroactively isolate existing instances.",
+      "decision": "Define owned mutable material wrappers and immutable shared source images. A frozen revision pins its own accepted output handles; new edits never write into those textures. Add two-aircraft and Workshop-versus-trial isolation cases instead of assuming duplicate() isolates every nested resource.",
+      "limit": "The exact source-material and custom-skin graph must be audited at integration. Blind deep-copying every resource can violate the memory budget.",
+      "next": "Resolve who owns pointer and keyboard input while a decal gesture is active."
+    },
+    {
+      "id": 21,
+      "batch": 2,
+      "title": "Input routing before camera arbitration",
+      "query": "site:docs.godotengine.org input event order Control accept_event _unhandled_input SubViewportContainer mouse_filter",
+      "question": "How do we prevent a slider, sticker drag and camera orbit from reacting to the same event?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/inputs/inputevent.html",
+          "ref": "turn617122546search0",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/latest/classes/class_control.html",
+          "ref": "turn617122546search3",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "Godot separates GUI handling and unhandled scene input. Accepted GUI events stop later propagation; SubViewports need explicit forwarding or a SubViewportContainer.",
+      "decision": "Route scene gestures through one owner state: idle, place, transform or orbit. Let GUI fields consume events first, suppress scene shortcuts while text entry owns focus, and explicitly convert preview-container coordinates. Focus loss/cancel must release ownership and restore the gesture start state.",
+      "limit": "accept_event cannot undo work already performed in an earlier _input callback. Integration must inspect and reroute the current camera handler, not merely add another listener.",
+      "next": "Find interaction alternatives for players who cannot precisely drag a tiny sticker."
+    },
+    {
+      "id": 22,
+      "batch": 2,
+      "title": "Precise editing without drag-only controls",
+      "query": "site:w3.org WAI WCAG22 Understanding dragging movements single pointer alternative keyboard dragging",
+      "question": "What alternatives make tiny and densely layered decals operable?",
+      "sources": [
+        {
+          "url": "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements",
+          "ref": "turn704080475search0",
+          "type": "primary accessibility guidance"
+        },
+        {
+          "url": "https://www.w3.org/WAI/WCAG22/Understanding/keyboard",
+          "ref": "turn704080475search9",
+          "type": "primary accessibility guidance"
+        }
+      ],
+      "finding": "W3C distinguishes keyboard access from a single-pointer alternative to dragging. Numeric controls, selection followed by destination, and activation buttons can provide alternatives without precise held-pointer movement.",
+      "decision": "Provide layer-list selection, click-to-place, labeled move/rotate/scale increments, numeric fields, keyboard nudges and accessible reorder buttons. Keep visual gizmo hit targets large even when the sticker is tiny; do not enlarge the actual printed image to make it selectable.",
+      "limit": "This applies accessibility principles to a native game; it does not claim WCAG certification or completed native assistive-technology testing.",
+      "next": "Compare these controls with a shipped game's official livery editor workflow."
+    },
+    {
+      "id": 23,
+      "batch": 2,
+      "title": "A shipped livery editor separates copy from mirror",
+      "query": "site:gran-turismo.com gt7 manual livery editor decals flip duplicate projection depth angle",
+      "question": "Which game-like editing conventions fit sponsor logos and repeated placements?",
+      "sources": [
+        {
+          "url": "https://www.gran-turismo.com/gb/gt7/manual/liveryeditor/03",
+          "ref": "turn626880231search0",
+          "type": "developer's official game manual"
+        }
+      ],
+      "finding": "Gran Turismo 7 exposes part selection, layers, fine movement, direct numeric editing, angle/depth limits and distinct opposite-side copy versus symmetric flipped copy. Some supplied logos restrict modification.",
+      "decision": "Adopt the distinction between readable opposite-side copy and deliberate artwork flip. Offer an authored part/camera shortcut, fine-adjust modifier and visible layer list. Put advanced projection limits behind receiver-safe ranges; display asset-specific allowed transformations rather than guessing from brand names.",
+      "limit": "The manual documents player behavior, not the game's rendering algorithm or transferable performance limits.",
+      "next": "Define bounded image admission so a user-supplied sticker cannot exhaust memory before validation."
+    },
+    {
+      "id": 24,
+      "batch": 2,
+      "title": "Validate image bounds before decode",
+      "query": "libpng user limits chunk cache decompression limits; Godot Image load_png_from_buffer memory",
+      "question": "Is checking dimensions after Image.load_png_from_buffer early enough?",
+      "sources": [
+        {
+          "url": "https://www.libpng.org/pub/png/libpng-1.4.0-manual.pdf",
+          "ref": "turn112524917search24",
+          "type": "historical library documentation"
+        },
+        {
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/png/png_driver_common.cpp",
+          "type": "exact pinned engine source",
+          "blob_sha": "7a3fe7c940b6d9d7896b34a57a42389d0f81149f"
+        }
+      ],
+      "finding": "The pinned Godot PNG reader obtains header properties, allocates a decoded buffer, then finishes decoding. A post-decode application dimension check therefore cannot prevent that allocation. Libpng separately documents dimension and ancillary-chunk controls.",
+      "decision": "Before invoking the decoder, bound encoded bytes, parse signature/IHDR with checked arithmetic and validate the chunk envelope/counts and animation policy. Bound total decoded pixels and concurrent jobs; then fully decode and verify again before publishing. Keep original input separate from normalized derivatives.",
+      "limit": "A header preflight is not a replacement PNG decoder or a complete defense against decoder defects. Use the supported patched engine and bounded admission; no new importer is implemented here.",
+      "next": "Calculate transport expansion before adding image bytes to the current bounded JSON bundle."
+    },
+    {
+      "id": 25,
+      "batch": 2,
+      "title": "Portable bytes must fit the whole package",
+      "query": "site:rfc-editor.org rfc4648 base64 24 bit 4 characters padding canonical encoding",
+      "question": "Do sixteen individually valid image files necessarily fit the existing bundle cap?",
+      "sources": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc4648.html",
+          "ref": "turn320140022search1",
+          "type": "official specification"
+        }
+      ],
+      "finding": "Base64 encodes each three-byte group as four characters, with padding. Therefore encoded length is 4*ceil(n/3), before JSON structure or any other bundled assets.",
+      "decision": "Budget the final serialized package, aggregate image bytes and decode peak independently. Sixteen 1 MiB files require about 21.33 MiB of Base64 alone; that is not a promise they fit a 24 MiB bundle containing other data. Include each unique admitted image once and verify its content hash on a clean-install import.",
+      "limit": "The current closed bundle v1 has no decal-byte collection. A separately versioned bundle extension and existing-format compatibility remain implementation work.",
+      "next": "Define stable visual hashes without relying on incidental JSON key order or float spelling."
+    },
+    {
+      "id": 26,
+      "batch": 2,
+      "title": "Canonical visual identity and old-version preservation",
+      "query": "site:rfc-editor.org RFC 8785 JSON canonicalization duplicate properties NaN Infinity numbers sorting",
+      "question": "How can equal designs hash consistently while reordered layers remain different?",
+      "sources": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc8785.html",
+          "ref": "turn389205411search0",
+          "type": "official specification"
+        }
+      ],
+      "finding": "JCS defines deterministic object sorting and number serialization, rejects non-finite numbers and duplicate names, and preserves array order. A generic JSON serializer is not automatically a canonicalizer.",
+      "decision": "Reuse OpenRC's versioned identity rules, extending them explicitly for new visual data. Preserve decal array order; exclude selection/hover/cache handles. Specify finite numeric ranges, negative-zero/rotation normalization and test vectors across export/import. Keep v1–v4 bytes and historical source pins intact; create a new revision for migration.",
+      "limit": "This research does not mandate replacing existing hashes with JCS or claim that the study's serializer implements RFC 8785.",
+      "next": "Specify what happens if a save stops halfway through publishing images and the document."
+    },
+    {
+      "id": 27,
+      "batch": 2,
+      "title": "Save atomicity must be tested at failure boundaries",
+      "query": "site:sqlite.org atomiccommit crash testing atomic commit file flush directory sync",
+      "question": "What does an all-or-nothing multi-asset save need to demonstrate?",
+      "sources": [
+        {
+          "url": "https://www.sqlite.org/atomiccommit.html",
+          "ref": "turn934821834search2",
+          "type": "database authors' engineering documentation"
+        },
+        {
+          "url": "https://www.sqlite.org/howtocorrupt.html",
+          "ref": "turn934821834search3",
+          "type": "database authors' engineering documentation"
+        }
+      ],
+      "finding": "SQLite distinguishes atomic consistency from durable persistence and tests failures at different write stages. Renaming a file or returning from a high-level write is not itself evidence of every crash/power-loss guarantee.",
+      "decision": "Extend the existing save boundary: stage and verify admitted immutable images, then publish the referring revision only when complete. Inject failures before/after each publication step and reopen in a fresh process. Preserve the last accepted revision and raw unresolved draft; report the exact durability guarantee actually demonstrated.",
+      "limit": "No SQLite dependency or replacement save system is proposed. Process-crash tests alone must not be described as power-loss proof.",
+      "next": "Specify worker and GPU output ownership so a late job cannot alter an accepted revision."
+    },
+    {
+      "id": 28,
+      "batch": 2,
+      "title": "Revision tokens require owned outputs",
+      "query": "site:docs.godotengine.org thread safe APIs active scene tree resources textures GPU synchronization threads",
+      "question": "Can checking a revision number at completion prevent every stale bake write?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html",
+          "ref": "turn740529765search2",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "Godot warns against active-scene-tree operations and concurrent mutation of shared resources from worker threads. GPU interaction can synchronize and stall even when scheduled away from the main logic.",
+      "decision": "Workers receive immutable CPU snapshots and return owned results. Each bake target belongs to one job/revision; never let an obsolete job write a texture reused by the next revision. Publish completed accepted handles on the owning thread, then retire old output only after consumers release it. Bound queue depth and temporary buffers.",
+      "limit": "Revision tokens alone only guard publication, not writes already made into shared GPU storage. GPU completion/lifetime behavior needs native qualification.",
+      "next": "Define measurements and arithmetic that can reject impossible texture budgets before a runtime spike."
+    },
+    {
+      "id": 29,
+      "batch": 2,
+      "title": "Measure full edit cost and reject impossible budgets",
+      "query": "site:docs.godotengine.org performance monitors video memory draw calls GPU profiler compatibility visual profiler",
+      "question": "Which measurements distinguish a cheap flight draw from an expensive editor pipeline?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/debug/debugger_panel.html",
+          "ref": "turn172953517search0",
+          "type": "official documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/4.6/classes/class_performance.html",
+          "ref": "turn172953517search7",
+          "type": "official API documentation"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/assets_pipeline/importing_images.html",
+          "ref": "turn741974967search6",
+          "type": "official texture guidance"
+        }
+      ],
+      "finding": "Godot separates rendering CPU/GPU profiling from script/physics profiling and warns that viewport resolution affects comparisons. Texture mip chains add memory beyond the base level.",
+      "decision": "Record steady flight, active drag, commit, bake/upload, save and reopen separately with frame-time tails and peak allocation. Arithmetic already rejects sixteen resident uncompressed 1024-square RGBA8 mip chains under a 32 MiB target: they require about 85.33 MiB before geometry. Sixteen 512-square chains use about 21.33 MiB, leaving limited room for other feature resources.",
+      "limit": "The memory figures are calculations, not profiler results; compression and actual rectangular dimensions can change them. GPU timings unavailable on a platform must be labeled unavailable, never zero.",
+      "next": "Challenge the candidate renderer against a community implementation claiming very large decal counts."
+    },
+    {
+      "id": 30,
+      "batch": 2,
+      "title": "A high-count community decal plugin is a different tradeoff",
+      "query": "site:github.com/antzGames/Godot-Compatibility-Decal-Node stencil unshaded limitations MultiMesh decal",
+      "question": "Does a one-draw-call thousand-decal demo remove the need for our renderer spike?",
+      "sources": [
+        {
+          "url": "https://github.com/antzGames/Godot-Compatibility-Decal-Node",
+          "ref": "turn739455376search0",
+          "type": "author repository and reported demo"
+        },
+        {
+          "url": "https://github.com/antzGames/Godot-Compatibility-Decal-Node/blob/main/addons/decal_compatibility/decal_instance.gdshader",
+          "type": "upstream source",
+          "blob_sha": "0554cb3c393538c75189364380666342347847dd"
+        }
+      ],
+      "finding": "The author reports large instanced counts, but the inspected shader reconstructs a screen-depth position and renders unshaded with stencil exclusion. The repository limits receivers to opaque materials and does not provide normal/roughness/metallic/emission maps.",
+      "decision": "Retain it as an adversarial comparison for a bounded screen-space option, not a production dependency. A sponsor livery needs illumination, chosen receiver isolation, arbitrary image/order combinations and immutable attachment; same-image instanced bullet marks do not prove those properties.",
+      "limit": "The reported draw counts are the author's demo results. No OpenRC benchmark, shader correctness pass or engine-version compatibility test was performed.",
+      "next": "Synthesize 11–30, then target the remaining rendering, lifecycle and product failure cases in the final thirty investigations."
+    },
+    {
+      "id": 31,
+      "batch": 3,
+      "title": "Screen-depth reconstruction is renderer-specific",
+      "query": "site:docs.godotengine.org advanced post processing reverse z compatibility NDC depth texture reconstruct position",
+      "question": "What must a screen-space alternative get right across Godot backends?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/shaders/advanced_postprocessing.html",
+          "ref": "turn980936792search0",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "Depth samples are nonlinear and reconstruction requires the inverse projection. Godot documents different normalized depth-coordinate ranges for Compatibility versus Mobile/Forward+, and limits depth-texture access to the current viewport.",
+      "decision": "If a screen-space comparison is built, explicitly branch by renderer convention and test near/far planes, camera-inside-volume, orthographic/perspective views and preview versus flight viewport. Keep this complexity outside the default CPU mesh projection unless evidence justifies it.",
+      "limit": "A working shader in one demo viewport does not validate the pinned engine, another camera projection or cross-viewport sampling.",
+      "next": "Verify the camera APIs used for precise placement rays and viewport coordinate conversion."
+    },
+    {
+      "id": 32,
+      "batch": 3,
+      "title": "Use the preview camera's complete placement ray",
+      "query": "site:docs.godotengine.org Camera3D project_ray_origin project_ray_normal orthogonal perspective viewport",
+      "question": "Will a ray built from camera position work for every editor view?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/4.7/classes/class_camera3d.html",
+          "ref": "turn925961113search7",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "Camera3D exposes both projected ray origin and normal from viewport coordinates. These APIs account for the camera projection rather than assuming a fixed origin and a screen-derived direction.",
+      "decision": "Convert pointer coordinates to the actual SubViewport pixel rectangle, then use both project_ray_origin and project_ray_normal. Reject points outside the rendered rectangle and qualify scaling/letterboxing, resized panels and any orthographic preset. Do not reuse outer-window coordinates directly.",
+      "limit": "This is the API contract; native picking still needs comparison with known geometric hit points on both aircraft families.",
+      "next": "Keep sticker rotation stable when the placement normal approaches the editor's chosen up vector."
+    },
+    {
+      "id": 33,
+      "batch": 3,
+      "title": "Stable roll while moving over a curved surface",
+      "query": "site:docs.godotengine.org Basis looking_at up collinear unstable flips vector parallel",
+      "question": "Why can a sticker suddenly spin when its normal becomes nearly vertical?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/4.5/classes/class_basis.html",
+          "ref": "turn100165216search0",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "Basis.looking_at warns that target and up vectors should not be collinear because the roll becomes unstable. Reconstructing orientation from a normal and one fixed global up vector has a singular case.",
+      "decision": "Use the authored receiver tangent as the initial orientation reference; during a continuous gesture, project the previous tangent into the new tangent plane and use a deterministic receiver-axis fallback when degenerate. Persist the accepted local frame and explicit user rotation. Reject abrupt region jumps instead of silently spinning the mark.",
+      "limit": "This is a proposed continuity rule. It needs a closed-path/pole-crossing fixture and cannot guarantee distortion-free transport over arbitrary surfaces.",
+      "next": "Specify opposite-side mapping in authored local coordinates rather than assuming every aircraft mirrors about world X."
+    },
+    {
+      "id": 34,
+      "batch": 3,
+      "title": "An authored symmetry frame, not a world-axis guess",
+      "query": "site:docs.blender.org manual mirror modifier local axes mirror object UV flip",
+      "question": "How can opposite-side copy remain correct on imported, rotated or asymmetric parts?",
+      "sources": [
+        {
+          "url": "https://docs.blender.org/manual/en/4.0/modeling/modifiers/generate/mirror.html",
+          "ref": "turn295411553search2",
+          "type": "official authoring-tool documentation"
+        }
+      ],
+      "finding": "Blender separates the geometry mirror plane, defined in an object's local frame, from UV flipping. Mirroring position does not inherently mean mirroring texture coordinates.",
+      "decision": "Store authored paired-receiver transforms and a defined symmetry plane in the visual companion. Map the placement frame into the paired receiver, rebuild a valid tangent basis, and preserve readable artwork unless the player explicitly selects a permitted UV flip. Offer no paired-copy action when the pairing is absent or incompatible.",
+      "limit": "This does not infer symmetry from aircraft naming or make every imported part symmetric. Pair mappings require source-pipeline qualification.",
+      "next": "Check the actual Godot render-priority API before proposing a dense overlay ordering implementation."
+    },
+    {
+      "id": 35,
+      "batch": 3,
+      "title": "Bounded material priority is not a depth override",
+      "query": "Godot Material render_priority -128 127 transparent opaque depth testing",
+      "question": "Can the proposed 64-layer overlay use a real ordering primitive without hiding occlusion errors?",
+      "sources": [
+        {
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/doc/classes/Material.xml",
+          "type": "exact pinned engine API source",
+          "blob_sha": "e03682acb915cf712700f28e9e8286817027dae6"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/4.6/tutorials/3d/standard_material_3d.html",
+          "ref": "turn611692802search16",
+          "type": "official documentation"
+        }
+      ],
+      "finding": "The pinned Material API bounds priority to -128…127 and separates opaque/transparent queues; next_pass does not guarantee immediately adjacent draws. Standard-material guidance states that depth testing overrules priority.",
+      "decision": "The overlay spike should use a deliberately allocated bounded priority range, per-order material wrappers, depth testing enabled, and no decal depth writes. Validate interaction with existing markings and other transparency. Reorder must update all affected ordering/cache dependencies; never disable depth tests to make a layering screenshot pass.",
+      "limit": "Available priority values make the candidate implementable, not proven correct at grazing angles or across renderers.",
+      "next": "Choose an offset strategy that avoids z-fighting without making a stack visibly float above the aircraft."
+    },
+    {
+      "id": 36,
+      "batch": 3,
+      "title": "Surface bias must not become layer thickness",
+      "query": "site:dev.epicgames.com using mesh decals depth precision LOD offset geometry intersect",
+      "question": "How should an overlay avoid depth artifacts at near and distant views?",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/using-mesh-decals-in-unreal-engine?lang=en-US",
+          "ref": "turn273973428search0",
+          "type": "official method documentation"
+        }
+      ],
+      "finding": "Epic's mesh-decal guidance calls out matching receiver geometry, small depth bias and failures caused by LOD or long-distance precision. Surface proximity is a real constraint even for a dedicated mesh-decal system.",
+      "decision": "Qualify one bounded receiver-scale-aware surface offset for visibility, with layer order handled separately. Do not move layer N outward by N times an epsilon: many layers would float or cross thin parts. Test silhouette, far distance and model-size extremes; reject the candidate if stable appearance requires excessive offset.",
+      "limit": "Unreal's mesh decal is a specialized renderer path, not equivalent to a Godot transparent mesh. The source establishes a failure mode, not a portable bias constant.",
+      "next": "Determine whether merging or instancing stickers preserves the required order."
+    },
+    {
+      "id": 37,
+      "batch": 3,
+      "title": "Batching must respect compositing dependencies",
+      "query": "site:docs.godotengine.org MultiMesh instances individual culling sorting transparency one object AABB",
+      "question": "Can repeated sponsor artwork always be combined into one instanced draw?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/4.5/classes/class_multimesh.html",
+          "ref": "turn788383428search4",
+          "type": "official API documentation"
+        }
+      ],
+      "finding": "MultiMesh repeats one mesh efficiently and is spatially treated as one object. That API advantage does not establish arbitrary per-instance layer order or support differently clipped receiver geometry.",
+      "decision": "Share immutable image resources immediately, but batch geometry only after proving compositing equivalence. A layer order A–B–A cannot be regrouped by image as A–A–B when the regions overlap. Prefer contiguous compatible runs or a qualified compositor; record draw-count savings and lost culling granularity.",
+      "limit": "This is a correctness restriction on optimization, not a claim that all instancing is unsuitable. Nonoverlapping identical geometry may qualify.",
+      "next": "Test whether screen coverage, rather than count alone, dominates the worst case."
+    },
+    {
+      "id": 38,
+      "batch": 3,
+      "title": "Screen coverage and overdraw are independent of layer count",
+      "query": "site:docs.godotengine.org optimizing 3D performance transparency fill rate overdraw screen resolution",
+      "question": "Which 64-sticker arrangement is a meaningful worst case?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/performance/gpu_optimization.html",
+          "ref": "turn967353973search0",
+          "type": "official performance guidance"
+        }
+      ],
+      "finding": "Godot's GPU guidance explains that overlapping blended geometry may shade the same pixel repeatedly and is particularly sensitive to fill rate. Small separated objects and large overlapping ones stress different costs.",
+      "decision": "Benchmark a coverage-by-overlap matrix: tiny separated, large separated, and large stacked marks at fixed counts and actual output pixels. Keep alpha footprints tight where source-safe derivatives allow it, but retain logical image bounds and aspect. A one-draw-call result must still pass GPU time and visual order checks.",
+      "limit": "No fixed hardware speedup or mobile-device compatibility claim follows from this general guidance.",
+      "next": "Check whether compressed image files automatically provide compressed GPU storage."
+    },
+    {
+      "id": 39,
+      "batch": 3,
+      "title": "PNG file compression does not establish GPU memory usage",
+      "query": "site:docs.godotengine.org ImageTexture CompressedTexture2D PNG VRAM compression runtime Image create_from_image",
+      "question": "Can smaller PNG files satisfy the proposed GPU budget for runtime sponsor images?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_compressedtexture2d.html",
+          "ref": "turn303529284search0",
+          "type": "official Godot documentation, stable snapshot"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_imagetexture.html",
+          "ref": "turn303529284search1",
+          "type": "official Godot documentation, stable snapshot"
+        }
+      ],
+      "finding": "Godot distinguishes compressed storage from GPU-compressed texture formats. Runtime ImageTexture creation and the import pipeline are different paths; a compact lossless source does not imply a compact resident texture.",
+      "decision": "Keep encoded-byte, decoded-pixel and resident-texture budgets separate. Start runtime artwork estimates with actual RGBA8 dimensions and mip levels; only credit GPU compression after the exact runtime path and logo quality are qualified on each target renderer.",
+      "limit": "Documentation establishes resource semantics, not the selected 4.8 beta device's allocation or compression quality. Runtime codec support and peak temporary copies remain measurement gates.",
+      "next": "Does retaining a ViewportTexture freeze a saved design, or does it remain tied to a mutable render target?"
+    },
+    {
+      "id": 40,
+      "batch": 3,
+      "title": "A live viewport texture is not a frozen saved design",
+      "query": "site:docs.godotengine.org ViewportTexture dynamic texture get_image ImageTexture create_from_image scene local",
+      "question": "Can the Workshop pass a viewport texture directly into a frozen trial or saved thumbnail?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_viewporttexture.html",
+          "ref": "turn478372738search0",
+          "type": "official Godot documentation, stable snapshot"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/rendering/viewports.html",
+          "ref": "turn478372738search2",
+          "type": "official Godot documentation, latest snapshot"
+        }
+      ],
+      "finding": "A ViewportTexture follows its viewport dynamically. Image capture requires a completed render; conversion to a separate ImageTexture has readback cost. HDR capture also has a different encoding contract.",
+      "decision": "Accepted trial snapshots retain immutable document/assets and owned completed outputs, never the editor's mutable viewport target. If a compositor is selected, capture only at an explicit completion boundary, with known color encoding, and keep the producer alive until consumers release it.",
+      "limit": "This defines lifetime requirements; it does not mandate CPU readback for every freeze or prove completion timing on the pinned renderer. Measure a retained owned GPU target versus an explicit copy.",
+      "next": "Can the engine's JSON parser alone enforce the strict portable-document format?"
+    },
+    {
+      "id": 41,
+      "batch": 3,
+      "title": "Parser success is not strict document admission",
+      "query": "site:docs.godotengine.org JSON parser trailing commas invalid unicode newline specification",
+      "question": "Does a successful JSON.parse prove that a portable sticker document satisfies the intended canonical format?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/classes/class_json.html",
+          "ref": "turn410410590search1",
+          "type": "official Godot documentation, latest snapshot"
+        }
+      ],
+      "finding": "Godot documents permissive parsing behavior for trailing commas, string control characters, number conversion and some Unicode errors. Successful parsing is therefore a different property from a strict, unambiguous admitted document.",
+      "decision": "For the new format, validate raw-byte/UTF-8/structural limits and duplicate-key policy before information is lost, then exact schema, finite bounded values and identity. Reuse the project's admission conventions; do not silently tighten legacy readers or use native-object deserialization for imported artwork.",
+      "limit": "Duplicate-key handling and exact parser edge behavior still require pinned-engine cases. This research does not claim a new strict parser already exists or justify replacing legacy serialization.",
+      "next": "How do resource-cache modes interact with replacing image files and retained trial references?"
+    },
+    {
+      "id": 42,
+      "batch": 3,
+      "title": "Cache replacement can mutate a resource retained by another consumer",
+      "query": "site:docs.godotengine.org ResourceLoader CACHE_MODE_REPLACE refresh existing instances CACHE_MODE_IGNORE_DEEP",
+      "question": "Will replacing the image at one path preserve a previously accepted trial's appearance?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/classes/class_resourceloader.html",
+          "ref": "turn485606924search0",
+          "type": "official Godot documentation, latest snapshot"
+        }
+      ],
+      "finding": "Godot's replacement cache mode can refresh existing resource instances in place. Ordinary ignore mode does not recursively isolate external dependencies; deep modes have distinct behavior.",
+      "decision": "Use content-addressed immutable artwork revisions and explicit consumer ownership. A changed logo gets a new identity/cache key; never overwrite accepted bytes or use replacement mode as a universal refresh mechanism. Include processing version and renderer-relevant settings in derived keys.",
+      "limit": "This does not prohibit sharing immutable textures. Runtime PNG admission can bypass ResourceLoader; the rule still applies to any mutable texture or material retained by multiple consumers.",
+      "next": "Which references keep image content alive after deletion from the current visible layer stack?"
+    },
+    {
+      "id": 43,
+      "batch": 3,
+      "title": "Undo and in-flight imports are asset-retention roots",
+      "query": "site:git-scm.com docs git gc prune reachable reflogs concurrent processes deletion objects",
+      "question": "When is it safe to reclaim a sticker image after its last visible layer is deleted?",
+      "sources": [
+        {
+          "url": "https://git-scm.com/docs/git-gc",
+          "ref": "turn618360215search0",
+          "type": "official Git documentation; lifecycle analogy, not game implementation"
+        }
+      ],
+      "finding": "Git's content-addressed object cleanup accounts for historical references and warns about objects used by concurrent writers before references are published. This supplies a concrete counterexample to treating the visible current state as the only owner.",
+      "decision": "Define roots for saved documents, current draft, bounded undo/redo history, recovery, frozen trial, in-flight import and generation jobs. Reclaim generated caches separately from original assets; only collect unreferenced originals at a coordinated maintenance boundary with pending jobs protected.",
+      "limit": "This is an explicit architectural inference. OpenRC does not need Git or its expiration durations at runtime, and a full garbage collector is unnecessary until owned asset storage is implemented.",
+      "next": "Which of these image-admission and storage mechanisms already exist in OpenRC's custom-skin implementation?"
+    },
+    {
+      "id": 44,
+      "batch": 3,
+      "title": "Reuse OpenRC's pre-decode admission rather than creating a parallel image loader",
+      "query": "Repository code inspection: app/aircraft/custom_skin.gd — _png_dimensions, _inspect, _unique_json_keys, _zip_directory, import_file",
+      "question": "Which required protections already exist, and what is genuinely new for sticker images?",
+      "sources": [
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/aircraft/custom_skin.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "bf01437796b953d45aff600365141f64db776ccc"
+        }
+      ],
+      "finding": "The existing custom-skin path bounds ZIP entries and expanded bytes, checks UTF-8 and duplicate fields, inspects PNG dimensions/chunk bounds and aggregate pixels before decoding, rejects compressed metadata chunks, verifies decoded dimensions, creates mipmaps and publishes immutable archives. Its PNG scan does not explicitly reject APNG control chunks.",
+      "decision": "Extract or reuse a reviewed common admission helper with regression parity for .orskin. Add sticker-specific aggregate resident/temporary allocation limits, explicit still-image policy, bounded concurrency and original-byte identity; cover APNG and critical-chunk/CRC behavior through actual decoder cases.",
+      "limit": "This is a source audit, not a finding that current imports are exploitable. PNG structural scanning is not a full decoder, and different existing skin limits must not be silently replaced by the smaller sticker policy.",
+      "next": "How will a portable sticker design carry a custom .orskin base that the receiving installation does not already have?"
+    },
+    {
+      "id": 45,
+      "batch": 3,
+      "title": "Portable designs must account for custom base archives as well as sticker images",
+      "query": "Repository code inspection: app/workshop/bundle.gd — BUNDLE_KEYS, MAX_BUNDLE_BYTES, decode, import_variant; custom_skin.gd archive identity",
+      "question": "Will a sticker design reconstruct its appearance on a fresh installation with no local custom paint?",
+      "sources": [
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/workshop/bundle.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "e3501c768a7333392034be76c5de08ca0b3dd827"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/aircraft/custom_skin.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "bf01437796b953d45aff600365141f64db776ccc"
+        }
+      ],
+      "finding": "Bundle v1 contains physical base snapshot bytes and a presentation profile, but no custom-paint archive or sticker image payload. The .orskin reader separately permits archives up to 32 MiB. Existing bundles already call the project's StrictJSON helper.",
+      "decision": "Design v2 with explicit visual dependency records: exact .orskin archive hash/bytes when distributable, admitted sticker bytes and built-in revision references. Compute the total before export; a locally valid large skin can still exceed the portable package policy. Distinguish self-contained export from an explicitly dependency-requiring reference, and never silently substitute factory paint. Reuse StrictJSON for new bounded JSON.",
+      "limit": "No new bundle format or higher byte cap is approved here. Tests must include fresh-install import, unavailable or modified base, oversized combined payload and failure after staging before manifest publication.",
+      "next": "Can old customized profiles still pass current source-bound validation after the new decal renderer is added?"
+    },
+    {
+      "id": 46,
+      "batch": 3,
+      "title": "Legacy read compatibility requires preserving source proof paths, not only JSON bytes",
+      "query": "Repository code inspection: presentation.gd validate/bindings_sha256; aircraft_customization.gd validate_bindings; presentation_sources.gd closed source set; presentation_rebind.gd propose",
+      "question": "What implementation route preserves both the identity and usability of old customized profiles?",
+      "sources": [
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/workshop/presentation.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "7c47fa9b17bc62a7ce6a212e6a476b6f68b79310"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/render/aircraft_customization.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "94c0b69236fd118d2609067d4c80d7accdaae49f"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/workshop/presentation_rebind.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "3c4fe55b24a300594db5418786e82f6bfd0945c9"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/render/presentation_sources.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "b3d6785caa34588200bb2ab245085597be61dd03"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/addons/aircraft_contract/export_plugin.gd",
+          "type": "OpenRC pinned exporter source; final integration review follow-up",
+          "blob_sha": "0a8f1702dd70ffb5e48d40c87b3e66104f73e29a"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/main.gd",
+          "type": "OpenRC pinned consumer source; final integration review follow-up",
+          "blob_sha": "228728daa62c25ffc8d85543825f84871aa9875b"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/ui/workshop_preview.gd",
+          "type": "OpenRC pinned consumer source; final integration review follow-up",
+          "blob_sha": "1651140f3d4c5ac8e5fae95cc37a5ba09c9badd0"
+        }
+      ],
+      "finding": "The closed presentation proof includes presentation.gd itself as well as the customization renderer. Changing either invalidates existing proof hashes. Current rebind creates a proposal and refuses some smoke-bearing records; it is not universal backward compatibility.",
+      "decision": "Preferred first slice: preserve existing proof-covered source bytes/companions and add a separate v5 envelope/facade, receiver registry and decal renderer. The envelope retains an exact validated v1–v4 base profile, while new visual base/stack identity is separate. Route non-proof-covered store/trial/bundle/UI consumers through the facade and project the embedded legacy profile into unchanged legacy rendering. If that cannot work, require a fully qualified versioned source package before shipping; do not silently rehash or rebind old saves.",
+      "limit": "This is an implementation proposal requiring a full dependency/call-site audit and exported-package tests. Compatibility with every historical app release is not claimed. Untouched legacy fixtures must remain usable at the audited baseline; missing old dependencies stay explicit. Final review also verified that the existing exporter accepts one legacy source-proof generation; v5 needs a separate marker, and every root-field legacy consumer needs a validated projection. Preserve baseline-admitted records, not an unsupported promise about all historical or older-app readers.",
+      "next": "Will separately rendered overlays choose the same automatic LOD as the surface they decorate?"
+    },
+    {
+      "id": 47,
+      "batch": 3,
+      "title": "Matching LOD labels does not synchronize separately rendered surfaces",
+      "query": "site:docs.godotengine.org mesh LOD screen threshold lod_bias MeshInstance3D distance screen size",
+      "question": "Can an overlay with its own bounds simply use the receiver's LOD names and bias?",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/latest/tutorials/3d/mesh_lod.html",
+          "ref": "turn240932587view0",
+          "type": "official Godot documentation, latest snapshot"
+        }
+      ],
+      "finding": "Godot's automatic selection depends on screen-space metrics, per-viewport thresholds and the nearest point of each instance's bounds. An overlay is a different instance with different geometry and bounds; equal labels or bias values do not establish equal selection.",
+      "decision": "Require a concrete shared LOD owner/selection mechanism, or a demonstrated geometry-invariant overlay over every accepted receiver LOD. Do not assert synchronization by copying thresholds. Qualify threshold crossings in both directions, near/far views, output resolutions, quality changes and secondary viewports before exposing the receiver.",
+      "limit": "The tutorial is not proof that a public per-instance selected-LOD API exists on the pinned beta. Backend/receiver qualification must resolve that implementation detail; fixing the editor to one LOD does not solve flight.",
+      "next": "What precisely destroys or repartitions the target meshes when an aircraft becomes a wreck?"
+    },
+    {
+      "id": 48,
+      "batch": 3,
+      "title": "Wreck sections replace mesh owners and reindex their attributes",
+      "query": "Repository code inspection: app/render/crash/section_splitter.gd — split, _subset, _find_mapped",
+      "question": "Will a decal child automatically follow the correct wreck fragment?",
+      "sources": [
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/render/crash/section_splitter.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "f14551f99bc7d69a63baabdde0829f22c0c3fe6d"
+        }
+      ],
+      "finding": "The splitter creates sibling meshes with section metadata, copies the source transform and active materials, remaps vertex arrays, then removes and frees the original mesh node. It does not preserve arbitrary children or provide their destination mapping.",
+      "decision": "Own decal lifetime outside the disappearing mesh. Prepare a receiver-to-section mapping and reclip/rebind owned fragments at the wreck transition, before or after splitting at a defined hook with preserved source data. A section-spanning sticker can become multiple fragments sharing one document-layer ID; never infer destination from new vertex indices.",
+      "limit": "Source reading establishes the replacement event, not the best integration hook. Wreck grouping, bounds, collision consumers and reset teardown need their own tests; applying crash_no_bounds alone is insufficient.",
+      "next": "Which exact identity boundary must remain unchanged for a purely cosmetic sticker edit?"
+    },
+    {
+      "id": 49,
+      "batch": 3,
+      "title": "The existing trial already separates visual identity from physical compilation",
+      "query": "Repository code inspection: app/workshop/trial.gd — freeze, trial_id, resolved_sha256, presentation_identity; dependencies.gd closed manifest",
+      "question": "What invariant can prove that placing or rotating a sponsor logo does not change flight behavior?",
+      "sources": [
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/workshop/trial.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "4f14a5b09cc3b14f6c0ef24b6b09a5d1f3ad0633"
+        },
+        {
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/0d251cb070a280bab6d6a3251af7955ed0bbec74/app/workshop/dependencies.gd",
+          "type": "OpenRC source pinned at branch commit",
+          "blob_sha": "82bed6dcd1ade24193c99b070c3a810505481b0f"
+        }
+      ],
+      "finding": "Trial.freeze constructs the physical trial ID from base, recipe, descriptor, family/model, dependency and compiler identities. Presentation profile identity is constructed separately. Physical dependency admission is a closed set rather than a general visual asset bag.",
+      "decision": "Keep logo, receiver and visual-base dependencies in the visual identity path. With the physical recipe and aircraft scale fixed, native metamorphic cases change decal position/size/rotation/flip/order/image or a compatible visual base while compiled raw bytes, trial ID, model hash, solver inputs and crash geometry/grouping remain identical. A changed canonical visual document must change composite identity; require changed pixels only in discriminating visible asymmetric, colored-alpha-overlap or genuinely different-base fixtures. Do not add visual files to the physical dependencies manifest.",
+      "limit": "Source separation does not prove isolation after new integration. Scene-derived crash bounds or collision construction can still introduce a side effect even if compilation hashes are unchanged.",
+      "next": "Which numerical failure cases should the clipping exercises cover beyond ordinary inside/outside triangles?"
+    },
+    {
+      "id": 50,
+      "batch": 3,
+      "title": "Near-degenerate geometry needs explicit numerical policy",
+      "query": "Shewchuk robust adaptive precision geometric predicates floating point orientation near zero official",
+      "question": "Can ordinary floating-point signs and one arbitrary epsilon reliably decide clipping boundaries?",
+      "sources": [
+        {
+          "url": "https://www.cs.cmu.edu/~quake/robust.html",
+          "ref": "turn519992911search0",
+          "type": "author's computational-geometry research page"
+        }
+      ],
+      "finding": "Orientation decisions near zero can change under rounding; robust predicates adapt precision to uncertainty. That result cautions against treating all sign/area tests as exact just because ordinary examples pass.",
+      "decision": "Specify tolerances in receiver-local units, reject singular frames and repeated/degenerate output, and exercise on-plane, nearly parallel, grazing and very small/large scale cases. Check 3D area and projected UV area independently. Use exact/rational known cases as oracles; evaluate a robust-predicate dependency only if bounded receiver tests demonstrate a need.",
+      "limit": "The paper does not solve decal clipping, choose OpenRC tolerances or prove the included float exercises robust for all inputs. No new geometry dependency is selected.",
+      "next": "How should authored region membership survive UV seams without welding across physical gaps or hinges?"
+    },
+    {
+      "id": 51,
+      "batch": 3,
+      "title": "Authored face regions are different data from UV seam topology",
+      "query": "site:docs.blender.org manual geometry attributes face corner UV map seam attribute domain",
+      "question": "Can paintable-region membership be derived safely from UV islands or coincident vertices?",
+      "sources": [
+        {
+          "url": "https://docs.blender.org/manual/en/5.0/modeling/geometry_nodes/attributes_reference.html",
+          "ref": "turn418914464search11",
+          "type": "official Blender 5.0 manual"
+        },
+        {
+          "url": "https://docs.blender.org/manual/en/3.1/modeling/geometry_nodes/attributes_reference.html",
+          "ref": "turn418914464search3",
+          "type": "official Blender 3.1 attribute-domain explanation; conceptual reference"
+        }
+      ],
+      "finding": "The authoring model distinguishes face, point and face-corner attributes; UV data and seam boundaries are separate from physical surface identity. A render-vertex split does not by itself identify an unpaintable boundary.",
+      "decision": "Generate explicit face/triangle region and rigid-owner records from the aircraft's authoring pipeline, with a source identity. Any seam-crossing adjacency must be authored or validated within that region; do not globally weld coincident vertices. Preserve allowed UV-seam crossing while rejecting gaps, opposite skins and hinge neighbors.",
+      "limit": "This does not assume Blender attributes automatically survive glTF import or procedural regeneration. The pipeline must emit and validate its own companion mapping after export/index changes.",
+      "next": "How should selecting an existing sticker behave when its image contains transparent holes?"
+    },
+    {
+      "id": 52,
+      "batch": 3,
+      "title": "Visible-pixel selection and geometric ray hits are different editor behaviors",
+      "query": "site:discourse.threejs.org raycast transparent texture pixel alpha decals selection",
+      "question": "Should a click through a transparent logo corner select that logo or the layer beneath it?",
+      "sources": [
+        {
+          "url": "https://discourse.threejs.org/t/how-to-get-texture-color-at-intersection-with-raycast/38631",
+          "ref": "turn730080487search2",
+          "type": "firsthand developer question and implementation discussion"
+        },
+        {
+          "url": "https://discourse.threejs.org/t/how-to-ignore-the-transparent-part-of-sprite-by-ray-pickup/7773",
+          "ref": "turn730080487search8",
+          "type": "firsthand developer forum discussion"
+        }
+      ],
+      "finding": "Developers distinguish geometric intersection from evaluating the image's alpha at the hit UV. The forum examples expose an interaction policy decision; a transparent mesh is not automatically absent from picking.",
+      "decision": "Keep surface placement raycasts separate from existing-layer selection. For the latter, define topmost visible-alpha hit behavior using a bounded cached CPU alpha mask and the same UV flips/transforms, plus a layer-list and cycle-selection escape hatch for tiny or fully covered stickers. Avoid per-pointer GPU readback.",
+      "limit": "These are scoped three.js discussions, not Godot guarantees or a copied implementation. Alpha threshold, filtering tolerance and accessibility behavior need product tests; the exact rendered pixel may differ from a simplified CPU mask.",
+      "next": "What input alternatives make the editor usable with a gamepad and without precise dragging?"
+    },
+    {
+      "id": 53,
+      "batch": 3,
+      "title": "Gamepad editing needs discrete actions and visible focus",
+      "query": "site:learn.microsoft.com gaming accessibility guidelines input navigation single input remap hold drag",
+      "question": "How can game-like placement remain fully usable without holding and dragging precisely?",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107",
+          "ref": "turn241046404search2",
+          "type": "official Xbox accessibility guidance"
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/112",
+          "ref": "turn241046404search5",
+          "type": "official Xbox UI navigation guidance"
+        }
+      ],
+      "finding": "Xbox guidance favors action remapping, equivalent digital alternatives and navigation with single nonsimultaneous inputs. Consistent focus and input behavior matter across menu and in-game controls.",
+      "decision": "Expose Move, Size, Rotate, Flip, Duplicate, Order, Confirm and Cancel as named actions with visible focus and button hints. Provide toggled adjustment modes, numeric fields and discrete nudges; use current input mappings in hints. Test a complete select/place/edit/save/cancel flow with keyboard only and gamepad only.",
+      "limit": "This is design guidance, not a claim of Xbox certification or support for every device. Reuse OpenRC's existing input system and keep flight input inactive while the editor owns focus.",
+      "next": "How should snapping and fine adjustment work without jumping the sticker when a mode changes?"
+    },
+    {
+      "id": 54,
+      "batch": 3,
+      "title": "Snapping, fine speed and numeric input should remain distinct controls",
+      "query": "site:docs.blender.org manual snapping increment absolute grid transform precision numeric input",
+      "question": "How can players make both quick large adjustments and precise small ones without unwanted jumps?",
+      "sources": [
+        {
+          "url": "https://docs.blender.org/manual/en/3.2/scene_layout/object/editing/transform/control/precision.html",
+          "ref": "turn401471224search0",
+          "type": "official Blender 3.2 interaction manual"
+        }
+      ],
+      "finding": "Blender distinguishes discrete snapping from fine transform speed, and shows the transform magnitude. These are complementary modes rather than one ambiguous precision toggle.",
+      "decision": "Offer explicit normal/fine step controls, optional angle snapping and editable values. Proposed starting increments: rotation 15°/1°, size 5%/1%, movement receiver-relative with displayed centimeters. Preserve the current transform as the adjustment origin when modes switch; apply one committed gesture to history. Validate step sizes with actual aircraft scales before fixing defaults.",
+      "limit": "OpenRC values are design proposals, not Blender requirements or usability results. Avoid mandatory modifier chords; snap behavior and camera-independent units must be described in the UI.",
+      "next": "Which repeated-logo workflow is worth adopting from real livery editors without expanding the first slice into a full vector-art package?"
+    },
+    {
+      "id": 55,
+      "batch": 3,
+      "title": "Repeated-logo workflows benefit from direct layer commands and stable selection",
+      "query": "site:forums.forza.net livery editor group vinyl layers duplicate insert saved vinyl groups tutorial",
+      "question": "Which friction in real livery editors should the first OpenRC interaction slice avoid?",
+      "sources": [
+        {
+          "url": "https://forums.forza.net/t/solved-and-explain-easily-move-layers-up-or-down/820136",
+          "ref": "turn938907643search3",
+          "type": "firsthand player workflow on official Forza forums"
+        },
+        {
+          "url": "https://forums.forza.net/t/vinyl-editor-qol-improvement-for-groups/813916",
+          "ref": "turn938907643search2",
+          "type": "firsthand feature request on official Forza forums"
+        }
+      ],
+      "finding": "Players describe indirect copy/delete/insert workarounds for ordering and lost context while editing groups. These reports identify discoverability and selection-state problems, not measured prevalence across the audience.",
+      "decision": "Provide visible Duplicate/Stamp, Move Up/Down, Top/Bottom, Hide and Delete commands with persistent layer selection and thumbnail/name. Duplicate creates a new instance ID but shares immutable image content. Start with independent sponsor instances; treat saved groups, masks and group opacity as a later feature with its own semantics.",
+      "limit": "The forum posts are individual reports and suggestions, not an official current feature specification. OpenRC should validate the proposed workflow with actual users rather than copy every requested Forza feature.",
+      "next": "How should asset files carry provenance and usage metadata without pretending all repository files share one license?"
+    },
+    {
+      "id": 56,
+      "batch": 3,
+      "title": "Binary logo files need per-asset provenance separate from the code license",
+      "query": "site:reuse.software specification binary files license sidecar .license SPDX copyright",
+      "question": "How can original sponsor artwork and generated runtime derivatives retain reviewable provenance?",
+      "sources": [
+        {
+          "url": "https://reuse.software/faq/",
+          "ref": "turn607525991search0",
+          "type": "official REUSE file-metadata guidance"
+        },
+        {
+          "url": "https://reuse.software/spec-3.3/",
+          "ref": "turn607525991search3",
+          "type": "REUSE 3.3 specification"
+        }
+      ],
+      "finding": "REUSE describes associating licensing information with individual files, including sidecar metadata for binary assets. Repository-level code licensing is not a substitute for records about third-party images.",
+      "decision": "Keep source URL, retrieval date, exact original hash, actual media type, derivative recipe/hash and usage status linked to each catalog entry. Record known terms accurately and leave unknown terms unresolved; never relabel a logo with the project's code license. Runtime catalog promotion remains a deliberate per-asset operation.",
+      "limit": "This investigation defines metadata practice, not permission to distribute any particular mark. The existing research catalog remains separate from a production-approved sponsor catalog.",
+      "next": "Do official brand instructions impose constraints on the requested rotation, flip, recoloring or stretching controls?"
+    },
+    {
+      "id": 57,
+      "batch": 3,
+      "title": "Catalog transform permissions are per asset, not a universal logo switch",
+      "query": "site:openai.com brand guidelines logo rotate stretch alter",
+      "question": "Can every official logo automatically support the same flip, stretch and recolor operations as a test sticker?",
+      "sources": [
+        {
+          "url": "https://openai.com/brand/",
+          "ref": "turn668590309search0",
+          "type": "official brand design guidelines retrieved 2026-11-19"
+        }
+      ],
+      "finding": "OpenAI's published example allows proportional wordmark scaling while prescribing unchanged proportions, approved forms and usage conditions. The source does not establish OpenRC's sponsorship status or a blanket permission for a game decal.",
+      "decision": "Keep the generic editor capable of movement, proportional size, rotation and explicit flips, and carry reviewed per-asset capabilities/variants in the catalog. Preserve aspect by default; do not automatically grant recolor, distortion or mirrored lettering to every external brand. Demonstrate unrestricted mechanics with project-owned/test art while production promotion resolves the intended sponsor artwork.",
+      "limit": "This is a specific example of machine-readable catalog requirements, not legal advice or a conclusion about other brands. Existing private arrangements are neither inferred from public logos nor reproduced in this report.",
+      "next": "What should a trusted offline vector-to-raster pipeline preserve so runtime PNGs do not subtly change the logo?"
+    },
+    {
+      "id": 58,
+      "batch": 3,
+      "title": "Pin the offline rasterizer and font inputs for faithful logo derivatives",
+      "query": "site:github.com/linebender/resvg text font database external resources render SVG png deterministic",
+      "question": "What can make an official SVG render differently on another developer's machine?",
+      "sources": [
+        {
+          "url": "https://github.com/linebender/resvg/blob/main/README.md",
+          "ref": "turn861889601search0",
+          "type": "upstream renderer README, dated snapshot",
+          "blob_sha": "97cbd0bc4810baa1cb8b0a1a72c2fd45dec73095"
+        },
+        {
+          "url": "https://github.com/linebender/resvg/blob/main/crates/resvg/src/main.rs",
+          "ref": "turn861889601search3",
+          "type": "upstream CLI source, dated snapshot"
+        }
+      ],
+      "finding": "resvg targets static SVG and reproducible rasterization while exposing font-loading controls. Reproducibility requires the same source and rendering inputs; system-font fallback and renderer changes can affect artwork.",
+      "decision": "Keep official vector originals unchanged, rasterize only in a trusted offline build with a pinned tool/version, explicit fonts or approved outlined source, fixed canvas/aspect and no unintended external dependencies. Record transparent padding, color/alpha processing and output hash. Compare the derivative visually with the original before runtime promotion.",
+      "limit": "No new rasterizer dependency is installed or claimed superior here. The current pack retains original sources; arbitrary player SVG remains outside the first runtime import format.",
+      "next": "Can a dynamic visibility-based atlas improve memory without changing saved identity or silently degrading important sponsor logos?"
+    },
+    {
+      "id": 59,
+      "batch": 3,
+      "title": "Visibility-driven atlases are a conditional cache strategy, not a new save format",
+      "query": "Follow-up to investigation 52: How to draw stuff on stuff — dynamic atlas visibility caching fallback scaling clustered decals",
+      "question": "What can OpenRC learn from a developer's large decal showcase without importing its performance claims?",
+      "sources": [
+        {
+          "url": "https://discourse.threejs.org/t/how-to-draw-stuff-on-stuff/48934",
+          "ref": "turn471634947view0",
+          "type": "firsthand implementation showcase, author-reported results"
+        }
+      ],
+      "finding": "The author describes visibility-driven atlas residency, worker decoding and downscaling when full, within a custom clustered renderer. The published high-count example uses a flat scene and does not establish OpenRC's renderer, ordered-overlap or aircraft cost.",
+      "decision": "Retain the useful separation of authoritative image bytes from evictable derived residency. If atlas pressure becomes measured, repack into an owned generation and atomically publish all affected UV/material references. Texture tier is explicit and reproducible; saved scale, artwork hash and ordering never change to satisfy a cache policy.",
+      "limit": "No demo was executed and no reported decal-count or draw-call claim is adopted as an OpenRC benchmark. A clustered renderer replacement remains outside this feature's first slice.",
+      "next": "What evidence protocol will distinguish a viable native backend from attractive but noncomparable demos?"
+    },
+    {
+      "id": 60,
+      "batch": 3,
+      "title": "Qualify backend choices with repeatable matched workloads",
+      "query": "site:google.github.io/benchmark user guide warmup repetitions random interleaving real time",
+      "question": "What measurement protocol makes the final renderer decision defensible?",
+      "sources": [
+        {
+          "url": "https://google.github.io/benchmark/user_guide.html",
+          "ref": "turn742129033search0",
+          "type": "official Google Benchmark methodology documentation"
+        },
+        {
+          "url": "https://google.github.io/benchmark/random_interleaving.html",
+          "ref": "turn742129033search1",
+          "type": "official benchmark methodology; analogy to native scene runs"
+        }
+      ],
+      "finding": "Benchmark guidance separates warmup from measured samples, repeats runs, distinguishes CPU from elapsed time and can interleave alternatives to reduce changing-system-state bias. A single appealing demo or average FPS is insufficient evidence.",
+      "decision": "Use matched empty/decorated aircraft scenes with fixed engine commit, renderer, host, output pixels, camera path, lighting and assets. Report cold construction separately from warmed steady frames, repeat/interleave runs, retain raw samples and p50/p95/p99, CPU/GPU availability, memory peaks and captures. Select the simplest backend passing appearance, lifecycle and budget gates; stop comparison when those gates are resolved.",
+      "limit": "Google Benchmark is not a Godot GPU profiler and is not added as a dependency. Proposed run counts/durations belong in the native protocol; all GPU/runtime performance claims remain pending.",
+      "next": "Integrate the three batches into one implementation contract, verify the offline exercises and publish the reviewable handoff on the existing feature branch."
+    }
+  ]
+}
