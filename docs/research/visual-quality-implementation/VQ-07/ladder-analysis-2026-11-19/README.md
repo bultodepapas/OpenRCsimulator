@@ -323,6 +323,31 @@ frame goes:
   confirm with a minimal project.
 - Until explained, Automatic should not choose FSR2 on hosts with 16 GB or less.
 
+**T5: separate render thread soak (`thread_model=2`, Forward+/Vulkan, 4K, L09).**
+
+Each cycle was a circling flight, a dive into the ground, three window changes (windowed 1920×1080 and
+2560×1440, then full screen) and a Restart; every fourth cycle went through Home instead. The app was relaunched
+between sessions. The same loop ran with the default model (Safe) as a baseline.
+
+| | Separate (4 sessions, 24 cycles) | Safe (2 sessions, 12 cycles) |
+| --- | --- | --- |
+| Process crashes, engine errors during play | none | none |
+| Impacts, window changes, Home round trips | 23, 72, 4 | 12, 36, 2 |
+| Flight fps outside calibration | 300–356 (median ≈318) | 255–295 (median ≈285) |
+| Flight fps while automatic calibration runs | 19–73 | unaffected |
+| On quit | `ERROR: This function (finalize) can only be called from the render thread.` and 2 leaked objects, every session | clean, 0 leaks |
+
+- **Stable in this soak.** The documented crash paths (particles in the crash effects, window resizes) caused no
+  failure in 24 cycles.
+- **Our calibration is a blocker (D7).** It runs on the first eligible flight of a session and after each Home →
+  Fly. It reads `viewport_get_measured_render_time_gpu/cpu` every frame (`auto_calibration.gd:90` and `:132`), and
+  each read becomes a render-thread sync: about 500 warnings per cycle, with the flight at 19–73 fps. Before any
+  thread-model change, it must read timings without a per-frame sync.
+- **The engine's exit error is the other blocker:** Godot
+  [#119000](https://github.com/godotengine/godot/issues/119000), reported to stop the pipeline cache from being
+  written. Track it (PR [#123391](https://github.com/godotengine/godot/pull/123391)) before adoption.
+- **Not covered:** input latency, Compatibility and D3D12, and macOS.
+
 **I10: harness, partly done.** `ladder.py` now:
 
 - kills orphaned `nvidia-smi` streams at start;
