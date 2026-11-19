@@ -6,6 +6,15 @@ These read-only Python tools accompany the [package investigation](../../../docs
 
 The code uses Python 3.10+ and its standard library; the recorded checks ran on Python 3.12.14 on Linux. It does not download anything, execute simulator/model code, extract members, follow stored source paths or decode opaque members. No aircraft binaries are committed here. Obtain a permitted local sample using its original creator/community link and the exact ZIP member listed in the [inventory](../../../docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json).
 
+## Bulk ZIP corpus scan (research only)
+
+Use [scan_bulk_zip.py](scan_bulk_zip.py) and [test_scan_bulk_zip.py](test_scan_bulk_zip.py) for deterministic, read-only, bounded ZIP32 discovery over explicitly selected PKGs. This is *not* a runtime importer, and it never extracts aircraft files.
+
+    python3 research/aircraft-creator/phoenix/scan_bulk_zip.py /path/to/captured.zip --sha256 EXACT_OUTER_SHA256 --start 0 --limit 25 --report /path/to/new-report.json
+    cd research/aircraft-creator/phoenix && python3 -m unittest -v test_scan_bulk_zip
+
+The initial 16 synthetic local tests used a noncommitted minimal PKG stand-in because the repo's inspector was not available in the local execution environment. **They must be rerun against the real inspector** before qualification; see the [cross-provider audit](../../../docs/plans/phoenix-aircraft-import/bulk-corpus-and-clearview.md) for source identities, safety limits and unsolved GEO/Creator work.
+
 ## Inspect one exact package
 
 For the author's Freewing SU-35 v23, select `SU-35 v23.pkg` from the ZIP linked in the inventory, then run from the repository root:
