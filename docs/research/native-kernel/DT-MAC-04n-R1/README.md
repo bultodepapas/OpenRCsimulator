@@ -80,6 +80,17 @@ mutant failed as required, and the installed receipt binds the new domain bytes.
 This is source-editor evidence on a hosted virtual M1. It does not qualify a
 package, the fleet, performance or physical hardware.
 
+## Main CI
+
+Run 44420818679 on `f7b348e40` repeated the Mac job with success, and the Linux
+unit roster passed `test_native_macos_domain_world.gd` (9/0, fingerprint
+`2cfce9a5…`), `test_ui_pause_physics.gd` (11/0), `test_ui_pause.gd`,
+`test_ui_pause_responsive.gd` (1,857), `test_ui_language.gd` and
+`test_companions_profiles.gd` (95/0). The run's two failures predate this
+change: the H6 guard's bare `pow(` in `app/physics/event_step.gd` (`793f76ccc`)
+and the telemetry Settings overflow in `test_ui_modal_responsive.gd`, fixed by
+`2c8d768fb`.
+
 ## Pending
 
 - Physical M1 default-route run. On 2026-11-18 ANGEL was running another track's
