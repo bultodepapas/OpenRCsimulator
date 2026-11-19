@@ -1,0 +1,221 @@
+{
+  "evidence_path_normalization": "Only the scratch workspace prefix is replaced by <workspace>; observation values are unchanged.",
+  "original_receipt_sha256": "f12d61af724bc9231191a318bf8c803efa4591e0520a617274149432fd22b7ff",
+  "receipt": {
+    "schema": "edgetx-native-build-receipt-v1",
+    "created_utc": "2026-11-19T19:07:26.046643+00:00",
+    "source": {
+      "path": "<workspace>/edgetx_2_12_5",
+      "commit": "0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99",
+      "tracked_worktree_status": "",
+      "submodules_recursive": [
+        "6b04dfe4d90870f09b8aa41b8ccf952ba47a55e1 radio/src/thirdparty/AccessDenied (heads/master)",
+        " dbf70559b27d39c1fdb68dfb9a32140b6a6777a0 radio/src/thirdparty/FreeRTOS (dbf70559b)",
+        " 9c5bad7b2f42b4e8420f12290b9bc085d3309e8b radio/src/thirdparty/FreeRTOS/portable/ThirdParty/Community-Supported-Ports (9c5bad7)",
+        " dc3afc6e837426b4bda81bbb6cf45bfb6f34c7e9 radio/src/thirdparty/FreeRTOS/portable/ThirdParty/Partner-Supported-Ports (dc3afc6)",
+        " 5f129c540ec43a4e5aebff9f77b3688b57a78063 radio/src/thirdparty/lvgl (v8.2.0-588-g5f129c540)",
+        " 5c205738c191bcb0abc65c4febfa9bd25ff35234 radio/src/thirdparty/stb (5c20573)",
+        " d03b585ed780ed51bb0d1e6e8cf233aacb408305 radio/src/thirdparty/uf2 (d03b585)",
+        " a6a622ffb680c55da0de787ff93b80280498330f radio/src/thirdparty/uf2/hidapi (hidapi-0.7.0-112-ga6a622f)"
+      ],
+      "generator_bytecode_caches_removed": true
+    },
+    "build": {
+      "target": "libsimulator",
+      "pcb": "T18H7",
+      "flavour": "t18h7",
+      "configuration": "Debug",
+      "parallel_jobs": 4,
+      "cmake": "cmake version 4.4.5",
+      "compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+      "python": "3.12.14",
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "qt_version": "6.9.3",
+      "sdl_detected": true,
+      "audio_implementation": "radio/src/targets/simu/simuaudio.cpp",
+      "generator_note": "Generated upstream datacopy with Clang 19 CPATH; compiled C/C++ with CPATH unset.",
+      "configure_log": "<workspace>/edgetx_native_build/configure-native-sdl.log",
+      "build_log": "<workspace>/edgetx_native_build/build-native-sdl-final.log",
+      "sdl_version": "2.32.4+dfsg-1",
+      "generator_log": "<workspace>/edgetx_native_build/build-datacopy-sdl.log",
+      "compiler_additional_include_path": "<workspace>/edgetx_native_build/deps/root/usr/include/x86_64-linux-gnu"
+    },
+    "plugin": {
+      "path": "<workspace>/edgetx_native_build/native/plugins/libedgetx-t18h7-simulator.so",
+      "sha256": "e055a9724d12c8dc69850a47925c4f932640924211fcc654e519cc96409a10fa",
+      "bytes": 58327648,
+      "elf_runpath": [
+        "<workspace>/edgetx_native_build/deps/root/usr/lib/x86_64-linux-gnu",
+        "<workspace>/edgetx_qt/lib"
+      ]
+    },
+    "plugin_expected_entry_point": "registerSimu",
+    "git_fetchcontent_revisions": {
+      "googletest": "f8d7d77c06936315286eb55f8de22cd23c188571",
+      "miniz": "89d7a5f6c3ce8893ea042b0a9d2a2d9975589ac9",
+      "yaml-cpp": "28f93bdec6387d42332220afa9558060c8016795",
+      "maxlibqt": "7e433da60d3f2e975d46afc91804a88029cd1b78",
+      "imgui": "dbb5eeaadffb6a3ba6a60de1290312e5802dba5a"
+    },
+    "rs_dfu_moving_release": {
+      "path": "<workspace>/edgetx_native_build/native/_deps/rsdfu-subbuild/rsdfu-populate-prefix/src/rs_dfu-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "017b33256480f29e3df4d48a526eab22127374fd19be9ed495bed6d3d2e5516d",
+      "bytes": 7942688,
+      "source_url": "https://github.com/EdgeTX/rs-dfu/releases/latest/download/rs_dfu-x86_64-unknown-linux-gnu.tar.gz"
+    },
+    "local_package_archives": [
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libgl-dev_1.7.0-1+b2_amd64.deb",
+        "sha256": "2c5044a44bc7cd7a196d554ca6ff78ae0358fbb98b7d2cce49176bdc6a816fe4",
+        "bytes": 100680,
+        "source_url": "https://deb.debian.org/debian/pool/main/libg/libglvnd/libgl-dev_1.7.0-1+b2_amd64.deb"
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libglx-dev_1.7.0-1+b2_amd64.deb",
+        "sha256": "93d456321c07009491b942783db8c57065b616db713ef5f6a0c629ca078c4ea0",
+        "bytes": 15804,
+        "source_url": "https://deb.debian.org/debian/pool/main/libg/libglvnd/libglx-dev_1.7.0-1+b2_amd64.deb"
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libopengl-dev_1.7.0-1+b2_amd64.deb",
+        "sha256": "fe63853277e05a3b02f9339fff85ab68af1c7ef63c4663b716930b8c88b29d52",
+        "bytes": 5388,
+        "source_url": "https://deb.debian.org/debian/pool/main/libg/libglvnd/libopengl-dev_1.7.0-1+b2_amd64.deb"
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libclang-common-19-dev_19.1.7-3+b1_amd64.deb",
+        "sha256": "4018e40e2d4144fe38c45822e68cca63c1bf6c7872c3073ebb262ad4b2f9b8bc",
+        "bytes": 739932,
+        "source_url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3+b1_amd64.deb"
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/clang-19.1.7-py3-none-any.whl",
+        "sha256": "a5d0931222e0c96a9933d942065d970859820482ee16854b7dfa1e7e2033fab3",
+        "bytes": 31475
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/lz4-4.4.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "sha256": "24092635f47538b392c4eaeff14c7270d2c8e806bf4be2a6446a378591c5e69e",
+        "bytes": 1368249
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libsdl2-dev_2.32.4+dfsg-1_amd64.deb",
+        "sha256": "277dc6373473df2079ed44ac8661575b97b39fa263bfa424b0324c1501d21413",
+        "bytes": 1099832,
+        "source_url": "https://deb.debian.org/debian/pool/main/libs/libsdl2/libsdl2-dev_2.32.4+dfsg-1_amd64.deb"
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/deps/downloads/libsdl2-2.0-0_2.32.4+dfsg-1_amd64.deb",
+        "sha256": "c61af1033d79fa6a393c49fac987165876de8ff27ebbd6a36cf19f5fc84d7a7a",
+        "bytes": 669048,
+        "source_url": "https://deb.debian.org/debian/pool/main/libs/libsdl2/libsdl2-2.0-0_2.32.4+dfsg-1_amd64.deb"
+      }
+    ],
+    "python_packages": {
+      "clang": "19.1.7",
+      "lz4": "4.4.5",
+      "jinja2": "3.1.6",
+      "markupsafe": "3.0.4",
+      "pillow": "12.0.0",
+      "asciitree": "0.3.3"
+    },
+    "qt_archive_receipt": [
+      {
+        "module": "qtbase",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.linux_gcc_64/6.9.3-0-202509261207qtbase-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z",
+        "sha256": "2f02d19183df1b011fd7fe57aa2a1e9073b981f5bda7a8f9c96a6c64b8b7b06c",
+        "bytes": 26134345
+      },
+      {
+        "module": "qttools",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.linux_gcc_64/6.9.3-0-202509261207qttools-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z",
+        "sha256": "77ff4d0085def2fc62efb93c0c2c93961433b1ed1bb30f230ee1b7c1ef90d116",
+        "bytes": 42752371
+      },
+      {
+        "module": "qtsvg",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.linux_gcc_64/6.9.3-0-202509261207qtsvg-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z",
+        "sha256": "02466f4028c14a9c49f82153d17367fd5a2bde26b6d19b72fe9da9245483da76",
+        "bytes": 286401
+      },
+      {
+        "module": "qtmultimedia",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.addons.qtmultimedia.linux_gcc_64/6.9.3-0-202509261207qtmultimedia-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z",
+        "sha256": "ee39bfa7c9afbaec91460d89d489f571f019cfef07433981f9df3f5120cd5736",
+        "bytes": 34676460
+      },
+      {
+        "module": "qtserialport",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.addons.qtserialport.linux_gcc_64/6.9.3-0-202509261207qtserialport-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z",
+        "sha256": "622b2f2d5e08b4dce8250e49092116555b75b42a9e1b42a792694558fb4db31c",
+        "bytes": 62666
+      },
+      {
+        "name": "icu",
+        "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_693/qt6_693/qt.qt6.693.linux_gcc_64/6.9.3-0-202509261207icu-linux-Rhel8.6-x86_64.7z",
+        "bytes": 9660622,
+        "sha256": "419bf0ce8db44ce83b309564c1686bd897a8b36ae0c6a78498905ba4c30a0439"
+      }
+    ],
+    "libraries_used_or_configured": [
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libclang-19.so.19",
+        "sha256": "a376ffcb5b1714685f7deec6ba344cf5e1eadde83c7ccb74bd557d75f9096b6d",
+        "bytes": 37947832
+      },
+      {
+        "path": "/lib/x86_64-linux-gnu/libGL.so.1",
+        "sha256": "b01915dfedf03be4710d3184bc62a3364880fc950043742fd5e07659b409ef1e",
+        "bytes": 542880
+      },
+      {
+        "path": "<workspace>/edgetx_qt/lib/libQt6Core.so.6.9.3",
+        "sha256": "b24bec505b4ae3f90913e8e6f97ba9d826cbc5e3ce2cc73e7eff86562d795e2b",
+        "bytes": 7367488
+      },
+      {
+        "path": "<workspace>/edgetx_qt/lib/libQt6SerialPort.so.6.9.3",
+        "sha256": "d3cf9dff40c73c301dc6557f4b92c51538ced48042f8353f064adac6cca2e10f",
+        "bytes": 151144
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.3200.4",
+        "sha256": "ee3ccdd9b5fead3ea6b55622df02b962ef7f0afd6dc193139e5b9c088f56a43f",
+        "bytes": 1996112
+      }
+    ],
+    "linuxdeploy_continuous_configure_tools": [
+      {
+        "path": "<workspace>/edgetx_native_build/native/linuxdeploy/usr/bin/linuxdeploy",
+        "sha256": "4c117250840331f1db966aef18a03ef74c4d78718fa3a9f84d3d65c24b748cf6",
+        "bytes": 3492312
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/native/linuxdeploy/usr/bin/linuxdeploy-plugin-qt",
+        "sha256": "b620c291da0e2f54e3fdecd027e2ea4e30c5a507d0b1278dfccd5bd4d702c04a",
+        "bytes": 26441664
+      },
+      {
+        "path": "<workspace>/edgetx_native_build/native/linuxdeploy/plugins/linuxdeploy-plugin-appimage/usr/bin/linuxdeploy-plugin-appimage",
+        "sha256": "2725eb8460623ab706bd2ac1e2a264ce76ae341ba86b2b7a44eba31f7301294d",
+        "bytes": 4514640
+      }
+    ],
+    "limitations": [
+      "Only native build and static symbol/dependency inspection were performed by this build agent.",
+      "The binary contains absolute scratch RUNPATHs and is not a portable package.",
+      "The host must initialize the SDL audio subsystem before expecting audio; audio is unqualified.",
+      "Configure-time rs-dfu and linuxdeploy URLs are moving; record and retain actual artifacts.",
+      "Distribution license and asset review remains open."
+    ],
+    "plugin_load_or_runtime_test_performed_by_build_agent": false,
+    "plugin_relocation_inspection": {
+      "tool": "ldd -r",
+      "report": "<workspace>/edgetx_native_build/ldd-relocations-sdl.log",
+      "unresolved_symbols": [],
+      "missing_libraries": []
+    },
+    "preserved_no_audio_plugin": "<workspace>/edgetx_native_build/libedgetx-t18h7-simulator-no-audio-71f4d8e7.so",
+    "no_audio_predecessor_receipt": "<workspace>/edgetx_native_build/build-receipt.json"
+  }
+}

@@ -11,6 +11,11 @@ compares reusable units, permission requirements and independent implementation.
 It also records a synchronization limitation in development channel copies and
 why configuration inspection should begin with real menus of a copied model.
 
+**Executed follow-up, 2026-11-19:** the [HUD increment](../HUD-RADIO-01/README.md)
+and [native T18-H7 experiment](../D6-RADIO-01/README.md) now record code, checked
+OpenRC tests and bounded native LCD/channel observations. The source-only scope
+above describes this initial report, not the later execution evidence.
+
 ## Source identities
 
 | Source | Inspected identity | Evidence scope |

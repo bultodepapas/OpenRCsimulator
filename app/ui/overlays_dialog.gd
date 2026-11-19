@@ -5,6 +5,7 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
+const RadioCatalog := preload("res://render/overlays/radio_catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const KeyLabels := preload("res://ui/key_labels.gd")
 
@@ -65,7 +66,7 @@ const DESCRIPTIONS := {
 }
 const LEGACY_DESCRIPTIONS := {
 	flight = "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data.",
-	transmitter = "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode.",
+	transmitter = "Shows stick and trim inputs, selected radio appearance and radio status. The SIM screen shows elapsed simulation time, airspeed (AS), height above terrain (AGL) and, where space allows, sensed flight-pack voltage and consumed mAh. These are OpenRC readings, not running radio firmware. Stick layout follows the chosen mode.",
 	warnings = "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings.",
 	wind = "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow.",
 	telemetry = "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing.",
@@ -78,7 +79,6 @@ const COMMON_WIDGET_HELP := "Unlocked: drag the header to move; double-click to 
 const HELP_SCROLL_HINT := "Focus the description to scroll with arrows or %s / %s."
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
-const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
 const WIDGET_BACKGROUND_NAMES := ["Light", "Balanced", "Solid"]
 
 var manager: CanvasLayer
@@ -377,7 +377,10 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 
 	radio_picker = _picker(other_page, tr("Radio appearance"), "RadioAppearance")
 	for model: String in Settings.RADIO_MODELS:
-		radio_picker.add_item(RADIO_NAMES[model])
+		radio_picker.add_item(RadioCatalog.label(model))
+		var definition := RadioCatalog.definition(model)
+		if definition.artwork_kind == "schematic":
+			radio_picker.set_item_tooltip(radio_picker.item_count - 1, tr("Original schematic appearance; OpenRC simulated display."))
 	radio_picker.item_selected.connect(func(index: int) -> void:
 		if not _syncing:
 			manager.set_radio_model(Settings.RADIO_MODELS[index]))

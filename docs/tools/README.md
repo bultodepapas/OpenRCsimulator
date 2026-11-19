@@ -38,6 +38,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Aircraft Workshop | [Generation, tests, captures and analysis](../TOOLS.md#aircraft-workshop). |
 | Player skin template and texture-only export | [Skin toolkit](../../tools/skins/README.md); [player tutorial](../AIRCRAFT-SKINS.md). |
 | Radio/controller diagnostics | [Device report, calibration and latency](../TOOLS.md#radio-diagnostics). |
+| Experimental EdgeTX LCD/channel observations | [Native observation host](../../tools/radio_runtime/README.md); pinned T18-H7 library, private SD/settings copies, bounded receipt; no flight admission. |
 | Helicopter or ground vehicle | [Helicopter guide](../HELICOPTER.md), [ground-vehicle tools](../../research/rc-monster-truck/README.md). |
 | Physical measurements | [Mass, inertia, thrust and video reducers](../TOOLS.md#aircraft-measurement-reducers). |
 | Audio | [Audio tool contracts and dependencies](../../tools/audio/README.md). |

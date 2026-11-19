@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Units := preload("res://render/overlays/units.gd")
+const RadioCatalog := preload("res://render/overlays/radio_catalog.gd")
 
 ## BAT-15: "battery" is O9; it shows only when the aircraft has a dynamic battery.
 const CLASSIC_IDS := ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
@@ -40,12 +41,12 @@ const PRESETS := {
 	training = ["warnings", "maneuver", "glide", "flight_summary"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
-const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]
+const RADIO_MODELS := RadioCatalog.IDS
 ## BAT-15: the Battery overlay is detailed while this overlay is shown (Full, Developer), compact otherwise (Pilot).
 ## Derived from the visible set, so the saved [hud] keys carry it without a new preference.
 const BATTERY_DETAIL_WITH := "telemetry"
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii" }
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = RadioCatalog.DEFAULT_ID }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.

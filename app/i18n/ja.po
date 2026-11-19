@@ -9029,8 +9029,11 @@ msgstr "送信機の校正には対応する送信機プロファイルが必要
 msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
 msgstr "対気速度、対地速度、高度、垂直速度、スロットル、操縦者からの距離、飛行時間。燃料は有限燃料データが有効な場合のみ表示されます。"
 
-msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
-msgstr "スティックとトリムの入力、選択した送信機の外観と状態を表示します。スティック配置は選択したモードに従います。"
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. The SIM screen shows elapsed simulation time, airspeed (AS), height above terrain (AGL) and, where space allows, sensed flight-pack voltage and consumed mAh. These are OpenRC readings, not running radio firmware. Stick layout follows the chosen mode."
+msgstr "スティックとトリムの入力、選択した送信機の外観と状態を表示します。SIM 画面にはシミュレーションの経過時間、対気速度（AS）、地上高（AGL）と、スペースがある場合は飛行用バッテリーの測定電圧と消費容量（mAh）を表示します。これらは OpenRC の値であり、送信機のファームウェアが動作しているわけではありません。スティック配置は選択したモードに従います。"
+
+msgid "Original schematic appearance; OpenRC simulated display."
+msgstr "独自に作成した模式図の外観です。画面は OpenRC によるシミュレーションです。"
 
 msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
 msgstr "現在の飛行と送信機の警告を優先順に表示し、推奨操作を示します。設定した警告数の上限により、他の警告が隠れる場合があります。"

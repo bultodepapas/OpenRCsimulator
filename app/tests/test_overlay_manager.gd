@@ -7,6 +7,8 @@ extends SceneTree
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const Manager := preload("res://render/overlays/overlay_manager.gd")
 const Transmitter := preload("res://render/overlays/transmitter.gd")
+const RadioCatalog := preload("res://render/overlays/radio_catalog.gd")
+const RadioDisplay := preload("res://render/overlays/radio_display.gd")
 const FlightData := preload("res://render/overlays/flight_data.gd")
 const Frame := preload("res://render/overlays/overlay_frame.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -49,6 +51,7 @@ func _run() -> void:
 	_contrast()
 	_preferences()
 	await _manager()
+	await _radio_telemetry()
 	await _all_close_buttons()
 	await _fuel()
 	await _dialog()
@@ -77,6 +80,21 @@ func _settings() -> void:
 	_check("Radiolink is accepted; unknown appearance falls back to JETI",
 		Settings.validate({ radio_model = "radiolink_t16d" }).radio_model == "radiolink_t16d"
 		and Settings.validate({ radio_model = "unknown" }).radio_model == "jeti_ds24_ii")
+	_check("existing appearance indices remain stable; the two new models follow",
+		Settings.RADIO_MODELS == ["jeti_ds24_ii", "radiolink_t16d", "jumper_t18_h7", "radiolink_t12d"])
+	for model: String in RadioCatalog.IDS:
+		var definition := RadioCatalog.definition(model)
+		_check("catalog ID survives settings validation: " + model, Settings.validate({radio_model = model}).radio_model == model)
+		_check("catalog LCD lies within its canvas: " + model, Rect2(Vector2.ZERO, definition.canvas_size).encloses(definition.lcd))
+		_check("catalog artwork exists: " + model, ResourceLoader.exists(definition.artwork))
+		for centre: Vector2 in definition.gimbals:
+			_check("gimbal and trim margins lie within the canvas: " + model,
+				Rect2(Vector2.ZERO, definition.canvas_size).encloses(Rect2(centre - Vector2(29, 29), Vector2(58, 58))))
+	var copied := RadioCatalog.definition("jumper_t18_h7")
+	copied.gimbals[0] = Vector2.ZERO
+	_check("catalog geometry cannot be changed through a returned definition", RadioCatalog.definition("jumper_t18_h7").gimbals[0] != Vector2.ZERO)
+	_check("RadioLink does not advertise an EdgeTX target", RadioCatalog.definition("radiolink_t12d").firmware_targets.is_empty()
+		and RadioCatalog.definition("radiolink_t16d").firmware_targets.is_empty())
 	_check("preset_for recognises every preset", Settings.PRESET_ORDER.all(func(p: String) -> bool: return Settings.preset_for(Settings.PRESETS[p]) == p))
 	_check("preset_for: any other set is custom", Settings.preset_for(["flight"]) == "custom")
 	_check("flight clock m:ss and h:mm:ss", FlightData.clock(75.9) == "1:15" and FlightData.clock(3725.0) == "1:02:05" and FlightData.clock(-3.0) == "0:00")
@@ -132,6 +150,10 @@ func _preferences() -> void:
 		radio_model = "radiolink_t16d", session_stats_scope = "aircraft" }
 	_check("save", Preferences.save_to(PREFS, p) == OK)
 	_check("custom overlays and radio appearance round-trip", Preferences.load_from(PREFS).hud == p.hud)
+	for model: String in RadioCatalog.IDS:
+		p.hud.radio_model = model
+		_check("appearance saves and round-trips: " + model, Preferences.save_to(PREFS, p) == OK
+			and Preferences.load_from(PREFS).hud == p.hud)
 	var cfg := ConfigFile.new()
 	cfg.load(PREFS)
 	cfg.set_value("hud", "units", 7)
@@ -177,12 +199,21 @@ func _manager() -> void:
 	_check("Radiolink choice updates artwork and keeps Full layout clear at 720p",
 		manager.frames.transmitter.radio_model == "radiolink_t16d"
 		and manager.frames.transmitter.title_label.text.begins_with("RADIOLINK T16D")
-		and manager.frames.transmitter.gimbals.custom_minimum_size == Transmitter.RADIOLINK_SIZE
+		and manager.frames.transmitter.gimbals.custom_minimum_size == Vector2(180, 213)
 		and _layout_ok(manager, false), _rects(manager))
 	manager.set_radio_model("jeti_ds24_ii")
 	await process_frame
 	_check("JETI remains selectable", manager.frames.transmitter.radio_model == "jeti_ds24_ii"
-		and manager.frames.transmitter.gimbals.custom_minimum_size == Transmitter.JETI_SIZE)
+		and manager.frames.transmitter.gimbals.custom_minimum_size == Vector2(180, 222))
+	for screen_size in [Vector2i(1920, 1080), Vector2i(1280, 720)]:
+		root.size = screen_size
+		for model: String in RadioCatalog.IDS:
+			manager.set_radio_model(model)
+			await process_frame
+			await process_frame
+			_check("all radio appearances fit Full layout at %s: %s" % [screen_size, model],
+				manager.frames.transmitter.radio_model == model and _layout_ok(manager, false, Vector2(screen_size)), _rects(manager))
+	manager.set_radio_model("jeti_ds24_ii")
 	changes.clear()
 	manager.apply({ preset = "developer" }, false)
 	var typical := PackedStringArray()
@@ -466,6 +497,12 @@ func _dialog() -> void:
 	dialog.switches.telemetry.button_pressed = true
 	_check("switching Telemetry on gives the Full preset", manager.settings.preset == "full" and dialog.preset_picker.selected == 2)
 	dialog.units_picker.item_selected.emit(2)
+	_check("radio picker derives all catalog labels in saved order", dialog.radio_picker.item_count == RadioCatalog.IDS.size())
+	for index in RadioCatalog.IDS.size():
+		dialog.radio_picker.item_selected.emit(index)
+		_check("radio picker applies its displayed model: " + str(index),
+			dialog.radio_picker.get_item_text(index) == RadioCatalog.label(RadioCatalog.IDS[index])
+			and manager.settings.radio_model == RadioCatalog.IDS[index])
 	dialog.radio_picker.item_selected.emit(1)
 	dialog.mode_picker.item_selected.emit(0)
 	_check("units, radio and stick mode apply at once", manager.settings.units == "imperial"
@@ -785,6 +822,61 @@ func _diagnostics_visibility(flight: Node, overlays: CanvasLayer) -> void:
 	flight._update_hud()
 	_check("explicit evidence refresh still writes a hidden HUD", hud.text.begins_with("airspeed"))
 	overlays.set_preset("full")
+
+
+## HUD-RADIO-02a: display cache follows accepted observations, units and lifecycle, never the input path.
+func _radio_telemetry() -> void:
+	var manager: CanvasLayer = Manager.new({preset = "custom", visible = ["transmitter"], units = "metric"}, "en")
+	root.add_child(manager)
+	var snap := _snapshot(PackedStringArray())
+	snap.battery = {ok = true, battery_kind = "legacy", time_s = 65.0,
+		bus_voltage_v = 16.243, pack_current_a = 2.25, consumed_charge_c = 0.0, remaining_charge_c = 3600.0}
+	manager.update(snap, 1.0)
+	var transmitter: Control = manager.frames.transmitter
+	var positions: Array = transmitter.get("_layout").duplicate()
+	var readings: Dictionary = transmitter.display_readings()
+	_check("radio displays accepted airspeed, terrain-relative height and timer", readings.airspeed == "72 km/h"
+		and readings.height_agl == "30 m" and readings.elapsed == "1:05", str(readings))
+	_check("radio uses the quantized flight-pack sensor, not raw electrical truth", readings.pack_voltage == "16.24 V"
+		and readings.used_mah == "0 mAh", str(readings))
+	readings.airspeed = "changed by caller"
+	_check("radio display snapshots are caller-owned", transmitter.display_readings().airspeed == "72 km/h")
+	snap.telemetry.airspeed = 10.0
+	manager.refresh_numbers(snap)
+	_check("telemetry changes while sticks stay held", transmitter.display_readings().airspeed == "36 km/h"
+		and transmitter.get("_layout") == positions)
+	manager.set_units("imperial")
+	_check("unit change schedules immediate radio refresh", manager.tick(0.0))
+	manager.refresh_numbers(snap)
+	_check("radio shares the overlay unit conversion", transmitter.display_readings().airspeed == "22 mph"
+		and transmitter.display_readings().height_agl == "98 ft")
+	manager.set_overlay_visible("transmitter", false)
+	snap.telemetry.airspeed = 20.0
+	manager.refresh_numbers(snap)
+	_check("hidden radio avoids display churn", transmitter.display_readings().airspeed == "22 mph")
+	manager.set_overlay_visible("transmitter", true)
+	_check("revealed radio schedules a fresh snapshot", manager.tick(0.0))
+	manager.refresh_numbers(snap)
+	_check("revealed radio receives the current readings", transmitter.display_readings().airspeed == "45 mph")
+	manager.refresh_numbers({})
+	_check("missing flight blanks every radio sensor", transmitter.display_readings() == RadioDisplay.readings({}, {}, "imperial"))
+	manager.refresh_numbers(snap)
+	manager.reset_flight()
+	_check("explicit reset clears the radio immediately at the same timestamp", transmitter.display_readings() == RadioDisplay.readings({}, {}, "imperial"))
+	manager.refresh_numbers(snap)
+	_check("accepted sample repopulates after same-time reset", transmitter.display_readings().elapsed == "1:05")
+	snap.telemetry.time_s = 0.0
+	snap.battery.time_s = 0.0
+	manager.refresh_numbers(snap)
+	_check("rewind replaces the timer and resets consumed capacity", transmitter.display_readings().elapsed == "0:00"
+		and transmitter.display_readings().used_mah == "0 mAh")
+	var invalid := RadioDisplay.readings({airspeed = NAN, height_agl = INF, time_s = "65"},
+		{valid = true, pack_voltage_v = NAN, used_mah = "0"}, "metric")
+	_check("nonfinite and wrongly typed fields stay unavailable", invalid == RadioDisplay.readings({}, {}, "metric"), str(invalid))
+	_check("an invalid battery cannot expose finite old readings",
+		RadioDisplay.readings(snap.telemetry, {valid = false, pack_voltage_v = 22.2, used_mah = 123}, "metric").pack_voltage == "– V")
+	manager.queue_free()
+	await process_frame
 
 
 func _snapshot(codes: PackedStringArray) -> Dictionary:

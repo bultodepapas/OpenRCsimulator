@@ -1,14 +1,17 @@
 # On-screen radios and EdgeTX integration
 
-Status: **planned; initial source inspection complete; runtime, device and further research gates open**.
+Status: **catalog and compact simulated LCD implemented on the working branch; enlarged view, firmware integration and device gates open**.
 Research dates: **2026-11-18 and 2026-11-19 (America/Bogota)**.
 Baseline: [OpenRC cf03e40](https://github.com/bultodepapas/OpenRCsimulator/commit/cf03e401fdb3e2af5eb32f91a56462f2ca69ff1c).
 [Dated findings and primary sources](../research/radio-input/D6-RADIO-00/README.md).
 [Code reuse, licensing and integration follow-up](../research/radio-input/D6-RADIO-00/code-reuse-licensing-2026-11-19.md).
+[Catalog and compact-display implementation](../research/radio-input/HUD-RADIO-01/README.md).
+[Native T18-H7 observation experiment](../research/radio-input/D6-RADIO-01/README.md).
 
 The request's “HTX” is interpreted as **EdgeTX**. This plan extends the existing
 [flight overlays](flight-overlays.md) and [EdgeTX controls](edgetx-airplane-controls.md).
-It does not claim that firmware simulation or the new radio artwork already ships.
+The branch now contains the four-radio selector and original artwork for the two
+new appearances. Firmware simulation is not yet connected to the HUD.
 
 ## The simple plan
 
@@ -23,20 +26,22 @@ It does not claim that firmware simulation or the new radio artwork already ship
 5. **Extend support.** Add other EdgeTX targets through the same interface; give
    other firmware families their own verified capabilities.
 
-The first usable delivery is steps 1–2. Firmware research can proceed alongside
-that work without making a radio appearance change depend on an emulator.
+Step 1 and the compact telemetry portion of step 2 are implemented. The enlarged
+view and native readability checks remain open. Firmware research proceeds
+alongside that work without making appearance selection depend on an emulator.
 
 ## Radio targets
 
 | Radio | Appearance | Display and firmware scope |
 | --- | --- | --- |
-| Jumper T18-H7 | New definition and redistributable artwork | First real EdgeTX target; separate identity from older T18 variants |
-| RadioLink T16D | Existing artwork and selection | Improve simulated telemetry; RadioLink firmware integration remains research |
-| RadioLink T12D | New definition and redistributable artwork | Simulated telemetry; existing input path subject to device/OS/USB-mode qualification |
+| Jumper T18-H7 | Implemented definition and original schematic SVG | First real EdgeTX target; compact OpenRC telemetry implemented; firmware execution separate |
+| RadioLink T16D | Existing artwork and selection retained | Compact simulated telemetry implemented; RadioLink firmware integration remains research |
+| RadioLink T12D | Implemented definition and original schematic SVG | Compact simulated telemetry implemented; existing input path subject to device/OS/USB-mode qualification |
 | JETI DS-24 II | Existing option | Preserve its saved identity and behavior |
 
-T18-H7 is listed upstream from EdgeTX 2.12.5 and its target exists in that pinned
-source; native runtime and physical qualification remain open. RadioLink T16D/T12D use the
+T18-H7 is listed upstream from EdgeTX 2.12.5. Its pinned native target has now
+built and passed a bounded local LCD/channel observation; complete runtime and
+physical qualification remain open. RadioLink T16D/T12D use the
 manufacturer's FreeRTOS/LVGL software, not EdgeTX. T16D is the higher-spec option;
 the evidence does not establish two equally high-end RadioLink flagships.
 The [source report](../research/radio-input/D6-RADIO-00/README.md#radio-evidence)
@@ -44,28 +49,32 @@ records the product and firmware distinctions.
 
 ## Build on the existing code
 
-The [transmitter overlay](../../app/render/overlays/transmitter.gd) already draws
-JETI/T16D, moves sticks and trims, and paints a small OPENRC SIM display.
+The [transmitter overlay](../../app/render/overlays/transmitter.gd) now draws
+all four catalog appearances, moves sticks and trims, and paints a compact SIM
+display from accepted telemetry and the existing battery sensor view.
 [Overlay settings](../../app/render/overlays/overlay_settings.gd) persist the
 selection; the [dialog](../../app/ui/overlays_dialog.gd) exposes it.
 
-Replace the two-model drawing branches with a small versioned catalog:
-stable ID, label, artwork, canvas size, gimbal/trim/switch positions, LCD rectangle,
-firmware family and compatible target IDs. An appearance definition does not
+The implemented [versioned catalog](../../app/render/overlays/radio_catalog.gd)
+replaces the two-model drawing branches: stable ID, label, artwork, canvas size,
+gimbal centers, LCD rectangle, firmware family and compatible target IDs. Trim
+marks retain the existing common geometry; interactive switch/button geometry
+belongs to the firmware-view increment. An appearance definition does not
 establish USB mapping or firmware compatibility. Unknown saved IDs fall back
 without rewriting the controller profile. Adding one radio should require an
 asset and catalog entry, not another renderer branch.
 
-Use a display provider for either OpenRC telemetry or an actual firmware
-framebuffer. The firmware choice must match the selected radio's capabilities.
+The original [display formatter](../../app/render/overlays/radio_display.gd)
+supplies compact OpenRC readings. Add an actual firmware-framebuffer provider
+only when its runtime gate passes. The firmware choice must match the radio's capabilities.
 EdgeTX menus must never appear as if they were RadioLink firmware.
 
 ## Telemetry and readability
 
 Reuse [overlay snapshots](../../app/render/overlays/overlay_manager.gd) and
 [battery sensor readings](../../app/render/overlays/battery_sensors.gd).
-The compact screen shows a few values; the enlarged view adds channels and
-settings. Useful initial fields are OpenRC aircraft name, flight timer, aircraft
+The compact screen shows a few values; the planned enlarged view will add
+channels and settings. Useful initial fields are OpenRC aircraft name, flight timer, aircraft
 battery voltage, consumed mAh, altitude with an explicit datum, and named airspeed
 or ground speed. A firmware model name is separate and shown only when known.
 
@@ -84,17 +93,21 @@ execution and output channels must not inherit that slow display rate.
 Repaint actual firmware LCD frames when supplied, independently of telemetry.
 HUD reads accepted simulation state and never writes flight controls.
 
-Clicking the screen opens an enlarged, keyboard-accessible view. Configuration
+Selecting the screen should open an enlarged, keyboard-accessible view once
+that increment is implemented. Configuration
 interaction uses the existing pause/menu ownership so a navigation gesture cannot
 also fly or restart the aircraft. Verify the repository's primary display policy,
 including the Apple Retina exception, and EN/ES readability.
 
 ## Real EdgeTX: a bounded first integration
 
-Evaluate the **stable 2.12.5 T18-H7 native simulator** first. Source code defines
-the target and loader, but no native build or runtime smoke has been executed
-for this investigation. The first gate is to boot that exact target, copy its
-LCD, move one control and read one channel. Configure/discover a sensor, inject
+The **stable 2.12.5 T18-H7 native simulator** now has an executed Linux experiment:
+the SDL-enabled library builds from unchanged upstream source, and the original
+host captures the LCD and observes one raw input/channel response across two
+separate process runs. [Exact results and limitations](../research/radio-input/D6-RADIO-01/README.md)
+include empty SD assets, generated default settings, unqualified coherence and
+local-only packaging. Complete the gate with a reviewed named/calibrated fixture
+and intended lifecycle. Configure/discover a sensor, inject
 telemetry and verify the expected value and units on the actual firmware LCD,
 including stream validity and a stale-data case.
 
@@ -106,9 +119,10 @@ before admitting virtual-radio flight. The latter currently copies shared values
 without synchronization in the copy function; its existence does not prove a
 coherent or lower-latency control path.
 
-A proposed local helper owns the EdgeTX runtime, its event loop and a private
-copy of SD/settings data. Godot exchanges versioned control, channel, telemetry,
-status and LCD messages with it. This bridge is new work. Pin the source commit,
+The experimental local host owns the EdgeTX runtime and event loop and requires
+private SD/settings paths. The planned Godot bridge will exchange versioned
+control, channel, telemetry, status and LCD messages; that transport remains new
+work. Pin the source commit,
 radio target, settings version and binary identity; run a mismatch check before
 starting. Disable the optional runtime when unused.
 
@@ -214,15 +228,16 @@ source-release record.
 
 ## Work and acceptance
 
-All implementation rows are pending.
+The first HUD implementation is on the branch. Its evidence and remaining
+readability gates are recorded separately from the native runtime investigation.
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | D6-RADIO-00 | Current-source and upstream feasibility research | This plan and linked dated evidence; source inspection only |
 | D6-RADIO-00a | Selected-code licenses and distribution boundary | Targeted inventory recorded; exact dependency/asset review and covered-work decision remain open before release |
-| HUD-RADIO-01 | Catalog and existing selector extension | Saved choices survive; all four appearances work; calibration/bindings unchanged |
-| HUD-RADIO-02 | Telemetry display and enlarged view | Accepted values/units, unavailable-data/reset cases, readable EN/ES captures; no input or physics change |
-| D6-RADIO-01 | Exact T18-H7 runtime spike | Boot named private-settings fixture, LCD, input→channel, configured telemetry→LCD with units/stale case, stop/restart; record source/build/OS identity |
+| HUD-RADIO-01 | Catalog and existing selector extension | Implemented four choices and original new SVGs; [software evidence and native visual limits](../research/radio-input/HUD-RADIO-01/README.md) |
+| HUD-RADIO-02 | Telemetry display and enlarged view | Compact accepted readings, units and unavailable/reset behavior implemented; enlarged LCD, aircraft/model naming and EN/ES rendered readability remain open |
+| D6-RADIO-01 | Exact T18-H7 runtime spike | Local Linux build, LCD capture, one input→channel response and two process starts/stops observed; [receipts](../research/radio-input/D6-RADIO-01/README.md). Complete SD assets, calibrated fixture, configured telemetry and intended lifecycle remain open |
 | D6-RADIO-01b | Channel freshness and runtime choice | Measure native event cadence; qualify a coherent snapshot path and input latency before flight admission |
 | D6-RADIO-02 | Helper transport and admitted virtual control path | Single rate/mix owner; reject mixed-surface misuse; bounded queues, stale-data pause and lifecycle/replay checks |
 | UI-15-RADIO-01 | Copied-model menus, then structured viewer | Real-menu inspection first; matching-board/version reports, unsupported data clearly reported, original files untouched |
@@ -243,13 +258,15 @@ Documentation checks do not satisfy the runtime or physical-device gates.
 | UI setup | Configuration viewer and lessons extending the existing assistant |
 | DT / release | Helper builds, target/version manifests, licenses and native package checks |
 
-Shared files remain with their existing track owners. Proposed helpers belong
-under a dedicated tools/runtime directory selected at D6-RADIO-01; this plan
+Shared files remain with their existing track owners. The experimental native
+observation host lives under `tools/radio_runtime/`; this plan
 does not introduce a new physics kernel or replace ControllerService.
 
 Use original or redistributable radio artwork. DT / release owns the selected
 component and asset inventory, exact source/binary identities and source-delivery
 record from D6-RADIO-00a. Runtime and physical evidence remain separate gates.
 
-**Next implementation increment:** HUD-RADIO-01 and HUD-RADIO-02, with the
-D6-RADIO-01 runtime spike kept separately reviewable.
+**Next implementation increment:** enlarged, keyboard-accessible HUD-RADIO-02
+display and native readability checks; complete the separately reviewable
+D6-RADIO-01 named-fixture, telemetry and lifecycle proof before Godot transport
+or virtual-flight admission.

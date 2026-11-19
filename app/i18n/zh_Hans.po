@@ -8978,8 +8978,11 @@ msgstr "遥控器校准需要受支持的遥控器配置。"
 msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
 msgstr "空速、地速、高度、垂直速度、油门、距飞手距离和飞行时间。仅在有限燃油数据有效时显示燃油。"
 
-msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
-msgstr "显示摇杆和微调输入、所选遥控器外观及状态。摇杆布局遵循所选模式。"
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. The SIM screen shows elapsed simulation time, airspeed (AS), height above terrain (AGL) and, where space allows, sensed flight-pack voltage and consumed mAh. These are OpenRC readings, not running radio firmware. Stick layout follows the chosen mode."
+msgstr "显示摇杆和微调输入、所选遥控器外观及状态。SIM 屏幕显示已过去的模拟时间、空速（AS）、离地高度（AGL），并在空间允许时显示测得的飞行电池组电压和已消耗的电量（mAh）。这些是 OpenRC 的读数，并非运行中的遥控器固件。摇杆布局遵循所选模式。"
+
+msgid "Original schematic appearance; OpenRC simulated display."
+msgstr "原创示意外观；OpenRC 模拟显示屏。"
 
 msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
 msgstr "按优先级显示当前飞行和遥控器警告及建议操作。设置的警报数量上限可能隐藏其他警告。"

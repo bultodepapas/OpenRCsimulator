@@ -1,0 +1,170 @@
+{
+  "schema": "openrc-radio-hud-verification-v1",
+  "baseline_commit": "1bfeddaf51f2f71ece67446aac7089d7e988c9d5",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "source_sha256": {
+    "app/assets/ui/RADIO-ARTWORK.md": "3bc79be78f3419ebbe467f89155e08dfb8ae793a9413f6b7fe1d1e04534d272c",
+    "app/assets/ui/jumper_t18_h7_schematic.svg": "ebb6b2d593471e0d520dc6b765de70027b1f745e75cfa995c7f235737e1a5f63",
+    "app/assets/ui/jumper_t18_h7_schematic.svg.import": "9c742a1c8095d4ac0dc6ff28bb203aa3fa0f8331d19e7010b15602b7ec421b5d",
+    "app/assets/ui/radiolink_t12d_schematic.svg": "957a701d9ce1077a06547e918629670722e8d60fe37f509a355279f7e71e3b0d",
+    "app/assets/ui/radiolink_t12d_schematic.svg.import": "45b11601771d5e365faf6d38459b121574da862ceda4c4a5571296708e907fe0",
+    "app/i18n/de.po": "ea8aca55c18ea7cbfaceb46826e785a07ecc029559fb1dea2b3931b3924d3e4e",
+    "app/i18n/es.po": "20aa034b1dbcc510c0eb5f35e9eda38f93792771eda31f59e7964202706599de",
+    "app/i18n/fr.po": "e708bb19061a7b678caf048aeb346de2e2fee0ade9726152e7a1d2eaa70a9786",
+    "app/i18n/it.po": "7149cf75890e99a214ab4f0e57ea5cb354ad60ba5e80f4bdf7c6c1129b6b39ca",
+    "app/i18n/ja.po": "b5429996fc24808cebede8cb12095512e8004619bdc555a452e7063294949ba7",
+    "app/i18n/pt_BR.po": "a65d0846963ddcfbf879e005f4528f3bd69f0225340d5b0cbe5860eb9cfa4b11",
+    "app/i18n/ru.po": "46a1e10fbb0359e6e299da41db1670c975cdcf35b749b60d80a9edc69e800625",
+    "app/i18n/zh_Hans.po": "fb294e69210ae8dce44815d7b02d51efc37a1694719776309c119bf746a39e08",
+    "app/render/overlays/overlay_manager.gd": "2d583ffae27160823560efa4c5490b1728877cc09cb2e0f6230368c7b066b1f5",
+    "app/render/overlays/overlay_settings.gd": "1ee9a2223e76ac6634da214f8ab959eba1f9a9f38b42c4a7acfd69ba24f41357",
+    "app/render/overlays/radio_catalog.gd": "a47bb5ccaabf5ebc228818a8739a0f134fc5c3b11363dd0f65cc41f3256e23a7",
+    "app/render/overlays/radio_catalog.gd.uid": "4501748f4ce1feb48b7eceee5ca02cdb94bb6eb5958ea01ce23fa9f7779d71ce",
+    "app/render/overlays/radio_display.gd": "5298297a2fcd5bdd56a23163b3e2b473eab1a4059383fe89a9f1874f8a81db51",
+    "app/render/overlays/radio_display.gd.uid": "b02fbc6632816044a4c77912fc17a640b6b3188e5590e5573467bbd304870ad3",
+    "app/render/overlays/transmitter.gd": "24f5f80474f8f05dc9d6e0ee912166e77e72d6602a0340b26e6ae984b0426568",
+    "app/tests/test_overlay_manager.gd": "a8dfc4e16b7311967f15dae1e7d5161e952245790d00b0c2b304d4e6a6398c96",
+    "app/ui/overlays_dialog.gd": "0809a7146d4a24f6e5cb11bea3def0fa46bcd552bfe87a24e9b068affa5d0b9d"
+  },
+  "reports": [
+    {
+      "original_report_sha256": "fc9de756facae8f679465550a19d0f35b2f4b2227ac6f6e918997776fa044c15",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2167c6ef-e430-42de-86c9-621d8d3e9c86",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "cwd": "<workspace>/openrc_radio",
+        "started_utc": "2026-11-19T19:08:06.038414+00:00",
+        "label": "radio-focused-import",
+        "log": "<workspace>/openrc_radio/tmp/godot-checks/radio-focused-import-xr4nrj3c/engine.log",
+        "report": "<workspace>/openrc_radio/tmp/godot-checks/radio-focused-import-xr4nrj3c/report.json",
+        "timeout_seconds": 480.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 12.940236,
+        "log_bytes": 13183,
+        "log_sha256": "9674fc142da6c824029842b627f99eedb33d0c2bd4bf12512a7748f426995eae"
+      }
+    },
+    {
+      "original_report_sha256": "266a966c8294bcaf2e9a749eb6dea87d975a45139e72ce0af87b7c850f63e544",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "74e655b1-438e-4998-973b-1987366f1c89",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_overlay_manager.gd"
+        ],
+        "cwd": "<workspace>/openrc_radio",
+        "started_utc": "2026-11-19T19:09:29.486901+00:00",
+        "label": "radio-overlay",
+        "log": "<workspace>/openrc_radio/tmp/godot-checks/radio-overlay-g92izq7i/engine.log",
+        "report": "<workspace>/openrc_radio/tmp/godot-checks/radio-overlay-g92izq7i/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 42.749875,
+        "log_bytes": 554,
+        "log_sha256": "f96e516e305fe8df9ac42fc6cf385430923e8ac1982a4987dbd0650e4f48105e"
+      }
+    },
+    {
+      "original_report_sha256": "5c367ef2aefbdefa9472aa785165356621a778b3c6d427e39a1a8088af9895c9",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cac73abb-7f6c-4cc6-9301-96b548a8bb89",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_language.gd"
+        ],
+        "cwd": "<workspace>/openrc_radio",
+        "started_utc": "2026-11-19T19:09:29.489760+00:00",
+        "label": "radio-languages",
+        "log": "<workspace>/openrc_radio/tmp/godot-checks/radio-languages-fml8pej2/engine.log",
+        "report": "<workspace>/openrc_radio/tmp/godot-checks/radio-languages-fml8pej2/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 69.937067,
+        "log_bytes": 5298,
+        "log_sha256": "59170011b86c5b97a566bbff45dae3d89f385328f876dc09e67e40749c8854d4"
+      }
+    }
+  ],
+  "completion_markers": [
+    "overlay manager: 277 checks, 0 failed",
+    "all UI language checks passed"
+  ],
+  "scope": {
+    "headless": true,
+    "overlay_checks": 277,
+    "translated_catalogs": 8,
+    "source_messages_per_catalog": 4213,
+    "physics_backend": "gdscript_reference (native stage library not installed)",
+    "native_rendered_capture": false,
+    "full_suite": false,
+    "physical_radio": false,
+    "asset_import": "Required test resources imported; unrelated GLB assets omitted after broad import timeouts. All source scripts and Stik engine GLB retained."
+  }
+}

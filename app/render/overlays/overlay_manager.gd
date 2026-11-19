@@ -236,6 +236,7 @@ func reset_flight() -> void:
 	navigation_data.reset()
 	flight_metrics.reset()
 	_battery_reading = {}
+	frames.transmitter.reset_display()
 	_fuel_state_known = false
 	_alert_policy.reset()
 	_raw_warning_codes = PackedStringArray()
@@ -448,6 +449,8 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
+	if visible and frames.transmitter.visible:
+		frames.transmitter.refresh_display(_last_telemetry, _battery_reading, system)
 	_raw_warning_codes = _warning_codes.duplicate()
 	_raw_warning_codes.append_array(_alert_policy.update(snap, settings))
 	var cruise := {}

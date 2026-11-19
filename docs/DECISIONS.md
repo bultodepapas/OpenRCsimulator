@@ -281,12 +281,18 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ### Separate radio appearance, firmware execution and flight admission
 
-**D6-RADIO / HUD-RADIO, 2026-11-18; proposed design, implementation pending.**
-Extend the existing radio selector and sensor-backed LCD first. Keep appearance,
+**D6-RADIO / HUD-RADIO, 2026-11-18; presentation implementation 2026-11-19, firmware integration gates open.**
+The first increment extends the existing selector with a versioned four-radio
+catalog and a compact sensor-backed SIM LCD. Keep appearance,
 physical USB calibration and optional firmware execution independent so choosing
 RadioLink artwork cannot imply EdgeTX firmware support or change control mappings.
 The [radio integration plan](plans/radio-display-edgetx.md) owns scope and gates;
 the [source investigation](research/radio-input/D6-RADIO-00/README.md) pins evidence.
+[HUD implementation evidence](research/radio-input/HUD-RADIO-01/README.md) records
+the original artwork, translation coverage, focused checks and open enlarged-view
+and native readability work. The experimental original observation host is under
+`tools/radio_runtime/`; [local Linux LCD/channel observations](research/radio-input/D6-RADIO-01/README.md)
+passed, but it is not connected to Godot or admitted for flight.
 
 Evaluate the stable T18-H7 native simulator in a local helper, with a separate
 latency gate before virtual flight. Current channel-change notifications are not

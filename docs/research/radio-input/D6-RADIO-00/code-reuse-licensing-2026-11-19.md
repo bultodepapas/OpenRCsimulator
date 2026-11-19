@@ -26,7 +26,12 @@ opinion or a claim that a working integration exists.
 This is a targeted source, license-header and build-file inspection. It does not
 audit every transitive dependency or asset. No upstream code or binary was
 added to OpenRC, no license was changed, and no maintainer was contacted.
-No EdgeTX build, timing measurement or physical-radio test ran.
+No EdgeTX build, timing measurement or physical-radio test ran during this
+source inspection. A subsequent [native experiment](../D6-RADIO-01/README.md)
+built the pinned SDL-enabled target and observed LCD/channel plumbing; the
+[HUD increment](../HUD-RADIO-01/README.md) adds original presentation code.
+Those reports own execution evidence. Neither the new adapter's MIT source
+grant nor its process boundary resolves the assembled runtime's release scope.
 
 ## What to reuse, and where
 

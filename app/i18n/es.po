@@ -8633,8 +8633,11 @@ msgstr "La calibración de radio requiere un perfil de radio compatible."
 msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
 msgstr "Velocidad del aire, velocidad respecto al suelo, altura, velocidad vertical, acelerador, distancia al piloto y tiempo de vuelo. El combustible solo aparece con datos válidos de combustible limitado."
 
-msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
-msgstr "Muestra las entradas de las palancas y los trims, el aspecto de la radio seleccionada y su estado. La disposición de las palancas sigue el modo elegido."
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. The SIM screen shows elapsed simulation time, airspeed (AS), height above terrain (AGL) and, where space allows, sensed flight-pack voltage and consumed mAh. These are OpenRC readings, not running radio firmware. Stick layout follows the chosen mode."
+msgstr "Muestra las entradas de las palancas y los trims, el aspecto de la radio seleccionada y su estado. La pantalla SIM muestra el tiempo de simulación transcurrido, la velocidad del aire (AS), la altura sobre el terreno (AGL) y, cuando hay espacio, el voltaje medido de la batería de vuelo y los mAh consumidos. Son lecturas de OpenRC, no un firmware de radio en ejecución. La disposición de las palancas sigue el modo elegido."
+
+msgid "Original schematic appearance; OpenRC simulated display."
+msgstr "Aspecto esquemático original; pantalla simulada de OpenRC."
 
 msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
 msgstr "Avisos activos de vuelo y radio, ordenados por prioridad, con acciones sugeridas. El límite de alertas configurado puede ocultar otros avisos."

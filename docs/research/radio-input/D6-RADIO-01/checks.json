@@ -1,0 +1,165 @@
+{
+  "schema": "openrc-edgetx-host-verification-v1",
+  "host_source_sha256": {
+    "tools/radio_runtime/main.cpp": "bdb365ed4afa6e821905c7063d79939cdf904c77f4dab41ce700d2bf5db67118",
+    "tools/radio_runtime/CMakeLists.txt": "09ed521dd63b320fe3a9cc3a139e86b3212a55eb04e2b2e9c1101a32ac80e7f6"
+  },
+  "host_binary_sha256": "3ed4407530e98796b781a18eb7ec59a1bd74f43d905942019c7978ff88081be0",
+  "expected_plugin_sha256": "e055a9724d12c8dc69850a47925c4f932640924211fcc654e519cc96409a10fa",
+  "cli_cases": [
+    {
+      "case": "help",
+      "expected_exit": 0,
+      "exit": 0,
+      "matched": true,
+      "diagnostic": ""
+    },
+    {
+      "case": "unknown_option",
+      "expected_exit": 1,
+      "exit": 1,
+      "matched": true,
+      "diagnostic": "openrc-edgetx-smoke: Unknown option 'unknown'."
+    },
+    {
+      "case": "missing_option_value",
+      "expected_exit": 1,
+      "exit": 1,
+      "matched": true,
+      "diagnostic": "openrc-edgetx-smoke: Missing value after '--plugin'."
+    },
+    {
+      "case": "missing_required",
+      "expected_exit": 2,
+      "exit": 2,
+      "matched": true,
+      "diagnostic": "--plugin, --sd-copy, --settings-copy and --output are required"
+    },
+    {
+      "case": "duration_range",
+      "expected_exit": 2,
+      "exit": 2,
+      "matched": true,
+      "diagnostic": "--duration-ms must be an integer between 1500 and 30000"
+    }
+  ],
+  "negative_checks": {
+    "existing_output_rejected": true,
+    "existing_receipt_unchanged": true,
+    "wrong_hash_rejected_before_output": true
+  },
+  "private_fixture_inputs": {
+    "generated-default-01": {
+      "MODELS/model1.yml": "30d64353ff1812decf095fcd85759e9451f0954432060a04441fa921e3860e83",
+      "MODELS/labels.yml": "4d61de6e0f3a3d75bd20b967dee377c931e1635c2c82cb0fbd1967dbc793c4cc",
+      "RADIO/radio.yml": "cdd8eb8107c6d119fb18b2d50b57465fa6b911f41f4e4c018aaf210a105bce8a"
+    },
+    "generated-default-02": {
+      "MODELS/model1.yml": "30d64353ff1812decf095fcd85759e9451f0954432060a04441fa921e3860e83",
+      "MODELS/labels.yml": "a19040fcddc88aede9c38e21a7433da842e0ed02f2ee805295dc8978919f3f3e",
+      "RADIO/radio.yml": "2f16855c2d99d0de3201534668909b625f751b94db7765db7f715aecf65eab08"
+    }
+  },
+  "firmware_log_observations": [
+    "Both SDL runs read MODEL01 from generated private YAML settings.",
+    "SD WIDGETS/THEMES assets are absent and a bitmap-load failure is logged.",
+    "runtime_error_count counts the upstream Qt signal; it does not classify every firmware log line."
+  ],
+  "qualification": {
+    "independently_authored_calibrated_fixture": false,
+    "telemetry_injection": false,
+    "channel_mapping": false,
+    "latency": false,
+    "lcd_coherence": false,
+    "audio_output": false,
+    "same_process_restart": false,
+    "two_separate_process_starts_and_stops": true,
+    "portable_package": false,
+    "physical_radio": false,
+    "flight_admission": false
+  },
+  "incomplete_runtime_rejection": {
+    "audio": {
+      "audible_output_qualified": false,
+      "driver": "dummy",
+      "initialized": true
+    },
+    "basic_observations_met": false,
+    "channel_notifications": {
+      "coherent_snapshot_or_freshness_proven": false,
+      "events": [],
+      "events_truncated": false,
+      "summaries": [],
+      "total": 0
+    },
+    "compiled_header_hashes_match_pin": true,
+    "created_utc": "2026-11-19T19:23:06.788Z",
+    "deadline_reached": false,
+    "elapsed_ms": 6,
+    "environment": {
+      "architecture": "x86_64",
+      "os": "Debian GNU/Linux 13 (trixie)",
+      "qt_build_version": "6.9.3",
+      "qt_runtime_version": "6.9.3",
+      "sdl_build_version": "2.32.4",
+      "sdl_runtime_version": "2.32.4"
+    },
+    "errors": [
+      {
+        "elapsed_ms": 5,
+        "kind": "internal",
+        "message": "Library load failed: Cannot load library <workspace>/edgetx_native_build/libedgetx-t18h7-simulator-no-audio-71f4d8e7.so: <workspace>/edgetx_native_build/libedgetx-t18h7-simulator-no-audio-71f4d8e7.so: undefined symbol: _Z17simuSetVolumeGaini"
+      }
+    ],
+    "errors_truncated": false,
+    "expected_edgetx_source_commit": "0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99",
+    "flight_admission": false,
+    "heartbeat": {
+      "count": 0,
+      "last_firmware_timestamp_ms": 0,
+      "last_host_elapsed_ms": -1,
+      "last_loops": 0
+    },
+    "internal_error_count": 1,
+    "lcd": {
+      "coherence_verified": false,
+      "expected_bytes": 261120,
+      "file": "",
+      "first_elapsed_ms": -1,
+      "format": "RGB565-native-endian",
+      "frames_received": 0,
+      "height": 272,
+      "last_backlight": false,
+      "last_elapsed_ms": -1,
+      "latest_sha256": "",
+      "stride_bytes": 960,
+      "width": 480
+    },
+    "named_model_loaded_verified": false,
+    "plugin": {
+      "expected_sha256": "",
+      "expected_sha256_matched": null,
+      "factory_name": "",
+      "path": "<workspace>/edgetx_native_build/libedgetx-t18h7-simulator-no-audio-71f4d8e7.so",
+      "sha256": "71f4d8e7d1a750406b9272c6fd49666130d2b2e58b6c7e464911f4402498fe43",
+      "simulator_name": ""
+    },
+    "plugin_origin_verified_by_source_commit": false,
+    "private_sd_copy": "<workspace>/openrc_radio/tmp/radio-runtime/reject-incomplete-final/sd",
+    "private_settings_copy": "<workspace>/openrc_radio/tmp/radio-runtime/reject-incomplete-final/settings",
+    "requested_duration_ms": 1500,
+    "runtime_error_count": 0,
+    "schema": "openrc-edgetx-native-smoke-v1",
+    "started_signal": false,
+    "startup_checks_enabled": false,
+    "stopped_signal": false,
+    "sweep": {
+      "channel_mapping_verified": false,
+      "enabled": false,
+      "sent": [],
+      "stick_index": -1,
+      "training_only": true
+    },
+    "telemetry_verified": false
+  }
+}

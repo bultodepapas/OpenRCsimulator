@@ -1,25 +1,20 @@
-# O2 Transmitter (HUD-05): selectable JETI DS-24 II / Radiolink T16D artwork with live controls.
+# O2 Transmitter (HUD-05, HUD-RADIO-01/02a): catalog-driven appearance, live controls and simulated readings.
 # Mode 2: left = throttle (vertical) + rudder, right = elevator + aileron. Mode 1 swaps throttle and elevator.
 extends "res://render/overlays/overlay_frame.gd"
 
-const Settings := preload("res://render/overlays/overlay_settings.gd")
-const JETI_IMAGE: Texture2D = preload("res://assets/ui/jeti_ds24_ii_orange.png")
-const RADIOLINK_IMAGE: Texture2D = preload("res://assets/ui/radiolink_t16d.png")
-const JETI_SIZE := Vector2(180.0, 222.0)
-const RADIOLINK_SIZE := Vector2(180.0, 213.0)
-const JETI_CENTRES := [Vector2(39.0, 126.0), Vector2(139.0, 126.0)]
-const RADIOLINK_CENTRES := [Vector2(39.0, 108.0), Vector2(139.0, 108.0)]
-const JETI_DISPLAY := Rect2(58.0, 23.0, 67.0, 64.0)
-const RADIOLINK_DISPLAY := Rect2(62.0, 154.0, 56.0, 42.0)
-const ORANGE := Color("ff8d40")
-const RED := Color("ff5259")
+const Catalog := preload("res://render/overlays/radio_catalog.gd")
+const Display := preload("res://render/overlays/radio_display.gd")
 const LCD_TEXT := Color("e2f4ff")
 const LCD_DIM := Color("9ab6c8")
 
 var gimbals: Control
 var footer: Label
 var mode := 2
-var radio_model := "jeti_ds24_ii"
+var radio_model := Catalog.DEFAULT_ID
+var _definition := Catalog.definition(Catalog.DEFAULT_ID)
+var _artwork: Texture2D
+var _display_system := "si"
+var _readings := Display.readings({}, {}, "si")
 ## Normalised screen positions (x right, y down, −1…1) and trims, set by refresh(), drawn by gimbals.
 var _layout: Array = [Vector2.ZERO, Vector2.ZERO]
 var _trims: Array = [Vector2.ZERO, Vector2.ZERO]
@@ -30,7 +25,8 @@ func _init() -> void:
 	gimbals = Control.new()
 	gimbals.name = "Gimbals"
 	gimbals.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	gimbals.custom_minimum_size = JETI_SIZE
+	gimbals.custom_minimum_size = _definition.canvas_size
+	_artwork = load(str(_definition.artwork)) as Texture2D
 	gimbals.draw.connect(_draw_gimbals)
 	body.add_child(gimbals)
 	footer = text_label("", LABEL_SIZE, UiTheme.TEXT_2)
@@ -75,26 +71,46 @@ func refresh(sticks: Dictionary, trims: Dictionary, stick_mode: int) -> void:
 
 
 func set_radio_model(value: String) -> void:
-	if not Settings.RADIO_MODELS.has(value) or value == radio_model:
+	if not Catalog.contains(value) or value == radio_model:
 		return
 	radio_model = value
-	gimbals.custom_minimum_size = RADIOLINK_SIZE if radio_model == "radiolink_t16d" else JETI_SIZE
+	_definition = Catalog.definition(value)
+	_artwork = load(str(_definition.artwork)) as Texture2D
+	gimbals.custom_minimum_size = _definition.canvas_size
 	_set_title()
 	gimbals.queue_redraw()
 
 
+## At the existing 10 Hz snapshot boundary, independently of stationary stick positions.
+func refresh_display(telemetry: Dictionary, battery: Dictionary, system: String) -> void:
+	_display_system = system
+	var next := Display.readings(telemetry, battery, system)
+	if next == _readings:
+		return
+	_readings = next
+	gimbals.queue_redraw()
+
+
+func reset_display() -> void:
+	refresh_display({}, {}, _display_system)
+
+
+## A caller-owned presentation snapshot, never an input/control source.
+func display_readings() -> Dictionary:
+	return _readings.duplicate()
+
+
 func _set_title() -> void:
-	title_label.text = ("RADIOLINK T16D · M%d" if radio_model == "radiolink_t16d" else "JETI DS-24 II · M%d") % mode
+	title_label.text = "%s · M%d" % [Catalog.label(radio_model).to_upper(), mode]
 
 
 func _draw_gimbals() -> void:
-	var radiolink := radio_model == "radiolink_t16d"
-	var artwork: Texture2D = RADIOLINK_IMAGE if radiolink else JETI_IMAGE
-	var device_size: Vector2 = RADIOLINK_SIZE if radiolink else JETI_SIZE
-	var centres: Array = RADIOLINK_CENTRES if radiolink else JETI_CENTRES
-	var accent: Color = RED if radiolink else ORANGE
-	gimbals.draw_texture_rect(artwork, Rect2(Vector2.ZERO, device_size), false)
-	_draw_display(radiolink, accent)
+	var device_size: Vector2 = _definition.canvas_size
+	var centres: Array = _definition.gimbals
+	var accent: Color = _definition.accent
+	if _artwork != null:
+		gimbals.draw_texture_rect(_artwork, Rect2(Vector2.ZERO, device_size), false)
+	_draw_display()
 	for side in 2:
 		var centre: Vector2 = centres[side]
 		# Cover the photographed, stationary stick within the real metal gimbal ring.
@@ -120,24 +136,25 @@ func _draw_gimbals() -> void:
 		gimbals.draw_circle(tip, 2.5, accent)
 
 
-func _draw_display(radiolink: bool, accent: Color) -> void:
-	var display: Rect2 = RADIOLINK_DISPLAY if radiolink else JETI_DISPLAY
+func _draw_display() -> void:
+	var display: Rect2 = _definition.lcd
 	gimbals.draw_rect(display, Color("0d1e30"))
 	gimbals.draw_rect(display, Color("5285a1"), false, 1.0)
-	gimbals.draw_rect(Rect2(display.position, Vector2(display.size.x, 10.0 if radiolink else 12.0)), Color("143d58"))
+	var header_height := 10.0 if display.size.y < 50.0 else 12.0
+	gimbals.draw_rect(Rect2(display.position, Vector2(display.size.x, header_height)), Color("143d58"))
 	var font: Font = ThemeDB.fallback_font
-	var throttle_y: float = (_layout[1] as Vector2).y if mode == 1 else (_layout[0] as Vector2).y
-	var throttle: int = roundi((1.0 - throttle_y) * 50.0)
-	var roll: int = roundi((_layout[1] as Vector2).x * 100.0)
-	var pitch: int = roundi((_layout[0] as Vector2).y * 100.0) if mode == 1 else roundi((_layout[1] as Vector2).y * 100.0)
-	if radiolink:
-		gimbals.draw_string(font, Vector2(65.0, 163.0), "OPENRC SIM", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, LCD_TEXT)
-		gimbals.draw_string(font, Vector2(65.0, 174.0), "M%d  THR %d%%" % [mode, throttle], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, accent)
-		gimbals.draw_string(font, Vector2(65.0, 185.0), "A%+d E%+d" % [roll, pitch], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, LCD_TEXT)
-		return
-	gimbals.draw_string(font, Vector2(62.0, 32.0), "OPENRC  SIM", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, LCD_TEXT)
-	gimbals.draw_string(font, Vector2(62.0, 45.0), "DS-24 II  M%d" % mode, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, accent)
-	gimbals.draw_line(Vector2(62.0, 49.0), Vector2(121.0, 49.0), Color(LCD_DIM, 0.55), 1.0)
-	gimbals.draw_string(font, Vector2(62.0, 59.0), "THR  %3d%%" % throttle, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, LCD_TEXT)
-	gimbals.draw_string(font, Vector2(62.0, 70.0), "AIL %+4d%%" % roll, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, LCD_TEXT)
-	gimbals.draw_string(font, Vector2(62.0, 81.0), "ELE %+4d%%" % pitch, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, LCD_TEXT)
+	var font_size := 7 if display.size.x < 70.0 else 8
+	var origin := display.position + Vector2(3.0, header_height - 2.0)
+	var width := display.size.x - 6.0
+	gimbals.draw_string(font, origin, "SIM " + str(_readings.elapsed), HORIZONTAL_ALIGNMENT_LEFT, width, font_size, LCD_TEXT)
+	# AS is airspeed, AGL is height above local terrain; the help names both explicitly.
+	# The smaller LCDs show fewer rows instead of shrinking text further or drawing outside their bounds.
+	var rows := ["AS " + str(_readings.airspeed), "AGL " + str(_readings.height_agl),
+		"BAT " + str(_readings.pack_voltage), str(_readings.used_mah)]
+	var line_height := 10.0 if font_size == 7 else 11.0
+	for row in rows.size():
+		var baseline := header_height + (row + 1) * line_height - 1.0
+		if baseline > display.size.y - 3.0:
+			break
+		gimbals.draw_string(font, Vector2(display.position.x + 3.0, display.position.y + baseline),
+			rows[row], HORIZONTAL_ALIGNMENT_LEFT, width, font_size, LCD_TEXT)

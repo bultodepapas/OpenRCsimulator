@@ -9779,8 +9779,11 @@ msgstr "Для калибровки передатчика требуется п
 msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
 msgstr "Воздушная и путевая скорость, высота, вертикальная скорость, газ, расстояние до пилота и время полёта. Топливо отображается только при наличии корректных данных об ограниченном запасе."
 
-msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
-msgstr "Показывает отклонения стиков и триммеров, выбранный вид передатчика и его состояние. Расположение стиков соответствует выбранному режиму."
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. The SIM screen shows elapsed simulation time, airspeed (AS), height above terrain (AGL) and, where space allows, sensed flight-pack voltage and consumed mAh. These are OpenRC readings, not running radio firmware. Stick layout follows the chosen mode."
+msgstr "Показывает отклонения стиков и триммеров, выбранный вид передатчика и его состояние. Экран SIM показывает прошедшее время симуляции, воздушную скорость (AS), высоту над землёй (AGL) и, если позволяет место, измеренное напряжение полётного аккумулятора и израсходованную ёмкость в mAh. Это показания OpenRC, а не работающая прошивка передатчика. Расположение стиков соответствует выбранному режиму."
+
+msgid "Original schematic appearance; OpenRC simulated display."
+msgstr "Авторское схематичное изображение; имитация экрана в OpenRC."
 
 msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
 msgstr "Активные предупреждения о полёте и передатчике по приоритету с рекомендациями. Заданный предел числа предупреждений может скрывать дополнительные сообщения."
