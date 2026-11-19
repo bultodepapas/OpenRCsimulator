@@ -21,10 +21,37 @@
    ],
    "mobile_to_forward_plus_ratio_on_anchor": 0.72,
    "implied_rel": 0.053,
+   "note": "beta1 research copy, Medium detail; the source of the 0.055 base",
    "source": "docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md"
+  },
+  {
+   "gpu": "Apple M1",
+   "renderer": "forward_plus/metal",
+   "frame_ms": 17.45,
+   "pixels": [
+    1920,
+    1080
+   ],
+   "anchor_ms": 1.07,
+   "implied_rel": 0.0613,
+   "note": "beta2, real route, externally cooled, GPU ~98% busy; the frame interval bounds GPU time from above",
+   "source": "docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md"
+  },
+  {
+   "gpu": "Apple M1",
+   "renderer": "mobile/metal",
+   "frame_ms": 13.05,
+   "pixels": [
+    1920,
+    1080
+   ],
+   "anchor_ms": 0.77,
+   "implied_rel": 0.059,
+   "note": "beta2, real route, externally cooled, GPU ~98% busy; the frame interval bounds GPU time from above",
+   "source": "docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md"
   }
  ],
- "provenance": "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor specifications and review aggregates; only the anchor is measured. vram_gb: common vendor configuration. steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). 2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, scaled to the anchor; integrated parts about 10% below the midpoint for power limits. No third-party benchmark table is copied.",
+ "provenance": "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor specifications and review aggregates; only rows whose provenance is `measured` (the anchor and the M1) were measured in OpenRC's workload. vram_gb: common vendor configuration. steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). 2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, scaled to the anchor; integrated parts about 10% below the midpoint for power limits. No third-party benchmark table is copied.",
  "provenance_levels": {
   "measured": "OpenRC measured this GPU in its own workload",
   "measured-circular": "derived from an OpenRC measurement that also defines it; not independent evidence",
@@ -2466,8 +2493,8 @@
    "rel": 0.055,
    "vram_gb": 0,
    "class": "integrated",
-   "provenance": "measured-circular: rel derived from the same M1 Mobile/Metal frame (DT-MAC-00-R4, Medium detail, beta1), so it cannot validate the cost model",
-   "correction": 1.0
+   "provenance": "measured: M1 (7-core GPU) Forward+ and Mobile on Metal at 1080p, real route, beta2, cooled (DT-MAC-03b, 2026-11-18); not the Retina panel or fanless sustained play",
+   "correction": 1.09
   },
   {
    "id": "apple_m2_ultra",

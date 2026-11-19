@@ -184,7 +184,10 @@ add("uhd_igpu", r"^(uhd|hd) graphics\b", 0.025, 0, "integrated", 1.99)
 # fitted TFLOPS x generation-efficiency estimate where unmeasured (M2 family, Ultras, M6 = M5 + Apple's +30%).
 # Adapter names do not carry the GPU core count, so each name takes its LOWER bin (conservative).
 # M6 Pro/Max/Ultra are unannounced as of 2026-11; their rows are extrapolated placeholders for future names.
-for chip, rel in [("m1 ultra", 0.29), ("m1 max", 0.16), ("m1 pro", 0.09), ("m1", 0.055),
+# 0.055 stays the base of these ratios; the M1's own in-workload measurement enters as its row's correction
+# (M1_CORRECTION below) and does not move the other chips, whose benchmark ratios are not this workload.
+M1_BASE_REL = 0.055
+for chip, rel in [("m1 ultra", 0.29), ("m1 max", 0.16), ("m1 pro", 0.09), ("m1", M1_BASE_REL),
                   ("m2 ultra", 0.42), ("m2 max", 0.24), ("m2 pro", 0.13), ("m2", 0.07),
                   ("m3 ultra", 0.50), ("m3 max", 0.27), ("m3 pro", 0.14), ("m3", 0.08),
                   ("m4 max", 0.33), ("m4 pro", 0.18), ("m4", 0.093),
@@ -217,9 +220,23 @@ add("software", r"llvmpipe|softpipe|lavapipe|swiftshader|microsoft basic render|
 
 # VQ-07h-A3 step 1: how far to trust each row. `correction` multiplies `rel` and stays 1.0 until a lab machine or
 # calibration reports measure the GPU (plan A5); provenance then becomes "measured" for that row.
-MEASURED = {"rtx_3090": "measured: RTX 3090 renderer/resolution matrix and knob costs, 2026-11-17/18"}
-MEASURED_CIRCULAR = {"apple_m1": "measured-circular: rel derived from the same M1 Mobile/Metal frame (DT-MAC-00-R4, "
-                                 "Medium detail, beta1), so it cannot validate the cost model"}
+#
+# VQ-07h-A6 (Mac): DT-MAC-03b measured the 7-core M1 in the real Home -> Fly route at 1920x1080 under Godot
+# 4.8-beta2, GPU ~98% busy, so each clean frame interval bounds its GPU time from above. Dividing the anchor's
+# 1080p GPU time by it gives the M1's rel per renderer; the correction is their mean over the base. This is
+# cooled throughput: a fanless Air in sustained play measured 0.045-0.055, and the anchor (scripted circle) and
+# M1 (real route) workloads differ. Thermal headroom is a power-envelope field (plan A3 step 2), not this factor.
+ANCHOR_1080P_MS = {"forward_plus": 1.07, "mobile": 0.77}  # RTX 3090 matrix GPU p50, MSAA 4x, Scene detail High
+M1_1080P_FRAME_MS = {
+    "forward_plus": 1000.0 / 57.3,  # L09 on High: MSAA 4x, Scene detail Medium, product-default effects
+    "mobile": 1000.0 / 76.6,        # L10 on Standard: MSAA 4x, Scene detail High
+}
+M1_IMPLIED_REL = {k: ANCHOR_1080P_MS[k] / M1_1080P_FRAME_MS[k] for k in ANCHOR_1080P_MS}
+M1_CORRECTION = round(sum(M1_IMPLIED_REL.values()) / len(M1_IMPLIED_REL) / M1_BASE_REL, 2)
+MEASURED = {"rtx_3090": "measured: RTX 3090 renderer/resolution matrix and knob costs, 2026-11-17/18",
+            "apple_m1": "measured: M1 (7-core GPU) Forward+ and Mobile on Metal at 1080p, real route, "
+                        "beta2, cooled (DT-MAC-03b, 2026-11-18); not the Retina panel or fanless sustained play"}
+CORRECTIONS = {"apple_m1": M1_CORRECTION}
 BENCHMARK_DERIVED_IDS = {
     "radeon_8060s", "radeon_8050s", "radeon_8040s", "radeon_890m", "radeon_880m", "radeon_860m", "radeon_840m",
     "radeon_820m", "radeon_780m", "radeon_760m", "radeon_740m", "radeon_680m", "radeon_660m", "arc_b390_igpu",
@@ -229,13 +246,11 @@ for _row in ROWS:
     _id = _row["id"]
     if _id in MEASURED:
         _row["provenance"] = MEASURED[_id]
-    elif _id in MEASURED_CIRCULAR:
-        _row["provenance"] = MEASURED_CIRCULAR[_id]
     elif _id in BENCHMARK_DERIVED_IDS or (_id.startswith("apple_m") and _id != "apple_unlisted"):
         _row["provenance"] = "benchmark-derived"
     else:
         _row["provenance"] = "extrapolated"
-    _row["correction"] = 1.0
+    _row["correction"] = CORRECTIONS.get(_id, 1.0)
 
 DOCUMENT = {
     "format": "openrc-gpu-capability v1",
@@ -249,11 +264,19 @@ DOCUMENT = {
     "cross_checks": [{
         "gpu": "Apple M1", "renderer": "mobile/metal", "gpu_ms": 23.44, "pixels": [2560, 1600],
         "mobile_to_forward_plus_ratio_on_anchor": round(0.77 / 1.07, 3), "implied_rel": 0.053,
+        "note": "beta1 research copy, Medium detail; the source of the 0.055 base",
         "source": "docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md",
-    }],
+    }] + [{
+        "gpu": "Apple M1", "renderer": "%s/metal" % renderer, "frame_ms": round(M1_1080P_FRAME_MS[renderer], 2),
+        "pixels": [1920, 1080], "anchor_ms": ANCHOR_1080P_MS[renderer],
+        "implied_rel": round(M1_IMPLIED_REL[renderer], 4),
+        "note": "beta2, real route, externally cooled, GPU ~98% busy; the frame interval bounds GPU time from above",
+        "source": "docs/research/desktop-delivery-investigations/DT-MAC-03b/README.md",
+    } for renderer in ("forward_plus", "mobile")],
     "provenance": (
         "rel: OpenRC estimate (2026-11-18) of 1080p raster throughput relative to the RTX 3090, from public vendor "
-        "specifications and review aggregates; only the anchor is measured. vram_gb: common vendor configuration. "
+        "specifications and review aggregates; only rows whose provenance is `measured` (the anchor and the M1) were "
+        "measured in OpenRC's workload. vram_gb: common vendor configuration. "
         "steam_share_2026_10: https://store.steampowered.com/hwsurvey/videocard/ (October 2026). "
         "2026 iGPU/RDNA4 revision: Notebookcheck Time Spy and game averages and CheckFPS 1080p comparisons, "
         "scaled to the anchor; integrated parts about 10% below the midpoint for power limits. "

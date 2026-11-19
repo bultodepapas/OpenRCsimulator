@@ -34,8 +34,25 @@ class GpuCapabilityTableTests(unittest.TestCase):
             self.assertGreater(row["correction"], 0.0, row["id"])
         by_id = {row["id"]: row for row in document["rows"]}
         self.assertTrue(by_id["rtx_3090"]["provenance"].startswith("measured:"))
-        self.assertTrue(by_id["apple_m1"]["provenance"].startswith("measured-circular"))
+        self.assertTrue(by_id["apple_m1"]["provenance"].startswith("measured:"))
         self.assertEqual(by_id["radeon_890m"]["provenance"], "benchmark-derived")
+        for row in document["rows"]:
+            if row["correction"] != 1.0:
+                self.assertTrue(row["provenance"].startswith("measured:"), row["id"])
+
+    def test_m1_correction_reproduces_its_measurements(self) -> None:
+        # In-sample calibration consistency (not validation): with its correction, the M1 row reproduces both
+        # measured 1080p renderers within 5%; without it (correction 1.0) the error is 7-12%.
+        document = json.loads(TABLE.read_text(encoding="utf-8"))
+        m1 = next(row for row in document["rows"] if row["id"] == "apple_m1")
+        rel = m1["rel"] * m1["correction"]
+        checks = [check for check in document["cross_checks"]
+                  if check["gpu"] == "Apple M1" and check["pixels"] == [1920, 1080]]
+        self.assertEqual(sorted(check["renderer"] for check in checks), ["forward_plus/metal", "mobile/metal"])
+        for check in checks:
+            self.assertLess(abs(check["anchor_ms"] / rel / check["frame_ms"] - 1.0), 0.05, check["renderer"])
+            self.assertGreater(abs(check["anchor_ms"] / m1["rel"] / check["frame_ms"] - 1.0), 0.05, check["renderer"])
+        self.assertEqual(next(row for row in document["rows"] if row["id"] == "apple_m2")["correction"], 1.0)
 
     def test_anchor_fit_reproduces_both_measurements(self) -> None:
         anchor = json.loads(TABLE.read_text(encoding="utf-8"))["anchor"]
