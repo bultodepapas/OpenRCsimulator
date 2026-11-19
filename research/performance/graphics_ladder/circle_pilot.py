@@ -40,6 +40,21 @@ def clamp(value: float, low: float, high: float) -> float:
     return max(low, min(high, value))
 
 
+def request_with_retry(debugctl, cmd: str, args: dict, timeout: float, port: int) -> dict:
+    """debugctl.request, retried when Windows refuses the connect with WSAEADDRINUSE (10048) or WSAENOBUFS (10055).
+    Each bridge request is a new TCP connection; at ~25 requests/s thousands sit in TIME_WAIT, and Windows
+    occasionally picks an ephemeral port whose 4-tuple is still in TIME_WAIT."""
+    for attempt in range(6):
+        try:
+            return debugctl.request(cmd, args, timeout=timeout, to_port=port)
+        except OSError as exc:
+            code = getattr(exc, "winerror", None) or exc.errno
+            if code not in (10048, 10055, 98) or attempt == 5:
+                raise
+            time.sleep(0.05 * (attempt + 1))
+    raise RuntimeError("unreachable")
+
+
 class CirclePilot:
     def __init__(self, debugctl, port: int, center_n: float = 68.0, center_e: float = 0.0, radius: float = 90.0,
                  altitude: float = 40.0, throttle: float = 0.6, rate_hz: float = 12.0, log_path: str | None = None):
@@ -59,7 +74,7 @@ class CirclePilot:
 
     def request(self, cmd: str, args: dict | None = None) -> dict:
         # 60 s: a first-use shader compile (OpenGL, D3D12) can stall the main thread for more than 10 s.
-        reply = self.debugctl.request(cmd, args or {}, timeout=60.0, to_port=self.port)
+        reply = request_with_retry(self.debugctl, cmd, args or {}, 60.0, self.port)
         if not reply.get("ok"):
             raise RuntimeError("%s: %s" % (cmd, reply.get("error")))
         return reply.get("result") or {}

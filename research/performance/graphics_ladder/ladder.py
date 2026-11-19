@@ -30,7 +30,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from circle_pilot import CirclePilot, import_debugctl  # noqa: E402
+from circle_pilot import CirclePilot, import_debugctl, request_with_retry  # noqa: E402
 
 WINDOWS = sys.platform == "win32"
 NO_WINDOW = subprocess.CREATE_NO_WINDOW if WINDOWS else 0
@@ -438,7 +438,7 @@ class Campaign:
 
     def bridge(self, port: int):
         def call(cmd: str, timeout: float = 120.0, **args):
-            reply = self.debugctl.request(cmd, args, timeout=timeout, to_port=port)
+            reply = request_with_retry(self.debugctl, cmd, args, timeout, port)
             if not reply.get("ok"):
                 raise RuntimeError("%s refused: %s" % (cmd, reply.get("error")))
             return reply.get("result")
