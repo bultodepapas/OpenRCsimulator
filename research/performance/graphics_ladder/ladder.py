@@ -248,16 +248,25 @@ def thermal_now(helper: Path) -> str:
 
 
 class Sampler(threading.Thread):
-    """Samples game CPU time/RSS and GPU utilisation every `period` seconds until stopped."""
+    """Samples game CPU time/RSS and GPU utilisation every `period` seconds until stopped. With `app`, it also
+    checks competing engines and remote sessions every `activity_every` samples, so a contamination that starts
+    mid-window is recorded (launch-time checks alone missed a local test run in VQ-07h)."""
 
-    def __init__(self, pid: int, period: float = 2.0, gpu_log: NvidiaLog | None = None):
+    def __init__(self, pid: int, period: float = 2.0, gpu_log: NvidiaLog | None = None, app: Path | None = None,
+                 activity_every: int = 5):
         super().__init__(daemon=True)
         self.pid, self.period, self.gpu_log = pid, period, gpu_log
+        self.app, self.activity_every = app, activity_every
+        self.activity = {"foreign": set(), "remote": set()}
         self.stop_event = threading.Event()
         self.rows = []
 
     def run(self):
         while not self.stop_event.is_set():
+            if self.app is not None and len(self.rows) % self.activity_every == 0:
+                seen = host_activity(self.app)
+                for key in ("foreign", "remote"):
+                    self.activity[key].update(seen.get(key) or [])
             row = {"t": time.monotonic(), "cputime_s": cputime_s(self.pid), "rss_mib": rss_mib(self.pid)}
             if WINDOWS:
                 row["threads"] = thread_times(self.pid)
@@ -272,6 +281,8 @@ class Sampler(threading.Thread):
 
     def summary(self) -> dict:
         out = {"samples": len(self.rows)}
+        if self.app is not None:
+            out["host_activity"] = {key: sorted(values) for key, values in self.activity.items()}
         if self.gpu_log is not None and self.rows:
             out.update(self.gpu_log.window(self.rows[0]["t"], self.rows[-1]["t"]))
         first, last = (self.rows[0], self.rows[-1]) if len(self.rows) > 1 else ({}, {})
@@ -534,6 +545,11 @@ class Campaign:
             home = FrameCollector(bridge)
             collect(home, lambda: False, 8.0)
             result["home_frames"] = home.summary()
+            # VQ-07h I2: Home may run at a lowered 3D scale; record the budget's decision with Home's frames.
+            result["home_render_budget"] = bridge("eval", expr="Engine.get_main_loop().root.get_meta("
+                                                  "'home_render_budget') if Engine.get_main_loop().root.has_meta("
+                                                  "'home_render_budget') else {}")
+            result["home_scale"] = bridge("eval", expr="Engine.get_main_loop().root.scaling_3d_scale")
 
             aircraft = spec.get("aircraft", "jensen-das-ugly-stik-60")
             bridge("setup", aircraft=aircraft, start="airborne", landscape=spec.get("landscape", "club_field"),
@@ -542,6 +558,15 @@ class Campaign:
             flown = bridge("fly", timeout=300, aircraft=aircraft, start="airborne")
             result["fly_load_s"] = round(time.monotonic() - began, 2)
             result["fly_start"] = {k: flown.get(k) for k in ("aircraft", "tick", "height_m", "speed_mps", "selection")}
+            # A long (cold-cache) load can lose window focus; AppRoot then opens Pause as a safeguard. Continue
+            # once, as the player would, and record it.
+            if wait_for(lambda: "pause" in (bridge("state").get("screens") or []), 3.0, 0.25):
+                bridge("close")
+                try:
+                    bridge("resume")
+                except RuntimeError:
+                    pass  # Continue from the menu already resumed the flight
+                result["fly_start"]["paused_on_start"] = True
 
             pilot = CirclePilot(self.debugctl, port, rate_hz=float(spec.get("pilot_hz", 12.0)),
                                 log_path=str(out_dir / "pilot.csv"))
@@ -570,7 +595,7 @@ class Campaign:
                 counter = LapCounter(pilot, 270.0)
                 if not wait_for(lambda: pilot.failure or counter.update() >= 1, 60, 0.05) or pilot.failure:
                     raise RuntimeError("pilot did not reach the window start: " + pilot.failure)
-                sampler = Sampler(pid, gpu_log=gpu_log)
+                sampler = Sampler(pid, gpu_log=gpu_log, app=app)
                 collector = FrameCollector(bridge)
                 t0 = pilot.last["t"]
                 sampler.start()
@@ -748,6 +773,25 @@ def kill_stray_engines(godot: str, app: Path) -> list:
     return killed
 
 
+def kill_orphan_gpu_logs() -> list:
+    """Windows: kill `nvidia-smi` streams with this orchestrator's query whose parent is gone. Killing a campaign
+    left two such streams polling the driver for eight hours in VQ-07h."""
+    killed = []
+    try:
+        import psutil
+        query = "--query-gpu=" + ",".join(NV_FIELDS)
+        for proc in psutil.process_iter(["pid", "name", "cmdline", "ppid"]):
+            if (proc.info.get("name") or "").lower() != "nvidia-smi.exe":
+                continue
+            command = " ".join(proc.info.get("cmdline") or [])
+            if query in command and "-lms" in command and not psutil.pid_exists(proc.info.get("ppid") or 0):
+                proc.kill()
+                killed.append(proc.info["pid"])
+    except Exception as exc:
+        killed.append("error: %s" % exc)
+    return killed
+
+
 def keep_awake() -> None:
     """Windows: keep the system and display on for the campaign (ES_CONTINUOUS|ES_SYSTEM_REQUIRED|ES_DISPLAY_REQUIRED)."""
     if WINDOWS:
@@ -820,6 +864,7 @@ def main() -> int:
         keep_awake()
         campaign.expect_screen, campaign.expect_refresh = args.expect_screen, args.expect_refresh
         log("stray engines killed at start: %s" % kill_stray_engines(godot, campaign.app))
+        log("orphan nvidia-smi streams killed at start: %s" % kill_orphan_gpu_logs())
     floors = {str(work): 5.0}
     if WINDOWS:
         floors["C:\\"] = 2.0  # NVIDIA shader caches live on C:

@@ -30,7 +30,10 @@ the player's profile; `ladder.py` refuses `OpenRC Simulator`. The snapshot needs
   `<work>/host-build/host-state`. `user://` lives under `~/Library/Application Support/Godot/app_userdata/<name>`.
 - **Windows:** `user://` follows `--profile` (APPDATA, default `<work>/profile`). Keep it on the system drive, like a
   player's profile: the app does some `user://` file I/O on the main thread, and a profile on a USB flash drive
-  turned a periodic controller-store lock into a 26 ms stall twice a second (VQ-07h). The local native kernel's receipt hashes the
+  turned a periodic controller-store lock into a 26 ms stall twice a second. It also inflated first-use shader
+  compilation into multi-second freezes (VQ-07h). Keep it outside `%APPDATA%`: the Microsoft Store Python
+  redirects new folders there to its package `LocalCache`, so deleting the `%APPDATA%` path leaves the old profile
+  in place. The local native kernel's receipt hashes the
   main working tree's exact bytes, which mix CRLF and LF there; a fresh checkout with either line-ending setting
   silently runs the GDScript reference physics. Copy the tracked `app/`, `assets/` and `AGENTS.md` bytes from the
   main tree into the snapshot, copy `app/native/`, and confirm `physics_backend` reads `native` in the smoke results.
@@ -51,7 +54,7 @@ python3 ladder/analyze.py runs plan.json summary
 # Windows, at the unlocked desktop; the orchestrator keeps the display awake
 python ladder/make_plan.py --windows plan.json plan-smoke.json
 $env:OPENRC_TESTQUEUE_ROOT = 'U:\OpenRC\testqueue'   # an unenrolled directory
-$ladderProfile = "$env:APPDATA\OpenRC-ladder-profile"   # user:// on the system drive
+$ladderProfile = "$env:USERPROFILE\OpenRC-ladder-profile" # system drive, outside AppData (Store Python)
 python ladder/ladder.py --work <work> --profile $ladderProfile --plan plan-smoke.json --out smoke --cooldown 10 `
   --thermal-wait 60 --expect-screen "(3840, 2160)" --expect-refresh 120
 python ladder/ladder.py --work <work> --profile $ladderProfile --plan plan.json --out runs --cooldown 10 `
@@ -88,7 +91,12 @@ Keep these outside Git.
   option's standalone cost. Neither is a sustained product qualification, and a run on one computer qualifies
   only that computer and display.
 - The crash includes first-use shader compilation the first time a configuration crashes, and its impact point
-  varies by a few metres.
+  varies by a few metres. A cold load can lose window focus, which makes AppRoot open Pause. The orchestrator
+  then continues once and records `fly_start.paused_on_start`.
+- Each window records competing engines and incoming remote sessions seen during it (`host_activity` in its
+  `process_gpu`), not only at launch. Orphaned `nvidia-smi` streams are killed when a campaign starts.
+- Home's 3D scale may be lowered by the Home render budget when Home misses the refresh. Its decision is in the
+  root viewport's `home_render_budget` meta. Home fps from builds with it are not comparable to builds without it.
 - Record host changes in `conditions.json`; the REF runs are what expose them. On a fanless MacBook Air,
   `thermalState` stays `fair` while the GPU loses up to a third of its throughput, and an attached RustDesk
   viewer cost the M1 8 %. Each run records competing engines and incoming remote-desktop sessions in

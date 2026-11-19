@@ -110,10 +110,10 @@ a taxi or a low chase view costs. No such view has been measured in flight yet (
 
 | # | Finding | Hosts | Evidence | Status, owner |
 | --- | --- | --- | --- | --- |
-| D1 | Controller refresh took the cross-process store lease every 0.5 s on the main thread: 7 ms on NVMe, 26 ms on USB flash; missed a 120 Hz refresh twice a second | Windows (APFS is fast) | [report §1](../graphics-ladder-2026-11-19/README.md#1-a-2-hz-main-thread-stall-found-and-fixed) | Fixed (F3-GP-02-R3). The menu-gamepad case remains open in the [controller plan](../../../../plans/controller-support.md) |
-| D2 | Home is GPU-bound below the refresh rate: M1 52.6 fps at product defaults (60 Hz), 33.6 fps at L13; 3090 105 fps at L13 4K (120 Hz) | both | Home ladders, 3090 ablation | Open: Home / UI-10 owners with VQ |
-| D3 | The crash shader warm-up runs only on Compatibility ([`shader_warmup.gd:9`](../../../../../app/render/crash/shader_warmup.gd)). Mobile's first crash froze 3.4–4.2 s on Windows; the M1, whose Standard is Mobile/Metal, froze up to 520 ms. Compatibility still froze 0.7–2.8 s at L00/L13, so its warm-up misses variants | both | report §5, DT-MAC-03b | Open: crash owners (CR-22c) |
-| D4 | First use of a profile is slow: Compatibility's first Home → Fly took 20–41 s and Mobile's 11–12 s. Caches were on USB flash, so this is unverified on NVMe | Windows | report §5 | Measure first (T4) |
+| D1 | Controller refresh took the cross-process store lease every 0.5 s on the main thread: 7 ms on NVMe, 26 ms on USB flash; missed a 120 Hz refresh twice a second | Windows (APFS is fast) | [report §1](../graphics-ladder-2026-11-19/README.md#1-a-2-hz-main-thread-stall-found-and-fixed) | Fixed (F3-GP-02-R3), including the menu-gamepad case (I1, [§8](#8-implementation-results)) |
+| D2 | Home is GPU-bound below the refresh rate: M1 52.6 fps at product defaults (60 Hz), 33.6 fps at L13; 3090 105 fps at L13 4K (120 Hz) | both | Home ladders, 3090 ablation | Mitigated by I2 on the M1 (51 → 58–60 fps, [§8](#8-implementation-results)); 4K and the Retina panel not re-measured |
+| D3 | The crash shader warm-up runs only on Compatibility ([`shader_warmup.gd:9`](../../../../../app/render/crash/shader_warmup.gd)). Mobile's first crash froze 3.4–4.2 s on Windows; the M1, whose Standard is Mobile/Metal, froze up to 520 ms. Compatibility still froze 0.7–2.8 s at L00/L13, so its warm-up misses variants | both | report §5, DT-MAC-03b | Re-measured cold (T4, [§8](#8-implementation-results)): mostly a USB-cache artifact; Compatibility keeps 0.4 s |
+| D4 | First use of a profile is slow: Compatibility's first Home → Fly took 20–41 s and Mobile's 11–12 s. Caches were on USB flash, so this is unverified on NVMe | Windows | report §5 | Re-measured on NVMe (T4): Compatibility 12.5 s, Mobile 3.6–4.4 s |
 | D5 | Crash frames reach p99 29–30 ms from L06 on at 4K, GPU-bound; at 60 Hz such frames miss a refresh | 3090 | crash ladder | Open: crash with VQ |
 | D6 | Projected shadows and the planar cue cost 6.6 % of flight fps as script work, with no draw-call change | 3090 | ladder L03 | Open: shadows owners |
 | D7 | Product code reads RenderingServer GPU/CPU timing every frame ([`auto_calibration.gd`](../../../../../app/render/auto_calibration.gd), `frame_diagnostics.gd`). Under the separate render thread each read is a blocking sync | latent | engine warning, [Godot server wrappers](https://github.com/godotengine/godot/blob/master/servers/server_wrap_mt_common.h) | Open: VQ-07h before any thread-model change |
@@ -191,6 +191,85 @@ there, and the M1 campaign the host-drift lesson. The rest are specific to this 
   cost". MSAA also shows in flight, because the single-threaded renderer waits for the GPU in part of the frames.
 - **M1 Home.** DT-MAC-03b reported Home as slower than flight. This analysis makes it a product defect (D2): at
   the M1's product defaults, Home runs below the 60 Hz refresh.
+
+## 8. Implementation results
+
+Afternoon of 2026-11-19, P1 items.
+
+During these runs the 4K display was off and the host was driven through RustDesk with a 1080p/60 Hz virtual
+display, so no Windows 4K measurement was possible. The M1 runs used its external 1080p/60 Hz display.
+
+**I1: menu-gamepad lease, done (`198141d58`).**
+
+- The service caches the last locked eligibility verdict under a key of every input it reads: device records,
+  the active profile, and a lock-free store signature.
+- The signature is stat only: existence, modification second and a commit count. It is never cached while a
+  file is less than 3 s old, git's "racily clean" rule.
+- The signature costs 0.15 ms; the lease cost 6 ms (27–42 ms on USB flash).
+- Tests: 61 checks, including another process's write that removes the pad from menus. The caching checks fail
+  on the previous code.
+
+**I2: Home render budget, implemented.**
+
+- **What it does.** `app/render/home_render_budget.gd` watches Home's frame intervals in rolling 90-frame windows
+  while Home is the focused top screen. Frames over 4× the target, such as stalls or pauses, do not count. After
+  two slow windows it lowers the 3D scale to ×, then ×. A step that does not cut the mean interval is undone,
+  and the budget stops for the visit.
+- **Where it acts.** Only on bilinear and FSR 1 scaling.
+- **Ownership.** It owns the scale only while the viewport holds its value under the same reconstruction policy
+  object, so a Settings apply is recognised even when it writes the same value.
+- **Covering and leaving Home.** A screen over Home, focus loss or minimising restores the player's scale.
+  Uncovering Home under the same setting re-applies the kept step without measuring again. Leaving Home forgets the
+  visit.
+
+M1 results, product defaults, VSync at 60 Hz, on the external 1080p display:
+
+| Home | fps | p50 | p95 | 3D scale |
+| --- | --- | --- | --- | --- |
+| Without the budget (3 runs) | 51.–1.5 | 18.–9.0 ms | 2–7 ms | 1.0 |
+| With the budget (5 runs) | 57.–9.5 | 16.–6.6 ms | 2–5 ms | 0.85 or 0.7 |
+
+- **M1 behaviour.** Some runs held at ×. Others went to ×, kept it when it helped, or returned to × when
+  it did not. About – % of Home frames still miss the refresh at any scale, so that share is not GPU work.
+- **Flight.** It always started at the player's scale.
+- **Windows.** At 1080p Home ran at 266 fps and the budget held at 1.0.
+- **Not yet measured.** The 3090 at 4K and the M1's native Retina panel, which the platform rules make its target.
+- **Decision rule.** Two earlier variants of the rule failed on the M1, and the final rule incorporates both lessons:
+  - A one-shot decision taken about 3 s after launch missed that Home grows heavier once its preview loads.
+  - A 5 % miss-share threshold chased the non-GPU misses and gave the resolution back.
+- **Review.** A Good Enemy review found the stale-state, coincident-write, focus, outlier and flapping gaps, now
+  fixed and covered by 36 checks in `test_home_render_budget.gd`.
+- **Evidence.** The ladder now records the budget's decision (`home_render_budget`, `home_scale`) with every run's
+  Home frames.
+
+**I3: crash warm-up on Mobile, not shipped.** T4 re-measured the first crash with Godot's shader cache cleared
+and the profile on a system drive, A against B (warm-up also on Mobile):
+
+| Host, renderer | First crash, longest frame | First Home → Fly |
+| --- | --- | --- |
+| Windows, Mobile/Vulkan L00 and L13 | A 33–48 ms, B 33–42 ms | 3.6–4.4 s |
+| Windows, Compatibility L13 (warm-up active) | 405 ms | 12.5 s |
+| Windows, Forward+ L09 | 20 ms | 4.2 s |
+| M1, Mobile/Metal L09 | A 78 ms, B 62–71 ms | 4.0–4.7 s |
+
+- The campaign's 3.4–4.2 s Mobile stalls and 20–41 s Compatibility loads came from the shader cache living on the
+  USB flash drive.
+- The Mobile warm-up showed no measurable benefit on either host, so it was not added.
+- What remains is Compatibility's 0.4 s first crash in spite of its warm-up, an open item for the crash owners.
+- Apple's own Metal cache stayed warm on the M1, so a first launch after an OS update is not covered.
+
+**I10: harness, partly done.** `ladder.py` now:
+
+- kills orphaned `nvidia-smi` streams at start;
+- samples competing engines and remote sessions every 10 s during each window;
+- continues once, and records it, when a cold load lost focus and AppRoot opened Pause.
+
+Learned on the way:
+
+- The Microsoft Store Python redirects new folders under `%APPDATA%` to its package `LocalCache`. A profile there
+  survives a `rm -rf` of the `%APPDATA%` path, which silently invalidated a "cold" series. Keep `--profile`
+  outside AppData.
+- A process filter that matches its own command line kills the shell running it.
 
 ## Evidence
 
