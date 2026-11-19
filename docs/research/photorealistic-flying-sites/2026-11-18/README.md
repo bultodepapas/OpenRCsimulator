@@ -22,6 +22,8 @@ reasoning; it does not claim runtime implementation or device qualification.
 | [Primary-source register](sources.md) | Which original sources support the claims, with what version and retrieval limits? |
 | [Twenty additional technique investigations](additional-techniques.md) | Which image-based, game-production, terrain, material, lighting and loading methods fit this repository, and what should be tested first? |
 | [Two-round search record](search-rounds.md) | What were the exact first ten and second ten queries, why was round 2 selected, and which results were retained or rejected? |
+| [Twenty-four free-resource investigations](free-resources.md) | Which free assets, datasets and authoring/validation utilities are useful, already present, conditional or unsuitable for public distribution? |
+| [Resource search and repository audit record](resource-search-record.md) | Which 78 query strings were retained, how were conflicting terms checked, and what did the source audit/review change? |
 
 ## Findings that change the decision
 
@@ -54,13 +56,23 @@ Recommendation: keep the current engine, prove one fixed-pilot photo site first,
 and build a small 3D/FPV site as a separately gated extension. Native optimization,
 multiple panoramas and Gaussian splats remain evidence-driven follow-ups.
 
-The requested follow-up adds twenty distinct technical investigations and twenty
-source records (62 total). It favors calibrated projection, conditional tiled
+The second research wave added twenty distinct technical investigations and
+twenty source records (62 at that point). It favors calibrated projection, conditional tiled
 panoramas, relightable scan preparation, bounded surface detail and material
 filtering. It checks existing/rejected OpenRC techniques rather than treating
 them as new implementation. Current-main source differences and Godot-version
 uncertainties are recorded in the search log. The plan maps the selected
 comparisons into its existing steps; no runtime qualification is added.
+
+The next requested follow-up adds **24 free-resource investigations** and
+**24 source records**, for **86 records** in the full pack. Its 78 retained
+search strings cover assets/geodata, mesh/material tools and image/delivery/
+diagnostic utilities. It prioritizes the existing capture chain, reuses the
+pinned glTF packages, distinguishes software from data/service/output rights,
+and holds conflicting redistribution grants. It also corrects the earlier
+PT-16 wording to acknowledge OpenRC's already-adopted maple coverage recipe and
+its bounded native beta1 evidence. New implementation and platform gates remain
+open in the canonical plan.
 
 ## Relationship to earlier research
 
@@ -141,3 +153,37 @@ recorded in the search log:
 
 No new simulator, capture, export or hardware benchmark was executed. Existing
 historical measurements remain scoped to their own engine, scene and device.
+
+## Free-resource follow-up verification
+
+The third wave was checked on 2026-11-18 against research commit
+`0f02635a47c2a83411bd6f153e49c9c914343827`, with the separately fetched main
+revision and scoped differences recorded in the resource search log:
+
+- The pack contains 24 unique FR dossiers with evidence/free terms, OpenRC fit,
+  a concrete first comparison and a disposition. F01–F24 extend the register to
+  86 unique records. Its 78 retained search strings are distinct; the log makes
+  its retained-query scope explicit instead of claiming a full raw transcript.
+- The original 20 PT investigations and their ordered ten-plus-ten query
+  strings remain present. The canonical implementation ledger retains 18 unique
+  SC-PHOTO rows; no implementation step was marked complete by this follow-up.
+- All 390 relative link occurrences and 221 linked heading anchors resolved
+  across the 12 owned plan/research documents and the two photographic-site
+  paragraphs of the research index. Tracked paths absent from the sparse
+  checkout were checked against Git's tree.
+- Nine changed files are Markdown documentation under `docs/`. Code fences,
+  unique IDs, query counts and Git whitespace checks passed. Runtime sources,
+  dependencies, engine pins and imported assets are outside the changed paths.
+- Independent read-only review required strict zero-error accepted-model
+  validation and acknowledgement of the already-adopted maple coverage policy.
+  Both corrections were checked against tracked source and integrated. The
+  lead also resolved an incorrect WorldCover spacing denominator against its
+  original manual and distinguished the actual Tree It EULA from unrelated
+  search results.
+
+The final bounded review confirmed both corrections and found no material
+contradiction in the integrated resource-adoption plan or capture workflow.
+
+No resource was installed or downloaded for adoption, and no new simulator,
+import/export, capture or hardware-performance test was run. The concrete
+comparison plans remain future evidence requirements.

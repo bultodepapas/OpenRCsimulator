@@ -5,6 +5,11 @@ performed for this plan. The [source register](sources.md) records tool evidence
 and [validation](validation-and-budgets.md) separates survey accuracy from visual
 and software acceptance.
 
+The [24 free-resource investigations](free-resources.md) add concrete asset,
+processing and inspection options. Their [search/audit record](resource-search-record.md)
+distinguishes newly assessed tools from existing repository dependencies. Use
+the small selection sequence below; no installation or conversion is claimed.
+
 ## 1. Define the first site before taking photographs
 
 Prepare a short site brief with the landowner/capture and distribution permission,
@@ -190,3 +195,50 @@ takeoff/landing, edge-of-object occlusion, collision and zoom checks. Use
 actual exported packages for final device qualification and clean offline
 resource validation. Retain only compact evidence required to assess those
 gates; the task does not require filling the Git repository with large images.
+
+## 9. Choose the smallest useful free toolchain
+
+The simple pilot remains Hugin, Blender and the pinned Godot application. Use
+our own authorized capture and measured proxies first. Additional tools below
+are conditional authoring choices within SC-PHOTO, not a mandatory stack.
+
+| Need | First resource to consider | Boundary / required comparison |
+| --- | --- | --- |
+| RAW development | [darktable](free-resources.md#fr-17) | Retain RAW/XMP settings and export consistent intermediates before stitching |
+| Genuine exposure brackets | [Luminance HDR](free-resources.md#fr-18) | Inspect ghosts; retain radiometric and display versions separately; EXR conversion cannot restore clipped radiance |
+| Repeatable image inspection/conversion | [OpenImageIO](free-resources.md#fr-20) or [libvips](free-resources.md#fr-19) | Select for a concrete need; measure processing memory/time, channels/color, dimensions and decoded output |
+| One generic grass/pavement comparison | [CGBookcase](free-resources.md#fr-01), [TextureCan](free-resources.md#fr-03), existing cleared materials, or optional [Material Maker](free-resources.md#fr-13) | Exact file grant/hash and map conventions; no implied change to physical friction or surveyed geometry |
+| A scanned landmark needing cleanup | [MeshLab](free-resources.md#fr-09), after Blender baseline | Retain textured source, filter sequence, scale, UVs and shape-error comparison |
+| Independent geometric accuracy check | [CloudCompare](free-resources.md#fr-10) | Actual distances and adequate sampling in the same frame, using held-out measurements |
+| Authorized LAS/LAZ input | [PDAL](free-resources.md#fr-11) | Pin processing JSON and preserve CRS/datum/classification/interpolation/no-data; terrain admission is separate |
+| Reconstruction baseline has a deficiency | [OpenMVS](free-resources.md#fr-12) | Same image/alignment comparison; selected release, CPU/GPU route, completeness, RAM and time |
+| glTF intake and structural review | Existing [glTF Transform](free-resources.md#fr-22) and [Validator](free-resources.md#fr-23) packages | Reuse pinned packages and source checks; extend wrapper scope deliberately for a new asset type |
+| Measured delivery or frame problem | Conditional [KTX/Basis](free-resources.md#fr-21), [gltfpack](free-resources.md#fr-14), [RenderDoc](free-resources.md#fr-24) | Prove exact importer/API support and compare actual export/residency/uncaptured timing |
+
+Geospatial candidates FR-04…08 belong to the later 3D/context workflow. Choose
+one source only after the field location and required information are known.
+Distinguish surface model, bare-earth model, orthophoto, vector footprint and
+categorical land cover. Preserve product year, native spacing/accuracy and
+coordinate metadata; resampling or smoothing does not create survey precision.
+Maintain runway and obstacle truth through the separately accepted physical
+data contract.
+
+Use [ground intake](../../../../tools/ground/import_rc_ground.py) as an existing
+provenance precedent, not a universal importer: it records file hashes, provider,
+dimensions, map roles, OpenGL normal convention and import settings. Keep the
+provider's source archive and license evidence with the authoring record, and
+carry required notices into the offline release. Track tool-code rights, input
+rights, service/access terms and output redistribution separately.
+
+For model intake, retain original validation errors for diagnosis and document
+any narrow repair. The **accepted** candidate must have zero validator errors
+and no resource-load errors, plus reviewed warnings. The existing
+[tree wrapper](../../../../tools/trees/validate_sources.mjs) expects local JSON
+glTF with in-repository references; its package API can support broader formats
+only through an explicitly reviewed path. Repeat actual Godot decode/bake,
+material/normal/scale checks and clean export even after structural validation.
+
+Do not adopt ShareTextures for a public source/bundle while its official terms
+conflict, or assume Tree It's supplied packs are cleared by its free standalone
+tool. Exact selected assets and distribution terms decide admission. No runtime
+service integration or automatic catalog downloading is part of this workflow.

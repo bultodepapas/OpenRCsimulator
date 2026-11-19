@@ -113,10 +113,13 @@ The following cases affected interpretation:
 - **PT-15:** search returned both 4.0 and 4.5 reflection-probe documentation with
   different Compatibility descriptions. The current stable class reference was
   opened to check its renderer limits. The old exclusion was not retained.
-- **PT-16:** the alpha-coverage import setting was found in latest documentation
-  but not in the retrieved stable import page. A direct fetch of the pinned
-  engine's importer source was unavailable. Presence and behavior on OpenRC's
-  exact binary remain an explicit prerequisite; no engine upgrade is assumed.
+- **PT-16:** the initial web search found the alpha-coverage setting in latest
+  documentation, not the retrieved stable page; the pinned importer fetch was
+  unavailable. The later resource audit corrected the initial conclusion using
+  [GDU-11a](../../engine-upgrade/GDU-11/README.md) and the tracked maple import:
+  OpenRC already adopted coverage-preserving maple mipmaps with bounded native
+  beta1 evidence. Exact beta2, new-asset and platform behavior still need their
+  own qualification. The original twenty query/order records above are unchanged.
 - The DICE PDF's lighting-removal section was inspected as text. No slides,
   imagery, game assets, addons or binaries were downloaded into the repository.
 
@@ -155,7 +158,7 @@ adds the material, LOD, precision and resource-lifecycle findings needed here.
 | PT-13 | Reuse the renderer capability probe and plane fallback; resolve documentation/version differences. |
 | PT-14 | Conditional authored fixed-lighting 3D scene; account for editor-only baking and dynamic aircraft probes. |
 | PT-15 | Reuse bounded probe refresh ownership; verify the actual renderer rather than old documentation. |
-| PT-16 | Conditional import/coverage experiment; the exact pinned feature is unverified. |
+| PT-16 | Retain the already-adopted maple coverage recipe and its bounded beta1 evidence; qualify new assets, beta2 and platforms separately. |
 | PT-17 | Compare offline roughness filtering only after confirming the target material's specular response, with a normal-map control. |
 | PT-18 | Keep existing haze initially; any LUT atmosphere change belongs to the shared world owner. |
 | PT-19 | Defer a bounded grass-patch experiment; the source demonstrates fur, grass is an adaptation. |

@@ -11,6 +11,12 @@ The repository audit is tied to commit
 [Current architecture](current-architecture.md). The authoritative proposed work
 and status are in the [plan](../../../plans/photorealistic-flying-sites.md).
 
+The [free-resource follow-up](free-resources.md) adds F01–F24, bringing this
+register to **86 stable source records**. A record may contain several primary
+URLs needed to separate functionality, software licensing and asset/service
+terms; it is not a count of independent websites. Its repository baseline and
+current-main check are in the [resource search record](resource-search-record.md).
+
 ## Reading and version limits
 
 - Godot `stable`, vendor product pages and `latest` manuals can change. The
@@ -470,7 +476,10 @@ guide the proposal; exact renderer and appearance still require testing.
 [3D antialiasing](https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html).
 Separate mip coverage from alpha-to-coverage/MSAA and material transparency mode.
 The setting was absent from the retrieved stable image page; the pinned engine
-source fetch was unavailable. Its presence on OpenRC's binary is unverified.
+source fetch was unavailable. The later repository audit found the already
+enabled maple import and [GDU-11a's bounded native beta1 adoption](../../engine-upgrade/GDU-11/README.md).
+That evidence corrects the initial broad uncertainty; new assets, beta2 scene
+behavior and other platform/release results are not inferred from it.
 
 ## E17
 
@@ -502,3 +511,242 @@ overdraw and contact appearance require their own comparison.
 Documents threaded resource requests, blocking retrieval and scene-tree safety.
 Resource loading is one component of a bounded scenery-residency design; no
 automatic cancellation, hitch-free upload or isolated World globals are inferred.
+
+## F01
+
+[CGBookcase — catalog and CC0 statement](https://www.cgbookcase.com/textures),
+[Asphalt 02 maps](https://www.cgbookcase.com/textures/asphalt-02), and
+[Creative Commons — CC0 legal text](https://creativecommons.org/publicdomain/zero/1.0/legalcode.en).
+The selected asset page explicitly labels DirectX normal maps. Resolution and
+archive contents must be checked per download; catalog filters do not establish
+every asset's available sizes. No downloaded file was inspected.
+
+## F02
+
+[ShareTextures — license](https://www.sharetextures.com/p/license),
+[terms](https://www.sharetextures.com/p/terms),
+[about/free access](https://www.sharetextures.com/about), and
+[Asphalt 10](https://www.sharetextures.com/textures/road/asphalt-10).
+The custom-CC0 redistribution restriction and standard-CC0 distribution wording
+conflict. Retain both, and hold public source/bundle distribution rather than
+declaring unrestricted CC0. Access restrictions also prohibit automated and
+bypassing download integration. No asset was acquired.
+
+## F03
+
+[TextureCan — terms](https://www.texturecan.com/terms/) and
+[Grassland Ground 0009](https://www.texturecan.com/details/130/).
+Terms describe CC0 and redistribution with projects/3D assets. The product page
+lists 1K/2K/4K maps and SBSAR; it does not prove engine SBSAR support, downloaded
+archive contents, normal handedness or suitability for maintained RC turf.
+
+## F04
+
+[Copernicus — DEM product catalog](https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM),
+[GLO-30-F license](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/DEM/resources/license/License-COPDEM-30.pdf),
+[combined DEM licenses including restricted variants](https://dataspace.copernicus.eu/sites/default/files/media/files/2025-06/copernicus_contributing_mission_data_access_v2_cop_dem_licenses.pdf), and
+[2026-08-25 View Service update](https://dataspace.copernicus.eu/news/2026-8-25-copernicus-dem-30m-view-service-update).
+Distinguish DSM from bare-earth survey, -F from -R, and registered download
+access from the restricted view service. Reuse requires the applicable exact
+product notices and conditions; no download/eligibility was tested.
+
+## F05
+
+[OpenTopography — usage terms](https://opentopography.org/usageterms),
+[access tiers](https://opentopography.org/about/subscriptions),
+[developer/API conditions](https://www.opentopography.org/developers),
+[Swiss 0.5 m dataset metadata](https://portal.opentopography.org/datasetMetadata?otCollectionID=OT.072026.2056.1), and
+[swisstopo — original OGD terms](https://www.swisstopo.admin.ch/en/terms-of-use-free-geodata-and-geoservices).
+Dataset rights and processing-service access are separate. Quotas are dated,
+and exact free-tier eligibility for the example dataset is unverified. A 0.5 m
+grid does not establish 0.5 m vertical accuracy or runway survey adequacy.
+
+## F06
+
+[OpenAerialMap — legal terms](https://openaerialmap.org/legal/),
+[current FAQ](https://docs.imagery.hotosm.org/about/faq/),
+[imagery format/metadata documentation](https://docs.openaerialmap.org/ecosystem/imagery-data/),
+[browser guide](https://docs.openaerialmap.org/browser/user-guide/), and
+[Creative Commons — CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+The older general CC BY statement and current instruction to check each image
+require item/provider-specific verification. No particular image, resolution,
+site coverage or reuse grant was selected. Orthophotos are not pilot-eye images.
+
+## F07
+
+[Geofabrik — free downloads and formats](https://www.geofabrik.de/en/data/download.html),
+[example regional extract](https://download.geofabrik.de/europe/germany/baden-wuerttemberg.html),
+[OSM — copyright/license](https://www.openstreetmap.org/copyright/en), and
+[OSMF — Produced Work guideline](https://osmfoundation.org/wiki/Licence/Community_Guidelines/Produced_Work_-_Guideline).
+Supports dated offline vector inputs and the distinction between produced work
+and derivative database obligations. It does not decide the classification of
+an unspecified generated 3D package or clear underlying third-party imagery.
+
+## F08
+
+[ESA WorldCover — official dataset repository](https://github.com/ESA-WorldCover/esa-worldcover-datasets) and
+[2021 v200 product user manual, version 2.0](https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PUM_V2.0.pdf).
+The manual defines categorical classes, nominal 10 m sampling, EPSG:4326 COG
+tiles and product limitations; dataset CC BY 4.0 terms are distinct from the
+repository code's GPL label. The general site access page timed out during
+research; the repository/manual were available. No tiles were downloaded.
+
+## F09
+
+[MeshLab — official site](https://www.meshlab.net/),
+[GPL-3.0 license](https://github.com/cnr-isti-vclab/meshlab/blob/main/LICENSE.txt),
+[textured mesh filters](https://github.com/cnr-isti-vclab/meshlab/blob/main/docs/dox/filter.dox), and
+[PyMeshLab — filter scripts](https://pymeshlab.readthedocs.io/en/latest/filter_scripts.html).
+The site explicitly replaces meshlabserver with PyMeshLab for batch processing.
+Mesh reduction/material preservation on our scan remains a proposed comparison,
+not a successful import or quality result.
+
+## F10
+
+[CloudCompare — repository](https://github.com/CloudCompare/CloudCompare),
+[versioned license file](https://github.com/CloudCompare/CloudCompare/blob/master/license.txt),
+[component license wiki](https://www.cloudcompare.org/doc/wiki/index.php/License),
+[cloud-to-mesh distances](https://cloudcompare.org/doc/wiki/index.php/Cloud-to-Mesh_Distance),
+[global shift/scale](https://cloudcompare.org/doc/wiki/index.php/Global_Shift_and_Scale), and
+[CLI](https://cloudcompare.org/doc/wiki/index.php/Command_line_mode).
+GPL version statements differ across project surfaces; preserve exact release,
+component and plugin notices. Approximate preview distances are not final
+measurement values; compared mesh vertices alone can undersample a surface.
+
+## F11
+
+[PDAL — license](https://github.com/PDAL/PDAL/blob/master/LICENSE.txt),
+[installation routes](https://pdal.io/en/latest/download.html),
+[pipelines](https://pdal.io/en/stable/pipeline.html), and
+[GDAL raster writer](https://pdal.io/en/stable/stages/writers.gdal.html).
+Documents BSD software and reproducible point-cloud/raster operations, not
+input-data rights, guaranteed classification accuracy or an OpenRC ground API.
+Preserve selected build dependencies and geospatial processing metadata.
+
+## F12
+
+[OpenMVS — COLMAP interchange/usage](https://github.com/cdcseacave/openMVS/blob/develop/docs/wiki/Usage.md),
+[development pipeline description](https://github.com/cdcseacave/openMVS/blob/develop/docs/pipelines.md),
+[architecture/formats](https://github.com/cdcseacave/openMVS/blob/develop/docs/architecture.md), and
+[copyright/third-party notices](https://github.com/cdcseacave/openMVS/blob/develop/COPYRIGHT.md).
+Development docs describe CPU/CUDA paths and newer functionality that can differ
+from older README/released versions. The pipeline document identifies automated
+codebase analysis as its origin. Pin a release and verify the actual route;
+neither documentation nor AGPL licensing supplies OpenRC performance/output rights.
+
+## F13
+
+[Material Maker — project and licensing](https://github.com/RodZill4/material-maker/blob/master/README.md),
+[license file](https://github.com/RodZill4/material-maker/blob/master/LICENSE.md),
+[export documentation](https://rodzill4.github.io/material-maker/doc/export.html),
+[painting inputs](https://rodzill4.github.io/material-maker/doc/user_interface_paint_panel.html), and
+[command line](https://rodzill4.github.io/material-maker/doc/command_line.html).
+The export page still names SpatialMaterial; use explicit image-map interchange
+and verify the current build rather than infer 4.8 material compatibility.
+The repository MIT default does not clear arbitrary community/input resources.
+
+## F14
+
+[meshoptimizer — gltfpack options/extensions](https://github.com/zeux/meshoptimizer/blob/master/gltf/README.md),
+[MIT license](https://github.com/zeux/meshoptimizer/blob/master/LICENSE.md), and
+[Godot maintainer discussion of imported glTF storage](https://github.com/godotengine/godot-proposals/discussions/14857).
+The optimizer can introduce extensions and discard unknown/custom data.
+The maintainer comment is dated contextual evidence, not a formal guarantee
+for every import/export mode. Measure the real exported resources and distinguish
+editor-imported assets from runtime GLB loading.
+
+## F15
+
+[xatlas — project](https://github.com/jpcy/xatlas),
+[MIT license](https://github.com/jpcy/xatlas/blob/master/LICENSE),
+[OBJ example](https://github.com/jpcy/xatlas/blob/master/source/examples/example.cpp),
+[Godot vendored source](https://github.com/godotengine/godot/blob/master/thirdparty/xatlas/xatlas.cpp), and
+[Godot — lightmap UV workflow](https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_lightmap_gi.html).
+The example does not retain input materials. Upstream vendoring is a reason to
+check the pinned engine first, not proof of a tested OpenRC bake/export pipeline.
+
+## F16
+
+[Evolved Software — commercial-use/tool distribution statement](https://www.evolved-software.com/),
+[Tree It — formats, free access and FAQ](https://www.evolved-software.com/treeit/treeit),
+[supplier Steam EULA](https://store.steampowered.com//eula/2386460_eula_0), and
+[Steam product page](https://store.steampowered.com/app/2386460/).
+Standalone and Steam terms must not be conflated. The EULA's supplied-pack and
+attribution conditions require exact-distribution review. Direct EULA retrieval
+initially failed; the supplier-linked double-slash URL was then opened successfully.
+Unrelated EULA/search-aggregator results were discarded. No executable or
+sample package was obtained, run or admitted for public source redistribution.
+
+## F17
+
+[darktable — about/license](https://www.darktable.org/about/),
+[features and formats](https://www.darktable.org/about/features/),
+[installation/build availability](https://www.darktable.org/install/), and
+[export workflow](https://docs.darktable.org/usermanual/development/en/overview/workflow/export/).
+Documents GPL-3.0-or-later, non-destructive development and explicit exports.
+Current binaries and moving development manuals require version/OS checks;
+no capture processing or installed-tool claim is made.
+
+## F18
+
+[Luminance HDR — project/formats](https://github.com/LuminanceHDR/LuminanceHDR),
+[install guidance](https://github.com/LuminanceHDR/LuminanceHDR/blob/master/INSTALL.md), and
+[project-license metadata](https://github.com/LuminanceHDR/LuminanceHDR/blob/master/net.sourceforge.qtpfsgui.LuminanceHDR.appdata.xml).
+The metadata explicitly says GPL-2.0+; a direct LICENSE fetch failed and the
+GitHub badge alone omits the later-version qualifier. Bracket merging and
+tone mapping are documented, but radiometric quality and ghosting need a trial.
+
+## F19
+
+[libvips — overview/license](https://www.libvips.org/),
+[installation](https://www.libvips.org/install.html), and
+[dzsave tile-pyramid operation](https://www.libvips.org/API/current/method.Image.dzsave.html).
+Documents LGPL-2.1-or-later and offline image/pyramid processing. File formats
+depend on compiled plugins; a generated tile layout is not a Godot loader or
+a measured memory/performance improvement for this project.
+
+## F20
+
+[OpenImageIO — introduction/license](https://openimageio.readthedocs.io/en/stable/oiiointro.html),
+[stable oiiotool manual](https://openimageio.readthedocs.io/en/stable/oiiotool.html), and
+[installation/build guidance](https://github.com/AcademySoftwareFoundation/OpenImageIO/blob/main/INSTALL.md).
+The stable manual retrieved identified 3.2.2; search also returned older and
+development manuals. Pin the selected tool/config. Assigning color-space metadata
+and changing pixel values are distinct; processing a JPEG cannot restore lost HDR.
+
+## F21
+
+[KTX-Software — official tools](https://github.com/KhronosGroup/KTX-Software/blob/main/README.md),
+[license/component exceptions](https://github.com/KhronosGroup/KTX-Software/blob/main/LICENSE.md),
+[Khronos KTX developer guide](https://github.com/KhronosGroup/3D-Formats-Guidelines/blob/main/KTXDeveloperGuide.md), and
+[Basis Universal — codecs/license/interchange limits](https://github.com/BinomialLLC/basis_universal).
+KTX's optional ETC unpack decoder is expressly listed as non-open-source and
+can be excluded from a build; do not label the entire dependency tree Apache.
+New codec interchange claims do not establish pinned-Godot importer or GPU support.
+
+## F22
+
+[glTF Transform — CLI](https://gltf-transform.dev/cli),
+[SDK](https://github.com/donmccurdy/glTF-Transform), and
+[MIT license](https://github.com/donmccurdy/glTF-Transform/blob/main/LICENSE.md).
+Supports inspection and selective transforms. OpenRC's exact 4.5.0 package pins
+come from its repository, not from an assumed latest global CLI. Compression
+examples require independently qualified loader extensions and asset semantics.
+
+## F23
+
+[Khronos glTF Validator — usage and supported checks](https://github.com/KhronosGroup/glTF-Validator/blob/main/README.md),
+[JavaScript API](https://github.com/KhronosGroup/glTF-Validator/blob/main/node/README.md), and
+[Apache-2.0 license](https://github.com/KhronosGroup/glTF-Validator/blob/main/LICENSE).
+The general tool supports glTF/GLB, but OpenRC's existing wrapper has narrower
+repository-local JSON glTF input constraints. Structural validity does not prove
+appearance, scale, provenance, physical accuracy or engine compatibility.
+
+## F24
+
+[RenderDoc — project, MIT license and API/platform table](https://github.com/baldurk/renderdoc) and
+[development build flags](https://github.com/baldurk/renderdoc/blob/v1.x/CMakeLists.txt).
+The advertised support table does not admit Metal; a disabled development Metal
+flag was found and is not a tested release/support promise. Use a confirmed
+Windows/Linux API path for our application; keep Mac diagnosis with its existing
+tools and measure final timing outside the frame-capture session.

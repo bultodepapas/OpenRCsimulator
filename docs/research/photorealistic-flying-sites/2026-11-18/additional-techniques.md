@@ -453,23 +453,31 @@ reuse existing ownership, qualify a small additional probe only for a visible ga
 
 **Evidence.** Newer Godot import documentation describes preserving alpha-test
 coverage through mip levels; the antialiasing manual distinguishes geometry MSAA
-from alpha-to-coverage and other filtering ([E16](sources.md#e16)). The import
-setting was not established on OpenRC's exact binary in this research.
+from alpha-to-coverage and other filtering ([E16](sources.md#e16)). The initial
+web review did not establish the pinned importer. The later resource audit
+found stronger repository evidence: OpenRC already enables the option for the
+maple leaf atlas at threshold 0.5, with an unchanged material cutoff of 0.5.
+[GDU-11a](../../engine-upgrade/GDU-11/README.md) records bounded Windows native
+4.8-beta1 comparisons at actual 1080p/1440p and local-development adoption.
+Those results do not qualify beta2, Mac, release, FPS or another foliage asset.
 
-**OpenRC fit.** Prior tree work rejected ordinary leaf mipmaps because they
-changed canopy gaps. Preserving a statistical alpha coverage does not guarantee
+**OpenRC fit.** Earlier tree work rejected ordinary leaf mipmaps because they
+changed canopy gaps; the later maple-specific coverage policy is already
+implemented and must be preserved. Quaternius and LandscapeLab retain separate
+policies. Preserving a statistical alpha coverage does not guarantee
 preserving those gaps or the perceived tree shape. First inspect the actual
 material transparency mode: the documented import option targets alpha-tested
 color textures, not an indiscriminate change to alpha-hash/blended materials.
 Current engine/renderer support and the existing custom vegetation adapters need
 verification. This is a controlled alternative to the prior candidate.
 
-**Experiment.** Compare retained leaves with coverage-aware preprocessing only
-if supported, keeping thresholds, source texture and density fixed. Measure
+**Experiment.** Use the accepted maple recipe and GDU-11a fixture as an existing
+baseline, and compare a new asset only after checking its exact importer and
+material path. Keep thresholds, source texture and density fixed. Measure
 silhouette/gap change and moving-view shimmer at pilot, overhead and FPV angles;
 review aircraft readability behind foliage. Test alpha-to-coverage separately
-with the actual MSAA configuration and renderer. **Disposition: conditional
-import experiment; preserve the existing default until appearance and cost pass.**
+with the actual MSAA configuration and renderer. **Disposition: retain current
+maple adoption; qualify beta2/new assets/platforms before extending it.**
 
 ## PT-17
 

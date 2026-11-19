@@ -34,6 +34,13 @@ result is delivered by this planning branch.
 
 The follow-up [twenty technique investigations](../research/photorealistic-flying-sites/2026-11-18/additional-techniques.md), based on [ten searches followed by ten adaptive searches](../research/photorealistic-flying-sites/2026-11-18/search-rounds.md), extend this recommendation with game-production methods and explicit current-code comparisons. Their selected experiments are assigned to the existing steps below; they do not introduce twenty mandatory features.
 
+The next [24 free-resource investigations](../research/photorealistic-flying-sites/2026-11-18/free-resources.md)
+add asset/geodata sources, mesh/material tools, image preparation and delivery/
+diagnostic utilities, with [78 retained search strings and a repository audit](../research/photorealistic-flying-sites/2026-11-18/resource-search-record.md).
+Their source-specific licensing, existing-tool reuse and proposed trials refine
+the workflow below. The research pack now contains 86 stable source records;
+this does not mean 86 websites or 24 adopted dependencies.
+
 ## Product scope
 
 | Site type | Intended experience | Camera and lighting contract |
@@ -94,7 +101,7 @@ and evidence requirements, not duplicate implementation status.
 
 | ID | Work and dependency | Required proof / status |
 | --- | --- | --- |
-| SC-PHOTO-00 | Audit current source, official simulator precedent, engines, tools, rights and implementation seams; register subtrack | **Research complete.** Initial pack plus twenty follow-up technique investigations from two ordered rounds of ten searches; 62 source records. Documentation checks recorded in its README; runtime and hardware evidence remain absent |
+| SC-PHOTO-00 | Audit current source, official simulator precedent, engines, tools, rights and implementation seams; register subtrack | **Research complete.** Initial pack, twenty technique investigations from two ordered rounds of ten searches, and 24 additional free-resource investigations with 78 retained query strings; 86 source records. Documentation checks recorded in its README; runtime and hardware evidence remain absent |
 | SC-PHOTO-01 | Select pilot site, capture rights, camera station, runway measurements and platform baseline; depends on 00 | Pending. Rights/provenance record, measured versus estimated quantities, held-out landmarks, named hardware and agreed acceptance envelope |
 | SC-PHOTO-02 | Disposable panorama + occlusion + shadow rendering spike on synthetic geometry; depends on 00, real photos optional | Pending. Same fixture in Compatibility, Mobile/Metal and applicable Forward+ configurations; choose a supported composition method before building a complete site |
 | SC-PHOTO-03 | Validate a separate site descriptor and catalog capability lookup; depends on 01–02 | Pending. Existing adapters retain their contract; unknown versions, bad paths/transforms and mismatched field identities fail before scene replacement; bounded memory admission |
@@ -191,7 +198,7 @@ The [comparison and proposed tests](../research/photorealistic-flying-sites/2026
 - **03/07/08 — loading:** PT-20 reuses staged construction and adds bounded resource requests, stale-result rejection and measured upload/residency costs as needed. It cannot stream physical ground or contacts according to graphics quality.
 - **11 — 3D asset quality:** first compare PT-06 lighting-reduced scans, PT-12 a controlled shoulder material blend, PT-13 local markings/overlays and PT-17 normal-guided roughness filtering where the actual material has a confirmed specular response. Use existing ground/world/asset owners and shared material conventions; binding a grass roughness map alone does not create that response.
 - **05/11 — lighting:** PT-15 reuses bounded reflection ownership; PT-14 baked lighting is conditional on an authored, fixed-lighting 3D scene and an editor-bake/export path.
-- **09/11 — measured detail cost:** PT-08 HLOD and PT-16 foliage filtering need a demonstrated baseline defect and separate moving-view/zoom evidence. Preserve the earlier rejected impostor, mipmap and ridge-LOD candidate records.
+- **09/11 — measured detail cost:** PT-08 HLOD and extensions of PT-16 foliage filtering need a demonstrated baseline defect and separate moving-view/zoom evidence. Retain the already-adopted maple coverage recipe and its bounded GDU-11a beta1 evidence; qualify new assets/beta2/platforms separately. Preserve the earlier rejected impostor, ordinary-mipmap and ridge-LOD candidate records.
 
 Clipmaps, runtime virtual texturing, layered-depth rendering, shell vegetation,
 new atmosphere LUTs and a general floating origin remain conditional research.
@@ -200,7 +207,37 @@ the follow-up found version differences in decals, reflection probes and foliage
 import options. These choices require no engine migration or dependency upgrade
 to be assumed during planning.
 
+## Resource adoption within the existing steps
+
+The [24 dossiers](../research/photorealistic-flying-sites/2026-11-18/free-resources.md)
+are a screened set of options. Start with the shortest working authoring chain
+and add a tool only to resolve a measured deficiency or a reproducibility need.
+These are proposed choices, not another implementation-status ledger.
+
+| Existing work | Resource decision | Evidence before adoption |
+| --- | --- | --- |
+| 01/02/05/07: first photographic pilot | Retain Hugin/Blender/Godot; darktable (FR-17) for RAW and Luminance HDR (FR-18) for justified brackets | Controlled capture/master, no ghosting or unexplained color/exposure seams, separate display/lighting resources |
+| 07: reproducible imagery and models | Compare OpenImageIO or libvips (FR-20/19) as needed; reuse pinned glTF Transform and Validator (FR-22/23) | Exact versions/configuration, source/output hashes, accepted candidate with zero validator and resource-load errors, correct repeat import and clean export |
+| 07/11: material candidates | Shortlist one exact CGBookcase or TextureCan asset (FR-01/03); Material Maker (FR-13) remains optional | Per-file terms/hash, map channels/normal convention, physical tile scale, visual improvement and actual imported resource cost |
+| 01/07/11: real-world context | Copernicus, OpenTopography, OpenAerialMap, OSM/Geofabrik and WorldCover (FR-04…08) remain product/site-specific | Actual geographic coverage, data/service rights, attribution, date/CRS/datum/resolution, independent alignment checks; context does not establish contact truth |
+| 04b/11: measured 3D scene | ODM/Blender baseline first; MeshLab, CloudCompare, PDAL and OpenMVS (FR-09…12) only for a specific cleanup/QA/input/reconstruction comparison | Same small input set, retained transforms/settings, held-out survey errors, completeness, processing cost, supported authoritative contacts |
+| 07/09/11: optimization | Inspect existing native meshoptimizer/unwrap first; gltfpack, xatlas and KTX/Basis (FR-14/15/21) are conditional | Required names/materials/metadata preserved, each extension/codec tested on pinned Godot and exported targets, measured shipped size/residency/frame behavior |
+| 02/09: graphics diagnosis | RenderDoc (FR-24) on a confirmed API/device path; existing native Mac tools for Metal | Inspect actual passes/resources, then measure frame pacing outside capture; keep platform results separate |
+| 01/07/10: distribution exclusions | Hold ShareTextures (FR-02) while its terms conflict; Tree It (FR-16) is low priority with distribution-specific and sample-rights checks | Exact intended source/binary packaging grant; no assumption that a free download or tool license clears a public asset bundle |
+
+Reuse [ground intake](../../tools/ground/README.md) and the
+[tree pipeline](../../tools/trees/README.md), including their asset-specific
+limitations. The existing validator wrapper accepts repository-local JSON glTF;
+a new external GLB route needs deliberate intake/API work. No new service key,
+online runtime terrain dependency, tool installation or engine upgrade is
+required by this plan. The [capture pipeline](../research/photorealistic-flying-sites/2026-11-18/capture-and-asset-pipeline.md)
+defines the per-source and per-output records needed to make the selected chain
+reproducible and redistributable.
+
 ## Planning ranges and staffing
+
+These ranges retain the original scope. The resource choices above add optional
+comparisons within the existing steps, not a requirement to adopt every tool.
 
 These are engineering estimates, not measured delivery dates or vendor quotes.
 Assume one experienced Godot developer and part-time photo/3D support, access to
