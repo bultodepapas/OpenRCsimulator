@@ -4,7 +4,9 @@
 [graphics ladder](../../../../../research/performance/graphics_ladder/README.md). It complements the scripted
 [per-setting GPU costs](../knob-costs-2026-11-18/README.md) and the direct-route
 [renderer matrix](../rtx3090-matrix-2026-11-17/README.md), and is the Windows counterpart of the M1 ladder
-[DT-MAC-03b](../../../desktop-delivery-investigations/DT-MAC-03b/README.md).
+[DT-MAC-03b](../../../desktop-delivery-investigations/DT-MAC-03b/README.md). The
+[cross-platform analysis](../ladder-analysis-2026-11-19/README.md) compares both ladders and lists the defects,
+improvement plan and follow-up tests.
 
 | | |
 | --- | --- |
@@ -75,40 +77,56 @@ smoothness numbers are those of the A/B.
 | With VSync at 120 Hz | 117.6 fps, GPU 38 %, 157 W |
 
 Every High configuration keeps the main thread at 89–95 %. Windowed 1080p and 1440p are only 4–10 % faster than
-4K, with the GPU 30–46 % busy. Graphics options therefore move fps only through their CPU cost.
+4K, with the GPU 30–46 % busy. Graphics options therefore move flight fps mainly through their CPU cost. MSAA
+also shows in flight, because the single-threaded renderer still waits for the GPU in part of the frames.
 
 ## 3. Ladder
 
-4K borderless, VSync off, four passes. Δ is the paired step delta with its 95 % interval; **bold** steps are
-resolved. GPU ms is the root viewport's time per frame.
+4K borderless, VSync off. Δ is the step delta paired within each pass, with its 95 % interval; **bold** deltas
+are resolved. Pass 1 is excluded. It ran right after the smoke warm-up and still paid first-use costs: −6.6 fps on
+average against passes 2–4, and up to −38.7 fps (L01). With it included, L01 and L03 looked 2 and 1 points more
+expensive and MSAA 2× unresolved. GPU ms is the root viewport's time per frame in flight.
 
-| Step | Adds | fps | Δ (95 % CI) | GPU ms | Draw calls | Home fps |
-| --- | --- | --- | --- | --- | --- | --- |
-| L00 | Every option at its minimum | 333.0 | | 1.75 | 311 | 229 |
-| L01 | Scene detail Medium | 324.4 | −2.6 % (±7.1 %) | 1.75 | 312 | 224 |
-| L02 | MSAA 2× | 314.5 | −2.9 % (±6.5 %) | 2.01 | 312 | 188 |
-| **L03** | Projected shadows and planar aircraft cue | 289.8 | **−7.9 % (±3.9 %)** | 2.01 | 315 | 182 |
-| L04 | Native sun shadows, Automatic distance and softness, Low atlas | 291.8 | +0.8 % (±5.5 %) | 2.04 | 455 | 157 |
-| L05 | Shadow quality Standard | 291.9 | 0.0 % (±2.4 %) | 2.08 | 595 | 144 |
-| L06 | Cloud shadows | 288.2 | −1.3 % (±2.0 %) | 2.08 | 595 | 142 |
-| L07 | Birds, flags, runway meadow, RC track | 274.4 | −4.8 % (±5.1 %) | 2.10 | 603 | 141 |
-| L08 | Lens and impact effects, aircraft lighting Standard | 269.6 | −1.7 % (±3.4 %) | 2.10 | 603 | 141 |
-| L09 | MSAA 4× (product defaults with Scene detail Medium) | 273.0 | +1.3 % (±3.3 %) | 2.16 | 603 | 128 |
-| L10 | Scene detail High | 264.8 | −3.0 % (±6.3 %) | 2.22 | 610 | 128 |
-| L11 | Shadows High, Far, Soft | 269.0 | +1.7 % (±5.1 %) | 2.21 | 744 | 133 |
-| L12 | Scene detail Extreme | 266.6 | −0.9 % (±1.2 %) | 2.21 | 743 | 126 |
-| L13 | Shadows Ultra, lens Ultra, lighting High, birds Many, flags Detailed | 268.3 | +0.6 % (±1.7 %) | 2.23 | 743 | 104 |
-| **L14** | MSAA 8× | 252.2 | **−6.0 % (±2.4 %)** | 2.69 | 743 | 92 |
+The same runs give three ladders, each limited by a different resource:
 
-- The whole ladder costs 19 % (333 → 268 fps); with MSAA 8×, 24 %. Every step still runs above 250 fps.
-- The projected shadows and planar cue (L03) change neither GPU time nor draw calls, so their resolved cost is
-  per-frame script work on the main thread. MSAA is the only option that moves GPU time (2× +0.26 ms, 8×
-  +0.46 ms); only 8× shows in fps.
-- The native shadow tiers add 140–420 shadow draw calls and cost nothing measurable: Vulkan submission on this
-  CPU and the 3090's spare GPU time absorb them. Birds, flags, meadow and track (L07) are a CPU cost of up to
-  5 %, unresolved.
-- **Home is the heaviest screen.** It falls from 229 to 104 fps at L13 and 92 fps at L14, while flight stays above
-  250 fps, so at 4K with every option on, Home does not hold 120 Hz on this GPU ([section 6](#6-experiments)).
+- **Flight** (the two-lap orbit) is limited by the main thread.
+- **Home** (8 s) is GPU-bound. It is the most precise ladder.
+- **The crash** (dive, impact and 4 s) is mostly GPU-bound: the main thread drops to 62–78 % and the GPU runs at
+  82–94 %.
+
+| Step | Adds | Flight fps | Flight Δ | Home fps | Home Δ | Crash Δ | GPU ms | Draw calls |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| L00 | Every option at its minimum | 335.7 | | 229 | | | 1.75 | 311 |
+| L01 | Scene detail Medium | 334.1 | −0.4 % (±4.6 %) | 226 | −1.2 % (±2.6 %) | −2.6 % (±12.4 %) | 1.75 | 312 |
+| L02 | MSAA 2× | 317.8 | **−4.9 % (±3.3 %)** | 193 | **−14.7 % (±2.1 %)** | −9.0 % (±13.1 %) | 2.01 | 312 |
+| L03 | Projected shadows and planar aircraft cue | 296.8 | **−6.6 % (±1.8 %)** | 182 | **−5.9 % (±2.2 %)** | −1.9 % (±8.8 %) | 2.01 | 315 |
+| L04 | Native sun shadows, Automatic distance and softness, Low atlas | 294.0 | −0.9 % (±2.5 %) | 175 | **−3.4 % (±2.3 %)** | −2.0 % (±3.7 %) | 2.04 | 455 |
+| L05 | Shadow quality Standard | 292.0 | −0.7 % (±1.8 %) | 144 | **−18.1 % (±0.9 %)** | **−10.2 % (±6.0 %)** | 2.08 | 595 |
+| L06 | Cloud shadows | 287.4 | −1.6 % (±3.2 %) | 142 | **−1.1 % (±0.5 %)** | −0.7 % (±10.7 %) | 2.08 | 595 |
+| L07 | Birds, flags, runway meadow, RC track | 273.0 | −5.0 % (±9.7 %) | 141 | −0.3 % (±1.7 %) | −3.3 % (±12.8 %) | 2.10 | 603 |
+| L08 | Lens and impact effects, aircraft lighting Standard | 270.2 | −1.0 % (±4.9 %) | 141 | 0.0 % (±2.2 %) | −1.0 % (±8.2 %) | 2.10 | 603 |
+| L09 | MSAA 4× (product defaults with Scene detail Medium) | 273.8 | +1.4 % (±6.3 %) | 130 | **−8.5 % (±0.6 %)** | **−3.5 % (±1.5 %)** | 2.16 | 603 |
+| L10 | Scene detail High | 263.4 | −3.8 % (±10.9 %) | 128 | −1.5 % (±2.3 %) | +0.7 % (±3.6 %) | 2.22 | 610 |
+| L11 | Shadows High, Far, Soft | 268.8 | +2.2 % (±9.3 %) | 133 | **+4.1 % (±2.6 %)** | +3.0 % (±7.8 %) | 2.21 | 744 |
+| L12 | Scene detail Extreme | 267.5 | **−0.5 % (±0.3 %)** | 126 | **−5.1 % (±0.8 %)** | −6.7 % (±7.4 %) | 2.21 | 743 |
+| L13 | Shadows Ultra, lens Ultra, lighting High, birds Many, flags Detailed | 268.9 | +0.5 % (±3.2 %) | 105 | **−16.9 % (±0.4 %)** | −4.5 % (±6.8 %) | 2.23 | 743 |
+| L14 | MSAA 8× | 252.5 | **−6.1 % (±4.5 %)** | 92 | **−12.2 % (±3.9 %)** | **−9.9 % (±2.9 %)** | 2.69 | 743 |
+
+- **Flight.** The whole ladder costs 20 % (336 → 269 fps), and 25 % with MSAA 8×. Every step still runs above
+  250 fps.
+  - Turning MSAA on costs 4.9 %. The projected shadows and planar cue (L03) cost 6.6 %. They change neither GPU
+    time nor draw calls, so their cost is per-frame script work.
+  - The native shadow tiers add 140–420 shadow draw calls and cost nothing measurable in flight.
+- **Home is the GPU's ladder.** The tight intervals show what each option costs once the GPU is the limit:
+  - MSAA: −15 % at 2×, −8.5 % more at 4×, −12 % more at 8×.
+  - Shadow quality Standard −18 %, and the Ultra bundle −17 %.
+  - Scene detail Extreme −5 %, and the projected cue −6 %.
+  - Scene detail Medium/High, cloud shadows, scenery life and lens effects cost ≤ 1.5 %.
+  - Shadows High (4 cascades) is 4 % *faster* at Home than Standard (2 cascades).
+- **Home is the heaviest screen.** It falls from 229 to 105 fps at L13 and 92 fps at L14, while flight stays above
+  250 fps. So at 4K with every option on, Home does not hold 120 Hz on this GPU ([section 6](#6-experiments)).
+- **The crash** responds to the same GPU options as Home: Standard shadows, MSAA. Its p99 rises from 11.6 ms at
+  L00 to 29–30 ms from L06 on.
 
 ## 4. Renderers, resolution and reconstruction
 
@@ -286,7 +304,7 @@ attributed the time as follows (root viewport; timestamp freshness unverified):
      GPU-bound state, not resolution alone.
 5. **VSync.** Keep it on by default. It holds 120 Hz here and halves board power (350 → 158 W).
 6. **The CPU is the next frontier in flight.**
-   - Main-thread work: projected-shadow scripts cost 8 %, scenery life up to 5 %, and crash effects 40 % during a
+   - Main-thread work: projected-shadow scripts cost 6.6 %, scenery life up to 5 %, and crash effects 40 % during a
      crash.
    - The separate render thread is worth 15–33 %. It needs an engine-level qualification first: particles, window
      resizing, latency, and calibration's per-frame GPU queries.
@@ -300,7 +318,7 @@ attributed the time as follows (root viewport; timestamp freshness unverified):
 - The official engine has no DLSS, FSR3 or Reflex; HAGS was off and the power plan Balanced throughout the
   campaign.
 - A host transient at runs 117–118 (REF 242 fps, −10 %) affected AUTO's second pass; otherwise REF stayed within
-  266–275 fps. The section 1 A/B saw two sub-second freezes outside the game's frame work, cause unknown.
+  266–275 fps. The section 1 A/B saw two freezes of 1.0 and 1.7 s outside the game's frame work, cause unknown.
 - The A/B has only one clean original L09 run, so its L09 row is not a comparison.
 - Section 6's thread and Home experiments edited the snapshot's `project.godot` and controller file per phase
   and restored them afterwards; the power-plan phases switched the Windows plan and restored Balanced.

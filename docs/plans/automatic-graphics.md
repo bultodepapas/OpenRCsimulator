@@ -85,6 +85,10 @@ Coverage: 317 rows (144 discrete, 72 laptop, 100 integrated, 1 software). The St
   - flight is CPU-bound at every tier, while Home is GPU-bound;
   - FSR2 never speeds up a CPU-bound frame;
   - the separate render thread gives +15–33 % but is experimental.
+- [Cross-platform ladder analysis](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md):
+  - CPU and GPU option costs, measured on bottleneck-matched views;
+  - option costs that differ by GPU family;
+  - defects D1–D12, improvement items I1–I10 and follow-up tests T1–T15.
 - [Native physics](../research/visual-quality-implementation/VQ-07/rtx3090-matrix-2026-11-17/README.md#native-kernel-follow-up-2026-11-18).
 - The 7-core M1 under Mobile/Metal: 23.4 ms GPU at 2560×1600 ([DT-MAC-00-R4](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md)). That run used Medium detail, a research copy and beta1.
 - The same M1 under beta2 in the real route at 720p, 900p and 1080p, on Mobile and Forward+ ([DT-MAC-03b](../research/desktop-delivery-investigations/DT-MAC-03b/README.md)).

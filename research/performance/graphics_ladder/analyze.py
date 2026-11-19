@@ -21,6 +21,10 @@ the ratio of the primary segment's reference (REF) mean to its own segment's REF
 under a uniformly slower condition can be pooled; capped runs (VSync or a frame cap) are never scaled. Ladder
 step deltas are paired within each pass on normalised fps, with a 95 % t interval across passes. The older
 form {"external_cooling_from_run": N} is read as two segments, the later one primary.
+
+`"exclude_passes_from_deltas": [1]` keeps those passes out of every step-delta table (a first pass still paying
+first-use pipeline compilation biases the early steps). Besides flight fps, step deltas are also reported for the
+Home fps and the crash fps (dive, impact and 4 s after), which can be bound by a different resource than flight.
 """
 from __future__ import annotations
 
@@ -102,7 +106,11 @@ def window_metrics(result):
     thermal = result.get("thermal") or {}
     frames, proc = window.get("frames", {}), window.get("process_gpu", {})
     render = result.get("render") or {}
+    count, seconds, over25 = frames.get("frames"), frames.get("duration_s"), frames.get("over_25ms_pct")
     return {
+        # Long frames per second: a rate equal across configurations points to periodic work, not an option.
+        "over_25ms_per_s": (round(over25 * count / 100.0 / seconds, 2)
+                            if isinstance(over25, (int, float)) and count and seconds else None),
         "fps": frames.get("fps_mean"), "p50_ms": frames.get("p50_ms"), "p95_ms": frames.get("p95_ms"),
         "p99_ms": frames.get("p99_ms"), "max_ms": frames.get("max_ms"), "low1_fps": frames.get("fps_1pct_low"),
         "over_8_33ms_pct": frames.get("over_8_33ms_pct"), "over_12_5ms_pct": frames.get("over_12_5ms_pct"),
@@ -128,7 +136,7 @@ def window_metrics(result):
     }
 
 
-METRICS = ["fps", "p50_ms", "p95_ms", "p99_ms", "max_ms", "low1_fps", "over_8_33ms_pct", "over_12_5ms_pct",
+METRICS = ["fps", "over_25ms_per_s", "p50_ms", "p95_ms", "p99_ms", "max_ms", "low1_fps", "over_8_33ms_pct", "over_12_5ms_pct",
            "over_16_7ms_pct", "over_20ms_pct", "over_25ms_pct", "over_33_3ms_pct", "hitches",
            "gpu_pct", "cpu_pct", "rss_mib", "gpu_mem_mib", "video_mem_mib", "draw_calls", "shadow_draw_calls",
            "primitives", "home_fps", "fly_load_s", "launch_s", "thermal_fair_s", "gpu_clock_mhz", "gpu_power_w",
@@ -193,6 +201,11 @@ def summarize(results, plan, conditions):
         desc = [v for p, v in pooled if p not in ASCENDING_PASSES]
         entry["fps_asc_minus_desc"] = round(mean(asc) - mean(desc), 2) if asc and desc else None
         entry["fps_by_pass_all"] = {str(r["spec"].get("pass")): window_metrics(r)["fps"] for r in good}
+        entry["home_fps_by_pass"] = {str(r["spec"].get("pass")): window_metrics(r)["home_fps"] for r in good
+                                     if window_metrics(r)["home_fps"] is not None}
+        entry["crash_fps_by_pass"] = {str(r["spec"].get("pass")): ((r.get("crash") or {}).get("frames_dive_impact_plus4s") or {}).get("fps_mean")
+                                      for r in good if (r.get("crash") or {}).get("impacted")
+                                      and ((r.get("crash") or {}).get("frames_dive_impact_plus4s") or {}).get("fps_mean") is not None}
         crashes = [r.get("crash") or {} for r in good]
         hit = [c for c in crashes if c.get("impacted")]
         crash_frames = [c.get("frames_dive_impact_plus4s") or {} for c in hit]
@@ -223,16 +236,18 @@ def summarize(results, plan, conditions):
     return summary
 
 
-def ladder_deltas(summary, ladder):
-    """Step deltas paired within each pass on normalised fps, with a 95 % t interval across passes."""
+def ladder_deltas(summary, ladder, by_pass="fps_norm_by_pass", exclude=()):
+    """Step deltas paired within each pass (normalised flight fps by default; also Home or crash fps), with a
+    95 % t interval across passes. Passes in `exclude` (e.g. a first-use pass) are left out."""
     deltas = []
+    excluded = {str(p) for p in exclude}
     for previous, current in zip(ladder, ladder[1:]):
         a, b = summary.get(previous), summary.get(current)
         if not a or not b:
             continue
-        passes = sorted(set(a["fps_norm_by_pass"]) & set(b["fps_norm_by_pass"]), key=int)
-        paired = [b["fps_norm_by_pass"][p] - a["fps_norm_by_pass"][p] for p in passes]
-        relative = [100.0 * (b["fps_norm_by_pass"][p] / a["fps_norm_by_pass"][p] - 1.0) for p in passes]
+        passes = sorted((set(a[by_pass]) & set(b[by_pass])) - excluded, key=int)
+        paired = [b[by_pass][p] - a[by_pass][p] for p in passes]
+        relative = [100.0 * (b[by_pass][p] / a[by_pass][p] - 1.0) for p in passes]
         ci = None
         if len(paired) > 1:
             ci = T95.get(len(paired) - 1, 2.0) * statistics.stdev(paired) / len(paired) ** 0.5
@@ -264,7 +279,15 @@ def fmt(value):
     return "" if value is None else str(value)
 
 
-def markdown(summary, order, deltas, drift, conditions):
+def delta_table(title, deltas):
+    lines = ["", "| %s step | Δ | Δ %% | 95 %% CI | passes | resolved |" % title, "|" + " --- |" * 6]
+    for d in deltas:
+        lines.append("| %s | %s | %s | ±%s | %s | %s |" % (d["step"], fmt(d["fps_delta"]), fmt(d["fps_delta_pct"]),
+                                                       fmt(d["ci95_fps"]), d["passes"], d["resolved"]))
+    return lines
+
+
+def markdown(summary, order, deltas, drift, conditions, extra_deltas=()):
     segments, primary, _normalize = segments_of(conditions)
     others = [s["name"] for s in segments if s["name"] != primary]
     nvidia = any(e.get("gpu_clock_mhz") is not None for e in summary.values())
@@ -296,6 +319,8 @@ def markdown(summary, order, deltas, drift, conditions):
         lines.append("| %s | %s | %s | ±%s | %s | %s | %s | %s | %s |" % (
             d["step"], fmt(d["fps_delta"]), fmt(d["fps_delta_pct"]), fmt(d["ci95_fps"]), d["passes"],
             fmt(d["primary_fps_delta"]), fmt(d["p95_ms_delta"]), d["draw_calls_delta"], d["resolved"]))
+    for title, rows in extra_deltas:
+        lines += delta_table(title, rows)
     lines += ["", "| Config | crash impacted | crash fps | crash p95 ms | crash max ms | first-crash max ms | hitches |",
               "|" + " --- |" * 7]
     for config in order:
@@ -325,14 +350,20 @@ def main():
         if run["config"] not in order:
             order.append(run["config"])
     ladder = [c for c in order if c.startswith("L") and c[1:].isdigit()]
-    deltas = ladder_deltas(summary, ladder)
+    exclude = conditions.get("exclude_passes_from_deltas") or []
+    deltas = ladder_deltas(summary, ladder, exclude=exclude)
+    home_deltas = ladder_deltas(summary, ladder, "home_fps_by_pass", exclude)
+    crash_deltas = ladder_deltas(summary, ladder, "crash_fps_by_pass", exclude)
     drift = reference_drift(results, conditions)
     segments, primary, normalize = segments_of(conditions)
     scale, ref_means = reference_scale(results, segments, primary, normalize)
     with open(prefix + ".json", "w") as handle:
         json.dump({"conditions": conditions, "reference_means": ref_means, "reference_scale": scale,
-                   "configs": summary, "ladder_deltas": deltas, "reference_drift": drift}, handle, indent=1)
-    text = markdown(summary, order, deltas, drift, conditions)
+                   "configs": summary, "ladder_deltas": deltas, "home_ladder_deltas": home_deltas,
+                   "crash_ladder_deltas": crash_deltas, "reference_drift": drift}, handle, indent=1)
+    text = markdown(summary, order, deltas, drift, conditions,
+                    [("Home fps (raw, %s)" % ("passes without %s" % exclude if exclude else "all passes"), home_deltas),
+                     ("Crash fps (raw, %s)" % ("passes without %s" % exclude if exclude else "all passes"), crash_deltas)])
     with open(prefix + ".md", "w", encoding="utf-8") as handle:
         handle.write(text)
     print(text)
