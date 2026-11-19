@@ -4,7 +4,7 @@ Run 2026-11-18. The campaign measures how one fanless M1 MacBook Air responds to
 using the real app route (Home → Fly) on its real 1080p display. It attributes graphics-option cost only. It
 does not complete the [DT-MAC-03b plan](../../../plans/apple-silicon-performance.md#dt-mac-03b--attribution-and-baseline-soak):
 no CPU profile, no GPU trace, and no workload manifest beyond the club field, Green Paradise and night. Method and
-tools: [graphics ladder](../../../../research/performance/mac_graphics_ladder/README.md).
+tools: [graphics ladder](../../../../research/performance/graphics_ladder/README.md).
 
 ## Host, source and display
 

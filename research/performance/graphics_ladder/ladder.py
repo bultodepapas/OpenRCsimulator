@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Graphics-option ladder on a real Mac display (DT-MAC-03b; README.md beside this file).
+"""Graphics-option ladder on a real display, macOS or Windows/NVIDIA (README.md beside this file).
 
 Each run seeds the player's display settings (`user://settings.cfg.display`) in the isolated user
 directory of a renamed project snapshot, starts the real app through the debug bridge (Home -> Fly),
-flies circle_pilot.py's wide orbit over the clubhouse, measures frames, GPU/CPU/memory and macOS
-thermal state, then dives at the pilot station and measures the crash. Python 3.9 compatible.
+flies circle_pilot.py's wide orbit over the clubhouse, measures frames, GPU/CPU/memory and thermal
+state, then dives at the pilot station and measures the crash. Python 3.9 compatible.
+
+macOS: GPU utilisation from ioreg AGX statistics, thermal state from the host-state helper.
+Windows: GPU utilisation, clocks, power and temperature from `nvidia-smi`, process CPU/RSS from psutil,
+user:// redirected to <work>/profile (debugctl --profile); OPENRC_TESTQUEUE_ROOT must name an unenrolled root.
 
 Usage: ladder.py --work <task dir> --plan plan.json --out <new or resumable dir> [--start-at N]
 """
@@ -28,6 +32,13 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from circle_pilot import CirclePilot, import_debugctl  # noqa: E402
 
+WINDOWS = sys.platform == "win32"
+NO_WINDOW = subprocess.CREATE_NO_WINDOW if WINDOWS else 0
+DEFAULT_RENDERER = "forward_plus" if WINDOWS else "mobile"
+# Windows passes method and driver explicitly; macOS keeps the DT-MAC-03b launch (Metal only for Forward+).
+DEFAULT_DRIVER = ({"forward_plus": "vulkan", "mobile": "vulkan", "gl_compatibility": "opengl3"} if WINDOWS
+                  else {"forward_plus": "metal"})
+GPU_TEMP_NOMINAL_C = 55.0  # Windows idle gate: "nominal" when the GPU is at or below this temperature
 PILOT_STATION = (0.0, 0.0, 1.0)  # dive target: the player's station, NED origin, 1 m above ground
 SETTINGS_CFG = """[meta]
 
@@ -93,29 +104,96 @@ def display_cfg(settings: dict) -> str:
     return "\n".join(lines)
 
 
-def isolated_user_dir(src: Path) -> Path:
+def isolated_user_dir(src: Path, profile: Path | None = None) -> Path:
     text = (src / "app" / "project.godot").read_text()
     match = re.search(r'^config/name="([^"]+)"$', text, re.M)
     if not match or match.group(1) == "OpenRC Simulator":
         raise SystemExit("rename config/name in the snapshot's app/project.godot first: the player's profile "
                          "(~/Library/.../OpenRC Simulator) must never be touched")
+    if profile is not None:  # Windows: debugctl --profile sets APPDATA, Godot adds Godot/app_userdata/<name>
+        return profile / "Godot" / "app_userdata" / match.group(1)
     return Path.home() / "Library" / "Application Support" / "Godot" / "app_userdata" / match.group(1)
 
 
 def sh(command: list, timeout: float = 300.0) -> subprocess.CompletedProcess:
-    return subprocess.run(command, capture_output=True, text=True, timeout=timeout)
+    return subprocess.run(command, capture_output=True, text=True, timeout=timeout, creationflags=NO_WINDOW)
+
+
+NV_FIELDS = ["utilization.gpu", "utilization.memory", "clocks.gr", "clocks.mem", "power.draw", "temperature.gpu",
+             "memory.used", "clocks_event_reasons.active", "pstate"]
+
+
+def nv_parse(line: str) -> dict:
+    row = {}
+    for key, value in zip(NV_FIELDS, [v.strip() for v in line.split(",")]):
+        try:
+            row[key] = float(value)
+        except ValueError:
+            row[key] = value
+    return row
 
 
 def gpu_stats() -> dict:
-    """AGX PerformanceStatistics from ioreg (no root): device/renderer/tiler utilisation and GPU memory."""
+    """macOS: AGX PerformanceStatistics from ioreg (no root). Windows: one nvidia-smi query."""
+    if WINDOWS:
+        out = sh(["nvidia-smi", "--query-gpu=" + ",".join(NV_FIELDS), "--format=csv,noheader,nounits"], 15).stdout
+        return nv_parse(out.strip().splitlines()[0]) if out.strip() else {}
     out = sh(["ioreg", "-r", "-d", "1", "-w", "0", "-c", "AGXAccelerator"], 10).stdout
     match = re.search(r'"PerformanceStatistics" = \{([^}]*)\}', out)
     return {k: int(v) for k, v in re.findall(r'"([^"]+)"=(\d+)', match.group(1))} if match else {}
 
 
+class NvidiaLog(threading.Thread):
+    """Windows: one `nvidia-smi -lms 1000` stream per run, logged to JSON lines and sliced per window."""
+
+    def __init__(self, path: Path):
+        super().__init__(daemon=True)
+        self.path, self.rows = path, []
+        self.proc = subprocess.Popen(["nvidia-smi", "--query-gpu=" + ",".join(NV_FIELDS), "--format=csv,noheader,nounits",
+                                      "-lms", "1000"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+                                     creationflags=NO_WINDOW)
+
+    def run(self):
+        with open(str(self.path), "w") as out:
+            for line in self.proc.stdout:
+                if not line.strip():
+                    continue
+                row = dict(nv_parse(line), t=time.monotonic())
+                self.rows.append(row)
+                out.write(json.dumps(row) + "\n")
+                out.flush()
+
+    def stop(self) -> None:
+        try:
+            self.proc.terminate()
+            self.proc.wait(10)
+        except Exception:
+            self.proc.kill()
+
+    def window(self, t0: float, t1: float) -> dict:
+        rows = [r for r in list(self.rows) if t0 <= r["t"] <= t1]
+        out = {"gpu_samples": len(rows)}
+        for key, name in (("utilization.gpu", "gpu_device_pct"), ("utilization.memory", "gpu_memctl_pct"),
+                          ("clocks.gr", "gpu_clock_mhz"), ("clocks.mem", "gpu_mem_clock_mhz"),
+                          ("power.draw", "gpu_power_w"), ("temperature.gpu", "gpu_temp_c"),
+                          ("memory.used", "gpu_inuse_mib")):
+            values = [r[key] for r in rows if isinstance(r.get(key), float)]
+            if values:
+                out[name + "_mean"] = round(statistics.mean(values), 1)
+                out[name + "_max"] = round(max(values), 1)
+                out[name + "_min"] = round(min(values), 1)
+        out["gpu_event_reasons"] = sorted({str(r.get("clocks_event_reasons.active")) for r in rows})
+        out["gpu_pstates"] = sorted({str(r.get("pstate")) for r in rows})
+        return out
+
+
 def cputime_s(pid: int) -> float | None:
-    """Accumulated CPU seconds of the process (`ps -o cputime`, [[h:]m:]s.ss); differences give window CPU."""
+    """Accumulated CPU seconds of the process; differences give window CPU. macOS: `ps -o cputime`."""
     try:
+        if WINDOWS:
+            import psutil
+            times = psutil.Process(pid).cpu_times()
+            return float(times.user + times.system)
         text = sh(["ps", "-o", "cputime=", "-p", str(pid)], 5).stdout.strip()
         seconds = 0.0
         for part in text.split(":"):
@@ -125,8 +203,36 @@ def cputime_s(pid: int) -> float | None:
         return None
 
 
+def thread_times(pid: int) -> dict:
+    """Windows: accumulated CPU seconds per thread id (psutil)."""
+    try:
+        import psutil
+        return {t.id: t.user_time + t.system_time for t in psutil.Process(pid).threads()}
+    except Exception:
+        return {}
+
+
+def rss_mib(pid: int) -> float | None:
+    try:
+        if WINDOWS:
+            import psutil
+            return psutil.Process(pid).memory_info().rss / 1048576.0
+        return int(sh(["ps", "-o", "rss=", "-p", str(pid)], 5).stdout.split()[0]) / 1024.0
+    except Exception:
+        return None
+
+
 def thermal_now(helper: Path) -> str:
-    """macOS ProcessInfo.thermalState through the host-state helper's initial read (stdin closed at once)."""
+    """macOS ProcessInfo.thermalState through the host-state helper's initial read (stdin closed at once).
+    Windows: "nominal" when the GPU is at or below GPU_TEMP_NOMINAL_C, else its temperature."""
+    if WINDOWS:
+        try:
+            temp = gpu_stats().get("temperature.gpu")
+        except Exception:  # a hung or failing nvidia-smi must not end an unattended campaign
+            return "unknown"
+        if not isinstance(temp, float):
+            return "unknown"
+        return "nominal" if temp <= GPU_TEMP_NOMINAL_C else "gpu %.0fC" % temp
     if not helper.exists():
         return "unknown"
     try:
@@ -144,29 +250,36 @@ def thermal_now(helper: Path) -> str:
 class Sampler(threading.Thread):
     """Samples game CPU time/RSS and GPU utilisation every `period` seconds until stopped."""
 
-    def __init__(self, pid: int, period: float = 2.0):
+    def __init__(self, pid: int, period: float = 2.0, gpu_log: NvidiaLog | None = None):
         super().__init__(daemon=True)
-        self.pid, self.period = pid, period
+        self.pid, self.period, self.gpu_log = pid, period, gpu_log
         self.stop_event = threading.Event()
         self.rows = []
 
     def run(self):
         while not self.stop_event.is_set():
-            row = {"t": time.monotonic(), "cputime_s": cputime_s(self.pid)}
-            try:
-                row["rss_mib"] = int(sh(["ps", "-o", "rss=", "-p", str(self.pid)], 5).stdout.split()[0]) / 1024.0
-            except Exception:
-                pass
-            stats = gpu_stats()
-            row["gpu_device_pct"] = stats.get("Device Utilization %")
-            row["gpu_renderer_pct"] = stats.get("Renderer Utilization %")
-            row["gpu_tiler_pct"] = stats.get("Tiler Utilization %")
-            row["gpu_inuse_mib"] = round(stats.get("In use system memory", 0) / 1048576.0, 1)
+            row = {"t": time.monotonic(), "cputime_s": cputime_s(self.pid), "rss_mib": rss_mib(self.pid)}
+            if WINDOWS:
+                row["threads"] = thread_times(self.pid)
+            if self.gpu_log is None:
+                stats = gpu_stats()
+                row["gpu_device_pct"] = stats.get("Device Utilization %")
+                row["gpu_renderer_pct"] = stats.get("Renderer Utilization %")
+                row["gpu_tiler_pct"] = stats.get("Tiler Utilization %")
+                row["gpu_inuse_mib"] = round(stats.get("In use system memory", 0) / 1048576.0, 1)
             self.rows.append(row)
             self.stop_event.wait(self.period)
 
     def summary(self) -> dict:
         out = {"samples": len(self.rows)}
+        if self.gpu_log is not None and self.rows:
+            out.update(self.gpu_log.window(self.rows[0]["t"], self.rows[-1]["t"]))
+        first, last = (self.rows[0], self.rows[-1]) if len(self.rows) > 1 else ({}, {})
+        if first.get("threads") and last.get("threads") and last["t"] > first["t"]:
+            # Busiest threads over the window, percent of one core: a ~100 % thread is the CPU limit.
+            busy = sorted(((100.0 * (last["threads"][tid] - first["threads"].get(tid, 0.0)) / (last["t"] - first["t"]))
+                           for tid in last["threads"]), reverse=True)
+            out["thread_cpu_pct_top"] = [round(v, 1) for v in busy[:4]]
         for key in ("rss_mib", "gpu_device_pct", "gpu_renderer_pct", "gpu_tiler_pct", "gpu_inuse_mib"):
             values = [r[key] for r in self.rows if isinstance(r.get(key), (int, float))]
             if values:
@@ -178,6 +291,12 @@ class Sampler(threading.Thread):
             out["cpu_pct_mean"] = round(100.0 * (timed[-1]["cputime_s"] - timed[0]["cputime_s"])
                                         / (timed[-1]["t"] - timed[0]["t"]), 1)
         return out
+
+
+def packed_values(text: str) -> list:
+    """Values of a var_to_str'd packed array, e.g. 'PackedFloat64Array(16.6, 17.1)'."""
+    inner = str(text)[str(text).index("(") + 1:str(text).rindex(")")].strip()
+    return [v for v in inner.split(",") if v.strip()] if inner else []
 
 
 class FrameCollector:
@@ -200,10 +319,12 @@ class FrameCollector:
         while self.seen < count:
             start = self.seen % self.capacity
             end = min(start + (count - self.seen), self.capacity)
-            ms, ticks = self.bridge("eval", expr="[bridge._frame_ms.slice(%d, %d), bridge._frame_ticks.slice(%d, %d)]"
-                                    % (start, end, start, end))
-            self.ms += [float(v) for v in ms]
-            self.ticks += [int(v) for v in ticks]
+            # One var_to_str string per array: the bridge's per-element JSON conversion of a ~1,000-frame slice
+            # costs milliseconds on the main thread, which would land as a spike in a CPU-bound window.
+            ms, ticks = self.bridge("eval", expr="[var_to_str(bridge._frame_ms.slice(%d, %d)), "
+                                    "var_to_str(bridge._frame_ticks.slice(%d, %d))]" % (start, end, start, end))
+            self.ms += [float(v) for v in packed_values(ms)]
+            self.ticks += [int(v) for v in packed_values(ticks)]
             self.seen += end - start
 
     def summary(self) -> dict:
@@ -224,6 +345,9 @@ class FrameCollector:
                 "max_ms": round(ordered[-1], 2), "fps_mean": round(1000.0 / mean, 1),
                 "fps_1pct_low": round(1000.0 / (sum(worst) / len(worst)), 1),
                 # Uncapped: >16.7 ms frames could not hold 60 Hz. With VSync, >20 ms marks a missed refresh.
+                "over_8_33ms_pct": round(100.0 * sum(1 for v in self.ms if v > 1000.0 / 120.0) / n, 2),
+                # With 120 Hz VSync, >12.5 ms marks a missed refresh (the 60 Hz analogue is >20 ms).
+                "over_12_5ms_pct": round(100.0 * sum(1 for v in self.ms if v > 12.5) / n, 2),
                 "over_16_7ms_pct": round(100.0 * sum(1 for v in self.ms if v > 1000.0 / 60.0) / n, 2),
                 "over_20ms_pct": round(100.0 * sum(1 for v in self.ms if v > 20.0) / n, 2),
                 "over_25ms_pct": round(100.0 * sum(1 for v in self.ms if v > 25.0) / n, 2),
@@ -287,16 +411,23 @@ class Campaign:
     def __init__(self, work: Path, src: Path, godot: str):
         self.work, self.src, self.godot = work, src, godot
         self.app = src / "app"
-        self.user_dir = isolated_user_dir(src)
+        self.profile = (work / "profile") if WINDOWS else None
+        self.expect_screen, self.expect_refresh = None, None  # set by main() on Windows
+        self.user_dir = isolated_user_dir(src, self.profile)
         self.helper = work / "host-build" / "host-state"
         self.debugctl = import_debugctl(str(src))
+        if WINDOWS:
+            root = os.environ.get("OPENRC_TESTQUEUE_ROOT")
+            if not root or (Path(root) / "enrollment.json").exists():
+                raise SystemExit("set OPENRC_TESTQUEUE_ROOT to an unenrolled root (e.g. U:\\OpenRC\\testqueue): an "
+                                 "enrolled queue would stage a multi-GB snapshot per launch on C:")
 
     def cli(self, args: list, port: int | None = None, timeout: float = 300.0) -> dict:
         env = dict(os.environ, OPENRC_GODOT=self.godot)
         if port:
             env["OPENRC_DEBUG_BRIDGE"] = str(port)
         done = subprocess.run([sys.executable, str(self.src / "tools/debug/debugctl.py")] + args, capture_output=True,
-                              text=True, timeout=timeout, cwd=str(self.src), env=env)
+                              text=True, timeout=timeout, cwd=str(self.src), env=env, creationflags=NO_WINDOW)
         for line in reversed(done.stdout.strip().splitlines()):
             if line.strip().startswith("{"):
                 try:
@@ -333,17 +464,34 @@ class Campaign:
         settings.update(spec.get("display", {}))  # an explicit display value (e.g. "auto" size) wins
         self.seed(settings, out_dir)
         result["thermal_at_start"] = thermal_now(self.helper)
-        result["pmset_therm_before"] = sh(["pmset", "-g", "therm"], 10).stdout.strip()
+        if not WINDOWS:
+            result["pmset_therm_before"] = sh(["pmset", "-g", "therm"], 10).stdout.strip()
         result["gpu_idle_before"] = gpu_stats()
-        launch_args = ["launch", "--app", str(self.app), "--resolution", resolution, "--mute", "--timeout", "180"]
-        if spec.get("renderer", "mobile") == "forward_plus":
+        # A config may run a sibling copy of the snapshot (same project name, so the same user dir and caches),
+        # e.g. one without app/native so the Home -> Fly route falls back to the GDScript reference physics.
+        app = (self.src.parent / spec["app_dir"] / "app") if spec.get("app_dir") else self.app
+        launch_args = ["launch", "--app", str(app), "--resolution", resolution, "--mute", "--timeout", "180"]
+        method = spec.get("renderer", DEFAULT_RENDERER)
+        driver = spec.get("driver", DEFAULT_DRIVER.get(method))
+        if WINDOWS:
+            launch_args += ["--profile", str(self.profile), "--rendering-method", method, "--rendering-driver", driver]
+        elif method == "forward_plus":
             launch_args += ["--rendering-method", "forward_plus", "--rendering-driver", "metal"]
+        gpu_log = NvidiaLog(out_dir / "gpu.jsonl") if WINDOWS else None
+        if gpu_log is not None:
+            gpu_log.start()
+        result["host_activity"] = {"start": host_activity(app)}
         began = time.monotonic()
-        launch = self.cli(launch_args, timeout=240)
+        try:
+            launch = self.cli(launch_args, timeout=240)
+        except Exception as exc:  # e.g. a hung launcher: stop the stream, record, let the campaign continue
+            launch = {"ok": False, "exception": "%s: %s" % (type(exc).__name__, exc)}
         result["launch_s"] = round(time.monotonic() - began, 2)
         result["launch"] = {k: launch.get(k) for k in ("ok", "port", "pid", "out", "godot", "display", "route")}
         if not launch.get("ok"):
             result["error"] = "launch failed: %s" % json.dumps(launch)[:1500]
+            if gpu_log is not None:
+                gpu_log.stop()
             self._write(out_dir, result)
             return result
         port, pid = int(launch["port"]), int(launch["pid"])
@@ -363,9 +511,25 @@ class Campaign:
             if mismatched:
                 raise RuntimeError("display settings were not applied: %s" % mismatched)
             result["graphics_auto"] = bridge("graphics_auto")
-            method = (result["graphics_auto"].get("inputs") or {}).get("rendering_method")
-            if method != spec.get("renderer", "mobile"):
-                raise RuntimeError("renderer %s instead of %s" % (method, spec.get("renderer", "mobile")))
+            actual = (result["graphics_auto"].get("inputs") or {}).get("rendering_method")
+            if actual != method:
+                raise RuntimeError("renderer %s instead of %s" % (actual, method))
+            if WINDOWS:
+                names = ["driver", "adapter", "user_dir", "screen_size", "refresh_hz", "screen_scale", "engine"]
+                values = bridge("eval", expr="[RenderingServer.get_current_rendering_driver_name(), "
+                                "RenderingServer.get_video_adapter_name(), OS.get_user_data_dir(), "
+                                "str(DisplayServer.screen_get_size()), DisplayServer.screen_get_refresh_rate(), "
+                                "DisplayServer.screen_get_scale(), Engine.get_version_info().string]")
+                result["identity"] = identity = dict(zip(names, values))
+                if identity["driver"] != driver:
+                    raise RuntimeError("rendering driver %s instead of %s" % (identity["driver"], driver))
+                # A sleeping or re-linked display changes mode silently: every run must see the expected desktop.
+                if self.expect_screen and identity["screen_size"] != self.expect_screen:
+                    raise RuntimeError("screen %s instead of %s" % (identity["screen_size"], self.expect_screen))
+                if self.expect_refresh and abs(float(identity["refresh_hz"]) - self.expect_refresh) > 1.5:
+                    raise RuntimeError("refresh %s Hz instead of %s" % (identity["refresh_hz"], self.expect_refresh))
+                if Path(str(identity["user_dir"])).resolve() != self.user_dir.resolve():
+                    raise RuntimeError("user dir %s instead of %s" % (identity["user_dir"], self.user_dir))
             time.sleep(4.0)
             home = FrameCollector(bridge)
             collect(home, lambda: False, 8.0)
@@ -406,7 +570,7 @@ class Campaign:
                 counter = LapCounter(pilot, 270.0)
                 if not wait_for(lambda: pilot.failure or counter.update() >= 1, 60, 0.05) or pilot.failure:
                     raise RuntimeError("pilot did not reach the window start: " + pilot.failure)
-                sampler = Sampler(pid)
+                sampler = Sampler(pid, gpu_log=gpu_log)
                 collector = FrameCollector(bridge)
                 t0 = pilot.last["t"]
                 sampler.start()
@@ -441,7 +605,7 @@ class Campaign:
             if not wait_for(lambda: pilot.failure or 80 < (pilot.angle_on_circle() or 0) < 95, 45) or pilot.failure:
                 raise RuntimeError("did not reach the dive entry point: " + pilot.failure)
             entry = dict(pilot.last)
-            crash_sampler = Sampler(pid, 1.0)
+            crash_sampler = Sampler(pid, 1.0, gpu_log=gpu_log)
             crash_collector = FrameCollector(bridge)
             crash_sampler.start()
             dive_began = time.monotonic()
@@ -484,9 +648,13 @@ class Campaign:
                 pilot.stop_event.set()
             if sampler is not None:
                 sampler.stop_event.set()
-            stop = self.cli(["stop"], port=port, timeout=120)
-            if not stop.get("stopped"):
-                stop = self.cli(["stop", "--force"], port=port, timeout=120)
+            result.setdefault("host_activity", {})["end"] = host_activity(app)
+            try:
+                stop = self.cli(["stop"], port=port, timeout=120)
+                if not stop.get("stopped"):
+                    stop = self.cli(["stop", "--force"], port=port, timeout=120)
+            except Exception as exc:
+                stop = {"stopped": False, "exception": "%s: %s" % (type(exc).__name__, exc)}
             result["stop"] = stop
             if helper is not None:
                 try:
@@ -499,7 +667,16 @@ class Campaign:
                 for name in ("engine.log", "log.jsonl", "launch.json"):
                     if os.path.exists(os.path.join(launch_out, name)):
                         shutil.copy(os.path.join(launch_out, name), str(out_dir / name))
-            result["thermal"] = thermal_summary(out_dir / "host-state.jsonl")
+            result["physics_backend"] = physics_backend(out_dir / "engine.log")
+            if WINDOWS:
+                result["stray_engines_killed"] = kill_stray_engines(self.godot, app)
+            if gpu_log is not None:
+                gpu_log.stop()
+                whole = gpu_log.window(float("-inf"), float("inf"))
+                result["thermal"] = {k: whole.get(k) for k in ("gpu_temp_c_max", "gpu_temp_c_mean", "gpu_power_w_max",
+                                                               "gpu_clock_mhz_min", "gpu_event_reasons", "gpu_pstates")}
+            else:
+                result["thermal"] = thermal_summary(out_dir / "host-state.jsonl")
             result["finished_unix"] = time.time()
             self._write(out_dir, result)
         return result
@@ -508,6 +685,82 @@ class Campaign:
     def _write(out_dir: Path, result: dict) -> None:
         with open(str(out_dir / "result.json"), "w") as handle:
             json.dump(result, handle, indent=1, default=str)
+
+
+def physics_backend(engine_log: Path) -> str | None:
+    """The flight's `physics backend:` line (native kernel or GDScript reference, with the refusal reason)."""
+    try:
+        for line in open(str(engine_log), errors="replace"):
+            if "physics backend:" in line:
+                return line.split("physics backend:", 1)[1].strip()[:400]
+    except OSError:
+        pass
+    return None
+
+
+FOREIGN_HEAVY = ("blender", "obs64", "obs32", "ffmpeg", "handbrakecli", "parsecd", "sunshine")  # stems; "godot*" too
+
+
+def host_activity(app: Path) -> dict:
+    """Other work that competes for the CPU/GPU (engines not running this snapshot, encoders, renderers) and
+    incoming remote-desktop sessions (RustDesk's connection manager `--cm`, Windows RDP). An attached remote
+    session cost the M1 8 % (DT-MAC-03b); these are recorded, not stopped."""
+    out = {"foreign": [], "remote": []}
+    try:
+        import psutil
+        app_key = os.path.normcase(str(app.resolve()))
+        for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+            name = (proc.info.get("name") or "").lower()
+            command = " ".join(proc.info.get("cmdline") or [])
+            stem = name[:-4] if name.endswith(".exe") else name
+            if (stem.startswith("godot") or stem in FOREIGN_HEAVY) and app_key not in os.path.normcase(command):
+                out["foreign"].append("%s:%s" % (proc.info["pid"], name))
+            if ("rustdesk" in name and "--cm" in command) or name == "rdpclip.exe":
+                out["remote"].append("%s:%s %s" % (proc.info["pid"], name, command[:60]))
+    except Exception as exc:
+        out["error"] = "%s: %s" % (type(exc).__name__, exc)
+    if not WINDOWS:
+        try:
+            text = subprocess.run(["/usr/bin/pmset", "-g", "assertions"], capture_output=True, text=True, timeout=10).stdout
+            out["remote"] += [line.strip()[:120] for line in text.splitlines()
+                              if any(key in line for key in ("RustDesk", "AnyDesk", "screensharingd", "TeamViewer"))]
+        except Exception as exc:
+            out["error"] = "%s: %s" % (type(exc).__name__, exc)
+    return out
+
+
+def kill_stray_engines(godot: str, app: Path) -> list:
+    """Windows: kill this engine's processes that run this snapshot's app (left by a failed stop or a tree-kill of
+    a dead wrapper). Other sessions' engines, even of the same executable, never match the app path."""
+    killed = []
+    try:
+        import psutil
+        target = os.path.normcase(os.path.abspath(godot)).replace("_console", "")
+        app_key = os.path.normcase(str(app.resolve()))
+        for proc in psutil.process_iter(["pid", "exe", "cmdline"]):
+            exe = proc.info.get("exe") or ""
+            command = os.path.normcase(" ".join(proc.info.get("cmdline") or []))
+            if exe and os.path.normcase(exe).replace("_console", "") == target and app_key in command:
+                proc.kill()
+                killed.append(proc.info["pid"])
+    except Exception as exc:
+        killed.append("error: %s" % exc)
+    return killed
+
+
+def keep_awake() -> None:
+    """Windows: keep the system and display on for the campaign (ES_CONTINUOUS|ES_SYSTEM_REQUIRED|ES_DISPLAY_REQUIRED)."""
+    if WINDOWS:
+        import ctypes
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001 | 0x00000002)
+
+
+def disk_low(paths: dict) -> str | None:
+    for path, floor_gb in paths.items():
+        free = shutil.disk_usage(path).free / 1e9
+        if free < floor_gb:
+            return "%s has %.1f GB free (floor %.1f GB)" % (path, free, floor_gb)
+    return None
 
 
 def thermal_summary(path: Path) -> dict:
@@ -537,6 +790,9 @@ def main() -> int:
     parser.add_argument("--cooldown", type=float, default=45.0, help="minimum idle seconds between runs")
     parser.add_argument("--thermal-wait", type=float, default=240.0,
                         help="after the cooldown, wait up to this long for thermalState nominal")
+    parser.add_argument("--max-failures", type=int, default=4, help="stop after this many consecutive failed runs")
+    parser.add_argument("--expect-screen", help='Windows: required screen size as the bridge prints it, e.g. "(3840, 2160)"')
+    parser.add_argument("--expect-refresh", type=float, help="Windows: required display refresh rate in Hz")
     args = parser.parse_args()
     work = args.work.resolve()
     src = (args.src or work / "src").resolve()
@@ -554,6 +810,15 @@ def main() -> int:
         progress.flush()
 
     log("campaign: %d runs, start at %d, user dir %s" % (len(plan["runs"]), args.start_at, campaign.user_dir))
+    if WINDOWS:
+        import psutil  # noqa: F401  (preflight: CPU/RSS sampling needs it)
+        keep_awake()
+        campaign.expect_screen, campaign.expect_refresh = args.expect_screen, args.expect_refresh
+        log("stray engines killed at start: %s" % kill_stray_engines(godot, campaign.app))
+    floors = {str(work): 5.0}
+    if WINDOWS:
+        floors["C:\\"] = 2.0  # NVIDIA shader caches live on C:
+    failures_in_row = 0
     for index, run in enumerate(plan["runs"]):
         if index < args.start_at:
             continue
@@ -573,14 +838,28 @@ def main() -> int:
             time.sleep(10.0)
             state = thermal_now(campaign.helper)
         spec["idle_before_s"] = round(time.monotonic() - idle_began, 1)
+        low = disk_low(floors)
+        if low:
+            log("campaign stopped: %s" % low)
+            return 1
         log("run %s (idle %.0fs, thermal %s)" % (out_dir.name, spec["idle_before_s"], state))
-        result = campaign.run_one(spec, out_dir, log)
+        try:
+            result = campaign.run_one(spec, out_dir, log)
+        except Exception as exc:  # one broken run must not end an unattended campaign
+            result = {"id": out_dir.name, "spec": spec, "ok": False, "error": "%s: %s" % (type(exc).__name__, exc),
+                      "traceback": traceback.format_exc()[-3000:]}
+            out_dir.mkdir(parents=True, exist_ok=True)
+            Campaign._write(out_dir, result)
         window = (result.get("windows") or [{}])[0]
         frames = window.get("frames", {})
         log("  -> ok=%s fps=%s p95=%s gpu=%s%% thermal=%s err=%s" % (
             result.get("ok"), frames.get("fps_mean"), frames.get("p95_ms"),
             (window.get("process_gpu") or {}).get("gpu_device_pct_mean"), result.get("thermal"),
             str(result.get("error", ""))[:300]))
+        failures_in_row = 0 if result.get("ok") else failures_in_row + 1
+        if failures_in_row >= args.max_failures:
+            log("campaign stopped: %d consecutive failures (resume with the same --out)" % failures_in_row)
+            return 1
     log("campaign complete")
     return 0
 

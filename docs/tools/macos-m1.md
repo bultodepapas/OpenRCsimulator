@@ -31,7 +31,7 @@ renamed `OpenRC GFX Ladder 20261118` so `user://` stays isolated. The app reads 
 from `user://settings.cfg.display` (not `display.cfg`). ANGEL's main display was then an external HDMI
 1920×1080 at 60 Hz mirrored to the built-in panel (scale 1), so 1080p was the target; the native-panel
 target needs the mirror switched off. The fanless Air reaches macOS thermal state `fair` within one
-two-minute flight. Method and tools: [Mac graphics ladder](../../research/performance/mac_graphics_ladder/README.md);
+two-minute flight. Method and tools: [graphics ladder](../../research/performance/graphics_ladder/README.md);
 results: [DT-MAC-03b evidence](../research/desktop-delivery-investigations/DT-MAC-03b/README.md).
 
 **2026-11-14 connection refresh:** both Macs are reachable directly from Windows

@@ -89,8 +89,17 @@ def capped(result):
     return str(config.get("vsync", "disabled")) != "disabled" or (config.get("max_fps") or 0) > 0
 
 
+def physics(result):
+    """The flight's physics backend ("native", "gdscript_reference") from the engine log line, or None."""
+    try:
+        return (json.loads(result.get("physics_backend") or "{}").get("identity") or {}).get("backend")
+    except ValueError:
+        return None
+
+
 def window_metrics(result):
     window = (result.get("windows") or [{}])[0]
+    thermal = result.get("thermal") or {}
     frames, proc = window.get("frames", {}), window.get("process_gpu", {})
     render = result.get("render") or {}
     return {
@@ -108,8 +117,9 @@ def window_metrics(result):
         "home_fps": (result.get("home_frames") or {}).get("fps_mean"),
         "fly_load_s": result.get("fly_load_s"), "launch_s": result.get("launch_s"),
         "thermal_start": result.get("thermal_at_start"),
-        "thermal_fair_s": (result.get("thermal") or {}).get("fair", 0),
-        "thermal_serious_s": (result.get("thermal") or {}).get("serious", 0),
+        # macOS thermalState seconds; Windows records GPU temperatures instead, so these stay empty there.
+        "thermal_fair_s": None if "gpu_temp_c_max" in thermal else thermal.get("fair", 0),
+        "thermal_serious_s": None if "gpu_temp_c_max" in thermal else thermal.get("serious", 0),
         # Windows/NVIDIA (nvidia-smi): clocks, board power and temperature over the window.
         "gpu_clock_mhz": proc.get("gpu_clock_mhz_mean"), "gpu_power_w": proc.get("gpu_power_w_mean"),
         "gpu_temp_c": proc.get("gpu_temp_c_max"),
@@ -135,7 +145,10 @@ def reference_scale(results, segments, primary, normalize):
     scale = {}
     for segment in segments:
         own = mean(refs.get(segment["name"], []), 4)
-        scale[segment["name"]] = (base / own) if (base and own and segment["name"] in normalize) else None
+        if segment["name"] == primary:
+            scale[segment["name"]] = 1.0
+        else:
+            scale[segment["name"]] = (base / own) if (base and own and segment["name"] in normalize) else None
     return scale, {name: mean(values) for name, values in refs.items()}
 
 
@@ -200,6 +213,7 @@ def summarize(results, plan, conditions):
                                                               "scaling_3d_mode", "scaling_3d_scale", "mesh_lod_threshold")}
         if good and good[0].get("identity"):
             entry["effective"]["driver"] = good[0]["identity"].get("driver")
+        entry["physics"] = sorted({str(physics(r)) for r in good})
         windows = [w for r in good for w in (r.get("windows") or [])]
         if len(windows) > 1 and config.startswith("S-"):
             entry["soak"] = [{"t0": w.get("flight_t0"), "fps": w["frames"].get("fps_mean"), "p95_ms": w["frames"].get("p95_ms"),
@@ -258,7 +272,7 @@ def markdown(summary, order, deltas, drift, conditions):
     head += [">8.33 ms %", ">12.5 ms %"] if nvidia else []
     head += [">16.7 ms %", ">20 ms %", "GPU %", "CPU %"]
     head += ["GPU MHz", "board W", "top thread %"] if nvidia else []
-    head += ["draw calls", "primitives", "RSS MiB", "normalised fps (runs)", "asc−desc fps"]
+    head += ["draw calls", "primitives", "RSS MiB", "physics", "normalised fps (runs)", "asc−desc fps"]
     head += ["fps " + name for name in others]
     head += ["runs ok"]
     lines = ["Headline columns use the **%s** runs; normalised fps pools the listed segments (see `conditions.json`)."
@@ -271,7 +285,7 @@ def markdown(summary, order, deltas, drift, conditions):
         cells += [e["over_8_33ms_pct"], e["over_12_5ms_pct"]] if nvidia else []
         cells += [e["over_16_7ms_pct"], e["over_20ms_pct"], e["gpu_pct"], e["cpu_pct"]]
         cells += [e["gpu_clock_mhz"], e["gpu_power_w"], e["top_thread_pct"]] if nvidia else []
-        cells += [e["draw_calls"], e["primitives"], e["rss_mib"],
+        cells += [e["draw_calls"], e["primitives"], e["rss_mib"], "/".join(e["physics"]),
                   "%s (%d)" % (fmt(e["fps_norm"]), e["fps_norm_runs"]), e["fps_asc_minus_desc"]]
         cells += [(e["segments"].get(name) or {}).get("fps") for name in others]
         cells += ["%d/%d" % (e["ok_runs"], e["runs"])]

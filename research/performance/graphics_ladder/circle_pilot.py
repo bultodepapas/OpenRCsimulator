@@ -58,7 +58,8 @@ class CirclePilot:
         self.target = None  # (north, east, height) once the final dive starts
 
     def request(self, cmd: str, args: dict | None = None) -> dict:
-        reply = self.debugctl.request(cmd, args or {}, timeout=10.0, to_port=self.port)
+        # 60 s: a first-use shader compile (OpenGL, D3D12) can stall the main thread for more than 10 s.
+        reply = self.debugctl.request(cmd, args or {}, timeout=60.0, to_port=self.port)
         if not reply.get("ok"):
             raise RuntimeError("%s: %s" % (cmd, reply.get("error")))
         return reply.get("result") or {}

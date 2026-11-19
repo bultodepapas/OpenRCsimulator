@@ -1,4 +1,4 @@
-"""Write the DT-MAC-03b graphics ladder plan. Usage: make_plan.py <plan.json> <smoke-plan.json>
+"""Write the graphics ladder plan. Usage: make_plan.py [--windows] <plan.json> <smoke-plan.json>
 
 The ladder is cumulative: each step adds options to the previous one, so a step's delta is the marginal cost
 on top of the earlier state, not an option's standalone cost. Five ladder passes alternate direction
@@ -52,6 +52,99 @@ product_defaults = {
     "shadow_softness": "auto", "shadow_cloud": "on", "lens_effects": "auto", "impact_effects": "curtain",
     "lens_rain": "on", "lens_grime": "on",
 }
+
+
+def with_references(body: list, first_reference: int = 1) -> list:
+    runs, reference = [], first_reference - 1
+    for index, run in enumerate(body):
+        if index % 10 == 0:
+            reference += 1
+            runs.append({"config": "REF", "pass": reference})
+        runs.append(run)
+    runs.append({"config": "REF", "pass": reference + 1})
+    return runs
+
+
+def windows_plan(plan_path: str, smoke_path: str) -> None:
+    """Windows/NVIDIA on a 4K display. Borderless always fills the screen (window_resolution is ignored), so the
+    ladder runs at native 3840x2160; 1080p and 1440p run windowed at their exact size. High = Forward+/Vulkan is
+    the Windows default, so the ladder stops at L14 (L15 would repeat it)."""
+    uhd = "3840x2160"
+    ladder_w = [name for name, _l, _d in steps if name != "L15"]
+    win = {name: dict(configs[name], resolution=uhd) for name in ladder_w}
+    win["REF"] = dict(configs["REF"], resolution=uhd)
+    levels = {name: configs[name]["display"] for name in ("L00", "L09", "L13")}
+
+    def add(name, label, display, **extra):
+        win[name] = dict({"label": label, "display": dict(display), "resolution": uhd}, **extra)
+    add("AUTO", "Product defaults (every Automatic choice) on High, borderless 4K, VSync off", product_defaults)
+    win["OOB"] = {"label": "Fresh-install display defaults on High: windowed Automatic size, VSync on (calibration "
+                           "file removed; an exported build would choose High itself)",
+                  "display": dict(product_defaults, vsync_mode="enabled", window_mode="windowed", window_resolution="auto")}
+    matrix = []
+    for level, display in levels.items():
+        add("STD-" + level, level + " on Standard (Compatibility, OpenGL)", display, renderer="gl_compatibility")
+        add("DX-" + level, level + " on High with Direct3D 12", display, driver="d3d12")
+        add("MOB-" + level, level + " on Mobile/Vulkan (not a Windows product mode)", display, renderer="mobile")
+        matrix += ["STD-" + level, "DX-" + level, "MOB-" + level]
+    windowed = []
+    for size, tag in (("1920x1080", "1080"), ("2560x1440", "1440")):
+        for level, display in levels.items():
+            add("W%s-%s" % (tag, level), "%s windowed %s (High)" % (level, size), display, resolution=size, windowed=True)
+            windowed.append("W%s-%s" % (tag, level))
+        for level in ("L09", "L13"):
+            add("SW%s-%s" % (tag, level), "%s windowed %s on Standard" % (level, size), levels[level], resolution=size,
+                windowed=True, renderer="gl_compatibility")
+            windowed.append("SW%s-%s" % (tag, level))
+    fsr = []
+    for mode, tag in (("fsr2_native", "N"), ("fsr2_quality", "Q"), ("fsr2_balanced", "B"), ("fsr2_performance", "P")):
+        add("F2%s-L13" % tag, "L13 + FSR2 %s (MSAA off: FSR2 replaces it)" % mode[5:], dict(levels["L13"], reconstruction=mode))
+        fsr.append("F2%s-L13" % tag)
+    add("F2Q-L09", "L09 + FSR2 quality (MSAA off)", dict(levels["L09"], reconstruction="fsr2_quality"))
+    fsr.append("F2Q-L09")
+    pacing = []
+    add("V-L09", "L09 with VSync (display refresh, 120 Hz)", dict(levels["L09"], vsync_mode="enabled"))
+    add("V-L13", "L13 with VSync (display refresh, 120 Hz)", dict(levels["L13"], vsync_mode="enabled"))
+    add("C120-L13", "L13 capped at 120 fps, VSync off", dict(levels["L13"], max_fps=120))
+    add("C60-L13", "L13 capped at 60 fps, VSync off", dict(levels["L13"], max_fps=60))
+    pacing += ["V-L09", "V-L13", "C120-L13", "C60-L13"]
+    # The 3090 is CPU-bound at most levels: the GDScript reference physics shows what the native kernel buys.
+    physics = []
+    add("PR-L09", "L09 with GDScript reference physics (snapshot copy without app/native)", levels["L09"],
+        app_dir="src-ref")
+    add("PR-W1080-L09", "L09 windowed 1920x1080 with GDScript reference physics", levels["L09"], resolution="1920x1080",
+        windowed=True, app_dir="src-ref")
+    physics += ["PR-L09", "PR-W1080-L09"]
+    scenes = []
+    add("G-L09", "L09 at Green Paradise", levels["L09"], landscape="green_paradise")
+    add("G-L13", "L13 at Green Paradise", levels["L13"], landscape="green_paradise")
+    add("N-L09", "L09 at night", levels["L09"], time="night")
+    add("N-L13", "L13 at night", levels["L13"], time="night")
+    scenes += ["G-L09", "G-L13", "N-L09", "N-L13"]
+    add("S-L13", "L13 soak: 12 two-lap windows (about 14 minutes)", levels["L13"], windows=12)
+    extras = ["AUTO", "OOB"] + matrix + windowed + fsr + pacing + physics + scenes
+    # A second sample for every extra except the lowest-priority ones (non-product Mobile, Standard 1440p, floors).
+    single = {"MOB-L00", "MOB-L13", "STD-L00", "DX-L00", "W1080-L00", "W1440-L00", "SW1440-L09", "SW1440-L13",
+              "F2N-L13", "F2B-L13"}
+    first = {"screenshots": True, "restart_timing": True}
+    body = [{"config": c, "pass": 1, "overrides": first} for c in ladder_w + extras]
+    # Ladder passes alternate direction and come before the second extras pass, so a short night keeps three.
+    body += [{"config": c, "pass": 2} for c in reversed(ladder_w)]
+    body += [{"config": c, "pass": 3} for c in ladder_w]
+    body += [{"config": c, "pass": 2} for c in reversed(extras) if c not in single]
+    runs = with_references(body)
+    runs.append({"config": "S-L13", "pass": 1, "overrides": {"screenshots": True}})
+    runs += with_references([{"config": c, "pass": 4} for c in reversed(ladder_w)], runs[-2]["pass"] + 1)
+    json.dump({"host": "windows", "configs": win, "runs": runs}, open(plan_path, "w"), indent=1)
+    smoke = [{"config": c, "pass": 0, "overrides": first} for c in ("L00", "W1080-L09", "STD-L09", "DX-L09", "MOB-L09",
+                                                                      "F2Q-L13", "PR-L09")]
+    json.dump({"host": "windows", "configs": win, "runs": smoke}, open(smoke_path, "w"), indent=1)
+    print(len(runs), "runs;", len(win), "configs")
+
+
+if sys.argv[1] == "--windows":
+    windows_plan(sys.argv[2], sys.argv[3])
+    sys.exit(0)
 configs["AUTO"] = {"label": "Product defaults (every Automatic choice), borderless 1080p, VSync off",
                    "display": dict(product_defaults)}
 configs["OOB"] = {"label": "Fresh-install display defaults: windowed Automatic size, VSync on (no first-run "

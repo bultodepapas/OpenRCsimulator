@@ -23,7 +23,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
 | Frame time or GPU cost | [Frame diagnosis](graphics.md#frame-diagnosis); use the target display/GPU and record actual pixels. |
 | Shadow cost per technique, renderer and view | [Shadow cost matrix](../../tools/shadows/README.md#shadow-cost-matrix): root GPU, delta against Off and offscreen-pass attribution. |
-| Cost of each player graphics option on a real Mac display | [Mac graphics ladder](../../research/performance/mac_graphics_ladder/README.md): saved settings through Home → Fly, closed-loop orbit and crash, raw frames, AGX GPU utilisation and thermal state. |
+| Cost of each player graphics option on a real display (macOS, Windows/NVIDIA) | [Graphics ladder](../../research/performance/graphics_ladder/README.md): saved settings through Home → Fly, closed-loop orbit and crash, raw frames, GPU utilisation (AGX or `nvidia-smi`), per-thread CPU and host conditions. |
 | Automated startup, real-flight phases, pause and lifecycle benchmark | [GOD TEST](../../tools/godtest/README.md); `all --dry-run` lists the versioned battery; experimental pilot and hardware limits remain explicit. |
 | High profile or Windows NVIDIA package | [Graphics modes](../../tools/graphics/README.md); [NVIDIA build/launch](../../tools/graphics/native/README.md). |
 | An agent driving the app: menus, options, flights | `debugctl.py look` / `choose` / `catalog` / `setup`, or the MCP server `tools/debug/mcp_server.py`; [agents and MCP](../../tools/debug/README.md#agents-and-mcp-pt1h-r11). |
