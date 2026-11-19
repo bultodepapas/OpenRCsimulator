@@ -244,7 +244,10 @@ Each phase is one reviewable step with its own evidence, under step ids **VQ-07h
     - planar reflections, only after their own qualification.
   - **An "Efficient" tier for integrated GPUs:** Mobile, MSAA 2× or off, Scene detail Low or Medium, and render scale through MetalFX, FSR or bilinear where the renderer allows.
   - **A CPU term:** processor class, thread count, native-kernel availability and render CPU per renderer. Weak CPUs avoid Compatibility and draw-heavy detail.
-  - **A RAM term:** shared-memory iGPUs with 8 GB or less stay conservative.
+  - **A RAM term:** shared-memory iGPUs with 8 GB or less stay conservative. FSR2 adds 2.3–2.5 GB of process memory on an RTX 3090 at 4K, so it stays off hosts with 16 GB or less until that is explained ([I8](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results)).
+  - **The GPU budget comes from ground views, not the orbit.**
+    - Measured on the 3090 at 4K/120 Hz: the orbit takes 2.2 ms of GPU. A runway view takes 5.4–5.9 ms at L09 and 7.2 ms at L13, which misses about 4 % of refreshes. Home takes 8.7–9.2 ms at L13, now held by the Home render budget.
+    - Option costs also differ by GPU family: shadow-atlas quality costs −18 % at Home on the 3090 and −3 % on the M1 ([ladder analysis](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#1-the-model-one-route-three-bottlenecks)).
 - **Dependencies:** the Efficient tier needs A2's gate. Ultra needs A5's worst-case-scene protocol and CPU measurements.
 - **Why:** W3 and W5. This is the owner's "5090 at maximum, integrated as good as it can be while smooth" requirement.
 - **Affected:** the policy; `shadow_settings.gd` (an automatic quality value, coordinated with the shadows track); `scene_detail.gd` (Extreme becomes automatically reachable for qualified tiers); Settings labels.
@@ -255,6 +258,10 @@ Each phase is one reviewable step with its own evidence, under step ids **VQ-07h
 - **What:**
   - **First:** measure Mobile against Compatibility on at least one integrated GPU, and define the worst-case scene protocol (night lights, rain, planar lake, the live route).
   - Make calibration refresh-aware, and sample with VSync off or in a known clock state. Classify CPU-bound against GPU-bound from render CPU, process and physics time, so a slow CPU does not lower GPU settings.
+    - The ladders show why. On the 3090 flight is main-thread-bound while Home and the crash are GPU-bound.
+    - Reconstruction helps only a GPU-bound frame: MetalFX spatial gave +28 % on the M1, while FSR2 was −2 to −28 % on the 3090.
+    - Calibration should measure on a ground-filling view.
+    - Calibration's per-frame `viewport_get_measured_render_time_*` reads would each force a sync under a separate render thread ([I7](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#4-improvement-plan)).
   - Add an **opt-in "graphics report" export**: the decision report plus calibration, attached to bug reports and the debug bridge. It lets measured rows enter the table with provenance.
   - Assemble a reference lab of 6–8 machines:
     - owned: the RTX 3090 and an M1;
@@ -311,4 +318,7 @@ Each phase is one reviewable step with its own evidence, under step ids **VQ-07h
 1. The Efficient (Mobile) direction, subject to A2's evidence.
 2. ~~Shipping the native kernel in Windows packages (A6)~~ **Approved 2026-11-18: native kernel always.**
 3. The target refresh policy: 60 fps everywhere, or display refresh where headroom allows.
+   - Home now holds the refresh through its render budget (VQ-07h I2): M1 51 → 58–60 fps, 3090 4K L13 97 → 119 fps.
+   - Ground views in flight are the remaining limit.
 4. The hardware lab: which machines can be borrowed, and whether community testers report through the opt-in graphics report.
+5. **Flight near the ground (VQ-07h I6).** Should flight also lower its 3D scale when a ground-filling view misses the refresh, as Home does? The alternative is for Automatic to plan a bundle that holds the runway view. Evidence: [ladder analysis §8](../research/visual-quality-implementation/VQ-07/ladder-analysis-2026-11-19/README.md#8-implementation-results).
