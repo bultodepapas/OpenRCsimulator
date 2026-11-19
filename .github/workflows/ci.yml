@@ -130,6 +130,10 @@ jobs:
       OPENRC_TEST_PART: ${{ matrix.part }}
       OPENRC_UNIT_SHARD: ${{ matrix.shard }}
       OPENRC_UNIT_SHARDS: ${{ matrix.shards }}
+      # One failed app/test.sh gate must not hide the later gates and phases; the job still fails.
+      OPENRC_KEEP_GOING: '1'
+    # Once setup (dependencies; for integration also import, generator venv and release tools)
+    # succeeds, independent check steps run even after an earlier check step failed.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Fetch fixed-brake historical source commits
@@ -165,6 +169,7 @@ jobs:
           done
           "$found" || { echo 'fixed-brake test missing' >&2; exit 1; }
       - name: Install app and display dependencies
+        id: app_deps
         timeout-minutes: 15
         run: |
           sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
@@ -185,7 +190,7 @@ jobs:
           python3 tools/godot/run_checked.py --timeout "${OPENRC_IMPORT_TIMEOUT:-600}" --out-dir tmp/godot-checks --label ci-resource-import -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv "$RUNNER_TEMP/aircraft-schema-venv"
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
@@ -194,17 +199,19 @@ jobs:
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/helicopter/hx700/test_schema.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-standardization/test_schema_v2.py --godot "$(app/get-godot.sh)"
       - name: Generator Python dependencies (X8-06 derive_physics.py needs numpy)
-        if: matrix.part == 'integration'
+        id: generator_deps
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv --system-site-packages "$RUNNER_TEMP/generator-venv"
           "$RUNNER_TEMP/generator-venv/bin/python" -m pip install -r research/skywalker-x8/X8-06/requirements.txt
           echo "$RUNNER_TEMP/generator-venv/bin" >> "$GITHUB_PATH"
       - name: Release fixture inspection tools
-        if: matrix.part == 'integration'
+        id: release_tools
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         timeout-minutes: 15
         run: sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y binutils zip g++
       - name: Offline measurement and validation tool regressions
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 app/tests/test_ci_partitions.py
           python3 app/tests/test_export_identity.py
@@ -212,7 +219,7 @@ jobs:
           python3 research/f4u-corsair/F4U-07/test_generated_identity.py
           research/test-tools.sh
       - name: NK-3 trajectory evidence policy (no native library required)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 tools/godot/run_checked.py --timeout 90 --out-dir tmp/godot-checks --label nk3-trajectory-policy \
             --require-text 'NK3_TRAJECTORY_POLICY verdict=pass' -- \
@@ -223,12 +230,14 @@ jobs:
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_fleet.gd"
       - name: Optional process RAM and I/O backend regressions (PT1h-R4)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv "$RUNNER_TEMP/godot-resources-venv"
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m pip install -r tools/godot/requirements-resources.txt
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
       - name: Run app checks with unit-backed parse coverage
+        if: ${{ !cancelled() && steps.app_deps.outcome == 'success' && (matrix.part != 'integration' || (steps.resource_import.outcome == 'success'
+          && steps.generator_deps.outcome == 'success' && steps.release_tools.outcome == 'success')) }}
         env:
           OPENRC_IMPORT_TIMEOUT: '1800'
         run: |

@@ -56,14 +56,19 @@ class PhaseRouting(unittest.TestCase):
         script = (self.app / "test.sh").read_text(encoding="utf-8")
         # Keep the real selection, parse, unit, import, receipt and pipe logic;
         # replace only the expensive integration blocks in this disposable copy.
-        start = script.index('echo "== CI and local generated source checks"')
+        start = script.index('section "CI and local generated source checks"')
         end = script.index("fi # offline generators and references", start)
         # Retain the actual reference-unit calls to exercise their routing too.
         references = "\n".join(line for line in script[start:end].splitlines()
                                if line.startswith("run_reference_unit "))
-        script = script[:start] + 'echo SOURCE_PHASE\n[[ "${FAIL_SOURCE:-}" != 1 ]]\n' + references + "\n" + script[end:]
-        start = script.index('echo "== H7:')
-        script = script[:start] + 'echo RUNTIME_PHASE\n[[ "${FAIL_RUNTIME:-}" != 1 ]]\n'
+        script = (script[:start]
+                  + 'section "fixture source one"; section_body() {\necho SOURCE_PHASE\n'
+                  + '[[ "${FAIL_SOURCE:-}" != 1 ]]\necho SOURCE_ONE_CONTINUED\n}; end_section\n'
+                  + 'section "fixture source two"; section_body() {\necho SOURCE_TWO\n'
+                  + references + "\n}; end_section\n" + script[end:])
+        start = script.index('section "H7:')
+        script = (script[:start] + 'section "fixture runtime"; section_body() {\necho RUNTIME_PHASE\n'
+                  + '[[ "${FAIL_RUNTIME:-}" != 1 ]]\n}; end_section\n')
         (self.app / "test.sh").write_text(script, encoding="utf-8", newline="\n")
         (self.app / "simulation").mkdir()
         (self.app / "simulation/non_unit.gd").write_text("# parse me\n", encoding="utf-8")
@@ -192,6 +197,40 @@ class PhaseRouting(unittest.TestCase):
                 result = self.run_part(part, **failure)
                 self.assertNotEqual(result.returncode, 0, result.stdout)
                 self.assertFalse(list((self.app.parent / "outputs" / part).glob("roster-*.json")))
+
+    def test_keep_going_runs_every_gate_and_phase_but_still_fails(self):
+        failures = {"FAIL_SOURCE": "1", "FAIL_RUNTIME": "1"}
+        result = self.run_part("integration", "keep-going", OPENRC_KEEP_GOING="1", **failures)
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("SOURCE_TWO", result.stdout)
+        self.assertNotIn("SOURCE_ONE_CONTINUED", result.stdout)  # errexit still applies inside a gate
+        self.assertIn("RUNTIME_PHASE", result.stdout)
+        self.assertEqual(len(list((self.app.parent / "outputs/keep-going").glob("roster-parse-*.json"))), 1)
+        self.assertIn("== 2 failed section(s):", result.stdout)
+        self.assertIn("  fixture source one (exit 1)", result.stdout)
+        self.assertIn("  fixture runtime (exit 1)", result.stdout)
+        # The default stops at the first failed gate.
+        result = self.run_part("integration", "fail-fast", **failures)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn("SOURCE_TWO", result.stdout)
+        self.assertNotIn("RUNTIME_PHASE", result.stdout)
+        self.assertFalse(list((self.app.parent / "outputs/fail-fast").glob("roster-*.json")))
+        self.assertIn("  fixture source one (exit 1)", result.stdout)
+
+    def test_keep_going_parse_failure_creates_no_receipt_and_runtime_still_runs(self):
+        result = self.run_part("integration", "parse-failed", OPENRC_KEEP_GOING="1", PROBE_FAIL="test_helper.gd")
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("RUNTIME_PHASE", result.stdout)
+        self.assertIn("== 1 failed section(s):", result.stdout)
+        self.assertIn("parse error in", result.stdout)
+        self.assertFalse(list((self.app.parent / "outputs/parse-failed").glob("roster-*.json")))
+
+    def test_keep_going_rejects_invalid_values(self):
+        for value in ("", "2", "true"):
+            with self.subTest(value=value):
+                result = self.run_part("integration-source", OPENRC_KEEP_GOING=value)
+                self.assertEqual(result.returncode, 2, result.stdout)
+                self.assertIn("OPENRC_KEEP_GOING must be 0 or 1", result.stdout)
 
     def test_roster_change_during_execution_cannot_create_receipt(self):
         result = self.run_part("units", PROBE_ADD=str(self.app / "tests/test_added.gd"))

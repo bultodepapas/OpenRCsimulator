@@ -53,6 +53,8 @@ Unit shard indices are 0–7. Without partition variables, the script runs the f
 
 For focused diagnosis, `OPENRC_TEST_PART=integration-source`, `integration-parse` or `integration-runtime` selects one integration phase. Each imports safely and is incomplete on its own; CI still uses the combined `integration` partition. Parse/unit runs retain unique source-bound roster receipts, reconciled by the final CI gate. [Local preflight and receipt contracts](../../tools/ci/README.md).
 
+Each integration gate is an isolated section: `section "label"; section_body() {` … `}; end_section`. Add new gates in that form; the body runs in its own subshell with errexit, so it cannot change later gates' variables or directory. Locally the first failed gate stops the run. `OPENRC_KEEP_GOING=1` (set by CI) records it and continues through the remaining gates and phases, then lists every failed gate and exits nonzero. Isolation is per gate: inside one gate (for example `check-sources.sh`) the first failing command still ends that gate, so keep unrelated checks in separate gates.
+
 - Use a stable checkout for a long run. A detached worktree at `HEAD` **does not contain uncommitted changes**; ensure the snapshot contains the intended edits and generated outputs, then record its identity. Changes during a run invalidate that result.
 - Use separate checkouts and isolated `user://` profiles for concurrent suites. Serialize imports in one checkout; Windows native-extension hot-reload DLLs can contend even with separate profiles.
 - Install integration dependencies from the manifests used by [CI](../../.github/workflows/ci.yml), including the X8 generator's requirements. Use a tool-specific environment; do not reuse an incompatible visual/audio environment.
