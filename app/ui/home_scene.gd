@@ -26,6 +26,7 @@ const Presentation := preload("res://ui/home_presentation.gd")
 const PreviewGeometry := preload("res://ui/home_preview_geometry.gd")
 const VehiclePreview := preload("res://ui/home_vehicle_preview.gd") # UI-39: RC cars, FPV quad, RC blimp
 const Conditions := preload("res://render/world/conditions.gd")
+const HomeRenderBudget := preload("res://render/home_render_budget.gd") # VQ-07h I2
 
 ## Render-only parked presentation. Contact points come from the visual wheels/skids;
 ## the simulator's start state and aircraft configuration remain independent.
@@ -189,6 +190,10 @@ func _ready() -> void:
 		return
 	get_viewport().size_changed.connect(_frame_aircraft)
 	_frame_aircraft()
+	# Lowers Home's 3D resolution only while Home misses the refresh; restores it when Home is covered or left.
+	var budget := HomeRenderBudget.new()
+	budget.name = "HomeRenderBudget"
+	add_child(budget)
 
 
 ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
