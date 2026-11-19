@@ -20,6 +20,8 @@ reasoning; it does not claim runtime implementation or device qualification.
 | [Capture and asset pipeline](capture-and-asset-pipeline.md) | How does a real flying site become a calibrated, reproducible, redistributable package? |
 | [Validation and budgets](validation-and-budgets.md) | Which experiments, mathematical budgets and hardware evidence determine whether the site is usable? |
 | [Primary-source register](sources.md) | Which original sources support the claims, with what version and retrieval limits? |
+| [Twenty additional technique investigations](additional-techniques.md) | Which image-based, game-production, terrain, material, lighting and loading methods fit this repository, and what should be tested first? |
+| [Two-round search record](search-rounds.md) | What were the exact first ten and second ten queries, why was round 2 selected, and which results were retained or rejected? |
 
 ## Findings that change the decision
 
@@ -52,6 +54,14 @@ Recommendation: keep the current engine, prove one fixed-pilot photo site first,
 and build a small 3D/FPV site as a separately gated extension. Native optimization,
 multiple panoramas and Gaussian splats remain evidence-driven follow-ups.
 
+The requested follow-up adds twenty distinct technical investigations and twenty
+source records (62 total). It favors calibrated projection, conditional tiled
+panoramas, relightable scan preparation, bounded surface detail and material
+filtering. It checks existing/rejected OpenRC techniques rather than treating
+them as new implementation. Current-main source differences and Godot-version
+uncertainties are recorded in the search log. The plan maps the selected
+comparisons into its existing steps; no runtime qualification is added.
+
 ## Relationship to earlier research
 
 Reuse [landscape selection](../../../plans/landscape-selection.md),
@@ -80,7 +90,7 @@ the primary-source qualifications here for the new plan.
 - No third-party imagery, commercial simulator assets, downloaded binaries or
   generated screenshots are committed. Large authoring inputs are future work.
 
-## Planning-branch verification
+## Initial planning-branch verification
 
 Documentation integration was checked on 2026-11-18:
 
@@ -105,3 +115,29 @@ Documentation integration was checked on 2026-11-18:
 
 No simulator, export, capture or hardware-performance test was run for this
 documentation-only branch. The implementation gates above remain unverified.
+
+## Twenty-technique follow-up verification
+
+The follow-up was checked on 2026-11-18 against research commit
+`03b028c58d953e603c42323e10529e29926b6fa0` and the separately fetched main revision
+recorded in the search log:
+
+- Twenty distinct queries were executed as ten first-round queries followed by
+  ten selected after those results. The recorded query tables and twenty PT
+  investigation headings agree, with one E01–E20 primary-source mapping each.
+- Every investigation contains evidence, current-code fit, a proposed experiment
+  and a disposition. The source register contains 62 unique records; the
+  implementation ledger retains 18 unique SC-PHOTO rows.
+- All 252 relative link occurrences and 129 linked heading anchors resolved in
+  the ten owned plan/research documents and the changed research-index paragraph.
+  Sparse-checkout paths were checked against Git's tracked tree when absent on disk.
+- Seven changed documents are within `docs/`. Whitespace/code-fence checks and
+  Git whitespace validation passed. No runtime source, dependency or asset changed.
+- Independent review required material-specific roughness/specular controls,
+  shared static/crash decal allocation and accounting for the lake's existing
+  two-slot reflection atlas. Those corrections were checked against source and
+  integrated into the comparisons. The final bounded review found no additional
+  material issue; search order and links were checked by the lead separately.
+
+No new simulator, capture, export or hardware benchmark was executed. Existing
+historical measurements remain scoped to their own engine, scene and device.

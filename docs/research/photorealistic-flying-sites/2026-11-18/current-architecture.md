@@ -47,6 +47,8 @@ has no photographed object registration, capability policy or general terrain
 sampling. The `rc_track` special path is Club-specific; do not repurpose it as a
 generic photo-terrain interface.
 
+The follow-up inspected [`airfield_track.gd`](../../../../app/physics/ground_vehicle/airfield_track.gd): its bounded analytic float64 RC-circuit heightfield and `composed()` derivatives are shared with rendering/contact sampling, while `matches_field()` restricts it to canonical Club geometry. This is an existing specialized heightfield, not a general surveyed terrain provider. The [additional compatibility audit](additional-techniques.md#repository-evidence) records ground-material, LOD, reflection, precision and staging evidence, plus the separately checked main revision.
+
 Supported collision primitives are not an existing general-purpose obstacle
 authoring API. FieldLoader allows at most one field object, a validated treeline;
 CollisionWorld currently derives other shapes from known scenery/light/prefab

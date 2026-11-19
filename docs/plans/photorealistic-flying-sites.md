@@ -32,6 +32,8 @@ contains primary references, the exact source seams, asset workflow, experiments
 and limitations. No panorama, addon, new landscape, runtime change or performance
 result is delivered by this planning branch.
 
+The follow-up [twenty technique investigations](../research/photorealistic-flying-sites/2026-11-18/additional-techniques.md), based on [ten searches followed by ten adaptive searches](../research/photorealistic-flying-sites/2026-11-18/search-rounds.md), extend this recommendation with game-production methods and explicit current-code comparisons. Their selected experiments are assigned to the existing steps below; they do not introduce twenty mandatory features.
+
 ## Product scope
 
 | Site type | Intended experience | Camera and lighting contract |
@@ -92,7 +94,7 @@ and evidence requirements, not duplicate implementation status.
 
 | ID | Work and dependency | Required proof / status |
 | --- | --- | --- |
-| SC-PHOTO-00 | Audit current source, official simulator precedent, engines, tools, rights and implementation seams; register subtrack | **Research complete.** Dated pack and source register. Documentation checks recorded in its README; runtime and hardware evidence remain absent |
+| SC-PHOTO-00 | Audit current source, official simulator precedent, engines, tools, rights and implementation seams; register subtrack | **Research complete.** Initial pack plus twenty follow-up technique investigations from two ordered rounds of ten searches; 62 source records. Documentation checks recorded in its README; runtime and hardware evidence remain absent |
 | SC-PHOTO-01 | Select pilot site, capture rights, camera station, runway measurements and platform baseline; depends on 00 | Pending. Rights/provenance record, measured versus estimated quantities, held-out landmarks, named hardware and agreed acceptance envelope |
 | SC-PHOTO-02 | Disposable panorama + occlusion + shadow rendering spike on synthetic geometry; depends on 00, real photos optional | Pending. Same fixture in Compatibility, Mobile/Metal and applicable Forward+ configurations; choose a supported composition method before building a complete site |
 | SC-PHOTO-03 | Validate a separate site descriptor and catalog capability lookup; depends on 01–02 | Pending. Existing adapters retain their contract; unknown versions, bad paths/transforms and mismatched field identities fail before scene replacement; bounded memory admission |
@@ -179,6 +181,24 @@ sky for chase/FPV. Remove or replace its near objects, use only sufficiently
 distant sky/horizon content, and test disocclusions. Raw photogrammetry also
 contains baked shadows and incomplete geometry. Cleanup and contact calibration
 are part of the work, not optional postprocessing.
+
+## Priorities from the twenty-technique follow-up
+
+The [comparison and proposed tests](../research/photorealistic-flying-sites/2026-11-18/additional-techniques.md) refine the sequence without changing step status:
+
+- **02/05 — composition:** prioritize PT-01 single-eye photographic projection onto measured proxy geometry. Qualify shadow/reflection/secondary-view behavior separately from the pilot image; multi-view reconstruction is a later option.
+- **07 — source detail:** retain ordinary panorama variants as the first baseline. Compare PT-11 multiresolution tiles only when the captured detail and actual zoom/memory results justify a custom page representation. Tiling cannot create missing image information.
+- **03/07/08 — loading:** PT-20 reuses staged construction and adds bounded resource requests, stale-result rejection and measured upload/residency costs as needed. It cannot stream physical ground or contacts according to graphics quality.
+- **11 — 3D asset quality:** first compare PT-06 lighting-reduced scans, PT-12 a controlled shoulder material blend, PT-13 local markings/overlays and PT-17 normal-guided roughness filtering where the actual material has a confirmed specular response. Use existing ground/world/asset owners and shared material conventions; binding a grass roughness map alone does not create that response.
+- **05/11 — lighting:** PT-15 reuses bounded reflection ownership; PT-14 baked lighting is conditional on an authored, fixed-lighting 3D scene and an editor-bake/export path.
+- **09/11 — measured detail cost:** PT-08 HLOD and PT-16 foliage filtering need a demonstrated baseline defect and separate moving-view/zoom evidence. Preserve the earlier rejected impostor, mipmap and ridge-LOD candidate records.
+
+Clipmaps, runtime virtual texturing, layered-depth rendering, shell vegetation,
+new atmosphere LUTs and a general floating origin remain conditional research.
+Exact engine capability checks take precedence over old or moving documentation;
+the follow-up found version differences in decals, reflection probes and foliage
+import options. These choices require no engine migration or dependency upgrade
+to be assumed during planning.
 
 ## Planning ranges and staffing
 

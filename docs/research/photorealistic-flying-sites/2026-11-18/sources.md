@@ -339,3 +339,166 @@ application, a surveyed candidate site, rights for a particular capture, a
 cross-platform export, or native contact admission for a new field. Those are
 implementation and field-work gates in SC-PHOTO-01…10. No exact source/tool
 release has been added as a project dependency by this research.
+
+## Additional technique sources
+
+E01–E20 support the [twenty follow-up investigations](additional-techniques.md).
+They were selected through the [two ordered search rounds](search-rounds.md),
+with primary-page opens/finds to resolve specific gaps. Historical methods and
+current documentation are explicitly distinguished from the pinned runtime.
+The register now has **62 records**, including the original 42.
+
+## E01
+
+[Debevec, Taylor and Malik — Modeling and Rendering Architecture from Photographs](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1996/5357.html), 1996, and
+[Debevec, Borshukov and Yu — Efficient View-Dependent Image-Based Rendering with Projective Texture-Mapping](https://www.pauldebevec.com/Research/VDTM/), 1998.
+Original research on combining photographic views with approximate geometry.
+Supports PT-01's representation comparison; no present-day hardware or Godot
+performance is inferred from these papers.
+
+## E02
+
+[Shade, Gortler, He and Szeliski — Layered Depth Images](https://www.microsoft.com/en-us/research/publication/layered-depth-images/), 1998.
+Original representation of multiple samples/depths along source-view rays.
+Supports restricted novel-view research, with missing data and physical geometry
+remaining separate problems. No LDI renderer is installed by this plan.
+
+## E03
+
+[Asirvatham and Hoppe — Terrain Rendering Using GPU-Based Geometry Clipmaps](https://developer.nvidia.com/gpugems/gpugems2/part-i-geometric-complexity/chapter-2-terrain-rendering-using-gpu-based-geometry), GPU Gems 2.
+Authored explanation of nested terrain grids, incremental updates and LOD
+transitions. Historical demonstration sizes/timings are not OpenRC budgets or
+proof of contact, shader, driver or multi-camera compatibility.
+
+## E04
+
+[Epic Games — Runtime Virtual Texturing](https://dev.epicgames.com/documentation/unreal-engine/runtime-virtual-texturing-in-unreal-engine).
+Documents on-demand cached surface shading and landscape integration in Unreal.
+Used as a system-design reference. It does not establish an equivalent available
+Godot subsystem or authorize copying an Unreal implementation into OpenRC.
+
+## E05
+
+[Deliot and Heitz — Procedural Stochastic Textures by Tiling and Blending](https://eheitzresearch.wordpress.com/738-2/) and
+[Unity Labs — procedural stochastic texturing prototype](https://github.com/UnityLabs/procedural-stochastic-texturing).
+Primary research/prototype on histogram-aware texture blending and filtering.
+Compare with OpenRC's retained two-sample method and earlier investigations;
+the prototype's engine integration and any copied code need separate review.
+
+## E06
+
+[Hamilton and Brown, EA DICE — Photogrammetry and Star Wars Battlefront](https://media.gdcvault.com/gdc2016/Presentations/Brown_Kenneth_Hamilton_Andrew_PhotogrammetryStarWars.pdf), GDC 2016; [session page](https://www.gdcvault.com/play/1023272/Photogrammetry-and-Star-Wars-Battlefront).
+Original production presentation; inspected map-generation and lighting-removal
+sections. Supports deliberate scan/material preparation. Game imagery is
+reference evidence only and supplies no reusable licensed site asset.
+
+## E07
+
+[SideFX — Game Tools: Imposter Textures](https://www.sidefx.com/tutorials/game-tools-imposter-textures/).
+Vendor authoring guidance for capture-sheet representations, including octahedral
+impostors. No SideFX/UE tool or output is adopted here; OpenRC's recorded failed
+candidate remains the stronger evidence about that particular tested package.
+
+## E08
+
+[Epic Games — World Partition HLOD](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition---hierarchical-level-of-detail-in-unreal-engine) and
+[Godot — visibility ranges (HLOD)](https://docs.godotengine.org/en/stable/tutorials/3d/visibility_ranges.html).
+The first explains grouped static proxies; the second provides a Godot-native
+implementation lead. Check fade mode, zoom behavior, bounds, materials and
+actual scene costs; neither establishes an automatic win over existing batching.
+
+## E09
+
+[Godot — StandardMaterial3D height mapping](https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html#height).
+Documents apparent relief from a height texture and its distinction from real
+geometry. OpenRC's custom ground shader would need its own bounded adaptation;
+no displacement/contact or triplanar compatibility is inferred.
+
+## E10
+
+[Godot — large world coordinates](https://docs.godotengine.org/en/stable/tutorials/physics/large_world_coordinates.html).
+Documents engine precision, build/export implications and rendering limitations.
+Supports keeping a measured local coordinate frame and evaluating a precision
+change only against a demonstrated problem; OpenRC's float64 simulation boundary
+is already a different, established contract.
+
+## E11
+
+[krpano — XML reference, image and multiresolution sections](https://krpano.com/docu/xml/#image).
+Vendor reference documents tiled image levels and panoramic projections.
+Primary page was opened directly after the targeted search returned third-party
+summaries. This is a representation example; no viewer, tile service or krpano
+license is adopted, and tiled delivery does not increase captured information.
+
+## E12
+
+[Epic Games — landscape materials](https://dev.epicgames.com/documentation/unreal-engine/landscape-materials-in-unreal-engine) and
+[landscape material expressions](https://dev.epicgames.com/documentation/en-us/unreal-engine/landscape-material-expressions-in-unreal-engine).
+Documents layer weights and height-aware material transitions. Supports a
+small shader comparison, not a new physical heightfield or a wholesale port of
+the vendor's landscape system.
+
+## E13
+
+[Godot — using decals](https://docs.godotengine.org/en/stable/tutorials/3d/using_decals.html).
+The retrieved stable manual describes projected decals and a flat-surface
+alternative, but excludes Compatibility. The inspected OpenRC 4.8 path probes
+decal creation and retains a plane fallback. GDU-11b has older 4.8.beta1 crash-path
+evidence; the new beta2 site combination remains untested. Preserve the probe,
+receiver-aware shared capacity and plane fallback when qualifying the site.
+
+## E14
+
+[Godot — LightmapGI](https://docs.godotengine.org/en/stable/classes/class_lightmapgi.html) and
+[using lightmap global illumination](https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_lightmap_gi.html).
+Documents static lighting, editor-side baking, UV/scene requirements and dynamic
+object probes. Current generated scene construction needs an explicit authored
+bake/export path; no scene was baked or qualified for any renderer in this task.
+
+## E15
+
+[Godot — ReflectionProbe](https://docs.godotengine.org/en/stable/classes/class_reflectionprobe.html).
+Current reference includes Compatibility and Mobile with different per-mesh
+limits, bounded updates and environment sourcing. Earlier 4.0 search results
+excluded Compatibility. The current source and OpenRC's existing probe owner
+guide the proposal; exact renderer and appearance still require testing.
+
+## E16
+
+[Godot latest — preserve alpha-test coverage on image import](https://docs.godotengine.org/en/latest/tutorials/assets_pipeline/importing_images.html#mipmaps-preserve-alpha-test-coverage),
+[latest importer reference](https://docs.godotengine.org/en/latest/classes/class_resourceimportertexture.html) and
+[3D antialiasing](https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html).
+Separate mip coverage from alpha-to-coverage/MSAA and material transparency mode.
+The setting was absent from the retrieved stable image page; the pinned engine
+source fetch was unavailable. Its presence on OpenRC's binary is unverified.
+
+## E17
+
+[Godot — texture roughness limiter on import](https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html#texture-roughness-limiter-on-import) and
+[image import options](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html).
+Documents an offline normal-guided roughness treatment and distinguishes it from
+the runtime screen-space limiter. A material-specific comparison is required;
+this does not establish removal of every form of shimmer or edge aliasing.
+
+## E18
+
+[Hillaire — A Scalable and Production Ready Sky and Atmosphere Rendering Technique](https://diglib.eg.org/items/8a3e5350-18b3-46bd-9274-3add5af88c75), Eurographics Symposium on Rendering 2020, [DOI](https://doi.org/10.1111/cgf.14050).
+Original sky/aerial-perspective LUT method. A possible shared-atmosphere design
+reference, not an OpenRC implementation, timing result or reason to apply more
+haze to an already photographed atmosphere.
+
+## E19
+
+[Lengyel, Praun, Finkelstein and Hoppe — Real-Time Fur over Arbitrary Surfaces](https://pixl.cs.princeton.edu/pubs/Lengyel_2001_RFO/index.php), I3D 2001; [author's project page](https://hhoppe.com/proj/fur/).
+Original shell/fin representation. Grass is an explicitly proposed adaptation,
+not a result established by this fur paper. Contemporary low-altitude RC views,
+overdraw and contact appearance require their own comparison.
+
+## E20
+
+[Godot — background loading](https://docs.godotengine.org/en/stable/tutorials/io/background_loading.html),
+[ResourceLoader](https://docs.godotengine.org/en/stable/classes/class_resourceloader.html) and
+[thread-safe APIs](https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html).
+Documents threaded resource requests, blocking retrieval and scene-tree safety.
+Resource loading is one component of a bounded scenery-residency design; no
+automatic cancellation, hitch-free upload or isolated World globals are inferred.
