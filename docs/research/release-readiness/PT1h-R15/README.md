@@ -3,6 +3,10 @@
 Date: 2026-11-17. Base: `a7de9b35676d891bc2034cc344b910d9e1ef9c61`.
 Branch: `perf/stutter-diagnostics-2026-11-17`.
 
+Follow-up: [24 investigations, 2026-11-19](research-2026-11-19.md) inform the
+[remaining implementation plan](../../../plans/stutter-diagnostics.md). That
+documentation update preserves the historical verification scope below.
+
 ## Purpose and boundary
 
 Strengthen the existing opt-in debug bridge so a short interruption, sustained FPS loss or long stall is easier

@@ -502,6 +502,39 @@ camera or physics/render cadence jitter.
 
 Research, decisions and software verification: [PT1h-R15 evidence](../../docs/research/release-readiness/PT1h-R15/README.md).
 
+### Choose the next investigation
+
+Preserve the four exported files first, then use the observed symptom to choose
+one follow-up. Keep scenario, source/build, renderer/driver, cap/VSync/refresh,
+output/internal resolution and cold/warm state with the report. The running
+revision is currently `not_observed`; the checkout used by the client cannot fill
+that gap. Capture in your owned session and keep any heavy profiling in a separate run.
+
+| Observation | Next check | Interpretation limit |
+| --- | --- | --- |
+| Isolated spike or sustained slow frames | Inspect raw intervals, retained event context and `timeline --stutter`; reproduce the same action | A relative detector can adapt to sustained slowdown; retain budget episodes and maxima |
+| Suspected script/physics work | Relaunch with `--script-profile`, reproduce, then use `profile`; inspect self and total ownership | Profiling perturbs timing; inclusive parent/child costs cannot be added |
+| First-use/selection/Fly delay | Compare the same cold/first-use and warm route; inspect loading/pipeline context | Loading completion does not make scene attachment cheap; a counter change is not a duration |
+| Suspected rendering cost | Use existing `render`/`ablate` and the supported engine profiler | Per-viewport GPU values are last readings with unverified freshness; overlapping work is not additive |
+| Physics catch-up reported | Compare time-scale/pause state, physics work and render evidence | A rendering stall can also force catch-up; the count alone does not identify the cause |
+| Motion looks jerky but callback pacing is stable | Review camera switches, reset/respawn and interpolation with a rendered recording | The frame detector cannot certify visual smoothness or input latency |
+| Callback and visible presentation disagree | Optional PresentMon on Windows, MangoHud on Linux, or Instruments for native Metal; see linked applicability research | External clocks/metrics need their own identity and alignment; no automatic import/correlation is implemented |
+
+**Pinned-engine caveats.** In Godot `4.8.beta2.official.cafc17a19`, process/physics
+timing monitors publish periodic window maxima. They are not fresh CPU durations
+for every observed frame. GLES3 timestamp collection reads older query results;
+viewport getters expose stored durations without a source-frame ID. Toggling engine
+measurement does not clear those durations. The current probe already guards the
+disabled state; keep `unverified_freshness` after re-enabling or on sparse viewports.
+Do not assume a fixed delay across OpenGL, Vulkan and Metal. Exact-source evidence
+and external-tool constraints are in the [24-investigation follow-up](../../docs/research/release-readiness/PT1h-R15/research-2026-11-19.md).
+
+Automatic lead-up/recovery collection, richer provenance and offline paired-run
+analysis are **proposed**, not additional `frames` options. Their ownership and
+acceptance checks live in the [implementation plan](../../docs/plans/stutter-diagnostics.md).
+A permanent main-thread hang may leave only the last received capture and a client
+timeout; an unreturned callback cannot supply a completed frame interval.
+
 ## GPU cost and rewind (PT1h-R9)
 
 Research and the first Windows measurements: [debug tooling 2026-11-06](../../docs/research/debug-tooling-render-rewind-2026-11-06.md).

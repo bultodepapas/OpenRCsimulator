@@ -88,6 +88,13 @@ Use the available native Windows workstation first for development comparisons; 
 
 Record commit/dirty-file hashes, engine/package hashes, aircraft/field identity, seed, physical/visual weather, camera/FOV/aid state, output/internal resolution, MSAA, VSync/cap, refresh rate, power mode and background load. Retain raw samples, failed runs and observer overhead. Measure instrumented attribution separately from release exports.
 
+For intermittent stutters and FPS drops, reuse the existing [PT1h-R15 frame captures](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15).
+The [stutter-diagnostics subplan](stutter-diagnostics.md), informed by [24 investigations](../research/release-readiness/PT1h-R15/research-2026-11-19.md),
+sequences provenance/freshness, bounded incident collection and comparable-run analysis.
+Those extensions are proposed; the current tool measures callback intervals. Periodic
+engine monitor maxima and last-read GPU values do not establish same-frame CPU/GPU
+attribution or displayed pacing. This plan retains the product gates below.
+
 | Workload | Minimum coverage |
 | --- | --- |
 | Complete fixed-wing flight | Stik circuit/takeoff/contact, P-51 high-load flight, electric Turbo Lumber Evolution route; basic route for other enabled catalog aircraft. Keep aircraft distributions separate. |

@@ -292,6 +292,14 @@ overhead controls. Never subtract noisy observer time from individual frame time
 `.orfl` is explicit and matched across roles. Reuse bounded streaming and existing
 OS resource/Perfetto tools; no new profiler or growing in-memory full-flight arrays.
 
+The [PT1h-R15 stutter-diagnostics plan](stutter-diagnostics.md) owns proposed bounded
+incident collection and channel/clock provenance. GOD TEST retains campaign control
+and this comparison policy. Attach original `openrc-debug-frames v1` snapshots by
+run/phase identity; do not coerce them into `openrc-frametimes` by inventing missing
+simulation fields. Shared reports must retain formula identity, coverage gaps,
+profiler state and unverified GPU freshness. The [24-investigation record](../research/release-readiness/PT1h-R15/research-2026-11-19.md)
+is planning input, not a new GOD TEST execution or hardware result.
+
 ## 11. Outcome and recovery contract
 
 | Outcome | States |
