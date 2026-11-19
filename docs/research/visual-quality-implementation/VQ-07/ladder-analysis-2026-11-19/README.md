@@ -111,11 +111,11 @@ a taxi or a low chase view costs. No such view has been measured in flight yet (
 | # | Finding | Hosts | Evidence | Status, owner |
 | --- | --- | --- | --- | --- |
 | D1 | Controller refresh took the cross-process store lease every 0.5 s on the main thread: 7 ms on NVMe, 26 ms on USB flash; missed a 120 Hz refresh twice a second | Windows (APFS is fast) | [report §1](../graphics-ladder-2026-11-19/README.md#1-a-2-hz-main-thread-stall-found-and-fixed) | Fixed (F3-GP-02-R3), including the menu-gamepad case (I1, [§8](#8-implementation-results)) |
-| D2 | Home is GPU-bound below the refresh rate: M1 52.6 fps at product defaults (60 Hz), 33.6 fps at L13; 3090 105 fps at L13 4K (120 Hz) | both | Home ladders, 3090 ablation | Mitigated by I2 on the M1 (51 → 58–60 fps, [§8](#8-implementation-results)); 4K and the Retina panel not re-measured |
+| D2 | Home is GPU-bound below the refresh rate: M1 52.6 fps at product defaults (60 Hz), 33.6 fps at L13; 3090 105 fps at L13 4K (120 Hz) | both | Home ladders, 3090 ablation | Fixed by I2: M1 51 → 58–60 fps, 3090 4K L13 97 → 119 fps ([§8](#8-implementation-results)); Retina panel not measured |
 | D3 | The crash shader warm-up runs only on Compatibility ([`shader_warmup.gd:9`](../../../../../app/render/crash/shader_warmup.gd)). Mobile's first crash froze 3.4–4.2 s on Windows; the M1, whose Standard is Mobile/Metal, froze up to 520 ms. Compatibility still froze 0.7–2.8 s at L00/L13, so its warm-up misses variants | both | report §5, DT-MAC-03b | Re-measured cold (T4, [§8](#8-implementation-results)): mostly a USB-cache artifact; Compatibility keeps 0.4 s |
 | D4 | First use of a profile is slow: Compatibility's first Home → Fly took 20–41 s and Mobile's 11–12 s. Caches were on USB flash, so this is unverified on NVMe | Windows | report §5 | Re-measured on NVMe (T4): Compatibility 12.5 s, Mobile 3.6–4.4 s |
 | D5 | Crash frames reach p99 29–30 ms from L06 on at 4K, GPU-bound; at 60 Hz such frames miss a refresh | 3090 | crash ladder | Open: crash with VQ |
-| D6 | Projected shadows and the planar cue cost 6.6 % of flight fps as script work, with no draw-call change | 3090 | ladder L03 | Open: shadows owners |
+| D6 | Projected shadows and the planar cue cost 6.6 % of flight fps in the ladder, with no draw-call change | 3090 | ladder L03 | Re-measured at about 2 % with no runtime culprit (I5, [§8](#8-implementation-results)) |
 | D7 | Product code reads RenderingServer GPU/CPU timing every frame ([`auto_calibration.gd`](../../../../../app/render/auto_calibration.gd), `frame_diagnostics.gd`). Under the separate render thread each read is a blocking sync | latent | engine warning, [Godot server wrappers](https://github.com/godotengine/godot/blob/master/servers/server_wrap_mt_common.h) | Open: VQ-07h before any thread-model change |
 | D8 | FSR2 adds about 2.3 GB of process RSS at 4K in every mode, while its VRAM report drops | 3090 | report §4 | Unexplained (T12) |
 | D9 | Native physics still costs 0.41 ms per 240 Hz tick, about 10 % of the main thread in flight (GDScript: 0.74 ms) | 3090 | `perf.sim_step_usec` | Open: physics/PT profiling (T15) |
@@ -233,7 +233,8 @@ M1 results, product defaults, VSync at 60 Hz, on the external 1080p display:
   it did not. About – % of Home frames still miss the refresh at any scale, so that share is not GPU work.
 - **Flight.** It always started at the player's scale.
 - **Windows.** At 1080p Home ran at 266 fps and the budget held at 1.0.
-- **Not yet measured.** The 3090 at 4K and the M1's native Retina panel, which the platform rules make its target.
+- **Not yet measured.** The M1's native Retina panel, which the platform rules make its target. The 3090 at 4K
+  follows below.
 - **Decision rule.** Two earlier variants of the rule failed on the M1, and the final rule incorporates both lessons:
   - A one-shot decision taken about 3 s after launch missed that Home grows heavier once its preview loads.
   - A 5 % miss-share threshold chased the non-GPU misses and gave the resolution back.
@@ -241,6 +242,28 @@ M1 results, product defaults, VSync at 60 Hz, on the external 1080p display:
   fixed and covered by 36 checks in `test_home_render_budget.gd`.
 - **Evidence.** The ladder now records the budget's decision (`home_render_budget`, `home_scale`) with every run's
   Home frames.
+
+**I2 and T3 on the RTX 3090 at 4K, 120 Hz VSync (later the same day, with the TV added to the desktop next to
+the remote session's virtual display).** Each launch measured Home, then a runway start: the pilot station's view
+of the aircraft on the ground, a ground-filling flight view. These are A/B pairs plus one discarded warm-up.
+
+| Configuration | Home without budget | Home with budget | Runway (flight, player's scale) |
+| --- | --- | --- | --- |
+| L09 (product defaults) | 112–113 fps, GPU 7.6 ms | 120.0 fps at ×0.85, GPU 6.0 ms | 118.5–119.9 fps, GPU 5.4–5.9 ms, 1 % low 60–71 |
+| L13 (every option on) | 96–99 fps, GPU 8.7–9.2 ms | 118.9–119.1 fps at ×0.85, GPU 7.2 ms | 115–116 fps, GPU 7.2 ms, 1 % low 56–63 |
+
+- Even product defaults missed 120 Hz at Home on the 3090; the budget holds it at both levels.
+- A view near the ground costs 2.5–3.3× the orbit's 2.2 ms of GPU. At L13 it sits at 87 % of the 8.3 ms budget
+  and misses about 4 % of refreshes; L09 holds. This is the GPU budget Automatic must plan for at 4K/120 Hz (I6).
+
+**I5: projected shadows, investigated, not optimised.**
+- **The ladder's cost shrank.** Under the corrected conditions (fixed controller code, profile on C:), L02 → L03
+  costs about 2 % of orbit fps (≈278 → ≈272 over six alternating windows), not the ladder's 6.6 %.
+- **No runtime node holds it.** Hiding and stopping the field projectors, the aircraft shadow, or both changed fps
+  by less than ±1 %.
+- **Redraw rates.** The aircraft silhouette redraws 7–8 times a second, so its reuse works. The windsock
+  silhouette (512²) redraws every frame, 238 times a second, because of its flutter. Stopping it cost nothing
+  measurable on this CPU. It stays a candidate for weak CPUs only.
 
 **I3: crash warm-up on Mobile, not shipped.** T4 re-measured the first crash with Godot's shader cache cleared
 and the profile on a system drive, A against B (warm-up also on Mobile):
