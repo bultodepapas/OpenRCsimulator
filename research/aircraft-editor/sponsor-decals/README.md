@@ -23,6 +23,14 @@ decal. OpenRC's own mark and three original geometric test decals exercise the
 editor controls now. The [scope register](../../../docs/research/aircraft-editor/AE-24e-00/sponsor-register.md)
 records the remaining work for every organization.
 
+The **2026-11-19 logo intake** expands the catalog to 17 external organizations
+and records exact official source candidates in [logo-source-intake.json](logo-source-intake.json).
+ProModeler, FEETECH and Hiwonder are additional source candidates, not new public
+claims of sponsorship. Newly retrieved art remains outside the public pack until
+its intended use and distribution are established. The 12 existing image files
+and their byte lock are unchanged. The source register gives quality notes and
+the concrete promotion steps for the maintainer.
+
 ## Reproduce and check
 
 From the repository root, with Python 3.11+ and Node 18+:
@@ -56,6 +64,7 @@ retains the blocked browser attempt and remaining native review.
 | File | Purpose |
 | --- | --- |
 | `catalog.json` | Research source, relationship, scope, next action and demo availability |
+| `logo-source-intake.json` | Public source URLs and technical receipts for newly located artwork; not a permission or asset-distribution manifest |
 | `assets/` | Exact official reference originals and named test SVGs, outside `app/` |
 | `asset-lock.json` | Reproducible byte counts, dimensions, source and packaged SHA-256 |
 | `catalog.js` | Generated local data for the interaction study |

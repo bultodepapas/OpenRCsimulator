@@ -88,7 +88,7 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official artwork source identified; obtain the approved original and logo-decal scope."
+      "reason": "Official transparent PNG located; confirm intended Workshop use and distribution."
     },
     {
       "id": "kontronik",
@@ -98,7 +98,7 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official PNG/EPS downloads identified; select approved art and confirm decal usage."
+      "reason": "Official red and black screen PNGs located; confirm the intended decal treatment."
     },
     {
       "id": "leomotion",
@@ -108,7 +108,7 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official logo source identified; confirm the intended decal and required preview approval."
+      "reason": "Official transparent logo located; confirm intended use and required presentation review."
     },
     {
       "id": "aloft",
@@ -118,7 +118,7 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Community knowledge/sharing support is recorded; obtain approved artwork and usage scope."
+      "reason": "Official logo located; website-content reproduction requires prior express authorization."
     },
     {
       "id": "radiolink",
@@ -128,7 +128,7 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Specific public simulator-image source only; standalone logo and editable-decal scope remain pending."
+      "reason": "Standalone official logo located; editable-decal and distribution scope remain pending."
     },
     {
       "id": "gm-propellers",
@@ -138,7 +138,37 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official website source lead; obtain approved artwork and a public scope record before activation."
+      "reason": "Standalone official logo located; no new collaboration or decal permission is asserted."
+    },
+    {
+      "id": "promodeler",
+      "brand": "ProModeler",
+      "label": "ProModeler",
+      "image": null,
+      "width": null,
+      "height": null,
+      "placement_enabled": false,
+      "reason": "Official-site logo lead returned HTTP 403; clean artwork remains unresolved."
+    },
+    {
+      "id": "feetech",
+      "brand": "FEETECH",
+      "label": "FEETECH",
+      "image": null,
+      "width": null,
+      "height": null,
+      "placement_enabled": false,
+      "reason": "Official wiki SVG recovered; it embeds a small bitmap and needs quality review."
+    },
+    {
+      "id": "hiwonder",
+      "brand": "Hiwonder",
+      "label": "Hiwonder",
+      "image": null,
+      "width": null,
+      "height": null,
+      "placement_enabled": false,
+      "reason": "Official path-only header SVG recovered; its viewBox-only dimensions need preparation."
     },
     {
       "id": "openrc",

@@ -100,12 +100,14 @@ def self_test() -> dict:
     validate_stack(full)  # Contract boundary only, not a performance claim.
     cases = []
 
-    def bad(name, mutate):
+    def bad(name, mutate, expected_error=None):
         value = copy.deepcopy(baseline)
         mutate(value)
         try:
             validate_stack(value)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as exc:
+            if expected_error is not None and str(exc) != expected_error:
+                raise AssertionError(f"Wrong refusal for {name}: {exc}") from exc
             cases.append(name)
             return
         raise AssertionError(f"Invalid contract accepted: {name}")
@@ -116,7 +118,13 @@ def self_test() -> dict:
     bad("duplicate instance id", lambda v: v["layers"][1].update(id=v["layers"][0]["id"]))
     bad("unknown asset", lambda v: v["layers"][0].update(asset_id="unknown"))
     bad("path-shaped asset id", lambda v: v["layers"][0].update(asset_id="../image"))
-    bad("reference-only sponsor", lambda v: v["layers"][0].update(asset_id="savox"))
+    # Use the correct bytes and aspect so this proves admission refusal, not an
+    # unrelated hash/geometry failure after accidental brand activation.
+    savox = next(a for a in read_catalog()["entries"] if a["id"] == "savox")
+    bad("reference-only sponsor", lambda v: v["layers"][0].update(
+        asset_id="savox", asset_sha256=savox["source_sha256"],
+        size_m=[0.25, 0.25 * savox["height"] / savox["width"]]),
+        expected_error="Asset is unavailable for the interaction fixture")
     bad("wrong asset bytes", lambda v: v["layers"][0].update(asset_sha256="0"*64))
     bad("stale receiver identity", lambda v: v.update(receiver_bindings_sha256="0"*64))
     bad("stale model identity", lambda v: v["visual_base"].update(model_sha256="0"*64))

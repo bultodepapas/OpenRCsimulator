@@ -22,9 +22,10 @@ node research/aircraft-editor/sponsor-decals/check_study.cjs
 python research/aircraft-editor/sponsor-decals/projection_exercises.py --check
 ```
 
-The first three commands reproduce the original pack and study checks; their
-results below are the **historical 2026-11-18 record**, not a claim that they
-were rerun for R1. The last command runs 37 closed-form synthetic exercises;
+The first three commands reproduce the pack and study checks. The original
+results remain in the **historical 2026-11-18 record**; their separate rerun for
+the 2026-11-19 logo intake is recorded below. R1 itself did not rerun that suite.
+The last command runs 37 closed-form synthetic exercises;
 the [recorded results](../AE-24e-00-R1/exercise-results.json) are 37/37 for
 that offline exercise only. They do not execute Godot, the GPU, a browser,
 native geometry, real resource lifetimes or performance workloads. The small,
@@ -35,7 +36,7 @@ or correct semantic surface selection.
 | Check | Scope |
 | --- | --- |
 | Reproducible source pack | 12 image assets and 14 generated files: eight exact external originals, OpenRC's master and three original geometric fixtures. Source/output hashes and true image dimensions/type are recorded. No website access is needed to reproduce the pack |
-| Catalog | 14 external organizations: eight with reference images and six with source/delivery leads. Only OpenRC and the three test fixtures enable study placement; this is not approval to ship external marks as player decals |
+| Catalog | 17 external organizations after the 2026-11-19 source intake: eight with existing reference images and nine with source/delivery leads. Only OpenRC and the three test fixtures enable study placement; this is not approval to ship external marks as player decals |
 | Proposal examples | Empty and three-layer proposals bind to the exact synthetic receiver, model, factory paint and image identities. Neither is accepted by the current production Workshop |
 | Invalid proposals | Unknown/missing keys, duplicates, unsafe/missing/reference-only assets, stale hashes, unknown/out-of-bounds receivers, invalid frames, dimensions/aspect, angle, numeric booleans, nonfinite values, opacity, layer count, duplicate JSON keys, NaN and byte bounds |
 | Appearance selector | Real stock IDs and `custom_` plus 24 lowercase hex characters; malformed custom IDs refused. Schema checks do not load a skin |
@@ -50,6 +51,36 @@ GPU composition, runtime admission or migration. The synthetic fixture is a
 concrete handoff contract, not a replacement for GDScript tests against the
 actual Workshop paths. The study harness simulates image completion/failure;
 it does not exercise a browser decoder, native pointer capture or download UI.
+
+## Logo intake verification — 2026-11-19
+
+The focused intake review passed `build_catalog.py --check`,
+`validate_pack.py --self-test` and `node check_study.cjs`: **12 exact assets**,
+**two valid proposal examples**, **27 rejected invalid-input cases** and
+**25/25 simulated editor checks**. The 12 image files and `asset-lock.json`
+are byte-identical to branch parent `8c3f230a1f1f5cf5ba8f036808dc4678a8f45ce1`;
+their aggregate image payload remains **233,118 bytes**. No new logo binaries
+were added to the public pack.
+
+The expanded catalog has 21 entries: four enabled project/test entries,
+17 external references and, within those references, nine metadata-only entries.
+The new source receipt records 11 verified download variants for eight
+organizations and one unresolved ProModeler lead. Receipt hashes and byte counts
+were checked against the exact downloaded source responses. FEETECH's embedded
+bitmap and Hiwonder's viewBox-only SVG limitations are recorded explicitly.
+
+The reference-only validator case now supplies the correct Savox hash and aspect
+and requires the admission-specific error. This prevents a different failure
+from disguising accidental brand activation. An in-memory mutation enabling
+Savox makes that guard fail. The study also asserts that every external entry
+remains unavailable for placement; the corresponding activation mutation fails
+that guard too. The new ProModeler, FEETECH and Hiwonder cards have no local image.
+
+These are offline metadata, byte-integrity and simulated interaction results.
+This intake did not rerun the unchanged 37 projection exercises or establish
+browser layout, Godot/native rendering, new image decoder compatibility, frame
+time or a production permission/admission result. The production matrix remains
+open.
 
 ## R1 package verification — 2026-11-19
 

@@ -22,7 +22,7 @@ No runtime decal editor or native rendering/performance result is claimed.
    from a local clone and try repeated decals, drag, size, rotation, flips and layers.
 3. Review the [architecture](architecture.md), especially explicit base paint,
    dense rendering, presentation migration and wreck remapping.
-4. Review the [14-organization register](sponsor-register.md) and
+4. Review the [17-organization register](sponsor-register.md) and
    [checksum-locked original image pack](../../../../research/aircraft-editor/sponsor-decals/asset-lock.json).
 5. Start AE-24e-01 with the exact two-family matrix in [validation](validation.md).
 

@@ -1,0 +1,334 @@
+{
+  "schema": "openrc.public-logo-source-intake.v1",
+  "reviewed_date": "2026-11-19",
+  "purpose": "Public source URLs and technical download receipts for developer intake. This file contains no relationship evidence from private correspondence.",
+  "interpretation": "Source authenticity and a successful download establish neither sponsorship nor a license for player decals, transforms, exported liveries or redistribution. All nine catalog entries remain metadata-only.",
+  "integrity": "Downloaded candidates were retained as exact HTTP responses, without local image edits. A live URL is not an immutable asset; compare the recorded SHA-256 before using later downloads.",
+  "counts": {
+    "organizations": 9,
+    "organizations_with_verified_downloads": 8,
+    "verified_image_files": 11,
+    "unresolved_organizations": 1,
+    "new_image_files_in_public_pack": 0
+  },
+  "records": [
+    {
+      "id": "gemfan",
+      "brand": "GEMFAN",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://www.gemfanhobby.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://www.gemfanhobby.com/",
+          "image_url": "https://img03.71360.com/w3/5p3560/20251023/3bd8255a2faebfb9aa84e31300555ab5.png",
+          "page_image_url": "https://img03.71360.com/w3/5p3560/20251023/3bd8255a2faebfb9aa84e31300555ab5.png?ct=webp",
+          "source_note": "Manufacturer homepage uses this CDN image with a WebP query; the unqueried PNG response is retained unchanged.",
+          "terms": "Manufacturer website states all rights reserved; no project-specific decal, modification, or redistribution grant was located.",
+          "terms_url": "https://www.gemfanhobby.com/",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 1807,
+          "height": 462,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 31955,
+          "sha256": "4b13652a4612693814ef445b918843500fea1456b531f7449156279b4809f98a",
+          "suggested_filename": "gemfan-header.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "kontronik",
+      "brand": "KONTRONIK",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://kontronik.com/en/downloads",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://kontronik.com/en/downloads",
+          "image_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_rgb.png",
+          "source_note": "Manufacturer-provided red SCREEN PNG, directly linked from its download page.",
+          "terms": "Download page specifies PNG for online/screen use and calls it not scalable; it offers EPS for print. This does not establish permission for this project or user-editable decals.",
+          "terms_url": "https://kontronik.com/en/downloads",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 1772,
+          "height": 263,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 15063,
+          "sha256": "624e42fc2a81ca8c6f48e0fc668a4fd433a9ce84400aad4553d3c923e3424cdf",
+          "suggested_filename": "kontronik-red.png",
+          "bytes_changed_locally": false
+        },
+        {
+          "source_page": "https://kontronik.com/en/downloads",
+          "image_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_rgb_schwarz.png",
+          "source_note": "Manufacturer-provided black SCREEN PNG, directly linked from its download page.",
+          "terms": "Download page specifies PNG for online/screen use and calls it not scalable; it offers EPS for print. This does not establish permission for this project or user-editable decals.",
+          "terms_url": "https://kontronik.com/en/downloads",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 1772,
+          "height": 263,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 20848,
+          "sha256": "f5e740008a3af543e27b9318b7c3856b53709c2ab03ffc6fd13d26b1f9c70db7",
+          "suggested_filename": "kontronik-black.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "leomotion",
+      "brand": "Leomotion Drives",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://leomotiondrives.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://leomotiondrives.com/",
+          "image_url": "https://leomotiondrives.com/assets/img/logo.png",
+          "source_note": "Directly referenced by manufacturer homepage as its logo.",
+          "terms": "Manufacturer English site states all rights reserved; no project-specific decal, modification, or redistribution grant was located.",
+          "terms_url": "https://leomotiondrives.com/en/",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 540,
+          "height": 106,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 43485,
+          "sha256": "d268e911bd9429f939a284f94f0887ea761674a5b142cc927c8b03646fdaa407",
+          "suggested_filename": "leomotion-logo.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "aloft",
+      "brand": "Aloft Hobbies",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://alofthobbies.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://alofthobbies.com/",
+          "image_url": "https://alofthobbies.com/cdn/shop/files/aloft-logo-300v2_946d6281-b371-4eb4-a58c-5ad7c968c1eb.png?v=1686249318",
+          "page_image_url": "https://alofthobbies.com/cdn/shop/files/aloft-logo-300v2_946d6281-b371-4eb4-a58c-5ad7c968c1eb_140x@2x.png?v=1686249318",
+          "source_note": "Unsized CDN response inferred by removing the Shopify size suffix from the homepage-linked image; it is not itself directly linked in the inspected HTML. The original authoring master is not established.",
+          "terms": "Aloft Hobbies terms say reproduction of website content is subject to prior express authorization. Keep private until applicable authorization is established.",
+          "terms_url": "https://alofthobbies.com/policies/terms-of-service",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 300,
+          "height": 180,
+          "mode": "LA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 16703,
+          "sha256": "322ffb413ff29647e547ebf4a8358299a45c8e999ea1e242dfecda04f801fdc8",
+          "suggested_filename": "aloft-hobbies-logo.png",
+          "bytes_changed_locally": false
+        },
+        {
+          "source_page": "https://alofthobbies.com/",
+          "image_url": "https://alofthobbies.com/cdn/shop/files/aloft-logo-300v2_946d6281-b371-4eb4-a58c-5ad7c968c1eb_140x@2x.png?v=1686249318",
+          "source_note": "Homepage-linked Shopify 2x display variant; server-generated display size, not an independently verified authoring master.",
+          "terms": "Aloft Hobbies terms say reproduction of website content is subject to prior express authorization. Keep private until applicable authorization is established.",
+          "terms_url": "https://alofthobbies.com/policies/terms-of-service",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 280,
+          "height": 168,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 37823,
+          "sha256": "054ba3b9d3fb150f9874eb987dc4e692c6eda4868e4d9cc7bfbc395d8feb9ddb",
+          "suggested_filename": "aloft-hobbies-homepage-2x.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "radiolink",
+      "brand": "RadioLink",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://www.radiolink.com/en/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://www.radiolink.com/en/",
+          "image_url": "https://www.radiolink.com/icon/radiolink_logo.png",
+          "source_note": "Directly referenced by manufacturer homepage as its logo.",
+          "terms": "Manufacturer site states all rights reserved; no project-specific decal, modification, or redistribution grant was located.",
+          "terms_url": "https://www.radiolink.com/en/",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 2754,
+          "height": 434,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 72914,
+          "sha256": "ef19424f4a17105c25f1da96113a122e087dbe0832c0ec71b5cfa3c8d71a86ad",
+          "suggested_filename": "radiolink-logo.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "gm-propellers",
+      "brand": "GM Propellers",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://gmpropellers.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://gmpropellers.com/",
+          "image_url": "https://gmpropellers.com/assets/media-27e15c6f0560d7.png",
+          "source_note": "Directly referenced by manufacturer homepage as its brand logo.",
+          "terms": "No logo-specific license or project-specific decal, modification, or redistribution grant was identified in this bounded review.",
+          "terms_url": "https://gmpropellers.com/",
+          "media_type": "image/png",
+          "format": "PNG",
+          "width": 680,
+          "height": 226,
+          "mode": "RGBA",
+          "alpha_present": true,
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "bytes": 53945,
+          "sha256": "27e15c6f0560d769b6e664ea3fb665d7f9a5b5a6c594eac1f8164955577cba4f",
+          "suggested_filename": "gm-propellers-logo.png",
+          "bytes_changed_locally": false
+        }
+      ]
+    },
+    {
+      "id": "promodeler",
+      "brand": "ProModeler",
+      "status": "source_unresolved",
+      "source_page": "https://www.promodeler.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [],
+      "unverified_lead": {
+        "page": "https://dev.promodeler.com/index.php",
+        "image_url": "https://dev.promodeler.com/media/yootheme/cache/ac/500px-PDR-logo-acb6623d.png",
+        "retrieval_http_status": 403,
+        "bytes": null,
+        "sha256": null,
+        "width": null,
+        "height": null,
+        "identity_visually_verified": false
+      },
+      "quality_notes": "The indexed official-site lead could not be retrieved. No clean logo bytes, dimensions or identity were verified. A photographed physical banner is not a substitute for a source logo.",
+      "next_action": "Obtain a clean original through the project owner and record its exact source, quality and intended-use scope."
+    },
+    {
+      "id": "feetech",
+      "brand": "FEETECH",
+      "status": "download_verified_quality_review_needed",
+      "source_page": "https://www.feetechrc.com/",
+      "source_authentication": "The manufacturer homepage links the ftservo documentation wiki; its pinned configuration selects this logo.",
+      "official_wiki": "https://ftservo.github.io/ftservo-wiki/",
+      "source_configuration": "https://github.com/ftservo/ftservo-wiki/blob/5637b7985bffb9baa3cda9d0f266be9c1714eb84/mkdocs.yml",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "suggested_filename": "feetech-logo-white.svg",
+          "source_page": "https://github.com/ftservo/ftservo-wiki/blob/5637b7985bffb9baa3cda9d0f266be9c1714eb84/docs/assets/feetech-logo-white.svg",
+          "image_url": "https://raw.githubusercontent.com/ftservo/ftservo-wiki/5637b7985bffb9baa3cda9d0f266be9c1714eb84/docs/assets/feetech-logo-white.svg",
+          "format": "SVG",
+          "media_type": "image/svg+xml",
+          "bytes": 16162,
+          "sha256": "4d403751988fac0a01aec9040576be6fa44db6c7e42f33f6d1dd962f698477a4",
+          "git_blob_sha1": "e0c8ecb89060037131ec44c0503920de9aef48d5",
+          "source_commit": "5637b7985bffb9baa3cda9d0f266be9c1714eb84",
+          "declared_width": 194,
+          "declared_height": 67,
+          "view_box": "2 40 194 67",
+          "embedded_raster": {
+            "format": "PNG",
+            "width": 200,
+            "height": 200
+          },
+          "bytes_changed_locally": false,
+          "quality_notes": "SVG wraps an embedded 200 by 200 PNG and applies a white color filter. It is a website reference, not an independently verified scalable vector master. Raster quality and SVG filter support require review.",
+          "terms": "No project-specific decal, modification or redistribution grant is asserted by this public source receipt."
+        }
+      ]
+    },
+    {
+      "id": "hiwonder",
+      "brand": "Hiwonder",
+      "status": "download_verified_metadata_only",
+      "source_page": "https://www.hiwonder.com/",
+      "artwork_in_public_pack": false,
+      "workshop_placement_enabled": false,
+      "candidates": [
+        {
+          "source_page": "https://www.hiwonder.com/",
+          "image_url": "https://www.hiwonder.com/cdn/shop/files/logo_20260703_V1.1.svg?v=1783050165&width=200",
+          "bytes": 6590,
+          "sha256": "7965b65e734963ed6cf17c906c9c17c5e07c33535a7e55fd6761e4b2961d226f",
+          "format": "SVG",
+          "element_counts": {
+            "path": 7,
+            "text": 0,
+            "image": 0,
+            "script": 0,
+            "foreignObject": 0
+          },
+          "suggested_filename": "hiwonder-header.svg",
+          "bytes_changed_locally": false,
+          "terms": "Official source authenticity does not establish player-decal or redistribution permission.",
+          "media_type": "image/svg+xml",
+          "view_box": "0 0 472.07 57.14",
+          "declared_width": null,
+          "declared_height": null,
+          "quality_notes": "Path-only orange header mark; seven paths, no embedded bitmap or text. The current offline pack reader requires integer width/height attributes and cannot admit this viewBox-only source unchanged. Review a separate raster derivative or a scoped reader extension before promotion; retain the original."
+        },
+        {
+          "source_page": "https://www.hiwonder.com/",
+          "image_url": "https://www.hiwonder.com/cdn/shop/files/hiwonder-logo_51c36218-9aa5-452a-a7e4-fb63c1aaa941.png?v=1760613806",
+          "bytes": 17313,
+          "sha256": "eed59e932e8804897635400c1f31ebb852a31e7150f4f3649f1304bca458e346",
+          "format": "PNG",
+          "width": 497,
+          "height": 325,
+          "mode": "RGBA",
+          "alpha_min": 159,
+          "suggested_filename": "hiwonder-social-logo.png",
+          "bytes_changed_locally": false,
+          "terms": "Official source authenticity does not establish player-decal or redistribution permission.",
+          "media_type": "image/png",
+          "quality_notes": "Official social-preview logo with substantial whitespace and a nearly opaque background; the header SVG is the stronger source for decal preparation."
+        }
+      ]
+    }
+  ]
+}
