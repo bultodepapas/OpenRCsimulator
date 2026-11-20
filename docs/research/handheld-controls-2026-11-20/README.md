@@ -1,6 +1,6 @@
 # Handheld controller automation research
 
-**D6-HH-00 — 20 November 2026.** Research and source inspection only. No handheld, controller, exported game or Steamworks application was exercised. The [implementation plan](../../plans/handheld-controller-automation.md) owns proposed work and acceptance; [controller support](../../plans/controller-support.md) retains the implemented input contracts.
+**D6-HH-00 — 20 November 2026; initial audit plus twenty additional investigations complete.** Research and source inspection only. No handheld, controller, exported game or Steamworks application was exercised. The [implementation plan](../../plans/handheld-controller-automation.md) owns proposed work; its [acceptance companion](../../plans/handheld-controller-acceptance.md) specifies the gates. [Controller support](../../plans/controller-support.md) retains the implemented input contracts.
 
 ## Scope and conclusion
 
@@ -20,6 +20,25 @@ The scope includes Steam Deck, the current Steam Machine with external controlle
 | Evidence limits | Static source/API review. No measured input latency, device mapping, firmware behavior, suspend result, performance result or compatibility certification |
 
 The audit used current code before historical plans. In particular, the documentation registry still describes Controls UX and EdgeTX as proposed, while their owning plans and source record delivered software. This investigation does not re-plan those delivered features or rewrite their unrelated status rows.
+
+## Twenty additional investigations
+
+The [first round](round-1.md) completed ten gap investigations before the next ten were selected. The [second round](round-2.md) resolves the resulting startup, freshness, persistence, transaction and qualification questions. Primary platform documents were checked against exact pinned engine and current application source; source-derived counterexamples are distinguished from observed hardware failures. All twenty are complete as research, with implementation and real-environment tests still pending.
+
+| First ten: gap | Next ten: resulting design decision |
+| --- | --- |
+| [01 Optional Steam failure stages](round-1.md#r1-01--can-an-optional-steam-integration-really-be-absent) | [11 Early native startup](round-2.md#r2-11--can-optional-steam-startup-precede-sdl-without-an-engine-replacement): qualify a minimal pre-SDL seam and supported loader failures before binding adoption. |
+| [02 Steam association and ownership](round-1.md#r1-02--does-a-handle-establish-live-source-ownership) | [12 Metadata freshness](round-2.md#r2-12--what-would-make-steam-association-genuinely-current): cached live handles cannot prove correct pairing after slot swaps. |
+| [03 Manifest and custom-layout migration](round-1.md#r1-03--will-packaged-layouts-preserve-custom-configurations) | [13 Native promotion and rollback](round-2.md#r2-13--how-do-native-actions-enter-fail-and-roll-back): session opt-in, separate context readiness and explicit unrecoverable controller-only cases. |
+| [04 Linux discovery and permissions](round-1.md#r1-04--what-does-an-empty-linux-controller-list-mean) | [14 Observable Linux recovery](round-2.md#r2-14--what-linux-recovery-can-the-application-substantiate): report actual observations, retain unknown causes and avoid broad privilege changes. |
+| [05 OEM mode and representation changes](round-1.md#r1-05--can-an-oem-mode-change-preserve-the-same-logical-controller) | [15 Minimal compatibility policy](round-2.md#r2-15--what-is-the-smallest-safe-saved-calibration-change): session review for uncertain raw calibration, distinct from ordinary gamepad startup. |
+| [06 Profile identity, persistence and Cloud](round-1.md#r1-06--is-a-matching-saved-profile-the-calibrated-physical-unit) | [16 Shareable diagnostics](round-2.md#r2-16--what-may-a-shareable-diagnostic-report-honestly-claim): preserve local CLI, add an allowlisted globally bounded report and honest disclosure. |
+| [07 Command and navigation inventory](round-1.md#r1-07--are-apparent-keyboard-gaps-actually-missing-controller-routes) | [17 Semantic command completion](round-2.md#r2-17--which-missing-commands-need-more-than-another-menu-button): retain hold/toggle guards and resolve paused-rejected interactions. |
+| [08 Text-entry and file boundaries](round-1.md#r1-08--can-a-platform-keyboard-safely-edit-existing-fields) | [18 Desktop editor transactions](round-2.md#r2-18--can-desktop-keyboards-preserve-real-editor-transactions): preserve draft/validation/focus semantics and qualify provider/locale coverage. |
+| [09 Sleep clock and activity coverage](round-1.md#r1-09--does-the-long-gap-watchdog-cover-real-sleep) | [19 Event-and-tick continuity](round-2.md#r2-19--where-must-continuity-loss-stop-command-consumption): gate on recognized boundaries and preserve reason-specific activity policy. |
+| [10 Sampling, frame rate and latency](round-1.md#r1-10--does-240-hz-imply-fresh-240-hz-controller-input) | [20 Finite qualification campaign](round-2.md#r2-20--what-finite-evidence-is-enough-to-qualify-a-configuration): exact configuration rows, mandatory fault cycles and correctly bounded timing measurements. |
+
+The rounds deliberately cross-link topics: representation findings feed both metadata and calibration, while persistence/diagnostic findings share evidence requirements. The authoritative plan incorporates the conclusions; the round reports preserve evidence and limits. A dated [baseline-drift note](../../plans/handheld-controller-automation.md#verification-rollout-and-open-dependencies) records the comparison with later main without changing the audited runtime.
 
 ## What OpenRC already implements
 
