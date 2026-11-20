@@ -152,7 +152,11 @@ def _wait_reason(row: dict, platform: str | None) -> dict | None:
     decision = status.get("decision") or {}
     candidates = decision.get("candidates") or []
     if row.get("phase") == "RETRY_WAIT":
-        return {"code": "RETRY_WAIT", "detail": str(status.get("error") or row.get("first_error") or "")[:200]}
+        reason = {"code": status.get("reason_code") or "RETRY_WAIT",
+                  "detail": str(status.get("error") or row.get("first_error") or "")[:200]}
+        if status.get("reason_code") == "TRANSFER_DEFERRED":
+            reason["note"] = "the archive never reached the host; the same job retries there automatically"
+        return reason
     if not candidates:
         return {"code": "QUEUED_IN_BATCH"} if row.get("phase") == "WAITING" else None
     matching = [c for c in candidates if not any(str(r).startswith(_PLATFORM_REASON) for r in c.get("reasons", []))]

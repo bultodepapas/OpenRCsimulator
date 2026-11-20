@@ -27,6 +27,31 @@ also registered in the user's Codex MCP configuration with the absolute server
 path and `OPENRC_TESTPOOL_CONFIG`; `codex mcp get openrc-sim` inspects that entry.
 Existing Codex sessions must reconnect to load the new tools.
 
+For the common case, call `sim_test_run` with `jobs` and an optional `wait_s`
+(default 60, maximum 300). It launches and waits for the compact result in one
+call. Without `request_id` it generates a new one, so a rerun is a new attempt.
+While a test is still running, repeat the call with the returned `request_id`;
+waiting never cancels.
+
+- `sim_test_status` defaults to `detail: "summary"`: one line per test with its
+  outcome, host, seconds, missing markers, flagged log lines or a typed waiting
+  reason (`NO_HOST_FOR_PLATFORM`, `NO_ONLINE_HOST_FOR_PLATFORM`, `HOST_BUSY`,
+  `DISK`, `CIRCUIT_OPEN`, `QUARANTINED`, `TRANSFER_DEFERRED`, …). `detail: "full"`
+  returns the authoritative rows.
+- `sim_fleet` shows hosts (online, typed `busy_code`, disk/RAM/load, active pool
+  jobs) and every Godot process on the coordinator, with unmanaged ones flagged.
+  It uses a 15-second cache; `refresh: true` probes now.
+- `sim_test_list` lists recent requests.
+- These tools run in their own lane, so they never wait behind a simulator call.
+
+A source edited by another agent during freezing is retried up to four times
+with a fresh destination. A remote archive transfer that fails before the agent's
+`run` is recorded as `TRANSFER_DEFERRED`; it holds no host and the same job
+retries on the same host. All ssh/scp calls use `BatchMode`, `ConnectTimeout`
+and `ServerAliveInterval`.
+
+The detached flow below remains for long batches:
+
 1. Choose a unique, stable `request_id` (1–80 letters, digits, `_` or `-`) and
    call `sim_test_launch` with 1–64 `jobs`. Each job accepts `script` and optional
    `platform`, `require` (literal completion markers), `timeout` (seconds; default

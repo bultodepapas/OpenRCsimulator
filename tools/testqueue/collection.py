@@ -184,8 +184,8 @@ def _copy_remote(protocol, host, output, name, target, expected):
     command = shlex.join([host.get("python", "python3"), "-c", _REMOTE_COPY,
                           str(base / name), str(expected["size"])])
     with target.open("xb") as stream:
-        protocol.subprocess.run(["ssh", "-T", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes", "-o", "ConnectTimeout=10",
-                                 host["ssh"], command], stdout=stream, stderr=protocol.subprocess.PIPE,
+        protocol.subprocess.run(protocol.ssh_command(host, command, connect_timeout=10),
+                                stdout=stream, stderr=protocol.subprocess.PIPE,
                                 check=True, timeout=120,
                                 creationflags=protocol.subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         stream.flush()

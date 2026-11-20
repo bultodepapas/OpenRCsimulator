@@ -183,7 +183,7 @@ class LegacyBatchTests(unittest.TestCase):
         original = (directory / "batch.json").read_bytes()
         with patch("tools.testqueue.pool.rpc") as rpc, patch.object(Pool, "remote") as remote, \
              patch.object(pool_mcp, "_start") as start:
-            result = pool_mcp.status("cached", config=self.config)
+            result = pool_mcp.status("cached", "full", config=self.config)
             self.assertEqual(result["result"], "INCOMPLETE")
             self.assertTrue(result["recovery_required"])
             self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
@@ -203,7 +203,7 @@ class LegacyBatchTests(unittest.TestCase):
         directory = self.write_mcp_cache([missing, live], result="INCOMPLETE")
         original = (directory / "batch.json").read_bytes()
         with patch("tools.testqueue.pool.rpc") as rpc, patch.object(Pool, "remote") as remote:
-            result = pool_mcp.status("cached", config=self.config)
+            result = pool_mcp.status("cached", "full", config=self.config)
         rpc.assert_not_called()
         remote.assert_not_called()
         self.assertEqual(result["result"], "INCOMPLETE")
@@ -222,7 +222,7 @@ class LegacyBatchTests(unittest.TestCase):
         original = (directory / "batch.json").read_bytes()
         with patch("tools.testqueue.pool.rpc") as rpc, patch.object(Pool, "remote") as remote, \
                 patch.object(pool_mcp, "_start") as start:
-            cached = pool_mcp.status("cached", config=self.config)
+            cached = pool_mcp.status("cached", "full", config=self.config)
             self.assertEqual(cached["result"], "INCOMPLETE")
             self.assertTrue(cached["recovery_required"])
             self.assertEqual(cached["jobs"][0]["status"]["state"], "UNKNOWN")
@@ -263,7 +263,7 @@ class LegacyBatchTests(unittest.TestCase):
              patch.object(self.pool, "verify_collection", return_value=collection), \
              patch.object(self.pool, "submit") as submit, patch.object(self.pool, "collect") as collect:
             self.assertEqual(self.run_batch()["result"], "FAILED")
-            result = pool_mcp.status("cached", config=self.config)
+            result = pool_mcp.status("cached", "full", config=self.config)
             self.assertEqual(result["result"], "FAILED")
             self.assertEqual(result["jobs"][0], row)
             self.assertFalse(result.get("recovery_required", False))

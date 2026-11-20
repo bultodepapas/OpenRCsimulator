@@ -36,6 +36,27 @@ class PoolLockTimeout(RuntimeError):
 class SubmissionDeferred(RuntimeError):
     """This call did not dispatch. Only retry its original identity, never fail over."""
 
+    reason_code = 'SUBMISSION_DEFERRED'
+    detail = None
+
+
+class TransferDeferred(SubmissionDeferred):
+    """The archive transfer failed before the remote ``run`` action; nothing was dispatched (TQ-05-F0.3)."""
+
+    reason_code = 'TRANSFER_DEFERRED'
+
+    def __init__(self, message, detail):
+        super().__init__(message)
+        self.detail = detail
+
+
+class TransferFailure(RuntimeError):
+    """One transfer step failed. No request had reached the remote agent."""
+
+    def __init__(self, stage, code, message):
+        super().__init__(message)
+        self.stage, self.code = stage, code
+
 
 class ArchiveTemporaryUnresolved(RuntimeError):
     """A failed build left an owned temporary requiring inspection before retry."""
@@ -63,6 +84,38 @@ def request_digest(request):
 
 def default_config():
     return os.environ.get('OPENRC_TESTPOOL_CONFIG', str(Path(os.environ.get('PROGRAMDATA', '/var/tmp')) / 'OpenRC/testpool/config.json'))
+
+
+SSH_CONNECT_TIMEOUT = 8
+
+
+def ssh_options(connect_timeout=SSH_CONNECT_TIMEOUT):
+    """Non-interactive, fail-fast options shared by every ssh and scp call (TQ-05-F0.3)."""
+    return ['-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
+            '-o', f'ConnectTimeout={int(connect_timeout)}',
+            '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=4']
+
+
+def ssh_command(host, command, connect_timeout=SSH_CONNECT_TIMEOUT):
+    return ['ssh', '-T', *ssh_options(connect_timeout), host['ssh'], command]
+
+
+def scp_command(host, source, destination, connect_timeout=SSH_CONNECT_TIMEOUT):
+    return ['scp', *ssh_options(connect_timeout), str(source), host['ssh'] + ':' + destination]
+
+
+def _describe(error):
+    if isinstance(error, subprocess.TimeoutExpired):
+        text = f'timed out after {error.timeout:g} s'
+    elif isinstance(error, subprocess.CalledProcessError):
+        text = f'exit status {error.returncode}'
+    else:
+        text = f'{type(error).__name__}: {error}'
+    stderr = getattr(error, 'stderr', None)
+    if isinstance(stderr, bytes):
+        stderr = stderr.decode('utf-8', 'replace')
+    stderr = (stderr or '').strip()
+    return f'{text}: {stderr[-300:]}' if stderr else text
 
 
 def digest(path):
@@ -135,8 +188,7 @@ class Pool:
 
     def remote(self, host, action, payload):
         command = shlex.join([host['python'], host['agent'], action, '--root', host['root']])
-        result = subprocess.run(['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
-                                 '-o', 'ConnectTimeout=8', host['ssh'], command],
+        result = subprocess.run(ssh_command(host, command),
                                 input=json.dumps(payload), capture_output=True, text=True, timeout=45, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         try:
             response = json.loads(result.stdout)
@@ -445,6 +497,67 @@ class Pool:
             result['pool_recovery_version'] = 1
         return result
 
+    @staticmethod
+    def _deferred_status(receipt):
+        """Queued, not blocked: the transfer failed before any dispatch and the same ID retries."""
+        transfer = receipt.get('transfer') or {}
+        return {'state': 'WAITING', 'reason_code': 'TRANSFER_DEFERRED', 'error': receipt.get('error'),
+                'transfer_attempts': transfer.get('attempts'), 'dispatched': False}
+
+    @staticmethod
+    def _defer_transfer(receipt, path, error):
+        previous = receipt.get('transfer')
+        history = list(receipt.get('transfer_history') or [])
+        if previous:
+            history.append(previous)
+        failure = {'attempts': (previous or {}).get('attempts', 0) + 1, 'stage': error.stage,
+                   'code': error.code, 'error': str(error), 'at': time.time()}
+        message = f"{error.code} at {error.stage} (attempt {failure['attempts']}): {error}"
+        receipt.update(state='TRANSFER_DEFERRED', transfer=failure, transfer_history=history[-9:], error=message)
+        write_json(path, receipt)
+        raise TransferDeferred(message, failure) from error
+
+    def _transfer_archive(self, host, archive, archive_digest, identifier):
+        """Place the verified archive on the bound remote host.
+
+        Nothing here calls the remote agent's ``run`` action, so every failure is
+        proved nondispatched. A killed upload leaves at most an unpublished
+        ``.pending`` file that the digest check rejects and a retry overwrites.
+        """
+        flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        remote_archive = host['root'] + '/incoming/' + archive_digest + '.tar'
+        verifier = ('import hashlib, pathlib, sys\n'
+                    'checksum = hashlib.sha256()\n'
+                    'with pathlib.Path(sys.argv[1]).open("rb") as stream:\n'
+                    '    for block in iter(lambda: stream.read(1048576), b""):\n'
+                    '        checksum.update(block)\n'
+                    'sys.exit(0 if checksum.hexdigest() == sys.argv[2] else 1)\n')
+        stage = 'mkdir'
+
+        def run(name, argv, timeout, check=True, capture=True):
+            nonlocal stage
+            stage = name
+            # scp spawns ssh; capturing its pipes can block after a timeout kill on Windows.
+            return subprocess.run(argv, check=check, timeout=timeout, capture_output=capture, creationflags=flags)
+
+        try:
+            run('mkdir', ssh_command(host, shlex.join(['mkdir', '-p', host['root'] + '/incoming'])), 30)
+            check = shlex.join([host['python'], '-c', verifier, remote_archive, archive_digest])
+            present = run('hash_check', ssh_command(host, check), 180, check=False).returncode == 0
+            if not present:
+                upload = remote_archive + '.' + identifier + '.pending'
+                run('scp', scp_command(host, archive, upload), 1800, capture=False)
+                check = shlex.join([host['python'], '-c', verifier, upload, archive_digest])
+                run('verify', ssh_command(host, check), 180)
+                publish = shlex.join([host['python'], '-c', 'import os,sys; os.replace(sys.argv[1],sys.argv[2])',
+                                      upload, remote_archive])
+                run('publish', ssh_command(host, publish), 30)
+        except subprocess.TimeoutExpired as error:
+            raise TransferFailure(stage, 'TRANSFER_TIMEOUT', _describe(error)) from error
+        except (OSError, subprocess.SubprocessError) as error:
+            raise TransferFailure(stage, 'TRANSFER_FAILED', _describe(error)) from error
+        return remote_archive
+
     def _destination(self, receipt, *, replay=False):
         bound = receipt.get('config_sha256')
         if digest(self.config_path) != self.config_digest or bound and self.config_digest != bound:
@@ -524,15 +637,21 @@ class Pool:
         if expected_manifest_sha256 is not None:
             inputs['snapshot_manifest_sha256'] = expected_manifest_sha256
         receipt_path = self.root / 'jobs' / (identifier + '.json')
+        resume = None
         if receipt_path.exists():
             receipt = self._read_receipt_locked(receipt_path)
             if receipt.get('inputs') != inputs:
                 raise ValueError('request id already has different inputs')
-            self._destination(receipt)
-            return self._submission_result(receipt, receipt_path)
+            deferred = receipt.get('state') == 'TRANSFER_DEFERRED'
+            self._destination(receipt, replay=deferred)
+            if not deferred:
+                return self._submission_result(receipt, receipt_path)
+            resume = receipt  # proved nondispatched: re-enter the transfer on the bound host below
         try:
             manifest, options, job = self._preflight(snapshot, script, platform, require, timeout,
                                                     host_id, settings, expected_manifest_sha256)
+            if resume is not None and resume.get('source_digest') != manifest['source_digest']:
+                raise ValueError('snapshot differs from the one whose transfer was deferred')
         except OSError as error:
             raise SubmissionDeferred(f'preflight I/O unavailable: {error}') from error
         except (ValueError, KeyError, TypeError) as error:
@@ -545,6 +664,7 @@ class Pool:
         guard = None
         archive = None
         archive_digest = None
+        bound_host = resume['host'] if resume is not None else host_id
         try:
             while True:
                 # SSH probes and remote engine hashing run before the global
@@ -560,11 +680,14 @@ class Pool:
                     receipt = self._read_receipt_locked(receipt_path)
                     if receipt.get('inputs') != inputs:
                         raise ValueError('request id already has different inputs')
-                    self._destination(receipt)
-                    return self._submission_result(receipt, receipt_path)
+                    deferred = resume is not None and receipt.get('state') == 'TRANSFER_DEFERRED'
+                    self._destination(receipt, replay=deferred)
+                    if not deferred:
+                        return self._submission_result(receipt, receipt_path)
+                    resume = receipt
                 observations = self._reserve(observations, since=probed_at)
-                if host_id:
-                    observations = [item for item in observations if item['id'] == host_id]
+                if bound_host:
+                    observations = [item for item in observations if item['id'] == bound_host]
                 else:
                     # Unpinned work avoids a host where this exact source keeps
                     # failing infrastructure; pinned work keeps its explicit host.
@@ -593,13 +716,18 @@ class Pool:
                         raise RuntimeError(f'Archive requires inspection before retry: {error}') from error
                     continue
                 break
-            receipt = {'request_id': identifier, 'host': host['id'], 'snapshot': str(snapshot),
-                       'inputs': inputs,
-                       'source_digest': manifest['source_digest'], 'options': options,
-                       'decision': decision, 'state': 'PREPARING', 'created': time.time(),
-                       'config_sha256': self.config_digest}
-            if host.get('local'):
-                receipt['local_authority_root'] = str(state_root().resolve())
+            if resume is not None:
+                receipt = resume
+                receipt.pop('error', None)
+                receipt.update(state='PREPARING', decision=decision)
+            else:
+                receipt = {'request_id': identifier, 'host': host['id'], 'snapshot': str(snapshot),
+                           'inputs': inputs,
+                           'source_digest': manifest['source_digest'], 'options': options,
+                           'decision': decision, 'state': 'PREPARING', 'created': time.time(),
+                           'config_sha256': self.config_digest}
+                if host.get('local'):
+                    receipt['local_authority_root'] = str(state_root().resolve())
             write_json(receipt_path, receipt)
             guard.close()
             guard = None
@@ -614,25 +742,10 @@ class Pool:
                 submission_receipt(self.root, request)
                 receipt['request'] = request
             else:
-                remote_archive = host['root'] + '/incoming/' + archive_digest + '.tar'
-                command = shlex.join(['mkdir', '-p', host['root'] + '/incoming'])
-                subprocess.run(['ssh', '-T', host['ssh'], command], check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
-                verifier = ('import hashlib, pathlib, sys\n'
-                            'checksum = hashlib.sha256()\n'
-                            'with pathlib.Path(sys.argv[1]).open("rb") as stream:\n'
-                            '    for block in iter(lambda: stream.read(1048576), b""):\n'
-                            '        checksum.update(block)\n'
-                            'sys.exit(0 if checksum.hexdigest() == sys.argv[2] else 1)\n')
-                check = shlex.join([host['python'], '-c', verifier, remote_archive, archive_digest])
-                present = subprocess.run(['ssh', '-T', host['ssh'], check], timeout=180,
-                                         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).returncode == 0
-                if not present:
-                    upload = remote_archive + '.' + identifier + '.pending'
-                    subprocess.run(['scp', str(archive), host['ssh'] + ':' + upload], check=True, timeout=1800, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
-                    check = shlex.join([host['python'], '-c', verifier, upload, archive_digest])
-                    subprocess.run(['ssh', '-T', host['ssh'], check], check=True, timeout=180, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
-                    publish = shlex.join([host['python'], '-c', 'import os,sys; os.replace(sys.argv[1],sys.argv[2])', upload, remote_archive])
-                    subprocess.run(['ssh', '-T', host['ssh'], publish], check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
+                try:
+                    remote_archive = self._transfer_archive(host, archive, archive_digest, identifier)
+                except TransferFailure as error:
+                    self._defer_transfer(receipt, receipt_path, error)  # always raises TransferDeferred
                 receipt['request'] = {'request_id': identifier, 'preset': 'checked',
                                       'archive': {'path': remote_archive, 'sha256': archive_digest},
                                       'expected_engine_sha256': host['engine_sha256'],
@@ -667,6 +780,9 @@ class Pool:
         guard = acquire_lock(self.root / (identifier + '.lock'))
         try:
             receipt = self._read_receipt_locked(path)
+            if receipt.get('state') == 'TRANSFER_DEFERRED':
+                # Nondispatched; only a repeated submit (it needs the snapshot) can resume the transfer.
+                return self._public_status(receipt, identifier, self._deferred_status(receipt))
             if 'request' not in receipt:
                 receipt.update(state='SUBMISSION_UNCONFIRMED', last_status={'state': 'UNKNOWN',
                                'cleanup': 'UNCONFIRMED', 'error': 'Dispatch metadata is unavailable; preserve the original receipt and authority'})
@@ -835,6 +951,8 @@ class Pool:
         receipt = self._read_receipt_locked(path)
         if receipt.get('state') in self._RECONCILED:
             return self._public_status(receipt, identifier, receipt['last_status'])
+        if receipt.get('state') == 'TRANSFER_DEFERRED':
+            return self._public_status(receipt, identifier, self._deferred_status(receipt))
         if 'request' not in receipt:
             return self._public_status(receipt, identifier, {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED',
                     'error': 'Preparation interrupted before durable dispatch request'})

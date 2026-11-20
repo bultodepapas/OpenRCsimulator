@@ -29,6 +29,10 @@ RETRY_INITIAL_SECONDS = 0.25
 RETRY_MAX_SECONDS = 30.0
 
 
+def _backoff(attempts):
+    return min(RETRY_MAX_SECONDS, RETRY_INITIAL_SECONDS * 2 ** min(max(attempts, 1) - 1, 16))
+
+
 def _digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -258,9 +262,10 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                     row.update(phase="REJECTED", status=error.status)
                     row.setdefault("first_error", str(error))
                 except SubmissionDeferred as error:
-                    delay = min(RETRY_MAX_SECONDS, RETRY_INITIAL_SECONDS * 2 ** min(row["submission_attempts"] - 1, 16))
+                    delay = _backoff(row["submission_attempts"])
                     row.update(phase="RETRY_WAIT", retry_after=time.time() + delay,
-                               status={"state": "WAITING", "reason_code": "SUBMISSION_DEFERRED", "error": str(error)})
+                               status={"state": "WAITING", "reason_code": error.reason_code, "error": str(error),
+                                       **({"transfer": error.detail} if error.detail else {})})
                     row.setdefault("first_error", str(error))
                     retry_ready[row["request_id"]] = time.monotonic() + delay
                 except Exception as error:
@@ -279,9 +284,16 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                     status = pool.status(row["request_id"])
                     if not isinstance(status, dict) or not isinstance(status.get("state"), str):
                         raise ValueError("pool returned an invalid status")
-                    phase = "COLLECTING" if status["state"] == "FINISHED" else (
-                        "BLOCKED" if status["state"] in {"UNKNOWN", "SUBMISSION_UNCONFIRMED", "NOT_FOUND"} else "TRACKING")
-                    row.update(phase=phase, status=status)
+                    if status.get("reason_code") == "TRANSFER_DEFERRED":
+                        # Proved nondispatched (e.g. a crash right after the deferral was recorded):
+                        # resubmit the SAME id so the pool re-enters the transfer.
+                        delay = _backoff(row.get("submission_attempts", 1))
+                        retry_ready[row["request_id"]] = time.monotonic() + delay
+                        row.update(phase="RETRY_WAIT", retry_after=time.time() + delay, status=status)
+                    else:
+                        phase = "COLLECTING" if status["state"] == "FINISHED" else (
+                            "BLOCKED" if status["state"] in {"UNKNOWN", "SUBMISSION_UNCONFIRMED", "NOT_FOUND"} else "TRACKING")
+                        row.update(phase=phase, status=status)
                 except Exception as error:
                     row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
                     row.setdefault("first_error", str(error))
