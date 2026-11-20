@@ -53,6 +53,7 @@ class WatchError(ValueError):
 class WatchPolicy:
     triggers: tuple[str, ...] = TRIGGERS
     target_fps: float | None = None      # None: use the bridge's target (read, never changed)
+    stutter_min_ms: float | None = None  # a stutter opens an incident only above this; None: the target budget
     sustained_frames: int = 30           # consecutive intervals above target budget + tolerance
     rearm_frames: int = 30               # consecutive in-budget intervals before the run trigger re-arms
     drop_fraction: float = 0.25          # mean callback rate falls by at least this fraction ...
@@ -78,6 +79,7 @@ class WatchPolicy:
             raise WatchError(f"triggers must be a nonempty subset of {','.join(TRIGGERS)}")
         checks = [
             (self.target_fps is None or 1 <= self.target_fps <= 1000, "target_fps must be in [1, 1000]"),
+            (self.stutter_min_ms is None or 0 <= self.stutter_min_ms <= 10_000, "stutter_min_ms must be in [0, 10000]"),
             (1 <= self.sustained_frames <= RING, f"sustained_frames must be in [1, {RING}]"),
             (1 <= self.rearm_frames <= RING, f"rearm_frames must be in [1, {RING}]"),
             (0.05 <= self.drop_fraction <= 0.9, "drop_fraction must be in [0.05, 0.9]"),
@@ -116,7 +118,7 @@ def policy_from_args(args: dict[str, Any]) -> WatchPolicy:
             value = tuple(item.strip() for item in value.split(",") if item.strip())
         elif type(value) is bool or type(value) not in (int, float):
             raise WatchError(f"{key} must be a number")
-        elif isinstance(getattr(policy, key), int) and key != "target_fps":
+        elif isinstance(getattr(policy, key), int) and key not in ("target_fps", "stutter_min_ms"):
             if value != int(value):
                 raise WatchError(f"{key} must be an integer")
             value = int(value)
@@ -472,7 +474,10 @@ class Watcher:
         else:
             if "stall" in self.p.triggers and flags & ABSOLUTE_STALL:
                 found.append({"kind": "stall", "ms": wall / 1000})
-            if ("stutter" in self.p.triggers and flags & RELATIVE_STUTTER
+            # Uncapped sessions flag many relative spikes that still meet the target budget (13 ms after 8 ms
+            # frames); they stay counted in the statistics but only a budget-breaking stutter opens an incident.
+            stutter_floor_ms = seg["slow_threshold_ms"] if self.p.stutter_min_ms is None else self.p.stutter_min_ms
+            if ("stutter" in self.p.triggers and flags & RELATIVE_STUTTER and wall / 1000 > stutter_floor_ms
                     and not (flags & ABSOLUTE_STALL and "stall" in self.p.triggers)):
                 found.append({"kind": "stutter", "ms": wall / 1000, "baseline_ms": row["baseline_ms"]})
             if wall > slow_us:

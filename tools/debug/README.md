@@ -543,7 +543,7 @@ reference desktop), checks continuity and evaluates five triggers on the raw int
 | Trigger | Rule (defaults) | Catches |
 | --- | --- | --- |
 | `stall` | Bridge absolute-stall flag (> `stall_ms`, 50 ms) | Long single frames, loading hitches |
-| `stutter` | Bridge relative-stutter flag (> 1.5× preceding median and > 4 ms above it) | Short hitches the eye sees |
+| `stutter` | Bridge relative-stutter flag (> 1.5× preceding median and > 4 ms above it) on an interval that also breaks the target budget; `stutter_min_ms=0` captures every flagged spike | Short hitches the eye sees. Uncapped spikes such as 13 ms after 8 ms frames stay counted, not captured |
 | `sustained` | `sustained_frames=30` consecutive intervals above `1000/target_fps + tolerance`; re-arms after `rearm_frames=30` in-budget intervals | Running below the target |
 | `drop` | Median interval of the last `drop_window_s=1` s is ≥ `drop_fraction=0.25` slower than the median of the preceding `drop_baseline_s=10` s on the same route, and ≥ `drop_min_ms=1` ms slower | FPS drops that stay above the target (140 → 75 FPS) |
 | `hang` | A `frames` poll times out after `hang_s=2` s, `ping` answers, and a second ping 0.25 s later shows the same engine frame | Main-thread freezes; when it resumes, the long interval is also a `stall` |

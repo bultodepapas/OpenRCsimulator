@@ -743,9 +743,10 @@ class DebugctlTests(unittest.TestCase):
                 run = debugctl.RUNS / f"run-{i}"
                 run.mkdir(parents=True)
                 (run / "launch.json").write_text("{}")
-                os.utime(run, (1000 + i, 1000 + i))
+                # Only the order matters. exFAT (e.g. a U: cache drive) refuses pre-1980 times: use 2020 + 10 s steps.
+                os.utime(run, (1_600_000_000 + 10 * i, 1_600_000_000 + 10 * i))
             (debugctl.RUNS / "notes").mkdir()
-            os.utime(debugctl.RUNS / "notes", (1, 1))
+            os.utime(debugctl.RUNS / "notes", (1_590_000_000, 1_590_000_000))
             status, out, _ = self.run_cli("clean", "--keep", "2")
             self.assertEqual((status, json.loads(out)["removed"]), (0, 2))
             self.assertEqual(sorted(p.name for p in debugctl.RUNS.iterdir()), ["notes", "run-2", "run-3"])

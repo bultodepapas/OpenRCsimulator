@@ -363,6 +363,16 @@ class FrameWatchTests(unittest.TestCase):
         summary, _, _ = watch(frames, tmp=self.tmp, triggers=("drop",), drop_min_ms=0.0)
         self.assertEqual(len(summary["incidents"]), 1)
 
+    def test_uncapped_spikes_within_budget_are_counted_not_captured(self):
+        frames = (steady(12, 4_000) + [(13_000, "flight")] + steady(3, 4_000) + [(30_000, "flight")]
+                  + steady(20, 4_000))  # longer than the 30 s watch: no padding frames
+        summary, _, _ = watch(frames, tmp=self.tmp, triggers=("stutter",))
+        self.assertEqual(len(summary["incidents"]), 1)  # only the 30 ms spike breaks the 60 FPS budget
+        self.assertAlmostEqual(summary["incidents"][0]["worst_ms"], 30.0)
+        self.assertEqual(summary["segments"][0]["overall"]["relative_stutter_frames"], 2)
+        sensitive, _, _ = watch(frames, tmp=tempfile.mkdtemp(dir=self.tmp), triggers=("stutter",), stutter_min_ms=0.0)
+        self.assertEqual(len(sensitive["incidents"]), 2)
+
     def test_stutter_only_policy_still_reports_a_stall_frame(self):
         frames = steady(10) + [(300_000, "flight")] + steady(10)
         summary, _, _ = watch(frames, tmp=self.tmp, triggers=("stutter",))
