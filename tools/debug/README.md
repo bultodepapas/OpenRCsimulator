@@ -160,7 +160,8 @@ $D launch                       # Home at 1920x1080 on the display (Xvfb on disp
 $D launch --mute                # the same without sound (Dummy audio driver); the MCP sim_launch is muted unless sound=true
 $D look                         # every visible control: ref, role, name, value, options; next steps
 $D fly aircraft=p51d-mustang-120 start=airborne
-$D state                        # route, screens, focus; flight tick, pause/holds/crash, pose, commands, log counts
+$D state                        # route, screens, focus; flight tick, pause/holds/crash, pose, commands, log counts,
+                                #   physics_backend {backend, requested, kind: native|selected|domain|stale|missing}
 $D shortcuts                    # every key and controller action for this vehicle
 $D control name=gear_toggle     # what a bound controller button does
 $D sticks pitch=0.3 throttle=0.8 for_s=2

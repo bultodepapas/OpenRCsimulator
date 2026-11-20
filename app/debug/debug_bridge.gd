@@ -16,6 +16,7 @@ const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const ViewportColor := preload("res://render/viewport_color.gd")
 const Spec := preload("res://spec.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const NativeFallback := preload("res://app_state/native_fallback.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const ControlsReference := preload("res://ui/controls_reference.gd")
@@ -3369,6 +3370,8 @@ func _flight_state(session: Node) -> Dictionary:
 		holds = session.holds.keys() if "holds" in session else [], crashed = "crash" in session and not session.crash.is_empty(),
 		radio_connected = "radio" in session and session.radio.connected, commands = session.get("commands"),
 		raw = session.get("raw")}
+	if session.has_method("stage_backend_status"):
+		out.physics_backend = NativeFallback.summary(session.stage_backend_status())
 	if s.size() >= RB.SIZE:
 		var w := s[RB.ATT]
 		var x := s[RB.ATT + 1]

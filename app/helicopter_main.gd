@@ -2,6 +2,7 @@
 extends Node3D
 var external_controller_selection: bool = false
 const Session = preload("res://sim/helicopter_flight_session.gd")
+const NativeFallback = preload("res://app_state/native_fallback.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const AirplaneBuilder = preload("res://render/airplane.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
@@ -182,6 +183,9 @@ func _ready() -> void:
  session.sim.stepped.connect(_on_sim_stepped)
  if not session.reset(): _refuse(session.start_error); return
  print("physics backend: ",JSON.stringify(session.stage_backend_status()))
+ var fallback_warning: String=NativeFallback.warning(session.stage_backend_status(),OS.get_name(),Engine.get_architecture_name(),
+  OS.has_feature("template_release"))
+ if not fallback_warning.is_empty() and not args.has("trace") and not args.has("capture"): push_warning(fallback_warning)
  if creator_visual.is_empty():
   Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
   Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)

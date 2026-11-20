@@ -11,6 +11,7 @@ var frametimes_route: String = ""
 
 const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
+const NativeFallback := preload("res://app_state/native_fallback.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const CreatorVisual := preload("res://workshop/creator/visual_builder.gd")
@@ -1261,6 +1262,11 @@ func _prepare_flight() -> void:
 	if not _scripted:
 		# Include the requested and active backend plus any fallback reason, including for headless traces.
 		print("physics backend: ", JSON.stringify(session.stage_backend_status()))
+		# Flights only: trace and capture harnesses keep the log line above without an engine warning.
+		var fallback_warning := NativeFallback.warning(session.stage_backend_status(), OS.get_name(),
+			Engine.get_architecture_name(), OS.has_feature("template_release"))
+		if not fallback_warning.is_empty() and not args.has("trace") and not args.has("capture"):
+			push_warning(fallback_warning)
 	if args.has("trace"):
 		if not session.aircraft.ok or not session.surface_error.is_empty():
 			# Never record a "flight" on invalid data (it would be a ballistic throw): fail the run instead.

@@ -464,6 +464,10 @@ Selection is launch-time only. ABI 2 selects a stage from the validated model's 
 capabilities, with native weather and configuration guards. This replaces the baseline stock-aircraft restriction;
 unsupported or unverified configurations report reference fallback. The interactive flight console prints
 requested/actual backend and refusal reason.
+A stale or missing build is also an engine warning on normal flights (`app/app_state/native_fallback.gd`):
+a refused source/package identity on any host except the macOS release, and a missing library on Windows/Linux
+x86_64. Expected domain refusals (lakes, weather, custom spawn) stay a log line. The debug bridge `state` reports
+`flight.physics_backend` as `{backend, requested, kind, reason}`; check `kind == "native"` before measuring.
 Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
 reference CSV bytes. In source builds, the exact verified Godot executable, binary and mirrored source/data hashes must match.
 Release packages instead verify the complete executable and embedded manifest before loading their pinned sidecar.
