@@ -65,11 +65,19 @@ class GodotClientEndToEnd(unittest.TestCase):
             finally:
                 server.terminate()
                 server.wait(timeout=20)
-            db = sqlite3.connect(str(Path(data) / "raw.sqlite"))
-            try:
-                bodies = [bytes(row[0]) for row in db.execute("SELECT body FROM batches ORDER BY rowid")]
-            finally:
-                db.close()
+            # The receiver was killed (Windows TerminateProcess): its WAL/shm files can be briefly held or need
+            # recovery, which intermittently surfaces as "disk I/O error" under load. Retry the read for a bounded time.
+            for attempt in range(20):
+                db = sqlite3.connect(str(Path(data) / "raw.sqlite"))
+                try:
+                    bodies = [bytes(row[0]) for row in db.execute("SELECT body FROM batches ORDER BY rowid")]
+                    break
+                except sqlite3.OperationalError:
+                    if attempt == 19:
+                        raise
+                    time.sleep(0.5)
+                finally:
+                    db.close()
         self.assertEqual(len(bodies), sent)
         names = set()
         for body in bodies:

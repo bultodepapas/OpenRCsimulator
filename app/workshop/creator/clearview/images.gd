@@ -59,7 +59,9 @@ static func _bmp(bytes: PackedByteArray, cancel: Callable, remaining_pixels: int
 		return R.fail(R.SOURCE_LIMIT, "The bitmap dimensions exceed the texture limits.", "source", "import")
 	var stride := (width * 3 + 3) & ~3
 	var offset := bytes.decode_u32(10)
-	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or offset + stride * height != bytes.size() or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
+	# Some writers append up to three alignment bytes after the pixel rows (declared in the file size).
+	var trailing := bytes.size() - (offset + stride * height)
+	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or trailing < 0 or trailing > 3 or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
 		return R.fail(R.SOURCE_INVALID, "The bitmap header, row sizes or pixel data are inconsistent.", "source", "import")
 	var pixels := PackedByteArray()
 	pixels.resize(width * height * 3)

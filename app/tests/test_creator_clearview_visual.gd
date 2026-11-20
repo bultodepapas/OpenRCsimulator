@@ -41,6 +41,14 @@ func _images() -> void:
 			var decoded := PngCheck.decode(normalized.value.png)
 			check("BMP row orientation and BGR channels", decoded.ok and decoded.value.image.get_pixel(0,0).is_equal_approx(Color.BLUE if signed_height > 0 else Color.RED))
 		check("bitmap cancellation", not Images.normalize(bmp,func() -> bool: return true).ok)
+		# Real downloads (Sopwith Camel): up to three alignment bytes after the rows, declared in the size.
+		var padded := bmp.duplicate()
+		padded.append_array(PackedByteArray([0, 0]))
+		padded.encode_u32(2, padded.size())
+		check("bitmap with two trailing alignment bytes accepted", Images.normalize(padded).ok)
+		padded.append_array(PackedByteArray([0, 0]))
+		padded.encode_u32(2, padded.size())
+		check("bitmap with four trailing bytes refused", not Images.normalize(padded).ok)
 		bmp.encode_s32(18,5000)
 		check("bitmap limits before decoding", not Images.normalize(bmp).ok)
 	var rgba := Image.create_from_data(1,1,false,Image.FORMAT_RGBA8,PackedByteArray([255,0,0,128])).save_png_to_buffer()
@@ -95,7 +103,30 @@ func _conversion() -> void:
 	var refused := _convert(body.replace("kids 1","kids 2") + many)
 	check("repeated marker references are bounded", not refused.ok and refused.diagnostics[0].code == "SOURCE_LIMIT")
 	var bow := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 1 1\n0 1 1\n1 0 0").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 1\n2 0 1\n3 1 0")
-	check("cancelling bow-tie is refused", not _convert(bow).ok)
+	check("a model whose only surface is a cancelling bow-tie is refused", not _convert(bow).ok)
+	# Real downloads (Red Arrows): an exactly cancelling bow-tie beside real geometry is omitted.
+	var cancelling := "OBJECT poly\nname \"tie\"\nnumvert 4\n0 0 0\n1 1 1\n0 1 1\n1 0 0\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 4\n0 0 0\n1 1 1\n2 0 1\n3 1 0\nkids 0\n"
+	var tied := _convert(body.replace("kids 1","kids 2") + cancelling)
+	check("cancelling bow-tie omitted and counted like any crossing", tied.ok and tied.value.source.triangle_count() == 1
+		and tied.value.receipt.omitted_self_intersecting_surfaces == 1 and tied.value.receipt.dropped_degenerate_surfaces == 0)
+	# Real downloads (DR 107, Cap 580): an exactly collinear triangle whose cross product has -0.0 parts.
+	var negative_zero := "OBJECT poly\nname \"sliver\"\nnumvert 3\n-0.04335 0.0234211 0.562649\n-0.04195 0.0234921 0.553229\n-0.04265 0.0234566 0.557939\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 0 0\n2 0 0\nkids 0\n"
+	var signed := _convert(body.replace("kids 1","kids 2") + negative_zero)
+	if not signed.ok:
+		printerr("Negative-zero sliver: ", signed)
+	check("negative-zero collinear triangle is a reported zero-area omission", signed.ok and signed.value.receipt.dropped_degenerate_surfaces == 1)
+	# Real downloads (E-starter, Force One): a 0.1 mm line marker far from the origin renders nothing.
+	var line_marker := "OBJECT poly\nname \"COORD_TWHEEL\"\nnumvert 2\n0.134842 -0.337895 0.00586971\n0.134942 -0.337895 0.00586971\nnumsurf 1\nSURF 0x32\nmat 0\nrefs 2\n0 0 0\n1 0 0\nkids 0\n"
+	check("a point/line-only helper is not held to render precision", _convert(body.replace("kids 1","kids 2") + line_marker).ok)
+	# Real downloads (GP Cap 232, Twist 3D, Hawker Hunter): AC3D subdivision is reported, not refused.
+	var subdivided := _convert(body.replace("name \"wing\"", "name \"wing\"\nsubdiv 2"))
+	check("subdivided part converts with its control shape", subdivided.ok and subdivided.value.source.triangle_count() == 1
+		and subdivided.value.receipt.unsubdivided_parts == 1)
+	check("subdivision reported at import and after reopening", subdivided.ok
+		and subdivided.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Converter.UNSUBDIVIDED_NOTE and d.severity == "warning")
+		and Converter.source_notes(subdivided.value.source).any(func(d: Dictionary) -> bool: return d.message == Converter.UNSUBDIVIDED_NOTE))
+	check("subdiv 0 changes nothing", _convert(body.replace("name \"wing\"", "name \"wing\"\nsubdiv 0")).ok
+		and not _convert(body.replace("name \"wing\"", "name \"wing\"\nsubdiv 0")).value.receipt.has("unsubdivided_parts"))
 	# Real downloads: a quad whose two consecutive corners coincide is a triangle (Ascent Park Glider).
 	var coincident := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 0 0\n1 0 0\n0 1 1").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 0\n2 1 0.5\n3 0 1")
 	var collapsed := _convert(coincident)

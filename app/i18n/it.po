@@ -14114,3 +14114,12 @@ msgstr "Sono state ignorate %s righe di etichetta dell’editor nei parametri de
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "Questo formato di texture non è ancora supportato. Converti la texture in PNG, JPEG o GIF standard o in BMP a 24 bit non compresso e aggiorna il suo riferimento nel modello."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "Non è stato possibile leggere %s marcatori di coordinate. Sono stati nascosti; collega manualmente le loro parti mobili."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Cerniera «%s»: non è stato possibile leggere il suo marcatore di coordinate. Collega questa parte manualmente in Parti mobili."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s parti usano la suddivisione AC3D. Viene mostrata la loro forma di controllo non levigata."

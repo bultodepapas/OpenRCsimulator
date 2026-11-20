@@ -14088,3 +14088,12 @@ msgstr "Проигнорировано строк-меток редактора 
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "Этот формат текстуры пока не поддерживается. Преобразуйте текстуру в стандартный PNG, JPEG, GIF или несжатый 24-битный BMP и обновите ссылку на неё в модели."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "Не удалось прочитать маркеры координат: %s. Они скрыты; привяжите их подвижные части вручную."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Шарнир «%s»: не удалось прочитать его маркер координат. Привяжите эту часть вручную в разделе «Подвижные части»."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "Частей с подразделением AC3D: %s. Показана их несглаженная контрольная форма."

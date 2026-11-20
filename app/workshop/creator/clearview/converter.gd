@@ -15,6 +15,9 @@ const MAX_POLYGON_WORK := 4000000
 ## A few self-intersecting slivers are omitted and reported; more indicates a damaged model.
 const MAX_SELF_INTERSECTING := 16
 const SELF_INTERSECTING_NOTE := "%s self-intersecting surfaces were omitted."
+## Doubled triangle area below extent² × this is invisible (< ~0.03 mm square on a 1 m part).
+const NEGLIGIBLE_AREA := 1.0e-9
+const UNSUBDIVIDED_NOTE := "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 var _bin := PackedByteArray()
 var _gltf := {}
 var _materials := {}
@@ -31,6 +34,7 @@ var _triangles := 0
 var _polygon_work := 0
 var _dropped := 0
 var _self_intersecting := 0
+var _cancelling_face := false
 var _error := {}
 var _cancel := Callable()
 var _package: Package
@@ -96,6 +100,9 @@ static func source_notes(source: InspectedSource) -> Array:
 	var crossed: Variant = receipt.get("omitted_self_intersecting_surfaces",0)
 	if typeof(crossed) in [TYPE_FLOAT,TYPE_INT] and float(crossed) == floor(float(crossed)) and crossed > 0 and crossed <= MAX_SELF_INTERSECTING:
 		notes.append(R.diagnostic(R.SOURCE_INVALID,SELF_INTERSECTING_NOTE,"source","import",[str(int(crossed))],R.SEVERITY_INFO))
+	var unsmoothed: Variant = receipt.get("unsubdivided_parts",0)
+	if typeof(unsmoothed) in [TYPE_FLOAT,TYPE_INT] and float(unsmoothed) == floor(float(unsmoothed)) and unsmoothed > 0 and unsmoothed <= Ac3d.MAX_NODES:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,UNSUBDIVIDED_NOTE,"source","import",[str(int(unsmoothed))],R.SEVERITY_WARNING))
 	var image_notes: Variant = receipt.get("image_notes",[])
 	notes.append_array(_motion_notes(receipt.get("coordinate_frames")))
 	if image_notes is Array:
@@ -154,6 +161,12 @@ func _convert() -> Dictionary:
 	# Present only when nonzero, so earlier conversions keep their exact bytes.
 	if _self_intersecting > 0:
 		receipt.omitted_self_intersecting_surfaces = _self_intersecting
+	var unsmoothed := 0
+	for node: Dictionary in _scene.nodes:
+		if int(node.get("subdiv", 0)) > 0 and not node.surfaces.is_empty():
+			unsmoothed += 1
+	if unsmoothed > 0:
+		receipt.unsubdivided_parts = unsmoothed
 	_gltf.asset.extras = {openrc_clearview = receipt}
 	if not _parameters.is_empty():
 		receipt.parameters = _parameters
@@ -193,6 +206,8 @@ func _convert() -> Dictionary:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, "%s zero-area surfaces were omitted.", "source", "import", [str(_dropped)], R.SEVERITY_INFO))
 	if _self_intersecting > 0:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, SELF_INTERSECTING_NOTE, "source", "import", [str(_self_intersecting)], R.SEVERITY_INFO))
+	if unsmoothed > 0:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, UNSUBDIVIDED_NOTE, "source", "import", [str(unsmoothed)], R.SEVERITY_WARNING))
 	return R.ok({source = inspected.value, receipt = receipt}, notes)
 
 func _admit(label: String) -> Dictionary:
@@ -252,10 +267,21 @@ static func _motion_notes(motion: Variant) -> Array:
 	return notes
 
 func _mesh(node: Dictionary) -> Array:
+	# Point/line-only helpers (e.g. COORD_* markers) render nothing; their float64 evidence is
+	# retained separately, so render precision does not apply to them.
+	if not node.surfaces.any(func(face: Dictionary) -> bool: return (int(face.flags) & 15) == 0 and face.refs.size() >= 3):
+		# Polygons with fewer than three corners render nothing either (counted as zero-area).
+		for face: Dictionary in node.surfaces:
+			if (int(face.flags) & 15) == 0:
+				_dropped += 1
+		return []
 	if not _precision_ok(node):
 		return []
+	var extent := _extent(node)
+	var area_floor := extent * extent * NEGLIGIBLE_AREA
 	var normals: Array[Vector3] = []
 	var neighbours := {}
+	var cancelling := {}
 	for index: int in node.surfaces.size():
 		if index % 128 == 0 and _cancelled():
 			return []
@@ -263,6 +289,14 @@ func _mesh(node: Dictionary) -> Array:
 		var normal := Vector3.ZERO
 		if (int(face.flags) & 15) == 0:
 			normal = _normal(node, face)
+			if _cancelling_face:
+				# Exactly cancelling bow-tie: no interior. Omitted and counted like any crossing.
+				_cancelling_face = false
+				cancelling[index] = true
+				_self_intersecting += 1
+				if _self_intersecting > MAX_SELF_INTERSECTING:
+					_error = R.fail(R.SOURCE_INVALID, "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit.", "source", "import", [str(index),str(node.name)])
+					return []
 			for ref: Dictionary in face.refs:
 				if not neighbours.has(ref.vertex):
 					neighbours[ref.vertex] = []
@@ -276,6 +310,8 @@ func _mesh(node: Dictionary) -> Array:
 		var face: Dictionary = node.surfaces[face_index]
 		if (int(face.flags) & 15) != 0:
 			continue # Marker points and lines remain non-rendered scene nodes.
+		if cancelling.has(face_index):
+			continue
 		var normal: Vector3 = normals[face_index]
 		if normal == Vector3.ZERO:
 			_dropped += 1
@@ -298,13 +334,17 @@ func _mesh(node: Dictionary) -> Array:
 			var c := _vector(node.vertices[face.refs[triangle[2]].vertex])
 			var source_cross := _triangle_cross(node.vertices[face.refs[triangle[0]].vertex],
 				node.vertices[face.refs[triangle[1]].vertex],node.vertices[face.refs[triangle[2]].vertex])
-			# Collinear consecutive outline corners can yield an ear with exactly zero source area.
-			# It covers nothing, so the polygon's shape is unchanged without it.
-			if source_cross == [0.0, 0.0, 0.0]:
-				continue
 			var render_cross := _triangle_cross([a.x,a.y,a.z],[b.x,b.y,b.z],[c.x,c.y,c.z])
 			var preserved: float = source_cross[0]*render_cross[0] + source_cross[1]*render_cross[1] + source_cross[2]*render_cross[2]
 			if preserved <= 0.0 or not is_finite(preserved):
+				# Collinear outline corners can yield an ear with zero or rounding-level source area
+				# (DR 107: |cross| ~1e-20 on a 1 m part) that collapses at render precision. It covers
+				# nothing visible, so it is dropped. A visible triangle that flips still refuses.
+				var doubled_area := sqrt(source_cross[0]*source_cross[0] + source_cross[1]*source_cross[1] + source_cross[2]*source_cross[2])
+				if _is_zero(source_cross) or doubled_area <= area_floor:
+					if order.size() == 3:
+						_dropped += 1
+					continue
 				_error = R.fail(R.SOURCE_UNSUPPORTED, "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing.", "source", "import")
 				return []
 			if source_cross[0]*normal.x + source_cross[1]*normal.y + source_cross[2]*normal.z < 0.0:
@@ -335,6 +375,8 @@ func _mesh(node: Dictionary) -> Array:
 	var primitives: Array = []
 	for material: int in groups:
 		var group: Dictionary = groups[material]
+		if group.positions.is_empty():
+			continue # Every triangle of this material was a dropped sliver.
 		var attributes := {POSITION = _accessor(group.positions, 3, true), NORMAL = _accessor(group.normals, 3)}
 		if not str(node.texture).is_empty():
 			attributes.TEXCOORD_0 = _accessor(group.uv, 2)
@@ -554,7 +596,7 @@ func _normal(node: Dictionary, face: Dictionary) -> Vector3:
 		var point: Array = node.vertices[ref.vertex]
 		if direction == origin:
 			direction = point
-		elif _triangle_cross(origin,direction,point) != [0.0,0.0,0.0]:
+		elif not _is_zero(_triangle_cross(origin,direction,point)):
 			collinear = false
 			break
 	if collinear:
@@ -566,11 +608,16 @@ func _normal(node: Dictionary, face: Dictionary) -> Vector3:
 		sum[0] += (a[1]-b[1])*(a[2]+b[2])
 		sum[1] += (a[2]-b[2])*(a[0]+b[0])
 		sum[2] += (a[0]-b[0])*(a[1]+b[1])
-	if sum == [0.0,0.0,0.0]:
-		_error = R.fail(R.SOURCE_INVALID, "An AC3D polygon has cancelling or self-intersecting edges.", "source", "import")
+	if _is_zero(sum):
+		_cancelling_face = true
 		return Vector3.ZERO
 	var length := sqrt(float(sum[0]*sum[0]+sum[1]*sum[1]+sum[2]*sum[2]))
 	return Vector3(sum[0]/length,sum[1]/length,sum[2]/length)
+
+## Numeric zero test: Array equality distinguishes -0.0 from 0.0, which hid exactly
+## collinear triangles whose cross product has negative-zero components.
+static func _is_zero(value: Array) -> bool:
+	return value[0] == 0.0 and value[1] == 0.0 and value[2] == 0.0
 
 static func _cross(a: Array, b: Array, c: Array) -> float:
 	return (float(b[0])-float(a[0]))*(float(c[1])-float(a[1])) - (float(b[1])-float(a[1]))*(float(c[0])-float(a[0]))
@@ -604,6 +651,18 @@ func _cancelled() -> bool:
 	if _cancel.is_valid() and bool(_cancel.call()):
 		_error = R.fail(R.SOURCE_INVALID, "The import was cancelled.", "source", "import")
 	return not _error.is_empty()
+
+## Largest axis-aligned extent of a node's local vertices (0 when empty).
+static func _extent(node: Dictionary) -> float:
+	if node.vertices.is_empty():
+		return 0.0
+	var low := [INF,INF,INF]
+	var high := [-INF,-INF,-INF]
+	for point: Array in node.vertices:
+		for axis: int in 3:
+			low[axis] = minf(low[axis],point[axis])
+			high[axis] = maxf(high[axis],point[axis])
+	return maxf(high[0]-low[0],maxf(high[1]-low[1],high[2]-low[2]))
 
 func _precision_ok(node: Dictionary) -> bool:
 	if node.vertices.is_empty():

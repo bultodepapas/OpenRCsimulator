@@ -163,8 +163,10 @@ func _object(header: Array[String], parent: int, depth: int) -> int:
 				else:
 					_at += count
 			"subdiv":
-				if _count(t, 8) != 0:
-					_fail("Apply AC3D subdivision before importing this model.")
+				# The control shape is imported unsmoothed; the converter reports it.
+				var levels := _count(t, 8)
+				if levels > 0:
+					node.subdiv = levels
 			"numvert":
 				var count := _count(t, MAX_VERTICES - _vertices)
 				_vertices += count

@@ -275,7 +275,8 @@ func _read_adobe(end: int) -> bool:
 		return _reject("The JPEG Adobe marker is invalid or duplicated.")
 	if _data.slice(_pos,_pos + 5) != PackedByteArray([65,100,111,98,101]):
 		return _reject("The JPEG APP14 marker is unsupported.", R.SOURCE_UNSUPPORTED)
-	if _u16(_pos + 5) not in [100,101] or _u16(_pos + 7) != 0 or _u16(_pos + 9) != 0 or _data[_pos + 11] > 1:
+	# Flags0/flags1 are encoder hints (e.g. 0x8000 "blend"); only the colour transform affects decoding.
+	if _u16(_pos + 5) not in [100,101] or _data[_pos + 11] > 1:
 		return _reject("The JPEG Adobe marker is unsupported.", R.SOURCE_UNSUPPORTED)
 	_adobe_transform = _data[_pos + 11]
 	if _jfif and _adobe_transform == 0:

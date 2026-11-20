@@ -14232,3 +14232,12 @@ msgstr "%s Editor-Kennzeilen in den Modellparametern wurden ignoriert."
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "Dieses Texturformat wird noch nicht unterstützt. Wandle die Textur in ein Standard-PNG, -JPEG, -GIF oder unkomprimiertes 24-Bit-BMP um und aktualisiere ihren Verweis im Modell."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "%s Koordinatenmarker konnten nicht gelesen werden. Sie wurden ausgeblendet; verknüpfe ihre beweglichen Teile manuell."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Gelenk „%s“: Sein Koordinatenmarker konnte nicht gelesen werden. Verknüpfe dieses Teil manuell unter Bewegliche Teile."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s Teile verwenden AC3D-Unterteilung. Ihre ungeglättete Kontrollform wird angezeigt."

@@ -13338,3 +13338,12 @@ msgstr "モデルパラメーター内のエディタータグ行 %s 行を無�
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "このテクスチャ形式はまだサポートされていません。テクスチャを標準の PNG、JPEG、GIF、または非圧縮 24 ビット BMP に変換し、モデル内の参照を更新してください。"
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "%s 個の座標マーカーを読み取れませんでした。非表示にしました。可動パーツは手動で割り当ててください。"
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "ヒンジ「%s」：座標マーカーを読み取れませんでした。可動パーツでこのパーツを手動で割り当ててください。"
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s 個のパーツが AC3D のサブディビジョンを使用しています。平滑化前のコントロール形状を表示しています。"

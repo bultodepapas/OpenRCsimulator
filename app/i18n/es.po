@@ -12877,3 +12877,12 @@ msgstr "Se ignoraron %s líneas de etiqueta del editor en los parámetros del mo
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "Este formato de textura aún no es compatible. Convierte la textura a PNG, JPEG o GIF estándar o a BMP de 24 bits sin comprimir y actualiza su referencia en el modelo."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "No se pudieron leer %s marcadores de coordenadas. Se ocultaron; vincula sus piezas móviles manualmente."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Bisagra «%s»: no se pudo leer su marcador de coordenadas. Vincula esta pieza manualmente en Piezas móviles."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s piezas usan subdivisión de AC3D. Se muestra su forma de control sin suavizar."
