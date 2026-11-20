@@ -203,7 +203,7 @@ Each phase is one reviewable step with its own evidence, under step ids **VQ-07h
 ### A2. Renderer strategy (Efficient = Mobile), behind measurement
 
 - **What:**
-  1. **Gate:** A5 has measured Mobile against Compatibility on at least one Intel and one AMD integrated GPU at 1080p: GPU and CPU time, pacing and stability. Mobile's forced `use_hdr_2d` buffer is costed separately, and dropped where HDR 2D is not needed.
+  1. **Gate:** A5 has measured Mobile against Compatibility on at least one Intel and one AMD integrated GPU at 1080p: GPU and CPU time, pacing and stability. Mobile's forced `use_hdr_2d` buffer is costed separately, and dropped where HDR 2D is not needed. **2026-11-20, first iGPU row:** on an Intel UHD 630 under Linux/Mesa, Compatibility needed 46 ms GPU p50, Mobile 56 ms (+21%) and Forward+ 74 ms (+60%) ([evidence](../research/visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md)). The Efficient = Mobile hypothesis fails there; Windows Intel, AMD iGPU and Mobile without `use_hdr_2d` remain open.
   2. Run a visual parity review of Mobile against the Standard look on Windows, as DT-MAC-05b did on Mac. Decide the Windows rendering driver per vendor (D3D12 or Vulkan for Intel) from the research and a measured A/B.
   3. Generalize recovery before adopting any new automatic renderer (W10):
      - a per-renderer blocked build in `plan()`;
