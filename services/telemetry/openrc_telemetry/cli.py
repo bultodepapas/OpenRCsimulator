@@ -6,15 +6,19 @@ from datetime import datetime, timedelta, timezone
 import json
 import logging
 import os
+from pathlib import Path
 import sys
 import time
 
 from .config import Config
 from .contract import ContractError, load_contracts
+from .counters import flush as flush_counters
 from .publisher import GitHub, publish
-from .report import material
+from .report import check_release, material
 from .rollup import eligibility_window, run_rollup
-from .storage import RAW_TTL, AggStore, RawStore, StorageUnavailable
+from .storage import RAW_TTL, AggStore, RawStore, StorageUnavailable, utc_day
+
+COUNTER_FLUSH_S = 60
 
 
 def _parser():
@@ -38,6 +42,9 @@ def _parser():
     group = pub.add_mutually_exclusive_group()
     group.add_argument("--dry-run", action="store_true", help="default: print only")
     group.add_argument("--execute", action="store_true", help="perform the remote write")
+    sub.add_parser("status", help="operator status: releases, raw age, today's ingest counters, last rollup")
+    check = sub.add_parser("check-release", help="exit 0 only if this receiver accepts batches from the tag")
+    check.add_argument("tag")
     return parser
 
 
@@ -61,6 +68,18 @@ def _purge_loop(config, raw, agg, stop):
             logging.getLogger("openrc_telemetry").warning("purge category=storage_unavailable")
 
 
+def _flush_counters(app):
+    try:
+        flush_counters(app.state.counters, app.state.aggregates)
+    except StorageUnavailable:
+        logging.getLogger("openrc_telemetry").warning("counters category=storage_unavailable")
+
+
+def _counter_loop(app, stop):
+    while not stop.wait(COUNTER_FLUSH_S):
+        _flush_counters(app)
+
+
 def _serve(config, args):
     import threading
     import uvicorn
@@ -72,6 +91,7 @@ def _serve(config, args):
     purge_once(config, time.time(), app.state.raw, app.state.aggregates, purge_margin_s(config))
     threading.Thread(target=_purge_loop, args=(config, app.state.raw, app.state.aggregates, stop),
                      name="telemetry-purge", daemon=True).start()
+    threading.Thread(target=_counter_loop, args=(app, stop), name="telemetry-counters", daemon=True).start()
     try:
         # Access logs would record addresses and paths; proxy headers are handled by the app itself. Concurrency is
         # bounded so slow request bodies cannot hold unlimited sockets (the TLS proxy also bounds body read time).
@@ -79,7 +99,64 @@ def _serve(config, args):
                     server_header=False, proxy_headers=False, timeout_keep_alive=5, limit_concurrency=200)
     finally:
         stop.set()
+        _flush_counters(app)
     return 0
+
+
+def status_report(config, now, raw=None, agg=None):
+    """ID-free operator status. `retention_ok` is false if any raw row is past its 48-hour deadline."""
+    raw = raw or RawStore(config.raw_path, config.max_raw_bytes)
+    agg = agg or AggStore(config.aggregates_path)
+    today = utc_day(now)
+    yesterday = utc_day(now - 86400)
+    oldest, newest = raw.oldest_receipt(), raw.newest_receipt()
+    return {
+        "releases": sorted(config.releases), "suspended_releases": sorted(config.suspended_releases),
+        "suspend_all": config.suspend_all, "trust_proxy": config.trust_proxy,
+        "raw_batches": raw.count(),
+        "oldest_raw_age_h": None if oldest is None else round((now - oldest) / 3600, 2),
+        "last_accepted_age_s": None if newest is None else int(now - newest),
+        "retention_ok": oldest is None or now - oldest < RAW_TTL,
+        "ingest_today": agg.ingest_counts(today), "ingest_yesterday": agg.ingest_counts(yesterday),
+        "rollup_yesterday": agg.day_statuses(yesterday),
+    }
+
+
+def _status(config):
+    result = status_report(config, time.time())
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["retention_ok"] else 1
+
+
+def check_release_tag(config, tag, example=None):
+    """(ok, message). The tag must match the client's release pattern, be allowlisted and not suspended, and the
+    canonical example batch carrying it must pass this receiver's full ingest validation. The example sits beside
+    the schema directory (research/telemetry/examples, or /app/examples in the container)."""
+    example = Path(example) if example else Path(config.schema_dir).parent / "examples" / "batch.json"
+    try:
+        check_release(tag)
+    except ContractError:
+        return False, "tag does not match the client release pattern (vX.Y.Z, optional -alpha/-beta/-rc and number)"
+    if config.suspend_all or tag in config.suspended_releases:
+        return False, "tag is suspended (410): its clients would stop"
+    if tag not in config.releases:
+        return False, "tag is not in OPENRC_TELEMETRY_RELEASES: its batches would be rejected (422)"
+    if not example.is_file():
+        return False, "example batch not found beside the schema directory"
+    payload = json.loads(example.read_text(encoding="utf-8"))
+    payload["build"]["release_id"] = tag
+    body = json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    try:
+        load_contracts(config.schema_dir).validate_ingest(body, config.releases)
+    except ContractError as error:
+        return False, f"example batch with this tag is refused: {error}"
+    return True, "accepted"
+
+
+def _check_release(config, args):
+    ok, message = check_release_tag(config, args.tag)
+    print(f"{'ok' if ok else 'refused'}: {args.tag} {message}", file=sys.stdout if ok else sys.stderr)
+    return 0 if ok else 2
 
 
 def _purge(config):
@@ -155,6 +232,10 @@ def main(argv=None):
             return _rollup(config, args)
         if args.command == "report":
             return _report(config, args)
+        if args.command == "status":
+            return _status(config)
+        if args.command == "check-release":
+            return _check_release(config, args)
         return _publish(config, args)
     except ContractError as error:
         print(f"refused: {error}", file=sys.stderr)

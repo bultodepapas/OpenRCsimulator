@@ -166,7 +166,7 @@ def render(data):
             lines.append(f"| {row['vehicle_id']} | {row['session_observations']} | {row['activity_summaries']} "
                          f"| {row['active_seconds'] / 3600:.2f} |")
         lines.append("")
-        lines.append("Activity summaries are accepted activity closes or 30-minute slices, not successful flights or players.")
+        lines.append("Activity summaries are accepted activity closes or 5-minute slices, not successful flights or players.")
     else:
         lines.append("No vehicle cells are published. This status is not a claim of zero activity.")
     content = "\n".join(lines) + "\n"

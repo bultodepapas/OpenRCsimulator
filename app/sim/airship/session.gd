@@ -506,13 +506,29 @@ func collision_identity() -> String:
 
 ## BL-08 replay: continue from a recorded accepted state (tick numbering restarts; the law is time-invariant in the
 ## admitted calm/steady weather). Leaves the flight running, ready for the recorded sticks.
+## The kernel's side-effect-free reset preparation validates the replacement before any signal, live array,
+## fault or pause changes, so a refused checkpoint leaves the flight and an active recorder untouched.
 func restore_checkpoint(state: PackedFloat64Array, continuous: PackedFloat64Array) -> bool:
 	if not prepared or continuous.size() != Data.CONTINUOUS_SIZE:
 		return false
-	resetting.emit()
-	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var live_inputs: PackedFloat64Array = sim.inputs
+	var live_continuous: PackedFloat64Array = sim.continuous
+	var zero_inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	# prepare_reset() evaluates the candidate in the live callback context; install it only for that call.
+	sim.inputs = zero_inputs
 	sim.continuous = continuous.duplicate()
-	if not sim.reset(state.duplicate()):
+	var candidate: Dictionary = sim.prepare_reset(state.duplicate())
+	sim.inputs = live_inputs
+	sim.continuous = live_continuous
+	if not candidate.get("ok", false):
+		return false
+	# Accepted: observers (the flight recorder) see the pre-reset flight, then the prepared reset is published.
+	resetting.emit()
+	sim.inputs = zero_inputs
+	sim.continuous = continuous.duplicate()
+	if not sim.commit_prepared_reset(candidate):
+		sim.inputs = live_inputs
+		sim.continuous = live_continuous
 		return false
 	tape = PackedFloat64Array()
 	tape_overflow = false
