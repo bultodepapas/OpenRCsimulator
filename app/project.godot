@@ -60,7 +60,8 @@ common/physics_jitter_fix=0.0
 ; VQ-07d: the native DLSS build uses the validated transformer preset.
 streamline/dlss_preset="K"
 
-; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
+; Compatibility (OpenGL) is a frozen legacy renderer (docs/DECISIONS.md): the baseline for weak GPUs, the engine
+; fallback and CI captures. Exported builds select Forward+ or Mobile through renderer_preference.gd. No web build.
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 ; DT-MAC-05b: Apple Silicon runs Mobile on native Metal (≈1.4× Compatibility on an M1, and the only path to MetalFX).

@@ -7,8 +7,7 @@ The owner asked two questions:
 
 This report answers both from three sources: the code, today's CI, and runs on DEVIL (Windows, RTX 3090) and ANGEL (M1).
 Code was read at `48580b75a`. Traces ran on the working tree of that day. CI evidence comes from run 44693516940
-(`a70d2a8f7`). §3 is a **proposed** development policy; it takes effect once the owner accepts it and it is recorded in
-[DECISIONS](../../DECISIONS.md).
+(`a70d2a8f7`). The owner accepted §3 on 2026-11-20. It is recorded in [DECISIONS](../../DECISIONS.md#compatibility-is-a-frozen-legacy-renderer).
 
 ## Verdict
 
@@ -124,7 +123,7 @@ Counts come from `rg` on `CURRENT_RENDERER` in shaders and on `get_current_rende
 
 The Web export is **not** a reason to keep Compatibility. There is no Web preset, and `advanced-graphics.md` rules out a web build. The `project.godot` comment calling Compatibility "the only one Godot can export to the web" is stale. Windows arm64 is not shipped; if it ships, `rendering_method.arm64` selects Mobile there.
 
-## 3. Proposed development policy
+## 3. Development policy (accepted 2026-11-20)
 
 **Stop doing:**
 
@@ -155,8 +154,7 @@ The Web export is **not** a reason to keep Compatibility. There is no Web preset
 5. **Ship native physics in the macOS package**, completing the existing DT-MAC promotion path.
 6. **Owner decision, optional.** Drop Intel Macs and pre-Vulkan GPUs from the supported list (gate 4). Together with steps 3
    and 4, this would let Compatibility be removed entirely.
-7. **Documentation.** On acceptance, add a DECISIONS entry and update STACK and the automatic-graphics plan. Also fix the
-   stale `project.godot` web comment.
+7. **Documentation.** Done 2026-11-20: DECISIONS, STACK, the automatic-graphics plan and the `project.godot` comment.
 
 ## Method
 
