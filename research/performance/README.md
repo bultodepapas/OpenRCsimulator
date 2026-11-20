@@ -4,6 +4,8 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+[2026-11-19 audit reproduction](audit-2026-11-19/README.md) runs isolated, source-hashed event/calibration counterexamples and the existing 54-check solver control. These are baseline correctness/policy observations, not a performance benchmark; the [full audit](../../docs/research/performance-audit-2026-11-19/README.md) owns findings and limits.
+
 On an enrolled shared host, `session_baseline.py` and `run_visibility_capture.py`
 require an exclusive inherited test-queue attempt with headless and rendered scope,
 respectively. Standalone admission adapters are unavailable. See the

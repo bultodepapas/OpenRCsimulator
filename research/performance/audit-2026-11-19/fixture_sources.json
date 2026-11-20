@@ -1,0 +1,24 @@
+{
+  "base": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "files": {
+    "app/tests/test_resource_event_step.gd": "1e742b2e7e5140da230c3e1b5d8d5320aa0b071a2c91abf290e1edb000d19a91",
+    "app/physics/resource_event_step.gd": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+    "app/physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "app/physics/integrator.gd": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/render/frame_samples.gd": "530608f601c1e80551ec297a1b98846dd1c697b4225deae2cf6dbb0aefd52d1b",
+    "app/render/grass_scene_snapshot.gd": "4160864e003f16bb1a3b101cf06828f6352cda955dc0d68a04fddad10ff58c0f",
+    "app/render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "app/ui/ui_scale.gd": "e2c26c121a3158c1f25a45cc38c361cf78a707e8d3bbddaf207f1d9fb7b5c6b4",
+    "app/app_state/renderer_preference.gd": "0654d9b355982658f86626a8294accd3618fe595811ecf4e9410430b9f3fbbe5",
+    "app/render/auto_calibration.gd": "4242ce1f99da8f7f40291cd2aa7535a1cc32101a2d7f2628b549f9ac4a2f9ccc",
+    "app/render/auto_graphics_policy.gd": "acec25d0e3b7e7edab3b0f57a60ad06817f4d0fddfc44e203b8cb5ed9b540c60",
+    "app/render/gpu_capability.gd": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+    "app/render/render_timing_lease.gd": "406063ea71136de95fb9411babca1d5623d81d8271aace2f9c306c995df46f42",
+    "app/data/gpu/capability.json": "84edc3050b607045ce9545199cc63d9c8d89f1ef83f198203dfdf563d9d125b3"
+  },
+  "format": "openrc-audit-fixture-sources-v1",
+  "note": "Exact copied source closure for the baseline probes; SHA-256 for files, SHA-512 for official Linux x86_64 engine."
+}

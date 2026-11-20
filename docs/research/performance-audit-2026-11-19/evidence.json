@@ -1,0 +1,674 @@
+{
+  "format": "openrc-performance-audit-evidence-v1",
+  "audited_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "reproduced_utc": "2026-11-19T20:19:54.882725+00:00",
+  "generator": "research/performance/audit-2026-11-19/run.py; compact extraction from audit_results.json",
+  "scope": {
+    "headless_only": true,
+    "engine": "4.8.beta2.official.cafc17a19",
+    "engine_binary": "official Linux x86_64",
+    "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "local_test_pool_configured": false,
+    "production_assets_imported": false,
+    "native_cpp_qualified": false,
+    "gpu_or_flight_performance_measured": false,
+    "note": "Successful reproduction means current baseline observations recurred, including reported defects; it does not mean they were repaired."
+  },
+  "fixture_source_hashes": {
+    "app/tests/test_resource_event_step.gd": "1e742b2e7e5140da230c3e1b5d8d5320aa0b071a2c91abf290e1edb000d19a91",
+    "app/physics/resource_event_step.gd": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+    "app/physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "app/physics/integrator.gd": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/render/frame_samples.gd": "530608f601c1e80551ec297a1b98846dd1c697b4225deae2cf6dbb0aefd52d1b",
+    "app/render/grass_scene_snapshot.gd": "4160864e003f16bb1a3b101cf06828f6352cda955dc0d68a04fddad10ff58c0f",
+    "app/render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "app/ui/ui_scale.gd": "e2c26c121a3158c1f25a45cc38c361cf78a707e8d3bbddaf207f1d9fb7b5c6b4",
+    "app/app_state/renderer_preference.gd": "0654d9b355982658f86626a8294accd3618fe595811ecf4e9410430b9f3fbbe5",
+    "app/render/auto_calibration.gd": "4242ce1f99da8f7f40291cd2aa7535a1cc32101a2d7f2628b549f9ac4a2f9ccc",
+    "app/render/auto_graphics_policy.gd": "acec25d0e3b7e7edab3b0f57a60ad06817f4d0fddfc44e203b8cb5ed9b540c60",
+    "app/render/gpu_capability.gd": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+    "app/render/render_timing_lease.gd": "406063ea71136de95fb9411babca1d5623d81d8271aace2f9c306c995df46f42",
+    "app/data/gpu/capability.json": "84edc3050b607045ce9545199cc63d9c8d89f1ef83f198203dfdf563d9d125b3"
+  },
+  "reproduction_script_hashes": {
+    "run.py": "394e0ce66404f1e0b53fe05c49057a9198aec7b9afa223afb94a2c6144700bc6",
+    "fixture_sources.json": "fdad1e0a747d44146f1100cfaccb258d98c55a8f7b513c206425b24b231bad81",
+    "event_probe.gd": "3086de14f2f3bb14dea441e792d110a688d5df5441b3dcc20b8211b43e28fd75",
+    "calibration_probe.gd": "3eae24989b4740370684107075ecd1b1eea4274321be17923eb2b04be1f7149f"
+  },
+  "checked_run_summaries": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b3b1bdd7-f33d-494e-a462-4bc2af94c258",
+      "label": "audit-import",
+      "started_utc": "2026-11-19T20:19:46.642240+00:00",
+      "timeout_seconds": 60.0,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "log_bytes": 2162,
+      "log_sha256": "2fa4e105c7dd3f3e8f67e4f9cc567e635c2105020582111ff8bb8e0764de9c61",
+      "checked_report_sha256": "e139338e535967bfd5f93f5e66ea5c21cc60a9d66268222c8647a70ef9a35d0b",
+      "script": "fixture import"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b33b5de4-d191-472f-b3a8-00163ce093a3",
+      "label": "audit-control",
+      "started_utc": "2026-11-19T20:19:53.537486+00:00",
+      "timeout_seconds": 60.0,
+      "required_text": [
+        "resource event step: 54 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "log_bytes": 3490,
+      "log_sha256": "5f272ebfad10b6839363b8d18e34e3b3cab0c5cc7fc95c9b777bfaaad857df41",
+      "checked_report_sha256": "7d1e0c4e80842a425ec3fc95369e4bb45de4842242d68c35c7edcbf8a94c88b0",
+      "script": "res://tests/test_resource_event_step.gd"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "4bd3fa3a-bc32-45a1-b575-db5cd812f7f4",
+      "label": "audit-events",
+      "started_utc": "2026-11-19T20:19:53.952063+00:00",
+      "timeout_seconds": 60.0,
+      "required_text": [
+        "Audit probe complete"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "log_bytes": 2851,
+      "log_sha256": "15857afebd1d90f72ca55f074833b84a4945c09ff24d8bc97df6887995efd9ca",
+      "checked_report_sha256": "727327d121fc6251a56d11981ec9d1b3aa8e6836d805030cada86afd29f5f788",
+      "script": "res://event_probe.gd"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "27f807bc-be6d-46f1-a651-137ee143946a",
+      "label": "audit-calibration",
+      "started_utc": "2026-11-19T20:19:54.466970+00:00",
+      "timeout_seconds": 60.0,
+      "required_text": [
+        "Calibration probe complete"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "log_bytes": 2670,
+      "log_sha256": "3067390d1f6241e68057515feda6669eb25eb502b8e73adcbb56826fced5c0b8",
+      "checked_report_sha256": "51d6a53ee485a8f2f97fc0ebcb76acc55a7415d5c8b98db91d389a3bc669a42b",
+      "script": "res://calibration_probe.gd"
+    }
+  ],
+  "existing_control": {
+    "script": "app/tests/test_resource_event_step.gd",
+    "checks": 54,
+    "failed": 0,
+    "source_unchanged": true
+  },
+  "expected_baseline_observations": {
+    "F01_missing_interior_in_both_orders": true,
+    "F02_nontransitive_comparator": true,
+    "F02_three_accepted_flag_sets": true,
+    "F04_scaled_window_size_mismatch": true,
+    "F05_stale_size_rejection": true,
+    "F06_scale_policy_sensitivity_only": true,
+    "F09_incomplete_neutral_suppresses_retry": true,
+    "F10_intentional_quantile_difference": true,
+    "rejected_packed_array_copy_lead": true
+  },
+  "baseline_observations_reproduced": true,
+  "observations": {
+    "events": {
+      "cases": [
+        {
+          "event_flags": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 3.1250000000000013e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            0,
+            1,
+            2
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "C",
+            "B",
+            "A"
+          ]
+        },
+        {
+          "event_flags": [
+            0.0,
+            1.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "B",
+              "surface_residual": -2.0194839173657902e-28,
+              "surface_unit": "s",
+              "time_error_bound_s": 4.375000000000001e-13,
+              "time_s": 1.7500000000000002e-12,
+              "type": "time_boundary"
+            },
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 7.499999999999995e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            0,
+            2,
+            1
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "B",
+            "A",
+            "C"
+          ]
+        },
+        {
+          "event_flags": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 3.1250000000000013e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            1,
+            0,
+            2
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "C",
+            "B",
+            "A"
+          ]
+        },
+        {
+          "event_flags": [
+            1.0,
+            0.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "A",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 1e-12,
+              "time_s": 1e-12,
+              "type": "time_boundary"
+            },
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 3.749999999999999e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            1,
+            2,
+            0
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "A",
+            "C",
+            "B"
+          ]
+        },
+        {
+          "event_flags": [
+            0.0,
+            1.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "B",
+              "surface_residual": -2.0194839173657902e-28,
+              "surface_unit": "s",
+              "time_error_bound_s": 4.375000000000001e-13,
+              "time_s": 1.7500000000000002e-12,
+              "type": "time_boundary"
+            },
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 7.499999999999995e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            2,
+            0,
+            1
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "B",
+            "A",
+            "C"
+          ]
+        },
+        {
+          "event_flags": [
+            1.0,
+            0.0,
+            1.0
+          ],
+          "events": [
+            {
+              "id": "A",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 1e-12,
+              "time_s": 1e-12,
+              "type": "time_boundary"
+            },
+            {
+              "id": "C",
+              "surface_residual": 0.0,
+              "surface_unit": "s",
+              "time_error_bound_s": 3.749999999999999e-13,
+              "time_s": 2.5e-12,
+              "type": "time_boundary"
+            }
+          ],
+          "input": [
+            2,
+            1,
+            0
+          ],
+          "message": "",
+          "ok": true,
+          "sorted": [
+            "A",
+            "C",
+            "B"
+          ]
+        }
+      ],
+      "comparator_cycle": {
+        "a_before_c": true,
+        "b_before_a": true,
+        "c_before_b": true
+      },
+      "engine": "4.8-beta2 (official)",
+      "internal_crossing": [
+        {
+          "events": [
+            {
+              "id": "A_endpoint",
+              "surface_residual": 0.0,
+              "surface_unit": "1",
+              "time_error_bound_s": 5.000002148425331e-13,
+              "time_s": 0.003125,
+              "type": "boundary"
+            }
+          ],
+          "expected_ids": [
+            "B_internal",
+            "A_endpoint"
+          ],
+          "flags": [
+            1.0,
+            0.0
+          ],
+          "message": "",
+          "ok": true,
+          "reverse": false
+        },
+        {
+          "events": [
+            {
+              "id": "A_endpoint",
+              "surface_residual": 0.0,
+              "surface_unit": "1",
+              "time_error_bound_s": 5.000002148425331e-13,
+              "time_s": 0.003125,
+              "type": "boundary"
+            }
+          ],
+          "expected_ids": [
+            "B_internal",
+            "A_endpoint"
+          ],
+          "flags": [
+            1.0,
+            0.0
+          ],
+          "message": "",
+          "ok": true,
+          "reverse": true
+        }
+      ],
+      "packed_alias": {
+        "local": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "original": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "stored": [
+          1.0,
+          2.0,
+          3.0
+        ]
+      }
+    },
+    "calibration": {
+      "engine": "4.8-beta2 (official)",
+      "incomplete_loaded": {
+        "adapter": "rtx 3090",
+        "complete": false,
+        "cpu_bound": false,
+        "cpu_p95_ms": 0.0,
+        "gpu_p95_ms": 0.0,
+        "interval_p95_ms": 0.0,
+        "level": "high",
+        "method": "forward_plus",
+        "pixels": 2073600,
+        "refresh_hz": 0.0,
+        "reject_high": false,
+        "scene_offset": 0,
+        "subviewports": false
+      },
+      "incomplete_retry": false,
+      "incomplete_saved": true,
+      "mac_policy_math": {
+        "actual_native_pixels": 4096000,
+        "assumed_pixels": 1818596,
+        "assumed_recommendation": {
+          "detail": "apple_m1 (estimated 0.06× RTX 3090)",
+          "gpu": {
+            "class": "integrated",
+            "id": "apple_m1",
+            "matched": true,
+            "normalized": "apple m1",
+            "provenance": "measured: M1 (7-core GPU) Forward+ and Mobile on Metal at 1080p, real route, beta2, cooled (DT-MAC-03b, 2026-11-18); not the Retina panel or fanless sustained play",
+            "rel": 0.05995,
+            "vram_gb": 0
+          },
+          "level": "medium",
+          "reason": "integrated GPU"
+        },
+        "native_recommendation": {
+          "detail": "apple_m1 (estimated 0.03× RTX 3090)",
+          "gpu": {
+            "class": "integrated",
+            "id": "apple_m1",
+            "matched": true,
+            "normalized": "apple m1",
+            "provenance": "measured: M1 (7-core GPU) Forward+ and Mobile on Metal at 1080p, real route, beta2, cooled (DT-MAC-03b, 2026-11-18); not the Retina panel or fanless sustained play",
+            "rel": 0.05995,
+            "vram_gb": 0
+          },
+          "level": "low",
+          "reason": "integrated GPU"
+        },
+        "scope": "pure capability-table calculation; no Mac or GPU execution"
+      },
+      "no_rejection_at_1080": {
+        "profile": "high",
+        "reason": "automatic: rtx_3090: estimated High GPU 1.1 ms at 2.1 MP (budget 4.3 ms)",
+        "restart": true,
+        "state": {
+          "high_blocked_build": "",
+          "mode": "auto",
+          "renderer": "forward_plus",
+          "standard_method": "gl_compatibility"
+        },
+        "write": true
+      },
+      "percentile": {
+        "calibration_p95": 20.0,
+        "count": 300,
+        "high_count": 15,
+        "hud_nearest_rank_p95": 1.0,
+        "low_count": 285,
+        "verdict": {
+          "complete": true,
+          "cpu_bound": false,
+          "cpu_p95_ms": 0.0,
+          "gpu_p95_ms": 20.0,
+          "interval_p95_ms": 0.0,
+          "reject_high": true,
+          "samples": 300,
+          "scene_offset": 0,
+          "subviewports": false
+        }
+      },
+      "rejection_at_1080": {
+        "profile": "standard",
+        "reason": "automatic: measured High GPU time missed the frame on this GPU",
+        "restart": false,
+        "state": {
+          "high_blocked_build": "",
+          "mode": "auto",
+          "renderer": "",
+          "standard_method": ""
+        },
+        "write": false
+      },
+      "rejection_saved": true,
+      "rejection_size_matches_1080": false,
+      "windows": [
+        {
+          "calibration_matches_same_window": true,
+          "content": [
+            1920,
+            1080
+          ],
+          "logical": [
+            1920.0,
+            1080.0
+          ],
+          "requested": [
+            1920,
+            1080
+          ],
+          "window": [
+            1920,
+            1080
+          ]
+        },
+        {
+          "calibration_matches_same_window": false,
+          "content": [
+            1920,
+            1080
+          ],
+          "logical": [
+            1920.0,
+            1080.0
+          ],
+          "requested": [
+            2560,
+            1440
+          ],
+          "window": [
+            2560,
+            1440
+          ]
+        },
+        {
+          "calibration_matches_same_window": false,
+          "content": [
+            1920,
+            1080
+          ],
+          "logical": [
+            1920.0,
+            1080.0
+          ],
+          "requested": [
+            3840,
+            2160
+          ],
+          "window": [
+            3840,
+            2160
+          ]
+        }
+      ]
+    }
+  },
+  "publication_main_comparison": {
+    "main_sha": "b2f81d1771031964446a1cbddd83770d6d1c87ff",
+    "changed_paths": [
+      "app/project.godot",
+      "docs/plans/automatic-graphics.md",
+      "docs/plans/drone-racing.md",
+      "docs/releases/v0.2.9.md",
+      "docs/research/aero-consistency/D11g/2026-11-19-release-v029-qualification.json",
+      "docs/research/aero-consistency/D11g/README.md",
+      "research/aero/d11g/apply_rate_derivatives.py",
+      "research/aero/d11g/derive_rate_derivatives.gd"
+    ],
+    "finding_runtime_paths_checked": 59,
+    "changed_finding_runtime_paths": [],
+    "fixture_dependencies_unchanged": true,
+    "assessment": "Inspected delta: v0.2.9 project version/release documentation, two plan corrections and D11g inventory guard/evidence renewal. No finding-related runtime implementation or fixture dependency changed. Audit remains pinned to the original base."
+  },
+  "exploratory_corrections": [
+    {
+      "kind": "completion_marker_mismatch",
+      "engine_result": "resource event step: 54 checks, 0 failed",
+      "required_text": [
+        "resource event step: 36 checks, 0 failed"
+      ],
+      "wrapper_ok": false,
+      "missing_required_text": [
+        "resource event step: 36 checks, 0 failed"
+      ],
+      "log_sha256": "5f272ebfad10b6839363b8d18e34e3b3cab0c5cc7fc95c9b777bfaaad857df41",
+      "disposition": "Harness-only failure; corrected 54-check run passed. Not counted as a failed solver assertion or a passing checked run."
+    },
+    {
+      "kind": "rearming_event_fixture",
+      "disposition": "Exploratory 2 ms permutation fixture can re-arm transitions. Repeated C is not used as evidence of a duplicate-event defect; the retained clean tiny-interval fixture disables each event independently."
+    },
+    {
+      "kind": "policy_reclassification",
+      "disposition": "Incomplete no-retry is explicitly intentional, and calibration rejection at exactly a 5% slow tail is covered by an existing test. F09/F10 are policy tradeoffs."
+    },
+    {
+      "kind": "memory_lead_rejection",
+      "disposition": "The actual packed-array alias probe contradicts the suspected copy-on-write append claim; caches and session tapes are not labeled unbounded leaks."
+    }
+  ],
+  "review_resolution": {
+    "independent_areas": [
+      "numerical counterexamples and reachability",
+      "calibration scope and policy conventions",
+      "runtime ownership and source guards",
+      "GPU culling and memory arithmetic"
+    ],
+    "material_corrections_applied": [
+      "correct restore_checkpoint method name",
+      "source-only airship restore reachability",
+      "three distinct comparator outcomes across six permutations",
+      "scenery fraction units and unproved geometry reachability",
+      "explicit scale versus hypothetical Automatic on Retina",
+      "headless output identity versus native drawable proof",
+      "F11 conditional gear/terrain path",
+      "F13 per-vehicle pause differences",
+      "F14 conditional spool worker",
+      "F24 no admitted airship water entry",
+      "F23 no assumed multirotor native backend",
+      "F30 whole-batch visibility caveat"
+    ]
+  },
+  "not_qualified": [
+    "full required CI",
+    "rendered frame pacing/FPS",
+    "GPU busy cost or VRAM residency",
+    "native Windows/macOS execution",
+    "native C++ oracle/fleet/package gates",
+    "audio listening",
+    "long-session recording and memory soak",
+    "physical aircraft or pilot validation"
+  ]
+}

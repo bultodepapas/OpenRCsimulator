@@ -1,0 +1,449 @@
+{
+  "format": "openrc-audit-source-identity-v1",
+  "audited_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "inventory": {
+    "tracked_files": 52035,
+    "app_gd": 2016,
+    "app_test_gd": 1195,
+    "app_shader_files": 95,
+    "native_core_cpp_headers": 54
+  },
+  "note": "Inventory is not a claim of line-by-line review. Hashes identify cited pinned source objects.",
+  "files": {
+    "AGENTS.md": {
+      "sha256": "405a8b1dd2946f738e3341d63d86f6acd5dbf30981bdf18feeec92832d97c716",
+      "lines": 95,
+      "git_blob": "40c9af2f2f33af3cdc5be5d89f9fe1c08e3b8c5d"
+    },
+    "app/app_root.gd": {
+      "sha256": "8c13800592bddfb5fae693d9a3ebe5e15f8475f9245c8baf3c603af5fdc7adfd",
+      "lines": 5126,
+      "git_blob": "e2e3fe4438520345aac4c0376fb2390fcc5a454e"
+    },
+    "app/app_state/renderer_preference.gd": {
+      "sha256": "0654d9b355982658f86626a8294accd3618fe595811ecf4e9410430b9f3fbbe5",
+      "lines": 230,
+      "git_blob": "0a48a8cee1b29bb89060fc9ba7434403faf859fb"
+    },
+    "app/audio/flight_audio.gd": {
+      "sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7",
+      "lines": 468,
+      "git_blob": "690a9428d2c47d225b9c1eaaab855f0dfc869362"
+    },
+    "app/audio/ground_audio_model.gd": {
+      "sha256": "5b3dab99711c22f00dbe0a5eb4a803949a8ff48a86eea4339f5e89cbaf9c6b12",
+      "lines": 222,
+      "git_blob": "b262db29b8578a1c047385addf49aaa54d56ecd3"
+    },
+    "app/debug/render_probe.gd": {
+      "sha256": "e33af403b3d248e22fbef0a08f4ee2e8f8fc6093bcb6f2c505082a5fa5619fa4",
+      "lines": 611,
+      "git_blob": "0c181b2d34f5e5e9d5d2db72f3dd8d62fa35645a"
+    },
+    "app/get-godot.sh": {
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "lines": 189,
+      "git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9"
+    },
+    "app/helicopter_main.gd": {
+      "sha256": "3b336c574fb2424c022509650fcf0d1719c11f4a0b192db9f5f5b6300c5fb9b0",
+      "lines": 655,
+      "git_blob": "fd5f563abde3d514f158c341281c06fa62697312"
+    },
+    "app/main.gd": {
+      "sha256": "b2a12f7e5cd1e5f6d08ea066aa75ff7f2c3781787e7f55047ab238d4fda98dc5",
+      "lines": 4242,
+      "git_blob": "228728daa62c25ffc8d85543825f84871aa9875b"
+    },
+    "app/physics/aero.gd": {
+      "sha256": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8",
+      "lines": 1414,
+      "git_blob": "d6f266279929e864b2b7744f26f41b06e497653d"
+    },
+    "app/physics/airship/airship_dynamics.gd": {
+      "sha256": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef",
+      "lines": 607,
+      "git_blob": "2923270d4ff426830bcb3bc255d53651083e4112"
+    },
+    "app/physics/glow/flight.gd": {
+      "sha256": "85dd0fdfc57b62a1d2ac2f9e665d2fda5e0f4e1d238ad0860c5bf6ee66fd8c31",
+      "lines": 884,
+      "git_blob": "fff0688aad9b660efb4966aa9ffa5498ddc89394"
+    },
+    "app/physics/ground_contact.gd": {
+      "sha256": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+      "lines": 494,
+      "git_blob": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19"
+    },
+    "app/physics/ground_wheels.gd": {
+      "sha256": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+      "lines": 274,
+      "git_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f"
+    },
+    "app/physics/liquid_fuel.gd": {
+      "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "lines": 177,
+      "git_blob": "24c7b0871d9caef0ec4b6e531bb434eb70220e6d"
+    },
+    "app/physics/multirotor/controlled_plant.gd": {
+      "sha256": "e8c3ad8b39041b45eecabfa78222dbd75e72c72bc549698f7b898148a7f8049f",
+      "lines": 1391,
+      "git_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806"
+    },
+    "app/physics/resource_event_step.gd": {
+      "sha256": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+      "lines": 373,
+      "git_blob": "de47ec0a5f4aaf99aea1fe035c82f0b884293d42"
+    },
+    "app/project.godot": {
+      "sha256": "71269ff5876ffa7d912ba1657ef9a385e368ae10cca27de06b68c1bb74c72725",
+      "lines": 88,
+      "git_blob": "7e66d58bcd13cbb3e17b437958ab4d813db7a1bb"
+    },
+    "app/render/auto_calibration.gd": {
+      "sha256": "4242ce1f99da8f7f40291cd2aa7535a1cc32101a2d7f2628b549f9ac4a2f9ccc",
+      "lines": 316,
+      "git_blob": "9ddd62af706057729c3e1053b9e7bebf02f160a8"
+    },
+    "app/render/camera/magnifier.gd": {
+      "sha256": "48e836937fa416fb44363af96351300b6677938ea7deed553e4fd1d720300460",
+      "lines": 215,
+      "git_blob": "cc5a893b10f993dde7ce650c9e03a011bc8c6c0b"
+    },
+    "app/render/cloud_shadow_map.gd": {
+      "sha256": "8141b8799846e9a05cd33398e923857a6accea770d9e84d6aaafa0a9c7359e5b",
+      "lines": 503,
+      "git_blob": "55382cf23600aec7957d35e2cb7faf9b1a5a522f"
+    },
+    "app/render/field.gd": {
+      "sha256": "8838eac95440080e22153b8da65d7f269c8aa7412a0373c7632d19e9fdb8f10e",
+      "lines": 573,
+      "git_blob": "8c2d65a2926bc8b0f1ea0a7d147fede0584db6aa"
+    },
+    "app/render/field_projected_shadows.gd": {
+      "sha256": "14284c42d02af2021818dd579a267dc27a46089dc8a750a0b821d6a5d1fe1534",
+      "lines": 264,
+      "git_blob": "d0527457fb15a1403d4c2fdb8606a61272e7e150"
+    },
+    "app/render/frame_diagnostics.gd": {
+      "sha256": "3481005b06d1c9cea0c0d0e1e7c000ce4a10610e840c42964396799164bf30d5",
+      "lines": 237,
+      "git_blob": "b5b53edadfd1a3cb30455f6208ab2e912cf5c20f"
+    },
+    "app/render/frame_samples.gd": {
+      "sha256": "530608f601c1e80551ec297a1b98846dd1c697b4225deae2cf6dbb0aefd52d1b",
+      "lines": 666,
+      "git_blob": "edf2b6a5c0893344f90f34cf216d548916e9f981"
+    },
+    "app/render/gpu_capability.gd": {
+      "sha256": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+      "lines": 140,
+      "git_blob": "1aaf926e64e86e4aa8a6dfd056fe167ec1a42c61"
+    },
+    "app/render/hud.gd": {
+      "sha256": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+      "lines": 53,
+      "git_blob": "0909423018a3f182800b7074490c49e391ac44aa"
+    },
+    "app/render/lake/lake_planar_reflection.gd": {
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+      "lines": 158,
+      "git_blob": "c6e13822215ad20f4ea779a9c6ee92731c6d2322"
+    },
+    "app/render/lake/water.gdshader": {
+      "sha256": "f889ca8b88aef5f8c27e42071105e24272ec096ade47d265327ba041cce99d02",
+      "lines": 277,
+      "git_blob": "b4f44999464becc4112bc6b5a8b99be0c8cb6f12"
+    },
+    "app/render/lens/drop_pool.gd": {
+      "sha256": "4600c2a613bbb6709fbfccdd6f757f0029622f80cddcf488fa070f608ef9f093",
+      "lines": 391,
+      "git_blob": "8773adaaa0ed988edec8e1be3957732aaa588ce3"
+    },
+    "app/render/lens/lens_stack.gd": {
+      "sha256": "ff872fa847a0da1531e4de9d7e6c53fcd5c404c3f99023245d42eca0dabc4818",
+      "lines": 1111,
+      "git_blob": "c0f04d557b6c7fe1d200058ed424e6c9f7e21300"
+    },
+    "app/render/near_grass.gd": {
+      "sha256": "b3963401fd066380da5af4ebeadf9f7e47ab2a1d69491d6c19bee8bc5b48a887",
+      "lines": 275,
+      "git_blob": "386edd7b662400128cb5101d21da6f03c15f270a"
+    },
+    "app/render/near_grass.gdshader": {
+      "sha256": "fa018122e1ced099ebc3c4a732cecad4d669adcc7ce586e2795945fd2233a0b0",
+      "lines": 95,
+      "git_blob": "3f9e81c150fe23a8c9fda3f1f6328900642f60c7"
+    },
+    "app/render/projected_shadow.gd": {
+      "sha256": "dfbeba569ef183ba630d98b08f725c74e36268ce4a7d9340f6a96edd488cde8e",
+      "lines": 636,
+      "git_blob": "ce7b8c11f55d3d5c86624303275c1567efc8d2ea"
+    },
+    "app/render/reconstruction.gd": {
+      "sha256": "ec9990942fe03ffcf162b03ea2951dd0e9cdde7602924760cf0559bff60f61dd",
+      "lines": 786,
+      "git_blob": "7137e38bafbe26ce5a7120aa0c97eb9d4326e87c"
+    },
+    "app/render/scene_detail.gd": {
+      "sha256": "d744ced85a45dc3b3e5a98d17723c5e772d716f78f5f065dcc8bfe496f8019b0",
+      "lines": 152,
+      "git_blob": "a1aa81cd422c65e48ed04e3eadd725f82a469cd9"
+    },
+    "app/render/shadow_field_policy.gd": {
+      "sha256": "8e339339274be935d51c19d084dcc509a34e7a9f25baeb669a32ca1b9995ebee",
+      "lines": 405,
+      "git_blob": "7db1fe183c5f221f509ee25f9f6c888a9a82bb59"
+    },
+    "app/render/sky.gdshader": {
+      "sha256": "727935ab19c18dc89bb3b4351d48dccc740fb01ddf80b9c0c7749042f4bf7ede",
+      "lines": 327,
+      "git_blob": "2810142e6efa267a972383fabdf12090ba57357d"
+    },
+    "app/scenery/ground_features.gd": {
+      "sha256": "57a30f1e901a9edc43a5ec2ccfa2d5a4f9d4a75f2d30494236eaa51a98f29523",
+      "lines": 622,
+      "git_blob": "b4e4586ae7e4aa9b3d53af40404a0cb0e2d02edf"
+    },
+    "app/scenery/imported_vegetation.gd": {
+      "sha256": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+      "lines": 1002,
+      "git_blob": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd"
+    },
+    "app/scenery/parked_aircraft.gd": {
+      "sha256": "bf6e5a05db63969a964fbf035989c92f534bf9860370c9a270fa770e09edf581",
+      "lines": 230,
+      "git_blob": "d33a67878134b4775e2a0d51fae9b179cda19246"
+    },
+    "app/scenery/scenery.gd": {
+      "sha256": "0a91cea2bfb27e9b673e0df0a8e9d2288e5d8ed40f03ae400146ac46cf409930",
+      "lines": 1120,
+      "git_blob": "589986f6ef47dc4ef2e8a2101f088553f356e4c8"
+    },
+    "app/sim/aircraft_contact_events.gd": {
+      "sha256": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+      "lines": 566,
+      "git_blob": "5c64279aa7e6a387bb3442adb74567dca50c32c5"
+    },
+    "app/sim/airship/flight_log.gd": {
+      "sha256": "adf991b551f42ae867f99c30fa3eab12c0d1988f7109cd479be6cf53b1ecc1c1",
+      "lines": 351,
+      "git_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a"
+    },
+    "app/sim/airship/session.gd": {
+      "sha256": "38273a350b3783861e2427810f36d5a066641e9ff76c7dddf4b853a771e5f69b",
+      "lines": 543,
+      "git_blob": "6fb53afe3349e88196f0026199a64442b1384e2c"
+    },
+    "app/sim/flight_log.gd": {
+      "sha256": "42e98ae1cde5054a18a944a1aa411bcd0bdd8bc8a90fff1c045ecdfd43cb6fe6",
+      "lines": 501,
+      "git_blob": "efc778b4fffc89a236591500636df0933b70ae90"
+    },
+    "app/sim/flight_session.gd": {
+      "sha256": "83a47286921fb721945160c3191680f65211f672058c9364f794738b8393d5d5",
+      "lines": 6635,
+      "git_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254"
+    },
+    "app/sim/liquid_fuel_flight.gd": {
+      "sha256": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad",
+      "lines": 159,
+      "git_blob": "d92f3a84c3d0f64b72d4548fc6c68eb4a918c639"
+    },
+    "app/sim/multirotor/flight_log.gd": {
+      "sha256": "ac6bf1450e27e9ae9245a84cc21583244329a96482aef34e6675e25132a76932",
+      "lines": 464,
+      "git_blob": "59e2de59aa78675a5b808a4931df3a23d70903cd"
+    },
+    "app/sim/multirotor/session.gd": {
+      "sha256": "d9fdc1df58f5b5da7ab858b7474ae5956138857c8881853befd6dff2cc14bb04",
+      "lines": 1014,
+      "git_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e"
+    },
+    "app/sim/native_stage.gd": {
+      "sha256": "17c8c3a461015d5477d10ca2568622c32fd22d0868c32e9fb722fcc0cab207f9",
+      "lines": 882,
+      "git_blob": "19370bc122165c3d1de5f8085115d9b9ab74c120"
+    },
+    "app/sim/race/race_director.gd": {
+      "sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+      "lines": 389,
+      "git_blob": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf"
+    },
+    "app/sim/race/race_model.gd": {
+      "sha256": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3",
+      "lines": 347,
+      "git_blob": "ed25d4b0a039566bd8492dd0fbbca30e810aa8f2"
+    },
+    "app/sim/recorder.gd": {
+      "sha256": "c169362758239a900940032187416f5bd3c0255265245038db206de19268b15b",
+      "lines": 124,
+      "git_blob": "b1c23e73b4457e5a9ee67594ac20a9a722943b94"
+    },
+    "app/sim/rotorcraft_recorder.gd": {
+      "sha256": "b4b912b494a9344d9c19b8719349e00690dc3c3d6aafa9df6946d4dcd74fc52b",
+      "lines": 281,
+      "git_blob": "2d7143d1b4dcc0be967ca8c9c6eb7048bbff6792"
+    },
+    "app/sim/scenery_collision.gd": {
+      "sha256": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+      "lines": 730,
+      "git_blob": "60760397c8e4e79db48145381f48391ce1fbd482"
+    },
+    "app/sim/servo_interval_flight.gd": {
+      "sha256": "26e8fcde62da94156f1eff1c4aa1937b51426d3120bb72957171bc4f4a799c42",
+      "lines": 178,
+      "git_blob": "ab9c2dea5a6436bbc3ca147b8c96f4efd2ff4367"
+    },
+    "app/sim/simulation.gd": {
+      "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+      "lines": 1453,
+      "git_blob": "d24478fefb93cc753a9e203b81543d58d38c2643"
+    },
+    "app/sim/trace.gd": {
+      "sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f",
+      "lines": 1895,
+      "git_blob": "58addd3d3af07a4f71d85cc5ba03d0579e6f5551"
+    },
+    "app/statistics/fixed_wing_adapter.gd": {
+      "sha256": "f38a8150b2a81a7a0beacab76ccaf6f14069c84b5edaa7836980273f1c3a57a5",
+      "lines": 247,
+      "git_blob": "173c2f8080da010f43c89bb8daf798f2ded19d71"
+    },
+    "app/statistics/service.gd": {
+      "sha256": "45202dd0c666d2a3336c2213f0f9e53ae16a7315b70c33d798085eb694bc407a",
+      "lines": 825,
+      "git_blob": "dfc3e1057ce6a5f8d1ebefc883a22aabd007791b"
+    },
+    "app/tests/test_auto_calibration.gd": {
+      "sha256": "869f82ac01353a2bd52f42d836553dd4fe39f4effe21046869b501f68b2b981d",
+      "lines": 290,
+      "git_blob": "073dc337944e9b3bee5ebc18baaa29d6356308fd"
+    },
+    "app/tests/test_resource_event_step.gd": {
+      "sha256": "1e742b2e7e5140da230c3e1b5d8d5320aa0b071a2c91abf290e1edb000d19a91",
+      "lines": 205,
+      "git_blob": "f194b6e5debac96c7cc053776479dbea46e3ee04"
+    },
+    "app/ui/ui_scale.gd": {
+      "sha256": "e2c26c121a3158c1f25a45cc38c361cf78a707e8d3bbddaf207f1d9fb7b5c6b4",
+      "lines": 55,
+      "git_blob": "8e3beaf8a81cf7d3ec1c18188fad10ac748af19b"
+    },
+    "app/vehicles/airship/airship_hud.gd": {
+      "sha256": "8990765861651982b1f3f7d21ec9e89dffbeb875dde55bcca11bddca6a321d3e",
+      "lines": 225,
+      "git_blob": "0e55144458a8bb02596f6aa304e36bbb737fc8a1"
+    },
+    "app/vehicles/airship/airship_scene.gd": {
+      "sha256": "2b5032b787327e6d192bdded715bc94b65994563ca83dcee3eb9407cca16f8a9",
+      "lines": 862,
+      "git_blob": "9b47e156df42baa6697ad4a35c5ff2ff5837d326"
+    },
+    "docs/FLIGHT-LOGGING.md": {
+      "sha256": "96cbed625da14bba3943255f3c4b9d09bc34fd786914c0010ddbe7d279cd83fb",
+      "lines": 401,
+      "git_blob": "fd7360e9a05031fcb6601e0309482744705acb0e"
+    },
+    "docs/STACK.md": {
+      "sha256": "d267895d1a94d4ab744c29fc3dc595dfe6f911575cd7ba1ee9fd208e1628021f",
+      "lines": 79,
+      "git_blob": "fb4f35a2eb15e3ee4451bdefcc2a95493a7f8175"
+    },
+    "docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md": {
+      "sha256": "9df463bb851ec6a2ea54f069955ae6f7b32e540a6354033fb12114301a58ed31",
+      "lines": 223,
+      "git_blob": "76c48993dc280c8f6c61f8564fef1f5045924d8b"
+    },
+    "docs/plans/advanced-graphics.md": {
+      "sha256": "5e2e93ed1e9baa8dcb8f5b404d7b966ba2626ae2fa9076ed28d4a7aae5d7beff",
+      "lines": 388,
+      "git_blob": "554cbaf06daa852a940e784876d05ad6e607214d"
+    },
+    "docs/plans/advanced-ground-flight-physics.md": {
+      "sha256": "54196b0068167e8d46998af373301d21c90b7c1b52befa1b3af549c8f6b64cfd",
+      "lines": 1071,
+      "git_blob": "3c1fb9086498505d60381e543586c7dafe2afc9f"
+    },
+    "docs/plans/apple-silicon-performance.md": {
+      "sha256": "cee2f36099e74064e34d9d20f506e45c4536c9668b117dd8c977b5e200fa62b2",
+      "lines": 937,
+      "git_blob": "18986d81ca8e2be8f74b5158064481d0889c4159"
+    },
+    "docs/plans/audio-realism.md": {
+      "sha256": "f2e154b7eef0d2bdd57cd69fd9ccc67ab7e090404cb97fa16f664cb4cc8e5cee",
+      "lines": 132,
+      "git_blob": "f4750520d7824bc4933f6ef0b688a53553388aec"
+    },
+    "docs/plans/automatic-graphics.md": {
+      "sha256": "d121179296eb3377521300f232b5b747a6dc0b1f7e988a6504fc02f6e9983c52",
+      "lines": 324,
+      "git_blob": "bdcbe4c4380bb7d3c5eb559d4f8b3f545f321537"
+    },
+    "docs/plans/crash-damage-economics.md": {
+      "sha256": "ba12d83ee1fc3fccf38ae75fe618eecb01acad139eb8a91724678c23a9ccb86f",
+      "lines": 256,
+      "git_blob": "d15ebfa49eef7776aad3dc28b1bf935422819293"
+    },
+    "docs/plans/drone-racing.md": {
+      "sha256": "d8a53f93ccffce8433ced15e13ec318fa168d5db9e7c9c420a0e81fd07854d64",
+      "lines": 665,
+      "git_blob": "a03383374a4f52f5c195d3c85f30f70a7c381007"
+    },
+    "docs/plans/flight-statistics.md": {
+      "sha256": "a893e0f06ea86eeb88ea794cb1c260dc33bff27de28d41119f8de08caeb5ff71",
+      "lines": 403,
+      "git_blob": "ade721356c52434c319880d8fcef036566786a3d"
+    },
+    "docs/plans/helicopter.md": {
+      "sha256": "aa58926e10b48d2259fa6e53bd211ea2323e47fa95c7ad39212b2d393a514a68",
+      "lines": 891,
+      "git_blob": "691981482caf8dad77d55a169aa793c12a20053c"
+    },
+    "docs/plans/optimization-priorities.md": {
+      "sha256": "897fbc4b763cfc70d9a6db116de573f814b96ba5a2750096a6b8828649d0229b",
+      "lines": 126,
+      "git_blob": "b0fdfda07fb4e5ff78102fda2662c9345287aec6"
+    },
+    "docs/plans/rc-airship.md": {
+      "sha256": "a169f428731f5f4a9577dab50d1f8e7316afd9c3f9c2122ee9fa6e3fa6ee5103",
+      "lines": 423,
+      "git_blob": "e4ffa410b9003dfda2f632c997ae7d5e7d6114ab"
+    },
+    "docs/plans/shadows.md": {
+      "sha256": "6f8c90b9da98467506dc345d0863c6f48dfa908f2e02b4cb1f0606d3a2f7bb52",
+      "lines": 395,
+      "git_blob": "78d28af242e1f1262500c164ea14d55246649e8b"
+    },
+    "docs/research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md": {
+      "sha256": "ec64b7776004bada4557571ee8fc4c8bbd00f89478dd004438b20a4359c7f430",
+      "lines": 743,
+      "git_blob": "92919b16890fdc0c4c532b4cf358767432de9754"
+    },
+    "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md": {
+      "sha256": "0f16fd281f9c12691ba91f9e408f196f769c38f6ad0b01fcfe56d6fcf9fca015",
+      "lines": 595,
+      "git_blob": "1ca228676820f946f9a3a7df9b1fe02ffeb71bad"
+    },
+    "docs/research/drone-racing/M1-M3-2026-11-11/README.md": {
+      "sha256": "5fcf9c0bc44bab0d7063e62aebf8776edb2ea7e4ab9293f2a0578de5dc2496c8",
+      "lines": 95,
+      "git_blob": "b60e745c48c9a482b5737d33152bcbe5ddae439c"
+    },
+    "docs/research/fuel-systems/FUEL-12/HARDENING-R2.md": {
+      "sha256": "992206bf794901161b975bc79ab0dfe434caf071985c0e5e3354c2cfb6695a49",
+      "lines": 51,
+      "git_blob": "d5f56ecc449adc0dd6109fc0b3888f594e9e833c"
+    },
+    "docs/research/performance-report-2026-11-09.md": {
+      "sha256": "541100424c3bf9efd4227d9a947ee2bea53d5eec4938d092e2b304ea82834f5f",
+      "lines": 198,
+      "git_blob": "db2efaaadd3b65242cd862eb90220beab6df2865"
+    },
+    "research/native-kernel/README.md": {
+      "sha256": "ede9d524f7257a9f981d4bb4f2ac97eb8d72363b7b97c74a38c26875817b37ad",
+      "lines": 859,
+      "git_blob": "d7d419e3c02a8491b90d307c0fd8d14c26e8ccdb"
+    }
+  }
+}

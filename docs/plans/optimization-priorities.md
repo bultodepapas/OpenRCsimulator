@@ -2,6 +2,8 @@
 
 Reviewed **2026-10-28**, source `f1e877d54`. Planning only: this review ran no new benchmarks.
 
+**Audit follow-up, 2026-11-19:** the [CPU/GPU source audit](../research/performance-audit-2026-11-19/README.md) adds reproducible event/calibration defects and a 35-item register of current CPU, GPU, native, memory and measurement work. It distinguishes known fixes and policy tradeoffs from defects; performance candidates still require complete-workload profiling under the gates below.
+
 **Implementation follow-up, 2026-10-28:** immediate Fly now overlaps numeric launch preparation with world construction. Five alternating native 1080p pairs reduce median first readiness from **3.789 to 3.531 s (6.8%)** on the measured Windows host; warm readiness is essentially unchanged. [UI-34c / DT-11a evidence and limits](../research/menu-investigations/UI-34c-R5/immediate-fly-2026-10-28/README.md). This is editor loading evidence, not release or flight-performance qualification.
 
 **Second delivery, 2026-10-28:** NK-2a now reuses battery type and block-size queries within each physics tick. Three paired complete-session runs per case reduce CPU callback cost by a median **6.4% for P-51 trim** and **6.1% for Timber pack trim**; Stik runway idle is effectively unchanged. [Exact-state comparisons, lifecycle checks and limits](../research/native-kernel/NK-2a/battery-queries-2026-10-28/README.md). These are GDScript headless CPU measurements, not rendered-frame or native-backend qualification.

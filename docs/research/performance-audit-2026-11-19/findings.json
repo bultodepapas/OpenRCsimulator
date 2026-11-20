@@ -1,0 +1,1945 @@
+{
+  "format": "openrc-performance-audit-findings-v1",
+  "date": "2026-11-19",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "audited_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "branch": "audit/cpu-gpu-optimization-2026-11-19",
+  "finding_count": 35,
+  "classification_counts": {
+    "reproduced_defect": 4,
+    "source_supported_defect": 2,
+    "measurement_gap": 3,
+    "policy_tradeoff": 3,
+    "optimization_candidate": 22,
+    "renderer_constraint": 1
+  },
+  "priority_definition": {
+    "P1": "Correctness/decision repair first; not a claim of common occurrence or measured severity.",
+    "P2": "Targeted next investigation or implementation after attribution.",
+    "P3": "Conditional optimization, policy review or lower-priority qualification."
+  },
+  "scope": "Risk-led source audit plus isolated pinned-engine probes; no rendered/native-GPU performance campaign.",
+  "findings": [
+    {
+      "id": "F01",
+      "title": "A detected interior event can be lost behind a later endpoint crossing",
+      "priority": "P1",
+      "kind": "reproduced_defect",
+      "area": "CPU / numerical correctness",
+      "owning_tracks": [
+        "SF",
+        "NITRO"
+      ],
+      "tracking_status": "New counterexample to the shared resource-event API; the existing 54-check suite does not cover this mixed-crossing case.",
+      "observation": "ResourceStep records an internal crossing from RK stage samples, but processes endpoint-bracketed crossings before the subdivision path. In the retained exact-source probe, T = 1/240 s, A(t) = 0.75 - t/T and B(t) = (t/T - 0.2)(t/T - 0.8), both falling. B crosses at 0.2T and is negative at the sampled midpoint; A crosses at 0.75T. Both event-list orders return ok=true with only A and flags [1,0]. The expected enabled transitions are B then A. Committing A leaves the earlier falling crossing behind the accepted time.",
+      "impact": "The generic solver can accept a tick with a missing resource transition. Glow flight is a production caller with nontrivial pickup surfaces, so correctness must be established before batching or moving these event computations to native code.",
+      "recommendation": "Resolve an already-detected internal crossing before committing a later endpoint root. Preserve bounded subdivision/evaluation budgets, transition validation and transactional rollback. Do not claim that a finite set of stage samples can detect every arbitrarily short excursion.",
+      "verification_plan": "Add the retained mixed-crossing fixture to the owning regression suite; test both event orders, rising/falling senses, reverse root order, transitions that change other surfaces, rejected transitions and exhausted budgets. Add a reachable glow pickup/fuel fixture and exact replay checks before assigning aircraft-level severity.",
+      "limits": "Reproduced at the production timestep using synthetic, valid event functions and the actual solver. No stock-aircraft trajectory demonstrating this failure was flown. No performance impact was measured.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 57,
+          "end_line": 92,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L57-L92"
+        },
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 118,
+          "end_line": 158,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L118-L158"
+        },
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 315,
+          "end_line": 328,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L315-L328"
+        },
+        {
+          "path": "app/physics/glow/flight.gd",
+          "start_line": 379,
+          "end_line": 407,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/glow/flight.gd#L379-L407"
+        },
+        {
+          "path": "app/tests/test_resource_event_step.gd",
+          "start_line": 1,
+          "end_line": 35,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/tests/test_resource_event_step.gd#L1-L35"
+        }
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "Tolerance-based ordering is non-transitive and can lose near-tie events",
+      "priority": "P1",
+      "kind": "reproduced_defect",
+      "area": "CPU / numerical correctness",
+      "owning_tracks": [
+        "SF",
+        "NITRO",
+        "SC"
+      ],
+      "tracking_status": "New solver counterexample and a second, source-supported occurrence in scenery collision ordering; one root-cause family, not two independently reproduced gameplay failures.",
+      "observation": "ResourceStep sorts by priority when two offsets differ by at most 1e-12 s, otherwise by time. With A=0/priority20, B=0.75e-12/priority11 and C=1.5e-12/priority0, B<A, C<B and A<C. The public advance() probe uses distinct disabling flags and a valid 4e-12 s interval: six input permutations yield three different accepted flag sets, each twice, omitting one or two transitions. A later high-priority root can also precede an earlier near-tie root whose residual then fails revalidation. SceneryCollision uses the same non-transitive pattern with fractions and obstacle IDs.",
+      "impact": "The solver result can depend on event discovery order. In scenery, choosing the first contact using this comparator has a mathematical ordering risk; a changed physical collision result has not been reproduced.",
+      "recommendation": "Use a transitive finite-time order, then define a tie set relative to an explicit earliest anchor and apply the documented priority/ID policy within that set. Preserve root uncertainty, residual checks and transition-induced surface changes. A skipped near-tie surface must not silently disappear after advancing time. The race director has a useful separate earliest/group pattern to study, not a drop-in implementation.",
+      "verification_plan": "Exercise all permutations, two-event near ties, chains straddling the tolerance, equal priorities, duplicate-ID rejection, uncertain brackets and state-changing transitions. Add real scenery geometry with competing hull probes and compare first-hit results. Preserve deterministic event records and exact replay.",
+      "limits": "The clean public-API witness is a tiny admitted synthetic interval, not a 240 Hz flight. The separate exploratory 2 ms probe re-arms its surfaces, so its repeated event is not evidence of an independent duplicate-event bug. Scenery FRACTION_TIE is dimensionless: 1e-12 of a 240 Hz tick is about 4.17e-15 s. Sorted world IDs do not prove every discovery order is reachable.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 103,
+          "end_line": 128,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L103-L128"
+        },
+        {
+          "path": "app/sim/scenery_collision.gd",
+          "start_line": 15,
+          "end_line": 15,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/scenery_collision.gd#L15"
+        },
+        {
+          "path": "app/sim/scenery_collision.gd",
+          "start_line": 127,
+          "end_line": 180,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/scenery_collision.gd#L127-L180"
+        },
+        {
+          "path": "app/sim/scenery_collision.gd",
+          "start_line": 654,
+          "end_line": 659,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/scenery_collision.gd#L654-L659"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 3640,
+          "end_line": 3646,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L3640-L3646"
+        },
+        {
+          "path": "app/sim/race/race_director.gd",
+          "start_line": 250,
+          "end_line": 258,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/race/race_director.gd#L250-L258"
+        },
+        {
+          "path": "app/sim/race/race_director.gd",
+          "start_line": 296,
+          "end_line": 304,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/race/race_director.gd#L296-L304"
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "Airship restore publishes reset side effects before validating the replacement body",
+      "priority": "P2",
+      "kind": "source_supported_defect",
+      "area": "CPU / state lifecycle",
+      "owning_tracks": [
+        "BL-07",
+        "BL-08",
+        "SF"
+      ],
+      "tracking_status": "New source-level restore transaction finding; the airship plan already requires rejected-reset safety.",
+      "observation": "AirshipSession.restore_checkpoint() checks preparation and continuous-array size, emits resetting, changes inputs/continuous data and then calls sim.reset(). The latter can reject a malformed body. An active airship flight log listens to resetting and synchronously finalizes and closes; the kernel failure path restores its protected physical snapshot but faults and pauses. Thus rejection can publish externally visible reset effects before a replacement is accepted.",
+      "impact": "A direct restore call on a prepared session with active recording and an invalid quaternion/NaN body can terminate that recording and change lifecycle state despite rejected physical reset. The rows already written are finalized, not shown lost or overwritten.",
+      "recommendation": "Prepare and validate a detached replacement before publishing accepted-reset side effects. Keep physical state, clock, inputs, observers and recorder ownership coherent under rejection; do not merely suppress kernel validation or the fault signal.",
+      "verification_plan": "Add an active-recording restore test with a correctly sized continuous array and malformed body, plus evaluator failure, invalid continuous data and a valid restore. Define the rejection contract and verify state/clock, pause/fault state, observer notifications and one accepted recorder closure. Include test_airship_session.gd and test_airship_flight_log.gd.",
+      "limits": "Source-supported API defect; not executed in this audit. Normal flight-log verification constructs a fresh session, so this is not evidence that ordinary replay interrupts a live player recording. Interactive reachability beyond the direct API remains to establish.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 509,
+          "end_line": 516,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L509-L516"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 84,
+          "end_line": 89,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L84-L89"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 104,
+          "end_line": 116,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L104-L116"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 155,
+          "end_line": 156,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L155-L156"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 277,
+          "end_line": 299,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L277-L299"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 113,
+          "end_line": 119,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L113-L119"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 935,
+          "end_line": 959,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L935-L959"
+        },
+        {
+          "path": "docs/plans/rc-airship.md",
+          "start_line": 260,
+          "end_line": 260,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/rc-airship.md#L260"
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "Calibration stores logical UI pixels but validates against window pixels",
+      "priority": "P1",
+      "kind": "reproduced_defect",
+      "area": "GPU / automatic graphics",
+      "owning_tracks": [
+        "VQ-07h",
+        "DT-MAC",
+        "UI"
+      ],
+      "tracking_status": "New isolated reproduction of a current calibration identity mismatch.",
+      "observation": "AutoCalibration stores get_visible_rect().size as the measured pixel count. AppRoot and SceneDetail compare that record with Window.size. With actual UiScale.apply() on the pinned headless engine, windows of 1920x1080, 2560x1440 and 3840x2160 all expose a 1920x1080 logical canvas. size_matches is true for the first and false for the other two, although each comparison refers to the same window before/after calibration.",
+      "impact": "A valid higher-resolution measurement can be labeled as 1080p, its scene offset ignored, and calibration requested again on the next flight. It also contaminates any later decision that trusts the stored pixel identity.",
+      "recommendation": "Define a consistent output-size identity for measurement, storage and consumers. Reconstruction.viewport_output_size() already estimates non-embedded output pixels; use or reconcile that boundary, while recording drawable and internal 3D pixels separately. Version/invalidate old logical-size records instead of relabeling unknown measurements.",
+      "verification_plan": "Cover 1080p, 1440p, 4K, UI scale/stretch, resize and display changes. Verify one completed measurement is reused only for a comparable workload. Add native Windows/Linux and Mac Retina checks for actual output/drawable/internal pixels; preserve explicit settings.",
+      "limits": "The headless test establishes Godot Window/CanvasItem scaling behavior and pure matching logic. It does not measure GPU time or native high-DPI drawable dimensions.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 107,
+          "end_line": 118,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L107-L118"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 263,
+          "end_line": 283,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L263-L283"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 1736,
+          "end_line": 1744,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L1736-L1744"
+        },
+        {
+          "path": "app/render/scene_detail.gd",
+          "start_line": 108,
+          "end_line": 121,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/scene_detail.gd#L108-L121"
+        },
+        {
+          "path": "app/ui/ui_scale.gd",
+          "start_line": 1,
+          "end_line": 55,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/ui_scale.gd#L1-L55"
+        },
+        {
+          "path": "app/render/reconstruction.gd",
+          "start_line": 657,
+          "end_line": 668,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/reconstruction.gd#L657-L668"
+        }
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "Automatic High reuses a rejection without checking its measurement size",
+      "priority": "P1",
+      "kind": "reproduced_defect",
+      "area": "GPU / automatic graphics",
+      "owning_tracks": [
+        "VQ-07h",
+        "DT"
+      ],
+      "tracking_status": "New isolated policy reproduction; related to F04 but a separate consumer-side check.",
+      "observation": "RendererPreference.facts() reads reject_high from the adapter/Forward+ record without size_matches(). The isolated probe saves a complete 4K-labeled rejection, verifies that it does not match 1080p, then calls the actual plan() with 1080p facts. Automatic remains Standard; identical facts without the stale rejection choose High. The consumer obtains pixels from the current screen, not necessarily the window.",
+      "impact": "A rejection from a materially different output workload can suppress Automatic High after a screen/resolution change, even when the current hardware policy would select it.",
+      "recommendation": "Validate the record against the same agreed measurement boundary and relevant workload identity before carrying its rejection into plan(). Preserve explicit user High selection and renderer startup/failure guards. Address F04 first so the size metadata itself is trustworthy.",
+      "verification_plan": "Test changed/current 1080p screen facts after a 4K measurement, unchanged-size rejection, unknown sizes, multi-monitor changes, adapter/renderer changes and explicit modes. Extend test_auto_calibration.gd and renderer preference tests with the isolated stored-verdict case.",
+      "limits": "The 4K-labeled record is deliberately injected to isolate the missing check; it is not an observed real 4K calibration record. F04 may cause production measurements to be mislabeled. The plan test is headless policy execution, not measured evidence that High meets a frame budget.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/app_state/renderer_preference.gd",
+          "start_line": 109,
+          "end_line": 116,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/renderer_preference.gd#L109-L116"
+        },
+        {
+          "path": "app/app_state/renderer_preference.gd",
+          "start_line": 137,
+          "end_line": 153,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/renderer_preference.gd#L137-L153"
+        },
+        {
+          "path": "app/app_state/renderer_preference.gd",
+          "start_line": 203,
+          "end_line": 207,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/renderer_preference.gd#L203-L207"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 263,
+          "end_line": 270,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L263-L270"
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "Retina scene-detail estimates use hypothetical Automatic scale rather than the selected viewport scale",
+      "priority": "P2",
+      "kind": "source_supported_defect",
+      "area": "GPU / resolution policy",
+      "owning_tracks": [
+        "VQ-07h",
+        "DT-MAC"
+      ],
+      "tracking_status": "Scoped current-source mismatch; the automatic-graphics plan already owns resolution-aware policy work.",
+      "observation": "SceneDetail._native_render_pixels() uses Reconstruction.auto_mode(runtime_capabilities(), screen). This correctly considers runtime support/global blocks, but it does not read an explicit user Native/other selection or the viewport-specific reconstruction failure latch. AppRoot applies the saved reconstruction before scene detail. Pure policy math for a 2560x1600 M1 panel gives 1,818,596 estimated internal pixels at 2/3 scale versus 4,096,000 at Native; the current table chooses Medium versus Low respectively.",
+      "impact": "Automatic scene detail can be selected against a smaller hypothetical workload than the viewport actually renders, particularly after an explicit scale choice or local scaler fallback.",
+      "recommendation": "Base the recommendation on the selected/effective reconstruction and the target panel policy, with a documented fallback when internal-size evidence is unavailable. Reconcile screen, output, drawable and internal pixels; do not assume every supported Mac is currently using MetalFX.",
+      "verification_plan": "On native Retina hardware, test Automatic, explicit Native, each supported scale, unsupported/global-blocked providers and viewport-specific failure. Compare policy identity with the active viewport, preserve saved settings and evaluate sustained motion/readability.",
+      "limits": "The numerical example injects scales into the capability functions; it is not a Mac execution or a GPU benchmark. Capability/global-failure checks already exist and must not be described as absent. Actual panel/backing-store behavior still needs host evidence.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/scene_detail.gd",
+          "start_line": 129,
+          "end_line": 138,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/scene_detail.gd#L129-L138"
+        },
+        {
+          "path": "app/render/reconstruction.gd",
+          "start_line": 227,
+          "end_line": 263,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/reconstruction.gd#L227-L263"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 2078,
+          "end_line": 2081,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L2078-L2081"
+        },
+        {
+          "path": "app/render/gpu_capability.gd",
+          "start_line": 1,
+          "end_line": 40,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/gpu_capability.gd#L1-L40"
+        },
+        {
+          "path": "docs/plans/automatic-graphics.md",
+          "start_line": 66,
+          "end_line": 66,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/automatic-graphics.md#L66"
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "Saved calibration does not identify several settings that determine its GPU workload",
+      "priority": "P2",
+      "kind": "measurement_gap",
+      "area": "GPU / calibration identity",
+      "owning_tracks": [
+        "VQ-07h",
+        "DT-MAC"
+      ],
+      "tracking_status": "Current schema limitation; propose a narrow identity extension rather than a second calibration system.",
+      "observation": "The saved key and reuse logic track adapter, renderer, pixel count and scene level. They do not identify the selected/effective reconstruction scale, MSAA or other major graphics-workload changes. A settings change can therefore retain a verdict from a substantially different render workload even after pixel-size matching is repaired.",
+      "impact": "An old up/down/High verdict may over- or under-estimate the current configuration. This weakens the value of a one-time measurement and makes optimization comparisons harder to interpret.",
+      "recommendation": "Add a versioned, minimal workload identity for the settings actually needed by the decision, including effective reconstruction/fallback. Invalidate or request bounded recalibration at explicit settings boundaries. Avoid hashing every runtime value or recalibrating for irrelevant presentation changes.",
+      "verification_plan": "Change one workload setting at a time and verify the intended reuse/invalidation table; include saved overrides, restart, fallback, preset reset, imported old records and unchanged sessions. Measure calibration overhead and retry frequency.",
+      "limits": "Source-supported coverage gap; not proof that every setting deserves its own persistent key or that a user has experienced a bad recommendation. No GPU samples were collected.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 220,
+          "end_line": 260,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L220-L260"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 273,
+          "end_line": 283,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L273-L283"
+        },
+        {
+          "path": "app/render/reconstruction.gd",
+          "start_line": 227,
+          "end_line": 263,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/reconstruction.gd#L227-L263"
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "Calibration checks secondary-view activity only at the end of its sample interval",
+      "priority": "P2",
+      "kind": "measurement_gap",
+      "area": "GPU / timing attribution",
+      "owning_tracks": [
+        "VQ-07h",
+        "DT-MAC",
+        "VQ"
+      ],
+      "tracking_status": "Current timing-boundary limitation; the root-viewport scope is already documented in source.",
+      "observation": "The calibrator samples root-viewport GPU time throughout the interval, but _subviewports_active() is called only when producing the final verdict. Magnifier and optional planar-water views render outside that root timing. A view active earlier but closed at completion is not represented by the final flag; a view still active blocks raising detail but does not supply its GPU cost.",
+      "impact": "The interval can be labeled more completely than its evidence allows, and root timing cannot by itself explain total rendering cost or a complete frame budget.",
+      "recommendation": "Track whether extra views participated anywhere in the measured interval, record the timing scope and mark incomplete attribution explicitly. Define a conservative policy for such intervals. Do not simply add viewport timings without establishing overlap, freshness and backend semantics.",
+      "verification_plan": "Toggle magnifier/reflections during warmup, mid-sample and immediately before completion; compare persistent and transient activity. Use native GPU/frame evidence per backend, including CPU-bound frames and unknown/zero timing samples.",
+      "limits": "Static source finding; no rendered interval or backend timing was measured. Optional views and their enablement matter; this is not a claim that the default scene always renders all of them.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 96,
+          "end_line": 118,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L96-L118"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 141,
+          "end_line": 146,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L141-L146"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 181,
+          "end_line": 206,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L181-L206"
+        },
+        {
+          "path": "app/render/camera/magnifier.gd",
+          "start_line": 61,
+          "end_line": 69,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/camera/magnifier.gd#L61-L69"
+        },
+        {
+          "path": "app/render/camera/magnifier.gd",
+          "start_line": 125,
+          "end_line": 138,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/camera/magnifier.gd#L125-L138"
+        },
+        {
+          "path": "app/render/camera/magnifier.gd",
+          "start_line": 211,
+          "end_line": 215,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/camera/magnifier.gd#L211-L215"
+        },
+        {
+          "path": "app/render/lake/lake_planar_reflection.gd",
+          "start_line": 29,
+          "end_line": 30,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_planar_reflection.gd#L29-L30"
+        }
+      ]
+    },
+    {
+      "id": "F09",
+      "title": "An incomplete calibration suppresses later retries by design",
+      "priority": "P3",
+      "kind": "policy_tradeoff",
+      "area": "GPU / calibration recovery",
+      "owning_tracks": [
+        "VQ-07h"
+      ],
+      "tracking_status": "Intentional anti-retry-loop policy, not an accidental failed-measurement success or mandatory bug fix.",
+      "observation": "evaluate() returns complete=false for the retained 200-valid-sample input. Saving that neutral result and calling needed() for the same adapter/method/pixels/level returns false. The source explicitly states that an unmeasurable flight stores a neutral verdict instead of retrying forever.",
+      "impact": "A transient shortage/unavailability of timing samples can leave the user on the heuristic recommendation even when a later flight could provide useful measurements.",
+      "recommendation": "If coverage is worth the cost, consider a bounded retry budget/backoff or explicit recalibrate action, while preserving the original anti-loop goal. Keep incomplete measurements neutral and distinguish them from complete evidence.",
+      "verification_plan": "Test too few/invalid samples, recovery of timings, repeated unavailable hosts, restart, settings changes and exhausted retry budgets. Measure added work; avoid retries that perturb every flight.",
+      "limits": "Observed policy behavior, not a correctness regression. Low frame rate alone is not enough to predict sample count because delta clamping and active-time accumulation can extend wall-clock collection.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 107,
+          "end_line": 118,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L107-L118"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 161,
+          "end_line": 181,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L161-L181"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 273,
+          "end_line": 283,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L273-L283"
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "HUD and calibration use different p95 conventions at the decision boundary",
+      "priority": "P3",
+      "kind": "policy_tradeoff",
+      "area": "CPU / performance statistics",
+      "owning_tracks": [
+        "VQ-07h",
+        "PT"
+      ],
+      "tracking_status": "Established/tested calibration policy; document the convention before proposing a behavioral change.",
+      "observation": "On the same synthetic 300 values (285 at 1 ms, 15 at 20 ms), HUD nearest-rank p95 is 1 ms while calibration p95 is 20 ms and rejects High. Calibration selects floor(0.95*N), whereas nearest rank uses ceil(0.95*N)-1. The existing calibration test explicitly expects rejection with exactly a 5% slow tail (570 fast and 30 slow samples).",
+      "impact": "The label p95 can conceal a materially different threshold decision. This matters when comparing tools and explaining automatic choices, especially with discrete small samples.",
+      "recommendation": "Document the chosen quantile definition and threshold semantics at each interface. If a shared convention is desired, obtain an owning-policy decision and update compatibility tests; do not present changing the index as a universally safe off-by-one fix.",
+      "verification_plan": "Use boundary sample counts around multiples of 20 and 5% slow tails; compare documented order statistics and resulting decisions. Keep interval, render CPU and GPU metrics distinct.",
+      "limits": "Different quantile conventions can be valid. The live HUD and calibrator also normally observe different metrics, so the synthetic comparison is not evidence that their real displayed numbers should match.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 161,
+          "end_line": 206,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L161-L206"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 169,
+          "end_line": 173,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L169-L173"
+        },
+        {
+          "path": "app/render/hud.gd",
+          "start_line": 44,
+          "end_line": 53,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/hud.gd#L44-L53"
+        },
+        {
+          "path": "app/tests/test_auto_calibration.gd",
+          "start_line": 90,
+          "end_line": 92,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/tests/test_auto_calibration.gd#L90-L92"
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "Incident observations repeat wheel-compression work on every accepted tick",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / accepted-state observers",
+      "owning_tracks": [
+        "CR-40",
+        "CC-00–17",
+        "GP-14"
+      ],
+      "tracking_status": "New reuse candidate; the accepted gear-contact producer itself is implemented.",
+      "observation": "Ordinary interactive fixed-wing flights enable cost observations. Their committed-tick handler calls gear_compressions() on every accepted tick. For equipped gear using terrain/lake/track surfaces, it transforms supports and samples terrain even far above ground; the flat-ground fallback is simpler and gearless queries return empty. The contact-event consumer emits nothing when both previous and current compression are nonpositive. Statistics independently derives compression near contact.",
+      "impact": "Avoidable accepted-tick CPU work can survive a fast native stage evaluator. Multiple consumers can repeat the same endpoint geometry/terrain derivation.",
+      "recommendation": "Share a detached accepted-endpoint support result or prove a conservative no-touch shortcut. Preserve previous-positive to ended events and invalidation on gear/configuration changes. Reuse the accepted endpoint, not the RK4 fourth-stage approximation.",
+      "verification_plan": "Compare event sequences for touchdown, liftoff, retraction, reset/restore, circuit, lake and terrain cases. Run test_crash_cost_producers.gd, test_ground_accident_session.gd and test_flight_statistics_terrain.gd; profile matched incident-on/off complete flights.",
+      "limits": "Source confidence high; savings and dominant scenarios unknown. Do not disable incident accounting or infer that all support work is redundant.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/main.gd",
+          "start_line": 1320,
+          "end_line": 1325,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L1320-L1325"
+        },
+        {
+          "path": "app/main.gd",
+          "start_line": 3072,
+          "end_line": 3075,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L3072-L3075"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 2580,
+          "end_line": 2587,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L2580-L2587"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 2745,
+          "end_line": 2761,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L2745-L2761"
+        },
+        {
+          "path": "app/physics/ground_wheels.gd",
+          "start_line": 216,
+          "end_line": 233,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/ground_wheels.gd#L216-L233"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 3344,
+          "end_line": 3349,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L3344-L3349"
+        },
+        {
+          "path": "app/physics/ground_contact.gd",
+          "start_line": 428,
+          "end_line": 440,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/ground_contact.gd#L428-L440"
+        },
+        {
+          "path": "app/sim/aircraft_contact_events.gd",
+          "start_line": 281,
+          "end_line": 285,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/aircraft_contact_events.gd#L281-L285"
+        },
+        {
+          "path": "app/statistics/fixed_wing_adapter.gd",
+          "start_line": 140,
+          "end_line": 154,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/statistics/fixed_wing_adapter.gd#L140-L154"
+        },
+        {
+          "path": "docs/plans/crash-damage-economics.md",
+          "start_line": 231,
+          "end_line": 231,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/crash-damage-economics.md#L231"
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "Master mute leaves flight-audio computations running",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / disabled-feature work",
+      "owning_tracks": [
+        "AUD-12b",
+        "SF"
+      ],
+      "tracking_status": "Volume behavior is tracked; no exact mute-processing optimization was found locally.",
+      "observation": "Game volume zero mutes the Master bus but does not suppress FlightAudio construction. The adapter continues accepted-tick contacts and per-frame wind, air, torque and mix-state work. The existing --soundscape=off route avoids construction but is distinct from the player volume setting.",
+      "impact": "A player who silences audio still pays much of its source-side CPU cost. Removing this work could help CPU-bound sessions without changing the flight model.",
+      "recommendation": "After required fades/retirement, suspend unnecessary generation and observation while fully muted; re-prime from the current accepted state on unmute. Preserve necessary safety/event semantics, avoid stale impact replay and handle preview/revert.",
+      "verification_plan": "Test zero/nonzero volume, settings preview/revert, pause, crash, rewind, reset and listener changes. Count callbacks and compare physics bytes; use test_flight_audio_accepted.gd, test_ground_audio.gd, test_mechanical_accepted_ticks.gd, test_soundscape.gd and settings integration. Listen on real audio hardware.",
+      "limits": "The source proves work remains, not its current cost. Event-history/fade requirements may justify a small residual observer while muted.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/app_root.gd",
+          "start_line": 2055,
+          "end_line": 2059,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L2055-L2059"
+        },
+        {
+          "path": "app/main.gd",
+          "start_line": 1268,
+          "end_line": 1272,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L1268-L1272"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 146,
+          "end_line": 158,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L146-L158"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 187,
+          "end_line": 198,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L187-L198"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 234,
+          "end_line": 250,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L234-L250"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 440,
+          "end_line": 466,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L440-L466"
+        },
+        {
+          "path": "docs/plans/audio-realism.md",
+          "start_line": 87,
+          "end_line": 87,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/audio-realism.md#L87"
+        }
+      ]
+    },
+    {
+      "id": "F13",
+      "title": "Opt-in flight logs serialize and flush packets on the simulation thread",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / storage hitches",
+      "owning_tracks": [
+        "FL-01",
+        "DT-MAC-04b"
+      ],
+      "tracking_status": "Already documented in the flight-log guide and Apple performance plan; retained here because it remains in current source.",
+      "observation": "Fixed-wing .orfl recording buffers up to 240 rows, then its accepted-tick callback serializes, hashes, writes and flushes synchronously. Fixed-wing pause/stop also flush. Multirotor and airship writers likewise flush packets on tick/stop paths; their pause-event buffering is not identical.",
+      "impact": "Slow storage can block an individual accepted-tick callback even though buffers/files are bounded. Average kernel timing can hide this intermittent tail.",
+      "recommendation": "Evaluate a bounded writer with immutable packets, sequence ordering, explicit backpressure/failure and accepted ownership. Preserve checksums, replay identity, complete/incomplete footers and crash recovery. Separate serialization cost from filesystem latency before choosing threading.",
+      "verification_plan": "Measure recording-off/on frame and full callback distributions on normal and slow storage. Inject write failure/full disk and shutdown during backlog. Run test_flight_log.gd, test_flight_log_inputs.gd, test_mr_flight_log.gd and test_airship_flight_log.gd plus ordering/recovery cases.",
+      "limits": "A known synchronous path, not a measured stall in this audit and not an unbounded-memory leak. Asynchronous writes need a defined durability tradeoff.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/flight_log.gd",
+          "start_line": 284,
+          "end_line": 306,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_log.gd#L284-L306"
+        },
+        {
+          "path": "app/sim/flight_log.gd",
+          "start_line": 350,
+          "end_line": 379,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_log.gd#L350-L379"
+        },
+        {
+          "path": "app/sim/multirotor/flight_log.gd",
+          "start_line": 138,
+          "end_line": 155,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L138-L155"
+        },
+        {
+          "path": "app/sim/multirotor/flight_log.gd",
+          "start_line": 190,
+          "end_line": 228,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L190-L228"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 124,
+          "end_line": 136,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L124-L136"
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "start_line": 168,
+          "end_line": 203,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L168-L203"
+        },
+        {
+          "path": "docs/FLIGHT-LOGGING.md",
+          "start_line": 335,
+          "end_line": 342,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/FLIGHT-LOGGING.md#L335-L342"
+        },
+        {
+          "path": "docs/plans/apple-silicon-performance.md",
+          "start_line": 349,
+          "end_line": 355,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/apple-silicon-performance.md#L349-L355"
+        }
+      ]
+    },
+    {
+      "id": "F14",
+      "title": "Stopping a manual trace performs whole-history export inline",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / user-visible storage stalls",
+      "owning_tracks": [
+        "DT-MAC-04b",
+        "FL"
+      ],
+      "tracking_status": "Already called out for investigation; distinguish manual CSV traces from .orfl logs.",
+      "observation": "The fixed-wing and helicopter T-key paths call recorder.stop() directly. Fixed-wing export joins the spool worker when one exists, then reads, formats, writes and flushes the full recording. Helicopter export has the analogous full-history path. The active raw pipeline is bounded, but export work and disk data grow with duration; the saved spool remains owned until cleared/released.",
+      "impact": "A long recording can create a stop-time input/render stall even if steady recording is inexpensive. Bounded RAM does not bound finalization time.",
+      "recommendation": "Move eligible export work to a bounded background job over frozen recording ownership, publish atomically and preserve recovery/retry. Keep explicit completion/failure state and safe exit behavior; avoid copying the whole trace into memory.",
+      "verification_plan": "Compare 1-, 10- and 60-minute stop latency/input gaps. Exercise stop, exit, reset, retry, destination failure and cleanup using test_trace_chunks.gd, test_rotorcraft_trace_chunks.gd, test_trace_chunk_store.gd, test_exit_transaction.gd and test_manual_trace_integrity.gd.",
+      "limits": "No long recording or stop latency was measured here. Retained spool ownership is intentional and is not by itself a leak.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/main.gd",
+          "start_line": 2292,
+          "end_line": 2296,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L2292-L2296"
+        },
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 606,
+          "end_line": 608,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/helicopter_main.gd#L606-L608"
+        },
+        {
+          "path": "app/sim/recorder.gd",
+          "start_line": 54,
+          "end_line": 66,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/recorder.gd#L54-L66"
+        },
+        {
+          "path": "app/sim/trace.gd",
+          "start_line": 1820,
+          "end_line": 1869,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/trace.gd#L1820-L1869"
+        },
+        {
+          "path": "app/sim/trace.gd",
+          "start_line": 159,
+          "end_line": 170,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/trace.gd#L159-L170"
+        },
+        {
+          "path": "app/sim/trace.gd",
+          "start_line": 274,
+          "end_line": 277,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/trace.gd#L274-L277"
+        },
+        {
+          "path": "app/sim/rotorcraft_recorder.gd",
+          "start_line": 127,
+          "end_line": 166,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/rotorcraft_recorder.gd#L127-L166"
+        },
+        {
+          "path": "app/sim/rotorcraft_recorder.gd",
+          "start_line": 224,
+          "end_line": 253,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/rotorcraft_recorder.gd#L224-L253"
+        },
+        {
+          "path": "docs/plans/apple-silicon-performance.md",
+          "start_line": 349,
+          "end_line": 355,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/apple-silicon-performance.md#L349-L355"
+        }
+      ]
+    },
+    {
+      "id": "F15",
+      "title": "Ground audio can recompute accepted contact laws and support queries",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / contact observation",
+      "owning_tracks": [
+        "GP-19",
+        "GP-19f",
+        "AUD"
+      ],
+      "tracking_status": "Accepted-contact reuse is already tracked. Older plan prose about frame-only touchdown polling is stale.",
+      "observation": "FlightAudio observes accepted ground endpoints and can force observation every tick near a possible touchdown. GroundAudioModel can reevaluate the ground law, wheel frames, support and material data. A far-ground unloaded-row shortcut and once-per-frame cadence already reduce some cases.",
+      "impact": "Near-ground audio may duplicate computations already needed by the physical/contact owner. This cost lies beyond the native evaluator boundary and can affect busy contact scenes.",
+      "recommendation": "Consume a detached, validated accepted-contact receipt with enough material/normal/slip information. Preserve intervening touchdown events and invalidation under terrain/configuration changes; do not replace accepted events with render-frame polling.",
+      "verification_plan": "Compare exact contact rows and cue order across touchdown/liftoff, surfaces, composed terrain, lake, pause/reset and multiple ticks per frame. Run test_ground_audio.gd, test_ground_audio_materials.gd, test_flight_audio_accepted.gd and test_presentation_cadence.gd, then paired complete-flight profiles.",
+      "limits": "Conditional source-visible work; the previous unloaded-row optimization is already implemented. No incremental saving is claimed.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 146,
+          "end_line": 158,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L146-L158"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 187,
+          "end_line": 198,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L187-L198"
+        },
+        {
+          "path": "app/audio/ground_audio_model.gd",
+          "start_line": 59,
+          "end_line": 73,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/ground_audio_model.gd#L59-L73"
+        },
+        {
+          "path": "app/audio/ground_audio_model.gd",
+          "start_line": 90,
+          "end_line": 104,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/ground_audio_model.gd#L90-L104"
+        },
+        {
+          "path": "docs/plans/advanced-ground-flight-physics.md",
+          "start_line": 613,
+          "end_line": 621,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/advanced-ground-flight-physics.md#L613-L621"
+        },
+        {
+          "path": "docs/plans/advanced-ground-flight-physics.md",
+          "start_line": 921,
+          "end_line": 921,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/advanced-ground-flight-physics.md#L921"
+        }
+      ]
+    },
+    {
+      "id": "F16",
+      "title": "Flight audio independently requests wind, air data and propulsion observations",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU / presentation sampling",
+      "owning_tracks": [
+        "AUD",
+        "SF",
+        "DT-MAC-04b"
+      ],
+      "tracking_status": "The compatibility-sensitive wind/air reuse candidate already appears in the November 14 handoff.",
+      "observation": "Every render frame the adapter calls wind_at() and air_data(); the base uniform-weather air_data() also samples wind, while spatial air has a different provider path. Non-turbine propellers above the RPM threshold also derive torque for sound.",
+      "impact": "Repeated derived-state queries can consume CPU after the solver is optimized, especially with spatial weather or multiple vehicles.",
+      "recommendation": "Reuse one correctly timed air/wind observation only where dispatch, provider and accepted-state identity match. Keep derived-session overrides, spatial semantics and torque-dependent sound. If native work is justified, batch a pure observation rather than many tiny crossings.",
+      "verification_plan": "Compare detached snapshots and provider call order for base/custom sessions, uniform/spatial weather, pause and rewind. Start with test_flight_audio_accepted.gd and test_soundscape.gd; profile complete audio-on/off routes.",
+      "limits": "A direct duplicate wind lookup is established for the uniform base path. Spatial calls are not necessarily interchangeable, and savings were not measured.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 234,
+          "end_line": 250,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L234-L250"
+        },
+        {
+          "path": "app/audio/flight_audio.gd",
+          "start_line": 440,
+          "end_line": 454,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/audio/flight_audio.gd#L440-L454"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 613,
+          "end_line": 616,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L613-L616"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "start_line": 677,
+          "end_line": 686,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L677-L686"
+        },
+        {
+          "path": "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md",
+          "start_line": 54,
+          "end_line": 54,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md#L54"
+        }
+      ]
+    },
+    {
+      "id": "F17",
+      "title": "Statistics continues substantial accepted-tick derivation with its widget closed",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU / accepted-state observers",
+      "owning_tracks": [
+        "UI-FS-08-R1",
+        "UI-FS-08-R2"
+      ],
+      "tracking_status": "Known remaining profiling area after existing shortcuts and a terrain correctness repair.",
+      "observation": "Eligible Home-started fixed-wing sessions attach the statistics service. Each accepted tick derives air data, terrain, attitude, contacts and detached classifier observations. Widget visibility does not disable accounting; Workshop and ineligible/suspended branches are excluded.",
+      "impact": "The service contributes to total callback cost even when its UI is hidden. Several derived quantities overlap other consumers.",
+      "recommendation": "Profile and share immutable values from the same accepted boundary. Preserve every required classifier sample, accounting and eligibility check; do not throttle statistics merely because the widget is closed.",
+      "verification_plan": "Require identical samples/events for short contacts, composed terrain, start/reset/restore and session eligibility. Run the detector, lifecycle, eligibility and terrain statistics suites; measure the whole active observer after current shortcuts.",
+      "limits": "Intentional sample cadence. Earlier statistics improvements are already implemented, so historical observer-ablation savings are not an achievable forecast.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/app_root.gd",
+          "start_line": 3828,
+          "end_line": 3846,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L3828-L3846"
+        },
+        {
+          "path": "app/statistics/service.gd",
+          "start_line": 120,
+          "end_line": 158,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/statistics/service.gd#L120-L158"
+        },
+        {
+          "path": "app/statistics/fixed_wing_adapter.gd",
+          "start_line": 40,
+          "end_line": 90,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/statistics/fixed_wing_adapter.gd#L40-L90"
+        },
+        {
+          "path": "app/statistics/fixed_wing_adapter.gd",
+          "start_line": 140,
+          "end_line": 154,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/statistics/fixed_wing_adapter.gd#L140-L154"
+        },
+        {
+          "path": "docs/plans/flight-statistics.md",
+          "start_line": 322,
+          "end_line": 324,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/flight-statistics.md#L322-L324"
+        },
+        {
+          "path": "docs/plans/optimization-priorities.md",
+          "start_line": 59,
+          "end_line": 65,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/optimization-priorities.md#L59-L65"
+        }
+      ]
+    },
+    {
+      "id": "F18",
+      "title": "Helicopter and airship presentation still mix interpolation needs with display-only work",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU / presentation cadence",
+      "owning_tracks": [
+        "HELI-09",
+        "HELI-16-R1",
+        "BL-17"
+      ],
+      "tracking_status": "Existing experimental-vehicle performance qualification remains open.",
+      "observation": "Helicopter accepted ticks build electronics/envelope presentation samples; two adjacent samples support rotor interpolation. Its HUD also formats text every render frame while the layer is hidden. Airship presentation requests telemetry and rebuilds nine HUD lines each frame; the detailed force evaluation is already cached per newly consumed tick.",
+      "impact": "Display-only derivation/text churn may add work without improving visible cadence, particularly while hidden or paused.",
+      "recommendation": "Separate the minimum adjacent-tick interpolation state from display-only derivation. Update hidden/unchanged text only when needed or at an explicitly bounded display cadence. Preserve rotor interpolation and current control/envelope semantics.",
+      "verification_plan": "Check adjacent-tick interpolation, hidden-to-visible, pause/resume, telemetry freshness and control changes with test_heli_render_audit.gd, test_airship_activity.gd and test_airship_presentation.gd; profile the actual vehicle routes.",
+      "limits": "Do not reduce helicopter physics/controller cadence or describe cached airship full-force evaluation as happening on every displayed frame. Gain unknown.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 169,
+          "end_line": 173,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/helicopter_main.gd#L169-L173"
+        },
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 310,
+          "end_line": 372,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/helicopter_main.gd#L310-L372"
+        },
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 395,
+          "end_line": 470,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/helicopter_main.gd#L395-L470"
+        },
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 512,
+          "end_line": 513,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/helicopter_main.gd#L512-L513"
+        },
+        {
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "start_line": 641,
+          "end_line": 658,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/vehicles/airship/airship_scene.gd#L641-L658"
+        },
+        {
+          "path": "app/vehicles/airship/airship_hud.gd",
+          "start_line": 198,
+          "end_line": 225,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/vehicles/airship/airship_hud.gd#L198-L225"
+        },
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 444,
+          "end_line": 453,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L444-L453"
+        },
+        {
+          "path": "docs/plans/helicopter.md",
+          "start_line": 650,
+          "end_line": 650,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/helicopter.md#L650"
+        },
+        {
+          "path": "docs/plans/rc-airship.md",
+          "start_line": 310,
+          "end_line": 310,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/rc-airship.md#L310"
+        }
+      ]
+    },
+    {
+      "id": "F19",
+      "title": "Bounded input tapes create deliberate memory and duration limits",
+      "priority": "P3",
+      "kind": "policy_tradeoff",
+      "area": "RAM / long-session behavior",
+      "owning_tracks": [
+        "DR-16b",
+        "DR-17",
+        "BL-07",
+        "BL-08",
+        "BL-17"
+      ],
+      "tracking_status": "Existing bounded design; quad pause is documented. This is not a demonstrated leak.",
+      "observation": "Airship retains up to 432,000 rows of four float64 inputs, about 13.2 MiB of raw values, then sets tape_overflow and continues. The quad retains nine or ten inputs per row, about 29.7 or 33.0 MiB, and deliberately pauses at 30 simulated minutes. These session tapes are separate from .orfl recording and its limits.",
+      "impact": "Long-session UX and RAM are constrained by an explicit history policy. Airship in-memory history can be a prefix even while the flight continues; quad duration is intentionally capped.",
+      "recommendation": "Expose the relevant limit/status if needed. Only if product requirements require longer exact history, evaluate segmented storage with bounded memory and explicit replay/completeness semantics. Do not silently replace exact history with a lossy ring.",
+      "verification_plan": "Exercise just-before/at/after limits, reset, replay and simultaneous .orfl recording. Use test_mr_session.gd, test_mr_flight_log.gd, test_airship_session.gd and test_airship_flight_log.gd; measure allocator overhead and retained copies separately.",
+      "limits": "Byte counts are capacity arithmetic, not measured RSS. They exclude allocation overhead and copies. Old plan text saying these flight-log adapters do not exist is superseded by source and later evidence.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 21,
+          "end_line": 22,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L21-L22"
+        },
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 49,
+          "end_line": 50,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L49-L50"
+        },
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 266,
+          "end_line": 275,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L266-L275"
+        },
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "start_line": 35,
+          "end_line": 39,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/session.gd#L35-L39"
+        },
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "start_line": 448,
+          "end_line": 450,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/session.gd#L448-L450"
+        },
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "start_line": 549,
+          "end_line": 605,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/session.gd#L549-L605"
+        },
+        {
+          "path": "app/sim/race/race_model.gd",
+          "start_line": 29,
+          "end_line": 34,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/race/race_model.gd#L29-L34"
+        },
+        {
+          "path": "docs/plans/drone-racing.md",
+          "start_line": 651,
+          "end_line": 651,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/drone-racing.md#L651"
+        }
+      ]
+    },
+    {
+      "id": "F20",
+      "title": "Glow event surfaces repeat full point evaluation outside the native stage",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / native-boundary residue",
+      "owning_tracks": [
+        "NITRO",
+        "SF",
+        "NK-3"
+      ],
+      "tracking_status": "NITRO profiling is already planned; this audit identifies repeated event-policy evaluation as a concrete target.",
+      "observation": "Glow pickup/event policy calls full point evaluation, including work beyond the scalar surface it needs. ResourceStep samples stages and also reevaluates an endpoint after its trial already collected endpoint surface values. The native stage replaces the stage evaluator, not the GDScript event policy, so that cost can remain under native physics.",
+      "impact": "Event-free and event-heavy ticks may repeat aerodynamic/propulsion/environment work despite a fast native RK stage. This is a better port/reuse target than assuming the whole physics stack remains interpreted.",
+      "recommendation": "First isolate pure surface prerequisites and reuse exact stage-local or endpoint receipts where state, time and context match. Consider a narrow native batch only after profiling. Fix F01/F02 independently before altering event execution. Never cache by time alone: RK midpoint states differ.",
+      "verification_plan": "Profile complete glow ticks with pickup/feed events and without events, native/reference separately. Compare event records, exact states, context mutation/refusal, roots, pause/restore and transition-induced changes. Retain evaluation bounds and mirrored-source/native receipt checks.",
+      "limits": "Source-supported repeated work; no current cost or speedup measured. Main/line and pickup-lost/recovered modes are mutually exclusive in pairs, although three candidates can coexist in a mode. Do not assume every surface is active every tick.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/physics/glow/flight.gd",
+          "start_line": 295,
+          "end_line": 307,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/glow/flight.gd#L295-L307"
+        },
+        {
+          "path": "app/physics/glow/flight.gd",
+          "start_line": 338,
+          "end_line": 407,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/glow/flight.gd#L338-L407"
+        },
+        {
+          "path": "app/physics/glow/flight.gd",
+          "start_line": 417,
+          "end_line": 545,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/glow/flight.gd#L417-L545"
+        },
+        {
+          "path": "app/physics/glow/flight.gd",
+          "start_line": 733,
+          "end_line": 750,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/glow/flight.gd#L733-L750"
+        },
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 57,
+          "end_line": 76,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L57-L76"
+        },
+        {
+          "path": "app/physics/resource_event_step.gd",
+          "start_line": 182,
+          "end_line": 211,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/resource_event_step.gd#L182-L211"
+        },
+        {
+          "path": "app/sim/native_stage.gd",
+          "start_line": 356,
+          "end_line": 395,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/native_stage.gd#L356-L395"
+        },
+        {
+          "path": "docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md",
+          "start_line": 223,
+          "end_line": 223,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md#L223"
+        }
+      ]
+    },
+    {
+      "id": "F21",
+      "title": "Opt-in servo intervals repeatedly prepare trajectories and validate guarded context",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / interval integration",
+      "owning_tracks": [
+        "AC-12",
+        "SF",
+        "NK"
+      ],
+      "tracking_status": "Concrete opt-in candidate; current adapter domain explicitly uses the reference evaluator.",
+      "observation": "Servo interval sampling, stages and policy reconstruct/validate trajectory information, while kernel interval callbacks copy and compare protected context. Short arrival pieces can multiply this overhead beyond the ordinary four-stage picture.",
+      "impact": "A correct local-clock/arrival solver can spend substantial work on repeated preparation and guard transport. Broadly removing those guards would weaken the transaction contract.",
+      "recommendation": "Prepare one immutable tick trajectory/context with owner-controlled invalidation, retain local piece clocks and arrival cuts, and reduce redundant internal preparation only after proving equality. Keep adversarial mutation protection and do not reuse a result solely because its timestamp matches.",
+      "verification_plan": "Compare exact endpoint/event trajectories for normal and tiny arrival intervals, long absolute clocks, reset/restore and malformed/mutating callbacks. Measure full ticks and worst-case pieces; use the existing servo interval suites and owning AC-12 campaign.",
+      "limits": "Opt-in/reference-domain path, not a claim that all stock flights incur this overhead or that the native backend can be enabled without qualification.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/servo_interval_flight.gd",
+          "start_line": 43,
+          "end_line": 50,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/servo_interval_flight.gd#L43-L50"
+        },
+        {
+          "path": "app/sim/servo_interval_flight.gd",
+          "start_line": 83,
+          "end_line": 90,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/servo_interval_flight.gd#L83-L90"
+        },
+        {
+          "path": "app/sim/servo_interval_flight.gd",
+          "start_line": 109,
+          "end_line": 169,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/servo_interval_flight.gd#L109-L169"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 441,
+          "end_line": 457,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L441-L457"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 1159,
+          "end_line": 1175,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L1159-L1175"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 1211,
+          "end_line": 1217,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L1211-L1217"
+        },
+        {
+          "path": "docs/research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md",
+          "start_line": 1,
+          "end_line": 30,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md#L1-L30"
+        }
+      ]
+    },
+    {
+      "id": "F22",
+      "title": "Reference liquid-fuel stages repeat configuration validation and result construction",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / reference evaluator",
+      "owning_tracks": [
+        "FUEL-12",
+        "NK-3"
+      ],
+      "tracking_status": "Already tracked in FUEL-12 hardening; old contaminated timings are not reused as current evidence.",
+      "observation": "LiquidFuelFlight invokes liquid-fuel evaluation from stage paths. The reference helper validates inventory/configuration maps and constructs reporting dictionaries repeatedly, despite much of that configuration being immutable during a prepared flight.",
+      "impact": "Reference fallback and research routes can pay preparation-like costs at stage cadence. Native implementations already exist, so this is not an unported whole subsystem.",
+      "recommendation": "Prepare immutable validated configuration once, while retaining amount/state-dependent checks, finite validation and bypassed-mutation detection at the correct boundary. Keep reporting optional only where the consumer contract permits.",
+      "verification_plan": "Compare exact reference outputs for normal/empty/refill/invalid inventory, configuration replacement and event boundaries; run the owning fuel hardening and native oracle/lifecycle gates. Measure current complete reference ticks rather than historical helper-only numbers.",
+      "limits": "Applies primarily to reference/fallback work. Current native ownership and refusal reasons must be recorded before attributing costs.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/liquid_fuel_flight.gd",
+          "start_line": 39,
+          "end_line": 69,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/liquid_fuel_flight.gd#L39-L69"
+        },
+        {
+          "path": "app/physics/liquid_fuel.gd",
+          "start_line": 16,
+          "end_line": 128,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/liquid_fuel.gd#L16-L128"
+        },
+        {
+          "path": "docs/research/fuel-systems/FUEL-12/HARDENING-R2.md",
+          "start_line": 27,
+          "end_line": 39,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/fuel-systems/FUEL-12/HARDENING-R2.md#L27-L39"
+        }
+      ]
+    },
+    {
+      "id": "F23",
+      "title": "Multirotor contact substeps and framed transaction checks need whole-tick attribution",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / multirotor",
+      "owning_tracks": [
+        "DR-16",
+        "DR-17",
+        "SF"
+      ],
+      "tracking_status": "Existing M1–M3 performance work; several guard/contact optimizations are already implemented.",
+      "observation": "The controlled plant selects two or four contact pieces in relevant cases, and framed callbacks preserve detached sampled/continuous/mode context. Protected-array comparisons remain around the model boundary. Current code already has guard reuse, scalar contact work, a two-piece path and terrain memoization.",
+      "impact": "Full contact/controller ticks may cost more than an isolated stage evaluation; profile both boundaries. Repeating old optimization claims or dropping substeps would misrepresent remaining work.",
+      "recommendation": "Profile the current complete framed tick and isolate remaining contact/guard allocations. Improve validated internal data flow only while preserving once-per-tick controller sampling, contact integration and mutation rejection. Consider native batching only for a measured pure kernel.",
+      "verification_plan": "Cover airborne, pad, impact, race wrapping and controller-memory replay; include adversarial callback mutation, refusal and exact native/reference candidates. Follow current drone campaign gates rather than treating historical medians as current qualification.",
+      "limits": "No multirotor timing was measured in this audit. Guards and contact pieces are correctness features, not unconditional waste.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/physics/multirotor/controlled_plant.gd",
+          "start_line": 288,
+          "end_line": 307,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L288-L307"
+        },
+        {
+          "path": "app/physics/multirotor/controlled_plant.gd",
+          "start_line": 690,
+          "end_line": 712,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L690-L712"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 453,
+          "end_line": 467,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L453-L467"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 580,
+          "end_line": 585,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L580-L585"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 642,
+          "end_line": 647,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L642-L647"
+        },
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 1364,
+          "end_line": 1400,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L1364-L1400"
+        },
+        {
+          "path": "docs/research/drone-racing/M1-M3-2026-11-11/README.md",
+          "start_line": 1,
+          "end_line": 25,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/drone-racing/M1-M3-2026-11-11/README.md#L1-L25"
+        }
+      ]
+    },
+    {
+      "id": "F24",
+      "title": "Airship terminal-contact observation can evaluate more ground forces than its consumer needs",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / airship contact",
+      "owning_tracks": [
+        "BL-12",
+        "BL-17"
+      ],
+      "tracking_status": "Existing BL performance gate; the BL-12 prefilter is already present.",
+      "observation": "After an accepted tick, the airship session observes contacts. Its dynamics contact observer can evaluate full gear/hull normal and friction work although the session consumes terminal hull/propeller contact outcomes. This is separate from reference stage force evaluation.",
+      "impact": "Accepted-endpoint safety observation can duplicate force-related work. A faster stage evaluator alone would leave the observation cost.",
+      "recommendation": "Provide a narrowly scoped terminal-contact query or reuse a suitable accepted-endpoint receipt, keeping the existing field-terrain and terminal-event semantics. Do not use the last RK stage as the accepted endpoint.",
+      "verification_plan": "Compare terminal outcomes, contact locations and accepted states across airborne, gear/hull/prop strikes, field terrain and reset/restore. Run airship activity/session/contact suites and measure complete BL-17 workloads.",
+      "limits": "Static candidate with existing prefilters; no current airship benchmark or physical validation was performed. Lake/water entry is not an admitted airship contract and remains open.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 135,
+          "end_line": 148,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L135-L148"
+        },
+        {
+          "path": "app/sim/airship/session.gd",
+          "start_line": 281,
+          "end_line": 285,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L281-L285"
+        },
+        {
+          "path": "app/physics/airship/airship_dynamics.gd",
+          "start_line": 403,
+          "end_line": 420,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/airship/airship_dynamics.gd#L403-L420"
+        },
+        {
+          "path": "app/physics/airship/airship_dynamics.gd",
+          "start_line": 464,
+          "end_line": 510,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/airship/airship_dynamics.gd#L464-L510"
+        },
+        {
+          "path": "docs/plans/rc-airship.md",
+          "start_line": 310,
+          "end_line": 310,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/rc-airship.md#L310"
+        }
+      ]
+    },
+    {
+      "id": "F25",
+      "title": "Coupled flap loops recompute station-only clean terms inside the pair loop",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "CPU / mathematical reuse",
+      "owning_tracks": [
+        "NK-2a",
+        "NK-3",
+        "SF"
+      ],
+      "tracking_status": "Explicitly retained as an unmeasured candidate in optimization-priorities.md.",
+      "observation": "In Aero._local_loads(), the coupled station inner loop recomputes clean_angle_k, clean_weight_k and clean_source_k for the same source station. These terms are invariant for that invocation even though the receiving/source coupling remains pair-dependent.",
+      "impact": "Hoisting the station-only work can remove repeated arithmetic from an O(n^2) loop. It does not make the coupling computation itself O(n).",
+      "recommendation": "Precompute only the invariant terms once per invocation, preserving expression grouping, branch behavior and sum order. Measure scratch allocation overhead. Coordinate native mirrors and exact source receipts; never cache state-dependent aerodynamic results across RK stages.",
+      "verification_plan": "Compare float64 bytes for zero/reverse flow, flap transitions, stall, coupled/uncoupled stations and native/reference paths; profile powered/flap complete sessions where this loop is material.",
+      "limits": "Already-known opportunity, not a new discovery or measured gain. Reassociation, fast-math or a different closed-form model would be a separate numerical change.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/physics/aero.gd",
+          "start_line": 408,
+          "end_line": 420,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/aero.gd#L408-L420"
+        },
+        {
+          "path": "app/physics/aero.gd",
+          "start_line": 543,
+          "end_line": 574,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/aero.gd#L543-L574"
+        },
+        {
+          "path": "docs/plans/optimization-priorities.md",
+          "start_line": 67,
+          "end_line": 73,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/optimization-priorities.md#L67-L73"
+        }
+      ]
+    },
+    {
+      "id": "F26",
+      "title": "The existing temporal-wind candidate is blocked by native source identity, not missing implementation",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU / native qualification",
+      "owning_tracks": [
+        "NK-3",
+        "M5-W"
+      ],
+      "tracking_status": "Known apply-ready research candidate retained outside production; not an active optimization.",
+      "observation": "The November 9 report retains a patch that reuses temporal remainders inside one immutable stage query while preserving point-dependent phase/trigonometry/order. Four changed reference files belong to NK-3 mirrored-source identity. Applying the patch alone invalidates existing native admission across the fleet, including calm weather.",
+      "impact": "A local reference-path speed improvement can make normal sessions slower if it forces native fallback, or fail package admission. Optimization must include deployment identity and actual selected backend.",
+      "recommendation": "Re-evaluate the candidate on a pinned isolated source/binary pair and qualify matching native mirrors/receipts before promotion. Preserve fallback and exact replay. Treat the reported preliminary one-pair result as historical screening, not accepted savings.",
+      "verification_plan": "Run the existing wind oracle/negative/lifecycle coverage, paired complete-session native/reference workloads and fleet/package gates. Verify actual backend/refusal reasons after the change, including calm flights.",
+      "limits": "No patch was applied and no historic timing was rerun. This is a qualification/reuse opportunity, not an instruction to bypass receipt checks.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "docs/research/performance-report-2026-11-09.md",
+          "start_line": 63,
+          "end_line": 94,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/performance-report-2026-11-09.md#L63-L94"
+        },
+        {
+          "path": "research/native-kernel/README.md",
+          "start_line": 455,
+          "end_line": 482,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/research/native-kernel/README.md#L455-L482"
+        },
+        {
+          "path": "docs/STACK.md",
+          "start_line": 54,
+          "end_line": 54,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/STACK.md#L54"
+        }
+      ]
+    },
+    {
+      "id": "F27",
+      "title": "Kernel timing and diagnostic instrumentation do not represent complete frame cost",
+      "priority": "P2",
+      "kind": "measurement_gap",
+      "area": "CPU/GPU / measurement validity",
+      "owning_tracks": [
+        "PT",
+        "SF",
+        "DT-MAC-04b",
+        "VQ"
+      ],
+      "tracking_status": "Boundary limitation already recognized in optimization priorities; current diagnostics also retain useful unknown/freshness metadata.",
+      "observation": "Simulation.step_usec is an exponentially smoothed value updated before stepped.emit(), so it excludes accepted-tick observers and is not a raw tail distribution. Frame diagnostics/debug render probes poll renderer timings; frame streaming synchronously serializes and flushes lines. The calibrator already throttles timing reads under the separate-render-thread model, acknowledging synchronization cost.",
+      "impact": "A faster kernel can coexist with slow full callbacks, recording hitches or GPU-bound frames. Instrumentation can perturb the workload being compared, especially on a slow user-data filesystem.",
+      "recommendation": "Measure raw full callback/tick boundaries and named observer phases alongside kernel time, with a bounded sampled/aggregate path. Compare diagnostics off/on and stream off/on, retain write-time metadata and record all timing scopes. Preserve unavailable/stale status rather than mapping missing GPU evidence to zero cost.",
+      "verification_plan": "Use matched uninstrumented controls and existing performance/debug tools. Report p50/p95/p99/max, hitch counts and simulation/wall ratio separately; test same-thread and separate-render-thread modes and normal/slow storage. Do not infer scanout or input-to-photon latency from process timing.",
+      "limits": "No observer overhead was measured here. The current diagnostic schema already marks GPU coverage/freshness limits; this is not a newly discovered false-zero implementation bug.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/sim/simulation.gd",
+          "start_line": 697,
+          "end_line": 705,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/simulation.gd#L697-L705"
+        },
+        {
+          "path": "app/render/frame_diagnostics.gd",
+          "start_line": 7,
+          "end_line": 22,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/frame_diagnostics.gd#L7-L22"
+        },
+        {
+          "path": "app/render/frame_diagnostics.gd",
+          "start_line": 117,
+          "end_line": 145,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/frame_diagnostics.gd#L117-L145"
+        },
+        {
+          "path": "app/debug/render_probe.gd",
+          "start_line": 75,
+          "end_line": 82,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/debug/render_probe.gd#L75-L82"
+        },
+        {
+          "path": "app/render/frame_samples.gd",
+          "start_line": 307,
+          "end_line": 323,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/frame_samples.gd#L307-L323"
+        },
+        {
+          "path": "app/render/auto_calibration.gd",
+          "start_line": 127,
+          "end_line": 139,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L127-L139"
+        },
+        {
+          "path": "docs/plans/optimization-priorities.md",
+          "start_line": 59,
+          "end_line": 65,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/optimization-priorities.md#L59-L65"
+        }
+      ]
+    },
+    {
+      "id": "F28",
+      "title": "Cloud-cache slot updates can evict keys needed later in the same transition",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "GPU/CPU / cache lifecycle",
+      "owning_tracks": [
+        "DT-MAC",
+        "FW"
+      ],
+      "tracking_status": "Already tracked in the consolidated Mac/external audit queue; remains source-visible.",
+      "observation": "Cloud-shadow cache ownership is changed slot by slot while eviction considers current references. A full set [A,B,C,D] changing to [E,A,B,C] can make A transiently unreferenced and eligible for eviction before a later slot binds it, causing an avoidable eviction/rebake cascade.",
+      "impact": "Preset transitions can perform repeated GPU baking/readback and create transient CPU/GPU/memory spikes. The analytic fallback preserves an output path but does not remove the redundant work.",
+      "recommendation": "Reconcile the complete desired key/owner set before admitting or evicting entries. Account for ground, sky and prewarm ownership together, preserving cancellation/generation tokens, bounded capacity and fallback.",
+      "verification_plan": "Add deterministic full-capacity reorder/overlap transitions, rapid preset changes, cancellation and owner release/reentry. Count admissions/evictions/bakes and compare output/fallback parity, then profile cold/warm transitions on each backend.",
+      "limits": "Source-derived transient ownership scenario; no live cloud transition or measured hitch was captured in this audit.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "start_line": 91,
+          "end_line": 118,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/cloud_shadow_map.gd#L91-L118"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "start_line": 315,
+          "end_line": 345,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/cloud_shadow_map.gd#L315-L345"
+        },
+        {
+          "path": "docs/plans/apple-silicon-performance.md",
+          "start_line": 878,
+          "end_line": 887,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/apple-silicon-performance.md#L878-L887"
+        }
+      ]
+    },
+    {
+      "id": "F29",
+      "title": "Cloud baking reads an HDR render target back to CPU and uploads a converted texture",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "GPU/CPU / synchronization and memory",
+      "owning_tracks": [
+        "DT-MAC",
+        "FW"
+      ],
+      "tracking_status": "Known cloud-cache qualification target; not a new claim that the analytic fallback is missing.",
+      "observation": "The non-headless cache path bakes 2048x2048 HDR SubViewports, calls get_image(), validates/converts to RGH and creates an ImageTexture. Four final two-channel half-float tiles contain 64 MiB of base-level texels in total; render targets, temporary Images, staging/copies and driver allocations are additional and backend-dependent.",
+      "impact": "Readback, validation/conversion and re-upload can synchronize CPU/GPU and amplify cold/preset-transition cost. Peak memory can exceed the final cache payload.",
+      "recommendation": "First measure bake/readback/convert/upload and cache churn separately. Compare offline/precomputed data or a GPU-resident publication path where compatible with the validated deterministic fallback. Retain content validation, lifecycle cancellation and bounded residency.",
+      "verification_plan": "Measure cold load, warm reuse, rapid preset transitions and F28 stress on Compatibility, Forward+ and native Metal. Capture peak RAM/VRAM when available, bake counts and frame gaps; test bad tiles, reset/reentry and device/provider failure.",
+      "limits": "64 MiB is logical texel arithmetic, not a measured VRAM footprint. No GPU execution occurred in this audit, and moving GPU calls to a worker is not automatically safe or faster.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "start_line": 33,
+          "end_line": 45,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/cloud_shadow_map.gd#L33-L45"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "start_line": 402,
+          "end_line": 435,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/cloud_shadow_map.gd#L402-L435"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "start_line": 488,
+          "end_line": 501,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/cloud_shadow_map.gd#L488-L501"
+        }
+      ]
+    },
+    {
+      "id": "F30",
+      "title": "Procedural grass collapses distant vertices after instance submission",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "GPU / visibility and geometry",
+      "owning_tracks": [
+        "VQ",
+        "LU",
+        "DT-MAC"
+      ],
+      "tracking_status": "Already identified in the external handoff; applies to the procedural fallback, not every default meadow path.",
+      "observation": "The procedural NearGrass path builds up to 6,000 clumps across four MultiMeshes. Its vertex shader collapses distant geometry, but when a whole MultiMesh batch remains visible, its instances are submitted and the distant ones reach the vertex shader. Godot MultiMesh visibility is coarse for the whole batch.",
+      "impact": "Distance collapse can save later raster work while leaving vertex/submission cost. Large batches also weaken spatial culling.",
+      "recommendation": "Compare conservative spatial chunks/visible instance ranges against extra draw calls, preserving all active views and the wind/time contract. Bulk instance-buffer preparation may help startup only if profiling shows setter overhead. Keep the imported vegetation route separate.",
+      "verification_plan": "Measure vertex/draw cost and frame time with pilot, chase, magnifier and reflection views; test field boundaries and fast camera motion. Compare visual density/transition stability at 1080p and the Mac native-panel target.",
+      "limits": "No rendered benchmark. Chunks can worsen draw overhead; vertex collapse is not itself proof of the dominant bottleneck. The stock imported meadow can use a different path.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/field.gd",
+          "start_line": 321,
+          "end_line": 335,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/field.gd#L321-L335"
+        },
+        {
+          "path": "app/render/near_grass.gd",
+          "start_line": 10,
+          "end_line": 17,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/near_grass.gd#L10-L17"
+        },
+        {
+          "path": "app/render/near_grass.gd",
+          "start_line": 229,
+          "end_line": 274,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/near_grass.gd#L229-L274"
+        },
+        {
+          "path": "app/render/near_grass.gdshader",
+          "start_line": 39,
+          "end_line": 51,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/near_grass.gdshader#L39-L51"
+        },
+        {
+          "path": "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md",
+          "start_line": 1,
+          "end_line": 100,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md#L1-L100"
+        }
+      ]
+    },
+    {
+      "id": "F31",
+      "title": "Zero-opacity cloud layers still compute density before alpha evaluation",
+      "priority": "P2",
+      "kind": "optimization_candidate",
+      "area": "GPU / shader work",
+      "owning_tracks": [
+        "FW",
+        "DT-MAC"
+      ],
+      "tracking_status": "Already identified in the external cloud/shader handoff.",
+      "observation": "Sky cloud evaluation computes density before alpha for a layer, with additional relief work later. An exactly zero-opacity layer can therefore pay work that may be removable under the intended compositing recurrence.",
+      "impact": "Preset transitions and disabled layers may retain unnecessary shader computation across many sky pixels or radiance updates.",
+      "recommendation": "Evaluate an exact-zero fast path before expensive density/relief work, preserving ordered compositing, zero-alpha state updates and floating-point behavior. Do not use a broad epsilon cutoff that changes fades.",
+      "verification_plan": "Compare zero, tiny-positive and transitioning opacity for every layer; include sky/radiance, day/night and each renderer. Inspect shader instructions and rendered frame cost on native hardware, plus visual equivalence at the accepted threshold.",
+      "limits": "A static candidate, not a measured shader improvement. GPU branch/compile behavior can erase or reverse an expected saving.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/sky.gdshader",
+          "start_line": 215,
+          "end_line": 244,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/sky.gdshader#L215-L244"
+        },
+        {
+          "path": "app/render/sky.gdshader",
+          "start_line": 266,
+          "end_line": 275,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/sky.gdshader#L266-L275"
+        },
+        {
+          "path": "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md",
+          "start_line": 1,
+          "end_line": 100,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md#L1-L100"
+        }
+      ]
+    },
+    {
+      "id": "F32",
+      "title": "Water refraction inherits opaque-screen-copy limitations and bandwidth cost",
+      "priority": "P2",
+      "kind": "renderer_constraint",
+      "area": "GPU / transparency and bandwidth",
+      "owning_tracks": [
+        "VQ-07",
+        "LU",
+        "DT-MAC"
+      ],
+      "tracking_status": "Known advanced-graphics qualification area; distinguish an engine constraint from a reproduced visual bug.",
+      "observation": "The water shader reads screen/depth textures and writes alpha. Godot documents that the 3D screen copy is captured after opaque geometry and before transparent geometry. Transparent smoke/canopies/other screen-reading surfaces therefore cannot be assumed to appear in that source, and the copy plus full-area water shading carries bandwidth cost.",
+      "impact": "Water/transparent intersections need explicit visual acceptance, and the screen-copy design may be expensive on bandwidth-limited GPUs or high-resolution outputs.",
+      "recommendation": "Test the actual content combinations and compare a scalable cheaper water/refraction option when profiling justifies it. Preserve shoreline/depth conventions per renderer. Extra viewports are a separate cost/coverage decision, not a free correctness fix.",
+      "verification_plan": "Capture smoke/canopy/water overlap, shoreline and near/far camera cases under Compatibility and supported native Metal/Forward+ routes. Compare bandwidth-sensitive settings, total frame cost and presentation quality; retain opaque/transparent limitations in the graphics contract.",
+      "limits": "No screenshot or GPU capture was made. This is a documented rendering limitation and optimization target, not a claim of an observed artifact in the current scene.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/lake/water.gdshader",
+          "start_line": 10,
+          "end_line": 35,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water.gdshader#L10-L35"
+        },
+        {
+          "path": "app/render/lake/water.gdshader",
+          "start_line": 137,
+          "end_line": 147,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water.gdshader#L137-L147"
+        },
+        {
+          "path": "app/render/lake/water.gdshader",
+          "start_line": 169,
+          "end_line": 201,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water.gdshader#L169-L201"
+        },
+        {
+          "path": "docs/plans/advanced-graphics.md",
+          "start_line": 207,
+          "end_line": 207,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/advanced-graphics.md#L207"
+        }
+      ]
+    },
+    {
+      "id": "F33",
+      "title": "Vegetation resources remain strongly cached for process lifetime",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "RAM/VRAM / resource lifecycle",
+      "owning_tracks": [
+        "LU",
+        "SC",
+        "DT-MAC"
+      ],
+      "tracking_status": "Already recorded as a retention/inventory task in the Apple plan.",
+      "observation": "Imported vegetation keeps static caches of parts, materials and shadow resources. These survive scene teardown and can accumulate catalog/quality variants during a session. The catalog and available variants bound the set; no unbounded leak was established.",
+      "impact": "Repeated scene/quality visits may retain more meshes/textures than the current flight needs. Source image file sizes do not reveal imported runtime allocation.",
+      "recommendation": "Inventory imported formats, unique resource identities and owners after controlled scene cycles. If retained unused variants exceed a justified budget, evaluate reference-aware eviction or explicit retirement without causing reload hitches or dangling resource use.",
+      "verification_plan": "Run repeated Home/flight/quality/reentry loops and a soak, observing steady-state RSS/resource counts and backend memory where supported. Verify active materials/shadows survive eviction and measure cold/warm reacquisition.",
+      "limits": "Source-supported retention, not proof of a leak or excessive VRAM. Exact resident/driver memory cannot be inferred from PNG/JPEG sizes.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 78,
+          "end_line": 85,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L78-L85"
+        },
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 115,
+          "end_line": 123,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L115-L123"
+        },
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 622,
+          "end_line": 632,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L622-L632"
+        },
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 769,
+          "end_line": 773,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L769-L773"
+        },
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 824,
+          "end_line": 877,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L824-L877"
+        },
+        {
+          "path": "app/scenery/imported_vegetation.gd",
+          "start_line": 914,
+          "end_line": 951,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/scenery/imported_vegetation.gd#L914-L951"
+        },
+        {
+          "path": "docs/plans/apple-silicon-performance.md",
+          "start_line": 908,
+          "end_line": 910,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/apple-silicon-performance.md#L908-L910"
+        }
+      ]
+    },
+    {
+      "id": "F34",
+      "title": "Visible lens film resubmits unchanged material parameters each frame",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU / render-state submission",
+      "owning_tracks": [
+        "VQ",
+        "DT-MAC"
+      ],
+      "tracking_status": "Existing low-priority delivery handoff candidate.",
+      "observation": "LensStack sets configuration constants/colors and dynamic film parameters in the visible-frame path. Hidden film already returns early. Much of the static configuration changes only on a material/configuration generation boundary.",
+      "impact": "Unchanged script-to-renderer setter calls may contribute avoidable CPU work; the number of calls alone does not establish GPU uploads or stalls.",
+      "recommendation": "Separate configuration/material-generation writes from truly dynamic parameters, preserving wetness, camera/light, pause and resource-replacement updates. Avoid a broad cache with stale material ownership.",
+      "verification_plan": "Count setters and measure full lens-enabled frames before/after; test visibility, material rebuild, weather transitions, pause/reset and camera/light changes. Use existing lens correctness and visual gates.",
+      "limits": "Optional candidate with unknown ROI. Hidden-film work is already avoided, and the rendering server may coalesce unchanged values.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/lens/lens_stack.gd",
+          "start_line": 536,
+          "end_line": 561,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lens/lens_stack.gd#L536-L561"
+        },
+        {
+          "path": "app/render/lens/lens_stack.gd",
+          "start_line": 863,
+          "end_line": 886,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lens/lens_stack.gd#L863-L886"
+        },
+        {
+          "path": "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md",
+          "start_line": 1,
+          "end_line": 100,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md#L1-L100"
+        }
+      ]
+    },
+    {
+      "id": "F35",
+      "title": "Field projected-shadow geometry is prepared before policy may hide it",
+      "priority": "P3",
+      "kind": "optimization_candidate",
+      "area": "CPU/RAM / scene construction",
+      "owning_tracks": [
+        "VQ-04b",
+        "SA-11",
+        "SA-12",
+        "DT-MAC"
+      ],
+      "tracking_status": "Intentional live-toggle preparation tradeoff already described in the shadow plan; low-priority measurement candidate.",
+      "observation": "Field construction attaches projected shadows before applying policy. The helper gathers/merges up to 16 casters even when projected shadows will be disabled or replaced by native shadows. Hidden projected targets are already reduced to 2x2, so the retained cost is not a full-size render-target leak.",
+      "impact": "Cold load and retained geometry may include work for a currently inactive feature, balanced against immediate toggling and fallback readiness.",
+      "recommendation": "Measure construction/retention first. Defer or cache eligible immutable field caster preparation only if live-toggle and fallback behavior remain correct. Do not blindly apply this to aircraft bind geometry, whose pose capture can require early preparation.",
+      "verification_plan": "Compare cold/warm loading and memory with shadows off/native/projected; exercise live toggles, fallback, reentry and immutable bind poses. Keep shader/time/physics separation and visual acceptance.",
+      "limits": "Source-visible design tradeoff, not an unconditional bug. Target resizing already addresses the obvious hidden-buffer concern.",
+      "performance_gain_measured": false,
+      "sources": [
+        {
+          "path": "app/render/field.gd",
+          "start_line": 352,
+          "end_line": 355,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/field.gd#L352-L355"
+        },
+        {
+          "path": "app/render/field_projected_shadows.gd",
+          "start_line": 22,
+          "end_line": 39,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/field_projected_shadows.gd#L22-L39"
+        },
+        {
+          "path": "app/render/field_projected_shadows.gd",
+          "start_line": 51,
+          "end_line": 72,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/field_projected_shadows.gd#L51-L72"
+        },
+        {
+          "path": "app/render/field_projected_shadows.gd",
+          "start_line": 94,
+          "end_line": 116,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/field_projected_shadows.gd#L94-L116"
+        },
+        {
+          "path": "app/render/shadow_field_policy.gd",
+          "start_line": 52,
+          "end_line": 72,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/shadow_field_policy.gd#L52-L72"
+        },
+        {
+          "path": "app/render/shadow_field_policy.gd",
+          "start_line": 396,
+          "end_line": 405,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/shadow_field_policy.gd#L396-L405"
+        },
+        {
+          "path": "app/render/projected_shadow.gd",
+          "start_line": 426,
+          "end_line": 438,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/projected_shadow.gd#L426-L438"
+        },
+        {
+          "path": "app/render/projected_shadow.gd",
+          "start_line": 510,
+          "end_line": 530,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/projected_shadow.gd#L510-L530"
+        },
+        {
+          "path": "docs/plans/shadows.md",
+          "start_line": 22,
+          "end_line": 26,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/shadows.md#L22-L26"
+        }
+      ]
+    }
+  ]
+}
