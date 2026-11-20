@@ -8,6 +8,13 @@ operating guide for **GOD-12-R1 / GOD-13-R1**; the [GOD TEST plan](../../docs/pl
 owns qualification status. The [general tool guide](README.md) owns source freezing,
 other scenarios, and event-stream semantics.
 
+**Next sequence — planned, not implemented:** [GOD-12-R2 / scenic and crash tour](../../docs/plans/god-test.md#4a-planned-scenic-and-crash-tour)
+adds runway takeoff, a low right turn past the pavilion/trees and rural house,
+one or two same-flight circuits, settings-preserving Home/Pause browsing, a
+horizontal roll and intentional aircraft-crash assessment. The commands below
+still run **V1**, including its airborne start and lighting Apply. The plan owns
+the new sequence and acceptance work; existing V1 results do not qualify V2.
+
 ## Run the complete workload
 
 Use a prepared checkout, the repository's pinned engine, and the Python environment
@@ -40,6 +47,8 @@ use `run runway-menus --aircraft <id>` instead. Normal pause, Settings, Controls
 lighting Apply, Home, and shutdown remain part of every complete tour case.
 
 ### What each aircraft actually does
+
+This is the implemented **V1** sequence.
 
 1. Start the real source/debug application through Startup and Home. Wait for a
    verified frame-watcher cursor before aircraft selection.

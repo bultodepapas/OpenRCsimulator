@@ -11,6 +11,11 @@ campaign on MacBook, Linux GPU and Windows, use the
 continuous stutter watcher, CPU/RSS sampler, per-device GPU observations and a
 verified suite report. The same guide owns hardware prerequisites and limits.
 
+The owner's [planned scenic/crash revision, GOD-12-R2](../../docs/plans/god-test.md#4a-planned-scenic-and-crash-tour)
+adds low flight after runway takeoff, one/two same-flight circuits, a horizontal
+roll, intentional impact/aftermath and settings-preserving menu browsing.
+It is not yet implemented; the current CLI and its evidence remain V1.
+
 ## Commands
 
 From the repository root, with the pinned Godot editor and prepared imports:

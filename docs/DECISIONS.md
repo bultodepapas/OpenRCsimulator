@@ -416,6 +416,19 @@ when that isolation cannot be established. The [operating contract](../tools/god
 owns commands and capabilities; the [GOD TEST ledger](plans/god-test.md#13-execution-steps-and-evidence-ledger)
 keeps real-hardware qualification open.
 
+**GOD-12-R2, 2026-11-20; planned scenic/crash sequence.** The next three-aircraft
+tour starts on the runway, climbs low, turns right past the club scenery and rural
+house, completes the declared circuit count, then performs a horizontal roll and
+an intentional terminal aircraft impact. Home and Pause navigation exercise panel
+responsiveness without changing settings; aircraft-preview selection is the explicit
+exception inside the isolated profile. Preserve impact, aftermath and accident-report
+observations before returning Home. Expected aircraft accident, application completion
+and performance remain separate outcomes; an app failure cannot satisfy the crash
+phase. All three aircraft need admitted takeoff/roll profiles. This changes the
+planned workload, not the implemented V1 command or its historical evidence; the
+[revised GOD TEST contract](plans/god-test.md#4a-planned-scenic-and-crash-tour) owns
+route details and acceptance work.
+
 **PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
 one-shot collector and two-snapshot union with a bounded multi-incident client
 watch. It reads every new row through cheap passive `since`/`lean` polls guarded by

@@ -2,7 +2,8 @@
 
 Owner: performance tooling, coordinated with the PT instrumentation, VQ performance,
 DT delivery, UI, controller, scenery and aircraft owners. Prefix: **GOD-01–13**.
-Date: 2026-11-10. Status: first usable source/debug implementation executed; hardware qualification remains open.
+Date: 2026-11-10; scenic/crash revision requested 2026-11-20. Status: first usable
+source/debug implementation executed; scenic/crash tour and hardware qualification remain open.
 This is the authoritative plan requested by the owner. The tool README will own
 implemented commands; this document owns remaining work and acceptance evidence.
 
@@ -136,6 +137,153 @@ landmark may remain executable but changes comparability. Camera/FOV/zoom matter
 aircraft proximity does not prove an object was visible or expensively rendered.
 Pilot and chase-camera cases are separate; record autozoom and projected size.
 
+## 4a. Planned scenic and crash tour
+
+**GOD-12-R2 — owner direction, 2026-11-20; planned `performance-tour-v2`.**
+This is the next three-aircraft workload, not an implemented command or a result.
+The current `performance-tour` still runs the airborne circuit and lighting Apply
+described in its [V1 operating guide](../../tools/godtest/PERFORMANCE_TOUR.md#what-each-aircraft-actually-does).
+Its previous passes do not establish the coverage below. Keep the existing
+`ugly-standard-v1` reference flight separate from this revised tour.
+
+Run the same ordered roster: **Ugly Stik → Avanti jet → Corsair**. Each case must
+start on the runway and use normal controls over the existing 240 Hz physics.
+The current pilot admits takeoff and roll only for the Stik; ground-start admission
+and calibrated takeoff, scenic navigation and roll profiles for all three aircraft
+are prerequisites. An unsupported aircraft must remain incomplete, with its reason;
+an airborne start or skipped maneuver cannot substitute for this workload.
+
+### Flight and menu sequence
+
+| Order | Phase | Required observation |
+| --- | --- | --- |
+| 1 | Normal startup and Home browsing | Observe first Home readiness; cycle all three aircraft previews and browse the declared Home panels; finish on the aircraft assigned to this case |
+| 2 | Load and runway takeoff | Verify selected/loaded/model identity, accepted ground start, acceleration, rotation and airborne departure |
+| 3 | Low climb and right turn | Establish the declared low AGL corridor, turn right and join the scenic route without a high-altitude shortcut |
+| 4 | Club and house scenery passes | Show the nearby pavilion and tree line, then the separate rural house at explicit route/view gates; retain scenery, camera and physical-flight evidence |
+| 5 | One or two circuits | Complete one clockwise circuit around the runway by default; optionally complete a second in the same uninterrupted flight, with independent lap receipts |
+| 6 | Pause browsing and resume | Traverse the declared Pause panels without changing settings; verify frozen flight state, menu responsiveness and healthy resumed flight |
+| 7 | Horizontal roll and recovery | Execute one full 360° aileron roll along a roughly level flight path; recover attitude, heading and usable energy inside the declared corridor |
+| 8 | Arm and perform intentional impact | Only after the preceding requirements pass, record the expected-impact boundary and fly into the designated impact region using normal controls |
+| 9 | Impact, aftermath and report | Observe collision/crash acceptance, presentation and accident-report readiness; inspect the wreck and damage breakdown without restarting the flight |
+| 10 | Home and shutdown | Return explicitly to Home, verify responsiveness and cleanup, then close the owned application with complete evidence |
+
+The nearby clubhouse-like object is `pavilion` at north/east **-22 / 0 m**; the
+tree line lies behind it. The main rural house is `farm-farmhouse` at
+**591.5 / 321 m**, a distinct, more distant landmark. Resolve current positions and
+tree IDs from scenery before launch rather than treating these inspected coordinates
+as permanent. Freeze a route that includes both scenery groups. Flying a generic
+runway orbit does not establish either scenic pass.
+
+The initial design target is roughly **30–60 m AGL** for the scenic legs, subject
+to per-aircraft calibration and terrain/obstacle clearance before the route is
+accepted. Final heights, turn radius, gates and camera framing remain to be refined.
+Freeze them in the versioned profile before measurement; do not relax them during
+a run to make the pilot pass. Record a bounded camera/FOV/zoom policy and visibility
+evidence at each gate, including the house and trees in the view. Proximity alone
+is insufficient. The normal scenery, rendering and physics systems remain active;
+seeing a tree does not prove that it has a collision proxy. Record observer/capture
+cost under the existing [comparison contract](#10-comparisons-and-observer-cost).
+
+Choose **one lap by default**, or two for a separately identified campaign, before
+launch. Count accepted positions around the runway, not only heading changes;
+each lap needs its own winding, corridor, altitude and minimum-duration receipt.
+Keep the same lap count across the three aircraft and baseline/candidate runs.
+The existing `--cycles 2` reloads through Home and is not a two-lap flight. This
+plan introduces no new CLI flag until the manifest, pilot and reporter support it.
+
+The horizontal roll is an aileron roll, not the legacy vertical-loop phase. Require
+approximately 360° accumulated body roll plus bounded altitude, track and cross-axis
+excursions, then stable recovery. Entry energy, clearance, tolerances and deadlines
+must be calibrated per aircraft; the Stik's current takeoff speed and maneuver
+profile are not fleet defaults. A failed roll must not be reclassified as the
+intentional crash that follows it.
+
+### Browse menus without changing settings
+
+Use a fixed route and dwell schedule recorded before the campaign. Visit at least
+three distinct panels from **Home** and three from **Pause**, and exercise focus,
+tabs or scrolling where supported. Preserve first-open and repeated-open timings.
+
+| Entry | Planned navigation | Invariant |
+| --- | --- | --- |
+| Home aircraft browser | Visit Stik, jet and Corsair previews, then restore the assigned aircraft | Preview/model readiness is timed; final selected, loaded and model IDs agree |
+| Home information | Open/close More flight details, Statistics and Help | No unrelated flight, practice activity or session is started |
+| Home configuration panels | Open Settings tabs and Controls, move focus/scroll, then close/cancel | No slider, toggle, binding, preset or saved value changes |
+| Pause configuration panels | Open Settings tabs and Session options → Controls, then return | Same session; physics remains paused throughout browsing |
+| Pause information and lighting | Open Statistics/Help and Sky and lighting, then return/cancel | No Apply, Save, Restore defaults or condition change; healthy resume follows |
+
+Measure the UI request, acknowledged state, first observed drawn state and readiness
+for the next action. Report those intervals separately, with frame-time spikes,
+stutter incidents and CPU/GPU/memory samples labeled by panel and transition.
+Missing draw/readiness evidence is unavailable data, not zero latency. These are
+application-observed timings; physical input-to-display latency needs its own
+external measurement. An unresponsive panel must time out with the trace retained.
+
+Take semantic readbacks before and after browsing for graphics, display, controls,
+weather and sky/time settings. Any unintended change is a failure. Aircraft preview
+selection is an explicitly allowed navigation action in the isolated run profile:
+the current UI saves the selection, so this is not a promise of zero filesystem
+writes. Verify the expected final aircraft and allow normal session bookkeeping.
+Prepare declared benchmark conditions separately from timed menu navigation.
+V2 must replace V1's lighting **Apply** step with open/browse/cancel; it must not
+silently inherit that settings mutation. Verify pause-state invariants and resumed
+input ownership as well as menu state.
+
+### Intentional crash and aftermath contract
+
+An intentional aircraft accident is required coverage; an application crash is a
+failure. Arm expected impact only after the scenic gates, required laps, menus and
+roll/recovery have completed. Retain the arm time, accepted state, planned impact
+region, descent/impact profile and control intent. Use ordinary physics contact;
+do not teleport, force a crash flag or replace damage logic. An accident before
+arming or outside the admitted impact contract remains unexpected failure.
+
+Keep continuous capture across the approach to impact and the aftermath. Initial
+observation windows are **at least five wall seconds before impact and 10–15 wall
+seconds after impact**, with a separate bounded deadline for report readiness;
+freeze the exact windows/deadline in the profile before acceptance. Missing coverage
+cannot pass. Physics may legitimately hold after a crash, so aftermath responsiveness
+uses wall time and drawing/UI progress, not a demand for continuing physics ticks.
+
+Record the accepted contact and accident, worst frame/stutter intervals, CPU/GPU
+and memory changes, existing effects/audio/debris when present, report allocation,
+deferred damage assessment and report readiness. Distinguish impact cost from
+report construction and later inspection. Exercise **Inspect wreck** and **Show
+damage breakdown**; verify their availability and response. Preserve the actual
+damage/report output without treating its current estimates as physical validation;
+see the [crash/damage scope](../CRASH-DAMAGE-PLAN.md).
+
+Keep automatic restart disabled until all aftermath evidence is collected. A missing
+report, hang, engine error, lost recording or forced termination cannot be accepted
+as an expected crash. Return Home explicitly; do not let restart hide the aftermath.
+The report must retain **flight outcome = accident**, alongside expected-impact
+coverage, data validity, application completion and the independent performance
+verdict. Earlier measurements survive a failed terminal phase, but the complete
+tour cannot pass without the terminal phase and clean shutdown.
+
+### Implementation and acceptance work
+
+These are requirements for **GOD-12-R2**; current status is maintained in the
+[execution ledger](#13-execution-steps-and-evidence-ledger).
+
+| Substep | Work | Required proof |
+| --- | --- | --- |
+| GOD-12-R2a | Ground starts and low scenic profiles for all three aircraft | Accepted takeoff/right-turn and resolved pavilion, trees and farmhouse view gates; per-aircraft energy/clearance and bounded failure evidence |
+| GOD-12-R2b | One/two same-flight laps and horizontal roll | Independent lap receipts, calibrated roll/recovery and refusal of incomplete geometry; no Home reload or airborne substitution |
+| GOD-12-R2c | Settings-preserving Home/Pause browsing | Declared routes, panel readiness timings, configuration readbacks, aircraft-selection exception and pause/resume invariants |
+| GOD-12-R2d | Expected impact and aftermath reporting | Explicit arm gate, accepted collision, retained accident outcome, report/inspection timings, early-accident/app-failure rejection and clean exit |
+| GOD-12-R2e | Contract checks and target-machine qualification | Focused failure fixtures, continuous native-physics rendered cases for all three aircraft, repeated matched campaigns on actual MacBook, Linux GPU and Windows hosts |
+
+Reuse the existing GOD TEST, frame watcher and CPU/GPU samplers. Preserve FPS lows,
+p95/p99/max frame time, stutter duration/count and monitoring availability by phase;
+do not hide the intentional-impact spike inside a whole-flight average. Compare
+each aircraft/phase only with the same V2 route, lap count, conditions, rendering,
+camera policy, crash profile and hardware identity. Report menus, low scenery,
+roll, impact and aftermath separately to guide optimization. Unavailable GPU data,
+headless execution or a reference-physics fallback cannot qualify the physical
+GPU campaign. V1 evidence remains valid only for its original workload.
+
 ## 5. Pilot and calibration
 
 State machine: PREFLIGHT → TAKEOFF → CLIMB → NAVIGATE → PAUSE → RESUME → ORBIT →
@@ -206,6 +354,7 @@ Record setup, preparation/warmup, measured interval and origin on every phase.
 | flight/pause | Selected routes or repeated pause/resume |
 | transitions | Settings, lighting, sky, physical weather, aircraft and field |
 | fleet | Admitted aircraft with explicit profile/coverage inventory |
+| scenic/crash tour (planned V2) | Three aircraft: ground takeoff, low scenery, one/two circuits, read-only menus, horizontal roll and intentional impact; [GOD-12-R2 contract](#4a-planned-scenic-and-crash-tour) |
 | graphics | Presets and independent available controls |
 | memory | Repeated Home/Fly cycles in the same process |
 | soak | Declared prolonged workload and degradation |
@@ -331,6 +480,11 @@ Exploratory collection preserves useful partial data without changing that rule.
 External watchdog terminates only the owned process tree and retains diagnostic
 prefixes; a prefix never establishes a completed soak.
 
+The planned [GOD-12-R2 expected-impact contract](#intentional-crash-and-aftermath-contract)
+adds an explicitly armed terminal aircraft accident while preserving the separate
+flight, execution, data, coverage and performance outcomes. It does not relax the
+current V1 failure rules or permit an application failure to count as crash coverage.
+
 ## 12. Declarative interface and files
 
 Initial format: versioned JSON, using existing Python/Godot support. YAML authoring
@@ -406,6 +560,7 @@ Status is maintained only here; tool instructions describe implemented commands.
 | GOD-11 | Comparison and JSON/HTML report | Implemented stream validation and matched-transition comparison; 17 Python checks; whole-flight geometric equivalence and repeated A/B statistics pending |
 | GOD-12 | Cycles, soak, hardware and overhead | Ten rendered load/flight/Home cycles completed; bounded memory/soak commands implemented; 50-cycle/30-minute and overhead qualification remain pending |
 | GOD-12-R1 | Three-aircraft runway/menu performance campaign | Implemented source/debug tour, continuous frame watcher, position-based lap and resumed-flight guards, process/GPU sampling and suite evidence checks; [operating contract](../../tools/godtest/PERFORMANCE_TOUR.md). Final three-aircraft headless cycle completed with valid/complete evidence and no GPU qualification; [2026-11-20 verification](../research/god-test/2026-11-20-performance-tour.md). Actual MacBook/Linux GPU/Windows qualification remains open. |
+| GOD-12-R2 | Low scenic takeoff, same-flight circuits, browse-only menus, roll and intentional crash | Planned; [owner's revised sequence and acceptance substeps](#4a-planned-scenic-and-crash-tour). Ground-start/roll admission for jet and Corsair, scenery visibility, menu readbacks and expected-impact reporting are not implemented by V1. No V2 execution or hardware result is claimed. |
 | GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release-package lanes remain pending |
 | GOD-13-R1 | Portable tooling and macOS profile adapter | Python tooling workflow is configured for Linux/Windows/macOS; private Mac launch copy changes only the project name. Local verification: 161 Python checks, three checked Godot fixtures and expected Startup profile refusal; [evidence](../research/god-test/2026-11-20-performance-tour.md). Hosted tests and headless control-flow evidence do not qualify target hardware. |
 
