@@ -620,12 +620,18 @@ extraction). The explicit operator tools below never touch failed, incomplete or
 `UNKNOWN` work, logs, reports or job records:
 
 ```powershell
+python tools/testqueue/retention.py                    # dry run: reclaimable inputs and why the rest is held
 python tools/testqueue/local_gc.py                     # dry run; --execute removes
 python tools/testqueue/testctl.py pool gc --host angel  # dry run; --execute removes
 python tools/testqueue/testctl.py pool reconcile JOB_ID [--operator-confirm]
 python tools/testqueue/testctl.py pool remote-reconcile --host angel JOB_ID
 ```
 
+- `retention.py` (TQ-05-F0.1) removes, after `--min-age-hours` (default 24):
+  - the `source` copy of finished, unclaimed `checked`/`debug-session` attempts, whatever their outcome except `UNKNOWN`. Those presets keep their evidence outside `source`.
+  - local and pool snapshots, and pool archives, that no unfinished job, unresolved submission, non-terminal receipt or non-final batch/MCP request names.
+
+  It prints hold reasons, so an abandoned batch that pins inputs is visible. Any unreadable pool receipt holds every pool input. `--execute` journals the plan under `<pool root>/retention/`, then recomputes references and removes only inputs that are still unreferenced. Archives are removed under the builder's lock. Records, verdicts, logs, collected results and `*.pending` files are never removed. The first run, on 20 November 2026, reclaimed 101 GB on `C:`.
 - `local_gc.py` removes `<attempt>/source` only for unclaimed attempts recorded
   `FINISHED/PASSED/COMPLETE/CONFIRMED`. It reads the store read-only and never
   follows a link, junction or reparse point.
