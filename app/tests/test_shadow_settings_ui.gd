@@ -157,6 +157,12 @@ func _settings_cases() -> void:
 	_select(settings, "ShadowTechnique", "projected")
 	_check("projected mode marks native-only options inactive", info.text.contains("Quality: Not active")
 		and info.text.contains("Distance limit: Not active") and info.text.contains("Softness: Not active"))
+	_check("SA-01: projected mode states that it cannot self-shadow", info.text.contains(settings.PROJECTED_SHADOW_LIMITATION)
+		and technique_picker.get_item_tooltip(2) == settings.PROJECTED_SHADOW_LIMITATION)
+	_select(settings, "ShadowTechnique", "native")
+	_select(settings, "ShadowSoftness", "soft")
+	if bool(ShadowSettings.describe().effective.native):
+		_check("SA-24: Soft names the filter it resolves to", info.text.contains("(PCF)") or info.text.contains("(PCSS)"))
 	settings._revert()
 	_check("Revert restores the saved choice and active receipt", settings._draft.shadow_technique == "native"
 		and ShadowSettings.describe().requested.shadow_technique == "native"

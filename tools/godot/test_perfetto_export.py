@@ -238,6 +238,25 @@ class PerfettoExportTests(unittest.TestCase):
         self.assertEqual(metadata["sources"]["frames"]["gpu_timer"]["interpretation"], "unavailable_or_zero")
         self.assertEqual(metadata["clock"]["mode"], "relative_frame_timeline")
 
+    def test_positive_gpu_polls_are_labelled_unverified_with_status_track(self):
+        frames = frame_report(gpu_values=[0.0, 2.0], raw_extra={"render_gpu_status": [1.0, 2.0]})
+        frames["frame_diagnostics"] = {"render_timing_available": True}
+        events, _partial = build_trace(frames=frames)
+        metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+        self.assertEqual(metadata["sources"]["frames"]["gpu_timer"]["interpretation"],
+                         "positive_freshness_unverified_with_zero_sentinels")
+        self.assertFalse(any("unexported frame metrics" in issue for issue in metadata.get("issues", [])))
+        status = [event["args"]["value"] for event in events if event.get("name") == "frame.render_gpu_status [code]"]
+        self.assertEqual(status, [1.0, 2.0])
+
+    def test_status_track_is_omitted_with_unusable_gpu_readings(self):
+        for gpu, available in (([0.0, 0.0], True), ([0.0, 2.0], False)):
+            frames = frame_report(gpu_values=gpu, raw_extra={"render_gpu_status": [1.0, 2.0 if gpu[1] else 1.0]})
+            frames["frame_diagnostics"] = {"render_timing_available": available}
+            with self.subTest(gpu=gpu, available=available):
+                events, _partial = build_trace(frames=frames)
+                self.assertFalse(any("render_gpu_status" in event.get("name", "") for event in events))
+
     def test_empty_frame_capture_id_is_allowed_only_for_single_source_trace(self):
         events, partial = build_trace(frames=frame_report(capture_id=""))
         self.assertFalse(partial)

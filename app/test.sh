@@ -79,6 +79,57 @@ run_reference_unit() {
   run "$@"
 }
 
+# BEGIN section helpers
+# Each integration gate is written as
+#   section "label"; section_body() {
+#   ...commands...
+#   }; end_section
+# end_section runs the body in its own subshell with errexit, so one gate cannot change
+# another's variables or directory. OPENRC_KEEP_GOING=1 (CI) records a failed gate and
+# continues with the next gates and phases; the exit status still fails and the EXIT trap
+# lists every failed gate. The default 0 stops at the first failure.
+KEEP_GOING="${OPENRC_KEEP_GOING-0}"
+[[ "$KEEP_GOING" == 0 || "$KEEP_GOING" == 1 ]] || { echo "OPENRC_KEEP_GOING must be 0 or 1" >&2; exit 2; }
+FAILED_SECTIONS=()
+SECTION_LABEL=""
+section() {
+  if [[ -n "$SECTION_LABEL" ]] || declare -F section_body > /dev/null; then
+    echo "test.sh: section '${SECTION_LABEL:-?}' is not closed by end_section before '$1'" >&2
+    exit 2
+  fi
+  SECTION_LABEL="$1"
+  echo "== $1"
+}
+end_section() {
+  local status=0
+  [[ -n "$SECTION_LABEL" ]] && declare -F section_body > /dev/null \
+    || { echo "test.sh: end_section without section and section_body" >&2; exit 2; }
+  set +e
+  ( set -e; section_body )
+  status=$?
+  set -e
+  unset -f section_body
+  if (( status != 0 )); then
+    FAILED_SECTIONS+=("$SECTION_LABEL (exit $status)")
+    echo "FAILED: $SECTION_LABEL (exit $status)" >&2
+    SECTION_LABEL=""
+    [[ "$KEEP_GOING" == 1 ]] || exit "$status"
+  fi
+  SECTION_LABEL=""
+}
+# Prints the failed gates; returns nonzero when any gate failed or one was left unclosed.
+report_sections() {
+  if [[ -n "$SECTION_LABEL" ]]; then
+    FAILED_SECTIONS+=("$SECTION_LABEL (interrupted, or not closed by end_section)")
+    SECTION_LABEL=""
+  fi
+  (( ${#FAILED_SECTIONS[@]} == 0 )) && return 0
+  echo "== ${#FAILED_SECTIONS[@]} failed section(s):" >&2
+  printf '  %s\n' "${FAILED_SECTIONS[@]}" >&2
+  return 1
+}
+# END section helpers
+
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
 echo "== import resource dependencies"
@@ -93,7 +144,7 @@ mkdir -p "$CHECK_OUT"
 LOG="$(mktemp)"
 RUN_SUFFIX="${LOG##*/}"
 ROSTER="$(mktemp)"; ROSTER_CURRENT="$(mktemp)"; ROSTER_DONE="$(mktemp)"; ROSTER_STATE="$(mktemp)"
-trap 'queue_status=$?; rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"; if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then python3 "$HERE/../tools/testqueue/entry.py" receipt suite "$queue_status"; fi; exit "$queue_status"' EXIT
+trap 'queue_status=$?; if ! report_sections && (( queue_status == 0 )); then queue_status=1; fi; rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"; if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then python3 "$HERE/../tools/testqueue/entry.py" receipt suite "$queue_status"; fi; exit "$queue_status"' EXIT
 ROSTER_HELPER="$HERE/../tools/ci/phase_roster.py"
 collect_parse_roster() {
   python3 "$ROSTER_HELPER" collect "$HERE" parse "$PARSE_COVERAGE"
@@ -103,68 +154,81 @@ collect_unit_roster() {
 }
 
 if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-source ]]; then
-echo "== CI and local generated source checks"
+section "CI and local generated source checks"; section_body() {
 bash "$HERE/../tools/ci/check-sources.sh"
-echo "== GP-12: fixed-brake comparison failure controls"
+}; end_section
+section "GP-12: fixed-brake comparison failure controls"; section_body() {
 python3 -m unittest discover -s "$HERE/../tools/godot" -p test_fixed_brake_legacy.py
+}; end_section
 
-echo "== LU-30: downloaded power-line extracts stay current"
+section "LU-30: downloaded power-line extracts stay current"; section_body() {
 python3 "$HERE/../tools/scenery/bake_power_cable.py" --check
 python3 "$HERE/../tools/scenery/bake_power_insulator.py" --check --godot "$GODOT"
+}; end_section
 
-echo "== PT1h-R1: real-engine diagnostic failure matrix"
+section "PT1h-R1: real-engine diagnostic failure matrix"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_run_checked.py" NativeGodotTests
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_frame_capture.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_lifecycle_probe.py" LifecycleProbeFixtureTests
+}; end_section
 
-echo "== HELI-03a/04: independent mean-inflow reference stays current"
+section "HELI-03a/04: independent mean-inflow reference stays current"; section_body() {
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
 python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
 run_reference_unit --script res://tests/test_heli_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/oracle.json"
+}; end_section
 
-echo "== HELI-04-R1/05: transient flow and main-rotor references stay current"
+section "HELI-04-R1/05: transient flow and main-rotor references stay current"; section_body() {
 python3 "$HERE/../research/helicopter/reference/test_dynamic_inflow.py"
 python3 "$HERE/../research/helicopter/reference/test_main_rotor.py"
 python3 "$HERE/../research/helicopter/reference/make_dynamic_oracle.py" --check
 python3 "$HERE/../research/helicopter/reference/make_main_rotor_oracle.py" --check
 run_reference_unit --script res://tests/test_heli_dynamic_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json"
 run_reference_unit --script res://tests/test_heli_main_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json"
+}; end_section
 
-echo "== HELI-06a: linearized tail-rotor reference stays current"
+section "HELI-06a: linearized tail-rotor reference stays current"; section_body() {
 python3 "$HERE/../research/helicopter/reference/test_tail_rotor.py"
 python3 "$HERE/../research/helicopter/reference/make_tail_rotor_oracle.py" --check
 run_reference_unit --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
+}; end_section
 
-echo "== HELI-06b/c: passive airframe and joint aerodynamic stage"
+section "HELI-06b/c: passive airframe and joint aerodynamic stage"; section_body() {
 python3 "$HERE/../research/helicopter/reference/test_airframe.py"
 python3 "$HERE/../research/helicopter/reference/make_airframe_oracle.py" --check
 run_reference_unit --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
 run_reference_unit --script res://tests/test_heli_aerodynamic_stage.gd
+}; end_section
 
-echo "== HELI-16: generated experimental rotorcraft quantities stay current"
+section "HELI-16: generated experimental rotorcraft quantities stay current"; section_body() {
 python3 "$HERE/../research/helicopter/xcell/derive.py" --check
 python3 "$HERE/../research/helicopter/xcell/test_derive.py"
+}; end_section
 
-echo "== HELI-36a: advanced laboratory candidate identity and admission"
+section "HELI-36a: advanced laboratory candidate identity and admission"; section_body() {
 python3 "$HERE/../research/helicopter/hx700/derive.py" --check
 python3 "$HERE/../research/helicopter/hx700/test_derive.py"
+}; end_section
 
-echo "== HELI-25c: articulated inspection source, bindings and copy identity"
+section "HELI-25c: articulated inspection source, bindings and copy identity"; section_body() {
 python3 "$HERE/../research/helicopter/assets/compile_hx700_articulated.py"
 python3 "$HERE/../research/helicopter/assets/compile_hx700_motion.py" --check
 python3 "$HERE/../research/helicopter/assets/test_compile_hx700_motion.py"
+}; end_section
 
-echo "== D11-R1: induced-flow aileron derivation"
+section "D11-R1: induced-flow aileron derivation"; section_body() {
 python3 -m unittest discover -s "$HERE/../research/aero" -p "test_aileron_effectiveness.py"
+}; end_section
 
-echo "== AS-01/02: versioned aircraft contract and migration stay current"
+section "AS-01/02: versioned aircraft contract and migration stay current"; section_body() {
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 python3 "$HERE/../research/aircraft-standardization/test_physical_identity_sources.py"
+}; end_section
 
-echo "== AS-07/09: shared aircraft modules and generated model bindings"
+section "AS-07/09: shared aircraft modules and generated model bindings"; section_body() {
 python3 "$HERE/../research/aircraft-standardization/test_conformance.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
 python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
@@ -173,32 +237,38 @@ python3 "$HERE/../research/aircraft-standardization/test_moonrunner_geometry.py"
 python3 "$HERE/../research/aircraft-standardization/test_moonrunner_overlay.py"
 python3 "$HERE/../tools/aircraft/moonrunner/test_lab.py"
 python3 "$HERE/../tools/skins/test_skin_kits.py"
+}; end_section
 
-echo "== CR-29: sourced economics catalog and aircraft coverage stay current"
+section "CR-29: sourced economics catalog and aircraft coverage stay current"; section_body() {
 python3 "$HERE/../research/crash-economics/build_catalog.py" --check
 python3 "$HERE/../research/crash-economics/build_runtime.py" --check
 python3 -m unittest discover -s "$HERE/../research/crash-economics" -p 'test_*.py'
+}; end_section
 
-echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
+section "AE-01: generated Workshop descriptors and exact-byte checkout bindings"; section_body() {
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
+}; end_section
 
-echo "== AE-24: generated presentation bindings and source pins stay current"
+section "AE-24: generated presentation bindings and source pins stay current"; section_body() {
 python3 "$HERE/../research/aircraft-standardization/build_customization.py" --check
 python3 "$HERE/../research/aircraft-standardization/test_customization.py"
+}; end_section
 
-echo "== AUD-12: generated Master safety-limiter bus layout stays current"
+section "AUD-12: generated Master safety-limiter bus layout stays current"; section_body() {
 run --script "$HERE/../tools/audio/make_bus_layout.gd" -- --check
+}; end_section
 
-echo "== BAT-05/06: generated battery data and the independent pack_ecm reference stay current"
+section "BAT-05/06: generated battery data and the independent pack_ecm reference stay current"; section_body() {
 python3 "$HERE/../research/battery/bat-05/build_batteries.py" --check
 python3 "$HERE/../research/battery/test_ecm_reference.py"
 BAT06_PROBE="$(mktemp)"
 run --script "$HERE/../research/battery/bat-06/law_probe.gd" -- --out="$BAT06_PROBE" > /dev/null
 python3 "$HERE/../research/battery/bat-06/compare_law.py" "$BAT06_PROBE" > /dev/null || { rm -f "$BAT06_PROBE"; echo "BAT-06 runtime law disagrees with the reference"; exit 1; }
 rm -f "$BAT06_PROBE"
+}; end_section
 
-echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
+section "NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"; section_body() {
 python3 "$HERE/../research/glow-engines/build_profiles.py" --check
 python3 "$HERE/../research/glow-engines/build_installations.py" --check
 python3 "$HERE/../research/glow-engines/installation_schema.py" --check
@@ -215,71 +285,89 @@ python3 "$HERE/../research/fuel-systems/test_fuel_registry.py"
 python3 "$HERE/../research/fuel-systems/test_mass_balance_report.py"
 python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json" --fail-on-drift
 python3 "$HERE/../research/glow-engines/reference/test_reference.py"
+}; end_section
 
-echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
+section "P51-16: separated hardware inventory and physical inertia stay consistent"; section_body() {
 python3 "$HERE/../research/p51/p51-15/test_inventory.py"
+}; end_section
 
-echo "== D11g: Stik rate derivatives and provenance match the current local law"
+section "D11g: Stik rate derivatives and provenance match the current local law"; section_body() {
 run --script "$HERE/../research/aero/d11g/derive_rate_derivatives.gd" -- --check
+}; end_section
 
-echo "== AV-15: independent geometry, inventory and fixed-build sensitivity checks"
+section "AV-15: independent geometry, inventory and fixed-build sensitivity checks"; section_body() {
 python3 "$HERE/../research/avanti-s/av14/test_geometry_inventory.py"
 python3 "$HERE/../research/avanti-s/av14/test_sensitivity.py"
 python3 "$HERE/../research/avanti-s/av17-r2/test_build_polar.py"
+}; end_section
 
-echo "== L6b offline tree placement matches committed positions"
+section "L6b offline tree placement matches committed positions"; section_body() {
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
 python3 "$HERE/../tools/trees/test_place.py"
+}; end_section
 
-echo "== AFC-02-R3: companion re-bind tool and its qualification record stay consistent"
+section "AFC-02-R3: companion re-bind tool and its qualification record stay consistent"; section_body() {
 python3 "$HERE/../tools/companions/test_rebind.py"
 run --check-only --script "$HERE/../tools/companions/solver_identity.gd"
+}; end_section
 
-echo "== L7-R1 woodland-edge recipe and full-envelope exclusions stay current"
+section "L7-R1 woodland-edge recipe and full-envelope exclusions stay current"; section_body() {
 python3 "$HERE/../tools/trees/place_woodland_edges.py" --check
 python3 "$HERE/../tools/trees/test_place_woodland_edges.py"
+}; end_section
 
-echo "== No tracked file above 50 MiB without a recorded reason, none above GitHub's 100 MiB limit"
+section "No tracked file above 50 MiB without a recorded reason, none above GitHub's 100 MiB limit"; section_body() {
 python3 "$HERE/../tools/repo/check_large_files.py"
+}; end_section
 
-echo "== LU-34-R1 scene budget report counts every instance of instanced LOD meshes"
+section "LU-34-R1 scene budget report counts every instance of instanced LOD meshes"; section_body() {
 python3 "$HERE/../tools/scenery/test_attribution_report.py"
+}; end_section
 
-echo "== SC-HUM-07 field-people outfits, shipped variants and manifests agree; scenery layout matches its generator"
+section "SC-HUM-07 field-people outfits, shipped variants and manifests agree; scenery layout matches its generator"; section_body() {
 python3 "$HERE/../tools/scenery/population/test_outfits.py"
 python3 "$HERE/../tools/scenery/place.py" --check
+}; end_section
 
-echo "== L11a offline grass placement matches committed offsets"
+section "L11a offline grass placement matches committed offsets"; section_body() {
 python3 "$HERE/../tools/grass/place.py" --check
 python3 "$HERE/../tools/grass/test_place.py"
+}; end_section
 
-echo "== L9e packed turf data matches its deterministic generator"
+section "L9e packed turf data matches its deterministic generator"; section_body() {
 python3 "$HERE/../tools/ground/turf_generate.py" --check
+}; end_section
 
-echo "== L7 offline hill profile matches committed heights"
+section "L7 offline hill profile matches committed heights"; section_body() {
 python3 "$HERE/../tools/terrain/gen_terrain.py" --check
+}; end_section
 
-echo "== FW-21/FW-24 sky table and star list match their generators"
+section "FW-21/FW-24 sky table and star list match their generators"; section_body() {
 python3 "$HERE/../tools/world/sky_table.py" --check
 python3 "$HERE/../tools/world/stars.py" --check
+}; end_section
 
-echo "== E0b2: Stik hub and neutral tail geometry stay current"
+section "E0b2: Stik hub and neutral tail geometry stay current"; section_body() {
 python3 "$HERE/../research/propwash/e0b2/derive_geometry.py" --check
 python3 "$HERE/../research/propwash/e0b2/test_geometry.py"
+}; end_section
 
-echo "== E0b3b: neutral Stik wash profiles stay current"
+section "E0b3b: neutral Stik wash profiles stay current"; section_body() {
 python3 "$HERE/../research/propwash/e0b3b/derive_profile.py" --check
 python3 "$HERE/../research/propwash/e0b3b/test_profile.py"
+}; end_section
 
-echo "== RCV-04a: independent suspension reference and headless bench exports"
+section "RCV-04a: independent suspension reference and headless bench exports"; section_body() {
 python3 "$HERE/../research/rc-monster-truck/generate_suspension_reference.py" --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_suspension_cli.py"
+}; end_section
 
-echo "== RCV-04b: coupled support reference and headless experiments"
+section "RCV-04b: coupled support reference and headless experiments"; section_body() {
 python3 "$HERE/../research/rc-monster-truck/generate_support_reference.py" --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_support_cli.py"
+}; end_section
 
-echo "== RCV-14a: supplied MT8 visual intake and isolated inspector"
+section "RCV-14a: supplied MT8 visual intake and isolated inspector"; section_body() {
 python3 "$HERE/../research/rc-monster-truck/build_visual.py" --check
 python3 "$HERE/../research/rc-monster-truck/build_vehicle_data.py" --check
 python3 "$HERE/../research/rc-monster-truck/test_vehicle_data_generator.py"
@@ -289,13 +377,15 @@ python3 "$HERE/../research/rc-monster-truck/test_asset_intake.py"
 run_with_timeout 180 --script "$HERE/../research/rc-monster-truck/visual/test_mt8_visual.gd"
 run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=en
 run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=es
+}; end_section
 
-echo "== RCV-35: source-derived MONSTER CAR 2 data stays current"
+section "RCV-35: source-derived MONSTER CAR 2 data stays current"; section_body() {
 python3 "$HERE/../research/rc-monster-truck/monster-car-2/build_vehicle_data.py" --check
 python3 "$HERE/../research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py"
 python3 "$HERE/../research/rc-monster-truck/monster-car-2/visual_verify.py"
+}; end_section
 
-echo "== float64 guard: no 32-bit math types in simulation code"
+section "float64 guard: no 32-bit math types in simulation code"; section_body() {
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.
 SIM_DIRS=()
@@ -303,22 +393,25 @@ for d in sim physics; do [ -d "$HERE/$d" ] && SIM_DIRS+=("$HERE/$d"); done
 if [ ${#SIM_DIRS[@]} -gt 0 ] && grep -rnE '^\s*[^#[:space:]].*\b(Vector2|Vector3|Vector4|Basis|Quaternion|Transform3D)\b' "${SIM_DIRS[@]}"; then
   echo "32-bit math type found in simulation code (see lines above)"; exit 1
 fi
+}; end_section
 
-echo "== H6: transcendental calls stay behind math3d"
+section "H6: transcendental calls stay behind math3d"; section_body() {
 python3 "$HERE/tests/check_transcendentals.py"
 python3 "$HERE/tests/check_transcendentals.py" --self-test
+}; end_section
 
-echo "== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)"
+section "shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)"; section_body() {
 # Shader files, plus any script that embeds shader code. Comment lines (// or #) are ignored.
 SHADER_FILES=$(cd "$HERE" && { find . \( -name '*.gdshader' -o -name '*.gdshaderinc' \) -not -path './.godot/*'; grep -rl --include='*.gd' 'shader_type' . 2>/dev/null | grep -v '^./.godot/' || true; } | sort -u)
 for f in $SHADER_FILES; do
   if grep -nE '^\s*[^/#[:space:]].*\bTIME\b' "$HERE/$f"; then echo "TIME used in $f (use the sim_clock global uniform)"; exit 1; fi
 done
+}; end_section
 
 fi # offline generators and references
 
 if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-parse ]]; then
-echo "== parse check: $PARSE_COVERAGE"
+section "parse check: $PARSE_COVERAGE"; section_body() {
 collect_parse_roster > "$ROSTER"
 : > "$ROSTER_DONE"
 PARSE_RECEIPT="$CHECK_OUT/roster-parse-$RUN_SUFFIX.json"
@@ -329,6 +422,7 @@ while IFS= read -r -d '' f; do
 done < "$ROSTER"
 collect_parse_roster > "$ROSTER_CURRENT"
 python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$PARSE_RECEIPT" "$PARSE_COVERAGE"
+}; end_section
 fi
 
 expected_failure() {
@@ -417,7 +511,7 @@ for t in "${unit_tests[@]}"; do
     test_flight_loading.gd|test_ui_pause.gd|test_ui_screen_stack.gd|test_ui_time_of_day.gd|test_landing_variations.gd|test_input_report_cli.gd|test_latency_patch_cli.gd) test_timeout=180 ;;
     test_ui_home_preview_cache.gd) test_timeout=180 ;; # F4U-20-R2: all 13 imported paints, fresh/cached light parity and eviction; 46 s natively.
     test_ui_home_layout.gd) test_timeout=180 ;; # Nine-locale layout matrix: 3,564 checks, measured 66 s on Linux.
-    test_ui_modal_responsive.gd) test_timeout=600 ;; # Nine-locale modal matrix: 3,024 cases, measured 249 s under shared-host load.
+    test_ui_modal_responsive.gd) test_timeout=600 ;; # Nine-locale modal matrix: 3,534 cases (incl. the telemetry notice), measured 309 s under shared-host load.
     test_heli_session.gd|test_heli_ground_session.gd|test_heli_ground_heading.gd) test_timeout=300 ;; # Actual hover/landing, signed ground-heading tapes, liftoff and checkpoint replay.
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
@@ -465,51 +559,62 @@ python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTE
 fi
 if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 
-echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
+section "H7: exact one-ulp math sensitivity and golden branch signatures"; section_body() {
 python3 "$HERE/tests/test_check_math_sensitivity_imports.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
+}; end_section
 
-echo "== L5: invalid field files fail before Home or flight can start"
+section "L5: invalid field files fail before Home or flight can start"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes
+}; end_section
 
-echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model team)"
+section "aircraft model contract (aircraft/verify_model.gd, owned by the model team)"; section_body() {
 run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)"
+section "Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)"; section_body() {
 run --script res://aircraft/verify_extra.gd 2>&1 | tee "$LOG" | tail -2
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)"
+section "P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)"; section_body() {
 python3 "$HERE/../assets/aircraft/p51d-mustang-120/compile_appearance.py" --check || exit 1
-echo "== P-51D ground-effect table is not stale (p51-20/ground_effect_vlm.py --check)"
+}; end_section
+section "P-51D ground-effect table is not stale (p51-20/ground_effect_vlm.py --check)"; section_body() {
 python3 "$HERE/../research/p51/p51-20/ground_effect_vlm.py" --check || exit 1
+}; end_section
 
-echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"
+section "P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"; section_body() {
 run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 model contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01/V14: rudder, elevators and flaps at the flown throws and 45 deg; ~75 s native)"
+section "P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01/V14: rudder, elevators and flaps at the flown throws and 45 deg; ~75 s native)"; section_body() {
 run_with_timeout 180 --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== Vantage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"
+section "Vantage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"; section_body() {
 python3 "$HERE/../assets/aircraft/avanti-s-a200/compile_blender.py" --check || exit 1
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Vantage Jet visual contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== Turbo Lumber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)"
+section "Turbo Lumber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)"; section_body() {
 run --script "$HERE/../research/timber/tt02/measure_mesh.gd" -- --out="$HERE/../assets/aircraft/turbo-lumber-evolution/mesh-measurements.json" --check 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Lumber mesh measurements are stale or the importer changed (see above)"; exit 1; fi
 python3 "$HERE/../research/timber/tt03/check_asset.py" --check || exit 1
 python3 "$HERE/../research/timber/tt07/sensitivity.py" --check
 python3 "$HERE/../research/timber/tt07/test_derive.py"
+}; end_section
 
-echo "== Turbo Lumber Evolution model contract (aircraft/verify_timber.gd, TT-03/TT-05: imported scene, pivots, signs, propeller, gear)"
+section "Turbo Lumber Evolution model contract (aircraft/verify_timber.gd, TT-03/TT-05: imported scene, pivots, signs, propeller, gear)"; section_body() {
 run --script res://aircraft/verify_timber.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Lumber model contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== F4U Corsair identity, generated data and model contract (F4U-03/05/07/11/12: manifest, rig, physics, costing, imported scene)"
+section "F4U Corsair identity, generated data and model contract (F4U-03/05/07/11/12: manifest, rig, physics, costing, imported scene)"; section_body() {
 python3 "$HERE/../research/f4u-corsair/F4U-03/manifest.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-05/compile_model.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/ground_effect_vlm.py" --check || exit 1
@@ -519,47 +624,60 @@ python3 "$HERE/../research/f4u-corsair/F4U-07/derive_physics.py" --check || exit
 python3 "$HERE/../research/f4u-corsair/F4U-11/costing_entry.py" --check || exit 1
 run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "F4U Corsair model contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== MoonRunner X99 identity, generated data and model contract (X8-00/02/06: manifest, assets, model, physics, imported scene)"
+section "MoonRunner X99 identity, generated data and model contract (X8-00/02/06: manifest, assets, model, physics, imported scene)"; section_body() {
 run --script res://aircraft/verify_moonrunner_x99.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "X8 model contract failed (see above)"; exit 1; fi
+}; end_section
 
-echo "== C7-R1: trace completion, finite samples and failure exits"
+section "C7-R1: trace completion, finite samples and failure exits"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
+}; end_section
 
-echo "== GP-12: fixed-gear brake trace roles and version boundaries"
+section "GP-12: fixed-gear brake trace roles and version boundaries"; section_body() {
 python3 "$HERE/tests/test_fixed_brake_trace_contract.py"
+}; end_section
 
-echo "== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route"
+section "D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route"; section_body() {
 run --script "$HERE/../research/flight-robustness/d8b-r2/make_candidates.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_analog.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_v2.gd" -- --check
-echo "== EX-14h: the Extra's post-stall wing polar fit is not stale (research/extra-300/ex14/fit_wing_polar.gd --check)"
+}; end_section
+section "EX-14h: the Extra's post-stall wing polar fit is not stale (research/extra-300/ex14/fit_wing_polar.gd --check)"; section_body() {
 run --script "$HERE/../research/extra-300/ex14/fit_wing_polar.gd" -- --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_pullup_cli.py"
+}; end_section
 
-echo "== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"
+section "M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_weather_cli.py"
+}; end_section
 
-echo "== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence"
+section "M5-W04a: seeded turbulence trace oracle and complete-state FPS independence"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_turbulence_cli.py"
+}; end_section
 
-echo "== M5-ATM: independent atmosphere, EAS and environment replay checks"
+section "M5-ATM: independent atmosphere, EAS and environment replay checks"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_cli.py"
+}; end_section
 
-echo "== M5-ATM-4 / VAL-AUD-R09: complete v11 standard-column CLI traces and endpoint/k1 ISA reader"
+section "M5-ATM-4 / VAL-AUD-R09: complete v11 standard-column CLI traces and endpoint/k1 ISA reader"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_column_cli.py"
+}; end_section
 
-echo "== TOD-09a: independent Gregorian clock fixtures stay current"
+section "TOD-09a: independent Gregorian clock fixtures stay current"; section_body() {
 python3 "$HERE/../research/time-of-day/tod-09a/calendar_oracles.py" --check
+}; end_section
 
-echo "== TOD-05/07: selected time, visual context and unchanged flight physics"
+section "TOD-05/07: selected time, visual context and unchanged flight physics"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_time_of_day_cli.py"
+}; end_section
 
-echo "== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence"
+section "G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence"; section_body() {
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_shaft_cli.py"
+}; end_section
 
-echo "== app: headless --trace starts in trimmed level flight (all five catalog aircraft)"
+section "app: headless --trace starts in trimmed level flight (all five catalog aircraft)"; section_body() {
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
@@ -584,19 +702,23 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "openrc-trace v14" "$TRACE" && grep -q "mass_base_trace_format.*openrc-trace v13" "$TRACE" || { echo "the default Lumber trace is not a finite-pack mass trace"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"; rm -f "$TRACE"
-echo "== Vantage Jet physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
+}; end_section
+section "Vantage Jet physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"; section_body() {
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
-echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
+}; end_section
+section "app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"; section_body() {
 expected_failure unknown-aircraft 1 "aircraft 'no-such-aircraft' refused: not in the catalog (" \
   -- --aircraft=no-such-aircraft --trace=/dev/null --t=1
 echo "refused"
+}; end_section
 
-echo "== NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces"
+section "NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces"; section_body() {
 GLOW_WORK="$(mktemp -d)"
 python3 "$HERE/../research/glow-engines/packaged_smoke.py" --godot "$GODOT" --out "$GLOW_WORK/results"
 rm -rf "$GLOW_WORK"
+}; end_section
 
-echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
+section "frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"; section_body() {
 FT="$(mktemp --suffix=.json)"
 run -- --frametimes="$FT" --t=1.5 > /dev/null 2>&1
 python3 - "$FT" <<'PY'
@@ -615,8 +737,9 @@ assert all(k in r for k in ("adapter", "api", "godot", "os", "vsync", "physics_u
 print(f"frame-time report: {r['frames']} frames, p50 {ms['p50']:.2f} <= p95 {ms['p95']:.2f} <= p99 {ms['p99']:.2f} ms")
 PY
 rm -f "$FT"
+}; end_section
 
-echo "== VQ-01b: scripted logger disables input and identifies its route"
+section "VQ-01b: scripted logger disables input and identifies its route"; section_body() {
 FT="$(mktemp --suffix=.json)"
 run -- --frametimes="$FT" --warmup=0 --t=0.1 --scripted --case=logger-smoke > "$LOG" 2>&1
 if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
@@ -631,7 +754,8 @@ assert r["warmup_s"] == 0 and r["backend"] and r["preset"]
 print("scripted route, raw samples and disabled input verified")
 PYLOGGER
 rm -f "$FT"
-echo "== VQ-01b: invalid logger options and output write failures fail the process"
+}; end_section
+section "VQ-01b: invalid logger options and output write failures fail the process"; section_body() {
 python3 "$HERE/tests/check_expected_cli_failure.py" --self-test
 expected_failure frametimes-t-zero 31 "--t must be greater than 0 and at most 300 seconds" \
   -- --frametimes=/dev/null --t=0
@@ -645,8 +769,9 @@ expected_failure frametimes-trace-conflict 31 "--frametimes cannot be combined w
   -- --frametimes=/dev/null --trace=/dev/null
 expected_failure frametimes-write-failure 1 "Cannot write frame-time report '" \
   -- --frametimes="$HERE" --warmup=0 --t=0.01
+}; end_section
 
-echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
+section "fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"; section_body() {
 HASHES=()
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd 2>&1)"
@@ -659,8 +784,9 @@ if [[ "${HASHES[0]}" != "${HASHES[1]}" || "${HASHES[0]}" != "${HASHES[2]}" ]]; t
   echo "final state depends on the rendering frame rate: ${HASHES[*]}"; exit 1
 fi
 echo "identical"
+}; end_section
 
-echo "== TT-08: Lumber coupled electric flight is identical at 30/60/144 fps"
+section "TT-08: Lumber coupled electric flight is identical at 30/60/144 fps"; section_body() {
 HASHES=()
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd -- --aircraft=turbo-lumber-evolution 2>&1)"
@@ -673,19 +799,24 @@ if [[ "${HASHES[0]}" != "${HASHES[1]}" || "${HASHES[0]}" != "${HASHES[2]}" ]]; t
   echo "Lumber complete checkpoint depends on the rendering frame rate: ${HASHES[*]}"; exit 1
 fi
 echo "identical Lumber complete checkpoints"
+}; end_section
 
-echo "== E0b5: experimental wash transport at 30/60/144 fps"
+section "E0b5: experimental wash transport at 30/60/144 fps"; section_body() {
 python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"
+}; end_section
 
-echo "== E0b6p: distributed swirl at 30/60/144 fps"
+section "E0b6p: distributed swirl at 30/60/144 fps"; section_body() {
 python3 "$HERE/../research/propwash/e0b6p/check_frames.py" --godot "$GODOT"
+}; end_section
 
-echo "== E5a: generated Extra taildragger contacts, P-51 review and session refinement"
+section "E5a: generated Extra taildragger contacts, P-51 review and session refinement"; section_body() {
 E5A_WORK="$(mktemp -d)"
 python3 "$HERE/../research/ground-contact/e5a/verify.py" --godot "$GODOT" --out "$E5A_WORK/results"
 rm -rf "$E5A_WORK"
+}; end_section
 
-echo "== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches"
+section "E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches"; section_body() {
 E5B_WORK="$(mktemp -d)"
 python3 "$HERE/../research/ground-contact/e5b/verify.py" --godot "$GODOT" --out "$E5B_WORK/results"
 rm -rf "$E5B_WORK"
+}; end_section

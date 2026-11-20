@@ -68,6 +68,9 @@ static func attach(airplane: Dictionary, session: Node, parent: Node) -> Node3D:
 		return null
 	var node: Node3D = new()
 	node.name = "PropellerBlur"
+	# SA-19: a planar shadow cue collecting the vehicle (the quad parents this under its root) takes the model's own
+	# blades, never these presentation copies or the disc (ProjectedShadow.EXCLUDED_META).
+	node.set_meta(&"shadow_excluded", true)
 	node.measured = measured
 	node._propeller = airplane.propeller
 	node._session = session

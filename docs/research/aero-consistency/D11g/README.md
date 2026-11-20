@@ -197,3 +197,27 @@ Option 2 of the brief now, option 3 later as held-out validation (DECISIONS.md, 
 - **CLadot** (borrowed 1.97) is unused by the code; the lag now supplies the tail's CLα̇.
 - **First-order lag vs pure delay:** at ωτ 0.46 a pure transport delay has ~17% more quadrature (damping) and ~40% less in-phase effect than the first-order lag. A delay line would be the next refinement if VAL short-period data demand it.
 - **Clp:** the converged-strip question (D11d) is now the only damping derivative still borrowed.
+
+### 2026-11-18 source renewal after servo, Creator, crash and EdgeTX edits
+
+The comparison ran on Linux x86_64 (WSL2, LF clone) with pinned Godot 4.8 beta2. Baseline was `e488ef765`; candidate was `fe296f1c3`.
+
+- **Inventory:** it grew from 149 to 151 inputs. `slew_interval.gd` and `slew_trajectory.gd` were added.
+- **Changes:** eight inputs changed, seven physics sources and `app/project.godot`.
+- **Aggregate:** the new normalized value is `006037e924b555b79fd92243a415b3926823eeebf4b4424ff62a67f8de19807e`.
+
+The baseline generator passed, and the unrenewed candidate refused exactly the three historical-source leaves. Aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance matched exactly.
+
+After the two inventory guards were renewed, the generator and the updater passed. Both refused a physics-comment mutation and a project-version mutation; both were restored, and the checks passed again. Aircraft bytes and historical source strings are unchanged. The [receipt](2026-11-18-source-renewal.json) binds the six reports. This is a Linux software provenance renewal, not a Windows reconstruction or physical validation.
+
+### 2026-11-19 v0.2.9 release renewal
+
+On Windows 11 with pinned Godot 4.8 beta2, a disposable sparse worktree of baseline `894357de8` compared `config/version` `0.2.8` with `0.2.9`. Of the 151 aggregated inputs, 150 were unchanged; only `app/project.godot` changed. The new aggregate is `2062c5d835be9f84482632da33fdd712808da70877b742a919052fe4c02ad313`.
+
+The baseline passed both guards, and the unrenewed candidate refused exactly the three historical-source leaves. Every other report field, including the normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance, matched exactly. After renewal, both guards passed; a physics-comment mutation and a version mutation were each refused and restored, and the checks passed again. The [receipt](2026-11-19-release-v029-qualification.json) binds the six reports. This is a Windows software provenance renewal, not a Linux reconstruction or physical validation.
+
+### 2026-11-19 v0.3.0 release renewal
+
+On Windows 11 with pinned Godot 4.8 beta2, disposable sparse worktrees compared the v0.2.9 tag `b2f81d177` with `79aa82015` at version `0.3.0`. Of the 151 aggregated inputs, 149 were unchanged. `app/project.godot` changed only its version; `app/physics/resource_event_step.gd` carries the audit's event-root repair from `d736ee8a2`, which had already made CI refuse the old guard. The new aggregate is `5413312f534da9f0f3539ccc17bc2a55154dcf7c39750d115807393050a5f906`.
+
+The baseline passed both guards, and the unrenewed candidate refused exactly the three historical-source leaves. Every other report field, including the normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance, matched exactly. After renewal, both guards passed; a physics-comment mutation and a version mutation were each refused and restored, and the checks passed again. The [receipt](2026-11-20-release-v030-qualification.json) binds the six reports. This is a Windows software provenance renewal, not a Linux reconstruction or physical validation.

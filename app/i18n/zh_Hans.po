@@ -462,6 +462,15 @@ msgstr "结束飞行"
 msgid "This flight cannot continue: %s"
 msgstr "此飞行无法继续：%s"
 
+msgid "Physics: native"
+msgstr "物理：原生"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "物理：兼容模式。原生物理未运行。"
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "物理：兼容模式。原生物理未运行：%s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "发生坠机。继续后将自动重新开始飞行。"
 
@@ -8427,6 +8436,15 @@ msgstr "当前图形会话不支持原生阴影；投影阴影已启用。"
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "原生阴影覆盖仍处于试验阶段；部分物体不会投射阴影。"
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "投影阴影仅作为地面参考：飞行器不会在自身投下阴影，屋顶和其他高出地面的表面也不会接收阴影。"
+
+msgid "Cloud shadows"
+msgstr "云影"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "移除地面上移动的云影。云仍然可见。"
+
 msgid "Activities may use a shorter range."
 msgstr "某些活动可能使用更短的距离。"
 
@@ -11261,9 +11279,6 @@ msgstr "横滚：右摇杆左右（左右方向键）"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "俯仰：右摇杆前推＝机头向下（上下方向键）"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "解锁或上锁：E、手柄LB，或设为起落架的遥控器开关。油门在低位时解锁。"
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "飞行模式 特技/自稳：M 或手柄 RB。开始时遥控器为特技，手柄或键盘为自稳。"
 
@@ -12957,3 +12972,497 @@ msgstr "4S · 1900 Kv · 6×4.5 推进式螺旋桨，代替涵道风扇 — 估�
 
 msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
 msgstr "6S · 1200 Kv · 7×5 推进式螺旋桨，代替涵道风扇 — 估算"
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "控制器连接已变化：电机已上锁。请检查控制器，继续后重新解锁。"
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "无法使用已保存的控制器配置：请打开“控制”进行修复或重新选择。"
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "继续时电机将上锁：请在油门低位时重新解锁。"
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "比赛成绩未保存（%d 条待保存）：请检查存储后重试。"
+
+msgid "Race records restored from the previous copy."
+msgstr "比赛记录已从上一份副本恢复。"
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "OSD 设置未保存：在离开前有效。下次更改时会再次尝试保存。"
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "FPV 四旋翼操作（手柄）"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "FPV 四旋翼操作（遥控器）"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "油门：%s（键盘 W/S）"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "偏航：%s（键盘 A/D）"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "横滚：%s（键盘左右方向键）"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "俯仰：%s，前推＝机头向下（键盘上下方向键）"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "摇杆：油门、偏航、横滚和俯仰按“控制”中为遥控器校准的设置。"
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "解锁或上锁：解锁开关（%s）。油门在低位时解锁。"
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "解锁或上锁：设为起落架的遥控器开关（%s）。油门在低位时解锁。"
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "解锁或上锁：E 或手柄 LB。油门在低位时解锁。"
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "解锁或上锁：E。油门在低位时解锁。"
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "飞行模式：飞行模式开关（%s），关为自稳，开为特技。"
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飞行模式 特技/自稳：M。开始时遥控器为特技，手柄或键盘为自稳。"
+
+msgid "left stick sides"
+msgstr "左摇杆左右"
+
+msgid "left stick up/down"
+msgstr "左摇杆上下"
+
+msgid "right stick sides"
+msgstr "右摇杆左右"
+
+msgid "right stick up/down"
+msgstr "右摇杆上下"
+
+msgid "left trigger"
+msgstr "左扳机"
+
+msgid "right trigger"
+msgstr "右扳机"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d 条比赛成绩未保存。8 秒内再次选择“返回主界面”即丢弃它们。"
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "EdgeTX FPV 四旋翼（CH5 解锁，CH6 模式，CH9 重新开始）"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "EdgeTX FPV 四旋翼：AETR 摇杆在 CH1-CH4，解锁在 CH5（仅高位解锁），飞行模式在 CH6（低位自稳，中位和高位特技），在起降台重新开始在 CH9（瞬时开关）。请在遥控器混控中分配这些开关，然后校准。"
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "EdgeTX FPV 预设仅适用于遥控器。"
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "无法应用 EdgeTX FPV 预设：%s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "EdgeTX FPV 开关已在草稿中。请在遥控器上检查，然后保存以保留。"
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "在起降台重新开始：R 或控制器上的 %s。"
+
+msgid "Upside down: press R to return to the pad."
+msgstr "机身倒扣：按 R 返回起降台。"
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "机身倒扣：按 R 或 %s 返回起降台。"
+
+msgid "PROP BROKEN"
+msgstr "螺旋桨断裂"
+
+msgid "PROP DAMAGE"
+msgstr "螺旋桨受损"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "撞击：分级（撞击可能损坏螺旋桨）"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "撞击：任何撞击都会结束飞行"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "撞击设置在“在起降台重新开始”后生效。"
+
+msgid "rear right"
+msgstr "右后"
+
+msgid "front right"
+msgstr "右前"
+
+msgid "rear left"
+msgstr "左后"
+
+msgid "front left"
+msgstr "左前"
+
+msgid "Prop broken: %s"
+msgstr "螺旋桨断裂：%s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "螺旋桨受损：%s（%d%%）"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "重着陆（%.1f m/s）"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "撞到障碍物后弹开（%.1f m/s）"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX 固定翼（CH5 起落架、CH6 襟翼、CH10 拉烟、CH9 重新开始）"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX 固定翼：AETR 摇杆在 CH1-CH4，起落架在 CH5（SD），襟翼在 CH6（SA，收起 / 起飞 / 着陆），重新开始在 CH9（SH，自复位），拉烟在 CH10（SE）。双比率、指数和油门锁定保留在遥控器上。先校准，再用“设置此设备”逐个检查开关。"
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "EdgeTX 固定翼预设仅适用于遥控器。"
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "无法应用 EdgeTX 固定翼预设：%s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "EdgeTX 固定翼预设已放入草稿。请用“设置此设备”在遥控器上检查起落架、襟翼和拉烟，然后保存。"
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s 使用按钮 %d（按住时开启）。保存配置文件以保留此设置。"
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · 从 %s 开始"
+
+msgid "DOWN (gear down)"
+msgstr "下（起落架放下）"
+
+msgid "UP (flaps up)"
+msgstr "上（襟翼收起）"
+
+msgid "OFF (smoke off)"
+msgstr "关（拉烟关闭）"
+
+msgid "released"
+msgstr "松开"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 或 Esc → 飞行叠加显示"
+
+msgid "Throttle cut"
+msgstr "油门锁定"
+
+msgid "On your radio (special function)"
+msgstr "在遥控器上（特殊功能）"
+
+msgid "Flap → elevator mix"
+msgstr "襟翼 → 升降舵混控"
+
+msgid "Applied by your radio"
+msgstr "由遥控器执行"
+
+msgid "Applied by OpenRC"
+msgstr "由 OpenRC 执行"
+
+msgid "Move %s to OFF to take control"
+msgstr "将 %s 拨到 OFF 以接管控制"
+
+msgid "Move its switch to OFF to take control"
+msgstr "将其开关拨到 OFF 以接管控制"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB 遥控器（EdgeTX）：在 Model setup 中选择 USB Joystick (Classic) 并关闭射频。建议布局：AETR 在 CH1-CH4，起落架 CH5（SD），襟翼 CH6（SA），重新开始 CH9（SH），拉烟 CH10（SE）；双比率、指数和油门锁定保留在遥控器上。拉低油门以解锁；拔出会暂停。K：校准。控制 → 设置此设备会逐个检查开关。飞行中按 F1 显示控制指南。 不做开关检查时，可在控制中分配起落架 AUX 或“切换起落架”。"
+
+msgid "Control guide: show / hide"
+msgstr "控制指南：显示 / 隐藏"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "双舵量开关（模拟舵量）"
+
+msgid "Dual-rate switch"
+msgstr "双舵量开关"
+
+msgid "Dual rates and expo"
+msgstr "双舵量和指数"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "在遥控器上（EdgeTX 双舵量）"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "由 OpenRC 模拟（机型舵量）"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC 不施加双舵量或指数：请在遥控器的 Inputs 中设置（例如 SC 100/75/50 %，指数 30，与 EdgeTX Plane 向导相同）。校准时把舵量开关置于 100 %。不会读取舵量开关。"
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC 施加所飞机型说明书中的舵量和指数：开关选择普通、运动（中位）或全舵量。遥控器上：Inputs 权重 100 %、指数 0、不要 D/R 或飞行模式行，Outputs ±100 %；添加混控 CH7 = SC，权重 100。没有开关时，用双舵量动作切换。"
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "已更改双舵量的执行方。保存配置文件以保留。"
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "FPV 四轴用同一开关解锁（仅高位）。"
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "FPV 四轴的飞行模式取自同一开关。"
+
+msgid "LOW (normal rates)"
+msgstr "低位（普通舵量）"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "双舵量：普通 / 运动 / 全舵量"
+
+msgid "Simulated by OpenRC"
+msgstr "由 OpenRC 模拟"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "双舵量跟随遥控器上的舵量开关。"
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "乌龟模式（坠机后翻正）：未解锁时按 %s，解锁后将摇杆推向要翻转的一侧，然后上锁即可继续飞行。"
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "机身倒扣：乌龟模式（%s），解锁并推动摇杆翻正，或按 R 回到起飞台。"
+
+msgid "Download: %s"
+msgstr "下载大小：%s"
+
+msgid "Skip this version"
+msgstr "跳过此版本"
+
+msgid "Hides this notice until you open the game again."
+msgstr "在下次打开游戏前隐藏此通知。"
+
+msgid "Check for updates automatically"
+msgstr "自动检查更新"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "每天最多向 GitHub 查询一次是否发布了新版本。不会自动下载或安装任何内容。"
+
+msgid "Update channel"
+msgstr "更新通道"
+
+msgid "Stable releases"
+msgstr "稳定版"
+
+msgid "Preview releases"
+msgstr "预览版"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "稳定版只提供正式版本。预览版还会在正式发布前提供测试版本。"
+
+msgid "Check now"
+msgstr "立即检查"
+
+msgid "Update preferences are saved immediately."
+msgstr "更新偏好设置会立即保存。"
+
+msgid "Update checks are only available in released builds."
+msgstr "仅在正式发布的版本中可以检查更新。"
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "你正在使用此通道的最新版本。上次检查：%s。"
+
+msgid "You're using the latest version on this channel."
+msgstr "你正在使用此通道的最新版本。"
+
+msgid "Version %s is available (%s download)."
+msgstr "版本 %s 可用（下载 %s）。"
+
+msgid "Version %s is available."
+msgstr "版本 %s 可用。"
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "版本 %s 可用，但没有适用于此系统的安装包。"
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "无法检查更新。上次成功检查：%s。"
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "无法检查更新。尚未有过成功的检查。"
+
+msgid "Updates have not been checked yet."
+msgstr "尚未检查更新。"
+
+msgid "Checking for updates…"
+msgstr "正在检查更新…"
+
+msgid "Wait a moment before checking again."
+msgstr "请稍候再检查。"
+
+msgid "Could not save update preferences (error %d)."
+msgstr "无法保存更新偏好设置（错误 %d）。"
+
+msgid "Obstacle strike"
+msgstr "撞上障碍物"
+
+msgid "Propeller strike"
+msgstr "螺旋桨触地"
+
+msgid "Hard impact"
+msgstr "剧烈撞击"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "未计入此门：请正对穿过"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "此 GPU 的自动设置：%s 模式，场景细节 %s。"
+
+msgid "GPU estimate: %s."
+msgstr "GPU 估算：%s。"
+
+msgid "measured on this GPU model"
+msgstr "在此 GPU 型号上实测"
+
+msgid "from benchmark data"
+msgstr "来自基准测试数据"
+
+msgid "extrapolated from a measured GPU"
+msgstr "由已实测的 GPU 外推"
+
+msgid "GPU not in the table"
+msgstr "GPU 不在表中"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "飞行中实测：每帧 GPU 时间 %.1f 毫秒（第 95 百分位）。"
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "下次飞行会对此 GPU 测量一次，并在需要时调整自动设置。"
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "将图形设置恢复为此 GPU 的推荐值，并在下次飞行时重新测量。"
+
+msgid "Help improve OpenRC Simulator"
+msgstr "帮助改进 OpenRC Simulator"
+
+msgid "Recommended: share technical telemetry."
+msgstr "推荐：共享技术遥测数据。"
+
+msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
+msgstr "如果选择“启用”，我们将发送性能摘要，例如 FPS 和帧时间范围、CPU/GPU 和内存的大致类别、操作系统、图形渲染器和 API、分辨率范围、垂直同步/帧率上限、图形设置是否经过自定义，以及你使用的内置飞机和活动。我们还会发送大致的输入方式、活动时长和结果、支持统计的起飞/着陆次数和模型飞机坠毁次数，以及固定类别的软件错误。模型飞机坠毁次数不是应用程序崩溃转储。我们使用这些报告来找出运行缓慢的配置并改进模拟器。"
+
+msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
+msgstr "我们不会发送你的姓名、电子邮件、账户、设备序列号、自定义飞机名称、已保存的飞行记录、操作输入、文件、截图或原始日志。一个临时的随机会话代码用于对报告分组。它不会保存在此设备上，每次启动都会重新生成；接收服务最多在收到后保留 48 小时。我们的接收服务会为接收连接而处理你的 IP 地址，但分析数据库不会存储它。硬件和会话数据仍可能具有辨识度，因此我们不承诺完全匿名。"
+
+msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
+msgstr "报告会发送到由 %s 运营的接收服务。只有经过审核的摘要才可能发布到 GitHub。你可以随时在 设置 → 界面 中查看数据并关闭遥测。关闭遥测后，模拟器的功能完全相同。"
+
+msgid "See exactly what we send"
+msgstr "准确查看我们发送的内容"
+
+msgid "Privacy notice"
+msgstr "隐私声明"
+
+msgid "Continue without telemetry"
+msgstr "不启用遥测并继续"
+
+msgid "Enable telemetry and continue"
+msgstr "启用遥测并继续"
+
+msgid "Pending data stays only in memory, for at most ten minutes. The session code changes at least every four hours and at the UTC day boundary. Raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt. Summary tables without codes expire within 180 days. Reviewed public summaries on GitHub can remain indefinitely. Any temporary IP-based abuse protection is kept only in memory, for at most 15 minutes. Telemetry is separate from update checks, which you can turn off on the same Settings page."
+msgstr "待发送的数据只保存在内存中，最多保留十分钟。会话代码至少每四小时以及在 UTC 日期变更时更换。原始报告、临时代码和去重键最迟在收到后 48 小时过期。不含代码的汇总表最多保留 180 天。经过审核并公开在 GitHub 上的摘要可能会无限期保留。任何基于 IP 的临时防滥用保护只保存在内存中，最多 15 分钟。遥测与检查更新相互独立，你可以在同一设置页面中关闭检查更新。"
+
+msgid "Operator: %s · Contact: %s · Receiving service: %s"
+msgstr "运营方：%s · 联系方式：%s · 接收服务：%s"
+
+msgid "Data waiting to be sent"
+msgstr "待发送的数据"
+
+msgid "Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on."
+msgstr "目前没有待发送的数据。启用遥测时，数据大约每分钟打包一次。"
+
+msgid "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks."
+msgstr "性能摘要、硬件大致类别以及你驾驶的内置飞机，仅在此选项开启时发送。与检查更新相互独立。"
+
+msgid "Share technical telemetry"
+msgstr "共享技术遥测数据"
+
+msgid "Telemetry is not available in this build."
+msgstr "此版本不提供遥测功能。"
+
+msgid "Telemetry is on. Batches sent this session: %d."
+msgstr "遥测已开启。本次会话已发送的批次：%d。"
+
+msgid "Telemetry is off until you choose."
+msgstr "在你做出选择之前，遥测保持关闭。"
+
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "遥测已关闭：此语言暂不提供遥测功能。请切换到英语或西班牙语后再选择。"
+
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "接收服务已暂停遥测；在重新启动模拟器之前将保持关闭。"
+
+msgid "The saved telemetry choice could not be read, so telemetry is off."
+msgstr "无法读取已保存的遥测选择，因此遥测已关闭。"
+
+msgid "Telemetry is off."
+msgstr "遥测已关闭。"
+
+msgid "Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting."
+msgstr "无法保存遥测选择（错误 %d）。它对本次会话有效；重新启动后请再次检查。"
+
+msgid "Telemetry is on · Settings → Interface"
+msgstr "遥测：开启 · 设置 → 界面"
+
+msgid "Telemetry is off · Settings → Interface"
+msgstr "遥测：关闭 · 设置 → 界面"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "测试飞行使用此估算的 OpenRC 配置，而不是 ClearView 飞行模型。这些飞行属于实验性质。"
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "所选的 OpenRC 配置属于另一个模型。请为此模型重新选择配置。"
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "已省略 %s 个自相交的面。"
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "多边形 %s（部件 \"%s\"）有相交的边，且模型中此类面过多，无法省略。"
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "已忽略 JPEG 元数据（相机、颜色配置文件或编辑器数据）。"
+
+msgid "Only the first GIF frame was imported."
+msgstr "仅导入了 GIF 的第一帧。"
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "已忽略模型参数中的 %s 行编辑器标记。"
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "尚不支持此纹理格式。请将纹理转换为标准 PNG、JPEG、GIF 或未压缩的 24 位 BMP，并更新模型中的引用。"
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "有 %s 个坐标标记无法读取。它们已被隐藏；请手动绑定其活动部件。"
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "铰链“%s”：无法读取其坐标标记。请在活动部件中手动绑定此部件。"
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "有 %s 个部件使用 AC3D 细分。显示的是其未平滑的控制形状。"
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "缺少纹理 %s；已使用同名的 %s。"
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "参数未指定模型文件；已使用 ClearView 默认的 %s。"
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "仅支持平面格式的 ClearView v0-v5 和分节格式的 v6 模型参数。"
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "创建器暂不支持直升机飞行。你可以预览此模型、设置其活动部件并将其保存为草稿。"
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "已合并 %s 个固定部件以满足创建器的网格上限。它们无法绑定为活动部件。"
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "纹理 %s 指向 ZIP 之外，未包含在内。这些部件使用纯色。"
+
+msgid "Fly with trainer physics?"
+msgstr "使用教练机物理飞行？"
+
+msgid "Fly with the trainer physics"
+msgstr "使用教练机物理飞行"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "估算的 OpenRC 配置无法让此模型飞行：%s\n\n它可以改用标准 Ugly Stick 电动教练机的物理飞行，并以此模型的外观按 %s m 翼展显示。这不是 ClearView 飞行模型。"

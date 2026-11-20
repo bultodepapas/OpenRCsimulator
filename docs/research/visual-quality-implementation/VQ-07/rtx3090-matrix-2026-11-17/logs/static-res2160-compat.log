@@ -1,0 +1,12 @@
+command: --path app --audio-driver Dummy --resolution 3840x2160 --fullscreen --disable-vsync -- --scene_detail=high --frametimes=U:/rtx3090-matrix/static-res2160-compat.json --warmup=5 --t=20 --frame-diagnostics --frametimes-max-frames=120000
+env: {"OPENRC_GRAPHICS_PROFILE": "standard", "OPENRC_RECONSTRUCTION": "native"}
+exit: 0
+wall_s: 43.5
+---
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"standard","gpu":"NVIDIA GeForce RTX 3090","renderer":"gl_compatibility","requested":"standard"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"mirrored source differs from the verified native build: app/app_state/native_package.gd","requested":"native"}
+frame times: p50 5.23 ms, p95 8.05 ms, p99 9.75 ms over 3598 frames (complete=true) → U:/rtx3090-matrix/static-res2160-compat.json

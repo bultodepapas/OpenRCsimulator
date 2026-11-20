@@ -6,6 +6,8 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const Preferences := preload("res://app_state/preferences.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 ## CAM-06b/28 pilot-view aid combinations offered by one picker.
@@ -27,10 +29,13 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
+const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const NATIVE_SHADOW_LIMITATION := "Native shadow coverage is experimental; some objects do not cast shadows."
+## SA-01: Projected suppresses native maps, so it cannot give aircraft self-shadowing.
+const PROJECTED_SHADOW_LIMITATION := "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -41,9 +46,18 @@ signal route_requested(route: String, from: Control)
 signal sound_preview_requested
 signal feedback_requested(cue: StringName)
 signal graphics_restart_requested(profile: String)
+## DT-UPD-04a: the Updates rows on the Interface page; saved at once by AppRoot, like the language. `channel`
+## "" keeps following the running build until the player picks a channel.
+signal update_preferences_changed(check_automatically: bool, channel: String)
+signal update_check_requested
+## TELEM-03: the telemetry switch on the Interface page (a deliberate, telemetry-specific choice); AppRoot owns it.
+signal telemetry_choice_changed(enabled: bool)
+## "notice" or "preview": AppRoot opens the telemetry notice or the exact pending data.
+signal telemetry_info_requested(kind: String)
 
 const DISPLAY_TEST_SECONDS := 15
 const Languages := preload("res://i18n/languages.gd")
+const UpdateCheck := preload("res://app_state/update_check.gd")
 const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
@@ -53,6 +67,7 @@ var window_close_managed := false # AppRoot owns save/recovery decisions before 
 var _surface: Control
 var _saved: Dictionary
 var _draft: Dictionary
+var _calibration_reset_pending := false
 var _language := "en"
 var _trial_deadline_msec := 0
 var _trial_baseline: Dictionary = {}
@@ -109,6 +124,7 @@ var _shadow_technique_picker: OptionButton
 var _shadow_cue_picker: OptionButton
 var _shadow_distance_picker: OptionButton
 var _shadow_softness_picker: OptionButton
+var _shadow_cloud_picker: OptionButton
 var _shadow_info: Label
 var _lighting_quality_picker: OptionButton
 var _lighting_vfx_toggle: CheckButton
@@ -143,6 +159,18 @@ var _language_save_error: int = OK
 var _language_save_protected := false
 var _keep_button: Button
 var _revert_button: Button
+var _update_auto_toggle: CheckButton
+var _update_channel_picker: OptionButton
+var _update_check_button: Button
+var _update_status: Label
+## AppRoot's _update_settings_state(): { check_automatically, channel, status, cooldown, save_error }.
+var _update_state := {}
+var _telemetry_toggle: CheckButton
+var _telemetry_status: Label
+var _telemetry_preview_button: Button
+var _telemetry_notice_button: Button
+## AppRoot's _telemetry_settings_state(): { state, reason, save_error, sent }.
+var _telemetry_state := {"state": "unavailable", "reason": "build"}
 
 
 func _init(store: DisplayPreferences = null, initial_language: String = "en") -> void:
@@ -404,6 +432,9 @@ func _build() -> void:
 	_shadow_softness_picker = _shadow_picker("ShadowSoftness", "shadow_softness", ShadowSettings.SOFTNESS)
 	_add_row(_shadow_group, "Shadow softness", _shadow_softness_picker)
 	_set_localized_tooltip(_shadow_softness_picker, "Softness changes native shadows; the projected blur stays the same.")
+	_shadow_cloud_picker = _shadow_picker("ShadowCloud", "shadow_cloud", ShadowSettings.CLOUD)
+	_add_row(_shadow_group, "Cloud shadows", _shadow_cloud_picker)
+	_set_localized_tooltip(_shadow_cloud_picker, "Removes the moving cloud shade from the ground. Clouds stay visible.")
 	_shadow_info = _label("", "SecondaryLabel", true)
 	_shadow_info.name = "ShadowInfo"
 	_shadow_group.add_child(_shadow_info)
@@ -430,6 +461,7 @@ func _build() -> void:
 	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
+	defaults_button.tooltip_text = tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight.")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
 	var graphics_actions := HFlowContainer.new()
 	graphics_page.add_child(graphics_actions)
@@ -533,6 +565,59 @@ func _build() -> void:
 	_language_picker.item_selected.connect(_language_selected)
 	_add_row(interface_page, "Language", _language_picker)
 	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
+
+	_update_auto_toggle = CheckButton.new()
+	_update_auto_toggle.name = "CheckUpdates"
+	_update_auto_toggle.theme_type_variation = "SettingsToggle"
+	_update_auto_toggle.button_pressed = true
+	_set_localized_tooltip(_update_auto_toggle, "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically.")
+	_update_auto_toggle.toggled.connect(func(_enabled: bool) -> void: _emit_update_preferences(false))
+	_add_row(interface_page, "Check for updates automatically", _update_auto_toggle)
+	_update_channel_picker = OptionButton.new()
+	_update_channel_picker.name = "UpdateChannel"
+	for channel: String in UpdateCheck.CHANNELS:
+		_update_channel_picker.add_item(_update_channel_caption(channel))
+		_update_channel_picker.set_item_metadata(_update_channel_picker.item_count - 1, channel)
+	_set_localized_tooltip(_update_channel_picker, "Stable offers final releases only. Preview also offers test versions before their final release.")
+	_update_channel_picker.item_selected.connect(func(_index: int) -> void: _emit_update_preferences(true))
+	_add_row(interface_page, "Update channel", _update_channel_picker)
+	_update_status = Widgets.label("", "SecondaryLabel", true)
+	_update_status.name = "UpdateStatus"
+	_update_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	interface_page.add_child(_update_status)
+	_update_check_button = _button("Check now", "QuietButton", "CheckUpdatesNow")
+	_update_check_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_update_check_button.pressed.connect(func() -> void: update_check_requested.emit())
+	interface_page.add_child(_update_check_button)
+	interface_page.add_child(_label("Update preferences are saved immediately.", "SecondaryLabel", true))
+	_refresh_update_status_text()
+
+	# TELEM-03: telemetry is a separate choice from update checks, saved at once by AppRoot.
+	_telemetry_toggle = CheckButton.new()
+	_telemetry_toggle.name = "ShareTelemetry"
+	_telemetry_toggle.theme_type_variation = "SettingsToggle"
+	_set_localized_tooltip(_telemetry_toggle, "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks.")
+	_telemetry_toggle.toggled.connect(func(enabled: bool) -> void: telemetry_choice_changed.emit(enabled))
+	_add_row(interface_page, "Share technical telemetry", _telemetry_toggle)
+	_telemetry_status = Widgets.label("", "SecondaryLabel", true)
+	_telemetry_status.name = "TelemetryStatus"
+	_telemetry_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	interface_page.add_child(_telemetry_status)
+	var telemetry_links := BoxContainer.new()
+	telemetry_links.add_theme_constant_override("separation", 12)
+	_telemetry_preview_button = _button("See exactly what we send", "QuietButton", "TelemetryPreview")
+	_telemetry_preview_button.pressed.connect(func() -> void: telemetry_info_requested.emit("preview"))
+	telemetry_links.add_child(_telemetry_preview_button)
+	_telemetry_notice_button = _button("Privacy notice", "QuietButton", "TelemetryNotice")
+	_telemetry_notice_button.pressed.connect(func() -> void: telemetry_info_requested.emit("notice"))
+	telemetry_links.add_child(_telemetry_notice_button)
+	# One row sharing the width: at 1080p both captions fit on one line; a long translation or large text wraps
+	# inside its button instead of widening the page (Russian at 960 px, Spanish at 200 %).
+	for link: Button in [_telemetry_preview_button, _telemetry_notice_button]:
+		link.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		link.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	interface_page.add_child(telemetry_links)
+	_refresh_telemetry_status_text()
 
 	var master_control := _volume_control("MasterVolumeControl", "MasterVolume", "MasterVolumeValue", _master_volume_changed)
 	_master_slider = master_control.get_child(0) as HSlider
@@ -793,6 +878,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"shadow_distance": return {auto = tr("Automatic"), near = tr("Near (100 m)"), field = tr("Field (300 m)"),
 			far = tr("Far (600 m)")}.get(value, str(value))
 		"shadow_softness": return {auto = tr("Automatic"), hard = tr("Hard"), soft = tr("Soft")}.get(value, str(value))
+		"shadow_cloud": return {on = tr("On"), off = tr("Off")}.get(value, str(value))
 		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
 		"lens_effects": return {off = tr("Off"), auto = tr("Automatic"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
@@ -1017,8 +1103,10 @@ func _trial_preview_ready() -> bool:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
-		_draft[key] = DisplayPreferences.DEFAULTS[key]
+	var recommended := DisplayPreferences.recommended_defaults() # VQ-07h: this GPU's first-launch values
+	for key: String in DisplayPreferences.graphics_default_keys(): # the set telemetry's graphics_profile compares
+		_draft[key] = recommended[key]
+	_calibration_reset_pending = true # VQ-07h: kept restores also forget the measured first-flight verdicts
 	_on_graphics_option_changed()
 
 
@@ -1040,6 +1128,8 @@ func _refresh_shadow_technique_tooltip() -> void:
 	for index: int in _shadow_technique_picker.item_count:
 		if _shadow_technique_picker.get_item_metadata(index) == "native":
 			_shadow_technique_picker.set_item_tooltip(index, tr(NATIVE_SHADOW_LIMITATION))
+		elif _shadow_technique_picker.get_item_metadata(index) == "projected":
+			_shadow_technique_picker.set_item_tooltip(index, tr(PROJECTED_SHADOW_LIMITATION))
 
 
 func _refresh_shadow_info() -> void:
@@ -1060,6 +1150,10 @@ func _refresh_shadow_info() -> void:
 	var quality := _choice_caption("shadow_quality", effective.get("quality", "current")) if native else inactive
 	var distance := tr("%.0f m") % float(effective.get("distance_m", 0.0)) if native else inactive
 	var softness := _choice_caption("shadow_softness", effective.get("softness", "auto")) if native else inactive
+	# SA-24: name the filter Soft actually resolves to (PCF in Standard, solar PCSS only with High graphics).
+	var filter := str(effective.get("filter_technique", ""))
+	if native and filter in ["pcf", "pcss"]:
+		softness += " (%s)" % filter.to_upper()
 	_shadow_info.text = tr("Active technique: %s · Quality: %s") % [
 		_choice_caption("shadow_technique", effective.get("technique", "auto")),
 		quality]
@@ -1070,6 +1164,8 @@ func _refresh_shadow_info() -> void:
 		_shadow_info.text += "\n" + tr("Activities may use a shorter range.")
 	if effective.get("technique", "") == "native":
 		_shadow_info.text += "\n" + tr(NATIVE_SHADOW_LIMITATION)
+	elif effective.get("technique", "") == "projected":
+		_shadow_info.text += "\n" + tr(PROJECTED_SHADOW_LIMITATION)
 	if requested.shadow_technique in ["auto", "native"] and not native and bool(effective.get("projected", false)):
 		_shadow_info.text += "\n" + tr("Native shadows are unavailable in this graphics session; projected shadows are active.")
 
@@ -1080,7 +1176,7 @@ func _refresh_graphics_info() -> void:
 	# SC-BIRD: one line (the renderer name moved to the tooltip) so the Graphics page, with its Birds row, still fits
 	# at 1080p; it ends with the effective VSync state.
 	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.") + "\n" \
-		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method()
+		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method() + "\n" + _automatic_graphics_text()
 	_graphics_info.text = tr("Graphics mode: %s") % (tr("High") if HighGraphics.active() else tr("Standard")) \
 		+ " · " + tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
@@ -1111,6 +1207,22 @@ func _refresh_graphics_info() -> void:
 		_graphics_info.text += "\n" + _reflex_unavailable_text(str(reflex.reason))
 	elif reflex.pending:
 		_graphics_info.text += "\n" + tr("Reflex mode change is waiting for the next frame.")
+
+
+## VQ-07h-A7: Automatic's choice for this GPU, how far its estimate is trusted and the first-flight measurement.
+## Tooltip only: the Graphics page must still fit at 1080p.
+func _automatic_graphics_text() -> String:
+	var summary := AutoGraphicsReport.player_summary(AutoGraphicsReport.runtime())
+	var estimate: String = {"measured": "measured on this GPU model", "benchmarks": "from benchmark data",
+		"extrapolated": "extrapolated from a measured GPU"}.get(str(summary.estimate), "GPU not in the table")
+	var text := tr("Automatic for this GPU: %s mode, %s scene detail.") % [
+		tr("High") if summary.mode == "high" else tr("Standard"), tr(str(summary.scene_detail).capitalize())]
+	text += "\n" + tr("GPU estimate: %s.") % tr(estimate)
+	if float(summary.measured_p95_ms) > 0.0:
+		text += "\n" + tr("Measured in flight: %.1f ms of GPU time per frame (95th percentile).") % float(summary.measured_p95_ms)
+	else:
+		text += "\n" + tr("The next flight measures this GPU once and adjusts Automatic if needed.")
+	return text
 
 
 func _refresh_scene_detail_tooltip() -> void:
@@ -1238,6 +1350,11 @@ func keep_changes() -> void:
 		_set_status("save_error", err)
 		feedback_requested.emit(&"reject")
 		return
+	# Only the production profile owns the calibration file (AppRoot's preferences_path + ".display").
+	if _calibration_reset_pending and display_preferences.path == Preferences.DEFAULT_PATH + ".display":
+		AutoCalibration.clear()
+		SceneDetail.calibration = {}
+	_calibration_reset_pending = false
 	_saved = _draft.duplicate(true)
 	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0
@@ -1313,6 +1430,7 @@ func _sync_controls() -> void:
 	_select_metadata(_shadow_cue_picker, _draft.get("shadow_aircraft_cue", DisplayPreferences.DEFAULTS.shadow_aircraft_cue))
 	_select_metadata(_shadow_distance_picker, _draft.get("shadow_distance", DisplayPreferences.DEFAULTS.shadow_distance))
 	_select_metadata(_shadow_softness_picker, _draft.get("shadow_softness", DisplayPreferences.DEFAULTS.shadow_softness))
+	_select_metadata(_shadow_cloud_picker, _draft.get("shadow_cloud", DisplayPreferences.DEFAULTS.shadow_cloud))
 	_refresh_shadow_info()
 	_select_metadata(_lighting_quality_picker, _draft.get("aircraft_lighting_quality", "standard"))
 	_lighting_vfx_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_show_vfx", true)))
@@ -1587,9 +1705,14 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
+	if _update_channel_picker != null:
+		for index: int in _update_channel_picker.item_count:
+			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
+	_refresh_update_status_text()
+	_refresh_telemetry_status_text()
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
-			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
+			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
@@ -1614,6 +1737,111 @@ func _refresh_translated_text() -> void:
 		_refresh_status_text()
 	_refresh_volume_text()
 	_refresh_language_save_text()
+
+
+## DT-UPD-04a: AppRoot's update preferences and status (see _update_state); never emits a change.
+func set_update_state(state: Dictionary) -> void:
+	_update_state = state.duplicate(true)
+	var status: Dictionary = _update_state.get("status", {})
+	_update_auto_toggle.set_pressed_no_signal(bool(_update_state.get("check_automatically", true)))
+	var channel := str(_update_state.get("channel", ""))
+	if not channel in UpdateCheck.CHANNELS:
+		channel = str(status.get("channel", UpdateCheck.CHANNEL_STABLE))
+	_select_metadata(_update_channel_picker, channel)
+	_update_check_button.disabled = str(status.get("kind", "")) == "unavailable" or bool(status.get("checking", false))
+	_refresh_update_status_text()
+
+
+func _emit_update_preferences(channel_changed: bool) -> void:
+	var channel := str(_update_state.get("channel", ""))
+	if channel_changed and _update_channel_picker.selected >= 0:
+		channel = str(_update_channel_picker.get_item_metadata(_update_channel_picker.selected))
+	_update_state.channel = channel
+	_update_state.check_automatically = _update_auto_toggle.button_pressed
+	update_preferences_changed.emit(_update_auto_toggle.button_pressed, channel)
+
+
+func _update_channel_caption(channel: String) -> String:
+	return tr("Preview releases") if channel == UpdateCheck.CHANNEL_PREVIEW else tr("Stable releases")
+
+
+func _refresh_update_status_text() -> void:
+	if _update_status == null:
+		return
+	var status: Dictionary = _update_state.get("status", {})
+	var version := str(status.get("version", ""))
+	var size := int(status.get("size", 0))
+	var last := int(status.get("last_success_unix", 0))
+	var kind := str(status.get("kind", UpdateCheck.STATUS_NOT_CHECKED))
+	var lines := PackedStringArray()
+	if bool(status.get("checking", false)):
+		lines.append(tr("Checking for updates…"))
+	elif kind == "unavailable":
+		lines.append(tr("Update checks are only available in released builds."))
+	elif kind == UpdateCheck.STATUS_CURRENT:
+		lines.append(tr("You're using the latest version on this channel. Last checked: %s.") % _local_time(last) if last > 0
+			else tr("You're using the latest version on this channel."))
+	elif kind == UpdateCheck.STATUS_AVAILABLE:
+		lines.append(tr("Version %s is available (%s download).") % [version, UpdateCheck.format_bytes(size)] if size > 0
+			else tr("Version %s is available.") % version)
+	elif kind == UpdateCheck.STATUS_NO_PACKAGE:
+		lines.append(tr("Version %s is available, but it has no package for this system.") % version)
+	elif kind == UpdateCheck.STATUS_FAILED:
+		lines.append(tr("Could not check for updates. Last successful check: %s.") % _local_time(last) if last > 0
+			else tr("Could not check for updates. No check has succeeded yet."))
+	else:
+		lines.append(tr("Updates have not been checked yet."))
+	if bool(_update_state.get("cooldown", false)):
+		lines.append(tr("Wait a moment before checking again."))
+	var save_error := int(_update_state.get("save_error", OK))
+	if save_error != OK:
+		lines.append(tr("Could not save update preferences (error %d).") % save_error)
+	_update_status.text = "\n".join(lines)
+
+
+## TELEM-03: AppRoot's telemetry state (see _telemetry_state); never emits a change.
+func set_telemetry_state(state: Dictionary) -> void:
+	_telemetry_state = state.duplicate(true)
+	var current := str(_telemetry_state.get("state", "unavailable"))
+	var reason := str(_telemetry_state.get("reason", ""))
+	_telemetry_toggle.set_pressed_no_signal(current == "on")
+	# Unavailable builds, unreviewed languages and a suspended service cannot be switched on from here.
+	_telemetry_toggle.disabled = current == "unavailable" or reason in ["locale", "suspended"]
+	_telemetry_preview_button.disabled = current == "unavailable"
+	_telemetry_notice_button.disabled = current == "unavailable"
+	_refresh_telemetry_status_text()
+
+
+func _refresh_telemetry_status_text() -> void:
+	if _telemetry_status == null:
+		return
+	var current := str(_telemetry_state.get("state", "unavailable"))
+	var reason := str(_telemetry_state.get("reason", ""))
+	var lines := PackedStringArray()
+	if current == "unavailable":
+		lines.append(tr("Telemetry is not available in this build."))
+	elif current == "on":
+		lines.append(tr("Telemetry is on. Batches sent this session: %d.") % int(_telemetry_state.get("sent", 0)))
+	elif current == "ask":
+		lines.append(tr("Telemetry is off until you choose."))
+	elif reason == "locale":
+		lines.append(tr("Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."))
+	elif reason == "suspended":
+		lines.append(tr("The receiving service paused telemetry, so it is off until you restart the simulator."))
+	elif reason == "unreadable":
+		lines.append(tr("The saved telemetry choice could not be read, so telemetry is off."))
+	else:
+		lines.append(tr("Telemetry is off."))
+	var save_error := int(_telemetry_state.get("save_error", OK))
+	if save_error != OK:
+		lines.append(tr("Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting.") % save_error)
+	_telemetry_status.text = "\n".join(lines)
+
+
+## "2026-11-17 14:03" in the system's time zone.
+static func _local_time(unix: int) -> String:
+	var bias_s := int(Time.get_time_zone_from_system().get("bias", 0)) * 60
+	return Time.get_datetime_string_from_unix_time(unix + bias_s, true).substr(0, 16)
 
 
 func _set_localized_tooltip(control: Control, source: String) -> void:

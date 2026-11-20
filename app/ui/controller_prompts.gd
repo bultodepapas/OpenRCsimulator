@@ -92,7 +92,7 @@ static func _radio_button_text(binding: Dictionary, profile: Dictionary) -> Stri
 	var button := int(binding.get("button", -1))
 	var aux_value: Variant = profile.get("aux", {})
 	if aux_value is Dictionary:
-		for aux_name in ["smoke", "flaps", "gear"]:
+		for aux_name in ["smoke", "flaps", "gear", "rates"]:
 			var aux_binding: Variant = aux_value.get(aux_name, {})
 			if not aux_binding is Dictionary or str(aux_binding.get("type", "")) != "switch" \
 					or not _SmokeAux.valid_binding(aux_binding):

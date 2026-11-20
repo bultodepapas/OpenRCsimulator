@@ -193,6 +193,13 @@ func _wizard() -> void:
 	check("the imported helicopter shows the donor offer", wizard.import_state().state == "imported" and offer != null
 		and offer.is_visible_in_tree() and offer.text == HeliDonor.OFFER)
 	if offer != null:
+		# A reopened draft is adopted without a source change: the helicopter offer must survive it.
+		var reopened: RefCounted = wizard.document()
+		wizard.set("_shown_helicopter", false)
+		wizard.call("_adopt_document", reopened, "")
+		for index: int in 2:
+			await process_frame
+		check("a reopened helicopter draft still shows the donor offer", offer.is_visible_in_tree() and offer.text == HeliDonor.OFFER)
 		offer.pressed.emit()
 		var dialog: ConfirmationDialog = wizard.get("_confirm")
 		var text: Label = wizard.get("_confirm_text")

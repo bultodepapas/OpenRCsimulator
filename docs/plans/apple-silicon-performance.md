@@ -32,7 +32,7 @@ sustained gains, lifecycle and package gates remain open. The M1 unexpectedly
 reported denoised support/allocation despite the Apple9 table floor; keep the
 runtime/input/execution gates rather than rejecting solely by GPU family.
 
-The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
+The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. **Resolution target (owner, 2026-11-18):** on an Apple Silicon Mac with a Retina (2×) display, which includes every MacBook and iMac panel, the product target is that display's native pixel resolution at 60 Hz, following the [AGENTS exception](../../AGENTS.md#display-resolution-priorities). Intel Macs and Macs on a standard (1×) external display keep 1920×1080 first, then higher resolutions, then 720p. The available M1 has a built-in 2560×1600 panel, which is its native target; it is currently set to 1440×900 logical points. Record measured viewport, drawable and internal 3D pixels separately. A built-in-panel run qualifies that named Mac configuration, but it does not establish 1080p on other systems. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
 
@@ -85,7 +85,7 @@ product, moving-aircraft readability or physical presentation qualification.
 | DT-MAC-01 | M1 Air/8 GB ARM64 native inventory and editor import recorded; complete baseline manifest and qualification open — phase 3. |
 | DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented and exercised natively; whole-observer overhead and remaining workload coverage stay open — phases 1–3. |
 | DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac. 02e adds bounded host series, raw-clock correlation and a sleep check, with native tests. 02h native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
-| DT-MAC-03a/b | Source-build reference replay was exact on M1; a frozen technical circuit and five valid short pairs show 23.8–24.5% more process-loop FPS. Three fresh 30-minute runs per role show 17.6–23.2% higher sustained FPS, with matching physics/input hashes and valid raw-clock joins; other cases, observer uncertainty and broader attribution remain open — phase 3. |
+| DT-MAC-03a/b | Source-build reference replay was exact on M1; a frozen technical circuit and five valid short pairs show 23.8–24.5% more process-loop FPS. Three fresh 30-minute runs per role show 17.6–23.2% higher sustained FPS, with matching physics/input hashes and valid raw-clock joins; other cases, observer uncertainty and broader attribution remain open — phase 3. The [graphics-option ladder](../research/desktop-delivery-investigations/DT-MAC-03b/README.md) (139 runs, 1080p) prices every player option on the M1: floor 88 fps, product defaults 78, Standard maximum 71, Forward+ −21 %; MSAA is the largest player cost, 8× equals 4×, and a fanless Air loses up to a third at high settings while reporting only `fair`. |
 | DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. 04d reuses lighting WeakRefs with focused checks and native image parity; the short object-count warning is bounded registry retention. The combined seven-file Metal bundle has a measured sustained gain; the WeakRef contribution is not isolated and remaining work stays open — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
@@ -436,7 +436,7 @@ Detailed work packages DT-MAC-07a1/a2, -07b1/b2 and -07c1 live in the
 They extend the existing policy/history/lifecycle boundaries below instead of
 creating another reconstruction system.
 
-**Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and Native 1080p baseline. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
+**Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and a Native baseline at the built-in panel's native resolution. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
 
 ### DT-MAC-07a — effective execution and creation/failure contract
 
@@ -502,7 +502,7 @@ Developer sidecars can require local tooling, but the eventual user flow must no
 
 Freeze final source/configuration and release export. Repeat three uninterrupted 30-minute active-flight runs with 30 s warmup, comparable initial conditions, complete v3/resources/required host-state coverage and minimal observers. Compare baseline/finalist early and final windows; report pacing tails/bursts, sim/wall, memory/pressure, thermal and native errors. Run 50 warm Home/flight cycles with relevant Workshop/world transitions, power/focus/sleep/wake/display changes and actual audio/controller reconnect. Perform owner pilot orientation/control acceptance independently of scripted/replayed evidence.
 
-Qualify AC first on the M1 built-in display; battery/Low Power and 120 Hz/VRR are distinct profiles. Then test actual 1080p and higher outputs when available; lastly 720p fallback. A built-in-display result does not establish 1080p qualification, and no failure at 1080p can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
+Qualify AC first on the M1 built-in display at its native panel resolution, the MacBook product target. Battery, Low Power and 120 Hz/VRR are distinct profiles. External 1080p and higher outputs follow the general order when available, with 720p last. A built-in-panel result does not establish external 1080p qualification, and no failure can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
 
 **Tests:** T8 final required workload, lifecycle and physical-device matrix; T7 final integrated same-host replay and applicable cross-platform policy. **Exit:** required targets met through the final window and visual/control gates accepted, or named limitation/failure retained without a broad support claim.
 
@@ -555,9 +555,15 @@ Mac/Linux/Windows CI passed. The canonical automatic route and exact replay,
 technical Home lifecycle and full marked native/reference candidate tape passed.
 Home/replay technical controls used headless/Dummy with scenery audio disabled;
 audio-enabled shutdown retains four audio objects with both evaluated backends
-and remains open. Source-editor physics adoption on this M1 does not qualify
-public signed distribution, physical display/control acceptance, broad Apple
-hardware, energy savings or a stable complete-product performance gain.
+and remains open.
+
+**2026-11-18 regression and repair:** DR-19e (`3c91936ab`) changed the stock collision
+world, so the guarded Mac default refused every ordinary flight and silently ran the
+reference evaluator. [DT-MAC-04n-R1](#dt-mac-04n-r1--keep-the-mac-native-default-after-world-changes)
+renews the domain and adds the gates that would have caught it. Source-editor physics
+adoption on this M1 does not qualify public signed distribution, physical
+display/control acceptance, broad Apple hardware, energy savings or a stable
+complete-product performance gain.
 
 The [2026-11-13 gap audit](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md#16-plan-gap-and-performance-audit--2026-11-13)
 retains the historical work order. The linked source-default ledger distinguishes
@@ -565,6 +571,68 @@ completed implementation from the remaining product and distribution gates.
 Source-editor performance work is independent of deferred public distribution.
 
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
+
+### DT-MAC-04n-R1 — keep the Mac native default after world changes
+
+**Status, 2026-11-18:** domain renewed and gates in place. The hosted virtual M1
+passed the domain guard and the no-flag default route (native stage executed);
+the physical-M1 run is pending. See the
+[R1 evidence](../research/native-kernel/DT-MAC-04n-R1/README.md). Scenery and
+collision owners trigger this procedure; this track owns the Mac pins.
+
+**Cause.** `app/sim/native_macos_domain.gd` pins the macOS ARM64 identity and
+proxy count of the stock collision world. Automatic admission refuses any other
+world and the flight silently keeps the reference evaluator. The identity hashes
+trigonometric results, so **each platform computes a different value**: the old
+world was `8c49e456…` on Windows and `ea0bdec4…` on the Mac. Never copy a
+Linux or Windows identity into the Mac pin.
+
+**Renewal procedure** after any change to collision geometry, scenery layout,
+field lights or their builders:
+
+1. `app/tests/test_native_macos_domain_world.gd` fails on Linux and Windows. It
+   pins the proxy count and a portable quantized geometry fingerprint; its
+   `STOCK_WORLD_PORTABLE` line prints the new values.
+2. Take the Mac identity from the required `native-kernel-macos` job. In the
+   `native-macos-correctness-<run>` artifact, `logs/domain-guard.log` prints
+   `MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC` with `world_identity` and `proxies`, even
+   when the pin check fails. The hosted virtual M1 reproduced the physical M1's
+   old value. A macOS or engine update can also change the identity; the same
+   job reports it.
+3. Update `STOCK_WORLD`, `STOCK_WORLD_PROXIES` and the test's fingerprint in one
+   commit. `research/native-kernel/macos_diagnostics.py` reads the pins from the
+   GDScript source.
+4. The edit changes `app/sim`: run `tools/companions/rebind.py --accept` after
+   committing and commit its three outputs.
+5. Required CI rebuilds the Linux, Windows and Mac native receipts. The Mac job
+   ends with the no-flag default route: `research/native-kernel/test_macos_default.gd`
+   must own and execute the installed stage. Local native installs become stale;
+   requalify them with the [native kernel guide](../../research/native-kernel/README.md).
+6. Record the identities, CI run and rebind receipt in the R1 evidence.
+
+**Gates.** The portable test fails first, on every platform's unit roster. The
+required Mac job fails twice: the domain guard rejects a stale pin, and the
+default route fails when an ordinary flight does not execute native.
+Pause shows `Physics: native`, or `Physics: compatibility…` with the
+technical reason, whenever native was requested; an explicit reference choice
+shows nothing.
+
+**Not covered by R1:**
+
+- Companion flights. `main.gd` still disables automatic Mac admission when
+  companions are enabled, and agents run the reference evaluator. Native player
+  flights with companions need their own interaction qualification.
+- Public Mac package. `app/export.sh` ships the reference-only Mac archive.
+  Native package delivery, the marker-independent `macos_package_default_probe.py
+  --default-only` gate and Developer ID distribution remain under DT-MAC-04n4.
+- Fleet. The production-profile Mac fleet was not re-run on the renewed world.
+  Rows that `screen()` already refuses stay refused.
+- Intel/Rosetta, helicopter, Creator/custom aircraft and RC terrain keep the
+  reference evaluator by design.
+
+**Exit:** the hosted Mac job passes the domain guard and default route on the
+renewed world, and a physical M1 runs the same default-route test. Companion and
+package coverage keep their own exits.
 
 ### DT-MAC-04n1 — math/toolchain feasibility, outside app
 
@@ -745,9 +813,9 @@ session probes, radio-free sustained circuits and event-bounded GOD TEST have
 different scopes/schemas. Never interchange reducers or call an effects-off
 scripted run a wet-lens/physical-controller/settlement benchmark.
 
-Keep 1920×1080 actual output first, higher resolutions second, 720p last. A built-in
-Retina test or `--require-1080p` render-target estimate cannot close physical output
-acceptance. Add A/A and whole-product observer-on/off controls, include work after
+On a built-in Retina panel the native panel resolution is the target. On external displays, keep 1920×1080
+actual output first, higher resolutions second and 720p last. A `--require-1080p` render-target estimate cannot
+close physical output acceptance. Add A/A and whole-product observer-on/off controls, include work after
 `Simulation.step_usec` and synchronous subscribers, and retain unknown channels.
 Use the [existing protocol](#campaign-protocol-and-acceptance-budgets), not copied
 handoff shell commands. Actual allocation traces and matching symbols identify

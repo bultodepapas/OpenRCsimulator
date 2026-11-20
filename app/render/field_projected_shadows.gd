@@ -10,8 +10,10 @@ const MAX_SCENERY_RANGE := 100.0 # artistic near-field budget, metres from pilot
 const MAX_MAPS := 16
 const MAX_TARGET_PIXELS := 8 * 1024 * 1024 # <=64 MiB nominal RGBA8 + 32-bit depth
 const OPACITY := 0.40 # artistic direct-light reduction, before time-of-day strength
+const MIN_STATIC_RESOLUTION := 256 # smallest static caster target chosen by add_caster()
 
 var projectors: Array[Node] = []
+var skipped_collections := 0 # SA-12 diagnostics: candidate cells not collected because nothing more fits
 var snapshot: Dictionary = {}
 var target_pixels := 0
 var _light_signature: Array = []
@@ -61,6 +63,11 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) 
 			candidate_cells.append(node)
 		var owners := population_cell_owners(candidate_cells, population, pilot)
 		for node in candidate_cells:
+			# SA-12: no later cell can be admitted once every map slot or even the smallest target is taken,
+			# so stop before collecting more faces. Accepted casters and their order are unchanged.
+			if not manager.can_admit_more():
+				manager.skipped_collections += 1
+				continue
 			var shape := collect_cell_shape(node, population, pilot, MAX_SCENERY_RANGE, 0.04, owners)
 			if manager.add_caster(node, shape):
 				var old := scenery.get_node_or_null(NodePath(str(node.name).replace("cell_", "shadows_"))) as MeshInstance3D
@@ -78,6 +85,12 @@ static func apply_lighting(field_node: Node3D, lighting: Dictionary) -> void:
 		manager.apply(lighting)
 
 
+## Conservative preflight: false only when add_caster() must reject every possible static cell (all slots used, or
+## less room than the smallest 256² target). Pixel rejection of one large cell is not a reason to stop.
+func can_admit_more() -> bool:
+	return projectors.size() < MAX_MAPS and target_pixels + MIN_STATIC_RESOLUTION * MIN_STATIC_RESOLUTION <= MAX_TARGET_PIXELS
+
+
 func add_caster(model: Node3D, collected_shape: Dictionary = {}) -> bool:
 	if projectors.size() >= MAX_MAPS:
 		return false
@@ -93,6 +106,7 @@ func add_caster(model: Node3D, collected_shape: Dictionary = {}) -> bool:
 		return false
 	var projector: Node = WindsockProjected.new() if moving_sock else Projected.new()
 	projector.name = "Caster_" + str(model.name)
+	projector.set("release_when_hidden", true) # SA-11: Off/Native and night keep no field render targets
 	add_child(projector)
 	projector.setup(model, shape, resolution, Viewport.MSAA_DISABLED)
 	projector.set_meta("soft_height", maxf(shape.bounds.size.y * 0.5, 0.0))

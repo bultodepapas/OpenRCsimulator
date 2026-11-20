@@ -11,6 +11,26 @@ render_mode blend_mix, depth_draw_always, cull_back, diffuse_burley, specular_sc
 
 global uniform float sim_clock;
 
+// SA-16: the ground's spatial cloud shade also removes the sun's direct light from the water. Same field, same
+// shared tile (render/cloud_shadow_map.gd) and the same uniforms the atmosphere already commits to the ground;
+// strength 0 (the default, Cloud shadows Off, or no clouds) skips it, leaving the transmission at 1.
+#include "res://render/cloud_field.gdshaderinc"
+#include "res://render/cloud_shadow_map.gdshaderinc"
+global uniform vec2 cloud_drift_offset;
+uniform float cloud_coverage = 0.35;
+uniform float cloud_scale = 6.0;
+uniform uint cloud_seed = 1253u;
+uniform float cluster_strength = 0.0;
+uniform float cloud_deck_m = 1500.0;
+uniform float cloud_shadow_strength = 0.0;
+uniform bool appearance_cloud_shadow = false;
+uniform float appearance_shadow_scale_m = 250.0;
+uniform float appearance_shadow_coverage = 0.35;
+uniform float appearance_shadow_density = 1.0;
+uniform uint appearance_shadow_seed = 1253u;
+uniform float appearance_shadow_cluster = 0.0;
+varying float cloud_transmission;
+
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;
 uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;
 // Optional native High capture; the normal probe path stays active by default.
@@ -199,4 +219,59 @@ void fragment() {
 	vec3 haze = haze_lin + sun_lin * pow(max(dot(view_ray, sun_dir), 0.0), 8.0) * sun_scatter
 		+ lobe_term(view_ray);
 	FOG = vec4(haze, 1.0 - exp(-beta * camera_distance));
+
+	// SA-16: the ground's cloud transmission (render/ground.gdshader), evaluated at the water surface.
+	cloud_transmission = 1.0;
+	if (cloud_shadow_strength > 0.0 && cloud_coverage > 0.0 && sun_dir.y > 0.01) {
+		vec2 deck = world_position.xz + max(cloud_deck_m - world_position.y, 0.0) * sun_dir.xz / sun_dir.y;
+		float density;
+		if (appearance_cloud_shadow) {
+			density = cloud_shadow_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
+				appearance_shadow_seed, appearance_shadow_coverage, appearance_shadow_cluster) * appearance_shadow_density;
+		} else {
+			density = cloud_shadow_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
+				cloud_seed, cloud_coverage, cluster_strength);
+		}
+		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
+	}
+}
+
+// SA-16: the engine's own diffuse_burley + specular_schlick_ggx direct light (scene_forward_lights_inc.glsl and the
+// GLES3 scene.glsl at the pinned 4.8-beta2), reproduced so only the directional term can carry the cloud
+// transmission. The engine still multiplies DIFFUSE_LIGHT by albedo and (1 - metallic) afterwards. At water_specular
+// f90 is 1 on both renderers. Forward+'s multiscatter energy compensation (a DFG lookup not exposed to shaders) and a
+// soft directional light's size are not reproduced; the zero-strength render A/B bounds that difference.
+float water_schlick(float u) {
+	float m = 1.0 - u;
+	float m2 = m * m;
+	return m2 * m2 * m;
+}
+
+void light() {
+	float transmission = LIGHT_IS_DIRECTIONAL ? cloud_transmission : 1.0;
+	float n_dot_l = min(dot(NORMAL, LIGHT), 1.0);
+	float c_n_dot_l = max(n_dot_l, 0.0);
+	float c_n_dot_v = max(dot(NORMAL, VIEW), 1e-4);
+	if (LIGHT_IS_DIRECTIONAL || ATTENUATION > 6.103515625e-05) {
+		vec3 h = normalize(VIEW + LIGHT);
+		float c_l_dot_h = clamp(dot(LIGHT, h), 0.0, 1.0);
+		float c_n_dot_h = clamp(dot(NORMAL, h), 0.0, 1.0);
+		if (METALLIC < 1.0) {
+			float fd90_minus_1 = 2.0 * c_l_dot_h * c_l_dot_h * ROUGHNESS - 0.5;
+			float brdf = (1.0 / PI) * (1.0 + fd90_minus_1 * water_schlick(c_n_dot_v))
+				* (1.0 + fd90_minus_1 * water_schlick(c_n_dot_l)) * c_n_dot_l;
+			DIFFUSE_LIGHT += LIGHT_COLOR * brdf * ATTENUATION * transmission;
+		}
+		if (ROUGHNESS > 0.0) {
+			float alpha_ggx = ROUGHNESS * ROUGHNESS;
+			float a = c_n_dot_h * alpha_ggx;
+			float k = alpha_ggx / (1.0 - c_n_dot_h * c_n_dot_h + a * a);
+			float d = clamp(k * k * (1.0 / PI), 0.0, 1.0);
+			float g = clamp(0.5 / mix(2.0 * c_n_dot_l * c_n_dot_v, c_n_dot_l + c_n_dot_v, alpha_ggx), 0.0, 1.0);
+			vec3 f0 = mix(vec3(0.16 * water_specular * water_specular), ALBEDO, METALLIC);
+			float f90 = clamp(dot(f0, vec3(50.0 * 0.33)), METALLIC, 1.0);
+			vec3 fresnel = f0 + (vec3(f90) - f0) * water_schlick(c_l_dot_h);
+			SPECULAR_LIGHT += c_n_dot_l * d * fresnel * g * LIGHT_COLOR * ATTENUATION * SPECULAR_AMOUNT * transmission;
+		}
+	}
 }

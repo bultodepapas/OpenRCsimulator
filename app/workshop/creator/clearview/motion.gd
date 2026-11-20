@@ -7,15 +7,17 @@ const Params := preload("params.gd")
 const FORMAT := "openrc-clearview-frames-v1"
 const ORTHOGONAL_TOLERANCE := 0.001
 const LENGTH_SEPARATION := 1.1
-const MAX_HELPER_VERTICES := 8
 const IDENTITY := [1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0]
+## A helper with more vertices than this is not treated as a hidden coordinate marker.
+const MAX_UNREADABLE_VERTICES := 64
+const UNREADABLE_NOTE := "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
 
 static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable()) -> Dictionary:
 	var frames: Array = []
+	var unreadable: Array = []
 	var marked := {}
 	var world: Array = []
 	var render_world: Array = []
-	var ambiguous: Array = []
 	for index: int in scene.nodes.size():
 		if cancel.is_valid() and bool(cancel.call()):
 			return R.fail(R.SOURCE_INVALID,"The import was cancelled.","source","import")
@@ -29,11 +31,13 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 		if group.is_empty() or group.begins_with(".") or group.ends_with(".") or ".." in group:
 			frame = {}
 		if frame.is_empty():
-			# An ambiguous helper frame cannot prepare a hinge, but it is not model geometry either:
-			# hide a helper-sized marker, keep the model, and name the part that stays static.
-			ambiguous.append(str(node.name))
-			if node.vertices.size() <= MAX_HELPER_VERTICES:
-				marked[index] = true
+			# ClearView names invisible coordinate helpers `*.XYZObject`. One that cannot be read
+			# unambiguously (extra vertices, near-equal axis lengths) is still a helper: hide it,
+			# keep its exact geometry, and leave its moving part to a manual binding.
+			if not node.children.is_empty() or node.vertices.size() > MAX_UNREADABLE_VERTICES:
+				return R.fail(R.SOURCE_UNSUPPORTED,"Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing.","source","import",[str(node.name)])
+			unreadable.append({node = index,name = node.name,group = group,vertices = node.vertices})
+			marked[index] = true
 			continue
 		frame.node = index
 		frame.name = node.name
@@ -46,14 +50,12 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 			surfaces = node.surfaces,texture = node.texture,texrep = node.texrep,texoff = node.texoff}
 		frames.append(frame)
 		marked[index] = true
-	return R.ok({frames = frames,marked = marked,world = world,render_world = render_world,requests = _requests(params),ambiguous = ambiguous})
+	return R.ok({frames = frames,unreadable = unreadable,marked = marked,world = world,render_world = render_world,requests = _requests(params)})
 
 ## Called only on the converter's trusted parsed IR. Never reads a saved GLB receipt as authority.
 static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, cancel := Callable()) -> Dictionary:
 	var plans: Array = []
 	var unresolved: Array = []
-	for marker: String in inspected.get("ambiguous",[]):
-		unresolved.append({group = marker.trim_suffix(".XYZObject") if not marker.trim_suffix(".XYZObject").is_empty() else marker,reason = "ambiguous_coordinate_marker",servos = []})
 	var attempted := 0
 	for group: String in inspected.requests:
 		if cancel.is_valid() and bool(cancel.call()):
@@ -64,6 +66,8 @@ static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, 
 			if frame.group == group:
 				matches.append(frame)
 		var reason := str(request.reason)
+		if reason.is_empty() and matches.is_empty() and inspected.unreadable.any(func(entry: Dictionary) -> bool: return entry.group == group):
+			reason = "unreadable_render_frame"
 		if reason.is_empty() and matches.size() != 1:
 			reason = "missing_or_duplicate_render_frame"
 		if not reason.is_empty():
@@ -194,8 +198,12 @@ static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, 
 		gltf.nodes.append({name = plan.group + " [ClearView " + str(plan.axis).to_upper() + " pivot]",matrix = matrix(transform),children = children,
 			extras = {openrc_creator_part = {format = "openrc-creator-part-hint-v1",axis = "x"}}})
 		prepared.append({group = plan.group,node = pivot,axis = "x",source_axis = plan.axis,marker_node = plan.frame.node,children = children,servos = plan.servos})
-	return R.ok({format = FORMAT,float_encoding = "ieee754-binary64-le-hex",orthogonal_tolerance = exact(ORTHOGONAL_TOLERANCE),
-		length_separation = exact(LENGTH_SEPARATION),frames = exact(inspected.frames),prepared = prepared,unresolved = unresolved})
+	var output := {format = FORMAT,float_encoding = "ieee754-binary64-le-hex",orthogonal_tolerance = exact(ORTHOGONAL_TOLERANCE),
+		length_separation = exact(LENGTH_SEPARATION),frames = exact(inspected.frames),prepared = prepared,unresolved = unresolved}
+	# Present only when nonzero, so earlier conversions keep their exact bytes.
+	if not inspected.unreadable.is_empty():
+		output.unreadable_frames = exact(inspected.unreadable)
+	return R.ok(output)
 
 static func _frame(node: Dictionary) -> Dictionary:
 	if node.type != "poly" or not node.children.is_empty() or node.get("has_data",false) or node.vertices.size() != 4 or node.surfaces.size() != 2:
@@ -269,21 +277,17 @@ static func _requests(params: Dictionary) -> Dictionary:
 		if not section.begins_with("servo."):
 			continue
 		var servo: Dictionary = sections[section]
-		var declared: Array = movements.get(section,[])
 		# Input-only throttle and explicitly absent targets are not missing visual hinges.
-		# Every servo with a real target is either prepared or named as unresolved below.
-		if servo.get("controlledPartType","") == "none" and servo.get("controlledPartName","") == "none" and declared.size() <= 1:
+		if "rotate" not in movements.get(section,[]):
 			continue
-		if declared.is_empty() and not servo.has("controlledPartType") and not servo.has("controlledPartName"):
+		if servo.get("controlledPartType","") == "none" and servo.get("controlledPartName","") == "none" and movements[section].size() == 1:
 			continue
 		var target := str(servo.get("controlledPartType","")) + "." + str(servo.get("controlledPartName",""))
 		var group := str(sections.get(target,{}).get("renderGroupName",""))
 		var axis := str(servo.get("controlledAxisName",""))
 		var reason := "" if not group.is_empty() and axis in ["x","y","z"] else "missing_or_conflicting_servo_mapping"
 		if servo.get("controlledPartMovement","") != "rotate":
-			# A single declared non-rotation (move/input) keeps its part static and is named.
-			reason = "unsupported_servo_movement" if declared.size() == 1 and declared[0] != "rotate" \
-				else "unsupported_or_conflicting_servo_movement"
+			reason = "unsupported_or_conflicting_servo_movement"
 		if servo.get("controlledPartType","") != "liftsurface":
 			reason = "unsupported_servo_target_type"
 		if not roster_ok or section.trim_prefix("servo.") not in active:

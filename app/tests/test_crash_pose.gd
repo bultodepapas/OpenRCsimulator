@@ -133,7 +133,10 @@ func _run() -> void:
 			ground_error < 2e-6)
 		_check(entry.id+" rendered hull point matches event point (residual %.9f m, limit %.9f m)" % [event_point_error, event_point_limit],
 			event_point_error <= event_point_limit)
-		var shadow: Transform3D = Shadow.footprint(expected_basis,expected_pos,flight._extent.x,flight._extent.y,Atmosphere.sun_direction())
+		# SA-04: the cue lands on the session terrain where the light meets it, not on a fixed y = 0 datum.
+		var receiving: Dictionary = Shadow.receiving_ground(expected_pos,Atmosphere.sun_direction(),Callable(flight,"_ground_height"),
+			maxf(flight._extent.x,flight._extent.y))
+		var shadow: Transform3D = Shadow.footprint(expected_basis,expected_pos,flight._extent.x,flight._extent.y,Atmosphere.sun_direction(),float(receiving.y))
 		_check(entry.id+" shadow uses crossing pose", flight._shadow.transform.is_equal_approx(shadow))
 		for inspect: bool in [false,true]:
 			flight._inspect = inspect

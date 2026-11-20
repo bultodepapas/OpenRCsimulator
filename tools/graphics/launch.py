@@ -25,6 +25,9 @@ from typing import Mapping, Optional, Sequence
 
 
 PROFILE_ENV = "OPENRC_GRAPHICS_PROFILE"
+# TELEM-02: benchmark and research launches are technical runs; they never send product telemetry, even from a
+# packaged release on a developer's own consented profile (app/telemetry/telemetry_policy.gd TECHNICAL_ENVIRONMENT).
+TELEMETRY_DISABLE_ENV = "OPENRC_TELEMETRY_DISABLE"
 RESEARCH_ENV = "OPENRC_GRAPHICS_RESEARCH"
 RECONSTRUCTION_ENV = "OPENRC_RECONSTRUCTION"
 METALFX_TRIAL_ENV = "OPENRC_METALFX_TRIAL"
@@ -60,6 +63,9 @@ _RESEARCH_RECONSTRUCTION = (
     "metalfx_temporal_native", "metalfx_temporal_85", "metalfx_temporal_quality",
 )
 _RESEARCH_PROJECT_NAME = re.compile(r"OpenRC-Research-[0-9a-f]{32}\Z")
+# VQ-07h: the saved graphics-mode file is read only by exported template builds, never by research launches.
+_EXPORT_ONLY_OVERRIDE_KEY = "application/config/project_settings_override.template"
+_EXPORT_ONLY_OVERRIDE_VALUE = '"user://renderer.cfg"'
 
 
 class LaunchError(ValueError):
@@ -161,6 +167,8 @@ def _research_project_settings(project: Path) -> tuple[dict[str, str], str]:
             continue
         key, raw = value.split("=", 1)
         full = f"{section}/{key.strip()}"
+        if full == _EXPORT_ONLY_OVERRIDE_KEY and raw.strip() == _EXPORT_ONLY_OVERRIDE_VALUE:
+            continue  # VQ-07h: only exported template builds read it; editor-binary research launches ignore it.
         for target in watched:
             if full.startswith(target + "."):
                 raise LaunchError(f"research project has a feature override for {target}")
@@ -330,6 +338,7 @@ def _child_environment(
             child.pop(key, None)
         else:
             child[key] = value
+    child[TELEMETRY_DISABLE_ENV] = "1"
     return child
 
 

@@ -9,6 +9,7 @@ const SAMPLE_KEYS: Array[String] = [
 	"render_buffer_memory_bytes",
 	"render_cpu_ms",
 	"render_gpu_ms",
+	"render_gpu_status",
 	"render_texture_memory_bytes",
 	"render_video_memory_bytes",
 	"resource_count",
@@ -29,8 +30,22 @@ func _run_checks() -> void:
 	var expect_native: bool = "--native" in OS.get_cmdline_user_args()
 	_check("requested native run has a native display", not expect_native or not headless, DisplayServer.get_name())
 	_check("headless and macOS Compatibility timing exclusions are explicit", not FrameDiagnostics._timing_unavailable_reason("headless", "Windows", "forward_plus").is_empty() and not FrameDiagnostics._timing_unavailable_reason("macOS", "macOS", "gl_compatibility").is_empty() and FrameDiagnostics._timing_unavailable_reason("Windows", "Windows", "forward_plus").is_empty())
+	_check("GPU status codes separate zero, positive and invalid readings",
+		FrameDiagnostics.gpu_status_code(0.0, false) == FrameDiagnostics.GPU_STATUS_ZERO_AMBIGUOUS
+		and FrameDiagnostics.gpu_status_code(2.5, false) == FrameDiagnostics.GPU_STATUS_POSITIVE_UNVERIFIED
+		and FrameDiagnostics.gpu_status_code(0.0, true) == FrameDiagnostics.GPU_STATUS_INVALID)
+	var codebook: Dictionary = FrameDiagnostics.GPU_STATUS_CODEBOOK
+	var claims_freshness: bool = false
+	for label: Variant in codebook.values():
+		claims_freshness = claims_freshness or str(label).begins_with("fresh") or str(label) == "measured"
+	_check("GPU status codebook covers every code and never claims freshness", codebook.size() == 4
+		and codebook.has(str(FrameDiagnostics.GPU_STATUS_NOT_MEASURED)) and codebook.has(str(FrameDiagnostics.GPU_STATUS_INVALID))
+		and not claims_freshness, str(codebook))
 	var observer = FrameDiagnostics.new()
 	_check("pre-start sample has stable finite schema", _sample_is_valid(observer.sample()), str(observer.sample()))
+	_check("pre-start sample reports GPU not measured", observer.sample().render_gpu_status == FrameDiagnostics.GPU_STATUS_NOT_MEASURED)
+	_check("metadata publishes the version 2 status codebook", observer.metadata().version == 2
+		and observer.metadata().render_gpu_status_codebook == codebook, str(observer.metadata()))
 	_check("observer begins disabled", not observer.metadata().enabled, str(observer.metadata()))
 	var invalid_probe = FrameDiagnostics.new()
 	var invalid_values: Array = [NAN, INF, -1.0, "not numeric"]
@@ -52,17 +67,28 @@ func _run_checks() -> void:
 	observer.start(root_viewport)
 	_check("repeated start does not reset or duplicate polls", observer.metadata().gpu_polls_including_warmup == 0, str(observer.metadata()))
 	var samples_valid: bool = true
+	var statuses_consistent: bool = true
 	var observed_gpu_polls: int = 0
 	var observed_positive_gpu_polls: int = 0
 	for _i in 4:
 		await process_frame
 		var current: Dictionary = observer.sample()
 		samples_valid = samples_valid and _sample_is_valid(current)
+		var expected_status: int = FrameDiagnostics.GPU_STATUS_NOT_MEASURED
+		if expected_timing_available:
+			# INVALID is admissible only when this sample itself counted an invalid reading.
+			var invalid_reading: bool = current.render_gpu_status == FrameDiagnostics.GPU_STATUS_INVALID \
+				and current.invalid_value_count > 0 and current.render_gpu_ms == 0.0
+			expected_status = FrameDiagnostics.GPU_STATUS_INVALID if invalid_reading \
+				else FrameDiagnostics.GPU_STATUS_POSITIVE_UNVERIFIED if current.render_gpu_ms > 0.0 \
+				else FrameDiagnostics.GPU_STATUS_ZERO_AMBIGUOUS
+		statuses_consistent = statuses_consistent and current.render_gpu_status == expected_status
 		if expected_timing_available:
 			observed_gpu_polls += 1
 			if current.render_gpu_ms > 0.0:
 				observed_positive_gpu_polls += 1
 	_check("active samples keep a stable finite schema", samples_valid, str(samples_valid))
+	_check("active sample status matches its reading and timing availability", statuses_consistent)
 	var before_stop: Dictionary = observer.metadata()
 	_check("GPU polling counters match observations including warm-up", before_stop.gpu_polls_including_warmup == observed_gpu_polls and before_stop.gpu_positive_polls == observed_positive_gpu_polls, str(before_stop))
 	_check("unavailable timing performs no GPU polls", expected_timing_available or before_stop.gpu_polls_including_warmup == 0, str(before_stop))
@@ -78,6 +104,7 @@ func _run_checks() -> void:
 	_check("stopped samples do not poll again", after_stop.gpu_polls_including_warmup == before_stop.gpu_polls_including_warmup and after_stop.gpu_positive_polls == before_stop.gpu_positive_polls, str(after_stop))
 	_check("stopped sample retains finite schema", _sample_is_valid(stopped_sample), str(stopped_sample))
 	_check("CPU and GPU readings stop after stop", stopped_sample.render_cpu_ms == 0.0 and stopped_sample.render_gpu_ms == 0.0 and stopped_sample.frame_setup_cpu_ms == 0.0, str(stopped_sample))
+	_check("stopped sample reports GPU not measured", stopped_sample.render_gpu_status == FrameDiagnostics.GPU_STATUS_NOT_MEASURED, str(stopped_sample))
 	await _test_viewport_is_not_retained(root_viewport)
 
 

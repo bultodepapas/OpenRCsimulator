@@ -13,7 +13,8 @@ const M := preload("res://physics/math3d.gd")
 
 const FORMAT := "openrc-race-track v1"
 const RULESET := "openrc-local-race-v1"
-const PATH_POLICY := "openrc-chord-path-v1"
+## v2 (DR-19g): a crossing on a graded impact tick is judged on the integrator chord plus the accepted endpoint.
+const PATH_POLICY := "openrc-chord-path-v2"
 const ORIGIN_PILOT := "pilot"
 
 const TOP_KEYS := ["format", "id", "name", "field_id", "ruleset", "laps", "origin", "pad", "gates"]
@@ -52,11 +53,19 @@ const OBJECT_CLEARANCE_M := 1.0
 const TREE_RADIUS_M := 15.0
 
 
-## The pinned record of the first local ruleset. Every value is part of the course identity.
+## The pinned record of the first local ruleset. Every value is part of the course identity. Audit A10 (2026-11-16):
+## terminal_policy declares that a crash or pack depletion decided on a tick's accepted endpoint voids every crossing
+## of that tick: its true time is only known to lie within the tick, so a finish on the same chord cannot be shown to
+## precede it. The added rule changes the course identity, so records under the earlier rules stay historical.
+const TERMINAL_POLICY := "endpoint-terminal-voids-tick-crossings-v1"
+## Audit A15: the identity also hashes the resolved solid frame boxes (post bases follow the terrain under them).
+const IDENTITY_VERSION := "openrc-course-identity-v2"
+
+
 static func ruleset() -> Dictionary:
 	return {id = RULESET, laps = 3, sample_hz = 240, countdown_ticks = 720, tie_window_s = 1.0e-6,
 		path_policy = PATH_POLICY, acceleration_envelope_mps2 = 250.0, min_normal_speed_mps = 1.0,
-		pad_radius_m = 1.5, pad_rest_speed_mps = 0.2, pad_rest_height_m = 0.25}
+		pad_radius_m = 1.5, pad_rest_speed_mps = 0.2, pad_rest_height_m = 0.25, terminal_policy = TERMINAL_POLICY}
 
 
 ## {ok, errors, track, sha256}. The sha256 hashes the file bytes exactly as read.
@@ -311,9 +320,14 @@ static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> D
 	var resolved: Array = []
 	for gate: Dictionary in gates:
 		resolved.append([gate.id, gate.c, gate.n, gate.w, gate.h])
-	# The solid frame geometry is part of what a recorded race collided with.
-	var identity: String = _sha256(var_to_bytes([FORMAT, str(track.source_sha256), str(field_id), rules, resolved,
-		pad_north, pad_east, -pad_ground[0], FRAME_SECTION_M, FRAME_THICKNESS_M, TOP_BANNER_M]))
+	# The solid frame geometry is part of what a recorded race collided with: the resolved boxes themselves (audit A15),
+	# whose post bases follow the terrain under each post, not only the aperture that sets them.
+	var solids: Array = []
+	for box: Dictionary in frames:
+		solids.append([float(box.north), float(box.east), float(box.down), float(box.half_x), float(box.half_down),
+			float(box.half_z), float(box.heading_deg)])
+	var identity: String = _sha256(var_to_bytes([FORMAT, IDENTITY_VERSION, str(track.source_sha256), str(field_id), rules,
+		resolved, solids, pad_north, pad_east, -pad_ground[0], FRAME_SECTION_M, FRAME_THICKNESS_M, TOP_BANNER_M]))
 	var course := {identity = identity, tag = float(identity.substr(0, 13).hex_to_int()), track_id = str(track.id),
 		track_name = str(track.name), track_sha256 = str(track.source_sha256), field_id = str(field_id), ruleset = rules,
 		laps = int(track.laps), gate_count = count, gates = gates, frames = frames,

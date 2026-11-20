@@ -37,8 +37,14 @@ const EYE_CLEARANCE_M := 0.15
 const PILOT_FRAME_M := 2.0
 const PILOT_VFOV_MIN_DEG := 4.0
 const PILOT_VFOV_MAX_DEG := 70.0
+## DR-19d impact shake: peak angle (rad) at full strength and its decay rate (1/s); about 0.3 s to fade.
+const SHAKE_MAX_RAD := 0.035
+const SHAKE_DECAY_PER_S := 12.0
 
 var camera: Camera3D
+## DR-19d impact shake: current peak angle (rad) and its phase clock (s).
+var _shake := 0.0
+var _shake_time := 0.0
 var view := 0
 var tilt_deg := 40.0
 var hfov_deg := 120.0
@@ -171,6 +177,7 @@ func adjust_fov(steps: int) -> bool:
 ## The next update() places the view without carrying any history (pad reset, view change, first frame).
 func snap() -> void:
 	_snap = true
+	_shake = 0.0
 
 
 ## Aspect of the content the camera renders into (the viewport's visible rectangle).
@@ -183,6 +190,12 @@ func aspect() -> float:
 
 ## Place the camera for one drawn pose. `pose` is the activity's single interpolated 13-value body; `mount_frd` the
 ## prepared camera mount; `ground` (render x, z) -> render height keeps inspection eyes above the terrain.
+## DR-19d: a short, decaying camera shake after an impact (presentation only; the flight's state is untouched).
+## `strength` 0…1 sets the peak angle (SHAKE_MAX_RAD at 1); a stronger later impact raises it, a weaker one does not.
+func shake(strength: float) -> void:
+	_shake = maxf(_shake, clampf(strength, 0.0, 1.0) * SHAKE_MAX_RAD)
+
+
 func update(pose: PackedFloat64Array, mount_frd: PackedFloat64Array, delta: float, ground: Callable) -> void:
 	if camera == null:
 		return
@@ -212,6 +225,17 @@ func update(pose: PackedFloat64Array, mount_frd: PackedFloat64Array, delta: floa
 				camera.look_at(target, Vector3.UP)
 			camera.fov = pilot_vfov_deg(eye.distance_to(target))
 	_snap = false
+	if _shake > 1.0e-4 and str(VIEWS[view]) == "pilot":
+		_shake = 0.0 # audit: the pilot's eye on the ground does not feel the quad's impacts
+	if _shake > 1.0e-4:
+		_shake_time += maxf(delta, 0.0)
+		# Two incommensurate frequencies per axis: an irregular jolt, not a regular wobble.
+		var a := _shake
+		camera.rotate_object_local(Vector3.RIGHT, a * (0.7 * sin(_shake_time * 61.0) + 0.3 * sin(_shake_time * 97.0)))
+		camera.rotate_object_local(Vector3.UP, a * (0.6 * sin(_shake_time * 53.0 + 1.3) + 0.4 * sin(_shake_time * 89.0)))
+		_shake *= exp(-SHAKE_DECAY_PER_S * maxf(delta, 0.0))
+	else:
+		_shake = 0.0
 
 
 ## Chase eye and aim point for a CG at `target` (render) and a heading (rad, render yaw of the nose): the eye sits

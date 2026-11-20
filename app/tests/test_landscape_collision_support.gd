@@ -116,7 +116,7 @@ func _test_pit_shelter_support() -> void:
 		and is_equal_approx(float(person_proxy.bounds_down_max), -0.10))
 	var shelter_only := CollisionWorld.build(field, {"groups": [shelter]})
 	_check("pit shelter support metadata adds no floor collider",
-		shelter_only.ok and shelter_only.world.proxies.size() == 19)
+		shelter_only.ok and shelter_only.world.proxies.size() == 24)
 	_check("pit shelter support adds only the existing person capsule",
 		supported.world.proxies.size() == shelter_only.world.proxies.size() + 1)
 

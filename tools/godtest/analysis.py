@@ -27,8 +27,11 @@ def validate_stream(directory: Path, frames: dict) -> dict:
     count, chunks, previous_end, header, trailer = 0, 0, None, None, None
     metric_schema = None
     phase_samples = defaultdict(list)
-    phase_hitches = defaultdict(lambda: {str(limit): dict(frames=0, consecutive=0, max_consecutive=0, excess_ms=0.0) for limit in (16.667, 33.333, 50, 100)})
+    phase_hitches = defaultdict(lambda: {str(limit): dict(frames=0, consecutive=0, max_consecutive=0,
+        excess_ms=0.0, slow_time_ms=0.0, runs=0, consecutive_ms=0.0, max_run_ms=0.0)
+        for limit in (16.667, 33.333, 50, 100)})
     phase_final_counters = {}
+    previous_phase = None
     slowest = []
     with path.open("rb") as source:
         for line in source:
@@ -63,6 +66,8 @@ def validate_stream(directory: Path, frames: dict) -> dict:
             metrics = item.get("metrics")
             if not isinstance(metrics, dict) or len(metrics) > 64:
                 raise ValueError("invalid metric schema")
+            if "phase_index" not in metrics:
+                raise ValueError("phase_index is required for phase reduction")
             if metric_schema is None:
                 metric_schema = sorted(metrics)
             if sorted(metrics) != metric_schema:
@@ -73,16 +78,27 @@ def validate_stream(directory: Path, frames: dict) -> dict:
             for offset, (phase_index, wall) in enumerate(zip(metrics.get("phase_index", []), walls)):
                 if phase_index != int(phase_index) or not 0 <= phase_index <= 10000:
                     raise ValueError("invalid phase index")
+                if previous_phase is not None and phase_index != previous_phase:
+                    for stats in phase_hitches[str(int(previous_phase))].values():
+                        stats["consecutive"] = 0
+                        stats["consecutive_ms"] = 0.0
+                previous_phase = phase_index
                 phase_samples[str(int(phase_index))].append(wall)
                 phase_final_counters[str(int(phase_index))] = {key: metrics[key][offset] for key in ("memory_static_bytes", "resource_count", "orphan_node_count", "render_texture_memory_bytes") if key in metrics}
                 for limit, stats in phase_hitches[str(int(phase_index))].items():
                     if wall / 1000 > float(limit):
+                        if not stats["consecutive"]:
+                            stats["runs"] += 1
                         stats["frames"] += 1
                         stats["consecutive"] += 1
+                        stats["consecutive_ms"] += wall / 1000
+                        stats["max_run_ms"] = max(stats["max_run_ms"], stats["consecutive_ms"])
                         stats["max_consecutive"] = max(stats["max_consecutive"], stats["consecutive"])
                         stats["excess_ms"] += wall / 1000 - float(limit)
+                        stats["slow_time_ms"] += wall / 1000
                     else:
                         stats["consecutive"] = 0
+                        stats["consecutive_ms"] = 0.0
                 entry = (wall, count + offset, int(phase_index), ends[offset])
                 if len(slowest) < 20: heapq.heappush(slowest, entry)
                 elif entry > slowest[0]: heapq.heapreplace(slowest, entry)
@@ -99,11 +115,20 @@ def validate_stream(directory: Path, frames: dict) -> dict:
     if count == 0:
         raise ValueError("empty frame collection")
     phase_stats = {}
+    phase_pacing = {}
     for index, values in phase_samples.items():
+        elapsed_ms = sum(values) / 1000
+        phase_pacing[index] = {"frames": len(values), "sample_wall_ms": elapsed_ms,
+                               "fps_mean": len(values) * 1000 / elapsed_ms,
+                               "assignment": "phase_index at interval end; denominator is assigned wall time"}
+        for stats in phase_hitches[index].values():
+            stats["slow_time_percent"] = 100 * stats["slow_time_ms"] / elapsed_ms
+            stats["over_budget_percent"] = 100 * stats["frames"] / len(values)
         values.sort()
         phase_stats[index] = {name: values[max(0, math.ceil(q*len(values))-1)] / 1000 for name, q in (("p50", .5), ("p95", .95), ("p99", .99), ("max", 1))}
     return {"valid": True, "frames": count, "chunks": chunks, "phase_stats": phase_stats,
-            "phase_hitches": dict(phase_hitches), "phase_final_counters": phase_final_counters,
+            "phase_hitches": dict(phase_hitches), "phase_pacing": phase_pacing,
+            "phase_final_counters": phase_final_counters,
             "slowest_frames": [dict(wall_ms=w/1000, frame=i, phase_index=p, end_usec=end) for w,i,p,end in sorted(slowest, reverse=True)]}
 
 
@@ -144,8 +169,12 @@ def report(directory: Path, *, write: bool = True) -> dict:
         if not isinstance(phase, dict) or phase.get("status") not in ("complete", "failed", "unsupported"):
             problems.append("invalid phase result")
             break
-        if phase.get("frame_statistics") == "offline_from_verified_stream":
-            phase["frame_ms"] = integrity.get("phase_stats", {}).get(str(phase.get("index")), {"p50": 0, "p95": 0, "p99": 0, "max": 0})
+        observed = integrity.get("phase_stats", {}).get(str(phase.get("index")))
+        phase["frame_ms"] = observed or {"p50": None, "p95": None, "p99": None, "max": None}
+        phase["frame_statistics_status"] = "available" if observed else "unavailable_no_verified_samples"
+        phase["pacing"] = integrity.get("phase_pacing", {}).get(str(phase.get("index")), {})
+        if not observed and phase.get("requested") and phase.get("status") == "complete":
+            problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
         phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
         phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
         for key in ("wall_seconds", "sim_seconds"):
@@ -153,6 +182,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
                 problems.append(f"invalid phase {key}")
         for key in ("p50", "p95", "p99", "max"):
             value = phase.get("frame_ms", {}).get(key)
+            if value is None and not observed:
+                continue
             if type(value) not in (float, int) or not math.isfinite(value) or value < 0:
                 problems.append("invalid phase frame distribution")
     rendered = runtime.get("metrics", {}).get("rendered") is True and manifest.get("headless") is False
@@ -173,9 +204,10 @@ def report(directory: Path, *, write: bool = True) -> dict:
     for phase in active:
         duration = phase.get("wall_seconds", 0)
         ratio = phase.get("sim_seconds", 0) / duration if duration else None
-        targets.append({"phase_id": phase.get("id"), "pacing_target": "screen_only" if duration < 60 else "observed",
-                        "p95_within_18ms": phase["frame_ms"]["p95"] <= 18,
-                        "p99_within_25ms": phase["frame_ms"]["p99"] <= 25,
+        available = phase["frame_statistics_status"] == "available"
+        targets.append({"phase_id": phase.get("id"), "pacing_target": ("screen_only" if duration < 60 else "observed") if available else "unavailable",
+                        "p95_within_18ms": phase["frame_ms"]["p95"] <= 18 if available else None,
+                        "p99_within_25ms": phase["frame_ms"]["p99"] <= 25 if available else None,
                         "simulation_wall_ratio": ratio, "simulation_pace_target_met": ratio is not None and 0.99 <= ratio <= 1.01})
     loading = []
     for phase in phase_records:
@@ -214,8 +246,10 @@ def report(directory: Path, *, write: bool = True) -> dict:
                   flight_observations=flight_observations)
     if write:
         write_json(directory / "report.json", result)
-        rows = "".join(f"<tr><td>{html.escape(str(p.get('name')))}</td><td>{html.escape(str(p.get('status')))}</td><td>{p.get('wall_seconds', 0):.3f}</td><td>{p.get('frame_ms', {}).get('p95', 0):.2f}</td><td>{p.get('frame_ms', {}).get('p99', 0):.2f}</td><td>{html.escape(str(p.get('reason', '')))}</td></tr>" for p in phase_records)
-        document = f"""<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width'><title>OpenRC GOD TEST</title><style>body{{font:16px system-ui;margin:3em;max-width:90em;background:#10171d;color:#e6eef5}}table{{border-collapse:collapse;width:100%}}td,th{{padding:.6em;border-bottom:1px solid #43515d;text-align:left}}code{{color:#9ed7cb}}li{{margin:.4em 0}}</style><h1>OpenRC GOD TEST · {html.escape(manifest['id'])}</h1><p>Execution: {html.escape(str(result['execution']))} · Data: {result['data']} · Coverage: {html.escape(str(coverage))} · Flight: {html.escape(str(result['flight']))}</p><p>{'Rendered' if rendered else 'Headless / drawing unqualified'} · Single instrumented run. Hardware qualification and physical validation remain separate.</p><ul>{''.join('<li>'+html.escape(issue)+'</li>' for issue in problems)}</ul><table><thead><tr><th>Phase</th><th>Status</th><th>Wall s</th><th>p95 ms</th><th>p99 ms</th><th>Reason</th></tr></thead><tbody>{rows}</tbody></table><p>Raw evidence is retained beside this report. GPU counters are not display presentation times. Short phase percentiles are exploratory.</p></html>"""
+        def number(value):
+            return "unavailable" if value is None else f"{value:.2f}"
+        rows = "".join(f"<tr><td>{html.escape(str(p.get('name')))}</td><td>{html.escape(str(p.get('status')))}</td><td>{p.get('wall_seconds', 0):.3f}</td><td>{number(p.get('frame_ms', {}).get('p95'))}</td><td>{number(p.get('frame_ms', {}).get('p99'))}</td><td>{number(p.get('pacing', {}).get('fps_mean'))}</td><td>{number(p.get('hitches', {}).get('16.667', {}).get('slow_time_percent'))}</td><td>{p.get('hitches', {}).get('16.667', {}).get('max_consecutive', 'unavailable')}</td><td>{html.escape(str(p.get('reason', '')))}</td></tr>" for p in phase_records)
+        document = f"""<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width'><title>OpenRC GOD TEST</title><style>body{{font:16px system-ui;margin:3em;max-width:90em;background:#10171d;color:#e6eef5}}table{{border-collapse:collapse;width:100%}}td,th{{padding:.6em;border-bottom:1px solid #43515d;text-align:left}}code{{color:#9ed7cb}}li{{margin:.4em 0}}</style><h1>OpenRC GOD TEST · {html.escape(manifest['id'])}</h1><p>Execution: {html.escape(str(result['execution']))} · Data: {result['data']} · Coverage: {html.escape(str(coverage))} · Flight: {html.escape(str(result['flight']))}</p><p>{'Rendered' if rendered else 'Headless / drawing unqualified'} · Single instrumented run. Hardware qualification and physical validation remain separate.</p><ul>{''.join('<li>'+html.escape(issue)+'</li>' for issue in problems)}</ul><table><thead><tr><th>Phase</th><th>Status</th><th>Wall s</th><th>p95 ms</th><th>p99 ms</th><th>Mean callback FPS</th><th>Slow wall % (&gt;16.667 ms)</th><th>Max slow run (frames)</th><th>Reason</th></tr></thead><tbody>{rows}</tbody></table><p>Raw evidence is retained beside this report. GPU counters are not display presentation times. Short phase percentiles are exploratory. FPS and slow-wall share use the sum of intervals assigned at their end to each phase, which differs from event-bounded phase duration. Threshold runs stop at phase changes; edge runs may be clipped. Detailed 16.667/33.333/50/100 ms observations are in report.json. These fixed thresholds are distinct from the debug bridge target plus tolerance.</p></html>"""
         flight_notes = "".join(f"<li>{html.escape(str(item['phase_id']))}: wheel contact outside the runway rectangle was observed (minimum margin {item['minimum_wheel_runway_margin_m']:.2f} m). Collection and stopping coverage do not establish a successful runway landing.</li>" for item in flight_observations if item["wheel_outside_runway_observed"])
         if flight_notes:
             document = document.replace("<table>", "<ul>" + flight_notes + "</ul><table>", 1)

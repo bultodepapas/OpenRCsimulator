@@ -1,6 +1,6 @@
 # 5-inch FPV racing drone: simulation integration plan
 
-**Revised:** 2026-10-21; **status updated 2026-11-14.** **Status:** an EXPERIMENTAL software slice of M1–M3 is implemented: closed-loop free flight in the app and a local three-lap gate race, on estimated data. [§15](#15-implementation-status-2026-11-11) owns step status and supersedes the "open" markers in §10; physical, pilot, target-host and CI gates remain open. The [FPV handoff pack](../../FPV/00_START_HERE.md) (2026-11-11) holds the detailed contracts this implementation followed.
+**Revised:** 2026-10-21; **status and remediation updated 2026-11-16.** **Status:** an EXPERIMENTAL software slice of M1–M3 is implemented: closed-loop free flight in the app and a local three-lap gate race, on estimated data. [§15](#15-implementation-status-2026-11-11) owns delivered step status and supersedes the historical "open" markers in §10; [§16](#16-audit-remediation-programme-2026-11-16) owns current repair priorities and acceptance. Implemented does not mean audit findings are closed. Physical, pilot, target-host and CI gates remain open. The [FPV handoff pack](../../FPV/00_START_HERE.md) (2026-11-11) holds the detailed contracts this implementation followed.
 
 **Owner / IDs:** drone track, DR-00…41, under main-line acceptance; existing IDs are retained. **Evidence:** [2026-10-21 investigation](../research/drone-racing/DR-01/refresh-2026-10-21.md), [original source survey](../research/drone-racing/DR-01/README.md), [implemented foundation](../research/drone-racing/DR-04a/README.md). The original survey remains dated research, not the current implementation specification.
 
@@ -17,7 +17,7 @@ Add one identified **5-inch-class, fixed-pitch electric quad-X racer**: select i
 
 M2 is **EXPERIMENTAL**, with explicit aerodynamic limits. Racing geometry does not establish accurate high-speed handling. M4 can run alongside product work, but M1–M3 grant no claim of validated propwash, VRS, exact Betaflight behavior or physical realism. Data from another quad does not validate this build.
 
-Deferred: multiplayer, online rankings, GPS rescue/autopilots, turtle/reverse-thrust mode, whoops, 7-inch vehicles, track editor, structural damage, thermal fidelity and RF/video simulation. Horizon mode, ghosts, extra tracks, night effects and elaborate particles are not first-flight dependencies.
+Deferred: multiplayer, online rankings, GPS rescue/autopilots, whoops, 7-inch vehicles, track editor, structural damage, thermal fidelity and RF/video simulation. Horizon mode, ghosts, extra tracks, night effects and elaborate particles are not first-flight dependencies.
 
 ## 2. Repository baseline and ownership
 
@@ -243,7 +243,7 @@ Each row is a reviewable change or splits into named suffixes without renumberin
 | DR-34 | Wash/grass/particles | Zero-load/observational guards; deferred. |
 | DR-38 | Held-out model/data comparison | Exact configuration, frames, splits, regime residuals; M4 open. |
 | DR-39 | Experienced FPV pilot review | Rates/hardware recorded, baseline/candidate maneuver card; open. |
-| DR-40 | Local race records and medals | Record book per course identity, geometry-derived medal targets, results card; pilot review open. |
+| DR-26a | Local race records and medals | Record book per course identity, geometry-derived medal targets, results card; software repairs and pilot review open. Historical alias: DR-40 (records). |
 | DR-40 | Selected-build physical validation | Mass/CG/inertia, thrust/torque/RPM/current, steps, Blackbox and independent motion with uncertainty; open. |
 | DR-41 | Capability expansion | Separate revision after evidence; deferred. |
 
@@ -300,11 +300,13 @@ DR-02 needs the exact assembly, downloadable parts, motor/prop/pack coverage and
 
 ## 14. First implementation task
 
-Start **DR-02 + DR-16a**: freeze the sourced build/asset manifest; specify sampled-feedback, stage access and rollback, then demonstrate the current gap in an isolated failing test. Next implement the smallest headless Acro/session/replay slice. Do not begin with a new renderer, procedural drone, global timestep change or fixed-wing FlightSession rewrite.
+The original DR-02 + DR-16a foundation sequence has delivered the software slice recorded in §15. The current first implementation task is **DR-14 controller authority**, beginning with A01's managed profile refusal and A02's binding ownership, followed by A03's pause contract. Use [§16](#16-audit-remediation-programme-2026-11-16) for current dependencies and desired-behavior tests; do not restart the already delivered renderer, kernel or activity work.
 
 ## 15. Implementation status (2026-11-11)
 
 Software evidence, test names and limits: [M0–M3 slice](../research/drone-racing/M1-M3-2026-11-11/README.md). Decisions: [kernel protocol](../DECISIONS.md#closed-loop-control-samples-the-accepted-frame-through-an-opt-in-protocol), [quad law](../DECISIONS.md#the-first-quad-law-is-transparent-and-its-continuations-are-declared), [race state](../DECISIONS.md#race-state-commits-with-the-physics-tick).
+
+Independent implementation audit: [2026-11-16 findings and reproducible evidence](../research/drone-racing/audit-2026-11-16/README.md), pinned to `cfb5acd5`: 18 initial findings plus A19 from the follow-up, for 19 prioritized findings across controller authority, lifecycle, physics boundaries, race validity, persistence and presentation. The 25 selected existing suites pass 1,120 checks; targeted diagnostic probes expose additional gaps. Audit evidence does not close native-controller, performance or physical-validation gates.
 
 | IDs | State | Note |
 | --- | --- | --- |
@@ -323,4 +325,341 @@ Software evidence, test names and limits: [M0–M3 slice](../research/drone-raci
 | DR-28 | Partly done | Second course, the Tower sprint (7 gates, 116.6 m gate to gate: low 5 x 1.3 m hurdle, a 4.6 m tower gate, high and low passes); T or the pause menu's Course button cycles the courses of the field on the pad. Published rule formats, dive/tilted gates, flags and a menu course picker are open. |
 | DR-27, 33, 34, 41 | Deferred | Ghosts, rich audio, effects, capability expansion. |
 
-Next: required CI on the full suite; a native 1080p session with a real radio (DR-14 acceptance, frame pacing, latency); the kernel guard share of the tick (about 0.3 ms, every framed vehicle); DR-40 measurements for the selected build.
+The local records/medals implementation is now tracked as **DR-26a**, with its historical **DR-40 (records)** references retained in dated evidence and existing comments. **DR-40** in current planning means selected-build physical validation. This resolves ownership without rewriting historical work.
+
+Next: the repair sequence below, required CI, a native 1080p session with a real radio/gamepad (DR-14 acceptance, frame pacing, latency), the kernel guard share of the tick, and DR-40 selected-build measurements. Earlier timing figures remain dated evidence rather than a measurement of this audit environment.
+
+## 16. Audit remediation programme (2026-11-16)
+
+**Status (2026-11-17): all 19 findings implemented with software evidence ([§16.5](#165-repair-status-2026-11-17)); native controller, OS replacement, performance and physical gates remain open.** The audit branch itself landed no production repairs. The [baseline audit](../research/drone-racing/audit-2026-11-16/README.md) records 18 initial findings plus A19 from the follow-up (19 total); the [follow-up investigation](../research/drone-racing/audit-2026-11-16/follow-up.md) supplies stronger scene/session witnesses, negative search results, alternatives and pinned engine-source analysis. Those documents own dated evidence; this section is the authoritative remaining-work plan. Implementation must reference the owning DR step and applicable A finding, with proof in its commit.
+
+The compared main head is `6dfe1b9179af408f6b765b91ca164e626570db9f`; relevant FPV/input/session/race source is unchanged from `cfb5acd5`. Recheck drift before implementation. Preserve baseline recordings and configuration identities before intentional physics changes. Documentation and observation probes do not promote M2/M3 qualification.
+
+### 16.1 Decisions and rejected shortcuts
+
+| Area | Selected planning direction | Alternative and tradeoff |
+| --- | --- | --- |
+| Managed profile refusal | Fix the quad boundary first: unresolved selected device remains connected but unready; only an explicit service-resolved default is usable. Reuse the airship refusal pattern. | A typed shared resolution API offers better diagnostics but needs all consumers and transactional rollback reviewed; it is not required for the initial fix. No silent keyboard/default substitution. |
+| Binding ownership | Resolve configured AUX, actually active actions and inherited LB/RB/Start shortcuts together; derive help from the effective result. Preserve separate flight/UI roles. | Migrating all quad shortcuts into shared semantic actions is a larger follow-up. Counting inactive fixed-wing LB throttle-cut as quad ownership would break the default arm control. |
+| Pause | Implement an explicit ordinary-hold continuity contract for an unchanged verified source/mapping/arm intent, with atomic pause entry and a recheck before the first resumed tick. Any observed OFF or continuity loss enters disclosed recovery. | A disclosed pad restart is acceptable temporary containment but does not close ordinary powered resume. Waiting for fresh AUX while paused deadlocks; retaining stale ON indefinitely can hide an actual OFF. A new pilot-frame validity field requires a versioned protocol change. |
+| Results | Stable publication ID and canonical payload outside pure physics; retry and graceful-exit/restore guards; authoritative attempt files and an idempotent recoverable book projection. | A durable queue follows only with an explicit verified acknowledgement boundary, startup recovery and rewind policy. It cannot persist an unavailable first write; graceful-exit safety must not be labeled process-crash durability. |
+| Mutable saves | Reuse validated previous-copy or alternating-generation recovery, with readback, ownership and failure seams. Preserve unknown/future versions. | Native atomic replacement may be preferable once qualified per OS. Removing the application's unlink alone leaves the pinned Windows engine's own delete-before-move failure window. `flush` is not a power-loss guarantee. |
+| Pack energy | First qualify the existing one-quadrant non-regenerative candidate, refusing unsupported signed laws on every admitted path and checking charge bounds. Regenerate source-owned data. | Coasting weakens early chop control in an existing synthetic test. If it fails the declared maneuver gate, implement coherent dissipative braking or bounded regeneration; neither a charge clamp nor clipped pack current repairs the energy law. |
+| Hover admission | Solve loaded shared-pack equilibrium with duty, shaft-speed, voltage and residual checks; retain independent power bounds as negative oracles. | An OCV-only or maximum-power-only guard cannot prove actuator feasibility. A frozen-SOC operating point does not prove sustained or real-FC hover; charge still decreases under load. |
+| Contact and scoring | Bounded full-terrain disc intersection; separately adopt a versioned conservative rule suppressing crossings in a tick with unresolved physical terminal time. | A plane formula is an exact fixture, not a curved-terrain certificate. A certified event locator can later reduce false-invalid finishes; endpoint timestamps cannot do so. |
+
+These are implementation choices, not claims that the patches exist. Record final architectural decisions in DECISIONS when the reviewed implementation settles their exact contracts. Do not silently alter historical local-practice scoring, document semantics or checkpoint compatibility.
+
+### 16.2 Reviewable work packets and dependencies
+
+| Order / owner | Findings and concrete work | Required closure evidence |
+| --- | --- | --- |
+| 1 — DR-14 | **A01, A02, A18, A19:** preserve managed refusal; enforce one effective binding owner, including switch-group members and Start; reconcile connection-generation evidence before flight; render current help/availability. | Real-scene unsupported/corrupt/ambiguous store cases fail closed; healthy explicit defaults still fly; default LB/RB work; cross-assigned AUX never acquires a second authority; selected/foreign and held/released controls behave correctly; duplicate arrival/removal never silently disarms an uninterrupted pad or leaves a stale verifier. True replacement/reconnect cannot retain old authority. Update fixtures that previously depended on empty managed profiles becoming defaults. |
+| 2 — DR-14/16/17 | **A03:** ordinary-hold epoch versus recovery. Track device identity/connection evidence, mapping and valid arm intent; do not queue edges during a hold. | The real activity retains powered continuity only in its qualified unchanged-source case. OFF, OFF→ON, held controls, focus loss, disconnect, generation/profile changes and invalid samples cannot reuse stale authority or synthesize OFF evidence. First accepted tick, motor state, tape and menu agree. |
+| 3 — DR-16/14 | **A04, A05:** shared controller and selected UI-device initialization for Home and direct entry; honor live role changes. Depends on packet 1's refusal policy. | Same V2 mapping, inversion, limits and AUX on both routes; explicit keyboard and unconfigured radio remain meaningful; selected UI role opens/navigates/accepts/backs out of menus, with no foreign flight authority. Native visible UI acceptance follows synthetic checks. |
+| 4 — DR-26/26a/17 | **A11, A12:** stable publication UUID, immutable payload, no-clobber ownership, explicit retry and all graceful-departure/restore guards. Specify replay and live-branch publication semantics before schema edits. | Eight failed writes recover without another race; retries keep ID/payload and do not double-fold the book; two sessions/processes, repeated wall time and collision never overwrite another payload; ID-generation failure retains the terminal payload until it acquires one stable ID; Home/quit/reconfiguration/restore cannot silently lose the last pending copy. Offer stay/retry/informed discard with a pending count; cancellation preserves all records and only explicit discard permits loss. Deterministic verification replay does not publish. |
+| 5 — DR-26a/26 | **A13, A16:** recoverable replacement, closed bounded book validation, legacy preservation/migration and idempotent projection reconciliation. Coordinate with packet 4's result schema. | Fault injection at stage/readback/publish/book/acknowledgement/rollback boundaries retains a valid accepted state; result-saved/book-failed and interrupted acknowledgement reconcile once. Empty/partial/future/malformed books never reach unsafe field access or get overwritten silently. Qualify native OS semantics separately. |
+| 6 — DR-10/16/17 | **A09:** reusable normalized physical invariants for raw/prepared/candidate admission; recompute or validate consumed derived values. | Negative drag and invalid mass/inertia/rotor/pack/contact/command data reject transactionally; valid stock and lab fixtures remain supported. Raw-only provenance stays strict. Candidate refusal preserves frame, tape, recorder, environment and identity. |
+| 7 — DR-18/05/21 | **A08:** loaded hover feasibility; **A06:** coherent pack/ESC candidate and charge-domain enforcement. Depends on packet 6's common admission boundary. | Independent impossibility and duty-limit fixtures, zero resistance, discriminant boundaries, chosen voltage branch, low/full SOC and actual bus residuals. Full/near-full chop, mixed motor flows, energy closure and refinement; full baseline exact replay then candidate FC/maneuver comparison. No physical ESC claim from software alone. |
+| 8 — DR-19/24/09b | **A07:** full-disc endpoint geometry and valid conservative bounds for composed terrain; review unsafe early-outs and memo approximation. | Analytic plane oracle, tilted discs, interior crest, shipped RC ramps/shoulders, custom narrow ramps, memo boundaries, stopped props/hull, grazing/clear/penetrating states and bounded-budget refusal. Observed hit, proven clearance and unresolved state remain distinct. Endpoint repair does not claim swept impact time. |
+| 9 — DR-25/23/24/20/26 | **A10, A14, A15:** conservative same-tick scoring; capture original reset tick/reason; hash resolved collision geometry and version rules/course identity. Can proceed alongside physics after publication/identity policy is fixed. | Composed RK4/session/wrapper test for earlier/tied/later or unresolved crash and depletion; unaffected clean race/replay; nonzero reset tick and failed-reset no-publication; real admitted terrain change separates identities. Preserve old records as historical instead of silently re-ranking them. |
+| 10 — DR-31/37 | **A17:** visible OSD-save failure and honest saved/current state, reusing the chosen replacement policy. Integrate A18 help with packet 1 rather than duplicating binding logic. | Failed save remains visible/retryable; successful reload agrees with settings; effective shortcut/AUX help matches runtime. Targeted OSD/activity tests and native 1080p readability. |
+
+Packets 1–3 are the first control-authority integration sequence. The persistence and physics streams can then proceed independently, with serialized edits to shared session, identity and scene contracts. Do not combine every finding into one production patch. Scope the durable queue as a follow-on to packets 4–5 if process-loss recovery is required; closing the minimum graceful-recovery defect must explicitly state its narrower guarantee.
+
+### 16.3 Contracts that must be settled before implementation
+
+**Publication versus rewind.** A pending external result must have an owner outside arbitrary physics rewind. An interim implementation may refuse restores that would lose or ambiguously revive pending output. A stronger design separates the publication queue from the versioned simulation envelope. Do not union old dictionaries blindly, regenerate IDs on retry, or evict a deduplication ledger while still promising permanent exactly-once projection. Preserve a legacy aggregate baseline and bound any reconstruction scan/index; old files do not necessarily contain all medal/attempt-count facts needed for perfect migration. Specify concurrent writer, stale-lock and conflict recovery.
+
+**Terrain authority.** The current contact law linearizes samples in 0.1 mm cells. Its small microrelief error estimate is not a bound for every admitted custom RC ramp, whose widths can approach zero. Choose exact collision geometry, a certified bound for the approximation, or explicit refusal of unsupported terrain. Existing rotorcraft disc search and RC upper-bound helpers are reuse candidates, not drop-in proof that the composed quad surface is covered.
+
+**Model and record identity.** Intentional pack/contact/scoring changes need explicit model/session/collision/rules versions and old-record handling. A flight log's solver hash alone does not reject a session checkpoint whose own identity still matches. Keep file-byte provenance, normalized candidate identity, exact replay and changed-solver/candidate comparison distinct. Never rewrite a baseline golden merely to hide a behavioral change.
+
+**Evidence strength.** Current stronger A03 uses the real scene with a synthetic radio and research air start; A07 is a constructed endpoint on the shipped ramp; A10 is a real wrapped tick from an initialized final-lap checkpoint. Fifteen normal pad-start trials show regeneration but no over-capacity. Keep those limits in repair reports. Generation/ambiguity changes need both positive continuity controls and genuine replacement/reconnect recovery; equal numeric device IDs do not alone prove equal authority.
+
+### 16.4 Verification and completion gates
+
+For each packet, first turn its baseline observation into a desired-behavior regression that fails before the fix. Parse changed GDScript and run affected existing suites through the checked runner; retain complete outcomes and exact identities, excluding workspace metadata from publication. Use the repository test pool when configured. Broaden tests only for affected shared consumers or a required gate.
+
+- **Controls/routes:** controller service/profile/AUX/setup, quad input/activity and affected fixed-wing/heli/airship consumers; explicit keyboard and default-pad positive controls; physical radio/gamepad follow-up.
+- **Persistence/race:** race session/director/model/records and activity, isolated storage fault seams, concurrency, migration and checkpoint/replay cases; native Linux/macOS/Windows for platform promises.
+- **Physics:** data, electric bus, controlled plant, session/flight log and applicable rotor-disc/RC-track suites; independent analytic/energy oracles and a preserved complete baseline before any candidate comparison.
+- **Product gates:** required repository CI, native **1920×1080 first**, actual selected controllers, frame pacing and input latency, DR-22 endurance and pad cycles. Higher resolution follows 1080p; 720p is fallback evidence.
+- **Physical gate:** DR-40 selected-build mass/CG/inertia, thrust/torque/RPM/current, ESC/braking and pack response, independent held-out motion and uncertainty. Estimated coefficients and passing software checks do not close it.
+
+Track each finding as **open → implemented with software evidence → applicable native/hardware acceptance complete**, linking the repair commit and retained evidence. Do not mark all 19 closed because diagnostic probes pass, or describe the baseline 1,120 checks as tests of an unimplemented repair.
+
+### 16.5 Repair status (2026-11-17)
+
+Every finding below is **implemented with software evidence**, on branch `fix/fpv-drone-racing-audit-2026-11-16` from `main` `f0ed7dec`. The production FPV source was unchanged from `cfb5acd5` at that point. Each new desired-behaviour suite inverts the audit's diagnostic observation. Inspection shows every one fails on the baseline; none was run there.
+
+The suites passed with zero script errors under pinned Godot 4.8-beta2 on Windows: 38 multirotor, race and quad-controller suites plus `test_ui_language`. An independent adversarial review found two low-severity defects, both fixed with regressions: a stale integrate flag after the A19 resync, and an A01 refusal message shown for uncalibrated radios without a retry. The runs were direct headless runs: the checked runner refuses this workspace's `app/.godot` junction. Required CI is still needed. [DECISIONS](../DECISIONS.md#fpv-audit-repairs-fix-the-quads-control-energy-scoring-and-result-contracts) records the contracts.
+
+| Findings | Repair | Desired-behaviour evidence | Still open |
+| --- | --- | --- | --- |
+| A01, A02, A18, A19 | Refusal stays unready; one authority per LB/RB/Pause button; generated help; connection-generation re-resolution behind the menu | `test_mr_controller_authority` (46) | Real radio and gamepad session, native hotplug |
+| A03 | Ordinary-hold arm-switch continuity; disclosed disarming resume | `test_mr_controller_authority` | Physical radio switch behaviour |
+| A04, A05 | Direct route owns the managed `ControllerService` and UI device; AppRoot unchanged (pinned) | `test_mr_controller_authority` | Native visible menu navigation |
+| A06 | Charge-acceptance-bounded regeneration (bus law v2) | `test_mr_pack_charge` (9) | ESC braking and LiPo acceptance under DR-40 |
+| A07 | Local-plane worst rim direction plus rim ring witnesses | `test_mr_rotor_strike_slope` (29) | Proven clearance on curved custom terrain |
+| A08, A09 | Loaded shared-pack hover solve; shared physical invariants for prepared models | `test_mr_admission` (28) | Sustained and real-FC hover |
+| A10, A15 | `terminal_policy` voids same-tick crossings; identity hashes resolved solids | `test_mr_race_integrity` (32), `test_race_director` | Event locator (false-invalid reduction) |
+| A11–A14, A16 | Publication id with no-clobber writes; `.prev` book recovery; strict entries; retry and informed discard; pad-reset context | `test_mr_race_integrity` | Crash-durable queue; native Windows/macOS rename |
+| A17 | In-session change kept and reported; the next change retries | `test_mr_race_integrity` | 1080p readability |
+
+Deliberate consequences:
+- Course identities change (A10/A15). Older record-book entries remain history and are not re-ranked.
+- The `app/physics` and `app/sim` edits change the solver identity, so recorded `.orfl` tapes replay as solver-changed.
+- After committing, the owner reruns `tools/companions/rebind.py`. The retained tapes are fixed-wing, so their CSVs are expected to be byte-identical.
+
+## 17. Pilot feedback (2026-11-17): preconfigured controls and graded crashes
+
+**Owner request after flying the repaired build:** connected controllers should arrive with arm, flight mode and a restart control already assigned (EdgeTX radio, Xbox and PlayStation pads), and crashes should not all end the flight: like a real quad, the outcome should depend on how hard and where it hits. Evidence for both designs comes from two research reviews on 2026-11-17. The [EdgeTX USB joystick manual](https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick), [ExpressLRS switch configuration](https://expresslrs.org/software/switch-config/), the [Betaflight arming guide](https://www.betaflight.com/docs/wiki/guides/current/Arming-Sequence-And-Safety) and the SDL3 gamepad drivers back the controls. The crash numbers are estimates: no source gives fly-on/walk-of-shame thresholds. Betaflight's `crash_recovery` defaults to OFF (no disarm on impact), and simulators commonly pair an optional prop-damage setting with a quick reset.
+
+### 17.1 DR-14d: preconfigured controls
+
+| Source | Arm | Flight mode | Restart on the pad | Notes |
+| --- | --- | --- | --- | --- |
+| EdgeTX/OpenTX radio (USB `1209:4F54` or an EdgeTX-family name) | CH5 = axis 4. Only the high end arms (OFF 0, ON +1), so a 3-position switch's middle never arms. | CH6 = axis 5: low Angle, middle and high Acro. | CH9 = joystick button 1 (SDL button 0). Assign a momentary switch (SH/SF) to CH9 in the radio's mixer. | AETR on axes 0–3 as before, and calibration is still required. CH7/CH8 are unused, because Windows DirectInput can swap them. |
+| SDL standard gamepad (Xbox, PlayStation) | LB toggle (existing) | RB toggle (existing) | View/Back (Xbox) or Create/Share (PlayStation): the existing `restart_flight` default, now dispatched by the quad. | Start pauses, as before. |
+| Keyboard | E | M | R | Unchanged |
+
+- Controls offers the EdgeTX preset for every radio, and it is the starting draft for a recognized EdgeTX radio.
+- Saved profiles are never rewritten.
+- The quad routes `restart_flight` through the profile's effective binding. It acts only on an OFF-to-ON edge after fresh OFF evidence, never through a button an AUX channel owns.
+- The help names the restart control.
+- The arm switch keeps the existing fresh OFF→ON at low-throttle rule.
+
+### 17.2 DR-19c: graded crashes
+
+A declared, deterministic gameplay law (`multirotor-graded-impact-v3` since §20) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
+
+- Each rotor's prop health h ∈ [0, 1] is checkpointed state (electrical law, layout v2). Thrust, aerodynamic torque and rotor drag scale with h. h = 1 is bit-identical to the undamaged law.
+- Severity is the closing speed along the contact normal, at the contact point.
+
+| Contact | Below the damage threshold | Damage band | Terminal |
+| --- | --- | --- | --- |
+| Feet or hull on terrain | ≤ `crash_speed` (5 m/s): no event | Up to 3 × `crash_speed` (15 m/s): hard landing; the two spinning props nearest the impact are chipped | Above 15 m/s: "Hard impact" |
+| Spinning prop disc on terrain (above `rotor_strike_speed`, so armed idle on the pad is safe) | — | Wear each tick in contact, proportional to shaft speed (one tick at hover speed costs 20 %); below 30 % health the prop breaks (h = 0) | Never by itself: a quad that cannot fly falls and the pilot restarts |
+| Prop disc (thin disc) touching an obstacle | — | Wear as above, plus a break above 6 m/s closing speed; bounce with restitution 0.2 | Never by itself |
+| Frame (box, §19.4) on an obstacle | — | Bounce at the touching face or edge: foliage restitution 0.35, a parked airframe 0.25, others 0.2. The two nearest spinning props are chipped | Foliage and people at 12 m/s and above, a parked foam airframe at 11, frangible stakes, lamps, bales and gate fabric at 10, buildings, trunks and benches at 8: "Obstacle strike" |
+
+- Non-terminal impacts raise `impact` and `prop_damage` events.
+- The OSD shows damaged and broken props. A quad lying upside down shows how to restart it from every source.
+- Race attempts continue through non-terminal impacts. A terminal impact keeps the A10 same-tick rule.
+- **Strict mode** reproduces the previous terminal law exactly (existing tests).
+- **Not claimed:** measured damage thresholds, motor or arm damage, or ESC desync. Turtle mode: §19.1. Calibrate later against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)).
+
+### 17.3 Verification
+
+**Status (2026-11-17): implemented with software evidence.** `test_mr_graded_crashes` (24 checks) and `test_mr_controls_presets` (22 checks) are new. 77 multirotor, race, controller and Controls-setup suites, plus `test_ui_language`, pass with zero script errors: pinned Godot 4.8-beta2 on Windows, direct headless runs.
+
+An adversarial review found five defects, all fixed with regressions:
+- a restart control could fire while a menu or dialog owned the input;
+- a resting frame contact could chip props every tick;
+- a midpoint contact took precedence over the endpoint;
+- a driven broken prop could outrun the shaft-speed domain;
+- a radio button was named like a gamepad face button.
+
+A broken prop keeps 30 % of its aerodynamic load. Still open: physical-radio and pad sessions, and a owner flight log to tune the estimated thresholds.
+
+New desired-behaviour suites (each fails on the previous behaviour):
+- **Controls:**
+  - The EdgeTX preset validates, a middle switch position does not arm, and a calibrated draft keeps its calibration.
+  - The quad restarts on an EdgeTX CH9 button and on a pad's Back, only after fresh OFF, and never through a button an AUX channel owns.
+  - The help names the restart control.
+- **Graded crashes:**
+  - Landing taps and armed idle on the pad cause no damage.
+  - A hard landing chips props and the flight continues; an extreme impact is terminal.
+  - Prop wear grows with contact time and breaks the prop.
+  - Obstacle bounce dissipates energy and pushes the quad out of the obstacle, prop clips are not terminal, and a frame hit above the threshold is terminal.
+  - The damage is replayed exactly, and strict mode keeps the old outcomes.
+
+Affected suites: multirotor plant/session/activity/OSD/flight log and race suites, controller setup/profile/actions, and `test_ui_language`.
+
+## 18. Crash audit and second iteration (2026-11-17)
+
+**Owner request:** keep improving crashes: physics, broken props, sound and the crash experience. The audit flew the graded law in headless scenarios (drops of 0.5–11 m, tilted and inverted drops, a 10 m/s skid, a 15 m/s dive, a broken and a damaged prop in powered flight) and inventoried reusable presentation code.
+
+### 18.1 Findings
+
+| ID | Finding | Evidence | Disposition |
+| --- | --- | --- | --- |
+| C1 | Hard touchdowns sank into the stiff pad springs, up to 28 mm at 12.5 m/s. At high approach speed some RK4 stages overshot deep into the springs, injecting up to 136 rad/s of pitch in one tick with no contact at either endpoint. | Drop probe and tick trace | Fixed: a touchdown above 3 m/s is one impulse at the contact patch (restitution about 0.15) with lift-out. Fast approaches take pieces of at most 4 mm (graded law only). Sink is now 0.3–3 mm. |
+| C2 | Tumbles after flat drops were partly real: the drag of the still-spinning props tilts a disarmed falling quad about 24°, and the shipped CG sits 0.6 mm ahead of the feet's centre. | Tick trace, geometry | Kept as physics. The regression requires no flip on a level 10 m/s landing. |
+| C3 | A spinning prop touching the ground only wore. It never braked or kicked the airframe, so the characteristic prop-strike flip was missing. | Law review | Fixed. A strike halves the shaft speed and applies the ground's reaction on the blade (I_r·Δω/r, against the tip motion, at the hub). Mirror strikes of counter-rotating props cancel. No energy is gained. |
+| C4 | Grinding props reported damage every tick: a flood of messages (and, once added, sounds). | Skid and dive probes | Fixed in presentation. Messages, sounds and effects come once per prop and damage step; touches are paced at 0.12 s and impact messages at 1.2 s. |
+| C5 | No crash sound, dust, chips, debris or camera jolt for the quad. A broken prop still rendered and spun. | Presentation inventory | Fixed by reusing the project's crash kit (synthetic MIT sounds in `render/crash/crash_audio.gd`; dust, chips, marks and debris in `render/crash/effects.gd`), allocated at the first event. Broken blades leave the model (`render/crash/prop_break.gd`, blur kept hidden). Damaged discs wobble. The motor loop gains a detuned rattle with prop damage. Impacts jolt the camera briefly. |
+| C6 | Upside down after a crash, the only way back is a restart (no turtle mode). | Probe | Fixed in §19.1: turtle mode. |
+| C7 | All thresholds are estimates. | Research (§17) | Open: tune against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)). |
+
+### 18.2 Verification
+
+- **New and updated suites, all passing on pinned Godot 4.8-beta2 (Windows, direct headless runs):**
+  - `test_mr_graded_crashes`, 28 checks: flat touchdown, the strike brake and kick, mirror cancellation, and a driven prop grinding to break.
+  - `test_mr_crash_presentation`, 12 checks: pacing, broken blades leaving and returning, the wobble, the camera jolt fading, and lazy allocation.
+- **Affected suites:** multirotor activity, visual, camera, plant, session, flight log, race and controls.
+- **Unchanged:** strict-law frames, and normal flight and gentle landings, because the new behaviour runs only for graded contacts above the thresholds.
+- **Not established:** audible quality of the synthetic crash sounds on a quad, native 1080p effect cost, and measured crash physics.
+
+## 19. Turtle mode, thresholds, sound mix and collision review (2026-11-17)
+
+**Owner request:** finish turtle mode, the thresholds and the sound; review the collision volumes of the quad, the trees and the club-house objects near the courses.
+
+### 19.1 DR-19e: turtle mode (crash flip)
+
+- **Request:** F on the keyboard, Y on a gamepad (never a button an AUX channel or Pause owns), toggled at any time. It engages only on an arming edge: a request made while armed (a crashed quad usually still is) waits, and the pilot's Acro/Angle mode keeps flying until the disarm. The arm cycle that engaged it consumes it (the next arm flies); a pad restart or source change clears it. Only the damped bridge can drive a motor backwards; on any other powertrain turtle mode commands nothing.
+- **Law** (`openrc-fc-acro-angle-turtle-v2`): no PID or allocation runs. The motors on the side opposite the stick spin in reverse, so the quad flips toward the stick. The command is −0.4 × √(stick beyond the 0.15 deadband), faded to 35 % as the body's up axis nears vertical. The motors stop past vertical, and for good once the quad is upright (up > 0.8, a latch until the disarm), so a fast roll flip does not cartwheel on.
+- **Plant:** the electrical law admits a negative duty in turtle mode only. A prop driven backwards keeps 35 % of its thrust and drag torque (declared estimate).
+- **HUD:** mode label TRTL; the help line and the upside-down hint name the turtle control.
+- **Evidence:** `test_mr_turtle` (35 checks). Full roll, full pitch, diagonal and half stick flip an inverted quad upright in 0.28–0.68 s with no damage or crash, and the motors stop with the stick still held. Halfway over, the quad stands on its stick-side edge (measured from the hub heights, not the controller's formula). A request in flight is ignored by the controller, the deadband spins nothing, and the input keeps a request made while armed until the next arming edge.
+- **Known behaviour:** turtle armed in the air reverses the motors as on a real flight controller; armed upright (up > 0.8) it latches done and the motors stay stopped until the disarm.
+
+### 19.2 Thresholds
+
+- **Kept:** hard impact at 3 × `crash_speed` (15 m/s, an 11 m free fall), hard landing above 5 m/s, prop break above 6 m/s, wear 20 % per tick at hover speed. These are plausible for a 5-inch quad and not yet measured.
+- **Changed:** frame terminal speeds now cover every scenery response class (table in §17.2). Before, stakes, bales and foam parked airplanes ended the flight at the 8 m/s of a building. A parked airframe bounces with its own shared restitution (0.25).
+- **Noted:** people are classed `soft_foliage_impulse` by the scenery inventory, so a frame hit survives up to 12 m/s. Confirm as a design choice with the scenery owner.
+
+### 19.3 Sound mix
+
+Levels measured from the source WAVs (max 50 ms RMS), FPV listener (Godot's inverse-distance gain is capped at +3 dB near the listener):
+
+| Sound | Before | After |
+| --- | --- | --- |
+| Motor loop at hover | −21.5 dBFS (reference) | unchanged |
+| Touch at 3 / 6 / 12 m/s | 19 / 9 / 2 dB under the motors | 10 / 5 / 2 dB under (strength (v/12)^0.6) |
+| Prop chip | 12 dB under | 8 dB under |
+| Rattle, one chipped (85 %) / one broken prop | 18 / 2 dB under | 12 / 4 dB under, never above (0.5·√missing, at most 0.8) |
+
+The crash voices used the airplane kit's 20 m unit size against the motor loop's 2 m, so from a ground view 20 m away crashes were about 20 dB louder relative to the motors than in FPV. The quad's crash voices, motor loop and rattle now share one distance law (`QuadCrashFx.VOICE_UNIT_SIZE_M`). Evidence: `test_mr_crash_presentation` (15 checks). Not established: listening tests on speakers and headphones.
+
+### 19.4 Collision review
+
+Both courses sit at N35–56, E35–85 from the pilot. The nearest trees are about 70 m away and the club-house group (pavilion, pit shelters, cars, benches) is 55–90 m south, so no tree or club-house proxy is on a race line. The review measured every proxy within 80 m and the scenery prefabs against their visual meshes.
+
+| Item | Finding | Disposition |
+| --- | --- | --- |
+| Quad frame | v1 tested a CG sphere through the hubs: 7.7 cm of invisible cushion above and below the 4.9 cm body. | Fixed (`multirotor-graded-impact-v2`): a box across the hubs (x, y) from the hull's top point to the feet (z). The contact lands on the touching face or edge, so an edge hit spins the quad. |
+| Spinning props | v1 tested spheres of the prop radius: 6.5 cm above and below each disc. | Fixed: thin discs (3 mm half thickness). Exact against walls, roofs and ground; for bars and poles thinner than the quad, never wider than v1. |
+| Pit-shelter roof | A flat slab at 3.15–3.29 m under a roof sloping from 3.47 m to 2.86 m: the back half was fly-through and the front eave sank in. All 18 posts collided to 3.35 m, so the back row's colliders rose 0.55 m through the roof. | Fixed: six stepped strips follow the sheet and the structure under it; front and back posts stop at their visual heights (3.30 m and 2.80 m). |
+| Round bales | A sphere for a cylinder lying on its side: the end faces were fly-through. | Fixed: a core box of the inscribed square section, inside the bale, now covers them to within 0.18 m of the rim. |
+| Windsock mast (3.6 m), pilot station | No proxy: the field declares both flight cues `collides: false` (L10a). | Not changed: owner decision for the field track, because airplane sessions share these proxies. |
+| Pit tables and chairs, flagpole base, flower clumps | Small or low uncovered items. | Not changed: deliberate open design; low severity. |
+| Quad hubs, prop radius, feet, rest height | Match the ion_r5 model within 1 mm. | Verified. |
+| Gates, pavilion, club sign, shed, cars, benches, tables | Proxies within 0.1 m of the visuals. | Verified. |
+| Bushes, shade trees, saplings, people | Proxies come from source bounds; the rendered MultiMesh bounds were not measured. | Not established; none is near a course. |
+
+Evidence: `test_mr_graded_crashes` (36 checks: roof clearance, a frame contact below a roof, an edge hit spinning the quad, every class threshold, broken props no longer striking obstacles); scenery collision and companion airspace suites.
+
+`app/scenery/collision_world.gd` is a source in the AI companions' behavior manifest. The pit-shelter and bale proxies lie off every companion circuit, so the manifest entry and the Stik profile's manifest hash were renewed, as the EdgeTX change did for `main.gd`. The companion airspace (48 checks), manager (53) and session (65) suites pass with the renewed pin. This is not a full behaviour requalification run (see [companion rebinds](../research/ai-companions/AFC-02/README.md)). The solver pin was re-bound with `tools/companions/rebind.py`: all nine companion tapes replay identically (receipt `2026-11-17-ea70a38e-to-5511bbbc.json`). The review fixes in §19.5 change `app/physics` again, so the re-bind must run once more after they are committed.
+
+### 19.5 Adversarial review
+
+An independent review of turtle mode and the v2 shapes found no energy gain, NaN path or nondeterminism in normal use. Fixed with regressions:
+- A turtle request made while still armed after a crash was consumed by the next disarm, and it froze the Acro/Angle toggle in flight. It now waits for the next arming edge.
+- Negative duty was admitted for any powertrain in turtle mode; now only for the damped bridge.
+- A broken prop still struck obstacles and bounced the quad every tick at a wall.
+- A non-finite contact depth could pass the contact guard.
+
+Accepted limits: only the nearest obstacle is tested at the box centre (as in v1); a prop disc has no midpoint check, so at about 10 m/s of axial travel it can skip a bar thinner than 4 cm; the terminal speed uses the edge-blended contact point; quad and airplane terminal speeds per class are separate tables by design.
+
+## 20. Grazes and material (DR-19f, 2026-11-17)
+
+**Owner request:** keep improving crashes: grazes, not everything gets damaged, more realism, grazes at high speed, damaged props.
+
+### 20.1 Audit of v2
+
+| ID | Finding | Evidence |
+| --- | --- | --- |
+| G1 | Obstacle contacts had no friction: the shared response is a normal impulse only, so a graze along a wall kept all its tangential speed and gave no drag or spin. | `SceneryCollision.apply_response` |
+| G2 | Every frame contact above 0.5 m/s chipped the two nearest props, even a battery or belly scrape. | `_chip_nearest` |
+| G3 | Prop wear ignored the surface and the bite: a tip brushing leaves cost the same 20 % per tick as a full bite into concrete. | `_wear` |
+| G4 | A prop clipping an obstacle neither braked nor kicked the quad, unlike a ground strike. | `_graded_prop_obstacles` |
+| G5 | No event for a sliding contact: grazes and skids were silent. | Event list |
+| G6 | In a session (Acro, throttle 0.5, 1 s), a 1 m/s graze along a wall at 8–25 m/s destroyed all four props, and leaves were as hard on them as concrete. | Graze probe, v2 |
+
+### 20.2 Law v3 (`multirotor-graded-impact-v3`)
+
+- **Friction:** a Coulomb impulse follows the normal impulse of a frame-obstacle bounce (μ: leaves 0.3, gate fabric and foam airframes 0.4, others 0.5) and of a touchdown (the data's `contacts.friction`). It is at most μ × the normal impulse, at most what stops the sliding and at most what keeps the contact separating, so it only removes energy; an off-centre graze yaws the quad.
+- **Local chips:** a frame hit chips only the spinning props whose disc reaches the contact (hub within prop radius + 2 cm), and only above 3 m/s along the normal; a ground touchdown from `crash_speed`.
+- **Material and bite:** wear per tick = 0.2 × ω/ω_hover × material × bite. Material: leaves 0.15, gate fabric 0.4, terrain and foam airframes 0.5, stakes, lamps and bales 0.6, hard 1. Bite: depth / 15 mm, at least 0.25. A prop breaks on an obstacle above 6 / √material m/s (leaves 15.5, hard 6).
+- **Obstacle prop strikes** brake the shaft and kick the airframe like ground strikes, scaled by the bite.
+- **Scrapes:** a pressed (approaching) frame-obstacle contact sliding above 2 m/s raises a `scrape` event on its bounce tick; a ground skid above 2 m/s reports once per 0.1 s of simulation time, bounding the event and flight-log volume. The presentation plays a paced scrape grain (strength √(v/15), one per 0.15 s), throws dust on the ground and buzzes the camera lightly; no message.
+
+### 20.3 Evidence
+
+| Graze (Acro, throttle 0.5, 1 s) | v2 prop health | v3 prop health |
+| --- | --- | --- |
+| Hard wall, 8 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.61, 0.65, 0.62, 0.85 |
+| Hard wall, 25 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.67, 0.59, 0.61, 0.85 |
+| Leaves, 15 m/s along, 1 m/s in | 0, 0, 0, 0 | 0.93, 0.79, 0.61, 0.85 |
+| Hard wall, 12 m/s along, 7 m/s in | 0, 0, 0, 0.85 | 0, 0, 0.48, 1.0 |
+
+- `test_mr_graded_crashes` (50 checks) adds closed-form graze checks: survival, drag within μ × the normal impulse, yaw, energy loss, one scrape and no chip; a battery hit on a roof chips nothing; a nose hit chips the front props only; leaves against a hard wall for wear and breaks; an obstacle prop strike brakes and kicks; a ground skid scrapes; a skid-landing loses speed to friction.
+- `test_mr_crash_presentation` (16 checks) adds scrape pacing and strength.
+- **Not established:** measured friction and damage data, and listening tests.
+- **Review:** an independent review found no blocking defect. Fixed with regressions: friction off the CG could shorten a rebound into a closing contact; a receding overlap raised a scrape without friction; a sustained skid raised one event per tick. Accepted: a prop can be struck by an obstacle and the ground in the same tick, and a prop that breaks still kicks (as on the ground).
+- **Flight logs:** `multirotor-graded-impact-v3` is part of the model identity, so graded logs recorded under v2 no longer replay as exact (identity mismatch, by design). No golden flight uses the graded law.
+- **Known limit:** the airframe has no rotational aerodynamic damping. With both props on one side broken and throttle held, the quad rolls up without bound (v2 and v3 alike); the pilot disarms.
+
+## 21. Full audit (2026-11-17)
+
+**Owner request:** an exhaustive audit for bugs, gaps, improvements and optimizations. Three independent read-only reviews covered physics and the flight controller, session, race and input, and the presentation layer. The lead verified each claim in code or with a probe before acting.
+
+### 21.1 Measured performance
+
+Headless tick cost at 240 Hz on the development PC, with the real field's collision world (6,139 proxies):
+
+| Case | Before | After |
+| --- | --- | --- |
+| Open-air flight, graded or strict | about 1.0 ms per tick | unchanged |
+| Ground skid at 8 m/s (4 contact pieces) | about 2.4 ms per tick | unchanged |
+| 12 m/s dive into the ground, worst tick | 11.0 ms | 4.6 ms |
+| 12 m/s dive, first 40 ticks | 110 ms | 67 ms |
+| 6 m/s dive, worst tick | 4.9 ms | 2.9 ms |
+
+Obstacle queries cost 1.7–7.7 µs each, and the default field has no index-wide proxies. The fine graded pieces now run only on the tick in which a foot or hull point can reach the ground, not on every tick below 0.25 m.
+
+### 21.2 Fixed with regressions
+
+| Area | Defect | Fix |
+| --- | --- | --- |
+| Race | A gate clipped while flying through it never scored: every crossing on a graded impact tick was unresolved. | Path policy `openrc-chord-path-v2`: the integrator chord is judged and the accepted endpoint must be past the plane. Records under v1 stay historical. `test_race_director` |
+| Physics | Fine contact pieces ran up to 0.3 m above the ground: an 11 ms tick at impact. | Refine only when a contact can begin this tick (§21.1). |
+| Session | A collision world installed after prepare kept the old class query (terminal speeds, friction, materials). | Both queries are rebuilt. `test_mr_graded_crashes` |
+| Scene | Race results were written, verified and renamed inside the finishing physics tick. | The handler runs deferred. |
+| Audio | The damaged-prop rattle kept playing while paused, crashed or in the restart menu. | It stops with the motors. `test_mr_crash_presentation` |
+| Visual | A broken prop hid its whole motor bell. | Only the ION R5 blades break. `test_mr_crash_presentation` |
+| Camera | The pilot's ground view shook with the quad's impacts. | Shake applies to FPV and chase only. `test_mr_crash_presentation` |
+| HUD | The crash cause was shown in English in every language; the last flight's statistics stayed after a pad restart. | Translated causes (8 catalogs); statistics dismissed on restart. |
+| HUD cost | The control names were rebuilt every frame. | Refreshed 4 times a second and on a source change. |
+| Race HUD | A crossing of the next gate that the director could not resolve (oblique, under 1 m/s through the plane, or bounced back) scored nothing, silently. | "Gate not counted: fly straight through it", once per crossing (8 catalogs). `test_mr_crash_presentation` |
+| Input | A refused arm (high throttle, an arm block) used up the turtle request. | The activity reports the controller's motor state after each tick; only an arm cycle the controller accepted consumes the request. `test_mr_turtle` |
+| Input | After the flight pad was unplugged, a second connected controller was not adopted (the direct route did adopt it). | Another connected controller takes over with ControllerService's priority (a saved profile, then a radio, then a known gamepad). A keyboard the pilot chose, also during the activity, stays chosen; the lost pad returning finds the role taken. `test_mr_activity` |
+| Presentation | The crash kit was built on the first touch: about 20 ms (10 ms particles, 10 ms voices), a visible hitch. | Built while loading; disabled parts stay unallocated. `test_mr_crash_presentation` |
+| Presentation | On rolling terrain every earlier scuff mark jumped to the latest touch's height, and an emitter still running (blade chips, dust) was lifted again by every later event. | Marks are lowered by the frame's lift; only the emitters an event places are lifted. `test_mr_crash_presentation` |
+
+### 21.3 Checked and kept
+
+- **Reverse-spinning props are exempt from the strike laws.** Counting them made the per-tick strike brake stall every crash flip on grass (`test_mr_turtle` failed). This is now a documented simplification at `REVERSE_PROP_EFFICIENCY`.
+- **A 160 V bus readout after a throttle chop on a full pack** was not reproduced. The pack has already discharged by the time of the chop; the peak was 25.7 V on 6S.
+- **Event identity:** `crash_model` is in the flight-log header and the impact law is in the model identity.
+- **Gate bounce-back** cannot double count.
+- **`restore_checkpoint` replaces the result outbox.** A restore is a full rewind: `test_race_session` relies on it. The scene saves each result as it arrives, so the outbox is normally empty, and a record that is re-added after it was saved is saved again with no effect (same publication id, same bytes).
+- **`prepare` in mid-attempt leaves no aborted record.** The scene aborts the attempt before it prepares.
+- **The pilot tape** restarts at every reset, prepare and restore, and is bounded at 30 minutes.
+- **`RcInput.poll` reads 128 buttons.** Measured at 17 µs per tick, about 0.4 % of one core at 240 Hz. Radios expose 32 or more buttons, so the scan stays.
+- **Every gate is tested on every racing tick.** The cost is a few dot products per gate on a course of a few gates.
+- **Statistics and the G-meter sample the latest accepted tick once per rendered frame.** Telemetry is evaluated once per tick, and sampling every tick would quadruple it at 60 fps for marginally higher peaks.
+- **Help panel at 1080p (keyboard source):** it fits in all 9 languages. German reaches lowest, 1017 of 1080 px.
+
+### 21.4 Open (not fixed)
+
+- **Physics:**
+  - A touching point closing fast (a belly skid into a bank) is not judged as an impact.
+  - There is no rotational aerodynamic damping.
+  - Ground lookups per stage (up to 10) and the per-call terrain memo miss are the next CPU targets; any change there alters results bit for bit and needs a re-record.
+- **Presentation:**
+  - The quad activity builds its world without the display preferences (`World.build` gets no graphics options): quality presets reach neither the field nor the gate shadows and halos. This is a cross-track integration with the graphics settings owners.
+  - The help panel is measured only with the keyboard source.

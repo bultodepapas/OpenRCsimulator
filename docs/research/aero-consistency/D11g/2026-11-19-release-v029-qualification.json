@@ -1,0 +1,43 @@
+{
+  "format": "openrc-d11g-source-renewal-v1",
+  "date_local": "2026-11-19",
+  "baseline_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "candidate_overlay": "app/project.godot config/version 0.2.8 to 0.2.9, followed by the two reviewed qualification-guard renewals",
+  "platform": "Windows 11 x86_64, official Godot 4.8-beta2 cafc17a19 console executable; disposable sparse worktree (app/project.godot, app/physics, app/sim, app/data, app/i18n, app/assets/fonts, research/aero/d11g) with only the two CJK font imports copied",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+  },
+  "inventory": {
+    "aggregated_paths": 151,
+    "unchanged": 150,
+    "qualified_sha256_before": "006037e924b555b79fd92243a415b3926823eeebf4b4424ff62a67f8de19807e",
+    "qualified_sha256_after": "2062c5d835be9f84482632da33fdd712808da70877b742a919052fe4c02ad313",
+    "changed": {
+      "app/project.godot": {
+        "lf_sha256_before": "8cb61a6cff7663ceb011c518c1864ac3b783708e35e17a24967f56de89943975",
+        "lf_sha256_after": "540b117b1b60511f4ddb75fd770ec0822069bf526a38378c75fad826c4871e7d",
+        "change": "config/version only"
+      }
+    }
+  },
+  "numerical_and_provenance_result": "Between the baseline, unrenewed candidate, renewed candidate, both mutations and the restored candidate, every report field other than derivation_identity.solver_sources is identical, as is derivation_identity.normalized_input: trim alpha 4.195979159664104 deg, ARP Cmq -8.082101784164095, CLq 2.3574257732845374, Cnr -0.13604012801947268, rounded -8.082/2.357/-0.136, the four sensitivity rows and generated provenance.",
+  "reports_sha256": {
+    "baseline": "9ea7f5ee2bc1734c1ee560ec034ad461c2397641d5347848d058ffb1d0a196e7",
+    "candidate-before": "678baec1e1a65d07cdc80bcba18d45ad3dd27dcec246854808075b4a4a7e7f27",
+    "renewed": "8efe8bafb8bbd0f6fe88ad7bb39891e68084ab8cc4263383c4b2443b8405007a",
+    "physics-mutation": "ce9b12b06040d22eee80ac605ad5721a85b1968885fbabe4d54597843d143357",
+    "version-mutation": "b2ff77d9bbb6bfdf44ff66c1a814f298be27b9c5a4d197e571ad36c1987ab16c",
+    "restored": "8efe8bafb8bbd0f6fe88ad7bb39891e68084ab8cc4263383c4b2443b8405007a"
+  },
+  "checks": {
+    "baseline": "generator --check reports compatible; updater --check passes",
+    "candidate_before_renewal": "generator and updater refuse exactly the Cmq, CLq and Cnr source leaves",
+    "renewed": "generator and updater --check pass; historical provenance admitted",
+    "physics_mutation": "comment appended to app/physics/aero.gd: both guards refuse, then restored byte for byte",
+    "version_mutation": "config/version 0.2.9-mut in app/project.godot: both guards refuse, then restored",
+    "restored": "both guards pass again",
+    "working_tree": "generator --check reports compatible in the main Windows working tree after the same three edits"
+  },
+  "limits": "Software provenance renewal on Windows only; not physical validation and not a Linux D11g reconstruction. Release CI and native checks remain separate evidence. The aircraft bytes and historical source strings were not changed."
+}

@@ -6,6 +6,7 @@ const Reference := preload("res://ui/controls_reference.gd")
 const Keys := preload("res://ui/key_labels.gd")
 const Actions := preload("res://input/controller_actions.gd")
 const Prompts := preload("res://ui/controller_prompts.gd")
+const Profiles := preload("res://input/controller_profile.gd")
 const ARROWS := { KEY_LEFT: "←", KEY_RIGHT: "→", KEY_UP: "↑", KEY_DOWN: "↓" }
 const CHANNELS := { roll = "Roll", pitch = "Pitch", yaw = "Rudder", throttle = "Throttle" }
 
@@ -44,7 +45,7 @@ func _init() -> void:
 	rows.mouse_filter = Control.MOUSE_FILTER_PASS
 	rows.add_theme_constant_override("separation", 5)
 	scroll.add_child(rows)
-	var footer := text_label(tr("Reopen: Esc → Flight overlays"), 12, UiTheme.TEXT_2)
+	var footer := text_label(tr("F1 or Esc → Flight overlays"), 12, UiTheme.TEXT_2)
 	body.add_child(footer)
 	refresh({})
 	_rebuild()
@@ -146,7 +147,7 @@ func _controller_rows() -> void:
 		if not gamepad and binding.get("type", "") == "button":
 			prompt = { text = tr("Button %d") % int(binding.button), texture_path = "" }
 		_row(tr(action.label), prompt.text, prompt.texture_path)
-	for channel: String in ["smoke", "flaps", "gear"]:
+	for channel: String in ["smoke", "flaps", "gear", "rates"]:
 		if _context.has("capabilities"):
 			continue
 		var binding: Dictionary = profile.get("aux", {}).get(channel, {})
@@ -157,7 +158,7 @@ func _controller_rows() -> void:
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif binding.type == "button" and not gamepad:
 			prompt.text = tr("Button %d") % int(binding.button)
-		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request" }[channel]), prompt.text)
+		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request", rates = "Dual-rate switch" }[channel]), prompt.text)
 	_row(tr("Pause"), Keys.label(KEY_ESCAPE))
 	_row(tr("Restart flight"), Keys.label(KEY_R))
 	_note(tr("Aircraft capabilities determine which auxiliary controls are available."))
@@ -165,11 +166,20 @@ func _controller_rows() -> void:
 
 func _rates_row(profile: Dictionary, bindings: Dictionary, family: String, info: Dictionary) -> void:
 	var caption := tr("Dual rates: normal / high")
-	if profile.get("kind", "radio") == "radio":
+	# D6-ETX-08: a radio's rates belong to the radio unless its profile asks OpenRC to simulate them.
+	if Profiles.rates_owner(profile) == "transmitter":
 		_row(caption + "\n" + tr("The radio sets its own rates."), "—")
 		return
 	if not bool(_context.get("capabilities", {}).get("rates", false)):
 		_row(caption + "\n" + tr("This aircraft has no rate profile."), "—")
+		return
+	var rate_switch: Dictionary = profile.get("aux", {}).get("rates", {}) if profile.get("aux", {}) is Dictionary else {}
+	if rate_switch.get("type", "") in ["axis", "button", "switch"]:
+		var fallback := tr("Axis %d") % int(rate_switch.get("axis", -1)) if rate_switch.type == "axis" \
+			else (tr("Button %d") % int(rate_switch.get("button", -1)) if rate_switch.type == "button" else tr("Switch"))
+		caption = tr("Dual rates: normal / sport / full") + "\n" + tr("Simulated by OpenRC")
+		var switch_label := _row(caption, radio_control_text(rate_switch, fallback))
+		_equipment_labels.rates = {label = switch_label, caption = caption, switch_name = _switch_name(rate_switch, fallback)}
 		return
 	var binding: Dictionary = bindings.get("rates_toggle", {})
 	var prompt := Prompts.prompt(binding, family, info, profile)
@@ -195,6 +205,10 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif not gamepad and binding.get("type", "") == "button":
 			prompt = {text = tr("Button %d") % int(binding.button), texture_path = ""}
+		if not aux.is_empty():
+			prompt.text = radio_control_text(aux, str(prompt.text))
+			if not prompt.text.is_empty() and aux.has("channel"):
+				prompt.texture_path = ""
 		if not available:
 			caption += "\n" + tr("Not available")
 			if binding.get("type", "unbound") == "unbound":
@@ -203,7 +217,13 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 			caption += "\n" + tr("Assign in Controls")
 		var label := _row(caption, prompt.text, prompt.texture_path)
 		if available and binding.get("type", "unbound") != "unbound":
-			_equipment_labels[channel] = {label = label, caption = caption}
+			_equipment_labels[channel] = {label = label, caption = caption, switch_name = _switch_name(aux, prompt.text)}
+	if str(profile.get("kind", "")) == "radio":
+		# HUD-ETX-01: with a radio, these stay on the transmitter (EdgeTX Special Functions, Inputs, mixes).
+		_row(tr("Throttle cut") + "\n" + tr("On your radio (special function)"), "—")
+		if bool(capabilities.get("flaps", false)):
+			var mix_owner := str(profile.get("flap_elevator_mix_owner", "simulator"))
+			_row(tr("Flap → elevator mix") + "\n" + (tr("Applied by your radio") if mix_owner == "transmitter" else tr("Applied by OpenRC")), "—")
 
 
 func _update_equipment_state() -> void:
@@ -224,6 +244,14 @@ func _update_equipment_state() -> void:
 			continue
 		var state_name := str(state)
 		entry.label.text = entry.caption + ("\n" + tr(names[state_name]) if names.has(state_name) else "")
+	# HUD-ETX-03: a bound radio switch has no command until it is seen at OFF (fresh-OFF arming).
+	var waiting: Variant = _equipment_state.get("waiting", {})
+	if waiting is Dictionary:
+		for channel: String in _equipment_labels:
+			if bool((waiting as Dictionary).get(channel, false)):
+				var switch_name := str(_equipment_labels[channel].get("switch_name", ""))
+				_equipment_labels[channel].label.text += "\n" + (tr("Move %s to OFF to take control") % switch_name \
+					if not switch_name.is_empty() else tr("Move its switch to OFF to take control"))
 
 
 func _section(caption: String) -> void:
@@ -277,6 +305,22 @@ func _row(caption: String, binding: String, texture_path := "") -> Label:
 	content.add_child(value)
 	line.tooltip_text = "%s: %s" % [caption, binding]
 	return label
+
+
+## HUD-ETX-01: a radio AUX binding as the pilot's radio names it: "CH5 · SD" from the binding's presentation
+## metadata (D6-ETX-03), "SD · Axis 4" with a label only, else the given fallback ("Axis 4", "Button 1").
+static func radio_control_text(binding: Dictionary, fallback: String) -> String:
+	var label := str(binding.get("label", "")).strip_edges()
+	if binding.has("channel") and typeof(binding.channel) == TYPE_INT:
+		return "CH%d · %s" % [int(binding.channel), label] if not label.is_empty() else "CH%d" % int(binding.channel)
+	if not label.is_empty() and str(binding.get("type", "")) != "switch":
+		return "%s · %s" % [label, fallback]
+	return fallback
+
+
+static func _switch_name(binding: Dictionary, fallback: String) -> String:
+	var label := str(binding.get("label", "")).strip_edges()
+	return label if not label.is_empty() else fallback
 
 
 static func key_text(keys: Array) -> String:

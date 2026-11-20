@@ -1,0 +1,12 @@
+command: --rendering-method forward_plus --rendering-driver d3d12 --path app --audio-driver Dummy --resolution 1920x1080 --windowed --disable-vsync -- --scene_detail=high --frametimes=U:/rtx3090-matrix/nk-static-fp-d3d12.json --warmup=5 --t=20 --frame-diagnostics --frametimes-max-frames=120000
+env: {"OPENRC_GRAPHICS_PROFILE": "high", "OPENRC_RECONSTRUCTION": "native"}
+exit: 0
+wall_s: 43.4
+---
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"abi_version":2,"backend":"native","backend_version":"openrc-native-kernel-stage-v2","binary_sha256":"5c64d4e7def1c05eb8eee5f212693b6e7f1bc2d6304c1cbd6145b771dd1b4d7f","lock_sha256":"4cf3c592b0161174f2521aad8d312d44706c18b73a154e5f10e853a6428e4687","source_sha256":"ba08a76c418a6e3a0470ac7cb7f1b55f281c95992a21d1111aa91dc50ca8146b"},"reason":"","requested":"native"}
+frame times: p50 2.97 ms, p95 4.29 ms, p99 5.38 ms over 6459 frames (complete=true) → U:/rtx3090-matrix/nk-static-fp-d3d12.json

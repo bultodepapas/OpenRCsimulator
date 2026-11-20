@@ -5,6 +5,7 @@ extends EditorExportPlugin
 const FlightLog := preload("res://sim/flight_log.gd")
 const MANIFEST := "res://native/kernel/package.json"
 const MAC_MANIFEST := "res://native/kernel/package-macos.json"
+const WINDOWS_MANIFEST := "res://native/kernel/package-windows.json"
 const MAC_PAIR_FORMAT := "openrc-macos-engine-pair-binding v1"
 const RESEARCH_SCOPE := "source-editor-local-custom-engine-research-v1"
 const PLUGIN_SOURCE := "res://addons/native_kernel/export_plugin.gd"
@@ -21,6 +22,7 @@ const MAC_SOURCES := {"session_probe.gd": "../research/performance/session_probe
 	"test_native_stage.gd": "tests/test_native_stage.gd", "test_native_session.gd": "tests/test_native_session.gd",
 	"test_native_replay.gd": "tests/test_native_replay.gd", "package_default_probe.gd": "tools/package_default_probe.gd"}
 var _manifest: Dictionary = {}
+var _platform := "linux"
 var _mac_probe_sha256 := ""
 var _mac_manifest: Dictionary = {}
 var _mac_manifest_sha256 := ""
@@ -35,6 +37,7 @@ func _get_name() -> String:
 
 func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _flags: int) -> void:
 	_manifest = {}
+	_platform = "linux"
 	_mac_probe_sha256 = ""
 	_mac_manifest = {}
 	_mac_manifest_sha256 = ""
@@ -81,35 +84,42 @@ func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _
 				add_file("res://native/kernel/qualification/" + name, FileAccess.get_file_as_bytes(path), false)
 			_mac_pair_marker("BEGIN")
 		return
-	if not features.has("linux") or not features.has("x86_64") or is_debug:
+	# NK-4 (owner decision 2026-11-18, native kernel always): Windows releases carry their own manifest.
+	var platform := "windows" if features.has("windows") else ("linux" if features.has("linux") else "")
+	if platform.is_empty() or not features.has("x86_64") or is_debug:
 		return
+	_platform = platform
+	var manifest_path := WINDOWS_MANIFEST if platform == "windows" else MANIFEST
 	var parser := JSON.new()
-	if not FileAccess.file_exists(MANIFEST) or parser.parse(FileAccess.get_file_as_string(MANIFEST)) != OK \
+	if not FileAccess.file_exists(manifest_path) or parser.parse(FileAccess.get_file_as_string(manifest_path)) != OK \
 			or typeof(parser.data) != TYPE_DICTIONARY:
-		_fail("Run research/native-kernel/package.py prepare before exporting Linux")
+		_fail("Run research/native-kernel/package.py %s before exporting %s" % [
+			"prepare-windows" if platform == "windows" else "prepare", platform.capitalize()])
 		return
 	_manifest = parser.data
-	if not _inputs_match():
-		_fail("NK-3 export inputs differ from the prepared verified manifest")
+	if not _inputs_match(platform):
+		_fail("Native kernel export inputs differ from the prepared verified %s manifest" % platform)
 		return
-	add_file(MANIFEST, FileAccess.get_file_as_bytes(MANIFEST), false)
+	add_file(manifest_path, FileAccess.get_file_as_bytes(manifest_path), false)
 	for name: String in SOURCES:
 		var path := ProjectSettings.globalize_path("res://").path_join(SOURCES[name])
 		add_file("res://native/kernel/qualification/" + name, FileAccess.get_file_as_bytes(path), false)
 
 
-func _inputs_match() -> bool:
-	if _manifest.get("format") != "openrc-native-kernel-package v1" \
+func _inputs_match(platform := "linux") -> bool:
+	if _manifest.get("format") != "openrc-native-kernel-package v1" or _manifest.get("platform") != platform \
 			or _manifest.get("engine_version") != Engine.get_version_info().string \
 			or _manifest.get("solver_sha256") != FlightLog.solver_identity():
 		return false
 	var receipt: Variant = _manifest.get("native_receipt")
 	if typeof(receipt) != TYPE_DICTIONARY or typeof(receipt.get("platforms")) != TYPE_DICTIONARY:
 		return false
-	var row: Variant = receipt.platforms.get("linux")
+	var row: Variant = receipt.platforms.get(platform)
+	var library := "res://native/kernel/openrc_native_kernel.dll" if platform == "windows" \
+		else "res://native/kernel/libopenrc_native_kernel.so"
 	if typeof(row) != TYPE_DICTIONARY or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY \
-			or row.mirrored_sources.is_empty() or row.get("engine_sha256") != FileAccess.get_sha256(OS.get_executable_path()) \
-			or row.get("binary_sha256") != FileAccess.get_sha256("res://native/kernel/libopenrc_native_kernel.so"):
+			or row.mirrored_sources.is_empty() or not _editor_matches(row, platform) \
+			or row.get("binary_sha256") != FileAccess.get_sha256(library):
 		return false
 	for name: Variant in row.mirrored_sources:
 		if typeof(name) != TYPE_STRING or not name.begins_with("app/"):
@@ -124,6 +134,16 @@ func _inputs_match() -> bool:
 		if diagnostics.get(name) != FileAccess.get_sha256(path):
 			return false
 	return true
+
+
+## Linux packages are exported by the very editor they were qualified with. The Windows DLL is qualified with the
+## pinned Windows editor; a Windows exporting editor must be that binary, while a cross-export from the Linux
+## editor (CI) can only check the identity is well formed: the package gate on the exported executable decides.
+func _editor_matches(row: Dictionary, platform: String) -> bool:
+	var pinned := str(row.get("engine_sha256", ""))
+	if platform == "linux" or OS.get_name() == "Windows":
+		return pinned == FileAccess.get_sha256(OS.get_executable_path())
+	return pinned.length() == 64 and pinned.is_valid_hex_number()
 
 
 func _bytes_sha256(bytes: PackedByteArray) -> String:
@@ -224,8 +244,8 @@ func _export_end() -> void:
 	if not mac_probe_ok:
 		push_error("Mac reference session probe changed during export")
 	_mac_probe_sha256 = ""
-	if not _manifest.is_empty() and not _inputs_match():
-		_fail("NK-3 source or binary changed during export")
+	if not _manifest.is_empty() and not _inputs_match(_platform):
+		_fail("Native kernel source or binary changed during %s export" % _platform)
 	if not _mac_manifest.is_empty():
 		if not _mac_inputs_match():
 			_fail("Experimental Mac native sources or binary changed during export")

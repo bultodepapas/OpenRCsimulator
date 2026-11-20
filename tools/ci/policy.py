@@ -20,8 +20,11 @@ SHA = re.compile(r"[0-9a-f]{40}\Z")
 SAFE_DOCS = frozenset({"docs/README.md", "docs/TOOLS.md",
                        "docs/DESKTOP-DELIVERY-PLAN.md", "CONTRIBUTING.md", "AGENTS.md",
                        "docs/plans/release-ci-efficiency.md"})
-PRODUCTION = ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux", "native-kernel-macos", "native-rc-runtime")
-JOBS = (*PRODUCTION, "three", "site", "export")
+PRODUCTION = ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux", "native-kernel-windows",
+              "native-kernel-macos", "native-rc-runtime")
+# NK-4 (owner decision 2026-11-18, native kernel always): the exported Windows executable is qualified on Windows.
+EXPORT_JOBS = ("export", "native-kernel-windows-package")
+JOBS = (*PRODUCTION, "three", "site", *EXPORT_JOBS)
 
 
 def git(root: Path, *args: str) -> str:
@@ -130,7 +133,8 @@ def selection(root: Path, event: str, ref: str, sha: str, payload: dict,
                                             ref.startswith("refs/tags/v") or
                                             event == "workflow_dispatch")
     required = {job: effective["production"] for job in PRODUCTION}
-    required.update(three=effective["prototype"], site=effective["site"], export=export)
+    required.update(three=effective["prototype"], site=effective["site"])
+    required.update({job: export for job in EXPORT_JOBS})
     return {"format": FORMAT, "mode": "shadow" if SHADOW else "active",
             "sha": sha, "event": event, "ref": ref, "base": base, "head": head,
             "paths": paths, "reason": reason, "recommended": proposed,

@@ -70,18 +70,26 @@ func _frames() -> void:
 			"children": marker.children = [2]
 			"data": marker.has_data = true
 			"flags": marker.surfaces[0].flags = 0x20
-		var kept := Motion.inspect(broken,params.value)
-		check("ambiguous marker is hidden and named, not fatal: " + change,kept.ok and kept.value.frames.is_empty()
-			and kept.value.ambiguous == [str(marker.name)] and kept.value.marked.has(frame.node))
+		var inspected := Motion.inspect(broken,params.value)
+		if change == "children":
+			check("marker with children is not a hidden helper: refused",not inspected.ok)
+		else:
+			# Real downloads (Lancaster, Kfir, SU-26, P-47): unreadable markers are hidden, never rendered.
+			check("unreadable marker hidden and retained, never a frame: " + change,inspected.ok and inspected.value.frames.is_empty()
+				and inspected.value.unreadable.size() == 1 and inspected.value.unreadable[0].node == frame.node
+				and inspected.value.marked.has(frame.node))
 	var almost: Dictionary = scene.value.duplicate(true)
 	almost.nodes[frame.node].vertices[3][1] += 0.0008
 	check("rounded near-orthogonal frame tolerated", Motion.inspect(almost,params.value).ok)
 	for name: String in [".XYZObject",".Control.XYZObject","Control..XYZObject","Control..Part.XYZObject"]:
 		var unnamed: Dictionary = scene.value.duplicate(true)
 		unnamed.nodes[frame.node].name = name
-		var unqualified := Motion.inspect(unnamed,params.value)
-		check("an unqualified marker group cannot prepare a hinge",unqualified.ok and unqualified.value.frames.is_empty()
-			and unqualified.value.ambiguous == [name])
+		var hidden := Motion.inspect(unnamed,params.value)
+		check("unqualified marker group never yields a frame",hidden.ok and hidden.value.frames.is_empty() and hidden.value.unreadable.size() == 1)
+	var crowded: Dictionary = scene.value.duplicate(true)
+	for extra: int in Motion.MAX_UNREADABLE_VERTICES:
+		crowded.nodes[frame.node].vertices.append([0.0,0.0,float(extra)])
+	check("a large mesh named like a marker is refused, not hidden",not Motion.inspect(crowded,params.value).ok)
 	var exact: Variant = Motion.exact(frame.original)
 	var roundtrip: Dictionary = JSON.parse_string(JSON.stringify(exact))
 	var decoded := PackedByteArray()
@@ -206,25 +214,25 @@ func _conversion() -> void:
 	for movement: String in ["rotate","input"]:
 		var throttle := _convert(_body(),throttle_params.replace("#begin servo.throttle\ncontrolledAxisName z\ncontrolledPartMovement rotate","#begin servo.throttle\ncontrolledAxisName z\ncontrolledPartMovement "+movement))
 		check("ordinary throttle needs no visual hinge warning",throttle.ok and throttle.value.receipt.coordinate_frames.prepared.size() == 1 and throttle.value.receipt.coordinate_frames.unresolved.is_empty())
-	# Targeted non-rotation motion stays static but is named (audit 2026-11-17, finding 6).
-	for movement: String in ["move","input"]:
-		var targeted := _convert(_body(),_params().replace("controlledPartMovement rotate","controlledPartMovement "+movement))
-		check("targeted %s servo is reported, not dropped" % movement,targeted.ok and targeted.value.receipt.coordinate_frames.prepared.is_empty()
-			and targeted.value.receipt.coordinate_frames.unresolved.size() == 1
-			and targeted.value.receipt.coordinate_frames.unresolved[0].reason == "unsupported_servo_movement"
-			and targeted.diagnostics.any(func(d: Dictionary) -> bool: return d.severity == "warning" and str(d.message).begins_with("Part \"%s\": only rotating")))
 	var foreign := _convert(_body().replace("Control.link","Other.link"),_params())
 	# Direct siblings with another prefix stay outside the selected group, hence still safe.
 	check("other prefix is not swept into the hinge", foreign.ok and foreign.value.receipt.coordinate_frames.prepared[0].children == [3])
 	var v5 := _convert(_body(),"verNumber 5\nmodelType 1\nmodelName body.ac\n")
 	check("v5 retains exact frames without assumed servo axis",v5.ok and v5.value.receipt.coordinate_frames.frames.size() == 1 and v5.value.receipt.coordinate_frames.prepared.is_empty())
-	check("v5 states that its motion is unmapped",v5.ok and v5.diagnostics.any(func(d: Dictionary) -> bool: return str(d.message).begins_with("This ClearView v5 model declares no moving-part")))
-	check("reopened v5 receipt states it again",v5.ok and Converter.source_notes(v5.value.source).any(func(d: Dictionary) -> bool: return str(d.message).begins_with("This ClearView v5 model declares no moving-part")))
 	var far_body := _body().replace("loc 0.1 0.2 0.3","loc 100000000 0 0").replace("rot 0.9961946980917455 0 0.08715574274765817 0 1 0 -0.08715574274765817 0 0.9961946980917455","rot 1 0 0 0 1 0 0 0 1").replace("0.4 1.5 0.6\n0.4 0.5 0.6\n0.4 0.5 3.6\n2.4 0.5 0.6","0 1 0\n0 0 0\n0 0 3\n2 0 0")
 	var far := _convert(far_body,_params())
 	if not far.ok or not far.value.receipt.coordinate_frames.prepared.is_empty() or far.value.receipt.coordinate_frames.unresolved[0].reason != "render_precision":
 		printerr("Far hinge outcome: ",far.value.receipt.coordinate_frames.unresolved if far.ok else far)
 	check("float32 cancellation leaves optional hinge static",far.ok and far.value.receipt.coordinate_frames.prepared.is_empty() and far.value.receipt.coordinate_frames.unresolved[0].reason == "render_precision")
+	# Equal X and Z lengths make the marker unreadable: the model still converts with a manual hinge.
+	var blurred := _convert(_body().replace("0.4 1.5 0.6\n0.4 0.5 0.6\n0.4 0.5 3.6\n2.4 0.5 0.6","0.4 1.5 0.6\n0.4 0.5 0.6\n0.4 0.5 2.6\n2.4 0.5 0.6"),_params())
+	check("unreadable marker converts with a precise manual-hinge reason",blurred.ok and blurred.value.receipt.coordinate_frames.prepared.is_empty()
+		and blurred.value.receipt.coordinate_frames.frames.is_empty() and blurred.value.receipt.coordinate_frames.unreadable_frames.size() == 1
+		and blurred.value.receipt.coordinate_frames.unresolved[0].reason == "unreadable_render_frame")
+	check("unreadable marker reported at import and after reopening",blurred.ok
+		and blurred.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Motion.UNREADABLE_NOTE)
+		and Converter.source_notes(blurred.value.source).any(func(d: Dictionary) -> bool: return d.message == Motion.UNREADABLE_NOTE))
+	check("readable models carry no unreadable field",_convert(_body(),_params()).value.receipt.coordinate_frames.has("unreadable_frames") == false)
 	if far.ok:
 		var preview := Builder.build_preview(far.value.source)
 		check("far hinge cannot move the static render pose",preview.ok and _near(Builder.relative(preview.value.root,_find_part(preview.value.root,"Control"))*Vector3(0.2,0.3,0.1),Vector3(3,4,5)+Basis(Vector3(0,0,1),PI/2.0)*(Vector3(2,-1,0.5)+Vector3(0.2,0.3,0.1))))

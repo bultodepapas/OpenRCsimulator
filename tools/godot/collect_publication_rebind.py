@@ -18,8 +18,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = "d61eb0830227e120c64c4fc51462b9feb5052149"
-PRIOR_FIXTURE_SHA256 = "a790e01d423c70af3112ef9a6f79e7c9aa9c5b4d0fb75adb12f1feb1b6f5f701"
+BASELINE = "b4ae37fd734e9f3ec98c66216a5518c11ad560d8"
+PRIOR_FIXTURE_SHA256 = "24bffa86e373599f4c105873d8e791d976d793672010a673200e8d37c669e85a"
 PIN_FILE = ROOT / "app/tests/fixtures/publication_fixture_bridge.json"
 PRIOR_RECEIPT = ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-11.json"
 CAPTURE_SCRIPTS = {"shaft": "audit_fixture_shaft_capture.gd", "weather": "audit_fixture_weather_capture.gd"}
@@ -149,8 +149,10 @@ def source_pins(project_root: Path, pins: dict) -> dict[str, str]:
 def checked(project: Path, engine: Path, out: Path, label: str, script: Path | None,
             marker: str, capture: Path | None, profile: Path) -> tuple[Path, Path]:
     check_dir = out / (label + "-checked")
+    # A cold import of the whole app now exceeds 10 minutes on hosted Windows (run 44394589486); CI's own
+    # pre-import allows 30. Captures keep the 10-minute bound.
     command = [sys.executable, str(ROOT / "tools/godot/run_checked.py"), "--out-dir", str(check_dir),
-               "--label", label, "--timeout", "600"]
+               "--label", label, "--timeout", "1800" if script is None else "600"]
     if script is not None:
         command.append("--warnings-as-errors")
     if marker:

@@ -1,0 +1,17 @@
+config_version=5
+
+[application]
+
+config/name="OpenRC-Mac-Display-Probe"
+run/main_scene="res://main.tscn"
+
+[display]
+
+window/size/mode=1
+window/size/no_focus=true
+window/size/viewport_width=320
+window/size/viewport_height=200
+
+[rendering]
+
+renderer/rendering_method="mobile"

@@ -2505,6 +2505,7 @@ func _ask_clearview_setup(revision: int) -> void:
 	if not setup.ok:
 		set_note(_diagnostics_text(setup.diagnostics))
 		_refresh()
+		_offer_trainer(_diagnostics_text(setup.diagnostics))
 		return
 	# Consequential differences first: a changed size or an assumed propeller.
 	var lines := PackedStringArray()
@@ -2556,9 +2557,25 @@ func _fly_donor(source: InspectedSource, donor: Dictionary) -> void:
 		return
 	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
 	set_note("")
+	var hand: bool = _start_choice == "hand_launch" and donor.donor_id == FixedWingDonor.FLYING_WING_DONOR
 	test_fly_requested.emit({creator_donor = {source = source, name = shown_name, donor_id = donor.donor_id,
 		placement = (donor.placement as Dictionary).duplicate(true)},
-		start_choice = "hand_launch" if _start_choice == "hand_launch" else "airborne"})
+		start_choice = "hand_launch" if hand else "airborne"})
+
+
+## Last resort when the estimated configuration cannot fly this model: offer the stock trainer physics
+## with the model's appearance, stating why. Nothing in the draft changes.
+func _offer_trainer(reason: String) -> void:
+	var source: InspectedSource = _doc.source()
+	if source == null or HeliDonor.is_helicopter(source):
+		return
+	var donor: Dictionary = FixedWingDonor.propose(source, true)
+	if not donor.ok or str(donor.value.donor_id) != FixedWingDonor.TRAINER_DONOR:
+		return
+	var text: String = tr(FixedWingDonor.TRAINER) % [reason, String.num(float(donor.value.flown_span_m), 2)]
+	text += "\n\n" + tr(FixedWingDonor.SCALE_NOTE) % [String.num(float(donor.value.source_span_m), 2),
+		String.num(100.0 * float(donor.value.flown_span_m) / float(donor.value.source_span_m), 0)]
+	_ask(tr(FixedWingDonor.TRAINER_TITLE), text, tr(FixedWingDonor.TRAINER_BUTTON), _fly_donor.bind(source, donor.value))
 
 
 func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:
@@ -2570,6 +2587,11 @@ func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:
 	else:
 		set_note(tr(ClearViewSetup.DONE))
 	_refresh()
+	# The estimate is complete but the compiler refuses it (a body too long, a balance out of range):
+	# the reason stays in the note, and the trainer physics are offered so the model still flies.
+	var compiled: Dictionary = _doc.compile() if applied.ok else applied
+	if not compiled.ok:
+		_offer_trainer.call_deferred(_diagnostics_text(compiled.diagnostics))
 
 
 func _choose_source_installation(proposal: Dictionary,revision: int) -> void:
@@ -3157,6 +3179,7 @@ func _adopt_document(fresh: Authoring, step: String) -> void:
 	_import_diagnostics = []
 	_reset_orient_inputs()
 	_shown_source = source
+	_shown_helicopter = HeliDonor.is_helicopter(source)
 	_item_texts.clear()
 	_inventory_signature = "-"
 	_issue_signature = "-"
@@ -3176,10 +3199,10 @@ func _on_publish_pressed() -> void:
 	if not _can_save():
 		set_note(_store_reason)
 		return
-	# Saving a draft remains available, but publishing must obey the same qualification
-	# gate as the footer even when this handler is called without pressing the button.
-	if _doc.source_installation_proposal().size() > 0:
-		set_note(tr(Authoring.Installation.PUBLISH_UNAVAILABLE))
+	# A ClearView model is published only with its confirmed OpenRC configuration, even when this
+	# handler is called without pressing the button.
+	if _doc.needs_source_installation():
+		set_note(tr(Authoring.Installation.blocked(_doc.source())))
 		return
 	if _doc.name.is_empty():
 		set_note(tr(NEEDS_NAME))

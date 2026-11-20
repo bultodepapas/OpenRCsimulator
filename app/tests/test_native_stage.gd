@@ -148,6 +148,27 @@ func test_complete_manifest() -> void:
 	bad_diagnostic.qualification_sources["test_native_stage.gd"] = "g".repeat(64)
 	check("malformed diagnostic digest is rejected", not NativePackage._complete_manifest(bad_diagnostic))
 
+	# NK-4 packages (owner decision 2026-11-18, native kernel always): the Windows release has its own manifest.
+	var windows_manifest: Dictionary = manifest.duplicate(true)
+	var windows_row: Dictionary = windows_manifest.native_receipt.platforms.linux
+	windows_row.platform = "windows"
+	windows_manifest.platform = "windows"
+	windows_manifest.native_receipt.platforms = {"windows": windows_row}
+	check("complete Windows package manifest is accepted", NativePackage._complete_manifest(windows_manifest, "windows"))
+	check("a Windows manifest does not satisfy the Linux package", not NativePackage._complete_manifest(windows_manifest))
+	check("a Linux manifest does not satisfy the Windows package", not NativePackage._complete_manifest(manifest, "windows"))
+	var mislabeled: Dictionary = windows_manifest.duplicate(true)
+	mislabeled.native_receipt.platforms.windows.platform = "linux"
+	check("a mislabeled Windows receipt row is rejected", not NativePackage._complete_manifest(mislabeled, "windows"))
+	check("Linux and Windows package manifests live at separate paths",
+		NativePackage.manifest_path("windows") == NativePackage.WINDOWS_MANIFEST_PATH
+		and NativePackage.manifest_path("linux") == NativePackage.MANIFEST_PATH)
+	if not OS.has_feature("template_release"):
+		check("editor and test runs are not a package platform", NativePackage.platform().is_empty())
+	check("the Windows package descriptor loads only the shipped DLL beside it",
+		NativeStage.EXPECTED_WINDOWS_PACKAGE_DESCRIPTOR.ends_with("[libraries]\nwindows.x86_64 = \"openrc_native_kernel.dll\"\n")
+		and not NativeStage.EXPECTED_WINDOWS_PACKAGE_DESCRIPTOR.contains("res://"))
+
 
 func run_all() -> void:
 	test_complete_manifest()

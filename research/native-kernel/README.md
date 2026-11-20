@@ -15,10 +15,14 @@ defines the supported Linux scope and separates backend qualification from displ
 
 The scalar Apple Clang port uses the existing evaluator ABI and float64 state.
 It is a fixed-wing source experiment, with separate source and package receipts;
-the Linux fleet qualification does not transfer to Mac. The automatic source-editor
-route is implemented but requires a matching default-admission marker. Without it,
-or when the selected flight is outside its admitted rows, the session retains the
-reference evaluator. The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
+the Linux fleet qualification does not transfer to Mac. Since the
+[2026-11-16 decision](../../docs/DECISIONS.md#default-to-native-physics-on-supported-apple-silicon-flights)
+the automatic source-editor route needs no admission marker: an ordinary ARM64
+flight inside the screened stock domain (`app/sim/native_macos_domain.gd`) runs
+native, and any other selection retains the reference evaluator. A collision-world
+change requires renewing that domain
+([DT-MAC-04n-R1](../../docs/plans/apple-silicon-performance.md#dt-mac-04n-r1--keep-the-mac-native-default-after-world-changes)).
+The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
 describes earlier candidates, not qualification of the current source.
 The [source-default ledger](../../docs/research/native-kernel/DT-MAC-04n4/README.md)
 records the November 14 adoption on the qualified M1, its actual installed
@@ -31,7 +35,7 @@ route. Companion-enabled automatic sessions retain reference. These choices
 freeze before session setup, and the normal `--physics-backend=gdscript_reference`
 override remains available.
 
-The marker binds the exact installed receipt, binary, sources, domain guard,
+The optional marker, no longer an admission prerequisite, binds the exact installed receipt, binary, sources, domain guard,
 Godot executable, macOS version/build, Apple M1 CPU and `MacBookAir10,1` model.
 The observed test host used macOS 27.0.1 (`26A434`) and official Godot
 `4.8.beta2.official.cafc17a19`; a different binary or OS is not covered by that
@@ -795,6 +799,61 @@ python research/native-kernel/build_windows.py --install-app      # beside the L
 
 The Windows installation uses `openrc_native_kernel_windows.gdextension` and `build-receipt-windows.json`; the
 loader checks the exact `Godot_v4.8-beta2_win64.exe`, the descriptor, binary and mirrored sources like Linux.
-`--define` diagnostic builds are never installable. Release packages remain Linux-only. CI job
+`--define` diagnostic builds are never installable. On an enrolled workstation, run the headless gates with
+`OPENRC_TESTQUEUE_ROOT` pointing at a private unenrolled root (no timing gate is involved). If `app/.godot` is
+relocated through a junction or link, installation reads its `extension_list.cfg` and refuses only when it would
+have to remove this kernel's registration there. CI job
 `native-kernel-windows` repeats the build, every gate and the native production markers with the pinned nuwen
-MinGW archive (informational until it has run green).
+MinGW archive. It ran green on the hosted runner on 2026-11-18 and is now required.
+
+### Windows release packages (NK-4, owner decision 2026-11-18: native kernel always)
+
+A Windows release carries the verified DLL beside its executable, as Linux does. The package has its own
+embedded manifest, `res://native/kernel/package-windows.json`, so Linux and Windows exports from one run cannot
+replace each other.
+
+```bash
+python research/native-kernel/package.py prepare-windows --tool-root "$OPENRC_NK_TOOL_ROOT"   # after --install-app
+"$GODOT" --headless --path app --export-release Windows "<new dir>/OpenRC Simulator.exe"
+python research/native-kernel/package.py finalize-windows --executable "<new dir>/OpenRC Simulator.exe" \
+  --template <windows_release_x86_64.exe> --tool-root "$OPENRC_NK_TOOL_ROOT"
+```
+
+**Commands:**
+
+- `prepare-windows` revalidates the installed DLL, its receipt, sources, toolchain lock, builder and pinned
+  Windows editor, and the exact oracle evidence the receipt cites.
+- The export plugin then embeds the manifest and the six diagnostics. On a Windows editor it requires the
+  qualified editor binary. A cross-export from Linux checks only that the identity is well formed.
+- `finalize-windows` writes `native/kernel/` with the DLL, the LF-only descriptor and the licence. It also
+  writes `package-receipt.json`, which binds the executable, manifest, template and DLL.
+
+`app/sim/native_stage.gd` and `app/app_state/native_package.gd` load the DLL only after these identities match;
+anything else selects the reference backend.
+
+**Qualification is on the exported executable.** It runs the same five `--quick-flight --native-qualification`
+modes as the Linux gate in `app/export.sh`, then `test_default_route.py --release-executable` (Windows aware).
+The DLL was qualified against the editor, and the shipped template is a different binary. Only this gate shows
+they agree. The [first local Windows package](../../docs/research/native-kernel/NK-4/windows-package-2026-11-18.md)
+passed all five modes.
+
+**CI release path (2026-11-18).** `native-kernel-windows` is required and uploads `nk4-native-windows-build`:
+the DLL, `build-receipt-windows.json`, the oracle evidence and the mutant. The Linux `export` job restores it
+beside the Linux install, and `app/export.sh` runs `prepare-windows` and `finalize-windows`. The tool root is
+`OPENRC_NK4_TOOL_ROOT`, default `tmp/native-kernel-windows`. A Linux exporter has no Windows editor, so
+`prepare-windows` checks the evidence against the editor and wrapper identities the receipt recorded.
+`tools/release/manifest.py` binds the final ZIP's executable and DLL to that receipt. The required
+`native-kernel-windows-package` job (windows-2025) then runs the five modes and the default route on the
+exact released archive, and `release` waits for it. An export without a qualified Windows install now fails.
+
+Both Windows jobs check out LF bytes (`core.autocrlf=false`), because receipts hash sources byte for byte. The
+hosted runner's default had produced CRLF hashes for 127 of 138 mirrored sources, which a Linux export cannot
+match. Known limits:
+
+- On a Linux exporter the editor identities come from the same run's artifact, so a forged receipt and evidence set
+  would require compromising CI itself.
+- The Windows gate omits Linux's player-CLI replay, production pair and trace smoke; `replay` mode and the default
+  route cover native selection.
+
+Cross-mode acceptance was checked in WSL against requalified evidence: 19 gates accepted, a wrong wrapper identity
+refused.

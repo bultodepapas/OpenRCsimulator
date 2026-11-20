@@ -42,8 +42,20 @@ const RadioMenuInput := preload("res://ui/radio_menu_input.gd")
 const RadioMenuSetup := preload("res://ui/radio_menu_setup.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
+const TelemetryService := preload("res://telemetry/telemetry_service.gd")
+const TelemetryRelease := preload("res://telemetry/telemetry_release.gd")
+const TelemetryPolicy := preload("res://telemetry/telemetry_policy.gd")
+const TelemetryConsentStore := preload("res://telemetry/telemetry_consent_store.gd")
+const TelemetryScreen := preload("res://ui/telemetry_screen.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
+const WorldResourceHold := preload("res://render/world/world_resource_hold.gd")
+const GpuCapability := preload("res://render/gpu_capability.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
+const AutoCalibration := preload("res://render/auto_calibration.gd")
+const FrameDiagnostics := preload("res://render/frame_diagnostics.gd")
+const AutoGraphicsReport := preload("res://render/auto_graphics_report.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -141,6 +153,8 @@ var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
 ## DT-MAC-05b: post-initialization recovery marker for the RD Standard renderer (empty outside the Home route).
 var renderer_guard_path := ""
+## A33: the departing activity's disk-backed meshes/materials/textures, held until Home is rebuilt.
+var _departing_world_resources: Array[Resource] = []
 ## UI-FS: tests/headless routes are memory-only unless they explicitly supply an isolated store.
 var statistics_path := ""
 var statistics_service: Node
@@ -267,6 +281,21 @@ var window_focus_probe: Callable = func() -> bool: return DisplayServer.window_i
 var natural_random_screen: CanvasLayer:
 	get:
 		return screens.get_screen("natural_random") as CanvasLayer
+## TELEM-02 product telemetry: the session's service (null unless this build and route offer telemetry) and its
+## test seams. `telemetry_release` {} reads TelemetryRelease.current(); `telemetry_route_override` null applies the
+## interactive-route policy, a bool replaces it (tests only).
+var telemetry: Node
+var telemetry_release: Dictionary = {}
+var telemetry_route_override: Variant = null
+var telemetry_consent_path := TelemetryConsentStore.DEFAULT_PATH
+var _telemetry_prompted := false
+## The telemetry status line last placed on Home (so it is replaced, but no other notice is).
+var _telemetry_home_note := ""
+## The renderer_unavailable session fact was checked (once per session, when collection is first on).
+var _telemetry_renderer_noted := false
+## Whether the OS window is minimized; tests replace it (a headless window reports itself minimized).
+var window_minimized_probe: Callable = func() -> bool:
+	return DisplayServer.window_get_mode(get_window().get_window_id()) == DisplayServer.WINDOW_MODE_MINIMIZED
 ## UI-16 update notice seams. `update_check_url` "" means the default policy (_start_update_check); tests point it
 ## at a local server, give the cache its own file and name the running version. `open_url` is what Download calls.
 var update_check_url := ""
@@ -275,6 +304,10 @@ var update_running_version := ""
 var open_url: Callable = OS.shell_open
 var update_checker: Node
 var _update_info := {}
+## DT-UPD-04a: the tag the player put off with Later; not offered again until the next launch.
+var _update_later_tag := ""
+## The last update-preferences save error shown in Settings (OK after a successful save).
+var _update_save_error: int = OK
 ## The editor and previous flight stay detached while a trial runs; return restores their exact state.
 var _workshop_screens: Array[Dictionary] = []
 var _workshop_previous_flight: Node
@@ -382,13 +415,35 @@ func _ready() -> void:
 	renderer_guard_path = preferences_path + ".renderer"
 	if RendererGuard.begin(get_tree(), renderer_guard_path):
 		return # restarting into Compatibility after an unconfirmed RD launch of this build
+	if RendererPreference.apply_at_startup(get_tree(), RendererGuard.load_state(renderer_guard_path),
+			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
+		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+		return # restarting into the saved graphics mode (exported builds only)
 	has_home = true
 	var ui_window: Window = get_tree().root
 	_automatic_window_size = ui_window.size
 	var initial_ui_scale: Dictionary = UiScale.apply(ui_window)
 	UiTheme.compact_layout = bool(initial_ui_scale.compact)
 	ui_window.size_changed.connect(_on_ui_window_resized)
-	display_preferences = DisplayPreferences.new(preferences_path + ".display")
+	# VQ-07h: a fresh production install (no settings or display file yet) starts with this GPU's efficient defaults
+	# and stores them at once; upgraders keep their values. Restore graphics defaults offers the same recommendation.
+	var display_path := preferences_path + ".display"
+	var fresh_install := false
+	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
+		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
+			RenderingServer.get_current_rendering_method())
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(RenderingServer.get_video_adapter_name(),
+			OS.get_name(), DisplayServer.screen_get_scale(), DisplayServer.screen_get_refresh_rate())
+		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
+	DisplayPreferences.first_run_applies = fresh_install
+	display_preferences = DisplayPreferences.new(display_path)
+	if fresh_install and not DisplayPreferences.first_run_defaults.is_empty() and display_preferences.save(display_preferences.config) != OK:
+		push_warning("Could not store the recommended display settings; they apply to this session only.")
+	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
+	if DisplayServer.get_name() != "headless":
+		var report := AutoGraphicsReport.runtime()
+		print("Graphics auto: %s → %s · %s" % [report.inputs.adapter, AutoGraphicsReport.compact(report.decisions),
+			JSON.stringify(report.decisions.reasons)])
 	menu_audio = MenuSounds.attach(self, func() -> Control:
 		return ScreenStack._surface(screens.top()) if screens.top() != null else null)
 	screens.surface_opened.connect(func(surface: Control, id: String, feedback: bool) -> void:
@@ -442,6 +497,7 @@ func _process(_delta: float) -> void:
 	_tick_radio_menu(_delta)
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
+	_tick_telemetry_prompt()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
 			_flush_home_scene_rebuild()
@@ -601,6 +657,8 @@ func _show_first_home_staged() -> void:
 func _return_home(after: Callable = Callable()) -> void:
 	if not flight_loading_enabled or home_build_pending or not is_inside_tree():
 		show_home()
+		if not home_build_pending:
+			_departing_world_resources.clear()
 		if after.is_valid():
 			after.call()
 		return
@@ -707,6 +765,7 @@ func _build_home_staged(progress: Callable, before_install: Callable) -> void:
 
 func _finish_home_build() -> void:
 	home_build_pending = false
+	_departing_world_resources.clear() # Home now references what it reused; the rest may unload
 	_home_build_cancelled = false
 	if _home_rebuild_after_build:
 		_home_rebuild_after_build = false
@@ -816,11 +875,13 @@ func _install_home(setup: Dictionary) -> void:
 	home.companions_requested.connect(open_companions_settings)
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
+	home.update_later.connect(_on_update_later)
 	screens.push("home", home)
 	if controllers != null: controllers.refresh()
 	_update_controller_home()
 	_update_controller_button_prompts()
 	home.set_note(_settings_note)
+	_refresh_telemetry_home_note()
 	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
@@ -1036,6 +1097,7 @@ func end_ground_vehicle() -> void:
 
 func _commit_end_ground_vehicle() -> void:
 	_menu_feedback(&"exit")
+	_departing_world_resources = WorldResourceHold.collect(ground_vehicle) # Home reuses them instead of reloading
 	remove_child(ground_vehicle)
 	ground_vehicle.queue_free()
 	ground_vehicle = null
@@ -1053,6 +1115,8 @@ func set_language(code: String) -> bool:
 		return false
 	TranslationServer.set_locale(code)
 	preferences.language = code
+	if is_instance_valid(telemetry):
+		telemetry.set_locale(code) # TELEM-03: a language without a reviewed notice turns collection off
 	var err := Preferences.save_to(preferences_path, preferences)
 	var active_settings: Node = screens.get_screen("settings") if screens != null else null
 	if active_settings != null:
@@ -1061,6 +1125,7 @@ func set_language(code: String) -> bool:
 		_menu_feedback(&"reject")
 	if home != null:
 		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+		_refresh_telemetry_home_note() # the status line in the new language, unless an error took the line
 	return true # a failed save keeps the language for this session
 
 
@@ -1460,6 +1525,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			return
 		var reason := "Flight scene could not be created."
 		var route_path := flight_script_path_for_aircraft(route_aircraft_id)
+		_note_telemetry_error("asset_load_failed")
 		if is_random:
 			natural_random_screen.show_error(tr("Could not start flight: %s") % tr(reason))
 		elif has_home and departing_home != null:
@@ -1644,6 +1710,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+		_attach_graphics_calibration()
 
 	if staged:
 		# Let disposal and the fully configured paused candidate draw behind the opaque layer.
@@ -1656,6 +1723,30 @@ func start_flight(request: Dictionary = {}) -> void:
 			open_pause()
 		elif flight.session != null:
 			_finish_controller_launch(flight.session)
+
+
+## VQ-07h: the first eligible flight on a GPU measures its GPU time once, when Automatic still decides the
+## Scene detail or the graphics mode (render/auto_calibration.gd). Production profile and rendered sessions only.
+func _attach_graphics_calibration() -> void:
+	if not has_home or flight == null or flight.session == null or preferences_path != Preferences.DEFAULT_PATH \
+			or display_preferences == null:
+		return
+	var method := RenderingServer.get_current_rendering_method()
+	# Same gate as frame diagnostics: no viewport GPU timings headless or on macOS Compatibility.
+	if not FrameDiagnostics._timing_unavailable_reason(DisplayServer.get_name(), OS.get_name(), method).is_empty():
+		return
+	var adapter := RenderingServer.get_video_adapter_name()
+	var automatic_scene := str(display_preferences.config.get("scene_detail", SceneDetail.AUTO)) == SceneDetail.AUTO
+	var automatic_high := str(RendererPreference.load_state().mode) == "auto" and HighGraphics.active()
+	var pixels := get_window().size.x * get_window().size.y
+	var automatic_level := str(SceneDetail.automatic().level) if automatic_scene else ""
+	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels, automatic_level):
+		return
+	var calibration := AutoCalibration.new(flight.session, adapter, SceneDetail.level())
+	calibration.finished.connect(func(result: Dictionary) -> void:
+		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
+		print("Graphics calibration: ", JSON.stringify(result)))
+	flight.add_child(calibration) # freed with the flight; an interrupted flight measures again next time
 
 
 ## Fly is the explicit launch action; a ready airplane needs no second Continue action.
@@ -1840,6 +1931,8 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 		home_scene.resume_preview()
 	_remove_flight_loading_screen()
 	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % tr(error)
+	if not error.is_empty():
+		_note_telemetry_error("asset_load_failed") # the flight scene could not be loaded or created
 	departing_home.cancel_start() if error.is_empty() else departing_home.fail_start(error)
 	if natural_random_screen != null:
 		if error.is_empty():
@@ -1874,6 +1967,13 @@ func open_settings(from: Control = null) -> void:
 		elif route == "about": open_help(opener))
 	settings.set_graphics_restart_available(_can_restart_graphics())
 	settings.graphics_restart_requested.connect(_request_graphics_restart)
+	_update_save_error = OK
+	settings.set_update_state(_update_settings_state())
+	settings.update_preferences_changed.connect(set_update_preferences)
+	settings.update_check_requested.connect(check_updates_now)
+	settings.set_telemetry_state(_telemetry_settings_state())
+	settings.telemetry_choice_changed.connect(set_telemetry_choice)
+	settings.telemetry_info_requested.connect(func(kind: String) -> void: open_telemetry_info(kind))
 	screens.push("settings", settings, from)
 
 
@@ -1893,9 +1993,17 @@ func _perform_graphics_restart(profile: String) -> void:
 	# Only Home can enter here, so no flight log or Workshop draft can be discarded.
 	if not renderer_guard_path.is_empty():
 		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
+	# Resolve the target before saving: a saved High override makes this session's project renderer
+	# Forward+, and only the state read before the save still records the host's Standard renderer.
+	var arguments := HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
+		ProjectSettings.globalize_path("res://"))
+	# VQ-07h: exported builds remember the choice; later launches start in it directly.
+	var persistent := preferences_path == Preferences.DEFAULT_PATH
+	if RendererPreference.save_choice(profile, persistent, HighGraphics.standard_rendering_method()) \
+			and profile == "high" and not renderer_guard_path.is_empty():
+		RendererGuard.forget_failure(renderer_guard_path) # an explicit request retries High; the guard re-arms
 	OS.set_environment(HighGraphics.ENVIRONMENT_KEY, profile)
-	OS.set_restart_on_exit(true, HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
-		ProjectSettings.globalize_path("res://")))
+	OS.set_restart_on_exit(true, arguments)
 	get_tree().quit()
 
 
@@ -2917,29 +3025,317 @@ func _on_first_flight_hint_done() -> void:
 
 ## UI-16: one update check per launch, only on the interactive route, only in exported builds (a development run
 ## checks when OPENRC_UPDATE_URL names a source) and only while the preference allows it. Home never waits for it.
+## One checker serves the whole session: a Home rebuilt after a flight reuses it and its announced release.
 func _start_update_check() -> void:
-	if home == null or not bool(preferences.get("check_updates", true)):
-		return # no Home (field errors) or the player said no
+	_start_telemetry() # TELEM-02: the same once-per-session "Home exists" moment; independent of the update choice
+	if home == null or is_instance_valid(update_checker) or not bool(preferences.get("check_updates", true)):
+		return # no Home (field errors), already running, or the player said no
+	var url := _update_source_url()
+	if url != "":
+		_create_update_checker(url, true)
+
+
+## TELEM-02: product telemetry exists only on the ordinary interactive route of an approved release export (or a
+## debug qualification run against a loopback receiver). Everywhere else there is no service, consent-file read,
+## hardware probe or request. One service serves the whole session, like the update checker.
+func _start_telemetry() -> void:
+	if home == null or is_instance_valid(telemetry):
+		return
+	var release: Dictionary = telemetry_release if not telemetry_release.is_empty() else TelemetryRelease.current()
+	var qualification := release.get("qualification") is bool and bool(release.get("qualification"))
+	var environment := {}
+	for key: String in TelemetryPolicy.TECHNICAL_ENVIRONMENT:
+		environment[key] = OS.get_environment(key)
+	# A qualification run starts from the source tree, whose engine arguments (--path) are expected.
+	var interactive: bool = telemetry_route_override if telemetry_route_override is bool else \
+		TelemetryPolicy.interactive_route(has_home, user_args,
+			PackedStringArray() if qualification else OS.get_cmdline_args(), DisplayServer.get_name(),
+			preferences_path == Preferences.DEFAULT_PATH or qualification, environment)
+	if not (release.get("ok") is bool and bool(release.get("ok"))) or not interactive:
+		return
+	telemetry = TelemetryService.new()
+	telemetry.release = release
+	telemetry.interactive = true
+	telemetry.consent_path = telemetry_consent_path
+	telemetry.locale = TranslationServer.get_locale()
+	telemetry.context_provider = _telemetry_context
+	telemetry.graphics_profile_provider = _telemetry_graphics_profile
+	add_child(telemetry)
+	telemetry.state_changed.connect(_on_telemetry_state_changed)
+	if statistics_service != null and statistics_service.has_signal("flight_events_accepted"):
+		statistics_service.flight_events_accepted.connect(telemetry.note_flight_events)
+	_on_telemetry_state_changed()
+
+
+## The first-launch choice appears once per session over a ready Home: AppRoot only processes after the branded
+## intro has faded and every held skip input was released, so neither can answer it.
+func _tick_telemetry_prompt() -> void:
+	if _telemetry_prompted or not is_instance_valid(telemetry) or telemetry.state != TelemetryPolicy.ASK:
+		return
+	if home_build_pending or _loading_active or not screens.is_top("home"):
+		return
+	_telemetry_prompted = true
+	open_telemetry_consent()
+
+
+func open_telemetry_consent() -> void:
+	if not is_instance_valid(telemetry) or not screens.is_top("home"):
+		return
+	var screen := TelemetryScreen.new("consent", telemetry.release)
+	screen.chosen.connect(func(enabled: bool) -> void:
+		if screens.is_top("telemetry_consent") and screens.get_screen("telemetry_consent") == screen:
+			screens.pop()
+		set_telemetry_choice(enabled))
+	screen.info_requested.connect(func(kind: String) -> void: open_telemetry_info(kind, screen.decline_button))
+	if not screens.push("telemetry_consent", screen, home):
+		screen.free() # nothing collects until a later launch asks again
+
+
+## Settings switch and first-launch answer. Enable is the only path that grants.
+func set_telemetry_choice(enabled: bool) -> void:
+	if not is_instance_valid(telemetry):
+		_push_telemetry_state()
+		return
+	if enabled:
+		telemetry.enable()
+	else:
+		telemetry.disable()
+	_push_telemetry_state()
+
+
+func open_telemetry_info(kind: String, from: Control = null) -> void:
+	var release: Dictionary = telemetry.release if is_instance_valid(telemetry) else {}
+	var preview: String = telemetry.preview_text() if is_instance_valid(telemetry) else ""
+	var screen := TelemetryScreen.new(kind, release, preview)
+	screen.closed.connect(func() -> void:
+		if screens.is_top("telemetry_info") and screens.get_screen("telemetry_info") == screen:
+			screens.pop())
+	if not screens.push("telemetry_info", screen, from):
+		screen.free() # rejected (one already open): the caller keeps nothing
+
+
+## What Settings shows: {state, reason, save_error, sent}.
+func _telemetry_settings_state() -> Dictionary:
+	if not is_instance_valid(telemetry):
+		return {"state": TelemetryPolicy.UNAVAILABLE, "reason": "build", "save_error": OK, "sent": 0}
+	var status: Dictionary = telemetry.status()
+	return {"state": status.state, "reason": status.reason, "save_error": status.save_error, "sent": status.sent}
+
+
+func _push_telemetry_state() -> void:
+	var active_settings: Node = screens.get_screen("settings") if screens != null else null
+	if active_settings != null and active_settings.has_method("set_telemetry_state"):
+		active_settings.set_telemetry_state(_telemetry_settings_state())
+
+
+func _on_telemetry_state_changed() -> void:
+	_push_telemetry_state()
+	_refresh_telemetry_home_note()
+	if not _telemetry_renderer_noted and is_instance_valid(telemetry) and telemetry.state == TelemetryPolicy.ON:
+		_telemetry_renderer_noted = true # a session fact: checked once, counted once, when collection is on
+		if _telemetry_renderer_unavailable():
+			telemetry.note_error("renderer_unavailable")
+
+
+## TELEM-04 error categories, counted only while telemetry is on (the service ignores them otherwise).
+func _note_telemetry_error(category: String) -> void:
+	if is_instance_valid(telemetry):
+		telemetry.note_error(category)
+
+
+## This session draws with Compatibility because RendererGuard recorded that this build's RenderingDevice renderer
+## failed (it restarted into the fallback); not a player's own renderer choice.
+func _telemetry_renderer_unavailable() -> bool:
+	if renderer_guard_path.is_empty() or RenderingServer.get_current_rendering_method() != RendererGuard.FALLBACK_METHOD:
+		return false
+	# Only the guard's own restart carries this argument; a later deliberate Compatibility session does not count.
+	var arguments := OS.get_cmdline_args()
+	var index := arguments.find("--rendering-method")
+	if index < 0 or index + 1 >= arguments.size() or arguments[index + 1] != RendererGuard.FALLBACK_METHOD:
+		return false
+	var failed: Variant = RendererGuard.load_state(renderer_guard_path).get("failed", {})
+	return failed is Dictionary and str(failed.get("build", "")) == RendererGuard.build_identity()
+
+
+## "current_default", "custom" or "unknown" for the graphics choices Restore graphics defaults resets.
+func _telemetry_graphics_profile() -> String:
+	return DisplayPreferences.graphics_profile(display_preferences.config) if display_preferences != null else "unknown"
+
+
+## Home states the effective telemetry choice on its note line only while that line is free or still shows the
+## previous telemetry status; it never replaces another notice (a launch failure, a save or browser error). State
+## changes call this; sealing and sending do not change the text, so the line is left alone.
+func _refresh_telemetry_home_note() -> void:
+	if home == null or _settings_note != "":
+		return
+	var note := _telemetry_note()
+	var current: String = home.note_label.text
+	if current == note:
+		_telemetry_home_note = note
+		return
+	if current != "" and current != _telemetry_home_note:
+		return
+	_telemetry_home_note = note
+	home.set_note(note)
+
+
+## Every eligible launch states the effective telemetry choice on Home (unavailable builds say nothing).
+func _telemetry_note() -> String:
+	if not is_instance_valid(telemetry):
+		return ""
+	match str(telemetry.state):
+		TelemetryPolicy.ON:
+			return tr("Telemetry is on · Settings → Interface")
+		TelemetryPolicy.OFF:
+			return tr("Telemetry is off · Settings → Interface")
+	return ""
+
+
+## TELEM-04: what the telemetry service may observe this frame, from state AppRoot already owns. Never inputs,
+## forces or replay data. Loading, menus over an activity, a paused tree and an unfocused or minimized window are
+## not eligible (the service closes its open window and re-primes its clock).
+func _telemetry_context() -> Dictionary:
+	var mode := "other"
+	var vehicle := ""
+	var custom := false
+	var simulated := -1.0
+	var fixed_wing := false
+	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
+	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
+	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
+	if activity != null and (_loading_active or not _has_property(activity, "session") \
+			or not (activity.get("session") is Object and is_instance_valid(activity.get("session")))):
+		activity = null
+	if activity != null:
+		var trial: Variant = activity.get("workshop_trial") if _has_property(activity, "workshop_trial") else {}
+		custom = not _workshop_screens.is_empty() or (trial is Dictionary and not trial.is_empty())
+		mode = "workshop" if not _workshop_screens.is_empty() else "flight"
+		if activity == flight:
+			vehicle = str(flight.get("aircraft_id")) if _has_property(flight, "aircraft_id") else ""
+		elif _has_property(activity, "vehicle_id"):
+			vehicle = str(activity.get("vehicle_id"))
+		elif str(activity.get_script().resource_path if activity.get_script() != null else "").contains("/airship/"):
+			vehicle = "rc-blimp-5m"
+		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
+		if session is Object and is_instance_valid(session):
+			if session.has_method("time_s"):
+				simulated = float(session.call("time_s"))
+			else:
+				var sim: Variant = session.get("sim")
+				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+					simulated = float(sim.call("time"))
+			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
+				and statistics_service.observing(session)
+	elif not _workshop_screens.is_empty():
+		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
+	elif home != null or home_build_pending:
+		mode = "home"
+	var window := get_window()
+	var minimized := bool(window_minimized_probe.call())
+	var menu_over_activity := activity != null and screens.top() != null
+	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
+		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+	var input_class := "unknown"
+	if controllers != null and controllers.get("registry") != null:
+		var flight_device: int = controllers.registry.selected_device_id("flight")
+		if flight_device < 0:
+			input_class = "keyboard"
+		else:
+			var kind := str(controllers.registry.device_for_id(flight_device).get("kind", ""))
+			input_class = "rc" if kind == "radio" else "gamepad" if kind == "gamepad" else "other"
+	return {"mode": mode, "activity": activity != null, "vehicle": vehicle, "custom": custom, "eligible": eligible,
+		"simulated_seconds": simulated,
+		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
+		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
+		"input_class": input_class}
+
+
+## The releases source this run may ask, or "" (a development run without OPENRC_UPDATE_URL, or not http(s)).
+func _update_source_url() -> String:
 	var url := update_check_url
 	if url == "":
 		url = OS.get_environment("OPENRC_UPDATE_URL")
 		if url == "" and BuildInfo.current().source == "export":
 			url = UpdateCheck.RELEASES_URL
-	if url == "":
-		return
-	if not (url.begins_with("https://") or url.begins_with("http://")):
+	if url != "" and not (url.begins_with("https://") or url.begins_with("http://")):
 		print("update check: ignoring a source that is not http(s): ", url)
-		return
+		return ""
+	return url
+
+
+func _create_update_checker(url: String, automatic: bool) -> void:
 	update_checker = UpdateChecker.new()
 	update_checker.url = url
 	update_checker.state_path = update_state_path
 	update_checker.running_version = update_running_version
+	update_checker.channel = str(preferences.get("update_channel", ""))
+	update_checker.automatic = automatic
 	update_checker.update_available.connect(_on_update_available)
 	update_checker.update_withdrawn.connect(_on_update_withdrawn)
+	update_checker.check_started.connect(_push_update_state)
+	update_checker.check_finished.connect(func(_status: String) -> void: _push_update_state())
 	add_child(update_checker)
 
 
+## DT-UPD-04a: Settings' automatic-check and channel choices, saved at once like the language. Turning checks on
+## starts the session's checker when Home is up; a channel change asks for that channel's releases.
+func set_update_preferences(check_automatically: bool, channel: String) -> void:
+	preferences.check_updates = check_automatically
+	preferences.update_channel = channel if channel in UpdateCheck.CHANNELS else ""
+	_update_save_error = Preferences.save_to(preferences_path, preferences)
+	if is_instance_valid(update_checker):
+		update_checker.set_channel(preferences.update_channel)
+		update_checker.set_automatic(check_automatically)
+	elif check_automatically:
+		_start_update_check()
+	_push_update_state()
+
+
+## Check now from Settings: creates the session's checker if automatic checks are off, then asks unless a request
+## is running or the cooldown has not passed (Settings says so).
+func check_updates_now() -> void:
+	var url := _update_source_url()
+	if url == "":
+		_push_update_state()
+		return
+	if not is_instance_valid(update_checker):
+		# Automatic only when the preference says so (its start-up check is then this one: check_now waits).
+		_create_update_checker(url, bool(preferences.get("check_updates", true)))
+	var started: bool = update_checker.check_now()
+	_push_update_state(not started and not update_checker.is_checking())
+
+
+## What Settings shows about updates: the two preferences, the status (UpdateCheck.status() kinds, plus
+## "unavailable" in a development run) and whether Check now was just refused by the cooldown.
+func _update_settings_state(cooldown := false) -> Dictionary:
+	var channel := str(preferences.get("update_channel", ""))
+	var status := {}
+	if is_instance_valid(update_checker):
+		status = update_checker.status()
+	elif _update_source_url() != "":
+		var running := update_running_version if update_running_version != "" else str(BuildInfo.current().parsed.semver)
+		var effective := UpdateCheck.effective_channel(channel, UpdateCheck.parse_version(running))
+		status = UpdateCheck.status(running, UpdateCheck.state_for(UpdateCheck.load_state(update_state_path), running, effective), channel)
+	else:
+		status = { kind = "unavailable", channel = UpdateCheck.effective_channel(channel, {}) }
+	return {
+		check_automatically = bool(preferences.get("check_updates", true)),
+		channel = channel,
+		status = status,
+		cooldown = cooldown,
+		save_error = _update_save_error,
+	}
+
+
+func _push_update_state(cooldown := false) -> void:
+	var active_settings: Node = screens.get_screen("settings") if screens != null else null
+	if active_settings != null and active_settings.has_method("set_update_state"):
+		active_settings.set_update_state(_update_settings_state(cooldown))
+
+
 func _on_update_available(info: Dictionary) -> void:
+	if str(info.get("tag", "")) == _update_later_tag:
+		return # put off with Later in this session
 	_update_info = info
 	if home != null:
 		home.show_update(info)
@@ -2949,6 +3345,12 @@ func _on_update_hidden(tag: String) -> void:
 	_update_info = {}
 	if update_checker != null:
 		update_checker.hide(tag)
+
+
+## Later: the card goes away for this session; the rebuilt Home after a flight does not bring it back.
+func _on_update_later(tag: String) -> void:
+	_update_info = {}
+	_update_later_tag = tag
 
 
 ## A fresh answer says nothing newer is published: the card from the cache goes away.
@@ -3273,8 +3675,10 @@ func _start_creator_helicopter_trial(editor: Node, payload: Dictionary) -> void:
 	if valid and heli:
 		valid = HeliDonor.is_helicopter(request.get("source")) and chosen_start in ["airborne", "ground"]
 	elif valid:
-		valid = donor_id == FixedWingDonor.FLYING_WING_DONOR and Catalog.can_fly(donor_id) \
-			and request.get("placement") is Dictionary and chosen_start in ["airborne", "hand_launch"] \
+		# The trainer donor starts airborne only; the X8 also hand-launches.
+		valid = donor_id in FixedWingDonor.DONORS and Catalog.can_fly(donor_id) \
+			and request.get("placement") is Dictionary and (chosen_start == "airborne" \
+				or (chosen_start == "hand_launch" and donor_id == FixedWingDonor.FLYING_WING_DONOR)) \
 			and FixedWingDonor.Setup.Installation.required(request.get("source"))
 	if not valid:
 		editor.set_note(tr(HeliDonor.UNAVAILABLE))
@@ -4406,6 +4810,7 @@ func _commit_end_flight() -> bool:
 	screens.set_session(null)
 	flight.recorder.detach()
 	if controllers != null: controllers.attach_session(null)
+	_departing_world_resources = WorldResourceHold.collect(flight) # Home reuses them instead of reloading
 	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
 	flight.queue_free()
 	flight = null

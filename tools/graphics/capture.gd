@@ -13,6 +13,7 @@ const TimeConfig := preload("res://environment/time_of_day_config.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
+const Shadow := preload("res://render/shadow.gd")
 
 const SHADOW_ARGUMENTS := {"--shadow-technique": "shadow_technique", "--shadow-quality": "shadow_quality",
 	"--shadow-distance": "shadow_distance", "--shadow-softness": "shadow_softness", "--shadow-cue": "shadow_aircraft_cue"}
@@ -20,10 +21,12 @@ const SHADOW_ARGUMENTS := {"--shadow-technique": "shadow_technique", "--shadow-q
 const DEFAULT_AIRCRAFT := "jensen-das-ugly-stik-60"
 const P51_AIRCRAFT := "p51d-mustang-120"
 const DEFAULT_WIDTH := 1920
-const WIDTHS := [1280, 1920, 2560]
+const WIDTHS := [1280, 1920, 2560, 3840]
 const WARMUP_SECONDS := 10.0
 
 var _values: Dictionary = {}
+## The aircraft cue's per-frame update (as flight calls it every frame), when --aircraft-cue=on.
+var _cue_update := Callable()
 
 
 func _initialize() -> void:
@@ -33,7 +36,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	if parsed.help:
-		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N] [--contact-shadows profile|off|on] [--aa msaa4|none|taa|fsr2_native] [--scale native|bilinear67|metalfx_spatial_85|metalfx_spatial_quality]")
+		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N] [--contact-shadows profile|off|on] [--aa msaa4|none|taa|fsr2_native] [--scale native|bilinear67|metalfx_spatial_85|metalfx_spatial_quality] [--aircraft-cue off|on]")
 		quit()
 		return
 	_values = parsed.values
@@ -42,7 +45,8 @@ func _initialize() -> void:
 
 func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var values := {}
-	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa", "--scale"]
+	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa", "--scale",
+		"--aircraft-cue", "--aircraft-motion"]
 	allowed.append_array(SHADOW_ARGUMENTS.keys())
 	var i := 0
 	while i < raw.size():
@@ -77,10 +81,10 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var width := DEFAULT_WIDTH
 	if values.has("--width"):
 		if not str(values["--width"]).is_valid_int():
-			return {ok = false, error = "--width must be 1280, 1920 or 2560"}
+			return {ok = false, error = "--width must be 1280, 1920, 2560 or 3840"}
 		width = int(values["--width"])
 	if not WIDTHS.has(width):
-		return {ok = false, error = "--width must be 1280, 1920 or 2560"}
+		return {ok = false, error = "--width must be 1280, 1920, 2560 or 3840"}
 	var aircraft := str(values.get("--aircraft", "default"))
 	if aircraft not in ["default", P51_AIRCRAFT]:
 		return {ok = false, error = "--aircraft must be default or %s" % P51_AIRCRAFT}
@@ -97,6 +101,14 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var contact_shadows := str(values.get("--contact-shadows", "profile"))
 	if contact_shadows not in ["profile", "off", "on"]:
 		return {ok = false, error = "--contact-shadows must be profile, off or on"}
+	# VQ-04b SA-02/SA-25: draw the production planar aircraft cue (bind, articulation and handoff as in flight).
+	var aircraft_cue := str(values.get("--aircraft-cue", "off"))
+	if aircraft_cue not in ["off", "on"]:
+		return {ok = false, error = "--aircraft-cue must be off or on"}
+	# SA-25: spin the aircraft a little every frame so masks and native maps do the work of a flight.
+	var aircraft_motion := str(values.get("--aircraft-motion", "off"))
+	if aircraft_motion not in ["off", "spin"]:
+		return {ok = false, error = "--aircraft-motion must be off or spin"}
 	var aa := str(values.get("--aa", "msaa4"))
 	if aa not in ["msaa4", "none", "taa", "fsr2_native"]:
 		return {ok = false, error = "--aa must be msaa4, none, taa or fsr2_native"}
@@ -115,7 +127,8 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if view == "all":
 			return {ok = false, error = "--seconds profiling requires one named --view"}
 	return {ok = true, help = false, values = {out = str(values["--out"]), width = width,
-		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa, shadows = shadows, scale = scale}}
+		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa, shadows = shadows, scale = scale,
+		aircraft_cue = aircraft_cue, aircraft_motion = aircraft_motion}}
 
 
 func run() -> void:
@@ -209,6 +222,13 @@ func run() -> void:
 	aircraft.name = "ComparisonAirplane"
 	aircraft.visible = false
 	world.add_child(aircraft)
+	var cue: MeshInstance3D = null
+	var cue_extent := Vector2.ZERO
+	if _values.aircraft_cue == "on":
+		cue = Shadow.create(world)
+		Shadow.Projected.tag_articulation(aircraft_data)
+		Shadow.bind_model(cue, aircraft)
+		cue_extent = Shadow.model_extent(aircraft)
 	var cases: Array[Dictionary] = []
 	for item: Dictionary in _view_cases():
 		if _values.view == "all" or item.id == _values.view:
@@ -228,6 +248,17 @@ func run() -> void:
 			aircraft.basis = Frames.attitude_to_render(deg_to_rad(float(item.aircraft_yaw_deg)), 0.0, 0.0)
 		ShaderClock.update(0.0)
 		Atmosphere.update_clouds(environment, 0.0)
+		if cue != null or _values.aircraft_motion == "spin":
+			if cue != null:
+				cue.visible = aircraft_visible
+			var spin: bool = _values.aircraft_motion == "spin" and aircraft_visible
+			_cue_update = func() -> void:
+				if spin:
+					aircraft.rotate_y(deg_to_rad(1.0))
+				if cue != null:
+					Shadow.update(cue, aircraft.basis, aircraft.position, cue_extent.x, cue_extent.y, Atmosphere.shadow_direction(lighting),
+						Shadow.cue_strength("auto", Atmosphere.shadow_strength(lighting)), "auto", 0.0)
+			_cue_update.call()
 		var entry := {"id": item.id, "camera_ned": camera_ned, "target_ned": target_ned,
 			"aircraft_id": aircraft_id, "aircraft_visible": aircraft_visible,
 			"aircraft_ned": item.get("aircraft_ned", []), "manual_draw": true}
@@ -313,6 +344,8 @@ func _view_cases() -> Array[Dictionary]:
 
 func _settle_frames(count: int) -> void:
 	for _frame in range(count):
+		if _cue_update.is_valid():
+			_cue_update.call()
 		await process_frame
 		RenderingServer.force_draw(false)
 
@@ -322,21 +355,53 @@ func _profile_view(viewport: SubViewport, _camera: Camera3D, seconds: float) -> 
 	RenderingServer.viewport_set_measure_render_time(rid, true)
 	var warmup_end := Time.get_ticks_usec() + int(WARMUP_SECONDS * 1000000.0)
 	while Time.get_ticks_usec() < warmup_end:
+		if _cue_update.is_valid():
+			_cue_update.call()
 		await process_frame
 		RenderingServer.force_draw(false)
+	# VQ-04b SA-25: offscreen passes (aircraft/field shadow masks, cloud tiles, reflections) by their own GPU time.
+	# A viewport that did not draw in a frame reports its last value, so each sample also records the update mode:
+	# only UPDATE_ALWAYS viewports are fresh every frame; the others are attributed when they redraw.
+	var offscreen: Array[SubViewport] = []
+	for node in viewport.find_children("*", "SubViewport", true, false):
+		offscreen.append(node as SubViewport)
+		RenderingServer.viewport_set_measure_render_time((node as SubViewport).get_viewport_rid(), true)
 	var samples: Array[Dictionary] = []
+	var sub_samples := {}
 	var last := Time.get_ticks_usec()
 	var end := last + int(seconds * 1000000.0)
 	while Time.get_ticks_usec() < end:
+		if _cue_update.is_valid():
+			_cue_update.call()
 		await process_frame
 		RenderingServer.force_draw(false)
 		var now := Time.get_ticks_usec()
 		samples.append({"wall_ms": float(now - last) / 1000.0,
 			"cpu_ms": RenderingServer.viewport_get_measured_render_time_cpu(rid),
 			"gpu_ms": RenderingServer.viewport_get_measured_render_time_gpu(rid)})
+		for sub in offscreen:
+			if not is_instance_valid(sub):
+				continue
+			var key := str(viewport.get_path_to(sub))
+			if not sub_samples.has(key):
+				sub_samples[key] = {"size": [sub.size.x, sub.size.y], "gpu_ms": PackedFloat32Array(), "update_modes": {}}
+			var series: PackedFloat32Array = sub_samples[key].gpu_ms # packed arrays copy: append, then store back
+			series.append(RenderingServer.viewport_get_measured_render_time_gpu(sub.get_viewport_rid()))
+			sub_samples[key].gpu_ms = series
+			var mode := str(sub.render_target_update_mode)
+			sub_samples[key].update_modes[mode] = int(sub_samples[key].update_modes.get(mode, 0)) + 1
 		last = now
+	var subviewports := {}
+	for key: String in sub_samples:
+		var gpu: PackedFloat32Array = sub_samples[key].gpu_ms
+		var sorted := Array(gpu)
+		sorted.sort()
+		subviewports[key] = {"size": sub_samples[key].size, "samples": gpu.size(),
+			"gpu_ms_median": float(sorted[sorted.size() / 2]) if not sorted.is_empty() else 0.0,
+			"gpu_ms_max": float(sorted.back()) if not sorted.is_empty() else 0.0,
+			"update_modes": sub_samples[key].update_modes}
 	return {"warmup_seconds": WARMUP_SECONDS, "sample_duration_seconds": seconds,
-		"raw_observations_no_claim": true, "samples_wall_cpu_gpu_ms": samples}
+		"raw_observations_no_claim": true, "samples_wall_cpu_gpu_ms": samples, "subviewports": subviewports}
 
 
 func _counters(viewport: SubViewport) -> Dictionary:

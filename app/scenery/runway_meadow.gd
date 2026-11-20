@@ -107,13 +107,19 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 	var keep_root := sqrt(keep_fraction)
 	var surface_rects := _surface_rects(field)
 	var triangles := 0
+	# A33: get_asset deep-copies the whole catalog entry; a handful of species repeat over thousands
+	# of plants. Positive counts are cached for this call only; misses keep asking the library.
+	var triangle_counts := {}
 	for plant: Dictionary in candidates:
 		if float(plant.group_u) >= keep_root or float(plant.member_u) >= keep_root:
 			continue
 		var asset_id := str(plant.asset_id)
-		var source_triangles := int(PlantLibrary.get_asset(asset_id).get("source_triangles", 0))
+		var source_triangles := int(triangle_counts.get(asset_id, 0))
 		if source_triangles <= 0:
-			continue
+			source_triangles = int(PlantLibrary.get_asset(asset_id).get("source_triangles", 0))
+			if source_triangles <= 0:
+				continue
+			triangle_counts[asset_id] = source_triangles
 		if triangles + source_triangles > MAX_SOURCE_TRIANGLES:
 			push_error("Runway meadow exceeds its %d source-triangle budget" % MAX_SOURCE_TRIANGLES)
 			return []

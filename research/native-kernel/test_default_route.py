@@ -21,6 +21,8 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
+# NK-4 packages ship the MinGW DLL; Linux packages and source trees the shared object.
+LIBRARY = "openrc_native_kernel.dll" if os.name == "nt" else "libopenrc_native_kernel.so"
 sys.path.insert(0, str(ROOT / "app/tests"))
 from test_atmosphere_cli import _read_parts  # noqa: E402: reuse the production trace parser
 
@@ -88,7 +90,7 @@ def missing_binary_project(source: Path, destination: Path) -> None:
                     shutil.copy2(cached, target / cached.name)
         else:
             target.symlink_to(entry, target_is_directory=entry.is_dir())
-    (destination / "native/kernel/libopenrc_native_kernel.so").unlink()
+    (destination / "native/kernel" / LIBRARY).unlink()
 
 
 def sha256_file(path: Path) -> str:
@@ -123,7 +125,7 @@ def private_package(executable: Path, destination: Path) -> Path:
 
 def missing_binary_package(executable: Path, destination: Path) -> Path:
     private_executable = private_package(executable, destination)
-    (destination / "native/kernel/libopenrc_native_kernel.so").unlink()
+    (destination / "native/kernel" / LIBRARY).unlink()
     return private_executable
 
 
@@ -135,7 +137,7 @@ def corrupt_package(executable: Path, destination: Path, case: str) -> Path:
         with (kernel / "openrc_native_kernel.gdextension").open("ab") as descriptor:
             descriptor.write(b"\n; altered in private fallback fixture\n")
     elif case == "corrupt-binary":
-        library = kernel / "libopenrc_native_kernel.so"
+        library = kernel / LIBRARY
         with library.open("ab") as binary:
             binary.write(b"\nopenrc private fallback fixture\n")
         # Even a sidecar receipt updated to match the altered file must not override the embedded pin.
@@ -372,17 +374,22 @@ def main() -> None:
     engine = engine.resolve()
     project = None if args.release_executable else args.project.resolve()
     native_root = engine.parent if project is None else project
-    if not engine.is_file() or not (native_root / "native/kernel/libopenrc_native_kernel.so").is_file():
+    if not engine.is_file() or not (native_root / "native/kernel" / LIBRARY).is_file():
         raise SystemExit("The executable and its verified NK-3 library are required.")
     tmp = ROOT / "tmp"
     tmp.mkdir(exist_ok=True)
     output = args.out.resolve() if args.out else Path(tempfile.mkdtemp(prefix="nk3-default-route-", dir=tmp)).resolve()
     if args.out:
-        if not output.is_relative_to(tmp.resolve()):
-            raise SystemExit("--out must be a new directory under tmp/")
+        # A package check may also write beside its executable's volume, so private copies are hard links rather
+        # than multi-gigabyte copies of the embedded-pack executable.
+        same_volume = args.release_executable is not None and output.anchor == engine.anchor
+        if not output.is_relative_to(tmp.resolve()) and not same_volume:
+            raise SystemExit("--out must be a new directory under tmp/ (or on the release executable's volume)")
         output.mkdir(parents=True, exist_ok=False)
     for variable, name in (("XDG_DATA_HOME", "data"), ("XDG_CONFIG_HOME", "config"), ("XDG_CACHE_HOME", "cache")):
         os.environ[variable] = str(output / name)
+    if os.name == "nt":  # Godot's Windows user data follows APPDATA
+        os.environ["APPDATA"] = str(output / "data")
     print(f"NK3 default-route evidence: {output}", flush=True)
     check(engine, project, output)
 

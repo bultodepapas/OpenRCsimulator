@@ -1,7 +1,8 @@
 extends RefCounted
 ## DT-MAC-05b: recovery for a RenderingDevice default renderer that initializes but then crashes or hangs.
 ## Godot already falls back to OpenGL when the Metal/Vulkan context cannot be created; this covers what follows.
-## A normal Home launch on the project's RD Standard renderer (Mobile on Apple Silicon) writes a pending marker,
+## A normal Home launch on the build's default RD renderer (Mobile on Apple Silicon, or Forward+ from a saved
+## VQ-07h High graphics mode) writes a pending marker,
 ## cleared after CONFIRM_FRAMES process callbacks and CONFIRM_SECONDS, or on a clean quit. This detects continued
 ## process responsiveness; it does not prove images reached the display. A later launch that finds the marker
 ## unconfirmed records a failure for that build and restarts once into Compatibility. Compatibility sessions write
@@ -62,8 +63,9 @@ static func build_identity() -> String:
 
 
 static func facts() -> Dictionary:
+	# The launch default, so a saved High mode (Forward+ via the VQ-07h override) is guarded too.
 	return {method = RenderingServer.get_current_rendering_method(),
-		standard_method = HighGraphics.standard_rendering_method(), profile = HighGraphics.requested(),
+		standard_method = HighGraphics.default_rendering_method(), profile = HighGraphics.requested(),
 		headless = DisplayServer.get_name() == "headless", build = build_identity()}
 
 
@@ -233,6 +235,15 @@ static func confirm(path: String) -> void:
 	if state.has("pending") or state.has("metalfx_pending"):
 		state.erase("pending")
 		state.erase("metalfx_pending")
+		save_state(path, state)
+
+
+## VQ-07h: an explicit High request retries the renderer. The next default launch is guarded again,
+## so a repeated failure records a new marker. MetalFX records are separate and kept.
+static func forget_failure(path: String) -> void:
+	var state := load_state(path)
+	if state.has("failed"):
+		state.erase("failed")
 		save_state(path, state)
 
 

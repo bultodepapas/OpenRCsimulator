@@ -69,13 +69,14 @@ func _card() -> void:
 	var bg: Color = notice.get_theme_stylebox("panel").bg_color
 	var r := UiTheme.contrast(notice.label.get_theme_color("font_color"), bg)
 	_check("contrast: notice text on its card %.2f:1 >= 4.5" % r, r >= 4.5)
-	for b: Button in [notice.download_button, notice.hide_button]:
+	for b: Button in [notice.download_button, notice.later_button, notice.hide_button]:
 		var rb := UiTheme.contrast(b.get_theme_color("font_color"), b.get_theme_stylebox("normal").bg_color)
 		_check("contrast: %s %.2f:1 >= 4.5" % [b.name, rb], rb >= 4.5)
 	TranslationServer.set_locale("es")
 	await ui.settle()
 	_check("Spanish", notice.label.text == "Nueva versión disponible: 0.1.0-rc8"
-		and notice.download_button.atr(notice.download_button.text) == "Descargar" and notice.hide_button.atr(notice.hide_button.text) == "Ocultar"
+		and notice.download_button.atr(notice.download_button.text) == "Descargar" and notice.hide_button.atr(notice.hide_button.text) == "Omitir esta versión"
+		and notice.later_button.atr(notice.later_button.text) == "Más tarde"
 		and notice.download_button.tooltip_text == "Abre la página de la versión en tu navegador.", notice.label.text)
 	TranslationServer.set_locale("en")
 	await ui.settle()
@@ -88,10 +89,33 @@ func _card() -> void:
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Download asks for the release page", opened == [RC8.url] and notice.visible, str(opened))
 	await ui.tap(KEY_RIGHT)
-	_check("Right reaches Hide", ui.focus_name() == "Hide", ui.focus_name())
+	_check("Right reaches Later", ui.focus_name() == "Later", ui.focus_name())
+	await ui.tap(KEY_RIGHT)
+	_check("Right again reaches Skip this version", ui.focus_name() == "SkipVersion", ui.focus_name())
 	await ui.tap(KEY_ENTER)
-	_check("Enter on Hide hides the card and names the version", hidden == ["v0.1.0-rc8"] and not notice.visible, str(hidden))
-	_check("Hide gives the keyboard back to Fly", ui.focus_name() == "Fly", ui.focus_name())
+	_check("Enter on Skip this version hides the card and names the version", hidden == ["v0.1.0-rc8"] and not notice.visible, str(hidden))
+	_check("Skip gives the keyboard back to Fly", ui.focus_name() == "Fly", ui.focus_name())
+	var later: Array[String] = []
+	home.update_later.connect(func(tag: String) -> void: later.append(tag))
+	home.show_update(RC8)
+	await ui.settle()
+	notice.later_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Later hides the card, names the version, skips nothing and returns the keyboard to Fly", later == ["v0.1.0-rc8"]
+		and hidden == ["v0.1.0-rc8"] and not notice.visible and ui.focus_name() == "Fly", str(later))
+	_check("no size line without a known package size", not notice.detail.visible)
+	home.show_update({ tag = "v0.2.9", version = "0.2.9", url = RC8.url, published = "", size = 1501341464 })
+	await ui.settle()
+	_check("the download size is shown when the package is known", notice.detail.visible and notice.detail.text == "Download: 1.50 GB",
+		notice.detail.text)
+	var card_right := notice.position.x + notice.size.x
+	_check("with the size line and three buttons the card still clears the sidebar at 1280x720",
+		card_right - notice.size.x > Home.SIDEBAR_WIDTH and absf(card_right - (home.size.x - 24)) < 1.0, "%s %s" % [notice.position, notice.size])
+	TranslationServer.set_locale("es")
+	await ui.settle()
+	_check("size line in Spanish", notice.detail.text == "Descarga: 1.50 GB", notice.detail.text)
+	TranslationServer.set_locale("en")
+	await ui.settle()
 	home.show_update({ tag = "v0.1.0-rc9", version = "0.1.0-rc9", url = RC8.url, published = "" })
 	await ui.settle()
 	_check("a newer release shows the same card again", notice.visible and notice.label.text == "Update available: 0.1.0-rc9")
@@ -171,19 +195,83 @@ func _route() -> void:
 	app.end_flight()
 	await ui.settle()
 	_check("after hiding, the rebuilt Home has no card", app.home != null and app.home.update_notice == null)
+	# DT-UPD-04a: Later puts a release off for this session only; one checker serves every rebuilt Home.
+	var rc9 := { tag = "v0.1.0-rc9", version = "0.1.0-rc9", url = RC8.url, published = "", size = 39598648 }
+	var checker: Node = app.update_checker
+	checker.update_available.emit(rc9)
+	await ui.settle()
+	_check("a newer release shows with its size", app.home.update_notice != null and app.home.update_notice.visible
+		and app.home.update_notice.detail.text == "Download: 39.6 MB")
+	app.home.update_notice.later_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Later: card gone, nothing skipped in the cache", not app.home.update_notice.visible
+		and UpdateCheck.load_state(STATE).hidden_tag == "v0.1.0-rc7" and app._update_info.is_empty())
+	checker.update_available.emit(rc9)
+	await ui.settle()
+	_check("the same release is not shown again this session", not app.home.update_notice.visible)
+	app.home.fly_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	app.end_flight()
+	await ui.settle()
+	_check("after Later and a flight: no card, the same checker, no new request", app.home.update_notice == null
+		and app.update_checker == checker and app.find_children("UpdateChecker", "", true, false).size() == 1
+		and server.requests.size() == 1, str(app.find_children("UpdateChecker", "", true, false).size()))
+	# Settings: the Updates rows reflect the checker and save at once.
+	app.open_settings(app.home.settings_button)
+	await ui.settle()
+	var settings: Node = app.screens.get_screen("settings")
+	var status_label: Label = settings.find_child("UpdateStatus", true, false)
+	var auto_toggle: CheckButton = settings.find_child("CheckUpdates", true, false)
+	var channel_picker: OptionButton = settings.find_child("UpdateChannel", true, false)
+	var check_button: Button = settings.find_child("CheckUpdatesNow", true, false)
+	_check("Settings shows the Updates rows: automatic on, preview (the rc build's channel), rc7 available with its size",
+		status_label != null and auto_toggle.button_pressed and channel_picker.get_item_metadata(channel_picker.selected) == "preview"
+		and status_label.text.begins_with("Version 0.1.0-rc7 is available (") and status_label.text.ends_with(" MB download).")
+		and not check_button.disabled, status_label.text if status_label != null else "no status")
+	checker.cooldown_s = 3600.0 # the launch request counts: Check now must wait
+	settings._show_category(1) # Interface
+	await ui.settle()
+	check_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Check now right after the launch check: refused by the cooldown, said so", server.requests.size() == 1
+		and status_label.text.ends_with("Wait a moment before checking again."), status_label.text)
+	checker.cooldown_s = 0.0
+	channel_picker.select(0)
+	channel_picker.item_selected.emit(0)
+	await ui.settle()
+	var saved: Dictionary = Preferences.load_from(PREFS)
+	_check("choosing Stable saves it and asks for stable releases", saved.update_channel == "stable" and saved.check_updates
+		and checker.channel == "stable" and checker.is_checking(), str(saved.get("update_channel")))
+	await _wait_idle(app, server)
+	_check("stable answer: nothing offered, current on this channel", server.requests.size() == 2
+		and status_label.text.begins_with("You're using the latest version on this channel."), status_label.text)
+	auto_toggle.button_pressed = false
+	await ui.settle()
+	_check("turning automatic checks off is saved at once", Preferences.load_from(PREFS).check_updates == false and not checker.automatic)
+	settings.close()
+	await ui.settle()
 	await ui.close_app(app)
 	# Opt-out in the settings file: no checker at all.
 	var prefs: Dictionary = Preferences.load_from(PREFS)
 	prefs.check_updates = false
 	_check("preference saved", Preferences.save_to(PREFS, prefs) == OK and Preferences.load_from(PREFS).check_updates == false)
+	var requests_before := server.requests.size()
 	var quiet: Node = _new_app()
 	quiet.update_check_url = server.url()
 	quiet.update_running_version = "0.1.0-rc6"
 	root.add_child(quiet)
 	await ui.settle()
 	await ui.settle()
-	_check("[updates] check=false: no checker, no request, no card", quiet.update_checker == null and server.requests.size() == 1
-		and quiet.home.update_notice == null)
+	_check("[updates] check=false: no checker, no request, no card", quiet.update_checker == null
+		and server.requests.size() == requests_before and quiet.home.update_notice == null)
+	# DT-UPD-04a: with automatic checks off, Check now from Settings still asks (and only then).
+	quiet.check_updates_now()
+	_check("automatic off: Check now creates a manual checker and asks once", quiet.update_checker != null
+		and not quiet.update_checker.automatic and quiet.update_checker.is_checking())
+	await _wait_idle(quiet, server)
+	_check("automatic off: the manual answer arrives", server.requests.size() == requests_before + 1
+		and quiet.update_checker.status().kind != UpdateCheck.STATUS_NOT_CHECKED, str(quiet.update_checker.status()))
 	await ui.close_app(quiet)
 	server.stop()
 
@@ -194,6 +282,15 @@ func _new_app() -> Node:
 	app.preferences_path = PREFS
 	app.update_state_path = STATE
 	return app
+
+
+## Serves the fake API until the checker's request finishes (or 15 s of wall clock pass).
+func _wait_idle(app: Node, server: FakeReleases) -> void:
+	var started := Time.get_ticks_msec()
+	while app.update_checker.is_checking() and Time.get_ticks_msec() - started < 15000:
+		server.poll()
+		await process_frame
+	await ui.settle()
 
 
 ## Serves the fake API until Home shows the card (or 15 s of wall clock pass).

@@ -139,7 +139,7 @@ Hardware qualification rows in [controller support](controller-support.md#hardwa
 - Hardware mapping (SDL GameControllerDB edits), firmware changes, EdgeTX-side mixing features.
 - Third-party glyph addons duplicating `controller_prompts.gd`.
 - Force feedback, motion controls and HOTAS expansion.
-- Radio-side shaping in the simulator (curves, rates, mixes, channel reorder, failsafe): it duplicates EdgeTX and risks double expo.
+- Radio-side shaping in the simulator (curves, mixes, channel reorder, failsafe): it duplicates EdgeTX and risks double expo. Exception: a radio profile may opt in to the aircraft's own dual rates (`rates_owner = "simulator"`, [D6-ETX](edgetx-airplane-controls.md)); the radio then sends linear sticks.
 - 3D animated controller models: performance cost on modest PCs without clarity gain.
 - Per-vehicle profiles: `controller_profile.gd` has no vehicle field; the vehicle-aware list (UI-15-UX-02c) covers the clarity need first.
 

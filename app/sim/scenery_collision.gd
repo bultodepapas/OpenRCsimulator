@@ -121,7 +121,7 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 	# No probe can hit a proxy outside the padded whole-hull envelope.
 	if overlapping_candidates.is_empty():
 		return result
-	var best_by_obstacle: Dictionary = {}
+	var hits_by_obstacle: Dictionary = {}
 	var p0: PackedFloat64Array = previous.slice(RB.POS, RB.POS + 3)
 	var p1: PackedFloat64Array = current.slice(RB.POS, RB.POS + 3)
 	for segment_index: int in subdivisions:
@@ -164,12 +164,13 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 					tick_fraction, tick, mass, inertia)
 				if event == null:
 					continue
-				var old: Event = best_by_obstacle.get(event.obstacle_id) as Event
-				if old == null or _event_precedes(event, old):
-					best_by_obstacle[event.obstacle_id] = event
-	for value: Variant in best_by_obstacle.values():
-		result.append(value as Event)
-	result.sort_custom(_event_precedes)
+				if not hits_by_obstacle.has(event.obstacle_id):
+					hits_by_obstacle[event.obstacle_id] = []
+				hits_by_obstacle[event.obstacle_id].append(event)
+	var firsts: Array = []
+	for hits: Variant in hits_by_obstacle.values():
+		firsts.append(_ordered(hits)[0])
+	result.append_array(_ordered(firsts))
 	return result
 
 
@@ -651,12 +652,38 @@ static func _aabb_overlap(proxy: Dictionary, north_min: float, north_max: float,
 		and float(proxy.bounds_down_max) >= down_min and float(proxy.bounds_down_min) <= down_max
 
 
-static func _event_precedes(a: Event, b: Event) -> bool:
-	if absf(a.time_fraction - b.time_fraction) > FRACTION_TIE:
+## Discovery-independent hit order. A pairwise comparator with a FRACTION_TIE window is not
+## transitive (chained near ties form cycles), so the earliest remaining hit anchors each tie
+## window; inside it the stable obstacle ID, then point index, decides.
+static func _ordered(events: Array) -> Array[Event]:
+	var remaining: Array = events.duplicate()
+	remaining.sort_custom(_exactly_precedes)
+	var ordered: Array[Event] = []
+	while not remaining.is_empty():
+		var anchor: float = (remaining[0] as Event).time_fraction
+		var cut: int = 1
+		while cut < remaining.size() and (remaining[cut] as Event).time_fraction - anchor <= FRACTION_TIE:
+			cut += 1
+		var group: Array = remaining.slice(0, cut)
+		group.sort_custom(_tie_precedes)
+		for event: Variant in group:
+			ordered.append(event as Event)
+		remaining = remaining.slice(cut)
+	return ordered
+
+
+static func _exactly_precedes(a: Event, b: Event) -> bool:
+	if a.time_fraction != b.time_fraction:
 		return a.time_fraction < b.time_fraction
+	return _tie_precedes(a, b)
+
+
+static func _tie_precedes(a: Event, b: Event) -> bool:
 	if a.obstacle_id != b.obstacle_id:
 		return a.obstacle_id < b.obstacle_id
-	return a.point_index < b.point_index
+	if a.point_index != b.point_index:
+		return a.point_index < b.point_index
+	return a.time_fraction < b.time_fraction
 
 
 static func _attitude_at(start: PackedFloat64Array, finish: PackedFloat64Array, fraction: float) -> PackedFloat64Array:

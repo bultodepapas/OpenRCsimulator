@@ -83,7 +83,7 @@ class _CuePolicy:
 		revision = ShadowSettings.revision
 		if not last_update.is_empty() and is_instance_valid(carrier):
 			shadow_api.call("update", carrier, last_update[0], last_update[1], last_update[2],
-				last_update[3], last_update[4], last_update[5], last_update[6])
+				last_update[3], last_update[4], last_update[5], last_update[6], last_update[7])
 		elif is_instance_valid(carrier) and (not ShadowSettings.projected_enabled() or ShadowSettings.aircraft_cue() == "off"):
 			(carrier.material_override as StandardMaterial3D).albedo_color.a = 0.0
 			var projected := carrier.get_node_or_null("ProjectedShadow")
@@ -186,10 +186,12 @@ static func _install_shape(shadow: MeshInstance3D, model: Node3D, shape: Diction
 ## Ground transform of the shadow quad for an airplane with model basis `b` (nose −Z, right +X) at render
 ## position `pos`: the span and length axes projected onto the ground along `along` (a unit vector pointing up toward
 ## the light: Vector3.UP for the vertical pilot aid, the sun direction for the sun shadow), so banking narrows it.
-static func footprint(b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP) -> Transform3D:
+## `ground_y` is the receiving terrain height (SA-04); NAN keeps the historical flat field at y = 0.
+static func footprint(b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP,
+		ground_y: float = NAN) -> Transform3D:
 	var s := along.normalized()
 	s.y = maxf(s.y, 0.05) # a sun on the horizon would cast an infinitely long shadow
-	var h: float = Spec.SHADOW.height
+	var h: float = (ground_y if is_finite(ground_y) else 0.0) + Spec.SHADOW.height
 	var right := b.x - s * (b.x.y / s.y)
 	var aft := b.z - s * (b.z.y / s.y) # model +Z = toward the tail
 	var center := pos - s * ((pos.y - h) / s.y)
@@ -228,21 +230,35 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 	return t
 
 
+## SA-09: one cue-strength rule for Home and flight. The Vertical cue is a pilot height aid and keeps full strength
+## whatever the celestial light; every other cue (Sun, Auto) follows the celestial direct-shadow strength.
+## `cue` is a flight-local mode or "auto", which resolves to the saved cue.
+static func cue_strength(cue: String, celestial_strength: float) -> float:
+	var resolved := cue if cue in ["sun", "vertical", "off"] else ShadowSettings.aircraft_cue()
+	return 1.0 if resolved == "vertical" else clampf(celestial_strength, 0.0, 1.0)
+
+
 ## The flight's local cue can override the saved cue; the global projected route
 ## still decides whether any cue may be drawn. Other callers use the saved policy.
+## SA-04: `ground_y` (from receiving_ground()) puts the receiver on the terrain under the shadow and makes the
+## height fade and blur terrain-relative; NAN keeps the historical flat field at y = 0.
 static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float,
-		along := Vector3.UP, strength: float = 1.0, cue_override: String = "auto") -> void:
+		along := Vector3.UP, strength: float = 1.0, cue_override: String = "auto", ground_y: float = NAN) -> void:
 	var cue := cue_override if cue_override in ["sun", "vertical", "off"] else ShadowSettings.aircraft_cue()
 	var enabled := ShadowSettings.projected_enabled() and cue != "off"
 	var policy := shadow.get_meta("shadow_cue_policy", null) as _CuePolicy
 	if policy != null:
-		policy.last_update = [b, pos, span, length, along, strength, cue_override]
+		policy.last_update = [b, pos, span, length, along, strength, cue_override, ground_y]
 		policy.revision = ShadowSettings.revision
 	var direction: Vector3 = along
 	if cue == "vertical":
 		direction = Vector3.UP
-	shadow.transform = footprint(b, pos, span, length, direction)
-	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0) if enabled else 0.0
+	var ground := ground_y if is_finite(ground_y) else 0.0
+	shadow.transform = footprint(b, pos, span, length, direction, ground_y)
+	var height := pos.y - ground
+	# SA-02: beside a casting native sun the Sun cue yields to it; the Vertical aid is a declared aid and stays.
+	var handoff := native_handoff(shadow) if enabled and cue != "vertical" else 1.0
+	var opacity := alpha(height) * clampf(strength, 0.0, 1.0) * handoff if enabled else 0.0
 	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
 	var shown := shadow.is_visible_in_tree() if shadow.is_inside_tree() else shadow.visible
 	if enabled and shown and opacity > 0.0:
@@ -254,7 +270,59 @@ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, 
 				material.albedo_texture = ImageTexture.create_from_image(silhouette())
 	var projected := shadow.get_node_or_null("ProjectedShadow")
 	if projected != null:
-		projected.refresh(pos.y, direction.normalized(), opacity, enabled and shown and opacity > 0.0)
+		projected.receiver_height = ground + Spec.SHADOW.height
+		projected.refresh(height, direction.normalized(), opacity, enabled and shown and opacity > 0.0)
+
+
+## SA-02: the planar Sun cue's share (0..1) of the aircraft-to-ground shadow at its footprint. While a native sun
+## casts into the same world, the engine owns that shadow (with self-shadowing and contact) wherever it draws one;
+## the cue takes over only across the engine's own fade band at the receiving point,
+## smoothstep(fade_start * max, max, view depth), the complement of the native fade, so the two never stack at full
+## strength. 1 without a casting native sun (Projected, Off, night, renderers without maps). Without a camera the
+## carrier is treated as near (a static preview built before its camera). Below the cue's 12° bound the two
+## weighted shadows sit apart within that band only, because the cue keeps its bounded direction.
+static func native_handoff(shadow: Node3D) -> float:
+	if not shadow.is_inside_tree():
+		return 1.0
+	var light := ShadowSettings.casting_sun(shadow.get_world_3d())
+	if light == null:
+		return 1.0
+	var far := light.directional_shadow_max_distance
+	var depth := 0.0
+	var camera := shadow.get_viewport().get_camera_3d()
+	if camera != null:
+		far = minf(far, camera.far)
+		depth = -(camera.global_transform.affine_inverse() * shadow.global_position).z
+	return smoothstep(far * clampf(light.directional_shadow_fade_start, 0.0, 0.999), far, depth)
+
+
+## SA-04: where a planar cue lands. Follows the light from `pos` to the terrain (`ground` maps render x, z to y, or
+## NAN), refined twice so a slope or ramp under the shadow is found, and rates how flat the terrain is across the
+## footprint: `fit` falls from 1 to 0 as it departs 0.15–0.6 m from one plane (estimate), so a planar receiver
+## never floats over a bank or sinks into a ramp. Without a ground query the historical flat field is kept.
+## Roofs and other nearer surfaces have no query here and remain uncovered.
+static func receiving_ground(pos: Vector3, along: Vector3, ground: Callable, extent: float) -> Dictionary:
+	if not ground.is_valid():
+		return {y = NAN, fit = 1.0}
+	var s := along.normalized()
+	s.y = maxf(s.y, 0.05)
+	var y: float = ground.call(pos.x, pos.z)
+	if not is_finite(y):
+		return {y = NAN, fit = 1.0}
+	var hit := pos
+	for refinement in 2:
+		hit = pos - s * ((pos.y - y) / s.y)
+		var next: float = ground.call(hit.x, hit.z)
+		if not is_finite(next):
+			break
+		y = next
+	var r := maxf(extent, 0.1) * 0.5
+	var deviation := 0.0
+	for offset: Vector2 in [Vector2(r, 0), Vector2(-r, 0), Vector2(0, r), Vector2(0, -r)]:
+		var sample: float = ground.call(hit.x + offset.x, hit.z + offset.y)
+		if is_finite(sample):
+			deviation = maxf(deviation, absf(sample - y))
+	return {y = y, fit = 1.0 - smoothstep(0.15, 0.6, deviation)}
 
 
 ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).

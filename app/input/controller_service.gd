@@ -6,6 +6,7 @@ const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const EdgeTxRadio := preload("res://input/edgetx_radio.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
 
 signal flight_selection_changed
@@ -29,6 +30,8 @@ var _last_flight_selection_result := true
 var _settings_save_transaction := false
 var _defaults_pending := true
 var _manual_roles: Dictionary = {}
+## Inputs of the last locked menu-eligibility check that kept the selected menu device (see _ui_check_key).
+var _ui_verified_key := ""
 
 
 func _init() -> void:
@@ -63,16 +66,49 @@ func refresh() -> void:
 	_profile_misses.clear()
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
+	# Storage is read below only for a menu device or a pending default. Without either, skip the
+	# cross-process lease: its lock directory and owner file cost ~7 ms per refresh on a Windows NVMe
+	# profile (26 ms on USB flash), a main-thread stall twice a second in Home and in flight.
+	var defaults_due := _defaults_pending and not is_instance_valid(session)
+	var selected_ui: int = registry.selected_device_id("ui")
+	if selected_ui < 0 and not defaults_due:
+		_refreshing = false
+		return
+	# A menu device already kept by a locked check whose inputs (devices, active profile, stored files) are
+	# unchanged would get the same verdict: skip the lease and the storage reads (F3-GP-02-R3).
+	if selected_ui >= 0 and not defaults_due and not _ui_verified_key.is_empty() \
+			and _ui_check_key(selected_ui) == _ui_verified_key:
+		_refreshing = false
+		return
 	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
 	if not held.ok:
 		_refreshing = false
+		_ui_verified_key = ""
 		return # A busy store is unknown, never proof that an existing role became ineligible.
 	var ui_id: int = registry.selected_device_id("ui")
 	if ui_id >= 0 and not is_ui_device(ui_id):
 		registry.select_device("ui", -1)
 	_refreshing = false
 	_apply_automatic_defaults()
+	# Still under the lease: whichever device now drives menus passed an eligibility check on these inputs.
+	var verified_ui: int = registry.selected_device_id("ui")
+	_ui_verified_key = _ui_check_key(verified_ui) if verified_ui >= 0 else ""
 	if store.has_method("release_write"): store.release_write()
+
+
+## Everything a menu-eligibility verdict reads, without the lease: the device and its connection
+## generation, every registered device's full record (kind, name and identity feed eligibility and match
+## uniqueness), the active profile, and the store's lock-free file signature. Empty when the store offers
+## no signature, so every refresh rechecks.
+func _ui_check_key(id: int) -> String:
+	if not store.has_method("storage_signature"):
+		return ""
+	var devices := PackedStringArray()
+	for info: Dictionary in registry.get_devices():
+		devices.append(str(hash(info)))
+	var current: Dictionary = _profiles.get("%d:%d" % [id, registry.connection_generation(id)], {})
+	return "%d|%d|%s|%d|%s" % [id, registry.connection_generation(id), ",".join(devices), hash(current),
+		store.storage_signature()]
 
 
 ## Selection is automatic only before flight. It never writes profiles or arms controls.
@@ -160,7 +196,8 @@ static func observed_devices() -> Array:
 			info["kind"] = "radio"
 		elif JetiRadio.has_jeti_identity_claim(info):
 			info["kind"] = "joystick"
-		elif RcInput.looks_like_radio(str(info.name)):
+		elif RcInput.looks_like_radio(str(info.name)) or EdgeTxRadio.classifies_as_radio(info):
+			# D6-ETX-01: every EdgeTX maker by the USB pair, unless SDL already reports a known gamepad.
 			info["kind"] = "radio"
 		devices.append(info)
 	return devices

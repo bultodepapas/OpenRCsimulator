@@ -10,9 +10,15 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 ]
 ## D6-UX-01 adds the FPV quad's "arm" and "flight_mode" after the airplane channels. A profile without a key
 ## leaves that channel unbound; unlisted keys are ignored as before.
-const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear", "arm", "flight_mode"]
+## D6-ETX-07 adds the airplane's dual-rate switch ("rates"), read only when OpenRC simulates the rates.
+const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear", "rates", "arm", "flight_mode"]
 ## D6-UX-01: the vehicle capability each AUX channel serves (presentation only, like required_capability).
-const AUX_CHANNEL_CAPABILITIES := {"smoke": "smoke", "flaps": "flaps", "gear": "gear", "arm": "multirotor", "flight_mode": "multirotor"}
+const AUX_CHANNEL_CAPABILITIES := {"smoke": "smoke", "flaps": "flaps", "gear": "gear", "rates": "rates", "arm": "multirotor",
+	"flight_mode": "multirotor"}
+## D6-ETX-05 (docs/plans/edgetx-airplane-controls.md): the FPV quad's AUX channels. One physical control may serve a
+## quad channel and an airplane channel (CH5 arm / landing gear, CH6 flight mode / flaps), as each EdgeTX model gives
+## a channel its own meaning; two channels of the same vehicle never share a control.
+const MULTIROTOR_AUX_IDS: PackedStringArray = ["arm", "flight_mode"]
 ## Product defaults on standardized gamepads, scoped to implemented vehicle capabilities.
 ## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
 const AUTOMATIC_BUTTONS := {
@@ -258,6 +264,8 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 				_append_issue(issues, "aux_invalid", _aux_invalid_paths(str(aux_id), aux_binding, profile), error)
 	for i in configured_aux.size():
 		for j in range(i + 1, configured_aux.size()):
+			if not aux_channels_share_vehicle(str(configured_aux[i].name), str(configured_aux[j].name)):
+				continue # D6-ETX-05: a quad channel and an airplane channel may share a control
 			if _same_aux_control(configured_aux[i].binding, configured_aux[j].binding):
 				var error: String = "AUX binding conflict: aux.%s and aux.%s" % [
 					configured_aux[i].name, configured_aux[j].name,
@@ -525,6 +533,32 @@ static func _is_unbound(value: Variant) -> bool:
 	return value is Dictionary and str(value.get("type", "")) == "unbound"
 
 
+## Physical buttons owned by the profile's configured AUX channels: every member of a button or switch binding
+## (a detent group reserves its inactive positions too). An activity's own shortcuts must not reuse them.
+static func aux_owned_buttons(profile: Dictionary) -> Dictionary:
+	var owned: Dictionary = {}
+	for entry in _configured_aux_bindings(profile):
+		var binding: Dictionary = entry.binding
+		var buttons: Array = SmokeAux.bound_buttons(binding) if str(binding.get("type", "")) == "switch" \
+			else ([binding.get("button")] if str(binding.get("type", "")) == "button" else [])
+		for button: Variant in buttons:
+			owned[int(button)] = str(entry.name)
+	return owned
+
+
+## Whether two action bindings name the same control (false for an empty or untyped binding).
+static func same_binding(left: Variant, right: Variant) -> bool:
+	return left is Dictionary and right is Dictionary and _valid_binding(left) and _valid_binding(right) 		and not _is_unbound(left) and not _is_unbound(right) and _same_binding(left, right)
+
+
+## Whether an action binding uses a control a configured AUX channel owns (any member of a button group, a whole axis).
+static func binding_conflicts_aux(binding: Dictionary, profile: Dictionary) -> bool:
+	for entry in _configured_aux_bindings(profile):
+		if _same_aux_control(binding, entry.binding):
+			return true
+	return false
+
+
 static func _configured_aux_bindings(profile: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var aux: Variant = _dict_value(profile, "aux", {})
@@ -569,8 +603,15 @@ static func _aux_is_configured(aux: Variant, aux_id: String) -> bool:
 	return not (value is Dictionary and value.is_empty()) and value != null
 
 
+## D6-ETX-05: whether two AUX channels serve the same vehicle (and so may not share a physical control).
+static func aux_channels_share_vehicle(left: String, right: String) -> bool:
+	return MULTIROTOR_AUX_IDS.has(left) == MULTIROTOR_AUX_IDS.has(right)
+
+
 static func _action_aux_semantic_conflict(action_id: String, aux_id: String) -> bool:
 	match aux_id:
+		"rates":
+			return action_id == "rates_toggle"
 		"smoke":
 			return action_id == "smoke_toggle"
 		"flaps":

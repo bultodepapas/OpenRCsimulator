@@ -35,9 +35,30 @@ func _run() -> void:
 	_leading_edge()
 	_document()
 	_pusher()
+	_long_body()
 	await _panel()
 	print("ClearView setup: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+## A body much longer than its wing (a delta jet) is shown smaller until it fits the definition's reach,
+## labelled scaled and placed in the size class that holds the smaller span (corpus: IAF Kfir).
+func _long_body() -> void:
+	var ac := "AC3Db\nMATERIAL \"m\" rgb 1 1 1 amb 0.2 0.2 0.2 emis 0 0 0 spec 0.5 0.5 0.5 shi 10 trans 0\nOBJECT world\nkids 2\n" \
+		+ "OBJECT poly\nname \"wing\"\nnumvert 4\n-0.1 0 -0.8\n0.2 0 -0.8\n0.2 0 0.8\n-0.1 0 0.8\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 4\n0 0 0\n1 1 0\n2 1 1\n3 0 1\nkids 0\n" \
+		+ "OBJECT poly\nname \"fuselage\"\nnumvert 3\n-2.5 0 0\n2.5 0 0.02\n2.5 0.1 0\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 1 1\nkids 0\n"
+	var converted: Dictionary = _converted(ac)
+	check("long-body fixture converts", converted.ok)
+	if not converted.ok:
+		return
+	var proposed := Setup.propose(converted.value.source, Authoring.span_domain())
+	check("a long body is proposed smaller so it fits the reach limit", proposed.ok and proposed.value.scaled
+		and float(proposed.value.flown_span_m) < float(proposed.value.source_span_m)
+		and float(proposed.value.flown_span_m) * Setup._reach(Setup._points(converted.value.source).value, proposed.value.placement.datum) / float(proposed.value.source_span_m) <= Setup.MAX_REACH_M + 1e-9)
+	var classes: Array = Authoring.span_domain()
+	check("its size class holds the smaller span", proposed.ok and int(proposed.value.range_index) >= 0
+		and float(proposed.value.flown_span_m) >= float(classes[proposed.value.range_index][0])
+		and float(proposed.value.flown_span_m) <= float(classes[proposed.value.range_index][1]))
 
 
 ## One straight wing panel pair (both sides) as triangles: root and tip leading/trailing edge x and height.

@@ -117,11 +117,20 @@ func _test_shelter_elevation(world: Dictionary) -> void:
 		{north = 80.0, east = 15.0, heading = 271.0, prefab = "pit_shelter"},
 	]}
 	var surfaces := SupportSurfaces.build({groups = [shelter_group]})
-	var shelter_parts := 0
+	# DR-19e: the open shelter is 18 posts and 6 stepped roof strips; any other shelter proxy would be a floor.
+	var shelter_posts := 0
+	var shelter_roof_strips := 0
+	var shelter_other := 0
 	var aircraft_support_parts := 0
 	for world_proxy: Dictionary in world.proxies:
-		if str(world_proxy.get("id", "")).begins_with("building:shelter"):
-			shelter_parts += 1
+		var proxy_id := str(world_proxy.get("id", ""))
+		if proxy_id.begins_with("building:shelter"):
+			if proxy_id.contains(":post:"):
+				shelter_posts += 1
+			elif proxy_id.contains(":roof:"):
+				shelter_roof_strips += 1
+			else:
+				shelter_other += 1
 		if world_proxy.get("kind", "") == "aircraft_support":
 			aircraft_support_parts += 1
 	_check("aircraft placement rests at the existing 0.10 m shelter slab datum",
@@ -129,7 +138,8 @@ func _test_shelter_elevation(world: Dictionary) -> void:
 		and is_equal_approx(float(placement.elevation), 0.10))
 	_check("shelter aircraft elevation adds no duplicate floor or support proxy",
 		not proxy.is_empty() and absf(float(proxy.down) - expected_down) < 1.0e-9
-		and proxy.get("damage_profile", "") == "none" and shelter_parts == 19 and aircraft_support_parts == 0)
+		and proxy.get("damage_profile", "") == "none" and shelter_posts == 18 and shelter_roof_strips == 6
+		and shelter_other == 0 and aircraft_support_parts == 0)
 	if not proxy.is_empty():
 		var hit: Collision.Event = _sweep_through_part(world, proxy, float(placement.heading), 5.0)
 		_check("custom flight solver hits aircraft at shelter elevation",

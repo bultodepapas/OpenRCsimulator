@@ -37,6 +37,31 @@ if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
   [[ "$VERSION" != *-dirty ]] || { echo "tagged release requires a clean working tree"; exit 1; }
   VERSION="$RELEASE_TAG"
 fi
+# TELEM-02: a build configured for telemetry must carry a configuration the game accepts (telemetry_release.gd
+# valid_endpoint/valid_text), and a tagged release must use a tag the client can offer telemetry from
+# (telemetry_contract.gd RELEASE_PATTERN). Otherwise it would ship with telemetry silently off. None set: off.
+TELEMETRY_SET=0
+for name in OPENRC_TELEMETRY_ENDPOINT OPENRC_TELEMETRY_OPERATOR OPENRC_TELEMETRY_CONTACT; do
+  [[ -z "${!name:-}" ]] || TELEMETRY_SET=$((TELEMETRY_SET + 1))
+done
+if (( TELEMETRY_SET > 0 )); then
+  (( TELEMETRY_SET == 3 )) || { echo "telemetry: set all of OPENRC_TELEMETRY_ENDPOINT, _OPERATOR and _CONTACT, or none" >&2; exit 1; }
+  ENDPOINT_RE='^https://[^/?#@\[:space:]]+/[^?#@\[:space:]]*$'
+  ENDPOINT_HOST="${OPENRC_TELEMETRY_ENDPOINT#https://}"; ENDPOINT_HOST="${ENDPOINT_HOST%%/*}"
+  case "$ENDPOINT_HOST" in localhost|localhost:*|127.0.0.1|127.0.0.1:*|"[::1]"|"[::1]:"*) ENDPOINT_HOST="" ;; esac
+  [[ "$OPENRC_TELEMETRY_ENDPOINT" =~ $ENDPOINT_RE && ${#OPENRC_TELEMETRY_ENDPOINT} -le 512 && -n "$ENDPOINT_HOST" ]] \
+    || { echo "telemetry: OPENRC_TELEMETRY_ENDPOINT must be https://host/path (not loopback, no query, credentials or spaces)" >&2; exit 1; }
+  for name in OPENRC_TELEMETRY_OPERATOR OPENRC_TELEMETRY_CONTACT; do
+    TELEMETRY_TEXT="${!name}"
+    [[ ${#TELEMETRY_TEXT} -le 200 && "$TELEMETRY_TEXT" != *$'\n'* && -n "${TELEMETRY_TEXT//[[:space:]]/}" ]] \
+      || { echo "telemetry: $name must be one line of at most 200 characters" >&2; exit 1; }
+  done
+  if [[ -n "${RELEASE_TAG:-}" ]]; then
+    [[ ${#RELEASE_TAG} -le 32 && "$RELEASE_TAG" =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)\.?[0-9]{1,3})?$ ]] \
+      || { echo "telemetry: release tag $RELEASE_TAG cannot offer telemetry (use vX.Y.Z or vX.Y.Z-alpha/beta/rc.N, or unset the telemetry variables)" >&2; exit 1; }
+  fi
+  echo "== telemetry: this build carries the receiving service configuration (${ENDPOINT_HOST})"
+fi
 NUMERIC="$(sed -n 's/\r$//; s/^config\/version="\(.*\)"$/\1/p' "$HERE/project.godot")"
 [[ "$NUMERIC" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "project.godot config/version must be x.y.z (found '$NUMERIC')"; exit 1; }
 # An ancestor tag identifies a development build, not its target version.
@@ -150,6 +175,12 @@ python3 "$ROOT/tools/release/manifest.py" capture --root "$ROOT" --editor "$GODO
 
 echo "== prepare verified NK-3 export identity"
 python3 "$ROOT/research/native-kernel/package.py" prepare
+# NK-4 (owner decision 2026-11-18, native kernel always): Windows packages carry the verified DLL as well. CI's
+# native-kernel-windows job supplies the DLL, its receipt and the oracle evidence it cites in this tool root;
+# native-kernel-windows-package then qualifies the exported executable on Windows.
+NK4_TOOL_ROOT="${OPENRC_NK4_TOOL_ROOT:-$ROOT/tmp/native-kernel-windows}"
+echo "== prepare verified NK-4 Windows export identity ($NK4_TOOL_ROOT)"
+python3 "$ROOT/research/native-kernel/package.py" prepare-windows --tool-root "$NK4_TOOL_ROOT"
 for preset in Linux Windows macOS; do
   case "$preset" in
     Linux) out="$DIST/linux/openrc-simulator.x86_64" ;;
@@ -164,6 +195,10 @@ for preset in Linux Windows macOS; do
     echo "== stage verified NK-3 sidecars for the exact exported executable"
     python3 "$ROOT/research/native-kernel/package.py" finalize \
       --executable "$out" --template "$TEMPLATE_DIR/linux_release.x86_64"
+  elif [[ "$preset" == Windows ]]; then
+    echo "== stage verified NK-4 sidecars for the exact exported Windows executable"
+    python3 "$ROOT/research/native-kernel/package.py" finalize-windows --executable "$out" \
+      --template "$TEMPLATE_DIR/windows_release_x86_64.exe" --tool-root "$NK4_TOOL_ROOT"
   fi
 done
 

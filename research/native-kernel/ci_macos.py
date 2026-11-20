@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Run the existing fixed-wing Mac correctness gates in an isolated CI workspace.
 
-This is not fleet, automatic-admission, performance or distribution evidence.
+The last gate launches an ordinary source-editor Quick Flight without native flags
+and requires the installed native stage to execute. This is not fleet, package,
+performance or distribution evidence.
 Each tool retains its own reports and enforces its existing identity checks.
 """
 from __future__ import annotations
@@ -188,10 +190,18 @@ def main() -> int:
                     marker + " verdict=pass", "--require-text", f"NATIVE_QUALIFICATION mode={mode} verdict=pass",
                     "--", str(godot), "--headless", "--path", str(after_app), "--audio-driver", "Dummy", "--",
                     "--quick-flight", "--native-qualification=" + mode, "--experimental-native-macos=true")
+        # The product default: an ordinary Quick Flight with no native or experimental
+        # flag must own and execute the installed stage. A domain, receipt or source
+        # mismatch that leaves the reference evaluator active fails this gate.
+        execute("installed-default-route", python, checked, "--out-dir", str(checks), "--label",
+                "installed-default-route", "--timeout", "1800", "--require-text",
+                "MACOS_DEFAULT_ROUTE verdict=pass checks=", "--", str(godot), "--headless", "--path",
+                str(after_app), "--audio-driver", "Dummy", "--script", str(HERE / "test_macos_default.gd"))
     except (OSError, ValueError, KeyError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         print(f"Mac native CI failed; partial evidence retained in {out}: {error}", file=sys.stderr)
         return 1
-    print("Mac native CI correctness gates passed; automatic admission, fleet, performance and distribution remain separate.")
+    print("Mac native CI correctness and source default-route gates passed; "
+          "fleet, package, performance and distribution remain separate.")
     return 0
 
 

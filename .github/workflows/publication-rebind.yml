@@ -7,14 +7,14 @@ on:
         description: Previously accepted publication source commit
         type: string
         required: false
-        default: 'd61eb0830227e120c64c4fc51462b9feb5052149'
+        default: 'b4ae37fd734e9f3ec98c66216a5518c11ad560d8'
   workflow_call:
     inputs:
       baseline-ref:
         description: Previously accepted publication source commit
         type: string
         required: false
-        default: 'd61eb0830227e120c64c4fc51462b9feb5052149'
+        default: 'b4ae37fd734e9f3ec98c66216a5518c11ad560d8'
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
   collect:
     name: Publication captures (${{ matrix.platform }})
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 90
+    timeout-minutes: 150 # two cold imports (30 min each) and four bounded captures
     strategy:
       fail-fast: false
       matrix:
@@ -54,7 +54,7 @@ jobs:
           architecture: x64
       - name: Verify collector and obtain the baseline tree
         run: |
-          test "$BASELINE_REF" = d61eb0830227e120c64c4fc51462b9feb5052149
+          test "$BASELINE_REF" = b4ae37fd734e9f3ec98c66216a5518c11ad560d8
           python tools/godot/test_collect_publication_rebind.py
           # Fetch the commit and trees only. checkout-index lazily requests only
           # changed historical blobs; unrelated historical assets stay absent.

@@ -89,7 +89,10 @@ func _test_recommendations() -> void:
 		"Intel(R) Arc(TM) A770 Graphics|Intel": "high",
 		"ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0)|Google Inc.": "high",
 		"NVIDIA GeForce MX250/PCIe/SSE2|NVIDIA Corporation": "medium",
-		"Intel(R) UHD Graphics 620|Intel": "medium",
+		"Intel(R) UHD Graphics 620|Intel": "low",
+		"NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2|NVIDIA Corporation": "medium",
+		"AMD Radeon Graphics (radeonsi, navi23, LLVM 17.0.6, DRM 3.57, 6.8.0)|AMD": "high",
+		"AMD Custom GPU 0405 (radeonsi, vangogh, LLVM 17.0.6, DRM 3.57, 6.8.0)|AMD": "medium",
 		"Mesa Intel(R) Iris(R) Xe Graphics (TGL GT2)|Intel": "medium",
 		"AMD Radeon(TM) Graphics|ATI Technologies Inc.": "medium",
 		"ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)|Google Inc.": "medium",
@@ -106,7 +109,7 @@ func _test_recommendations() -> void:
 	SceneDetail.adapter_override = PackedStringArray(["llvmpipe (LLVM 20.1.2, 256 bits)", "Mesa"])
 	_check("a saved Automatic resolves through the detected GPU", SceneDetail.level() == "low"
 		and Scenery.options().quality == "low")
-	SceneDetail.adapter_override = PackedStringArray(["Intel(R) UHD Graphics 620", "Intel"])
+	SceneDetail.adapter_override = PackedStringArray(["Intel(R) Iris(R) Xe Graphics", "Intel"])
 	_check("Automatic follows a different GPU at the next launch", SceneDetail.level() == "medium")
 	SceneDetail.adapter_override = PackedStringArray()
 	SceneDetail.set_preference("low")

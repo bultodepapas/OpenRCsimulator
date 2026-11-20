@@ -76,10 +76,14 @@ WINDOWS_DESCRIPTOR = (
 )
 
 
-def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: str, sources: dict[str, str]) -> dict:
-    """build.py's find_verification for the Windows build: same evidence rules, Windows identities."""
-    wrapper_sha256 = nk.sha256_file(ENGINE_WRAPPER)
-    executable_sha256 = nk.sha256_file(ENGINE_EXECUTABLE)
+def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: str, sources: dict[str, str],
+                      engine: tuple[str, str] | None = None) -> dict:
+    """build.py's find_verification for the Windows build: same evidence rules, Windows identities.
+    `engine` = (wrapper, executable) SHA-256 replaces hashing the local Windows editor. Only package.py passes it,
+    from the installation receipt, when a Linux release export (CI) has no Windows editor; the Windows package
+    gate then qualifies the exported executable itself."""
+    wrapper_sha256, executable_sha256 = engine if engine is not None else (
+        nk.sha256_file(ENGINE_WRAPPER), nk.sha256_file(ENGINE_EXECUTABLE))
     harness = ["research/native-kernel/" + name for name in
                ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py", "build.py", nk.ORACLE_SCRIPTS[key])]
     harness += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
@@ -128,7 +132,7 @@ def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: st
             recorded = {str(name).replace("\\", "/"): digest for name, digest in data["harness_sources"].items()}
             if any(recorded.get(name) != nk.sha256_file(ROOT / name) for name in harness):
                 continue
-            for name, digest in data["harness_sources"].items():
+            for name, digest in recorded.items():
                 file = (ROOT / name).resolve()
                 if not file.is_relative_to(ROOT.resolve()) or nk.sha256_file(file) != digest:
                     raise ValueError("oracle harness changed")

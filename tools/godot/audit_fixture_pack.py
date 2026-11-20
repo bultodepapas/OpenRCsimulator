@@ -57,8 +57,8 @@ V4_PAIRS_SHA256 = '097a50dd2111e6ce24fc7f171fa01b59c0b84c87e6126399c08c273a304c2
 
 # The next rebind preserves the complete current pack. It admits only a changed
 # Session source after both retained platform captures reproduce exactly.
-SOURCE_REBIND_PRIOR = 'a790e01d423c70af3112ef9a6f79e7c9aa9c5b4d0fb75adb12f1feb1b6f5f701'
-SOURCE_REBIND_BASE = 'd61eb0830227e120c64c4fc51462b9feb5052149'
+SOURCE_REBIND_PRIOR = '24bffa86e373599f4c105873d8e791d976d793672010a673200e8d37c669e85a'
+SOURCE_REBIND_BASE = 'b4ae37fd734e9f3ec98c66216a5518c11ad560d8'
 SOURCE_REBIND_SESSION = 'sim/flight_session.gd'
 SOURCE_REBIND_ENGINES = {
     'Windows': '1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b',
@@ -244,7 +244,11 @@ def source_rebind_report(raw, log, platform, family, run):
 
 
 def rebind_source(capture_dir, prior_fixture, output, receipt_path, candidate):
-    """Preserve all typed frames while binding a reviewed Session-only source change."""
+    """Preserve all typed frames while binding reviewed changes to any pinned sources.
+
+    Every baseline and candidate capture on both hosts must still reproduce the retained typed evidence byte for
+    byte, so the changed set only widens which committed sources the fixture binds (as the 2026-11-11 renewal
+    did for three pins); overlays follow their pins."""
     repo = Path(__file__).resolve().parents[2]
     if not _rebind_hex(candidate, 40) or candidate == SOURCE_REBIND_BASE:
         raise ValueError('candidate must identify a distinct committed source')
@@ -253,10 +257,13 @@ def rebind_source(capture_dir, prior_fixture, output, receipt_path, candidate):
         raise ValueError('prior fixture identity differs')
     prior = json.loads(raw)
     pins = prior.get('source_pins')
+    overlays = prior.get('candidate_overlays')
     if (prior.get('format') != 'openrc-publication-bridge-v1' or prior.get('current_engine') != ENGINE2
             or prior.get('candidate_commit') != SOURCE_REBIND_BASE or not isinstance(pins, dict) or len(pins) != 19
             or not _rebind_hex(pins.get(SOURCE_REBIND_SESSION, {}).get('sha256'))
-            or prior.get('candidate_overlays', {}).get(SOURCE_REBIND_SESSION) != pins[SOURCE_REBIND_SESSION]['sha256']):
+            or not isinstance(overlays, dict) or SOURCE_REBIND_SESSION not in overlays
+            or any(not isinstance(pins.get(path), dict) or pins[path].get('sha256') != value
+                   for path, value in overlays.items())):
         raise ValueError('prior fixture source contract differs')
     old_pins, new_pins, old_bytes, new_bytes = {}, {}, {}, {}
     for path, pin in pins.items():
@@ -271,10 +278,9 @@ def rebind_source(capture_dir, prior_fixture, output, receipt_path, candidate):
             raise ValueError('baseline or current committed source differs: ' + path)
         old_pins[path], new_pins[path] = digest(old), digest(new)
         old_bytes[path], new_bytes[path] = old, new
-        if path != SOURCE_REBIND_SESSION and old != new:
-            raise ValueError('unexpected source change: ' + path)
-    if old_pins[SOURCE_REBIND_SESSION] == new_pins[SOURCE_REBIND_SESSION]:
-        raise ValueError('Session source is unchanged')
+    changed = sorted(path for path in pins if old_pins[path] != new_pins[path])
+    if not changed:
+        raise ValueError('no pinned source changed')
     attributes = {role: digest(source_rebind_git_normalized(repo, commit, '.gitattributes')) for role, commit in
                   (('baseline', SOURCE_REBIND_BASE), ('candidate', candidate))}
     script_sha = {}
@@ -363,13 +369,15 @@ def rebind_source(capture_dir, prior_fixture, output, receipt_path, candidate):
             raise ValueError(platform + ': baseline and candidate projects must be separate')
     updated = copy.deepcopy(prior)
     updated['candidate_commit'] = candidate
-    updated['candidate_overlays'][SOURCE_REBIND_SESSION] = new_pins[SOURCE_REBIND_SESSION]
-    updated['source_pins'][SOURCE_REBIND_SESSION]['sha256'] = new_pins[SOURCE_REBIND_SESSION]
+    for path in changed:
+        updated['source_pins'][path]['sha256'] = new_pins[path]
+        if path in updated['candidate_overlays']:
+            updated['candidate_overlays'][path] = new_pins[path]
     data = (json.dumps(updated, sort_keys=True, separators=(',', ':')) + '\n').encode('utf-8')
     result = {'format': 'openrc-publication-source-requalification-v1', 'baseline_commit': SOURCE_REBIND_BASE,
               'candidate_commit': candidate, 'prior_fixture_sha256': SOURCE_REBIND_PRIOR,
-              'candidate_fixture_sha256': digest(data), 'source_pin_changes': {SOURCE_REBIND_SESSION:
-                  {'before': old_pins[SOURCE_REBIND_SESSION], 'after': new_pins[SOURCE_REBIND_SESSION]}},
+              'candidate_fixture_sha256': digest(data), 'source_pin_changes': {path:
+                  {'before': old_pins[path], 'after': new_pins[path]} for path in changed},
               'capture_manifests_sha256': manifests, 'captures': observations,
               'preserved': ['families', 'reference_commit', 'requalification'],
               'scope': 'Collector-verified complete historical app baseline and committed candidate; '

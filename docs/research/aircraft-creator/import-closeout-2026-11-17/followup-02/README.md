@@ -3,7 +3,7 @@
 **Date:** 2026-11-17. **Production source:** `08f948265d40d83fbb4726a302b9e1c9490ccfce`.
 **Branch:** `audit/aircraft-import-closeout-2026-11-17`.
 
-This continues the [first audit](../README.md) with three new executed probes, a checked corpus ledger and a closer review of draft, launch and publication boundaries. The [implementation guide](../../../../plans/aircraft-import-implementation.md) turns the findings into code seams, pseudocode and regression recipes. The [closeout](../../../../plans/aircraft-import-closeout.md) remains the sole owner of phase order and acceptance.
+This continues the [first audit](../README.md) with three new executed probes, a checked corpus ledger and a closer review of draft, launch and publication boundaries. The [implementation guide](../implementation-guide.md) turns the findings into code seams, pseudocode and regression recipes. The [closeout](../closeout-plan.md) remains the sole owner of phase order and acceptance.
 
 **Result:** invalid inventory input can be lost on save/reopen; cancellation during the last model can return a successful partial inventory. Two further runtime defects are supported by source traces and still need full integration reproductions. Existing hash-pair checks are demonstrably insufficient to establish external definition-to-physics derivation. None of this evidence qualifies a source aircraft for flight, and this follow-up does not change production runtime logic.
 
@@ -106,7 +106,7 @@ Later `_start_workshop_trial()` assesses Root's `field_path` and the previous no
 
 Required integration test: actual direct technical launch with `--landscape=green_paradise --wind-speed=4 --wind-from=270 --physics-backend=gdscript_reference`; capture previous installed field/weather; request an ordinary legacy/v1 Creator trial; compare assessed and candidate-installed context. Using v1 keeps the separate v4 backend/calm-law refusal from masking this case. A test injecting only Root's `user_args` must explicitly supply equivalent candidate args because Main's default comes from the OS. Assert exact agreement or a named refusal, not only “flight started.”
 
-The [implementation guide](../../../../plans/aircraft-import-implementation.md#8-resolve-one-effective-start-request-then-prepare-and-commit) defines the shared-request and setup-order work. Existing v4 backend and soft-contact incompatibilities remain separate blockers from these two defects.
+The [implementation guide](../implementation-guide.md#8-resolve-one-effective-start-request-then-prepare-and-commit) defines the shared-request and setup-order work. Existing v4 backend and soft-contact incompatibilities remain separate blockers from these two defects.
 
 ## Corpus decision and remaining work
 

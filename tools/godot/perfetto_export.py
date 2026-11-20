@@ -91,6 +91,7 @@ _FRAME_METRICS: dict[str, str] = {
     "invalid_value_count": "count",
     "render_cpu_ms": "ms",
     "render_gpu_ms": "ms",
+    "render_gpu_status": "code",  # frame_diagnostics v2 codebook; not a duration
     "frame_setup_cpu_ms": "ms",
     "memory_static_bytes": "bytes",
     "render_video_memory_bytes": "bytes",
@@ -100,6 +101,8 @@ _FRAME_METRICS: dict[str, str] = {
     "orphan_node_count": "nodes",
 }
 assert len(_FRAME_METRICS) <= 32
+# The status track describes the GPU readings, so both are omitted together when those readings are unusable.
+_GPU_TRACKS = ("render_gpu_ms", "render_gpu_status")
 
 _RESOURCE_METRICS: dict[str, tuple[str, str]] = {
     "rss_bytes": ("process", "bytes"),
@@ -954,8 +957,8 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 "positive_samples": gpu_positive_count,
                 "interpretation": (
                     "contradictory_timing_unavailable" if gpu_contradictory else
-                    "positive_samples_with_zero_sentinels" if gpu_positive_count and gpu_zero_count else
-                    "measured_positive_samples" if gpu_positive_count else
+                    "positive_freshness_unverified_with_zero_sentinels" if gpu_positive_count and gpu_zero_count else
+                    "positive_freshness_unverified" if gpu_positive_count else
                     "invalid_samples_omitted" if gpu_values is not None and invalid_frame_indexes else
                     "unavailable_or_zero" if gpu_values is not None else "not_reported"
                 ),
@@ -987,7 +990,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         estimated_events = len(events) + 1 + selection_end - selection_start
         selected_invalid = sum(selection_start <= index < selection_end for index in invalid_frame_indexes)
         for key in frame_metrics:
-            if key == "render_gpu_ms" and (gpu_contradictory or gpu_positive_count == 0):
+            if key in _GPU_TRACKS and (gpu_contradictory or gpu_positive_count == 0):
                 continue
             if key == "render_gpu_ms":
                 estimated_events += sum(
@@ -1024,7 +1027,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
 
         for key in frame_metrics:
             values = raw_metrics[key]
-            if key == "render_gpu_ms" and (gpu_contradictory or gpu_positive_count == 0):
+            if key in _GPU_TRACKS and (gpu_contradictory or gpu_positive_count == 0):
                 continue
             unit = _FRAME_METRICS[key]
             track = f"frame.{key} [{unit}]"

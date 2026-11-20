@@ -226,7 +226,8 @@ func _update_radio_help_text() -> void:
 	if _vehicle_type == Reference.ROTORCRAFT:
 		radio_help_label.text = tr("USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controls. Throttle cut latches hold; releasing it never starts the rotor. K calibrates.")
 	else:
-		radio_help_label.text = tr("USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controls.")
+		# UI-15-ETX-02: Classic, as the calibration and Setup assistant checklists say (audit D6-ETX-00 A10).
+		radio_help_label.text = tr("USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls.")
 
 
 ## Product, build identity (as exported, or "development"), engine and licence: what a bug report needs.

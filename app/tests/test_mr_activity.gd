@@ -16,6 +16,7 @@ const Visual = preload("res://vehicles/multirotor/multirotor_visual.gd")
 const Cam = preload("res://vehicles/multirotor/multirotor_camera.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const FC = preload("res://physics/multirotor/flight_controller.gd")
+const ControllerProfile = preload("res://input/controller_profile.gd")
 const UiDriver = preload("res://tests/ui_driver.gd")
 
 const DT := 1.0 / 240.0
@@ -43,6 +44,14 @@ class FakeRegistry extends RefCounted:
 		if role == "flight":
 			select_flight(id)
 		return true
+
+	func get_devices() -> Array[Dictionary]:
+		var ids: Array = devices.keys()
+		ids.sort()
+		var out: Array[Dictionary] = []
+		for id in ids:
+			out.append((devices[id] as Dictionary).duplicate(true))
+		return out
 
 
 var _count := 0
@@ -497,7 +506,9 @@ func _audit_fixes() -> void:
 	activity.enable_audio = false
 	activity.departure_managed = true
 	activity.controller_registry = registry
-	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
+	# ControllerService resolves an explicit default for a healthy new known pad; an empty result is a refusal (audit A01).
+	var pad_default: Dictionary = ControllerProfile.defaults("gamepad", "mode2")
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return pad_default.duplicate(true)
 	# ControllerService._confirmed_gamepad_connection stand-in: the selected pad of this connection generation.
 	activity.controller_confirmation = func(id: int, expected_id: int, generation: int) -> bool:
 		return id == expected_id and generation == registry.connection_generation(id) and registry.flight == id
@@ -518,6 +529,27 @@ func _audit_fixes() -> void:
 		await process_frame
 	_check("an unplugged gamepad that returns flies the quad again", dropped and activity.input.radio.connected
 		and int(activity.input.radio.device_id) == 7 and registry.flight == 7)
+	# Audit: another pad still connected takes over when the flight pad is unplugged (a known gamepad before an unknown
+	# device); the original pad returning finds the role taken.
+	registry.devices[9] = {id = 9, connected = true, name = "Unknown pad", guid = "0300unknown", known = false, kind = "gamepad"}
+	registry.devices[10] = {id = 10, connected = true, name = "Second gamepad", guid = "0300second", known = true, kind = "gamepad"}
+	registry.devices[7].connected = false
+	registry.flight = -1
+	activity._joy_connection_changed(7, false)
+	for i in 3:
+		await process_frame
+	var fallback: bool = registry.flight == 10 and activity.input.radio.connected and int(activity.input.radio.device_id) == 10
+	registry.devices[7].connected = true
+	activity._joy_connection_changed(7, true)
+	for i in 3:
+		await process_frame
+	_check("an unplugged flight pad hands over to another connected gamepad; its return does not take the role back",
+		fallback and registry.flight == 10, "flight %d" % registry.flight)
+	registry.devices.erase(9)
+	registry.devices.erase(10)
+	registry.select_flight(7)
+	for i in 3:
+		await process_frame
 	# A profile saved for the device in use (AppRoot's profile_saved hook) is adopted as a new source.
 	var custom: Dictionary = activity.input.radio.profile.duplicate(true)
 	custom.roll = (custom.roll as Dictionary).duplicate(true)
@@ -538,6 +570,11 @@ func _audit_fixes() -> void:
 	_check("selecting the keyboard drops the device, holds the flight and says so", activity.input.source() == "keyboard"
 		and activity.input.source_generation > generation and activity.session.paused and activity.hud.menu_visible
 		and "disconnected" in activity.hud.menu_reason.text, activity.hud.menu_reason.text)
+	# Audit: choosing the keyboard during the activity is remembered, so an unplugged or returning pad cannot take over.
+	var chose_keyboard: bool = activity._keyboard_by_choice
+	activity._adopt_fallback_device(3)
+	activity._adopt_returning_device(7)
+	_check("a keyboard chosen during the activity stays chosen when pads come and go", chose_keyboard and registry.flight == -1)
 	activity.handle_action("resume")
 	var start := InputEventJoypadButton.new()
 	start.device = 3

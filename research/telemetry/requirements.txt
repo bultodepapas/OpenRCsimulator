@@ -1,0 +1,10 @@
+# Offline reference/test environment; no runtime game dependency.
+jsonschema==4.26.0
+attrs==26.1.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.6.3
+typing-extensions==4.16.0
+# Test-only generated sequences; never a game/runtime dependency.
+hypothesis==6.170.15
+sortedcontainers==2.4.0

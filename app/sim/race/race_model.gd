@@ -7,7 +7,7 @@
 #   stage:    hands the plant a NEW sampled context whose held motor commands are zero while the race phase inhibits
 #             drive (READY/COUNTDOWN); the commands the controller sampled stay in aux as evidence;
 #   endpoint: runs the plant's physical endpoint first, builds the tick's accepted chord piece (policy
-#             openrc-chord-path-v1, race_director.gd) and lets the director adjudicate; it returns one ordered event list
+#             openrc-chord-path-v2, race_director.gd) and lets the director adjudicate; it returns one ordered event list
 #             (physical and race events) — the plant has no step policy, so the kernel adds no located events of its own;
 #   validator: the plant validator on the plant slices AND the race domains, including the course tag.
 # Every value the race needs between ticks lives in the kernel's checkpointed arrays; nothing on this object changes
@@ -304,13 +304,20 @@ func _endpoint(previous: Dictionary, candidate: Dictionary, context: Dictionary)
 	var dt: float = float(context.dt)
 	var t0: float = float(int(context.tick) - 1) * dt # the kernel's start-of-tick clock, tick * dt
 	var t1: float = float(context.time_s)
-	var qualified: bool = not bool(context.get("body_filtered", true)) \
-		and accepted_body.to_byte_array() == candidate.body.to_byte_array()
+	# DR-19g (path policy v2): when the plant's impact law changed the endpoint (a graded bounce, e.g. a gate clip),
+	# the crossing is judged on the integrator's own chord, which the envelope still qualifies, and it scores only if
+	# the accepted endpoint is past the gate plane as well (a bounce back out never counts). v1 left every crossing on
+	# an impact tick unresolved, so a clipped gate the quad flew through was never scored.
+	var impacted: bool = accepted_body.to_byte_array() != candidate.body.to_byte_array()
+	var path_body: PackedFloat64Array = candidate.body if impacted else accepted_body
+	var qualified: bool = not bool(context.get("body_filtered", true))
 	if qualified:
-		var dv: PackedFloat64Array = M.sub(_world_velocity(accepted_body), _world_velocity(previous.body))
+		var dv: PackedFloat64Array = M.sub(_world_velocity(path_body), _world_velocity(previous.body))
 		qualified = M.norm(dv) / dt <= float(rules.acceleration_envelope_mps2)
-	var piece := {p0 = previous.body.slice(RB.POS, RB.POS + 3), t0 = t0, p1 = accepted_body.slice(RB.POS, RB.POS + 3),
+	var piece := {p0 = previous.body.slice(RB.POS, RB.POS + 3), t0 = t0, p1 = path_body.slice(RB.POS, RB.POS + 3),
 		t1 = t1, qualified = qualified}
+	if impacted:
+		piece.p1_accepted = accepted_body.slice(RB.POS, RB.POS + 3)
 	var adjudicated: Dictionary = Director.advance(_race(candidate), piece, inner.events, course, rules, context)
 	var aux: PackedFloat64Array = inner.aux.duplicate()
 	aux.append_array(adjudicated.aux_suffix)

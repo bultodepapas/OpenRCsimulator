@@ -49,43 +49,31 @@ static func collect(model: Node3D, max_lod_distance: float) -> Dictionary:
 		return full
 	if not is_finite(max_lod_distance) or max_lod_distance <= 0.0:
 		return _full(full, "invalid LOD criterion")
-	var vertices := PackedVector3Array()
+	# SA-03: the same entries as the full collection, so hinged/tagged parts stay articulated in the proxy.
+	var entries := Projected.mesh_entries(model)
+	var faces: Array[PackedVector3Array] = []
 	var lod_surfaces := 0
-	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
-	if model is MeshInstance3D:
-		meshes.push_front(model)
-	for item in meshes:
-		var instance := item as MeshInstance3D
-		if instance.mesh == null:
-			continue
-		var transform := Transform3D.IDENTITY
-		var node: Node = instance
-		var include := true
-		while node != model and node != null:
-			if node is Node3D:
-				include = include and node.visible and node.name != &"propeller"
-				transform = node.transform * transform
-			node = node.get_parent()
-		if not include:
-			continue
-		var faces: PackedVector3Array = instance.mesh.get_faces()
-		var selected := _mesh_faces(instance.mesh, faces, max_lod_distance)
-		vertices.append_array(transform * (selected.faces as PackedVector3Array))
+	var vertex_count := 0
+	for entry: Dictionary in entries:
+		var instance := entry.instance as MeshInstance3D
+		var selected := _mesh_faces(instance, max_lod_distance)
+		faces.append(selected.faces)
+		vertex_count += (selected.faces as PackedVector3Array).size()
 		lod_surfaces += int(selected.lod_surfaces)
-	if lod_surfaces == 0 or vertices.size() >= int(full.triangles) * 3:
+	if lod_surfaces == 0 or vertex_count >= int(full.triangles) * 3:
 		return _full(full, "no smaller usable imported LOD")
 	var guarded_bounds: AABB = full.bounds.grow(0.0001)
-	for point: Vector3 in vertices:
-		if not point.is_finite() or not guarded_bounds.has_point(point):
-			return _full(full, "LOD extends outside the original silhouette bounds")
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return {mesh = mesh, bounds = full.bounds, triangles = vertices.size() / 3,
-		source_triangles = full.triangles, representation = "imported-lod-proxy",
-		lod_surfaces = lod_surfaces, max_lod_distance = max_lod_distance}
+	for index in entries.size():
+		for point: Vector3 in (entries[index].to_model as Transform3D) * faces[index]:
+			if not point.is_finite() or not guarded_bounds.has_point(point):
+				return _full(full, "LOD extends outside the original silhouette bounds")
+	var shape := Projected.assemble(model, entries, faces)
+	shape.bounds = full.bounds
+	shape.source_triangles = full.triangles
+	shape.representation = "imported-lod-proxy"
+	shape.lod_surfaces = lod_surfaces
+	shape.max_lod_distance = max_lod_distance
+	return shape
 
 
 static func _full(shape: Dictionary, reason: String) -> Dictionary:
@@ -97,31 +85,38 @@ static func _full(shape: Dictionary, reason: String) -> Dictionary:
 	return result
 
 
-static func _mesh_faces(mesh: Mesh, full_faces: PackedVector3Array, max_distance: float) -> Dictionary:
-	var fallback := {faces = full_faces, lod_surfaces = 0}
+## SA-05: only natively casting surfaces (ProjectedShadow.surface_casts) contribute, as in the full collection.
+static func _mesh_faces(instance: MeshInstance3D, max_distance: float) -> Dictionary:
+	var mesh := instance.mesh
+	var full_faces := mesh.get_faces()
+	# Built only when needed: casting_faces() reads the faces again.
+	var fallback := func() -> Dictionary: return {faces = Projected.casting_faces(instance), lod_surfaces = 0}
 	if not mesh is ArrayMesh or mesh.get_blend_shape_count() != 0:
-		return fallback
+		return fallback.call()
 	var serialized: Variant = mesh.get("_surfaces")
 	if not serialized is Array or serialized.size() != mesh.get_surface_count():
-		return fallback
+		return fallback.call()
 	var faces := PackedVector3Array()
 	var offset := 0
 	var selected_count := 0
 	for surface in mesh.get_surface_count():
 		if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
-			return fallback
+			return fallback.call()
 		var arrays := mesh.surface_get_arrays(surface)
 		if not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array or not serialized[surface] is Dictionary:
-			return fallback
+			return fallback.call()
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 		var base_count: int = (mesh as ArrayMesh).surface_get_array_index_len(surface)
 		if base_count == 0:
 			base_count = vertices.size()
 		if base_count % 3 != 0 or offset + base_count > full_faces.size():
-			return fallback
+			return fallback.call()
+		if not Projected.surface_casts(instance, surface):
+			offset += base_count
+			continue
 		var selected := _select_lod(serialized[surface], vertices.size(), base_count, max_distance)
 		if not selected.ok:
-			return fallback
+			return fallback.call()
 		var indices: PackedInt32Array = selected.indices
 		if indices.is_empty():
 			faces.append_array(full_faces.slice(offset, offset + base_count))
@@ -134,7 +129,7 @@ static func _mesh_faces(mesh: Mesh, full_faces: PackedVector3Array, max_distance
 			selected_count += 1
 		offset += base_count
 	if offset != full_faces.size():
-		return fallback
+		return fallback.call()
 	return {faces = faces, lod_surfaces = selected_count}
 
 

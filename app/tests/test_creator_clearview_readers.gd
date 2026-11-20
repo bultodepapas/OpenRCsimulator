@@ -158,7 +158,7 @@ modelWeight 4.6
 ".to_ascii_buffer())
 	check("an old flat dialect without modelName uses the ClearView default body.ac", nameless.ok
 		and nameless.value.model_name == Params.DEFAULT_MODEL and nameless.diagnostics.any(
-			func(d: Dictionary) -> bool: return d.message == Params.MODEL_DEFAULTED))
+			func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
 	check("v5 still requires modelName", not Params.read("verNumber 5.0
 modelType 1.0
 ".to_ascii_buffer()).ok)
@@ -178,6 +178,23 @@ modelName body.ac
 		check("ambiguous or unsupported parameters refused", not Params.read(text.to_ascii_buffer()).ok)
 	check("NUL refused", not Params.read(v5.to_ascii_buffer() + PackedByteArray([0])).ok)
 	check("empty params refused", not Params.read(PackedByteArray()).ok)
+	# Real downloads (FMS-PT-17 Stearman) begin with an editor tag line such as `$PlaneMidWindDhD01 paramsAgriDuck`.
+	var tagged := Params.read(("$PlaneMidWindDhD01 paramsAgriDuck\n" + v5).to_ascii_buffer())
+	check("editor tag line ignored, not a record", tagged.ok and tagged.value.records.size() == 6 and tagged.value.records[0].key == "verNumber")
+	check("editor tag line reported", tagged.ok and tagged.diagnostics.size() == 2 and tagged.diagnostics[1].message == Params.TAG_NOTE \
+		and tagged.diagnostics[1].arguments == ["1"])
+	check("untagged parameters keep a single note", result.ok and result.diagnostics.size() == 1)
+	# Real downloads: CVHeliPak (v3, modelType 0, no modelName) and Harrier/VJ-101 (flat v0).
+	var heli := Params.read("verNumber 3.0\nmodelType 0.0\nmodelWeight 4.6\n".to_ascii_buffer())
+	check("pre-v5 helicopter defaults its model file", heli.ok and heli.value.version == 3 and heli.value.model_type == 0
+		and heli.value.model_name == Params.DEFAULT_MODEL and heli.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
+	var vtol := Params.read("modelMass 15.0\nmodelName body.ac\nmodelType 1.0\nverNumber 0.0\n".to_ascii_buffer())
+	check("flat v0 airplane accepted with its named model", vtol.ok and vtol.value.version == 0 and vtol.value.model_name == "body.ac"
+		and not vtol.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
+	check("v5 still requires modelName", not Params.read("verNumber 5\nmodelType 1\n".to_ascii_buffer()).ok)
+	check("old dialects must be flat", not Params.read("#begin params\nverNumber 3\nmodelType 0\n#end params\n".to_ascii_buffer()).ok)
+	check("unknown future dialect refused", not Params.read("verNumber 7\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()).ok)
+	check("tag line cannot supply the identity", not Params.read("$verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()).ok)
 
 func _ac3d() -> void:
 	var text := _ac_fixture()

@@ -335,11 +335,74 @@ class FrameDiagnoseTests(unittest.TestCase):
         status = result["observations"]["render_gpu_ms_status"]
         self.assertEqual(status["measured_positive_samples"], 2)
         self.assertEqual(status["zero_samples"], 2)
-        self.assertEqual(status["interpretation"], "positive_samples_with_zero_sentinels")
+        # Render progress gates the poll but never makes a cached reading fresh (graphics audit M0).
+        self.assertEqual(status["interpretation"], "positive_freshness_unverified_with_zero_sentinels")
+        self.assertEqual(status["freshness"], "unverified")
         top_by_index = {item["frame_index"]: item["context"] for item in result["observations"]["top_frames"]}
         self.assertEqual(top_by_index[0]["render_gpu_ms_reported"], 0.0)
         self.assertIsNone(top_by_index[0]["render_gpu_ms"])
         self.assertEqual(top_by_index[1]["render_gpu_ms"], 1.4)
+        self.assertEqual(top_by_index[1]["render_gpu_ms_interpretation"], "positive_freshness_unverified")
+
+    def test_all_positive_gpu_polls_remain_freshness_unverified(self):
+        report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+        report["raw_metrics"]["render_gpu_ms"] = [1.0, 1.4, 1.1, 0.8]
+        status = diagnose_report(report)["observations"]["render_gpu_ms_status"]
+        self.assertEqual(status["interpretation"], "positive_freshness_unverified")
+        self.assertNotIn("status_counts", status)  # v1 reports have no status column
+
+    def test_v2_gpu_status_column_is_counted_and_labelled(self):
+        for streamed in (False, True):
+            report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+            report["raw_metrics"]["render_gpu_ms"] = [0.0, 1.4, 0.0, 0.8]
+            report["raw_metrics"]["render_gpu_status"] = [1.0, 2.0, 3.0, 2.0]
+            if streamed:
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    path, _ = write_stream_run(Path(temp_dir), "run", report)
+                    result = diagnose(path, path.with_suffix(".log"))
+            else:
+                result = diagnose_dict(report)
+            with self.subTest(streamed=streamed):
+                self.assertTrue(result["valid"], result["validity_reasons"])
+                status = result["observations"]["render_gpu_ms_status"]
+                self.assertEqual(status["status_counts"], {"not_measured": 0, "zero_ambiguous": 1,
+                                                           "positive_freshness_unverified": 2,
+                                                           "invalid_reading": 1, "malformed": 0})
+                by_index = {item["frame_index"]: item["context"] for item in result["observations"]["top_frames"]}
+                self.assertEqual(by_index[1]["render_gpu_status"], "positive_freshness_unverified")
+                self.assertEqual(by_index[2]["render_gpu_status"], "invalid_reading")
+
+    def test_unknown_gpu_status_code_fails_closed(self):
+        for bad in (4.0, 1.5, -1.0):
+            report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+            report["raw_metrics"]["render_gpu_ms"] = [0.0, 1.4, 0.0, 0.8]
+            report["raw_metrics"]["render_gpu_status"] = [1.0, 2.0, bad, 2.0]
+            with self.subTest(code=bad):
+                result = diagnose_dict(report)
+                self.assertFalse(result["valid"])
+                self.assertTrue(any("unknown render_gpu_status codes at sampled frames: 2" in issue
+                                    for issue in result["measurement_issues"]))
+                self.assertEqual(result["observations"]["render_gpu_ms_status"]["status_counts"]["malformed"], 1)
+
+    def test_v2_diagnostics_without_status_column_fails_closed(self):
+        report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+        report["raw_metrics"]["render_gpu_ms"] = [0.0, 1.4, 0.0, 0.8]
+        report["frame_diagnostics"] = {"format": "openrc-frame-diagnostics", "version": 2,
+                                       "render_timing_available": True}
+        result = diagnose_dict(report)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("lacks its render_gpu_status column" in issue for issue in result["measurement_issues"]))
+        report["frame_diagnostics"]["version"] = 1
+        self.assertTrue(diagnose_dict(report)["valid"])
+
+    def test_gpu_status_contradicting_reading_fails_closed(self):
+        report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+        report["raw_metrics"]["render_gpu_ms"] = [0.0, 1.4, 0.0, 0.8]
+        report["raw_metrics"]["render_gpu_status"] = [2.0, 1.0, 1.0, 2.0]  # positive code on zero; zero code on 1.4
+        result = diagnose_dict(report)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("contradicts render_gpu_ms at sampled frames: 0, 1" in issue
+                            for issue in result["measurement_issues"]))
 
     def test_optional_gpu_array_missing_is_reported_as_not_reported(self):
         report = report_with_intervals([12_000, 12_500, 13_000, 14_000])

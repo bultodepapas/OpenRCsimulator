@@ -546,6 +546,15 @@ msgstr "フライトを終了"
 msgid "This flight cannot continue: %s"
 msgstr "このフライトは続行できません：%s"
 
+msgid "Physics: native"
+msgstr "物理演算：ネイティブ"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "物理演算：互換モード。ネイティブ物理演算は動作していません。"
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "物理演算：互換モード。ネイティブ物理演算は動作していません：%s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "墜落しました。続行するとフライトが自動的に再開します。"
 
@@ -8477,6 +8486,15 @@ msgstr "このグラフィックセッションではネイティブ影を使え
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "ネイティブ影の対応範囲は試験段階で、一部の物体は影を落としません。"
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "投影影は地面の目安にすぎません。機体は自身に影を落とさず、屋根などの高い面にも影は映りません。"
+
+msgid "Cloud shadows"
+msgstr "雲の影"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "地面を動く雲の影を消します。雲は表示されたままです。"
+
 msgid "Activities may use a shorter range."
 msgstr "アクティビティによっては、より短い距離を使用します。"
 
@@ -11312,9 +11330,6 @@ msgstr "ロール：右スティック左右（左右矢印キー）"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "ピッチ：右スティック前＝機首下げ（上下矢印キー）"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "アーム／ディスアーム：E、ゲームパッドのLB、または着陸装置に割り当てた送信機スイッチ。スロットルを下げてアームします。"
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "飛行モード Acro/Angle：M またはゲームパッドの RB。開始時は送信機で Acro、ゲームパッドとキーボードで Angle。"
 
@@ -13008,3 +13023,497 @@ msgstr "4S · 1900 Kv · 6×4.5 プッシャープロペラ（ダクテッドフ
 
 msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
 msgstr "6S · 1200 Kv · 7×5 プッシャープロペラ（ダクテッドファンの代わり） — 推定"
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "コントローラーの接続が変わりました：モーターはディスアーム状態です。コントローラーを確認し、再開後にもう一度アームしてください。"
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "保存されたコントローラープロファイルを使用できません：「操作」を開いて修復するか選び直してください。"
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "再開するとモーターはディスアームされます：スロットルを下げてもう一度アームしてください。"
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "レース結果を保存できていません（未保存 %d 件）：保存先を確認してから再試行してください。"
+
+msgid "Race records restored from the previous copy."
+msgstr "レース記録を前回のコピーから復元しました。"
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "OSD 設定を保存できませんでした：終了するまで有効です。次の変更時にもう一度保存を試みます。"
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "FPV クアッドの操作（ゲームパッド）"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "FPV クアッドの操作（送信機）"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "スロットル：%s（キーボード W/S）"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "ヨー：%s（キーボード A/D）"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "ロール：%s（キーボードの左右矢印キー）"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "ピッチ：%s、前＝機首下げ（キーボードの上下矢印キー）"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "スティック：スロットル、ヨー、ロール、ピッチは「操作」で送信機に設定したキャリブレーションに従います。"
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "アーム／ディスアーム：アームスイッチ（%s）。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "アーム／ディスアーム：着陸装置に割り当てた送信機スイッチ（%s）。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "アーム／ディスアーム：E またはゲームパッドの LB。スロットルを下げてアームします。"
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "アーム／ディスアーム：E。スロットルを下げてアームします。"
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "飛行モード：飛行モードスイッチ（%s）、OFF で Angle、ON で Acro。"
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飛行モード Acro/Angle：M。開始時は送信機で Acro、ゲームパッドとキーボードで Angle。"
+
+msgid "left stick sides"
+msgstr "左スティック左右"
+
+msgid "left stick up/down"
+msgstr "左スティック上下"
+
+msgid "right stick sides"
+msgstr "右スティック左右"
+
+msgid "right stick up/down"
+msgstr "右スティック上下"
+
+msgid "left trigger"
+msgstr "左トリガー"
+
+msgid "right trigger"
+msgstr "右トリガー"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d 件のレース結果が保存されていません。8 秒以内にもう一度「ホームに戻る」を選ぶと破棄します。"
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "EdgeTX FPV クアッド（CH5 アーム、CH6 モード、CH9 再開）"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "EdgeTX FPV クアッド：AETR スティックは CH1-CH4、アームは CH5（上端でのみアーム）、飛行モードは CH6（下で Angle、中央と上で Acro）、パッドから再開は CH9（モーメンタリースイッチ）。送信機のミキサーでこれらのスイッチを割り当ててから、キャリブレーションしてください。"
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "EdgeTX FPV プリセットは送信機でのみ使用できます。"
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "EdgeTX FPV プリセットを適用できませんでした：%s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "EdgeTX FPV のスイッチを下書きに入れました。送信機で確認してから保存してください。"
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "パッドから再開：R またはコントローラーの %s。"
+
+msgid "Upside down: press R to return to the pad."
+msgstr "裏返し：R を押すとパッドに戻ります。"
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "裏返し：R または %s を押すとパッドに戻ります。"
+
+msgid "PROP BROKEN"
+msgstr "プロペラ破損"
+
+msgid "PROP DAMAGE"
+msgstr "プロペラ損傷"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "クラッシュ：段階的（衝撃でプロペラが損傷することがあります）"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "クラッシュ：どのクラッシュでも飛行終了"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "クラッシュ設定は「パッドから再開」後に適用されます。"
+
+msgid "rear right"
+msgstr "右後"
+
+msgid "front right"
+msgstr "右前"
+
+msgid "rear left"
+msgstr "左後"
+
+msgid "front left"
+msgstr "左前"
+
+msgid "Prop broken: %s"
+msgstr "プロペラ破損：%s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "プロペラ損傷：%s（%d%%）"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "ハードランディング（%.1f m/s）"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "障害物に当たって跳ね返りました（%.1f m/s）"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX 飛行機（CH5 脚、CH6 フラップ、CH10 スモーク、CH9 リスタート）"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX 飛行機：AETR スティックは CH1-CH4、脚は CH5（SD）、フラップは CH6（SA、上げ / 離陸 / 着陸）、リスタートは CH9（SH、モーメンタリ）、スモークは CH10（SE）。デュアルレート、エクスポ、スロットルカットは送信機側に残ります。キャリブレーション後、「このデバイスを設定」で各スイッチを確認してください。"
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "EdgeTX 飛行機プリセットは送信機でのみ使用できます。"
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "EdgeTX 飛行機プリセットを適用できませんでした: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "EdgeTX 飛行機プリセットを下書きに入れました。「このデバイスを設定」で送信機の脚、フラップ、スモークを確認してから保存してください。"
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s はボタン %d を使います（押している間オン）。保持するにはプロファイルを保存してください。"
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · %s から開始"
+
+msgid "DOWN (gear down)"
+msgstr "下（脚下げ）"
+
+msgid "UP (flaps up)"
+msgstr "上（フラップ上げ）"
+
+msgid "OFF (smoke off)"
+msgstr "オフ（スモーク停止）"
+
+msgid "released"
+msgstr "離した状態"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 または Esc → フライト表示"
+
+msgid "Throttle cut"
+msgstr "スロットルカット"
+
+msgid "On your radio (special function)"
+msgstr "送信機側（スペシャルファンクション）"
+
+msgid "Flap → elevator mix"
+msgstr "フラップ → エレベーター ミキシング"
+
+msgid "Applied by your radio"
+msgstr "送信機が適用"
+
+msgid "Applied by OpenRC"
+msgstr "OpenRC が適用"
+
+msgid "Move %s to OFF to take control"
+msgstr "%s を OFF にすると操作できます"
+
+msgid "Move its switch to OFF to take control"
+msgstr "そのスイッチを OFF にすると操作できます"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "USB 送信機（EdgeTX）：Model setup で USB Joystick (Classic) を選び、RF をオフにします。推奨配置：AETR は CH1-CH4、脚 CH5（SD）、フラップ CH6（SA）、リスタート CH9（SH）、スモーク CH10（SE）。デュアルレート、エクスポ、スロットルカットは送信機側に残ります。スロットルを下げるとアーム、抜くと一時停止。K：キャリブレーション。操作 → このデバイスを設定 で各スイッチを確認します。飛行中は F1 で操作ガイドを表示します。 スイッチ確認を使わない場合は、操作 で脚を AUX または「着陸装置を切り替え」に割り当てます。"
+
+msgid "Control guide: show / hide"
+msgstr "操作ガイド：表示 / 非表示"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "デュアルレートスイッチ（シミュレーター側レート）"
+
+msgid "Dual-rate switch"
+msgstr "デュアルレートスイッチ"
+
+msgid "Dual rates and expo"
+msgstr "デュアルレートとエクスポ"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "送信機側（EdgeTX のデュアルレート）"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "OpenRC がシミュレート（機体のレート）"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC はデュアルレートもエクスポも適用しません：送信機の Inputs で設定してください（例：SC 100/75/50 %、エクスポ 30。EdgeTX の Plane ウィザードと同じ）。レートスイッチを 100 % にしてキャリブレーションします。レートスイッチは読み取りません。"
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC は飛行中の機体マニュアルのレートとエクスポを適用します：スイッチで通常、スポーツ（中央）、フルを選びます。送信機側：Inputs のウェイト 100 %、エクスポ 0、D/R やフライトモードの行なし、Outputs ±100 %。ミックス CH7 = SC、ウェイト 100 を追加します。スイッチがない場合はデュアルレート操作で切り替えます。"
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "デュアルレートの適用先を変更しました。保持するにはプロファイルを保存してください。"
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "FPV クアッドは同じスイッチでアームします（上端のみ）。"
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "FPV クアッドは同じスイッチでフライトモードを切り替えます。"
+
+msgid "LOW (normal rates)"
+msgstr "下（通常レート）"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "デュアルレート：通常 / スポーツ / フル"
+
+msgid "Simulated by OpenRC"
+msgstr "OpenRC がシミュレート"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "デュアルレートは送信機のレートスイッチに従います。"
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "タートルモード（墜落後に起き上がる）：ディスアーム中に %s、アームして起こしたい側へスティックを倒し、その後ディスアームすれば飛行を続けられます。"
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "逆さま：タートルモード（%s）、アームしてスティックを倒すと起き上がります。R でパッドに戻ります。"
+
+msgid "Download: %s"
+msgstr "ダウンロードサイズ：%s"
+
+msgid "Skip this version"
+msgstr "このバージョンをスキップ"
+
+msgid "Hides this notice until you open the game again."
+msgstr "次にゲームを開くまでこの通知を非表示にします。"
+
+msgid "Check for updates automatically"
+msgstr "アップデートを自動的に確認"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "新しいバージョンが公開されているかを、1日に最大1回GitHubに問い合わせます。自動でダウンロードやインストールは行いません。"
+
+msgid "Update channel"
+msgstr "アップデートチャンネル"
+
+msgid "Stable releases"
+msgstr "安定版"
+
+msgid "Preview releases"
+msgstr "プレビュー版"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "安定版は正式リリースのみを提供します。プレビュー版では正式リリース前のテスト版も提供されます。"
+
+msgid "Check now"
+msgstr "今すぐ確認"
+
+msgid "Update preferences are saved immediately."
+msgstr "アップデート設定はすぐに保存されます。"
+
+msgid "Update checks are only available in released builds."
+msgstr "アップデートの確認は公開ビルドでのみ利用できます。"
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "このチャンネルの最新バージョンを使用しています。最終確認：%s。"
+
+msgid "You're using the latest version on this channel."
+msgstr "このチャンネルの最新バージョンを使用しています。"
+
+msgid "Version %s is available (%s download)."
+msgstr "バージョン %s が利用可能です（ダウンロード %s）。"
+
+msgid "Version %s is available."
+msgstr "バージョン %s が利用可能です。"
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "バージョン %s が利用可能ですが、このシステム用のパッケージはありません。"
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "アップデートを確認できませんでした。最後に成功した確認：%s。"
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "アップデートを確認できませんでした。まだ一度も確認に成功していません。"
+
+msgid "Updates have not been checked yet."
+msgstr "アップデートはまだ確認されていません。"
+
+msgid "Checking for updates…"
+msgstr "アップデートを確認しています…"
+
+msgid "Wait a moment before checking again."
+msgstr "もう一度確認する前に少しお待ちください。"
+
+msgid "Could not save update preferences (error %d)."
+msgstr "アップデート設定を保存できませんでした（エラー %d）。"
+
+msgid "Obstacle strike"
+msgstr "障害物に衝突"
+
+msgid "Propeller strike"
+msgstr "プロペラ接触"
+
+msgid "Hard impact"
+msgstr "激しい衝突"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "ゲート未通過扱い：正面からまっすぐ通過してください"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "このGPUの自動設定：%sモード、シーンの描画品質 %s。"
+
+msgid "GPU estimate: %s."
+msgstr "GPUの推定：%s。"
+
+msgid "measured on this GPU model"
+msgstr "このGPUモデルで測定"
+
+msgid "from benchmark data"
+msgstr "ベンチマークデータに基づく"
+
+msgid "extrapolated from a measured GPU"
+msgstr "測定済みGPUからの推定"
+
+msgid "GPU not in the table"
+msgstr "表にないGPU"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "飛行中の測定：1フレームあたりのGPU時間 %.1f ms（95パーセンタイル）。"
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "次の飛行でこのGPUを一度測定し、必要に応じて自動設定を調整します。"
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "グラフィック設定をこのGPUの推奨値に戻し、次の飛行で再測定します。"
+
+msgid "Help improve OpenRC Simulator"
+msgstr "OpenRC Simulator の改善にご協力ください"
+
+msgid "Recommended: share technical telemetry."
+msgstr "推奨：技術的なテレメトリーを共有する。"
+
+msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
+msgstr "「有効にする」を選ぶと、FPS やフレーム時間の範囲などのパフォーマンス概要、CPU/GPU とメモリの大まかな区分、OS、グラフィックスのレンダラーと API、解像度の範囲、VSync/フレームレート上限、グラフィック設定を変更しているかどうか、使用した付属の機体とアクティビティを送信します。また、大まかな入力方法、アクティビティの時間と結果、対応する離陸・着陸回数と模型機の墜落回数、ソフトウェアエラーの固定区分も送信します。模型機の墜落回数はアプリのクラッシュダンプではありません。これらのレポートは、動作の遅い構成を見つけてシミュレーターを改善するために使います。"
+
+msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
+msgstr "名前、メールアドレス、アカウント、デバイスのシリアル番号、カスタム機体の名前、保存された飛行履歴、操作入力、ファイル、スクリーンショット、生のログは送信しません。一時的なランダムのセッションコードでレポートをまとめます。このコードはこのデバイスには保存されず、起動のたびに新しく作られ、受信サービスでは受信から最大 48 時間保持されます。受信サービスは接続を受けるために IP アドレスを処理しますが、分析データベースには保存しません。それでもハードウェアやセッションのデータが識別につながる可能性があるため、完全な匿名性は約束しません。"
+
+msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
+msgstr "レポートは %s が運営する受信サービスに送られます。GitHub に公開されるのは確認済みの概要だけです。データの確認やテレメトリーの停止は、いつでも 設定 → インターフェース で行えます。テレメトリーをオフにしてもシミュレーターは同じように動作します。"
+
+msgid "See exactly what we send"
+msgstr "送信内容を正確に見る"
+
+msgid "Privacy notice"
+msgstr "プライバシーに関するお知らせ"
+
+msgid "Continue without telemetry"
+msgstr "テレメトリーなしで続ける"
+
+msgid "Enable telemetry and continue"
+msgstr "テレメトリーを有効にして続ける"
+
+msgid "Pending data stays only in memory, for at most ten minutes. The session code changes at least every four hours and at the UTC day boundary. Raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt. Summary tables without codes expire within 180 days. Reviewed public summaries on GitHub can remain indefinitely. Any temporary IP-based abuse protection is kept only in memory, for at most 15 minutes. Telemetry is separate from update checks, which you can turn off on the same Settings page."
+msgstr "送信待ちのデータはメモリ上にのみ、最長 10 分間保持されます。セッションコードは少なくとも 4 時間ごと、および UTC の日付が変わるときに切り替わります。生のレポート、一時コード、重複確認用のキーは受信から 48 時間以内に失効します。コードを含まない集計表は 180 日以内に失効します。GitHub に公開された確認済みの概要は無期限に残る場合があります。IP に基づく一時的な不正防止情報はメモリ上にのみ、最長 15 分間保持されます。テレメトリーはアップデート確認とは別です。アップデート確認は同じ設定ページでオフにできます。"
+
+msgid "Operator: %s · Contact: %s · Receiving service: %s"
+msgstr "運営者：%s · 連絡先：%s · 受信サービス：%s"
+
+msgid "Data waiting to be sent"
+msgstr "送信待ちのデータ"
+
+msgid "Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on."
+msgstr "送信待ちのデータはありません。テレメトリーがオンのとき、データはおよそ 1 分ごとにまとめられます。"
+
+msgid "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks."
+msgstr "パフォーマンス概要、ハードウェアの大まかな区分、飛行した付属機体を、この設定がオンの間だけ送信します。アップデート確認とは別の設定です。"
+
+msgid "Share technical telemetry"
+msgstr "技術的なテレメトリーを共有"
+
+msgid "Telemetry is not available in this build."
+msgstr "このビルドではテレメトリーを利用できません。"
+
+msgid "Telemetry is on. Batches sent this session: %d."
+msgstr "テレメトリーはオンです。このセッションで送信したバッチ：%d。"
+
+msgid "Telemetry is off until you choose."
+msgstr "選択するまでテレメトリーはオフです。"
+
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "テレメトリーはオフです。この言語ではまだ提供していません。選択するには英語またはスペイン語に切り替えてください。"
+
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "受信サービスがテレメトリーを一時停止しました。シミュレーターを再起動するまでオフのままです。"
+
+msgid "The saved telemetry choice could not be read, so telemetry is off."
+msgstr "保存されたテレメトリーの選択を読み取れなかったため、テレメトリーはオフです。"
+
+msgid "Telemetry is off."
+msgstr "テレメトリーはオフです。"
+
+msgid "Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting."
+msgstr "テレメトリーの選択を保存できませんでした（エラー %d）。このセッションには適用されます。再起動後にもう一度確認してください。"
+
+msgid "Telemetry is on · Settings → Interface"
+msgstr "テレメトリー：オン · 設定 → インターフェース"
+
+msgid "Telemetry is off · Settings → Interface"
+msgstr "テレメトリー：オフ · 設定 → インターフェース"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "テスト飛行はこの推定 OpenRC 構成を使用し、ClearView の飛行モデルは使用しません。実験的な機能です。"
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "選択された OpenRC 構成は別のモデルのものです。このモデルの構成をもう一度選択してください。"
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "自己交差する面を %s 個省略しました。"
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "ポリゴン %s（パーツ \"%s\"）の辺が交差しており、このような面が多すぎるため省略できません。"
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "JPEG メタデータ（カメラ、カラープロファイル、エディターのデータ）は無視されました。"
+
+msgid "Only the first GIF frame was imported."
+msgstr "GIF の最初のフレームのみをインポートしました。"
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "モデルパラメーター内のエディタータグ行 %s 行を無視しました。"
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "このテクスチャ形式はまだサポートされていません。テクスチャを標準の PNG、JPEG、GIF、または非圧縮 24 ビット BMP に変換し、モデル内の参照を更新してください。"
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "%s 個の座標マーカーを読み取れませんでした。非表示にしました。可動パーツは手動で割り当ててください。"
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "ヒンジ「%s」：座標マーカーを読み取れませんでした。可動パーツでこのパーツを手動で割り当ててください。"
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s 個のパーツが AC3D のサブディビジョンを使用しています。平滑化前のコントロール形状を表示しています。"
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "テクスチャ %s がありません。同じ名前の %s を使用しました。"
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "パラメーターにモデルファイルが指定されていないため、ClearView の既定の %s を使用しました。"
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "対応しているのは、フラット形式の ClearView v0〜v5 とセクション形式の v6 のモデルパラメーターのみです。"
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "ヘリコプターの飛行はクリエイターではまだ利用できません。このモデルのプレビュー、可動パーツの設定、下書きとしての保存は行えます。"
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "クリエイターのメッシュ上限に収めるため、固定パーツ %s 個を結合しました。これらは可動パーツとして割り当てられません。"
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "テクスチャ %s は ZIP の外を指しており、含まれていません。これらのパーツは単色で表示されます。"
+
+msgid "Fly with trainer physics?"
+msgstr "練習機の物理で飛行しますか？"
+
+msgid "Fly with the trainer physics"
+msgstr "練習機の物理で飛行"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "推定 OpenRC 構成ではこのモデルを飛ばせません: %s\n\n代わりに標準の Ugly Stick 電動練習機の物理で飛行でき、このモデルの外観を翼幅 %s m に合わせて表示します。ClearView の飛行モデルではありません。"

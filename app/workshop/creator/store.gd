@@ -125,6 +125,7 @@ const AIRCRAFT_INTEGERS: PackedStringArray = ["revision", "created_unix", "defin
 	"aircraft/byte_length", "source/byte_length"]
 
 # Player messages: what happened and what to do. `%s` is filled from the diagnostic's arguments.
+const M_INSTALLATION_MODEL := "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
 const M_ROOT := "The aircraft library folder cannot be used because it is not a plain folder inside the simulator's data folder. Move it back there, then open the Creator again."
 const M_DAMAGED := "Your aircraft library could not be read because its entry files are damaged (%s). Nothing was changed or deleted. Restore the folder %s from a backup, or move it somewhere safe to start an empty library."
 const M_LOCK_BUSY := "Another OpenRC window is using your aircraft library, so this window can show it but cannot change it. Close the other window, then open the Creator again to edit here."
@@ -644,6 +645,11 @@ func _prepare_publication(publication: Dictionary, binding: Variant = null) -> D
 	var definition_bytes: PackedByteArray = definition_written.value.bytes
 	var raw_sha := CreatorBytes.sha256(raw)
 	var source_sha := CreatorBytes.sha256(source)
+	# A declared source installation names one model. It cannot travel with another model's bytes.
+	for member: Dictionary in [definition, members.snapshot]:
+		if member.has("source_installation") and (not member.source_installation is Dictionary
+				or member.source_installation.get("source_sha256") != source_sha):
+			return R.fail(R.IDENTITY_MISMATCH, M_INSTALLATION_MODEL, "source_installation")
 	if binding != null:
 		if not CompileBinding.matches(binding, definition_written.value.sha256, raw_sha) \
 				or not CompiledPublication.valid_pair(definition, raw, aircraft_uuid) \

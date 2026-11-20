@@ -2,6 +2,10 @@
 
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable.
 
+Use U drive as cache and temp.
+you are allowed to make commit or push or merge if you want to.
+
+
 ## Lead agent and subagents
 
 The **main conversation's agent is the senior developer, technical orchestrator and final implementation owner**. The intended lead is the user's selected highest-capability reasoning model. Keep that lead responsible for architecture, difficult reasoning, the definitive code, integration and verification throughout the task. Repository instructions cannot upgrade a running model; report a known mismatch instead of claiming a capability or silently switching the lead to a helper model.
@@ -23,6 +27,8 @@ Reuse suitable freely available tools, assets and data before creating equivalen
 3. **Tertiary target: 1280×720 (720p), last in priority.** Treat it as a fallback/compatibility objective, after 1080p and higher-resolution objectives.
 
 Use this order for planning, optimization and acceptance evidence. A 720p viewport default, capture fixture or historical benchmark does not make 720p the product target; 720p results cannot establish 1080p qualification. These are development priorities, not claims that any resolution is already qualified on particular hardware.
+
+**Exception: Apple Silicon Macs on a Retina (2× backing scale) display.** This covers every MacBook Air/Pro and iMac built-in panel, and Retina external displays. The target is the display's **native pixel resolution** (for example 2560×1600, 2880×1864, 3024×1964, 3456×2234), not 1080p. On these Macs, performance assumptions, automatic defaults and acceptance evidence use the native panel. That includes full-screen output and the internal 3D resolution after MetalFX, where MetalFX is available. Godot reports the backing store, which can exceed the physical panel at scaled "looks like" modes. A 1080p result does not qualify a MacBook panel, and a native-panel result does not qualify 1080p elsewhere. Intel Macs, Macs on standard (1×) external displays, and every other system keep the 1080p-first order above. Record output, drawable and internal 3D pixels separately. The [Apple plan](docs/plans/apple-silicon-performance.md) owns Mac acceptance details.
 
 ## Tools
 
@@ -49,8 +55,6 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 - [STACK.md](docs/STACK.md): current architecture and dependencies.
 - [docs/TOOLS.md](docs/TOOLS.md): setup, commands, tests, captures and exports.
 - [docs/README.md](docs/README.md#tracks-plans-and-step-ids): track ownership and documentation homes.
-- [ROADMAP.md](ROADMAP.md): main-line steps and acceptance gates.
-- [AIRCRAFT_CONTRACT.md](docs/AIRCRAFT_CONTRACT.md): aircraft authoring and extension rules.
 - [LEARNINGS.md](docs/LEARNINGS.md): reusable technical lessons.
 
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.

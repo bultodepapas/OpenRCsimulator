@@ -33,6 +33,12 @@ const LensSettings = preload("res://render/lens/lens_settings.gd")
 const RcTrackOption = preload("res://scenery/rc_track_option.gd")
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const M = preload("res://physics/math3d.gd")
+const ControllerService = preload("res://input/controller_service.gd")
+const JetiRadio = preload("res://input/jeti_radio.gd")
+const ControllerActions = preload("res://input/controller_actions.gd")
+const UiInput = preload("res://ui/ui_input.gd")
+const QuadCrashFx = preload("res://vehicles/multirotor/quad_crash_fx.gd")
 
 const DT := 1.0 / 240.0
 ## CC0 quadcopter recording already shipped for the blimp's electric motors (assets/audio/powertrains/LICENSE.txt).
@@ -45,6 +51,18 @@ const RACE_TRACKS := [RACE_TRACK, "res://data/race/tracks/openrc-tower-sprint-1.
 const OSD_PREFS := "user://multirotor_osd.cfg"
 const READY_TEXT := "Ready. Cycle the arm switch OFF then ON at low throttle."
 const CHANGED_TEXT := "The controller changed: restart on the pad to fly with it."
+## Audit A19: the selected controller's connection changed (a matching controller arrived or left, a reused handle).
+const RECONNECTED_TEXT := "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+## Audit A01: the service refused the selected controller's saved profile.
+const PROFILE_REFUSED_TEXT := "The saved controller profile could not be used: open Controls to repair or reselect it."
+## Audit A03: what resuming does to the motors when the hold could not keep the arm switch's ON.
+const RESUME_DISARMS_TEXT := "Resuming disarms the motors: arm again with the throttle low."
+## Audit A11: unsaved race results (the session outbox) and the informed discard on leaving.
+const OUTBOX_TEXT := "Race results are not saved (%d pending): check the storage, then try again."
+const DISCARD_TEXT := "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+const DISCARD_CONFIRM_MS := 8000
+## DR-19c: prop names in the data's rotor order (multirotor_data.gd: 1 rear right, 2 front right, 3 rear left, 4 front left).
+const ROTOR_NAMES := ["rear right", "front right", "rear left", "front left"]
 
 signal home_requested
 
@@ -72,6 +90,9 @@ var frame_model: String = Visual.MODEL_PATH
 var scripted_pilot := Callable()
 ## DR-23/32/36b: the local practice course flown from this activity when it belongs to the loaded field ("" = none).
 var race_track: String = RACE_TRACK
+## DR-19c: the crash law the next prepared flight uses: "graded" (default; most impacts bounce or damage props) or
+## "strict" (every crash ends the flight). A change applies through Restart on pad, like the throttle limit.
+var crash_model := "graded"
 ## Where finished and aborted race records are written (tests point this at an isolated folder).
 var results_directory: String = Session.RESULTS_DIRECTORY
 
@@ -102,6 +123,17 @@ var _lens: LensStack
 var _obstacle_world: Dictionary = {}
 var _audio: AudioStreamPlayer3D
 var _audio_level := 0.0
+## DR-19d: the damaged-prop rattle layered on the motor loop (same stream, detuned), and the crash presentation.
+var _rattle: AudioStreamPlayer3D
+var crash_fx: Node3D
+## Refresh interval (ms) of the cached control names shown by the OSD and help.
+const BINDINGS_REFRESH_MS := 250
+var _bindings_cache: Dictionary = {}
+var _bindings_at := 0
+var _bindings_generation := -1
+## Shortest interval (ms) between two impact messages; prop messages come once per prop and damage step.
+const IMPACT_MESSAGE_INTERVAL_MS := 1200
+var _impact_message_at := -100000
 var _hover_speed := 1.0
 var _accumulation_owned := false
 var _accumulation_before := true
@@ -117,6 +149,9 @@ var _rc_track := {}
 var _race_action := 0
 var _gate_views: Array = []
 var _gate_next := -1
+## Audit: the race attempt and its unresolved-crossing count last seen by the notice (_notice_unresolved).
+var _unresolved_attempt := -1
+var _unresolved_seen := 0
 ## DR-32 race course presentation (gates, numbers, start pad); null in free flight without a course.
 var course_visual: RefCounted
 ## Telemetry of the last accepted tick (one plant evaluation per tick, not per rendered frame); emptied by the
@@ -129,6 +164,25 @@ var _hold_pose_until_tick := -1
 var _lost_device_key := ""
 ## Whether the keyboard flies because the pilot selected it while a controller was connected (vs. no controller).
 var _keyboard_by_choice := false
+## Audit A19: the registry connection generation the active device was bound with (its verifier and profile). Any
+## change (identity evidence, a matching device arriving or leaving, a reused handle) re-resolves the source.
+var _controller_generation := 0
+## Audit A01: the controller service refused to resolve the selected device's profile (unreadable store, ambiguous
+## association): it stays connected but unready; no built-in mapping replaces the refusal.
+var _profile_refused := false
+## The controller service in use: AppRoot's on the Home route, the scene's own on the direct route (audit A04).
+var _controller_service: Node
+var _owns_controller_service := false
+var _direct_controllers_started := false
+## The reason of the open menu, before any note on what resuming does to the motors (audit A03).
+var _menu_reason := ""
+var _resume_note := ""
+## Audit A11: until when (Time.get_ticks_msec) a second Home discards unsaved race results; 0 = not armed.
+var _discard_until_ms := 0
+## DR-14d: edge state of the controller's Restart flight binding (a fresh OFF is needed after each source change).
+var _restart_active := false
+var _restart_off_seen := false
+var _restart_generation := -1
 
 
 func _enter_tree() -> void:
@@ -162,6 +216,8 @@ func _ready() -> void:
 	_obstacle_world = obstacles.world
 	# The flight is prepared for the source that will fly it (its throttle policy and limit are session options).
 	_adopt_app_controllers()
+	if _owns_controller_service:
+		_refresh_controller_ui()
 	_connect_selected_controller()
 	_flight_generation = input.source_generation
 	if not session.prepare(field, _session_options()):
@@ -174,6 +230,9 @@ func _ready() -> void:
 		_disable()
 		return
 	add_child(visual.root)
+	# SA-08: a Projected shadow selection also gives the quad its planar shadow; parked rotors cast, spinning ones stay out (SA-19).
+	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting, _ground_height_render,
+		visual.rotors.map(func(rotor: Dictionary) -> Variant: return rotor.get("pivot")))
 	var derived: Variant = session.data.get("derived", {})
 	_hover_speed = float(derived.get("hover_speed_rad_s", 0.0)) if typeof(derived) == TYPE_DICTIONARY else 0.0
 	if not is_finite(_hover_speed) or _hover_speed <= 0.0:
@@ -204,8 +263,10 @@ func _ready() -> void:
 	session.crashed.connect(_on_crashed)
 	session.depleted.connect(_on_depleted)
 	session.race_event.connect(_on_race_event)
-	session.race_result.connect(_on_race_result)
+	# Audit: saving writes, verifies and renames files; deferred so the finishing tick does not stall on disk I/O.
+	session.race_result.connect(_on_race_result, CONNECT_DEFERRED)
 	session.resetting.connect(_invalidate_telemetry)
+	session.impact.connect(_on_impact)
 	_build_gates()
 	# Pay the solver fingerprint (about 70 ms of source hashing, once per process) while loading, not on F10.
 	FlightLogFormat.replay_identity()
@@ -218,6 +279,13 @@ func _ready() -> void:
 		controller_registry.selection_changed.connect(_on_controller_selection_changed)
 	if enable_audio:
 		_build_audio()
+	crash_fx = QuadCrashFx.new()
+	crash_fx.name = "QuadCrashFx"
+	crash_fx.enable_audio = enable_audio
+	crash_fx.enable_effects = enable_world
+	crash_fx.ground_height = _ground_height_render
+	add_child(crash_fx)
+	crash_fx.warm() # about 20 ms while loading instead of a hitch on the first touch; disabled parts stay unallocated
 	_start_lens()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
@@ -238,6 +306,9 @@ func _notification(what: int) -> void:
 
 func _exit_tree() -> void:
 	_stop_recording("left the FPV quad activity")
+	if session != null and is_instance_valid(session) and session.race != null and not _retry_pending_saves():
+		# Audit A11: a departure that bypassed Home (application quit) gets one last bounded attempt; say what is lost.
+		push_warning("%d race results were not saved when the FPV activity closed" % session.results.size())
 	if Input.joy_connection_changed.is_connected(_joy_connection_changed):
 		Input.joy_connection_changed.disconnect(_joy_connection_changed)
 	if _has_registry() and controller_registry.has_signal("selection_changed") \
@@ -249,6 +320,8 @@ func _exit_tree() -> void:
 	if _accumulation_owned:
 		Input.use_accumulated_input = _accumulation_before
 		_accumulation_owned = false
+	if _owns_controller_service:
+		UiInput.isolate_joypads() # the direct route's GUI joypad mapping leaves with its service
 
 
 func _load_field() -> bool:
@@ -335,7 +408,7 @@ func _pad_grass_exclusions() -> Array:
 func _session_options() -> Dictionary:
 	return {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
 		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option,
-		rc_track = _rc_track}
+		rc_track = _rc_track, crash_model = crash_model}
 
 
 ## The prepared flight's throttle limit.
@@ -361,6 +434,7 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 			if input.radio.connected and int(input.radio.device_id) == id:
 				_lost_device_key = str(input.radio.device_key)
 			input.on_connection_changed(id, false)
+			_adopt_fallback_device.call_deferred(id)
 		else:
 			_adopt_returning_device.call_deferred(id)
 		_sync_selected_controller.call_deferred()
@@ -387,6 +461,39 @@ func _adopt_returning_device(id: int) -> void:
 		controller_registry.select_device("flight", id)
 
 
+## Audit: when the flight device is unplugged, another controller still connected takes over with ControllerService's
+## automatic priority: a device with a matching saved profile, then a radio, then a known gamepad, then anything else,
+## lowest connection ID first; an ambiguous Jeti identity without a matching profile is skipped. A keyboard the pilot
+## chose stays chosen. The flight is held either way, and the lost device returning later finds the role taken
+## (switching back mid-flight would disarm again).
+func _adopt_fallback_device(lost_id: int) -> void:
+	if not is_inside_tree() or not _has_registry() or _keyboard_by_choice 		or int(controller_registry.selected_device_id("flight")) >= 0 or not controller_registry.has_method("get_devices"):
+		return
+	var store: Variant = _controller_service.get("store") if is_instance_valid(_controller_service) else null
+	var devices: Array = controller_registry.get_devices()
+	var best_id := -1
+	var best_priority := 100
+	for info: Dictionary in devices:
+		var id := int(info.get("id", -1))
+		if id < 0 or id == lost_id or not bool(info.get("connected", false)):
+			continue
+		var matching: Dictionary = store.match_profile(info, devices) if store is Object and store.has_method("match_profile") else {}
+		if bool(info.get("ambiguous", false)) and JetiRadio.has_jeti_identity_claim(info) and matching.is_empty():
+			continue
+		var priority := 3
+		if not matching.is_empty():
+			priority = 0
+		elif str(info.get("kind", "")) == "radio":
+			priority = 1
+		elif bool(info.get("known", false)) and str(info.get("kind", "")) == "gamepad":
+			priority = 2
+		if priority < best_priority:
+			best_priority = priority
+			best_id = id
+	if best_id >= 0:
+		controller_registry.select_device("flight", best_id)
+
+
 ## A connected known gamepad is confirmed by its live connection (ControllerService through AppRoot, or the direct
 ## check below without a registry) instead of waiting for motion on all four axes and a centred dwell; a radio keeps
 ## its calibrated-profile and fresh-evidence rules.
@@ -395,9 +502,9 @@ func _bind_gamepad_confirmation() -> void:
 		return
 	var id := int(input.radio.device_id)
 	if _has_registry():
-		if controller_confirmation.is_valid() and controller_registry.has_method("connection_generation"):
-			input.radio.confirmed_gamepad_connection = controller_confirmation.bind(id,
-				int(controller_registry.connection_generation(id)))
+		input.radio.confirmed_gamepad_connection = Callable()
+		if controller_confirmation.is_valid():
+			input.radio.confirmed_gamepad_connection = controller_confirmation.bind(id, _controller_generation)
 	else:
 		input.radio.confirmed_gamepad_connection = _confirmed_direct_gamepad
 
@@ -419,14 +526,47 @@ func _confirmed_direct_gamepad(id: int) -> bool:
 func _adopt_app_controllers() -> void:
 	var parent := get_parent()
 	var service: Variant = parent.get("controllers") if parent != null else null
+	if (not service is Object or not is_instance_valid(service)) and _direct_app_route(parent):
+		service = _start_direct_controllers(parent)
 	if not service is Object or not is_instance_valid(service):
 		return
+	_controller_service = service
 	if controller_registry == null and service.get("registry") is RefCounted:
 		controller_registry = service.registry
 	if not controller_profile_for.is_valid() and service.has_method("profile_for_device"):
 		controller_profile_for = Callable(service, "profile_for_device")
 	if not controller_confirmation.is_valid() and service.has_method("_confirmed_gamepad_connection"):
 		controller_confirmation = Callable(service, "_confirmed_gamepad_connection")
+
+
+## AppRoot's direct command-line route (--multirotor=): an AppRoot without Home and without its controller service.
+## Launcher-provided seams (a registry or resolver set by a test) keep their own wiring.
+func _direct_app_route(parent: Node) -> bool:
+	return parent != null and "controllers" in parent and parent.get("has_home") == false \
+		and controller_registry == null and not controller_profile_for.is_valid()
+
+
+## Audit A04/A05: the direct route uses the same controller service as Home — the current saved profiles
+## (user://controller_profiles.cfg, or the launcher's preferences-path variant), the same device selection,
+## refusal policy and verifier — instead of the legacy calibration file and the first joypad. Automatic selection
+## runs once at entry (as Home's would) and is then suspended, as AppRoot suspends it during an activity.
+func _start_direct_controllers(parent: Node) -> Node:
+	var service: Node = ControllerService.new()
+	service.name = "DirectControllers"
+	var preferences_path := str(parent.get("preferences_path"))
+	if not preferences_path.is_empty() and preferences_path != "user://settings.cfg":
+		service.store = ControllerService.Store.new(preferences_path + ".controllers", preferences_path + ".legacy_rc")
+	service.allow_automatic_selection = func() -> bool: return not _direct_controllers_started
+	add_child(service) # refresh(): enumerate devices and select flight and UI roles
+	_direct_controllers_started = true
+	_owns_controller_service = true
+	if not service.ui_selection_changed.is_connected(_on_direct_ui_selection_changed):
+		service.ui_selection_changed.connect(_on_direct_ui_selection_changed)
+	return service
+
+
+func _on_direct_ui_selection_changed(_id: int) -> void:
+	_refresh_controller_ui()
 
 
 func _has_registry() -> bool:
@@ -441,38 +581,82 @@ func _connect_selected_controller() -> void:
 		_bind_gamepad_confirmation()
 		return
 	var id := int(controller_registry.selected_device_id("flight"))
+	_profile_refused = false
 	if id < 0:
+		_controller_generation = 0
 		input.use_keyboard()
 		return
 	_lost_device_key = ""
 	var info: Dictionary = controller_registry.device_for_id(id)
 	if not bool(info.get("connected", false)):
+		_controller_generation = 0
 		input.use_keyboard()
 		return
+	_controller_generation = _registry_generation(id)
 	var profile: Dictionary = controller_profile_for.call(id) if controller_profile_for.is_valid() else {}
+	if profile.is_empty():
+		# Audit A01: RcInput must never infer its built-in pad mapping from an empty managed result: the device stays
+		# connected, unconfigured and unready. For a known gamepad the healthy resolver always returns an explicit
+		# default, so empty there is a refusal (unreadable store, ambiguous association, busy store) that Continue
+		# retries; for a radio or unknown joystick it is the ordinary "not calibrated yet".
+		_profile_refused = bool(info.get("known", false)) and str(info.get("kind", "")) == "gamepad"
+		info = info.duplicate(true)
+		info.known = false
 	input.connect_device(id, info, profile)
 	_bind_gamepad_confirmation()
 
 
-## Follow a changed "flight" selection (or a hot-plug the service resolved): a different device is a new source.
-func _sync_selected_controller() -> void:
-	if not is_inside_tree() or not _has_registry():
+## Audit A01: ask the service again for a refused known pad (repaired or no longer busy storage); a resolved profile
+## becomes the source's mapping as a new source generation, before any tick flies it.
+func _retry_refused_profile() -> void:
+	if not controller_profile_for.is_valid() or not input.radio.connected:
 		return
+	var profile: Dictionary = controller_profile_for.call(int(input.radio.device_id))
+	if not profile.is_empty() and input.use_profile(profile, "calibrated"):
+		_profile_refused = false
+
+
+func _registry_generation(id: int) -> int:
+	return int(controller_registry.connection_generation(id)) if id >= 0 \
+		and controller_registry.has_method("connection_generation") else 0
+
+
+## Whether the active source is still the registry's current "flight" device and connection (audit A19).
+func _controller_binding_current() -> bool:
+	if not _has_registry():
+		return true
 	var id := int(controller_registry.selected_device_id("flight"))
 	var current: int = int(input.radio.device_id) if input.radio.connected else -1
-	if id == current:
+	return id == current and (id < 0 or _registry_generation(id) == _controller_generation)
+
+
+## Follow a changed "flight" selection or connection (a hot-plug the service resolved, a matching device arriving
+## or leaving, a reused handle): a new device or connection generation is a new source with a re-resolved profile
+## and verifier, held behind the menu (never a silent disarm by a stale verifier, audit A19).
+func _sync_selected_controller() -> void:
+	if not is_inside_tree() or not _has_registry() or _controller_binding_current():
 		return
 	var before: int = input.source_generation
-	_connect_selected_controller()
-	_announce_source_change(before)
+	var same_device: bool = input.radio.connected \
+		and int(controller_registry.selected_device_id("flight")) == int(input.radio.device_id)
+	_connect_selected_controller() # connect_device always starts a new source generation
+	_announce_source_change(before, tr(RECONNECTED_TEXT) if same_device else "")
 
 
-func _on_controller_selection_changed(role: String, _id: int) -> void:
-	if role == "flight":
-		_sync_selected_controller.call_deferred()
+func _on_controller_selection_changed(role: String, id: int) -> void:
+	if role != "flight":
+		return
+	# Audit: track the pilot's keyboard choice during the activity. A cleared selection while the device in use is still
+	# connected is a choice (a disconnect clears it with the device already marked disconnected); a device selection
+	# ends it. Fallback and returning-device adoption respect it.
+	if id >= 0:
+		_keyboard_by_choice = false
+	elif input.radio.connected and bool(controller_registry.device_for_id(int(input.radio.device_id)).get("connected", false)):
+		_keyboard_by_choice = true
+	_sync_selected_controller.call_deferred()
 
 
-func _announce_source_change(before: int) -> void:
+func _announce_source_change(before: int, reason: String = "") -> void:
 	if input.source_generation == before or session == null or not session.prepared:
 		return
 	var stale_policy: bool = _input_policy() != str(session.options.throttle_policy)
@@ -480,7 +664,9 @@ func _announce_source_change(before: int) -> void:
 	if _at_start() and (stale_policy or stale_limit):
 		# Untouched on the pad: prepare the flight for the new source at once (as Restart on pad would).
 		restart_on_pad()
-	if input.radio.connected:
+	if not reason.is_empty():
+		_hold(reason)
+	elif input.radio.connected:
 		_hold(tr("Controller connected: the motors are disarmed. Cycle the arm switch after resuming."))
 	else:
 		_hold(tr("Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."))
@@ -498,6 +684,41 @@ func _hold(reason: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	input.on_event(event)
+	_route_restart(event)
+
+
+## DR-14d: the flight controller's Restart flight binding (a pad's View/Back, an EdgeTX radio's CH9 switch) acts as R
+## on its OFF-to-ON edge. A source change requires a fresh OFF first, so a switch already ON at connection or after a
+## profile change never restarts the flight; other devices have no say.
+func _route_restart(event: InputEvent) -> void:
+	if scripted_pilot.is_valid() or session == null or not session.prepared or not input.radio.connected:
+		return
+	if not (event is InputEventJoypadButton or event is InputEventJoypadMotion) or event.device != int(input.radio.device_id):
+		return
+	if _restart_generation != input.source_generation:
+		_restart_generation = input.source_generation
+		_restart_active = false
+		_restart_off_seen = false
+	var binding: Dictionary = input.restart_binding()
+	var active := false
+	match str(binding.get("type", "")):
+		"button":
+			if not event is InputEventJoypadButton or event.button_index != int(binding.button):
+				return
+			active = event.pressed
+		"axis":
+			if not event is InputEventJoypadMotion or event.axis != int(binding.axis):
+				return
+			active = ControllerActions.matches_binding(binding, event, int(input.radio.device_id), _restart_active)
+		_:
+			return
+	# While the menu (or a dialog over it, such as Controls capturing this very control) is open, the control is only
+	# observed: the menu's own Restart on pad is the way back, and a press held into the menu cannot fire on closing.
+	if not active:
+		_restart_off_seen = true
+	elif not _restart_active and _restart_off_seen and not hud.menu_visible:
+		quick_restart()
+	_restart_active = active
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -535,10 +756,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_:
 				return
 		get_viewport().set_input_as_handled()
-	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START \
-			and input.radio.connected and input.radio.is_gamepad() and event.device == input.radio.device_id:
-		# Only the active gamepad's Start: a radio in USB mode reports raw button numbers (a switch on button 6
-		# must not pause the flight), and a second, unused controller has no say.
+	elif event is InputEventJoypadButton and event.pressed and input.pause_button() >= 0 \
+			and event.button_index == input.pause_button() and input.radio.connected and input.radio.is_gamepad() \
+			and event.device == input.radio.device_id:
+		# Only the active gamepad's effective Pause button (Start unless the profile remaps it; never a button an
+		# AUX channel owns, audit A02): a radio in USB mode reports raw button numbers (a switch on button 6 must
+		# not pause the flight), and a second, unused controller has no say.
 		if hud.menu_visible: handle_action("resume")
 		else: _open_menu(tr("Flight paused"))
 
@@ -557,8 +780,30 @@ func _open_menu(reason: String) -> void:
 	_race_action = RaceDirector.ACTION_NONE
 	if session.prepared and not session.paused:
 		session.pause(reason)
+		input.begin_hold()
 	hud.set_throttle_limit(_session_limit(), input.throttle_limit())
-	hud.show_menu(reason, _can_resume(), _rate_reset_needed(), _terminal_state())
+	hud.set_crash_model(str(session.options.get("crash_model", "strict")), crash_model)
+	if session.race != null and not session.results.is_empty():
+		_retry_pending_saves() # audit A11: storage may have been repaired since the last terminal result
+	_menu_reason = reason
+	_resume_note = _resume_disarm_note()
+	hud.show_menu(_menu_text(), _can_resume(), _rate_reset_needed(), _terminal_state())
+
+
+func _menu_text() -> String:
+	return _menu_reason if _resume_note.is_empty() else _menu_reason + "\n" + _resume_note
+
+
+## Audit A03: an armed quad whose hold cannot keep its arm level (a changed source or connection, focus loss, an arm
+## switch not readable or moved during the hold) disarms on resuming; the menu says so before Continue.
+func _resume_disarm_note() -> String:
+	if scripted_pilot.is_valid() or session == null or not session.prepared or _terminal_state() != "":
+		return ""
+	if session.sim.modes[FC.MODE_MOTOR] != FC.MOTOR_ARMED:
+		return ""
+	if input.source_generation == _flight_generation and input.hold_keeps_arm():
+		return ""
+	return tr(RESUME_DISARMS_TEXT)
 
 
 ## "" for a flyable quad; "crash", or after pack depletion "depleted_air" (it can only fall: resuming is a
@@ -599,10 +844,18 @@ func handle_action(action: String) -> void:
 				hud.flash(tr(CHANGED_TEXT))
 				return
 			if not scripted_pilot.is_valid():
+				if not _controller_binding_current():
+					_sync_selected_controller()
+					return
+				if _profile_refused:
+					_retry_refused_profile()
 				var sample: Dictionary = input.sample(DT, false)
 				if not sample.ready:
-					hud.flash(tr(Hud.NOT_READY_TEXT) if input.source() != "keyboard" \
-						else tr("No controller: connect or check the controller."))
+					if _profile_refused:
+						hud.flash(tr(PROFILE_REFUSED_TEXT), 5.0)
+					else:
+						hud.flash(tr(Hud.NOT_READY_TEXT) if input.source() != "keyboard" \
+							else tr("No controller: connect or check the controller."))
 					return
 			if _rate_reset_needed():
 				input.request_throttle_reset()
@@ -616,16 +869,30 @@ func handle_action(action: String) -> void:
 			restart_on_pad()
 		"throttle_limit":
 			cycle_throttle_limit()
+		"crash_model":
+			cycle_crash_model()
 		"course":
 			cycle_course()
 		"help":
 			hud.toggle_help()
 		"home":
+			if not _may_leave():
+				return
 			_stop_recording("left the FPV quad activity")
 			session.pause("Leaving")
 			home_requested.emit()
 			if not departure_managed:
 				get_tree().quit()
+
+
+## DR-19c: switch between graded crashes and "every crash ends the flight". Untouched on the pad it applies at once
+## through a fresh prepare; after any flight it waits for Restart on pad.
+func cycle_crash_model() -> void:
+	crash_model = "strict" if crash_model == "graded" else "graded"
+	if _at_start() and session.paused:
+		restart_on_pad()
+		return
+	hud.set_crash_model(str(session.options.get("crash_model", "strict")), crash_model)
 
 
 ## Next throttle limit for the current source. Untouched on the pad it applies at once through a fresh prepare (the
@@ -645,7 +912,7 @@ func restart_on_pad() -> bool:
 	_race_action = RaceDirector.ACTION_NONE
 	var ok: bool
 	var reconfigure: bool = _input_policy() != str(session.options.throttle_policy) \
-		or absf(input.throttle_limit() - _session_limit()) > 1.0e-9 or _race_option != str(session.options.get("race_track", ""))
+		or absf(input.throttle_limit() - _session_limit()) > 1.0e-9 or _race_option != str(session.options.get("race_track", "")) 		or crash_model != str(session.options.get("crash_model", "strict"))
 	if reconfigure:
 		# A fresh prepare publishes no race record: abort an attempt in progress through the pad reset first.
 		ok = true
@@ -680,16 +947,23 @@ func _after_pad_reset() -> void:
 	_terminal_text = ""
 	_crash_cause = ""
 	view.snap()
+	if crash_fx != null:
+		crash_fx.reset()
+	hud.dismiss_stats()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
 
 
 func _on_crashed(reason: String) -> void:
 	_crash_cause = reason
-	_terminal_text = tr("Crashed: %s. Press R to reset.") % reason
+	_terminal_text = tr("Crashed: %s. Press R to reset.") % tr(reason)
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
 	# The OSD hint already names the cause (no duplicate flash).
 	_lens_crash(reason)
+	# DR-19d: the shared crash ladder (sound and debris) and a full camera jolt.
+	if crash_fx != null and visual != null:
+		crash_fx.crash(reason, visual.root.position, _render_velocity())
+	view.shake(1.0)
 
 
 ## LENS-01: the quad session reports a strike only as a reason. Presentation names what was hit by asking the installed
@@ -756,6 +1030,66 @@ func _lens_crash(reason: String) -> void:
 		_obstacle_world if reason == "Obstacle strike" else {}, "quad:%d" % int(session.sim.tick))
 
 
+## DR-19c: a survivable impact or prop damage (graded crashes): say what happened; the flight goes on.
+## DR-19d: messages once per prop and damage step (a grinding prop reports every tick) and at most one impact message
+## per IMPACT_MESSAGE_INTERVAL_MS; the crash presentation paces its own sound and effects; impacts jolt the camera.
+func _on_impact(event: Dictionary) -> void:
+	var velocity := _render_velocity()
+	match str(event.get("type", "")):
+		"prop_damage":
+			var rotor := int(event.get("rotor", -1))
+			var where: String = tr(str(ROTOR_NAMES[rotor])) if rotor >= 0 and rotor < ROTOR_NAMES.size() else "?"
+			var health := float(event.get("health", 0.0))
+			if health <= 0.0:
+				hud.flash(tr("Prop broken: %s") % where, 3.0)
+			elif bool(event.get("first", false)):
+				hud.flash(tr("Prop damaged: %s (%d%%)") % [where, int(round(100.0 * health))], 3.0)
+			if crash_fx != null:
+				crash_fx.prop_damage(event, velocity)
+			view.shake(0.25 if health > 0.0 else 0.5)
+		"impact":
+			var speed := float(event.get("normal_speed_mps", 0.0))
+			var now := Time.get_ticks_msec()
+			if now - _impact_message_at >= IMPACT_MESSAGE_INTERVAL_MS:
+				_impact_message_at = now
+				if str(event.get("surface", "")) == "ground":
+					hud.flash(tr("Hard landing (%.1f m/s)") % speed, 2.5)
+				else:
+					hud.flash(tr("Bounced off an obstacle (%.1f m/s)") % speed, 2.5)
+			if crash_fx != null:
+				crash_fx.impact(event, velocity)
+			view.shake(clampf(speed / 12.0, 0.15, 1.0))
+		"scrape":
+			# DR-19f: a graze or skid: a paced scrape and a light, speed-scaled buzz of the camera; no message.
+			if crash_fx != null:
+				crash_fx.scrape(event, velocity)
+			view.shake(clampf(float(event.get("slip_speed_mps", 0.0)) / 50.0, 0.04, 0.25))
+
+
+## The accepted CG velocity in render axes (presentation).
+func _render_velocity() -> Vector3:
+	var state: PackedFloat64Array = session.sim.state
+	if state.size() < RB.SIZE:
+		return Vector3.ZERO
+	var world: PackedFloat64Array = M.q_rotate(RB._att(state), M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
+	return Frames.ned_to_render(world)
+
+
+## DR-19c: lying upside down on the ground, nearly still: the HUD offers turtle mode (DR-19e) or the pad restart.
+func _upside_down() -> bool:
+	if session == null or not session.crash.is_empty():
+		return false
+	var state: PackedFloat64Array = session.sim.state
+	if state.size() < RB.SIZE:
+		return false
+	var q := PackedFloat64Array([state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]])
+	var body_down_z: float = 1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]) # world down component of the body's down axis
+	var speed := Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
+	var under: PackedFloat64Array = session.environment.ground(state[RB.POS], state[RB.POS + 1])
+	var agl := -state[RB.POS + 2] - (under[0] if under.size() == 3 and is_finite(under[0]) else 0.0)
+	return body_down_z < -0.3 and agl < 0.5 and speed < 1.0
+
+
 func _on_depleted() -> void:
 	_terminal_text = tr("The battery is depleted. Restart on the pad to fly again.")
 	if _aftermath_until < 0.0:
@@ -773,9 +1107,22 @@ func _physics_process(_delta: float) -> void:
 			throttle_policy = str(session.options.throttle_policy), raw = {arm = frame[FC.IN_ARM] == 1.0},
 			source_generation = _flight_generation}
 	else:
+		if not _controller_binding_current():
+			# Audit A19: a connection change reaches the activity before its deferred sync; the stale verifier must
+			# never feed an unready, disarming tick. Re-resolve and hold now.
+			_sync_selected_controller()
+			if not session.paused:
+				return
+			integrate = false # the sync held the flight: a hold sample queues no toggle or action
 		sample = input.sample(DT, integrate)
 	_last_input = sample
 	if session.paused:
+		if hud.menu_visible and _resume_note.is_empty():
+			var note := _resume_disarm_note()
+			if not note.is_empty():
+				# Audit A03: the arm switch moved (or could no longer be read) during the hold.
+				_resume_note = note
+				hud.set_menu_reason(_menu_text())
 		return
 	if str(sample.throttle_policy) != str(session.options.throttle_policy):
 		_open_menu(tr(CHANGED_TEXT))
@@ -787,11 +1134,15 @@ func _physics_process(_delta: float) -> void:
 	_race_action = RaceDirector.ACTION_NONE
 	if not session.tick_once(sample.pilot, action):
 		if action == RaceDirector.ACTION_START:
-			hud.flash(tr("Race start refused: return to the pad and stop"))
+			hud.flash(tr(OUTBOX_TEXT) % session.results.size() if session.results.size() >= Session.MAX_PENDING_RESULTS \
+				else tr("Race start refused: return to the pad and stop"), 6.0)
 		elif not session.paused:
 			_open_menu(tr("The input frame was refused."))
 		return
-	if session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED:
+	var motor_armed: bool = session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED
+	if not scripted_pilot.is_valid():
+		input.note_motor_state(motor_armed) # a refused arm leaves a turtle request pending
+	if motor_armed:
 		if _arm_time < 0.0:
 			_arm_time = float(session.sim.time())
 		_armed_ticks += 1
@@ -809,8 +1160,11 @@ func _process(delta: float) -> void:
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
 	var t: Dictionary = _current_telemetry()
 	var frame_dt := delta if not session.paused else 0.0
+	visual.set_rotor_health(t.get("rotor_health", PackedFloat64Array()))
 	visual.pose(drawn, t.get("rotor_speed_rad_s", PackedFloat64Array()), frame_dt)
 	view.update(drawn, visual.fpv_mount_frd, delta, _ground_height_render)
+	if crash_fx != null:
+		crash_fx.update(delta, session.paused)
 	if _lens != null:
 		_lens.advance(delta, float(session.sim.time()), session.paused)
 	if _environment != null:
@@ -825,8 +1179,9 @@ func _process(delta: float) -> void:
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
 		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(_osd_gate_index(t)), gate_number = _osd_gate_index(t) + 1,
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
-		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad()})
+		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad(), upside_down = _upside_down()})
 	_update_gates(t.get("race", {}), delta)
+	_notice_unresolved(t.get("race", {}))
 	_update_audio(t, delta)
 
 
@@ -848,7 +1203,14 @@ func _osd_gate(index: int) -> Variant:
 
 ## The source's OSD bindings plus whether its latest sample is ready (a connected controller may not be yet).
 func _osd_bindings() -> Dictionary:
-	var bindings: Dictionary = input.bindings()
+	# Audit: input.bindings() builds a nested dictionary of control names; they change only through menus and device
+	# changes, so the copy is refreshed four times a second (and at once on a source generation change), not per frame.
+	var now := Time.get_ticks_msec()
+	if _bindings_cache.is_empty() or now - _bindings_at >= BINDINGS_REFRESH_MS or _bindings_generation != input.source_generation:
+		_bindings_cache = input.bindings()
+		_bindings_at = now
+		_bindings_generation = input.source_generation
+	var bindings: Dictionary = _bindings_cache.duplicate()
 	bindings.ready = bool(_last_input.get("ready", true))
 	return bindings
 
@@ -894,12 +1256,22 @@ func _build_audio() -> void:
 	_audio = AudioStreamPlayer3D.new()
 	_audio.name = "Motors"
 	_audio.stream = looped
-	_audio.unit_size = 2.0
-	_audio.max_distance = 150.0
+	_audio.unit_size = QuadCrashFx.VOICE_UNIT_SIZE_M # one distance law for motors and crash voices (§19.3)
+	_audio.max_distance = QuadCrashFx.VOICE_MAX_DISTANCE_M
 	_audio.volume_db = -80.0
 	add_child(_audio)
 	_audio.play()
 	_audio.stream_paused = true
+	# DR-19d: the out-of-balance rattle of damaged props: the same loop, detuned, silent while every prop is intact.
+	_rattle = AudioStreamPlayer3D.new()
+	_rattle.name = "MotorRattle"
+	_rattle.stream = looped
+	_rattle.unit_size = QuadCrashFx.VOICE_UNIT_SIZE_M
+	_rattle.max_distance = QuadCrashFx.VOICE_MAX_DISTANCE_M
+	_rattle.volume_db = -80.0
+	add_child(_rattle)
+	_rattle.play(0.37 * stream.get_length())
+	_rattle.stream_paused = true
 
 
 ## One loop for the four motors: pitch follows the mean ACHIEVED shaft speed relative to hover; the level fades to
@@ -918,9 +1290,35 @@ func _update_audio(t: Dictionary, delta: float) -> void:
 	var silent: bool = session.paused or _audio_level < 0.02
 	_audio.stream_paused = silent
 	if silent:
+		if _rattle != null:
+			_rattle.stream_paused = true # audit: the rattle stops with the motors
 		return
 	_audio.pitch_scale = clampf(n, 0.35, 2.5)
 	_audio.volume_db = linear_to_db(clampf(_audio_level, 0.001, 1.0)) - 4.0
+	_update_rattle(t)
+
+
+## DR-19d: a damaged or broken prop makes the motors rattle: a detuned copy of the loop whose level follows the
+## missing prop health of the spinning props, with a slight warble. Silent while every prop is intact. Level
+## 0.5 × sqrt(missing), at most 0.8 (DR-19e §19.3): one prop chipped to 85 % sits about 12 dB under the motors, one
+## broken prop about 4 dB under, and never above them.
+func _update_rattle(t: Dictionary) -> void:
+	if _rattle == null:
+		return
+	var health: PackedFloat64Array = t.get("rotor_health", PackedFloat64Array())
+	var speeds: PackedFloat64Array = t.get("rotor_speed_rad_s", PackedFloat64Array())
+	var missing := 0.0
+	for i in mini(health.size(), speeds.size()):
+		if absf(speeds[i]) > 0.3 * _hover_speed:
+			missing += 1.0 - clampf(health[i], 0.0, 1.0)
+	var level := minf(0.5 * sqrt(missing), 0.8) * _audio_level
+	_rattle.global_position = _audio.global_position
+	_rattle.stream_paused = session.paused or level < 0.02
+	if _rattle.stream_paused:
+		return
+	var warble := 0.03 * sin(float(Time.get_ticks_msec()) * 0.031)
+	_rattle.pitch_scale = clampf(_audio.pitch_scale * (1.09 + warble), 0.35, 2.8)
+	_rattle.volume_db = linear_to_db(clampf(level, 0.001, 1.0)) - 2.0
 
 
 ## Start or stop the opt-in flight log of the current flight; a reset or reconfiguration closes it.
@@ -949,7 +1347,7 @@ func apply_controller_selection(device_id: int) -> bool:
 	if session == null or not session.prepared or not _has_registry():
 		return false
 	var current: int = int(input.radio.device_id) if input.radio.connected else -1
-	if device_id != current:
+	if device_id != current or not _controller_binding_current():
 		_sync_selected_controller()
 		return true
 	if device_id < 0 or not controller_profile_for.is_valid():
@@ -960,12 +1358,27 @@ func apply_controller_selection(device_id: int) -> bool:
 	var before: int = input.source_generation
 	if not input.use_profile(profile, "calibrated"):
 		return false # the quad keeps flying the profile in use; the Controls screen reports the refusal
+	_profile_refused = false
 	_announce_source_change(before)
 	return true
 
 
+## Audit A05: the menu follows the controller selected for the "ui" role. AppRoot calls this when that role
+## changes during the activity; on the direct route the scene's own service does, and once at entry (AppRoot
+## isolated every joypad from the GUI actions before the direct route started). A selected gamepad gets its
+## effective Accept/Back/navigation buttons on that device only; anything else leaves keyboard and mouse.
 func _refresh_controller_ui() -> void:
-	pass
+	var service: Node = _controller_service
+	if service == null or not is_instance_valid(service):
+		return
+	var id := int(service.registry.selected_device_id("ui"))
+	if id >= 0 and service.is_ui_gamepad(id):
+		var profile: Dictionary = service.profile_for_device(id)
+		var bindings: Dictionary = ControllerActions.clean_radio_bindings() if profile.is_empty() \
+			or not bool(profile.get("configured", true)) else ControllerActions.effective_bindings(profile)
+		UiInput.set_gamepad(id, bindings)
+	else:
+		UiInput.set_gamepad(-1)
 
 
 ## DR-36b: G starts a race from the pad, or cancels a countdown or a race in progress. The action is sampled with the
@@ -975,6 +1388,8 @@ func request_race() -> void:
 		return
 	var phase := _race_phase()
 	var racing: bool = phase in ["COUNTDOWN", "RACING"]
+	if not racing and _outbox_blocks_start():
+		return
 	if not racing and (not _on_race_pad() or _terminal_state() != "" or phase in ["FINISHED", "ABORTED"]):
 		# DR-37 one-key retry: off the pad, after a crash or an empty pack, and after any attempt (a fresh pack, so
 		# attempts compare fairly), G first puts the quad back on the pad, resumes and stages the start (the countdown
@@ -1039,7 +1454,7 @@ func race_refusal_text(reason: String) -> String:
 func _on_race_result(result: Dictionary) -> void:
 	var report: Dictionary = session.save_results(results_directory)
 	if int(report.failed) > 0:
-		hud.flash(tr("Race result not saved"))
+		hud.flash(tr(OUTBOX_TEXT) % session.results.size(), 5.0)
 	if session.race == null:
 		return
 	_load_records()
@@ -1058,6 +1473,41 @@ func _on_race_result(result: Dictionary) -> void:
 	card.next_medal = RaceRecords.next_medal(str((summary.entry as Dictionary).get("medal", "")), RaceRecords.targets(session.course))
 	hud.show_race_result(card)
 	_push_race_info()
+
+
+## Audit A11: one bounded attempt to save every pending race result (at most MAX_PENDING_RESULTS small files). Only
+## attempt files are written: each result already entered the record book once, so a retry never counts it twice.
+## True when none remain.
+func _retry_pending_saves() -> bool:
+	if session == null or session.results.is_empty():
+		return true
+	session.save_results(results_directory)
+	return session.results.is_empty()
+
+
+## A full outbox refuses a start (the session would): retry first; if it stays full, name the storage problem and
+## the pending count instead of a generic hint.
+func _outbox_blocks_start() -> bool:
+	if session.race == null or session.results.size() < Session.MAX_PENDING_RESULTS:
+		return false
+	if _retry_pending_saves() or session.results.size() < Session.MAX_PENDING_RESULTS:
+		return false
+	hud.flash(tr(OUTBOX_TEXT) % session.results.size(), 6.0)
+	return true
+
+
+## Leaving must not silently drop unsaved race results (the outbox lives with this session): retry; if any remain,
+## the first Home names the count and a second one within DISCARD_CONFIRM_MS is the pilot's informed discard.
+func _may_leave() -> bool:
+	if session == null or not session.prepared or _retry_pending_saves():
+		return true
+	if _discard_until_ms > 0 and Time.get_ticks_msec() <= _discard_until_ms:
+		_discard_until_ms = 0
+		session.discard_results()
+		return true
+	_discard_until_ms = Time.get_ticks_msec() + DISCARD_CONFIRM_MS
+	hud.flash(tr(DISCARD_TEXT) % session.results.size(), 8.0)
+	return false
 
 
 ## A prepared course that differs from the drawn one (a course change through a fresh prepare) is drawn anew.
@@ -1098,6 +1548,12 @@ func _load_records() -> void:
 	_records_loaded = true
 	var loaded: Dictionary = RaceRecords.load_file(records_path())
 	_records = loaded.records
+	if bool(loaded.get("recovered", false)):
+		# Audit A13: the book was lost or unreadable and its previous copy is in use; keep a damaged file aside.
+		if FileAccess.file_exists(records_path()) and RaceRecords.set_aside(records_path()).is_empty():
+			_records_writable = false
+		hud.flash(tr("Race records restored from the previous copy."), 6.0)
+		return
 	if not loaded.ok or int(loaded.get("dropped", 0)) > 0:
 		# Keep the unreadable (or partly unreadable) book aside before any save could replace it; when it cannot be
 		# kept, this session saves no records at all.
@@ -1145,6 +1601,22 @@ func _build_gates() -> void:
 	var night: float = 1.0 - clampf(float(_lighting.get("sun_energy", 1.0)), 0.0, 1.0)
 	course_visual.build(self, session.course, night)
 	_gate_views = course_visual.gate_views
+
+
+## Audit: a crossing of the next gate the director could not resolve (oblique or under 1 m/s through the plane, or
+## bounced back by an impact) scores nothing; the pilot is told once per such crossing instead of a silent miss.
+func _notice_unresolved(race: Variant) -> void:
+	if typeof(race) != TYPE_DICTIONARY:
+		return
+	var attempt := int((race as Dictionary).get("attempt", 0))
+	var count := int((race as Dictionary).get("unresolved", 0))
+	if attempt != _unresolved_attempt:
+		_unresolved_attempt = attempt
+		_unresolved_seen = count
+		return
+	if count > _unresolved_seen and str((race as Dictionary).get("phase", "")) == "RACING":
+		hud.flash(tr("Gate not counted: fly straight through it"), 3.0)
+	_unresolved_seen = count
 
 
 ## Highlight the next required gate (and the one after it) while a race is counting down or under way.

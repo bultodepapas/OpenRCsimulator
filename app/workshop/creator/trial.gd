@@ -65,12 +65,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if not (source is Object) or (source as Object).get_script() != InspectedSource or not (source as InspectedSource).is_admitted():
 		return _refused("The model source was not admitted.")
 	var association := Installation.check_pair((candidate as AcceptedCandidate).summary(),source as InspectedSource)
+	# A ClearView source flies only with its confirmed, source-bound OpenRC installation.
 	if not association.ok:
 		return _refused(str(association.diagnostics[0].message))
-	var policy := Installation.flight_refusal(source as InspectedSource,
-		(candidate as AcceptedCandidate).summary().has("servo_integration"))
-	if not policy.is_empty():
-		return _refused(policy)
 	var placement: Variant = payload.get("creator_placement")
 	if typeof(placement) != TYPE_DICTIONARY:
 		return _refused("The model placement is missing.")
@@ -100,10 +97,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		"bindings": look.bindings, "appearance": look.appearance,
 		"qualification": accepted.qualification(),
 	}
-	# A ClearView visual flies only as its declared independent estimate: pin that declaration so
-	# verify() can refuse a trial re-pointed at a ClearView source without one.
+	# Only recognized ClearView sources carry this key, so ordinary trial identities are unchanged.
 	if Installation.required(source as InspectedSource):
-		pinned["source_installation"] = (accepted.summary().get("source_installation", {}) as Dictionary).duplicate(true)
+		pinned["source_installation"] = (accepted.summary().source_installation as Dictionary).duplicate(true)
 	var trial_id: String = _trial_id(pinned)
 	if trial_id.is_empty():
 		return _refused("The trial identity could not be written.")
@@ -162,16 +158,8 @@ static func verify(trial: Dictionary) -> Dictionary:
 	if not (source is Object) or (source as Object).get_script() != InspectedSource \
 			or (source as InspectedSource).sha256() != str(identity.get("source_sha256", "")):
 		return _refused("The frozen model source does not match the trial identity.")
-	var controls: Variant = (data.model as Dictionary).get("controls")
-	var policy := Installation.flight_refusal(source as InspectedSource,
-		controls is Dictionary and (controls as Dictionary).has("servo_integration"))
-	if not policy.is_empty():
-		return _refused(policy)
-	var declared: Variant = identity.get("source_installation")
-	if Installation.required(source as InspectedSource) != (declared != null) or (declared != null and (not declared is Dictionary
-			or str((declared as Dictionary).get("source_sha256", "")) != (source as InspectedSource).sha256()
-			or str((declared as Dictionary).get("mode", "")) != Installation.MODE)):
-		return _refused(Installation.FLIGHT_UNAVAILABLE)
+	if not _installation_pinned(identity, source as InspectedSource):
+		return _refused(Installation.REQUIRED)
 	var reloaded: Dictionary = RecordLoader.load_bytes(bytes, aircraft_id)
 	if not reloaded.get("ok", false) or reloaded.model != data.model:
 		return _refused("The frozen model is not what its exact bytes load to.")
@@ -319,6 +307,20 @@ static func _climb_out(session: Node) -> Dictionary:
 
 static func _refused(reason: String) -> Dictionary:
 	return {"ok": false, "errors": PackedStringArray([reason])}
+
+
+## A ClearView trial must carry the confirmed installation bound to its exact source; any other
+## trial must not carry one. This rejects a relabelled ordinary trial, not a deliberate forgery.
+static func _installation_pinned(identity: Dictionary, source: InspectedSource) -> bool:
+	var pinned: Variant = identity.get("source_installation")
+	if not Installation.required(source):
+		return not identity.has("source_installation")
+	if not pinned is Dictionary or pinned.size() != Installation.KEYS.size():
+		return false
+	for key: String in Installation.KEYS:
+		if typeof(pinned.get(key)) != TYPE_STRING:
+			return false
+	return pinned.format == Installation.FORMAT and pinned.mode == Installation.MODE and pinned.source_sha256 == source.sha256()
 
 
 static func _failure(reason: String, start_choice: String, field_id: String, started_usec: int) -> Dictionary:

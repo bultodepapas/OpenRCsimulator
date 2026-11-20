@@ -84,6 +84,16 @@ const EXPECTED_PACKAGE_DESCRIPTOR := (
 	+ "[libraries]\n"
 	+ "linux.x86_64 = \"libopenrc_native_kernel.so\"\n"
 )
+## NK-4 package (owner decision 2026-11-18, "native kernel always"): the Windows release beside its executable.
+const EXPECTED_WINDOWS_PACKAGE_DESCRIPTOR := (
+	"; NK-4 packaged stage; loaded explicitly after embedded identity verification.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "windows.x86_64 = \"openrc_native_kernel.dll\"\n"
+)
 const EXPECTED_MACOS_PACKAGE_DESCRIPTOR := (
 	"; DT-MAC packaged stage; loaded explicitly after embedded identity verification.\n"
 	+ "[configuration]\n"
@@ -563,7 +573,7 @@ static func _load_library() -> String:
 		return "native stage: Linux/Windows x86_64 or experimental macOS ARM64 source only"
 	if OS.has_feature("template_release"):
 		if platform == "macos": return _load_macos_package_library()
-		return _load_package_library() if platform == "linux" else "native stage packages: Linux x86_64 or experimental macOS ARM64 only"
+		return _load_package_library(platform)
 	var extension_path := EXTENSION_PATH
 	var receipt_path := RECEIPT_PATH
 	if platform == "windows":
@@ -601,17 +611,18 @@ static func _load_library() -> String:
 	return load_error
 
 
-static func _load_package_library() -> String:
+static func _load_package_library(platform := "linux") -> String:
 	var package := NativePackage.identity()
 	if not package.ok:
 		return str(package.reason)
-	var row := _platform_row(package.manifest.native_receipt)
+	var row := _platform_row(package.manifest.native_receipt, platform)
 	if row.is_empty() or row.get("engine_version") != package.manifest.engine_version:
-		return "native package has no valid verified Linux receipt"
+		return "native package has no valid verified %s receipt" % ("Windows" if platform == "windows" else "Linux")
 	var directory := NativePackage.directory()
 	var descriptor := directory.path_join("openrc_native_kernel.gdextension")
-	var library := directory.path_join(LIBRARY_FILE)
-	if not FileAccess.file_exists(descriptor) or FileAccess.get_file_as_string(descriptor) != EXPECTED_PACKAGE_DESCRIPTOR:
+	var library := directory.path_join(WINDOWS_LIBRARY_FILE if platform == "windows" else LIBRARY_FILE)
+	var expected := EXPECTED_WINDOWS_PACKAGE_DESCRIPTOR if platform == "windows" else EXPECTED_PACKAGE_DESCRIPTOR
+	if not FileAccess.file_exists(descriptor) or FileAccess.get_file_as_string(descriptor) != expected:
 		return "native package descriptor differs from the verified loader contract"
 	if not FileAccess.file_exists(library) or FileAccess.get_sha256(library) != row.binary_sha256:
 		return "native package binary differs from its embedded identity"

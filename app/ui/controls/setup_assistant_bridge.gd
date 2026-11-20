@@ -35,6 +35,7 @@ func device_info() -> Dictionary:
 	if bool(draft.get("configured", true)) and not str(draft.get("kind", "")).is_empty():
 		info["profile_kind"] = str(draft.get("kind", ""))
 	info["preset"] = str(draft.get("preset", ""))
+	info["rates_owner"] = ControllerProfile.rates_owner(draft)
 	var presentation: Variant = draft.get("presentation", {})
 	var requested_family := str(presentation.get("glyph_family", "auto")) if presentation is Dictionary else "auto"
 	info["family"] = ControllerPrompts.resolve_family(requested_family, device)

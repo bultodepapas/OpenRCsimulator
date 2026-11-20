@@ -192,6 +192,8 @@ static func flight_axes(profile: Variant) -> Array:
 static func valid_binding(value: Variant, reserved_axes: Array = []) -> bool:
 	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("type")) != TYPE_STRING:
 		return false
+	if not valid_metadata(value):
+		return false
 	match value.type:
 		"axis":
 			if typeof(value.get("axis")) != TYPE_INT or typeof(value.get("invert")) != TYPE_BOOL:
@@ -236,6 +238,32 @@ static func valid_binding(value: Variant, reserved_axes: Array = []) -> bool:
 						return false
 			return true
 	return false
+
+
+## D6-ETX-03/04 (docs/plans/edgetx-airplane-controls.md): optional fields on any AUX binding. `label` (the radio's
+## switch name, 1-24 characters) and `channel` (radio channel 1-32) are presentation only and never change a value;
+## `detents: "aircraft"` lets the flap request snap to the flown aircraft's detents (RcInput.set_flap_detents).
+static func valid_metadata(value: Dictionary) -> bool:
+	if value.has("label"):
+		if typeof(value.label) != TYPE_STRING or value.label.strip_edges().is_empty() or value.label.length() > 24:
+			return false
+	if value.has("channel"):
+		if typeof(value.channel) != TYPE_INT or int(value.channel) < 1 or int(value.channel) > 32:
+			return false
+	if value.has("detents"):
+		if typeof(value.detents) != TYPE_STRING or value.detents != "aircraft":
+			return false
+	return true
+
+
+## The flap request for a continuous amount 0…1 snapped to `detents` (ascending fractions, first 0 and last 1):
+## equal bands per detent, so a 3-position switch (0, 0.5, 1) lands on up / take-off / full and a 2-position switch
+## on up / full. Fewer than two detents return the amount unchanged.
+static func snap_to_detents(amount: float, detents: Array) -> float:
+	if detents.size() < 2 or not is_finite(amount):
+		return amount
+	var index := clampi(int(floor(clampf(amount, 0.0, 1.0) * float(detents.size()))), 0, detents.size() - 1)
+	return float(detents[index])
 
 
 ## Return validated button indices for a switch, or an empty array for other bindings.

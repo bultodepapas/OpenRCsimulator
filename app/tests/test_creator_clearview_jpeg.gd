@@ -63,6 +63,7 @@ func _initialize() -> void:
 	var interval := _pack_entropy(restart_bits)
 	var reset := _jpeg(16,8,interval + PackedByteArray([255,208]) + interval + PackedByteArray([255,217]),false,1,10)
 	check("DC predictors reset at restart", Jpeg.inspect(reset,128).ok and Images.normalize(reset).ok)
+	_metadata(valid, native)
 	print("ClearView JPEG: %d checks, %d failures" % [checks,failures])
 	quit(1 if failures else 0)
 
@@ -71,6 +72,56 @@ func check(label: String, good: bool) -> void:
 	if not good:
 		failures += 1
 		printerr("FAIL: ",label)
+
+## Real ClearView textures carry EXIF (APP1), ICC (APP2) and Photoshop (APP13) segments.
+func _metadata(valid: PackedByteArray, native: PackedByteArray) -> void:
+	var plain := Jpeg.inspect(valid,200)
+	check("metadata-free JPEG has no metadata note", plain.ok and not plain.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Jpeg.METADATA_NOTE))
+	for marker: int in [0xE1,0xE2,0xED,0xEF]:
+		var tagged := _with_segments(valid,[_segment(marker,PackedByteArray([69,120,105,102,0,0,73,73,42]))])
+		var checked := Jpeg.inspect(tagged,200)
+		check("APP%d metadata skipped" % (marker - 0xE0), checked.ok and checked.diagnostics.size() == 1
+			and checked.diagnostics[0].message == Jpeg.METADATA_NOTE)
+		check("APP%d image still decodes to the oracle" % (marker - 0xE0), Images.normalize(tagged).ok)
+	var stacked := _with_segments(native,[_segment(0xE1,PackedByteArray([1,2,3])),_segment(0xE2,PackedByteArray([4])),_segment(0xED,PackedByteArray())])
+	check("stacked metadata over a native image", Jpeg.inspect(stacked,32*32).ok and Images.normalize(stacked).ok)
+	var filler := PackedByteArray()
+	filler.resize(65533)
+	var segments: Array = []
+	for index: int in 17:
+		segments.append(_segment(0xE1,filler))
+	var oversized := Jpeg.inspect(_with_segments(valid,segments),200)
+	check("metadata total is bounded", not oversized.ok and oversized.diagnostics[0].code == "SOURCE_LIMIT")
+	var truncated := _with_segments(valid,[PackedByteArray([255,0xE1,0,200,1,2])])
+	check("metadata length beyond the file refused", not Jpeg.inspect(truncated,200).ok)
+	# Real downloads (Mig-15, Parkzone Vapor): Adobe APP14 with encoder-hint flags 0x8000/0xC000.
+	for flags: int in [0x80, 0xC0]:
+		var adobe := _with_segments(valid,[_segment(0xEE,PackedByteArray([65,100,111,98,101,0,100,flags,0,0,0,1]))])
+		check("Adobe encoder-hint flags 0x%X00 accepted" % flags, Jpeg.inspect(adobe,200).ok and Images.normalize(adobe).ok)
+	# Real downloads (EF-Sabre): 4:2:2 luma sampling, in both orientations.
+	for sampling: int in [0x21, 0x12]:
+		var base := _jpeg(1,1,PackedByteArray([0,255,217]),true)
+		var at := 0
+		for index: int in base.size() - 2:
+			if base[index] == 3 and base[index + 1] == 1 and base[index + 2] == 0x22:
+				at = index + 2
+		base[at] = sampling
+		check("4:2:2 sampling 0x%X validated and decoded" % sampling, at > 0 and Jpeg.inspect(base,200).ok and Images.normalize(base).ok)
+		var short := base.slice(0, base.size() - 3) + PackedByteArray([255,217])
+		check("4:2:2 sampling 0x%X still checks every block" % sampling, not Jpeg.inspect(short,200).ok)
+	var ycck := _with_segments(valid,[_segment(0xEE,PackedByteArray([65,100,111,98,101,0,100,0,0,0,0,2]))])
+	check("Adobe YCCK transform still refused", not Jpeg.inspect(ycck,200).ok)
+	check("progressive coding still refused", not Jpeg.inspect(_with_segments(valid,[]).slice(0,2) + _segment(0xC2,PackedByteArray([8,0,1,0,1,3,1,0x11,0,2,0x11,0,3,0x11,0])),200).ok)
+
+## Insert segments after SOI and any leading JFIF APP0, as real files order them.
+static func _with_segments(jpeg: PackedByteArray, segments: Array) -> PackedByteArray:
+	var at := 2
+	if jpeg.size() > 6 and jpeg[2] == 255 and jpeg[3] == 0xE0:
+		at = 4 + ((jpeg[4] << 8) | jpeg[5])
+	var bytes := jpeg.slice(0,at)
+	for segment: PackedByteArray in segments:
+		bytes += segment
+	return bytes + jpeg.slice(at)
 
 static func _segment(marker: int, payload: PackedByteArray) -> PackedByteArray:
 	var length := payload.size() + 2

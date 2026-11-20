@@ -12,6 +12,9 @@ func _initialize() -> void:
 	_test_failure_rolls_back()
 	_test_small_boundary_signs()
 	_test_invalid_definitions()
+	_test_internal_crossing_precedes_endpoint()
+	_test_near_tie_order_is_discovery_independent()
+	_test_unsampled_crossing_before_anchor()
 	print("resource event step: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -182,6 +185,119 @@ func _test_invalid_definitions() -> void:
 		_check("truncated rigid body refuses before RK "+str(size), not result.get("ok", true) and not result.has("state"))
 	var stalled_clock: Dictionary = ResourceStep.advance(_padded([1.0]), 1e20, 0.1, derivative, PackedFloat64Array(), [event])
 	_check("a timestep must advance the absolute clock", not stalled_clock.get("ok", true) and not stalled_clock.has("state"))
+
+
+# Audit 2026-11-19 F01: B crosses at 0.2T between RK samples, A at 0.75T on the endpoint.
+func _test_internal_crossing_precedes_endpoint() -> void:
+	var tick_dt := 1.0 / 240.0
+	for sense: String in ["falling", "rising"]:
+		var sign: float = 1.0 if sense == "falling" else -1.0
+		for reverse: bool in [false, true]:
+			var endpoint := {id = "A_endpoint", type = "boundary", sense = sense, surface_unit = "1",
+				enabled = func(values: PackedFloat64Array, _at: float) -> bool: return values[13] == 0.0,
+				surface = func(_values: PackedFloat64Array, at: float) -> float: return sign * (0.75 - at / tick_dt),
+				transition = func(values: PackedFloat64Array, _at: float) -> Dictionary:
+					values[13] = 1.0
+					return {ok = true, state = values}}
+			var internal := {id = "B_internal", type = "boundary", sense = sense, surface_unit = "1",
+				enabled = func(values: PackedFloat64Array, _at: float) -> bool: return values[14] == 0.0,
+				surface = func(_values: PackedFloat64Array, at: float) -> float:
+					return sign * (at / tick_dt - 0.2) * (at / tick_dt - 0.8),
+				transition = func(values: PackedFloat64Array, _at: float) -> Dictionary:
+					values[14] = 1.0
+					return {ok = true, state = values}}
+			var label := "%s %s mixed crossing" % [sense, "reversed" if reverse else "listed"]
+			var result: Dictionary = ResourceStep.advance(_flags_state(2), 0.0, tick_dt, _still(),
+				PackedFloat64Array(), [internal, endpoint] if reverse else [endpoint, internal])
+			_check(label + " integrates", result.get("ok", false), str(result.get("message", "")))
+			if not result.get("ok", false):
+				continue
+			_check(label + " applies the interior crossing first", result.events.size() == 2
+				and result.events[0].id == "B_internal" and result.events[1].id == "A_endpoint"
+				and result.state[13] == 1.0 and result.state[14] == 1.0, str(result.events))
+			_near(label + " interior time", float(result.events[0].time_s), 0.2 * tick_dt, 1e-12)
+			_near(label + " endpoint time", float(result.events[1].time_s), 0.75 * tick_dt, 1e-12)
+
+
+# Audit 2026-11-19 F02: offsets 0.75e-12 s apart chain across TIME_TOL; priorities oppose time.
+func _test_near_tie_order_is_discovery_independent() -> void:
+	var targets := [1.0e-12, 1.75e-12, 2.5e-12]
+	var priorities := [20, 11, 0]
+	for order: Array in [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]:
+		var events: Array = []
+		for index: int in order:
+			events.append(_time_event(index, float(targets[index]), int(priorities[index])))
+		var result: Dictionary = ResourceStep.advance(_flags_state(3), 0.0, 4e-12, _still(),
+			PackedFloat64Array(), events)
+		var label := "near-tie order %s" % str(order)
+		_check(label + " integrates", result.get("ok", false), str(result.get("message", "")))
+		if not result.get("ok", false):
+			continue
+		var ids: Array = result.events.map(func(event: Dictionary) -> String: return str(event.id))
+		_check(label + " applies every transition in time order", ids == ["A", "B", "C"]
+			and result.state[13] == 1.0 and result.state[14] == 1.0 and result.state[15] == 1.0, str(ids))
+
+
+# B is below zero only on [0.6, 0.9] of the step, so no RK sample (0, 0.5, 1) sees it; A crosses
+# on the endpoint at 0.75. B is past zero at A's root, which must trigger a shorter retry, not a drop.
+# (Several roots of one surface between samples remain undetectable by design.)
+func _test_unsampled_crossing_before_anchor() -> void:
+	for sense: String in ["falling", "rising"]:
+		var sign: float = 1.0 if sense == "falling" else -1.0
+		var endpoint := {id = "A_endpoint", type = "boundary", sense = sense, surface_unit = "1",
+			enabled = func(values: PackedFloat64Array, _at: float) -> bool: return values[13] == 0.0,
+			surface = func(_values: PackedFloat64Array, at: float) -> float: return sign * (0.75 - at),
+			transition = func(values: PackedFloat64Array, _at: float) -> Dictionary:
+				values[13] = 1.0
+				return {ok = true, state = values}}
+		var hidden := {id = "B_hidden", type = "boundary", sense = sense, surface_unit = "1",
+			enabled = func(values: PackedFloat64Array, _at: float) -> bool: return values[14] == 0.0,
+			surface = func(_values: PackedFloat64Array, at: float) -> float: return sign * (at - 0.6) * (at - 0.9),
+			transition = func(values: PackedFloat64Array, _at: float) -> Dictionary:
+				values[14] = 1.0
+				return {ok = true, state = values}}
+		var result: Dictionary = ResourceStep.advance(_flags_state(2), 0.0, 1.0, _still(), PackedFloat64Array(),
+			[endpoint, hidden])
+		var label := sense + " unsampled crossing"
+		_check(label + " integrates", result.get("ok", false), str(result.get("message", "")))
+		if not result.get("ok", false):
+			continue
+		_check(label + " is applied before the endpoint root", result.events.size() == 2
+			and result.events[0].id == "B_hidden" and result.events[1].id == "A_endpoint"
+			and result.state[13] == 1.0 and result.state[14] == 1.0, str(result.events))
+		_near(label + " time", float(result.events[0].time_s), 0.6, 1e-12)
+	# Only a surface enabled at the segment start has a real side of zero to have crossed from.
+	var below := {id = "below", type = "boundary", sense = "falling", surface_unit = "1",
+		surface = func(_values: PackedFloat64Array, _at: float) -> float: return -1.0,
+		transition = func(values: PackedFloat64Array, _at: float) -> Dictionary: return {ok = true, state = values}}
+	var anchor := _flags_state(0)
+	_check("a surface past zero at the boundary is a missed crossing",
+		bool(ResourceStep._crossed_before(anchor, 0.5, [below], {"below": 1.0}, {"below": true}, 100).crossed))
+	_check("a surface enabled only inside the segment is not",
+		not bool(ResourceStep._crossed_before(anchor, 0.5, [below], {"below": 1.0}, {"below": false}, 100).crossed))
+
+
+func _time_event(index: int, target: float, priority: int) -> Dictionary:
+	return {id = ["A", "B", "C"][index], type = "time_boundary", sense = "falling", surface_unit = "s",
+		priority = priority, surface_tolerance = 1e-22,
+		enabled = func(state: PackedFloat64Array, _at: float) -> bool: return state[13 + index] == 0.0,
+		surface = func(_state: PackedFloat64Array, at: float) -> float: return target - at,
+		transition = func(state: PackedFloat64Array, _at: float) -> Dictionary:
+			state[13 + index] = 1.0
+			return {ok = true, state = state}}
+
+
+func _flags_state(flags: int) -> PackedFloat64Array:
+	var state := _zero_state()
+	state.resize(13 + flags)
+	return state
+
+
+func _still() -> Callable:
+	return func(values: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		var rate := PackedFloat64Array()
+		rate.resize(values.size())
+		return rate
 
 
 func _padded(values: Array) -> PackedFloat64Array:

@@ -45,6 +45,7 @@ static var auto_output_size := Vector2i.ZERO
 const DEFAULT_SHARPNESS := 0.9 # User strength; matches Godot's default fsr_sharpness=0.2.
 const ENVIRONMENT_KEY := "OPENRC_RECONSTRUCTION"
 const SHARPNESS_ENVIRONMENT_KEY := "OPENRC_FSR2_SHARPNESS"
+const MSAA_ENVIRONMENT_KEY := "OPENRC_MSAA"
 const FSR3_METHOD := "is_fsr3_available"
 const DLSS_SINGLETON := "Streamline"
 const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
@@ -190,10 +191,17 @@ static func option_status(mode: String, capabilities: Dictionary = {}) -> Dictio
 ## Direct/technical launches may select a candidate without reading player preferences.
 static func startup_config() -> Dictionary:
 	var strength := OS.get_environment(SHARPNESS_ENVIRONMENT_KEY).strip_edges()
-	return {"reconstruction": OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
+	var config := {"reconstruction": OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
 		if OS.has_environment(ENVIRONMENT_KEY) else "native",
 		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS),
 		"nvidia_reflex": NvidiaReflex.startup_mode()}
+	# VQ-07h: technical routes may measure another MSAA level (0, 2, 4 or 8); otherwise apply() keeps
+	# msaa_3d=2, which is Viewport.MSAA_4X.
+	var msaa := OS.get_environment(MSAA_ENVIRONMENT_KEY).strip_edges()
+	if msaa in ["0", "2", "4", "8"]:
+		config["msaa_3d"] = {"0": Viewport.MSAA_DISABLED, "2": Viewport.MSAA_2X, "4": Viewport.MSAA_4X,
+			"8": Viewport.MSAA_8X}[msaa]
+	return config
 
 
 static func sharpness_strength(value: Variant) -> float:

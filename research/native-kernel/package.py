@@ -64,11 +64,17 @@ def sha(path: Path) -> str:
     return digest.hexdigest()
 
 
+## Must equal app/sim/flight_log.gd `_solver_identity_uncached()`: the solver trees plus the stage-input mapping
+## sources it added on 2026-11-16 (input/commands.gd, spec.gd). test_package_windows.py pins the source list.
+SOLVER_EXTRA_SOURCES = ("input/commands.gd", "spec.gd")
+
+
 def solver_identity() -> str:
     digest = hashlib.sha256()
     paths = [("res://" + path.relative_to(ROOT / "app").as_posix(), path)
              for directory in ("physics", "sim", "failures")
              for path in (ROOT / "app" / directory).rglob("*.gd")]
+    paths += [("res://" + name, ROOT / "app" / name) for name in SOLVER_EXTRA_SOURCES if (ROOT / "app" / name).is_file()]
     paths.sort(key=lambda entry: entry[0])
     if not paths:
         raise ValueError("solver source set is empty")
@@ -146,6 +152,116 @@ def finalize(executable: Path, template: Path) -> dict:
                 "editor_sha256": manifest["native_receipt"]["platforms"]["linux"]["engine_sha256"],
                 "native_binary_sha256": sha(destination / library)}
     (destination / "package-receipt.json").write_text(json.dumps(artifact, indent=2, sort_keys=True) + "\n")
+    return artifact
+
+
+WINDOWS_MANIFEST = ROOT / "app/native/kernel/package-windows.json"
+WINDOWS_PACKAGE_DESCRIPTOR = (
+    "; NK-4 packaged stage; loaded explicitly after embedded identity verification.\n"
+    "[configuration]\n"
+    'entry_symbol = "openrc_native_kernel_library_init"\n'
+    'compatibility_minimum = "4.7"\n'
+    "reloadable = false\n\n"
+    "[libraries]\n"
+    'windows.x86_64 = "openrc_native_kernel.dll"\n'
+)
+
+
+def _windows_builder():
+    spec = importlib.util.spec_from_file_location("nk4_package_windows_builder", HERE / "build_windows.py")
+    if spec is None or spec.loader is None:
+        raise ValueError("Windows native builder is unavailable")
+    windows = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(windows)
+    return windows
+
+
+def windows_engine_identity(windows, row: dict) -> tuple[str, str] | None:
+    """None: hash the pinned Windows editor and wrapper on this host. A Linux release export (CI) has neither, so the
+    oracle evidence must cite the (wrapper, editor) identities the receipt recorded; the Windows package gate then
+    qualifies the exported executable itself."""
+    if windows.ENGINE_EXECUTABLE.is_file() and windows.ENGINE_WRAPPER.is_file():
+        return None
+    engine = (str(row.get("engine_wrapper_sha256", "")), str(row.get("engine_sha256", "")))
+    if not all(len(value) == 64 and all(c in "0123456789abcdef" for c in value) for value in engine):
+        raise ValueError("Windows installation receipt lacks the qualified editor identities")
+    return engine
+
+
+def verified_windows_install(tool_root: Path) -> dict:
+    """NK-4 (owner decision 2026-11-18, native kernel always): revalidate the installed Windows build against its
+    receipt, current sources and the exact oracle evidence it cites in `tool_root`, as --install-app recorded it."""
+    windows = _windows_builder()
+    receipt = json.loads((builder.APP_DESTINATION / "build-receipt-windows.json").read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict) or receipt.get("format") != builder.RECEIPT_FORMAT \
+            or receipt.get("backend") != "native" or receipt.get("backend_version") != builder.BACKEND_VERSION \
+            or type(receipt.get("abi_version")) is not int or receipt["abi_version"] != builder.ABI_VERSION \
+            or not isinstance(receipt.get("platforms"), dict) or set(receipt["platforms"]) != {"windows"}:
+        raise ValueError("Windows installation receipt envelope is invalid")
+    row = receipt["platforms"]["windows"]
+    if not isinstance(row, dict) or row.get("platform") != "windows" or row.get("architecture") != "x86_64" \
+            or row.get("backend") != "native" or row.get("backend_version") != builder.BACKEND_VERSION \
+            or type(row.get("abi_version")) is not int or row["abi_version"] != builder.ABI_VERSION \
+            or not isinstance(row.get("verification"), dict) or row.get("engine_version") != windows.ENGINE_LABEL:
+        raise ValueError("Windows installation receipt row is invalid")
+    library = builder.APP_DESTINATION / f"{builder.NAME}.dll"
+    if sha(library) != row.get("binary_sha256") or builder.source_digest() != row.get("source_sha256"):
+        raise ValueError("Windows native library or C++ sources differ from the installation receipt")
+    if sha(HERE / "toolchain-lock.json") != row.get("lock_sha256") or sha(HERE / "build_windows.py") != row.get("builder_sha256"):
+        raise ValueError("Windows toolchain lock or builder differs from the installation receipt")
+    sources = builder.mirrored_sources()
+    if row.get("mirrored_sources") != sources:
+        raise ValueError("mirrored sources changed; qualify and reinstall the Windows build before exporting")
+    if windows.ENGINE_EXECUTABLE.is_file() and sha(windows.ENGINE_EXECUTABLE) != row.get("engine_sha256"):
+        raise ValueError("the pinned Windows editor differs from the one the Windows build was qualified with")
+    engine = windows_engine_identity(windows, row)
+    for key, pattern in builder.VERIFICATIONS.items():
+        current = windows.find_verification(tool_root, key, pattern, row["binary_sha256"], sources, engine)
+        if current != row["verification"].get(key):
+            raise ValueError("Windows installation does not cite the current " + key + " verification")
+    return receipt
+
+
+def prepare_windows(tool_root: Path) -> dict:
+    receipt = verified_windows_install(tool_root)
+    manifest = {
+        "format": MANIFEST_FORMAT, "platform": "windows", "architecture": "x86_64",
+        "engine_version": receipt["platforms"]["windows"]["engine_version"],
+        "native_receipt": receipt, "solver_sha256": solver_identity(),
+        "qualification_sources": {name: sha(path) for name, path in QUALIFICATION.items()},
+    }
+    WINDOWS_MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    return {"manifest": str(WINDOWS_MANIFEST), "manifest_sha256": sha(WINDOWS_MANIFEST)}
+
+
+def finalize_windows(executable: Path, template: Path, tool_root: Path) -> dict:
+    executable = executable.resolve(strict=True)
+    template = template.resolve(strict=True)
+    manifest = json.loads(WINDOWS_MANIFEST.read_text(encoding="utf-8"))
+    if manifest.get("format") != MANIFEST_FORMAT or manifest.get("platform") != "windows" \
+            or manifest.get("native_receipt") != verified_windows_install(tool_root):
+        raise ValueError("prepared Windows package inputs are stale")
+    if manifest.get("solver_sha256") != solver_identity() or manifest.get("qualification_sources") != {
+            name: sha(path) for name, path in QUALIFICATION.items()}:
+        raise ValueError("solver or diagnostic sources changed during export")
+    destination = executable.parent / "native/kernel"
+    if destination.exists() or destination.is_symlink() or (executable.parent / "native").is_symlink() \
+            or destination.resolve() != executable.parent / "native/kernel":
+        raise ValueError("package sidecar directory must not be redirected")
+    destination.mkdir(parents=True, exist_ok=False)
+    library = f"{builder.NAME}.dll"
+    shutil.copy2(builder.APP_DESTINATION / library, destination / library)
+    row = manifest["native_receipt"]["platforms"]["windows"]
+    if sha(destination / library) != row["binary_sha256"]:
+        raise ValueError("Windows native library changed during package staging")
+    shutil.copy2(builder.APP_DESTINATION / "LICENSE.godot-cpp.md", destination / "LICENSE.godot-cpp.md")
+    # The loader compares the descriptor byte for byte: never let a Windows host write CRLF.
+    (destination / f"{builder.NAME}.gdextension").write_text(WINDOWS_PACKAGE_DESCRIPTOR, encoding="utf-8", newline="\n")
+    artifact = {"format": ARTIFACT_FORMAT, "platform": "windows", "executable_sha256": sha(executable),
+                "manifest_sha256": sha(WINDOWS_MANIFEST), "template_sha256": sha(template),
+                "editor_sha256": row["engine_sha256"], "native_binary_sha256": sha(destination / library)}
+    (destination / "package-receipt.json").write_text(json.dumps(artifact, indent=2, sort_keys=True) + "\n",
+                                                      encoding="utf-8", newline="\n")
     return artifact
 
 
@@ -670,6 +786,12 @@ def main() -> None:
     final = commands.add_parser("finalize")
     final.add_argument("--executable", type=Path, required=True)
     final.add_argument("--template", type=Path, required=True)
+    windows_prepare = commands.add_parser("prepare-windows")
+    windows_prepare.add_argument("--tool-root", type=Path, required=True)
+    windows_final = commands.add_parser("finalize-windows")
+    windows_final.add_argument("--executable", type=Path, required=True)
+    windows_final.add_argument("--template", type=Path, required=True)
+    windows_final.add_argument("--tool-root", type=Path, required=True)
     mac_prepare = commands.add_parser("prepare-macos")
     mac_prepare.add_argument("--tool-root", type=Path, required=True)
     mac_prepare.add_argument("--godot", type=Path, required=True)
@@ -701,6 +823,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.command == "prepare": result = prepare()
     elif args.command == "finalize": result = finalize(args.executable, args.template)
+    elif args.command == "prepare-windows": result = prepare_windows(args.tool_root)
+    elif args.command == "finalize-windows": result = finalize_windows(args.executable, args.template, args.tool_root)
     else:
         selection = _mac_builder().engine_policy.selection_from_args(args)
         pair_selection = _pair_selection_from_args(args, selection)

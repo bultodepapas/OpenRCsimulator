@@ -585,6 +585,15 @@ msgstr "Termina il volo"
 msgid "This flight cannot continue: %s"
 msgstr "Impossibile continuare questo volo: %s"
 
+msgid "Physics: native"
+msgstr "Fisica: nativa"
+
+msgid "Physics: compatibility. Native physics is not running."
+msgstr "Fisica: compatibilità. La fisica nativa non è attiva."
+
+msgid "Physics: compatibility. Native physics is not running: %s"
+msgstr "Fisica: compatibilità. La fisica nativa non è attiva: %s"
+
 msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "Incidente. Il volo ripartirà automaticamente quando riprenderai."
 
@@ -9253,6 +9262,15 @@ msgstr "Le ombre native non sono disponibili in questa sessione grafica; sono at
 msgid "Native shadow coverage is experimental; some objects do not cast shadows."
 msgstr "La copertura delle ombre native è sperimentale; alcuni oggetti non proiettano ombre."
 
+msgid "Projected shadows are ground cues only: aircraft do not shade themselves, and roofs and other raised surfaces do not receive them."
+msgstr "Le ombre proiettate sono solo riferimenti al suolo: gli aerei non si ombreggiano da soli, e tetti e altre superfici rialzate non le ricevono."
+
+msgid "Cloud shadows"
+msgstr "Ombre delle nuvole"
+
+msgid "Removes the moving cloud shade from the ground. Clouds stay visible."
+msgstr "Rimuove dal suolo l’ombra mobile delle nuvole. Le nuvole restano visibili."
+
 msgid "Activities may use a shorter range."
 msgstr "Alcune attività possono usare una distanza minore."
 
@@ -12088,9 +12106,6 @@ msgstr "Rollio: stick destro ai lati (frecce sinistra/destra)"
 msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
 msgstr "Beccheggio: stick destro avanti = muso giù (frecce su/giù)"
 
-msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
-msgstr "Armare o disarmare: E, LB del gamepad o l’interruttore della radio assegnato a Carrello. Arma con il gas al minimo."
-
 msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
 msgstr "Modalità di volo Acro/Angle: M o RB del gamepad. All’inizio Acro con la radio, Angle con gamepad o tastiera."
 
@@ -13784,3 +13799,497 @@ msgstr "4S · 1900 Kv · elica spingente 6×4,5, al posto di una ventola intubat
 
 msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
 msgstr "6S · 1200 Kv · elica spingente 7×5, al posto di una ventola intubata — stimato"
+msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
+msgstr "La connessione del controller è cambiata: i motori sono disarmati. Controlla il controller, poi arma di nuovo dopo la ripresa."
+
+msgid "The saved controller profile could not be used: open Controls to repair or reselect it."
+msgstr "Impossibile usare il profilo del controller salvato: apri Comandi per ripararlo o selezionarlo di nuovo."
+
+msgid "Resuming disarms the motors: arm again with the throttle low."
+msgstr "La ripresa disarma i motori: arma di nuovo con il gas al minimo."
+
+msgid "Race results are not saved (%d pending): check the storage, then try again."
+msgstr "Risultati della gara non salvati (%d in attesa): controlla l’archiviazione, poi riprova."
+
+msgid "Race records restored from the previous copy."
+msgstr "Record di gara ripristinati dalla copia precedente."
+
+msgid "OSD settings not saved: they apply until you leave. The next change tries again."
+msgstr "Impostazioni OSD non salvate: valgono finché non esci. La prossima modifica riproverà."
+
+msgid "FPV QUAD CONTROLS (gamepad)"
+msgstr "COMANDI DEL QUADRICOTTERO FPV (gamepad)"
+
+msgid "FPV QUAD CONTROLS (radio)"
+msgstr "COMANDI DEL QUADRICOTTERO FPV (radio)"
+
+msgid "Throttle: %s (keyboard W/S)"
+msgstr "Gas: %s (tastiera W/S)"
+
+msgid "Yaw: %s (keyboard A/D)"
+msgstr "Imbardata: %s (tastiera A/D)"
+
+msgid "Roll: %s (keyboard Left/Right arrows)"
+msgstr "Rollio: %s (tastiera, frecce sinistra/destra)"
+
+msgid "Pitch: %s, forward = nose down (keyboard Up/Down arrows)"
+msgstr "Beccheggio: %s, avanti = muso giù (tastiera, frecce su/giù)"
+
+msgid "Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."
+msgstr "Stick: gas, imbardata, rollio e beccheggio come calibrati per la tua radio in Comandi."
+
+msgid "Arm or disarm: the Arm switch (%s). Arm with the throttle low."
+msgstr "Armare o disarmare: l’interruttore di armamento (%s). Arma con il gas al minimo."
+
+msgid "Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low."
+msgstr "Armare o disarmare: l’interruttore della radio assegnato a Carrello (%s). Arma con il gas al minimo."
+
+msgid "Arm or disarm: E or gamepad LB. Arm with the throttle low."
+msgstr "Armare o disarmare: E o LB del gamepad. Arma con il gas al minimo."
+
+msgid "Arm or disarm: E. Arm with the throttle low."
+msgstr "Armare o disarmare: E. Arma con il gas al minimo."
+
+msgid "Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro."
+msgstr "Modalità di volo: l’interruttore della modalità di volo (%s), OFF Angle, ON Acro."
+
+msgid "Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Modalità di volo Acro/Angle: M. All’inizio Acro con la radio, Angle con gamepad o tastiera."
+
+msgid "left stick sides"
+msgstr "stick sinistro ai lati"
+
+msgid "left stick up/down"
+msgstr "stick sinistro su/giù"
+
+msgid "right stick sides"
+msgstr "stick destro ai lati"
+
+msgid "right stick up/down"
+msgstr "stick destro su/giù"
+
+msgid "left trigger"
+msgstr "grilletto sinistro"
+
+msgid "right trigger"
+msgstr "grilletto destro"
+
+msgid "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
+msgstr "%d risultati di gara non sono salvati. Scegli di nuovo Torna a Home entro 8 s per scartarli."
+
+msgid "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"
+msgstr "Quadricottero FPV EdgeTX (CH5 armamento, CH6 modalità, CH9 ripartenza)"
+
+msgid "EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate."
+msgstr "Quadricottero FPV EdgeTX: stick AETR su CH1-CH4, armamento su CH5 (arma solo la posizione alta), modalità di volo su CH6 (basso Angle, centro e alto Acro), ripartenza dalla piazzola su CH9 (un interruttore momentaneo). Assegna questi interruttori nel mixer della radio, poi calibra."
+
+msgid "The EdgeTX FPV preset is available only for a radio."
+msgstr "Il preset FPV EdgeTX è disponibile solo per una radio."
+
+msgid "Could not apply the EdgeTX FPV preset: %s"
+msgstr "Impossibile applicare il preset FPV EdgeTX: %s"
+
+msgid "EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."
+msgstr "Gli interruttori FPV EdgeTX sono nella bozza. Controllali sulla radio, poi Salva per mantenerli."
+
+msgid "Restart on the pad: R or %s on the controller."
+msgstr "Riparti dalla piazzola: R o %s sul controller."
+
+msgid "Upside down: press R to return to the pad."
+msgstr "Capovolto: premi R per tornare alla piazzola."
+
+msgid "Upside down: press R or %s to return to the pad."
+msgstr "Capovolto: premi R o %s per tornare alla piazzola."
+
+msgid "PROP BROKEN"
+msgstr "ELICA ROTTA"
+
+msgid "PROP DAMAGE"
+msgstr "ELICA DANNEGGIATA"
+
+msgid "Crashes: graded (impacts can damage props)"
+msgstr "Schianti: graduati (gli impatti possono danneggiare le eliche)"
+
+msgid "Crashes: every crash ends the flight"
+msgstr "Schianti: ogni schianto termina il volo"
+
+msgid "The crash setting applies after Restart on pad."
+msgstr "L’impostazione degli schianti vale dopo Riparti dalla piazzola."
+
+msgid "rear right"
+msgstr "posteriore destra"
+
+msgid "front right"
+msgstr "anteriore destra"
+
+msgid "rear left"
+msgstr "posteriore sinistra"
+
+msgid "front left"
+msgstr "anteriore sinistra"
+
+msgid "Prop broken: %s"
+msgstr "Elica rotta: %s"
+
+msgid "Prop damaged: %s (%d%%)"
+msgstr "Elica danneggiata: %s (%d%%)"
+
+msgid "Hard landing (%.1f m/s)"
+msgstr "Atterraggio duro (%.1f m/s)"
+
+msgid "Bounced off an obstacle (%.1f m/s)"
+msgstr "Rimbalzo su un ostacolo (%.1f m/s)"
+
+msgid "EdgeTX airplane (CH5 gear, CH6 flaps, CH10 smoke, CH9 restart)"
+msgstr "EdgeTX aereo (CH5 carrello, CH6 flap, CH10 fumo, CH9 riavvio)"
+
+msgid "EdgeTX airplane: AETR sticks on CH1-CH4, landing gear on CH5 (SD), flaps on CH6 (SA, up / take-off / landing), restart on CH9 (SH, momentary), smoke on CH10 (SE). Dual rates, expo and throttle cut stay on the radio. Calibrate, then use Set up this device to check each switch."
+msgstr "EdgeTX aereo: stick AETR su CH1-CH4, carrello su CH5 (SD), flap su CH6 (SA, retratti / decollo / atterraggio), riavvio su CH9 (SH, momentaneo), fumo su CH10 (SE). Dual rate, expo e taglio motore restano nella radio. Calibra, poi usa Configura questo dispositivo per verificare ogni interruttore."
+
+msgid "The EdgeTX airplane preset is available only for a radio."
+msgstr "Il preset EdgeTX aereo è disponibile solo per una radio."
+
+msgid "Could not apply the EdgeTX airplane preset: %s"
+msgstr "Impossibile applicare il preset EdgeTX aereo: %s"
+
+msgid "EdgeTX airplane preset is in the draft. Use Set up this device to check gear, flaps and smoke on your radio, then Save."
+msgstr "Il preset EdgeTX aereo è nella bozza. Usa Configura questo dispositivo per verificare carrello, flap e fumo sulla radio, poi Salva."
+
+msgid "%s uses button %d (on while pressed). Save the profile to keep it."
+msgstr "%s usa il pulsante %d (attivo finché premuto). Salva il profilo per mantenerlo."
+
+msgid "CH%d · %s · start at %s"
+msgstr "CH%d · %s · inizia da %s"
+
+msgid "DOWN (gear down)"
+msgstr "GIÙ (carrello estratto)"
+
+msgid "UP (flaps up)"
+msgstr "SU (flap retratti)"
+
+msgid "OFF (smoke off)"
+msgstr "OFF (fumo spento)"
+
+msgid "released"
+msgstr "rilasciato"
+
+msgid "F1 or Esc → Flight overlays"
+msgstr "F1 o Esc → Sovrimpressioni di volo"
+
+msgid "Throttle cut"
+msgstr "Taglio motore"
+
+msgid "On your radio (special function)"
+msgstr "Sulla radio (funzione speciale)"
+
+msgid "Flap → elevator mix"
+msgstr "Mix flap → elevatore"
+
+msgid "Applied by your radio"
+msgstr "Applicato dalla radio"
+
+msgid "Applied by OpenRC"
+msgstr "Applicato da OpenRC"
+
+msgid "Move %s to OFF to take control"
+msgstr "Porta %s su OFF per prendere il controllo"
+
+msgid "Move its switch to OFF to take control"
+msgstr "Porta il suo interruttore su OFF per prendere il controllo"
+
+msgid "USB radio (EdgeTX): select USB Joystick (Classic) in Model setup and turn RF off. Suggested layout: AETR on CH1-CH4, landing gear CH5 (SD), flaps CH6 (SA), restart CH9 (SH), smoke CH10 (SE); dual rates, expo and throttle cut stay on the radio. Lower throttle to arm; unplugging pauses. K: calibrate. Controls → Set up this device checks each switch. F1 shows the control guide in flight. Without the switch check, assign gear AUX or Toggle landing gear in Controls."
+msgstr "Radio USB (EdgeTX): seleziona USB Joystick (Classic) in Model setup e spegni la RF. Disposizione suggerita: AETR su CH1-CH4, carrello CH5 (SD), flap CH6 (SA), riavvio CH9 (SH), fumo CH10 (SE); dual rate, expo e taglio motore restano nella radio. Abbassa il gas per armare; scollegare mette in pausa. K: calibra. Comandi → Configura questo dispositivo verifica ogni interruttore. F1 mostra la guida ai comandi in volo. Senza la verifica degli interruttori, assegna il carrello a un AUX o a «Attiva/disattiva il carrello» in Comandi."
+
+msgid "Control guide: show / hide"
+msgstr "Guida ai comandi: mostra / nascondi"
+
+msgid "Dual-rate switch (simulated rates)"
+msgstr "Interruttore doppia corsa (corse simulate)"
+
+msgid "Dual-rate switch"
+msgstr "Interruttore doppia corsa"
+
+msgid "Dual rates and expo"
+msgstr "Doppia corsa ed expo"
+
+msgid "On the radio (EdgeTX dual rates)"
+msgstr "Nella radio (doppia corsa EdgeTX)"
+
+msgid "Simulated by OpenRC (aircraft rates)"
+msgstr "Simulata da OpenRC (corse dell’aereo)"
+
+msgid "OpenRC applies no dual rates or expo: set them in the radio's Inputs (for example SC 100/75/50 %, expo 30, as the EdgeTX Plane wizard does). Calibrate with the rate switch at 100 %. The rate switch is not read."
+msgstr "OpenRC non applica doppia corsa né expo: impostali negli Inputs della radio (per esempio SC 100/75/50 %, expo 30, come fa il wizard Plane di EdgeTX). Calibra con l’interruttore delle corse al 100 %. L’interruttore non viene letto."
+
+msgid "OpenRC applies the flown aircraft's manual rates and expo: the rate switch selects normal, sport (middle) or full. On the radio: Inputs weight 100 %, expo 0, no D/R or flight-mode lines, Outputs ±100 %; add a mix CH7 = SC, weight 100. Without a switch, the Dual rates action toggles."
+msgstr "OpenRC applica le corse e l’expo del manuale dell’aereo pilotato: l’interruttore sceglie normale, sport (centro) o massima. Nella radio: Inputs peso 100 %, expo 0, nessuna riga D/R o di fase di volo, Outputs ±100 %; aggiungi un mix CH7 = SC, peso 100. Senza interruttore, l’azione doppia corsa alterna."
+
+msgid "Dual rates owner changed. Save the profile to keep it."
+msgstr "È cambiato chi applica la doppia corsa. Salva il profilo per mantenerlo."
+
+msgid "The FPV quad arms from the same switch (high end only)."
+msgstr "Il quad FPV si arma con lo stesso interruttore (solo in alto)."
+
+msgid "The FPV quad takes its flight mode from the same switch."
+msgstr "Il quad FPV prende la modalità di volo dallo stesso interruttore."
+
+msgid "LOW (normal rates)"
+msgstr "BASSO (corsa normale)"
+
+msgid "Dual rates: normal / sport / full"
+msgstr "Doppia corsa: normale / sport / massima"
+
+msgid "Simulated by OpenRC"
+msgstr "Simulata da OpenRC"
+
+msgid "Dual rates follow the radio's rate switch."
+msgstr "La doppia corsa segue l’interruttore della radio."
+
+msgid "Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on."
+msgstr "Modalità tartaruga (raddrizzarsi dopo uno schianto): %s da disarmato, arma e spingi lo stick verso il lato su cui girarsi, poi disarma per continuare a volare."
+
+msgid "Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad."
+msgstr "Capovolto: modalità tartaruga (%s), arma e spingi lo stick per raddrizzarti, oppure R per la piazzola."
+
+msgid "Download: %s"
+msgstr "Dimensione del download: %s"
+
+msgid "Skip this version"
+msgstr "Salta questa versione"
+
+msgid "Hides this notice until you open the game again."
+msgstr "Nasconde questo avviso fino alla prossima apertura del gioco."
+
+msgid "Check for updates automatically"
+msgstr "Cerca aggiornamenti automaticamente"
+
+msgid "Asks GitHub at most once a day whether a newer version is published. Nothing is downloaded or installed automatically."
+msgstr "Chiede a GitHub al massimo una volta al giorno se è stata pubblicata una versione più recente. Nulla viene scaricato o installato automaticamente."
+
+msgid "Update channel"
+msgstr "Canale di aggiornamento"
+
+msgid "Stable releases"
+msgstr "Versioni stabili"
+
+msgid "Preview releases"
+msgstr "Versioni di anteprima"
+
+msgid "Stable offers final releases only. Preview also offers test versions before their final release."
+msgstr "Stabile offre solo versioni definitive. Anteprima offre anche versioni di prova prima del rilascio finale."
+
+msgid "Check now"
+msgstr "Cerca ora"
+
+msgid "Update preferences are saved immediately."
+msgstr "Le preferenze di aggiornamento vengono salvate subito."
+
+msgid "Update checks are only available in released builds."
+msgstr "La ricerca degli aggiornamenti è disponibile solo nelle versioni pubblicate."
+
+msgid "You're using the latest version on this channel. Last checked: %s."
+msgstr "Stai usando la versione più recente di questo canale. Ultimo controllo: %s."
+
+msgid "You're using the latest version on this channel."
+msgstr "Stai usando la versione più recente di questo canale."
+
+msgid "Version %s is available (%s download)."
+msgstr "La versione %s è disponibile (download di %s)."
+
+msgid "Version %s is available."
+msgstr "La versione %s è disponibile."
+
+msgid "Version %s is available, but it has no package for this system."
+msgstr "La versione %s è disponibile, ma non c'è un pacchetto per questo sistema."
+
+msgid "Could not check for updates. Last successful check: %s."
+msgstr "Impossibile cercare gli aggiornamenti. Ultimo controllo riuscito: %s."
+
+msgid "Could not check for updates. No check has succeeded yet."
+msgstr "Impossibile cercare gli aggiornamenti. Nessun controllo è ancora riuscito."
+
+msgid "Updates have not been checked yet."
+msgstr "Gli aggiornamenti non sono ancora stati cercati."
+
+msgid "Checking for updates…"
+msgstr "Ricerca degli aggiornamenti…"
+
+msgid "Wait a moment before checking again."
+msgstr "Attendi un momento prima di cercare di nuovo."
+
+msgid "Could not save update preferences (error %d)."
+msgstr "Impossibile salvare le preferenze di aggiornamento (errore %d)."
+
+msgid "Obstacle strike"
+msgstr "Urto contro un ostacolo"
+
+msgid "Propeller strike"
+msgstr "Colpo d'elica"
+
+msgid "Hard impact"
+msgstr "Impatto violento"
+
+msgid "Gate not counted: fly straight through it"
+msgstr "Porta non contata: attraversala dritto"
+
+msgid "Automatic for this GPU: %s mode, %s scene detail."
+msgstr "Automatica per questa GPU: modalità %s, dettaglio della scena %s."
+
+msgid "GPU estimate: %s."
+msgstr "Stima della GPU: %s."
+
+msgid "measured on this GPU model"
+msgstr "misurata su questo modello di GPU"
+
+msgid "from benchmark data"
+msgstr "da dati di benchmark"
+
+msgid "extrapolated from a measured GPU"
+msgstr "estrapolata da una GPU misurata"
+
+msgid "GPU not in the table"
+msgstr "GPU non presente nella tabella"
+
+msgid "Measured in flight: %.1f ms of GPU time per frame (95th percentile)."
+msgstr "Misurato in volo: %.1f ms di GPU per fotogramma (95° percentile)."
+
+msgid "The next flight measures this GPU once and adjusts Automatic if needed."
+msgstr "Il prossimo volo misura questa GPU una volta e regola l'impostazione automatica se serve."
+
+msgid "Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."
+msgstr "Riporta la grafica alla raccomandazione per questa GPU e la misura di nuovo al prossimo volo."
+
+msgid "Help improve OpenRC Simulator"
+msgstr "Aiutaci a migliorare OpenRC Simulator"
+
+msgid "Recommended: share technical telemetry."
+msgstr "Consigliato: condividi la telemetria tecnica."
+
+msgid "If you choose Enable, we will send performance summaries such as FPS and frame-time ranges, broad CPU/GPU and memory categories, operating system, graphics renderer and API, resolution range, VSync/frame-rate cap, whether graphics settings are customized, and the built-in aircraft and activities you use. We also send the broad input method, activity duration and outcome, supported takeoff/landing and model-aircraft crash counts, and fixed categories of software errors. Model-aircraft crash counts are not application crash dumps. We use these reports to find slow configurations and improve the simulator."
+msgstr "Se scegli Attiva, invieremo riepiloghi delle prestazioni come FPS e intervalli dei tempi di frame, categorie generali di CPU/GPU e memoria, sistema operativo, renderer e API grafica, fascia di risoluzione, VSync/limite di frame rate, se le impostazioni grafiche sono personalizzate e gli aerei e le attività inclusi che usi. Inviamo anche il tipo generale di comando, la durata e l'esito dell'attività, i conteggi supportati di decolli, atterraggi e incidenti del modello e categorie fisse di errori del software. I conteggi degli incidenti del modello non sono dump di arresti anomali dell'applicazione. Usiamo questi report per trovare configurazioni lente e migliorare il simulatore."
+
+msgid "We do not send your name, email, account, device serial number, custom aircraft names, saved flight history, control inputs, files, screenshots or raw logs. A temporary random session code groups reports. It is not saved on this device and a new code is created at launch; the receiving service retains it for at most 48 hours after receipt. Our receiving service processes your IP to receive the connection, but the analytics database does not store it. Hardware and session data can still be distinctive, so we do not promise complete anonymity."
+msgstr "Non inviamo il tuo nome, l'email, l'account, il numero di serie del dispositivo, i nomi degli aerei personalizzati, la cronologia dei voli salvata, i comandi, i file, gli screenshot o i log grezzi. Un codice di sessione casuale e temporaneo raggruppa i report. Non viene salvato su questo dispositivo, ne viene creato uno nuovo a ogni avvio e il servizio di ricezione lo conserva al massimo per 48 ore dalla ricezione. Il nostro servizio di ricezione elabora il tuo indirizzo IP per ricevere la connessione, ma il database di analisi non lo memorizza. I dati hardware e di sessione possono comunque essere distintivi, quindi non promettiamo l'anonimato completo."
+
+msgid "Reports go to the receiving service operated by %s. Only reviewed summaries may be published on GitHub. You can inspect the data and turn telemetry off at any time in Settings → Interface. The simulator works the same with telemetry off."
+msgstr "I report vanno al servizio di ricezione gestito da %s. Su GitHub possono essere pubblicati solo riepiloghi verificati. Puoi controllare i dati e disattivare la telemetria in qualsiasi momento in Impostazioni → Interfaccia. Il simulatore funziona allo stesso modo senza telemetria."
+
+msgid "See exactly what we send"
+msgstr "Vedi esattamente cosa inviamo"
+
+msgid "Privacy notice"
+msgstr "Informativa sulla privacy"
+
+msgid "Continue without telemetry"
+msgstr "Continua senza telemetria"
+
+msgid "Enable telemetry and continue"
+msgstr "Attiva la telemetria e continua"
+
+msgid "Pending data stays only in memory, for at most ten minutes. The session code changes at least every four hours and at the UTC day boundary. Raw reports, temporary codes and duplicate-check keys expire within 48 hours of receipt. Summary tables without codes expire within 180 days. Reviewed public summaries on GitHub can remain indefinitely. Any temporary IP-based abuse protection is kept only in memory, for at most 15 minutes. Telemetry is separate from update checks, which you can turn off on the same Settings page."
+msgstr "I dati in attesa restano solo in memoria, per al massimo dieci minuti. Il codice di sessione cambia almeno ogni quattro ore e al cambio di giorno UTC. I report grezzi, i codici temporanei e le chiavi di deduplicazione scadono entro 48 ore dalla ricezione. Le tabelle di riepilogo senza codici scadono entro 180 giorni. I riepiloghi pubblici verificati su GitHub possono restare a tempo indeterminato. Qualsiasi protezione temporanea dagli abusi basata sull'IP è conservata solo in memoria, per al massimo 15 minuti. La telemetria è separata dalla ricerca degli aggiornamenti, che puoi disattivare nella stessa pagina delle impostazioni."
+
+msgid "Operator: %s · Contact: %s · Receiving service: %s"
+msgstr "Gestore: %s · Contatto: %s · Servizio di ricezione: %s"
+
+msgid "Data waiting to be sent"
+msgstr "Dati in attesa di invio"
+
+msgid "Nothing is waiting to be sent. Batches are sealed about once a minute while telemetry is on."
+msgstr "Non c'è nulla in attesa di invio. Con la telemetria attiva, i lotti vengono chiusi circa una volta al minuto."
+
+msgid "Performance summaries, broad hardware categories and the built-in aircraft you fly, sent only while this is on. Separate from update checks."
+msgstr "Riepiloghi delle prestazioni, categorie hardware generali e gli aerei inclusi che piloti, inviati solo mentre questa opzione è attiva. Separata dalla ricerca degli aggiornamenti."
+
+msgid "Share technical telemetry"
+msgstr "Condividi la telemetria tecnica"
+
+msgid "Telemetry is not available in this build."
+msgstr "La telemetria non è disponibile in questa build."
+
+msgid "Telemetry is on. Batches sent this session: %d."
+msgstr "La telemetria è attiva. Lotti inviati in questa sessione: %d."
+
+msgid "Telemetry is off until you choose."
+msgstr "La telemetria resta disattivata finché non scegli."
+
+msgid "Telemetry is off: it is not offered in this language yet. Switch to English or Spanish to choose."
+msgstr "La telemetria è disattivata: non è ancora disponibile in questa lingua. Passa all'inglese o allo spagnolo per scegliere."
+
+msgid "The receiving service paused telemetry, so it is off until you restart the simulator."
+msgstr "Il servizio di ricezione ha sospeso la telemetria, quindi resta disattivata finché non riavvii il simulatore."
+
+msgid "The saved telemetry choice could not be read, so telemetry is off."
+msgstr "Impossibile leggere la scelta di telemetria salvata, quindi la telemetria è disattivata."
+
+msgid "Telemetry is off."
+msgstr "La telemetria è disattivata."
+
+msgid "Could not save the telemetry choice (error %d). It applies to this session; check it again after restarting."
+msgstr "Impossibile salvare la scelta di telemetria (errore %d). Vale per questa sessione; ricontrollala dopo il riavvio."
+
+msgid "Telemetry is on · Settings → Interface"
+msgstr "Telemetria attiva · Impostazioni → Interfaccia"
+
+msgid "Telemetry is off · Settings → Interface"
+msgstr "Telemetria disattivata · Impostazioni → Interfaccia"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "I voli di prova usano questa configurazione OpenRC stimata, non il modello di volo ClearView. Sono sperimentali."
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "La configurazione OpenRC scelta appartiene a un altro modello. Scegli di nuovo la configurazione per questo modello."
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "Sono state omesse %s superfici autointersecanti."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "Il poligono %s della parte \"%s\" ha spigoli che si intersecano e il modello ha troppe superfici di questo tipo per ometterle."
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "I metadati JPEG (fotocamera, profilo colore o dati dell’editor) sono stati ignorati."
+
+msgid "Only the first GIF frame was imported."
+msgstr "È stato importato solo il primo fotogramma della GIF."
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "Sono state ignorate %s righe di etichetta dell’editor nei parametri del modello."
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "Questo formato di texture non è ancora supportato. Converti la texture in PNG, JPEG o GIF standard o in BMP a 24 bit non compresso e aggiorna il suo riferimento nel modello."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "Non è stato possibile leggere %s marcatori di coordinate. Sono stati nascosti; collega manualmente le loro parti mobili."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Cerniera «%s»: non è stato possibile leggere il suo marcatore di coordinate. Collega questa parte manualmente in Parti mobili."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s parti usano la suddivisione AC3D. Viene mostrata la loro forma di controllo non levigata."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Manca la texture %s; è stato usato il file omonimo %s."
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "I parametri non indicano alcun file di modello; è stato usato %s, il predefinito di ClearView."
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "Sono supportati solo parametri di modello ClearView piatti v0-v5 e a sezioni v6."
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "Il volo in elicottero non è ancora disponibile nel Creator. Puoi visualizzare questo modello, configurarne le parti mobili e salvarlo come bozza."
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "%s parti fisse sono state unite per rispettare il limite di mesh del Creator. Non possono essere collegate come parti mobili."
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "La texture %s punta fuori dallo ZIP e non è inclusa. Quelle parti usano il loro colore semplice."
+
+msgid "Fly with trainer physics?"
+msgstr "Volare con la fisica da addestratore?"
+
+msgid "Fly with the trainer physics"
+msgstr "Vola con la fisica da addestratore"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "La configurazione OpenRC stimata non può far volare questo modello: %s\n\nPuò invece volare con la fisica dell’addestratore elettrico Ugly Stick standard, mostrata con l’aspetto di questo modello adattato alla sua apertura alare di %s m. Non è il modello di volo di ClearView."

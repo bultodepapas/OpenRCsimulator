@@ -1,9 +1,16 @@
 # Local GitHub history
 
-This tool archives the GitHub repository's daily traffic buckets and observes
-release ZIP download counters. It writes a local SQLite database and a small
+This tool archives the GitHub repository's daily traffic and clone buckets and
+observes release ZIP download counters, repository counters (stars, forks,
+watchers, open issues), the 14-day top referrers and popular paths, published
+releases and stars per UTC day. It writes a local SQLite database and a small
 HTML/CSV report; it does not send data anywhere except the read-only GitHub API
-requests made by the installed GitHub CLI.
+requests made by the installed GitHub CLI. The [statistics dashboard](../telemetry/README.md)
+charts everything in the archive.
+
+Stargazers are reduced to the UTC day of each star; no login or profile is
+stored. Archive schema version 2 adds the clone and community tables; a version
+1 archive is upgraded in place by its next `collect`.
 
 The existing `gh` authentication is used directly. Nothing reads or exports its
 token. `GH_TOKEN` or `GITHUB_TOKEN`, if set, take precedence according to `gh`'s

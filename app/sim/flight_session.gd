@@ -3120,6 +3120,7 @@ func _physics_process(_delta: float) -> void:
 			if flaps_available() and not sim.paused and not radio.profile.get("aux", {}).get("flaps", {}).is_empty() \
 					and radio.auxiliary_request_valid("flaps"):
 				_flap_requested = radio.auxiliary_amount("flaps")
+			_apply_rate_switch()
 			if controller_cut_held:
 				controller_throttle_cut()
 				commands.throttle = 0.0
@@ -4166,10 +4167,26 @@ func _flight_ready() -> bool:
 	return _has_valid_start() and not _weather_pending_reset and not _shaft_pending_reset and sim.fault_reason.is_empty()
 
 
-## Radios supply transmitter-shaped commands. Calibrated joysticks use simulator rates.
+## Radios supply transmitter-shaped commands unless their profile asks OpenRC to simulate the rates (D6-ETX-08,
+## `rates_owner`: the radio then sends linear sticks). Calibrated joysticks use simulator rates.
 func rate_profile_available() -> bool:
 	return aircraft.get("ok", false) and aircraft.model.controls.has("rates") and not external_driver_enabled \
-		and not (radio.connected and radio.profile.get("kind", "radio") == "radio")
+		and not (radio.connected and ControllerProfile.rates_owner(radio.profile) == "transmitter")
+
+
+## D6-ETX-08: a bound dual-rate switch selects the profile by position at the input boundary (beside flaps and gear).
+## Without fresh OFF evidence it has no command and the current profile stays. Flight logs record the change through
+## rate_profile_changed and the post-rate inputs, so a replay needs no live switch.
+func _apply_rate_switch() -> void:
+	if sim.paused or not rate_profile_available():
+		return
+	var selected: String = radio.rate_switch_profile()
+	if selected.is_empty() or selected == rate_profile:
+		return
+	rate_profile = selected
+	if selected != "normal":
+		_high_rate_profile = selected
+	rate_profile_changed.emit(rates_active())
 
 
 ## D6e: true while the aircraft's normal or sport profile shapes the sticks.
@@ -4193,7 +4210,7 @@ func rate_profile_label() -> String:
 ## has no controls.rates or a radio is connected (it keeps its own rates). Only the input layer changes: the next tick
 ## samples the new shaping, and flight logs record post-rate inputs, so a replay reproduces the switch exactly.
 func toggle_rate_profile() -> bool:
-	if not rate_profile_available():
+	if not rate_profile_available() or radio.has_rate_switch():
 		return false
 	if rate_profile == "normal":
 		rate_profile = _high_rate_profile

@@ -37,6 +37,7 @@ const SHORTCUTS := [
 	[[KEY_U, KEY_Y], "Canopy open / close · tailhook lower / raise"],
 	[[KEY_N], "Dual rates: normal / high"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
+	[[KEY_F1], "Control guide: show / hide"],
 	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
 	[[KEY_F6, KEY_F7, KEY_F8, KEY_F9], "Glow: cut, starter, lean/rich mixture"],

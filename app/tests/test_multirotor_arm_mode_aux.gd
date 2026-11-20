@@ -158,7 +158,7 @@ func _capabilities() -> void:
 		and ControllerActions.aux_applies("gear", plane) and not ControllerActions.aux_applies("gear", quad)
 		and not ControllerActions.aux_applies("smoke", quad) and ControllerActions.aux_applies("unknown_future", {}))
 	_check("the shared AUX list keeps the airplane channels first", ControllerActions.AUX_CHANNEL_IDS
-		== PackedStringArray(["smoke", "flaps", "gear", "arm", "flight_mode"]))
+		== PackedStringArray(["smoke", "flaps", "gear", "rates", "arm", "flight_mode"])) # D6-ETX-07 rate switch
 
 
 ## The hard requirement: a profile saved before D6-UX-01 with the arm switch on the Landing gear AUX still arms.
@@ -350,9 +350,15 @@ func _validation() -> void:
 	var same_button := _radio_profile({"gear": {"type": "button", "button": 20, "mode": "level"},
 		"arm": {"type": "button", "button": 20, "mode": "level"}})
 	report = ControllerProfile.validate(same_button)
-	_check("Arm and Landing gear on one button conflict", not report.ok and str(report.errors).contains("aux.gear and aux.arm"), str(report.errors))
+	# D6-ETX-05 (docs/plans/edgetx-airplane-controls.md): one EdgeTX profile may give a control a quad meaning and an
+	# airplane meaning (CH5 arm / landing gear); two channels of the same vehicle still conflict.
+	_check("Arm and Landing gear may share one button (quad and airplane)", report.ok, str(report.errors))
+	var same_vehicle := _radio_profile({"flight_mode": {"type": "button", "button": 20, "mode": "level"},
+		"arm": {"type": "button", "button": 20, "mode": "level"}})
+	report = ControllerProfile.validate(same_vehicle)
+	_check("Arm and Flight mode on one button conflict", not report.ok and str(report.errors).contains("aux.arm and aux.flight_mode"), str(report.errors))
 	var switch_overlap := _radio_profile({"flight_mode": {"type": "switch", "buttons": [20, 21], "invert": false},
-		"smoke": {"type": "button", "button": 21, "mode": "level"}})
+		"arm": {"type": "button", "button": 21, "mode": "level"}})
 	report = ControllerProfile.validate(switch_overlap)
 	_check("a Flight mode switch reserves every member button", not report.ok and str(report.errors).contains("flight_mode"), str(report.errors))
 	var action_conflict := _radio_profile({"arm": {"type": "button", "button": 20, "mode": "level"}})
@@ -440,10 +446,12 @@ func _setup_rows() -> void:
 	var committed: bool = quad._commit_aux_binding("arm", _axis(5), false)
 	_check("assigning Arm clears the hint and hides the gear row", committed and not quad.aux_legacy_arm_hint.visible
 		and not _row(quad, "gear").visible and quad._draft_profile.aux.has("gear"))
-	_check("a conflicting Flight mode switch is rejected by the shared validator",
-		not quad._commit_aux_binding("flight_mode", {"type": "switch", "buttons": [7, 8], "invert": false}, false)
-		and not quad._draft_profile.aux.has("flight_mode"))
-	_check("the rejection reveals the hidden Smoke row it conflicts with", quad.show_all_vehicle_aux.button_pressed and _row(quad, "smoke").visible)
+	_check("a Flight mode switch may share the hidden airplane Smoke button (D6-ETX-05)",
+		quad._commit_aux_binding("flight_mode", {"type": "switch", "buttons": [7, 8], "invert": false}, false)
+		and quad._draft_profile.aux.has("flight_mode") and quad._draft_profile.aux.has("smoke") and not _row(quad, "smoke").visible)
+	quad._commit_aux_binding("arm", {"type": "button", "button": 10, "mode": "level"}, false)
+	_check("a Flight mode switch on the Arm button is rejected by the shared validator",
+		quad._draft_profile.aux.arm.type == "button" and not quad._commit_aux_binding("flight_mode", {"type": "switch", "buttons": [10, 11], "invert": false}, false))
 	quad.show_all_vehicle_aux.button_pressed = false
 	quad._draft_profile = ControllerProfile.defaults("gamepad", "mode2")
 	quad._draft_profile.aux = {"gear": {"type": "button", "button": 20, "mode": "level"}}

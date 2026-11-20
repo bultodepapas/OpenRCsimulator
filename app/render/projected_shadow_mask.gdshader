@@ -5,9 +5,12 @@ uniform mat3 aircraft_basis;
 uniform vec3 light_direction = vec3(0.0, 1.0, 0.0);
 uniform vec2 frame_center;
 uniform float frame_size = 2.0;
+// SA-03: an articulated part's live transform in the model frame; identity for the static mesh.
+uniform mat3 part_basis = mat3(1.0);
+uniform vec3 part_origin = vec3(0.0);
 
 void vertex() {
-	vec3 p = aircraft_basis * VERTEX;
+	vec3 p = aircraft_basis * (part_basis * VERTEX + part_origin);
 	vec2 ground = p.xz - light_direction.xz * p.y / max(light_direction.y, 0.05);
 	vec2 clip = (ground - frame_center) * 2.0 / frame_size;
 	// Compatibility render targets flip clip Y: +z must become +V on PlaneMesh.

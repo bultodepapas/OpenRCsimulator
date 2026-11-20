@@ -120,6 +120,8 @@ func _ready() -> void:
 		_disable()
 		return
 	add_child(visual.root)
+	# SA-08: a Projected shadow selection also gives the blimp its planar shadow.
+	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting, _ground_height_render)
 	# The model child carries the Workshop size; the root keeps the accepted pose only.
 	visual.model.scale = Vector3.ONE * _size
 	if not workshop_trial.is_empty() and visual.has_method("apply_presentation"):
@@ -612,6 +614,9 @@ func _swap_skin(next_skin: String) -> void:
 	skin_id = next_skin
 	add_child(visual.root)
 	visual.model.scale = Vector3.ONE * _size
+	var shadow_cue := get_node_or_null("VehicleShadowCue")
+	if shadow_cue != null:
+		shadow_cue.set_vehicle(visual.root) # rebinds the new skin's silhouette on its next frame
 	_configure_lights()
 	_process(0.0)
 

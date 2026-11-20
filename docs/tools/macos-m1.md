@@ -16,6 +16,24 @@ reused engine and new frozen evidence. This does not qualify a native evaluator
 or renew the historical rendered campaign. The separate `angel` mDNS alias did
 not resolve in that session.
 
+**2026-11-18 ANGEL rendered use:** `angel-setup-20261107` is gone. The verified official engine
+(`4.8.beta2.official.cafc17a19`, `codesign` strict OK) is now
+`/Users/g/OpenRC-m1-work/display-probe-20261118/engine/Godot.app/Contents/MacOS/Godot`. A
+source archive of `04d6cde2c` imported with zero errors into `shadows-20261118/`, and rendered
+Mobile/Metal and Forward+/Metal runs worked over SSH with the console session logged in. Metal's
+per-viewport GPU timers overlap on this tile-based GPU; compare wall time per frame. Results:
+[shadow audit closure](../research/visual-quality-implementation/VQ-04b/shadow-audit-closure-2026-11-18/README.md#apple-m1-angel-19201080).
+Only `/usr/bin/python3` 3.9 is present; the venv path below is absent.
+
+**2026-11-18 ANGEL graphics ladder:** `gfx-ladder-20261118/src` is an APFS clone of that snapshot plus the
+63 files changed up to `212e9e7e4`, verified file-by-file against a `git archive` manifest; its project is
+renamed `OpenRC GFX Ladder 20261118` so `user://` stays isolated. The app reads the player's display settings
+from `user://settings.cfg.display` (not `display.cfg`). ANGEL's main display was then an external HDMI
+1920×1080 at 60 Hz mirrored to the built-in panel (scale 1), so 1080p was the target; the native-panel
+target needs the mirror switched off. The fanless Air reaches macOS thermal state `fair` within one
+two-minute flight. Method and tools: [graphics ladder](../../research/performance/graphics_ladder/README.md);
+results: [DT-MAC-03b evidence](../research/desktop-delivery-investigations/DT-MAC-03b/README.md).
+
 **2026-11-14 connection refresh:** both Macs are reachable directly from Windows
 over Tailscale using retained SSH keys. ANGEL's new Tailscale route matches its
 previously trusted LAN host key. The permanent aliases and current tool paths
@@ -183,8 +201,9 @@ Python; it was reinstalled at the same pin after Apple tools became available
 to complete its library install-name setup. These are headless source checks;
 the full suite, native compilation, GUI, GPU/performance and release gates
 still need their own evidence. No task-owned Godot process remains running.
-The original Mac's built-in-display exception below does not apply to ANGEL;
-use the repository's 1920×1080 priority for future rendered qualification.
+Since 2026-11-18 every MacBook's built-in Retina panel at its native resolution is the product target (see the
+[AGENTS exception](../../AGENTS.md#display-resolution-priorities)), so this applies to ANGEL's built-in display too.
+Use 1920×1080 only for external-display rendered qualification.
 
 Bootstrap references checked November 7: [uv installation](https://docs.astral.sh/uv/getting-started/installation/),
 [managed Python versions](https://docs.astral.sh/uv/concepts/python-versions/)
@@ -504,8 +523,9 @@ to accept a failed run; preserve the failure and collect a fresh complete run.
 For this Mac, the user authorizes the built-in display instead of an external
 1080p screen. The panel is 2560×1600; desktop logical size and Godot's reported
 screen/viewport can differ. Record requested, reported, internal and drawable
-dimensions separately; unknown drawable pixels stay unknown. This exception
-does not change the repository's 1080p product priority. Uncapped throughput,
+dimensions separately; unknown drawable pixels stay unknown. The native panel is
+the Mac product target ([AGENTS exception](../../AGENTS.md#display-resolution-priorities)); external displays keep
+the 1080p priority. Uncapped throughput,
 60 Hz pacing, observer overhead and final-package qualification are separate.
 
 After measurement, retrieve only the relevant complete output directories. From

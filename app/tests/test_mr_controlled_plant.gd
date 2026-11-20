@@ -332,6 +332,14 @@ func _stage_equivalence() -> void:
 				result.derivative[i], law)
 			force = M.add(force, loads.force)
 			moment = M.add(moment, loads.moment)
+			if frame.continuous[i] < 0.0:
+				# DR-19e reverse law: a backward-spinning prop pushes toward the belly (+z) at the declared efficiency
+				# and its drag torque opposes the reversed spin.
+				var w: float = frame.continuous[i]
+				var push: float = float(data.rotor_law.thrust_coefficient_n_s2) * Plant.REVERSE_PROP_EFFICIENCY * w * w
+				var drag: float = -float(data.rotor_law.torque_coefficient_n_m_s2) * Plant.REVERSE_PROP_EFFICIENCY * w * w
+				force = M.add(force, M.v3(0.0, 0.0, push))
+				moment = M.add(moment, M.add(M.cross(rotor.hub_frd, M.v3(0.0, 0.0, push)), M.v3(0.0, 0.0, float(rotor.spin) * drag)))
 		for i in 3:
 			worst = maxf(worst, absf(result.loads[i] - force[i]) / maxf(1.0, absf(force[i])))
 			worst = maxf(worst, absf(result.loads[3 + i] - moment[i]) / maxf(1.0, absf(moment[i])))
@@ -419,7 +427,7 @@ func _pad_and_crash() -> void:
 	var h: Dictionary = Fixtures.install(root, data)
 	var sim: Node = h.sim
 	var message: String = Fixtures.reset(sim, h.plant.initial_frame(Fixtures.body(Fixtures.REST_HEIGHT_M)), FC.neutral_input())
-	_check("the electrical plant installs with eight continuous values", h.ok and message.is_empty() and sim.model.continuous_size == 8, message)
+	_check("the electrical plant installs with twelve continuous values (DR-19c: four prop health factors)", h.ok and message.is_empty() and sim.model.continuous_size == Plant.ELECTRIC_CONTINUOUS and Plant.ELECTRIC_CONTINUOUS == 12, message)
 	var ok: bool = Fixtures.run(sim, FC.neutral_input(), 480)
 	_check("CONTACT-01 the disarmed airframe rests on its feet at the solved static sag",
 		ok and absf(-sim.state[RB.POS + 2] - Fixtures.REST_HEIGHT_M) < 5e-4 and absf(sim.state[RB.VEL + 2]) < 1e-4

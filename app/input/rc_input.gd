@@ -6,6 +6,7 @@ extends RefCounted
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const EdgeTxRadio := preload("res://input/edgetx_radio.gd")
 const AXES := 10
 const ARM_THROTTLE := 0.05
 
@@ -50,10 +51,18 @@ var axes := PackedFloat64Array()
 var smoke_aux = SmokeAux.new()
 ## These are input requests, not simulated flap/gear actuator positions. D6-UX-01: "arm" and "flight_mode" are the
 ## FPV quad's arm and Angle/Acro switches (read by multirotor_input.gd); they have no semantic toggle actions.
-var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "arm": SmokeAux.new(), "flight_mode": SmokeAux.new()}
-const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "arm": 0.0, "flight_mode": 0.0}
+## D6-ETX-07: "rates" is the airplane's dual-rate switch (0 = normal … 1 = full), read only for simulated rates.
+var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "rates": SmokeAux.new(), "arm": SmokeAux.new(),
+	"flight_mode": SmokeAux.new()}
+const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "rates": 0.0, "arm": 0.0, "flight_mode": 0.0}
+## D6-ETX-07: rate profiles selected by the rates switch's position band (low, middle, high). A two-position switch
+## gives normal / full; a three-position switch normal / sport / full.
+const RATE_SWITCH_PROFILES: PackedStringArray = ["normal", "sport", "full"]
 var _aux_action_values := _AUX_ACTION_DEFAULTS.duplicate()
 var _auxiliary_enabled := true
+## D6-ETX-04: the flown aircraft's flap detents (ascending fractions 0…1), set by the airplane activity; [] = none.
+## Only a flaps binding with `detents: "aircraft"` snaps to them.
+var _flap_detents: Array[float] = []
 
 var _seen: Dictionary = {}
 var _throttle_low_seen := false
@@ -94,7 +103,7 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(candidate) if not candidate.is_empty() else {}
 	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
 	var radio_hint := JetiRadio.matches(info) or str(info.get("kind", "")) == "radio" \
-		or (looks_like_radio(device_name) and not jeti_claim)
+		or (looks_like_radio(device_name) and not jeti_claim) or EdgeTxRadio.classifies_as_radio(info)
 	if not upgraded.is_empty():
 		if not _activate_profile(upgraded, "calibrated", false):
 			# Keep a repairable radio draft and raw readings, but never arm it.
@@ -468,7 +477,40 @@ func auxiliary_amount(channel_name: String) -> float:
 	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return 0.0
 	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)
 	if channel == null: return 0.0
-	return channel.amount() if not channel.binding.is_empty() else float(_aux_action_values.get(channel_name, 0.0))
+	if channel.binding.is_empty():
+		return float(_aux_action_values.get(channel_name, 0.0))
+	if channel_name == "flaps" and str(channel.binding.get("detents", "")) == "aircraft":
+		return SmokeAux.snap_to_detents(channel.amount(), _flap_detents)
+	return channel.amount()
+
+
+## D6-ETX-07: whether the profile binds a dual-rate switch (it then owns the rate choice; the toggle is refused).
+func has_rate_switch() -> bool:
+	return connected and _profile_ready and not _extra_aux.rates.binding.is_empty()
+
+
+## D6-ETX-07: the rate profile the bound rates switch selects now ("normal", "sport" or "full"), or "" when no switch
+## is bound or it has no valid command yet (not seen at OFF since the last boundary: keep the current profile).
+func rate_switch_profile() -> String:
+	if not has_rate_switch() or not auxiliary_request_valid("rates"):
+		return ""
+	var amount := clampf(auxiliary_amount("rates"), 0.0, 1.0)
+	var index := clampi(int(floor(amount * float(RATE_SWITCH_PROFILES.size()))), 0, RATE_SWITCH_PROFILES.size() - 1)
+	return RATE_SWITCH_PROFILES[index]
+
+
+## D6-ETX-04: the flap detents of the aircraft being flown (main.gd's keyboard detents: up, take-off, full). Invalid
+## entries are dropped; fewer than two detents disable snapping.
+func set_flap_detents(detents: Array) -> void:
+	_flap_detents.clear()
+	for detent: Variant in detents:
+		if typeof(detent) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(detent)):
+			_flap_detents.append(clampf(float(detent), 0.0, 1.0))
+	_flap_detents.sort()
+
+
+func flap_detents() -> Array[float]:
+	return _flap_detents.duplicate()
 
 
 ## Whether auxiliary_amount(channel_name) is a pilot command now (external audit A6 F2). A pause, menu or focus

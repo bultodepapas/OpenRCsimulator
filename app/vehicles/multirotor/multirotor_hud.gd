@@ -36,14 +36,19 @@ const BLOCK_REASONS := {
 const NOT_READY_REASON := "Controller not ready"
 const NOT_READY_TEXT := "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 const CAMERA_NAMES := {"fpv": "FPV", "chase": "Chase", "pilot": "Pilot"}
-const HELP_LINES := [
+## Audit A18: the controls part of the help (header, sticks, arm, flight mode) follows the active source and its
+## effective bindings (controls_help_lines); HELP_LINES is the part every source shares.
+const KEYBOARD_HELP := [
 	"FPV QUAD CONTROLS (Mode 2)",
 	"Throttle: left stick up/down (W/S)",
 	"Yaw: left stick sides (A/D)",
 	"Roll: right stick sides (Left/Right arrows)",
 	"Pitch: right stick forward = nose down (Up/Down arrows)",
-	"Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low.",
-	"Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start.",
+]
+## SDL standard gamepad axes 0-5 as the help names them.
+const GAMEPAD_AXIS_NAMES := ["left stick sides", "left stick up/down", "right stick sides", "right stick up/down",
+	"left trigger", "right trigger"]
+const HELP_LINES := [
 	"Gamepad stick and keyboard throttle: hold up to add power, down to reduce it.",
 	"Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start.",
 	"C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view",
@@ -55,6 +60,8 @@ const HELP_LINES := [
 	"F10: start/stop the flight log   F11: log marker",
 	"Estimated, unvalidated physics: not a model of a real quad.",
 ]
+## Audit A17: an OSD change that could not be written to the settings file.
+const OSD_UNSAVED_TEXT := "OSD settings not saved: they apply until you leave. The next change tries again."
 ## Pack display conventions of FPV OSDs (pilot warnings, not physics and not the ESC cutoff): average resting/loaded
 ## cell voltage below 3.6 V is shown amber, below 3.4 V red with a LAND NOW warning.
 const CELL_CAUTION_V := 3.6
@@ -105,6 +112,10 @@ var _slow_due := 0.0
 var _shown := {}
 ## _tr() results by source string for the current locale (cleared when the language changes).
 var _tr_cache := {}
+## The controls the help currently describes (set_controls_help; audit A18).
+var _controls_help := {}
+## Audit A17: the shown OSD configuration differs from the saved one (the last save failed).
+var osd_unsaved := false
 var tag: Label
 var fixture_label: Label
 var mode_label: Label
@@ -183,6 +194,9 @@ var _rate_reset_resume := false
 var _terminal := ""
 ## Throttle limit {active: the flight's, pending: the next prepare's}.
 var _limit := {active = 1.0, pending = 1.0}
+## DR-19c: the crash law of the prepared flight and the one the next Restart on pad applies ("graded" or "strict").
+var _crash_model := {active = "graded", pending = "graded"}
+var crash_button: Button
 ## Last drawn OSD geometry state (horizon, throttle) for the draw callback.
 var _draw_state := {}
 ## Colours last applied per label: a theme override notifies a theme change (text re-layout), so it is set only when
@@ -524,6 +538,9 @@ func _build_menu(s: float) -> void:
 	limit_note.add_theme_color_override("font_color", UiTheme.CAUTION)
 	limit_note.visible = false
 	box.add_child(limit_note)
+	crash_button = _button(box, "", "crash_model")
+	crash_button.name = "CrashModel"
+	crash_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	osd_button = _local_button(box, "OsdSettingsButton", toggle_osd_settings)
 	course_button = _button(box, "", "course")
 	course_button.name = "Course"
@@ -546,7 +563,10 @@ func _build_menu(s: float) -> void:
 	settings_panel.offset_left = 300.0 * s
 	settings_panel.offset_right = 300.0 * s
 	settings_panel.visible = false
-	settings_panel.config_changed.connect(func(next: Dictionary) -> void: _apply_config(next, true))
+	settings_panel.config_changed.connect(func(next: Dictionary) -> void:
+		_apply_config(next, true)
+		if osd_unsaved:
+			flash(_tr(OSD_UNSAVED_TEXT), 4.0))
 	settings_panel.closed.connect(func() -> void:
 		settings_panel.visible = false
 		osd_button.grab_focus())
@@ -598,15 +618,17 @@ func _tr(source: String) -> String:
 	return hit
 
 
-## Adopt an OSD configuration (validated), save it when asked and a path is set, and show it everywhere.
+## Adopt an OSD configuration (validated), save it when asked and a path is set, and show it everywhere. Audit A17: a
+## failed save keeps the change for this session and says so (osd_unsaved); every later change saves the whole
+## configuration again, so a repaired storage takes the current choice. The direct route (no path) is in memory by design.
 func _apply_config(next: Dictionary, save: bool) -> void:
 	osd_config = Osd.sanitize(next)
 	_elements = Osd.elements_of(osd_config)
 	_shown = {}
 	for element: String in _elements:
 		_shown[element] = true
-	if save:
-		Osd.save_config(prefs_path, osd_config)
+	if save and not prefs_path.is_empty():
+		osd_unsaved = not Osd.save_config(prefs_path, osd_config)
 	if settings_panel != null:
 		settings_panel.show_config(osd_config)
 	_next_refresh = 0.0
@@ -618,13 +640,17 @@ func cycle_layout() -> void:
 	var next := osd_config.duplicate(true)
 	next.layout = Osd.next_in(Osd.LAYOUTS, str(osd_config.layout))
 	_apply_config(next, true)
-	flash(_tr("OSD layout: %s") % _tr(str(Osd.LAYOUT_NAMES[osd_config.layout])), 1.5)
+	var shown := _tr("OSD layout: %s") % _tr(str(Osd.LAYOUT_NAMES[osd_config.layout]))
+	flash(shown + "
+" + _tr(OSD_UNSAVED_TEXT) if osd_unsaved else shown, 4.0 if osd_unsaved else 1.5)
 
 
 func cycle_units() -> void:
 	var next := osd_config.duplicate(true)
 	next.units = Osd.next_in(Osd.UNITS, str(osd_config.units))
 	_apply_config(next, true)
+	if osd_unsaved:
+		flash(_tr(OSD_UNSAVED_TEXT), 4.0)
 
 
 ## Open or close the OSD settings beside the pause menu.
@@ -669,8 +695,79 @@ func _notification(what: int) -> void:
 		_update_texts()
 
 
-func _update_texts() -> void:
+## The active source's controls for the help (bindings from the activity: source, axes, arm_button, arm_aux,
+## arm_control, mode_button, mode_switch, mode_control). Updates the help only when they change.
+func set_controls_help(bindings: Dictionary) -> void:
+	var key := {}
+	for field: String in ["source", "axes", "arm_button", "arm_aux", "arm_control", "mode_button", "mode_switch",
+			"mode_control", "pause_button", "restart_control", "turtle", "turtle_button"]:
+		key[field] = bindings.get(field)
+	if key == _controls_help:
+		return
+	_controls_help = key
+	if help != null:
+		_update_texts()
+
+
+## Translated controls lines for `bindings` (see set_controls_help); the keyboard and an unknown source keep the
+## Mode 2 keyboard layout. A switch-bound arm or mode names that switch only: its key and button toggles are off.
+func controls_help_lines(bindings: Dictionary) -> PackedStringArray:
 	var lines := PackedStringArray()
+	var source := str(bindings.get("source", "keyboard"))
+	match source:
+		"gamepad":
+			var axes: Dictionary = bindings.get("axes", {}) if typeof(bindings.get("axes")) == TYPE_DICTIONARY else {}
+			lines.append(_tr("FPV QUAD CONTROLS (gamepad)"))
+			lines.append(_tr("Throttle: %s (keyboard W/S)") % _axis_text(axes.get("throttle", -1)))
+			lines.append(_tr("Yaw: %s (keyboard A/D)") % _axis_text(axes.get("yaw", -1)))
+			lines.append(_tr("Roll: %s (keyboard Left/Right arrows)") % _axis_text(axes.get("roll", -1)))
+			lines.append(_tr("Pitch: %s, forward = nose down (keyboard Up/Down arrows)") % _axis_text(axes.get("pitch", -1)))
+		"radio":
+			lines.append(_tr("FPV QUAD CONTROLS (radio)"))
+			lines.append(_tr("Sticks: throttle, yaw, roll and pitch as calibrated for your radio in Controls."))
+		_:
+			for line: String in KEYBOARD_HELP:
+				lines.append(_tr(line))
+	var arm_aux := str(bindings.get("arm_aux", ""))
+	if arm_aux == "arm":
+		lines.append(_tr("Arm or disarm: the Arm switch (%s). Arm with the throttle low.") % str(bindings.get("arm_control", "")))
+	elif arm_aux == "gear":
+		lines.append(_tr("Arm or disarm: the radio switch set as Landing gear (%s). Arm with the throttle low.") \
+			% str(bindings.get("arm_control", "")))
+	elif not str(bindings.get("arm_button", "")).is_empty():
+		lines.append(_tr("Arm or disarm: E or gamepad LB. Arm with the throttle low."))
+	else:
+		lines.append(_tr("Arm or disarm: E. Arm with the throttle low."))
+	if bindings.get("mode_switch") == true:
+		lines.append(_tr("Flight mode: the Flight mode switch (%s), OFF Angle, ON Acro.") % str(bindings.get("mode_control", "")))
+	elif not str(bindings.get("mode_button", "")).is_empty():
+		lines.append(_tr("Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."))
+	else:
+		lines.append(_tr("Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."))
+	var restart := str(bindings.get("restart_control", "")) if bindings.get("restart_control") != null else ""
+	if not restart.is_empty():
+		lines.append(_tr("Restart on the pad: R or %s on the controller.") % restart)
+	lines.append(_tr("Turtle mode (flip over after a crash): %s while disarmed, arm and push the stick toward the side to flip to, then disarm to fly on.")
+		% turtle_controls(bindings))
+	return lines
+
+
+## DR-19e: the turtle-mode toggle(s) of the active source ("F", or "F / Y" with a gamepad).
+static func turtle_controls(bindings: Dictionary) -> String:
+	var key := str(bindings.get("turtle", "F")) if bindings.get("turtle") != null else "F"
+	var button := str(bindings.get("turtle_button", "")) if bindings.get("turtle_button") != null else ""
+	return key if button.is_empty() else "%s / %s" % [key, button]
+
+
+func _axis_text(axis: Variant) -> String:
+	var index := int(axis) if typeof(axis) in [TYPE_INT, TYPE_FLOAT] else -1
+	if index >= 0 and index < GAMEPAD_AXIS_NAMES.size():
+		return _tr(str(GAMEPAD_AXIS_NAMES[index]))
+	return _tr("axis %d") % index if index >= 0 else _tr("Unbound")
+
+
+func _update_texts() -> void:
+	var lines := controls_help_lines(_controls_help)
 	for line: String in HELP_LINES:
 		lines.append(_tr(line))
 	if not variant_text.is_empty():
@@ -686,6 +783,12 @@ func _update_texts() -> void:
 	limit_button.text = _tr("Throttle limit: %d%%") % int(round(100.0 * float(_limit.pending)))
 	limit_note.text = _tr("Throttle limit %d%% applies after Restart on pad.") % int(round(100.0 * float(_limit.pending)))
 	limit_note.visible = absf(float(_limit.pending) - float(_limit.active)) > 1.0e-6
+	if crash_button != null:
+		crash_button.text = _tr("Crashes: graded (impacts can damage props)") if str(_crash_model.pending) == "graded" 			else _tr("Crashes: every crash ends the flight")
+		if str(_crash_model.pending) != str(_crash_model.active):
+			limit_note.text = (limit_note.text + "
+" if limit_note.visible else "") + _tr("The crash setting applies after Restart on pad.")
+			limit_note.visible = true
 	osd_button.text = _tr("OSD settings")
 	course_button.text = _tr("Course: %s") % _tr(_course_name)
 	_update_race_note()
@@ -717,6 +820,12 @@ func toggle_help() -> void:
 	help_panel.visible = not help_panel.visible
 
 
+## DR-19c: active: the prepared flight's crash law; pending: the one the next Restart on pad uses.
+func set_crash_model(active: String, pending: String) -> void:
+	_crash_model = {active = active, pending = pending}
+	_update_texts()
+
+
 ## active: the prepared flight's throttle limit; pending: the value the next prepare (Restart on pad) uses.
 func set_throttle_limit(active: float, pending: float) -> void:
 	_limit = {active = active, pending = pending}
@@ -736,11 +845,7 @@ func show_menu(reason: String, can_resume: bool, rate_reset: bool = false, termi
 	_terminal = terminal
 	_update_texts()
 	menu.visible = true
-	menu_reason.text = reason
-	# DR-37: a menu over a finished or ended attempt (the crash aftermath) keeps its outcome and the way back.
-	var outcome := race_card_text()
-	if not str(outcome.title).is_empty():
-		menu_reason.text = reason + "\n" + str(outcome.title) + "   " + _tr("G: race again   R: back to the pad")
+	set_menu_reason(reason)
 	var box := resume_button.get_parent()
 	var resumable := can_resume and terminal in ["", "depleted_air"]
 	resume_button.visible = terminal == "" or terminal == "depleted_air"
@@ -752,6 +857,15 @@ func show_menu(reason: String, can_resume: bool, rate_reset: bool = false, termi
 		box.move_child(resume_button, restart_button.get_index())
 	(resume_button if resumable and terminal == "" else restart_button).grab_focus.call_deferred()
 	_refresh_visibility()
+
+
+## The open menu's reason text, without moving focus (an update while the pilot uses the menu).
+func set_menu_reason(reason: String) -> void:
+	menu_reason.text = reason
+	# DR-37: a menu over a finished or ended attempt (the crash aftermath) keeps its outcome and the way back.
+	var outcome := race_card_text()
+	if not str(outcome.title).is_empty():
+		menu_reason.text = reason + "\n" + str(outcome.title) + "   " + _tr("G: race again   R: back to the pad")
 
 
 func hide_menu() -> void:
@@ -861,6 +975,16 @@ func _set_color(label: Label, color: Color) -> void:
 	label.add_theme_color_override("font_color", color)
 
 
+## DR-19c: the weakest prop's health in telemetry (1 when the law reports none).
+static func prop_health(t: Dictionary) -> float:
+	var health: Variant = t.get("rotor_health", PackedFloat64Array())
+	var weakest := 1.0
+	if typeof(health) == TYPE_PACKED_FLOAT64_ARRAY:
+		for value: float in health:
+			weakest = minf(weakest, value)
+	return weakest
+
+
 ## The arm line: MOTORS ARMED, or MOTORS DISARMED with the controller's reason when an arm request is being refused.
 ## A connected controller whose live sample is not ready (bindings from the activity: source, ready).
 static func controller_not_ready(bindings: Dictionary) -> bool:
@@ -888,7 +1012,7 @@ func arm_text(t: Dictionary, arm_requested: bool, controller := false) -> String
 ## throttle_up}); "" while flying.
 func hint_text(t: Dictionary, arm_requested: bool, bindings: Dictionary, crash_reason: String) -> String:
 	if bool(t.get("crashed", false)) or not crash_reason.is_empty():
-		return _tr("Crashed: %s. Press R to reset.") % (crash_reason if not crash_reason.is_empty() else "—")
+		return _tr("Crashed: %s. Press R to reset.") % (_tr(crash_reason) if not crash_reason.is_empty() else "—")
 	if bool(t.get("depleted", false)):
 		return _tr("The battery is depleted. Restart on the pad to fly again.")
 	var arm := str(bindings.get("arm", "E"))
@@ -963,10 +1087,11 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	if mode < 0:
 		mode = int(t.get("flight_mode", FC.FLIGHT_ACRO))
 	# The four-letter mode names of Betaflight and INAV.
-	mode_label.text = "ANGL" if mode == FC.FLIGHT_ANGLE else "ACRO"
+	mode_label.text = "TRTL" if mode == FC.FLIGHT_TURTLE else ("ANGL" if mode == FC.FLIGHT_ANGLE else "ACRO")
 	mode_label.visible = shows("mode")
 	var arm_requested := bool(osd_state.get("arm_requested", false))
 	var bindings: Dictionary = osd_state.get("bindings", {})
+	set_controls_help(bindings)
 	arm_label.text = arm_text(t, arm_requested, controller_not_ready(bindings))
 	_set_color(arm_label, _tone(Osd.INFO) if armed else _tone(Osd.WARNING))
 	timer_label.text = format_timer(flight_s)
@@ -1028,8 +1153,13 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var crashed := bool(t.get("crashed", false)) or not str(osd_state.get("crash_reason", "")).is_empty()
 	_show_warning(Osd.warning({armed = armed, arm_requested = arm_requested, block = int(t.get("arm_block", FC.BLOCK_NONE)),
 		not_ready = controller_not_ready(bindings), crashed = crashed, depleted = bool(t.get("depleted", false)),
-		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until}), now)
-	hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
+		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until, prop_health = prop_health(t)}), now)
+	if bool(osd_state.get("upside_down", false)) and str(osd_state.get("crash_reason", "")).is_empty():
+		# DR-19c/19e: a graded crash can leave the quad upside down on the ground: the crash flip first; R (or the
+		# controller's restart) returns to the pad.
+		hint_label.text = _tr("Upside down: turtle mode (%s), arm and push the stick to flip over, or R for the pad.") 			% turtle_controls(osd_state.get("bindings", {}))
+	else:
+		hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
 	if now > _message_until:
 		message.text = ""
 	var horizon := {}
@@ -1065,6 +1195,11 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 ## A severity's colour in the configured style: HD goggles colour it, an analog character OSD is all white.
 func _tone(severity: int) -> Color:
 	return OSD_TEXT if str(osd_config.style) == "analog" else Paint.SEVERITY[severity]
+
+
+## Audit: a pad restart starts a new flight, so the last flight's statistics leave the screen.
+func dismiss_stats() -> void:
+	_stats_ready = false
 
 
 ## Home, the armed notice and the statistics follow the arm state like a flight controller: arming sets home, resets

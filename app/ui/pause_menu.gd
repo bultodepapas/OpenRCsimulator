@@ -60,6 +60,7 @@ var exit_options_container: VBoxContainer
 var status_label: Label
 ## UI-34a: which aircraft and field this pause belongs to.
 var identity_label: Label
+var physics_label: Label
 var controller_value_label: Label
 var collective_control := false
 var failure_config_label: Label
@@ -132,6 +133,10 @@ func _init(can_end := true, trial_mode := false) -> void:
 	identity_label.name = "Identity"
 	identity_label.visible = false
 	column.add_child(identity_label)
+	physics_label = _wrapped_label()
+	physics_label.name = "PhysicsBackend"
+	physics_label.visible = false
+	column.add_child(physics_label)
 	status_label = _wrapped_label()
 	column.add_child(status_label)
 	controller_value_label = _wrapped_label()
@@ -322,6 +327,7 @@ func refresh() -> void:
 	continue_button.disabled = not _session.is_flyable()
 	status_label.text = status_text(_session)
 	status_label.visible = status_label.text != ""
+	_refresh_physics()
 	_refresh_controller_value()
 	_refresh_controller_recovery()
 	failure_config_label.text = failure_config_text(_failure_config)
@@ -533,6 +539,30 @@ func _session_status_text(session: Node) -> String:
 	return session.pause_reason
 
 
+## DT-MAC-04n-R1: which physics evaluator runs this flight. A requested native evaluator that
+## is not running is shown with its technical reason; an explicit reference choice shows nothing.
+func physics_backend_text(session: Node) -> String:
+	if not is_instance_valid(session) or not session.has_method("stage_backend_status"):
+		return ""
+	var status: Variant = session.stage_backend_status()
+	if not status is Dictionary:
+		return ""
+	var identity: Variant = status.get("identity")
+	if identity is Dictionary and str(identity.get("backend", "")) == "native":
+		return tr("Physics: native")
+	if str(status.get("requested", "")) != "native":
+		return ""
+	var reason := str(status.get("reason", ""))
+	if reason.is_empty():
+		return tr("Physics: compatibility. Native physics is not running.")
+	return tr("Physics: compatibility. Native physics is not running: %s") % reason
+
+
+func _refresh_physics() -> void:
+	physics_label.text = physics_backend_text(_session)
+	physics_label.visible = not physics_label.text.is_empty()
+
+
 ## "Aircraft · field" under the title; "" hides it.
 func set_identity(text: String) -> void:
 	_identity_base = text
@@ -583,6 +613,7 @@ func set_localized_note(message_key: String) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_identity()
+		_refresh_physics()
 		if not _note_translation_key.is_empty():
 			note_label.text = tr(_note_translation_key)
 

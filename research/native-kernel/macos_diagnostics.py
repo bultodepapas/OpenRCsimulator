@@ -47,6 +47,7 @@ SCRIPT_COMPONENTS = {
 }
 DEFAULT_SCRIPTS = ("oracle.gd", "stage_oracle.gd", "propeller_oracle.gd")
 DOMAIN_GUARD_SCRIPT = "test_macos_domain_guard.gd"
+DOMAIN_SOURCE = ROOT / "app/sim/native_macos_domain.gd"
 DOMAIN_GUARD_PROFILE_SCOPE = "isolated guard-call loop only; not inclusive tick or product performance"
 DOMAIN_GUARD_KINDS = frozenset(("byte", "int32", "int64", "float32", "float64"))
 
@@ -267,8 +268,19 @@ def oracle_error(script: str, data: dict, report: dict, log: str, seed: int, sta
     return ""
 
 
-def domain_guard_result(report: dict, log: str) -> dict:
+def screened_world(source: Path = DOMAIN_SOURCE) -> tuple[str, int]:
+    """Read the one authoritative Mac stock-world pin rather than duplicating it here."""
+    text = source.read_text(encoding="utf-8")
+    identity = re.findall(r'^const STOCK_WORLD := "([0-9a-f]{64})"$', text, re.M)
+    proxies = re.findall(r"^const STOCK_WORLD_PROXIES := ([1-9][0-9]*)$", text, re.M)
+    if len(identity) != 1 or len(proxies) != 1:
+        raise ValueError(f"cannot read the screened Mac stock world from {source}")
+    return identity[0], int(proxies[0])
+
+
+def domain_guard_result(report: dict, log: str, domain_source: Path = DOMAIN_SOURCE) -> dict:
     """Validate the real guard harness, including its controls and stock-world profile."""
+    stock_identity, stock_proxies = screened_world(domain_source)
     if (report.get("ok") is not True or report.get("complete") is not True
             or report.get("reason") != "passed" or report.get("process_exit") != 0
             or report.get("counts", {}).get("error") != 0 or report.get("missing_required_text") != []
@@ -323,7 +335,7 @@ def domain_guard_result(report: dict, log: str) -> dict:
     if (profile.get("scope") != DOMAIN_GUARD_PROFILE_SCOPE or profile.get("all_match") is not True
             or type(profile.get("warmup_calls")) is not int or profile["warmup_calls"] != 16
             or type(profile.get("calls")) is not int or profile["calls"] != 2400
-            or type(profile.get("proxies")) is not int or profile["proxies"] != 6092
+            or type(profile.get("proxies")) is not int or profile["proxies"] != stock_proxies
             or any(type(profile.get(key)) is not int or profile[key] <= 0
                    for key in ("nodes", "packed_leaves", "packed_bytes"))
             or type(profile.get("elapsed_usec")) is not int or not 0 <= profile["elapsed_usec"] <= 2**53
@@ -331,8 +343,7 @@ def domain_guard_result(report: dict, log: str) -> dict:
             or (type(profile["mean_usec"]) is int and abs(profile["mean_usec"]) > 2**53)
             or not math.isfinite(profile["mean_usec"]) or profile["mean_usec"] < 0
             or not math.isclose(profile["mean_usec"], profile["elapsed_usec"] / 2400.0, rel_tol=1e-5, abs_tol=1e-6)
-            or not isinstance(profile.get("world_identity"), str)
-            or re.fullmatch(r"[0-9a-f]{64}", profile["world_identity"]) is None
+            or profile.get("world_identity") != stock_identity
             or not all(isinstance(profile.get(key), str) and profile[key] for key in ("cpu", "model"))):
         raise ValueError("domain-guard stock profile is incomplete or inconsistent")
     return {"checks": int(match.group(1)), "resize_controls": resize, "direct_resize": direct,

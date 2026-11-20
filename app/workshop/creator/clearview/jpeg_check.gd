@@ -6,6 +6,10 @@ const Limits := preload("res://workshop/creator/limits.gd")
 const MAX_NON_RESTART_MARKERS := 4096
 const MAX_MARKERS := MAX_NON_RESTART_MARKERS + 262144
 const MAX_COMMENT_BYTES := 256 * 1024
+## EXIF (APP1), ICC colour profiles (APP2), Photoshop data (APP13) and other APPn segments are
+## skipped as opaque metadata. They never change the validated baseline image data.
+const MAX_METADATA_BYTES := 1024 * 1024
+const METADATA_NOTE := "JPEG metadata (camera, colour profile or editor data) was ignored."
 const MAX_SYMBOLS := 8 * 1024 * 1024
 const MAX_READ_BITS := 64 * 1024 * 1024
 var _data := PackedByteArray()
@@ -18,6 +22,8 @@ var _markers := 0
 var _non_restart_markers := 0
 var _comment_count := 0
 var _comment_bytes := 0
+var _metadata_count := 0
+var _metadata_bytes := 0
 var _jfif := false
 var _adobe := false
 var _adobe_transform := -1
@@ -50,6 +56,8 @@ static func inspect(bytes: PackedByteArray, remaining_pixels: int, cancel := Cal
 	var notes: Array = []
 	if reader._comment_count > 0:
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, "JPEG comments were ignored.", "source", "import", [], R.SEVERITY_INFO))
+	if reader._metadata_count > 0:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, METADATA_NOTE, "source", "import", [], R.SEVERITY_INFO))
 	return R.ok({width = reader._width, height = reader._height, pixels = reader._width * reader._height}, notes)
 
 func _reject(message: String, code := R.SOURCE_INVALID) -> bool:
@@ -113,12 +121,15 @@ func _run() -> bool:
 		var marker := _marker()
 		if marker < 0 or not _count_non_restart():
 			return false
-		if marker not in [0xC0,0xC4,0xDA,0xDB,0xDD,0xE0,0xEE,0xFE]:
+		var metadata := marker >= 0xE1 and marker <= 0xEF and marker != 0xEE
+		if marker not in [0xC0,0xC4,0xDA,0xDB,0xDD,0xE0,0xEE,0xFE] and not metadata:
 			return _reject("This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG.", R.SOURCE_UNSUPPORTED)
 		var end := _segment_end()
 		if end < 0:
 			return false
 		var ok := false
+		if metadata:
+			ok = _read_metadata(end)
 		match marker:
 			0xC0: ok = _read_frame(end)
 			0xC4: ok = _read_huffman(end)
@@ -154,7 +165,7 @@ func _read_frame(end: int) -> bool:
 			return _reject("The JPEG component identifiers are unsupported.", R.SOURCE_UNSUPPORTED)
 		var sample: int = _data[at + 1]
 		if component == 0:
-			if sample not in [0x11,0x22]:
+			if sample not in [0x11,0x21,0x12,0x22]:
 				return _reject("The JPEG sampling is unsupported.", R.SOURCE_UNSUPPORTED)
 			_sampling = sample
 		elif sample != 0x11:
@@ -264,7 +275,8 @@ func _read_adobe(end: int) -> bool:
 		return _reject("The JPEG Adobe marker is invalid or duplicated.")
 	if _data.slice(_pos,_pos + 5) != PackedByteArray([65,100,111,98,101]):
 		return _reject("The JPEG APP14 marker is unsupported.", R.SOURCE_UNSUPPORTED)
-	if _u16(_pos + 5) not in [100,101] or _u16(_pos + 7) != 0 or _u16(_pos + 9) != 0 or _data[_pos + 11] > 1:
+	# Flags0/flags1 are encoder hints (e.g. 0x8000 "blend"); only the colour transform affects decoding.
+	if _u16(_pos + 5) not in [100,101] or _data[_pos + 11] > 1:
 		return _reject("The JPEG Adobe marker is unsupported.", R.SOURCE_UNSUPPORTED)
 	_adobe_transform = _data[_pos + 11]
 	if _jfif and _adobe_transform == 0:
@@ -277,6 +289,14 @@ func _read_comment(end: int) -> bool:
 	_comment_bytes += end - _pos
 	if _comment_bytes > MAX_COMMENT_BYTES:
 		return _reject("The JPEG comments exceed the metadata limit.", R.SOURCE_LIMIT)
+	return true
+
+## Opaque APPn metadata, bounded in total size. Its contents are never interpreted.
+func _read_metadata(end: int) -> bool:
+	_metadata_count += 1
+	_metadata_bytes += end - _pos
+	if _metadata_bytes > MAX_METADATA_BYTES:
+		return _reject("The JPEG metadata exceeds its size limit.", R.SOURCE_LIMIT)
 	return true
 
 func _read_scan_header(end: int) -> bool:
@@ -388,14 +408,16 @@ func _align() -> bool:
 	return true
 
 func _scan() -> bool:
-	var side := 16 if _sampling == 0x22 else 8
-	var columns := (_width + side - 1) / side
-	var rows := (_height + side - 1) / side
+	# Luma sampling h×v (4:4:4, 4:2:2 either way, 4:2:0); chroma is always 1×1 here.
+	var horizontal := _sampling >> 4
+	var vertical := _sampling & 15
+	var columns := (_width + 8 * horizontal - 1) / (8 * horizontal)
+	var rows := (_height + 8 * vertical - 1) / (8 * vertical)
 	var total := columns * rows
 	var next_restart := 0
 	for mcu: int in total:
 		for component: int in 3:
-			var blocks := 4 if component == 0 and _sampling == 0x22 else 1
+			var blocks := horizontal * vertical if component == 0 else 1
 			for index: int in blocks:
 				if not _block(component):
 					return false

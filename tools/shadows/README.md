@@ -179,3 +179,24 @@ blur, ownership, settings and Home-geometry suites cover affected consumers.
 records exact image parity and the first-enable setup cost.
 
 The [VQ-04a-F2 windsock follow-up](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md) shares the visible sleeve deformation and basket yaw with one 512² field map. Run `test_windsock_shadow.gd` and `test_field_projected_shadows.gd` headless for lifecycle/cache/budget checks. Native `windsock_capture.gd -- --out=<new directory>` saves seven wind/light cases, isolated masks, shadow-hidden appearance controls and a wide low-sun view. `windsock_probe.gd -- --out=<JSON path>` checks coverage against independent ray-plane intersections and records alternating dynamic/cached component timings. These native tools require a display and absolute script paths when run with `--path app`; timings are fixture evidence, not full-flight performance qualification. `check_windsock_pack.gd` accepts one exported PCK path as its sole user argument from an empty project and constructs the imported caster and shaders.
+
+## Shadow cost matrix
+
+`shadow_cost.py` (VQ-04b SA-25) measures GPU time per shadow technique, renderer, view and width with the
+production graphics producer, and attributes offscreen passes (aircraft and field masks, cloud tiles) by their own
+GPU time. The aircraft view draws the production planar cue and spins the aircraft so masks and native maps do a
+flight's work. Runs alternate technique order in each repeat; the summary reports the root GPU median and p95, the
+delta against Off and the spread between repeats (a smaller delta is not resolved).
+
+```powershell
+python tools/shadows/shadow_cost.py --godot .tools/Godot_v4.8-beta2_win64_console.exe --out NEW_DIRECTORY --repeats 3
+python -m unittest tools.shadows.test_shadow_cost -v
+```
+
+`--renderer mobile --driver metal` (or `forward_plus`, `gl_compatibility`) runs the engine directly with that rendering
+method instead of the product launcher, for example macOS's product Standard (Mobile on Metal); the graphics
+profile still selects High's settings, which apply only on Forward+.
+
+Run it alone on the GPU. The root delta contains native shadow passes plus anything else a technique switches;
+cold bakes before the warm-up are excluded. Results apply to the recorded hardware, renderer, resolution and
+static fixture, not to moving flights or minimum hardware.

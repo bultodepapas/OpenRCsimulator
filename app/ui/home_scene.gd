@@ -26,6 +26,7 @@ const Presentation := preload("res://ui/home_presentation.gd")
 const PreviewGeometry := preload("res://ui/home_preview_geometry.gd")
 const VehiclePreview := preload("res://ui/home_vehicle_preview.gd") # UI-39: RC cars, FPV quad, RC blimp
 const Conditions := preload("res://render/world/conditions.gd")
+const HomeRenderBudget := preload("res://render/home_render_budget.gd") # VQ-07h I2
 
 ## Render-only parked presentation. Contact points come from the visual wheels/skids;
 ## the simulator's start state and aircraft configuration remain independent.
@@ -189,6 +190,10 @@ func _ready() -> void:
 		return
 	get_viewport().size_changed.connect(_frame_aircraft)
 	_frame_aircraft()
+	# Lowers Home's 3D resolution only while Home misses the refresh; restores it when Home is covered or left.
+	var budget := HomeRenderBudget.new()
+	budget.name = "HomeRenderBudget"
+	add_child(budget)
 
 
 ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
@@ -248,9 +253,11 @@ func show_aircraft(id: String, livery := "") -> bool:
 			HeliNightLights.attach(airplane)
 	_update_aircraft_lights()
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
-	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
+	var celestial: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
+	var strength := Shadow.cue_strength("auto", celestial) # SA-09: the saved Vertical aid matches flight
 	_shadow.visible = strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	# SA-06: the same bounded planar direction as flight and the field cues, in fixed and flowing time.
+	var direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength * 0.65)
 	_frame_aircraft()
 

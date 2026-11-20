@@ -3,6 +3,7 @@
 extends SceneTree
 
 const AUDIO_DRAIN_TIMEOUT_USEC := 1_000_000
+const RETURN_HOME_TIMEOUT_USEC := 60_000_000
 var _app: Node
 var _settings_path := "" # Only a sidecar successfully created by this run.
 var _finishing := false
@@ -187,11 +188,18 @@ func _run() -> void:
 		var return_begin := Time.get_ticks_usec()
 		app.call("end_flight")
 		var return_ready := Time.get_ticks_usec()
+		# UI-28-R5b: Home is rebuilt in stages behind a loading surface; wait (bounded) until it is installed.
+		var return_staged := bool(app.get("home_build_pending"))
 		await process_frame
 		await RenderingServer.frame_post_draw
-		if app.get("flight") != null or app.get("home") == null:
+		while (app.get("home") == null or bool(app.get("home_build_pending"))) \
+				and Time.get_ticks_usec() - return_begin < RETURN_HOME_TIMEOUT_USEC:
+			await process_frame
+			await RenderingServer.frame_post_draw
+		if app.get("flight") != null or app.get("home") == null or bool(app.get("home_build_pending")):
 			_fail("End flight failed to restore Home")
 			return
+		sample["return_staged"] = return_staged
 		home = app.get("home")
 		cycle_home_drawn = Time.get_ticks_usec()
 		sample["return_sync_usec"] = return_ready - return_begin

@@ -54,6 +54,13 @@ Release/test orchestration follow-up: [PT1-CI efficiency plan](plans/release-ci-
 
 ## Accepted step register
 
+GitHub-only update execution detail: the [update system plan](plans/github-updates.md)
+owns DT-UPD-00…12. Its [2026-11-17 investigation](research/desktop-delivery-investigations/DT-UPD-00/README.md)
+compares free update frameworks, audits the current notice/package/receipt/data
+boundaries, and proposes signed discovery, verified downloads and a qualified
+temporary apply helper. It adds no production updater and closes no DT delivery
+or native recovery gate.
+
 | ID | Deliverable and minimum proof | Status |
 | --- | --- | --- |
 | DT-00 | Audit delivery, engine and primary sources; register the track. | Done — 2026-10-07 |

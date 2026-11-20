@@ -1,0 +1,78 @@
+name: Telemetry contracts
+
+# Offline contract and receiver checks only; not a required check. Path filters keep it off unrelated PRs.
+# The Godot client's own tests run in the app suite (app/tests/test_telemetry_*.gd).
+on:
+  push:
+    paths:
+      - 'research/telemetry/**'
+      - 'services/telemetry/**'
+      - 'tools/telemetry/**'
+      - 'tools/analytics/github_history.py'
+      - '.github/workflows/telemetry-contracts.yml'
+  pull_request:
+    paths:
+      - 'research/telemetry/**'
+      - 'services/telemetry/**'
+      - 'tools/telemetry/**'
+      - 'tools/analytics/github_history.py'
+      - '.github/workflows/telemetry-contracts.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: telemetry-contracts-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  contracts:
+    name: Offline telemetry contracts and receiver
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Check out the reviewed telemetry source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # Same immutable pin as repository CI.
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            research/telemetry
+            services/telemetry
+            tools/telemetry
+            tools/analytics
+      - name: Install exact test dependencies in isolation
+        run: |
+          python3.12 --version
+          python3.12 -m venv "$RUNNER_TEMP/telemetry-venv"
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m pip install --disable-pip-version-check -r research/telemetry/requirements.txt
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m pip check
+          python3.12 -m venv "$RUNNER_TEMP/receiver-venv"
+          "$RUNNER_TEMP/receiver-venv/bin/python" -m pip install --disable-pip-version-check -r services/telemetry/requirements.txt
+          "$RUNNER_TEMP/receiver-venv/bin/python" -m pip check
+      - name: Verify schemas, examples and behavioral contracts
+        run: |
+          "$RUNNER_TEMP/telemetry-venv/bin/python" research/telemetry/generate_contracts.py --check
+          "$RUNNER_TEMP/telemetry-venv/bin/python" research/telemetry/generate_examples.py --check
+          "$RUNNER_TEMP/telemetry-venv/bin/python" -m unittest discover -s research/telemetry -p 'test_*.py' -v
+      - name: Receiver tests (the Godot end-to-end test skips without OPENRC_GODOT)
+        working-directory: services/telemetry
+        run: |
+          "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest discover -s tests -t . -v
+      - name: Operator dashboard against the receiver package
+        run: |
+          "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest tools/telemetry/test_dashboard.py -v
+      - name: Build and smoke-test the receiver container
+        run: |
+          docker build -f services/telemetry/Dockerfile -t openrc-telemetry:ci .
+          docker run -d --name telemetry -p 127.0.0.1:8787:8787 -e OPENRC_TELEMETRY_RELEASES=v0.2.7 openrc-telemetry:ci
+          for attempt in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/healthz && break; sleep 1; done
+          status=$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
+            --data-binary @research/telemetry/examples/batch.json http://127.0.0.1:8787/v1/batches)
+          echo "canonical example: HTTP $status"
+          test "$status" = 202
+          docker exec telemetry python -m openrc_telemetry purge
+          docker exec telemetry sh -c 'test -f /data/raw/raw.sqlite && test -f /data/aggregates/aggregates.sqlite && test "$(id -u)" = 10001'
+          docker rm -f telemetry

@@ -59,6 +59,7 @@ const DEFAULTS := {
 	"shadow_aircraft_cue": ShadowSettings.DEFAULTS.shadow_aircraft_cue,
 	"shadow_distance": ShadowSettings.DEFAULTS.shadow_distance,
 	"shadow_softness": ShadowSettings.DEFAULTS.shadow_softness,
+	"shadow_cloud": ShadowSettings.DEFAULTS.shadow_cloud,
 	"ui_scale": 1.0,
 	"opaque_panels": false,
 	"reduced_motion": false,
@@ -94,7 +95,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
-	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
+	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness", "shadow_cloud",
 	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
@@ -117,6 +118,7 @@ const SHADOW_FILE_KEYS := {
 	"shadow_aircraft_cue": "aircraft_cue",
 	"shadow_distance": "distance",
 	"shadow_softness": "softness",
+	"shadow_cloud": "clouds", # SA-15; absent in older files, which keep the default (on)
 }
 ## LENS-01: additive choices retain the defaults when absent from a schema-1 file.
 const LENS_FILE_KEYS := {
@@ -168,7 +170,62 @@ static func load_from(file_path: String) -> Dictionary:
 	result.writable = true
 	result.note = ""
 	if not FileAccess.file_exists(file_path):
-		return result
+		return _with_first_run_defaults(result) if first_run_applies else result
+	return _load_existing(file_path, result)
+
+
+## VQ-07h: per-GPU recommendations (render/gpu_capability.gd first_run_settings). They replace DEFAULTS when no
+## display file exists only if `first_run_applies` (a fresh install, decided by AppRoot, which then stores them),
+## and always seed recommended_defaults() for "Restore graphics defaults". Tools and private profiles keep DEFAULTS.
+static var first_run_defaults: Dictionary = {}
+static var first_run_applies := false
+
+
+static func recommended_defaults() -> Dictionary:
+	return _with_first_run_defaults(DEFAULTS.duplicate(true))
+
+
+## The graphics choices Settings → "Restore graphics defaults" resets. TELEM-04 telemetry reports whether they all
+## still equal recommended_defaults() (graphics_profile), so both use this one list.
+static func graphics_default_keys() -> Array[String]:
+	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
+		"runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+	for key: String in SHADOW_FILE_KEYS:
+		keys.append(key)
+	return keys
+
+
+## TELEM-04: "current_default" when every graphics_default_keys() value equals this GPU's recommended_defaults(),
+## "custom" when any differs, "unknown" when `candidate` cannot be compared. Not a settings snapshot.
+static func graphics_profile(candidate: Variant) -> String:
+	if not candidate is Dictionary:
+		return "unknown"
+	var recommended := recommended_defaults()
+	for key: String in graphics_default_keys():
+		if not candidate.has(key) or not recommended.has(key):
+			return "unknown"
+		var value: Variant = candidate[key]
+		var expected: Variant = recommended[key]
+		if typeof(value) in [TYPE_INT, TYPE_FLOAT] and typeof(expected) in [TYPE_INT, TYPE_FLOAT]:
+			if not is_equal_approx(float(value), float(expected)):
+				return "custom"
+		elif typeof(value) != typeof(expected) or value != expected:
+			return "custom"
+	return "current_default"
+
+
+static func _with_first_run_defaults(result: Dictionary) -> Dictionary:
+	for key: String in first_run_defaults:
+		var value: Variant = first_run_defaults[key]
+		if key in ["msaa_3d", "max_fps"] and typeof(value) == TYPE_INT \
+				and int(value) in (MSAA_3D_VALUES if key == "msaa_3d" else MAX_FPS_VALUES):
+			result[key] = int(value)
+		elif key == "window_mode" and typeof(value) == TYPE_STRING and str(value) in WINDOW_MODES:
+			result[key] = str(value)
+	return result
+
+
+static func _load_existing(file_path: String, result: Dictionary) -> Dictionary:
 
 	var cfg := ConfigFile.new()
 	var load_error := cfg.load(file_path)
@@ -442,6 +499,7 @@ static func _valid_shadow_value(key: String, value: Variant) -> bool:
 		"shadow_aircraft_cue": return value in ShadowSettings.AIRCRAFT_CUES
 		"shadow_distance": return value in ShadowSettings.DISTANCES
 		"shadow_softness": return value in ShadowSettings.SOFTNESS
+		"shadow_cloud": return value in ShadowSettings.CLOUD
 	return false
 
 

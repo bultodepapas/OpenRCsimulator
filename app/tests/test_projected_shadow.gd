@@ -150,6 +150,102 @@ func _test_independent_projection_and_datum() -> void:
 	host.free()
 
 
+## SA-19/SA-05: tagged propeller blades are live parts (spinner excluded); natively non-casting meshes stay out.
+func _test_rotor_blades_and_native_casting() -> void:
+	var fixture := _make_fixture("RotorFixture")
+	var model := fixture.model as Node3D
+	var propeller := fixture.propeller as Node3D
+	var spinner := _new_mesh(propeller, "Spinner", PackedVector3Array([
+		Vector3(-0.3, -0.3, 0), Vector3(0.3, -0.3, 0), Vector3(0, 0.3, 0.6)]))
+	# A round hub at 0.4 of the tip radius: its bounding-box corner reaches 0.53 R, its real vertices 0.4 R.
+	var hub := _new_mesh(propeller, "Hub", PackedVector3Array([
+		Vector3(2.4, 0, 0.1), Vector3(-1.2, 2.078, 0.1), Vector3(-1.2, -2.078, 0.1)]))
+	var cone := _new_mesh(model, "LightCone", PackedVector3Array([
+		Vector3(0, 0, 0), Vector3(3, 0, 0), Vector3(0, 0, 9)]))
+	cone.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var blade := propeller.get_node("Mount/Blade") as MeshInstance3D
+	_check("an untagged propeller still stays out", Projected.collect(model).get("triangles", 0) == 1)
+	Projected.tag_articulation({propeller = propeller})
+	_check("tag_rotor tags the blade, not the short spinner or a round hub (real vertex radii, not box corners)",
+		bool(blade.get_meta(Projected.ARTICULATED_META, false))
+		and not bool(spinner.get_meta(Projected.ARTICULATED_META, false))
+		and not bool(hub.get_meta(Projected.ARTICULATED_META, false)))
+	blade.visible = false # blurred when the shadow binds: still a part, shown live once the blur shows it again
+	var shape: Dictionary = Projected.collect(model)
+	var parts: Array = shape.get("parts", [])
+	# Two triangles: the visible surface and the blade; the spinner and the non-casting cone are out.
+	_check("SA-19/SA-05: the blade enters only as its own live part; spinner and non-casting cone stay out",
+		shape.get("triangles", 0) == 2 and parts.size() == 1 and model.get_node(parts[0].path) == blade,
+		"triangles=%s parts=%d" % [shape.get("triangles", -1), parts.size()])
+	cone.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+	_check("SA-05: a shadows-only mesh casts", Projected.collect(model).get("triangles", 0) == 3)
+	model.free()
+
+
+## SA-05: per-surface native caster semantics, as measured on Forward+ and Compatibility (2026-11-18).
+func _test_surface_casting_semantics() -> void:
+	var model := Node3D.new()
+	var mesh := ArrayMesh.new()
+	var opaque_points := PackedVector3Array([Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0, 0, 1)])
+	var glass_points := PackedVector3Array([Vector3(5, 1, 5), Vector3(6, 1, 5), Vector3(5, 1, 6)])
+	for points: PackedVector3Array in [opaque_points, glass_points]:
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = points
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var instance := MeshInstance3D.new()
+	instance.mesh = mesh
+	model.add_child(instance)
+	var opaque := StandardMaterial3D.new()
+	opaque.albedo_color.a = 0.4 # alpha below one with transparency disabled still casts
+	instance.set_surface_override_material(0, opaque)
+	var cases := {}
+	var blend := StandardMaterial3D.new()
+	blend.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	blend.albedo_color.a = 0.45
+	cases["blend"] = [blend, false]
+	var prepass := blend.duplicate() as StandardMaterial3D
+	prepass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+	cases["depth pre-pass"] = [prepass, true]
+	var scissor := StandardMaterial3D.new()
+	scissor.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	scissor.albedo_color.a = 0.0
+	cases["scissor at alpha 0"] = [scissor, false]
+	var hashed := StandardMaterial3D.new()
+	hashed.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+	hashed.albedo_color.a = 0.8
+	cases["hash at alpha 0.8"] = [hashed, true]
+	var shader_cases := {
+		"void fragment() { ALBEDO = vec3(1.0); ALPHA = 1.0; }": false,
+		"void fragment() { ALBEDO = vec3(1.0); }": true,
+		"render_mode depth_prepass_alpha;\nvoid fragment() { ALPHA = 0.5; }": true,
+		"void fragment() {\n\t// ALPHA = 0.5;\n\tALBEDO = vec3(1.0);\n}": true,
+		"void fragment() {\n\t/* a block\n\t * ALPHA = 0.0; */\n\tALBEDO = vec3(1.0);\n}": true,
+		"void fragment() { float a = 1.0 / 2.0; ALPHA *= a; }": false,
+		"void fragment() { if (ALPHA == 1.0) { ALBEDO = vec3(1.0); } }": true,
+		"render_mode blend_add;\nvoid fragment() { ALBEDO = vec3(1.0); }": false,
+	}
+	for code: String in shader_cases:
+		var shader_material := ShaderMaterial.new()
+		shader_material.shader = Shader.new()
+		shader_material.shader.code = "shader_type spatial;\n" + code
+		cases["shader: " + code.replace("\n", " ")] = [shader_material, shader_cases[code]]
+	for label: String in cases:
+		instance.set_surface_override_material(1, cases[label][0])
+		var expected: bool = cases[label][1]
+		var shape := Projected.collect(model)
+		_check("SA-05: %s %s" % [label, "casts" if expected else "casts nothing"],
+			Projected.surface_casts(instance, 1) == expected and int(shape.get("triangles", 0)) == (2 if expected else 1),
+			"triangles=%s" % shape.get("triangles", -1))
+	instance.set_surface_override_material(1, blend)
+	var faces := Projected.casting_faces(instance)
+	_check("SA-05: a blended surface's faces are dropped in get_faces() order", faces == opaque_points)
+	instance.set_surface_override_material(0, blend)
+	_check("SA-05: a fully blended mesh is not an aircraft caster", Projected.mesh_entries(model).is_empty()
+		and not Projected.mesh_entries(model, false).is_empty())
+	model.free()
+
+
 func _test_collection_excludes_hidden_and_propeller() -> void:
 	var fixture := _make_fixture("CollectionFixture")
 	var model := fixture.model as Node3D
@@ -340,6 +436,147 @@ func _test_binding_lifecycle_and_hidden_updates() -> void:
 	host.free()
 
 
+## Audit SA-07 counterexample: 0.2° of pitch on a 6 m model at a 12° sun moves its end ~49 mm on the ground,
+## which the old 0.25° angular rule reused. The bounded rule must redraw it and still reuse a sub-tolerance change.
+func _test_error_bounded_reuse() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	host.add_child(model)
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(1.0, 0.4, 6.0)
+	var projected := Projected.new()
+	host.add_child(projected)
+	projected.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 256, Viewport.MSAA_DISABLED)
+	var sun := Vector3(0.0, sin(deg_to_rad(12.0)), cos(deg_to_rad(12.0)))
+	projected.refresh(0.0, sun, 0.5, true)
+	var drawn_basis := model.global_basis
+	var tolerance: float = projected.reuse_tolerance(0.018, (projected._last_signature[2] as Rect2).size.x)
+	model.rotation.x = deg_to_rad(0.2)
+	var end_shift := _ray_to_ground(model.global_basis * Vector3(0, 0, 3), sun).distance_to(
+		_ray_to_ground(drawn_basis * Vector3(0, 0, 3), sun))
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	projected.refresh(0.0, sun, 0.5, true)
+	_check("SA-07: a 0.2° change that moves the 6 m model's end %.1f mm redraws at a 12° sun" % (end_shift * 1000.0),
+		end_shift > 0.045 and end_shift > tolerance
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE, "tolerance %.4f" % tolerance)
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	model.rotation.x = deg_to_rad(0.2 + 0.02)
+	projected.refresh(0.0, sun, 0.5, true)
+	_check("SA-07: a sub-tolerance 0.02° change reuses the mask",
+		projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	_check("SA-07: the blur arm is capped at REUSE_MAX_M for a fine mask",
+		projected.reuse_tolerance(0.45, 1.0) == Projected.REUSE_MAX_M)
+	_check("SA-07: a coarse mask never redraws for less than one texel",
+		is_equal_approx(projected.reuse_tolerance(0.018, 40.0), 40.0 / 256.0))
+	host.free()
+
+
+## SA-11: a releasing (field) projector holds no full render target while hidden and redraws when shown again.
+func _test_release_when_hidden() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	host.add_child(model)
+	var mesh := BoxMesh.new()
+	var projected := Projected.new()
+	projected.release_when_hidden = true
+	host.add_child(projected)
+	projected.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 512, Viewport.MSAA_DISABLED)
+	_check("SA-11: a releasing projector starts without a full target", projected.viewport.size == Projected.RELEASED_SIZE)
+	projected.refresh(0.0, Vector3.UP, 0.4, true)
+	var drawn := projected.redraw_count
+	_check("SA-11: showing allocates the full target and draws", projected.viewport.size == Vector2i(512, 512)
+		and drawn == 1 and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
+	projected.refresh(0.0, Vector3.UP, 0.4, false)
+	_check("SA-11: hiding releases the target", projected.viewport.size == Projected.RELEASED_SIZE)
+	projected.refresh(0.0, Vector3.UP, 0.4, true)
+	_check("SA-11: showing again reallocates and redraws the same pose", projected.viewport.size == Vector2i(512, 512)
+		and projected.redraw_count == drawn + 1)
+	var kept := Projected.new()
+	host.add_child(kept)
+	kept.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 256, Viewport.MSAA_DISABLED)
+	kept.refresh(0.0, Vector3.UP, 0.4, false)
+	_check("SA-11: the aircraft cue keeps its target while hidden", kept.viewport.size == Vector2i(256, 256))
+	host.free()
+
+
+## SA-03: control surfaces and tagged mechanisms follow their live hinge in the projected mask.
+func _test_articulated_parts() -> void:
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := Node3D.new()
+	model.name = "airplane"
+	host.add_child(model)
+	var body := MeshInstance3D.new()
+	var body_mesh := BoxMesh.new()
+	body_mesh.size = Vector3(1.0, 0.2, 2.0)
+	body.mesh = body_mesh
+	model.add_child(body)
+	var hinge := Node3D.new()
+	hinge.name = "elevator_hinge"
+	hinge.position = Vector3(0, 0, 1)
+	model.add_child(hinge)
+	var surface := MeshInstance3D.new()
+	var surface_mesh := BoxMesh.new()
+	surface_mesh.size = Vector3(1.0, 0.02, 0.4)
+	surface.mesh = surface_mesh
+	surface.position = Vector3(0, 0, 0.2)
+	hinge.add_child(surface)
+	var canopy_mount := Node3D.new()
+	canopy_mount.name = "canopy"
+	canopy_mount.set_meta(Projected.ARTICULATED_META, true)
+	model.add_child(canopy_mount)
+	var canopy := MeshInstance3D.new()
+	canopy.mesh = BoxMesh.new()
+	canopy.position = Vector3(0, 0.5, -0.5)
+	canopy_mount.add_child(canopy)
+	var shape := Projected.collect(model)
+	var parts: Array = shape.get("parts", [])
+	var expected := body_mesh.get_aabb().merge(Transform3D(Basis(), Vector3(0, 0, 1.2)) * surface_mesh.get_aabb()) \
+		.merge(Transform3D(Basis(), Vector3(0, 0.5, -0.5)) * (canopy.mesh as BoxMesh).get_aabb())
+	_check("SA-03: hinged and tagged meshes become parts; whole-model bounds and triangles are unchanged",
+		parts.size() == 2 and int(shape.triangles) == 36 and (shape.bounds as AABB).is_equal_approx(expected)
+		and shape.mesh != null and shape.mesh.get_faces().size() == 36, str(shape.bounds))
+	_check("SA-03: a cropped (scenery) collection never articulates", not Projected.collect(model, -1.0).has("parts"))
+	var projected := Projected.new()
+	host.add_child(projected)
+	projected.setup(model, shape, 64, Viewport.MSAA_DISABLED)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	var redraws := projected.redraw_count
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: an unchanged pose reuses the mask", projected.redraw_count == redraws
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	hinge.rotation.x = deg_to_rad(35.0)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	var elevator: Dictionary = {}
+	for part: Dictionary in projected._parts:
+		if part.node == hinge:
+			elevator = part
+	_check("SA-03: a 35° hinge deflection redraws the mask with the live hinge transform",
+		projected.redraw_count == redraws + 1 and not elevator.is_empty()
+		and (elevator.material as ShaderMaterial).get_shader_parameter("part_basis") == hinge.transform.basis
+		and (elevator.material as ShaderMaterial).get_shader_parameter("part_origin") == hinge.transform.origin)
+	_check("SA-03: parts share the projection uniforms", (elevator.material as ShaderMaterial).get_shader_parameter(
+		"frame_size") == projected.mask_material.get_shader_parameter("frame_size"))
+	canopy_mount.position = Vector3(0, 0, -0.4)
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a tagged mechanism slide redraws and widens the framing", projected.redraw_count == redraws + 2
+		and (projected._last_signature[2] as Rect2).size.y >= 2.0 + 0.4)
+	surface.visible = false
+	hinge.visible = false
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a hidden part stops casting", projected.redraw_count == redraws + 3
+		and not (elevator.proxy as MeshInstance3D).visible)
+	hinge.visible = true
+	model.remove_child(hinge)
+	hinge.free()
+	projected.refresh(0.0, Vector3.UP, 0.5, true)
+	_check("SA-03: a freed part stays out of the mask", not (elevator.proxy as MeshInstance3D).visible)
+	host.free()
+
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -347,8 +584,13 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_independent_projection_and_datum()
 	_test_collection_excludes_hidden_and_propeller()
+	_test_rotor_blades_and_native_casting()
+	_test_surface_casting_semantics()
 	_test_conservative_framing()
 	_test_framing_reuse_inputs()
+	_test_error_bounded_reuse()
+	_test_articulated_parts()
+	_test_release_when_hidden()
 	_test_neutral_geometry_on_catalog_models()
 	_test_binding_lifecycle_and_hidden_updates()
 	print("Projected shadow regression: %d checks, %d failed" % [_checks, _failures])
@@ -399,23 +641,36 @@ func _test_framing_reuse_inputs() -> void:
 	_check("height changes above the blur cap retain the same mask framing",
 		var_to_bytes(projected._last_signature) == capped_signature
 		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
-	# PT1h-R12: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the drawn
-	# mask; the error is measured from the last drawn mask, so small steps cannot accumulate past the tolerance.
-	_check("the reuse cosine is cos(REUSE_ANGLE_DEG)",
-		is_equal_approx(Projected.REUSE_COS, cos(deg_to_rad(Projected.REUSE_ANGLE_DEG))))
+	# PT1h-R12/SA-07: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the
+	# drawn mask; the corner shift is measured from the last drawn mask, so small steps cannot accumulate past it.
 	height = 3.0
+	direction = Vector3(0.3, 1, -0.2) # above the projector's 0.05 grazing clamp, so the ray oracle is exact
 	model.rotation = Vector3.ZERO
 	projected.refresh(height, direction, 0.5, true)
 	var drawn := var_to_bytes(projected._last_signature)
+	var tolerance: float = projected.reuse_tolerance(clampf(0.018 + height * 0.0093, 0.018, 0.45),
+		(projected._last_signature[2] as Rect2).size.x)
 	var redraws: Array[bool] = []
-	for step in 3:
+	var predicted: Array[bool] = []
+	for step in 40:
 		projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.1))
+		var drawn_basis: Basis = projected._last_signature[0]
+		var drawn_direction: Vector3 = projected._last_signature[1]
+		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.5)) # the 32² fixture mask has a ~0.11 m texel
 		model.position.x += 0.5
+		# Independent corner-shift oracle: ray/plane projections of all eight corners, before and after.
+		var worst := 0.0
+		for i in 8:
+			var corner := projected.bounds.get_endpoint(i)
+			var now := model.global_basis * corner
+			var then := drawn_basis * corner
+			worst = maxf(worst, _ray_to_ground(now, direction).distance_to(_ray_to_ground(then, drawn_direction)))
+		predicted.append(worst > tolerance)
 		projected.refresh(height, direction, 0.5, true)
 		redraws.append(projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
-	_check("rotations under 0.25° from the drawn mask reuse it; the third 0.1° step (0.3° in total) redraws",
-		redraws == [false, false, true] and var_to_bytes(projected._last_signature) != drawn, str(redraws))
+	_check("0.5° steps reuse the mask exactly until the corner shift passes the tolerance, then redraw",
+		redraws == predicted and redraws.has(true) and not redraws[0] and var_to_bytes(projected._last_signature) != drawn,
+		"%s predicted %s tolerance %.4f" % [str(redraws), str(predicted), tolerance])
 	var moved_transform: Transform3D = projected.receiver.transform
 	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	model.position.x += 1.0

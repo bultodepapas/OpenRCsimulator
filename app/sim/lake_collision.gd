@@ -154,6 +154,7 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 	var end_time: float = float(tick) * dt
 	var waves: Array = lake.get("waves", [])
 	var best: WaterEvent = null
+	var seen: Array[WaterEvent] = []
 	for probe: Dictionary in probes:
 		var probe_radius: float = float(probe.reach) if probe.has("reach") else M.norm(probe.body_point)
 		var bounds: PackedFloat64Array = shore_bounds if str(probe.kind) == "gear" else bank_bounds
@@ -196,14 +197,13 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 						var gear_water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
 							gear_water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
 							mass_at_fraction, sample_failure, best, hull_contact)
-						if gear_water_event != null and (best == null or _event_precedes(gear_water_event, best)):
-							best = gear_water_event
+						if gear_water_event != null:
+							best = _admit(seen, gear_water_event)
 					continue
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
 					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
 				if bank_event != null:
-					if best == null or _event_precedes(bank_event, best):
-						best = bank_event
+					best = _admit(seen, bank_event)
 					continue
 				if soft_bank:
 					var water_hit: Dictionary = _sweep_water(lake, sweep0, sweep1,
@@ -212,19 +212,19 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 						var water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
 							water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
 							mass_at_fraction, sample_failure, best, hull_contact)
-						if water_event != null and (best == null or _event_precedes(water_event, best)):
-							best = water_event
+						if water_event != null:
+							best = _admit(seen, water_event)
 				continue
 			if material == "water":
 				var water_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
 					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
-				if water_event != null and (best == null or _event_precedes(water_event, best)):
-					best = water_event
+				if water_event != null:
+					best = _admit(seen, water_event)
 			elif material == "bank_ground" and str(probe.kind) == "hull":
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
 					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
-				if bank_event != null and (best == null or _event_precedes(bank_event, best)):
-					best = bank_event
+				if bank_event != null:
+					best = _admit(seen, bank_event)
 			# Once a probe has a terminal event, later pieces of that same probe cannot precede it.
 			if best != null and best.probe_order == int(probe.order) \
 					and best.time_fraction <= fraction1 + FRACTION_TIE:
@@ -233,8 +233,8 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 		if str(probe.kind) == "hull" and soft_bank and best == null:
 			var final_event: WaterEvent = _deep_bank_event(lake, previous, candidate, probe,
 				tick, mass, inertia, mass_at_fraction, sample_failure, hull_contact)
-			if final_event != null and (best == null or _event_precedes(final_event, best)):
-				best = final_event
+			if final_event != null:
+				best = _admit(seen, final_event)
 	return best
 
 
@@ -530,14 +530,31 @@ static func _surface_normal(slope_north: float, slope_east: float) -> PackedFloa
 	return PackedFloat64Array([slope_north / length, slope_east / length, -1.0 / length])
 
 
-static func _event_precedes(a: WaterEvent, b: WaterEvent) -> bool:
-	if absf(a.time_fraction - b.time_fraction) > FRACTION_TIE:
-		return a.time_fraction < b.time_fraction
+## Record a candidate and return the discovery-independent winner of all candidates so far. A pairwise
+## comparator with a FRACTION_TIE window is not transitive (chained near ties form cycles), so the
+## earliest candidate anchors the tie window and the stable probe/material/obstacle order decides in it.
+## A candidate later than winner + FRACTION_TIE can never enter that window, so callers may skip it.
+static func _admit(seen: Array[WaterEvent], event: WaterEvent) -> WaterEvent:
+	seen.append(event)
+	var earliest: float = seen[0].time_fraction
+	for candidate: WaterEvent in seen:
+		earliest = minf(earliest, candidate.time_fraction)
+	var winner: WaterEvent = null
+	for candidate: WaterEvent in seen:
+		if candidate.time_fraction - earliest <= FRACTION_TIE \
+				and (winner == null or _tie_precedes(candidate, winner)):
+			winner = candidate
+	return winner
+
+
+static func _tie_precedes(a: WaterEvent, b: WaterEvent) -> bool:
 	if a.probe_order != b.probe_order:
 		return a.probe_order < b.probe_order
 	if a.material != b.material:
 		return a.material == "water"
-	return a.obstacle_id < b.obstacle_id
+	if a.obstacle_id != b.obstacle_id:
+		return a.obstacle_id < b.obstacle_id
+	return a.time_fraction < b.time_fraction
 
 
 static func _polygon_bounds(polygon: PackedFloat64Array) -> PackedFloat64Array:

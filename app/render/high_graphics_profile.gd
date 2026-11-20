@@ -3,6 +3,7 @@
 extends RefCounted
 
 const ShadowSettings := preload("res://render/shadow_settings.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
 
 const ENVIRONMENT_KEY := "OPENRC_GRAPHICS_PROFILE"
 const RESEARCH_ENVIRONMENT_KEY := "OPENRC_GRAPHICS_RESEARCH"
@@ -66,9 +67,16 @@ static func describe() -> Dictionary:
 	return result
 
 ## The project's Standard renderer for this host, including feature-tag overrides
-## (DT-MAC-05b: Mobile on Apple Silicon, Compatibility elsewhere). A CLI renderer does not change it.
+## (DT-MAC-05b: Mobile on Apple Silicon, Compatibility elsewhere). A CLI renderer does not change it,
+## and neither does a saved High graphics mode (VQ-07h renderer override in exported builds).
 static func standard_rendering_method() -> String:
-	return str(ProjectSettings.get_setting_with_override("rendering/renderer/rendering_method"))
+	return RendererPreference.project_standard_method(default_rendering_method(), OS.has_feature("template"),
+		RendererPreference.load_state())
+
+
+## The renderer a normal launch of this build starts with, including a saved graphics mode.
+static func default_rendering_method() -> String:
+	return str(ProjectSettings.get_setting_with_override(RendererPreference.SETTING))
 
 
 static func restart_arguments(profile: String, editor_binary: bool, project_path: String) -> PackedStringArray:

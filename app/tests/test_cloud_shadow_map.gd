@@ -262,12 +262,42 @@ func run() -> void:
 	var headless := ShaderMaterial.new()
 	headless.shader = Atmosphere.GROUND_SHADER
 	CloudShadowMap.apply(headless, headless_seed)
+	# SA-10: obsolete seeds no longer hold slots that a current seed needs.
 	CloudShadowMap.apply(ground, seed + 4)
-	check("capacity fallback disables the previous binding", ground.get_shader_parameter("cloud_shadow_map_enabled") == false
+	check("a full cache reclaims the unreferenced ready seed for the new current seed",
+		CloudShadowMap._tiles.size() == CloudShadowMap.MAX_TILES and not CloudShadowMap._tiles.has(next_seed)
+		and str(CloudShadowMap._tiles.get(seed + 4, {}).get("status", "")) == "pending"
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == false
 		and CloudShadowMap.diagnostics().effective.ground == "mixed")
-	CloudShadowMap.apply(ground, next_seed)
-	check("a ready seed can be restored after capacity fallback", ground.get_shader_parameter("cloud_shadow_map") == texture
-		and ground.get_shader_parameter("cloud_shadow_map_enabled") == true)
+	CloudShadowMap.apply(ground, seed + 5)
+	check("switching away cancels the obsolete pending bake", not CloudShadowMap._tiles.has(seed + 4)
+		and str(CloudShadowMap._tiles.get(seed + 5, {}).get("status", "")) == "pending")
+	for step in 5: # the audit's synchronous 101…105 sequence on one material
+		CloudShadowMap.apply(ground, seed + 10 + step)
+	var rapid_left := false
+	for step in 4:
+		rapid_left = rapid_left or CloudShadowMap._tiles.has(seed + 10 + step)
+	check("rapid seed changes keep only the current seed pending, never capacity",
+		not rapid_left and not CloudShadowMap._tiles.has(seed + 5)
+		and str(CloudShadowMap._tiles.get(seed + 14, {}).get("status", "")) == "pending"
+		and str(CloudShadowMap._consumers[ground.get_instance_id()].status) == "pending")
+	var blocked := ShaderMaterial.new()
+	blocked.shader = Atmosphere.GROUND_SHADER
+	CloudShadowMap.apply(blocked, seed + 20)
+	check("capacity remains when every retained seed is still required",
+		str(CloudShadowMap._consumers[blocked.get_instance_id()].status) == "capacity"
+		and not CloudShadowMap._tiles.has(seed + 20) and blocked.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	CloudShadowMap.apply(ground, seed)
+	check("a ready seed retained by other consumers rebinds at once",
+		ground.get_shader_parameter("cloud_shadow_map") == CloudShadowMap.texture_for(seed)
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == true and not CloudShadowMap._tiles.has(seed + 14))
+	check("the freed slot is retried for the waiting consumer",
+		str(CloudShadowMap._tiles.get(seed + 20, {}).get("status", "")) == "pending"
+		and str(CloudShadowMap._consumers[blocked.get_instance_id()].status) == "pending")
+	var late := CloudShadowMap.diagnostics_generation()
+	CloudShadowMap._complete_bake(self, seed + 14, _sample_image(seed + 14), "")
+	check("a late completion for a released seed publishes nothing", not CloudShadowMap._tiles.has(seed + 14)
+		and CloudShadowMap.diagnostics_generation() == late)
 
 	var transient := ShaderMaterial.new()
 	transient.shader = Atmosphere.GROUND_SHADER

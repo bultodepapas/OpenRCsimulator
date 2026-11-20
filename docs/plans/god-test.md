@@ -259,6 +259,16 @@ Resource-sampler peaks are sampled peaks. Short phases emphasize raw intervals,
 maxima and events rather than a poorly supported p99. Keep first-use hitches visible;
 warmup is separately labeled and never silently erases the user experience.
 
+**PT1h-R15-S3a implemented offline:** the existing phase reducer now reports callback
+FPS, slow-wall share, run counts and maximum run durations at strict 16.667/33.333/50/100 ms
+thresholds. Phase changes break consecutive runs across chunks. It requires the
+phase-index channel and derives percentiles from verified samples; missing completed
+requested-phase samples remain unavailable/ineligible instead of zero-ms passes.
+Assigned interval durations, not event-bounded phase duration, supply FPS/share
+denominators. This adds no runtime observer and does not close campaign gates.
+The [integration follow-up](../research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
+records source contracts, proof and pending native adapters.
+
 Inherit owning-track targets, preserving their definitions and stricter limits:
 
 | Existing target | Definition/limit |
@@ -291,6 +301,14 @@ inside an acceptance run. Preserve pilot while changing only audited observers i
 overhead controls. Never subtract noisy observer time from individual frame times.
 `.orfl` is explicit and matched across roles. Reuse bounded streaming and existing
 OS resource/Perfetto tools; no new profiler or growing in-memory full-flight arrays.
+
+The [PT1h-R15 stutter-diagnostics plan](stutter-diagnostics.md) owns proposed bounded
+incident collection and channel/clock provenance. GOD TEST retains campaign control
+and this comparison policy. Attach original `openrc-debug-frames v1` snapshots by
+run/phase identity; do not coerce them into `openrc-frametimes` by inventing missing
+simulation fields. Shared reports must retain formula identity, coverage gaps,
+profiler state and unverified GPU freshness. The [24-investigation record](../research/release-readiness/PT1h-R15/research-2026-11-19.md)
+is planning input, not a new GOD TEST execution or hardware result.
 
 ## 11. Outcome and recovery contract
 

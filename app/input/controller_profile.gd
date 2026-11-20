@@ -7,6 +7,10 @@ const VALID_KINDS := ["gamepad", "radio", "joystick"]
 const VALID_THROTTLE_MODES := ["stick_rate", "trigger_absolute", "radio_absolute"]
 const VALID_GLYPHS := ["auto", "xbox", "playstation", "nintendo", "generic"]
 const VALID_FLAP_ELEVATOR_MIX_OWNERS := ["simulator", "transmitter"]
+## D6-ETX-07: who applies dual rates and expo to a radio's sticks. "transmitter": the radio (EdgeTX Inputs), OpenRC
+## passes the sticks through; "simulator": the radio sends linear 100 % sticks and OpenRC applies the flown aircraft's
+## manual rates (normal / sport / full), chosen by the profile's rates switch or the Dual rates action.
+const VALID_RATES_OWNERS := ["simulator", "transmitter"]
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
@@ -14,10 +18,25 @@ const RadioMenu := preload("res://input/radio_menu.gd")
 const DEFAULT_DEADZONE := 0.08
 const DEFAULT_EXPO := 0.3
 const DEFAULT_THROTTLE_RATE := 0.5
+## DR-14d (docs/plans/drone-racing.md §17.1): EdgeTX/OpenTX Classic USB joystick FPV conventions. AETR on axes 0-3
+## (calibrated as any radio); CH5 (axis 4) arms only at its high end, so a 3-position switch's middle never arms;
+## CH6 (axis 5) is the flight mode (low Angle, middle and high Acro); CH9 (joystick button 1 = SDL button 0) restarts
+## on the pad. CH7/CH8 stay free: Windows DirectInput can swap them.
+const EDGETX_FPV_PRESET := "edgetx_fpv"
+const EDGETX_FPV_AUX := {
+	"arm": {"type": "axis", "axis": 4, "invert": false, "off": 0.0, "on": 1.0},
+	"flight_mode": {"type": "axis", "axis": 5, "invert": false, "off": -1.0, "on": 1.0},
+}
+const EDGETX_FPV_RESTART := {"type": "button", "button": 0}
+## D6-ETX-02 (docs/plans/edgetx-airplane-controls.md): EdgeTX airplane. AETR on axes 0-3 (calibrated as any radio)
+## and restart on CH9 (button 0) like the quad; gear, flaps and smoke are bound only by the Setup assistant's switch
+## check (EdgeTxRadio.AIRPLANE_LAYOUT is the recommendation it presents), so the preset never trusts an AUX index.
+## Dual rates and expo stay on the radio.
+const EDGETX_AIRPLANE_PRESET := "edgetx_airplane"
 
 
 ## Returns a complete, validated starter profile. `preset` is one of mode1,
-## mode2, trigger_absolute, radio_custom, or jeti_mode2. Unknown combinations return {}.
+## mode2, trigger_absolute, radio_custom, jeti_mode2, edgetx_fpv or edgetx_airplane. Unknown combinations return {}.
 static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dictionary:
 	if preset == "custom" and kind in ["radio", "joystick"]:
 		preset = "radio_custom"
@@ -25,7 +44,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		return {}
 	if kind == "gamepad" and not ["mode1", "mode2", "trigger_absolute"].has(preset):
 		return {}
-	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2"]:
+	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2", EDGETX_FPV_PRESET, EDGETX_AIRPLANE_PRESET]:
 		return {}
 	if kind == "joystick" and preset != "radio_custom":
 		return {}
@@ -52,6 +71,10 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 	var name := "Gamepad Mode 2" if preset == "mode2" else ("Gamepad Mode 1" if preset == "mode1" else ("Gamepad Trigger Throttle" if preset == "trigger_absolute" else ("Radio Custom" if kind == "radio" else "Joystick Custom")))
 	if preset == "jeti_mode2":
 		name = "JETI USB Mode 2"
+	elif preset == EDGETX_FPV_PRESET:
+		name = "EdgeTX FPV quad"
+	elif preset == EDGETX_AIRPLANE_PRESET:
+		name = "EdgeTX airplane"
 	var result: Dictionary = {
 		"schema_version": SCHEMA_VERSION,
 		"profile_id": _new_uuid(),
@@ -77,6 +100,11 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 	result["configured"] = true
 	if kind in ["radio", "joystick"]:
 		result.actions = ControllerActions.clean_radio_bindings()
+	if preset == EDGETX_FPV_PRESET:
+		result.aux = EDGETX_FPV_AUX.duplicate(true)
+		result.actions.restart_flight = EDGETX_FPV_RESTART.duplicate(true)
+	elif preset == EDGETX_AIRPLANE_PRESET:
+		result.actions.restart_flight = EDGETX_FPV_RESTART.duplicate(true)
 	return result if validate(result).ok else {}
 
 
@@ -178,6 +206,17 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		if not ["kind", "roll", "pitch", "yaw", "throttle", "deadzone", "expo", "throttle_rate", "name", "preset", "schema_version", "profile_id", "aux", "association", "throttle_mode", "configured"].has(str(key)):
 			result[key] = legacy[key].duplicate(true) if typeof(legacy[key]) in [TYPE_ARRAY, TYPE_DICTIONARY] else legacy[key]
 	return result if validate(result).ok else {}
+
+
+## D6-ETX-07: the side that shapes the sticks. A missing field keeps the established behaviour: a radio applies its
+## own rates; keyboard, gamepads and calibrated joysticks get the aircraft's rates.
+static func rates_owner(profile: Variant) -> String:
+	if typeof(profile) != TYPE_DICTIONARY:
+		return "simulator"
+	var kind := _string_field(profile, "kind")
+	if kind in ["radio", "joystick"] and _string_field(profile, "rates_owner") in VALID_RATES_OWNERS:
+		return _string_field(profile, "rates_owner")
+	return "transmitter" if kind == "radio" else "simulator"
 
 
 ## Missing or invalid ownership fails safe to the simulator's established behavior.
@@ -354,6 +393,14 @@ static func validate(value: Variant) -> Dictionary:
 		elif owner == "transmitter" and _string_field(value, "kind") not in ["radio", "joystick"]:
 			var error: String = "transmitter flap-to-elevator compensation requires a radio or joystick profile"
 			_append_validation_issue(errors, issues, "profile_invalid", ["flap_elevator_mix_owner"], error)
+	if value.has("rates_owner"):
+		var rates_owner_value: Variant = value.get("rates_owner")
+		if typeof(rates_owner_value) != TYPE_STRING or not VALID_RATES_OWNERS.has(rates_owner_value):
+			var error: String = "rates_owner must be simulator or transmitter"
+			_append_validation_issue(errors, issues, "profile_invalid", ["rates_owner"], error)
+		elif _string_field(value, "kind") not in ["radio", "joystick"]:
+			var error: String = "rates_owner applies only to a radio or joystick profile"
+			_append_validation_issue(errors, issues, "profile_invalid", ["rates_owner"], error)
 	var configured: Variant = value.get("configured", true)
 	if typeof(configured) != TYPE_BOOL or not configured:
 		var error: String = "unconfigured profile cannot drive flight commands"

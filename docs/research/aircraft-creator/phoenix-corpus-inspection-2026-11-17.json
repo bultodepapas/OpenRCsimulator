@@ -1,0 +1,3122 @@
+{
+  "schema": "openrc-phoenix-corpus-inspection-v1",
+  "research_date_local": "2026-11-17",
+  "research_timezone": "America/Bogota",
+  "observation_date_utc": "2026-11-18",
+  "research_code_commit": "6f2b05000bd72e8dd5ef4939924115c114c06914",
+  "summary": {
+    "packages_inspected": 25,
+    "pkg_observed_profile": 20,
+    "pkg_outside_profile": 5,
+    "mod_observed_grammar": 13,
+    "mod_outside_grammar": 7
+  },
+  "interpretation": [
+    "These 25 package observations include the previously inspected Su-37, Carbon-Z Yak and AW109 v4. They are not 25 new aircraft.",
+    "Five packages were outside the current container profile; no definition result exists for those five.",
+    "Seven MOD members were outside the observed grammar. Their binary-looking prefixes mean a first line-ending error is not evidence of a text-file line-ending defect.",
+    "The zero-padding limit diagnostic is emitted before all remaining bytes are checked for zero; it does not prove valid all-zero padding or corruption.",
+    "Geometry, rendering, dynamics, controller behavior and physical calibration remain unqualified."
+  ],
+  "archives": [
+    {
+      "schema": "openrc-phoenix-corpus-expansion-inspection-v1",
+      "source_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Planes.zip",
+      "archive_sha256": "e59a722798df2d024fe60b93238ace6099e96f669f7fbedb2991423cdf3fdeca",
+      "archive_bytes": 63166915,
+      "method": "captured existing local archive; bounded member reads with ZIP CRC verification, existing PKG/MOD research tools, in-memory data only",
+      "probe_source_sha256": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+      "definition_source_sha256": "678268321579b34ef75662102fba1b734deb9421b59d39f3f314c24057402550",
+      "scope": "No geometry decode, simulator execution, runtime or flight qualification; names are data, not extraction paths.",
+      "packages": [
+        {
+          "zip_member": "AV-8B_Harrier turbine.pkg",
+          "pkg_bytes": 3084809,
+          "pkg_sha256": "7b8dae6b9246e0cac03dbf4a124acb84aef2f4cd2ee4f4065734ba7a6aa35294",
+          "zip_crc32": "10b9156b",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 12,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "AV_8B_Harrier_turbine",
+                "AV_8B_Harrier_turbine.mod"
+              ],
+              "bytes": 17324,
+              "sha256": "01fec3a392f5ee991fdba73c823ed505dd49c9c2f8ac0e81297f8486736ae7f1",
+              "prefix_hex": "6d6f64656c54797065732e41565f3842",
+              "status": "observed MOD grammar parsed",
+              "target": "AV_8B_Harrier_turbine",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "AV-8B_Harrier turbine",
+                    "raw_hex": "41562d38425f486172726965722074757262696e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2241562d38425f486172726965722074757262696e6522",
+                  "span": {
+                    "start_byte": 64,
+                    "end_byte_exclusive": 87,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 98,
+                    "end_byte_exclusive": 108,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 162,
+                    "end_byte_exclusive": 165,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 185,
+                    "end_byte_exclusive": 192,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 216,
+                    "end_byte_exclusive": 223,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 257,
+                    "end_byte_exclusive": 273,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "89",
+                    "raw_hex": "3839",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3839",
+                  "span": {
+                    "start_byte": 437,
+                    "end_byte_exclusive": 439,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 5,
+                "number": 499,
+                "pivot_pairs_declared": 10,
+                "string": 144,
+                "strings_with_non_ascii_bytes": 2,
+                "symbol": 1,
+                "table": 225
+              },
+              "diagnostics": [
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "AV_8B_Harrier_turbine",
+                    "gear",
+                    1,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 11991,
+                    "end_byte_exclusive": 12022,
+                    "line": 660,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "AV_8B_Harrier_turbine",
+                    "gear",
+                    1,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 12348,
+                    "end_byte_exclusive": 12381,
+                    "line": 686,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "AV_8B_Harrier_turbine",
+                    "airfoils",
+                    0,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 6013,
+                    "end_byte_exclusive": 6030,
+                    "line": 275,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "AV_8B_Harrier_turbine",
+                    "airfoils",
+                    1,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 7305,
+                    "end_byte_exclusive": 7322,
+                    "line": 374,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "AV_8B_Harrier_turbine",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8497,
+                    "end_byte_exclusive": 8514,
+                    "line": 459,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "B52H_Stratofortress.pkg",
+          "pkg_bytes": 4833112,
+          "pkg_sha256": "b1429e123b08456e54a0cf3fad16f9fe21215cbe8f40be0791d659e5019aa0f9",
+          "zip_crc32": "a4f64f02",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 11,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "B_52H_Stratofortress_turbine",
+                "B_52H_Stratofortress_turbine.mod"
+              ],
+              "bytes": 30120,
+              "sha256": "963007c89e164c6acb33145cf7910619640f047baa7b9204ea7ba53329b7f740",
+              "prefix_hex": "6d6f64656c54797065732e425f353248",
+              "status": "observed MOD grammar parsed",
+              "target": "B_52H_Stratofortress_turbine",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "B-52H_Stratofortress turbine",
+                    "raw_hex": "422d3532485f53747261746f666f7274726573732074757262696e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22422d3532485f53747261746f666f7274726573732074757262696e6522",
+                  "span": {
+                    "start_byte": 71,
+                    "end_byte_exclusive": 101,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 112,
+                    "end_byte_exclusive": 122,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 176,
+                    "end_byte_exclusive": 179,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 199,
+                    "end_byte_exclusive": 206,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 230,
+                    "end_byte_exclusive": 237,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 271,
+                    "end_byte_exclusive": 287,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "55",
+                    "raw_hex": "3535",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3535",
+                  "span": {
+                    "start_byte": 451,
+                    "end_byte_exclusive": 453,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 5,
+                "number": 896,
+                "pivot_pairs_declared": 19,
+                "string": 213,
+                "strings_with_non_ascii_bytes": 2,
+                "symbol": 1,
+                "table": 411
+              },
+              "diagnostics": [
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "B_52H_Stratofortress_turbine",
+                    "gear",
+                    4,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 18209,
+                    "end_byte_exclusive": 18260,
+                    "line": 974,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "B_52H_Stratofortress_turbine",
+                    "gear",
+                    4,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 18586,
+                    "end_byte_exclusive": 18639,
+                    "line": 1000,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "B_52H_Stratofortress_turbine",
+                    "airfoils",
+                    0,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 7034,
+                    "end_byte_exclusive": 7051,
+                    "line": 289,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "B_52H_Stratofortress_turbine",
+                    "airfoils",
+                    1,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8324,
+                    "end_byte_exclusive": 8341,
+                    "line": 388,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "B_52H_Stratofortress_turbine",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 9517,
+                    "end_byte_exclusive": 9534,
+                    "line": 473,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "C-5 Galaxy turbine.pkg",
+          "pkg_bytes": 2935286,
+          "pkg_sha256": "61c1f146cda3e7ac267c974f6a579d1689991c240abef7630656fb3ad21bcf08",
+          "zip_crc32": "881a4667",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 8,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "C_5_Galaxy_turbine",
+                "C_5_Galaxy_turbine.mod"
+              ],
+              "bytes": 19141,
+              "sha256": "c6ad691e8c4dd7ba079cc10ec46618d2ef0f3e9bfabfbefb38b1a8b3c896e8b1",
+              "prefix_hex": "6d6f64656c54797065732e435f355f47",
+              "status": "observed MOD grammar parsed",
+              "target": "C_5_Galaxy_turbine",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "C-5 Galaxy turbine",
+                    "raw_hex": "432d352047616c6178792074757262696e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22432d352047616c6178792074757262696e6522",
+                  "span": {
+                    "start_byte": 61,
+                    "end_byte_exclusive": 81,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 92,
+                    "end_byte_exclusive": 102,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 156,
+                    "end_byte_exclusive": 159,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.e",
+                    "raw_hex": "352e352e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6522",
+                  "span": {
+                    "start_byte": 179,
+                    "end_byte_exclusive": 186,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 210,
+                    "end_byte_exclusive": 217,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 251,
+                    "end_byte_exclusive": 267,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "51",
+                    "raw_hex": "3531",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3531",
+                  "span": {
+                    "start_byte": 427,
+                    "end_byte_exclusive": 429,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 5,
+                "number": 531,
+                "pivot_pairs_declared": 11,
+                "string": 152,
+                "symbol": 1,
+                "table": 244
+              },
+              "diagnostics": [
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "C_5_Galaxy_turbine",
+                    "airfoils",
+                    0,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 6201,
+                    "end_byte_exclusive": 6218,
+                    "line": 276,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "C_5_Galaxy_turbine",
+                    "airfoils",
+                    1,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8603,
+                    "end_byte_exclusive": 8620,
+                    "line": 441,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "C_5_Galaxy_turbine",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 9793,
+                    "end_byte_exclusive": 9810,
+                    "line": 526,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "EFLCarbonZYak543X.pkg",
+          "pkg_bytes": 1928595,
+          "pkg_sha256": "4a9b0cf1af316416c6d28bce0fbf1e8758216904610a485a3f431f2d469ac93e",
+          "zip_crc32": "a889141c",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Airplanes",
+                "EFLCarbonZYak543X",
+                "EFLCarbonZYak543X.mod"
+              ],
+              "bytes": 23130,
+              "sha256": "41b7845bad7f223ba5425b449be9bea8e74635d3d639fc323c5b592453ded5d7",
+              "prefix_hex": "00010204081020401605321a30450061",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 45, line 1, byte column 46: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "efliteCarbonZCub.pkg",
+          "pkg_bytes": 1930802,
+          "pkg_sha256": "5ae017077b41dba30c825c16ad9c7e9f4013c819180a3f6aab7cc0f9e944059b",
+          "zip_crc32": "2d74a3dd",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Airplanes",
+                "efliteCarbonZCub",
+                "efliteCarbonZCub.mod"
+              ],
+              "bytes": 23734,
+              "sha256": "d73c9c02154556de894709c1571e8f2a4d541307dd8576dd44e63b1b7ea14145",
+              "prefix_hex": "0001020408102040001b044874015e03",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 96, line 1, byte column 97: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "EFLP-47D.pkg",
+          "pkg_bytes": 1686718,
+          "pkg_sha256": "3eae4b98b9bab386d3135edcc67123c99e25153e7e6111cb3ea6792094bcc383",
+          "zip_crc32": "c6f94c8b",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Airplanes",
+                "EFLP_47D",
+                "EFLP_47D.mod"
+              ],
+              "bytes": 11638,
+              "sha256": "01064ad3de0ac2fbe1217853c0f9022b452bc31239b4d868dcb708be5ceb5f10",
+              "prefix_hex": "6d6f64656c54797065732e45464c505f",
+              "status": "observed MOD grammar parsed",
+              "target": "EFLP_47D",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "P-47D Thunderbolt",
+                    "raw_hex": "502d343744205468756e646572626f6c74",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22502d343744205468756e646572626f6c7422",
+                  "span": {
+                    "start_byte": 51,
+                    "end_byte_exclusive": 70,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 81,
+                    "end_byte_exclusive": 91,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 152,
+                    "end_byte_exclusive": 155,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.e",
+                    "raw_hex": "352e352e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6522",
+                  "span": {
+                    "start_byte": 175,
+                    "end_byte_exclusive": 182,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 206,
+                    "end_byte_exclusive": 213,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 270,
+                    "end_byte_exclusive": 286,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "137",
+                    "raw_hex": "313337",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "313337",
+                  "span": {
+                    "start_byte": 454,
+                    "end_byte_exclusive": 457,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 3,
+                "number": 320,
+                "pivot_pairs_declared": 6,
+                "string": 82,
+                "symbol": 1,
+                "table": 149
+              },
+              "diagnostics": [
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "EFLP_47D",
+                    "gear",
+                    0,
+                    "wheels",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 10044,
+                    "end_byte_exclusive": 10051,
+                    "line": 615,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "EFLP_47D",
+                    "gear",
+                    1,
+                    "wheels",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 11161,
+                    "end_byte_exclusive": 11168,
+                    "line": 686,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "EFLRareBear.pkg",
+          "pkg_bytes": 1544165,
+          "pkg_sha256": "8c5a7b3373bd1203fb1fae30f8ad89cd93ced22fefd4dd6d8f35d392c333184f",
+          "zip_crc32": "46bc5659",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Airplanes",
+                "EFLRareBear",
+                "EFLRareBear.mod"
+              ],
+              "bytes": 8869,
+              "sha256": "4cf0a3b1d938b38201af3d400bc8eb9583ef18077f603254a0fb69900514d1d9",
+              "prefix_hex": "6d6f64656c54797065732e45464c5261",
+              "status": "observed MOD grammar parsed",
+              "target": "EFLRareBear",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Rare Bear",
+                    "raw_hex": "526172652042656172",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2252617265204265617222",
+                  "span": {
+                    "start_byte": 54,
+                    "end_byte_exclusive": 65,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 76,
+                    "end_byte_exclusive": 86,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 147,
+                    "end_byte_exclusive": 150,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.e",
+                    "raw_hex": "352e352e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6522",
+                  "span": {
+                    "start_byte": 170,
+                    "end_byte_exclusive": 177,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 201,
+                    "end_byte_exclusive": 208,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 270,
+                    "end_byte_exclusive": 286,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "106",
+                    "raw_hex": "313036",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "313036",
+                  "span": {
+                    "start_byte": 454,
+                    "end_byte_exclusive": 457,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 1,
+                "number": 232,
+                "pivot_pairs_declared": 3,
+                "string": 73,
+                "symbol": 1,
+                "table": 101
+              },
+              "diagnostics": []
+            }
+          ]
+        },
+        {
+          "zip_member": "F-14A_Tomcat_turbine.pkg",
+          "pkg_bytes": 4237538,
+          "pkg_sha256": "bca595faa8d5d5017eb68ef7c5cc69f685253961a5ae5222a11b995867043c10",
+          "zip_crc32": "1fa3975d",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 11,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "Turbine_F_14A_Tomcat",
+                "Turbine_F_14A_Tomcat.mod"
+              ],
+              "bytes": 22225,
+              "sha256": "d07f8b912a27e7c92f561f7f963956bf5264c27fd38b4f8829311403c8d91091",
+              "prefix_hex": "6d6f64656c54797065732e5475726269",
+              "status": "observed MOD grammar parsed",
+              "target": "Turbine_F_14A_Tomcat",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Turbine F-14A_Tomcat ",
+                    "raw_hex": "54757262696e6520462d3134415f546f6d63617420",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2254757262696e6520462d3134415f546f6d6361742022",
+                  "span": {
+                    "start_byte": 63,
+                    "end_byte_exclusive": 86,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 97,
+                    "end_byte_exclusive": 107,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 161,
+                    "end_byte_exclusive": 164,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 184,
+                    "end_byte_exclusive": 191,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 215,
+                    "end_byte_exclusive": 222,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 256,
+                    "end_byte_exclusive": 272,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "81",
+                    "raw_hex": "3831",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3831",
+                  "span": {
+                    "start_byte": 436,
+                    "end_byte_exclusive": 438,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 6,
+                "number": 622,
+                "pivot_pairs_declared": 16,
+                "string": 212,
+                "strings_with_non_ascii_bytes": 12,
+                "symbol": 1,
+                "table": 285
+              },
+              "diagnostics": [
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    0,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 14162,
+                    "end_byte_exclusive": 14193,
+                    "line": 749,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    0,
+                    "sides",
+                    0,
+                    "geometry",
+                    1
+                  ],
+                  "span": {
+                    "start_byte": 14203,
+                    "end_byte_exclusive": 14237,
+                    "line": 750,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    0,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 14558,
+                    "end_byte_exclusive": 14591,
+                    "line": 776,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    1,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 15323,
+                    "end_byte_exclusive": 15362,
+                    "line": 816,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    2,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 16154,
+                    "end_byte_exclusive": 16196,
+                    "line": 864,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    2,
+                    "sides",
+                    0,
+                    "geometry",
+                    1
+                  ],
+                  "span": {
+                    "start_byte": 16206,
+                    "end_byte_exclusive": 16236,
+                    "line": 865,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    2,
+                    "sides",
+                    0,
+                    "geometry",
+                    2
+                  ],
+                  "span": {
+                    "start_byte": 16246,
+                    "end_byte_exclusive": 16287,
+                    "line": 866,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    2,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 16621,
+                    "end_byte_exclusive": 16656,
+                    "line": 892,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    3,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 17393,
+                    "end_byte_exclusive": 17435,
+                    "line": 932,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    3,
+                    "sides",
+                    0,
+                    "geometry",
+                    1
+                  ],
+                  "span": {
+                    "start_byte": 17445,
+                    "end_byte_exclusive": 17475,
+                    "line": 933,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    3,
+                    "sides",
+                    0,
+                    "geometry",
+                    2
+                  ],
+                  "span": {
+                    "start_byte": 17485,
+                    "end_byte_exclusive": 17526,
+                    "line": 934,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "gear",
+                    3,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 17855,
+                    "end_byte_exclusive": 17891,
+                    "line": 960,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "airfoils",
+                    1,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8989,
+                    "end_byte_exclusive": 9006,
+                    "line": 421,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 10188,
+                    "end_byte_exclusive": 10205,
+                    "line": 506,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Turbine_F_14A_Tomcat",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    1,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 10697,
+                    "end_byte_exclusive": 10714,
+                    "line": 537,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "F-14-tomcat.pkg",
+          "pkg_bytes": 877419,
+          "pkg_sha256": "03b810c02b26d559d72a8260eafb0c87f819c9753f5b3ccb36bc9e1bde7e6258",
+          "zip_crc32": "d81d7756",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 5,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "F_14_tomcat",
+                "F_14_tomcat.mod"
+              ],
+              "bytes": 12950,
+              "sha256": "464775ddf20b795e2debd5f82c6176566f658af82ea024c54598da03a298ce2b",
+              "prefix_hex": "6d6f64656c54797065732e465f31345f",
+              "status": "observed MOD grammar parsed",
+              "target": "F_14_tomcat",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "F-14 Tomcat",
+                    "raw_hex": "462d313420546f6d636174",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22462d313420546f6d63617422",
+                  "span": {
+                    "start_byte": 54,
+                    "end_byte_exclusive": 67,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 78,
+                    "end_byte_exclusive": 88,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 142,
+                    "end_byte_exclusive": 145,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 165,
+                    "end_byte_exclusive": 172,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 196,
+                    "end_byte_exclusive": 203,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 257,
+                    "end_byte_exclusive": 273,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "96",
+                    "raw_hex": "3936",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3936",
+                  "span": {
+                    "start_byte": 441,
+                    "end_byte_exclusive": 443,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 8,
+                "number": 324,
+                "pivot_pairs_declared": 5,
+                "string": 122,
+                "symbol": 1,
+                "table": 167
+              },
+              "diagnostics": [
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "F_14_tomcat",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8005,
+                    "end_byte_exclusive": 8013,
+                    "line": 424,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "F_14_tomcat",
+                    "airfoils",
+                    3,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 9162,
+                    "end_byte_exclusive": 9170,
+                    "line": 508,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "Great Lakes Bi-Plane.pkg",
+          "pkg_bytes": 813604,
+          "pkg_sha256": "4af3f3ec9216a2e12c0154818ea7cc73c15d8eb69ebb66d24eddf261fa5811bf",
+          "zip_crc32": "02405391",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 8,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "Great_Lakes_Bi_Plane",
+                "Great_Lakes_Bi_Plane.mod"
+              ],
+              "bytes": 12865,
+              "sha256": "9b3d05969d737e1ffe3a9e2abcd5d55699b193f19f92c8cae8aecf5f55db6d1d",
+              "prefix_hex": "6d6f64656c54797065732e4772656174",
+              "status": "observed MOD grammar parsed",
+              "target": "Great_Lakes_Bi_Plane",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Great Lakes Bi-Plane",
+                    "raw_hex": "4772656174204c616b65732042692d506c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "224772656174204c616b65732042692d506c616e6522",
+                  "span": {
+                    "start_byte": 63,
+                    "end_byte_exclusive": 85,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 96,
+                    "end_byte_exclusive": 106,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 169,
+                    "end_byte_exclusive": 172,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 192,
+                    "end_byte_exclusive": 199,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 223,
+                    "end_byte_exclusive": 230,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 278,
+                    "end_byte_exclusive": 294,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "64",
+                    "raw_hex": "3634",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3634",
+                  "span": {
+                    "start_byte": 454,
+                    "end_byte_exclusive": 456,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 1,
+                "number": 330,
+                "pivot_pairs_declared": 6,
+                "string": 121,
+                "symbol": 1,
+                "table": 166
+              },
+              "diagnostics": []
+            }
+          ]
+        },
+        {
+          "zip_member": "H9Inverza62.pkg",
+          "pkg_bytes": 1331165,
+          "pkg_sha256": "a9cd87a0aafeffa775f46122dd53a123e5c01e08a2976c67e28262cec34c9a1d",
+          "zip_crc32": "22f75bb3",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 5,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Airplanes",
+                "H9Inverza62",
+                "H9Inverza62.mod"
+              ],
+              "bytes": 25792,
+              "sha256": "390442d74f0c05c5015946965c1bb96c9695e3bcf880adbbd0cc6fbff1d2ad6f",
+              "prefix_hex": "0001020408102040170409434b2a055c",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 122, line 4, byte column 3: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "KDSAgile55.pkg",
+          "pkg_bytes": 2538564,
+          "pkg_sha256": "f8ea56ebedd90f45b4d50358c54d259d83cf7a132b98d75183051093a5659557",
+          "zip_crc32": "d905078d",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 5,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Helicopters",
+                "KDSAgile55",
+                "KDSAgile55.mod"
+              ],
+              "bytes": 16658,
+              "sha256": "8727714d547c88c2e251fda529c570abd0e0b9c4a31e76f74fe8c525dccfc7d6",
+              "prefix_hex": "000102040810204009121636086d5809",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 196, line 5, byte column 3: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "Lockheed-P38.pkg",
+          "pkg_bytes": 8003612,
+          "pkg_sha256": "fbc2513263e86c7b2e3e3bb299dbd76a3bf5555f0d9fb3ba6d58484cf414cd36",
+          "zip_crc32": "1d57fd31",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 31,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "Lockheed_P38",
+                "Lockheed_P38.mod"
+              ],
+              "bytes": 17387,
+              "sha256": "41ab6f2df29040e0ea3d6421491bbaaf12c9da66d9b5682d98a3a82e7f477416",
+              "prefix_hex": "6d6f64656c54797065732e4c6f636b68",
+              "status": "observed MOD grammar parsed",
+              "target": "Lockheed_P38",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Lockheed-P38",
+                    "raw_hex": "4c6f636b686565642d503338",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "224c6f636b686565642d50333822",
+                  "span": {
+                    "start_byte": 55,
+                    "end_byte_exclusive": 69,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 80,
+                    "end_byte_exclusive": 90,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 144,
+                    "end_byte_exclusive": 147,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.f",
+                    "raw_hex": "352e352e66",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6622",
+                  "span": {
+                    "start_byte": 167,
+                    "end_byte_exclusive": 174,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 198,
+                    "end_byte_exclusive": 205,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 239,
+                    "end_byte_exclusive": 255,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "57",
+                    "raw_hex": "3537",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3537",
+                  "span": {
+                    "start_byte": 413,
+                    "end_byte_exclusive": 415,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 7,
+                "number": 493,
+                "pivot_pairs_declared": 9,
+                "string": 138,
+                "symbol": 1,
+                "table": 221
+              },
+              "diagnostics": [
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Lockheed_P38",
+                    "airfoils",
+                    0,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 6385,
+                    "end_byte_exclusive": 6402,
+                    "line": 268,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Lockheed_P38",
+                    "airfoils",
+                    1,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 7670,
+                    "end_byte_exclusive": 7687,
+                    "line": 367,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Lockheed_P38",
+                    "airfoils",
+                    2,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 8835,
+                    "end_byte_exclusive": 8852,
+                    "line": 451,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Lockheed_P38",
+                    "airfoils",
+                    3,
+                    "controlSurfaces",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 10096,
+                    "end_byte_exclusive": 10113,
+                    "line": 549,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "PhoenixRC_A6MZero.pkg",
+          "pkg_bytes": 1963481,
+          "pkg_sha256": "368f1eb570eda24b3f74f134907357aa0167b1a640628a05b946598cc2586397",
+          "zip_crc32": "5d1fc57f",
+          "pkg_status": "outside observed package profile",
+          "reason": "unrecognized package header numeric string: '1.0'"
+        },
+        {
+          "zip_member": "PhoenixRC_F16.pkg",
+          "pkg_bytes": 5464000,
+          "pkg_sha256": "8a46523ac3052f528d01b2622425f7ce7f9d60dec29377eebdfb7dcdef68af2c",
+          "zip_crc32": "808f1a7f",
+          "pkg_status": "outside observed package profile",
+          "reason": "unrecognized package header numeric string: '1.0'"
+        },
+        {
+          "zip_member": "PhoenixRC_F18turbine.pkg",
+          "pkg_bytes": 1506475,
+          "pkg_sha256": "fb010d37d5bd1c961b2f340ff71f50835a65107b6801841d394c19a9b1b38c41",
+          "zip_crc32": "a70b4214",
+          "pkg_status": "outside observed package profile",
+          "reason": "unrecognized package header numeric string: '1.0'"
+        },
+        {
+          "zip_member": "PhoenixRC_hiroboQuarkSG.pkg",
+          "pkg_bytes": 1919392,
+          "pkg_sha256": "c0918b42af8c331a0d58aee950b6904d52c6ccddd1aed7ab12b99448f0aabb35",
+          "zip_crc32": "b3bff7c4",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Helicopters",
+                "hiroboQuarkSG",
+                "hiroboQuarkSG.mod"
+              ],
+              "bytes": 17802,
+              "sha256": "458426649f9b3ee5a8451d19c987423f157f67ef9348bda9836fa8ee83d89262",
+              "prefix_hex": "0001020408102040110a301c264f0f52",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 79, line 2, byte column 70: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "PhoenixRC_TTMiniTitanV2.pkg",
+          "pkg_bytes": 2231728,
+          "pkg_sha256": "fac7a15726c6fca6384973a5479138e36c8af5f6dad22a560b5bad31a5a9ca3a",
+          "zip_crc32": "7cd4379e",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 6,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Helicopters",
+                "TTMiniTitanV2",
+                "TTMiniTitanV2.mod"
+              ],
+              "bytes": 16452,
+              "sha256": "16c87e4cb925f15ad969889914ffeba63a6122e1462b652f7d9e9ba8a2d73845",
+              "prefix_hex": "000102040810204009120d3f066f1849",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 10, line 1, byte column 11: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "PhoenixRC_TTRaptorE700.pkg",
+          "pkg_bytes": 2105590,
+          "pkg_sha256": "6cd2893bc2cad25d3c43366ef1478dd3edc7295362bfa884e136e0eb0a7b1e17",
+          "zip_crc32": "1fa2b67b",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "Official",
+                "Helicopters",
+                "TTRaptorE700",
+                "TTRaptorE700.mod"
+              ],
+              "bytes": 16830,
+              "sha256": "548f16ef2db5081ca7231602d3a5c1f6d5e27d62b64959b8869ffdda7a1e8b32",
+              "prefix_hex": "0001020408102040071427251263441d",
+              "status": "outside observed MOD grammar",
+              "reason": "UNSUPPORTED_LINE_ENDING at byte 227, line 2, byte column 177: only LF or CRLF line endings are in this profile"
+            }
+          ]
+        },
+        {
+          "zip_member": "Su_37_Terminator_turbine.pkg",
+          "pkg_bytes": 8367984,
+          "pkg_sha256": "e7943d1a2c1379f4950b11421dd867b3f01922654d9efc430d43f17761aeafe7",
+          "zip_crc32": "313224ee",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.000000",
+          "member_count": 24,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Airplanes",
+                "Su_37_Terminator_turbine",
+                "Su_37_Terminator_turbine.mod"
+              ],
+              "bytes": 18265,
+              "sha256": "132d083b92f6877fa0849a51b374c1cd19a5c13042e4a924f90c049c5efe5764",
+              "prefix_hex": "6d6f64656c54797065732e53755f3337",
+              "status": "observed MOD grammar parsed",
+              "target": "Su_37_Terminator_turbine",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Su-37_Terminator turbine",
+                    "raw_hex": "53752d33375f5465726d696e61746f722074757262696e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2253752d33375f5465726d696e61746f722074757262696e6522",
+                  "span": {
+                    "start_byte": 67,
+                    "end_byte_exclusive": 93,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Airplane",
+                    "raw_hex": "416972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22416972706c616e6522",
+                  "span": {
+                    "start_byte": 104,
+                    "end_byte_exclusive": 114,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.0",
+                    "raw_hex": "312e30",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e30",
+                  "span": {
+                    "start_byte": 168,
+                    "end_byte_exclusive": 171,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.c",
+                    "raw_hex": "352e302e63",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6322",
+                  "span": {
+                    "start_byte": 191,
+                    "end_byte_exclusive": 198,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 222,
+                    "end_byte_exclusive": 229,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.airplane",
+                    "raw_hex": "706879736963732e616972706c616e65",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e616972706c616e65",
+                  "span": {
+                    "start_byte": 263,
+                    "end_byte_exclusive": 279,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "79",
+                    "raw_hex": "3739",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3739",
+                  "span": {
+                    "start_byte": 443,
+                    "end_byte_exclusive": 445,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 6,
+                "number": 516,
+                "pivot_pairs_declared": 10,
+                "string": 163,
+                "strings_with_non_ascii_bytes": 8,
+                "symbol": 1,
+                "table": 225
+              },
+              "diagnostics": [
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    0,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 13391,
+                    "end_byte_exclusive": 13422,
+                    "line": 707,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    0,
+                    "sides",
+                    0,
+                    "geometry",
+                    1
+                  ],
+                  "span": {
+                    "start_byte": 13431,
+                    "end_byte_exclusive": 13465,
+                    "line": 708,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    0,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 13797,
+                    "end_byte_exclusive": 13830,
+                    "line": 734,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    1,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 14570,
+                    "end_byte_exclusive": 14611,
+                    "line": 774,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    1,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 14938,
+                    "end_byte_exclusive": 14973,
+                    "line": 800,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    2,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 15715,
+                    "end_byte_exclusive": 15756,
+                    "line": 840,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    2,
+                    "wheels",
+                    0,
+                    "sides",
+                    0,
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 16084,
+                    "end_byte_exclusive": 16120,
+                    "line": 866,
+                    "byte_column": 8
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "DISPLAY_DECODING_ONLY",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    3,
+                    "sides",
+                    0,
+                    "geometry",
+                    0
+                  ],
+                  "span": {
+                    "start_byte": 16853,
+                    "end_byte_exclusive": 16892,
+                    "line": 906,
+                    "byte_column": 7
+                  },
+                  "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    0,
+                    "wheels",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 13579,
+                    "end_byte_exclusive": 13590,
+                    "line": 724,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                },
+                {
+                  "code": "REPEATED_NAME",
+                  "severity": "observation",
+                  "path": [
+                    "Su_37_Terminator_turbine",
+                    "gear",
+                    2,
+                    "wheels",
+                    0,
+                    "name"
+                  ],
+                  "span": {
+                    "start_byte": 15870,
+                    "end_byte_exclusive": 15881,
+                    "line": 856,
+                    "byte_column": 13
+                  },
+                  "detail": "Display name repeats; retain ordered structural identity and every occurrence."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "zip_member": "Turbine MIG 31.pkg",
+          "pkg_bytes": 4969264,
+          "pkg_sha256": "05ec26e901d71548ede4e19664e709773a593de05b0138c779eb0e8b8ba0dbf8",
+          "zip_crc32": "be9b5e88",
+          "pkg_status": "outside observed package profile",
+          "reason": "zero padding limit exceeded"
+        },
+        {
+          "zip_member": "typhoon3.pkg",
+          "pkg_bytes": 1497451,
+          "pkg_sha256": "126964fb9a06ab89f49facacda305d9d02591855b80664c1b230c2defc84e0e8",
+          "zip_crc32": "b2f08187",
+          "pkg_status": "outside observed package profile",
+          "reason": "zero padding limit exceeded"
+        }
+      ]
+    },
+    {
+      "schema": "openrc-phoenix-corpus-expansion-inspection-v1",
+      "source_url": "https://www.flugsimulatoren.ch/Files/AW-109-Davinci-REGA.zip",
+      "archive_sha256": "9c4aa7b935fbea92cc208ac183a248f7bcebebfd66013dbe1e526119c8e3f196",
+      "archive_bytes": 8020104,
+      "method": "captured existing local archive; bounded selected package reads with ZIP CRC checks; other WAV/PXE/text content not executed",
+      "probe_source_sha256": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+      "definition_source_sha256": "678268321579b34ef75662102fba1b734deb9421b59d39f3f314c24057402550",
+      "scope": "Package and MOD observations only; no geometry, rotor or physical behavior qualification",
+      "packages": [
+        {
+          "zip_member": "Agusta AW109 v4 Skids.pkg",
+          "pkg_bytes": 2601760,
+          "pkg_sha256": "80fd6321f07ad713848a529ec0c81b0e7dfd84a19e23d46cd6d68791525f8ff3",
+          "zip_crc32": "f46dac65",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.200000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Helicopters",
+                "Agusta_AW109_v4_Skids",
+                "Agusta_AW109_v4_Skids.mod"
+              ],
+              "bytes": 14457,
+              "sha256": "465df5e17c05ee0a7e9ac0f9c99d0813a4f6f7b196ba116db4eec1f59956a4a7",
+              "prefix_hex": "6d6f64656c54797065732e4167757374",
+              "status": "observed MOD grammar parsed",
+              "target": "Agusta_AW109_v4_Skids",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "AW109",
+                    "raw_hex": "4157313039",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22415731303922",
+                  "span": {
+                    "start_byte": 64,
+                    "end_byte_exclusive": 71,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Helicopter",
+                    "raw_hex": "48656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2248656c69636f7074657222",
+                  "span": {
+                    "start_byte": 82,
+                    "end_byte_exclusive": 94,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.2",
+                    "raw_hex": "312e32",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e32",
+                  "span": {
+                    "start_byte": 154,
+                    "end_byte_exclusive": 157,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.f",
+                    "raw_hex": "352e352e66",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6622",
+                  "span": {
+                    "start_byte": 177,
+                    "end_byte_exclusive": 184,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 208,
+                    "end_byte_exclusive": 215,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.helicopter",
+                    "raw_hex": "706879736963732e68656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e68656c69636f70746572",
+                  "span": {
+                    "start_byte": 249,
+                    "end_byte_exclusive": 267,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "71",
+                    "raw_hex": "3731",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3731",
+                  "span": {
+                    "start_byte": 432,
+                    "end_byte_exclusive": 434,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "empty_geometry_lists": 3,
+                "number": 414,
+                "pivot_pairs_declared": 2,
+                "string": 89,
+                "symbol": 1,
+                "table": 185
+              },
+              "diagnostics": []
+            }
+          ]
+        },
+        {
+          "zip_member": "Agusta AW109 v4.pkg",
+          "pkg_bytes": 2595163,
+          "pkg_sha256": "7072023bb8425cd8c703a287219397f35a4fc819cc370674ebaaec12030ff597",
+          "zip_crc32": "aef61c25",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.200000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Helicopters",
+                "Agusta_AW109_v4",
+                "Agusta_AW109_v4.mod"
+              ],
+              "bytes": 14432,
+              "sha256": "ec9354bc93fde0627c5a039175eae715ee9fb2db5bef26e40046c6a6c0b7ca8e",
+              "prefix_hex": "6d6f64656c54797065732e4167757374",
+              "status": "observed MOD grammar parsed",
+              "target": "Agusta_AW109_v4",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "AW109",
+                    "raw_hex": "4157313039",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22415731303922",
+                  "span": {
+                    "start_byte": 58,
+                    "end_byte_exclusive": 65,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Helicopter",
+                    "raw_hex": "48656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2248656c69636f7074657222",
+                  "span": {
+                    "start_byte": 76,
+                    "end_byte_exclusive": 88,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.2",
+                    "raw_hex": "312e32",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e32",
+                  "span": {
+                    "start_byte": 148,
+                    "end_byte_exclusive": 151,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.f",
+                    "raw_hex": "352e352e66",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6622",
+                  "span": {
+                    "start_byte": 171,
+                    "end_byte_exclusive": 178,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 202,
+                    "end_byte_exclusive": 209,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.helicopter",
+                    "raw_hex": "706879736963732e68656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e68656c69636f70746572",
+                  "span": {
+                    "start_byte": 243,
+                    "end_byte_exclusive": 261,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "64",
+                    "raw_hex": "3634",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3634",
+                  "span": {
+                    "start_byte": 426,
+                    "end_byte_exclusive": 428,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "number": 414,
+                "pivot_pairs_declared": 2,
+                "string": 88,
+                "symbol": 1,
+                "table": 185
+              },
+              "diagnostics": []
+            }
+          ]
+        },
+        {
+          "zip_member": "Agusta AW109 v3.pkg",
+          "pkg_bytes": 2624182,
+          "pkg_sha256": "8dd55094804792f8a277aebf024040b4e866e20fea72730fc13f61be8cacb3ac",
+          "zip_crc32": "5317d6e8",
+          "pkg_status": "observed package profile inspected",
+          "header_numeric_label": "1.200000",
+          "member_count": 4,
+          "definitions": [
+            {
+              "member_components": [
+                "Downloaded",
+                "Models",
+                "User-Made",
+                "Helicopters",
+                "Agusta_AW109_v3",
+                "Agusta_AW109_v3.mod"
+              ],
+              "bytes": 14455,
+              "sha256": "cce9c5126f3befbe3a60837ccbe405129a00a529c3e635ddbe36a09c639af794",
+              "prefix_hex": "6d6f64656c54797065732e4167757374",
+              "status": "observed MOD grammar parsed",
+              "target": "Agusta_AW109_v3",
+              "headers": {
+                "name": {
+                  "kind": "string",
+                  "value": {
+                    "display": "AW109",
+                    "raw_hex": "4157313039",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22415731303922",
+                  "span": {
+                    "start_byte": 58,
+                    "end_byte_exclusive": 65,
+                    "line": 6,
+                    "byte_column": 9
+                  }
+                },
+                "type": {
+                  "kind": "string",
+                  "value": {
+                    "display": "Helicopter",
+                    "raw_hex": "48656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "2248656c69636f7074657222",
+                  "span": {
+                    "start_byte": 76,
+                    "end_byte_exclusive": 88,
+                    "line": 7,
+                    "byte_column": 9
+                  }
+                },
+                "revision": {
+                  "kind": "number",
+                  "value": {
+                    "display": "1.2",
+                    "raw_hex": "312e32",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "312e32",
+                  "span": {
+                    "start_byte": 148,
+                    "end_byte_exclusive": 151,
+                    "line": 10,
+                    "byte_column": 13
+                  }
+                },
+                "formatVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.5.f",
+                    "raw_hex": "352e352e66",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e352e6622",
+                  "span": {
+                    "start_byte": 171,
+                    "end_byte_exclusive": 178,
+                    "line": 11,
+                    "byte_column": 18
+                  }
+                },
+                "minProgramVersion": {
+                  "kind": "string",
+                  "value": {
+                    "display": "5.0.a",
+                    "raw_hex": "352e302e61",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "quoted content bytes",
+                  "source_lexeme_raw_hex": "22352e302e6122",
+                  "span": {
+                    "start_byte": 202,
+                    "end_byte_exclusive": 209,
+                    "line": 12,
+                    "byte_column": 22
+                  }
+                },
+                "physics": {
+                  "kind": "symbol",
+                  "value": {
+                    "display": "physics.helicopter",
+                    "raw_hex": "706879736963732e68656c69636f70746572",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "canonical symbolic name",
+                  "source_lexeme_raw_hex": "706879736963732e68656c69636f70746572",
+                  "span": {
+                    "start_byte": 243,
+                    "end_byte_exclusive": 261,
+                    "line": 14,
+                    "byte_column": 12
+                  }
+                },
+                "nodeCount": {
+                  "kind": "number",
+                  "value": {
+                    "display": "89",
+                    "raw_hex": "3839",
+                    "display_decoding": "utf-8"
+                  },
+                  "value_representation": "numeric source lexeme",
+                  "source_lexeme_raw_hex": "3839",
+                  "span": {
+                    "start_byte": 426,
+                    "end_byte_exclusive": 428,
+                    "line": 25,
+                    "byte_column": 14
+                  }
+                }
+              },
+              "counts": {
+                "number": 414,
+                "pivot_pairs_declared": 2,
+                "string": 89,
+                "symbol": 1,
+                "table": 185
+              },
+              "diagnostics": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -64,7 +64,7 @@ const DONE := "The model is set up with an estimated OpenRC configuration. Revie
 static func propose(source: InspectedSource, span_range: Array = []) -> Dictionary:
 	if not Installation.required(source):
 		return R.fail(R.SOURCE_UNSUPPORTED, "Automatic setup is only available for converted ClearView models.", "source", "import")
-	if _model_type(source) == HELICOPTER_TYPE:
+	if is_helicopter(source):
 		return R.fail(R.UNSUPPORTED_CAPABILITY, HELICOPTER, "source", "import")
 	var points: Dictionary = _points(source)
 	if not points.ok:
@@ -96,6 +96,16 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 		var reach := _reach(points.value, datum.value.datum)
 		if flown > span and reach > 0.0:
 			flown = clampf(MAX_REACH_M * span / reach, span, flown)
+	# A body that reaches further from its datum than the definition allows (a long delta jet) is shown
+	# smaller until it fits, then flies in the size class that holds the smaller span.
+	var body_reach := _reach(points.value, datum.value.datum)
+	if body_reach > 0.0 and flown * body_reach / span > MAX_REACH_M:
+		flown = MAX_REACH_M * span / body_reach
+		for index: int in ranges.size():
+			var candidate: Array = ranges[index]
+			if candidate.size() == 2 and flown >= float(candidate[0]) and flown <= float(candidate[1]):
+				range_index = index
+				chosen = candidate
 	var scale: float = float(Placement.UNITS[UNITS]) * flown / span
 	var scaled := absf(flown - span) > 1e-9
 	var placement := {nose_axis = NOSE_AXIS, up_axis = UP_AXIS, unit_scale = scale, datum = datum.value.datum}
@@ -382,7 +392,8 @@ static func _points(source: InspectedSource) -> Dictionary:
 
 ## A converted ClearView helicopter (receipt modelType 0). It selects the donor helicopter offer only.
 static func is_helicopter(source: InspectedSource) -> bool:
-	return source != null and Installation.required(source) and _model_type(source) == HELICOPTER_TYPE
+	# One signal for the whole Creator: the converter's rotorcraft tag (written for modelType 0).
+	return source != null and Installation.rotorcraft(source)
 
 
 ## The ClearView modelType recorded in the conversion receipt (1 aeroplane, 0 helicopter), or -1.

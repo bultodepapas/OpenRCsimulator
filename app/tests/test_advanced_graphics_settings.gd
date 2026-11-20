@@ -102,6 +102,18 @@ func _run() -> void:
 	settings._restore_graphics_defaults()
 	settings.keep_changes()
 	_check("graphics defaults restore Reflex On", DisplayPreferences.load_from(PREFS + ".display").nvidia_reflex == "on")
+	# VQ-07h-A7: the info tooltip explains Automatic's choice for this GPU and its measurement state.
+	settings._refresh_graphics_info()
+	var automatic_text: String = settings._graphics_info.tooltip_text
+	_check("graphics info tooltip explains Automatic for this GPU",
+		automatic_text.contains(tr("Automatic for this GPU: %s mode, %s scene detail.").get_slice("%s", 0))
+		and automatic_text.contains(tr("GPU estimate: %s.").get_slice("%s", 0)))
+	_check("graphics info tooltip states the measurement",
+		automatic_text.contains(tr("The next flight measures this GPU once and adjusts Automatic if needed."))
+		or automatic_text.contains(tr("Measured in flight: %.1f ms of GPU time per frame (95th percentile).").get_slice("%", 0)))
+	var defaults_button := settings.find_child("GraphicsDefaults", true, false) as Button
+	_check("Restore graphics defaults says it measures this GPU again", defaults_button != null
+		and defaults_button.tooltip_text == tr("Returns graphics settings to the recommendation for this GPU and measures it again on the next flight."))
 	settings._vsync_picker.select(1)
 	settings._vsync_picker.item_selected.emit(1)
 	await ui.settle()

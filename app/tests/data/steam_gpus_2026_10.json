@@ -1,0 +1,735 @@
+{
+ "format": "openrc-steam-gpu-survey v1",
+ "month": "2026-10",
+ "source": [
+  "https://store.steampowered.com/hwsurvey/videocard/",
+  "https://store.steampowered.com/hwsurvey/directx/"
+ ],
+ "note": "Named rows of the Steam Hardware Survey video-card and DirectX 12 tables (October 2026), fetched 2026-11-18. Rows below about 0.02% and 'Other' (8.58%) are not listed. Coverage fixture for app/tests/test_gpu_capability.gd.",
+ "rows": [
+  {
+   "name": "NVIDIA GeForce RTX 3060",
+   "share": 3.78
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5070",
+   "share": 3.78
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+   "share": 3.6
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4060",
+   "share": 3.51
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050",
+   "share": 3.25
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5060",
+   "share": 3.15
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5060 Ti",
+   "share": 2.7
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+   "share": 2.68
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1650",
+   "share": 2.44
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4060 Ti",
+   "share": 2.3
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3060 Ti",
+   "share": 2.13
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3070",
+   "share": 1.98
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5070 Ti",
+   "share": 1.91
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5080",
+   "share": 1.78
+  },
+  {
+   "name": "Intel Iris Xe Graphics",
+   "share": 1.78
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+   "share": 1.76
+  },
+  {
+   "name": "AMD Radeon Graphics",
+   "share": 1.75
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+   "share": 1.74
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4070",
+   "share": 1.71
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2060",
+   "share": 1.61
+  },
+  {
+   "name": "AMD Radeon RX 9070 XT",
+   "share": 1.59
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1060",
+   "share": 1.45
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4070 SUPER",
+   "share": 1.43
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1660 SUPER",
+   "share": 1.39
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3080",
+   "share": 1.36
+  },
+  {
+   "name": "Intel(R) UHD Graphics",
+   "share": 1.27
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1050 Ti",
+   "share": 1.14
+  },
+  {
+   "name": "AMD Radeon(TM) Graphics",
+   "share": 0.97
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+   "share": 0.92
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3070 Ti",
+   "share": 0.9
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4070 Ti",
+   "share": 0.89
+  },
+  {
+   "name": "AMD Radeon RX 9060 XT",
+   "share": 0.89
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1660 Ti",
+   "share": 0.86
+  },
+  {
+   "name": "AMD Radeon RX 6600",
+   "share": 0.84
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2060 SUPER",
+   "share": 0.76
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+   "share": 0.74
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+   "share": 0.73
+  },
+  {
+   "name": "Intel UHD Graphics",
+   "share": 0.72
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4090",
+   "share": 0.7
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+   "share": 0.69
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4080",
+   "share": 0.67
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2070 SUPER",
+   "share": 0.66
+  },
+  {
+   "name": "AMD Radeon RX 7800 XT",
+   "share": 0.63
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4080 SUPER",
+   "share": 0.62
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+   "share": 0.61
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1070",
+   "share": 0.61
+  },
+  {
+   "name": "Intel(R) Graphics",
+   "share": 0.6
+  },
+  {
+   "name": "AMD Radeon RX 580 2048SP",
+   "share": 0.58
+  },
+  {
+   "name": "AMD Radeon RX 580",
+   "share": 0.57
+  },
+  {
+   "name": "AMD Radeon RX 5700 XT",
+   "share": 0.56
+  },
+  {
+   "name": "AMD Radeon RX 6700 XT",
+   "share": 0.55
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1050",
+   "share": 0.54
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3080 Ti",
+   "share": 0.54
+  },
+  {
+   "name": "AMD Radeon RX 7600",
+   "share": 0.53
+  },
+  {
+   "name": "AMD Radeon (TM) Graphics",
+   "share": 0.51
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5050 Laptop GPU",
+   "share": 0.48
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2050",
+   "share": 0.47
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1660",
+   "share": 0.46
+  },
+  {
+   "name": "Intel UHD Graphics 620",
+   "share": 0.44
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2070",
+   "share": 0.44
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5090",
+   "share": 0.43
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3070 Laptop GPU",
+   "share": 0.42
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+   "share": 0.42
+  },
+  {
+   "name": "AMD Radeon RX 7900 XTX",
+   "share": 0.42
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1080",
+   "share": 0.39
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1650 Ti",
+   "share": 0.36
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3090",
+   "share": 0.36
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+   "share": 0.35
+  },
+  {
+   "name": "AMD Radeon RX 570",
+   "share": 0.35
+  },
+  {
+   "name": "AMD Radeon RX 7900 XT",
+   "share": 0.33
+  },
+  {
+   "name": "AMD Radeon 780M Graphics",
+   "share": 0.32
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1080 Ti",
+   "share": 0.31
+  },
+  {
+   "name": "AMD Radeon Vega 8 Graphics",
+   "share": 0.3
+  },
+  {
+   "name": "Intel Arc Graphics",
+   "share": 0.29
+  },
+  {
+   "name": "AMD Radeon RX 6600 XT",
+   "share": 0.27
+  },
+  {
+   "name": "Intel UHD Graphics 630",
+   "share": 0.27
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1650 SUPER",
+   "share": 0.27
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5050",
+   "share": 0.26
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2080 SUPER",
+   "share": 0.26
+  },
+  {
+   "name": "AMD Radeon RX 6650 XT",
+   "share": 0.25
+  },
+  {
+   "name": "AMD Radeon RX 6750 XT",
+   "share": 0.25
+  },
+  {
+   "name": "AMD Radeon RX 7700 XT",
+   "share": 0.25
+  },
+  {
+   "name": "AMD Radeon RX 6800 XT",
+   "share": 0.23
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2080 Ti",
+   "share": 0.22
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2080",
+   "share": 0.22
+  },
+  {
+   "name": "AMD Radeon RX 9070",
+   "share": 0.21
+  },
+  {
+   "name": "AMD Radeon RX 550",
+   "share": 0.21
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+   "share": 0.21
+  },
+  {
+   "name": "NVIDIA GeForce GT 1030",
+   "share": 0.2
+  },
+  {
+   "name": "AMD Radeon RX 6500 XT",
+   "share": 0.19
+  },
+  {
+   "name": "AMD Radeon Vega 3 Graphics",
+   "share": 0.19
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1070 Ti",
+   "share": 0.19
+  },
+  {
+   "name": "Intel HD Graphics 520",
+   "share": 0.19
+  },
+  {
+   "name": "Intel HD Graphics 620",
+   "share": 0.19
+  },
+  {
+   "name": "NVIDIA GeForce GTX 970",
+   "share": 0.18
+  },
+  {
+   "name": "NVIDIA GeForce GTX 750 Ti",
+   "share": 0.17
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4080 Laptop GPU",
+   "share": 0.17
+  },
+  {
+   "name": "NVIDIA GeForce GTX 960",
+   "share": 0.16
+  },
+  {
+   "name": "Intel HD Graphics 4600",
+   "share": 0.16
+  },
+  {
+   "name": "AMD Radeon RX 6800",
+   "share": 0.16
+  },
+  {
+   "name": "AMD Radeon RX 6900 XT",
+   "share": 0.15
+  },
+  {
+   "name": "NVIDIA GeForce GT 730",
+   "share": 0.15
+  },
+  {
+   "name": "AMD Radeon 890M Graphics",
+   "share": 0.15
+  },
+  {
+   "name": "AMD Radeon RX 5600 XT",
+   "share": 0.13
+  },
+  {
+   "name": "AMD Radeon RX 5500 XT",
+   "share": 0.13
+  },
+  {
+   "name": "Intel UHD Graphics 600",
+   "share": 0.13
+  },
+  {
+   "name": "Intel HD Graphics 530",
+   "share": 0.12
+  },
+  {
+   "name": "Intel UHD Graphics 730",
+   "share": 0.12
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5080 Laptop GPU",
+   "share": 0.11
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 Ti",
+   "share": 0.11
+  },
+  {
+   "name": "AMD Radeon RX 7600 XT",
+   "share": 0.11
+  },
+  {
+   "name": "AMD Radeon RX 6750 GRE 10GB",
+   "share": 0.1
+  },
+  {
+   "name": "AMD Radeon RX Vega 11 Graphics",
+   "share": 0.1
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3080 Laptop GPU",
+   "share": 0.1
+  },
+  {
+   "name": "AMD Radeon RX 6750 GRE 12GB",
+   "share": 0.1
+  },
+  {
+   "name": "Intel HD Graphics 630",
+   "share": 0.09
+  },
+  {
+   "name": "AMD Radeon RX 5700",
+   "share": 0.09
+  },
+  {
+   "name": "AMD Radeon RX 7900 GRE",
+   "share": 0.09
+  },
+  {
+   "name": "AMD Radeon RX 6950 XT",
+   "share": 0.09
+  },
+  {
+   "name": "NVIDIA GeForce RTX 4090 Laptop GPU",
+   "share": 0.09
+  },
+  {
+   "name": "NVIDIA GeForce GT 710",
+   "share": 0.08
+  },
+  {
+   "name": "AMD Radeon RX 7650 GRE",
+   "share": 0.08
+  },
+  {
+   "name": "NVIDIA GeForce MX450",
+   "share": 0.08
+  },
+  {
+   "name": "AMD Radeon RX 470",
+   "share": 0.08
+  },
+  {
+   "name": "AMD Radeon RX Vega 20",
+   "share": 0.08
+  },
+  {
+   "name": "NVIDIA GeForce GTX 960M",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce 940M",
+   "share": 0.07
+  },
+  {
+   "name": "AMD Radeon RX 560",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3090 Ti",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2070 with Max-Q Design",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce MX350",
+   "share": 0.07
+  },
+  {
+   "name": "AMD Radeon 760M Graphics",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce MX150",
+   "share": 0.07
+  },
+  {
+   "name": "Intel HD Graphics 5500",
+   "share": 0.07
+  },
+  {
+   "name": "NVIDIA GeForce MX330",
+   "share": 0.06
+  },
+  {
+   "name": "AMD Radeon RX 480",
+   "share": 0.06
+  },
+  {
+   "name": "AMD Radeon RX590 GME",
+   "share": 0.06
+  },
+  {
+   "name": "AMD Radeon RX 9070 GRE",
+   "share": 0.06
+  },
+  {
+   "name": "AMD Radeon RX 6700",
+   "share": 0.06
+  },
+  {
+   "name": "Qualcomm Adreno X1",
+   "share": 0.06
+  },
+  {
+   "name": "NVIDIA GeForce MX110",
+   "share": 0.05
+  },
+  {
+   "name": "NVIDIA GeForce GTX 950",
+   "share": 0.05
+  },
+  {
+   "name": "AMD Radeon RX Vega",
+   "share": 0.05
+  },
+  {
+   "name": "NVIDIA GeForce GTX 750",
+   "share": 0.05
+  },
+  {
+   "name": "AMD Radeon(TM) 780M",
+   "share": 0.05
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 OEM",
+   "share": 0.05
+  },
+  {
+   "name": "AMD Radeon RX 6400",
+   "share": 0.05
+  },
+  {
+   "name": "NVIDIA GeForce MX130",
+   "share": 0.05
+  },
+  {
+   "name": "AMD Radeon RX 590 Series",
+   "share": 0.05
+  },
+  {
+   "name": "Intel HD Graphics 4400",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3080 Ti Laptop GPU",
+   "share": 0.04
+  },
+  {
+   "name": "AMD Radeon RX Vega 10 Graphics",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce GTX 980",
+   "share": 0.04
+  },
+  {
+   "name": "AMD Radeon R7 Graphics",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce GT 720M",
+   "share": 0.04
+  },
+  {
+   "name": "AMD Radeon RX 6600M",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce GTX 950M",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce RTX 5090 D V2",
+   "share": 0.04
+  },
+  {
+   "name": "NVIDIA GeForce RTX 2060 with Max-Q Design",
+   "share": 0.04
+  },
+  {
+   "name": "AMD Radeon 740M Graphics",
+   "share": 0.04
+  },
+  {
+   "name": "AMD Radeon R5 Graphics",
+   "share": 0.03
+  },
+  {
+   "name": "AMD Radeon RX 460",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce RTX 3050 4GB Laptop GPU",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce GTX 650",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce MX230",
+   "share": 0.03
+  },
+  {
+   "name": "Intel(R) UHD Graphics 770",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce GTX 660",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce GTX 980 Ti",
+   "share": 0.03
+  },
+  {
+   "name": "NVIDIA GeForce GT 610",
+   "share": 0.03
+  },
+  {
+   "name": "Intel UHD Graphics 605",
+   "share": 0.03
+  },
+  {
+   "name": "Intel UHD Graphics 610",
+   "share": 0.03
+  },
+  {
+   "name": "AMD Radeon HD 7700 Series",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon RX 5500",
+   "share": 0.02
+  },
+  {
+   "name": "NVIDIA GeForce GT 740",
+   "share": 0.02
+  },
+  {
+   "name": "NVIDIA GeForce GTX 1060 6GB",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon Pro 460",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon Vega 11 Graphics",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon R5 M330",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon Vega 8 Mobile Graphics",
+   "share": 0.02
+  },
+  {
+   "name": "AMD Radeon HD 8500 Series",
+   "share": 0.02
+  }
+ ]
+}

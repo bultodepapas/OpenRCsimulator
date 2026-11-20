@@ -39,9 +39,11 @@ class FixedFpsShellTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.outputs = Path(self.temp.name)
         script = (ROOT / "app/test.sh").read_text(encoding="utf-8")
-        start = script.index('echo "== fixed step:')
-        end = script.index('echo "== E0b5:', start)
-        self.block = script[start:end]
+        start = script.index('section "fixed step:')
+        end = script.index('section "E0b5:', start)
+        # The gates run through the real section helpers (isolated, errexit, fail-fast default).
+        helpers = script[script.index("# BEGIN section helpers"):script.index("# END section helpers")]
+        self.block = helpers + script[start:end]
 
     def write_outputs(self, changed=None):
         for kind, field in (("state", "state_sha256"), ("flight", "flight_sha256")):

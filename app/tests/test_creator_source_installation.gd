@@ -108,8 +108,6 @@ func _run() -> void:
 		quit(1)
 		return
 	check("a declared estimate under the historical law has no qualification block",not doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
-	check("the servo-interval law stays unqualified for ClearView models",Installation.flight_refusal(source,true) == Installation.FLIGHT_UNAVAILABLE
-		and Installation.flight_refusal(source,false).is_empty() and Installation.flight_refusal(ordinary.value,true).is_empty())
 	var reopened := Authoring.new()
 	var saved: Dictionary = Bytes.decode(Bytes.encode(doc.snapshot()).value.bytes).value.data
 	check("v3 survives exact persisted roundtrip",reopened.restore(saved,source,Observations.inspect(source).value).ok and reopened.snapshot() == doc.snapshot() and reopened.source_installation() == doc.source_installation())
@@ -154,18 +152,18 @@ func _run() -> void:
 
 func _pairing(candidate: RefCounted,plain: RefCounted,source: RefCounted,ordinary: RefCounted) -> void:
 	var request := {creator_candidate = candidate,creator_source = source,creator_placement = {nose_axis = "+x",up_axis = "+z",unit_scale = 1.0,datum = [0.0,0.0,0.0]}}
-	var declared := Trial.freeze(request)
-	check("a declared estimate flies as a labelled experimental trial",declared.ok and Trial.verify(declared).ok
-		and declared.identity.experimental and declared.identity.source_installation.mode == Installation.MODE)
-	if declared.ok:
-		var stripped: Dictionary = declared.duplicate(true)
-		stripped.identity.erase("source_installation")
-		var repinned: Dictionary = stripped.identity.duplicate(true)
-		repinned.erase("trial_id")
-		repinned.erase("experimental")
-		stripped.identity.trial_id = Trial._trial_id(repinned)
-		var bare := Trial.verify(stripped)
-		check("a ClearView trial without its pinned declaration is refused",not bare.ok and bare.errors[0] == Installation.FLIGHT_UNAVAILABLE)
+	var confirmed := Trial.freeze(request)
+	check("confirmed installation grants the experimental test flight",confirmed.ok and Trial.verify(confirmed).ok
+		and confirmed.identity.experimental and confirmed.identity.source_installation.source_sha256 == source.sha256())
+	if confirmed.ok:
+		var unpinned: Dictionary = confirmed.duplicate(true)
+		unpinned.identity.erase("source_installation")
+		var bare: Dictionary = unpinned.identity.duplicate(true)
+		bare.erase("trial_id")
+		bare.erase("experimental")
+		unpinned.identity.trial_id = Trial._trial_id(bare)
+		var stripped := Trial.verify(unpinned)
+		check("a ClearView trial without its pinned installation is refused",not stripped.ok and stripped.errors[0] == Installation.REQUIRED)
 	request.creator_candidate = plain
 	check("ordinary candidate cannot bypass a recognized source",not Trial.freeze(request).ok)
 	request.creator_candidate = candidate
@@ -185,4 +183,4 @@ func _pairing(candidate: RefCounted,plain: RefCounted,source: RefCounted,ordinar
 		pinned.erase("experimental")
 		trial.identity.trial_id = Trial._trial_id(pinned)
 		var historical := Trial.verify(trial)
-		check("historical ClearView trials cannot bypass qualification",not historical.ok and historical.errors[0] == Installation.FLIGHT_UNAVAILABLE)
+		check("a relabelled ordinary trial cannot fly a ClearView source",not historical.ok and historical.errors[0] == Installation.REQUIRED)

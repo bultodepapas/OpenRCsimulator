@@ -175,3 +175,24 @@ The subsequent [VQ-04a packed-index follow-up](visual-quality-implementation/VQ-
 retains a modest native shadow-collection improvement, exact 1080p image parity
 and the rejected traversal/gather experiments. Geometry collection remains
 synchronous; complete-flight and first-interactive-frame qualification stay open.
+
+## Runway meadow triangle counts (2026-11-17)
+
+The open A33 meadow finding is implemented in
+[`runway_meadow.gd`](../../app/scenery/runway_meadow.gd) `layout`: positive
+`source_triangles` counts are cached per asset ID for one call, so the library's
+deep copy of each catalog entry runs once per species instead of once per retained
+plant. Misses keep querying the library; the budget check, missing-asset handling
+and output order are unchanged. Three interleaved headless pairs on the RTX 3090
+host (Ryzen 9 5900X), 15 layouts each after one warm-up, against a disposable copy
+of the previous source:
+
+| Quality | Plants | Before median | After median |
+| --- | --- | --- | --- |
+| high | 4,492 | 127.7–129.9 ms | 95.2–100.3 ms |
+| balanced | 2,729 | 97.5–99.2 ms | 78.2–79.4 ms |
+| low | 1,521 | 79.5–79.8 ms | 68.8–69.1 ms |
+
+Every run of both versions produced the same `var_to_str` SHA-256 per quality, and
+`test_runway_meadow.gd` passes 59 checks. This is field-construction time on one
+host, not a frame-time or first-interactive-frame result.

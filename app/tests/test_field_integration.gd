@@ -497,7 +497,9 @@ func _field_shadow_viewports_own_world(field_node: Node3D) -> bool:
 				mask_meshes += 1
 			else:
 				return false
-		if cameras != 1 or environments != 1 or mask_meshes != 1:
+		# One static mask mesh plus one per articulated part (SA-03); the windsock adds its moving proxies.
+		var expected_meshes := 1 + (node as ProjectedShadow)._parts.size()
+		if cameras != 1 or environments != 1 or mask_meshes < expected_meshes:
 			return false
 	return viewport_count > 0
 

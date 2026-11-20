@@ -31,8 +31,10 @@ func _run() -> void:
 	await process_frame
 	_versions()
 	_selection()
+	_channels_and_packages()
 	_state_file()
 	await _checker()
+	await _manual_and_channel()
 	_remove(STATE)
 	print("all update check checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
@@ -130,6 +132,92 @@ func _selection() -> void:
 		and fresh.etag == "" and fresh.latest_tag == "" and fresh.last_check_unix == 0 and fresh.hidden_tag == "v0.1.0-rc5", str(fresh))
 
 
+## DT-UPD-04a: stable/preview subscription, exact per-platform packages, statuses and sizes.
+func _channels_and_packages() -> void:
+	var releases: Variant = JSON.parse_string(FileAccess.get_file_as_string(FIXTURE))
+	var rc6 := UpdateCheck.parse_version("0.1.0-rc6")
+	var final := UpdateCheck.parse_version("0.1.0")
+	_check("effective channel: a prerelease build follows preview, a release build stable, a choice wins",
+		UpdateCheck.effective_channel("", rc6) == "preview" and UpdateCheck.effective_channel("", final) == "stable"
+		and UpdateCheck.effective_channel("stable", rc6) == "stable" and UpdateCheck.effective_channel("preview", final) == "preview"
+		and UpdateCheck.effective_channel("nightly", final) == "stable" and UpdateCheck.effective_channel("", {}) == "stable")
+	_check("stable channel on a prerelease build: no prerelease offered", UpdateCheck.newest(releases, rc6, "stable").is_empty())
+	var mixed := [
+		{ tag_name = "v0.2.0", prerelease = false, html_url = UpdateCheck.RELEASES_PAGE + "/tag/v0.2.0" },
+		{ tag_name = "v0.3.0-rc1", prerelease = true, html_url = UpdateCheck.RELEASES_PAGE + "/tag/v0.3.0-rc1" },
+	]
+	_check("preview channel on a release build: the newer prerelease is offered",
+		UpdateCheck.newest(mixed, final, "preview").get("tag", "") == "v0.3.0-rc1"
+		and UpdateCheck.newest(mixed, final, "stable").get("tag", "") == "v0.2.0")
+	var latest := UpdateCheck.newest(releases, rc6)
+	var windows: Dictionary = latest.get("packages", {}).get("windows", {})
+	_check("rc7's exact Windows package: name, size, no digest in the 2026-10-12 fixture",
+		windows.get("name", "") == "openrc-simulator-v0.1.0-rc7-windows-x86_64.zip" and windows.get("size", 0) == 39598648
+		and windows.get("digest", "x") == "" and str(windows.get("url", "")).begins_with(UpdateCheck.TRUSTED_PAGE_PREFIX)
+		and latest.packages.size() == 3, str(windows))
+	var digest := "sha256:" + "ab".repeat(32)
+	var odd := { tag_name = "v0.4.0", prerelease = false, html_url = UpdateCheck.RELEASES_PAGE + "/tag/v0.4.0", assets = [
+		{ name = "openrc-simulator-v0.4.0-windows-x86_64.zip", size = 1501341464.0, digest = digest,
+			browser_download_url = UpdateCheck.TRUSTED_PAGE_PREFIX + "releases/download/v0.4.0/openrc-simulator-v0.4.0-windows-x86_64.zip" },
+		{ name = "openrc-simulator-v0.4.0-linux-x86_64.zip", size = 10, browser_download_url = "https://example.com/x.zip", digest = "md5:00" },
+		{ name = "openrc-simulator-v0.4.0-linux-x86_64.zip", size = 11 },
+		{ name = "OpenRC-Simulator-v0.4.0-macos-universal.zip", size = 12 },
+		{ name = "openrc-simulator-v0.3.9-macos-universal.zip", size = 13 },
+		{ name = "notes-macos-universal.zip.txt", size = 14 },
+	] }
+	var p: Dictionary = UpdateCheck.newest([odd], final).packages
+	_check("packages: exact names only, a duplicate is ambiguous, digest kept only when well formed",
+		p.keys() == ["windows"] and p.windows.size == 1501341464 and p.windows.digest == digest
+		and str(p.windows.url).ends_with("openrc-simulator-v0.4.0-windows-x86_64.zip"), str(p))
+	odd.assets = [{ name = "openrc-simulator-v0.4.0-linux-x86_64.zip", size = -5, browser_download_url = "https://example.com/x.zip" },
+		{ name = "openrc-simulator-v0.4.0-macos-universal.zip", size = 1.5e10 }]
+	p = UpdateCheck.newest([odd], final).packages
+	_check("packages: an untrusted URL is dropped, an implausible size reads as unknown",
+		p.linux.url == "" and p.linux.size == 0 and p.macos.size == 0, str(p))
+	_check("platform keys follow the official packages", UpdateCheck.platform_key("Windows", "x86_64") == "windows"
+		and UpdateCheck.platform_key("Linux", "x86_64") == "linux" and UpdateCheck.platform_key("macOS", "arm64") == "macos"
+		and UpdateCheck.platform_key("Linux", "arm64") == "" and UpdateCheck.platform_key("Android", "arm64") == "")
+	_check("sizes in decimal units", UpdateCheck.format_bytes(1501341464) == "1.50 GB" and UpdateCheck.format_bytes(39598648) == "39.6 MB"
+		and UpdateCheck.format_bytes(512) == "1 KB" and UpdateCheck.format_bytes(338_000) == "338 KB"
+		and UpdateCheck.format_bytes(999_999) == "1.0 MB" and UpdateCheck.format_bytes(999_960_000) == "1.00 GB")
+	# Statuses stay distinct.
+	var st := UpdateCheck.default_state()
+	_check("status: never checked", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_NOT_CHECKED)
+	st.last_status = "transport error 4"
+	_check("status: a failed first request is failed, never current", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_FAILED)
+	st.last_status = "200 ok"
+	st.last_success_unix = T0
+	st.latest_tag = "v0.1.0-rc6"
+	_check("status: an answer for another build or channel is not current", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_NOT_CHECKED)
+	st.for_version = "0.1.0-rc6"
+	st.for_channel = "preview"
+	_check("status: current, with the last success", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_CURRENT
+		and UpdateCheck.status("0.1.0-rc6", st).last_success_unix == T0
+		and UpdateCheck.status("0.1.0-rc6", st, "stable").kind == UpdateCheck.STATUS_NOT_CHECKED)
+	st.latest_tag = "v0.1.0-rc7"
+	st.latest_prerelease = true
+	st.latest_package = "openrc-simulator-v0.1.0-rc7-windows-x86_64.zip"
+	st.latest_size = 39598648
+	st.hidden_tag = "v0.1.0-rc7"
+	var s := UpdateCheck.status("0.1.0-rc6", st)
+	_check("status: a skipped newer release is still reported available, with its size", s.kind == UpdateCheck.STATUS_AVAILABLE
+		and s.version == "0.1.0-rc7" and s.size == 39598648 and UpdateCheck.notice("0.1.0-rc6", st).is_empty(), str(s))
+	st.last_status = "http 403"
+	_check("status: a cached release outranks a later failed request", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_AVAILABLE)
+	_check("status: the stable channel does not report a prerelease", UpdateCheck.status("0.1.0-rc6", st, "stable").kind == UpdateCheck.STATUS_FAILED)
+	st.latest_package = ""
+	_check("status: no package for this platform", UpdateCheck.status("0.1.0-rc6", st).kind == UpdateCheck.STATUS_NO_PACKAGE)
+	st.hidden_tag = ""
+	st.latest_package = "openrc-simulator-v0.1.0-rc7-windows-x86_64.zip"
+	var n := UpdateCheck.notice("0.1.0-rc6", st)
+	_check("notice carries the package and size; the stable channel hides a prerelease", n.get("size", 0) == 39598648
+		and n.get("package", "") == st.latest_package and UpdateCheck.notice("0.1.0-rc6", st, "stable").is_empty(), str(n))
+	_check("state_for: the same build and channel keep the cache", UpdateCheck.state_for(st, "0.1.0-rc6", "preview") == st)
+	var other := UpdateCheck.state_for(st, "0.1.0-rc6", "stable")
+	_check("state_for: another channel starts fresh, keeping the last success", other.latest_tag == "" and other.etag == ""
+		and other.for_channel == "stable" and other.last_success_unix == T0 and other.last_check_unix == 0, str(other))
+
+
 func _state_file() -> void:
 	_remove(STATE)
 	_check("no file: defaults", UpdateCheck.load_state(STATE) == UpdateCheck.default_state())
@@ -143,8 +231,24 @@ func _state_file() -> void:
 	state.latest_prerelease = true
 	state.hidden_tag = "v0.1.0-rc6"
 	state.last_status = "200 ok"
+	state.last_success_unix = T0
+	state.for_channel = "preview"
+	state.latest_package = "openrc-simulator-v0.1.0-rc7-windows-x86_64.zip"
+	state.latest_size = 39598648
+	state.latest_digest = "sha256:" + "0f".repeat(32)
 	_check("save", UpdateCheck.save_state(STATE, state) == OK)
 	_check("round trip", UpdateCheck.load_state(STATE) == state, str(UpdateCheck.load_state(STATE)))
+	var v1 := ConfigFile.new()
+	v1.set_value("meta", "format", 1)
+	v1.set_value("check", "last_check_unix", T0)
+	v1.set_value("check", "etag", "W/\"old\"")
+	v1.set_value("latest", "tag", "v0.1.0-rc7")
+	v1.set_value("latest", "hidden_tag", "v0.1.0-rc5")
+	v1.save(STATE)
+	var migrated := UpdateCheck.load_state(STATE)
+	var expected := UpdateCheck.default_state()
+	expected.hidden_tag = "v0.1.0-rc5"
+	_check("format 1: only the skipped version survives, so one fresh check fills the package", migrated == expected, str(migrated))
 	var f := FileAccess.open(STATE, FileAccess.WRITE)
 	f.store_string("this is not a config file\n[[[")
 	f.close()
@@ -292,6 +396,74 @@ func _checker() -> void:
 	_check("offline: transport error reported, no notice, next launch checks again", r.status.begins_with("transport error")
 		and r.notices.is_empty() and st.last_check_unix == 0 and st.last_status == r.status, str(r) + " " + str(st))
 	r.checker.queue_free()
+	await process_frame
+
+
+## DT-UPD-04a: automatic checks off, Check now with its cooldown, the package size cached for this platform,
+## and a channel change that withdraws a release the new channel does not offer.
+func _manual_and_channel() -> void:
+	var server := FakeReleases.new()
+	if not server.start(FileAccess.get_file_as_string(FIXTURE)):
+		_check("fake releases server listens on 127.0.0.1 (manual)", false)
+		return
+	_remove(STATE)
+	var notices: Array = []
+	var withdrawn := [0]
+	var started := [0]
+	var checker := UpdateChecker.new()
+	checker.url = server.url()
+	checker.state_path = STATE
+	checker.running_version = "0.1.0-rc6"
+	checker.now_unix = T0
+	checker.platform = "windows"
+	checker.automatic = false
+	checker.update_available.connect(func(info: Dictionary) -> void: notices.append(info))
+	checker.update_withdrawn.connect(func() -> void: withdrawn[0] += 1)
+	checker.check_started.connect(func() -> void: started[0] += 1)
+	root.add_child(checker)
+	for i in 10:
+		server.poll()
+		await process_frame
+	_check("automatic off: no request and no notice at start", server.requests.is_empty() and notices.is_empty()
+		and checker.status().kind == UpdateCheck.STATUS_NOT_CHECKED)
+	_check("Check now starts a request", checker.check_now() and checker.is_checking() and started[0] == 1)
+	_check("a second Check now while running is refused", not checker.check_now())
+	await _serve(server, checker)
+	var st := UpdateCheck.load_state(STATE)
+	_check("Check now: rc7 announced with the exact Windows package size", server.requests.size() == 1 and notices.size() == 1
+		and notices[0].get("size", 0) == 39598648 and st.latest_package == "openrc-simulator-v0.1.0-rc7-windows-x86_64.zip"
+		and st.latest_size == 39598648 and st.last_success_unix == T0 and st.for_channel == "preview", str(st))
+	var s: Dictionary = checker.status()
+	_check("status after Check now: available, not checking", s.kind == UpdateCheck.STATUS_AVAILABLE and s.version == "0.1.0-rc7"
+		and s.size == 39598648 and not s.checking, str(s))
+	_check("cooldown: an immediate Check now is refused", not checker.check_now() and not checker.cooldown_over())
+	checker.cooldown_s = 0.0
+	checker.set_channel("stable") # automatic is off: withdraws, does not ask
+	_check("stable channel: the preview card is withdrawn, the cache restarts for stable, no request yet",
+		withdrawn[0] == 1 and server.requests.size() == 1 and UpdateCheck.load_state(STATE).for_channel == "stable"
+		and checker.status().kind == UpdateCheck.STATUS_NOT_CHECKED, str(checker.status()))
+	_check("Check now on stable asks again", checker.check_now())
+	await _serve(server, checker)
+	_check("stable answer: nothing to offer (every fixture release is a prerelease)", server.requests.size() == 2
+		and not server.requests[1].contains("If-None-Match") and notices.size() == 1 and checker.status().kind == UpdateCheck.STATUS_CURRENT,
+		str(checker.status()))
+	checker.set_automatic(true)
+	checker.set_channel("") # back to following the build (preview): automatic, so it asks at once
+	_check("back to the build's channel with automatic checks: asks at once", checker.is_checking())
+	await _serve(server, checker)
+	_check("preview again: rc7 offered again", notices.size() == 2 and notices[1].tag == "v0.1.0-rc7" and server.requests.size() == 3)
+	checker.queue_free()
+	server.stop()
+	_remove(STATE)
+	await process_frame
+
+
+func _serve(server: FakeReleases, checker: Node) -> void:
+	var started := Time.get_ticks_msec()
+	while checker.is_checking() and Time.get_ticks_msec() - started < 15000:
+		server.poll()
+		await process_frame
+	server.poll()
 	await process_frame
 
 

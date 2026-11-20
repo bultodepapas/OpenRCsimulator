@@ -1,5 +1,6 @@
 extends VBoxContainer
-## UI intent only: no coefficients are imported; a chosen configuration flies as a labelled estimate.
+## UI intent only: no coefficients are imported. The confirmed configuration flies exactly like an
+## STL/GLB Creator aircraft with the same values: experimental, never a ClearView flight model.
 signal choice_requested(proposal: Dictionary,revision: int)
 ## One-click ClearView setup: orientation, estimated datum, values, inventory and this choice.
 signal setup_requested(revision: int)
@@ -76,7 +77,7 @@ func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool
 	_selected = selected
 	_busy = busy
 	_helicopter = helicopter
-	visible = not proposal.is_empty()
+	visible = helicopter or not proposal.is_empty()
 	_proposal_label.visible = not helicopter
 	_review.visible = not selected and not helicopter
 	_setup.visible = not selected or helicopter

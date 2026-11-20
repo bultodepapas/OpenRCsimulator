@@ -8,13 +8,15 @@ const TECHNIQUES: Array[String] = ["auto", "native", "projected", "off"]
 const AIRCRAFT_CUES: Array[String] = ["auto", "sun", "vertical", "off"]
 const DISTANCES: Array[String] = ["auto", "near", "field", "far"]
 const SOFTNESS: Array[String] = ["auto", "hard", "soft"]
+## SA-15: spatial cloud occlusion of the ground, independent of the direct-shadow technique (plans/shadows.md §6).
+const CLOUD: Array[String] = ["on", "off"]
 const DEFAULTS := {
 	"shadow_quality": "current", "shadow_technique": "auto", "shadow_aircraft_cue": "auto",
-	"shadow_distance": "auto", "shadow_softness": "auto",
+	"shadow_distance": "auto", "shadow_softness": "auto", "shadow_cloud": "on",
 }
 const CHOICES := {
 	"shadow_quality": QUALITY, "shadow_technique": TECHNIQUES, "shadow_aircraft_cue": AIRCRAFT_CUES,
-	"shadow_distance": DISTANCES, "shadow_softness": SOFTNESS,
+	"shadow_distance": DISTANCES, "shadow_softness": SOFTNESS, "shadow_cloud": CLOUD,
 }
 const DISTANCE_METRES := {"auto": 300.0, "near": 100.0, "field": 300.0, "far": 600.0}
 # Candidate allocations are opt-in; Current reproduces the installed renderer profile.
@@ -31,6 +33,8 @@ const LIGHT_BASE := &"openrc_shadow_base"
 const LIGHT_REQUEST := &"openrc_shadow_requested"
 const LIGHT_REVISION := &"openrc_shadow_revision"
 const LIGHT_DISTANCE_CAP := &"openrc_shadow_distance_cap"
+## SA-22: the directional atlas submitted while native shadows are disabled (256² 16-bit, 128 KiB if ever drawn).
+const PARKED_ATLAS_SIZE := 256
 
 static var revision := 0
 static var _requested: Dictionary = DEFAULTS.duplicate(true)
@@ -38,6 +42,7 @@ static var _receipt: Dictionary = {}
 static var _global_signature: Array = []
 static var _lights: Array[WeakRef] = []
 static var _lighting_refresh := Callable()
+static var _cloud_refresh := Callable()
 
 
 static func normalize(raw: Dictionary) -> Dictionary:
@@ -76,7 +81,7 @@ static func resolve(raw: Dictionary, renderer: String, high_profile: bool,
 			reasons.append("The selected technique suppresses the planar aircraft cue.")
 		cue = "off"
 	if technique == "auto":
-		reasons.append("Current coverage retains both native and projected shadows.")
+		reasons.append("Native shadows own the aircraft's ground shadow in range; the planar cue takes over beyond it.")
 	var softness: String = requested.shadow_softness
 	if softness == "auto":
 		softness = "hard" if int(allocation.filter_quality) == 0 else "soft"
@@ -94,7 +99,8 @@ static func resolve(raw: Dictionary, renderer: String, high_profile: bool,
 	var effective := {"technique": technique, "quality": quality, "native": native, "projected": projected,
 		"aircraft_cue": cue, "distance_m": float(DISTANCE_METRES[requested.shadow_distance]),
 		"softness": softness, "filter_technique": filter_technique, "angular_distance": angular_distance,
-		"renderer": renderer, "high_profile": high_profile, "contact_shadows": false}
+		"renderer": renderer, "high_profile": high_profile, "contact_shadows": false,
+		"cloud_shadows": requested.shadow_cloud == "on"}
 	effective.merge(allocation)
 	return {"requested": requested, "effective": effective, "reasons": reasons}
 
@@ -128,14 +134,23 @@ static func _commit(high_profile: bool) -> void:
 	if receipt == _receipt:
 		return
 	var previous_native := bool(_receipt.effective.native) if not _receipt.is_empty() else bool(receipt.effective.native)
+	var previous_cloud := bool(_receipt.effective.cloud_shadows) if not _receipt.is_empty() else bool(receipt.effective.cloud_shadows)
 	_receipt = receipt
 	revision += 1
 	var state: Dictionary = _receipt.effective
-	var signature: Array = [state.atlas_size, state.use_16_bits, state.filter_quality]
+	# SA-22: engines allocate the directional atlas on the first native shadow frame and keep it until its size
+	# changes. A disabled native route parks it at the minimum, so turning Native off returns that memory; this runs
+	# before the lights below, so re-enabling restores the selected size before any light casts again.
+	var native := bool(state.native)
+	var signature: Array = [int(state.atlas_size) if native else PARKED_ATLAS_SIZE,
+		bool(state.use_16_bits) if native else true, int(state.filter_quality)]
 	if signature != _global_signature:
 		if DisplayServer.get_name() != "headless":
-			RenderingServer.directional_shadow_atlas_set_size(int(state.atlas_size), bool(state.use_16_bits))
-			RenderingServer.directional_soft_shadow_filter_set_quality(int(state.filter_quality) as RenderingServer.ShadowQuality)
+			if _global_signature.size() != 3 or signature.slice(0, 2) != _global_signature.slice(0, 2):
+				RenderingServer.directional_shadow_atlas_set_size(int(signature[0]), bool(signature[1]))
+			# RD rebuilds its scene-shader specialization on a filter change; submit only real changes.
+			if _global_signature.size() != 3 or signature[2] != _global_signature[2]:
+				RenderingServer.directional_soft_shadow_filter_set_quality(int(signature[2]) as RenderingServer.ShadowQuality)
 		_global_signature = signature
 	var alive: Array[WeakRef] = []
 	for reference in _lights:
@@ -146,6 +161,8 @@ static func _commit(high_profile: bool) -> void:
 	_lights = alive
 	if previous_native != bool(state.native) and _lighting_refresh.is_valid():
 		_lighting_refresh.call(bool(state.native))
+	if previous_cloud != bool(state.cloud_shadows) and _cloud_refresh.is_valid():
+		_cloud_refresh.call()
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null:
 		tree.call_group(&"shadow_policy_consumers", &"apply_shadow_policy")
@@ -165,7 +182,60 @@ static func effective() -> Dictionary:
 	return _receipt.effective.duplicate(true)
 
 
+## SA-13: the global atlas/filter values this owner last submitted to the RenderingServer, which live setting changes
+## never write back to ProjectSettings. `submitted` is false where no renderer accepted them (headless). This is the
+## requested configuration, not a measured GPU allocation. `parked` marks the SA-22 minimum while native is disabled.
+static func applied_global() -> Dictionary:
+	ensure_configured(_high_active())
+	var result := {"atlas_size": 0, "use_16_bits": false, "filter_quality": 0,
+		"submitted": DisplayServer.get_name() != "headless", "revision": revision,
+		"parked": not bool(_receipt.effective.native)}
+	if _global_signature.size() == 3:
+		result.atlas_size = int(_global_signature[0])
+		result.use_16_bits = bool(_global_signature[1])
+		result.filter_quality = int(_global_signature[2])
+	return result
+
+
+## SA-14: what each registered world sun actually does, beside the global policy. A source veto (`source_requested`
+## false) or an activity cap explains why a light casts less than the configured technique and distance suggest.
+static func light_receipts() -> Array:
+	var rows: Array = []
+	for reference in _lights:
+		var light := reference.get_ref() as DirectionalLight3D
+		if light == null:
+			continue
+		var source_requested := bool(light.get_meta(LIGHT_REQUEST, light.shadow_enabled))
+		var cap := float(light.get_meta(LIGHT_DISTANCE_CAP, INF))
+		var visible := light.is_visible_in_tree() if light.is_inside_tree() else light.visible
+		var reason := ""
+		if not source_requested:
+			reason = "source_disabled"
+		elif not bool(_receipt.get("effective", {}).get("native", false)):
+			reason = "technique"
+		elif not visible:
+			reason = "hidden"
+		rows.append({"path": str(light.get_path()) if light.is_inside_tree() else str(light.name),
+			"casting": light.shadow_enabled and light.light_energy > 0.0 and reason.is_empty(),
+			"shadow_enabled": light.shadow_enabled, "source_requested": source_requested,
+			"max_distance_m": light.directional_shadow_max_distance, "distance_cap_m": cap if is_finite(cap) else null,
+			"opacity": light.shadow_opacity, "energy": light.light_energy,
+			"policy_revision": int(light.get_meta(LIGHT_REVISION, -1)), "inactive_reason": reason})
+	return rows
+
+
 ## Atmosphere registers the owner of existing light/fog/material compensation.
+## SA-15: Atmosphere re-applies the cloud-shadow choice to its live ground materials.
+static func set_cloud_refresh(callback: Callable) -> void:
+	_cloud_refresh = callback
+
+
+static func cloud_shadows_enabled() -> bool:
+	if _receipt.is_empty():
+		ensure_configured(_high_active())
+	return bool(_receipt.effective.cloud_shadows)
+
+
 static func set_lighting_refresh(callback: Callable) -> void:
 	_lighting_refresh = callback
 
@@ -186,6 +256,18 @@ static func aircraft_cue() -> String:
 	if _receipt.is_empty():
 		ensure_configured(_high_active())
 	return str(_receipt.effective.aircraft_cue)
+
+
+## SA-02: the registered world sun currently drawing native shadow maps into `world`, or null.
+static func casting_sun(world: World3D) -> DirectionalLight3D:
+	if world == null:
+		return null
+	for reference in _lights:
+		var light := reference.get_ref() as DirectionalLight3D
+		if light != null and light.shadow_enabled and light.light_energy > 0.0 and light.is_inside_tree() \
+				and light.is_visible_in_tree() and light.get_world_3d() == world:
+			return light
+	return null
 
 
 ## Called after the atmosphere/profile has established its original per-light values.

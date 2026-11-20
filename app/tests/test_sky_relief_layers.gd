@@ -97,10 +97,20 @@ func _run() -> void:
 	over_capacity.append(900003)
 	Cache.apply_sky(material, over_capacity)
 	check("tile cache stays within its fixed budget", Cache._tiles.size() == Cache.MAX_TILES)
-	check("capacity leaves the later layer analytic",
-		material.get_shader_parameter("cloud_relief_map_2_enabled") != true
-		and material.get_shader_parameter("cloud_relief_map_2") == null
-		and Cache.diagnostics().effective.sky == "mixed")
+	# SA-10: an unreferenced prewarmed tile yields its slot; the later layer stays analytic until its tile is ready.
+	check("a later layer reclaims an unreferenced prewarmed slot and stays analytic while pending",
+		Cache._tiles.has(900003) and not (Cache._tiles.has(900001) and Cache._tiles.has(900002))
+		and material.get_shader_parameter("cloud_relief_map_2_enabled") != true
+		and material.get_shader_parameter("cloud_relief_map_2") == null)
+	var holder := ShaderMaterial.new()
+	holder.shader = Atmosphere.GROUND_SHADER
+	Cache.apply(holder, 900001 if Cache._tiles.has(900001) else 900002)
+	var full: Array = over_capacity.duplicate()
+	full.append(900007)
+	Cache.apply_sky(material, full)
+	check("capacity leaves a later layer analytic when every retained tile is required",
+		not Cache._tiles.has(900007) and material.get_shader_parameter("cloud_relief_map_3_enabled") != true
+		and material.get_shader_parameter("cloud_relief_map_3") == null and Cache.diagnostics().effective.sky == "mixed")
 	OS.set_environment(Cache.SKY_ENVIRONMENT_KEY, "0")
 	Cache.diagnostics()
 	check("sky opt-out clears every layer binding", material.get_shader_parameter("cloud_shadow_map_enabled") != true

@@ -1,0 +1,104 @@
+{
+  "observed_date": "2026-11-17",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "source_commit": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "method": "Authenticated read-only GitHub REST releases?per_page=5; asset bytes were not downloaded or verified.",
+  "source_url": "https://api.github.com/repos/bultodepapas/OpenRCsimulator/releases?per_page=5",
+  "releases": [
+    {
+      "tag": "v0.2.8",
+      "published_at": "2026-11-14T13:52:59Z",
+      "prerelease": false,
+      "immutable": false,
+      "assets": [
+        {
+          "name": "linux-abi.json",
+          "bytes": 4755,
+          "github_digest": "sha256:1b42f877b9b04a6fdfa558c2b510b3d6010e3ff3affc2d930f08d1836eeb6163",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/linux-abi.json"
+        },
+        {
+          "name": "openrc-simulator-v0.2.8-linux-x86_64.zip",
+          "bytes": 1495576887,
+          "github_digest": "sha256:8fbbbe10ac4e5b273f91d761dfcfe58e3daea7558749d9177e89266c1f3dd95e",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/openrc-simulator-v0.2.8-linux-x86_64.zip"
+        },
+        {
+          "name": "openrc-simulator-v0.2.8-macos-universal.zip",
+          "bytes": 1523644106,
+          "github_digest": "sha256:950ef4920de2a916d17eea3870936c6a0c23ea3848b8b089e89da6d195d01eb4",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/openrc-simulator-v0.2.8-macos-universal.zip"
+        },
+        {
+          "name": "openrc-simulator-v0.2.8-windows-x86_64.zip",
+          "bytes": 1501341464,
+          "github_digest": "sha256:542c88d52563f40a76c43bb6f7d5a007d7c400234bac2d5435df46b43ddf3764",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/openrc-simulator-v0.2.8-windows-x86_64.zip"
+        },
+        {
+          "name": "release-manifest.json",
+          "bytes": 5878,
+          "github_digest": "sha256:3cd57e6f24bf1dfca16774d6764e6b9eca175f4b5e49186f60a02fd132724a70",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/release-manifest.json"
+        },
+        {
+          "name": "SHA256SUMS",
+          "bytes": 495,
+          "github_digest": "sha256:4a30eead11bbce7e420c6ee4b16d4ee7c0be1c6fc5708dbc3d75be55179f35e3",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.8/SHA256SUMS"
+        }
+      ]
+    },
+    {
+      "tag": "v0.2.7",
+      "published_at": "2026-11-13T01:41:29Z",
+      "prerelease": false,
+      "immutable": false,
+      "assets": [
+        {
+          "name": "linux-abi.json",
+          "bytes": 4755,
+          "github_digest": "sha256:143c88a99a9d2f0b8b806fbb3280eec824019166074fcc397ef3df8132ff692e",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/linux-abi.json"
+        },
+        {
+          "name": "openrc-simulator-v0.2.7-linux-x86_64.zip",
+          "bytes": 1495524385,
+          "github_digest": "sha256:6825c46d21710a3918bdf8880b4aa05436b5b7923341b48b5685a4295c7a3234",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/openrc-simulator-v0.2.7-linux-x86_64.zip"
+        },
+        {
+          "name": "openrc-simulator-v0.2.7-macos-universal.zip",
+          "bytes": 1523598778,
+          "github_digest": "sha256:9e208609dd84c607012db1e53cf4c026cb0c1e6254790a3d646a6807425e7790",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/openrc-simulator-v0.2.7-macos-universal.zip"
+        },
+        {
+          "name": "openrc-simulator-v0.2.7-windows-x86_64.zip",
+          "bytes": 1501300919,
+          "github_digest": "sha256:e4c47787075f5c58214d0b7c39905ceba461b04e3b0e233e4ac325088a2fcbe4",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/openrc-simulator-v0.2.7-windows-x86_64.zip"
+        },
+        {
+          "name": "release-manifest.json",
+          "bytes": 5877,
+          "github_digest": "sha256:1791e396615b1bcdf4524bdac9bbc389497b8099a533a374592e8c0d35869a4a",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/release-manifest.json"
+        },
+        {
+          "name": "SHA256SUMS",
+          "bytes": 495,
+          "github_digest": "sha256:f5cb0aa0f7b3ed2e267b0b0e8030e2d28b32ce82452e58a6b208bbb8aa0390a3",
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/SHA256SUMS"
+        }
+      ]
+    }
+  ],
+  "range_probe": {
+    "method": "Bounded unauthenticated urllib GET with Range: bytes=-65536 and Accept-Encoding: identity",
+    "asset": "openrc-simulator-v0.2.8-windows-x86_64.zip",
+    "observed_http_status": 501,
+    "body_read": false,
+    "conclusion": "Inconclusive in this environment; does not establish GitHub/CDN Range behavior."
+  }
+}

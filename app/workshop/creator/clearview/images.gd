@@ -1,10 +1,12 @@
 extends RefCounted
-## Texture normalization. PNG uses Creator's strict validator; uncompressed 24-bit BMP is
-## decoded here without a native bitmap parser. Other source formats require their own gate.
+## Texture normalization. PNG uses Creator's strict validator; uncompressed 24-bit BMP and the
+## first GIF frame are decoded here without a native parser. Other formats require their own gate.
 const R := preload("res://workshop/creator/result.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
 const PngCheck := preload("res://workshop/creator/png_check.gd")
 const JpegCheck := preload("jpeg_check.gd")
+const Gif := preload("gif.gd")
+const UNSUPPORTED := "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 
 static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pixels := Limits.PNG_AGGREGATE_PIXELS) -> Dictionary:
 	if bytes.is_empty() or bytes.size() > Limits.PNG_BYTES:
@@ -40,7 +42,19 @@ static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pi
 			return R.fail(R.SOURCE_INVALID, "The JPEG decoder did not produce the validated image.", "source", "import")
 		return R.ok({png = image.save_png_to_buffer(), width = checked.value.width, height = checked.value.height,
 			pixels = checked.value.pixels, has_alpha = false}, checked.diagnostics)
-	return R.fail(R.SOURCE_UNSUPPORTED, "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference.", "source", "import")
+	if Gif.is_gif(bytes):
+		var decoded := Gif.decode(bytes, remaining_pixels, cancel)
+		if not decoded.ok:
+			return decoded
+		if cancel.is_valid() and bool(cancel.call()):
+			return R.fail(R.SOURCE_INVALID, "The import was cancelled.", "source", "import")
+		var frame: Dictionary = decoded.value
+		var gif_png := Image.create_from_data(frame.width, frame.height, false, Image.FORMAT_RGBA8, frame.rgba).save_png_to_buffer()
+		if gif_png.is_empty():
+			return R.fail(R.SOURCE_INVALID, "The GIF could not be converted to a PNG texture.", "source", "import")
+		return R.ok({png = gif_png, width = frame.width, height = frame.height,
+			pixels = frame.pixels, has_alpha = frame.has_alpha}, decoded.diagnostics)
+	return R.fail(R.SOURCE_UNSUPPORTED, UNSUPPORTED, "source", "import")
 
 static func _cancelled(cancel: Callable) -> bool:
 	return cancel.is_valid() and bool(cancel.call())
@@ -58,7 +72,9 @@ static func _bmp(bytes: PackedByteArray, cancel: Callable, remaining_pixels: int
 		return R.fail(R.SOURCE_LIMIT, "The bitmap dimensions exceed the texture limits.", "source", "import")
 	var stride := (width * 3 + 3) & ~3
 	var offset := bytes.decode_u32(10)
-	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or offset + stride * height != bytes.size() or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
+	# Some writers append up to three alignment bytes after the pixel rows (declared in the file size).
+	var trailing := bytes.size() - (offset + stride * height)
+	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or trailing < 0 or trailing > 3 or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
 		return R.fail(R.SOURCE_INVALID, "The bitmap header, row sizes or pixel data are inconsistent.", "source", "import")
 	var pixels := PackedByteArray()
 	pixels.resize(width * height * 3)

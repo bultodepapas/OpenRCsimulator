@@ -130,6 +130,10 @@ jobs:
       OPENRC_TEST_PART: ${{ matrix.part }}
       OPENRC_UNIT_SHARD: ${{ matrix.shard }}
       OPENRC_UNIT_SHARDS: ${{ matrix.shards }}
+      # One failed app/test.sh gate must not hide the later gates and phases; the job still fails.
+      OPENRC_KEEP_GOING: '1'
+    # Once setup (dependencies; for integration also import, generator venv and release tools)
+    # succeeds, independent check steps run even after an earlier check step failed.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Fetch fixed-brake historical source commits
@@ -165,6 +169,7 @@ jobs:
           done
           "$found" || { echo 'fixed-brake test missing' >&2; exit 1; }
       - name: Install app and display dependencies
+        id: app_deps
         timeout-minutes: 15
         run: |
           sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
@@ -185,7 +190,7 @@ jobs:
           python3 tools/godot/run_checked.py --timeout "${OPENRC_IMPORT_TIMEOUT:-600}" --out-dir tmp/godot-checks --label ci-resource-import -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv "$RUNNER_TEMP/aircraft-schema-venv"
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
@@ -194,17 +199,19 @@ jobs:
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/helicopter/hx700/test_schema.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-standardization/test_schema_v2.py --godot "$(app/get-godot.sh)"
       - name: Generator Python dependencies (X8-06 derive_physics.py needs numpy)
-        if: matrix.part == 'integration'
+        id: generator_deps
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv --system-site-packages "$RUNNER_TEMP/generator-venv"
           "$RUNNER_TEMP/generator-venv/bin/python" -m pip install -r research/skywalker-x8/X8-06/requirements.txt
           echo "$RUNNER_TEMP/generator-venv/bin" >> "$GITHUB_PATH"
       - name: Release fixture inspection tools
-        if: matrix.part == 'integration'
+        id: release_tools
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         timeout-minutes: 15
         run: sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y binutils zip g++
       - name: Offline measurement and validation tool regressions
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 app/tests/test_ci_partitions.py
           python3 app/tests/test_export_identity.py
@@ -212,7 +219,7 @@ jobs:
           python3 research/f4u-corsair/F4U-07/test_generated_identity.py
           research/test-tools.sh
       - name: NK-3 trajectory evidence policy (no native library required)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 tools/godot/run_checked.py --timeout 90 --out-dir tmp/godot-checks --label nk3-trajectory-policy \
             --require-text 'NK3_TRAJECTORY_POLICY verdict=pass' -- \
@@ -223,12 +230,14 @@ jobs:
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_fleet.gd"
       - name: Optional process RAM and I/O backend regressions (PT1h-R4)
-        if: matrix.part == 'integration'
+        if: ${{ !cancelled() && matrix.part == 'integration' && steps.resource_import.outcome == 'success' }}
         run: |
           python3 -m venv "$RUNNER_TEMP/godot-resources-venv"
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m pip install -r tools/godot/requirements-resources.txt
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
       - name: Run app checks with unit-backed parse coverage
+        if: ${{ !cancelled() && steps.app_deps.outcome == 'success' && (matrix.part != 'integration' || (steps.resource_import.outcome == 'success'
+          && steps.generator_deps.outcome == 'success' && steps.release_tools.outcome == 'success')) }}
         env:
           OPENRC_IMPORT_TIMEOUT: '1800'
         run: |
@@ -338,7 +347,8 @@ jobs:
           key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - name: Import project resources with checked diagnostics
         run: |
-          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-import -- \
+          # Cold imports took 351-601 s on hosted runners; use the shared 1800 s cold-import budget.
+          python3 tools/godot/run_checked.py --timeout 1800 --out-dir tmp/nk3-ci/checks --label nk3-import -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - name: Build the locked native stage
         run: python3 research/native-kernel/build.py --jobs 2 2>&1 | tee tmp/nk3-ci/build-output.log
@@ -473,7 +483,8 @@ jobs:
   native-kernel-windows:
     needs: scope
     if: needs.scope.outputs.app == 'true'
-    # NK-4: informational until it has run green on the hosted runner; not yet a release dependency.
+    # NK-4 (owner decision 2026-11-18, native kernel always): required. Its qualified DLL, receipt and oracle
+    # evidence feed the release export; native-kernel-windows-package qualifies the exported executable.
     name: NK-4 native kernel qualification (Windows)
     runs-on: windows-2025
     timeout-minutes: 180
@@ -483,6 +494,14 @@ jobs:
     env:
       OPENRC_NK_TOOL_ROOT: ${{ github.workspace }}/tmp/native-kernel-windows
       PYTHONIOENCODING: utf-8 # Match redirected oracle output to the UTF-8 log reader.
+      # Check out LF bytes, as on Linux (set before checkout). The receipt hashes the C++ and mirrored GDScript
+      # sources byte for byte; with the runner's default autocrlf they were CRLF hashes (127 of 138 differed),
+      # which the Linux release export and the exported pack's LF sources can never match.
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -598,6 +617,18 @@ jobs:
           python tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk4-ci/checks --label nk4-native-helicopter \
             --require-text 'NK3_NATIVE_HELICOPTER_NATIVE verdict=pass' -- \
             "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_helicopter_session.gd
+      # The release export (Linux) revalidates this exact DLL against its receipt and the oracle evidence it cites.
+      # Paths keep their repository layout (the artifact root is the workspace, their common ancestor).
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nk4-native-windows-build
+          path: |
+            app/native/kernel/openrc_native_kernel.dll
+            app/native/kernel/build-receipt-windows.json
+            tmp/native-kernel-windows/*.json
+            tmp/native-kernel-windows/lib/openrc_native_kernel_mutant.dll
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
@@ -814,6 +845,7 @@ jobs:
     if: needs.scope.outputs.app == 'true'
     name: RC native Windows build
     runs-on: windows-2025-vs2026
+    timeout-minutes: 45 # About 3 minutes normally; leaves room for a one-off MSVC component install.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -840,7 +872,49 @@ jobs:
           if (-not (Test-Path -LiteralPath $devcmd -PathType Leaf)) {
             throw "Visual Studio developer command file was not found: $devcmd"
           }
-          $command = "call `"$devcmd`" -no_logo -arch=amd64 -host_arch=amd64 >nul && set"
+          # Runner image updates move the default MSVC (20261111 ships 14.52). Select the locked
+          # toolset explicitly and add it side by side when the image lacks it; build.py still
+          # refuses any other VCToolsVersion.
+          $lock = Get-Content -Raw -LiteralPath 'research/rc-monster-truck/native/toolchain-lock.json' | ConvertFrom-Json
+          $toolset = $lock.windows.compiler_toolset
+          $toolsetRoot = Join-Path $installation 'VC\Tools\MSVC'
+          if (-not (Test-Path -LiteralPath (Join-Path $toolsetRoot $toolset) -PathType Container)) {
+            function Show-InstallerLog {
+              Get-ChildItem -LiteralPath $env:TEMP -Filter 'dd_*.log' -ErrorAction SilentlyContinue |
+                Sort-Object LastWriteTime | Select-Object -Last 2 |
+                ForEach-Object { Write-Host "== $($_.FullName)"; Get-Content -LiteralPath $_.FullName -Tail 40 }
+            }
+            # Take the component id from this instance's catalog: superseded toolsets can gain a VS
+            # version suffix (VC.14.44.17.14.x86.x64). Prefer the bare id when the catalog has it.
+            $minor = ($toolset -split '\.')[0..1] -join '.'
+            $bare = "Microsoft.VisualStudio.Component.VC.$minor.x86.x64"
+            $instanceId = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property instanceId
+            $catalog = Join-Path $env:ProgramData "Microsoft\VisualStudio\Packages\_Instances\$instanceId\catalog.json"
+            $ids = @()
+            if (Test-Path -LiteralPath $catalog -PathType Leaf) {
+              $pattern = '"(Microsoft\.VisualStudio\.Component\.VC\.' + [regex]::Escape($minor) + '(?:\.\d+\.\d+)?\.x86\.x64)"'
+              $ids = @([regex]::Matches((Get-Content -Raw -LiteralPath $catalog), $pattern) |
+                ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+            }
+            $component = if ($ids.Count -eq 0 -or $ids -contains $bare) { $bare } else { $ids[-1] }
+            Write-Host "MSVC $toolset is absent (found: $((Get-ChildItem -LiteralPath $toolsetRoot -Name) -join ', ')); catalog offers: $($ids -join ', '); adding $component."
+            $installer = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vs_installer.exe'
+            $arguments = "modify --installPath `"$installation`" --add $component --quiet --norestart --nocache"
+            $started = Get-Date
+            $process = Start-Process -FilePath $installer -ArgumentList $arguments -Wait -PassThru -WindowStyle Hidden
+            Get-Process -Name setup, vs_installer, vs_installershell -ErrorAction SilentlyContinue |
+              Wait-Process -Timeout 900 -ErrorAction SilentlyContinue
+            Write-Host "Visual Studio Installer exited $($process.ExitCode) after $([int]((Get-Date) - $started).TotalSeconds) s."
+            if ($process.ExitCode -notin 0, 3010) {
+              Show-InstallerLog
+              throw "Visual Studio Installer could not add $component (exit $($process.ExitCode))."
+            }
+            if (-not (Test-Path -LiteralPath (Join-Path $toolsetRoot $toolset) -PathType Container)) {
+              Show-InstallerLog
+              throw "$component did not provide MSVC $toolset (found: $((Get-ChildItem -LiteralPath $toolsetRoot -Name) -join ', ')). Changing the lock is a deliberate rebuild for its owning track."
+            }
+          }
+          $command = "call `"$devcmd`" -no_logo -arch=amd64 -host_arch=amd64 -vcvars_ver=$toolset >nul && set"
           $developerEnvironment = & $env:ComSpec /d /s /c $command
           if ($LASTEXITCODE -ne 0) {
             throw 'Could not initialize the x64 Visual Studio developer environment.'
@@ -934,7 +1008,7 @@ jobs:
     name: Release builds (Windows, Linux, macOS)
     if: needs.scope.outputs.export == 'true'
     # Package in parallel with app/visual/RC runtime checks; publication requires every check.
-    needs: [scope, native-linux, native-windows, native-kernel-linux]
+    needs: [scope, native-linux, native-windows, native-kernel-linux, native-kernel-windows]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -984,8 +1058,20 @@ jobs:
           "$godot" --version
           tar -xzf tmp/native-kernel/godot-cpp-pinned.tar.gz -C tmp/native-kernel
           python3 research/native-kernel/build.py --install-app
+      # NK-4: the qualified Windows DLL, receipt and oracle evidence, beside (never over) the Linux install.
+      # app/export.sh revalidates them (package.py prepare-windows) before exporting Windows.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: nk4-native-windows-build
+          path: .
       - id: packages
         run: app/export.sh # exact successful run path and build identity are step outputs
+        env:
+          # TELEM-14: repository variables (not secrets) let exact-tag release builds offer telemetry. Unset, every
+          # build keeps it unavailable; app/telemetry/telemetry_release.gd also refuses untagged or dirty builds.
+          OPENRC_TELEMETRY_ENDPOINT: ${{ vars.OPENRC_TELEMETRY_ENDPOINT }}
+          OPENRC_TELEMETRY_OPERATOR: ${{ vars.OPENRC_TELEMETRY_OPERATOR }}
+          OPENRC_TELEMETRY_CONTACT: ${{ vars.OPENRC_TELEMETRY_CONTACT }}
       - name: Preserve failed export log and changed source paths
         if: always() && steps.packages.outcome == 'failure'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -1024,10 +1110,101 @@ jobs:
             ${{ steps.packages.outputs.package_dir }}/SHA256SUMS
           if-no-files-found: error
 
+  native-kernel-windows-package:
+    needs: [scope, export]
+    if: needs.scope.outputs.export == 'true'
+    # NK-4 (owner decision 2026-11-18, native kernel always): the Windows executable exported on Linux must load and
+    # pass the native kernel on Windows before any release. Mirrors app/export.sh's Linux package gate.
+    name: NK-4 Windows package qualification
+    runs-on: windows-2025
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONIOENCODING: utf-8
+      GIT_CONFIG_COUNT: '2' # LF checkout, as in native-kernel-windows
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-builds
+          path: tmp/nk4-package/dist
+      # download-artifact v4.3.0 once delivered a corrupt copy of the verified 4.7 GB archive without failing
+      # (run 44485690454). Check the release checksum and download once more before treating it as a package defect;
+      # the unpack step requires the check to pass, so nothing here may tolerate a failure (no continue-on-error).
+      - name: Check the downloaded Windows archive against the release checksums
+        id: transfer
+        run: |
+          if (cd tmp/nk4-package/dist &&
+              grep -E '^[0-9a-f]{64}  openrc-simulator-[^/ ]+-windows-x86_64\.zip$' SHA256SUMS | sha256sum --check --strict -); then
+            echo 'corrupt=false' >> "$GITHUB_OUTPUT"
+          else
+            echo '::warning::The downloaded release artifact failed its SHA256SUMS check; downloading it once more.'
+            rm -rf tmp/nk4-package/dist
+            echo 'corrupt=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        if: steps.transfer.outputs.corrupt == 'true'
+        with:
+          name: release-builds
+          path: tmp/nk4-package/dist
+      - name: Unpack the exact Windows release archive
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          archives=(tmp/nk4-package/dist/openrc-simulator-*-windows-x86_64.zip)
+          [ "${#archives[@]}" -eq 1 ] || { echo "expected exactly one Windows release archive" >&2; exit 1; }
+          checksum="$(grep -E '^[0-9a-f]{64}  openrc-simulator-[^/ ]+-windows-x86_64\.zip$' tmp/nk4-package/dist/SHA256SUMS)" ||
+            { echo "SHA256SUMS lists no Windows release archive" >&2; exit 1; }
+          [ "$(printf '%s\n' "$checksum" | wc -l)" -eq 1 ] || { echo "SHA256SUMS lists several Windows archives" >&2; exit 1; }
+          (cd tmp/nk4-package/dist && printf '%s\n' "$checksum" | sha256sum --check --strict -)
+          python -m zipfile -e "${archives[0]}" tmp/nk4-package/app
+          for file in "OpenRC Simulator.exe" native/kernel/openrc_native_kernel.dll \
+              native/kernel/openrc_native_kernel.gdextension native/kernel/package-receipt.json; do
+            test -s "tmp/nk4-package/app/$file" || { echo "Windows archive lacks $file" >&2; exit 1; }
+          done
+      - name: Require the native kernel in every package qualification mode and the default route
+        run: |
+          set -euo pipefail
+          exe="$(cygpath -w "$PWD/tmp/nk4-package/app/OpenRC Simulator.exe")"
+          evidence="$PWD/tmp/nk4-package/evidence"
+          mkdir -p "$evidence/appdata"
+          for mode in stage lifecycle replay helicopter helicopter-radio; do
+            markers=(--require-text "NATIVE_QUALIFICATION preloaded=false"
+                     --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass")
+            case "$mode" in
+              helicopter) markers+=(--require-text "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass") ;;
+              helicopter-radio) markers+=(--require-text "NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass") ;;
+            esac
+            APPDATA="$(cygpath -w "$evidence/appdata")" python tools/godot/run_checked.py --timeout 600 \
+              --out-dir "$evidence/checks" --label "nk4-package-$mode" "${markers[@]}" -- \
+              "$exe" --headless --audio-driver Dummy -- --quick-flight "--native-qualification=$mode"
+          done
+          python research/native-kernel/test_default_route.py --release-executable "$exe" \
+            --out "$evidence/default-route" 2>&1 | tee "$evidence/default-route.log"
+          grep -q "NK3_DEFAULT_ROUTE verdict=pass" "$evidence/default-route.log"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: nk4-package-diagnostics
+          path: |
+            tmp/nk4-package/evidence/checks/
+            tmp/nk4-package/evidence/default-route.log
+            tmp/nk4-package/evidence/default-route/checks/
+            tmp/nk4-package/evidence/default-route/*.json
+            tmp/nk4-package/app/native/kernel/package-receipt.json
+          if-no-files-found: ignore
+          retention-days: 7
+
   required:
     name: CI required
     if: always()
-    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-macos, native-rc-runtime, export]
+    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-windows, native-kernel-macos, native-rc-runtime, export, native-kernel-windows-package]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -1052,8 +1229,8 @@ jobs:
 
   release:
     name: GitHub release (v* tags)
-    if: startsWith(github.ref, 'refs/tags/v') && needs.required.result == 'success' && needs.export.result == 'success'
-    needs: [required, export]
+    if: startsWith(github.ref, 'refs/tags/v') && needs.required.result == 'success' && needs.export.result == 'success' && needs.native-kernel-windows-package.result == 'success'
+    needs: [required, export, native-kernel-windows-package]
     concurrency:
       group: publish-${{ github.ref }}
       cancel-in-progress: false

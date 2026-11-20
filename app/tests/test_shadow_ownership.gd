@@ -205,13 +205,14 @@ func _field_policy() -> void:
 		cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		and caster.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		and near_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+	# SA-18: an alpha-cut person casts natively with its real (scissor) coverage and vertex animation.
+	_check("SA-18: native admits an alpha-cut population batch", cut_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
 	_check("native preserves prior modes and skips transparent or unrelated sources",
 		preexisting.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
 		and translucent.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		and decoration.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		and far_caster.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		and mixed_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		and cut_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+		and mixed_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	var stats: Dictionary = field.get_meta("shadow_native_casters")
 	_check("native promotes only the nearest two eligible shelter meshes",
 		near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -227,10 +228,14 @@ func _field_policy() -> void:
 		and alpha_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		and next_pass_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	_check("field diagnostics report bounded active candidates and exclusions", bool(stats.active)
-		and int(stats.source_meshes) == 5 and int(stats.population_batches) == 1
+		and int(stats.source_meshes) == 5 and int(stats.population_batches) == 2
 		and int(stats.shelter_meshes) == 2 and int(stats.max_shelter_meshes) == 2
 		and int(stats.skipped_shelter_range) == 2 and int(stats.skipped_shelter_budget) == 2
-		and int(stats.skipped_material) >= 7 and int(stats.skipped_population_range) == 1)
+		and int(stats.skipped_material) >= 6 and int(stats.skipped_population_range) == 1)
+	var reasons: Dictionary = stats.get("skipped_reasons", {})
+	_check("SA-18: each exclusion carries its reason", reasons.has("material_overlay") and reasons.has("next_pass")
+		and reasons.has("shelter_shader") and reasons.has("blended")
+		and (stats.get("skipped_examples", []) as Array).size() >= mini(int(stats.skipped_material), 16))
 	_check("native suppresses every planar field batch", not cue_plane.visible and not near_plane.visible
 		and not far_plane.visible and not already_hidden.visible and not population.visible)
 	_check("native suppresses receivers and offscreen mask work", _all_projectors_disabled(projectors) and not manager.is_processing())

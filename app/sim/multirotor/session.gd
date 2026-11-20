@@ -68,6 +68,9 @@ signal resetting
 ## DR-25/26 (race sessions only): every accepted race event, and the terminal record of a finished or aborted attempt.
 signal race_event(event: Dictionary)
 signal race_result(result: Dictionary)
+## DR-19c: a non-terminal impact, prop damage or (DR-19f) sliding scrape of an accepted tick
+## ({type = "impact" | "prop_damage" | "scrape", ...}).
+signal impact(event: Dictionary)
 
 var sim: Node
 var environment: SimEnvironment = SimEnvironment.new()
@@ -89,6 +92,8 @@ var race: RefCounted
 var course: Dictionary = {}
 var results: Array[Dictionary] = []
 var _result_sequence := 0
+## Test seam: Callable() -> String giving a new publication id ("" = generation failed). Default: 128 random bits.
+var publication_id_source := Callable()
 var _field: Dictionary = {}
 ## Resolved start pose {mode, north_m, east_m, heading_deg[, altitude_m], initial_soc, source_generation}.
 var _start: Dictionary = {}
@@ -107,7 +112,7 @@ func _init() -> void:
 static func default_options() -> Dictionary:
 	return {data_path = DEFAULT_DATA, rates = {}, throttle_policy = "absolute", start = "pad", altitude_m = 3.0,
 		north_offset_m = 12.0, east_offset_m = 0.0, heading_deg = 0.0, wind_speed_mps = 0.0, wind_from_deg = 0.0,
-		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = "", rc_track = {}}
+		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = "", rc_track = {}, crash_model = "strict"}
 
 
 ## Build every derived object detached, then replace the running configuration. Refusal keeps the old session,
@@ -195,6 +200,12 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 		var shape := _prepared_shape_error(doc)
 		if not shape.is_empty():
 			return _refused(shape)
+	# Audit A09: one physical-invariant list for both routes; a prepared document (tests, Workshop, a candidate
+	# replay) meets the loader's bounds (passive drag, nonnegative resistances, positive-definite inertia, a pack
+	# that carries the hover load). Nothing is built yet, so a refusal leaves an accepted session untouched.
+	var invariants: PackedStringArray = Data.physical_invariant_errors(doc)
+	if not invariants.is_empty():
+		return _refused("multirotor model: " + "; ".join(invariants))
 	if typeof(opts.rates) != TYPE_DICTIONARY:
 		return _refused("option rates must be an openrc-rates profile or empty")
 	var profile: Dictionary = Rates.default_profile() if opts.rates.is_empty() else opts.rates
@@ -246,10 +257,15 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	if typeof(opts.throttle_limit) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(opts.throttle_limit)) \
 			or float(opts.throttle_limit) < 0.2 or float(opts.throttle_limit) > 1.0:
 		return _refused("option throttle_limit must lie in 0.2..1")
+	# DR-19c: "strict" ends the flight at any hard contact (the original law); "graded" lets most impacts bounce or wear
+	# the props (electrical law). Part of the model identity, so a log replays with the law it was flown with.
+	if typeof(opts.get("crash_model")) != TYPE_STRING or not str(opts.crash_model) in ["strict", "graded"]:
+		return _refused("option crash_model must be strict or graded")
 	var created: Dictionary = Plant.create(doc, profile, policy, 0, float(opts.throttle_limit))
 	if not created.ok:
 		return _refused("; ".join(created.errors))
 	var candidate_plant: RefCounted = created.plant
+	candidate_plant.graded_impacts = str(opts.crash_model) == "graded"
 	var captured_env := candidate_env
 	candidate_plant.environment = captured_env
 	candidate_plant.ground = contact_ground(captured_env)
@@ -286,6 +302,7 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var gate_frames: Array = _frame_proxies(race_course.get("frames", []))
 	if not _collision_world.is_empty() or not gate_frames.is_empty():
 		candidate_plant.obstacle = _obstacle_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
+		candidate_plant.obstacle_class = _obstacle_class_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
 	var frame := _start_frame(framer, doc, candidate_env, start)
 	var kernel: Node = Sim.new()
 	kernel.process_mode = Node.PROCESS_MODE_DISABLED
@@ -393,7 +410,12 @@ func reset_to_pad() -> bool:
 		aborted.terminal = true
 		aborted.phase = "ABORTED"
 		aborted.valid = false
-		aborted.reason = "pad_reset"
+		# Audit A14: the reset's own reason code, and the terminal clock of the accepted frame being left (the record
+		# is published after the new tick-zero frame is committed).
+		aborted.reason = RaceDirector.REASON_NAMES[RaceDirector.REASON_PAD_RESET]
+		aborted.reason_code = RaceDirector.REASON_PAD_RESET
+		aborted.terminal_tick = int(sim.tick)
+		aborted.terminal_time_s = float(sim.time())
 	var candidate: Dictionary = sim.prepare_reset_frame(frame, input)
 	if not candidate.ok:
 		load_error = "multirotor reset refused: " + str(candidate.message)
@@ -434,18 +456,32 @@ func _publish_result(result: Dictionary) -> void:
 	var record: Dictionary = result.duplicate(true)
 	record.session = {data_sha256 = source_sha256, rates = str(plant.config.rates.identity), controller = str(plant.config.identity),
 		collision_identity = collision_identity(), field_id = str(_field.get("id", ""))}
-	record.terminal_tick = int(sim.tick)
+	record.terminal_tick = int(result.get("terminal_tick", sim.tick))
 	record.saved = false
-	# A file identity that stays unique across pad resets (which restart the attempt counter) and across sessions.
+	# Diagnostic order inside this session; the file identity is publication_id.
 	_result_sequence += 1
 	record.sequence = _result_sequence
 	record.created_utc = Time.get_datetime_string_from_system(true)
+	# Audit A12: a stable, globally unique publication identity, kept by every retry ("" when generation failed:
+	# save_results() tries again and then keeps the id on this pending record).
+	record.publication_id = _new_publication_id()
 	results.append(record)
 	race_result.emit(record.duplicate(true))
 
 
-## DR-26: write every pending terminal record as one JSON file (complete temporary file, then a rename in the same
-## directory). A record leaves the outbox only after its file is confirmed; a failure keeps it for a later retry.
+func _new_publication_id() -> String:
+	if publication_id_source.is_valid():
+		return str(publication_id_source.call())
+	var bytes: PackedByteArray = Crypto.new().generate_random_bytes(16)
+	return bytes.hex_encode() if bytes.size() == 16 else ""
+
+
+## DR-26: write every pending terminal record as its own JSON file. A record leaves the outbox only after its file is
+## confirmed; a failure keeps it for a later retry. Audit A12/A13: the file name carries the record's stable
+## publication id, and a result file is never replaced: a complete, read-back temporary file is renamed onto a name
+## that does not exist yet (so no earlier file can be lost on a failed rename, also where the engine removes the
+## target before moving), and an existing file with the same bytes is the idempotent success of a retry while one
+## with other bytes is a conflict that keeps the record pending. No fsync: not a power-loss guarantee.
 ## Returns {saved, failed, errors, paths}. Accepted physics is never touched.
 func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 	var report := {saved = 0, failed = 0, errors = PackedStringArray(), paths = PackedStringArray()}
@@ -458,33 +494,51 @@ func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 		return report
 	var kept: Array[Dictionary] = []
 	for record: Dictionary in results:
-		var name := "race-%s-%s-n%03d.json" % [str(record.get("track_id", "track")).validate_filename(),
-			str(record.get("created_utc", "")).replace(":", "").validate_filename(), int(record.get("sequence", 0))]
-		var target := directory.path_join(name)
-		var temporary := target + ".tmp"
-		var written := false
-		var file := FileAccess.open(temporary, FileAccess.WRITE)
-		if file != null:
+		if str(record.get("publication_id", "")).is_empty():
+			record.publication_id = _new_publication_id() # kept on the pending record from now on
+		var id := str(record.get("publication_id", ""))
+		var target := directory.path_join("race-%s-%s-%s.json" % [str(record.get("track_id", "track")).validate_filename(),
+			str(record.get("created_utc", "")).replace(":", "").validate_filename(), id.validate_filename()])
+		var failure := ""
+		if id.is_empty() or id != id.validate_filename():
+			failure = "no valid publication id"
+		else:
 			var stored: Dictionary = record.duplicate(true)
 			stored.saved = true
-			file.store_string(JSON.stringify(stored, "\t", true) + "\n")
-			file.flush()
-			var write_error: Error = file.get_error()
-			file.close()
-			if write_error == OK:
-				# Idempotent: a record keeps its name, so a retry replaces its own earlier file.
-				if FileAccess.file_exists(target):
-					DirAccess.remove_absolute(target)
-				written = DirAccess.rename_absolute(temporary, target) == OK
-		if written:
+			failure = _publish_new_file(target, JSON.stringify(stored, "\t", true) + "\n")
+		if failure.is_empty():
 			report.saved += 1
 			report.paths.append(target)
 		else:
 			report.failed += 1
-			report.errors.append("could not write %s" % target)
+			report.errors.append("could not write %s: %s" % [target, failure])
 			kept.append(record)
 	results = kept
 	return report
+
+
+## Publish a result file without ever replacing another one. "" when the file now holds exactly `text` (written now,
+## or already identical: the retry of the same record); otherwise the reason.
+static func _publish_new_file(target: String, text: String) -> String:
+	var expected := text.to_utf8_buffer()
+	if FileAccess.file_exists(target):
+		return "" if FileAccess.get_file_as_bytes(target) == expected else "a different result already uses this name"
+	var temporary := target + ".tmp"
+	var file := FileAccess.open(temporary, FileAccess.WRITE)
+	if file == null:
+		return "cannot open %s (%s)" % [temporary, error_string(FileAccess.get_open_error())]
+	file.store_buffer(expected)
+	file.flush()
+	var write_error: Error = file.get_error()
+	file.close()
+	if write_error != OK or FileAccess.get_file_as_bytes(temporary) != expected:
+		DirAccess.remove_absolute(temporary)
+		return "the temporary file was not written completely"
+	var renamed: Error = DirAccess.rename_absolute(temporary, target)
+	if renamed != OK:
+		DirAccess.remove_absolute(temporary)
+		return "rename failed (%s)" % error_string(renamed)
+	return "" if FileAccess.get_file_as_bytes(target) == expected else "the file differs after publication"
 
 
 ## Drop every pending record without saving (an explicit pilot choice, never automatic).
@@ -560,6 +614,8 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 					crashed.emit(str(crash.reason))
 			"pack_depleted":
 				depleted.emit()
+			"impact", "prop_damage", "scrape":
+				impact.emit(event.duplicate(true))
 		if race != null and kind in RACE_EVENT_TYPES:
 			race_event.emit(event.duplicate(true))
 			if kind == "race_finish" or kind == "race_abort":
@@ -597,8 +653,11 @@ func set_collision_world(world: Dictionary) -> bool:
 	_collision_world = world.duplicate(true)
 	if prepared:
 		var gate_frames: Array = _frame_proxies(course.get("frames", []))
-		plant.obstacle = Callable() if _collision_world.is_empty() and gate_frames.is_empty() \
-			else _obstacle_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		var empty: bool = _collision_world.is_empty() and gate_frames.is_empty()
+		plant.obstacle = Callable() if empty else _obstacle_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		# The class query follows the same world (the graded law reads terminal speed, friction and material from it).
+		plant.obstacle_class = Callable() if empty \
+			else _obstacle_class_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
 	return true
 
 
@@ -627,6 +686,29 @@ static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> C
 			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
 				nearest = minf(nearest, _clearance(proxy, north, east, down))
 		return nearest
+
+
+## DR-19c: obstacle_class(north, east, down) -> the response class of the nearest proxy within `reach` (gate frames:
+## "gate_frame"), "" when none; the same pure index and candidates as _obstacle_query.
+static func _obstacle_class_query(world: Dictionary, frames: Array, reach: float) -> Callable:
+	var index: Dictionary = obstacle_index(world, reach)
+	return func(north: float, east: float, down: float) -> String:
+		var nearest := reach
+		var kind := ""
+		if not index.is_empty() and is_finite(north) and is_finite(east) and is_finite(down):
+			for proxy: Dictionary in obstacle_candidates(index, north, east):
+				if CollisionWorld._aabb_sphere_overlap(proxy, north, east, down, reach):
+					var clearance := _clearance(proxy, north, east, down)
+					if clearance < nearest:
+						nearest = clearance
+						kind = str(proxy.get("response_class", ""))
+		for proxy: Dictionary in frames:
+			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
+				var clearance := _clearance(proxy, north, east, down)
+				if clearance < nearest:
+					nearest = clearance
+					kind = "gate_frame"
+		return kind
 
 
 ## DR-22/R1 terrain law of the plant's contact, impact and substep queries: the field surface linearized inside

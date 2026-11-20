@@ -18,6 +18,15 @@ FUNCTIONS = (
     "sinh", "cosh", "tanh", "asinh", "acosh", "atanh",
 )
 CALL = re.compile(r"(?<![\w.])(" + "|".join(sorted(FUNCTIONS, key=len, reverse=True)) + r")(?=\s*\()")
+# Exact powers of two are exempt (H6 amendment, 2026-11-18): pow(2.0, n) with an integer literal n in
+# the normal binary64 range is an exactly representable constant, as math3d.MIN_NORMAL_FLOAT64 uses.
+EXACT_POWER_OF_TWO = re.compile(r"pow\s*\(\s*2(?:\.0*)?\s*,\s*(-?\d+)(?:\.0*)?\s*\)")
+NORMAL_EXPONENTS = range(-1022, 1024)
+
+
+def _exact_power_of_two(code: str, start: int) -> bool:
+    match = EXACT_POWER_OF_TWO.match(code, start)
+    return match is not None and int(match.group(1)) in NORMAL_EXPONENTS
 
 
 def _mask_strings_and_comments(source: str) -> str:
@@ -66,6 +75,8 @@ def scan(root: Path) -> list[str]:
                 continue  # This file is the sole implementation boundary for the built-ins.
             code = _mask_strings_and_comments(path.read_text(encoding="utf-8"))
             for match in CALL.finditer(code):
+                if _exact_power_of_two(code, match.start()):
+                    continue
                 line = code.count("\n", 0, match.start()) + 1
                 findings.append(f"{path.relative_to(root).as_posix()}:{line}: bare {match.group(1)}( call")
     return findings
@@ -80,11 +91,22 @@ def self_test() -> bool:
         (root / "physics" / "injected.gd").write_text(
             "extends RefCounted\nstatic func bad() -> float:\n\treturn sin(0.25)\n", encoding="utf-8"
         )
+        # Only constant normal powers of two are exempt; any other pow( remains a finding.
+        (root / "sim" / "powers.gd").write_text(
+            "extends RefCounted\nstatic func powers(x: float) -> Array:\n"
+            "\treturn [pow(2.0, -1022.0), pow( 2 , 1023 ),\n"
+            "\t\tpow(2.0, x),\n\t\tpow(2.0, 0.5),\n\t\tpow(3.0, 2.0),\n\t\tpow(2.0, -1023.0),\n"
+            "\t\tpow(2.0, -1022.0 + x),\n\t\tpow(2.0, 1024),\n\t\tpow(2.0, 1e3),\n"
+            "\t\tpow(2.0,\n\t\t\t5)]  # pow(0.5, x) in a comment is ignored\n",
+            encoding="utf-8",
+        )
         run = subprocess.run(
             [sys.executable, str(Path(__file__).resolve()), "--root", str(root)],
             text=True, capture_output=True, check=False,
         )
-        if run.returncode == 0 or "physics/injected.gd:3: bare sin( call" not in run.stdout:
+        refused = {line for line in run.stdout.splitlines() if line.startswith("sim/powers.gd:")}
+        expected = {f"sim/powers.gd:{line}: bare pow( call" for line in range(4, 11)}
+        if run.returncode == 0 or "physics/injected.gd:3: bare sin( call" not in run.stdout or refused != expected:
             print("transcendental guard self-test failed", file=sys.stderr)
             print(run.stdout, end="", file=sys.stderr)
             print(run.stderr, end="", file=sys.stderr)

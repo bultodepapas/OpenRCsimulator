@@ -13,6 +13,12 @@ const OWNER := "analytic-fixed-plane-sourcefree-owner-v1"
 const SOLVER := "bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2"
 
 
+## AC-12 (793f76ccc): the kernel derivative takes an optional piece origin, so its argument count is 3.
+## AircraftGroundStep requires exactly two arguments; the policy passes the zero-origin (whole-tick) form.
+static func _two_argument(derivative: Callable) -> Callable:
+	return func(values: PackedFloat64Array, at: float) -> Variant: return derivative.call(values, at)
+
+
 func _options() -> Dictionary:
 	return {operator_law = NewStep.INTEGRATED_CAPACITY_LAW}
 
@@ -311,7 +317,7 @@ func _kernel() -> void:
 	)
 	sim.model.step_policy = func(s, t, h, f, k1):
 		return NewStep.advance(
-			s, t, h, f, k1, _capacity_evaluate, _capacity_certificate, _options()
+			s, t, h, _two_argument(f), k1, _capacity_evaluate, _capacity_certificate, _options()
 		)
 	_check("new owner identity/reset committed before use", sim.reset(initial.slice(0, RB.SIZE)))
 	for i in 5:
@@ -341,7 +347,7 @@ func _kernel() -> void:
 		point.interval_capacity.row_ids[1] = point.interval_capacity.row_ids[0]
 		return point
 	sim.model.step_policy = func(s, t, h, f, k1):
-		return NewStep.advance(s, t, h, f, k1, bad, _capacity_certificate, _options())
+		return NewStep.advance(s, t, h, _two_argument(f), k1, bad, _capacity_certificate, _options())
 	sim.step()
 	_check(
 		"bad packet rolls back all frame channels and events",

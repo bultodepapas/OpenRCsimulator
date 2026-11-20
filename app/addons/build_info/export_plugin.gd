@@ -5,6 +5,7 @@
 extends EditorExportPlugin
 
 const FORMAT := "openrc-build v1"
+const TelemetryRelease := preload("res://telemetry/telemetry_release.gd")
 
 
 func _get_name() -> String:
@@ -24,3 +25,23 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 		commit_date = OS.get_environment("OPENRC_BUILD_DATE"),
 	}
 	add_file("res://build_info.json", (JSON.stringify(info, "  ") + "\n").to_utf8_buffer(), false)
+	_add_telemetry_release()
+
+
+## TELEM-02: the receiving service's HTTPS endpoint, operator name and contact let an approved release offer
+## telemetry (telemetry/telemetry_release.gd decides at run time). Without all three nothing is packed and the build
+## never offers it; a partial or invalid set is reported and also packs nothing.
+func _add_telemetry_release() -> void:
+	var endpoint := OS.get_environment("OPENRC_TELEMETRY_ENDPOINT").strip_edges()
+	var operator := OS.get_environment("OPENRC_TELEMETRY_OPERATOR").strip_edges()
+	var contact := OS.get_environment("OPENRC_TELEMETRY_CONTACT").strip_edges()
+	if endpoint == "" and operator == "" and contact == "":
+		return
+	# The same rules the game applies at run time, so a packed configuration is one the release can actually use
+	# (export.sh refuses an invalid set before exporting; this guards exports started another way).
+	if not TelemetryRelease.valid_endpoint(endpoint, false) or not TelemetryRelease.valid_text(operator) \
+			or not TelemetryRelease.valid_text(contact):
+		push_error("telemetry: OPENRC_TELEMETRY_ENDPOINT (https://host/path, not loopback, no query), _OPERATOR and _CONTACT must all be set; this build will not offer telemetry")
+		return
+	var release := {format = "openrc-telemetry-release v1", endpoint = endpoint, operator = operator, contact = contact}
+	add_file("res://telemetry_release.json", (JSON.stringify(release, "  ") + "\n").to_utf8_buffer(), false)

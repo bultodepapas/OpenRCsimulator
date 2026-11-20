@@ -468,6 +468,9 @@ var _shadow: MeshInstance3D
 ## [V] cycles; Gate L decides the default.
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
+## SA-02/SA-04: the last terrain receiving point, reused while the query is skipped so the footprint (and the
+## native handoff measured at it) stays on the terrain instead of jumping to the flat plane.
+var _shadow_receiving := {y = NAN, fit = 1.0}
 var _shadow_cli_override := false
 var _shadow_preference := ""
 var _shadow_settings_revision := -1
@@ -508,6 +511,7 @@ var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 const ProfileSmoke := preload("res://render/smoke/smoke_system.gd")
 const StockSmoke := preload("res://render/smoke/stock_profile.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 var _profile_smoke: Node3D
 var _stock_smoke_profile := false
@@ -1033,7 +1037,7 @@ func _prepare_flight() -> void:
 		return
 	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
 		_sync_shadow_preference()
-		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+		_bind_aircraft_shadow()
 	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
 	# --rates selects the high/low starting profile; radios retain transmitter rates.
 	var rates := str(args.get("rates", "sport"))
@@ -1189,6 +1193,7 @@ func _prepare_flight() -> void:
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
 	session.reset()
+	_sync_radio_flap_detents()
 	GroundGear.attach(_airplane, session)
 	TimberVisualMotion.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
@@ -1310,6 +1315,7 @@ func _prepare_flight() -> void:
 		crash_context.wind_provider = Callable(self, "_render_wind")
 		crash_context.shadow = _shadow
 		crash_context.sun = _sun
+		crash_context.shadow_strength = Callable(self, "_celestial_shadow_strength")
 		crash_context.propeller_blur = get_node_or_null("PropellerBlur") as Node3D
 		if _crash_director.configure(crash_context, str(args.get("soundscape", "on")) != "off"):
 			session.crash_auto_restart = false
@@ -1487,6 +1493,7 @@ func _process(delta: float) -> void:
 		_clear_wheel_brake()
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
+	_sync_radio_flap_detents()
 	_advance_wing_fold(dt)
 	_advance_mechanisms(dt)
 	if _frametimes_active:
@@ -1605,7 +1612,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 		return true
 	_extent = Shadow.model_extent(_airplane.root)
 	_sync_shadow_preference()
-	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+	_bind_aircraft_shadow()
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
 	return true
@@ -1964,7 +1971,9 @@ func controller_action(action: String) -> bool:
 		"rates_toggle":
 			if session.toggle_rate_profile():
 				_note = tr(session.rate_profile_label())
-			elif session.radio.connected and session.radio.profile.get("kind", "radio") == "radio":
+			elif session.rate_profile_available() and session.radio.has_rate_switch():
+				_note = tr("Dual rates follow the radio's rate switch.")
+			elif session.radio.connected and ControllerProfile.rates_owner(session.radio.profile) == "transmitter":
 				_note = tr("The radio sets its own rates.")
 			else:
 				_note = tr("This aircraft has no rate profile.")
@@ -1978,6 +1987,18 @@ func controller_action(action: String) -> bool:
 			else: pause_requested.emit()
 		_: return false
 	return true
+
+## D6-ETX-04: a radio flaps switch with `detents: "aircraft"` snaps to the flown aircraft's detents (the same list as
+## the keyboard). Pushed when the aircraft (or its flap data) changes; an aircraft without flaps clears it.
+func _sync_radio_flap_detents() -> void:
+	if session == null or session.radio == null:
+		return
+	var detents: Array[float] = []
+	if session.aircraft.get("ok", false) and session.flaps_available():
+		detents = _flap_detents()
+	if session.radio.flap_detents() != detents:
+		session.radio.set_flap_detents(detents)
+
 
 ## Keyboard detents follow the active model's full-down angle and recommended takeoff fraction.
 func _flap_detents() -> Array[float]:
@@ -2319,6 +2340,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					_overlays.toggle_developer()
 				else:
 					_show_perf = not _show_perf
+			KEY_F1:
+				# HUD-ETX-02: show or hide the control guide (it lists every stick, switch and key for this aircraft).
+				if _overlays != null:
+					_overlays.set_overlay_visible("controls", not _overlays.is_overlay_visible("controls"))
 			KEY_F2:
 				if _overlays != null:
 					_overlays.cycle_preset()
@@ -2447,8 +2472,27 @@ func _overlay_snapshot() -> Dictionary:
 			smoke = "on" if _smoke_requested_for_presentation() else "off",
 			flaps = session.flap_state(),
 			rates = session.rate_profile_label(),
+			waiting = _aux_waiting_for_off(),
 		}
 	return snap
+
+
+## HUD-ETX-03: bound radio switches that have no command yet because they were not seen at OFF since the last
+## connection, pause or focus boundary (gear and flaps keep their last target meanwhile; smoke stays off).
+func _aux_waiting_for_off() -> Dictionary:
+	var waiting := {}
+	if session == null or not session.radio.connected or session.sim.paused:
+		return waiting
+	var aux: Variant = session.radio.profile.get("aux", {})
+	if not aux is Dictionary:
+		return waiting
+	for channel: String in ["gear", "flaps", "smoke", "rates"]:
+		if channel == "rates" and not (session.rate_profile_available() and session.radio.has_rate_switch()):
+			continue # an inert rate switch (radio-owned rates) never waits for OFF
+		var binding: Variant = (aux as Dictionary).get(channel, {})
+		if binding is Dictionary and not (binding as Dictionary).is_empty():
+			waiting[channel] = not session.radio.auxiliary_request_valid(channel)
+	return waiting
 
 
 func _smoke_requested_for_presentation() -> bool:
@@ -3479,7 +3523,7 @@ func _build_world() -> bool:
 	_shadow = Shadow.create(self, _shadow_mode)
 	# Bind the aircraft silhouette before fitting luminous geometry.
 	if not startup_checkpoint.is_valid():
-		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+		_bind_aircraft_shadow()
 	# Legacy profiles keep the established lazy kit and imported-material behavior.
 	var lighting_profile: Dictionary = workshop_trial.get("presentation_profile", {}).get("lighting", LightingProfile.defaults())
 	if lighting_profile.get("selection", "inherit") != "inherit":
@@ -3575,16 +3619,43 @@ func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
 	return ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg())
 
 
+## SA-03: tag the nodes this aircraft moves, then bind, so the projected cue follows hinges, folds, mechanisms
+## and gear retraction instead of keeping the bind-time pose.
+func _bind_aircraft_shadow() -> void:
+	Shadow.Projected.tag_articulation(_airplane)
+	_shadow_receiving = {y = NAN, fit = 1.0}
+	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
+
+
+## SA-20: the celestial direct-shadow strength the aircraft cue uses, for the wreck's planar shadows. Read-only.
+func _celestial_shadow_strength() -> float:
+	return Atmosphere.shadow_strength(_lighting) if lighting_config.get("mode", "legacy") != "legacy" \
+		else Atmosphere.shadow_strength()
+
+
 ## Apply the current flight-local cue to the presentation carrier.
 func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vector3:
 	_sync_shadow_preference()
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
-	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
-		if _shadow_mode == "sun" else 1.0
+	# SA-09: the Vertical aid keeps full strength (Shadow.cue_strength), as in Home.
+	var celestial: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()
+	var strength := Shadow.cue_strength(_shadow_mode, celestial)
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction, strength, _shadow_mode)
-	return direction
+	# SA-06: fixed and flowing time both project the Sun cue along the bounded planar direction, as the field cues do.
+	var cue_direction: Vector3 = Atmosphere.shadow_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	# SA-04: the cue lands on the session's own terrain (read-only) and fades over ground that is far from flat.
+	# Query the terrain only for a cue that can draw (not in Auto/Native-only, Off or at night).
+	# SA-02: nor while a casting native sun owns the shadow here (last frame's footprint decides).
+	var drawn := _shadow.visible and Atmosphere.ShadowSettings.projected_enabled() and session != null \
+		and (_shadow_mode == "vertical" or Shadow.native_handoff(_shadow) > 0.0)
+	if drawn:
+		_shadow_receiving = Shadow.receiving_ground(pose.pos, Vector3.UP if _shadow_mode == "vertical" else cue_direction,
+			Callable(self, "_ground_height"), maxf(_extent.x, _extent.y))
+	var receiving := _shadow_receiving
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, cue_direction, strength * float(receiving.fit),
+		_shadow_mode, float(receiving.y))
+	# CAM-14 keeps its existing light input: the raw sun in fixed time, the bounded direction in flowing time.
+	return Atmosphere.sun_direction(_lighting) if snapshot_lighting else cue_direction
 
 
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_camera_cut := false) -> void:
@@ -3859,7 +3930,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 				plants = meadow.get_meta("plants", 0) if meadow != null else 0,
 				source_triangles = meadow.get_meta("source_triangles", 0) if meadow != null else 0},
 		},
-		shadows = Atmosphere.ShadowSettings.describe(),
+		shadows = Atmosphere.ShadowSettings.describe().merged({applied = Atmosphere.ShadowSettings.applied_global(),
+			lights = Atmosphere.ShadowSettings.light_receipts()}), # SA-13/14: configured, submitted and per-light state
 		backend = RenderingServer.get_current_rendering_method(),
 		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,

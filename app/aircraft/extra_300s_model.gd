@@ -350,8 +350,12 @@ static func _cowl_face(nose: Array, root: Node3D) -> void:
 					q.append(center + Vector3(direction.x * radius.x, direction.y * radius.y, 0) * (1.08 - 0.08 * sin(angle)) + Vector3(0, 0, 0.0015 * (1.0 - cos(angle))))
 					# Gradient normal of the elliptical fillet, in metres.
 					n.append(Vector3(-direction.x * sin(angle) / radius.x, -direction.y * sin(angle) / radius.y, -0.08 * cos(angle) / 0.0015).normalized())
-				_tri(lips, q[0], q[1], q[2], n[0], n[1], n[2], n[0] + n[2])
-				_tri(lips, q[0], q[2], q[3], n[0], n[2], n[3], n[0] + n[2])
+				# The face's (y, z) UVs: the plain COWL_LIP finish ignores them, but custom paint keeps every
+				# Extra paint surface's original UVs beside its six-view projection (ProceduralSkin).
+				_tri(lips, q[0], q[1], q[2], n[0], n[1], n[2], n[0] + n[2],
+					[Vector2(q[0].y, q[0].z), Vector2(q[1].y, q[1].z), Vector2(q[2].y, q[2].z)])
+				_tri(lips, q[0], q[2], q[3], n[0], n[2], n[3], n[0] + n[2],
+					[Vector2(q[0].y, q[0].z), Vector2(q[2].y, q[2].z), Vector2(q[3].y, q[3].z)])
 			d = center + (d - center) / 1.08 + Vector3(0, 0, 0.0015)
 			c = center + (c - center) / 1.08 + Vector3(0, 0, 0.0015)
 			_tri(ducts, d, c, throat[j], ni, nj, nj, ni + nj)

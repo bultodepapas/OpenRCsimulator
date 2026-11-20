@@ -469,6 +469,21 @@ class ManualLoadingInstallation(unittest.TestCase):
         self.assertEqual(self.registry.read_bytes(), original)
         self.assertEqual(list(self.registry.parent.glob(".nk3-extension-list-*")), [])
 
+    def test_relocated_cache_without_our_entry_is_read_but_never_written(self):
+        external = self.root / "relocated-cache"
+        external.mkdir()
+        content = b"res://native/ground_vehicle/openrc_ground_vehicle.gdextension\n"
+        (external / "extension_list.cfg").write_bytes(content)
+        try:
+            (self.app / ".godot").symlink_to(external, target_is_directory=True)
+        except OSError as error:
+            self.skipTest(f"directory links unavailable: {error}")
+        self.prepare()
+        self.assertEqual((external / "extension_list.cfg").read_bytes(), content)
+        (external / "extension_list.cfg").write_bytes(content + self.own_entry + b"\n")
+        with self.assertRaises(SystemExit):
+            self.prepare()  # removing our entry would write outside the app
+
     def test_refuses_external_destination_and_symlinked_registry(self):
         with self.assertRaises(SystemExit):
             builder.prepare_manual_loading(self.app, self.root / "outside")

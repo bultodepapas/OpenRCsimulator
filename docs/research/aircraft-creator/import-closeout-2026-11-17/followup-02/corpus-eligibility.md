@@ -70,4 +70,4 @@ Use **Extra 330 Red as a translation reference**, because its v6 sections provid
 
 Beginair remains the v5 shared-template counterexample. Preserve B-52/V-22 multiplicity and the v6 inferred-unit cases in negative tests. The synthetic Stik battery record and estimated Creator template remain useful software fixtures; neither is independent physical evidence that this source corpus is compatible. No battery, propeller curve, reduced mass or omitted gear may be invented to force a pass.
 
-The [implementation guide](../../../../plans/aircraft-import-implementation.md#2-turn-source-selection-into-a-decision) specifies the per-property disposition table. Complete that table for one candidate; this lexical ledger does not close Phase 0A by itself.
+The [implementation guide](../implementation-guide.md#2-turn-source-selection-into-a-decision) specifies the per-property disposition table. Complete that table for one candidate; this lexical ledger does not close Phase 0A by itself.
