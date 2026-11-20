@@ -14123,3 +14123,6 @@ msgstr "Cerniera «%s»: non è stato possibile leggere il suo marcatore di coor
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s parti usano la suddivisione AC3D. Viene mostrata la loro forma di controllo non levigata."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Manca la texture %s; è stato usato il file omonimo %s."

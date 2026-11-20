@@ -71,6 +71,7 @@ func _catalogs() -> void:
 		"%s coordinate markers could not be read. They were hidden; bind their moving parts manually.",
 		"Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts.",
 		"%s parts use AC3D subdivision. Their unsmoothed control shape is shown.",
+		"Texture %s is missing; the same-named %s was used.",
 		"Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit.",
 		"This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference.",
 		InstallationPanel.TITLE,InstallationPanel.PROPOSAL,InstallationPanel.RETAINED,InstallationPanel.REVIEW,

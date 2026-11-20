@@ -15,6 +15,11 @@ const MAX_POLYGON_WORK := 4000000
 ## A few self-intersecting slivers are omitted and reported; more indicates a damaged model.
 const MAX_SELF_INTERSECTING := 16
 const SELF_INTERSECTING_NOTE := "%s self-intersecting surfaces were omitted."
+const IMAGE_EXTENSIONS := ["png", "jpg", "jpeg", "bmp", "gif"]
+const SUBSTITUTED_NOTE := "Texture %s is missing; the same-named %s was used."
+## Largest float32 vertex rounding accepted, relative to the part's own size (0.1 mm on a 1 m part).
+## RN Buccaneer: a 14.5 mm aerial 5 m from its origin rounds by 1.6e-5 of its size, invisibly.
+const RENDER_PRECISION := 1.0e-4
 ## Doubled triangle area below extent² × this is invisible (< ~0.03 mm square on a 1 m part).
 const NEGLIGIBLE_AREA := 1.0e-9
 const UNSUBDIVIDED_NOTE := "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
@@ -269,7 +274,7 @@ static func _motion_notes(motion: Variant) -> Array:
 func _mesh(node: Dictionary) -> Array:
 	# Point/line-only helpers (e.g. COORD_* markers) render nothing; their float64 evidence is
 	# retained separately, so render precision does not apply to them.
-	if not node.surfaces.any(func(face: Dictionary) -> bool: return (int(face.flags) & 15) == 0 and face.refs.size() >= 3):
+	if not node.surfaces.any(func(face: Dictionary) -> bool: return (int(face.flags) & 15) == 0 and _corners(node, face) >= 3):
 		# Polygons with fewer than three corners render nothing either (counted as zero-area).
 		for face: Dictionary in node.surfaces:
 			if (int(face.flags) & 15) == 0:
@@ -466,8 +471,22 @@ func _material(index: int, texture: String, double_sided: bool) -> int:
 func _texture(name: String) -> int:
 	var resolved := _package.archive().resolve(_model.root, "data/" + name)
 	if not resolved.ok:
-		_error = resolved
-		return -1
+		# Repaints sometimes ship the same image under another extension (SU-31 Matador: .bmp
+		# referenced, .jpg present). Use it only when exactly one same-named image exists.
+		var alternatives: Array = []
+		for extension: String in IMAGE_EXTENSIONS:
+			var candidate := name.get_basename() + "." + extension
+			if candidate.to_lower() == name.to_lower():
+				continue
+			var found := _package.archive().resolve(_model.root, "data/" + candidate)
+			if found.ok:
+				alternatives.append(found)
+		if alternatives.size() != 1:
+			_error = resolved
+			return -1
+		resolved = alternatives[0]
+		_texture_notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, SUBSTITUTED_NOTE, "source", "import",
+			[name.get_file(), str(resolved.value.name).get_file()], R.SEVERITY_WARNING))
 	var member: String = resolved.value.name
 	if _textures.has(member):
 		return _textures[member]
@@ -652,6 +671,15 @@ func _cancelled() -> bool:
 		_error = R.fail(R.SOURCE_INVALID, "The import was cancelled.", "source", "import")
 	return not _error.is_empty()
 
+## Distinct corner positions of a face (a 4-reference face over two points renders nothing).
+static func _corners(node: Dictionary, face: Dictionary) -> int:
+	var unique := {}
+	for ref: Dictionary in face.refs:
+		unique[node.vertices[ref.vertex]] = true
+		if unique.size() >= 3:
+			break
+	return unique.size()
+
 ## Largest axis-aligned extent of a node's local vertices (0 when empty).
 static func _extent(node: Dictionary) -> float:
 	if node.vertices.is_empty():
@@ -681,7 +709,7 @@ func _precision_ok(node: Dictionary) -> bool:
 	for point: Array in node.vertices:
 		for axis: int in 3:
 			scratch.encode_float(0, point[axis])
-			if absf(scratch.decode_float(0)-float(point[axis])) > extent * 0.00001:
+			if absf(scratch.decode_float(0)-float(point[axis])) > extent * RENDER_PRECISION:
 				_error = R.fail(R.SOURCE_UNSUPPORTED, "Recenter or rescale this model to preserve its detail at render precision.", "source", "import")
 				return false
 	return true

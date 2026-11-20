@@ -14268,3 +14268,6 @@ msgstr "Charnière « %s » : son repère de coordonnées n’a pas pu être lu.
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s pièces utilisent la subdivision AC3D. Leur forme de contrôle non lissée est affichée."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "La texture %s est manquante ; le fichier homonyme %s a été utilisé."

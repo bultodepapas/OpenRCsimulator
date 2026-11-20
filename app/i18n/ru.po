@@ -14097,3 +14097,6 @@ msgstr "Шарнир «%s»: не удалось прочитать его ма�
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "Частей с подразделением AC3D: %s. Показана их несглаженная контрольная форма."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Текстура %s отсутствует; использован файл с тем же именем %s."

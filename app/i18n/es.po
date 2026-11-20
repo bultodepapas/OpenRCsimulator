@@ -12886,3 +12886,6 @@ msgstr "Bisagra «%s»: no se pudo leer su marcador de coordenadas. Vincula esta
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s piezas usan subdivisión de AC3D. Se muestra su forma de control sin suavizar."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Falta la textura %s; se usó %s, que tiene el mismo nombre."

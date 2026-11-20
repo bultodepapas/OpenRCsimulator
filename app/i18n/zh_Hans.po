@@ -13296,3 +13296,6 @@ msgstr "铰链“%s”：无法读取其坐标标记。请在活动部件中手�
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "有 %s 个部件使用 AC3D 细分。显示的是其未平滑的控制形状。"
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "缺少纹理 %s；已使用同名的 %s。"

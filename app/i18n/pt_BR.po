@@ -14135,3 +14135,6 @@ msgstr "Dobradiça «%s»: não foi possível ler seu marcador de coordenadas. V
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s peças usam subdivisão do AC3D. A forma de controle sem suavização é exibida."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "A textura %s está ausente; foi usado o arquivo de mesmo nome %s."

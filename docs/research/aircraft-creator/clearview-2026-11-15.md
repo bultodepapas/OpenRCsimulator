@@ -381,3 +381,31 @@ Verification: each suite below completed with zero failures and no `SCRIPT ERROR
 Language, trial, flow, import and bytes also passed.
 
 Website: `build_locales.py --check`, seven locale tests and eight download tests passed. Rendered browser layout was not reviewed. This establishes conversion coverage on this corpus and parity with the existing experimental Creator gates. It does not establish physical realism, packaged-target behaviour, or saved-aircraft flight.
+### Owner download corpus (AC-CV, 2026-11-19)
+
+The owner's local download folder held 123 ZIPs. Of these, 59 contain a ClearView `params.txt`. After SHA-256 deduplication, 49 are new archives with 172 model roots. They are kept outside Git. Before this round the importer admitted 105 roots. Every in-scope airplane refusal had a concrete cause:
+
+| Cause | Real models | Change |
+| --- | --- | --- |
+| Unreadable `.XYZObject` marker: extra vertices, or axis lengths within the 10% separation rule (0.063/0.0665/0.0758) | 18 airplanes, including Avro Lancaster, Eflite P-47, Cap 232, Edge 540, SU-26/31, IAF Kfir and RN Buccaneer | Marker hidden and recorded as `unreadable_frames`. Its hinge is unresolved with reason `unreadable_render_frame`, and the player binds it manually. A marker with children, or more than 64 vertices, still refuses |
+| AC3D `subdiv` | GP Cap 232, Twist 3D 40, Hawker Hunter (plus 9 helicopters) | Control shape shown unsmoothed with a warning; receipt `unsubdivided_parts` |
+| Adobe APP14 flags `0x8000`/`0xC000` | Mig-15, Parkzone Vapor, Eflite P-47 | Encoder-hint flags ignored; only transform 0/1 is accepted |
+| Collinear triangle whose float64 cross product is about 1e-20 (prints as `-0.0`) | DR 107, two MC Cap 580 packages | Array equality distinguished `-0.0`, so zero tests are now numeric. Collapsing ears with doubled area at or below extent² × 1e-9 are dropped. Visible flips still refuse |
+| Point/line or two-point `COORD_*` helper held to render precision | E-starter, Force One | Nodes with no face of three distinct corners render nothing and are skipped |
+| 14.5 mm aerial 5 m from its node origin; float32 rounding 1.6e-5 of its size | RN Buccaneer | Precision bound changed from 1e-5 to 1e-4 of the part's size. The 1e8-offset and collapsed-edge refusal tests still pass |
+| Exactly cancelling bow-tie | Red Arrows, both variants | Omitted and counted with other self-intersecting surfaces |
+| BMP with 2 trailing alignment bytes, declared in the file size | Sopwith Camel | Up to 3 trailing bytes accepted |
+| `.bmp` referenced, same-named `.jpg` shipped | SU-31 Matador | The single same-named image in the folder is used, with a warning. Two candidates keep the missing-file refusal |
+
+Converting only the changed cases keeps earlier admitted GLBs byte-identical: every new receipt field appears only when nonzero. An empty primitive left after a fully dropped sliver is no longer emitted, because its infinite bounds were refused by GLB admission.
+
+**Result: 148 of 172 roots admitted; the first corpus stays 25/25.** Remaining refusals are out of v1 scope:
+
+- Helicopter packs in another parameter dialect (16).
+- The Blade mSR helicopter (precision).
+- VTOL and blimp parameter formats: Harrier, VJ-101, XFV-1, Hindenburg.
+- Two landscape packs.
+
+One in-scope airplane remains refused: Wee Jock has 142 meshes, against the Creator-wide 128-mesh limit.
+
+All 28 `test_creator_*` suites passed with zero engine errors. Visual: 71 checks. JPEG: 379. Motion: 225.

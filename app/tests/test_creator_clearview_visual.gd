@@ -118,6 +118,25 @@ func _conversion() -> void:
 	# Real downloads (E-starter, Force One): a 0.1 mm line marker far from the origin renders nothing.
 	var line_marker := "OBJECT poly\nname \"COORD_TWHEEL\"\nnumvert 2\n0.134842 -0.337895 0.00586971\n0.134942 -0.337895 0.00586971\nnumsurf 1\nSURF 0x32\nmat 0\nrefs 2\n0 0 0\n1 0 0\nkids 0\n"
 	check("a point/line-only helper is not held to render precision", _convert(body.replace("kids 1","kids 2") + line_marker).ok)
+	check("a two-corner polygon helper is not held to render precision", _convert(body.replace("kids 1","kids 2") + line_marker.replace("SURF 0x32","SURF 0x30")).ok)
+	var repeated := line_marker.replace("SURF 0x32\nmat 0\nrefs 2\n0 0 0\n1 0 0","SURF 0x20\nmat 0\nrefs 4\n0 0 0\n1 0 0\n0 0 0\n1 0 0")
+	check("a four-reference face over two points (E-starter COORD_TWHEEL) renders nothing", _convert(body.replace("kids 1","kids 2") + repeated).ok)
+	# Real downloads (RN Buccaneer): a 14.5 mm aerial 5 m from its origin rounds invisibly in float32.
+	var aerial := "OBJECT poly\nname \"AerialFwd\"\nnumvert 3\n-4.94334 2.04405 -0.00759996\n-4.92884 2.04405 -0.00759996\n-4.94334 2.04905 -0.00759996\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n"
+	var antenna := _convert(body.replace("kids 1","kids 2") + aerial)
+	if not antenna.ok:
+		printerr("Aerial: ", antenna)
+	check("a small part far from its origin keeps sub-micron float32 rounding", antenna.ok and antenna.value.source.triangle_count() == 2)
+	# Real downloads (SU-31 Matador): the model names a .bmp, the ZIP ships the same image as .png/.jpg.
+	var png_paint := Image.create_from_data(1,1,false,Image.FORMAT_RGBA8,PackedByteArray([255,0,0,255])).save_png_to_buffer()
+	var renamed := _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"paint.bmp\""), png_paint)
+	check("unique same-named texture substitutes a missing reference", renamed.ok
+		and renamed.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Converter.SUBSTITUTED_NOTE and d.arguments == ["paint.bmp","paint.png"]))
+	var params5 := "verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()
+	var twice := Package.inspect_bytes(Fixture._zip_bytes([["Plane/params.txt",params5],
+		["Plane/data/body.ac",body.replace("name \"wing\"", "name \"wing\"\ntexture \"paint.bmp\"").to_ascii_buffer()],
+		["Plane/data/paint.png",png_paint],["Plane/data/paint.gif",PackedByteArray([71,73,70,56,57,97])]]))
+	check("ambiguous same-named textures keep the missing-file refusal", twice.ok and not Converter.convert(twice.value,"Plane").ok)
 	# Real downloads (GP Cap 232, Twist 3D, Hawker Hunter): AC3D subdivision is reported, not refused.
 	var subdivided := _convert(body.replace("name \"wing\"", "name \"wing\"\nsubdiv 2"))
 	check("subdivided part converts with its control shape", subdivided.ok and subdivided.value.source.triangle_count() == 1

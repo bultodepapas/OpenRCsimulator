@@ -13347,3 +13347,6 @@ msgstr "ヒンジ「%s」：座標マーカーを読み取れませんでした�
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s 個のパーツが AC3D のサブディビジョンを使用しています。平滑化前のコントロール形状を表示しています。"
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "テクスチャ %s がありません。同じ名前の %s を使用しました。"

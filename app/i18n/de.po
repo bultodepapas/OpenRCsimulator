@@ -14241,3 +14241,6 @@ msgstr "Gelenk „%s“: Sein Koordinatenmarker konnte nicht gelesen werden. Ver
 
 msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
 msgstr "%s Teile verwenden AC3D-Unterteilung. Ihre ungeglättete Kontrollform wird angezeigt."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Textur %s fehlt; die gleichnamige Datei %s wurde verwendet."
