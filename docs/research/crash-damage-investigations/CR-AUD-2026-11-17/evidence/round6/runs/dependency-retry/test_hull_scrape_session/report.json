@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a7cc74b7-e2bb-4987-9bd6-6badc06867bf",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_hull_scrape_session.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:20:39.647531+00:00",
+  "label": "test_hull_scrape_session",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape Session complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 139,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 8,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 46,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 65,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 84,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 103,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 122,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 141,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 160,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 179,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 199,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 219,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 239,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 259,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 279,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 299,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 319,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 339,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Clover_1.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 359,
+      "message": "Cannot open file 'res://assets/scenery/farm_tractor/tractor.res'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1143)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] create (res://scenery/farm_tractor.gd:26)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 378,
+      "message": "Failed loading resource: res://assets/scenery/farm_tractor/tractor.res.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] create (res://scenery/farm_tractor.gd:26)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 19.437092,
+  "log_bytes": 128460,
+  "log_sha256": "4d81ff0ee8eed9a4d5fe4393663b13abbc86458000068732df3a100340a582bb"
+}

@@ -1,0 +1,42 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://workshop/creator/clearview/params.gd" does not exist.
+          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Params" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:8)
+SCRIPT ERROR: Parse Error: Preload file "res://workshop/creator/clearview/archive.gd" does not exist.
+          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Archive" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "parsed" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:86)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://workshop/creator/source_installation.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://workshop/creator/trial.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://main.gd:0)
+ERROR: Failed to load script "res://main.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ERROR: Aircraft model contract: ["bundled resource is missing"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:79)
+       [1] _build_world (res://main.gd:3458)
+       [2] _prepare_flight (res://main.gd:967)
+       [3] _ready (res://main.gd:582)
+       [4] _default_field_control (res://tests/test_hull_scrape_session.gd:215)
+       [5] _run (res://tests/test_hull_scrape_session.gd:206)
+Aircraft model failed its manifest and scene binding checks: jensen-das-ugly-stik-60
+SCRIPT ERROR: Invalid call. Nonexistent function 'set_physics_process' in base 'Nil'.
+          at: _default_field_control (res://tests/test_hull_scrape_session.gd:216)
+          GDScript backtrace (most recent call first):
+              [0] _default_field_control (res://tests/test_hull_scrape_session.gd:216)
+              [1] _run (res://tests/test_hull_scrape_session.gd:206)
+Hull scrape Session: 46 checks, 0 failed
+Hull scrape Session complete

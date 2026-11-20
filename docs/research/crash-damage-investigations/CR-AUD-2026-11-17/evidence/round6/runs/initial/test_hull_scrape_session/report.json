@@ -1,0 +1,146 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cf1ad18b-5246-4d73-8da9-64a84d951a31",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_hull_scrape_session.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:17:30.761585+00:00",
+  "label": "test_hull_scrape_session",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape Session complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 11,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Preload file \"res://workshop/creator/clearview/params.gd\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:8)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Cannot infer the type of \"Params\" constant because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:8)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Parse Error: Preload file \"res://workshop/creator/clearview/archive.gd\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Parse Error: Cannot infer the type of \"Archive\" constant because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Parse Error: Cannot infer the type of \"parsed\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/clearview/observations.gd:86)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/source_installation.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 15,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://workshop/creator/trial.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://main.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Failed to load script \"res://main.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 26,
+      "message": "Aircraft model contract: [\"bundled resource is missing\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 36,
+      "message": "Invalid call. Nonexistent function 'set_physics_process' in base 'Nil'.",
+      "context": [
+        "          at: _default_field_control (res://tests/test_hull_scrape_session.gd:216)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _default_field_control (res://tests/test_hull_scrape_session.gd:216)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 13.188018,
+  "log_bytes": 3158,
+  "log_sha256": "0ab800cf84fa771b39a7bcfafb97b5ca5d4e46d36e68f9fdf47757e455b2549f"
+}

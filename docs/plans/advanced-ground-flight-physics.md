@@ -1,5 +1,7 @@
 # Advanced ground, takeoff, landing and damage physics masterplan
 
+**19 November 2026 contact-audit coordination:** the [recoverable-contact contract in the crash plan](crash-realism.md#9-recoverable-contact-and-near-misses--19-november-2026) integrates the owner's requested wingtip/prop/water brushes and 300 km/h near-miss cases with this plan's existing GP-07/10 geometry, GP-14 accepted lifecycle, GP-16/17/18 work/damage and GP-19 audio ownership. Its [source-pinned review and probes](../research/crash-damage-investigations/CR-AUD-2026-11-17/nonfatal-contact-review-2026-11-19.md) distinguish new geometric/time/kinematic evidence from deliberate capability policies. This adds acceptance cases and implementation ordering; it does not activate advanced contact, close physical validation, replace accepted scrape audio, or establish a universal millimetre clearance guarantee.
+
 **Status: implementation in progress; bounded physics, lifecycle and audio slices integrated. Stock advanced-contact activation remains gated.** Audit date: **2026-10-25**. Owner: existing **GP ground-physics track**, with SF, AS, aircraft, CR, AUD, AE, UI-FS, input, landscape and performance owners retaining their interfaces. This plan extends GP-00…07; it does not replace their delivered evidence. Execution steps are GP-08…23 (§12). The execution ledger distinguishes delivered slices from the full acceptance gates. Later dated slices supersede earlier scope limits; their original evidence remains unchanged.
 
 | Implemented slice | Evidence and remaining gate |

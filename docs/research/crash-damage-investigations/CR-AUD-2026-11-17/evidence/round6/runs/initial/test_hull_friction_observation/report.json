@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a47b6633-4e80-48e5-a0cb-ed1e131d966f",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_hull_friction_observation.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:17:30.276759+00:00",
+  "label": "test_hull_friction_observation",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape metrics:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.483639,
+  "log_bytes": 112,
+  "log_sha256": "ca96e30f68e272f95062a3473ff938ca0f2863fa1a108491e4a2daa20704bc55"
+}

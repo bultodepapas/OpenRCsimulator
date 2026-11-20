@@ -1,0 +1,82 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   authored lake loaded []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+WATER {"accepted_tick":1,"event":false,"fault":"","gap_m":0.001,"normal_speed_mps":-1.0,"speed_mps":10.0,"synthetic_point":true,"terminal":false}
+ok   water accepted tick commits
+ok   water current classification speed 10.000000 gap 0.00100000
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+CRASH at 10.0 m/s (sink 0.0 m/s, water impact (lake:near_runway:water), normal speed -0.0 m/s) - [R] restart
+WATER {"accepted_tick":1,"event":true,"fault":"","gap_m":0.0,"normal_speed_mps":0.0,"speed_mps":10.0,"synthetic_point":true,"terminal":true}
+ok   water accepted tick commits
+ok   water current classification speed 10.000000 gap 0.00000000
+ok   tangent current event has zero point normal speed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+CRASH at 10.0 m/s (sink 0.0 m/s, water impact (lake:near_runway:water), normal speed -0.0 m/s) - [R] restart
+WATER {"accepted_tick":1,"event":true,"fault":"","gap_m":-0.00001,"normal_speed_mps":0.0,"speed_mps":10.0,"synthetic_point":true,"terminal":true}
+ok   water accepted tick commits
+ok   water current classification speed 10.000000 gap -0.00001000
+ok   tangent current event has zero point normal speed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+WATER {"accepted_tick":1,"event":false,"fault":"","gap_m":0.001,"normal_speed_mps":-1.0,"speed_mps":83.3333333333333,"synthetic_point":true,"terminal":false}
+ok   water accepted tick commits
+ok   water current classification speed 83.333333 gap 0.00100000
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+CRASH at 83.3 m/s (sink 0.0 m/s, water impact (lake:near_runway:water), normal speed -0.0 m/s) - [R] restart
+WATER {"accepted_tick":1,"event":true,"fault":"","gap_m":0.0,"normal_speed_mps":0.0,"speed_mps":83.3333333333333,"synthetic_point":true,"terminal":true}
+ok   water accepted tick commits
+ok   water current classification speed 83.333333 gap 0.00000000
+ok   tangent current event has zero point normal speed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   water fixture installs callback
+ok   water synthetic state resets
+CRASH at 83.3 m/s (sink 0.0 m/s, water impact (lake:near_runway:water), normal speed -0.0 m/s) - [R] restart
+WATER {"accepted_tick":1,"event":true,"fault":"","gap_m":-0.00001,"normal_speed_mps":0.0,"speed_mps":83.3333333333333,"synthetic_point":true,"terminal":true}
+ok   water accepted tick commits
+ok   water current classification speed 83.333333 gap -0.00001000
+ok   tangent current event has zero point normal speed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP {"depth_m":0.00100000000000269,"recorded_velocity_ned":[],"reference_velocity_ned":[10.0,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[10.30521675193,0.0,-0.805336874704],"rpm_aux_injected":299.999,"source_after":true,"source_on_injected":true,"speed_mps":10.0,"struck":false}
+ok   prop current guard classification rpm 299.999 depth 0.00100000 source true
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP STRIKE at 300 rpm, 10.0 m/s: engine stopped
+PROP {"depth_m":0.00100000000000269,"recorded_velocity_ned":[10.0,0.0,0.0],"reference_velocity_ned":[10.0,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[10.30521675193,0.0,-0.805336874704],"rpm_aux_injected":300.0,"source_after":false,"source_on_injected":true,"speed_mps":10.0,"struck":true}
+ok   prop current guard classification rpm 300.000 depth 0.00100000 source true
+ok   prop payload uses reference velocity
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP STRIKE at 5000 rpm, 10.0 m/s: engine stopped
+PROP {"depth_m":0.000001000000002499,"recorded_velocity_ned":[10.0,0.0,0.0],"reference_velocity_ned":[10.0,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[10.30521675193,0.0,-0.805336874704],"rpm_aux_injected":5000.0,"source_after":false,"source_on_injected":true,"speed_mps":10.0,"struck":true}
+ok   prop current guard classification rpm 5000.000 depth 0.00000100 source true
+ok   prop payload uses reference velocity
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP STRIKE at 5000 rpm, 83.3 m/s: engine stopped
+PROP {"depth_m":0.000001000000002499,"recorded_velocity_ned":[83.3333333333333,0.0,0.0],"reference_velocity_ned":[83.3333333333333,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[83.6385500852633,0.0,-0.805336874704],"rpm_aux_injected":5000.0,"source_after":false,"source_on_injected":true,"speed_mps":83.3333333333333,"struck":true}
+ok   prop current guard classification rpm 5000.000 depth 0.00000100 source true
+ok   prop payload uses reference velocity
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP {"depth_m":-0.000999999999999751,"recorded_velocity_ned":[],"reference_velocity_ned":[10.0,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[10.30521675193,0.0,-0.805336874704],"rpm_aux_injected":5000.0,"source_after":true,"source_on_injected":true,"speed_mps":10.0,"struck":false}
+ok   prop current guard classification rpm 5000.000 depth -0.00100000 source true
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prop fixture is isolated and resets
+PROP {"depth_m":0.00100000000000269,"recorded_velocity_ned":[],"reference_velocity_ned":[10.0,0.0,0.0],"rigid_point_velocity_ned_excluding_blade_spin":[10.30521675193,0.0,-0.805336874704],"rpm_aux_injected":5000.0,"source_after":false,"source_on_injected":false,"speed_mps":10.0,"struck":false}
+ok   prop current guard classification rpm 5000.000 depth 0.00100000 source false
+ok   wave starts above point gap and rises across it
+ok   stationary point wave contacts; calm control remains clear
+WAVE {"analytic_interface_normal_closing_mps":0.0471178150172732,"event_time_s":0.0021240234375,"initial_gap_m":0.000099999999999989,"reported_normal_speed_mps":0.0,"reported_velocity_ned":[0.0,0.0,0.0],"terminal":true}
+ok   stationary point reported speed ignores rising-interface rate
+NONFATAL CHARACTERIZATION checks=47 failures=0

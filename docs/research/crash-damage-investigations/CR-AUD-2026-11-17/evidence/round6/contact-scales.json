@@ -1,0 +1,65 @@
+{
+  "basis": "Constant translation, static plane, no body rotation; effective-mass energy is not aircraft-mass severity or strength.",
+  "speed_mps": 83.33333333333333,
+  "tick_s": 0.004166666666666667,
+  "reference_distance_per_tick_m": 0.3472222222222222,
+  "angles": [
+    {
+      "angle_to_static_plane_deg": 0.0,
+      "normal_speed_mps": 0.0,
+      "normal_incident_energy_J_per_kg_effective_mass": 0.0,
+      "normal_travel_per_tick_m": 0.0,
+      "time_to_close_1mm_ms": null
+    },
+    {
+      "angle_to_static_plane_deg": 0.1,
+      "normal_speed_mps": 0.14544403049152574,
+      "normal_incident_energy_J_per_kg_effective_mass": 0.010576983002809934,
+      "normal_travel_per_tick_m": 0.0006060167937146906,
+      "time_to_close_1mm_ms": 6.875497032229623
+    },
+    {
+      "angle_to_static_plane_deg": 0.5,
+      "normal_speed_mps": 0.7272112915311612,
+      "normal_incident_energy_J_per_kg_effective_mass": 0.26441813126520974,
+      "normal_travel_per_tick_m": 0.003030047048046505,
+      "time_to_close_1mm_ms": 1.375116161761564
+    },
+    {
+      "angle_to_static_plane_deg": 1.0,
+      "normal_speed_mps": 1.4543672031069592,
+      "normal_incident_energy_J_per_kg_effective_mass": 1.0575919807365797,
+      "normal_travel_per_tick_m": 0.006059863346278996,
+      "time_to_close_1mm_ms": 0.6875842619826023
+    },
+    {
+      "angle_to_static_plane_deg": 2.0,
+      "normal_speed_mps": 2.9082913918750806,
+      "normal_incident_energy_J_per_kg_effective_mass": 4.229079410027347,
+      "normal_travel_per_tick_m": 0.012117880799479503,
+      "time_to_close_1mm_ms": 0.3438445001741259
+    },
+    {
+      "angle_to_static_plane_deg": 5.0,
+      "normal_speed_mps": 7.262978562304847,
+      "normal_incident_energy_J_per_kg_effective_mass": 26.37542879824989,
+      "normal_travel_per_tick_m": 0.030262410676270193,
+      "time_to_close_1mm_ms": 0.13768455894803827
+    },
+    {
+      "angle_to_static_plane_deg": 90.0,
+      "normal_speed_mps": 83.33333333333333,
+      "normal_incident_energy_J_per_kg_effective_mass": 3472.2222222222217,
+      "normal_travel_per_tick_m": 0.3472222222222222,
+      "time_to_close_1mm_ms": 0.012
+    }
+  ],
+  "illustrative_prop": {
+    "radius_m": 0.15,
+    "basis": "Rotational tip-speed magnitude alone; not a stock prop specification or a nick threshold.",
+    "tip_speed_mps_by_rpm": {
+      "300": 4.71238898038469,
+      "5000": 78.53981633974483
+    }
+  }
+}

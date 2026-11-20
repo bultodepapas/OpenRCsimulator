@@ -1,0 +1,630 @@
+{
+  "format": "openrc-nonfatal-contact-audit-round6-v1",
+  "review_date_local": "2026-11-19",
+  "timezone": "America/Bogota",
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "fixture": "Exact source copies in an isolated component project, not a complete production app or native package. Full-Main resource-dependent attempts are excluded.",
+  "execution_policy": "Checked local runner fallback: no exposed test-pool capability/configuration. Fresh per-run XDG profiles, Dummy audio; engine diagnostics, completion and exit all inspected.",
+  "qualifying_runs": [
+    {
+      "name": "geometry",
+      "kind": "audit-probe",
+      "script_sha256": "e9aa4fa206e51f26240d2819ecc6a37633889f98e28be28e8bb4ebd56f270caf",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/geometry/geometry-gis6d4yi/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/geometry/geometry-gis6d4yi/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/geometry/report.json",
+      "retained_log": "runs/initial/geometry/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 18,
+      "failed_checks": 1,
+      "passed_checks": 17,
+      "classification": "desired-behavior-counterexample"
+    },
+    {
+      "name": "water-prop",
+      "kind": "audit-probe",
+      "script_sha256": "dc7eba09d6c743f88f03fd4b507d29e488b1786d6fe6c172452899175043e741",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/water-prop/water-prop-235qtzbe/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/water-prop/water-prop-235qtzbe/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/water-prop/report.json",
+      "retained_log": "runs/initial/water-prop/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 47,
+      "failed_checks": 0,
+      "passed_checks": 47,
+      "classification": "passing-current-policy-characterization"
+    },
+    {
+      "name": "test_soft_contacts",
+      "kind": "existing-control",
+      "script_sha256": "daad6e1d76cca1e349d43f22ca2e6206ac4ea1bd61417d4bb1d3c964cddb872f",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_soft_contacts/test_soft_contacts-ssi9zhhz/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_soft_contacts/test_soft_contacts-ssi9zhhz/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_soft_contacts/report.json",
+      "retained_log": "runs/initial/test_soft_contacts/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 36,
+      "failed_checks": 0,
+      "passed_checks": 36,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_hull_friction_observation",
+      "kind": "existing-control",
+      "script_sha256": "cc836d383c04c87a38dea01a425aef6b43cf3ffae9a5af93a4af7dc2482136bc",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_hull_friction_observation/report.json",
+      "retained_log": "runs/initial/test_hull_friction_observation/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 388,
+      "failed_checks": 0,
+      "passed_checks": 388,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_hull_scrape_audio",
+      "kind": "existing-control",
+      "script_sha256": "61dce56560d0439c8bca6219b976685c50c16dc034d668feee5ab14b8a2afa5c",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_hull_scrape_audio/report.json",
+      "retained_log": "runs/initial/test_hull_scrape_audio/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 60,
+      "failed_checks": 0,
+      "passed_checks": 60,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_prop_strike",
+      "kind": "existing-control",
+      "script_sha256": "d019c7f3c741276ecbb383327b72c8e7c230f747275eb7bc680c22ecbeabf765",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_prop_strike/test_prop_strike-9mvn0iyv/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_prop_strike/test_prop_strike-9mvn0iyv/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_prop_strike/report.json",
+      "retained_log": "runs/initial/test_prop_strike/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 44,
+      "failed_checks": 0,
+      "passed_checks": 44,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_lake_collision",
+      "kind": "existing-control",
+      "script_sha256": "f68a9ea82506a405fdbdd5f95609436b5a6e95458fa9dfe492b704c8ee2e06b4",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_lake_collision/report.json",
+      "retained_log": "runs/initial/test_lake_collision/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 61,
+      "failed_checks": 0,
+      "passed_checks": 61,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_collision_tie_order",
+      "kind": "existing-control",
+      "script_sha256": "1f8bda6cfe6abd75d677a8ecc717b0720da68cd62981b1d63d822c1c7fd54e7d",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_collision_tie_order/test_collision_tie_order-murq8wfw/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_collision_tie_order/test_collision_tie_order-murq8wfw/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_collision_tie_order/report.json",
+      "retained_log": "runs/initial/test_collision_tie_order/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 17,
+      "failed_checks": 0,
+      "passed_checks": 17,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "test_airframe_contacts",
+      "kind": "existing-control",
+      "script_sha256": "4a4a3c5c93e788a9106ab4a85f25d1c8a929fa029a042c885a15b2b1e40ec808",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_airframe_contacts/test_airframe_contacts-tef2r7gf/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_airframe_contacts/test_airframe_contacts-tef2r7gf/engine.log",
+      "batch": "dependency-retry",
+      "retained_report": "runs/dependency-retry/test_airframe_contacts/report.json",
+      "retained_log": "runs/dependency-retry/test_airframe_contacts/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "source-manifest.json",
+      "checks": 46,
+      "failed_checks": 0,
+      "passed_checks": 46,
+      "classification": "passing-existing-control"
+    },
+    {
+      "name": "remainder",
+      "kind": "audit-probe",
+      "script_sha256": "fd01b720ef02337d920c57aea70256e668af720d788a6612528d243f545cf052",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/remainder/remainder/remainder-dm7j3iis/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/remainder/remainder/remainder-dm7j3iis/engine.log",
+      "batch": "remainder",
+      "retained_report": "runs/remainder/remainder/report.json",
+      "retained_log": "runs/remainder/remainder/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "checks": 19,
+      "failed_checks": 0,
+      "passed_checks": 19,
+      "classification": "passing-current-policy-characterization"
+    },
+    {
+      "name": "geometry-outside",
+      "kind": "audit-probe",
+      "script_sha256": "4434f3266bed8a269b4e9def042f83d4208f3f7fdc5dac12f57df880be7aee8c",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/geometry-outside/geometry-outside/geometry-outside-z2v5gi6d/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/geometry-outside/geometry-outside/geometry-outside-z2v5gi6d/engine.log",
+      "batch": "geometry-outside",
+      "retained_report": "runs/geometry-outside/geometry-outside/report.json",
+      "retained_log": "runs/geometry-outside/geometry-outside/engine.log",
+      "qualifies": true,
+      "fixture_manifest": "source-manifest.json",
+      "checks": 13,
+      "failed_checks": 1,
+      "passed_checks": 12,
+      "classification": "desired-behavior-counterexample"
+    }
+  ],
+  "excluded_runs": [
+    {
+      "name": "test_hull_scrape_session",
+      "kind": "existing-control",
+      "script_sha256": "e7113d413a2e56425059a62a4a0425182c6f60f3f2eddf23a00112d6fd6808e6",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 11,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_hull_scrape_session/report.json",
+      "retained_log": "runs/initial/test_hull_scrape_session/engine.log",
+      "qualifies": false,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "classification": "excluded-incomplete-component-fixture",
+      "reason_for_exclusion": "Missing Stik grain and relative-preload scripts; full-Main resource graph outside initial component scope."
+    },
+    {
+      "name": "test_airframe_contacts",
+      "kind": "existing-control",
+      "script_sha256": "4a4a3c5c93e788a9106ab4a85f25d1c8a929fa029a042c885a15b2b1e40ec808",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/engine.log",
+      "batch": "initial",
+      "retained_report": "runs/initial/test_airframe_contacts/report.json",
+      "retained_log": "runs/initial/test_airframe_contacts/engine.log",
+      "qualifies": false,
+      "fixture_manifest": "attempts/source-manifest-initial.json",
+      "classification": "excluded-incomplete-component-fixture",
+      "reason_for_exclusion": "Missing Stik grain and relative-preload scripts; full-Main resource graph outside initial component scope."
+    },
+    {
+      "name": "test_hull_scrape_session",
+      "kind": "existing-control",
+      "script_sha256": "e7113d413a2e56425059a62a4a0425182c6f60f3f2eddf23a00112d6fd6808e6",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 139,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/engine.log",
+      "batch": "dependency-retry",
+      "retained_report": "runs/dependency-retry/test_hull_scrape_session/report.json",
+      "retained_log": "runs/dependency-retry/test_hull_scrape_session/engine.log",
+      "qualifies": false,
+      "fixture_manifest": "source-manifest.json",
+      "classification": "excluded-incomplete-component-fixture",
+      "reason_for_exclusion": "Full Main loads landscape, soundscape and other assets outside the isolated component resource set; engine errors invalidate the apparent zero-failed summary."
+    }
+  ],
+  "setup_runs": [
+    {
+      "name": "setup",
+      "report": "setup/setup/report.json",
+      "log": "setup/setup/engine.log",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "complete": true
+    },
+    {
+      "name": "setup-followup",
+      "report": "setup/setup-followup/report.json",
+      "log": "setup/setup-followup/engine.log",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "complete": true
+    }
+  ],
+  "recordings": [],
+  "preflight_note": "First runner invocation refused before launching Godot because source project.godot had been listed among exact copies although replaced by the explicit component project. Manifest now records that original separately as replaced_source_project. No test was counted from that refusal.",
+  "totals": {
+    "qualifying_executions": 11,
+    "audit_probes": 4,
+    "existing_controls": 7,
+    "checks": 749,
+    "passed_checks": 747,
+    "desired_behavior_failed_checks": 2,
+    "checked_engine_errors": 0,
+    "checked_engine_warnings": 0,
+    "excluded_script_attempts": 3,
+    "excluded_engine_errors": 151
+  },
+  "files": [
+    {
+      "path": "attempts/source-manifest-initial.json",
+      "sha256": "44e601403b7eb233516a0b68e2a1a580f7b29b675dab347c6d0d8b39ce5d6307",
+      "size_bytes": 340829
+    },
+    {
+      "path": "build_fixture.py",
+      "sha256": "b700c4f3568190699fb0c94641a3bc58085562845fa776fddf8a44c6fa47853f",
+      "size_bytes": 2808
+    },
+    {
+      "path": "calculate_contact_scales.py",
+      "sha256": "b11354d4a7bf208286275ae3dd3c03b77f862f733ec87d2908887cd7ab405ccd",
+      "size_bytes": 1155
+    },
+    {
+      "path": "contact-scales.json",
+      "sha256": "1c62be29a1f954ca99c6ebb103dc9721e6eadf5da53070157c419606e0b4137f",
+      "size_bytes": 2419
+    },
+    {
+      "path": "later-main-comparison.json",
+      "sha256": "fad1d7a5d117066d5db98e8b3e2c38bd9d2897349006b1c4f6de0cc90544b0e1",
+      "size_bytes": 5323
+    },
+    {
+      "path": "probes/probe_nonfatal_geometry.gd",
+      "sha256": "e9aa4fa206e51f26240d2819ecc6a37633889f98e28be28e8bb4ebd56f270caf",
+      "size_bytes": 9809
+    },
+    {
+      "path": "probes/probe_nonfatal_geometry_outside.gd",
+      "sha256": "4434f3266bed8a269b4e9def042f83d4208f3f7fdc5dac12f57df880be7aee8c",
+      "size_bytes": 8242
+    },
+    {
+      "path": "probes/probe_nonfatal_remainder.gd",
+      "sha256": "fd01b720ef02337d920c57aea70256e668af720d788a6612528d243f545cf052",
+      "size_bytes": 8672
+    },
+    {
+      "path": "probes/probe_nonfatal_water_prop.gd",
+      "sha256": "dc7eba09d6c743f88f03fd4b507d29e488b1786d6fe6c172452899175043e741",
+      "size_bytes": 10184
+    },
+    {
+      "path": "run_probes.py",
+      "sha256": "4b634f6c0b9a4fd0b530a2fcb1d5341b7d16391a5561a2b82636f2bc051add27",
+      "size_bytes": 6101
+    },
+    {
+      "path": "runs/dependency-retry/summary.json",
+      "sha256": "476dff0361903e0a210f33883de8f22029f37ea719827000641e96f01aa46e79",
+      "size_bytes": 1647
+    },
+    {
+      "path": "runs/dependency-retry/test_airframe_contacts/engine.log",
+      "sha256": "4af4bcf2e49b19278d53c15502a56fcfb0ee2b067339c01cf4ca4d112ae43e3e",
+      "size_bytes": 3570
+    },
+    {
+      "path": "runs/dependency-retry/test_airframe_contacts/report.json",
+      "sha256": "7d1487d81e295836c373a078378d5c4827eee46ded4c6b44770c85ec7b4d0840",
+      "size_bytes": 1366
+    },
+    {
+      "path": "runs/dependency-retry/test_hull_scrape_session/engine.log",
+      "sha256": "4d81ff0ee8eed9a4d5fe4393663b13abbc86458000068732df3a100340a582bb",
+      "size_bytes": 128460
+    },
+    {
+      "path": "runs/dependency-retry/test_hull_scrape_session/report.json",
+      "sha256": "15a2ee253a88753b1d0b30f29d5b9d6e649bb3511dc5d2ab05b08e187fb1304b",
+      "size_bytes": 9962
+    },
+    {
+      "path": "runs/geometry-outside/geometry-outside/engine.log",
+      "sha256": "5ad834e53c7eaa9a183a3f5273a71a11c4f8f64599117a0d9ff95adcfc7c7af1",
+      "size_bytes": 2596
+    },
+    {
+      "path": "runs/geometry-outside/geometry-outside/report.json",
+      "sha256": "a2b8fa5cda7d62f90181ff3358844706412cf094699e4619006eadd6e774687f",
+      "size_bytes": 1451
+    },
+    {
+      "path": "runs/geometry-outside/summary.json",
+      "sha256": "47c2b3eab7ade6a120882cda5f343a83ae0d92dacce61a11f868c51f26930ba8",
+      "size_bytes": 968
+    },
+    {
+      "path": "runs/initial/geometry/engine.log",
+      "sha256": "df1ef9fbcdd81f24a7e833575faf7eb61ad24cf2cee75e2e11f403499b7a1e21",
+      "size_bytes": 3808
+    },
+    {
+      "path": "runs/initial/geometry/report.json",
+      "sha256": "baf6fb07ad1f9ee95feac1906c4cbf6a697393848e34aab3db554a779473f9da",
+      "size_bytes": 1374
+    },
+    {
+      "path": "runs/initial/summary.json",
+      "sha256": "d8d5e2379d37f99a823f280cff7ed6695aa5993dceb1c6ea40526c89476c7c29",
+      "size_bytes": 6381
+    },
+    {
+      "path": "runs/initial/test_airframe_contacts/engine.log",
+      "sha256": "107952a643e9be59d6ecc172b8a9313190602cbcd08485ac3b20870b512e07e3",
+      "size_bytes": 3573
+    },
+    {
+      "path": "runs/initial/test_airframe_contacts/report.json",
+      "sha256": "68808e29232d5efc0b5f692ae8512224f30212b9b32bc6765cdf950feabf0b9a",
+      "size_bytes": 1746
+    },
+    {
+      "path": "runs/initial/test_collision_tie_order/engine.log",
+      "sha256": "5f54ce53d874b225ebe482f077ad9d902a3460a64814c8740fa942f99b91ee12",
+      "size_bytes": 1238
+    },
+    {
+      "path": "runs/initial/test_collision_tie_order/report.json",
+      "sha256": "0534de74eb1ea47cf24a01dd2b772025bce37b9a427dd1fad6642f3b4411c17c",
+      "size_bytes": 1371
+    },
+    {
+      "path": "runs/initial/test_hull_friction_observation/engine.log",
+      "sha256": "ca96e30f68e272f95062a3473ff938ca0f2863fa1a108491e4a2daa20704bc55",
+      "size_bytes": 112
+    },
+    {
+      "path": "runs/initial/test_hull_friction_observation/report.json",
+      "sha256": "169a334e0fab649fd7b8a49858803c4cefbb1949a3c6254743ecf5d74cbf8124",
+      "size_bytes": 1406
+    },
+    {
+      "path": "runs/initial/test_hull_scrape_audio/engine.log",
+      "sha256": "d114e35fd02cc356455264bfc82c6f1f175275e01be7d9dd46a2e222f58a345d",
+      "size_bytes": 136
+    },
+    {
+      "path": "runs/initial/test_hull_scrape_audio/report.json",
+      "sha256": "8058f5de353b7ab767d664857f69fe77393ba387bbd753fe7bf74f188ec52e8b",
+      "size_bytes": 1364
+    },
+    {
+      "path": "runs/initial/test_hull_scrape_session/engine.log",
+      "sha256": "0ab800cf84fa771b39a7bcfafb97b5ca5d4e46d36e68f9fdf47757e455b2549f",
+      "size_bytes": 3158
+    },
+    {
+      "path": "runs/initial/test_hull_scrape_session/report.json",
+      "sha256": "134582458d5301d9dbb6a4fc98246e74a15050ce762dbf303e37636bede96330",
+      "size_bytes": 5136
+    },
+    {
+      "path": "runs/initial/test_lake_collision/engine.log",
+      "sha256": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e",
+      "size_bytes": 4195
+    },
+    {
+      "path": "runs/initial/test_lake_collision/report.json",
+      "sha256": "74ce49b436b0c0ed930cf07dfc21ee07db1cdb374eb33f076ccfc8972d21aaed",
+      "size_bytes": 1353
+    },
+    {
+      "path": "runs/initial/test_prop_strike/engine.log",
+      "sha256": "14c9bc6a153d8aa634b966e2d8d2400c59199498967868583a386e0e1fec0711",
+      "size_bytes": 4138
+    },
+    {
+      "path": "runs/initial/test_prop_strike/report.json",
+      "sha256": "f377d0b106b9ed47c034f9a0bb10be4bdf03066b3a67f7f2ecd82beb528b5044",
+      "size_bytes": 1312
+    },
+    {
+      "path": "runs/initial/test_soft_contacts/engine.log",
+      "sha256": "e59e618a5be38d16493b7060ae7140b143bdbf36b6d2dbe76ae9d88274940d67",
+      "size_bytes": 2682
+    },
+    {
+      "path": "runs/initial/test_soft_contacts/report.json",
+      "sha256": "eb8b4a591d8775a9b7bbe1d9dd88eeb0af5ee7a116974b06b36eed15ef06caf7",
+      "size_bytes": 1324
+    },
+    {
+      "path": "runs/initial/water-prop/engine.log",
+      "sha256": "1d025e9f0f64b349038fb9dff106b5c093f8f029b4b6a60f65611d65b8c83ece",
+      "size_bytes": 7085
+    },
+    {
+      "path": "runs/initial/water-prop/report.json",
+      "sha256": "319a6fe37713dee40c49fc87922147c371305010ee4dda9bc1da17ad81a8f717",
+      "size_bytes": 1387
+    },
+    {
+      "path": "runs/remainder/remainder/engine.log",
+      "sha256": "5ec2aaaa7ebd346d8dfe6730b8f7ace14e4e84563a48d3c17bc298aeccb20aee",
+      "size_bytes": 2367
+    },
+    {
+      "path": "runs/remainder/remainder/report.json",
+      "sha256": "070812f4c736b16b8c4394bd6d2a7f89a6a3b31109ec6da6a8da3e9de0a3445e",
+      "size_bytes": 1398
+    },
+    {
+      "path": "runs/remainder/summary.json",
+      "sha256": "6c5c4ee6c40e5ae47b3b6e1b62be49d1239f25d8070ecc0023d3437899be2739",
+      "size_bytes": 912
+    },
+    {
+      "path": "setup/setup/engine.log",
+      "sha256": "12e5d8ec3e806787cd7fb8a96e0140f50527fe02bcf3ac90a1dbfd3c392fab5b",
+      "size_bytes": 89261
+    },
+    {
+      "path": "setup/setup/report.json",
+      "sha256": "2f9000335a248534dbad5a61cd1548a4718c6b323b5842632b6d880714b3a66f",
+      "size_bytes": 1171
+    },
+    {
+      "path": "setup/setup-followup/engine.log",
+      "sha256": "7d345c2d5f0981f6e7b631cb43caad3c3e6433015f5acc04fb10f8e658ac340d",
+      "size_bytes": 2497
+    },
+    {
+      "path": "setup/setup-followup/report.json",
+      "sha256": "db524e9d2d113394238f971bd3e23dd45c7e23accaa4c7f91d356d9d06bf7dce",
+      "size_bytes": 1243
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "fbb7b18689cdefe63cd3cc0a8c03f4601761a317b7266d4fe8b22b5b68a2fe28",
+      "size_bytes": 342742
+    }
+  ],
+  "recording_note": "The existing airframe test writes and exactly replays 120 rows, then deletes its temporary .orfl via DirAccess.remove_absolute; only the checked log is retained, no standalone recording is claimed.",
+  "review": {
+    "geometry_and_remainder": "Independent source/log/algebra review: no material errors; direct-vs-accepted scope and both final probe hashes verified.",
+    "canonical_ownership_and_counts": "Independent source/diff review reconciled GP/CR/AUD ownership and all counts; frame/lever-arm and per-piece work wording clarified.",
+    "prop_water": "Independent source/log review confirmed numerical claims; subsystem arbitration, physical envelopes/uncertainty, conditional authority, sampled geometry scope and explicit recovery-end-state requirements clarified.",
+    "runtime_changes": false
+  }
+}

@@ -1,0 +1,30 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   synthetic box and bins prepared
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   session aircraft and simulation prepared
+ok   body-only synthetic initial state resets
+ok   fixture uses constant-mass scenery path
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   session aircraft and simulation prepared
+ok   synthetic scenery world installs
+ok   body-only synthetic initial state resets
+ok   fixture uses constant-mass scenery path
+ok   fixture tick is 1/240 s
+CASE isolated accepted step: one point at CG; zero applied loads, zero gravity, zero angular rate
+PARAM speed_n=83.333333333333 down_speed=0.240000000000 dt=0.004166666667 initial_down=-10.000400000000 box_top=-10.000000000000 separation=0.010000000000
+OBS control tick=1 time_s=0.004166666667 fault= state=[0.34722222222222, 0.0, -9.9994, 83.3333333333333, 0.0, 0.24, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] scenery_event=<null>
+OBS impacted tick=1 time_s=0.004166666667 fault= state=[0.13888854166701, 0.0, -10.010000001, 83.3333333333333, 0.0, -0.084, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] crash={  }
+ok   no-world control accepts one tick
+ok   no-world control travels the full zero-force interval
+ok   world run accepts one tick without a crash
+ok   accepted tick commits a nonterminal scenery impulse
+OBS event fraction=0.399999000001 time_s=0.001666662500 point=[0.13888854166701, 0.0, -10.000000001] normal=[0.0, 0.0, -1.0] point_velocity=[83.3333333333333, 0.0, 0.24] normal_speed=0.240000000000 restitution=0.350000000000 energy_j=0.082905469586 dissipated_j=0.072749549559 status=dissipative_impulse
+ORACLE remaining_s=0.002500004167 current_north=0.138888541667 forcefree_continued_north=0.347222222222 difference_north_m=0.208333680555 current_down=-10.010000001000 forcefree_continued_down=-10.010210001350
+ok   event time matches the prescribed approach
+ok   normal impact speed and direction match fixture
+ok   current accepted north stops at the event point
+ok   current response includes 1 cm outward position separation
+ok   normal impulse reverses down velocity and preserves north velocity
+ok   characterized remaining ballistic north travel is about 0.2083 m
+SUMMARY accepted-step characterization checks=19 failures=0

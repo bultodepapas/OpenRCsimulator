@@ -1,0 +1,146 @@
+{
+  "reviewed_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "later_remote_main_observed": "59d4a3d5bf4d9b5656a8efead01245bfcd4024a0",
+  "basis": "Read-only git history/name diff and listed exact blob comparison while packaging. No test results relabeled; not whole-app equivalence.",
+  "paths": [
+    {
+      "path": "app/physics/hull_contact.gd",
+      "reviewed_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "later_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "identical": true
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "reviewed_blob": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "later_blob": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "identical": true
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "reviewed_blob": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "later_blob": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "identical": true
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "reviewed_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "later_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "identical": true
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "reviewed_blob": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "later_blob": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "identical": true
+    },
+    {
+      "path": "app/physics/resource_event_step.gd",
+      "reviewed_blob": "5ed40f9aac78827d3c6b6c22d14230be17edabb1",
+      "later_blob": "5ed40f9aac78827d3c6b6c22d14230be17edabb1",
+      "identical": true
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "reviewed_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "later_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "identical": true
+    },
+    {
+      "path": "app/sim/scenery_collision.gd",
+      "reviewed_blob": "b29bb299e4ae6b0b52f5767ab12842ed5ebb03cf",
+      "later_blob": "b29bb299e4ae6b0b52f5767ab12842ed5ebb03cf",
+      "identical": true
+    },
+    {
+      "path": "app/sim/lake_collision.gd",
+      "reviewed_blob": "cd0176ffe66d6852f0ebfa945de8b2a39d71d587",
+      "later_blob": "cd0176ffe66d6852f0ebfa945de8b2a39d71d587",
+      "identical": true
+    },
+    {
+      "path": "app/sim/aircraft_contact_events.gd",
+      "reviewed_blob": "5c64279aa7e6a387bb3442adb74567dca50c32c5",
+      "later_blob": "5c64279aa7e6a387bb3442adb74567dca50c32c5",
+      "identical": true
+    },
+    {
+      "path": "app/render/crash/director.gd",
+      "reviewed_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+      "later_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+      "identical": true
+    },
+    {
+      "path": "app/render/crash/crash_audio.gd",
+      "reviewed_blob": "5bf304dacbaa76573bfc7d9af2f178bbfca2c9c6",
+      "later_blob": "5bf304dacbaa76573bfc7d9af2f178bbfca2c9c6",
+      "identical": true
+    },
+    {
+      "path": "app/render/near_grass.gd",
+      "reviewed_blob": "386edd7b662400128cb5101d21da6f03c15f270a",
+      "later_blob": "386edd7b662400128cb5101d21da6f03c15f270a",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_soft_contacts.gd",
+      "reviewed_blob": "7693ce2e97d31cb22e4f9e4dd9977f91f3da6e00",
+      "later_blob": "7693ce2e97d31cb22e4f9e4dd9977f91f3da6e00",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_hull_friction_observation.gd",
+      "reviewed_blob": "3b55eb78d120d3bbd4739f54057671432ea8a8cb",
+      "later_blob": "3b55eb78d120d3bbd4739f54057671432ea8a8cb",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_hull_scrape_audio.gd",
+      "reviewed_blob": "eb64a1661f0353a54c992d91f84b5354fe29002c",
+      "later_blob": "eb64a1661f0353a54c992d91f84b5354fe29002c",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_prop_strike.gd",
+      "reviewed_blob": "019a4bab9fdc31a97e83cdf0d00934762d1718fc",
+      "later_blob": "019a4bab9fdc31a97e83cdf0d00934762d1718fc",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_lake_collision.gd",
+      "reviewed_blob": "efbd8c80989f39903d476565cc4377ca3207c6b1",
+      "later_blob": "efbd8c80989f39903d476565cc4377ca3207c6b1",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_collision_tie_order.gd",
+      "reviewed_blob": "bc2a914d32e979bd4b602f39c6aff01577a07d19",
+      "later_blob": "bc2a914d32e979bd4b602f39c6aff01577a07d19",
+      "identical": true
+    },
+    {
+      "path": "app/tests/test_airframe_contacts.gd",
+      "reviewed_blob": "0bcb8c443fc4775120542dc6b30340f6388afb25",
+      "later_blob": "0bcb8c443fc4775120542dc6b30340f6388afb25",
+      "identical": true
+    },
+    {
+      "path": "docs/plans/crash-realism.md",
+      "reviewed_blob": "a03ed61e37145b76fdfb26095b464103bc5aeb76",
+      "later_blob": "a03ed61e37145b76fdfb26095b464103bc5aeb76",
+      "identical": true
+    },
+    {
+      "path": "docs/plans/advanced-ground-flight-physics.md",
+      "reviewed_blob": "3c1fb9086498505d60381e543586c7dafe2afc9f",
+      "later_blob": "3c1fb9086498505d60381e543586c7dafe2afc9f",
+      "identical": true
+    },
+    {
+      "path": "docs/CRASH-DAMAGE-PLAN.md",
+      "reviewed_blob": "72cf4775b188a4ab18877b1e46c557418d128a59",
+      "later_blob": "72cf4775b188a4ab18877b1e46c557418d128a59",
+      "identical": true
+    }
+  ],
+  "all_listed_paths_identical": true
+}

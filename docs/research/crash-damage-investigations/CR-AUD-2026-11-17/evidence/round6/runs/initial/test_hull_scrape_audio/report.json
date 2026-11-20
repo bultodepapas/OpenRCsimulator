@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "55828a28-9ec8-4a9f-90b2-c632ab3c3cb9",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_hull_scrape_audio.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:17:43.955794+00:00",
+  "label": "test_hull_scrape_audio",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape audio complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.433748,
+  "log_bytes": 136,
+  "log_sha256": "d114e35fd02cc356455264bfc82c6f1f175275e01be7d9dd46a2e222f58a345d"
+}

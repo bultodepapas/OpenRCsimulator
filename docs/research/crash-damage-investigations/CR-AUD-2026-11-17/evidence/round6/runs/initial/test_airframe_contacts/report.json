@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "bccfa3b1-31d7-494b-8379-866dee53af73",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_airframe_contacts.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:18:12.687672+00:00",
+  "label": "test_airframe_contacts",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Aircraft model contract: [\"bundled resource is missing\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:79)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 10.507014,
+  "log_bytes": 3573,
+  "log_sha256": "107952a643e9be59d6ecc172b8a9313190602cbcd08485ac3b20870b512e07e3"
+}

@@ -1,0 +1,23 @@
+{
+  "format": "openrc-nonfatal-contact-round6-reproduction-v1",
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "project": "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+  "runs": [
+    {
+      "name": "remainder",
+      "kind": "audit-probe",
+      "script_sha256": "fd01b720ef02337d920c57aea70256e668af720d788a6612528d243f545cf052",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/remainder/remainder/remainder-dm7j3iis/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/remainder/remainder/remainder-dm7j3iis/engine.log"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "dc2d3653-45d1-4497-8a78-124e88e6980c",
+  "command": [
+    "/workspace/scratch/40820211f477/OpenRCsimulator-main/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/40820211f477/nonfatal-fixture/app/tests/test_lake_collision.gd"
+  ],
+  "cwd": "/workspace/scratch/40820211f477/OpenRCsimulator-main",
+  "started_utc": "2026-11-20T02:18:11.444601+00:00",
+  "label": "test_lake_collision",
+  "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/engine.log",
+  "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "all lake collision checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.653489,
+  "log_bytes": 4195,
+  "log_sha256": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e"
+}

@@ -1,0 +1,34 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+CASE flat plane: direct HullContact, single point, no wheels/prop/lake/track/scenery
+PARAM dt=0.004166666667 speed=83.333333333333 m/s distance=0.347222222222 m mass=2.000 inertia=[1.0, 1.0, 1.0, 0.0, 0.0, 0.0]
+ok   flat test contact geometry prepared  point=[0.0, 1.0, 0.0]
+OBS flat_clear a_point=[0.0, 1.0, -0.001] b_point=[0.34722222222222, 1.0, -0.001] normal=[0, 0, -1] normal_speed=0 loads=[] records=[] terminal={ &"index": -1, &"rule": "", &"specific_j_per_kg": 0.0, &"normal_speed_mps": 0.0, &"depth_m": 0.0 }
+ok   300 km/h one-point 1 mm clear: no soft loads
+ok   300 km/h one-point 1 mm clear: no contact/terminal
+OBS flat_tangent a_point=[0.0, 1.0, 0.0] b_point=[0.34722222222222, 1.0, 0.0] normal=[0, 0, -1] normal_speed=0 loads=[] records=[] terminal={ &"index": -1, &"rule": "", &"specific_j_per_kg": 0.0, &"normal_speed_mps": 0.0, &"depth_m": 0.0 }
+ok   soft zero-depth tangent: no loads
+ok   soft zero-depth tangent: no contact/terminal
+OBS flat_brush a_point=[0,1,-0.001] b_point=[0.34722222222222, 1.0, 0.0001] normal=[0,0,-1] approach=0.264 m/s entry_fraction=0.909090909091 entry_seconds=0.003787878788 independent_effective_mass=0.666666666667 independent_specific_J_per_kg=0.011616000000
+OBS flat_brush loads=[-0.24384, 0.0, -0.6096, -0.6096, 0.0, 0.24384] records=[{ &"index": 0, &"new": true, &"depth_m": 0.0001, &"normal_speed_mps": 0.264, &"slide_speed_mps": 83.3333333333333, &"point_ned": [0.34722222222222, 1.0, 0.0001], &"velocity_ned": [83.3333333333333, 0.0, 0.264] }] terminal={ &"index": -1, &"rule": "", &"specific_j_per_kg": 0.0, &"normal_speed_mps": 0.0, &"depth_m": 0.0 }
+ok   penetrating tip has one contact record
+ok   penetrating tip has upward force and opposing friction
+ok   specified light brush is below configured terminal threshold
+ok   brush normal and slide speeds match prescribed motion
+CASE scenery padding: synthetic one-point fixture ONLY; the CG is INSIDE the box. No accepted flight claim.
+ok   synthetic box and bins prepared
+PARAM start_cg_down=0.999547847419 end_cg_down=0.999797847419 start_clearance_m=0.000300 end_clearance_m=0.000050 roll_deg=[89.0005,90.9995] rate_radps=8.373391619368 CG_downspeed_mps=0.060000000000
+ORACLE uninflated-point clearance >=0.000050 m for entire monotone nlerp interval; padding_m=0.000152153581 chord_entry_fraction=0.591385677189
+ok   fixture explicitly has CG inside box
+OBS scenery_rotating_far_clear event=null
+ok   rotating farther-clear control has no event
+OBS scenery_unrotated_clear event=null
+ok   unrotated clear control has no event
+OBS scenery_true_point_penetration_control fraction=0.422418340849 seconds=0.001760076420 point=[0.14667303501701, -0.00270682041298, -0.00030064271632] normal=[0.0, 0.0, -1.0] point_velocity=[83.3333333333333, 8.37336092702636, 0.06132225955143] normal_speed_mps=0.061322259551 effective_mass_kg=1.999970692922 energy_j=0.003760364413 terminal=false status=impulse_pending uninflated_box_top_clearance_m=0.000300642716
+ok   real point penetration admits a scenery event
+OBS scenery_rotating_clear_test fraction=0.591385677189 seconds=0.002464106988 point=[0.2053422490239, 0.00318843968524, -0.00029922307467] normal=[0.0, 0.0, -1.0] point_velocity=[83.3333333333333, 8.37334907075983, 0.08668922996959] normal_speed_mps=0.086689229970 effective_mass_kg=1.999959336236 energy_j=0.007514869798 terminal=false status=impulse_pending uninflated_box_top_clearance_m=0.000299223075
+ok   reported event point is independently clear of box top  clearance_m=0.000299223075
+ok   reported approach passes soft minimum speed
+ok   reported time matches inflated chord entry
+FAIL desired: clear rotating point causes no uninflated-box contact
+SUMMARY component checks=18 desired_failures_or_fixture_errors=1
