@@ -300,6 +300,19 @@ func _app_trial(heli: RefCounted, plane: RefCounted) -> void:
 		await ui.settle()
 		check("ending the trial returns to the Workshop", host.flight == null and host.screens.top() == editor
 			and (not is_instance_valid(flight) or flight.get_parent() == null))
+	# AC-CV: an airship request flies the stock RC blimp with the imported appearance; a helicopter cannot use it.
+	host._start_workshop_trial({creator_airship = {source = heli, name = "Fixture heli"}, start_choice = "airborne"})
+	check("a helicopter cannot take the blimp route", host.ground_vehicle == null and host.screens.top() == editor)
+	host._start_workshop_trial({creator_airship = {source = plane, name = "Fixture airship"}, start_choice = "airborne"})
+	await ui.settle()
+	var blimp: Node = host.ground_vehicle
+	check("the airship trial starts the blimp activity with the imported model", blimp != null and blimp.name == "AirshipActivity"
+		and str(blimp.startup_error).is_empty() and not blimp.creator_visual.is_empty()
+		and blimp.visual.root.get_node_or_null("CreatorModel") != null and host.screens.top() == null)
+	if blimp != null:
+		host._return_to_workshop()
+		await ui.settle()
+		check("the blimp trial returns to the Workshop", host.ground_vehicle == null and host.screens.top() == editor)
 	await ui.close_app(host)
 
 

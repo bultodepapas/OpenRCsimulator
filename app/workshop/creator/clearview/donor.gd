@@ -26,6 +26,14 @@ const TRAINER_TITLE := "Fly with trainer physics?"
 const TRAINER_BUTTON := "Fly with the trainer physics"
 const TRAINER := "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
 const DONORS := [FLYING_WING_DONOR, TRAINER_DONOR]
+## A slender body with no usable wing (an airship such as the Hindenburg) flies on OpenRC's own RC blimp
+## physics instead of the trainer: the route id names the blimp activity, not a catalog aircraft.
+const AIRSHIP_DONOR := "airship"
+## Widest of width and height against length, below which a fallback model is treated as an airship.
+const AIRSHIP_SLENDERNESS := 0.35
+const AIRSHIP_TITLE := "Fly as a blimp?"
+const AIRSHIP_BUTTON := "Fly with the blimp physics"
+const AIRSHIP := "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
 
 
 ## {donor_id, placement, source_span_m, flown_span_m, message} for a model a donor can fly, or a refusal.
@@ -40,6 +48,11 @@ static func propose(source: InspectedSource, fallback := false) -> Dictionary:
 		return points
 	if not points.mixed_controls and not fallback:
 		return R.fail(R.UNSUPPORTED_CAPABILITY, "This model has no donor configuration; use the automatic setup.", "source", "import")
+	# A named rotor (an autogyro) is not an airship, however slender its fuselage.
+	if fallback and not points.mixed_controls and not bool(points.get("rotor_found", false)) and is_airship(points.value):
+		# The blimp scene fits the appearance to its own envelope; no wing placement is needed.
+		return R.ok({donor_id = AIRSHIP_DONOR, placement = {}, source_span_m = _width(points.value),
+			flown_span_m = 0.0, message = AIRSHIP})
 	var donor_id := FLYING_WING_DONOR if points.mixed_controls else TRAINER_DONOR
 	var donor_span := FLYING_WING_SPAN_M if points.mixed_controls else TRAINER_SPAN_M
 	var edge: Dictionary = Setup.leading_edge(points.value)
@@ -66,6 +79,18 @@ static func propose(source: InspectedSource, fallback := false) -> Dictionary:
 		return R.fail(R.DATUM_UNRESOLVED, Setup.UNAVAILABLE, "placement/datum", Placement.STEP)
 	return R.ok({donor_id = donor_id, placement = placement, source_span_m = span,
 		flown_span_m = donor_span, message = FLYING_WING if donor_id == FLYING_WING_DONOR else TRAINER})
+
+
+## True for a slender body: its length (ClearView X) is long against both its width (Z) and height (Y).
+static func is_airship(triangles: PackedFloat64Array) -> bool:
+	var low := Vector3(INF, INF, INF)
+	var high := -low
+	for index: int in range(0, triangles.size() - 2, 3):
+		var point := Vector3(triangles[index], triangles[index + 1], triangles[index + 2])
+		low = low.min(point)
+		high = high.max(point)
+	var size := high - low
+	return is_finite(size.x) and size.x > 0.0 and maxf(size.y, size.z) < AIRSHIP_SLENDERNESS * size.x
 
 
 ## The larger horizontal extent (ClearView X length or Z width) of the triangle points, in source metres.

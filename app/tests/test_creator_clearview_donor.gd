@@ -51,7 +51,19 @@ func _run() -> void:
 	var ordinary := Importer.inspect_bytes(Fixture.airplane_glb(), "ordinary.glb")
 	check("an ordinary model has no donor", ordinary.ok and not Donor.propose(ordinary.value).ok
 		and not Donor.propose(ordinary.value, true).ok)
+	# A slender body with no wing (the Hindenburg) flies on the RC blimp; a named rotor (an autogyro) does not.
+	var hull := "AC3Db\nMATERIAL \"m\" rgb 1 1 1 amb 0.2 0.2 0.2 emis 0 0 0 spec 0.5 0.5 0.5 shi 10 trans 0\nOBJECT world\nkids 1\nOBJECT poly\nname \"envelope\"\nnumvert 3\n-2 0 -0.2\n2 0 0.2\n0 0.3 0\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n"
+	var airship: Dictionary = SetupTest._converted(hull)
+	var blimp := Donor.propose(airship.value.source, true) if airship.ok else {ok = false}
+	check("a slender wingless body is offered the RC blimp", blimp.ok and blimp.value.donor_id == Donor.AIRSHIP_DONOR
+		and blimp.value.message == Donor.AIRSHIP and not Donor.AIRSHIP_DONOR in Donor.DONORS)
+	check("the blimp is only a fallback", airship.ok and not Donor.propose(airship.value.source).ok)
+	var gyro: Dictionary = SetupTest._converted(hull.replace("name \"envelope\"", "name \"Rotor\""))
+	var gyro_donor := Donor.propose(gyro.value.source, true) if gyro.ok else {ok = false}
+	check("a slender body with a rotor gets the trainer, not the blimp", gyro_donor.ok and gyro_donor.value.donor_id == Donor.TRAINER_DONOR)
 	await _offer(wing.replace("LElevon", "wing"))
+	if airship.ok:
+		await _blimp(airship.value.source)
 	print("ClearView donor: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -94,4 +106,29 @@ func _offer(ac: String) -> void:
 		and requests[0].creator_donor.donor_id == Donor.TRAINER_DONOR and requests[0].start_choice == "airborne"
 		and requests[0].creator_donor.source == wizard.document().source())
 	wizard.queue_free()
+	await process_frame
+
+
+## The blimp activity flies its stock physics with the imported model in place of the envelope, fitted to its length.
+func _blimp(source: RefCounted) -> void:
+	var activity: Node3D = load("res://vehicles/airship/airship_scene.gd").new()
+	activity.enable_audio = false
+	activity.creator_visual = {source = source, name = "Fixture airship"}
+	root.add_child(activity)
+	check("the blimp activity starts with an imported appearance", str(activity.startup_error).is_empty())
+	if not str(activity.startup_error).is_empty():
+		activity.queue_free()
+		return
+	var shown: Node3D = activity.visual.root.get_node_or_null("CreatorModel")
+	var stock: AABB = activity._mesh_bounds(activity.visual.root, activity.visual.model)
+	var fitted: AABB = activity._mesh_bounds(activity.visual.root, shown) if shown != null else AABB()
+	check("the stock envelope is hidden and the model fits its length and centre", shown != null and not activity.visual.model.visible
+		and absf(fitted.size.z - stock.size.z) < 1e-3 and fitted.get_center().distance_to(stock.get_center()) < 1e-3)
+	activity.scripted_sticks = func(_tick: int) -> PackedFloat64Array: return PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	activity.handle_action("resume")
+	var started: int = activity.session.sim.tick
+	for frame: int in 30:
+		await physics_frame
+	check("the blimp physics run under the imported appearance", activity.session.sim.tick > started and activity.session.crash.is_empty())
+	activity.queue_free()
 	await process_frame

@@ -2570,12 +2570,25 @@ func _offer_trainer(reason: String) -> void:
 	if source == null or HeliDonor.is_helicopter(source):
 		return
 	var donor: Dictionary = FixedWingDonor.propose(source, true)
+	if donor.ok and str(donor.value.donor_id) == FixedWingDonor.AIRSHIP_DONOR:
+		_ask(tr(FixedWingDonor.AIRSHIP_TITLE), tr(FixedWingDonor.AIRSHIP) % reason, tr(FixedWingDonor.AIRSHIP_BUTTON),
+			_fly_airship.bind(source))
+		return
 	if not donor.ok or str(donor.value.donor_id) != FixedWingDonor.TRAINER_DONOR:
 		return
 	var text: String = tr(FixedWingDonor.TRAINER) % [reason, String.num(float(donor.value.flown_span_m), 2)]
 	text += "\n\n" + tr(FixedWingDonor.SCALE_NOTE) % [String.num(float(donor.value.source_span_m), 2),
 		String.num(100.0 * float(donor.value.flown_span_m) / float(donor.value.source_span_m), 0)]
 	_ask(tr(FixedWingDonor.TRAINER_TITLE), text, tr(FixedWingDonor.TRAINER_BUTTON), _fly_donor.bind(source, donor.value))
+
+
+## The blimp donor request: the stock RC blimp physics with this model's appearance, from the blimp's start.
+func _fly_airship(source: InspectedSource) -> void:
+	if source != _doc.source() or _closing:
+		return
+	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
+	set_note("")
+	test_fly_requested.emit({creator_airship = {source = source, name = shown_name}, start_choice = "airborne"})
 
 
 func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:

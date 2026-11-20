@@ -25,6 +25,9 @@ const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
 const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
 const LensSettings = preload("res://render/lens/lens_settings.gd")
+const CreatorVisual = preload("res://workshop/creator/visual_builder.gd")
+const CREATOR_LABEL := "RC blimp physics · %s appearance only — experimental"
+const CREATOR_UNAVAILABLE := "This model could not be shown on the blimp."
 ## Servo sound channels: [id, continuous indices averaged] (vector and fin angles in radians, CTRL sign).
 const SERVO_CHANNELS := [["vector_side", [4, 5]], ["vector_stern", [6]], ["fin_dorsal", [7]], ["fin_port", [8]], ["fin_starboard", [9]]]
 const SERVO_ANCHORS := [["vector_port", "vector_starboard"], ["vector_stern"], ["fin_dorsal"], ["fin_port"], ["fin_starboard"]]
@@ -58,6 +61,9 @@ var enable_world := true
 var scripted_sticks := Callable()
 ## BL-19d: a frozen Workshop build (workshop/trial.gd). Empty = the shipped blimp.
 var workshop_trial := {}
+## AC-CV: {source: admitted ClearView InspectedSource, name}. The stock blimp physics fly; the imported model
+## replaces only the drawn envelope, fitted to the stock envelope's length and centre. Empty keeps the route.
+var creator_visual := {}
 var _trial_raw := {}
 ## Virtual size of the flown build (Workshop scale); camera, audio and weigh-off presets follow it.
 var _size := 1.0
@@ -124,6 +130,9 @@ func _ready() -> void:
 	preload("res://render/vehicle_shadow_cue.gd").attach(self, visual.root, _lighting, _ground_height_render)
 	# The model child carries the Workshop size; the root keeps the accepted pose only.
 	visual.model.scale = Vector3.ONE * _size
+	if not creator_visual.is_empty() and not _apply_creator_visual():
+		_disable()
+		return
 	if not workshop_trial.is_empty() and visual.has_method("apply_presentation"):
 		var painted: Dictionary = visual.call("apply_presentation", workshop_trial.get("presentation_profile", {}))
 		if not painted.get("ok", false):
@@ -156,6 +165,8 @@ func _ready() -> void:
 	if not workshop_trial.is_empty():
 		var length := float(session.data.envelope.length)
 		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % length, length)
+	elif not creator_visual.is_empty():
+		hud.set_workshop_trial(tr(CREATOR_LABEL) % str(creator_visual.get("name", "")), float(session.data.envelope.length))
 	hud.action_requested.connect(handle_action)
 	hud.option_selected.connect(_option_selected)
 	session.crashed.connect(func(reason: String) -> void: _open_menu(reason + ". Restart to fly again."))
@@ -176,6 +187,45 @@ func _ready() -> void:
 	_open_menu(session.pause_reason)
 	_note_weigh_off()
 	_process(0.0)
+
+
+## AC-CV: hides the stock envelope and shows the imported ClearView model in its place, scaled so its length
+## (render Z) equals the stock model's and centred on it. Presentation only; physics stay the stock blimp's.
+func _apply_creator_visual() -> bool:
+	var source: Variant = creator_visual.get("source")
+	var built: Dictionary = {}
+	if source is CreatorVisual.InspectedSource:
+		built = CreatorVisual.build_flight(source, {nose_axis = "-x", up_axis = "+y", unit_scale = 1.0, datum = [0.0, 0.0, 0.0]})
+	if built.is_empty():
+		startup_error = CREATOR_UNAVAILABLE
+		return false
+	var imported: Node3D = built.root
+	var stock_box := _mesh_bounds(visual.root, visual.model)
+	var imported_box := _mesh_bounds(imported, imported)
+	if not stock_box.has_volume() or not imported_box.has_volume() or imported_box.size.z <= 0.0:
+		imported.free()
+		startup_error = CREATOR_UNAVAILABLE
+		return false
+	var fit := stock_box.size.z / imported_box.size.z
+	visual.model.visible = false
+	imported.name = "CreatorModel"
+	imported.transform = Transform3D(Basis.from_scale(Vector3.ONE * fit), stock_box.get_center() - imported_box.get_center() * fit)
+	visual.root.add_child(imported)
+	return true
+
+
+## Bounds of every mesh under `node`, in `ancestor` space.
+static func _mesh_bounds(ancestor: Node, node: Node) -> AABB:
+	var box := AABB()
+	var found := false
+	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
+		var mesh := child as MeshInstance3D
+		if mesh.mesh == null:
+			continue
+		var placed: AABB = CreatorVisual.relative(ancestor, mesh) * mesh.get_aabb()
+		box = placed if not found else box.merge(placed)
+		found = true
+	return box
 
 
 ## LENS-01: the blimp session reports a crash as a reason; the lens asks the installed obstacle inventory (read-only)

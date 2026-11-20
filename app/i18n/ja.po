@@ -13517,3 +13517,18 @@ msgstr "練習機の物理で飛行"
 
 msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
 msgstr "推定 OpenRC 構成ではこのモデルを飛ばせません: %s\n\n代わりに標準の Ugly Stick 電動練習機の物理で飛行でき、このモデルの外観を翼幅 %s m に合わせて表示します。ClearView の飛行モデルではありません。"
+
+msgid "Fly as a blimp?"
+msgstr "飛行船として飛行しますか？"
+
+msgid "Fly with the blimp physics"
+msgstr "飛行船の物理で飛行"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
+msgstr "推定 OpenRC 構成ではこのモデルを飛ばせません: %s\n\n細長い機体は飛行船なので、OpenRC の RC 飛行船の物理で飛行でき、このモデルの外観を飛行船の全長に合わせて表示します。ClearView の飛行モデルではありません。"
+
+msgid "RC blimp physics · %s appearance only — experimental"
+msgstr "RC 飛行船の物理 · %s の外観のみ — 実験的"
+
+msgid "This model could not be shown on the blimp."
+msgstr "このモデルを飛行船に表示できませんでした。"

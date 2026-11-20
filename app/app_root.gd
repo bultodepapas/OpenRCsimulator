@@ -3536,6 +3536,16 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if payload.has("creator_helicopter") or payload.has("creator_donor"):
 		_start_creator_helicopter_trial(editor, payload)
 		return
+	# AC-CV: a ClearView airship flies its appearance on the stock RC blimp physics in the blimp activity.
+	if payload.has("creator_airship"):
+		var request: Variant = payload.creator_airship
+		if not request is Dictionary or not FixedWingDonor.Setup.Installation.required(request.get("source")) \
+				or FixedWingDonor.Setup.is_helicopter(request.get("source")) or typeof(request.get("name", "")) != TYPE_STRING:
+			editor.set_note(tr(HeliDonor.UNAVAILABLE))
+			_menu_feedback(&"reject")
+			return
+		_start_workshop_airship_trial(editor, {}, "airborne", {source = request.source, name = str(request.name)})
+		return
 	var chosen_start: Variant = payload.get("start_choice", "airborne")
 	# AC-11: an Aircraft Creator request carries an accepted candidate instead of a catalog base. It has no
 	# landing gear, so its ground start is the hand launch; every other step below is the Workshop trial path.
@@ -3812,7 +3822,7 @@ func _commit_detached(previous: Node) -> void:
 
 ## BL-19d: the blimp trial occupies the exclusive activity slot while the Workshop, Home and any retained flight wait
 ## detached exactly as for a fixed-wing trial; its own menu offers Return to Workshop (home_requested).
-func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start: String) -> void:
+func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start: String, creator_visual: Dictionary = {}) -> void:
 	if ground_vehicle != null:
 		editor.set_note(tr("Close the running activity before starting a blimp trial."))
 		_menu_feedback(&"reject")
@@ -3830,6 +3840,7 @@ func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start
 	var candidate: Node3D = load("res://vehicles/airship/airship_scene.gd").new()
 	candidate.departure_managed = true
 	candidate.workshop_trial = trial.duplicate(true)
+	candidate.creator_visual = creator_visual
 	candidate.start_index = 1 if chosen_start == "runway" else 0
 	candidate.field_path = field_path
 	candidate.lighting_config = (previous.lighting_config if previous != null else preferences.get("lighting_config", TimeOfDay.defaults())).duplicate(true)

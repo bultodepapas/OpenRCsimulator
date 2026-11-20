@@ -353,10 +353,12 @@ static func _points(source: InspectedSource) -> Dictionary:
 	var out := PackedFloat64Array()
 	var mixed := false
 	var propeller := false
+	var rotor := false
 	for node: GLTFNode in nodes:
 		var lowered := str(node.resource_name).to_lower()
 		mixed = mixed or "elevon" in lowered
 		propeller = propeller or "prop" in lowered or "spinner" in lowered
+		rotor = rotor or "rotor" in lowered
 	for index: int in nodes.size():
 		var transform := _world(nodes, index, world, done, 0)
 		if _rotating_or_ground(nodes, index):
@@ -387,6 +389,7 @@ static func _points(source: InspectedSource) -> Dictionary:
 	var result := R.ok(out)
 	result["mixed_controls"] = mixed
 	result["propeller_found"] = propeller
+	result["rotor_found"] = rotor
 	return result
 
 

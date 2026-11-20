@@ -14305,3 +14305,18 @@ msgstr "Voar com a física de treinador"
 
 msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
 msgstr "A configuração estimada do OpenRC não consegue fazer este modelo voar: %s\n\nEle pode voar com a física do treinador elétrico Ugly Stick padrão, mostrada com a aparência deste modelo ajustada à envergadura de %s m. Não é o modelo de voo do ClearView."
+
+msgid "Fly as a blimp?"
+msgstr "Voar como dirigível?"
+
+msgid "Fly with the blimp physics"
+msgstr "Voar com a física do dirigível"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
+msgstr "A configuração estimada do OpenRC não consegue fazer este modelo voar: %s\n\nO corpo esguio é de um dirigível, então ele pode voar com a física do dirigível RC do OpenRC, mostrada com a aparência deste modelo ajustada ao comprimento do dirigível. Não é o modelo de voo do ClearView."
+
+msgid "RC blimp physics · %s appearance only — experimental"
+msgstr "Física do dirigível RC · apenas a aparência de %s — experimental"
+
+msgid "This model could not be shown on the blimp."
+msgstr "Não foi possível mostrar este modelo no dirigível."

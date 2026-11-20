@@ -14411,3 +14411,18 @@ msgstr "Mit der Trainer-Physik fliegen"
 
 msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
 msgstr "Die geschätzte OpenRC-Konfiguration kann dieses Modell nicht fliegen: %s\n\nEs kann stattdessen mit der Physik des serienmäßigen Ugly-Stick-Elektrotrainers fliegen, mit dem Aussehen dieses Modells, angepasst an dessen %s m Spannweite. Es ist nicht das ClearView-Flugmodell."
+
+msgid "Fly as a blimp?"
+msgstr "Als Luftschiff fliegen?"
+
+msgid "Fly with the blimp physics"
+msgstr "Mit der Luftschiff-Physik fliegen"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
+msgstr "Die geschätzte OpenRC-Konfiguration kann dieses Modell nicht fliegen: %s\n\nSein schlanker Rumpf ist ein Luftschiff, daher kann es mit der RC-Luftschiff-Physik von OpenRC fliegen, mit dem Aussehen dieses Modells, angepasst an die Länge des Luftschiffs. Es ist nicht das ClearView-Flugmodell."
+
+msgid "RC blimp physics · %s appearance only — experimental"
+msgstr "RC-Luftschiff-Physik · nur das Aussehen von %s — experimentell"
+
+msgid "This model could not be shown on the blimp."
+msgstr "Dieses Modell konnte nicht auf dem Luftschiff gezeigt werden."

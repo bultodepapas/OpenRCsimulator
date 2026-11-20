@@ -13466,3 +13466,18 @@ msgstr "使用教练机物理飞行"
 
 msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
 msgstr "估算的 OpenRC 配置无法让此模型飞行：%s\n\n它可以改用标准 Ugly Stick 电动教练机的物理飞行，并以此模型的外观按 %s m 翼展显示。这不是 ClearView 飞行模型。"
+
+msgid "Fly as a blimp?"
+msgstr "作为飞艇飞行？"
+
+msgid "Fly with the blimp physics"
+msgstr "使用飞艇物理飞行"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
+msgstr "估算的 OpenRC 配置无法让此模型飞行：%s\n\n它细长的机身是一艘飞艇，因此可以改用 OpenRC 的遥控飞艇物理飞行，并以此模型的外观按飞艇长度显示。这不是 ClearView 飞行模型。"
+
+msgid "RC blimp physics · %s appearance only — experimental"
+msgstr "遥控飞艇物理 · 仅 %s 的外观 — 实验性"
+
+msgid "This model could not be shown on the blimp."
+msgstr "无法在飞艇上显示此模型。"
