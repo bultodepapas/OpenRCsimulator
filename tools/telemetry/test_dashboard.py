@@ -226,6 +226,34 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("Release v0.3.10", page)  # release marker in a tooltip
         self.assertIn("G-4Z11DSB2BV", page)
 
+    def test_website_tab_from_ga4(self):
+        import test_ga4
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        data["github"] = None
+        self.assertIn("Not connected", dashboard.render(data))  # older snapshots have no "website" key
+        data["website"] = test_ga4.model()
+        page = dashboard.render(data)
+        website = page.split('id="panel-website"')[1].split('id="panel-receiver"')[0]
+        for text in ("Active users, 7 days", "Download requests by platform", "windows", "Not registered in GA4",
+                     "<code>download_source</code>", "Web Vitals ratings", "/OpenRCsimulator/ja.html",
+                     "Etc/UTC", "Active users now", "property 123456789"):
+            self.assertIn(text, website)
+        self.assertIn("&lt;b&gt;evil&lt;/b&gt;", website)  # country text is escaped
+        self.assertNotIn("<b>evil</b>", page)
+        overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
+        self.assertIn("Website users, 7 days", overview)
+        self.assertIn("Website visitors per day", overview)
+        rows = dashboard.ingest_rows(data)
+        self.assertNotIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
+        data["website"] = test_ga4.model(fail={(("date",), "download_request")})
+        overview, website = (dashboard.render(data).split('id="panel-website"')[i] for i in (0, 1))
+        self.assertIn("download requests: report failed", overview)
+        self.assertIn('<div class="tv">-</div><div class="ts">report failed</div>', website)
+        data["website"] = {"error": "HTTP 403: <denied>", "collected_utc": "2027-01-20T09:00:00Z", "property": None}
+        page = dashboard.render(data)
+        self.assertIn("HTTP 403: &lt;denied&gt;", page)
+        self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
+
     def test_version_one_archive_loads_without_extras(self):
         import sqlite3
         archive = self.dir / "v1"

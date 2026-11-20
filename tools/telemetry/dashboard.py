@@ -1,10 +1,11 @@
-"""Operator statistics dashboard: players (telemetry), downloads, GitHub and receiver health in one local page.
+"""Operator statistics dashboard: players (telemetry), downloads, GitHub, website and receiver health in one page.
 
     python tools/telemetry/dashboard.py fetch  --ssh root@<receiver-host> [--key <identity>] [--ct 404]
     python tools/telemetry/dashboard.py render --snapshot <dashboard.snapshot.json>
 
 `fetch` pipes `snapshot.py` to the receiver (Proxmox `pct exec` into the receiver container, or directly with
-`--ct ''`), saves the JSON beside the page and renders it. `render` rebuilds the page from a saved snapshot. The
+`--ct ''`), adds the GitHub archive and the GA4 website reports (ga4.py, when a credential is configured), saves
+the JSON beside the page and renders it. `render` rebuilds the page from a saved snapshot. The
 page is self-contained (no network requests) and is written to a local directory outside the repository, never
 published: insight cells are operator-only (see services/telemetry/README.md). Standard library only.
 """
@@ -23,6 +24,7 @@ import sys
 import time
 import webbrowser
 
+import ga4
 import github_archive as downloads
 
 HERE = Path(__file__).resolve().parent
@@ -289,6 +291,9 @@ def alerts(snapshot, rows, day_state):
         if age is not None and age > DOWNLOADS_STALE_S:
             out.append(("warning", "Download counters stale", f"last collected {fmt_age(age)}: check the "
                         "'OpenRC GitHub Analytics' task"))
+    website = snapshot.get("website")
+    if website and website.get("error"):
+        out.append(("warning", "Website analytics failed", f"GA4: {website['error']}"))
     return sorted(out, key=lambda item: LEVELS[item[0]][0])
 
 
@@ -869,6 +874,21 @@ def overview_section(snapshot, rows, alert_items):
             days, [("Stars", downloads.stars_cumulative(model, days), "s1")], "Stars", markers, 200)))
     else:
         items.append(("GitHub", "-", "no history archive"))
+    website = snapshot.get("website")
+    if website and not website.get("error"):
+        daily, ga_days = website.get("daily") or [], (website.get("days") or [])[-30:]  # property-time-zone days
+        dl_failed = "downloads" in (website.get("errors") or {})
+        items.append((f"Website users, {len(website.get('days') or [])} days",
+                      fmt_int((website.get("totals") or {}).get("users", 0)),
+                      "download requests: report failed" if dl_failed else
+                      f"{fmt_int(ga4.window(website, 7))} download requests in 7 days"))
+        series = [("Active users", daily_values(daily, ga_days, "users"), "s1")]
+        if not dl_failed:
+            series.append(("Download requests", daily_values(website.get("downloads_daily") or [], ga_days,
+                                                             "count"), "s2"))
+        charts.append(panel("Website visitors per day", "GA4 active users and download requests",
+                            legend([("u", "Active users", "s1"), ("d", "Download requests", "s2")][:len(series)])
+                            + line_chart(ga_days, series, "Website visitors per day", markers, 200)))
     charts.append(panel("Telemetry batches accepted per day", "consenting players' sessions reaching the receiver",
                         line_chart(days, [("Accepted", daily_values(
                             [{"day": r["day"], "count": r["counts"]["accepted"]} for r in rows], days, "count"), "s1")],
@@ -935,14 +955,124 @@ def github_section(model, now):
                    panel("Popular pages", window, hbar_chart(paths, fmt_int, "Popular repository pages by views"))))
 
 
-def website_section():
-    return ('<div class="panel"><h4>Website analytics (Google Analytics 4)</h4><p class="sub">Not connected yet</p>'
-            '<p>The public site sends page views, <code>download_request</code> events and sampled Web Vitals to GA4 '
-            'destination <code>G-4Z11DSB2BV</code> through Tag Manager (site/README.md, WEB-12). This dashboard can '
-            'chart visitors, countries, traffic sources, download requests by platform and Web Vitals once it can '
-            'read the GA4 Data API: it needs the numeric GA4 property ID and a read-only credential '
-            '(<code>analytics.readonly</code>).</p><p>Until then, open '
-            '<a href="https://analytics.google.com/analytics/web/" rel="noopener">Google Analytics</a>.</p></div>')
+GA_SETUP = ('<p>Give <code>dashboard.py fetch</code> a read-only Google credential (<code>analytics.readonly</code>): '
+            'a service-account JSON key added as <b>Viewer</b> in GA Admin → Property access management, with the '
+            'Google Analytics Data API enabled in its Cloud project (set <code>OPENRC_GA4_CREDENTIALS</code> to the '
+            'key, kept outside the repository), or a gcloud application-default login. Set '
+            '<code>OPENRC_GA4_PROPERTY</code> to the numeric property ID, or enable the Admin API too and it is found '
+            'from the web stream. See tools/telemetry/README.md.</p>')
+VITAL_RATINGS = (("good", "Good"), ("needs-improvement", "Needs improvement"), ("poor", "Poor"))
+
+
+def ga_rows(table, metric, tip_metrics):
+    """GA4 report rows -> hbar_chart rows; tip_metrics: [(api name, label)]."""
+    return [(" / ".join(r["dims"]) or "(not set)", r["values"].get(metric, 0),
+             [f"{label} {fmt_int(r['values'].get(name, 0))}" for name, label in tip_metrics], False)
+            for r in table or []]
+
+
+def ga_panel(model, key, title, sub, metric, tip_metrics):
+    if key in model.get("missing", {}):
+        names = ", ".join(f"<code>{e(n.split(':', 1)[1])}</code>" for n in model["missing"][key])
+        body = (f'<p class="empty">Not registered in GA4.</p><p class="note">Register the event-scoped custom '
+                f'dimension(s) {names} in GA Admin → Custom definitions; GA4 reports them from registration '
+                'onwards.</p>')
+    elif key in model.get("errors", {}):
+        body = f'<p class="empty">Report failed: {e(model["errors"][key])}</p>'
+    elif not (model.get("tables") or {}).get(key):
+        body = '<p class="empty">No data in this period.</p>'
+    else:
+        body = hbar_chart(ga_rows(model["tables"][key], metric, tip_metrics), fmt_int, title)
+    return panel(title, sub, body)
+
+
+def vitals_panel(model):
+    title, sub = "Web Vitals ratings", "sampled web_vital events (about 10% of page views), by metric and rating"
+    if "vitals" in model.get("missing", {}) or "vitals" in model.get("errors", {}) or \
+            not (model.get("tables") or {}).get("vitals"):
+        return ga_panel(model, "vitals", title, sub, "eventCount", [])
+    counts, known = {}, {k for k, _ in VITAL_RATINGS}
+    for row in model["tables"]["vitals"]:
+        if len(row["dims"]) == 2 and row["dims"][1] in known:
+            counts.setdefault(row["dims"][0], {}).setdefault(row["dims"][1], 0)
+            counts[row["dims"][0]][row["dims"][1]] += row["values"].get("eventCount", 0)
+    body = []
+    for name in sorted(counts, key=lambda n: ({"LCP": 0, "INP": 1, "CLS": 2}.get(n, 9), n)):
+        total = sum(counts[name].values()) or 1
+        cells = "".join(f"<td>{fmt_int(counts[name].get(k, 0))} ({counts[name].get(k, 0) * 100 / total:.0f}%)</td>"
+                        for k, _ in VITAL_RATINGS)
+        body.append(f"<tr><td>{e(name)}</td>{cells}<td>{fmt_int(sum(counts[name].values()))}</td></tr>")
+    heads = "".join(f"<th>{label}</th>" for _, label in VITAL_RATINGS)
+    table = (f"<table><thead><tr><th>Metric</th>{heads}<th>Samples</th></tr></thead>"
+             f"<tbody>{''.join(body)}</tbody></table>")
+    return panel(title, sub, scroll(table) + '<p class="note">Ratings use the web-vitals thresholds (LCP 2.5/4 s, '
+                 'INP 200/500 ms, CLS 0.1/0.25). Sampled field data, not a lab measurement.</p>')
+
+
+def website_section(model, github_model, now):
+    head = ('<p class="sub">Public website (GA4 web stream <code>' + e(ga4.MEASUREMENT_ID) + '</code>, through Tag '
+            'Manager): page views, <code>download_request</code> events and sampled Web Vitals. Blocked analytics '
+            'and direct GitHub downloads are not measured; a download request is not a completed download.</p>')
+    if model is None:
+        return (head + '<div class="panel"><h4>Google Analytics 4</h4><p class="sub">Not connected</p>' + GA_SETUP
+                + '<p>Until then, open <a href="https://analytics.google.com/analytics/web/" rel="noopener">Google '
+                'Analytics</a>.</p></div>')
+    if model.get("error"):
+        return (head + f'<div class="panel"><h4>Google Analytics 4</h4><p class="sub">Collection failed '
+                f'{e((model.get("collected_utc") or "")[:16].replace("T", " "))} UTC</p>'
+                f'<p><b>{e(model["error"])}</b></p>{GA_SETUP}</div>')
+    totals, days = model.get("totals") or {}, model.get("days") or []
+    sessions = totals.get("sessions", 0)
+    engaged = f"{totals.get('engaged', 0) * 100 / sessions:.0f}% engaged" if sessions else "no sessions"
+    span = f"{len(days)} days"
+    dl_failed = "downloads" in (model.get("errors") or {})
+    items = [
+        (f"Active users, {span}", fmt_int(totals.get("users", 0)), f"{fmt_int(totals.get('new_users', 0))} new"),
+        (f"Sessions, {span}", fmt_int(sessions), engaged),
+        (f"Page views, {span}", fmt_int(totals.get("views", 0)), "all locales"),
+        (f"Download requests, {span}", "-" if dl_failed else fmt_int(model.get("downloads_total") or 0),
+         "report failed" if dl_failed else f"{fmt_int(ga4.window(model, 7))} in the last 7 days"),
+        ("Active users now", "-" if model.get("realtime_users") is None else fmt_int(model["realtime_users"]),
+         f"last 30 minutes · property {model.get('property')}"),
+    ]
+    markers = release_days(github_model)
+    daily = model.get("daily") or []
+    zone = (f"per UTC day: time zone {model.get('time_zone') or 'unknown'} could not be loaded (pip install "
+            "tzdata), so the newest day can be partial or empty; triangles mark releases"
+            if model.get("zone_fallback") else
+            f"per day in the property time zone ({model.get('time_zone') or 'unknown'}); triangles mark releases")
+    visitors = panel("Visitors per day", zone, legend([("u", "Active users", "s1"), ("s", "Sessions", "s2"),
+                                                       ("v", "Page views", "s3")]) + line_chart(
+        days, [("Active users", daily_values(daily, days, "users"), "s1"),
+               ("Sessions", daily_values(daily, days, "sessions"), "s2"),
+               ("Page views", daily_values(daily, days, "views"), "s3")], "Website visitors per day", markers))
+    if "downloads" in model.get("errors", {}):
+        dl_body = f'<p class="empty">Report failed: {e(model["errors"]["downloads"])}</p>'
+    else:
+        dl_body = line_chart(days, [("Download requests", daily_values(model.get("downloads_daily") or [], days,
+                                                                        "count"), "s1")],
+                             "Website download requests per day", markers)
+    requests = panel("Download requests per day", "download_request events (automatic and manual)", dl_body)
+    pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
+    users_sessions = [("activeUsers", "Users"), ("sessions", "Sessions")]
+    errors = {k: v for k, v in (model.get("errors") or {}).items()
+              if k in ("metadata", "realtime")}
+    error_note = "".join(f'<p class="note">{e(k.capitalize())} report failed: {e(v)}</p>' for k, v in errors.items())
+    return (head + stat_tiles(items) + error_note + pair(visitors, requests)
+            + pair(ga_panel(model, "countries", "Countries", "active users", "activeUsers", users_sessions),
+                   ga_panel(model, "download_countries", "Download requests by country", "download_request events",
+                            "eventCount", [("eventCount", "Requests")]))
+            + pair(ga_panel(model, "sources", "Traffic sources", "sessions by source / medium", "sessions",
+                            [("sessions", "Sessions"), ("activeUsers", "Users")]),
+                   ga_panel(model, "pages", "Top pages", "page views (one page per locale)", "screenPageViews",
+                            [("screenPageViews", "Views"), ("activeUsers", "Users")]))
+            + pair(ga_panel(model, "download_platforms", "Download requests by platform", "download_platform",
+                            "eventCount", [("eventCount", "Requests")]),
+                   ga_panel(model, "download_sources", "Download requests by source",
+                            "download_source: website or the GitHub README link", "eventCount",
+                            [("eventCount", "Requests")]))
+            + pair(ga_panel(model, "devices", "Devices", "active users by device category", "activeUsers",
+                            [("activeUsers", "Users")]), vitals_panel(model)))
 
 
 def players_section(snapshot, insight_html):
@@ -1126,7 +1256,7 @@ def render(snapshot):
         "players": players_section(snapshot, insight_html),
         "downloads": downloads_section(snapshot["github"], now, len(rows) or 30),
         "github": github_section(snapshot["github"], now),
-        "website": website_section(),
+        "website": website_section(snapshot.get("website"), snapshot["github"], now),
         "receiver": receiver,
     }
     count = len(alert_items)
@@ -1189,6 +1319,11 @@ def main(argv=None):
     f.add_argument("--timeout", type=int, default=15)
     f.add_argument("--no-download-collect", action="store_true",
                    help="use the archived download counters without collecting from GitHub first")
+    f.add_argument("--ga4-property", default=os.environ.get("OPENRC_GA4_PROPERTY"),
+                   help="numeric GA4 property ID; env OPENRC_GA4_PROPERTY (default: found from the web stream)")
+    f.add_argument("--ga4-credentials", default=None,
+                   help="GA4 credential JSON (service account or authorized_user); env OPENRC_GA4_CREDENTIALS")
+    f.add_argument("--no-ga4", action="store_true", help="skip the website (GA4) collection")
     r = sub.add_parser("render", help="render a saved snapshot")
     r.add_argument("--snapshot", required=True)
     for p in (f, r):
@@ -1210,6 +1345,7 @@ def main(argv=None):
             ok, message = downloads.collect(args.downloads_dir)
             note = None if ok else message
         snapshot["github"] = load_downloads(args.downloads_dir, note)
+        snapshot["website"] = None if args.no_ga4 else ga4.fetch(args.days, args.ga4_property, args.ga4_credentials)
         snapshot_path(out).write_text(json.dumps(snapshot, indent=1, sort_keys=True), encoding="utf-8")
     else:
         snapshot = json.loads(Path(args.snapshot).read_text(encoding="utf-8"))
