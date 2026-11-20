@@ -127,8 +127,18 @@ func _run() -> void:
 	check("water entry explicitly unsupported", s._water_contact_possible(water,water))
 	var high: PackedFloat64Array=water.duplicate(); high[2]=-4.0
 	check("high overflight remains admitted", not s._water_contact_possible(high,high))
-	check("direct native adapter rejects lake", not Adapter.prepare(s,null).ok)
-	check("direct native configuration rejects lake", not NativeConfig.prepare_helicopter(s).ok)
+	# Native helicopter lakes: a valid published lake is carried to the native stage, an invalid one is refused.
+	check("direct native adapter accepts a valid lake", Adapter.lake_refusal(s).is_empty(), Adapter.lake_refusal(s))
+	var configured: Dictionary=NativeConfig.prepare_helicopter(s)
+	check("direct native configuration carries the lake", configured.get("ok",false) \
+		and configured.snapshot.format==Adapter.SNAPSHOT_FORMAT \
+		and var_to_bytes(configured.snapshot.lake)==var_to_bytes(s.environment.lake), str(configured.get("reason","")))
+	var valid_lake: Dictionary=s.environment.lake
+	var broken: Dictionary=valid_lake.duplicate(true)
+	broken.erase("bank_ne_m")
+	s.environment.lake=broken
+	check("direct native adapter refuses an invalid lake definition", Adapter.lake_refusal(s)=="helicopter lake definition is invalid")
+	s.environment.lake=valid_lake
 	check("compatible lake checkpoint restores", s.restore_checkpoint(old).ok)
 	var in_water: Dictionary=old.duplicate(true)
 	in_water.simulation.state=water.duplicate(); in_water.simulation.previous=water.duplicate()
