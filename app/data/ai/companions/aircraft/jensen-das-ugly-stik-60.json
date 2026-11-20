@@ -15,7 +15,7 @@
     }
   },
   "solver": {
-    "sha256": "dabca746b19975773c737d8e14887f8b1d0cb72cd8c296b6e600234d112cded6",
+    "sha256": "c6b8823dda844b8c4d68a44a07deff3ec33746d85e3120d32245ec372a7bbfae",
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta2.official.cafc17a19",
