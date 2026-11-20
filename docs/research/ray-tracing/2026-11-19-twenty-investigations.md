@@ -10,6 +10,14 @@
 **Separate NVIDIA lane:** Godot fork `135dff3887a3d2ccf45cafbd9bdffa7b718e1e76`, Streamline 2.11.1.  
 **Change scope:** documentation only. No engine, simulation, settings, package or shader implementation is changed by this research.
 
+## Execution precedence — integrated revision of 20 November 2026
+
+All twenty investigations below remain the dated source and reasoning record, including their original proposals and rejected leads. The [canonical implementation plan](../../plans/optional-ray-tracing.md) now incorporates their findings and all sixteen [adversarial audit](2026-11-19-adversarial-plan-audit.md) remedies. Its current contracts govern execution when a historical proposal below differs.
+
+In particular, use the plan's checked geometry/immutable-index boundary; full-width masks; fixed-LOD/single-mip alpha whitelist; MSAA Off admission for both modes; independent Hard release path; complete primitive/guide/31-age moment contract; numerical-ambiguity reference intervals and quantitative PCSS benefit; fixed eleven-pair matched-state estimator; entire-session recovery latch; and exact exported-package protocol. The old 36-byte payload estimate is incomplete for the selected full Soft guide layout, successive quadrature agreement is not a reference certificate, and I20's five-pair bootstrap/extension is superseded. These are explicit corrections, not retroactive claims that the investigations measured a passing product.
+
+See [fixed decisions and current-main intake](../../plans/optional-ray-tracing.md#13-frozen-implementation-decisions-and-source-intake) and [finding-by-finding resolution](../../plans/optional-ray-tracing.md#11-audit-resolution-and-implementation-entry). Runtime implementation and GPU/package qualification remain unexecuted.
+
 ## 1. Method, order and evidence rules
 
 The work consists of **20 question-led investigations**, not 20 search queries. Round 1 completed I01–I10 across architecture, numerical correctness, denoising, content, platforms and qualification. Only after all ten findings were consolidated was Round 2 selected. I11–I20 follow specific unresolved boundaries from Round 1 and reduce them to source-specific implementation decisions and test oracles.

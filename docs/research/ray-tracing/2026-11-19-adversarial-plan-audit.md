@@ -2,11 +2,19 @@
 
 **Date:** 19 November 2026, America/Bogota.  
 **Audited revision:** `bultodepapas/OpenRCsimulator@381d4215b590d09692a090df0fd0fdd43d3a85ba`, branch `ray-tracing`.  
-**Disposition:** corrective revision required before treating the plan as a fully specified implementation handoff.  
-**Findings:** 16 open — 5 High, 10 Medium, 1 Low.  
+**Disposition at the audited revision:** corrective revision required before treating that revision as a fully specified implementation handoff. See the integration status below for its subsequent resolution.  
+**Findings at the audited revision:** 16 open — 5 High, 10 Medium, 1 Low. The current plan specifies remedies for all 16; implementation proof remains pending.  
 **Evidence scope:** source/document review, independent mathematical counterexamples and CPU numerical emulation. No engine build, GPU dispatch, rendered flight, package execution or device-loss experiment was performed for this audit.
 
-The [implementation plan](../../plans/optional-ray-tracing.md) remains the execution owner. This dated report owns the findings against the frozen revision above; the [twenty-investigation record](2026-11-19-twenty-investigations.md) remains historical research. The accompanying plan notice and documentation-index update expose this audit without silently rewriting the contracts being judged.
+The [implementation plan](../../plans/optional-ray-tracing.md) remains the execution owner. This dated report owns the findings against the frozen revision above; the [twenty-investigation record](2026-11-19-twenty-investigations.md) remains historical research. The original accompanying plan notice exposed this audit without rewriting the contracts being judged. The later integration status explicitly records the corrective revision while preserving this frozen analysis.
+
+## Integration status — 20 November 2026
+
+**All 16 findings have a specified remedy in the implementation-ready plan revision RT-2026-11-20.** The [canonical resolution register](../../plans/optional-ray-tracing.md#11-audit-resolution-and-implementation-entry) maps each finding to the corrected contract, phase and proof gate. The findings and “Open” status below describe the frozen **19 November audited revision**, and remain intact as historical evidence; they are not a second current execution contract.
+
+Three specialist reviews covered engine/material/mask correctness, temporal/numerical methods, and admission/recovery/performance/packages. The integration fixes checked BLAS spans and index generations, defines a conservative alpha/MSAA support boundary, gives Hard an independent release path, specifies primitive-level history and bounded moments, replaces false reference convergence and the five-pair bootstrap, and requires exact exported-artifact qualification. Targeted follow-up review corrected fractional-count variance and reference numerical ambiguity before finalizing the contract. The 20-investigation record remains preserved.
+
+This closes **specification gaps**, not engine implementation or product qualification. All runtime subphases remain not started; source fixes, GPU execution, image quality, memory/performance, real flight, recovery and packages still require their named proof. The implementation intake also explicitly accounts for main advancing to `48580b75a796fc6048fb77cdd69875c94ebb69e0`; see [source intake and fixed decisions](../../plans/optional-ray-tracing.md#13-frozen-implementation-decisions-and-source-intake).
 
 ## 1. Verdict and scope
 
