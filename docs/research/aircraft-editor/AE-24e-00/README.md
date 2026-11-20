@@ -15,6 +15,17 @@ validation documents now incorporate those findings. The source follow-ups use
 branch commit `0d251cb`; original asset and study results below retain their date.
 No runtime decal editor or native rendering/performance result is claimed.
 
+## R2 artwork and study follow-up — 2026-11-19
+
+The [artwork-preparation guide](artwork-preparation.md) records 14 additional
+artwork originals across six brands, source/variant conflicts and concrete
+runtime preparation decisions. The source receipts include a ProModeler seal,
+a stronger FEETECH raster, SAVOX variants and KONTRONIK/REVOC vector masters.
+The public pack retains its existing image bytes. The study now has independent
+rotation/mirroring/repeat/export capabilities and bounded, duplicate-aware draft
+recovery. See the current [verification record](validation.md); these changes
+advance developer preparation without changing the shipped simulator.
+
 ## Handoff in five minutes
 
 1. Read the [plan and implementation sequence](../../../plans/sponsor-decal-workshop.md).

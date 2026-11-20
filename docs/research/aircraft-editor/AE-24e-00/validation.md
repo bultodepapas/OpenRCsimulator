@@ -19,6 +19,8 @@ and Node 18+:
 python research/aircraft-editor/sponsor-decals/build_catalog.py --check
 python research/aircraft-editor/sponsor-decals/validate_pack.py --self-test
 node research/aircraft-editor/sponsor-decals/check_study.cjs
+node research/aircraft-editor/sponsor-decals/check_strict_draft_json.cjs
+python research/aircraft-editor/sponsor-decals/check_capabilities.py
 python research/aircraft-editor/sponsor-decals/projection_exercises.py --check
 ```
 
@@ -51,6 +53,47 @@ GPU composition, runtime admission or migration. The synthetic fixture is a
 concrete handoff contract, not a replacement for GDScript tests against the
 actual Workshop paths. The study harness simulates image completion/failure;
 it does not exercise a browser decoder, native pointer capture or download UI.
+
+## R2 variant and capability verification — 2026-11-19
+
+The [R2 guide](artwork-preparation.md) and
+[source receipt](../../../../research/aircraft-editor/sponsor-decals/logo-variant-intake-r2.json)
+record 14 new artwork originals across six brands, one brand book and three
+original archives. Exact response/member hashes and byte counts were verified;
+the new files stay outside the public image pack. ProModeler now has verified
+seal/icon coverage, while its standalone wordmark remains unresolved. FEETECH has
+a direct manufacturer color PNG. The unchanged public lock still covers 12 files
+and 233,118 image bytes; no new external entry is enabled.
+
+The actual integrated study passes **39/39 simulated interaction checks**,
+**seven strict-JSON check groups** and **nine Python capability tests**. The
+existing validator still passes its **two examples and 27 invalid-input cases**.
+The generator check reproduces all 14 generated outputs. Tests use restricted
+synthetic policies on project artwork, never an inferred sponsor grant.
+All five focused commands also passed from a fresh materialized working copy
+containing the exact pinned source inputs; this was not a full Git clone or a
+native engine run.
+
+Independent review exposed and the lead resolved three classes of defects:
+
+- Search rebuilt a one-copy card as enabled even though the action guard refused
+  the extra instance. A shared card-state function now preserves the correct
+  disabled state and label through search and deletion.
+- A restored angle such as `0.001` could be rounded to zero and displayed while
+  recovery was active. Any nonmatching cleaned draft now displays no repaired
+  layers and retains the exact original text without a storage write.
+- Native JSON decoding could discard duplicate keys or underflow a nonzero token
+  to zero. The bounded pre-decoder rejects decoded duplicate keys, including
+  Unicode-escaped aliases, and numeric underflow. Missing parser files also block
+  an empty board rather than creating a draft that cannot reload.
+
+Directly fired disabled controls, hidden repeats, hidden/locked export-restricted
+layers, deletion and Undo are covered. Independent reproductions of `0.001`,
+duplicate rotation keys and `1e-400` now enter recovery with zero displayed layers,
+zero writes/downloads and unchanged raw storage. Valid restricted drafts retain
+local editing/storage. This is offline evidence; real browser layout, native
+pointer capture, Godot rendering, production migration and GPU costs remain
+unqualified. The unchanged 37 projection exercises were not rerun for R2.
 
 ## Logo intake verification — 2026-11-19
 

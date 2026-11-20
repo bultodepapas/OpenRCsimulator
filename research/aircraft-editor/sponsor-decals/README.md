@@ -11,7 +11,7 @@ image pack and flat study retain their original scope.
 ## Review the interaction
 
 Open `workshop-preview.html` directly in a browser after cloning this branch.
-It uses only this directory's `catalog.js` and `assets/`; no server, account,
+It uses this directory's `catalog.js`, `strict-draft-json.js` and `assets/`; no server, account,
 external request or simulator changes are needed. The flat aircraft board
 demonstrates repeated placement, movement, scale, rotation, explicit flips,
 layers, Undo/Redo and a local draft. It does **not** demonstrate 3D projection,
@@ -31,6 +31,22 @@ its intended use and distribution are established. The 12 existing image files
 and their byte lock are unchanged. The source register gives quality notes and
 the concrete promotion steps for the maintainer.
 
+The **R2 variant pass** adds [14 new artwork-source receipts](logo-variant-intake-r2.json)
+across six brands, a brand book and three source archives. The separate review
+package supplies the unchanged originals. A verified ProModeler seal closes icon
+coverage and a direct FEETECH color PNG improves that source; a ProModeler wordmark
+and FEETECH vector master remain unresolved. Read the
+[preparation and variant guide](../../../docs/research/aircraft-editor/AE-24e-00/artwork-preparation.md)
+for source disagreements, master-to-texture decisions and memory calculations.
+
+The study now enforces five explicit capabilities per asset: rotation, horizontal
+and vertical mirroring, repeated placement and export. Missing or malformed
+capabilities disable that entry. All external entries remain references. Local
+editing/storage can remain available when export is unavailable; hidden layers
+still count for repeat and export checks. The strict draft reader preserves
+ambiguous or incompatible original text and pauses editing instead of repairing
+it silently. Keep all study files together when opening or sharing the folder.
+
 ## Reproduce and check
 
 From the repository root, with Python 3.11+ and Node 18+:
@@ -39,6 +55,8 @@ From the repository root, with Python 3.11+ and Node 18+:
 python research/aircraft-editor/sponsor-decals/build_catalog.py --check
 python research/aircraft-editor/sponsor-decals/validate_pack.py --self-test
 node research/aircraft-editor/sponsor-decals/check_study.cjs
+node research/aircraft-editor/sponsor-decals/check_strict_draft_json.cjs
+python research/aircraft-editor/sponsor-decals/check_capabilities.py
 python research/aircraft-editor/sponsor-decals/projection_exercises.py --check
 ```
 
@@ -65,9 +83,13 @@ retains the blocked browser attempt and remaining native review.
 | --- | --- |
 | `catalog.json` | Research source, relationship, scope, next action and demo availability |
 | `logo-source-intake.json` | Public source URLs and technical receipts for newly located artwork; not a permission or asset-distribution manifest |
+| `logo-variant-intake-r2.json` | Follow-up vector/color/icon source receipts and source-identity caveats; no additional image binaries |
 | `assets/` | Exact official reference originals and named test SVGs, outside `app/` |
 | `asset-lock.json` | Reproducible byte counts, dimensions, source and packaged SHA-256 |
 | `catalog.js` | Generated local data for the interaction study |
+| `strict-draft-json.js` | Bounded grammar guard for exact draft recovery; study port of the existing Godot approach |
+| `check_strict_draft_json.cjs` | Duplicate-key, Unicode, numeric and resource-boundary checks for that reader |
+| `check_capabilities.py` | Synthetic policy checks against the actual builder and proposal validator |
 | `schemas/decal-stack.schema.json` | Closed proposed 3D layer contract; not accepted by presentation v4 |
 | `examples/` | Valid empty and layered proposals against `receiver-fixture.json` |
 | `receiver-fixture.json` | Synthetic receiver bind-local bounds, model transforms and identity |

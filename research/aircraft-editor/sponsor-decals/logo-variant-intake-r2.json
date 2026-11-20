@@ -1,0 +1,731 @@
+{
+  "schema": "openrc.public-logo-variant-intake.v1",
+  "reviewed_local_date": "2026-11-19",
+  "review_timezone": "America/Bogota",
+  "retrieved_utc_date": "2026-11-20",
+  "branch_parent": "edd8a476f50410d3583df0f166e4a513a5ef8b8c",
+  "scope": "Follow-up public-source artwork research. Exact originals remain in the separate owner/developer review package. No new third-party image bytes or private correspondence are included in the public branch.",
+  "rights": "These source receipts establish provenance and quality observations, not permission to place, modify, mirror, export or redistribute the marks.",
+  "counts": {
+    "new_artwork_originals": 14,
+    "brands_with_new_artwork": 6,
+    "brand_guidance_documents": 1,
+    "original_archives": 3,
+    "retained_source_files": 18,
+    "new_image_files_in_public_pack": 0
+  },
+  "coverage": "Some form of logo artwork has now been located for all 17 catalog organizations across the existing pack and both intakes. ProModeler coverage is a seal/icon, not a verified standalone wordmark or vector master.",
+  "artwork_and_guidance": [
+    {
+      "bytes": 88481,
+      "sha256": "8a22e3499cc9b229d3621a423dd004215d7edcc138cb7f3bafc265870910409d",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PNG/TeamSavox-Logo-DarkBG.png",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PNG",
+      "notes": "Transparent high-resolution outlined-letter wordmark. Includes substantial transparent margins; do not silently crop or recolor.",
+      "width": 4167,
+      "height": 1417,
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "nonzero_alpha_bbox": [
+        482,
+        421,
+        3685,
+        996
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-DarkBG.png",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 90980,
+      "sha256": "ef08cff91668c98fc0d80c69462ac6c6ad7edb58095f40f823d4b2d46573c50a",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PNG/TeamSavox-Logo-Mono-Black.png",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PNG",
+      "notes": "Transparent high-resolution outlined-letter wordmark. Includes substantial transparent margins; do not silently crop or recolor.",
+      "width": 4167,
+      "height": 1417,
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "nonzero_alpha_bbox": [
+        482,
+        421,
+        3685,
+        996
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-Mono-Black.png",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 91490,
+      "sha256": "1a2482aa1ac60387f894c40b2c28141cb77720d5c03fb6736029f4bec5fcd81f",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PNG/TeamSavox-Logo-Mono-Orange.png",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PNG",
+      "notes": "Transparent high-resolution outlined-letter wordmark. Includes substantial transparent margins; do not silently crop or recolor.",
+      "width": 4167,
+      "height": 1417,
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "nonzero_alpha_bbox": [
+        482,
+        421,
+        3685,
+        996
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-Mono-Orange.png",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 86285,
+      "sha256": "477c9a922d3b7b3d669f17c44ea27fef85069e37371c6d3ee38e0c7e6c507f61",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PNG/TeamSavox-Logo-Mono-White.png",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PNG",
+      "notes": "Transparent high-resolution outlined-letter wordmark. Includes substantial transparent margins; do not silently crop or recolor.",
+      "width": 4167,
+      "height": 1417,
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "nonzero_alpha_bbox": [
+        482,
+        421,
+        3685,
+        996
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-Mono-White.png",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 229427,
+      "sha256": "d3662a8155c4af8dd55cd60717003935c5c638e1c85e59eb0d564c13e46caccf",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PDF/TeamSavox-Logo-CMYK.pdf",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PDF 1.6",
+      "notes": "Five page vectors: light, dark, white, black and orange wordmarks; no visible-page raster images or fonts. Background rectangles are part of pages 2 and 3. AI renders those pages dark; corresponding PDF renders them very light gray in this inspection. RGB and CMYK appearance also differs.",
+      "page_count": 5,
+      "page_size_points": [
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ]
+      ],
+      "visible_page_vector_drawings": [
+        5,
+        6,
+        6,
+        5,
+        5
+      ],
+      "visible_page_embedded_image_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible_page_font_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-CMYK.pdf",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 1297170,
+      "sha256": "a4fa354933133f359af102649f7b1f458a723b6a98ca997604af5d4420dfca55",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/AI/TeamSavox-Logo-CMYK.ai",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "Adobe Illustrator .ai with PDF 1.6-compatible pages",
+      "notes": "Five page vectors: light, dark, white, black and orange wordmarks; no visible-page raster images or fonts. Background rectangles are part of pages 2 and 3. AI renders those pages dark; corresponding PDF renders them very light gray in this inspection. RGB and CMYK appearance also differs.",
+      "page_count": 5,
+      "page_size_points": [
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ]
+      ],
+      "visible_page_vector_drawings": [
+        5,
+        6,
+        6,
+        5,
+        5
+      ],
+      "visible_page_embedded_image_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible_page_font_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-CMYK.ai",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 231514,
+      "sha256": "c98d309dca20b7eec9f649c73b535e74bb9b7d0bdd86b84b36cbdd29c786371e",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/PDF/TeamSavox-Logo-RGB.pdf",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "PDF 1.6",
+      "notes": "Five page vectors: light, dark, white, black and orange wordmarks; no visible-page raster images or fonts. Background rectangles are part of pages 2 and 3. AI renders those pages dark; corresponding PDF renders them very light gray in this inspection. RGB and CMYK appearance also differs.",
+      "page_count": 5,
+      "page_size_points": [
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ]
+      ],
+      "visible_page_vector_drawings": [
+        5,
+        6,
+        6,
+        5,
+        5
+      ],
+      "visible_page_embedded_image_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible_page_font_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-RGB.pdf",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 244805,
+      "sha256": "4efadca3213620a74dbbc6fd3a82b1a206352d5a2527e40606ab93887ab67651",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "TeamSavox-Logos-Package/AI/TeamSavox-Logo-RGB.ai",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "Adobe Illustrator .ai with PDF 1.6-compatible pages",
+      "notes": "Five page vectors: light, dark, white, black and orange wordmarks; no visible-page raster images or fonts. Background rectangles are part of pages 2 and 3. AI renders those pages dark; corresponding PDF renders them very light gray in this inspection. RGB and CMYK appearance also differs.",
+      "page_count": 5,
+      "page_size_points": [
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ],
+        [
+          0.0,
+          0.0,
+          1000.0,
+          340.0
+        ]
+      ],
+      "visible_page_vector_drawings": [
+        5,
+        6,
+        6,
+        5,
+        5
+      ],
+      "visible_page_embedded_image_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible_page_font_counts": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "suggested_filename": "savox-TeamSavox-Logo-RGB.ai",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8"
+    },
+    {
+      "bytes": 3043290,
+      "sha256": "043bbb44722daf5b42724c7e05f6f65f7eef06f4129a2a15546884823e18c58b",
+      "brand": "KONTRONIK",
+      "source_page": "https://kontronik.com/en/downloads",
+      "http_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_cmyk.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "kontronik_cmyk (1).eps",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "EPSF 3.0, PostScript Level 2 with DOS preview",
+      "notes": "Manufacturer labels this red PRINT EPS and says EPS is scalable for print. Neither source access nor a public download establishes decal, transform, or distribution permission.",
+      "bounding_box": "0 0 133 20",
+      "hires_bounding_box": "0 0 132.8705 19.7021",
+      "embedded_preview": "DOS EPS 133 x 20 TIFF plus Illustrator thumbnail; these are previews, not the rendered logo artwork",
+      "rendered_artwork": "Ghostscript -dSAFER -dEPSCrop PDF conversion performed in memory; 9 vector drawings, zero page images, zero fonts",
+      "suggested_filename": "kontronik-red.eps",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "0eba51c187267ffa667660c4fabee6076da2f342bdb05cb0709b4b3dd367b0a2"
+    },
+    {
+      "bytes": 3038854,
+      "sha256": "65e729b0dd0855249fa216dbd6ab28615c55abe60935196d20ad9633318a1956",
+      "brand": "KONTRONIK",
+      "source_page": "https://kontronik.com/en/downloads",
+      "http_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_cmyk_schwarz.zip",
+      "directly_linked": false,
+      "archive_directly_linked": true,
+      "archive_entry": "kontronik_cmyk_schwarz.eps",
+      "local_changes": "None; exact uncompressed archive member",
+      "actual_format": "EPSF 3.0, PostScript Level 2 with DOS preview",
+      "notes": "Manufacturer labels this black PRINT EPS and says EPS is scalable for print. Neither source access nor a public download establishes decal, transform, or distribution permission.",
+      "bounding_box": "0 0 133 20",
+      "hires_bounding_box": "0 0 132.8705 19.7021",
+      "embedded_preview": "DOS EPS 133 x 20 TIFF plus Illustrator thumbnail; these are previews, not the rendered logo artwork",
+      "rendered_artwork": "Ghostscript -dSAFER -dEPSCrop PDF conversion performed in memory; 9 vector drawings, zero page images, zero fonts",
+      "suggested_filename": "kontronik-black.eps",
+      "role": "artwork_original",
+      "in_public_image_pack": false,
+      "archive_sha256": "4496c44835698cd37f5dce3fb48898f8a94a6d2c1d958799075c0534c5613e73"
+    },
+    {
+      "bytes": 272748,
+      "sha256": "f1dc2a38af4aa95dd389f247c924c05a36b8bca1b0bef73cb754d13a35b481ef",
+      "brand": "REVOC Custom",
+      "source_page": "https://shop.revoc.eu/download",
+      "http_url": "https://shop.revoc.eu/userdata/public/assets/images/logo/revoc-custom-logo.pdf",
+      "directly_linked": true,
+      "http_status": 200,
+      "local_changes": "None; exact HTTP response",
+      "actual_format": "PDF 1.5",
+      "page_count": 1,
+      "page_size_points": [
+        0.0,
+        0.0,
+        1164.1199951171875,
+        735.073974609375
+      ],
+      "visible_page_vector_drawings": 11,
+      "visible_page_embedded_image_counts": 0,
+      "visible_page_font_counts": 0,
+      "notes": "One-page logo master with vector paths and no embedded page bitmap or fonts. No crop, redraw or color modification performed.",
+      "suggested_filename": "revoc-logo.pdf",
+      "role": "artwork_original",
+      "in_public_image_pack": false
+    },
+    {
+      "bytes": 1891035,
+      "sha256": "2c351bd69566e84234e7334dabe998e06f073eee69c354a98a037d17dceacb57",
+      "brand": "SAVOX",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Brandbook.pdf",
+      "directly_linked": true,
+      "http_status": 200,
+      "local_changes": "None; exact HTTP response",
+      "actual_format": "PDF 1.4",
+      "page_count": 8,
+      "page_size_points": [
+        0.0,
+        0.0,
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "notes": "Guidance document, not an isolated decal master. Retain alongside the source-variant discrepancies documented in source_caveats.",
+      "suggested_filename": "savox-brandbook.pdf",
+      "role": "brand_guidance",
+      "in_public_image_pack": false
+    },
+    {
+      "brand": "FEETECH",
+      "suggested_filename": "feetech-header.png",
+      "source_authenticity": "directly linked manufacturer-domain header image",
+      "source_page": "https://www.feetechrc.com/",
+      "source_relationship": "The manufacturer homepage HTML directly references this absolute PNG URL in its header image element.",
+      "image_url": "https://www.feetechrc.com/Data/feetechrc/template/en/images/logo.png",
+      "bytes": 30098,
+      "sha256": "13bcc96ff78bbb04d60e55be1624978789774db2bb8afa0a5a5a2fe17569b628",
+      "format": "PNG",
+      "media_type": "image/png",
+      "width": 600,
+      "height": 200,
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nonzero_alpha_bbox": [
+        0,
+        13,
+        598,
+        196
+      ],
+      "visual_identity": "Stylized FEETECH wordmark with a red/yellow swoosh; visible identity inspected.",
+      "quality_notes": "Color transparent raster, materially larger than the 200×200 raster embedded in the earlier white wiki SVG; no scalable vector master established.",
+      "bytes_changed_locally": false,
+      "permissions": "No project-specific use, transform, player decal, livery export, or redistribution authorization established.",
+      "role": "artwork_original",
+      "in_public_image_pack": false
+    },
+    {
+      "brand": "ProModeler",
+      "suggested_filename": "promodeler-logo-512.png",
+      "source_authenticity": "full-size image directly listed by the public media API of a ProModeler-branded site; manufacturer-site article directly cross-links that site",
+      "source_page": "https://jbeech.com/",
+      "image_listing_url": "https://jbeech.com/wp-json/wp/v2/media/416",
+      "manufacturer_cross_link_page": "https://www.promodeler.com/profiles/NPL-ProModeler-and-steering-lasers",
+      "manufacturer_cross_link_target": "https://jbeech.com/edu/profiles/npl-promodeler-and-steering-lasers/",
+      "manufacturer_founder_page": "https://www.promodeler.com/About-Us",
+      "source_relationship": "ProModeler.com names John Beech as its founder and directly links its NPL article to a matching John Beech article at jbeech.com. The latter homepage identifies itself as ProModeler and directly links a 300×300 seal for its site icon. Its public WordPress media record identifies that 300×300 version and directly lists this full 512×512 source_url. This establishes the public cross-link and source self-identification; it does not independently prove domain ownership.",
+      "image_url": "https://jbeech.com/wp-content/uploads/2024/07/512x512-PDR-logo.png",
+      "bytes": 48295,
+      "sha256": "1ed11e1f2ab727bc93ad2ee8648fd767ec85f83e77be438e91357e630f202236",
+      "format": "PNG",
+      "media_type": "image/png",
+      "width": 512,
+      "height": 512,
+      "mode": "P with PNG transparency",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nonzero_alpha_bbox": [
+        8,
+        9,
+        504,
+        503
+      ],
+      "visual_identity": "Inspected circular toothed seal with stylized P and the words SPEED, POWER, PRECISION, DURABILITY and RESILIENCE. It does not spell out ProModeler.",
+      "quality_notes": "Icon/seal variant only. A separate high-resolution ProModeler wordmark and scalable vector original remain unresolved. Its existence as a site icon does not establish it as the full corporate wordmark.",
+      "bytes_changed_locally": false,
+      "permissions": "No project-specific use, transform, player decal, livery export, or redistribution authorization established.",
+      "role": "artwork_original",
+      "in_public_image_pack": false
+    },
+    {
+      "brand": "Leomotion Drives",
+      "suggested_filename": "leomotion-drives-icon.png",
+      "source_authenticity": "directly linked manufacturer-domain favicon",
+      "source_page": "https://leomotiondrives.com/",
+      "source_relationship": "The manufacturer homepage HTML directly references assets/img/favicon.png in its icon link.",
+      "image_url": "https://leomotiondrives.com/assets/img/favicon.png",
+      "bytes": 8343,
+      "sha256": "51b2e7169224ab2d7a9811a6f77d77f5c12b0d4d45d3d4c698ea805290e7f7eb",
+      "format": "PNG",
+      "media_type": "image/png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nonzero_alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "visual_identity": "Blue circular motor/gear symbol; visually consistent with the symbol on the existing Leomotion Drives homepage wordmark.",
+      "quality_notes": "Dedicated transparent icon variant, but only 64×64 pixels; not a scalable vector. Previously retained Leomotion Drives wordmark is larger.",
+      "bytes_changed_locally": false,
+      "permissions": "No project-specific use, transform, player decal, livery export, or redistribution authorization established.",
+      "role": "artwork_original",
+      "in_public_image_pack": false
+    }
+  ],
+  "archives": [
+    {
+      "bytes": 3045462,
+      "sha256": "7a2ebe29b4a7ac948f23fbbef7887f0c82e8e181efa24f05644386e5259b14d8",
+      "source_page": "https://www.teamsavox.com/download/",
+      "http_url": "https://www.teamsavox.com/TeamSavox-Logos-Package.zip",
+      "directly_linked": true,
+      "http_status": 200,
+      "actual_format": "ZIP",
+      "integrity": "ZIP CRC test passed",
+      "suggested_filename": "savox-package.zip",
+      "role": "source_archive",
+      "in_public_image_pack": false
+    },
+    {
+      "bytes": 2330215,
+      "sha256": "0eba51c187267ffa667660c4fabee6076da2f342bdb05cb0709b4b3dd367b0a2",
+      "source_page": "https://kontronik.com/en/downloads",
+      "http_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_cmyk.zip",
+      "directly_linked": true,
+      "http_status": 200,
+      "actual_format": "ZIP",
+      "integrity": "ZIP CRC test passed",
+      "suggested_filename": "kontronik-red.zip",
+      "role": "source_archive",
+      "in_public_image_pack": false
+    },
+    {
+      "bytes": 2327890,
+      "sha256": "4496c44835698cd37f5dce3fb48898f8a94a6d2c1d958799075c0534c5613e73",
+      "source_page": "https://kontronik.com/en/downloads",
+      "http_url": "https://kontronik.com/wp-content/uploads/2023/03/kontronik_cmyk_schwarz.zip",
+      "directly_linked": true,
+      "http_status": 200,
+      "actual_format": "ZIP",
+      "integrity": "ZIP CRC test passed",
+      "suggested_filename": "kontronik-black.zip",
+      "role": "source_archive",
+      "in_public_image_pack": false
+    }
+  ],
+  "source_caveats": [
+    {
+      "brand": "SAVOX",
+      "source": "https://www.teamsavox.com/TeamSavox-Brandbook.pdf",
+      "finding": "The linked brand book depicts filled letterforms while the current logo archive depicts outlined forms. Gray swatch RGB and hex numbers also disagree. Record the selected source revision; do not silently reconcile these differences."
+    },
+    {
+      "brand": "SAVOX",
+      "source": "https://www.teamsavox.com/Copyright_Statement_of_Hongji_Company_Official_Website.pdf",
+      "finding": "The English copyright statement calls for prior written consent for reproducing, distributing or modifying website content, including logos; assess project-specific written scope separately."
+    },
+    {
+      "brand": "JETI model",
+      "page": "https://www.jetimodel.com/",
+      "stylesheet": "https://www.jetimodel.com/public/views/assets/css/style.min.css",
+      "asset": "https://www.jetimodel.com/public/views/assets/img/logo-mobile.png",
+      "direct_link": "Homepage references stylesheet; .logo-mobile directly references logo-mobile.png.",
+      "format": "PNG",
+      "dimensions": [
+        542,
+        150
+      ],
+      "bytes": 6588,
+      "sha256": "4f99224439ba7c6829c40c440c3ceae32974bb57bdfcce043efcd0d55e76f007",
+      "outcome": "Byte-identical to existing JETI source. Other inspected official eSHOP/SW SHOP badges are shop-specific; no stronger standalone company master found in this bounded search."
+    },
+    {
+      "brand": "SonicModell",
+      "page": "https://www.sonicmodell.com/",
+      "asset": "https://www.sonicmodell.com/u_file/weblogo/fbb0fc46c2.png",
+      "direct_link": "Homepage img src directly references logo.",
+      "format": "PNG",
+      "dimensions": [
+        350,
+        59
+      ],
+      "bytes": 10019,
+      "sha256": "5512f435115b4b83af11c8732bbb030feb07582145805da235be943257d9632a",
+      "outcome": "Byte-identical to existing SonicModell header. No stronger standalone logo master found in bounded official-site search."
+    },
+    {
+      "brand": "ProModeler",
+      "result": "A 200×50 jbeech homepage image is a contact-details graphic with a small seal, not a standalone wordmark; intentionally omitted. The prior ProModeler and dev ProModeler direct URLs returned HTTP 403. No bypass was attempted. No high-resolution standalone wordmark was identified in this bounded review.",
+      "homepage": "https://jbeech.com/",
+      "prior_unavailable_image_url": "https://dev.promodeler.com/media/yootheme/cache/ac/500px-PDR-logo-acb6623d.png"
+    },
+    {
+      "brand": "FEETECH",
+      "result": "A goodservo.com page self-identifies as Shenzhen Feetech and displays a 600×200 PNG whose decoded pixels exactly match the manufacturer-domain header (ImageMagick compare absolute error count 0). The domains were not independently established as under common ownership, so the differently hosted duplicate was discarded and the manufacturer-domain file retained. A nontruncated recursive listing of the pinned official wiki commit found only the previously recorded feetech-logo-white.svg among paths containing logo or brand.",
+      "self_identifying_page": "https://goodservo.com/company-profile/",
+      "self_identifying_image_url": "https://goodservo.com/app/template/picture/logo.png",
+      "wiki_tree_url": "https://api.github.com/repos/ftservo/ftservo-wiki/git/trees/5637b7985bffb9baa3cda9d0f266be9c1714eb84?recursive=1"
+    },
+    {
+      "brand": "Leomotion Drives",
+      "result": "Leomotion GmbH is a separate entity, not automatically interchangeable with Leomotion Drives AG. The AG English homepage directly links leomotion.com as its Swiss RC shop; that storefront identifies itself as Leomotion GmbH. A public 2023 Leomotion GmbH announcement states that electric-motor production was transferred to Leomotion Drives AG and describes the GmbH as its Swiss RC distribution channel. The GmbH storefront directly links a 752×47 path SVG (4 paths, no embedded image), but this is the GmbH storefront logo: do not recommend it as an AG variant without explicit brand/rights verification. This research copy was discarded.",
+      "manufacturer_page": "https://leomotiondrives.com/en/",
+      "relationship_announcement": "https://download.leomotion.com/LeomotionNewOwnership.pdf",
+      "different_entity_source_page": "https://www.leomotion.com/",
+      "different_entity_image_url": "https://www.leomotion.com/shop/Bilder/shoplogo_xs.svg",
+      "discarded_candidate_metadata": {
+        "media_type": "image/svg+xml",
+        "bytes": 4310,
+        "sha256": "ae594954151ee8e33d859e8f89b9f7c6610705e8580dc809508b72f65f6a2fab",
+        "declared_width": 752,
+        "declared_height": 47,
+        "viewBox": "0 0 752 47",
+        "path_count": 4,
+        "image_count": 0
+      }
+    },
+    {
+      "brand": "GEMFAN",
+      "result": "The manufacturer homepage links the gfprops.com store, whose directly linked 1807×462 PNG decodes to exactly the same pixels as the previously retained manufacturer-header PNG (ImageMagick compare absolute error count 0); the different encoded response was discarded. The Chinese site header is a smaller version of the same mark and was also discarded. No stronger independent logo was identified.",
+      "manufacturer_page": "https://www.gemfanhobby.com/",
+      "linked_store": "https://www.gfprops.com/",
+      "store_image_url": "https://images-oss.2cshop.com/upload/customer_291/upload/20220706/085d5f2a584f9f5c808cc9f9c4c785e4.png?p=image,q=80,f=png",
+      "store_image_sha256": "1e844eb09b97a4ad5e2f388c2d963f157d16735421bdf7a93ed4c5e5d7a1a73b",
+      "prior_image_sha256": "4b13652a4612693814ef445b918843500fea1456b531f7449156279b4809f98a",
+      "chinese_site": "https://www.gemfanhobby.net/"
+    },
+    {
+      "brand": "Hiwonder",
+      "result": "Homepage continues to link the previously captured orange path-only SVG; no new meaningful variation identified. No duplicate was downloaded.",
+      "source_page": "https://www.hiwonder.com/",
+      "previously_retained_image_url": "https://www.hiwonder.com/cdn/shop/files/logo_20260703_V1.1.svg?v=1783050165&width=200"
+    }
+  ]
+}

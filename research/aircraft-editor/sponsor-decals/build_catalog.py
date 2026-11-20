@@ -20,6 +20,16 @@ import xml.etree.ElementTree as ET
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 BASELINE = "cf03e401fdb3e2af5eb32f91a56462f2ca69ff1c"
+STUDY_CAPABILITIES = frozenset({"rotate", "flip_x", "flip_y", "repeat", "export"})
+
+
+def read_study_capabilities(entry):
+    """Read an explicit study policy; absent or malformed data never grants use."""
+    value = entry.get("study_capabilities")
+    if (not isinstance(value, dict) or set(value) != STUDY_CAPABILITIES
+            or any(type(flag) is not bool for flag in value.values())):
+        raise ValueError(f"invalid study capabilities: {entry.get('id')}")
+    return dict(value)
 
 
 def strict_object(pairs):
@@ -100,6 +110,7 @@ def build_outputs():
         demo = entry["demo_placement"]
         if not isinstance(demo, bool):
             raise ValueError(f"demo_placement must be a boolean: {id}")
+        capabilities = read_study_capabilities(entry)
         image = None
         width = height = None
         if entry["source_path"] is not None:
@@ -123,7 +134,8 @@ def build_outputs():
             raise ValueError(f"invalid metadata-only entry: {id}")
         browser_assets.append({"id": id, "brand": entry["brand"], "label": entry["label"],
                                "image": image, "width": width, "height": height,
-                               "placement_enabled": demo, "reason": entry["reason"]})
+                               "placement_enabled": demo, "study_capabilities": capabilities,
+                               "reason": entry["reason"]})
     outputs[Path("asset-lock.json")] = (json.dumps({"format": "openrc-decal-research-assets", "version": 1,
         "baseline_commit": BASELINE, "assets": locked,
         "total_bytes": sum(item["bytes"] for item in locked)}, indent=2, ensure_ascii=False) + "\n").encode()

@@ -11,7 +11,7 @@ import sys
 
 from jsonschema import Draft202012Validator
 
-from build_catalog import HERE, build_outputs, read_catalog, strict_object
+from build_catalog import HERE, build_outputs, read_catalog, read_study_capabilities, strict_object
 
 MAX_STACK_BYTES = 65536
 
@@ -20,11 +20,20 @@ def reject_constant(value):
     raise ValueError(f"Non-finite JSON number: {value}")
 
 
+def bounded_float(token):
+    value = float(token)
+    if not math.isfinite(value):
+        raise ValueError("Non-finite JSON number")
+    if value == 0.0 and any(c in "123456789" for c in token.lower().split("e")[0]):
+        raise ValueError("Nonzero JSON number underflows to zero")
+    return value
+
+
 def read_json(data: bytes):
     if len(data) > MAX_STACK_BYTES:
         raise ValueError("Research stack exceeds 65536 bytes")
     return json.loads(data.decode("utf-8"), object_pairs_hook=strict_object,
-                      parse_constant=reject_constant)
+                      parse_constant=reject_constant, parse_float=bounded_float)
 
 
 def finite_tree(value):
@@ -66,6 +75,7 @@ def validate_stack(value: dict) -> None:
     assets = {a["id"]: a for a in read_catalog()["entries"]}
     locks = {a["id"]: a for a in json.loads((HERE / "asset-lock.json").read_text(encoding="utf-8"))["assets"]}
     ids = set()
+    asset_counts = {}
     for layer in value["layers"]:
         if layer["id"] in ids:
             raise ValueError("Duplicate decal instance ID")
@@ -73,6 +83,16 @@ def validate_stack(value: dict) -> None:
         asset = assets.get(layer["asset_id"])
         if asset is None or not asset["demo_placement"]:
             raise ValueError("Asset is unavailable for the interaction fixture")
+        capabilities = read_study_capabilities(asset)
+        asset_counts[layer["asset_id"]] = asset_counts.get(layer["asset_id"], 0) + 1
+        if not capabilities["repeat"] and asset_counts[layer["asset_id"]] > 1:
+            raise ValueError("Repeated placement is unavailable for this study asset")
+        if not capabilities["rotate"] and layer["rotation_deg"] != 0:
+            raise ValueError("Rotation is unavailable for this study asset")
+        if not capabilities["flip_x"] and layer["flip_u"]:
+            raise ValueError("Horizontal mirroring is unavailable for this study asset")
+        if not capabilities["flip_y"] and layer["flip_v"]:
+            raise ValueError("Vertical mirroring is unavailable for this study asset")
         if layer["asset_sha256"] != asset["source_sha256"]:
             raise ValueError("Asset identity mismatch")
         receiver = receivers.get(layer["receiver_id"])

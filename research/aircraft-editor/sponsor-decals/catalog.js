@@ -8,6 +8,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 1212,
       "height": 542,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Development credit is recorded; confirm an approved decal treatment under the brand rules."
     },
     {
@@ -18,6 +25,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 4167,
       "height": 1417,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Product representations are covered; confirm player decals, transforms and distribution."
     },
     {
@@ -28,6 +42,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 350,
       "height": 59,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Covered-model branding is recorded; confirm placement on other aircraft and exports."
     },
     {
@@ -38,6 +59,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 255,
       "height": 94,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Servo/product-link scope is recorded; confirm editable logo-decal use."
     },
     {
@@ -48,6 +76,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 600,
       "height": 173,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Existing logo scope covers website/README credit; confirm player placement and withdrawal handling."
     },
     {
@@ -58,6 +93,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 2000,
       "height": 420,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Simulator supporter credit is recorded; confirm arbitrary placement, flips and player export."
     },
     {
@@ -68,6 +110,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 542,
       "height": 150,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Technical help and livery support are recorded; complete written distribution and decal scope."
     },
     {
@@ -78,6 +127,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 658,
       "height": 256,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Existing livery support is recorded; complete written distribution and editable-decal scope."
     },
     {
@@ -88,6 +144,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Official transparent PNG located; confirm intended Workshop use and distribution."
     },
     {
@@ -98,6 +161,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Official red and black screen PNGs located; confirm the intended decal treatment."
     },
     {
@@ -108,6 +178,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Official transparent logo located; confirm intended use and required presentation review."
     },
     {
@@ -118,6 +195,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Official logo located; website-content reproduction requires prior express authorization."
     },
     {
@@ -128,6 +212,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Standalone official logo located; editable-decal and distribution scope remain pending."
     },
     {
@@ -138,6 +229,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Standalone official logo located; no new collaboration or decal permission is asserted."
     },
     {
@@ -148,7 +246,14 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official-site logo lead returned HTTP 403; clean artwork remains unresolved."
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
+      "reason": "A 512px seal is verified through an official cross-link; a standalone wordmark remains unresolved."
     },
     {
       "id": "feetech",
@@ -158,7 +263,14 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
-      "reason": "Official wiki SVG recovered; it embeds a small bitmap and needs quality review."
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
+      "reason": "A direct manufacturer 600 × 200 transparent color PNG is verified; a true vector master remains unverified."
     },
     {
       "id": "hiwonder",
@@ -168,6 +280,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": null,
       "height": null,
       "placement_enabled": false,
+      "study_capabilities": {
+        "rotate": false,
+        "flip_x": false,
+        "flip_y": false,
+        "repeat": false,
+        "export": false
+      },
       "reason": "Official path-only header SVG recovered; its viewBox-only dimensions need preparation."
     },
     {
@@ -178,6 +297,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 1505,
       "height": 327,
       "placement_enabled": true,
+      "study_capabilities": {
+        "rotate": true,
+        "flip_x": true,
+        "flip_y": true,
+        "repeat": true,
+        "export": true
+      },
       "reason": ""
     },
     {
@@ -188,6 +314,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 400,
       "height": 160,
       "placement_enabled": true,
+      "study_capabilities": {
+        "rotate": true,
+        "flip_x": true,
+        "flip_y": true,
+        "repeat": true,
+        "export": true
+      },
       "reason": ""
     },
     {
@@ -198,6 +331,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 400,
       "height": 160,
       "placement_enabled": true,
+      "study_capabilities": {
+        "rotate": true,
+        "flip_x": true,
+        "flip_y": true,
+        "repeat": true,
+        "export": true
+      },
       "reason": ""
     },
     {
@@ -208,6 +348,13 @@ window.OPENRC_DECAL_CATALOG = {
       "width": 400,
       "height": 160,
       "placement_enabled": true,
+      "study_capabilities": {
+        "rotate": true,
+        "flip_x": true,
+        "flip_y": true,
+        "repeat": true,
+        "export": true
+      },
       "reason": ""
     }
   ]

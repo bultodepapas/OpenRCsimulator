@@ -87,6 +87,9 @@ Workshop. Personal PNG import follows a later bounded input/portability step.
    transformation/distribution rules come from recorded permission. Support or a
    public download is not automatically a freeform decal grant. This branch
    prepares all work without sending new permission requests.
+   The [R2 preparation guide](../research/aircraft-editor/AE-24e-00/artwork-preparation.md)
+   adds verified vector/color/icon sources, derivative decisions and independently
+   enforced study capabilities; production admission remains part of this sequence.
 5. **Reuse the editor's transaction and save boundaries.** Extend the shared history,
    recovery, immutable saved revisions, visual identity and bundle validation.
    Reuse `StrictJSON` and the reviewed custom-skin admission foundations. Own

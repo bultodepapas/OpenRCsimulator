@@ -33,6 +33,15 @@ shipped catalog. The research study deliberately shows pending entries as source
 references so maintainers can review the intake work. See
 [investigation 57](../AE-24e-00-R1/investigations-31-60.md#57-catalog-transform-permissions-are-per-asset-not-a-universal-logo-switch).
 
+The R2 flat study now implements separate rotation, horizontal/vertical mirror,
+repeat and export controls, with unchanged defaults for the four own/test assets.
+Hidden layers still count, search retains one-copy availability, and export does
+not silently drop restricted artwork. Policy-incompatible or ambiguous drafts
+remain in recovery with their original bytes. This is a demonstrated study subset;
+the [capability contract and limits](artwork-preparation.md#implemented-study-capabilities)
+still need integration with the production catalog, trusted identities and shared
+Workshop transactions.
+
 ## Main journey
 
 1. Select a decal. A translucent ghost follows the valid surface under the pointer.

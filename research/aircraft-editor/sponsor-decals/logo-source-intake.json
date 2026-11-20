@@ -330,5 +330,7 @@
         }
       ]
     }
-  ]
+  ],
+  "followup_receipt": "logo-variant-intake-r2.json",
+  "followup_note": "R2 adds vector/color variants and a verified ProModeler seal. The original nine-record intake below preserves its earlier findings; use the follow-up receipt for the newer source choices."
 }

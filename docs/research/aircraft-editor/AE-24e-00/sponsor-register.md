@@ -25,8 +25,8 @@ linked project records.
 | **Jumper RC** | [Existing sponsor-livery source](../../../../app/assets/vehicle-paints/avanti-s-a200/sponsors/SOURCE.txt) | Owner-reported support; same written redistribution follow-up as the existing sponsor livery | Exact existing header logo included; record written intended-use and distribution scope before Workshop activation |
 | **RadioLink** | [Public T16D source record](../../../../assets/ui/radiolink-t16d/README.md) | The existing public source record documents a specific simulator-image context; it does not establish a reusable Workshop logo grant | Exact 2754 × 434 transparent header PNG retrieved and hashed; metadata-only public entry. Establish precise decal scope before activation |
 | **GM Propellers** | [Official website](https://gmpropellers.com/) | Public artwork/source lead only in this handoff; an accepted collaboration or decal scope is not established by the cited public evidence | Exact official header PNG retrieved and hashed; metadata-only public entry. Establish intended-use scope before activation |
-| **ProModeler** | [Official website](https://www.promodeler.com/) | Public brand-source candidate only; this row establishes no collaboration, sponsorship or logo permission | Metadata-only entry. The official-site image lead returned HTTP 403; identity and clean original bytes remain unverified |
-| **FEETECH** | [Official website](https://www.feetechrc.com/) and its linked [documentation wiki](https://ftservo.github.io/ftservo-wiki/) | Public artwork-source candidate only; this row establishes no collaboration, sponsorship or logo permission | Exact pinned wiki SVG retrieved and hashed. It embeds a small PNG; obtain better artwork for large decals and establish intended-use scope |
+| **ProModeler** | [Official website](https://www.promodeler.com/) and its [cross-linked article](https://www.promodeler.com/profiles/NPL-ProModeler-and-steering-lasers) | Public brand-source candidate only; this row establishes no collaboration, sponsorship or logo permission | A transparent 512 × 512 seal is now verified through the linked site's media record. Metadata-only entry; a standalone wordmark/vector remains unresolved |
+| **FEETECH** | [Official website](https://www.feetechrc.com/) and its linked [documentation wiki](https://ftservo.github.io/ftservo-wiki/) | Public artwork-source candidate only; this row establishes no collaboration, sponsorship or logo permission | Direct manufacturer-domain 600 × 200 transparent color PNG now improves the earlier bitmap-wrapped wiki SVG. Metadata-only entry; a vector master and intended-use scope remain open |
 | **Hiwonder** | [Official website](https://www.hiwonder.com/) | Public artwork-source candidate only; this row establishes no collaboration, sponsorship or logo permission | Exact path-only header SVG and social PNG retrieved and hashed; metadata-only public entry. Review dimension handling and intended-use scope before promotion |
 
 The register distinguishes publicly recorded relationships from artwork/source
@@ -66,14 +66,16 @@ permission follow-up therefore concerns those builds too; do not claim that
 ignoring the source files makes the baked marks absent from runtime. This branch
 does not alter the existing paint or resolve its release review.
 
-## Official source intake, 2026-11-19
+## Earlier source intake, 2026-11-19
 
-The [technical receipt](../../../../research/aircraft-editor/sponsor-decals/logo-source-intake.json)
+The first [technical receipt](../../../../research/aircraft-editor/sponsor-decals/logo-source-intake.json)
 records **11 exact downloaded files for eight organizations**, plus one unresolved
 ProModeler lead. It includes complete URLs, byte sizes, SHA-256 values, dimensions,
 source variants and quality caveats. These newly located image files are not
 added to the public asset pack. Its existing 12 locked images remain unchanged;
-the nine organizations below retain metadata-only catalog entries.
+the nine organizations below retain metadata-only catalog entries. This table
+preserves the first pass's findings. R2 below supplies the newer ProModeler and
+FEETECH choices as well as additional variants.
 
 | Organization | Verified source and quality | Developer handoff |
 | --- | --- | --- |
@@ -90,6 +92,22 @@ the nine organizations below retain metadata-only catalog entries.
 Availability on an official website establishes source authenticity, not the new
 Workshop permission. Keep exact original bytes and the reviewed source URL after
 intake; changes on a live website must not silently replace saved art.
+
+## R2 source choices
+
+The [R2 receipt](../../../../research/aircraft-editor/sponsor-decals/logo-variant-intake-r2.json)
+adds 14 new artwork originals for six brands, one guidance document and three
+original archives. Some form of logo artwork has now been located for all
+17 catalog organizations; this counts ProModeler's seal as an icon, not a full
+wordmark. No new image binaries are added to this public pack.
+
+SAVOX supplies dark-background and monochrome PNG variants plus vector masters;
+KONTRONIK supplies red/black EPS print masters; REVOC supplies a vector PDF.
+FEETECH now has a better direct color raster, and Leomotion Drives has a small
+dedicated icon. See [artwork preparation](artwork-preparation.md) for exact source
+choices, brand-book/master disagreements, excluded lookalike/other-entity assets,
+texture budgets and the source-to-runtime recipe. New sources do not change the
+recorded relationship or permission scope above.
 
 ## Promotion checklist for the maintainer/developer
 
@@ -119,7 +137,8 @@ Once a treatment is established, the concrete promotion sequence is:
 4. Run `build_catalog.py`, then its `--check`, `validate_pack.py --self-test` and
    `node check_study.cjs` from the documented working directory. Review the byte
    lock, generated catalog and exact source/scope evidence together.
-5. Treat study placement and production release as separate decisions. The present
-   study has a single `demo_placement` switch: enabling it allows all study
-   transforms and export. A restricted rotation/flip/export grant needs explicit
-   capability enforcement before that switch can safely represent the treatment.
+5. Treat study placement and production release as separate decisions. The study
+   now requires explicit `study_capabilities` for `rotate`, `flip_x`, `flip_y`,
+   `repeat` and `export`, in addition to `demo_placement`. Unsupported restrictions
+   (for example a prescribed aircraft or size range) still need implementation
+   before activation. Capabilities are technical configuration, not proof of a grant.
