@@ -6,6 +6,7 @@ extends Node
 const Retraction := preload("res://aircraft/retractable_model.gd")
 const NightKit := preload("res://render/world/aircraft_lights.gd")
 const Cadence := preload("res://render/presentation_cadence.gd")
+const GroundAudioModel := preload("res://audio/ground_audio_model.gd")
 
 var _session: Node
 var _airplane: Dictionary
@@ -84,8 +85,14 @@ func _process(_dt: float) -> void:
 	var model: Node3D = _airplane.get("root")
 	if model != null and model.has_node("NightKit"):
 		NightKit.update_dynamic(model.get_node("NightKit"), model, _session.gear_state().extension if _session.gear_is_retractable() else 1.0)
-	var fraction := 1.0 if _session.sim.paused else Engine.get_physics_interpolation_fraction()
-	var compression: PackedFloat64Array = _session.gear_compressions(_session.sim.interpolated(fraction))
+	# Far above the ground no wheel can be compressed: skip the per-wheel terrain/lake/track queries and leave the
+	# axles at rest. The bound (reach + highest surface + margin + 0.5 s of travel) also covers the interpolated
+	# pose between two accepted ticks. Same conservative test as ground audio (VQ-01c-R1).
+	var clear: bool = GroundAudioModel.wheels_clear_of_ground(_session)
+	var compression := PackedFloat64Array()
+	if not clear:
+		var fraction := 1.0 if _session.sim.paused else Engine.get_physics_interpolation_fraction()
+		compression = _session.gear_compressions(_session.sim.interpolated(fraction))
 	var steer: float = _session.sim.aux[_session.AUX_SERVO + 2]
 	var gear: Dictionary = _airplane.get("gear", {})
 	for i in contacts.size():
@@ -98,7 +105,13 @@ func _process(_dt: float) -> void:
 			wheel.rotation.x = float(_angles.get(key, 0.0))
 			if not rig.is_empty():
 				var lower_leg: Node3D = rig.compression[key]
+				if clear:
+					lower_leg.position = rig.rest[key].origin
+					continue
 				lower_leg.position = rig.rest[key].origin + lower_leg.get_parent().global_basis.inverse() * Vector3.UP * maxf(0.0, compression[i])
+				continue
+			if clear:
+				wheel.position = _rest[key]
 				continue
 			# Equivalent compliant contact: move the axle up in world space. The leg
 			# mesh is not a multibody strut; do not scale or rewrite model geometry.
