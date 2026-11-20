@@ -7,6 +7,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Need | Authoritative home |
 | --- | --- |
 | Display resolution priorities: 1080p first, above 1080p second, 720p last | [Shared resolution policy](../AGENTS.md#display-resolution-priorities) |
+| Website analytics (GA4): audit, consent, download measurement and dashboard follow-ups | [Website analytics plan](plans/website-analytics.md); [GA4 audit, 2026-11-20](research/website-analytics/ga4-audit-2026-11-20.md) |
 | Transparent runtime telemetry, consent and GitHub summaries | [TELEM plan and activation steps](plans/telemetry.md); [receiver](../services/telemetry/README.md); [68 investigations across both research rounds](research/telemetry/TELEM-00-R1/README.md) |
 | Project overview and downloads | [README](../README.md) |
 | Launch, controls, calibration and player diagnostics | [FIRST-LAUNCH](FIRST-LAUNCH.md); release notes describe each download separately |
