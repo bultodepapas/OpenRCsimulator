@@ -141,6 +141,13 @@ var _k_h := 0.0
 ## law only; part of the model identity. obstacle_class(north, east, down) names the nearest solid's response class.
 var graded_impacts := false
 var obstacle_class: Callable = Callable()
+## CR-AUD-25: prop_disc_contact(hub_ned, axis_ned, radius_m, half_thickness_m) -> {} or the deepest obstacle that
+## intersects the finite prop disc: {penetration_m, normal (outward, NED), point_ned, kind}, judged per obstacle.
+## Unset keeps the hub-clearance estimate.
+var prop_disc_contact: Callable = Callable()
+## CR-AUD-01/R2: water_contact(body, time_s) -> true when the airframe touches an enabled lake's water; unset =
+## no water. Terminal in the endpoint transition (no water force model): the drive is cut, nothing is settled.
+var water_contact: Callable = Callable()
 var _hover_speed := 0.0
 ## DR-19e (§19.4): the frame's collision box (FRD, from the CG): x/y across the motor hubs, z from the hull's top point
 ## to the feet (the declared contact geometry, the same the ground sees). Centre and half extents.
@@ -639,12 +646,15 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 			events.append_array(graded.events)
 		else:
 			reason = crash_reason(_previous.body, candidate.body, continuous)
+		if reason.is_empty() and water_contact.is_valid() \
+				and bool(water_contact.call(candidate.body, float(context.time_s))):
+			reason = WATER_CRASH_REASON
 		if not reason.is_empty():
 			terminal = true
 			modes[FC.MODE_MOTOR] = FC.MOTOR_CRASHED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
 			events.append({type = "crash", time_s = float(context.time_s), reason = reason})
-			if reason != "Obstacle strike":
+			if reason != "Obstacle strike" and reason != WATER_CRASH_REASON:
 				candidate.body = _settle_impact(candidate.body)
 		elif electric and continuous[C_CHARGE] <= 0.0 and modes[FC.MODE_MOTOR] != FC.MOTOR_DEPLETED:
 			modes[FC.MODE_MOTOR] = FC.MOTOR_DEPLETED
@@ -653,6 +663,12 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 			terminal = true
 		if electric and terminal:
 			continuous[C_CUT_LATCH] = 1.0
+	elif graded_impacts and electric and obstacle.is_valid():
+		# CR-AUD-20: the crash is adjudicated once, but the wreck stays a solid: later ticks keep the frame's obstacle
+		# response (push-out and bounded bounce), without new events, crash or prop wear.
+		var aftermath := {reason = "", body = candidate.body.duplicate(), continuous = continuous.duplicate(), events = []}
+		_graded_frame_obstacle(_previous.body, aftermath, float(context.time_s), true)
+		candidate.body = aftermath.body
 	var accepted := {body = candidate.body, continuous = continuous, aux = candidate.aux, modes = modes}
 	if not state_validator(accepted, context):
 		return {} # outside the law's domain: a malformed result, so the kernel refuses the tick
@@ -684,6 +700,23 @@ func _settle_impact(body: PackedFloat64Array) -> PackedFloat64Array:
 		settled[RB.VEL + i] = v_body[i]
 		settled[RB.RATE + i] = body[RB.RATE + i] * CRASH_RATE_KEEP
 		settled[RB.POS + i] = body[RB.POS + i] + normal[i] * deepest * -normal[2]
+	return settled
+
+
+## CR-AUD-20: the crash aftermath against an obstacle (world `normal`, outward; the frame `depth` inside it): pushed out
+## along the normal, the closing velocity removed, the tangential velocity and the body rates kept by the declared
+## CRASH_*_KEEP fractions, as _settle_impact does on the terrain. Presentation aftermath, not a restitution model.
+func _settle_on(body: PackedFloat64Array, normal: PackedFloat64Array, depth: float) -> PackedFloat64Array:
+	var settled: PackedFloat64Array = body.duplicate()
+	var attitude := RB._att(body)
+	var v_world: PackedFloat64Array = M.q_rotate(attitude, RB._slice3(body, RB.VEL))
+	var along: float = M.dot(v_world, normal)
+	var tangential: PackedFloat64Array = M.scale(M.sub(v_world, M.scale(normal, along)), CRASH_TANGENT_KEEP)
+	var v_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), M.add(tangential, M.scale(normal, maxf(along, 0.0))))
+	for k in 3:
+		settled[RB.POS + k] = body[RB.POS + k] + normal[k] * maxf(depth, 0.0)
+		settled[RB.VEL + k] = v_body[k]
+		settled[RB.RATE + k] = body[RB.RATE + k] * CRASH_RATE_KEEP
 	return settled
 
 
@@ -886,6 +919,7 @@ const TOUCHDOWN_RESPONSE := "frangible_impulse"
 const OBSTACLE_NORMAL_STEP_M := 0.005
 ## DR-19e: half thickness (m) of a spinning prop disc (blade pitch envelope; the model's blades span 5 mm).
 const PROP_DISC_HALF_THICKNESS_M := 0.003
+const WATER_CRASH_REASON := "Water contact"
 ## Normal component (body axes) below which a box contact point blends from an edge to the face centre, so a face that
 ## is nearly parallel to the surface does not jump between its edges.
 const BOX_EDGE_BLEND := 0.05
@@ -979,7 +1013,9 @@ func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array
 ## wall, roof or bar wider than the box; never wider than a sphere around the box for a thinner one). DR-19f: the bounce
 ## carries Coulomb friction (a graze drags and spins the quad), only a hit at a prop's disc chips it, and a sliding
 ## contact raises a scrape event.
-func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
+## CR-AUD-20: a terminal strike also leaves the solid at its contact with the same bounded response (the crash is a
+## classification, not a pass-through); `aftermath` (after the crash) applies the response only: no events or chips.
+func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float, aftermath := false) -> void:
 	var body: PackedFloat64Array = out.body
 	var attitude := RB._att(body)
 	var offset := M.q_rotate(attitude, _frame_box_centre)
@@ -998,17 +1034,25 @@ func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, 
 		var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
 		var contact_body: PackedFloat64Array = support.point
 		var speed := _closing_speed(body, contact_body, normal)
-		if speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS)):
-			out.reason = "Obstacle strike"
-			return
+		var terminal: bool = not aftermath and speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS))
 		var point_ned := M.sub(centre, M.scale(normal, float(support.extent)))
 		var slip := _slip_speed(body, contact_body, normal)
+		if aftermath:
+			# The wreck rests on or slides off the solid with the same declared aftermath law as the terrain
+			# (_settle_impact): out of the solid, no inward normal velocity, kept fractions of tangential speed and rates.
+			# Endpoint only, so a resting wreck is not pulled back to the tick midpoint.
+			if fraction == 1.0:
+				out.body = _settle_on(body, normal, depth)
+			return
 		# Survivable: back to this contact position, out of the solid, then a bounded bounce with friction.
 		var moved := body.duplicate()
 		for k in 3:
 			moved[RB.POS + k] = centre[k] - offset[k] + normal[k] * depth
 		out.body = _bounce(moved, contact_body, normal, speed, kind if kind in [FOLIAGE_RESPONSE, AIRFRAME_RESPONSE] else SOLID_RESPONSE,
 			float(OBSTACLE_FRICTION.get(kind, OBSTACLE_FRICTION_DEFAULT)))
+		if terminal:
+			out.reason = "Obstacle strike"
+			return
 		var surface := kind if not kind.is_empty() else "obstacle"
 		if speed > PROP_CHIP_SPEED_MPS:
 			_chip_near(out, contact_body, t, "frame")
@@ -1037,23 +1081,44 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 		var radius: float = 0.5 * float(rotor.diameter_m)
 		var hub := M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, rotor.hub_frd))
 		var clearance: Variant = obstacle.call(hub[0], hub[1], hub[2])
-		if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius:
+		# The hub clearance is a cheap gate: no obstacle farther than the disc's rim (and half thickness) can touch it.
+		if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius + PROP_DISC_HALF_THICKNESS_M:
 			continue
-		var normal := _obstacle_normal(hub)
-		var support := _disc_support(M.q_rotate(M.q_conj(attitude), normal), M.v3(0.0, 0.0, -1.0), radius) # the admitted thrust axis
-		var depth: float = float(support.extent) - float(clearance)
+		var normal: PackedFloat64Array
+		var depth: float
+		var kind: String
+		var support_point: PackedFloat64Array
+		if prop_disc_contact.is_valid():
+			# CR-AUD-25: the finite disc against each obstacle, with that obstacle's own witness, normal and class.
+			var contact: Variant = prop_disc_contact.call(hub, M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0)), radius,
+				PROP_DISC_HALF_THICKNESS_M)
+			if typeof(contact) != TYPE_DICTIONARY or (contact as Dictionary).is_empty():
+				continue
+			normal = contact.normal
+			depth = float(contact.penetration_m)
+			kind = str(contact.kind)
+			var witness_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude),
+				M.sub(contact.point_ned, M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])))
+			support_point = M.sub(witness_body, rotor.hub_frd)
+		else:
+			if float(clearance) > radius:
+				continue
+			normal = _obstacle_normal(hub)
+			var support := _disc_support(M.q_rotate(M.q_conj(attitude), normal), M.v3(0.0, 0.0, -1.0), radius) # the admitted thrust axis
+			depth = float(support.extent) - float(clearance)
+			kind = str(obstacle_class.call(hub[0], hub[1], hub[2])) if obstacle_class.is_valid() else ""
+			support_point = support.point
 		if not (depth >= 0.0 and is_finite(depth)):
 			continue
-		var kind := str(obstacle_class.call(hub[0], hub[1], hub[2])) if obstacle_class.is_valid() else ""
 		var material := float(PROP_MATERIAL.get(kind, PROP_MATERIAL_DEFAULT))
-		var contact_body := M.add(rotor.hub_frd, support.point)
+		var contact_body := M.add(rotor.hub_frd, support_point)
 		var speed := _closing_speed(body, contact_body, normal)
 		if speed > PROP_BREAK_SPEED_MPS / sqrt(material):
 			_set_health(out, i, 0.0, t, "obstacle")
 		else:
 			_wear(out, i, t, "obstacle", material, depth)
 		# The blade's in-plane direction from the hub to the contact (none for a face-on touch of the disc).
-		var rim := M.v3(support.point[0], support.point[1], 0.0)
+		var rim := M.v3(support_point[0], support_point[1], 0.0)
 		var rim_norm := M.norm(rim)
 		if rim_norm > 1.0e-9:
 			_prop_strike_kick(out, i, M.q_rotate(attitude, M.scale(rim, 1.0 / rim_norm)), _bite(depth))
@@ -1163,7 +1228,12 @@ func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float
 ## at the hub (its rim lever cancels the rotor's own momentum change). Bounded by the rotor's lost momentum; energy only
 ## leaves the system (the rotor's lost kinetic energy far exceeds what the kick gives the airframe). DR-19f: a lighter
 ## bite (`engagement` in [PROP_MIN_BITE, 1]) brakes and kicks in proportion; obstacles strike the same way.
+## CR-AUD-21: the kick may not add energy. The coupled body-and-shaft kinetic energy after braking and kicking is
+## compared with the energy before; when the airframe's own motion along the kick would raise it, the impulse is
+## scaled down (bisection on its magnitude) until the transition is passive. A conservative limit, not a solved
+## contact impulse.
 func _prop_strike_kick(out: Dictionary, i: int, hit_world: PackedFloat64Array, engagement: float = 1.0) -> void:
+	var energy_before: float = _coupled_energy(out.body, out.continuous)
 	var omega: float = out.continuous[i]
 	var lost: float = omega * PROP_STRIKE_BRAKE * engagement
 	out.continuous[i] = omega - lost
@@ -1183,11 +1253,44 @@ func _prop_strike_kick(out: Dictionary, i: int, hit_world: PackedFloat64Array, e
 	var inverse_inertia: PackedFloat64Array = RB.inertia_inverse(prepared.inertia_kg_m2)
 	var delta_rates: PackedFloat64Array = RB.inertia_mul(inverse_inertia, M.cross(rotor.hub_frd, impulse))
 	var mass: float = prepared.mass_kg
+	var kicked := _kicked(body, impulse, delta_rates, mass, 1.0)
+	var budget: float = energy_before + KICK_ENERGY_TOLERANCE * maxf(absf(energy_before), 1.0)
+	if _coupled_energy(kicked, out.continuous) > budget:
+		var low := 0.0
+		var high := 1.0
+		for iteration in KICK_PASSIVITY_ITERATIONS:
+			var middle := 0.5 * (low + high)
+			if _coupled_energy(_kicked(body, impulse, delta_rates, mass, middle), out.continuous) > budget:
+				high = middle
+			else:
+				low = middle
+		kicked = _kicked(body, impulse, delta_rates, mass, low)
+	out.body = kicked
+
+
+const KICK_PASSIVITY_ITERATIONS := 40
+## Relative round-off allowance of the passivity comparison (the energies are sums of products).
+const KICK_ENERGY_TOLERANCE := 1.0e-12
+
+
+static func _kicked(body: PackedFloat64Array, impulse: PackedFloat64Array, delta_rates: PackedFloat64Array, mass: float,
+		scale: float) -> PackedFloat64Array:
 	var kicked := body.duplicate()
 	for k in 3:
-		kicked[RB.VEL + k] += impulse[k] / mass
-		kicked[RB.RATE + k] += delta_rates[k]
-	out.body = kicked
+		kicked[RB.VEL + k] += scale * impulse[k] / mass
+		kicked[RB.RATE + k] += scale * delta_rates[k]
+	return kicked
+
+
+## Coupled kinetic energy of the airframe and its relative shafts (CR-AUD-21 oracle): the locked-inertia body term
+## plus each rotor's relative spin and the body-yaw cross term, K = ½m|v|² + ½ωᵀI_Lω + Σ ½I_iΩ_i² − ω_z Σ s_i I_i Ω_i.
+func _coupled_energy(body: PackedFloat64Array, continuous: PackedFloat64Array) -> float:
+	var energy: float = _kinetic_energy(body)
+	for i in 4:
+		var rotor: Dictionary = prepared.rotors[i]
+		var inertia := float(rotor.inertia_kg_m2)
+		energy += 0.5 * inertia * continuous[i] * continuous[i] - body[RB.RATE + 2] * float(rotor.spin) * inertia * continuous[i]
+	return energy
 
 
 ## Unit outward normal of the nearest obstacle at `point` (central differences of the clearance field); straight up

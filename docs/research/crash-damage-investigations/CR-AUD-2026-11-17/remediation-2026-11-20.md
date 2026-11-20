@@ -35,12 +35,12 @@ This page is the single status ledger for CR-AUD-01…34 and the improved execut
 | 17 | **Fixed** | A checkpoint requested inside the crash tick is refused; the next one carries the crash, cut and tape | `test_mr_graded_crashes` |
 | 18 | **Fixed (R1)** | With soft hull contacts, a terminal scenery hit yields to the ground when the soft-ground terminal rule already holds at the obstacle's contact pose (ground-first tie; the obstacle takes no damage). A documented tick-boundary rule, not a measured first impact | `test_soft_ground_scenery_order` (promoted probe) |
 | 19 | **Fixed (R1)** | The crash record, reason, contact events and scenery damage are committed before the pause is published; the pause still precedes the change notifications | `test_crash_pause_log` (promoted probe, real `.orfl`) |
-| 20 | Planned R2 | Quad keeps solid response after a terminal wall strike; also cut the drive after a water crash | — |
-| 21 | Planned R2 | Quad prop contact energy invariant | — |
-| 22 | Planned R2 | Airship recording identity on a paused world change | — |
+| 20 | **Fixed (R2)** | A terminal frame-obstacle strike leaves the solid with the bounded response; after the crash the wreck keeps colliding with the terrain's declared aftermath law (out of the solid, no inward speed, kept fractions), without new events. A quad water crash is adjudicated in the plant's endpoint transition, so the drive is cut | `test_quad_obstacle_aftermath` (promoted probe), `test_quad_wreck_rest`, `test_lake_session` |
+| 21 | **Fixed (R2)** | The prop-strike kick may not raise the coupled body-and-shaft kinetic energy; when the airframe's motion along the kick would, the impulse is bisected down (conservative limit, not a solved contact impulse) | `test_quad_prop_strike_energy` (promoted probe) |
+| 22 | **Fixed (R2)** | Changing the airship's world identity on a started flight (paused included) emits `resetting`, closing recorders, as the quad does; every written file replays exactly | `test_airship_collision_recording` (promoted probe) |
 | 23 | Planned R4 | Submicron capsule entry tolerance | — |
 | 24 | **Fixed (R1)** | Near the lake's bounded bank the disc depth also scans 64 rim phases against the covered terrain; flat ground keeps its exact lowest point. A sampled rim proves the overlaps it finds, not clearance between samples (sagitta 0.18 mm at 15 cm) | `test_prop_bank_rim` (promoted probe) |
-| 25 | Planned R2 | Finite quad prop disc vs box | — |
+| 25 | **Fixed (R2)** | A session query judges the finite prop disc against each obstacle (alternating disc/proxy projections plus rim and hub samples), returning that obstacle's own witness, normal and class; the hub clearance is only a gate | `test_quad_disc_box_separation` (promoted probe) |
 | 26 | **Fixed** | Car body damage follows the contacting probe's face; travel direction only as fallback | `test_rcv_damage` |
 | 27 | Design R1b | Deployed wheel vs scenery (capability). Not patched: see *CR-AUD-27 proposal* below | — |
 | 28 | **Fixed** | Director grades every snapshot against its own validated normal; the soft-rule C2 floor stays | `test_crash_integration` |
@@ -58,7 +58,7 @@ The original eight slices ordered work by theme. The remaining items are now ord
 | Batch | Findings | Files | Gate in addition to the audit's acceptance |
 |---|---|---|---|
 | **R1 native batch** (done except 27) | 02, 03, 18, 19, 24, 34 | `flight_session.gd`, `helicopter_flight_session.gd`, `rotorcraft/impact_detector.gd`, `hull_contact.gd` (mirrored); `lake_collision.gd` | One native rebuild and requalification on Windows, Linux and macOS (NK gates). Companion rebind. Flight-log baseline/candidate comparison for any trajectory change; re-record goldens only for an explained physics change. |
-| **R2 vehicle physics** | 20, 21, 22, 25 | `multirotor/controlled_plant.gd`, `sim/airship/*` | Quad and airship replay/golden checks; contact energy invariant tests; recording identity test with real `.orfl` files. |
+| **R2 vehicle physics** (done) | 20, 21, 22, 25 | `multirotor/controlled_plant.gd`, `sim/airship/*` | Quad and airship replay/golden checks; contact energy invariant tests; recording identity test with real `.orfl` files. |
 | **R3 car scenery** | 14 | ground-vehicle course/session adapter over the shared collision world | Explicit capability matrix; wall dedupe; bounded candidates with visible overflow; both stock cars, driven passes. |
 | **R4 contact-time policy** | 23, 31, 32, 33 | `sim/scenery_collision.gd`, lake policy | Flight-log comparison at 240/480 Hz; no false-clear results; owner decision on transient water. |
 | **R5 presentation follow-ups** | — | wreck/effects | Per-section compound core proxy with slide/rebound retuning (a compound box set made sideways slides tumble on gear boxes, so it needs its own tuning). Quad/airship obstacle identity for lens strikes. 1080p captures of asymmetric, slope and scenery crashes. |
@@ -114,3 +114,16 @@ The R1 changes touch native-mirrored sources, so the installed native kernel was
 | Native production paths after install (Windows): stage, session, replay, helicopter session/route, fallback | see NK-4 |
 
 **Limits retained from review.** The helicopter applies the nonterminal response but still records no scenery damage, contact event or statistic; it responds to the earliest body contact per tick, and rotor–scenery nonterminal contacts remain terminal-only. Its heading memory and rotor state keep the tick-end values while the body takes the contact-time pose (same approximation as the fixed wing). The 18 rule refuses the tick when sampled mass properties fail, as the existing glow terminal check does. The rim scan runs only when the disc is below the lake's highest possible surface and inside its bank bounds.
+
+## R2 vehicle batch — verification
+
+None of the R2 files is native-mirrored, so no kernel requalification is needed; the flight-log solver identity changes (`solver_changed` on older logs) and the companion pin is renewed.
+
+| Check (Windows, Godot 4.8 beta 2) | Result |
+|---|---|
+| Audit probes: quad obstacle aftermath (20) 32, prop strike energy (21) 16, airship recording (22) 31, disc/box separation (25) 29 | Desired failures before (1, 1, 1, 2) → 0 after; promoted to the named tests |
+| `test_quad_wreck_rest`: terminal roof strike, 2400 aftermath ticks | Never below the roof (0.000 mm), at rest (0.0000 m/s) |
+| `test_lake_session` | 82 checks, 0 failures; the quad water crash leaves motor mode crashed and the cut latch at 1 |
+| Regression sweep: every `test_mr_*`, `test_race_*`, `test_airship_*`, quad and controller-audit suite plus golden flights (56 suites, including race replay and the quad/airship flight logs) | 0 failures |
+
+**Review outcomes.** An independent review found the first aftermath version (a bounded bounce every crashed tick) kept a wreck hopping and spinning on a roof; it now uses the terrain aftermath law at the endpoint only. The disc query now also takes the deepest rim/hub sample and falls back to an outward normal; the passivity comparison has a round-off tolerance. Kept limits: when shaft braking alone (an extreme yaw rate) raises the coupled energy the kick is removed but the braking stays; the disc contact samples are a bounded search, not an exact disc–box distance; replay of logs recorded before R2 reports `solver_changed`.

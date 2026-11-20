@@ -383,6 +383,10 @@ func set_collision_world(world: Dictionary) -> bool:
 		for proxy: Dictionary in world.proxies:
 			if not CollisionWorld._proxy_is_valid(proxy):
 				return false
+	# CR-AUD-22: a changed inventory on a flight that has begun (a paused one included) is a new recording boundary, as
+	# for the quad: recorders close, so no file mixes two worlds under one header identity.
+	if prepared and sim.tick > 0 and str(world.get("identity", "")) != collision_identity():
+		resetting.emit()
 	_collision_world = world.duplicate(true)
 	_broad_center = PackedFloat64Array()
 	return true

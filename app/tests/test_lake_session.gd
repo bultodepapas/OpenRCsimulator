@@ -14,6 +14,7 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const QuadSession := preload("res://sim/multirotor/session.gd")
 const BlimpSession := preload("res://sim/airship/session.gd")
 const QuadController := preload("res://physics/multirotor/flight_controller.gd")
+const QuadPlant := preload("res://physics/multirotor/controlled_plant.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -380,6 +381,11 @@ func _water_entry(label: String, session: Node, north: float, east: float) -> vo
 		and int(session.crash.get("tick", 0)) == int(session.sim.tick), str(session.crash))
 	_check(label + " the water crash refuses resume and further ticks", not session.resume()
 		and not session.tick_once(_neutral(session)))
+	if session.has_method("reset_to_pad"):
+		# R2: the quad's water crash is adjudicated in the plant's endpoint transition, so the drive is cut there.
+		_check(label + " the water crash cuts the drive in the kernel", int(session.sim.modes[QuadController.MODE_MOTOR]) == QuadController.MOTOR_CRASHED
+			and session.sim.continuous[QuadPlant.C_CUT_LATCH] == 1.0,
+			"motor=%d latch=%s" % [int(session.sim.modes[QuadController.MODE_MOTOR]), str(session.sim.continuous[QuadPlant.C_CUT_LATCH])])
 
 
 func _world(proxy: Dictionary) -> Dictionary:

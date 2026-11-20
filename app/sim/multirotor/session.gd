@@ -322,6 +322,12 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	if not _collision_world.is_empty() or not gate_frames.is_empty():
 		candidate_plant.obstacle = _obstacle_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
 		candidate_plant.obstacle_class = _obstacle_class_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
+		candidate_plant.prop_disc_contact = _prop_disc_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
+	if not candidate_env.lake.is_empty():
+		# R2: water is adjudicated in the plant's endpoint transition, so the drive is cut like any crash.
+		var lake: Dictionary = candidate_env.lake
+		candidate_plant.water_contact = func(body: PackedFloat64Array, time_s: float) -> bool:
+			return _water_contact(lake, body, radius, time_s)
 	var frame := _start_frame(framer, doc, candidate_env, start)
 	var kernel: Node = Sim.new()
 	kernel.process_mode = Node.PROCESS_MODE_DISABLED
@@ -675,6 +681,8 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 			"crash":
 				if crash.is_empty():
 					crash = {reason = str(event.get("reason", "Crash")), tick = int(sim.tick), time_s = float(event.get("time_s", sim.time()))}
+					if str(crash.reason) == WATER_CRASH:
+						_set_paused(true, WATER_PAUSE)
 					crashed.emit(str(crash.reason))
 			"pack_depleted":
 				depleted.emit()
@@ -685,13 +693,8 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 			if kind == "race_finish" or kind == "race_abort":
 				# The terminal record is a projection of this committed frame; the start bound kept room for it.
 				_publish_result(race.result(frame()))
-	# CR-AUD-01: an enabled lake's water is terminal. The adjudication is on the accepted endpoint and after the plant's own
-	# events, so a ground crash of the same tick keeps its reason.
-	if crash.is_empty() and not environment.lake.is_empty() \
-			and _water_contact(environment.lake, sim.state, _body_radius, sim.time()):
-		crash = {reason = WATER_CRASH, tick = int(sim.tick), time_s = sim.time()}
-		_set_paused(true, WATER_PAUSE)
-		crashed.emit(WATER_CRASH)
+	# CR-AUD-01: an enabled lake's water is terminal. The plant adjudicates it in its endpoint transition (cutting the
+	# drive) after its other crash causes, so a ground crash of the same tick keeps its reason.
 	tick_advanced.emit(sim.tick, sim.time())
 	return true
 
@@ -729,6 +732,8 @@ func set_collision_world(world: Dictionary) -> bool:
 		# The class query follows the same world (the graded law reads terminal speed, friction and material from it).
 		plant.obstacle_class = Callable() if empty \
 			else _obstacle_class_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
+		plant.prop_disc_contact = Callable() if empty \
+			else _prop_disc_query(_collision_world, gate_frames, _body_radius + OBSTACLE_SLACK_M)
 	return true
 
 
@@ -863,6 +868,127 @@ static func _frame_proxies(frames: Array) -> Array:
 
 
 ## Euclidean distance from a world NED point to the proxy solid (<= 0 inside), as the airship session.
+## CR-AUD-25: prop_disc_contact(hub, axis, radius, half_thickness) -> {} or the deepest obstacle intersecting the finite
+## prop disc, judged per proxy with its own witness, outward normal and class (gate frames: "gate_frame"). Pure, on
+## the same index and candidates as _obstacle_query; candidate order is the index order, the deepest wins.
+static func _prop_disc_query(world: Dictionary, frames: Array, reach: float) -> Callable:
+	var index: Dictionary = obstacle_index(world, reach)
+	return func(hub: PackedFloat64Array, axis: PackedFloat64Array, radius: float, half_thickness: float) -> Dictionary:
+		var best := {}
+		if hub.size() != 3 or axis.size() != 3 or not (is_finite(hub[0]) and is_finite(hub[1]) and is_finite(hub[2])):
+			return best
+		var candidates: Array = []
+		if not index.is_empty():
+			for proxy: Dictionary in obstacle_candidates(index, hub[0], hub[1]):
+				if CollisionWorld._aabb_sphere_overlap(proxy, hub[0], hub[1], hub[2], radius + half_thickness):
+					candidates.append([proxy, str(proxy.get("response_class", ""))])
+		for proxy: Dictionary in frames:
+			if absf(hub[0] - float(proxy.north)) < proxy.span and absf(hub[1] - float(proxy.east)) < proxy.span:
+				candidates.append([proxy, "gate_frame"])
+		for entry: Array in candidates:
+			var contact := _disc_proxy_contact(entry[0], hub, axis, radius, half_thickness)
+			if not contact.is_empty() and (best.is_empty() or float(contact.penetration_m) > float(best.penetration_m)):
+				contact.kind = entry[1]
+				best = contact
+		return best
+
+
+const DISC_PROJECTION_ITERATIONS := 16
+const DISC_GRADIENT_STEP_M := 1.0e-5
+
+
+## Closest approach of a thin disc (centre `hub`, unit `axis`, `radius`) and one convex proxy, by alternating
+## projections between the two from two seeds (the proxy centre and the hub). {} when separated by more than
+## `half_thickness`; else {penetration_m, normal (proxy's outward normal at the witness), point_ned (disc witness)}.
+static func _disc_proxy_contact(proxy: Dictionary, hub: PackedFloat64Array, axis: PackedFloat64Array, radius: float,
+		half_thickness: float) -> Dictionary:
+	var best_point := PackedFloat64Array()
+	var best_distance := INF
+	for seed: PackedFloat64Array in [PackedFloat64Array([float(proxy.north), float(proxy.east), float(proxy.down)]), hub]:
+		var point := _project_to_disc(seed, hub, axis, radius)
+		for iteration in DISC_PROJECTION_ITERATIONS:
+			var distance := _clearance(proxy, point[0], point[1], point[2])
+			if not (distance > 0.0):
+				break
+			var gradient := _clearance_gradient(proxy, point)
+			if gradient.is_empty():
+				break
+			var surface := PackedFloat64Array([point[0] - gradient[0] * distance, point[1] - gradient[1] * distance,
+				point[2] - gradient[2] * distance])
+			var next := _project_to_disc(surface, hub, axis, radius)
+			var moved := absf(next[0] - point[0]) + absf(next[1] - point[1]) + absf(next[2] - point[2])
+			point = next
+			if moved < 1.0e-9:
+				break
+		var final := _clearance(proxy, point[0], point[1], point[2])
+		if final < best_distance:
+			best_distance = final
+			best_point = point
+	if not (half_thickness - best_distance > 0.0) or best_point.is_empty():
+		return {}
+	# Intersecting: the projections stop at the first point inside, so the deepest point is also looked for on the
+	# rim and at the hub (DISC_DEPTH_SAMPLES phases); the deeper witness sets the penetration and normal.
+	var u := _perpendicular(axis)
+	var v := PackedFloat64Array([axis[1] * u[2] - axis[2] * u[1], axis[2] * u[0] - axis[0] * u[2],
+		axis[0] * u[1] - axis[1] * u[0]])
+	for k in DISC_DEPTH_SAMPLES + 1:
+		var sample := hub.duplicate()
+		if k < DISC_DEPTH_SAMPLES:
+			var phase := TAU * float(k) / float(DISC_DEPTH_SAMPLES)
+			for j in 3:
+				sample[j] += radius * (cos(phase) * u[j] + sin(phase) * v[j])
+		var distance := _clearance(proxy, sample[0], sample[1], sample[2])
+		if distance < best_distance:
+			best_distance = distance
+			best_point = sample
+	var normal := _clearance_gradient(proxy, best_point)
+	if normal.is_empty():
+		# A medial point inside the proxy has no gradient: leave toward the hub's side of the proxy centre.
+		var away := PackedFloat64Array([hub[0] - float(proxy.north), hub[1] - float(proxy.east), hub[2] - float(proxy.down)])
+		var length := sqrt(away[0] * away[0] + away[1] * away[1] + away[2] * away[2])
+		normal = PackedFloat64Array([away[0] / length, away[1] / length, away[2] / length]) if length > 1.0e-9 \
+			else PackedFloat64Array([-axis[0], -axis[1], -axis[2]])
+	return {penetration_m = half_thickness - best_distance, normal = normal, point_ned = best_point}
+
+
+const DISC_DEPTH_SAMPLES := 24
+
+
+## A unit vector perpendicular to the unit `axis`.
+static func _perpendicular(axis: PackedFloat64Array) -> PackedFloat64Array:
+	var seed := PackedFloat64Array([0.0, 0.0, 1.0]) if absf(axis[2]) < 0.9 else PackedFloat64Array([1.0, 0.0, 0.0])
+	var c := PackedFloat64Array([axis[1] * seed[2] - axis[2] * seed[1], axis[2] * seed[0] - axis[0] * seed[2],
+		axis[0] * seed[1] - axis[1] * seed[0]])
+	var length := sqrt(c[0] * c[0] + c[1] * c[1] + c[2] * c[2])
+	return PackedFloat64Array([c[0] / length, c[1] / length, c[2] / length])
+
+
+static func _project_to_disc(point: PackedFloat64Array, hub: PackedFloat64Array, axis: PackedFloat64Array,
+		radius: float) -> PackedFloat64Array:
+	var rel := PackedFloat64Array([point[0] - hub[0], point[1] - hub[1], point[2] - hub[2]])
+	var along := rel[0] * axis[0] + rel[1] * axis[1] + rel[2] * axis[2]
+	var in_plane := PackedFloat64Array([rel[0] - along * axis[0], rel[1] - along * axis[1], rel[2] - along * axis[2]])
+	var length := sqrt(in_plane[0] * in_plane[0] + in_plane[1] * in_plane[1] + in_plane[2] * in_plane[2])
+	var scale := radius / length if length > radius else 1.0
+	return PackedFloat64Array([hub[0] + in_plane[0] * scale, hub[1] + in_plane[1] * scale, hub[2] + in_plane[2] * scale])
+
+
+## Unit outward gradient of a proxy's signed distance at `point` (central differences); empty where it is flat.
+static func _clearance_gradient(proxy: Dictionary, point: PackedFloat64Array) -> PackedFloat64Array:
+	var g := PackedFloat64Array([0.0, 0.0, 0.0])
+	for k in 3:
+		var plus := point.duplicate()
+		var minus := point.duplicate()
+		plus[k] += DISC_GRADIENT_STEP_M
+		minus[k] -= DISC_GRADIENT_STEP_M
+		g[k] = (_clearance(proxy, plus[0], plus[1], plus[2]) - _clearance(proxy, minus[0], minus[1], minus[2])) \
+			/ (2.0 * DISC_GRADIENT_STEP_M)
+	var length := sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2])
+	if not (is_finite(length) and length > 1.0e-6):
+		return PackedFloat64Array()
+	return PackedFloat64Array([g[0] / length, g[1] / length, g[2] / length])
+
+
 static func _clearance(proxy: Dictionary, n: float, e: float, d: float) -> float:
 	var dn := n - float(proxy.north)
 	var de := e - float(proxy.east)
