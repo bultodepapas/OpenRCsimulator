@@ -657,9 +657,11 @@ func _adopt_import(job: ImportJob) -> void:
 		result = R.ok(result.value.source, result.diagnostics)
 	var phoenix_placement := {}
 	var phoenix_bindings := {}
+	var phoenix_values := {}
 	if job.phase == "phoenix_convert" and result.get("ok", false):
 		phoenix_placement = result.value.placement
 		phoenix_bindings = result.value.get("bindings", {})
+		phoenix_values = result.value.get("values", {})
 		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
@@ -694,6 +696,14 @@ func _adopt_import(job: ImportJob) -> void:
 				var bound: Dictionary = VisualBuilder.validate_bindings(result.value, phoenix_bindings)
 				if bound.ok:
 					_doc.set_bindings(bound.value)
+			# Source dimensions (wing, tails, hub, throws) enter as labelled estimates to confirm.
+			# They are layered over the scaled starting estimates (which would otherwise replace them later),
+			# and the estimated mass inventory follows the resulting geometry.
+			if not phoenix_values.is_empty():
+				var layout: Dictionary = _doc.starting_values()
+				layout.merge(phoenix_values, true)
+				_doc.apply_values(layout, true)
+				_doc.propose_inventory()
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])

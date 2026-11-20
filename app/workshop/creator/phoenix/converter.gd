@@ -44,6 +44,9 @@ const BINDINGS_FORMAT := "openrc-creator-bindings v1"
 ## Phoenix surface inputs -> Creator control roles (left/right decided by the airfoil side).
 const _INPUT_ROLES := {"aileron": "aileron", "left aileron": "aileron", "right aileron": "aileron",
 	"elevator": "elevator", "left elevator": "elevator", "right elevator": "elevator", "rudder": "rudder"}
+const LAYOUT := "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+## Fuselage nose just aft of a tractor hub (the package allows the hub 0 to 0.12 m ahead of the nose).
+const HUB_SETBACK_M := 0.03
 const PLACED := "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 
 
@@ -148,8 +151,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	var bindings := proposed_bindings(glb.value.pivots)
 	if not bindings.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, MOVING_PARTS, "source", STEP, [str(glb.value.pivots.size())], R.SEVERITY_INFO))
+	var values := definition_values(model, scale, placement.datum)
+	if not values.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, LAYOUT, "source", STEP, [], R.SEVERITY_INFO))
 	return R.ok({source = admitted.value, receipt = receipt, placement = placement, summary = summary,
-		bindings = bindings}, notes)
+		bindings = bindings, values = values}, notes)
 
 
 ## Read-only facts from the decoded definition, in metres, kilograms and degrees where established.
@@ -209,6 +215,104 @@ static func _placement(summary: Dictionary) -> Dictionary:
 ## Phoenix gives the left side's hinge (positive X); a mirrored airfoil's right side is its mirror image.
 ## Positive Creator deflection turns about the left-span axis (ailerons, elevator), the up axis (rudder)
 ## or the forward axis (propeller), so the sign follows the hinge direction along that axis.
+## Creator layout fields from the decoded airfoils and propeller, in the structural frame
+## [aft, right, up] metres from `datum` (GLB metres, the main-wing root leading edge). These are source
+## dimensions to be confirmed, applied as estimates; mass, inertia and aerodynamics stay OpenRC's own.
+static func definition_values(model: Dictionary, scale: float, datum: Array) -> Dictionary:
+	var values := {}
+	if datum.size() != 3:
+		return values
+	var wing: Variant = null
+	var tail: Variant = null
+	var fin: Variant = null
+	var travel := {}
+	var airfoils: Variant = model.get("airfoils")
+	if not airfoils is Array:
+		return values
+	for airfoil: Variant in airfoils:
+		if not airfoil is Dictionary:
+			continue
+		var roles: Array = []
+		for surface: Variant in (airfoil.get("controlSurfaces") if airfoil.get("controlSurfaces") is Array else []):
+			if not surface is Dictionary:
+				continue
+			var role := str(_INPUT_ROLES.get(str(_dig(surface, ["attributes", "Input"])).to_lower(), ""))
+			var throw := _number(_dig(surface, ["attributes", "Max_travel"]))
+			if not role.is_empty():
+				roles.append(role)
+				if is_finite(throw) and throw > 0.0 and _number(_dig(surface, ["attributes", "Length"])) > 0.0:
+					travel[role] = maxf(float(travel.get(role, 0.0)), throw)
+		if "aileron" in roles and wing == null:
+			wing = airfoil
+		elif "elevator" in roles and tail == null:
+			tail = airfoil
+		elif "rudder" in roles and fin == null:
+			fin = airfoil
+	if wing == null:
+		var widest := 0.0
+		for airfoil: Variant in airfoils:
+			if airfoil is Dictionary and _number(airfoil.get("isMirrored")) == 1.0:
+				var length := _number(_dig(airfoil, ["attributes", "Length"]))
+				if is_finite(length) and length > widest and airfoil != tail:
+					widest = length
+					wing = airfoil
+	var structural := func(point: Variant) -> Array:
+		var p: Variant = _point(point, scale)
+		if p == null:
+			return []
+		return [-(float(p[2]) - float(datum[2])), -float(p[0]), float(p[1]) - float(datum[1])]
+	if wing is Dictionary:
+		var at: Variant = wing.get("attributes")
+		var length := _number(_dig(at, ["Length"]))
+		if is_finite(length) and length > 0.0:
+			values["wing/span"] = 2.0 * length
+		_copy(values, "wing/root_chord", _number(_dig(at, ["Root_chord"])))
+		_copy(values, "wing/tip_chord", _number(_dig(at, ["Tip_chord"])))
+		var dihedral := _number(_dig(at, ["Dihedral"]))
+		if is_finite(dihedral) and dihedral >= 0.0:
+			values["wing/dihedral_deg"] = dihedral
+	if tail is Dictionary:
+		var at: Variant = tail.get("attributes")
+		var length := _number(_dig(at, ["Length"]))
+		if is_finite(length) and length > 0.0:
+			values["horizontal_tail/span"] = length * (2.0 if _number(tail.get("isMirrored")) == 1.0 else 1.0)
+		_copy(values, "horizontal_tail/chord", (_number(_dig(at, ["Root_chord"])) + _number(_dig(at, ["Tip_chord"]))) / 2.0)
+		var place: Array = structural.call(_dig(at, ["Position"]))
+		if not place.is_empty():
+			values["horizontal_tail/position/0"] = place[0]
+			values["horizontal_tail/position/2"] = place[2]
+	if fin is Dictionary:
+		var at: Variant = fin.get("attributes")
+		_copy(values, "vertical_tail/height", _number(_dig(at, ["Length"])))
+		_copy(values, "vertical_tail/chord", (_number(_dig(at, ["Root_chord"])) + _number(_dig(at, ["Tip_chord"]))) / 2.0)
+		var place: Array = structural.call(_dig(at, ["Position"]))
+		if not place.is_empty():
+			values["vertical_tail/position/0"] = place[0]
+			values["vertical_tail/position/2"] = place[2]
+	var propulsion: Variant = model.get("propulsion")
+	if propulsion is Array:
+		for unit: Variant in propulsion:
+			if unit is Dictionary and str(unit.get("type", "")) == "propeller":
+				var hub: Array = structural.call(unit.get("pivot"))
+				if not hub.is_empty():
+					for axis: int in 3:
+						values["equipment/hub_position/%d" % axis] = hub[axis]
+					# A tractor hub sits on the fuselage nose: the model box would otherwise put the nose at
+					# the spinner tip, ahead of the hub, and centre the fuselage at a template height.
+					if float(hub[0]) < 0.0:
+						values["fuselage/nose_x"] = float(hub[0]) + HUB_SETBACK_M
+						values["fuselage/center_z"] = hub[2]
+				break
+	for role: String in travel:
+		values["controls/%s_deg" % role] = travel[role]
+	return values
+
+
+static func _copy(values: Dictionary, path: String, number: float) -> void:
+	if is_finite(number) and number > 0.0:
+		values[path] = number
+
+
 static func articulation_groups(model: Dictionary) -> Array:
 	var groups: Array = []
 	var airfoils: Variant = model.get("airfoils")

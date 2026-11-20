@@ -13517,3 +13517,6 @@ msgstr "文件 \"%s\" 为空或超过 %s MiB 上限。"
 
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "已根据 Phoenix 铰链准备了 %s 个活动部件；请在“活动部件”中检查。"
+
+msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+msgstr "机翼、尾翼、螺旋桨位置和舵面行程已根据 Phoenix 模型作为估算值填写；飞行前请确认。"

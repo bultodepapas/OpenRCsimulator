@@ -13568,3 +13568,6 @@ msgstr "ファイル \"%s\" は空か、%s MiB の上限を超えています。
 
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "Phoenix のヒンジから %s 個の可動部品を準備しました。「可動パーツ」で確認してください。"
+
+msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+msgstr "主翼、尾翼、プロペラ位置、舵角は Phoenix モデルから推定値として入力されました。飛行前に確認してください。"

@@ -21,6 +21,7 @@ func _initialize() -> void:
 	_glb()
 	_converter()
 	_articulation()
+	_layout()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -526,3 +527,28 @@ func _accessor_floats(glb: PackedByteArray, document: Dictionary, index: int) ->
 	var bin_start := 20 + json_length + 8
 	var start := bin_start + int(view.get("byteOffset", 0))
 	return glb.slice(start, start + int(view.byteLength)).to_float32_array()
+
+
+func _layout() -> void:
+	var model := {airfoils = [
+		{isMirrored = 1, attributes = {Position = {x = 0.0, y = 2.0, z = 3.0}, Length = 0.75, Root_chord = 0.25,
+			Tip_chord = 0.2, Dihedral = 3.0},
+			controlSurfaces = [{attributes = {Input = "Left Aileron", Length = 0.3, Max_travel = 20.0}}]},
+		{isMirrored = 1, attributes = {Position = {x = 0.0, y = 2.5, z = -40.0}, Length = 0.25, Root_chord = 0.12,
+			Tip_chord = 0.1}, controlSurfaces = [{attributes = {Input = "Left Elevator", Length = 0.2, Max_travel = 15.0}}]},
+		{isMirrored = 0, attributes = {Position = {x = 0.0, y = 3.0, z = -41.0}, Length = 0.2, Root_chord = 0.14,
+			Tip_chord = 0.06}, controlSurfaces = [{attributes = {Input = "Rudder", Length = 0.1, Max_travel = 25.0}}]}],
+		propulsion = [{type = "propeller", pivot = {x = 0.0, y = 2.0, z = 10.0}}]}
+	var values: Dictionary = Converter.definition_values(model, 0.01, [0.0, 0.02, 0.03])
+	var expected := {"wing/span": 1.5, "wing/root_chord": 0.25, "wing/tip_chord": 0.2, "wing/dihedral_deg": 3.0,
+		"horizontal_tail/span": 0.5, "horizontal_tail/chord": 0.11, "horizontal_tail/position/0": 0.43,
+		"horizontal_tail/position/2": 0.005, "vertical_tail/height": 0.2, "vertical_tail/chord": 0.1,
+		"vertical_tail/position/0": 0.44, "vertical_tail/position/2": 0.01, "equipment/hub_position/0": -0.07,
+		"equipment/hub_position/1": 0.0, "equipment/hub_position/2": 0.0, "fuselage/nose_x": -0.04,
+		"fuselage/center_z": 0.0, "controls/aileron_deg": 20.0,
+		"controls/elevator_deg": 15.0, "controls/rudder_deg": 25.0}
+	var matching := values.size() == expected.size()
+	for path: String in expected:
+		matching = matching and values.has(path) and is_equal_approx(float(values[path]), float(expected[path]))
+	check("Phoenix layout maps into the Creator structural frame", matching)
+	check("no layout without a datum", Converter.definition_values(model, 0.01, []).is_empty())

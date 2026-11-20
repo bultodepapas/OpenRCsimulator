@@ -14318,3 +14318,6 @@ msgstr "Файл \"%s\" пуст или превышает лимит %s МиБ.
 
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "Подготовлено подвижных частей по шарнирам Phoenix: %s; проверьте их в разделе «Подвижные части»."
+
+msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+msgstr "Крыло, хвостовое оперение, положение винта и ходы рулей заполнены по модели Phoenix как оценки; подтвердите их перед полётом."

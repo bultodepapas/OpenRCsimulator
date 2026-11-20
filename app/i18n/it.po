@@ -14344,3 +14344,6 @@ msgstr "Il file \"%s\" è vuoto o supera il limite di %s MiB."
 
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "%s parti mobili sono state preparate dalle cerniere di Phoenix; controllale in Parti mobili."
+
+msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+msgstr "Ala, impennaggi, posizione dell’elica ed escursioni dei comandi sono stati compilati dal modello Phoenix come stime; confermali prima di volare."
