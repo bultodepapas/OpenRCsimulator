@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-请使用 v0.2.9 或更高版本，并在文件选择器中选择**ClearView 飞机 ZIP**。试飞和保存为飞机需要下一个版本或开发版本。
+请使用 v0.3.0 或更高版本，并在文件选择器中选择**ClearView 飞机 ZIP**。v0.2.9 只能导入预览，不能试飞或保存。
 
 **实验性。**模型保留 ClearView 外观，但使用估算的 OpenRC 教练机配置飞行，而不是 ClearView 的飞行模型。已保存的飞机暂时无法从主页启动。
 

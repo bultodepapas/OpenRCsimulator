@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-استخدم الإصدار v0.2.9 أو أحدث واختر **ClearView aircraft ZIP** في منتقي الملفات. تتطلب رحلات الاختبار والحفظ كطائرة الإصدار القادم أو إصدار تطوير.
+استخدم الإصدار v0.3.0 أو أحدث واختر **ClearView aircraft ZIP** في منتقي الملفات. يستورد الإصدار v0.2.9 المعاينة فقط، دون رحلات اختبار أو حفظ.
 
 **تجريبي.** يحتفظ النموذج بمظهر ClearView لكنه يطير بإعداد تدريبي تقديري من OpenRC، وليس بنموذج طيران ClearView. لا يمكن تشغيل الطائرات المحفوظة من الشاشة الرئيسية بعد.
 

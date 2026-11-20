@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Use a v0.2.9 ou posterior e escolha **ZIP de aeronave ClearView** no seletor de arquivos. Voos de teste e salvar como aeronave exigem a próxima versão ou uma build de desenvolvimento.
+Use a v0.3.0 ou posterior e escolha **ZIP de aeronave ClearView** no seletor de arquivos. A v0.2.9 importa apenas a prévia, sem voos de teste nem salvamento.
 
 **Experimental.** O modelo mantém a aparência do ClearView, mas voa com uma configuração estimada de treinador do OpenRC, não com o modelo de voo do ClearView. Aeronaves salvas ainda não podem ser lançadas pelo Início.
 

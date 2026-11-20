@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Use v0.2.9 or later and choose **ClearView aircraft ZIP** in the file picker. Test flights and saving as an aircraft need the next release or a development build.
+Use v0.3.0 or later and choose **ClearView aircraft ZIP** in the file picker. v0.2.9 imports the preview only, without test flights or saving.
 
 **Experimental.** The model keeps its ClearView look but flies with an estimated OpenRC trainer configuration, not ClearView’s flight model. Saved aircraft cannot be launched from Home yet.
 

@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Utilisez la v0.2.9 ou plus récente et choisissez **ZIP d’avion ClearView** dans le sélecteur de fichiers. Les vols d’essai et l’enregistrement comme avion nécessitent la prochaine version ou une version de développement.
+Utilisez la v0.3.0 ou plus récente et choisissez **ZIP d’avion ClearView** dans le sélecteur de fichiers. La v0.2.9 importe seulement l’aperçu, sans vols d’essai ni enregistrement.
 
 **Expérimental.** Le modèle garde son apparence ClearView, mais vole avec une configuration estimée d’avion-école OpenRC, pas avec le modèle de vol ClearView. Les avions enregistrés ne peuvent pas encore être lancés depuis l’accueil.
 

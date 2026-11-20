@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-v0.2.9 以降を使い、ファイル選択で**ClearView 機体 ZIP**を選んでください。試験飛行と機体としての保存には、次のリリースまたは開発ビルドが必要です。
+v0.3.0 以降を使い、ファイル選択で**ClearView 機体 ZIP**を選んでください。v0.2.9 はプレビューのみを読み込み、試験飛行や保存はできません。
 
 **実験的機能です。**モデルは ClearView の外観を保ちますが、ClearView の飛行モデルではなく、推定 OpenRC トレーナー構成で飛行します。保存した機体はまだホームから起動できません。
 

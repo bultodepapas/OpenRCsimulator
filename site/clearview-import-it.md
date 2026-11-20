@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Usa la v0.2.9 o successiva e scegli **ZIP aereo ClearView** nel selettore di file. I voli di prova e il salvataggio come aereo richiedono la prossima versione o una build di sviluppo.
+Usa la v0.3.0 o successiva e scegli **ZIP aereo ClearView** nel selettore di file. La v0.2.9 importa solo l’anteprima, senza voli di prova né salvataggio.
 
 **Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con una configurazione stimata da addestratore OpenRC, non con il modello di volo di ClearView. Gli aerei salvati non si possono ancora avviare dalla Home.
 

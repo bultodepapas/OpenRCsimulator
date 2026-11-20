@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-v0.2.9 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**을 고르세요. 시험 비행과 기체로 저장하기는 다음 릴리스나 개발 빌드가 필요합니다.
+v0.3.0 이상을 사용하고 파일 선택기에서 **ClearView aircraft ZIP**을 고르세요. v0.2.9는 미리보기만 가져오며 시험 비행과 저장은 할 수 없습니다.
 
 **실험적 기능입니다.** 모델은 ClearView 외관을 유지하지만 ClearView 비행 모델이 아닌 추정 OpenRC 트레이너 구성으로 비행합니다. 저장된 기체는 아직 홈에서 실행할 수 없습니다.
 

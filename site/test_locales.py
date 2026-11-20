@@ -95,8 +95,8 @@ class LocalePublicationTests(unittest.TestCase):
                 for filename in ('.zip', 'params.txt', '.ac', '.lst'):
                     self.assertIn(f'`{filename}`', markdown)
                 self.assertIn('64 MiB', markdown)
-                # The first release with ZIP import; flight/save need a later build.
-                self.assertIn('v0.2.9', markdown)
+                # v0.3.0 is the first release with ClearView test flight and saving.
+                self.assertIn('v0.3.0', markdown)
                 self.assertNotIn('v0.2.7', markdown)
                 for format_name in ('PNG', 'JPEG', 'GIF', 'BMP'):
                     self.assertIn(format_name, markdown)

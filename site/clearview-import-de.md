@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Verwende v0.2.9 oder neuer und wähle in der Dateiauswahl **ClearView-Flugzeug-ZIP**. Testflüge und das Speichern als Flugzeug benötigen die nächste Version oder einen Entwicklungsbuild.
+Verwende v0.3.0 oder neuer und wähle in der Dateiauswahl **ClearView-Flugzeug-ZIP**. v0.2.9 importiert nur die Vorschau, ohne Testflüge oder Speichern.
 
 **Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit einer geschätzten OpenRC-Trainerkonfiguration, nicht mit dem ClearView-Flugmodell. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
 

@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Используйте v0.2.9 или новее и выберите **ZIP самолёта ClearView** в окне выбора файла. Для пробных полётов и сохранения самолёта нужна следующая версия или сборка для разработки.
+Используйте v0.3.0 или новее и выберите **ZIP самолёта ClearView** в окне выбора файла. v0.2.9 импортирует только предпросмотр, без пробных полётов и сохранения.
 
 **Экспериментально.** Модель сохраняет внешний вид ClearView, но летает с оценочной конфигурацией учебного самолёта OpenRC, а не с лётной моделью ClearView. Сохранённые самолёты пока нельзя запускать с главного экрана.
 
