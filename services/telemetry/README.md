@@ -118,6 +118,8 @@ Every count is distinct session tokens per UTC day and cell (session-day observa
 
 A rising `rejected:unapproved_release` means a published tag is missing from `OPENRC_TELEMETRY_RELEASES`; `rate_limited` behind a proxy usually means `OPENRC_TELEMETRY_TRUST_PROXY` does not match the proxy; `forwarded_for_present` with `TRUST_PROXY=0` shows the proxy does forward client addresses.
 
+The [operator dashboard](../../tools/telemetry/README.md) renders `status`, the daily counters, rollup coverage and recent weekly insights from the live receiver as one local HTML page.
+
 Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation; a missed deadline yields a missing day, never extended raw retention. It is an idempotent upsert keyed by (day, release, table). Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens; each token counts at most 120 windows (or activity summaries).
 
 Weekly publication flow:
