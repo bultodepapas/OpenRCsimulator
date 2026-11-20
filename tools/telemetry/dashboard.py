@@ -358,6 +358,8 @@ def tiles(snapshot, rows):
         health = ("critical", "\u2716", "All releases suspended")
     elif not status["retention_ok"]:
         health = ("critical", "\u2716", "Raw row past 48 h")
+    elif status["last_accepted_age_s"] is None and not status["raw_batches"]:
+        health = ("warning", "!", "Waiting for first batch")
     elif status["last_accepted_age_s"] is None or status["last_accepted_age_s"] > 86400:
         health = ("warning", "!", "No batch in 24 h")
     else:
