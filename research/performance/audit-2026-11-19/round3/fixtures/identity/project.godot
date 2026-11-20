@@ -1,0 +1,5 @@
+config_version=5
+[application]
+config/name="R3-Identity-Read-Count"
+[rendering]
+renderer/rendering_method="gl_compatibility"

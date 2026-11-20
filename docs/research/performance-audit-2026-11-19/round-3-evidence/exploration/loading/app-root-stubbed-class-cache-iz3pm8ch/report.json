@@ -1,0 +1,204 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "83227a99-19bb-45bb-a5af-0ac3b7e69410",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/fixture",
+    "--script",
+    "res://probe_compile.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator-r3",
+  "started_utc": "2026-11-20T01:54:03.309698+00:00",
+  "label": "app-root-stubbed-class-cache",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/app-root-stubbed-class-cache-iz3pm8ch/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/app-root-stubbed-class-cache-iz3pm8ch/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROOT LOADED"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 18,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Compile Error: Identifier not found: HeliRotorBlur",
+      "context": [
+        "          at: GDScript::reload (res://render/rotor/heli_rotor_blur.gd:43)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://render/rotor/heli_night_lights.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://ui/home_scene.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/device_card.gd:137)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Parse Error: Cannot infer the type of \"prompt\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/device_card.gd:137)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/device_picture.gd:425)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 15,
+      "message": "Parse Error: Cannot infer the type of \"prompt\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/device_picture.gd:425)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/controls_workspace.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 19,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/binding_chip.gd:128)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 21,
+      "message": "Parse Error: Cannot infer the type of \"prompt\" variable because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/binding_chip.gd:128)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/binding_chip.gd:133)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 25,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/setup_assistant.gd:271)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 27,
+      "message": "Parse Error: Identifier \"ControllerPrompts\" not declared in the current scope.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controls/setup_assistant.gd:326)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://ui/controller_setup.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 31,
+      "message": "Compile Error: Identifier not found: MenuAudio",
+      "context": [
+        "          at: GDScript::reload (res://ui/menu_audio.gd:127)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://app_root.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 35,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://probe_compile.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 37,
+      "message": "Failed to load script \"res://probe_compile.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "ROOT LOADED true"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 11.177381,
+  "log_bytes": 2814,
+  "log_sha256": "408bea1c6ab1a784e055c904c531c2f3c6bda729862cccfe66afb9117e497f19"
+}

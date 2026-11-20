@@ -1,0 +1,75 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3018e7e8-8e21-4972-8a30-58b6b89943b3",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/render/lighting_fixture",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_auto_calibration.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator-r3",
+  "started_utc": "2026-11-20T01:55:17.519979+00:00",
+  "label": "current-auto-calibration",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/render/runs/current-auto-calibration-2ozo9pg8/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/render/runs/current-auto-calibration-2ozo9pg8/report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "auto calibration:",
+    "0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Parse JSON failed. Error at line 0: Unknown error getting token",
+      "context": [
+        "   at: parse_string (core/io/json.cpp:601)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] table (res://render/gpu_capability.gd:42)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "GPU capability table res://data/gpu/capability.json is missing or invalid",
+      "context": [
+        "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] table (res://render/gpu_capability.gd:51)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 28,
+      "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2609)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.485428,
+  "log_bytes": 1723,
+  "log_sha256": "0c8ae8809e8b19c330f8a20f06ec5d490273645e8462f37f5c2504692f198959"
+}

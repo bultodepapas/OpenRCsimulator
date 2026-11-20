@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+CASE target=2000000000.000000 ps result={"events":[{"id":"B","surface_residual":0.0,"surface_unit":"s","time_error_bound_s":0.000000000000500000214842533,"time_s":0.00200000000075,"type":"time_boundary"},{"id":"A","surface_residual":-0.000000000000749999888582931,"surface_unit":"s","time_error_bound_s":0.000000000000500000214842533,"time_s":0.00200000000075,"type":"time_boundary"}],"ok":true,"state":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0],"surface_evaluations":58}
+BOUND priority_later_first=B actual_ps=0.749999889 reported_ps=0.500000215
+SINGLE result={"events":[{"id":"A","surface_residual":0.0,"surface_unit":"s","time_error_bound_s":0.000000000000500000214842533,"time_s":0.002,"type":"time_boundary"}],"ok":true,"state":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],"surface_evaluations":29}
+CONTROL result={"events":[{"id":"A","surface_residual":0.0,"surface_unit":"s","time_error_bound_s":0.000000000000500000214842533,"time_s":0.002,"type":"time_boundary"},{"id":"B","surface_residual":0.000000000000749999888582931,"surface_unit":"s","time_error_bound_s":0.000000000000500000214842533,"time_s":0.002,"type":"time_boundary"}],"ok":true,"state":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0],"surface_evaluations":58}
+ROOT_BOUND_COMPLETE failures=0

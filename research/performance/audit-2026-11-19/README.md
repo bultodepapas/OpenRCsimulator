@@ -5,6 +5,8 @@ Audited source: `894357de83762ff6e0fdc47b0024e60f3d8286b7`.
 
 The [round-two package](round2/README.md) extends this collection with controller, terrain, settings, replay, input-count and lake-math probes for [F36–F45](../../../docs/research/performance-audit-2026-11-19/round-2.md). The recipe below preserves the original event/calibration snapshot.
 
+The [round-three package](round3/README.md) extracts newer main `d736ee8a` from pinned Git blobs. Its 13 checked launches cover F46–F48, residual F02/F07 boundaries and selected current controls. [The report](../../../docs/research/performance-audit-2026-11-19/round-3.md) records repairs, fixture limits and the existing calibration test's one warning. Its manifest is separate from the first two snapshots.
+
 These are isolated **baseline observations**, including counterexamples to current
 behavior. A successful run means the recorded baseline was reproduced; it does
 not mean the reported bugs are fixed or that GPU/flight performance is qualified.

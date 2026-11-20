@@ -1,0 +1,221 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d14d22cf-2e0d-497b-8541-14992e5a755d",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/fixture",
+    "--script",
+    "res://probe_compile.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator-r3",
+  "started_utc": "2026-11-20T01:52:20.016746+00:00",
+  "label": "app-root-compile",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/app-root-compile-xq42cz6p/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/app-root-compile-xq42cz6p/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ROOT LOADED"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 105,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Preload file \"res://assets/landscape/turf/detail.png\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/ground.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Cannot infer the type of \"TURF_DETAIL\" constant because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://render/ground.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Parse Error: Preload file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 15,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://render/landscape_upgrade/scenery_grass_mask.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://render/near_grass.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 19,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:8)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 21,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:10)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 25,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:11)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 27,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:12)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:13)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 31,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:14)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/pilot_station.gd:15)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 35,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:101)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 37,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:102)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 39,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:103)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 41,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:104)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.548758,
+  "log_bytes": 18172,
+  "log_sha256": "e724437c128050ea5fb8672761a6db7af693ee5c2ed8989e4393be121675cc77"
+}

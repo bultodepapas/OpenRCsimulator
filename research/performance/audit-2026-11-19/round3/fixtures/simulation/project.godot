@@ -1,0 +1,7 @@
+config_version=5
+[application]
+config/name="OpenRC-R3-Simulation-Fixture"
+[physics]
+common/physics_ticks_per_second=240
+[rendering]
+renderer/rendering_method="gl_compatibility"

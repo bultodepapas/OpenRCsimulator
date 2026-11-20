@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "040a639b-3135-47fe-bc77-19c8a7690a38",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+    "--script",
+    "res://calibration_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T02:02:43.494506+00:00",
+  "label": "r3-calibration-mixed",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "mixed workload probe: 1 check, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.383526,
+  "log_bytes": 641,
+  "log_sha256": "f61277b83bc9d483e31315fcd5097c683ede5901fe674063eae15f2361101071"
+}

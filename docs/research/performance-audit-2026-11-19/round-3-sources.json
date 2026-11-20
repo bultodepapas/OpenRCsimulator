@@ -1,0 +1,374 @@
+{
+  "consulted_date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "application_sources": [
+    {
+      "key": "launch-clear",
+      "path": "app/app_root.gd",
+      "start_line": 1460,
+      "end_line": 1489,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1460-L1489"
+    },
+    {
+      "key": "launch-drain",
+      "path": "app/app_root.gd",
+      "start_line": 1495,
+      "end_line": 1520,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1495-L1520"
+    },
+    {
+      "key": "launch-attach",
+      "path": "app/app_root.gd",
+      "start_line": 1603,
+      "end_line": 1645,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1603-L1645"
+    },
+    {
+      "key": "cancel",
+      "path": "app/app_root.gd",
+      "start_line": 1921,
+      "end_line": 1941,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1921-L1941"
+    },
+    {
+      "key": "rebuild",
+      "path": "app/app_root.gd",
+      "start_line": 4338,
+      "end_line": 4361,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L4338-L4361"
+    },
+    {
+      "key": "landscape",
+      "path": "app/app_root.gd",
+      "start_line": 4481,
+      "end_line": 4510,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L4481-L4510"
+    },
+    {
+      "key": "prefetch",
+      "path": "app/app_root.gd",
+      "start_line": 494,
+      "end_line": 576,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L494-L576"
+    },
+    {
+      "key": "selection-signals",
+      "path": "app/app_root.gd",
+      "start_line": 850,
+      "end_line": 861,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L850-L861"
+    },
+    {
+      "key": "home-selector",
+      "path": "app/ui/home.gd",
+      "start_line": 2135,
+      "end_line": 2154,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/ui/home.gd#L2135-L2154"
+    },
+    {
+      "key": "helicopter-ready",
+      "path": "app/helicopter_main.gd",
+      "start_line": 102,
+      "end_line": 197,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/helicopter_main.gd#L102-L197"
+    },
+    {
+      "key": "loading-tests",
+      "path": "app/tests/test_flight_loading.gd",
+      "start_line": 598,
+      "end_line": 641,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/tests/test_flight_loading.gd#L598-L641"
+    },
+    {
+      "key": "lighting-install",
+      "path": "app/main.gd",
+      "start_line": 3492,
+      "end_line": 3504,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/main.gd#L3492-L3504"
+    },
+    {
+      "key": "lighting-frame",
+      "path": "app/main.gd",
+      "start_line": 1547,
+      "end_line": 1561,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/main.gd#L1547-L1561"
+    },
+    {
+      "key": "lighting-mode",
+      "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+      "start_line": 89,
+      "end_line": 178,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L89-L178"
+    },
+    {
+      "key": "lighting-advance",
+      "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+      "start_line": 181,
+      "end_line": 263,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L181-L263"
+    },
+    {
+      "key": "lighting-counter",
+      "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+      "start_line": 651,
+      "end_line": 664,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L651-L664"
+    },
+    {
+      "key": "lighting-vfx",
+      "path": "app/render/lighting/lighting_vfx.gd",
+      "start_line": 133,
+      "end_line": 195,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/lighting_vfx.gd#L133-L195"
+    },
+    {
+      "key": "lighting-state",
+      "path": "app/render/world/aircraft_light_state.gd",
+      "start_line": 24,
+      "end_line": 64,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/world/aircraft_light_state.gd#L24-L64"
+    },
+    {
+      "key": "events",
+      "path": "app/physics/resource_event_step.gd",
+      "start_line": 89,
+      "end_line": 173,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/physics/resource_event_step.gd#L89-L173"
+    },
+    {
+      "key": "root-bracket",
+      "path": "app/physics/resource_event_step.gd",
+      "start_line": 254,
+      "end_line": 287,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/physics/resource_event_step.gd#L254-L287"
+    },
+    {
+      "key": "event-tests",
+      "path": "app/tests/test_resource_event_step.gd",
+      "start_line": 190,
+      "end_line": 238,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/tests/test_resource_event_step.gd#L190-L238"
+    },
+    {
+      "key": "contacts",
+      "path": "app/sim/scenery_collision.gd",
+      "start_line": 125,
+      "end_line": 181,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/scenery_collision.gd#L125-L181"
+    },
+    {
+      "key": "contact-order",
+      "path": "app/sim/scenery_collision.gd",
+      "start_line": 655,
+      "end_line": 686,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/scenery_collision.gd#L655-L686"
+    },
+    {
+      "key": "contact-consumer",
+      "path": "app/sim/flight_session.gd",
+      "start_line": 3487,
+      "end_line": 3533,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/flight_session.gd#L3487-L3533"
+    },
+    {
+      "key": "restore",
+      "path": "app/sim/airship/session.gd",
+      "start_line": 511,
+      "end_line": 532,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/airship/session.gd#L511-L532"
+    },
+    {
+      "key": "kernel-replacement",
+      "path": "app/sim/simulation.gd",
+      "start_line": 125,
+      "end_line": 158,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/simulation.gd#L125-L158"
+    },
+    {
+      "key": "calibration",
+      "path": "app/render/auto_calibration.gd",
+      "start_line": 100,
+      "end_line": 137,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/auto_calibration.gd#L100-L137"
+    },
+    {
+      "key": "calibration-identity",
+      "path": "app/render/auto_calibration.gd",
+      "start_line": 301,
+      "end_line": 374,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/auto_calibration.gd#L301-L374"
+    },
+    {
+      "key": "calibration-attach",
+      "path": "app/app_root.gd",
+      "start_line": 1728,
+      "end_line": 1747,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1728-L1747"
+    },
+    {
+      "key": "settings-open",
+      "path": "app/app_root.gd",
+      "start_line": 1944,
+      "end_line": 1951,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1944-L1951"
+    },
+    {
+      "key": "settings-apply",
+      "path": "app/app_root.gd",
+      "start_line": 2062,
+      "end_line": 2081,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L2062-L2081"
+    },
+    {
+      "key": "reconstruction",
+      "path": "app/render/reconstruction.gd",
+      "start_line": 254,
+      "end_line": 272,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/reconstruction.gd#L254-L272"
+    },
+    {
+      "key": "startup-renderer",
+      "path": "app/app_state/renderer_preference.gd",
+      "start_line": 105,
+      "end_line": 191,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_state/renderer_preference.gd#L105-L191"
+    },
+    {
+      "key": "startup-order",
+      "path": "app/app_root.gd",
+      "start_line": 415,
+      "end_line": 454,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L415-L454"
+    },
+    {
+      "key": "scene-detail",
+      "path": "app/render/scene_detail.gd",
+      "start_line": 124,
+      "end_line": 164,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/scene_detail.gd#L124-L164"
+    },
+    {
+      "key": "cloud-cache",
+      "path": "app/render/cloud_shadow_map.gd",
+      "start_line": 85,
+      "end_line": 154,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/cloud_shadow_map.gd#L85-L154"
+    },
+    {
+      "key": "sky",
+      "path": "app/render/sky.gdshader",
+      "start_line": 213,
+      "end_line": 282,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/sky.gdshader#L213-L282"
+    },
+    {
+      "key": "nitro-identity",
+      "path": "app/physics/ground_vehicle/nitro_dynamics.gd",
+      "start_line": 37,
+      "end_line": 53,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/physics/ground_vehicle/nitro_dynamics.gd#L37-L53"
+    },
+    {
+      "key": "body-identity",
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "start_line": 90,
+      "end_line": 101,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/physics/ground_vehicle/vehicle_dynamics.gd#L90-L101"
+    },
+    {
+      "key": "artifact-read",
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "start_line": 140,
+      "end_line": 195,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/physics/ground_vehicle/vehicle_dynamics.gd#L140-L195"
+    },
+    {
+      "key": "ground-tick",
+      "path": "app/sim/ground_vehicle/session.gd",
+      "start_line": 469,
+      "end_line": 485,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/ground_vehicle/session.gd#L469-L485"
+    },
+    {
+      "key": "backend-guard",
+      "path": "app/sim/ground_vehicle/session.gd",
+      "start_line": 1838,
+      "end_line": 1841,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/sim/ground_vehicle/session.gd#L1838-L1841"
+    },
+    {
+      "key": "ground-scene",
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "start_line": 492,
+      "end_line": 503,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/vehicles/ground/ground_scene.gd#L492-L503"
+    },
+    {
+      "key": "rcv41",
+      "path": "docs/research/rc-monster-truck/RCV-41/README.md",
+      "start_line": 1,
+      "end_line": 50,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/docs/research/rc-monster-truck/RCV-41/README.md#L1-L50"
+    },
+    {
+      "key": "rcv42",
+      "path": "docs/research/rc-monster-truck/RCV-42/README.md",
+      "start_line": 1,
+      "end_line": 43,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/docs/research/rc-monster-truck/RCV-42/README.md#L1-L43"
+    },
+    {
+      "key": "priorities",
+      "path": "docs/plans/optimization-priorities.md",
+      "start_line": 1,
+      "end_line": 110,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/docs/plans/optimization-priorities.md#L1-L110"
+    },
+    {
+      "key": "native-wind",
+      "path": "research/native-kernel/README.md",
+      "start_line": 455,
+      "end_line": 482,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/research/native-kernel/README.md#L455-L482"
+    },
+    {
+      "key": "nominal-size",
+      "path": "app/render/reconstruction.gd",
+      "start_line": 671,
+      "end_line": 691,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/reconstruction.gd#L671-L691"
+    }
+  ],
+  "external_primary_sources": [
+    {
+      "title": "Godot CPU optimization",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/cpu_optimization.html",
+      "purpose": "Profiling scope and whole-workload cost.",
+      "version_note": "Latest/unstable documentation; actual probes pin the engine binary separately."
+    },
+    {
+      "title": "Godot GPU optimization",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/gpu_optimization.html",
+      "purpose": "Hardware-dependent rendering cost, batching and culling tradeoffs.",
+      "version_note": "Latest/unstable documentation; actual probes pin the engine binary separately."
+    },
+    {
+      "title": "Godot thread-safe APIs",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/thread_safe_apis.html",
+      "purpose": "Active SceneTree and GPU-resource operations need thread/ownership discipline.",
+      "version_note": "Latest/unstable documentation; actual probes pin the engine binary separately."
+    },
+    {
+      "title": "Godot ShaderMaterial",
+      "url": "https://docs.godotengine.org/en/latest/classes/class_shadermaterial.html",
+      "purpose": "Parameter setter semantics; API activity does not measure GPU execution cost.",
+      "version_note": "Latest/unstable documentation; actual probes pin the engine binary separately."
+    },
+    {
+      "title": "Godot Viewport",
+      "url": "https://docs.godotengine.org/en/latest/classes/class_viewport.html",
+      "purpose": "Output, internal scaling and MSAA are distinct viewport settings.",
+      "version_note": "Latest/unstable documentation; actual probes pin the engine binary separately."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+OBS before={ "pixels": 8294400, "render_pixels": 8294400, "msaa_3d": 2 } final={ "pixels": 2073600, "render_pixels": 2073600, "msaa_3d": 0 } stored={ "adapter": "synthetic gpu", "method": "gl_compatibility", "level": "high", "scene_offset": -1, "reject_high": false, "complete": true, "pixels": 2073600, "render_pixels": 2073600, "msaa_3d": 0, "gpu_p95_ms": 20.0, "cpu_p95_ms": 1.0, "interval_p95_ms": 16.0, "cpu_bound": false, "subviewports": false, "refresh_hz": -1.0 } needed_final=false matches_before=false matches_final=true
+mixed workload probe: 1 check, 0 failed

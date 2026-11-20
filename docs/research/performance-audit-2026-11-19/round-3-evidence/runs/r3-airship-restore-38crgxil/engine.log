@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok prepare terrain-only session
+ok resume
+ok warmup tick
+ok warmup tick
+ok warmup tick
+Flight log REC: /workspace/scratch/74aa0272b109/audit_tmp/round3/published2/xdg/simulation/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/r3_restore_probe.orfl
+ok record starts
+ok recorded tick
+ok recorded tick
+ok nan body refused
+ok degenerate quaternion refused
+ok nan continuous refused
+ok rejection preserves state, inputs, tape and tick
+ok rejection preserves recorder, signals and pause
+ok flight and recorder continue
+Flight log saved: /workspace/scratch/74aa0272b109/audit_tmp/round3/published2/xdg/simulation/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/r3_restore_probe.orfl (3 ticks)
+ok valid restore accepted
+ok accepted restore closes complete recorder once
+RESTORE_PROBE_COMPLETE failures=0

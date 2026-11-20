@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://calibration_probe.gd:34)
+ERROR: Failed to load script "res://calibration_probe.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)

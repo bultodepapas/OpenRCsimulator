@@ -1,0 +1,107 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://scenery/club_furniture.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://scenery/pit_chair.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb" does not exist.
+          at: GDScript::reload (res://scenery/power_lines.gd:5)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/prefabs.gd:0)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:101)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:102)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:103)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:104)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:105)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:106)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:107)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:108)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:109)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:110)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:111)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_world.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/airship/session.gd:0)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:7)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:8)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:9)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:10)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:11)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:12)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:13)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:14)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg" does not exist.
+          at: GDScript::reload (res://scenery/building_roofs.gd:15)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf" does not exist.
+          at: GDScript::reload (res://scenery/airfield_detail.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf" does not exist.
+          at: GDScript::reload (res://scenery/airfield_detail.gd:7)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf" does not exist.
+          at: GDScript::reload (res://scenery/airfield_detail.gd:8)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf" does not exist.
+          at: GDScript::reload (res://scenery/airfield_detail.gd:10)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/scenery.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_setup.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/airship/flight_log.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://tests/test_airship_flight_log.gd:0)
+ERROR: Failed to load script "res://tests/test_airship_flight_log.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+ok   session prepares on the real field 
+Flight log REC: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/flight.orfl
+ok   recording starts mid-flight 
+Flight log saved: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/flight.orfl (1920 ticks)
+ok   recording stops cleanly 1920 rows
+ok   complete file with checksummed blocks and chain 
+ok   pause, marker, resume and stop events are kept ["pause", "marker", "resume", "stop"]
+ok   last recorded row is the live final state 
+ok   exact replay from the mid-flight checkpoint {"complete":true,"error":"","exact":true,"first_mismatch_tick":-1,"format":"openrc-airship-flight-log-report v1","identity_match":true,"log":"user://test_airship_flight_log/flight.orfl","ok":true,"recorded_crash":"","replayed_crash":"","rows":1920,"solver_changed":false}
+ok   a different session identity is refused Session identity (law, mixer, data, layout, weather or field) differs from the recording.
+ok   a changed stick row is found at its tick Replay diverged from the recorded state. at 1181
+ok   a flipped byte is refused 
+ok   a truncated file is refused as incomplete Invalid or truncated packet length.
+ok   fixed-wing tools refuse the airship format 
+Flight log REC: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/reset.orfl
+Flight log saved: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/reset.orfl (120 ticks)
+ok   a reset closes a complete log 
+Flight log already exists: user://test_airship_flight_log/flight.orfl
+ok   refuses to overwrite an existing log 
+Flight log REC: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/crash.orfl
+Flight log saved: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/crash.orfl (48 ticks)
+ok   a strike ends the recorded flight and replays as the same strike {"complete":true,"error":"","exact":true,"first_mismatch_tick":-1,"format":"openrc-airship-flight-log-report v1","identity_match":true,"log":"user://test_airship_flight_log/crash.orfl","ok":true,"recorded_crash":"Hard envelope impact (1.9 m/s)","replayed_crash":"Hard envelope impact (1.9 m/s)","rows":48,"solver_changed":false}
+ok   a replay whose terminal outcome differs is refused Replay terminal outcome differs from the recording.
+Flight log REC: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/restore_refused.orfl
+ok   restore test: recording starts 
+ok   malformed checkpoint bodies or continuous data are refused [false, false, false, false, false]
+ok   a refused restore emits no reset and no fault 0 resets, 0 faults
+ok   a refused restore leaves state, continuous, inputs, tape and clock unchanged 
+ok   a refused restore does not fault or pause the flight 
+ok   a refused restore leaves the recorder open 
+ok   the flight and its recording continue after a refused restore 
+Flight log saved: /workspace/scratch/74aa0272b109/audit_tmp/round3/simulation/xdg/data/godot/app_userdata/OpenRC-R3-Simulation-Fixture/test_airship_flight_log/restore_refused.orfl (31 ticks)
+ok   a valid restore is accepted and keeps the flight running 
+ok   a valid restore announces the reset once and closes a complete log 1 resets, 31
+25 checks, 0 failed

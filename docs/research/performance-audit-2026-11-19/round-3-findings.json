@@ -1,0 +1,230 @@
+{
+  "format": "openrc-audit-findings-v1",
+  "round": 3,
+  "date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/cpu-gpu-optimization-2026-11-19",
+  "audited_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "new_count": 3,
+  "historical_register_total": 48,
+  "findings": [
+    {
+      "id": "F46",
+      "title": "Early launch cancellation loses the pending Home landscape rebuild",
+      "priority": "P2",
+      "classification": "Component-reproduced logic defect",
+      "owners": [
+        "UI-34c",
+        "DT-11a",
+        "L21–24"
+      ],
+      "sources": [
+        {
+          "path": "app/app_root.gd",
+          "start_line": 4481,
+          "end_line": 4510,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L4481-L4510"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 4338,
+          "end_line": 4361,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L4338-L4361"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 1460,
+          "end_line": 1489,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1460-L1489"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 1921,
+          "end_line": 1941,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1921-L1941"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 494,
+          "end_line": 576,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L494-L576"
+        },
+        {
+          "path": "app/ui/home.gd",
+          "start_line": 2135,
+          "end_line": 2154,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/ui/home.gd#L2135-L2154"
+        }
+      ],
+      "reproduction": [
+        "Hold the actual scene-load worker through its injected loader callback.",
+        "Select Green through the production set_landscape method; the backdrop rebuild is queued.",
+        "Call production start_flight and cancel_flight_loading at its first feedback checkpoint.",
+        "Release the worker and allow the production rebuild-flush path to run."
+      ],
+      "observed": {
+        "selected": "green_paradise",
+        "shown_by_backdrop_standin": "club_field",
+        "rebuild_count": 0,
+        "launch_status": "cancelled",
+        "control_without_fly_rebuild_count": 1
+      },
+      "impact": "Home can keep the previous landscape behind the new selected launch intent after a cancelled launch.",
+      "recommendation": "Retain a reconciliation obligation keyed to the current Home/world generation until successful departure or a successful rebuild; restore it on cancellation/failure.",
+      "acceptance": [
+        "Busy prefetch, change landscape, Fly, early Cancel, drain.",
+        "No-Fly control; multiple selections; failed creation; successful departure; repeated cancellation; Home recreation; shutdown.",
+        "Rendered verification with real backdrops and stock assets."
+      ],
+      "limits": "Unmodified production AppRoot methods and field validation; gated loader, stub Home backdrop/preview broker/candidate, overridden setup/process plumbing. Correctness of transition state is reproduced, not a rendered Home frame or race frequency.",
+      "evidence_labels": [
+        "r3-loading"
+      ]
+    },
+    {
+      "id": "F47",
+      "title": "Cancelled rotorcraft launch constructs and attaches a candidate after the prefetch drain",
+      "priority": "P2",
+      "classification": "Component-reproduced cancellation defect",
+      "owners": [
+        "UI-34c",
+        "DT-11a",
+        "Rotorcraft"
+      ],
+      "sources": [
+        {
+          "path": "app/app_root.gd",
+          "start_line": 1495,
+          "end_line": 1520,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1495-L1520"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 1603,
+          "end_line": 1645,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L1603-L1645"
+        },
+        {
+          "path": "app/helicopter_main.gd",
+          "start_line": 102,
+          "end_line": 197,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/helicopter_main.gd#L102-L197"
+        },
+        {
+          "path": "app/tests/test_flight_loading.gd",
+          "start_line": 598,
+          "end_line": 641,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/tests/test_flight_loading.gd#L598-L641"
+        },
+        {
+          "path": "app/app_root.gd",
+          "start_line": 494,
+          "end_line": 576,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/app_root.gd#L494-L576"
+        }
+      ],
+      "reproduction": [
+        "Start the fixed-wing Home scene worker and hold it at the injected loader callback.",
+        "Select xcell-60-research and start the helicopter route.",
+        "Cancel while AppRoot awaits the shared prefetch drain, then release the worker."
+      ],
+      "observed": {
+        "candidate_constructions_after_cancel": 1,
+        "candidate_ready_calls_after_cancel": 1,
+        "final_flight": null,
+        "final_status": "cancelled",
+        "early_cancel_control_constructions": 0
+      },
+      "impact": "Cancellation can admit avoidable synchronous construction before rollback; real helicopter setup cost is source-traced and unmeasured.",
+      "recommendation": "Keep required worker draining, recheck cancellation across that wait and immediately before construction/attachment, then use existing before-candidate rollback.",
+      "acceptance": [
+        "Cancel at the first checkpoint, during drain, on the drain-completion frame and immediately before attachment.",
+        "Zero new candidates after cancellation at the drain boundary; Home restored; worker joined; no stale cache publication.",
+        "Real helicopter integration under a cold and warm resource cache; repeated cancel and quit."
+      ],
+      "limits": "Actual production AppRoot and loader control flow with a counted stand-in candidate; real helicopter _ready, renderer, audio, loading latency and peak memory were not executed/measured.",
+      "evidence_labels": [
+        "r3-loading"
+      ]
+    },
+    {
+      "id": "F48",
+      "title": "An explicit aircraft-lighting rig publishes hidden material parameters in mode OFF",
+      "priority": "P3",
+      "classification": "Counted CPU-side optimization candidate",
+      "owners": [
+        "FW-RGB",
+        "DT-MAC"
+      ],
+      "sources": [
+        {
+          "path": "app/main.gd",
+          "start_line": 3492,
+          "end_line": 3504,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/main.gd#L3492-L3504"
+        },
+        {
+          "path": "app/main.gd",
+          "start_line": 1547,
+          "end_line": 1561,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/main.gd#L1547-L1561"
+        },
+        {
+          "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+          "start_line": 89,
+          "end_line": 178,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L89-L178"
+        },
+        {
+          "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+          "start_line": 181,
+          "end_line": 263,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L181-L263"
+        },
+        {
+          "path": "app/render/lighting/aircraft_lighting_rig_3d.gd",
+          "start_line": 651,
+          "end_line": 664,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/aircraft_lighting_rig_3d.gd#L651-L664"
+        },
+        {
+          "path": "app/render/lighting/lighting_vfx.gd",
+          "start_line": 133,
+          "end_line": 195,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/lighting/lighting_vfx.gd#L133-L195"
+        },
+        {
+          "path": "app/render/world/aircraft_light_state.gd",
+          "start_line": 24,
+          "end_line": 64,
+          "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396/app/render/world/aircraft_light_state.gd#L24-L64"
+        }
+      ],
+      "observed": {
+        "preset": "classic_rc",
+        "fixture_geometry": "BoxMesh",
+        "mode": "off",
+        "kit_and_tested_strobe_hidden": true,
+        "initial_parameter_writes": 18,
+        "subsequent_changed_clock_parameter_writes": 6,
+        "same_clock_parameter_writes": 0,
+        "strobe_clock_before": 1.0,
+        "strobe_clock_after": 2.0,
+        "reenabled_clock": 3.0,
+        "reenabled_visible": true
+      },
+      "impact": "Per-frame CPU-side setter traffic survives OFF for an instantiated preset/custom rig. Cost is unmeasured; inherited lighting and selection=disabled have separate behavior.",
+      "recommendation": "Defer parameters for invisible contributions while preserving logical time/VFX state and synchronously reconciling current values when re-enabled.",
+      "acceptance": [
+        "Compare exact setter counts for OFF, daytime Automatic, NAV, ALL and selection=disabled.",
+        "Preserve VFX cue/maneuver histories, residual effects, rewind/reset, skins, emission, gear gates, exposure and multiple views.",
+        "Measure paired complete-frame cost on actual target hardware before claiming a gain."
+      ],
+      "limits": "Counter aggregates _set_param calls in one headless synthetic rig. No GPU upload, GPU time, FPS improvement or default-fleet impact established. Do not skip all advance(): it also owns logical lifecycle state.",
+      "evidence_labels": [
+        "r3-lighting-off"
+      ]
+    }
+  ]
+}

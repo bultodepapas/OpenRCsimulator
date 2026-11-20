@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok individual point sweeps yield two hits and one hit 
+WITNESS z1=0.499999975999245 z0=0.499999975999997 a=0.499999976000748 local_delta=0.000000000000751 global_delta=0.000000000001503
+WITNESS ordered first=a_box/0 second=z_box/0
+ok global anchor places A outside tie window 
+ok per-obstacle reduction selects out-of-window A 
+ok control: wider gap returns z 
+COLLISION_ANCHOR_COMPLETE failures=0

@@ -1,0 +1,8 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+R3_IDENTITY_BEGIN nitro
+R3_IDENTITY_END nitro
+R3_IDENTITY_BEGIN body
+R3_IDENTITY_END body
+IDENTITY_JSON {"body_backend":"gdscript_reference","calls_per_case":240,"engine":"4.8-beta2 (official)","identities_equal":true}
+IDENTITY_PROBE_COMPLETE expected_observation=true

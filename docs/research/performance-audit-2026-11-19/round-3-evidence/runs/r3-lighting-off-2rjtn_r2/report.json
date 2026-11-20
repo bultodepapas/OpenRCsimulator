@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ace6655-16dc-4146-86e3-5574fb9667a9",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+    "--script",
+    "res://probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T02:02:42.741185+00:00",
+  "label": "r3-lighting-off",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "lighting disabled probe: 1 check, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.690649,
+  "log_bytes": 244,
+  "log_sha256": "1749c97f52bfac1595949470c0390d3da6f7f797e93bb5850cad2ec09ed84707"
+}

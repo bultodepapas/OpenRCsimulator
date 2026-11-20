@@ -1,0 +1,4 @@
+[application]
+config/name="render-audit-fixture"
+[rendering]
+renderer/rendering_method="gl_compatibility"

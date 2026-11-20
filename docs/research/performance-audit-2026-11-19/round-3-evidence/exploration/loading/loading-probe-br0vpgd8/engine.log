@@ -1,0 +1,120 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] set_aircraft (res://ui/home.gd:1382)
+       [7] _init (res://ui/home.gd:749)
+       [8] _ready (res://loading_probe.gd:64)
+       [9] begin_app (res://loading_probe.gd:99)
+       [10] _run (res://loading_probe.gd:124)
+CHECK worker_gate_entered PASS {}
+CHECK change_while_busy_queued FAIL {}
+CHECK control_without_fly_rebuilds FAIL {"rebuilds":0,"selected":"club_field","shown":"club_field"}
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] set_aircraft (res://ui/home.gd:1382)
+       [7] _init (res://ui/home.gd:749)
+       [8] _ready (res://loading_probe.gd:64)
+       [9] begin_app (res://loading_probe.gd:99)
+       [10] _run (res://loading_probe.gd:132)
+       [11] close_app (res://loading_probe.gd:120)
+       [12] frames (res://loading_probe.gd:94)
+CHECK worker_gate_entered PASS {}
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] resolve_livery (res://render/airplane.gd:305)
+       [5] start_flight (res://app_root.gd:1444)
+       [6] _run (res://loading_probe.gd:135)
+       [7] begin_app (res://loading_probe.gd:109)
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] reject_start (res://ui/home.gd:1719)
+       [7] cancel_start (res://ui/home.gd:1736)
+       [8] _cancel_loading_before_candidate (res://app_root.gd:1934)
+       [9] start_flight (res://app_root.gd:1488)
+       [10] _flight_loading_checkpoint (res://app_root.gd:1823)
+       [11] _flight_loading_draw (res://app_root.gd:1808)
+CHECK early_cancel_clears_queued_rebuild FAIL {"queued":false,"selected":"club_field","shown":"club_field","status":"cancelled"}
+CHECK released_worker_does_not_rebuild FAIL {"rebuilds":0,"selected":"club_field","shown":"club_field"}
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] set_aircraft (res://ui/home.gd:1382)
+       [7] _init (res://ui/home.gd:749)
+       [8] _ready (res://loading_probe.gd:64)
+       [9] begin_app (res://loading_probe.gd:99)
+       [10] _run (res://loading_probe.gd:143)
+       [11] close_app (res://loading_probe.gd:120)
+       [12] frames (res://loading_probe.gd:94)
+CHECK worker_gate_entered PASS {}
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] set_aircraft (res://ui/home.gd:1382)
+       [7] set_aircraft (res://app_root.gd:1141)
+       [8] _run (res://loading_probe.gd:145)
+       [9] begin_app (res://loading_probe.gd:109)
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] resolve_livery (res://render/airplane.gd:305)
+       [5] start_flight (res://app_root.gd:1444)
+       [6] _run (res://loading_probe.gd:146)
+       [7] begin_app (res://loading_probe.gd:109)
+CHECK heli_cancel_waits_without_candidate PASS {"blocked":true,"creations":0}
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] kit (res://aircraft/custom_skin.gd:54)
+       [1] supports (res://aircraft/custom_skin.gd:45)
+       [2] choices (res://aircraft/custom_skin.gd:136)
+       [3] livery_choices (res://render/airplane.gd:298)
+       [4] _update_livery (res://ui/home.gd:1613)
+       [5] _refresh_selection (res://ui/home.gd:1410)
+       [6] reject_start (res://ui/home.gd:1719)
+       [7] cancel_start (res://ui/home.gd:1736)
+       [8] start_flight (res://app_root.gd:1645)
+CHECK heli_cancel_still_constructs PASS {"creations":1,"ready":1,"route":"xcell-60-research","status":"cancelled"}
+PROBE_COMPLETE failures=4

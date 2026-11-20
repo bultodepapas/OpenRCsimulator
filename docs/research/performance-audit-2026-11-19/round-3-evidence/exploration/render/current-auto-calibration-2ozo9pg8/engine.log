@@ -1,0 +1,29 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] table (res://render/gpu_capability.gd:42)
+       [1] lookup (res://render/gpu_capability.gd:104)
+       [2] scene_detail_from_capability (res://render/auto_graphics_policy.gd:108)
+       [3] scene_detail (res://render/auto_graphics_policy.gd:129)
+       [4] recommend (res://render/scene_detail.gd:154)
+       [5] detected (res://render/scene_detail.gd:75)
+       [6] _test_scene_detail (res://tests/test_auto_calibration.gd:245)
+       [7] _run (res://tests/test_auto_calibration.gd:27)
+WARNING: GPU capability table res://data/gpu/capability.json is missing or invalid
+     at: push_warning (core/variant/variant_utility.cpp:1034)
+     GDScript backtrace (most recent call first):
+         [0] table (res://render/gpu_capability.gd:51)
+         [1] lookup (res://render/gpu_capability.gd:104)
+         [2] scene_detail_from_capability (res://render/auto_graphics_policy.gd:108)
+         [3] scene_detail (res://render/auto_graphics_policy.gd:129)
+         [4] recommend (res://render/scene_detail.gd:154)
+         [5] detected (res://render/scene_detail.gd:75)
+         [6] _test_scene_detail (res://tests/test_auto_calibration.gd:245)
+         [7] _run (res://tests/test_auto_calibration.gd:27)
+FAIL: Automatic keeps High without a measured rejection 
+FAIL: Automatic picks High at 1080p after a 4K rejection 
+auto calibration: 94 checks, 2 failed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2609)

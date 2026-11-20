@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f01760c8-374c-4847-9680-332928fc90e8",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/fixture",
+    "--script",
+    "res://loading_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator-r3",
+  "started_utc": "2026-11-20T02:00:02.493879+00:00",
+  "label": "loading-probe-final-pinned",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/loading-probe-final-pinned-9f5ysgan/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/loading/runs/loading-probe-final-pinned-9f5ysgan/report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PROBE_COMPLETE failures=0"
+  ],
+  "process_exit": -9,
+  "complete": false,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 45.087339,
+  "log_bytes": 887,
+  "log_sha256": "a8a751533f7404a829a934ead1104474e72a24f3536a51568f8c8b855eb9cf2a"
+}

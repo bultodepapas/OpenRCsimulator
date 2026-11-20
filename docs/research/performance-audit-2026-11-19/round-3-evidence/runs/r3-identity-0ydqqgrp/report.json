@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "46beeb66-bb32-4f1f-b91f-b40e8f0da26f",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/identity",
+    "--script",
+    "res://probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T02:02:57.455562+00:00",
+  "label": "r3-identity",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "IDENTITY_PROBE_COMPLETE expected_observation=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.504643,
+  "log_bytes": 339,
+  "log_sha256": "4de2d35ad6dd153cad1674ec7085117263be11f4ac2cde579cfce0d1be58f275"
+}

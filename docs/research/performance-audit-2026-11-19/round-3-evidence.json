@@ -1,0 +1,1480 @@
+{
+  "format": "openrc-audit-round3-evidence-v1",
+  "date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "collection": {
+    "format": "openrc-performance-audit-round3-results-v1",
+    "collected_utc": "2026-11-20T02:02:58.294011+00:00",
+    "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+    "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "fixture_manifest_sha256": "3d7bb2920356968275f6e0d44777000504860820aae8f024e36051db6527664d",
+    "runner_sha256": "431259c54d750df513c270e2429431220ab79c450d1147d6a1c16e636bef1e04",
+    "runs": [
+      {
+        "label": "r3-resource",
+        "group": "simulation",
+        "report": "runs/r3-resource-b7tdlmy3/report.json",
+        "log": "runs/r3-resource-b7tdlmy3/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "bdf9fd51-b8de-4a47-912d-24efc67fe96b",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+            "--script",
+            "res://tests/test_resource_event_step.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:30.170242+00:00",
+          "label": "r3-resource",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-resource-b7tdlmy3/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-resource-b7tdlmy3/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "90 checks, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.426875,
+          "log_bytes": 8228,
+          "log_sha256": "7c1bc5a36ee0bc3b6df91446d9bdd3fd137667b6b32798f65a897b7dea72517c"
+        }
+      },
+      {
+        "label": "r3-collision-order",
+        "group": "simulation",
+        "report": "runs/r3-collision-order-ilvqd10i/report.json",
+        "log": "runs/r3-collision-order-ilvqd10i/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "ecc0d526-2d32-48fa-9295-505d5bf58423",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+            "--script",
+            "res://tests/test_collision_tie_order.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:30.671036+00:00",
+          "label": "r3-collision-order",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-order-ilvqd10i/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-order-ilvqd10i/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "17 checks, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.711745,
+          "log_bytes": 1238,
+          "log_sha256": "5f54ce53d874b225ebe482f077ad9d902a3460a64814c8740fa942f99b91ee12"
+        }
+      },
+      {
+        "label": "r3-collision-anchor",
+        "group": "simulation",
+        "report": "runs/r3-collision-anchor-5j37bg0h/report.json",
+        "log": "runs/r3-collision-anchor-5j37bg0h/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "95a3c4bd-f498-4ea5-85d4-873fc90abcfd",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+            "--script",
+            "res://collision_anchor_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:31.463703+00:00",
+          "label": "r3-collision-anchor",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-anchor-5j37bg0h/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-anchor-5j37bg0h/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "COLLISION_ANCHOR_COMPLETE failures=0"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.566778,
+          "log_bytes": 468,
+          "log_sha256": "7cc6133c50c135d2cb2b10616694d55610a2633ef6068e2c27036fb6a5888a7e"
+        }
+      },
+      {
+        "label": "r3-event-bound",
+        "group": "simulation",
+        "report": "runs/r3-event-bound-cb5c0kus/report.json",
+        "log": "runs/r3-event-bound-cb5c0kus/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "7a69d802-3d75-4a79-92d1-1ae2d5d87531",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+            "--script",
+            "res://root_bound_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:32.091526+00:00",
+          "label": "r3-event-bound",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-event-bound-cb5c0kus/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-event-bound-cb5c0kus/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "ROOT_BOUND_COMPLETE failures=0"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.391036,
+          "log_bytes": 1384,
+          "log_sha256": "fa6241e5da1a1724dbf28c3ab92b61e786f725ebd432c8e1de3f2bf8e1b2b3c1"
+        }
+      },
+      {
+        "label": "r3-airship-restore",
+        "group": "simulation",
+        "report": "runs/r3-airship-restore-38crgxil/report.json",
+        "log": "runs/r3-airship-restore-38crgxil/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "ae8d69ef-e7a5-44b8-b06e-73584c6e4045",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+            "--script",
+            "res://restore_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:32.544778+00:00",
+          "label": "r3-airship-restore",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-airship-restore-38crgxil/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-airship-restore-38crgxil/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "RESTORE_PROBE_COMPLETE failures=0"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 2.161861,
+          "log_bytes": 876,
+          "log_sha256": "1ec15a40c21740b303c0ecf92eb8eccec288922cbaa439fa43566973910bb155"
+        }
+      },
+      {
+        "label": "r3-render-import",
+        "group": "render",
+        "report": "runs/r3-render-import-olusjzae/report.json",
+        "log": "runs/r3-render-import-olusjzae/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "f706765b-65ad-4b31-8317-0e84ee4abe06",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--editor",
+            "--import"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:34.789217+00:00",
+          "label": "r3-render-import",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-render-import-olusjzae/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-render-import-olusjzae/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 7.880199,
+          "log_bytes": 4024,
+          "log_sha256": "4e760b1f9405e8128b5613ea16d85233bf35525f66359690d64339a766eeeb2e"
+        }
+      },
+      {
+        "label": "r3-lighting-off",
+        "group": "render",
+        "report": "runs/r3-lighting-off-2rjtn_r2/report.json",
+        "log": "runs/r3-lighting-off-2rjtn_r2/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "6ace6655-16dc-4146-86e3-5574fb9667a9",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--script",
+            "res://probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:42.741185+00:00",
+          "label": "r3-lighting-off",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "lighting disabled probe: 1 check, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.690649,
+          "log_bytes": 244,
+          "log_sha256": "1749c97f52bfac1595949470c0390d3da6f7f797e93bb5850cad2ec09ed84707"
+        }
+      },
+      {
+        "label": "r3-calibration-mixed",
+        "group": "render",
+        "report": "runs/r3-calibration-mixed-602fbmc8/report.json",
+        "log": "runs/r3-calibration-mixed-602fbmc8/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "040a639b-3135-47fe-bc77-19c8a7690a38",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--script",
+            "res://calibration_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:43.494506+00:00",
+          "label": "r3-calibration-mixed",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "mixed workload probe: 1 check, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.383526,
+          "log_bytes": 641,
+          "log_sha256": "f61277b83bc9d483e31315fcd5097c683ede5901fe674063eae15f2361101071"
+        }
+      },
+      {
+        "label": "r3-calibration-high",
+        "group": "render",
+        "report": "runs/r3-calibration-high-pkfuweky/report.json",
+        "log": "runs/r3-calibration-high-pkfuweky/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "af4c8999-64b6-4d9e-8eda-90b3e100924d",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--script",
+            "res://calibration_high_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:43.949393+00:00",
+          "label": "r3-calibration-high",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-high-pkfuweky/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-high-pkfuweky/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "high workload probe: 1 check, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.383641,
+          "log_bytes": 200,
+          "log_sha256": "b1d3c93f1966dd4d9159fa44c21056b90f77c38bccfb8a32914ec769c3a13073"
+        }
+      },
+      {
+        "label": "r3-auto-control",
+        "group": "render",
+        "report": "runs/r3-auto-control-1tdbyz8f/report.json",
+        "log": "runs/r3-auto-control-1tdbyz8f/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "5226c14a-25e9-4f48-b62c-c52d05b3181b",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--script",
+            "res://tests/test_auto_calibration.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:44.400704+00:00",
+          "label": "r3-auto-control",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-auto-control-1tdbyz8f/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-auto-control-1tdbyz8f/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "94 checks, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 4,
+              "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+              "context": [
+                "   at: cleanup (core/object/object.cpp:2609)"
+              ]
+            }
+          ],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.363391,
+          "log_bytes": 237,
+          "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2"
+        }
+      },
+      {
+        "label": "r3-cloud-control",
+        "group": "render",
+        "report": "runs/r3-cloud-control-of4bh_78/report.json",
+        "log": "runs/r3-cloud-control-of4bh_78/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "70531120-fbc3-4893-b511-a992fc573255",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+            "--script",
+            "res://tests/test_cloud_shadow_reorder.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:44.827256+00:00",
+          "label": "r3-cloud-control",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "16 checks, 0 failed"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.85064,
+          "log_bytes": 112,
+          "log_sha256": "103e7e9fc784120ba80478fc00be47759853e4fda1d8b8b7ee4d68c543673a9f"
+        }
+      },
+      {
+        "label": "r3-loading",
+        "group": "loading",
+        "report": "runs/r3-loading-hecezesi/report.json",
+        "log": "runs/r3-loading-hecezesi/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "9704dfd6-1f35-40bc-be66-641cd315a34e",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/loading",
+            "--script",
+            "res://loading_probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:45.751358+00:00",
+          "label": "r3-loading",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-loading-hecezesi/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-loading-hecezesi/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "PROBE_COMPLETE failures=0"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 11.60373,
+          "log_bytes": 887,
+          "log_sha256": "a8a751533f7404a829a934ead1104474e72a24f3536a51568f8c8b855eb9cf2a"
+        }
+      },
+      {
+        "label": "r3-identity",
+        "group": "identity",
+        "report": "runs/r3-identity-0ydqqgrp/report.json",
+        "log": "runs/r3-identity-0ydqqgrp/engine.log",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "46beeb66-bb32-4f1f-b91f-b40e8f0da26f",
+          "command": [
+            "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/identity",
+            "--script",
+            "res://probe.gd"
+          ],
+          "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+          "started_utc": "2026-11-20T02:02:57.455562+00:00",
+          "label": "r3-identity",
+          "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/engine.log",
+          "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/report.json",
+          "timeout_seconds": 60.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "IDENTITY_PROBE_COMPLETE expected_observation=true"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 0.504643,
+          "log_bytes": 339,
+          "log_sha256": "4de2d35ad6dd153cad1674ec7085117263be11f4ac2cde579cfce0d1be58f275"
+        }
+      }
+    ],
+    "limits": "Headless source fixtures. No GPU/FPS/native/release/full-game or latency qualification."
+  },
+  "runs": [
+    {
+      "label": "r3-resource",
+      "group": "simulation",
+      "report": "runs/r3-resource-b7tdlmy3/report.json",
+      "log": "runs/r3-resource-b7tdlmy3/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "bdf9fd51-b8de-4a47-912d-24efc67fe96b",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+          "--script",
+          "res://tests/test_resource_event_step.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:30.170242+00:00",
+        "label": "r3-resource",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-resource-b7tdlmy3/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-resource-b7tdlmy3/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "90 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.426875,
+        "log_bytes": 8228,
+        "log_sha256": "7c1bc5a36ee0bc3b6df91446d9bdd3fd137667b6b32798f65a897b7dea72517c"
+      },
+      "report_sha256": "2a1f7507e32c53d3c7e9ac39c25e0a646b6b8a5f13447275df63fe9d5f53fa58",
+      "log_sha256": "7c1bc5a36ee0bc3b6df91446d9bdd3fd137667b6b32798f65a897b7dea72517c",
+      "observations": []
+    },
+    {
+      "label": "r3-collision-order",
+      "group": "simulation",
+      "report": "runs/r3-collision-order-ilvqd10i/report.json",
+      "log": "runs/r3-collision-order-ilvqd10i/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ecc0d526-2d32-48fa-9295-505d5bf58423",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+          "--script",
+          "res://tests/test_collision_tie_order.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:30.671036+00:00",
+        "label": "r3-collision-order",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-order-ilvqd10i/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-order-ilvqd10i/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "17 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.711745,
+        "log_bytes": 1238,
+        "log_sha256": "5f54ce53d874b225ebe482f077ad9d902a3460a64814c8740fa942f99b91ee12"
+      },
+      "report_sha256": "5fa23ced9396c7bbea7d2a7302da39bb994e922e41f4132f8e652bcd7a2d03a5",
+      "log_sha256": "5f54ce53d874b225ebe482f077ad9d902a3460a64814c8740fa942f99b91ee12",
+      "observations": []
+    },
+    {
+      "label": "r3-collision-anchor",
+      "group": "simulation",
+      "report": "runs/r3-collision-anchor-5j37bg0h/report.json",
+      "log": "runs/r3-collision-anchor-5j37bg0h/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "95a3c4bd-f498-4ea5-85d4-873fc90abcfd",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+          "--script",
+          "res://collision_anchor_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:31.463703+00:00",
+        "label": "r3-collision-anchor",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-anchor-5j37bg0h/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-collision-anchor-5j37bg0h/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "COLLISION_ANCHOR_COMPLETE failures=0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.566778,
+        "log_bytes": 468,
+        "log_sha256": "7cc6133c50c135d2cb2b10616694d55610a2633ef6068e2c27036fb6a5888a7e"
+      },
+      "report_sha256": "ddebcc8693428db964a5ce94ca8b5ac6733a8f1a456f5829e61d632016c76845",
+      "log_sha256": "7cc6133c50c135d2cb2b10616694d55610a2633ef6068e2c27036fb6a5888a7e",
+      "observations": [
+        "WITNESS z1=0.499999975999245 z0=0.499999975999997 a=0.499999976000748 local_delta=0.000000000000751 global_delta=0.000000000001503",
+        "WITNESS ordered first=a_box/0 second=z_box/0",
+        "COLLISION_ANCHOR_COMPLETE failures=0"
+      ]
+    },
+    {
+      "label": "r3-event-bound",
+      "group": "simulation",
+      "report": "runs/r3-event-bound-cb5c0kus/report.json",
+      "log": "runs/r3-event-bound-cb5c0kus/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7a69d802-3d75-4a79-92d1-1ae2d5d87531",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+          "--script",
+          "res://root_bound_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:32.091526+00:00",
+        "label": "r3-event-bound",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-event-bound-cb5c0kus/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-event-bound-cb5c0kus/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "ROOT_BOUND_COMPLETE failures=0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.391036,
+        "log_bytes": 1384,
+        "log_sha256": "fa6241e5da1a1724dbf28c3ab92b61e786f725ebd432c8e1de3f2bf8e1b2b3c1"
+      },
+      "report_sha256": "49c9cf666db49d168047ac55bbb839c8ef099103a6a428fbad1c6991841e2d2b",
+      "log_sha256": "fa6241e5da1a1724dbf28c3ab92b61e786f725ebd432c8e1de3f2bf8e1b2b3c1",
+      "observations": [
+        "CASE target=2000000000.000000 ps result={\"events\":[{\"id\":\"B\",\"surface_residual\":0.0,\"surface_unit\":\"s\",\"time_error_bound_s\":0.000000000000500000214842533,\"time_s\":0.00200000000075,\"type\":\"time_boundary\"},{\"id\":\"A\",\"surface_residual\":-0.000000000000749999888582931,\"surface_unit\":\"s\",\"time_error_bound_s\":0.000000000000500000214842533,\"time_s\":0.00200000000075,\"type\":\"time_boundary\"}],\"ok\":true,\"state\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0],\"surface_evaluations\":58}",
+        "BOUND priority_later_first=B actual_ps=0.749999889 reported_ps=0.500000215",
+        "SINGLE result={\"events\":[{\"id\":\"A\",\"surface_residual\":0.0,\"surface_unit\":\"s\",\"time_error_bound_s\":0.000000000000500000214842533,\"time_s\":0.002,\"type\":\"time_boundary\"}],\"ok\":true,\"state\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],\"surface_evaluations\":29}",
+        "CONTROL result={\"events\":[{\"id\":\"A\",\"surface_residual\":0.0,\"surface_unit\":\"s\",\"time_error_bound_s\":0.000000000000500000214842533,\"time_s\":0.002,\"type\":\"time_boundary\"},{\"id\":\"B\",\"surface_residual\":0.000000000000749999888582931,\"surface_unit\":\"s\",\"time_error_bound_s\":0.000000000000500000214842533,\"time_s\":0.002,\"type\":\"time_boundary\"}],\"ok\":true,\"state\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0],\"surface_evaluations\":58}",
+        "ROOT_BOUND_COMPLETE failures=0"
+      ]
+    },
+    {
+      "label": "r3-airship-restore",
+      "group": "simulation",
+      "report": "runs/r3-airship-restore-38crgxil/report.json",
+      "log": "runs/r3-airship-restore-38crgxil/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ae8d69ef-e7a5-44b8-b06e-73584c6e4045",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/simulation",
+          "--script",
+          "res://restore_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:32.544778+00:00",
+        "label": "r3-airship-restore",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-airship-restore-38crgxil/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-airship-restore-38crgxil/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "RESTORE_PROBE_COMPLETE failures=0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.161861,
+        "log_bytes": 876,
+        "log_sha256": "1ec15a40c21740b303c0ecf92eb8eccec288922cbaa439fa43566973910bb155"
+      },
+      "report_sha256": "02c874c7e99bce8f7f3332d464e4754e1a841c58148c064c5be510247f2c3041",
+      "log_sha256": "1ec15a40c21740b303c0ecf92eb8eccec288922cbaa439fa43566973910bb155",
+      "observations": [
+        "RESTORE_PROBE_COMPLETE failures=0"
+      ]
+    },
+    {
+      "label": "r3-render-import",
+      "group": "render",
+      "report": "runs/r3-render-import-olusjzae/report.json",
+      "log": "runs/r3-render-import-olusjzae/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f706765b-65ad-4b31-8317-0e84ee4abe06",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:34.789217+00:00",
+        "label": "r3-render-import",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-render-import-olusjzae/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-render-import-olusjzae/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.880199,
+        "log_bytes": 4024,
+        "log_sha256": "4e760b1f9405e8128b5613ea16d85233bf35525f66359690d64339a766eeeb2e"
+      },
+      "report_sha256": "633cf4b8c14074e4da3bc6c6b47ab528aa3d8d9d9a071319028fe7a36ce76247",
+      "log_sha256": "4e760b1f9405e8128b5613ea16d85233bf35525f66359690d64339a766eeeb2e",
+      "observations": []
+    },
+    {
+      "label": "r3-lighting-off",
+      "group": "render",
+      "report": "runs/r3-lighting-off-2rjtn_r2/report.json",
+      "log": "runs/r3-lighting-off-2rjtn_r2/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6ace6655-16dc-4146-86e3-5574fb9667a9",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--script",
+          "res://probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:42.741185+00:00",
+        "label": "r3-lighting-off",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-lighting-off-2rjtn_r2/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "lighting disabled probe: 1 check, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.690649,
+        "log_bytes": 244,
+        "log_sha256": "1749c97f52bfac1595949470c0390d3da6f7f797e93bb5850cad2ec09ed84707"
+      },
+      "report_sha256": "22019e34773ce42286bcef8a0d836a0b61b37a27530be170ad2c352fb7705e3d",
+      "log_sha256": "1749c97f52bfac1595949470c0390d3da6f7f797e93bb5850cad2ec09ed84707",
+      "observations": [
+        "OBS hidden=true first_writes=18 second_writes=6 clocks=1.0,2.0 same_writes=0 reenabled=true reenabled_writes=6 reenabled_clock=3.0"
+      ]
+    },
+    {
+      "label": "r3-calibration-mixed",
+      "group": "render",
+      "report": "runs/r3-calibration-mixed-602fbmc8/report.json",
+      "log": "runs/r3-calibration-mixed-602fbmc8/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "040a639b-3135-47fe-bc77-19c8a7690a38",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--script",
+          "res://calibration_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:43.494506+00:00",
+        "label": "r3-calibration-mixed",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-mixed-602fbmc8/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "mixed workload probe: 1 check, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.383526,
+        "log_bytes": 641,
+        "log_sha256": "f61277b83bc9d483e31315fcd5097c683ede5901fe674063eae15f2361101071"
+      },
+      "report_sha256": "c458a92d3803f627a0388e7e11c8940f729820eff5794ed6f9a443bf53801c1c",
+      "log_sha256": "f61277b83bc9d483e31315fcd5097c683ede5901fe674063eae15f2361101071",
+      "observations": [
+        "OBS before={ \"pixels\": 8294400, \"render_pixels\": 8294400, \"msaa_3d\": 2 } final={ \"pixels\": 2073600, \"render_pixels\": 2073600, \"msaa_3d\": 0 } stored={ \"adapter\": \"synthetic gpu\", \"method\": \"gl_compatibility\", \"level\": \"high\", \"scene_offset\": -1, \"reject_high\": false, \"complete\": true, \"pixels\": 2073600, \"render_pixels\": 2073600, \"msaa_3d\": 0, \"gpu_p95_ms\": 20.0, \"cpu_p95_ms\": 1.0, \"interval_p95_ms\": 16.0, \"cpu_bound\": false, \"subviewports\": false, \"refresh_hz\": -1.0 } needed_final=false matches_before=false matches_final=true"
+      ]
+    },
+    {
+      "label": "r3-calibration-high",
+      "group": "render",
+      "report": "runs/r3-calibration-high-pkfuweky/report.json",
+      "log": "runs/r3-calibration-high-pkfuweky/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "af4c8999-64b6-4d9e-8eda-90b3e100924d",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--script",
+          "res://calibration_high_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:43.949393+00:00",
+        "label": "r3-calibration-high",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-high-pkfuweky/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-calibration-high-pkfuweky/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "high workload probe: 1 check, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.383641,
+        "log_bytes": 200,
+        "log_sha256": "b1d3c93f1966dd4d9159fa44c21056b90f77c38bccfb8a32914ec769c3a13073"
+      },
+      "report_sha256": "b8d141274d0117bbf70944f7a4d87a87c4ba0a8471aa74ea841e713c1c01ea5a",
+      "log_sha256": "b1d3c93f1966dd4d9159fa44c21056b90f77c38bccfb8a32914ec769c3a13073",
+      "observations": [
+        "OBS same_needed=false changed_msaa_needed=true same_size_veto=true small_screen_veto=false"
+      ]
+    },
+    {
+      "label": "r3-auto-control",
+      "group": "render",
+      "report": "runs/r3-auto-control-1tdbyz8f/report.json",
+      "log": "runs/r3-auto-control-1tdbyz8f/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5226c14a-25e9-4f48-b62c-c52d05b3181b",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--script",
+          "res://tests/test_auto_calibration.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:44.400704+00:00",
+        "label": "r3-auto-control",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-auto-control-1tdbyz8f/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-auto-control-1tdbyz8f/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "94 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 4,
+            "message": "1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+            "context": [
+              "   at: cleanup (core/object/object.cpp:2609)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.363391,
+        "log_bytes": 237,
+        "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2"
+      },
+      "report_sha256": "6670d0d637cdc477f6981d0e4451172d638fe6acdc9d714bb6294c64b903cc7d",
+      "log_sha256": "a7955dcac7d01e384b9b549258d9ae4465d88d23b79cecb5c507aa60409b1fc2",
+      "observations": []
+    },
+    {
+      "label": "r3-cloud-control",
+      "group": "render",
+      "report": "runs/r3-cloud-control-of4bh_78/report.json",
+      "log": "runs/r3-cloud-control-of4bh_78/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "70531120-fbc3-4893-b511-a992fc573255",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+          "--script",
+          "res://tests/test_cloud_shadow_reorder.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:44.827256+00:00",
+        "label": "r3-cloud-control",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "16 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.85064,
+        "log_bytes": 112,
+        "log_sha256": "103e7e9fc784120ba80478fc00be47759853e4fda1d8b8b7ee4d68c543673a9f"
+      },
+      "report_sha256": "ef7db5acbe4e3fcb8ae44f09e08db53aa94ed2d358b7f3b47795b985ee34da16",
+      "log_sha256": "103e7e9fc784120ba80478fc00be47759853e4fda1d8b8b7ee4d68c543673a9f",
+      "observations": []
+    },
+    {
+      "label": "r3-loading",
+      "group": "loading",
+      "report": "runs/r3-loading-hecezesi/report.json",
+      "log": "runs/r3-loading-hecezesi/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "9704dfd6-1f35-40bc-be66-641cd315a34e",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/loading",
+          "--script",
+          "res://loading_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:45.751358+00:00",
+        "label": "r3-loading",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-loading-hecezesi/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-loading-hecezesi/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "PROBE_COMPLETE failures=0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 11.60373,
+        "log_bytes": 887,
+        "log_sha256": "a8a751533f7404a829a934ead1104474e72a24f3536a51568f8c8b855eb9cf2a"
+      },
+      "report_sha256": "cf82d2ba2083abee64988adfec3354db783a3e17b276adcdc18ab92a395472c1",
+      "log_sha256": "a8a751533f7404a829a934ead1104474e72a24f3536a51568f8c8b855eb9cf2a",
+      "observations": [
+        "CHECK worker_gate_entered PASS {}",
+        "CHECK change_while_busy_queued PASS {}",
+        "CHECK control_without_fly_rebuilds PASS {\"rebuilds\":1,\"selected\":\"green_paradise\",\"shown\":\"green_paradise\"}",
+        "CHECK worker_gate_entered PASS {}",
+        "CHECK early_cancel_clears_queued_rebuild PASS {\"queued\":false,\"selected\":\"green_paradise\",\"shown\":\"club_field\",\"status\":\"cancelled\"}",
+        "CHECK released_worker_does_not_rebuild PASS {\"rebuilds\":0,\"selected\":\"green_paradise\",\"shown\":\"club_field\"}",
+        "CHECK worker_gate_entered PASS {}",
+        "CHECK heli_early_cancel_control PASS {\"creations\":0,\"status\":\"cancelled\"}",
+        "CHECK worker_gate_entered PASS {}",
+        "CHECK heli_cancel_waits_without_candidate PASS {\"blocked\":true,\"creations\":0}",
+        "CHECK heli_cancel_still_constructs PASS {\"creations\":1,\"ready\":1,\"route\":\"xcell-60-research\",\"status\":\"cancelled\"}",
+        "PROBE_COMPLETE failures=0"
+      ]
+    },
+    {
+      "label": "r3-identity",
+      "group": "identity",
+      "report": "runs/r3-identity-0ydqqgrp/report.json",
+      "log": "runs/r3-identity-0ydqqgrp/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "46beeb66-bb32-4f1f-b91f-b40e8f0da26f",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/identity",
+          "--script",
+          "res://probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T02:02:57.455562+00:00",
+        "label": "r3-identity",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-identity-0ydqqgrp/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "IDENTITY_PROBE_COMPLETE expected_observation=true"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.504643,
+        "log_bytes": 339,
+        "log_sha256": "4de2d35ad6dd153cad1674ec7085117263be11f4ac2cde579cfce0d1be58f275"
+      },
+      "report_sha256": "68259d733bd3fa97c4ce28af47e35395f1e03c4c41f85da582d09dba1f26229f",
+      "log_sha256": "4de2d35ad6dd153cad1674ec7085117263be11f4ac2cde579cfce0d1be58f275",
+      "observations": [
+        "IDENTITY_JSON {\"body_backend\":\"gdscript_reference\",\"calls_per_case\":240,\"engine\":\"4.8-beta2 (official)\",\"identities_equal\":true}"
+      ]
+    }
+  ],
+  "nonqualifying_exploration": [
+    {
+      "group": "simulation",
+      "report": "exploration/simulation/r3-airship-log-9bpprbyx/report.json",
+      "report_sha256": "b4931148c3fad59b0da98549cfede36fe7169541be638d3cf48c048627bc3b2b",
+      "log": "exploration/simulation/r3-airship-log-9bpprbyx/engine.log",
+      "log_sha256": "610cd891ccc3bb155b89e6a9cbb512a3172cf5726e569024b33d2a70b017de92",
+      "reason": "engine_error",
+      "counts": {
+        "error": 35,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "simulation",
+      "report": "exploration/simulation/r3-anchor-015j9n99/report.json",
+      "report_sha256": "91ac186403487576543b20a1c5e5889b7ffe606b68d6d4199a53d2089e346ee4",
+      "log": "exploration/simulation/r3-anchor-015j9n99/engine.log",
+      "log_sha256": "82ebecde8ccfb4e67c5fe4bf73577b8692f8910de1535557ef32979ab9bf3a1e",
+      "reason": "engine_error",
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "simulation",
+      "report": "exploration/simulation/r3-root-bound-bfm2lqfh/report.json",
+      "report_sha256": "a515f85e8a8d056ffc077e020f41e7cc7b1d16fa18e297c44eacf70aef94c22f",
+      "log": "exploration/simulation/r3-root-bound-bfm2lqfh/engine.log",
+      "log_sha256": "1c5d182f957b492b820d18639a70e65dcd4284efb758f39fc5990bbf000eaf41",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "render",
+      "report": "exploration/render/calibration-mixed-umope37k/report.json",
+      "report_sha256": "a838e30bea07cba734f48bd2b9c4518f0ab4b58fe9244298ce50a7389478bc53",
+      "log": "exploration/render/calibration-mixed-umope37k/engine.log",
+      "log_sha256": "2dc1c96638c92df8acb5258719d3ef6bd0784a532e0f5800d0e1188f902765ec",
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "render",
+      "report": "exploration/render/current-auto-calibration-2ozo9pg8/report.json",
+      "report_sha256": "d9b753eb4190f46139fbe663d01eba9808fc7f762260eebcc88520821337e795",
+      "log": "exploration/render/current-auto-calibration-2ozo9pg8/engine.log",
+      "log_sha256": "0c8ae8809e8b19c330f8a20f06ec5d490273645e8462f37f5c2504692f198959",
+      "reason": "process_exit",
+      "counts": {
+        "error": 1,
+        "warning": 2
+      },
+      "qualifying": false
+    },
+    {
+      "group": "loading",
+      "report": "exploration/loading/app-root-compile-xq42cz6p/report.json",
+      "report_sha256": "6500d90352498c9c471543d92399ebfe1b58cc4b238340f2aa4df72b37cb34fa",
+      "log": "exploration/loading/app-root-compile-xq42cz6p/engine.log",
+      "log_sha256": "e724437c128050ea5fb8672761a6db7af693ee5c2ed8989e4393be121675cc77",
+      "reason": "engine_error",
+      "counts": {
+        "error": 105,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "loading",
+      "report": "exploration/loading/app-root-stubbed-class-cache-iz3pm8ch/report.json",
+      "report_sha256": "1acc4ea5261fd498abfad2949c2d2ea92cf830391e2fecd615e7fa837f049087",
+      "log": "exploration/loading/app-root-stubbed-class-cache-iz3pm8ch/engine.log",
+      "log_sha256": "408bea1c6ab1a784e055c904c531c2f3c6bda729862cccfe66afb9117e497f19",
+      "reason": "engine_error",
+      "counts": {
+        "error": 18,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "loading",
+      "report": "exploration/loading/app-root-stubbed-compile-9089e5l_/report.json",
+      "report_sha256": "7671c2ce40a5c28ea9fdf646253c31a01d227c8f581747d477b70c09483cb608",
+      "log": "exploration/loading/app-root-stubbed-compile-9089e5l_/engine.log",
+      "log_sha256": "408bea1c6ab1a784e055c904c531c2f3c6bda729862cccfe66afb9117e497f19",
+      "reason": "engine_error",
+      "counts": {
+        "error": 18,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "loading",
+      "report": "exploration/loading/loading-probe-br0vpgd8/report.json",
+      "report_sha256": "98ef078ff0bd2fb234ff2b98f7b4d14378bf199fae580aa448c7e5cc306cee83",
+      "log": "exploration/loading/loading-probe-br0vpgd8/engine.log",
+      "log_sha256": "0b06fd7092d534e769d6ca91f225e140eaf360db3e3d5ca91090fb0f6f5db6fc",
+      "reason": "process_exit",
+      "counts": {
+        "error": 8,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "loading",
+      "report": "exploration/loading/loading-probe-final-pinned-9f5ysgan/report.json",
+      "report_sha256": "ffda3d224f3146e2c7f864a31144b19ac4141463c7e8296742fd2721b420bf58",
+      "log": "exploration/loading/loading-probe-final-pinned-9f5ysgan/engine.log",
+      "log_sha256": "a8a751533f7404a829a934ead1104474e72a24f3536a51568f8c8b855eb9cf2a",
+      "reason": "timeout",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "qualifying": false
+    },
+    {
+      "group": "root",
+      "report": "exploration/root/r3-identity-reads-4y3ia1zw/report.json",
+      "report_sha256": "828ec899b4183fca47e9a1afdf1f7bb53d1bca3a6ca9aa7562ba0a1b64f56ff1",
+      "log": "exploration/root/r3-identity-reads-4y3ia1zw/engine.log",
+      "log_sha256": "01c79a7d47475a07737aecab58d739206fd0dcf4a572f2efdab84f037f393c00",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "qualifying": false
+    }
+  ],
+  "scope": "Controlled headless source fixtures and static review. No full game, GPU timing, native backend, release, physical input, audio or cross-platform qualification.",
+  "fixture_manifest_sha256": "3d7bb2920356968275f6e0d44777000504860820aae8f024e36051db6527664d",
+  "reproduction_files": {
+    "README.md": "67ade87db1604224a68969bc9376236e407b274f99bcc933bd51211801b9fbd8",
+    "fixture_sources.json": "3d7bb2920356968275f6e0d44777000504860820aae8f024e36051db6527664d",
+    "fixtures/identity/probe.gd": "84265e6e63e90a35edf1a0f8591098e8159ad23d50a6de08cbbceff245879339",
+    "fixtures/identity/project.godot": "405daa20d1e29915415aa5b4d21b8e1eabdc9919e16d1735cc2d633a878227ab",
+    "fixtures/loading/.godot/global_script_class_cache.cfg": "00d8eac50bea26425161c658d8b17cc49ab4cee92b33ea9abc58134a7bddaad2",
+    "fixtures/loading/fixture_audio.tres": "21d7b1323db720dc37e26fbc07792b29ee88dc6515ec0f264604d2a9d066d68b",
+    "fixtures/loading/fixture_scene.tscn": "8cb84668bb79afb63914ef9c64e2ed629de26967046f8ec9e2b7c00f91ff2f18",
+    "fixtures/loading/fixture_texture.tres": "1ea4e4b7e390d952c659622d1008083a953e8fc347f5364a0f27c8bf80285baf",
+    "fixtures/loading/loading_probe.gd": "393b8d4fc783a885ff36fcc6a8261c8a44e93311dc3cc76825f071deb2d5a437",
+    "fixtures/loading/project.godot": "5abb31a9c7eb66177de906eb685044c547cda6255f36e4cb642409a647930e60",
+    "fixtures/render/calibration_high_probe.gd": "0f86c0a54b54316a35b0f51069d01b848faef5908103103a3c6308fd8494fbf0",
+    "fixtures/render/calibration_probe.gd": "b6578210fd2c8c4615b692e562c96bac205dad3591bd929d3e8d3af6a0df27e6",
+    "fixtures/render/calibration_test_node.gd": "9d843a0139e12533d7ca7c5d42a966e9cab621761ad0484e596fb0493c26247c",
+    "fixtures/render/probe.gd": "f39e2c16783790e6ef41e2949ea9bc13029a0470300e56a8b9446e807461d317",
+    "fixtures/render/project.godot": "e9a86dfdea2efde6d08b4c5632df552ed5373a58debeadff4543906c10495014",
+    "fixtures/simulation/collision_anchor_probe.gd": "55cb6d99f0d034c587d602d3a891659eb7949f60baa1425c14ed6098df72861d",
+    "fixtures/simulation/project.godot": "d406d2e5a79f87c47765a58f4dd993f4021e1f3fdc90785dd886a9cffa152a8f",
+    "fixtures/simulation/restore_probe.gd": "0f3aec4c93f82915ed0fbbce333be33b02cd890bc556c62cf06d0d5367de030c",
+    "fixtures/simulation/root_bound_probe.gd": "49c8584fb4e030a3ce5278305da709b9428f68343a630d7bcde9d6914981ef0d",
+    "fixtures/simulation/scenery/collision_setup.gd": "9e079056680393ae880caf78419026d2d3c8f8c46630064d6b7059609fb53f30",
+    "fixtures/simulation/scenery/collision_world.gd": "b3f977ec4407b39a55970647b2c5be57af87d683f558400b8093280634ef9754",
+    "run.py": "431259c54d750df513c270e2429431220ab79c450d1147d6a1c16e636bef1e04"
+  },
+  "known_warning": "The existing auto-calibration test passed 94 assertions but emitted one ObjectDB-at-exit warning; the checked runner permits warnings by default. All other final launches have zero warnings.",
+  "independent_review": {
+    "scope": "Read-only source/probe/report review; no additional engine runs.",
+    "result": "Claims, numeric witnesses, final receipts/hashes, new-finding source ranges and round-two changed-file comparisons checked.",
+    "correction_applied": "Calibration records nominal internal pixel count from the applied viewport scale, not a backend allocation query."
+  }
+}

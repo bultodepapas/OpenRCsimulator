@@ -1,0 +1,93 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   main depletes before the primed line
+ok   earliest resource event is first  [{ &"type": "main_empty", &"time_s": 0.8, &"id": "main_floor", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, "source": "main" }, { &"type": "line_empty", &"time_s": 1.3, &"id": "line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, "source": "line" }]
+ok   main boundary time  got 0.8 expected 0.8 (tol 0.0000000002)
+ok   line boundary time  got 1.3 expected 1.3 (tol 0.0000000002)
+ok   event surfaces carry explicit mass units
+ok   main resource reaches its boundary  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   line resource reaches its boundary  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   total liquid is conserved across source changes  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   depletion ends in the starved mode
+ok   boundary solve remains within deterministic budget
+ok   simultaneous boundaries integrate
+ok   tie priority and stable ordering select one active transition
+ok   tied boundary is located once  got 0.5 expected 0.5 (tol 0.0000000002)
+ok   post-transition remainder follows the new mode  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   failed event transition rejects the complete trial
+ok   failed transition leaves caller state untouched  got 0.25 expected 0.25 (tol 0.0000000002)
+ok   failed trial exposes no partially accepted state
+ok   falling tiny boundary integrates
+ok   falling positive endpoint distance is not a zero crossing
+ok   falling tiny boundary integrates
+ok   falling tiny initial distance still triggers the event
+ok   falling tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   rising tiny boundary integrates
+ok   rising positive endpoint distance is not a zero crossing
+ok   rising tiny boundary integrates
+ok   rising tiny initial distance still triggers the event
+ok   rising tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   either tiny boundary integrates
+ok   either positive endpoint distance is not a zero crossing
+ok   either tiny boundary integrates
+ok   either tiny initial distance still triggers the event
+ok   either tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   subnormal same-side endpoints do not cross
+ok   malformed event refuses cleanly [&"surface"]
+ok   malformed event refuses cleanly [&"transition"]
+ok   malformed event refuses cleanly [&"enabled"]
+ok   malformed event refuses cleanly [&"priority"]
+ok   malformed event refuses cleanly [&"priority"]
+ok   malformed event refuses cleanly [&"surface_tolerance"]
+ok   malformed event refuses cleanly [&"surface_tolerance"]
+ok   malformed event refuses cleanly [&"type"]
+ok   missing event field refuses cleanly type
+ok   missing event field refuses cleanly surface_unit
+ok   missing event field refuses cleanly surface
+ok   missing event field refuses cleanly transition
+ok   malformed first derivative refuses cleanly 0
+ok   malformed first derivative refuses cleanly 28
+ok   malformed first derivative refuses cleanly 2
+ok   malformed first derivative refuses cleanly 1
+ok   malformed first derivative refuses cleanly 33
+ok   truncated rigid body refuses before RK 0
+ok   truncated rigid body refuses before RK 1
+ok   truncated rigid body refuses before RK 12
+ok   a timestep must advance the absolute clock
+ok   falling listed mixed crossing integrates
+ok   falling listed mixed crossing applies the interior crossing first  [{ &"type": "boundary", &"time_s": 0.00083333333334, &"id": "B_internal", &"surface_residual": -0.00000000000076, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.00312500000013, &"id": "A_endpoint", &"surface_residual": -0.00000000003, &"surface_unit": "1", &"time_error_bound_s": 0.00000000000013 }]
+ok   falling listed mixed crossing interior time  got 0.00083333333334 expected 0.00083333333333 (tol 0.000000000001)
+ok   falling listed mixed crossing endpoint time  got 0.00312500000013 expected 0.003125 (tol 0.000000000001)
+ok   falling reversed mixed crossing integrates
+ok   falling reversed mixed crossing applies the interior crossing first  [{ &"type": "boundary", &"time_s": 0.00083333333334, &"id": "B_internal", &"surface_residual": -0.00000000000076, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.00312500000013, &"id": "A_endpoint", &"surface_residual": -0.00000000003, &"surface_unit": "1", &"time_error_bound_s": 0.00000000000013 }]
+ok   falling reversed mixed crossing interior time  got 0.00083333333334 expected 0.00083333333333 (tol 0.000000000001)
+ok   falling reversed mixed crossing endpoint time  got 0.00312500000013 expected 0.003125 (tol 0.000000000001)
+ok   rising listed mixed crossing integrates
+ok   rising listed mixed crossing applies the interior crossing first  [{ &"type": "boundary", &"time_s": 0.00083333333334, &"id": "B_internal", &"surface_residual": 0.00000000000076, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.00312500000013, &"id": "A_endpoint", &"surface_residual": 0.00000000003, &"surface_unit": "1", &"time_error_bound_s": 0.00000000000013 }]
+ok   rising listed mixed crossing interior time  got 0.00083333333334 expected 0.00083333333333 (tol 0.000000000001)
+ok   rising listed mixed crossing endpoint time  got 0.00312500000013 expected 0.003125 (tol 0.000000000001)
+ok   rising reversed mixed crossing integrates
+ok   rising reversed mixed crossing applies the interior crossing first  [{ &"type": "boundary", &"time_s": 0.00083333333334, &"id": "B_internal", &"surface_residual": 0.00000000000076, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.00312500000013, &"id": "A_endpoint", &"surface_residual": 0.00000000003, &"surface_unit": "1", &"time_error_bound_s": 0.00000000000013 }]
+ok   rising reversed mixed crossing interior time  got 0.00083333333334 expected 0.00083333333333 (tol 0.000000000001)
+ok   rising reversed mixed crossing endpoint time  got 0.00312500000013 expected 0.003125 (tol 0.000000000001)
+ok   near-tie order [0, 1, 2] integrates
+ok   near-tie order [0, 1, 2] applies every transition in time order  ["A", "B", "C"]
+ok   near-tie order [0, 2, 1] integrates
+ok   near-tie order [0, 2, 1] applies every transition in time order  ["A", "B", "C"]
+ok   near-tie order [1, 0, 2] integrates
+ok   near-tie order [1, 0, 2] applies every transition in time order  ["A", "B", "C"]
+ok   near-tie order [1, 2, 0] integrates
+ok   near-tie order [1, 2, 0] applies every transition in time order  ["A", "B", "C"]
+ok   near-tie order [2, 0, 1] integrates
+ok   near-tie order [2, 0, 1] applies every transition in time order  ["A", "B", "C"]
+ok   near-tie order [2, 1, 0] integrates
+ok   near-tie order [2, 1, 0] applies every transition in time order  ["A", "B", "C"]
+ok   falling unsampled crossing integrates
+ok   falling unsampled crossing is applied before the endpoint root  [{ &"type": "boundary", &"time_s": 0.60000000000002, &"id": "B_hidden", &"surface_residual": -0.00000000000001, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.75, &"id": "A_endpoint", &"surface_residual": 0.0, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }]
+ok   falling unsampled crossing time  got 0.60000000000002 expected 0.6 (tol 0.000000000001)
+ok   rising unsampled crossing integrates
+ok   rising unsampled crossing is applied before the endpoint root  [{ &"type": "boundary", &"time_s": 0.60000000000002, &"id": "B_hidden", &"surface_residual": 0.00000000000001, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }, { &"type": "boundary", &"time_s": 0.75, &"id": "A_endpoint", &"surface_residual": 0.0, &"surface_unit": "1", &"time_error_bound_s": 0.0000000000005 }]
+ok   rising unsampled crossing time  got 0.60000000000002 expected 0.6 (tol 0.000000000001)
+ok   a surface past zero at the boundary is a missed crossing
+ok   a surface enabled only inside the segment is not
+resource event step: 90 checks, 0 failed

@@ -1,0 +1,180 @@
+{
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "previous_source_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "reviewed_status": [
+    {
+      "id": "F01",
+      "status": "Original example repaired; bounded checked regression",
+      "scope": "90 current resource-step checks cover both mixed-crossing senses and event orders; no guarantee for crossings invisible to all samples."
+    },
+    {
+      "id": "F02",
+      "status": "Partially repaired; geometric residual reproduced",
+      "scope": "Exact-time comparator/permutation checks pass, but per-obstacle reduction can lose the global earliest anchor. Event-local time-bound metadata also needs a precise contract."
+    },
+    {
+      "id": "F03",
+      "status": "Original malformed-state examples repaired; recorder probe passed",
+      "scope": "NaN body, zero quaternion and NaN continuous data are rejected without state/signal/recording effects; accepted restore closes a complete three-row log once. Evaluator rejection and full asset-dependent suite remain outside scope."
+    },
+    {
+      "id": "F04",
+      "status": "Original source mismatch addressed; headless controls passed",
+      "scope": "Format 4 invalidates old records and stores output pixels. Native drawable/Retina qualification remains open."
+    },
+    {
+      "id": "F05",
+      "status": "Original large-to-small screen veto guarded",
+      "scope": "One-sided output-size policy prevents the specific 4K-to-1080p reuse. Workload-specific veto remains F07."
+    },
+    {
+      "id": "F06",
+      "status": "Applied-scale source correction present",
+      "scope": "Scene Detail reads applied reconstruction scale when policy metadata exists; native Retina/provider-failure qualification remains open."
+    },
+    {
+      "id": "F07",
+      "status": "Partially repaired; two remaining component observations",
+      "scope": "Acquisition can label retained synthetic samples with final applied settings/nominal workload; High-veto reuse omits nominal internal pixels/MSAA even when needed() requests a new measurement. Backend allocation is not observed."
+    },
+    {
+      "id": "F08",
+      "status": "Tracking improved; measurement coverage remains open",
+      "scope": "Observed SubViewport activity is accumulated; enough root timing samples do not establish complete GPU attribution or all one-shot-view coverage."
+    },
+    {
+      "id": "F28",
+      "status": "Reported reconciliation example repaired; focused control passed",
+      "scope": "16 source control assertions include retained synthetic texture identity and desired-set changes. No real GPU bake/timing qualification."
+    },
+    {
+      "id": "F31",
+      "status": "Exact-zero fast path implemented in source",
+      "scope": "No shader execution, rendered equivalence or measured benefit established."
+    }
+  ],
+  "round2_source_comparison": [
+    {
+      "id": "F36",
+      "source_files": [
+        "app/app_root.gd",
+        "app/app_state/preferences.gd",
+        "app/render/auto_calibration.gd",
+        "app/ui/settings_screen.gd"
+      ],
+      "changed_files": [
+        "app/render/auto_calibration.gd"
+      ],
+      "executed_again": false
+    },
+    {
+      "id": "F37",
+      "source_files": [
+        "app/physics/multirotor/controlled_plant.gd",
+        "app/physics/multirotor/flight_controller.gd",
+        "app/tests/test_mr_controlled_plant.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F38",
+      "source_files": [
+        "app/sim/airship/flight_log.gd",
+        "app/sim/multirotor/flight_log.gd",
+        "app/tools/airship_flight_log_cli.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F39",
+      "source_files": [
+        "app/sim/airship/flight_log.gd",
+        "app/sim/airship/session.gd",
+        "app/sim/multirotor/flight_log.gd",
+        "app/tools/airship_flight_log_cli.gd"
+      ],
+      "changed_files": [
+        "app/sim/airship/session.gd"
+      ],
+      "executed_again": false
+    },
+    {
+      "id": "F40",
+      "source_files": [
+        "app/app_root.gd",
+        "app/app_state/native_package.gd",
+        "app/sim/airship/flight_log.gd",
+        "app/sim/flight_log.gd",
+        "app/sim/multirotor/flight_log.gd",
+        "app/ui/startup.gd",
+        "app/vehicles/airship/airship_scene.gd",
+        "app/vehicles/multirotor/multirotor_scene.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F41",
+      "source_files": [
+        "app/input/airship_input.gd",
+        "app/input/rc_input.gd",
+        "app/sim/flight_session.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F42",
+      "source_files": [
+        "app/render/lake/lake_plants.gd",
+        "app/render/lake/lake_terrain.gd",
+        "app/render/lake/lily_pad.gdshader",
+        "app/render/lake/water.gdshader"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F43",
+      "source_files": [
+        "app/physics/ground_vehicle/airfield_track.gd",
+        "app/physics/multirotor/controlled_plant.gd",
+        "app/sim/environment.gd",
+        "app/sim/multirotor/session.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F44",
+      "source_files": [
+        "app/data/lake_loader.gd",
+        "app/physics/lake_surface.gd",
+        "app/render/lake/lake_plants.gd",
+        "app/render/lake/lake_world.gd",
+        "app/render/lake/water_material.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    },
+    {
+      "id": "F45",
+      "source_files": [
+        "app/data/lake_loader.gd",
+        "app/main.gd",
+        "app/physics/hull_contact.gd",
+        "app/physics/lake_surface.gd",
+        "app/render/lake/lily_pad.gdshader",
+        "app/render/lake/water.gdshader",
+        "app/render/lake/water_material.gd",
+        "app/render/shader_clock.gd",
+        "app/render/world/world.gd"
+      ],
+      "changed_files": [],
+      "executed_again": false
+    }
+  ],
+  "round2_note": "Original primary fault sites remain unchanged; calibration dependencies for F36 and restore dependencies for F39 changed. No R2 probe was rerun here. Original conclusions and their limits remain dated evidence."
+}

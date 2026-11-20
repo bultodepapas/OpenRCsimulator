@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+CHECK worker_gate_entered PASS {}
+CHECK change_while_busy_queued PASS {}
+CHECK control_without_fly_rebuilds PASS {"rebuilds":1,"selected":"green_paradise","shown":"green_paradise"}
+CHECK worker_gate_entered PASS {}
+CHECK early_cancel_clears_queued_rebuild PASS {"queued":false,"selected":"green_paradise","shown":"club_field","status":"cancelled"}
+CHECK released_worker_does_not_rebuild PASS {"rebuilds":0,"selected":"green_paradise","shown":"club_field"}
+CHECK worker_gate_entered PASS {}
+CHECK heli_early_cancel_control PASS {"creations":0,"status":"cancelled"}
+CHECK worker_gate_entered PASS {}
+CHECK heli_cancel_waits_without_candidate PASS {"blocked":true,"creations":0}
+CHECK heli_cancel_still_constructs PASS {"creations":1,"ready":1,"route":"xcell-60-research","status":"cancelled"}
+PROBE_COMPLETE failures=0

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "70531120-fbc3-4893-b511-a992fc573255",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/render",
+    "--script",
+    "res://tests/test_cloud_shadow_reorder.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T02:02:44.827256+00:00",
+  "label": "r3-cloud-control",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round3/published2/runs/r3-cloud-control-of4bh_78/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "16 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.85064,
+  "log_bytes": 112,
+  "log_sha256": "103e7e9fc784120ba80478fc00be47759853e4fda1d8b8b7ee4d68c543673a9f"
+}
