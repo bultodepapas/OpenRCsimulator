@@ -62,13 +62,16 @@ MIX_TABLES = {
     "mix_input": ("Input", lambda c: (c["input_class"],)),
 }
 USAGE_TABLE, ERROR_TABLE = "usage_vehicle", "errors"
+# Schema v2 (2026-11-20): which physics backend each activity ran; v1 summaries count as "unknown".
+BACKEND_TABLE = "usage_backend"
 CADENCE_METRICS = ("windows", "interval_sum_us", "rendered_frames", "interval_count", "excluded_gap_count")
 USAGE_METRICS = ("summaries", "complete_summaries", "active_seconds", "simulated_seconds", "classified_summaries",
                  "takeoffs", "landings", "aircraft_crashes")
 TITLES = {**{k: v[0] for k, v in FLIGHT_TABLES.items()}, MENU_TABLE[0]: MENU_TABLE[1],
-          **{k: v[0] for k, v in MIX_TABLES.items()}, USAGE_TABLE: "Vehicle", ERROR_TABLE: "Error category"}
+          **{k: v[0] for k, v in MIX_TABLES.items()}, USAGE_TABLE: "Vehicle",
+          BACKEND_TABLE: "Vehicle / physics backend", ERROR_TABLE: "Error category"}
 KINDS = {**{k: "cadence" for k in FLIGHT_TABLES}, MENU_TABLE[0]: "cadence", **{k: "mix" for k in MIX_TABLES},
-         USAGE_TABLE: "usage", ERROR_TABLE: "errors"}
+         USAGE_TABLE: "usage", BACKEND_TABLE: "usage", ERROR_TABLE: "errors"}
 
 
 def _metric_names(table):
@@ -122,21 +125,23 @@ def daily_cells(payloads):
                 for i, count in enumerate(event["interval_histogram"]):
                     m[f"hist{i}"] += count
         elif name == "activity_summary":
-            entry = cell(USAGE_TABLE, (event["vehicle_id"],))
-            seen = entry["per_session"].get(session, 0)
-            if seen >= WINDOW_CAP:
-                continue
-            entry["per_session"][session] = seen + 1
-            entry["sessions"].add(session)
-            m = entry["metrics"]
-            m["summaries"] += 1
-            m["complete_summaries"] += 1 if event["complete_observation"] else 0
-            m["active_seconds"] += event["active_seconds"]
-            m["simulated_seconds"] += event["simulated_seconds"]
-            if event["classification"] == "accepted_fixed_wing":
-                m["classified_summaries"] += 1
-                for field in ("takeoffs", "landings", "aircraft_crashes"):
-                    m[field] += event[field] or 0
+            backend = event.get("physics_backend", "unknown")
+            for table, dims in ((USAGE_TABLE, (event["vehicle_id"],)), (BACKEND_TABLE, (event["vehicle_id"], backend))):
+                entry = cell(table, dims)
+                seen = entry["per_session"].get(session, 0)
+                if seen >= WINDOW_CAP:
+                    continue
+                entry["per_session"][session] = seen + 1
+                entry["sessions"].add(session)
+                m = entry["metrics"]
+                m["summaries"] += 1
+                m["complete_summaries"] += 1 if event["complete_observation"] else 0
+                m["active_seconds"] += event["active_seconds"]
+                m["simulated_seconds"] += event["simulated_seconds"]
+                if event["classification"] == "accepted_fixed_wing":
+                    m["classified_summaries"] += 1
+                    for field in ("takeoffs", "landings", "aircraft_crashes"):
+                        m[field] += event[field] or 0
         elif name == "error_count":
             entry = cell(ERROR_TABLE, (event["category"],))
             entry["sessions"].add(session)
@@ -267,7 +272,7 @@ HEADERS = {
 SECTIONS = [
     ("Flight frame cadence", list(FLIGHT_TABLES)),
     ("Menu and workshop frame cadence", [MENU_TABLE[0]]),
-    ("Vehicle usage", [USAGE_TABLE]),
+    ("Vehicle usage", [USAGE_TABLE, BACKEND_TABLE]),
     ("Software errors", [ERROR_TABLE]),
     ("Hardware and settings mix", list(MIX_TABLES)),
 ]

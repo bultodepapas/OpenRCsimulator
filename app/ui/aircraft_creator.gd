@@ -656,8 +656,10 @@ func _adopt_import(job: ImportJob) -> void:
 	if job.phase == "clearview_convert" and result.get("ok", false):
 		result = R.ok(result.value.source, result.diagnostics)
 	var phoenix_placement := {}
+	var phoenix_bindings := {}
 	if job.phase == "phoenix_convert" and result.get("ok", false):
 		phoenix_placement = result.value.placement
+		phoenix_bindings = result.value.get("bindings", {})
 		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
@@ -687,6 +689,11 @@ func _adopt_import(job: ImportJob) -> void:
 			_doc.set_units(str(phoenix_placement.units))
 			if not (phoenix_placement.datum as Array).is_empty():
 				_doc.set_datum(phoenix_placement.datum)
+			# Hinge-aligned pivots from the decoded surfaces; the player still confirms them in Moving parts.
+			if not phoenix_bindings.is_empty():
+				var bound: Dictionary = VisualBuilder.validate_bindings(result.value, phoenix_bindings)
+				if bound.ok:
+					_doc.set_bindings(bound.value)
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])

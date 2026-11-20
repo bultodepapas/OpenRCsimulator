@@ -44,6 +44,9 @@ def mutate(payload, *path, value=None, delete=False):
 
 def dict_mutations():
     base, rich = fixture(), rich_batch()
+    rich_v2 = mutate(mutate(rich, "schema_version", value=2), "notice_version", value="2026-11-20")
+    rich_v2["events"][2]["physics_backend"] = "native"
+    rich_v2["events"][4]["physics_backend"] = "reference_domain"
     cases = {"fixture": base, "rich": rich, "rich_other_release": batch(4, release="v0.2.8")}
     for key in base:
         cases[f"drop_{key}"] = mutate(base, key, delete=True)
@@ -55,7 +58,7 @@ def dict_mutations():
         cases[f"bad_context_{key}"] = mutate(base, "context", key, value="bogus")
         cases[f"drop_context_{key}"] = mutate(base, "context", key, delete=True)
     cases.update({
-        "schema_version_2": mutate(base, "schema_version", value=2),
+        "schema_version_3": mutate(base, "schema_version", value=3),
         "schema_version_str": mutate(base, "schema_version", value="1"),
         "notice_old": mutate(base, "notice_version", value="2026-01-01"),
         "session_upper": mutate(base, "session_id", value="A" * 32),
@@ -102,6 +105,13 @@ def dict_mutations():
         "activity_unsupported_counts": mutate(rich, "events", 4, "takeoffs", value=1),
         "activity_accepted_rotor": mutate(rich, "events", 2, "vehicle_id", value="xcell-60-research"),
         "activity_none_vehicle": mutate(rich, "events", 2, "vehicle_id", value="none"),
+        # Schema v2 (2026-11-20): physics_backend is required in v2 activity summaries and absent from v1 ones.
+        "rich_v2": rich_v2,
+        "rich_v2_missing_backend": mutate(rich_v2, "events", 2, "physics_backend", delete=True),
+        "rich_v2_bad_backend": mutate(rich_v2, "events", 2, "physics_backend", value="gdscript_reference"),
+        "rich_v2_old_notice": mutate(rich_v2, "notice_version", value="2026-11-18"),
+        "rich_v1_with_backend": mutate(rich, "events", 2, "physics_backend", value="native"),
+        "rich_v1_new_notice": mutate(rich, "notice_version", value="2026-11-20"),
         "error_zero": mutate(rich, "events", 3, "count", value=0),
         "error_category_bad": mutate(rich, "events", 3, "category", value="disk_full_for_user"),
         "event_name_bad": mutate(base, "events", 0, "name", value="keypress"),
@@ -116,7 +126,7 @@ def dict_mutations():
 def raw_mutations():
     good = encode(fixture())
     return {
-        "duplicate_key": good.replace(b'"schema_version":1', b'"schema_version":1,"schema_version":1'),
+        "duplicate_key": good.replace(b'"session_id":', b'"session_id":"' + b"a" * 32 + b'","session_id":', 1),
         "nan": good.replace(b'"gpu_ms":null', b'"gpu_ms":NaN'),
         "infinity": good.replace(b'"gpu_ms":null', b'"gpu_ms":Infinity'),
         "minus_infinity": good.replace(b'"gpu_ms":null', b'"gpu_ms":-Infinity'),
@@ -193,6 +203,10 @@ class EquivalenceTests(unittest.TestCase):
         statuses = {status for _, status in outcomes.values()}
         self.assertEqual(statuses, {202, 400, 422})   # 400 only from the depth bound
         self.assertEqual(outcomes["fixture"], ("ok", 202))
+        self.assertEqual(outcomes["rich_v2"], ("ok", 202))
+        for name in ("rich_v2_missing_backend", "rich_v2_bad_backend", "rich_v2_old_notice",
+                     "rich_v1_with_backend", "rich_v1_new_notice", "schema_version_3"):
+            self.assertEqual(outcomes[name], ("error", 422), name)
         for accepted in ("rich", "seq_gap_ok", "partial_ok", "gpu_positive_ok", "events_16", "seq_max"):
             self.assertEqual(outcomes[accepted], ("ok", 202), accepted)
         self.assertEqual(outcomes["nested_depth_inside_extra"], ("error", 400))

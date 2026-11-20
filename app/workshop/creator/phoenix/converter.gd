@@ -37,6 +37,13 @@ const NO_GEOMETRY := "The geometry file \"%s\" was not found next to the Phoenix
 const TEXTURE_SKIPPED := "The texture \"%s\" could not be used; those parts keep their plain colour."
 const APPEARANCE_ONLY := "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
+## Alpha textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
+const UNIFORM_PIXELS := 64 * 64
+const BINDINGS_FORMAT := "openrc-creator-bindings v1"
+## Phoenix surface inputs -> Creator control roles (left/right decided by the airfoil side).
+const _INPUT_ROLES := {"aileron": "aileron", "left aileron": "aileron", "right aileron": "aileron",
+	"elevator": "elevator", "left elevator": "elevator", "right elevator": "elevator", "rudder": "rudder"}
 const PLACED := "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 
 
@@ -75,6 +82,7 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	if _cancelled(cancelled):
 		return _cancel()
 	var notes: Array = []
+	var shared := _shared_texture_folders(folder)
 	var textures := {}
 	var texture_hashes := {}
 	for material: Dictionary in geo.value.materials:
@@ -83,12 +91,23 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 			continue
 		if textures.size() >= Limits.GLB_IMAGES:
 			break  # The GLB admits at most this many images; further materials keep their colour.
+		# The model folder first, then the installation's shared aircraft textures (glass, rotor discs).
 		var found := _resolve(listing, str(wanted))
+		var found_dir := folder
 		if found.is_empty():
-			continue  # Shared simulator textures (glass, white, rotor blur) are not in the model folder.
-		var bytes := _read(folder.path_join(found), Limits.PNG_BYTES)
+			for shared_dir: String in shared:
+				found = _resolve(shared[shared_dir], str(wanted))
+				if not found.is_empty():
+					found_dir = shared_dir
+					break
+		if found.is_empty():
+			continue
+		var bytes := _read(found_dir.path_join(found), Limits.PNG_BYTES)
 		var decoded := PhoenixTexture.decode(bytes.value) if bytes.ok else bytes
 		if decoded.ok:
+			var image: Image = decoded.value.image
+			# A small alpha texture is glass: use its average colour rather than a texture of uncertain registration.
+			decoded.value.uniform = bool(decoded.value.has_alpha) and image.get_width() * image.get_height() <= UNIFORM_PIXELS
 			textures[str(wanted).to_lower()] = decoded.value
 			texture_hashes[found] = decoded.value.sha256
 		else:
@@ -103,7 +122,8 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		textures = texture_hashes, metres_per_unit = scale, size = size,
 		coordinate_frame = "gltf: +X left, +Y up, +Z forward", physics_imported = false,
 	}
-	var glb := GlbWriter.build(geo.value, textures, scale, receipt)
+	var articulation := articulation_groups(model)
+	var glb := GlbWriter.build(geo.value, textures, scale, receipt, articulation)
 	if not glb.ok:
 		return glb
 	notes.append_array(glb.diagnostics)
@@ -125,7 +145,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		R.SEVERITY_INFO))
 	if not placement.datum.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, PLACED, "source", STEP, [], R.SEVERITY_INFO))
-	return R.ok({source = admitted.value, receipt = receipt, placement = placement, summary = summary}, notes)
+	var bindings := proposed_bindings(glb.value.pivots)
+	if not bindings.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, MOVING_PARTS, "source", STEP, [str(glb.value.pivots.size())], R.SEVERITY_INFO))
+	return R.ok({source = admitted.value, receipt = receipt, placement = placement, summary = summary,
+		bindings = bindings}, notes)
 
 
 ## Read-only facts from the decoded definition, in metres, kilograms and degrees where established.
@@ -179,6 +203,104 @@ static func _placement(summary: Dictionary) -> Dictionary:
 	if not best.is_empty():
 		datum = [0.0, float(best.leading_edge[1]), float(best.leading_edge[2])]
 	return {nose_axis = NOSE_AXIS, up_axis = UP_AXIS, units = "m", datum = datum}
+
+
+## Rigid moving groups for the GLB writer, from decoded control surfaces and the first propeller.
+## Phoenix gives the left side's hinge (positive X); a mirrored airfoil's right side is its mirror image.
+## Positive Creator deflection turns about the left-span axis (ailerons, elevator), the up axis (rudder)
+## or the forward axis (propeller), so the sign follows the hinge direction along that axis.
+static func articulation_groups(model: Dictionary) -> Array:
+	var groups: Array = []
+	var airfoils: Variant = model.get("airfoils")
+	if airfoils is Array:
+		for airfoil: Variant in airfoils:
+			if not airfoil is Dictionary or not airfoil.get("controlSurfaces") is Array:
+				continue
+			var mirrored := _number(airfoil.get("isMirrored")) == 1.0
+			for surface: Variant in airfoil.controlSurfaces:
+				if not surface is Dictionary:
+					continue
+				var role := str(_INPUT_ROLES.get(str(_dig(surface, ["attributes", "Input"])).to_lower(), ""))
+				var root: Variant = _point(surface.get("root_pivot"), 1.0)
+				var tip: Variant = _point(surface.get("tip_pivot"), 1.0)
+				var sides: Variant = surface.get("sides")
+				if role.is_empty() or root == null or tip == null or not sides is Array:
+					continue
+				for side: int in (sides as Array).size():
+					var names: Variant = sides[side]
+					if not names is Array or (names as Array).is_empty():
+						continue
+					var a: Array = root
+					var b: Array = tip
+					if side == 1:
+						if not mirrored:
+							continue
+						a = [-float(root[0]), root[1], root[2]]
+						b = [-float(tip[0]), tip[1], tip[2]]
+					var hinge := [float(b[0]) - float(a[0]), float(b[1]) - float(a[1]), float(b[2]) - float(a[2])]
+					var along: float = hinge[1] if role == "rudder" else hinge[0]
+					var named := role
+					if role == "aileron":
+						named = "aileron_left" if side == 0 else "aileron_right"
+					groups.append({role = named, nodes = (names as Array).map(func(n: Variant) -> String: return str(n)),
+						origin = a, hinge = hinge, axis = "x", sign = 1 if along >= 0.0 else -1})
+	var propulsion: Variant = model.get("propulsion")
+	if propulsion is Array:
+		for unit: Variant in propulsion:
+			if not unit is Dictionary or str(unit.get("type", "")) != "propeller":
+				continue
+			var pivot: Variant = _point(unit.get("pivot"), 1.0)
+			var names: Array = []
+			for key: String in ["spinGeometry", "blurGeometry"]:
+				if unit.get(key) is Array:
+					for name: Variant in unit[key]:
+						if not str(name) in names:
+							names.append(str(name))
+			if pivot != null and not names.is_empty():
+				groups.append({role = "propeller", nodes = names, origin = pivot, hinge = [], axis = "z",
+					sign = -1 if _number(unit.get("spinDirection")) == -1.0 else 1})
+			break  # Creator binds one propeller.
+	return groups
+
+
+## Creator bindings for the built pivots: up to two parts per control role, one propeller.
+static func proposed_bindings(pivots: Array) -> Dictionary:
+	var controls := {}
+	var propeller: Variant = null
+	for pivot: Dictionary in pivots:
+		var entry := {node = int(pivot.node), axis = str(pivot.axis), sign = int(pivot.sign)}
+		if pivot.role == "propeller":
+			if propeller == null:
+				propeller = entry
+			continue
+		if not controls.has(pivot.role):
+			controls[pivot.role] = []
+		if (controls[pivot.role] as Array).size() < 2:
+			controls[pivot.role].append(entry)
+	if controls.is_empty() and propeller == null:
+		return {}
+	var out := {format = BINDINGS_FORMAT, controls = controls}
+	if propeller != null:
+		out.propeller = propeller
+	return out
+
+
+## `resources/textures/aircraft` and `resources/textures/misc` of the installation holding `folder`.
+static func _shared_texture_folders(folder: String) -> Dictionary:
+	var out := {}
+	var current := folder
+	for _level: int in 8:
+		if current.get_file().to_lower() == "resources":
+			for sub: String in ["textures/aircraft", "textures/misc"]:
+				var path := current.path_join(sub)
+				if DirAccess.dir_exists_absolute(path):
+					out[path] = _folder(path)
+			break
+		var parent := current.get_base_dir()
+		if parent == current or parent.is_empty():
+			break
+		current = parent
+	return out
 
 
 static func _definition(script: Dictionary, label: String) -> Dictionary:

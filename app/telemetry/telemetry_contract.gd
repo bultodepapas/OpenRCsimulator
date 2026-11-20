@@ -4,9 +4,10 @@
 ## anything wider. Pure functions; no I/O, hardware probe or network.
 extends RefCounted
 
-const SCHEMA_VERSION := 1
+## v2 (2026-11-20, legacy modes audit): activity summaries carry physics_backend. The receiver still accepts v1.
+const SCHEMA_VERSION := 2
 ## Changing the notice text, recipients or data categories requires a new identifier (and a new grant).
-const NOTICE_VERSION := "2026-11-18"
+const NOTICE_VERSION := "2026-11-20"
 const ENGINE_MINOR := "4.8"
 const MAX_BODY_BYTES := 32768
 const MAX_EVENTS := 16
@@ -69,8 +70,22 @@ const PERFORMANCE_KEYS: Array[String] = ["name", "seq", "mode", "vehicle_id", "p
 	"interval_count", "interval_sum_us", "rendered_frames", "draw_counter_status", "interval_histogram",
 	"excluded_gap_count", "gpu_status", "gpu_ms"]
 const ACTIVITY_KEYS: Array[String] = ["name", "seq", "vehicle_id", "active_seconds", "simulated_seconds", "outcome",
-	"complete_observation", "classification", "takeoffs", "landings", "aircraft_crashes"]
+	"complete_observation", "classification", "takeoffs", "landings", "aircraft_crashes", "physics_backend"]
+## Which physics evaluator an activity ran (app_state/native_fallback.gd kinds). Never the refusal text.
+const PHYSICS_BACKENDS: Array[String] = ["native", "reference_selected", "reference_domain", "reference_stale",
+	"reference_missing", "not_applicable", "unknown"]
+const PHYSICS_BACKEND_KINDS := {"native": "native", "selected": "reference_selected", "domain": "reference_domain",
+	"stale": "reference_stale", "missing": "reference_missing"}
 const ERROR_KEYS: Array[String] = ["name", "seq", "category", "count"]
+
+
+## The wire value for a NativeFallback.summary() kind; "not_applicable" for a vehicle without a backend choice.
+static func physics_backend(kind: Variant) -> String:
+	if typeof(kind) != TYPE_STRING:
+		return "unknown"
+	if str(kind) == "not_applicable":
+		return "not_applicable"
+	return str(PHYSICS_BACKEND_KINDS.get(str(kind), "unknown"))
 
 
 ## A stock catalog/roster id, "custom" for player or Workshop content, otherwise "unknown". Never the raw string.
@@ -102,7 +117,7 @@ static func encode(batch: Dictionary) -> PackedByteArray:
 	return JSON.stringify(batch, "", false).to_utf8_buffer()
 
 
-## "" when `batch` satisfies the closed v1 schema plus the receiver's semantic rules, otherwise a fixed category.
+## "" when `batch` satisfies the closed v2 schema plus the receiver's semantic rules, otherwise a fixed category.
 ## The receiver validates independently; this check keeps a client defect from ever leaving the machine.
 static func check_batch(batch: Variant) -> String:
 	if not batch is Dictionary:
@@ -216,7 +231,7 @@ static func _check_activity(e: Dictionary) -> String:
 	if not _string_in(e.vehicle_id, ["custom", "unknown"] + STOCK_VEHICLES) \
 			or not _int_in(e.active_seconds, 0, ACTIVITY_MAX_ACTIVE_S) \
 			or not _int_in(e.simulated_seconds, 0, ACTIVITY_MAX_SIMULATED_S) or not _string_in(e.outcome, OUTCOMES) \
-			or typeof(e.complete_observation) != TYPE_BOOL:
+			or typeof(e.complete_observation) != TYPE_BOOL or not _string_in(e.physics_backend, PHYSICS_BACKENDS):
 		return "activity_summary"
 	if same_text(e.classification, "unsupported"):
 		for key: String in ["takeoffs", "landings", "aircraft_crashes"]:

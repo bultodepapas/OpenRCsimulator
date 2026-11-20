@@ -210,11 +210,17 @@ def _native_inputs(root: Path, scope: tuple[str, ...]) -> set[str]:
     return found
 
 
+def _bytecode(relative: str) -> bool:
+    """Python caches are rebuilt per host and remote agents refuse them in archives."""
+    return "__pycache__" in relative.split("/") or relative.endswith((".pyc", ".pyo"))
+
+
 def _inventory(root: Path, scope: tuple[str, ...], include_imports: bool) -> dict:
     commit = _git(root, "rev-parse", "--verify", "HEAD").decode("ascii").strip()
     tracked = _git_paths(root, ("ls-files", "-z", "--cached"), scope)
     tracked |= _git_paths(root, ("ls-tree", "-r", "--name-only", "-z", "HEAD"), scope)
-    untracked = _git_paths(root, ("ls-files", "-z", "--others", "--exclude-standard"), scope)
+    untracked = {path for path in _git_paths(root, ("ls-files", "-z", "--others", "--exclude-standard"), scope)
+                 if not _bytecode(path)}  # a checkout without the ignore rule must not freeze .pyc (TQ-05-F0.2)
     authoring, missing_authoring = _authoring_inputs(root, tracked | untracked)
     status = _status(root, scope + tuple(sorted(authoring | missing_authoring)))
     native = _native_inputs(root, scope)

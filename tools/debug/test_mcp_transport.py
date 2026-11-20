@@ -299,6 +299,43 @@ mcp_server.serve()
                 server.finish()
             self.assertTrue(server.replies.empty())
 
+    def test_test_lane_answers_while_a_simulator_call_blocks(self):
+        """TQ-05-F1.4: pool calls never wait behind a long ordered simulator tool."""
+        entered, release, run_entered = threading.Event(), threading.Event(), threading.Event()
+
+        def launch(_argv):
+            entered.set()
+            if not release.wait(5):
+                raise RuntimeError("fixture timed out")
+            print(json.dumps({"job": "fixture", "handle": "h"}))
+            return 0
+
+        def run(**kwargs):
+            run_entered.set()
+            return {"request_id": "r", "result": "PASSED", "args": sorted(kwargs)}
+
+        with patch.dict(os.environ, {}, clear=False), \
+                patch.object(debugctl.admission, "enabled", return_value=False), \
+                patch.object(debugctl, "launch", side_effect=launch), \
+                patch.object(pool_mcp, "run", side_effect=run), \
+                patch.object(pool_mcp, "fleet", return_value={"hosts": []}), \
+                patch.object(pool_mcp, "list_requests", return_value={"requests": []}):
+            server = PipeServer()
+            try:
+                server.send(request("launch", "sim_launch"))
+                self.assertTrue(entered.wait(3))
+                server.send(request("run", "sim_test_run", {"jobs": [{"script": "res://tests/test_math3d.gd"}]}),
+                            request("fleet", "sim_fleet"), request("list", "sim_test_list", {"limit": 3}))
+                early = {reply["id"]: reply for reply in (server.get(), server.get(), server.get())}
+                self.assertEqual(set(early), {"run", "fleet", "list"})
+                self.assertTrue(run_entered.is_set())
+                self.assertEqual(json.loads(early["run"]["result"]["content"][0]["text"])["args"], ["jobs"])
+                release.set()
+                self.assertEqual(server.get()["id"], "launch")
+            finally:
+                release.set()
+                server.finish()
+
     def test_overload_rejects_only_unaccepted_work_and_duplicate_id_is_unambiguous(self):
         entered, release = threading.Event(), threading.Event()
         calls = []

@@ -5,13 +5,14 @@ import json
 from pathlib import Path
 
 from reference import aggregate_daily_gpu, encode, render_report, validate_body
+from generate_contracts import NOTICE, SCHEMA_VERSION
 
 ROOT = Path(__file__).resolve().parent
 
 
 def example():
     return {
-        "schema_version": 1, "notice_version": "2026-11-18",
+        "schema_version": SCHEMA_VERSION, "notice_version": NOTICE,
         "session_id": "a" * 32, "batch_id": "b" * 32,
         "build": {"release_id": "v0.2.7", "channel": "stable", "engine_minor": "4.8"},
         "context": {

@@ -306,11 +306,22 @@ func _texture() -> void:
 	wrong_magic[0] = 0
 	check("unknown signature refused", not PhoenixTexture.decode(wrong_magic).ok)
 	check("odd layout refused", not PhoenixTexture.decode(bytes.slice(0, bytes.size() - 1)).ok)
-	# 4-channel: 8 magic + 54 header-ish + 4 * 4 * 4 bytes is unverified and must fail with a typed code.
+	# 4-channel: magic, 54 filler bytes, 4 x 4 BGRA rows stored bottom-up from byte 62, two trailing bytes.
 	var four := PackedByteArray([0xFF, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02])
-	four.resize(8 + 54 + 4 * 4 * 4)
+	for index: int in 54:
+		four.append(7)
+	for row: int in 4:
+		for x: int in 4:
+			four.append_array(PackedByteArray([40 + x, 50 + row, 60, 100 + row * 4 + x]))
+	four.append_array(PackedByteArray([0, 0]))
 	var four_result := PhoenixTexture.decode(four)
-	check("four channel layout is a typed failure", not four_result.ok and four_result.diagnostics[0].code == R.SOURCE_UNSUPPORTED)
+	check("four channel texture decodes as RGBA", four_result.ok and four_result.value.has_alpha
+		and four_result.value.image.get_format() == Image.FORMAT_RGBA8 and four_result.value.profile.pixel_offset == 62)
+	if four_result.ok:
+		var top_left: Color = four_result.value.image.get_pixel(0, 0)
+		check("BGRA order and bottom-up rows", top_left.r8 == 60 and top_left.g8 == 53 and top_left.b8 == 40
+			and top_left.a8 == 112)
+		check("mean alpha", is_equal_approx(float(four_result.value.mean[3]), (100.0 + 115.0) / 2.0 / 255.0))
 
 
 # -------------------------------------------------------------------------------------------- glb

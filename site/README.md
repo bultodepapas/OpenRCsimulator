@@ -70,6 +70,17 @@ Publish with `python site/publish.py --message "WEB-step: change; proof: complet
 
 Remaining work (WEB-17…23: property hygiene, production-only collection, consent, download integrity, attribution, engagement events) is in the [website analytics plan](../docs/plans/website-analytics.md), based on the [GA4 audit, 2026-11-20](../docs/research/website-analytics/ga4-audit-2026-11-20.md). The operator dashboard reads this property in its [Website tab](../tools/telemetry/README.md#website-ga4).
 
+**Production-only collection (WEB-18).** The GTM bootstrap in `index.html` returns early unless `location.hostname` is `bultodepapas.github.io`. `downloads.js` sends events only there. Local previews and other hosts therefore send nothing; downloads still work. The `noscript` iframe cannot be guarded, so JavaScript-disabled local previews can still request it.
+
+**Download integrity (WEB-20).**
+
+- `downloads.js` sends at most one `download_request` per platform and release per page load.
+- On phones and tablets, a README `?download=` link does not start a desktop ZIP. It shows a localized explanation and a *Share link* button (*Copy link* without the Web Share API). This sends `download_handoff`, with `handoff_action` set to `shown` (once per history entry), `shared` or `copied`.
+- A deliberate tap on a ZIP link still downloads and is counted as `manual`.
+- Handheld detection: `navigator.userAgentData.mobile`, Android/iPhone/iPad/iPod/Mobile agents, or a Macintosh agent with touch points (iPadOS).
+- No storage is used.
+- Enhanced-measurement `file_download` and GitHub `click` events overlap manual requests; never add them to `download_request`.
+
 All eleven pages install the owner's Google Tag Manager container `GTM-N4G2K5K7`: the asynchronous bootstrap is near the start of `<head>`, and the hidden `noscript` iframe is first in `<body>`. Edit these in `index.html`, then run `python site/build_locales.py`; never add a second standalone GA4 snippet. The published container inspected on 2026-10-28 includes GA4 destination `G-4Z11DSB2BV` and enhanced measurement for page views, downloads, outbound clicks and scrolling. Tags and measurement settings are managed in Tag Manager; their live configuration can change independently of this repository.
 
 The integration follows Google's [container installation](https://support.google.com/tagmanager/answer/14847097) and [GA4 configuration](https://support.google.com/tagmanager/answer/9442095) guides. The container ID is public, not a credential. This measures website activity; it does not install telemetry in the simulator or measure GitHub repository-page visits. GitHub [removes scripts from rendered Markdown](https://github.com/github/markup/blob/master/README.md), so do not add tracking snippets to the project README. Repository visits and clones are available through [Insights → Traffic](https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository).

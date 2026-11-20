@@ -159,12 +159,28 @@ class ContextTablesTest(InsightsCase):
         usage = rows("usage_vehicle")[("f4u-corsair-250",)]["metrics"]
         self.assertEqual((usage["summaries"], usage["active_seconds"], usage["takeoffs"]), (20, 6000, 20))
         self.assertEqual(rows("errors")[("asset_load_failed",)]["metrics"]["count"], 40)
+        # v1 activity summaries carry no physics backend: they count as "unknown" in the v2 backend table.
+        self.assertEqual(rows("usage_backend")[("f4u-corsair-250", "unknown")]["metrics"]["summaries"], 20)
         # Session mix counts every session once per cell, whatever events it sent.
         self.assertEqual(rows("mix_gpu")[("nvidia_rtx",)]["sessions"], 40)
         self.assertEqual(rows("mix_input")[(CONTEXT["input_class"],)]["sessions"], 40)
         body = insights.render(self.week())
         for heading in ("Flight frame cadence", "Vehicle usage", "Software errors", "Hardware and settings mix"):
             self.assertIn(heading, body)
+
+    def test_v2_physics_backend_table(self):
+        """Schema v2: one usage_backend cell per (vehicle, backend), capped per session like usage_vehicle."""
+        def payload(session, backend):
+            body = batch(session, events=[{**activity_event(1), "physics_backend": backend}])
+            body.update(schema_version=2, notice_version="2026-11-20")
+            return body
+        payloads = [payload(i, "native") for i in range(1, 4)] + [payload(9, "reference_stale")]
+        cells = {(t, d): (sessions, m) for t, d, sessions, m in insights.daily_cells(payloads)}
+        self.assertEqual(cells[("usage_backend", ("f4u-corsair-250", "native"))][0], 3)
+        self.assertEqual(cells[("usage_backend", ("f4u-corsair-250", "reference_stale"))][1]["summaries"], 1)
+        self.assertEqual(cells[("usage_vehicle", ("f4u-corsair-250",))][1]["summaries"], 4)
+        for (table, dims), (sessions, metrics) in cells.items():
+            insights.validate_cell(table, dims, sessions, metrics)
 
     def test_cells_hold_no_identifiers_and_rollup_is_idempotent(self):
         self.day_of_sessions(MONDAY, {"nvidia_rtx": 20})

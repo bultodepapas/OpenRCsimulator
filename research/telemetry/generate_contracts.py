@@ -1,4 +1,4 @@
-"""Authoritative proposed v1 schema source. No network, runtime probes or uploads."""
+"""Authoritative telemetry schema source (v1 and v2). No network, runtime probes or uploads."""
 from __future__ import annotations
 
 import argparse
@@ -7,7 +7,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SCHEMA_URI = "https://json-schema.org/draft/2020-12/schema"
-NOTICE = "2026-11-18"
+# v2 (2026-11-20, legacy modes audit): activity summaries report the physics backend; a new notice discloses it.
+# The receiver keeps accepting v1 batches under the v1 notice from builds released before the change.
+NOTICE_V1 = "2026-11-18"
+NOTICE = "2026-11-20"
+SCHEMA_VERSION = 2
+PHYSICS_BACKENDS = [
+    "native", "reference_selected", "reference_domain", "reference_stale", "reference_missing",
+    "not_applicable", "unknown",
+]
 # Match the inspected shipped catalog; do not accept an arbitrary slug from a player.
 FIXED_WING_VEHICLES = [
     "jensen-das-ugly-stik-60",
@@ -98,7 +106,10 @@ def schemas():
         "takeoffs": {"type": ["integer", "null"], "minimum": 0, "maximum": 1000},
         "landings": {"type": ["integer", "null"], "minimum": 0, "maximum": 1000},
         "aircraft_crashes": {"type": ["integer", "null"], "minimum": 0, "maximum": 1000},
+        "physics_backend": enum(*PHYSICS_BACKENDS),
     })
+    # v1 activity summaries have no physics_backend; the batch-level rule below requires it exactly for v2.
+    activity["required"].remove("physics_backend")
     activity["allOf"] = [{
         "if": {"properties": {"classification": {"const": "unsupported"}}},
         "then": {"properties": {k: {"type": "null"} for k in ("takeoffs", "landings", "aircraft_crashes")}},
@@ -108,8 +119,8 @@ def schemas():
         }},
     }]
     batch = closed({
-        "schema_version": {"const": 1},
-        "notice_version": {"const": NOTICE},
+        "schema_version": {"enum": [1, SCHEMA_VERSION]},
+        "notice_version": enum(NOTICE_V1, NOTICE),
         "session_id": {"type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$"},
         "batch_id": {"type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$"},
         "build": closed({
@@ -128,8 +139,20 @@ def schemas():
             }),
         ]}},
     })
-    batch.update({"$schema": SCHEMA_URI, "$id": "urn:openrc:telemetry:batch:1",
-                  "title": "OpenRC proposed telemetry batch v1"})
+    activity_items = {"if": {"properties": {"name": {"const": "activity_summary"}}}}
+    batch["allOf"] = [{
+        "if": {"properties": {"schema_version": {"const": SCHEMA_VERSION}}},
+        "then": {"properties": {
+            "notice_version": {"const": NOTICE},
+            "events": {"items": {**activity_items, "then": {"required": ["physics_backend"]}}},
+        }},
+        "else": {"properties": {
+            "notice_version": {"const": NOTICE_V1},
+            "events": {"items": {**activity_items, "then": {"not": {"required": ["physics_backend"]}}}},
+        }},
+    }]
+    batch.update({"$schema": SCHEMA_URI, "$id": "urn:openrc:telemetry:batch:2",
+                  "title": "OpenRC telemetry batch v2 (accepts v1)"})
     row = closed({
         "gpu_family": enum(*GPU_FAMILIES),
         "session_observations": integer(20, 1000000000),

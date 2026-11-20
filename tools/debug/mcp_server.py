@@ -121,17 +121,38 @@ TOOLS += [
              "script": {"type": "string"}, "platform": {"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
              "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
              "host": {"type": "string"}}, ["script"])}}, ["request_id", "jobs"])},
-    {"name": "sim_test_status", "description": "Read cached test-pool progress and automatically collected report/log paths. "
-     "Read summary first: counts, attention (failed/rejected/blocked tests with report and log), next_action and "
-     "suggested_poll_seconds; jobs holds the authoritative rows. "
-     "No SSH or waiting. Only result PASSED with verified evidence qualifies a batch; an accepted ticket is not a frozen source or test pass.",
-     "inputSchema": _schema({"request_id": {"type": "string"}}, ["request_id"])},
+    {"name": "sim_test_run", "description": "The usual way to run checked tests: launch them and wait up to wait_s "
+     "(default 60, max 300) for the result in one call. Returns the compact status: per test outcome, host, seconds, "
+     "failing log lines, or a typed waiting reason. If still running, call it again with the returned request_id "
+     "(or sim_test_status). request_id is optional; omit it for a new run. Waiting never cancels the tests. "
+     "Platform defaults to caller OS; choose any only for portable tests.",
+     "inputSchema": _schema({"request_id": {"type": "string"}, "source": {"type": "string"},
+         "wait_s": {"type": "number"},
+         "jobs": {"type": "array", "minItems": 1, "maxItems": 64, "items": _schema({
+             "script": {"type": "string"}, "platform": {"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
+             "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
+             "host": {"type": "string"}}, ["script"])}}, ["jobs"])},
+    {"name": "sim_test_status", "description": "Read cached test-pool progress. Default detail=summary: summary "
+     "(counts, next_action, waiting codes), then one line per test with outcome, host, seconds, failing log lines "
+     "or a typed waiting reason and the alternative. detail=full adds the authoritative rows. No SSH or waiting. "
+     "Only result PASSED with verified evidence qualifies a batch.",
+     "inputSchema": _schema({"request_id": {"type": "string"},
+                             "detail": {"type": "string", "enum": ["summary", "full"]}}, ["request_id"])},
+    {"name": "sim_fleet", "description": "Which test hosts are online, idle or busy (typed cause), their disk/RAM/"
+     "load, active pool jobs, and every Godot process on this machine (unmanaged ones block the local host). Cached "
+     "about 15 s; refresh=true probes now (a few seconds).",
+     "inputSchema": _schema({"refresh": {"type": "boolean"}})},
+    {"name": "sim_test_list", "description": "Recent test requests with one-line results, newest first, so a new "
+     "session can find its earlier work.", "inputSchema": _schema({"limit": {"type": "integer"}})},
     {"name": "sim_test_recover", "description": "Resume a stopped test supervisor using the same frozen snapshot and job IDs/hosts. "
      "Does not rerun failed tests or cancel remote jobs. Returns immediately; inspect sim_test_status.",
      "inputSchema": _schema({"request_id": {"type": "string"}}, ["request_id"])},
 ]
-INSTRUCTIONS += (" For independent checked headless regression tests use sim_test_launch with a stable caller-generated "
-                 "request_id and jobs, then sim_test_status. Compatible tests are placed automatically across the configured pool. "
+INSTRUCTIONS += (" For independent checked headless regression tests call sim_test_run with jobs: it launches and "
+                 "waits for the compact result in one call (repeat it with the returned request_id while still running). "
+                 "sim_fleet shows which hosts are online/idle and why others are busy; sim_test_list finds earlier requests. "
+                 "sim_test_launch (stable caller-generated request_id) + sim_test_status remain for detached batches. "
+                 "Compatible tests are placed automatically across the configured pool. "
                  "Declare platform=any only for portable checks; otherwise keep native coverage. Evidence is collected automatically. "
                  "Use sim_test_recover on a stopped supervisor, preserving the same request. Graphical/performance checks keep their native workflows.")
 INSTRUCTIONS += (" Protocol requests and cached sim_test_status can be serviced during a long tool call. Simulator "
@@ -150,6 +171,12 @@ TOOL_BY_NAME = {tool["name"]: tool for tool in TOOLS}
 # cannot create an unbounded number of workers or queued messages.
 TOOL_QUEUE_LIMIT = 32
 STATUS_QUEUE_LIMIT = 8
+TEST_QUEUE_LIMIT = 16
+# Test-pool calls touch only durable receipts (no process-global stdout or
+# environment), so they get their own lane and never wait behind a long
+# simulator call. Two workers let a waiting sim_test_run coexist with a launch.
+TEST_LANE = {"sim_test_launch", "sim_test_recover", "sim_test_run", "sim_fleet", "sim_test_list"}
+TEST_WORKERS = 2
 OUTPUT_QUEUE_LIMIT = 64
 MAX_INPUT_CHARS = 1024 * 1024
 OUTPUT_ENQUEUE_SECONDS = 0.2
@@ -225,11 +252,15 @@ def _text(text: str) -> dict:
 
 
 def call_tool(name: str, args: dict) -> list[dict]:
-    if name.startswith("sim_test_"):
+    if name.startswith("sim_test_") or name == "sim_fleet":
         from tools.testqueue import pool_mcp
         action = {"sim_test_launch": pool_mcp.launch, "sim_test_status": pool_mcp.status,
-                  "sim_test_recover": pool_mcp.recover}[name]
-        return [_text(json.dumps(action(**args), ensure_ascii=False))]
+                  "sim_test_recover": pool_mcp.recover, "sim_test_run": pool_mcp.run,
+                  "sim_fleet": pool_mcp.fleet, "sim_test_list": pool_mcp.list_requests}[name]
+        try:
+            return [_text(json.dumps(action(**args), ensure_ascii=False, default=str))]
+        except ValueError as error:
+            raise ToolError(str(error)) from None
     if name == "sim_launch":
         argv = ["--headless"] if args.get("headless") else []
         if args.get("resolution"):
@@ -434,6 +465,7 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
     """
     ordered = queue.Queue(TOOL_QUEUE_LIMIT)
     status = queue.Queue(STATUS_QUEUE_LIMIT)
+    tests = queue.Queue(TEST_QUEUE_LIMIT)
     outgoing = queue.Queue(OUTPUT_QUEUE_LIMIT)
     finished = object()
     disconnected = threading.Event()
@@ -520,7 +552,8 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
 
     writer = threading.Thread(target=write_replies, name="mcp-writer", daemon=True)
     workers = [threading.Thread(target=run_tools, args=(work,), name=name)
-               for work, name in ((ordered, "mcp-tools"), (status, "mcp-status"))]
+               for work, name in ((ordered, "mcp-tools"), (status, "mcp-status"),
+                                  *((tests, f"mcp-tests-{index}") for index in range(TEST_WORKERS)))]
     writer.start()
     for worker in workers:
         worker.start()
@@ -556,7 +589,8 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
                     if not duplicate:
                         in_flight.add(tracked_id)
                 if not duplicate and invocation is not None:
-                    work = status if invocation[0] == "sim_test_status" else ordered
+                    work = (status if invocation[0] == "sim_test_status"
+                            else tests if invocation[0] in TEST_LANE else ordered)
                     try:
                         work.put_nowait((reply, invocation, tracked_id))
                     except queue.Full:
@@ -576,6 +610,8 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
         # to kill a call or silently discard an action already accepted above.
         ordered.put(finished)
         status.put(finished)
+        for _ in range(TEST_WORKERS):
+            tests.put(finished)
         for worker in workers:
             worker.join()
         deadline = time.monotonic() + OUTPUT_DRAIN_SECONDS

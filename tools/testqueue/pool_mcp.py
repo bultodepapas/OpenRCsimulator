@@ -13,6 +13,7 @@ import time
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
+from tools.testqueue import agent_view
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.pool import Pool, default_config, digest
 from tools.testqueue.pool_batch import _finished_success, reobservation_ids, run_batch
@@ -110,8 +111,64 @@ def launch(request_id, jobs, source=None, *, config=None):
     return status(request_id, config=config)
 
 
-def status(request_id, *, config=None):
-    """Read cached receipts, without network or rehashing collected artifacts."""
+def status(request_id, detail="summary", *, config=None):
+    """Read cached receipts, without network or rehashing collected artifacts.
+
+    ``detail="summary"`` (default) returns one compact line per test with its
+    typed waiting reason and failing lines; ``"full"`` returns the rows.
+    """
+    if detail not in {"summary", "full"}:
+        raise ValueError("detail must be summary or full")
+    full = _full_status(request_id, config=config)
+    if detail == "full":
+        return full
+    if not full.get("jobs"):
+        full = {**full, "request_jobs": _read(Path(full["receipt"]) / "request.json").get("jobs", [])}
+    return agent_view.compact_status(full)
+
+
+def fleet(refresh=False, *, config=None):
+    """Cached fleet view: hosts, typed busy causes and local Godot processes."""
+    return agent_view.fleet(Pool(config or default_config()), refresh=bool(refresh))
+
+
+def list_requests(limit=20, *, config=None):
+    return {"requests": agent_view.list_requests(Pool(config or default_config()), int(limit))}
+
+
+RUN_POLL_SECONDS = 1.0
+RUN_MAX_WAIT_SECONDS = 300
+
+
+def run(jobs, request_id=None, source=None, wait_s=60, *, config=None):
+    """Launch and wait up to ``wait_s`` for a final result in one call (TQ-05-F1.5).
+
+    Without ``request_id`` a fresh one is generated, so a deliberate rerun is a
+    new attempt. Repeating a call with the same explicit ID stays idempotent.
+    Waiting only observes: a timeout returns the ticket and never cancels.
+    """
+    if not isinstance(wait_s, (int, float)) or not 0 <= wait_s <= RUN_MAX_WAIT_SECONDS:
+        raise ValueError(f"wait_s must be 0-{RUN_MAX_WAIT_SECONDS} seconds")
+    request_id = request_id or time.strftime("run-%Y%m%d-%H%M%S-") + os.urandom(3).hex()
+    launch(request_id, jobs, source, config=config)
+    deadline = time.monotonic() + wait_s
+    time.sleep(min(RUN_POLL_SECONDS, wait_s))  # let the detached supervisor take its lock first
+    while True:
+        view = status(request_id, config=config)
+        if view["summary"].get("result") in {"PASSED", "FAILED"} or time.monotonic() >= deadline:
+            break
+        if not view.get("supervisor_active") and view["summary"].get("next_action", "").startswith(
+                ("sim_test_recover", "inspect", "snapshot", "source freeze")):
+            break  # the supervisor stopped; waiting longer cannot change the answer
+        time.sleep(min(RUN_POLL_SECONDS, max(0.0, deadline - time.monotonic())))
+    view["waited_seconds"] = round(wait_s - max(0.0, deadline - time.monotonic()), 1)
+    if view["summary"].get("result") not in {"PASSED", "FAILED"} and view.get("supervisor_active"):
+        view["note"] = ("still running: call sim_test_status or sim_test_run again with this request_id; "
+                        "waiting never cancels the tests")
+    return view
+
+
+def _full_status(request_id, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
     request = _request(directory, request_id)
@@ -158,7 +215,7 @@ def summarize(result, pool=None):
     supervisor = result.get("supervisor") or {}
     counts = {"total": len(rows), "passed": 0, "failed": 0, "rejected": 0, "blocked": 0,
               "running": 0, "queued": 0}
-    attention, pending = [], []
+    attention, pending, waiting, progressing = [], [], {}, 0
     for row in rows:
         script = (row.get("input") or {}).get("script")
         status, collection = row.get("status") or {}, row.get("collection") or {}
@@ -186,9 +243,18 @@ def summarize(result, pool=None):
         elif phase in _QUEUED:
             counts["queued"] += 1
             pending.append(script)
+            reason = agent_view._wait_reason(row, (row.get("input") or {}).get("platform"))
+            if reason and reason["code"] != "QUEUED_IN_BATCH":
+                waiting[reason["code"]] = waiting.get(reason["code"], 0) + 1
         elif phase in _ACTIVE:
             counts["running"] += 1
             pending.append(script)
+            reason = agent_view._wait_reason(row, (row.get("input") or {}).get("platform")) \
+                if phase == "SUBMITTING" else None
+            if reason and reason["code"] != "QUEUED_IN_BATCH":
+                waiting[reason["code"]] = waiting.get(reason["code"], 0) + 1
+            else:
+                progressing += 1
     overall = result.get("result", "INCOMPLETE")
     active = bool(result.get("supervisor_active"))
     state = supervisor.get("state")
@@ -198,6 +264,9 @@ def summarize(result, pool=None):
             state == "SNAPSHOTTING"
             or state == "ERROR" and "snapshot preparation was interrupted" in str(supervisor.get("error"))):
         action = "snapshot was interrupted before any dispatch; sim_test_launch with a new request_id"
+    elif state == "ERROR" and not active and not result.get("source_frozen") and not rows:
+        action = ("source freeze failed before any test was dispatched (" + str(supervisor.get("error"))[:160]
+                  + "); fix that cause, then run again with a new request_id")
     elif state == "ERROR" and not active:
         action = "inspect supervisor.error; then sim_test_recover with the same request_id"
     elif not active and overall == "INCOMPLETE" and (result.get("recovery_required") or state not in {None, "ACCEPTED"}):
@@ -210,9 +279,20 @@ def summarize(result, pool=None):
     elif counts["blocked"] and not counts["running"] and not counts["queued"]:
         action = ("blocked rows cannot finish on their own: inspect attention[] and run "
                   "testctl pool status/recover with each row request_id; never resubmit them under a new ID")
+    elif waiting and set(waiting) <= {"NO_HOST_FOR_PLATFORM"}:
+        action = ("no configured host has the requested platform: these tests cannot start; "
+                  "launch a new request_id with a configured platform or host")
+    elif waiting and not progressing and set(waiting) <= {"NO_ONLINE_HOST_FOR_PLATFORM"}:
+        action = ("every host for the requested platform is offline; tests wait for one to return "
+                  "(sim_fleet shows hosts; a reviewed portable check may use platform any)")
+    elif waiting:
+        action = ("poll sim_test_status; waiting: " + ", ".join(f"{code}={count}" for code, count in sorted(waiting.items()))
+                  + " (tests[].waiting explains each; sim_fleet shows hosts)")
     else:
         action = "poll sim_test_status"
     summary = {"result": overall, **counts, "attention": attention, "next_action": action}
+    if waiting:
+        summary["waiting"] = waiting
     if overall == "INCOMPLETE" and pool is not None:
         try:
             history = pool.history()

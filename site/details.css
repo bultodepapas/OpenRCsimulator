@@ -115,6 +115,12 @@ html[dir=rtl] .hero-scene-caption .aircraft-note { text-align:start; }
 html[dir=rtl] .field-shade { background:linear-gradient(270deg,#071e16d9,#0a20173d 70%,#0a201710),linear-gradient(0deg,#0819129c,transparent 30%); }
 /* Download instructions, release copy and dispatch status must not overlap. */
 .download .download-intro { position: static; max-width: 65ch; margin: 0 0 1em; }
+/* WEB-20: phone/tablet hand-off button inside the dispatch status. */
+.download-handoff { display:inline-block; margin-top:12px; min-height:44px; padding:10px 18px; font:inherit; font-size:14px;
+  color:var(--green); background:var(--lime); border:0; border-radius:2px; cursor:pointer; }
+.download-handoff:focus-visible { outline:2px solid var(--paper); outline-offset:3px; }
+.download-handoff-status { display:inline-block; margin:0 0 0 14px; font-size:14px; color:var(--lime); }
+html[dir=rtl] .download-handoff-status { margin:0 14px 0 0; }
 html[dir=rtl] .download-intro { left:auto; right:61%; }
 html[dir=rtl] .download-links a { padding:30px 60px 30px 20px; }
 html[dir=rtl] .download-links a+a { border-left:0; border-right:1px solid #ffffff40; padding-right:75px; }

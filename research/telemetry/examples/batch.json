@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "notice_version": "2026-11-18",
+  "schema_version": 2,
+  "notice_version": "2026-11-20",
   "session_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "batch_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "build": {

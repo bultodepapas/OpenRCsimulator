@@ -10,6 +10,7 @@
 extends Node
 
 const ScreenStack := preload("res://ui/screen_stack.gd")
+const NativeFallback := preload("res://app_state/native_fallback.gd")
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
@@ -3200,6 +3201,7 @@ func _telemetry_context() -> Dictionary:
 	var custom := false
 	var simulated := -1.0
 	var fixed_wing := false
+	var physics_backend := "unknown"
 	var activity: Node = flight if is_instance_valid(flight) else ground_vehicle if is_instance_valid(ground_vehicle) else null
 	# A vehicle activity begins once its session runs: not while it loads behind the loading screen, when neither its
 	# simulated clock nor the statistics classifier exists yet (the summary would be incomplete and unclassified).
@@ -3226,6 +3228,9 @@ func _telemetry_context() -> Dictionary:
 					simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
+			# Telemetry v2: only the backend kind (native_fallback.gd), never the refusal text.
+			physics_backend = str(NativeFallback.summary(session.call("stage_backend_status")).kind) \
+				if session.has_method("stage_backend_status") else "not_applicable"
 	elif not _workshop_screens.is_empty():
 		mode = "workshop" # editing in the Workshop: measured, but not a vehicle activity
 	elif home != null or home_build_pending:
@@ -3244,7 +3249,7 @@ func _telemetry_context() -> Dictionary:
 			var kind := str(controllers.registry.device_for_id(flight_device).get("kind", ""))
 			input_class = "rc" if kind == "radio" else "gamepad" if kind == "gamepad" else "other"
 	return {"mode": mode, "activity": activity != null, "vehicle": vehicle, "custom": custom, "eligible": eligible,
-		"simulated_seconds": simulated,
+		"simulated_seconds": simulated, "physics_backend": physics_backend,
 		"fixed_wing_accepted": fixed_wing, "window_size": window.size,
 		"vsync": DisplayServer.window_get_vsync_mode(window.get_window_id()), "max_fps": Engine.max_fps,
 		"input_class": input_class}

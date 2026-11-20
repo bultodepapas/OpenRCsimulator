@@ -20,17 +20,26 @@ function fixture(search = '?download=windows&release=v0.1.8', options = {}) {
   const window = {addEventListener: (name, callback) => listeners[name] = callback};
   const history = {state: options.state || null, replaceState(state) { this.state = state; }};
   const document = {
-    documentElement: {lang: 'en'},
+    title: 'OpenRC',
+    documentElement: {lang: options.lang || 'en'},
     querySelectorAll: () => links,
-    createElement: () => ({setAttribute() {}}),
+    createElement: tag => ({tag, attributes: {}, siblings: [],
+      setAttribute(name, value) { this.attributes[name] = value; },
+      removeAttribute(name) { delete this.attributes[name]; },
+      after(...elements) { this.siblings.push(...elements); },
+      addEventListener(name, callback) { this[name] = callback; }}),
     getElementById: () => ({scrollIntoView() {}}),
     addEventListener: (name, callback) => listeners[name] = callback,
   };
-  vm.runInNewContext(source, {window, document, history, URL, URLSearchParams,
-    location: {search, assign: url => navigation.push(url)},
+  const hostname = options.hostname ?? 'bultodepapas.github.io';
+  const context = {window, document, history, URL, URLSearchParams,
+    location: {search, hostname, href: `https://${hostname}/OpenRCsimulator/en.html${search}`,
+      assign: url => navigation.push(url)},
     setTimeout: (callback, delay) => { timers.set(callback, delay); return callback; },
     clearTimeout: id => timers.delete(id),
-  });
+  };
+  if (options.navigator) context.navigator = options.navigator;
+  vm.runInNewContext(source, context);
   return {window, history, navigation, timers, links, listeners, inserted,
     events: () => window.dataLayer.filter(e => e[0] === 'event'),
     expire: () => [...timers.keys()].forEach(callback => callback()),
@@ -43,8 +52,12 @@ test('prerelease links dispatch all platforms and attribute manual clicks', () =
     assert.equal(f.events()[0][2].release_version, 'v0.1.9-beta.1');
     f.expire();
     assert.deepEqual(f.navigation, [f.links[index].href]);
-    f.links[index].click();
+    f.links[index].click();  // the same platform and release is not counted twice in one page load
+    assert.equal(f.events().length, 1);
+    const other = (index + 1) % 3;
+    f.links[other].click();
     assert.equal(f.events().at(-1)[2].download_method, 'manual');
+    assert.equal(f.events().length, 2);
   }
 });
 
@@ -126,6 +139,74 @@ test('manual navigation cancels the automatic request without blocking the link'
   assert.equal(manual.download_platform, 'linux');
   assert.equal(manual.download_method, 'manual');
   assert.equal(manual.download_source, 'website');
+});
+
+test('non-production hosts download without sending analytics (WEB-18)', () => {
+  for (const hostname of ['127.0.0.1', 'localhost', '']) {
+    const f = fixture('?download=windows&release=v0.1.8', {hostname});
+    f.expire();
+    assert.deepEqual(f.navigation, [f.links[0].href], hostname);
+    f.links[1].click();
+    assert.equal(f.window.dataLayer.length, 0, hostname);
+  }
+});
+
+test('one request per platform and release per page load (WEB-20)', () => {
+  const f = fixture('');
+  f.links[0].click(); f.links[0].click(); f.links[2].click();
+  assert.deepEqual(JSON.parse(JSON.stringify(f.events().map(e => e[2].download_platform))), ['windows', 'macos']);
+  const automatic = fixture();
+  automatic.links[0].click();  // same platform and release as the automatic request
+  assert.equal(automatic.events().length, 1);
+});
+
+const PHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1';
+const IPAD = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15';
+
+test('phones and tablets get a hand-off instead of a desktop ZIP (WEB-20)', async () => {
+  for (const navigator of [{userAgent: PHONE}, {userAgent: IPAD, maxTouchPoints: 5}, {userAgentData: {mobile: true}}]) {
+    const shared = [];
+    navigator.share = data => { shared.push(data); return Promise.resolve(); };
+    const f = fixture('?download=windows&release=v0.1.8&fbclid=abc', {navigator, lang: 'de'});
+    f.expire();
+    assert.equal(f.navigation.length, 0);
+    assert.deepEqual(JSON.parse(JSON.stringify(f.events().map(e => [e[1], e[2].handoff_action, e[2].download_platform]))),
+      [['download_handoff', 'shown', 'windows']]);
+    const button = f.inserted[0].children[0];
+    assert.equal(button.textContent, 'Link teilen');
+    button.click();
+    await new Promise(resolve => setImmediate(resolve));
+    assert.ok(!shared[0].url.includes('fbclid'));
+    assert.ok(shared[0].url.includes('download=windows'));
+    assert.equal(f.events().at(-1)[2].handoff_action, 'shared');
+    f.links[0].click();  // an explicit tap still downloads and is counted as manual
+    assert.equal(f.events().at(-1)[2].download_method, 'manual');
+  }
+});
+
+test('the hand-off falls back to copying and counts "shown" once per history entry', async () => {
+  const copied = [];
+  const navigator = {userAgent: PHONE, clipboard: {writeText: text => { copied.push(text); return Promise.resolve(); }}};
+  const f = fixture('?download=macos&release=v0.1.8', {navigator});
+  const button = f.inserted[0].children[0];
+  assert.equal(button.textContent, 'Copy link');
+  button.click();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(copied.length, 1);
+  assert.equal(button.textContent, 'Link copied');
+  const reload = fixture('?download=macos&release=v0.1.8', {navigator, state: f.history.state});
+  assert.equal(reload.events().length, 0);
+  assert.equal(reload.inserted.length, 1);  // the message is still shown
+  const bare = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent: PHONE}});
+  assert.equal(bare.inserted[0].children.length, 0);  // no share or clipboard API: no dead button
+});
+
+test('desktop Macs and Windows keep the automatic download', () => {
+  for (const userAgent of [IPAD, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0 Safari/537.36']) {
+    const f = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent, maxTouchPoints: 0}});
+    f.expire();
+    assert.deepEqual(f.navigation, [f.links[2].href]);
+  }
 });
 
 test('leaving the page cancels a pending automatic download', () => {

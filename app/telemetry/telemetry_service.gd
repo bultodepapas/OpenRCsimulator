@@ -351,7 +351,9 @@ func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, a
 		"sim_start": maxf(simulated, 0.0), "sim_last": maxf(simulated, 0.0),
 		"complete": _activity_from_start and simulated >= 0.0,
 		"classification": "accepted_fixed_wing" if fixed_wing else "unsupported",
-		"takeoffs": 0, "landings": 0, "aircraft_crashes": 0}
+		"takeoffs": 0, "landings": 0, "aircraft_crashes": 0,
+		# Captured at the activity start: a backend change needs a new flight or reset, which ends this activity.
+		"physics_backend": Contract.physics_backend(ctx.get("physics_backend"))}
 
 
 func _end_activity(now: int, outcome: String, finished: bool) -> void:
@@ -365,7 +367,8 @@ func _end_activity(now: int, outcome: String, finished: bool) -> void:
 		"classification": str(a.classification),
 		"takeoffs": int(a.takeoffs) if fixed else null,
 		"landings": int(a.landings) if fixed else null,
-		"aircraft_crashes": int(a.aircraft_crashes) if fixed else null}, now)
+		"aircraft_crashes": int(a.aircraft_crashes) if fixed else null,
+		"physics_backend": str(a.get("physics_backend", "unknown"))}, now)
 
 
 ## Number the event, keep batches context-stable and seal when full. `event` arrives without its seq.

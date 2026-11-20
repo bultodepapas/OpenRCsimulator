@@ -207,6 +207,13 @@ class Pool:
                          'capabilities': ['headless'], 'engine': current['engine']}
                 if external:
                     value['busy_reason'] = 'an unmanaged simulator is running on this desktop'
+                # Typed cause for agents (TQ-05-F1.1); first match wins.
+                value['busy_code'] = next((code for code, active in (
+                    ('CONDITION_' + str(current['condition']), current['condition'] != 'READY'),
+                    ('HUMAN_RESERVATION', bool(current['reservation'])),
+                    ('EXTERNAL_SIMULATOR', external),
+                    ('RUNNING_QUEUE_WORK', bool(current['claims'])),
+                    ('QUEUED_LOCAL_WORK', type(queued) is int and queued > 0)) if active), None)
             else:
                 remote = self.remote(host, 'probe', {'engine_path': host['engine']})
                 capacity, admission = remote['capacity'], remote['admission']
@@ -217,7 +224,10 @@ class Pool:
                          'free_disk_bytes': capacity['free_bytes'],
                          'free_memory_bytes': capacity['free_memory_bytes'],
                          'cores': capacity['cpu_count'], 'load': load[0] if isinstance(load, list) else (load or 0),
-                         'capabilities': remote['capabilities'], 'engine': remote['engine']}
+                         'capabilities': remote['capabilities'], 'engine': remote['engine'],
+                         'busy_code': ('QUARANTINED' if admission['quarantined'] else
+                                       'RUNNING_POOL_JOB' if admission['busy'] else
+                                       'ENROLLED_HOST' if admission['enrolled'] else None)}
             if not host.get('local') and value['engine'].get('sha256') != host.get('engine_sha256'):
                 raise ValueError('Remote engine differs from the configured verified pin')
             value.update(id=host['id'], local=host.get('local', False))
@@ -274,6 +284,7 @@ class Pool:
             recent = sorted(finished.get(observation['id'], []), reverse=True)[:self.CIRCUIT_FAILURES]
             if len(recent) == self.CIRCUIT_FAILURES and all(outcome == 'INFRA_FAILED' for _, outcome, _ in recent):
                 observation['busy'] = True
+                observation['busy_code'] = 'CIRCUIT_OPEN'
                 observation['busy_reason'] = (f'CIRCUIT_OPEN: last {self.CIRCUIT_FAILURES} attempts of this source ended '
                                               f'INFRA_FAILED ({", ".join(stem[:8] for _, _, stem in recent)}); inspect them')
         return observations
@@ -306,16 +317,37 @@ class Pool:
             if observation['id'] in reserved:
                 observation['busy'] = True
                 observation['busy_reason'] = reserved[observation['id']]
+                observation['busy_code'] = 'RESERVED_BY_RECEIPT'
             if unreadable:
                 observation['unreadable_receipts'] = sorted(unreadable)[:10]
         return observations
 
+    SNAPSHOT_ATTEMPTS = 4
+    SNAPSHOT_BACKOFF_SECONDS = 2.0
+
     def snapshot(self, source):
+        """Freeze ``source``; retry a capture that saw files change (TQ-05-F0.2).
+
+        Several agents edit the shared checkout, so "changed during snapshot" is
+        routine. Each retry uses a fresh destination. Only this call's own
+        incomplete destination is removed; other failures keep theirs for
+        inspection and are raised at once.
+        """
         parent = self.root / 'snapshots'
         parent.mkdir(exist_ok=True)
-        target = parent / uuid.uuid4().hex
-        capture(Path(source).resolve(), target, include_imports=False)
-        return target
+        for attempt in range(1, self.SNAPSHOT_ATTEMPTS + 1):
+            target = parent / uuid.uuid4().hex
+            try:
+                capture(Path(source).resolve(), target, include_imports=False)
+                return target
+            except ValueError as error:
+                transient = 'changed during snapshot' in str(error) or 'disappeared during snapshot' in str(error)
+                if not transient or attempt == self.SNAPSHOT_ATTEMPTS:
+                    raise
+                from tools.testqueue.local_gc import safe_remove_tree
+                if target.exists():
+                    safe_remove_tree(target)
+                time.sleep(self.SNAPSHOT_BACKOFF_SECONDS * attempt)
 
     def _prepare_archive(self, snapshot, manifest):
         """Publish a verified archive; discard only this call's failed build."""

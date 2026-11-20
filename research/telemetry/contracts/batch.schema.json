@@ -12,10 +12,17 @@
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "enum": [
+        1,
+        2
+      ]
     },
     "notice_version": {
-      "const": "2026-11-18"
+      "type": "string",
+      "enum": [
+        "2026-11-18",
+        "2026-11-20"
+      ]
     },
     "session_id": {
       "type": "string",
@@ -519,6 +526,18 @@
                 ],
                 "minimum": 0,
                 "maximum": 1000
+              },
+              "physics_backend": {
+                "type": "string",
+                "enum": [
+                  "native",
+                  "reference_selected",
+                  "reference_domain",
+                  "reference_stale",
+                  "reference_missing",
+                  "not_applicable",
+                  "unknown"
+                ]
               }
             },
             "allOf": [
@@ -609,7 +628,66 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": 2
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "notice_version": {
+            "const": "2026-11-20"
+          },
+          "events": {
+            "items": {
+              "if": {
+                "properties": {
+                  "name": {
+                    "const": "activity_summary"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "physics_backend"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "notice_version": {
+            "const": "2026-11-18"
+          },
+          "events": {
+            "items": {
+              "if": {
+                "properties": {
+                  "name": {
+                    "const": "activity_summary"
+                  }
+                }
+              },
+              "then": {
+                "not": {
+                  "required": [
+                    "physics_backend"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:openrc:telemetry:batch:1",
-  "title": "OpenRC proposed telemetry batch v1"
+  "$id": "urn:openrc:telemetry:batch:2",
+  "title": "OpenRC telemetry batch v2 (accepts v1)"
 }

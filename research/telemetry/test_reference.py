@@ -138,7 +138,7 @@ class PayloadTests(unittest.TestCase):
         self.assertNotIn("PRIVATE-CANARY", str(raised.exception))
 
     def test_unknown_schema_notice_and_missing_fields(self):
-        for key, value in [("schema_version", 2), ("notice_version", "future")]:
+        for key, value in [("schema_version", 3), ("notice_version", "future")]:
             candidate = deepcopy(self.payload)
             candidate[key] = value
             with self.assertRaises(ContractError):
@@ -146,6 +146,39 @@ class PayloadTests(unittest.TestCase):
         del self.payload["context"]
         with self.assertRaises(ContractError):
             validate_body(encode(self.payload))
+
+    def test_schema_and_notice_versions_pair(self):
+        # v0.3.0 builds keep sending v1 under the 2026-11-18 notice; a mixed pair is never accepted.
+        v1 = dict(self.payload, schema_version=1, notice_version="2026-11-18")
+        self.assertEqual(validate_body(encode(v1)), v1)
+        for version, notice in [(1, "2026-11-20"), (2, "2026-11-18")]:
+            with self.subTest(version=version, notice=notice), self.assertRaises(ContractError):
+                validate_body(encode(dict(self.payload, schema_version=version, notice_version=notice)))
+
+    def test_physics_backend_only_in_v2_activity(self):
+        activity = {
+            "name": "activity_summary", "seq": 1, "vehicle_id": "xcell-60-research",
+            "active_seconds": 60, "simulated_seconds": 60, "outcome": "returned_home",
+            "complete_observation": True, "classification": "unsupported",
+            "takeoffs": None, "landings": None, "aircraft_crashes": None,
+        }
+        for backend in ["native", "reference_selected", "reference_domain", "reference_stale",
+                        "reference_missing", "not_applicable", "unknown"]:
+            self.payload["events"] = [dict(activity, physics_backend=backend)]
+            validate_body(encode(self.payload))
+        for bad in [None, "", "gdscript_reference", "mirrored source differs: app/sim/simulation.gd"]:
+            self.payload["events"] = [dict(activity, physics_backend=bad)]
+            with self.subTest(bad=bad), self.assertRaises(ContractError):
+                validate_body(encode(self.payload))
+        self.payload["events"] = [dict(activity)]
+        with self.assertRaises(ContractError):
+            validate_body(encode(self.payload))  # v2 requires it
+        v1 = dict(self.payload, schema_version=1, notice_version="2026-11-18")
+        v1["events"] = [dict(activity)]
+        validate_body(encode(v1))
+        v1["events"] = [dict(activity, physics_backend="native")]
+        with self.assertRaises(ContractError):
+            validate_body(encode(v1))  # v1 never carries it
 
     def test_duplicate_sequences_atomic_rejection(self):
         self.payload["events"].append(deepcopy(self.payload["events"][0]))
@@ -197,7 +230,7 @@ class PayloadTests(unittest.TestCase):
             "name": "activity_summary", "seq": 1, "vehicle_id": "rc-blimp-5m",
             "active_seconds": 60, "simulated_seconds": 60, "outcome": "returned_home",
             "complete_observation": True, "classification": "unsupported",
-            "takeoffs": None, "landings": None, "aircraft_crashes": None,
+            "takeoffs": None, "landings": None, "aircraft_crashes": None, "physics_backend": "not_applicable",
         }]
         validate_body(encode(self.payload))
         self.payload["events"][0]["landings"] = 0
@@ -213,6 +246,7 @@ class PayloadTests(unittest.TestCase):
             "name": "activity_summary", "seq": 1, "active_seconds": 60,
             "simulated_seconds": 60, "outcome": "returned_home", "complete_observation": True,
             "classification": "accepted_fixed_wing", "takeoffs": 1, "landings": 1, "aircraft_crashes": 0,
+            "physics_backend": "native",
         }
         for vehicle in ["custom", "unknown", "xcell-60-research", "openrc-fpv5-x1",
                         "rc-blimp-5m", "mt8-bisonte", "monster-car-2"]:

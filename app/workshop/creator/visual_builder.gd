@@ -292,6 +292,7 @@ static func _glb_scene(source: InspectedSource, map_nodes: bool) -> Dictionary:
 		scene.free()
 		return R.fail(R.BUILD_INVALID, "The GLB model contains an unsupported element (%s).", "source", "import", [unexpected])
 	scene.name = "glb_scene"
+	_filter_textures(scene)
 	var nodes := {}
 	if map_nodes:
 		var mapped: Dictionary = _map_nodes(source, scene as Node3D, state)
@@ -300,6 +301,26 @@ static func _glb_scene(source: InspectedSource, map_nodes: bool) -> Dictionary:
 			return mapped
 		nodes = mapped.value
 	return R.ok({content = scene, nodes = nodes})
+
+
+## Imported liveries use mipmapped anisotropic filtering, as stock paint does, so decals and panel lines
+## stay sharp at grazing chase-camera angles instead of using the importer default. Presentation only.
+static func _filter_textures(scene: Node) -> void:
+	var pending: Array[Node] = [scene]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		var instance := node as MeshInstance3D
+		if instance != null and instance.mesh != null:
+			for surface: int in instance.mesh.get_surface_count():
+				var material := instance.mesh.surface_get_material(surface) as BaseMaterial3D
+				if material != null and material.albedo_texture != null:
+					material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+					var image := material.albedo_texture.get_image()
+					if image != null and not image.has_mipmaps() and not image.is_compressed():
+						image.generate_mipmaps()
+						material.albedo_texture = ImageTexture.create_from_image(image)
+		for child: Node in node.get_children():
+			pending.append(child)
 
 
 ## Returns the first class outside the admitted set, or "" when the generated scene is plain.

@@ -39,8 +39,16 @@ func _initialize() -> void:
 func _schema_parity(schema: Dictionary) -> void:
 	var properties: Dictionary = schema["properties"]
 	var build: Dictionary = properties["build"]["properties"]
-	_check("schema and notice versions match", properties["schema_version"]["const"] == Contract.SCHEMA_VERSION
-		and properties["notice_version"]["const"] == Contract.NOTICE_VERSION and build["engine_minor"]["const"] == Contract.ENGINE_MINOR)
+	# The receiver accepts v1 (older releases) and the current version; the client sends only the current one.
+	var versions: Array = properties["schema_version"]["enum"]
+	var current: Dictionary = schema["allOf"][0]
+	_check("schema and notice versions match", versions.max() == Contract.SCHEMA_VERSION
+		and int(current["if"]["properties"]["schema_version"]["const"]) == Contract.SCHEMA_VERSION
+		and current["then"]["properties"]["notice_version"]["const"] == Contract.NOTICE_VERSION
+		and Contract.NOTICE_VERSION in properties["notice_version"]["enum"]
+		and build["engine_minor"]["const"] == Contract.ENGINE_MINOR, str(versions))
+	_check("the current version requires physics_backend in activity summaries",
+		current["then"]["properties"]["events"]["items"]["then"]["required"] == ["physics_backend"])
 	var pattern := str(build["release_id"]["pattern"])
 	_check("release pattern is the schema pattern", pattern == Contract.RELEASE_PATTERN, pattern)
 	var context: Dictionary = properties["context"]["properties"]
@@ -55,6 +63,7 @@ func _schema_parity(schema: Dictionary) -> void:
 		and vehicles.slice(0, 3) == ["none", "custom", "unknown"], str(vehicles))
 	_check("performance keys match", Array(performance.keys()) == Array(Contract.PERFORMANCE_KEYS))
 	_check("activity keys match", Array(activity.keys()) == Array(Contract.ACTIVITY_KEYS))
+	_check("physics backends match", Array(activity["physics_backend"]["enum"]) == Array(Contract.PHYSICS_BACKENDS))
 	var accepted: Array = events[2]["allOf"][0]["else"]["properties"]["vehicle_id"]["enum"]
 	_check("fixed-wing classifier list matches", accepted == Array(Contract.FIXED_WING_VEHICLES))
 	_check("error categories match", Array(events[3]["properties"]["category"]["enum"]) == Array(Contract.ERROR_CATEGORIES))
@@ -75,7 +84,7 @@ func _golden(example: Dictionary) -> void:
 	for i: int in 1800:
 		window.record(16667 if i < 1200 else 16666, 1)
 	var event := window.event(1, "flight", Contract.vehicle_id("f4u-corsair-250"), "steady", true)
-	var batch := {"schema_version": 1, "notice_version": Contract.NOTICE_VERSION,
+	var batch := {"schema_version": Contract.SCHEMA_VERSION, "notice_version": Contract.NOTICE_VERSION,
 		"session_id": "a".repeat(32), "batch_id": "b".repeat(32),
 		"build": {"release_id": "v0.2.7", "channel": "stable", "engine_minor": "4.8"},
 		"context": Hardware.context({"os": "Windows", "architecture": "x86_64", "cpu": "Intel(R) Core(TM) i7-9700K",
@@ -111,6 +120,10 @@ func _rejections() -> void:
 		"active seconds over the slice": func(b: Dictionary) -> void: b.events[2].active_seconds = 1801,
 		"unknown error category": func(b: Dictionary) -> void: b.events[3].category = "segfault",
 		"none vehicle in an activity": func(b: Dictionary) -> void: b.events[2].vehicle_id = "none",
+		"activity without physics_backend": func(b: Dictionary) -> void: b.events[2].erase("physics_backend"),
+		"refusal text as physics_backend": func(b: Dictionary) -> void:
+			b.events[2].physics_backend = "mirrored source differs: app/sim/simulation.gd",
+		"v1 batch from the client": func(b: Dictionary) -> void: b.schema_version = 1,
 	}
 	for label: String in cases:
 		var candidate := base.duplicate(true)
@@ -220,7 +233,7 @@ func _valid() -> Dictionary:
 	var window := FrameWindow.new()
 	for i: int in 1800:
 		window.record(16667 if i < 1200 else 16666, 1)
-	return {"schema_version": 1, "notice_version": Contract.NOTICE_VERSION, "session_id": "a".repeat(32),
+	return {"schema_version": Contract.SCHEMA_VERSION, "notice_version": Contract.NOTICE_VERSION, "session_id": "a".repeat(32),
 		"batch_id": "b".repeat(32), "build": {"release_id": "v0.2.8", "channel": "stable", "engine_minor": "4.8"},
 		"context": Hardware.context({"os": "Linux", "architecture": "x86_64", "cpu": "AMD Ryzen 7", "threads": 16,
 			"memory_bytes": 34359738368, "gpu": "AMD Radeon RX 7800", "renderer": "forward_plus", "driver": "vulkan",
@@ -228,7 +241,8 @@ func _valid() -> Dictionary:
 		"events": [Contract.session_started(1), window.event(2, "flight", "p51d-mustang-120", "steady", true),
 			{"name": "activity_summary", "seq": 3, "vehicle_id": "p51d-mustang-120", "active_seconds": 600,
 				"simulated_seconds": 590, "outcome": "returned_home", "complete_observation": true,
-				"classification": "accepted_fixed_wing", "takeoffs": 2, "landings": 1, "aircraft_crashes": 1},
+				"classification": "accepted_fixed_wing", "takeoffs": 2, "landings": 1, "aircraft_crashes": 1,
+				"physics_backend": "native"},
 			Contract.error_count(4, "asset_load_failed", 2)]}
 
 

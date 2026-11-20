@@ -25,6 +25,12 @@ const _MAGIC := 0x46546C67
 const _CHUNK_JSON := 0x4E4F534A
 const _CHUNK_BIN := 0x004E4942
 const _DEFAULT_COLOR := 0.8
+## Untextured glass: tinted, smooth and translucent. Stock glass textures are almost clear (alpha ~0.1),
+## which reads as missing in a sunlit scene, so translucency keeps a visible minimum.
+const _GLASS_COLOR := [0.12, 0.15, 0.18, 0.45]
+const _GLASS_ROUGHNESS := 0.08
+const _GLASS_MIN_ALPHA := 0.3
+const _PART_HINT := "openrc-creator-part-hint-v1"
 
 
 ## Builds a GLB from `geo` (the value of `geo.gd` `parse`) and an optional decoded texture (the value of
@@ -34,12 +40,18 @@ const _DEFAULT_COLOR := 0.8
 ## `texture` may instead map lower-case GEO texture names to decoded textures: each material then uses
 ## its own image, and materials whose texture is absent keep their diffuse colour. `receipt` fields are
 ## merged into `asset.extras.openrc_phoenix` (the format and `physics_imported = false` always win).
-static func build(geo: Dictionary, texture := {}, scale := 1.0, receipt := {}) -> Dictionary:
+##
+## `articulation` lists rigid moving groups `{role, nodes: [GEO node names], origin: [x, y, z] GEO units,
+## hinge: [x, y, z] (direction; empty for a propeller), axis: "x"|"z", sign}`. Each group becomes a pivot
+## node at `origin` whose local `axis` is the hinge (or the forward axis for a propeller), with the
+## member meshes expressed in that frame so the neutral pose is unchanged. `value.pivots` returns
+## `{role, node, axis, sign}` per built group. Groups are skipped when meshes are merged.
+static func build(geo: Dictionary, texture := {}, scale := 1.0, receipt := {}, articulation: Array = []) -> Dictionary:
 	if not (scale > 0.0 and scale <= MAX_SCALE):
 		return R.fail(R.FIELD_INVALID, "The model scale must be greater than zero and at most %s.", "scale", STEP,
 			[str(MAX_SCALE)])
 	var writer := Writer.new()
-	return writer.run(geo, texture, scale, receipt)
+	return writer.run(geo, texture, scale, receipt, articulation)
 
 
 class Writer extends RefCounted:
@@ -50,7 +62,7 @@ class Writer extends RefCounted:
 	var bin := PackedByteArray()
 	var error := {}
 
-	func run(source: Dictionary, texture: Dictionary, factor: float, receipt: Dictionary) -> Dictionary:
+	func run(source: Dictionary, texture: Dictionary, factor: float, receipt: Dictionary, articulation: Array) -> Dictionary:
 		geo = source
 		scale = factor
 		vertices = source.vertex_data
@@ -74,6 +86,8 @@ class Writer extends RefCounted:
 		for key: String in by_name:
 			if image_index.size() >= Limits.GLB_IMAGES:
 				break
+			if bool(by_name[key].get("uniform", false)):
+				continue  # A small alpha texture (glass) becomes a flat translucent colour instead.
 			var png: PackedByteArray = (by_name[key].image as Image).save_png_to_buffer()
 			if png.is_empty() or png.size() > Limits.PNG_BYTES:
 				return R.fail(R.SOURCE_LIMIT, "The converted texture is empty or larger than %s MiB.", "source", STEP,
@@ -90,12 +104,31 @@ class Writer extends RefCounted:
 			image_index[key] = gltf.textures.size() - 1
 		for material: Dictionary in geo.materials:
 			var pbr := {metallicFactor = 0.0, roughnessFactor = 0.6}
+			var entry := {name = material.name, pbrMetallicRoughness = pbr, doubleSided = false}
+			var key := str(material.texture).to_lower() if material.texture != null else ""
+			var decoded: Dictionary = by_name.get("", by_name.get(key, {})) if material.texture != null else {}
 			var slot := -1
 			if material.texture != null:
-				slot = int(image_index.get("", image_index.get(str(material.texture).to_lower(), -1)))
+				slot = int(image_index.get("", image_index.get(key, -1)))
 			if slot >= 0:
 				pbr.baseColorFactor = [1.0, 1.0, 1.0, 1.0]
 				pbr.baseColorTexture = {index = slot}
+				if bool(decoded.get("has_alpha", false)):
+					entry.alphaMode = "BLEND"
+			elif bool(decoded.get("uniform", false)):
+				var mean: Array = decoded.mean
+				if float(mean[3]) < _GLASS_MIN_ALPHA:
+					pbr.baseColorFactor = _GLASS_COLOR.duplicate()  # Nearly clear glass: a visible tinted canopy.
+				else:
+					pbr.baseColorFactor = [clampf(mean[0], 0.0, 1.0), clampf(mean[1], 0.0, 1.0), clampf(mean[2], 0.0, 1.0),
+						clampf(float(mean[3]), 0.0, 1.0)]
+				if float(pbr.baseColorFactor[3]) < 0.98:
+					entry.alphaMode = "BLEND"
+					pbr.roughnessFactor = _GLASS_ROUGHNESS
+			elif _is_glass(material):
+				pbr.baseColorFactor = _GLASS_COLOR.duplicate()
+				pbr.roughnessFactor = _GLASS_ROUGHNESS
+				entry.alphaMode = "BLEND"
 			else:
 				var color: Array = []
 				for channel: int in 3:
@@ -103,7 +136,7 @@ class Writer extends RefCounted:
 					color.append(clampf(value, 0.0, 1.0) if is_finite(value) else _DEFAULT_COLOR)
 				color.append(1.0)
 				pbr.baseColorFactor = color
-			gltf.materials.append({name = material.name, pbrMetallicRoughness = pbr, doubleSided = false})
+			gltf.materials.append(entry)
 		var visual: Array = []
 		var primitive_total := 0
 		for node: Dictionary in geo.nodes:
@@ -142,16 +175,54 @@ class Writer extends RefCounted:
 				if made < 0:
 					return error
 				triangles += made
-		else:
+		var pivots: Array = []
+		if merged and not articulation.is_empty():
+			notes.append(R.diagnostic(R.SOURCE_LIMIT, "Moving parts were not prepared because the model's parts were merged.",
+				"source", STEP, [], R.SEVERITY_WARNING))
+		if not merged:
+			var by_name := {}
 			for entry: Dictionary in visual:
-				var node: Dictionary = entry.node
-				var parts: Array = []
-				for sub: Dictionary in entry.ranges:
-					parts.append({material = int(sub.material), ranges = [sub]})
-				var made := _mesh(str(node.name), parts, {index = node.index, role = node.role})
+				by_name[str(entry.node.name)] = entry
+			# Each visual node joins at most one moving group; the rest stay static scene roots.
+			var claimed := {}
+			var groups: Array = []
+			for group: Dictionary in articulation:
+				var members: Array = []
+				for name: Variant in group.get("nodes", []):
+					if by_name.has(str(name)) and not claimed.has(str(name)) and not str(name) in members:
+						members.append(str(name))
+				var frame := _frame(group)
+				if members.is_empty() or frame.is_empty():
+					continue
+				for name: String in members:
+					claimed[name] = true
+				groups.append({group = group, members = members, frame = frame})
+			for entry: Dictionary in visual:
+				if claimed.has(str(entry.node.name)):
+					continue
+				var made := _node_mesh(entry, {}, true)
 				if made < 0:
 					return error
 				triangles += made
+			for built: Dictionary in groups:
+				var children: Array = []
+				for name: String in built.members:
+					var made := _node_mesh(by_name[name], built.frame, false)
+					if made < 0:
+						return error
+					triangles += made
+					children.append(gltf.nodes.size() - 1)
+				var axis := str(built.group.get("axis", "x"))
+				var x: Array = built.frame.axes[0]
+				var y: Array = built.frame.axes[1]
+				var z: Array = built.frame.axes[2]
+				var o: Array = built.frame.origin
+				gltf.nodes.append({name = "pivot_%s_%d" % [str(built.group.role), pivots.size()],
+					matrix = [x[0], x[1], x[2], 0.0, y[0], y[1], y[2], 0.0, z[0], z[1], z[2], 0.0, o[0], o[1], o[2], 1.0],
+					children = children, extras = {openrc_creator_part = {format = _PART_HINT, axis = axis}}})
+				gltf.scenes[0].nodes.append(gltf.nodes.size() - 1)
+				pivots.append({role = str(built.group.role), node = gltf.nodes.size() - 1, axis = axis,
+					sign = 1 if int(built.group.get("sign", 1)) >= 0 else -1})
 		_align()
 		gltf.buffers = [{byteLength = bin.size()}]
 		var json := JSON.stringify(gltf, "", true, true).to_utf8_buffer()
@@ -176,7 +247,36 @@ class Writer extends RefCounted:
 		out.append_array(chunk)
 		out.append_array(bin)
 		return R.ok({bytes = out, merged = merged, meshes = gltf.meshes.size(), primitives = _primitive_count(),
-			triangles = triangles, visual_nodes = visual.size()}, notes)
+			triangles = triangles, visual_nodes = visual.size(), pivots = pivots}, notes)
+
+	## Orthonormal pivot frame for a group: X along the hinge (Y/Z completed right-handed), or the
+	## model axes for a propeller. `{origin (metres), axes: [x, y, z]}`; empty when degenerate.
+	func _frame(group: Dictionary) -> Dictionary:
+		var origin: Variant = group.get("origin")
+		if not origin is Array or (origin as Array).size() != 3:
+			return {}
+		var o := [float(origin[0]) * scale, float(origin[1]) * scale, float(origin[2]) * scale]
+		for value: float in o:
+			if not is_finite(value):
+				return {}
+		var hinge: Variant = group.get("hinge", [])
+		if not hinge is Array or (hinge as Array).is_empty():
+			return {origin = o, axes = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]}
+		var d := Vector3(float(hinge[0]), float(hinge[1]), float(hinge[2]))
+		if not d.is_finite() or d.length() < 1.0e-6:
+			return {}
+		var x := d.normalized()
+		var helper := Vector3.UP if absf(x.dot(Vector3.UP)) < 0.9 else Vector3.BACK
+		var z := x.cross(helper).normalized()
+		var y := z.cross(x)
+		return {origin = o, axes = [[x.x, x.y, x.z], [y.x, y.y, y.z], [z.x, z.y, z.z]]}
+
+	func _node_mesh(entry: Dictionary, frame: Dictionary, root: bool) -> int:
+		var node: Dictionary = entry.node
+		var parts: Array = []
+		for sub: Dictionary in entry.ranges:
+			parts.append({material = int(sub.material), ranges = [sub]})
+		return _mesh(str(node.name), parts, {index = node.index, role = node.role}, frame, root)
 
 	func _primitive_count() -> int:
 		var total := 0
@@ -205,45 +305,68 @@ class Writer extends RefCounted:
 
 	## Appends one mesh node holding one primitive per part `{material, ranges}`; a part with several ranges
 	## joins them into one primitive. Returns the triangle count, or -1 with `error` set.
-	func _mesh(label: String, parts: Array, extras: Dictionary) -> int:
+	func _mesh(label: String, parts: Array, extras: Dictionary, frame := {}, root := true) -> int:
 		var primitives: Array = []
 		var triangles := 0
+		var axes: Array = frame.get("axes", [])
+		var origin: Array = frame.get("origin", [0.0, 0.0, 0.0])
 		for part: Dictionary in parts:
-			var count := 0
+			var corners := 0
 			for sub: Dictionary in part.ranges:
-				count += int(sub.end) - int(sub.first)
+				corners += int(sub.end) - int(sub.first)
 			var position := PackedFloat32Array()
 			var normal := PackedFloat32Array()
 			var uv := PackedFloat32Array()
-			position.resize(count * 3)
-			normal.resize(count * 3)
-			uv.resize(count * 2)
+			var indices := PackedInt32Array()
+			indices.resize(corners)
 			var low := [INF, INF, INF]
 			var high := [-INF, -INF, -INF]
 			var probe := 0.0
 			var out := 0
+			var corner := 0
+			# Identical corners (position, normal, UV) are welded: GEO stores one unindexed triangle list.
+			var welded := {}
 			for sub: Dictionary in part.ranges:
 				for index: int in range(int(sub.first), int(sub.end)):
 					var base := index * Geo.VERTEX_STRIDE_FLOATS
-					var x: float = vertices[base] * scale
-					var y: float = vertices[base + 1] * scale
-					var z: float = vertices[base + 2] * scale
-					position[out * 3] = x
-					position[out * 3 + 1] = y
-					position[out * 3 + 2] = z
-					probe += (x + y + z) * 0.0
+					var x: float = vertices[base] * scale - float(origin[0])
+					var y: float = vertices[base + 1] * scale - float(origin[1])
+					var z: float = vertices[base + 2] * scale - float(origin[2])
 					var nx: float = vertices[base + 3]
 					var ny: float = vertices[base + 4]
 					var nz: float = vertices[base + 5]
+					if not axes.is_empty():
+						var ax: Array = axes[0]
+						var ay: Array = axes[1]
+						var az: Array = axes[2]
+						var px := x * ax[0] + y * ax[1] + z * ax[2]
+						var py := x * ay[0] + y * ay[1] + z * ay[2]
+						var pz := x * az[0] + y * az[1] + z * az[2]
+						var qx := nx * ax[0] + ny * ax[1] + nz * ax[2]
+						var qy := nx * ay[0] + ny * ay[1] + nz * ay[2]
+						var qz := nx * az[0] + ny * az[1] + nz * az[2]
+						x = px
+						y = py
+						z = pz
+						nx = qx
+						ny = qy
+						nz = qz
+					probe += (x + y + z) * 0.0
 					var length := sqrt(nx * nx + ny * ny + nz * nz)
 					if length == 0.0:
 						length = 1.0
-					normal[out * 3] = nx / length
-					normal[out * 3 + 1] = ny / length
-					normal[out * 3 + 2] = nz / length
-					uv[out * 2] = vertices[base + 6]
-					uv[out * 2 + 1] = vertices[base + 7]
-					out += 1
+					var key := [x, y, z, nx, ny, nz, vertices[base + 6], vertices[base + 7]]
+					var found: Variant = welded.get(key)
+					if found == null:
+						position.append_array(PackedFloat32Array([x, y, z]))
+						normal.append_array(PackedFloat32Array([nx / length, ny / length, nz / length]))
+						uv.append_array(PackedFloat32Array([vertices[base + 6], vertices[base + 7]]))
+						welded[key] = out
+						found = out
+						out += 1
+					indices[corner] = int(found)
+					corner += 1
+			var count := out
 			# Float32 values read back, so the declared bounds match the stored data exactly.
 			for index: int in count:
 				for axis: int in 3:
@@ -256,21 +379,18 @@ class Writer extends RefCounted:
 					and absf(high[0]) < 3.0e38 and absf(high[1]) < 3.0e38 and absf(high[2]) < 3.0e38):
 				error = R.fail(R.SOURCE_INVALID, "The scaled Phoenix geometry is not representable.", "scale", STEP)
 				return -1
-			var indices := PackedInt32Array()
-			indices.resize(count)
-			for index: int in count:
-				indices[index] = index
 			var attributes := {
 				POSITION = _accessor(position.to_byte_array(), _FLOAT, count, "VEC3", _ARRAY_BUFFER, low, high),
 				NORMAL = _accessor(normal.to_byte_array(), _FLOAT, count, "VEC3", _ARRAY_BUFFER),
 				TEXCOORD_0 = _accessor(uv.to_byte_array(), _FLOAT, count, "VEC2", _ARRAY_BUFFER)}
-			var primitive := {attributes = attributes, indices = _accessor(indices.to_byte_array(), _UNSIGNED_INT, count,
+			var primitive := {attributes = attributes, indices = _accessor(indices.to_byte_array(), _UNSIGNED_INT, corners,
 				"SCALAR", _ELEMENT_ARRAY_BUFFER), mode = 4}
 			if int(part.material) >= 0:
 				primitive.material = int(part.material)
 			primitives.append(primitive)
-			triangles += count / 3
+			triangles += corners / 3
 		gltf.meshes.append({name = label, primitives = primitives})
 		gltf.nodes.append({name = label, mesh = gltf.meshes.size() - 1, extras = {openrc_phoenix_node = extras}})
-		gltf.scenes[0].nodes.append(gltf.nodes.size() - 1)
+		if root:
+			gltf.scenes[0].nodes.append(gltf.nodes.size() - 1)
 		return triangles
