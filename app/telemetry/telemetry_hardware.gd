@@ -103,18 +103,19 @@ static func driver(name: String) -> String:
 	return name if name in ["opengl3", "opengl3_es", "opengl3_angle", "metal", "vulkan", "d3d12"] else "unknown"
 
 
-## Exact 16:9 sizes only (the pilot rule): 1920x1080 is "1080p"; any other aspect ratio is "other".
+## TELEM-18: pixel-count bands named after their 16:9 reference, so 16:10 laptops, MacBook panels, ultrawides and
+## windowed sizes are classified instead of becoming "other" (still in the schema, no longer produced):
+## below1080p < 1.6 MP <= 1080p (1920x1080, 1920x1200, 2560x1080) < 2.9 MP <= 1440p (2560x1440, 2560x1600,
+## 3440x1440, 2880x1864) < 5.5 MP <= 2160p (3024x1964, 3456x2234, 3840x2160) < 10 MP <= above2160p.
 static func resolution_class(size: Vector2i) -> String:
 	if size.x <= 0 or size.y <= 0:
 		return "unknown"
-	if size.x * 9 != size.y * 16:
-		return "other"
-	if size.y < 1080: return "below1080p"
-	if size.y == 1080: return "1080p"
-	if size.y == 1440: return "1440p"
-	if size.y == 2160: return "2160p"
-	if size.y > 2160: return "above2160p"
-	return "other"
+	var pixels := size.x * size.y
+	if pixels < 1600000: return "below1080p"
+	if pixels < 2900000: return "1080p"
+	if pixels < 5500000: return "1440p"
+	if pixels < 10000000: return "2160p"
+	return "above2160p"
 
 
 static func vsync(mode: int) -> String:

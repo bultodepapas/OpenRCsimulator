@@ -1,0 +1,38 @@
+name: Telemetry receiver health
+
+# TELEM-21c: one light daily check that the public telemetry receiver answers. A failed scheduled run is the alert
+# (GitHub notifies by email). It reads the same repository variable that release exports pack, so it does nothing
+# until telemetry is configured. It never sends a batch and needs no secret. GitHub pauses scheduled workflows after
+# 60 days without repository activity; re-enable it from the Actions tab if that happens.
+on:
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  health:
+    name: Public /healthz answers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      ENDPOINT: ${{ vars.OPENRC_TELEMETRY_ENDPOINT }}
+    steps:
+      - name: Check the receiver
+        run: |
+          if [ -z "$ENDPOINT" ]; then
+            echo "OPENRC_TELEMETRY_ENDPOINT is not set: telemetry is not configured, nothing to check."
+            exit 0
+          fi
+          case "$ENDPOINT" in
+            https://*/v1/batches) ;;
+            *) echo "::error::OPENRC_TELEMETRY_ENDPOINT must be https://host/v1/batches"; exit 1 ;;
+          esac
+          health="${ENDPOINT%/v1/batches}/healthz"
+          body="$(curl --fail --silent --show-error --max-time 20 --retry 3 --retry-delay 30 --retry-all-errors "$health")"
+          if ! printf '%s' "$body" | jq -e '.status == "ok"' >/dev/null; then
+            echo "::error::unexpected /healthz answer"
+            exit 1
+          fi
+          echo "Receiver healthy: $health"

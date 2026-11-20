@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import os
 from pathlib import Path
+import re
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 DEFAULT_SCHEMA_DIR = (PACKAGE_DIR.parent / ".." / ".." / "research" / "telemetry" / "contracts").resolve()
@@ -30,6 +31,34 @@ def _float(env, name, default):
     if not value >= 0:
         raise SystemExit(f"{name} must be non-negative")
     return value
+
+
+RELEASE_PREFIX_RE = re.compile(r"^v[0-9]{1,3}\.([0-9]{1,3}\.)?\*$")
+RELEASE_TAG_RE = re.compile(r"^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(alpha|beta|rc)\.?[0-9]{1,3})?$")
+
+
+class ReleasePatterns(frozenset):
+    """Exact tags plus series prefixes such as `v0.3.*` (TELEM-20: a release cannot be lost because its exact tag
+    was not added before publishing). Membership is the only operation that honours prefixes."""
+
+    def __contains__(self, tag):
+        if frozenset.__contains__(self, tag):
+            return True
+        return isinstance(tag, str) and any(p.endswith("*") and tag.startswith(p[:-1]) for p in self)
+
+    def __or__(self, other):
+        return ReleasePatterns(frozenset.__or__(self, other))
+
+    def __ror__(self, other):  # frozenset() | ReleasePatterns(...) must keep prefix matching too
+        return ReleasePatterns(frozenset.__or__(self, other))
+
+
+def _releases(env, name):
+    values = [x.strip() for x in env.get(name, "").split(",") if x.strip()]
+    for value in values:
+        if not (RELEASE_TAG_RE.fullmatch(value) or RELEASE_PREFIX_RE.fullmatch(value)):
+            raise SystemExit(f"{name}: {value!r} is neither an exact release tag nor a vX.* / vX.Y.* prefix")
+    return ReleasePatterns(values)
 
 
 @dataclass(frozen=True)
@@ -69,8 +98,8 @@ class Config:
     @classmethod
     def from_env(cls, env=None):
         env = os.environ if env is None else env
-        releases = frozenset(x.strip() for x in env.get("OPENRC_TELEMETRY_RELEASES", "").split(",") if x.strip())
-        suspended = frozenset(x.strip() for x in env.get("OPENRC_TELEMETRY_SUSPEND_RELEASES", "").split(",") if x.strip())
+        releases = _releases(env, "OPENRC_TELEMETRY_RELEASES")
+        suspended = _releases(env, "OPENRC_TELEMETRY_SUSPEND_RELEASES")
         defaults = cls()
         interval = _int(env, "OPENRC_TELEMETRY_PURGE_INTERVAL_S", defaults.purge_interval_s)
         # serve purges interval + 60 s before 48 h; up to 1800 s that stays after the 47 h rollup deadline, so no

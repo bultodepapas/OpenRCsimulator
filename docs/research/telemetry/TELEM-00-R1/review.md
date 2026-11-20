@@ -70,7 +70,7 @@ Newer main `d407acd9da55dc49d6e1e0442a81f3b6d7657591` was source-reviewed for ar
 
 ### Handoff decision
 
-The result is prepared for senior review and merge as documentation, executable contracts and test infrastructure. It does not activate product telemetry. The [master plan](../../../plans/telemetry.md#merge-readiness-versus-activation) owns the first implementation PRs and pending activation decisions. Native Godot consent/persistence/rotation/sockets, real database transactions and erasure, authenticated/durable publication, all enabled locales and target-hardware performance remain qualification gates. No first-run production guarantee is inferred from this offline review.
+The result is prepared for senior review and merge as documentation, executable contracts and test infrastructure. It does not activate product telemetry. The [master plan](../../../plans/telemetry.md#activation-and-release-checklist) owns the first implementation PRs and pending activation decisions. Native Godot consent/persistence/rotation/sockets, real database transactions and erasure, authenticated/durable publication, all enabled locales and target-hardware performance remain qualification gates. No first-run production guarantee is inferred from this offline review.
 
 ## Main integration review
 
