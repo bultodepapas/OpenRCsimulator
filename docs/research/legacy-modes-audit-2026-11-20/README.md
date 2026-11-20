@@ -201,6 +201,18 @@ shot pays that cost. Warm Forward+ costs about 1.5–1.7× Compatibility, and Mo
 The renders were reviewed visually. Forward+ matches the GL field closely. On Mobile the HUD panel blends lighter,
 which is an A2 look item (2D under `use_hdr_2d`). The images are not retained in the repository.
 
+## 5. Follow-up work, 2026-11-20 (second request)
+
+| Item | Result |
+| --- | --- |
+| Vulkan captures in CI | The `vulkan-captures` job runs on lavapipe. The first dispatch exposed two problems: cold pipeline compilation needs more than the 60 s first-shot limit, and the Vulkan process hangs at quit after saving its capture. `capture.sh` now gives Vulkan +540 s and an `--exit-grace` of 20 s, so the runner stops a process that has already saved its evidence. Compatibility keeps the strict path. A clean CI pass is still pending (run 44783172957). |
+| Physics backend in telemetry | Done. Schema v2 adds `activity_summary.physics_backend`, under notice 2026-11-20 in 9 languages. The receiver on PRIMIS CT 404 runs release `0c6579085`: 133 tests pass, `check-release v0.3.0` returns ok, and v1 is still accepted. See [DECISIONS](../../DECISIONS.md#telemetry-schema-v2-reports-the-physics-backend). |
+| Native helicopter over lakes | Done on branch `heli-native-lake`, draft [PR #16](https://github.com/bultodepapas/OpenRCsimulator/pull/16). On Windows, all 18 gates and the negative control pass, the build installs, and the lake oracle and an end-to-end Club flight are identical to the reference. A 120 s Club flight takes 31.8 s of wall time native and 52.1 s on the reference. The merge waits for CI on Linux and macOS. |
+| Mobile on an integrated GPU | Measured on an Intel UHD 630 under Linux/Mesa: Compatibility is fastest, Mobile costs +21% GPU time and Forward+ +60%. [Evidence](../visual-quality-implementation/VQ-07/igpu-uhd630-2026-11-20/README.md). Windows Intel and an AMD iGPU remain open. |
+
+Side fix: commit 6a536bcb0 had changed `main.gd` without renewing the AI-companion behavior manifest, which failed
+every Godot unit shard. It was renewed in d0a5c65bd.
+
 ## Method
 
 - **Code read:** `app/project.godot`, `app/app_state/renderer_preference.gd`, `app/sim/native_stage.gd`,
