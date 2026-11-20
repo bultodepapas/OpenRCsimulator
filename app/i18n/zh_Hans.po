@@ -13556,3 +13556,15 @@ msgstr "未在此模型旁找到 Phoenix 翼型库，因此无法使用其自身
 
 msgid "Propeller and motor from the Phoenix model — estimated installation"
 msgstr "来自 Phoenix 模型的螺旋桨和电机 — 估算配置"
+
+msgid "Phoenix helicopters and multirotors are imported for their appearance only: OpenRC cannot fly them from their Phoenix data yet."
+msgstr "Phoenix 直升机和多旋翼仅导入外观：OpenRC 目前还无法用其 Phoenix 数据飞行。"
+
+msgid "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
+msgstr "此模型使用了超过 %s 张纹理；其中 %s 张未导入，这些部件保留纯色。"
+
+msgid "This model's Phoenix flight data was derived for another size. Use Set up for flight again."
+msgstr "此模型的 Phoenix 飞行数据是按另一尺寸推导的。请再次使用“设置以便飞行”。"
+
+msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
+msgstr "此草稿的 Phoenix 飞行数据来自更早版本的 OpenRC。请再次使用“设置以便飞行”重新推导。"

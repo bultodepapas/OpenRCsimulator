@@ -14501,3 +14501,15 @@ msgstr "Die Phoenix-Profilbibliothek wurde neben diesem Modell nicht gefunden, d
 
 msgid "Propeller and motor from the Phoenix model — estimated installation"
 msgstr "Propeller und Motor aus dem Phoenix-Modell — geschätzte Ausrüstung"
+
+msgid "Phoenix helicopters and multirotors are imported for their appearance only: OpenRC cannot fly them from their Phoenix data yet."
+msgstr "Phoenix-Hubschrauber und Multikopter werden nur mit ihrem Aussehen importiert: OpenRC kann sie noch nicht mit ihren Phoenix-Daten fliegen."
+
+msgid "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
+msgstr "Dieses Modell verwendet mehr als %s Texturen; %s davon wurden nicht importiert, daher behalten diese Teile ihre einfache Farbe."
+
+msgid "This model's Phoenix flight data was derived for another size. Use Set up for flight again."
+msgstr "Die Phoenix-Flugdaten dieses Modells wurden für eine andere Größe abgeleitet. Verwende erneut „Für den Flug einrichten“."
+
+msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
+msgstr "Die Phoenix-Flugdaten dieses Entwurfs stammen aus einer früheren OpenRC-Version. Verwende erneut „Für den Flug einrichten“, um sie abzuleiten."

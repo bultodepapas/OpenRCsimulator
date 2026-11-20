@@ -1090,17 +1090,28 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 		context = checked.value
 	var power_package: Variant = saved.get("power_package", POWER_PACKAGE)
 	var airframe_package: Variant = saved.get("airframe_package", AIRFRAME_PACKAGE)
-	# Phoenix-derived packages are re-derived from this source's own physics block, or refused.
-	var derived := typeof(power_package) == TYPE_STRING and typeof(airframe_package) == TYPE_STRING \
+	# Phoenix-derived packages are re-derived from this source's own physics block. A draft whose derivation
+	# no longer reproduces (an earlier OpenRC version) reopens on its base packages without its flight setup,
+	# and says so: the player runs Set up for flight again instead of losing the draft.
+	var derived_ids := typeof(power_package) == TYPE_STRING and typeof(airframe_package) == TYPE_STRING \
 		and PhoenixPhysics.is_derived(power_package) and PhoenixPhysics.is_derived(airframe_package) \
-		and Installation.provider(admitted) == "phoenix" \
+		and Installation.provider(admitted) == "phoenix"
+	var derived := derived_ids \
 		and PhoenixPhysics.restore(PhoenixSetup.creator_setup(admitted).get("physics", {}), airframe_package, power_package)
+	var reset_derivation := false
+	if derived_ids and not derived:
+		var base_power := str(PhoenixPhysics.parse_id(power_package).get("base", ""))
+		var base_airframe := str(PhoenixPhysics.parse_id(airframe_package).get("base", ""))
+		if base_power in POWER_PACKAGES and base_airframe in AIRFRAME_PACKAGES:
+			power_package = base_power
+			airframe_package = base_airframe
+			reset_derivation = true
 	if typeof(power_package) != TYPE_STRING or (power_package not in POWER_PACKAGES and not derived):
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	if typeof(airframe_package) != TYPE_STRING or (airframe_package not in AIRFRAME_PACKAGES and not derived):
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	var installation := {}
-	if saved.format == INSTALLATION_SNAPSHOT_FORMAT or (saved.format == SERVO_SNAPSHOT_FORMAT and saved.has("source_installation")):
+	if not reset_derivation and (saved.format == INSTALLATION_SNAPSHOT_FORMAT or (saved.format == SERVO_SNAPSHOT_FORMAT and saved.has("source_installation"))):
 		var checked := Installation.validate(saved.get("source_installation"),context,airframe_package,power_package)
 		if not checked.ok:
 			return checked
@@ -1178,6 +1189,8 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	_power_package = power_package
 	_airframe_package = airframe_package
 	_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
+	restore_notes = [R.diagnostic(R.SOURCE_UNSUPPORTED, PHOENIX_DERIVATION_RESET, "source_installation", "import", [],
+		R.SEVERITY_WARNING)] if reset_derivation else []
 	_placement = placed
 	_units = str(saved.get("units", "")) if Placement.UNITS.has(str(saved.get("units", ""))) else ""
 	_values = values
@@ -1459,11 +1472,33 @@ func issues() -> Array:
 
 
 ## Compiles the current definition. The result is cached for the current document revision.
+## Notes from the last `restore` (a Phoenix flight setup that must be run again), for the wizard to show.
+var restore_notes: Array = []
+
+const PHOENIX_RESIZED := "This model's Phoenix flight data was derived for another size. Use Set up for flight again."
+const PHOENIX_DERIVATION_RESET := "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
+## Relative scale change below which the derived packages still describe the flown model.
+const PHOENIX_SCALE_TOLERANCE := 1.0e-5
+
+
+## True when the derived Phoenix packages were made for another unit scale than the placement's.
+func phoenix_size_changed() -> bool:
+	if not PhoenixPhysics.is_derived(_power_package):
+		return false
+	var derived_scale := float(PhoenixPhysics.parse_id(_power_package).get("scale", NAN))
+	var scale := float(_placement.get("unit_scale", NAN))
+	# The id carries the scale with six decimals.
+	return not (is_finite(derived_scale) and is_finite(scale) and scale > 0.0) \
+		or absf(derived_scale - scale) > 1.0e-6 + PHOENIX_SCALE_TOLERANCE * scale
+
+
 func compile() -> Dictionary:
 	if _compiled_revision == revision:
 		return _compiled
 	if needs_source_installation():
 		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.blocked(_source),"source_installation","import")
+	elif phoenix_size_changed():
+		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY, PHOENIX_RESIZED, "source_installation", "import")
 	elif not _invalid.is_empty():
 		_compiled = R.fail(R.FIELD_INVALID, "Correct the highlighted values first.")
 	elif not _item_invalid.is_empty():

@@ -27,7 +27,8 @@ const DIHEDRAL_RANGE := [0.0, 8.0]
 const MAX_LAYOUT_FIELDS := 64
 const PHYSICS_FORMAT := "openrc-phoenix-physics-v1"
 ## Control throws of the estimated packages (degrees, both packages share them).
-const THROW_RANGES := {"controls/aileron_deg": [5.0, 30.0], "controls/elevator_deg": [5.0, 30.0], "controls/rudder_deg": [5.0, 35.0]}
+const THROW_RANGES := {"controls/aileron_deg": [5.0, 30.0], "controls/elevator_deg": [5.0, 30.0], "controls/rudder_deg": [5.0, 35.0],
+	"equipment/thrust_angles_deg/0": [-5.0, 5.0], "equipment/thrust_angles_deg/1": [-5.0, 5.0]}
 
 const NOT_PHOENIX := "Automatic setup is only available for converted Phoenix aeroplanes."
 const UNAVAILABLE := "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
@@ -74,7 +75,7 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 	for path: String in THROW_RANGES:
 		if layout.has(path):
 			var limited := clampf(float(layout[path]), float(THROW_RANGES[path][0]), float(THROW_RANGES[path][1]))
-			throws_fitted = throws_fitted or limited != float(layout[path])
+			throws_fitted = throws_fitted or (limited != float(layout[path]) and path.begins_with("controls/"))
 			layout[path] = limited
 	return R.ok({placement = placement, units = "" if scaled else "m", rule = RULE, estimated_datum = false,
 		half_span_m = half_span, source_span_m = span, flown_span_m = flown, scaled = scaled, owns_scale = true,
@@ -100,8 +101,8 @@ static func fit_planform(span: float, root: float, tip: float) -> Dictionary:
 		taper = taper, aspect = aspect}
 
 
-## The validated `creator_setup` of the admitted GLB's Phoenix receipt, or {} when absent or malformed.
-static func creator_setup(source: InspectedSource) -> Dictionary:
+## The admitted GLB's Phoenix receipt (`asset.extras.openrc_phoenix`, untrusted), or {} when absent.
+static func receipt(source: InspectedSource) -> Dictionary:
 	if source == null or not source.is_admitted() or source.format() != InspectedSource.FORMAT_GLB:
 		return {}
 	var bytes := source.source_bytes()
@@ -116,7 +117,12 @@ static func creator_setup(source: InspectedSource) -> Dictionary:
 	var extras: Variant = document.asset.get("extras")
 	if not extras is Dictionary or not extras.get("openrc_phoenix") is Dictionary:
 		return {}
-	var data: Variant = extras.openrc_phoenix.get("creator_setup")
+	return extras.openrc_phoenix
+
+
+## The validated `creator_setup` of the admitted GLB's Phoenix receipt, or {} when absent or malformed.
+static func creator_setup(source: InspectedSource) -> Dictionary:
+	var data: Variant = receipt(source).get("creator_setup")
 	if not data is Dictionary:
 		return {}
 	for key: String in ["half_span_m", "root_chord_m", "tip_chord_m", "dihedral_deg"]:

@@ -2,6 +2,7 @@ extends SceneTree
 ## Focused checks of the Phoenix script container, GEO, texture and GLB writer (AC-PX).
 ## Every fixture is built here from the documented layout: no third-party bytes.
 const R := preload("res://workshop/creator/result.gd")
+const Limits := preload("res://workshop/creator/limits.gd")
 const ScriptContainer := preload("res://workshop/creator/phoenix/script_container.gd")
 const Geo := preload("res://workshop/creator/phoenix/geo.gd")
 const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
@@ -34,6 +35,8 @@ func _initialize() -> void:
 	_physics()
 	_physics_propulsion()
 	_physics_untrusted()
+	_import_hardening()
+	_physics_tuning()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -185,11 +188,11 @@ func _geo_bytes(nodes: Array, material_count := 1, mutate := "") -> PackedByteAr
 	for index: int in material_count:
 		var record := _fixed("Mat%d" % index, 128)
 		record.resize(716)
-		record.encode_u32(128, 2 if (mutate == "flag" and index == 0) else (1 if index == 0 else 0))
-		if index == 0:
-			record.encode_u8(132 + 0, 0)
-			for at: int in "demo.bmp".length():
-				record[132 + at] = "demo.bmp".unicode_at(at)
+		record.encode_u32(128, 2 if (mutate == "flag" and index == 0) else (1 if index == 0 or mutate == "textures" else 0))
+		if index == 0 or mutate == "textures":
+			var texture_name := "t%d.bmp" % index if mutate == "textures" else "demo.bmp"
+			for at: int in texture_name.length():
+				record[132 + at] = texture_name.unicode_at(at)
 		record.encode_float(680, 0.25)
 		record.encode_float(684, 0.5)
 		record.encode_float(688, 0.75)
@@ -798,3 +801,170 @@ func _physics_untrusted() -> void:
 		var thrust := float(Packages.static_thrust(probe, 1.0).get("thrust_n", NAN))
 		var wanted := PhoenixPhysics.GLIDER_THRUST_SHARE * 3.0 * Packages.GRAVITY
 		check("the launch motor refers to the flying weight", absf(thrust - wanted) <= 0.05 * wanted)
+
+
+# --------------------------------------------------------------------------- import hardening (IAQ-03c)
+
+func _import_hardening() -> void:
+	var folder := OS.get_user_data_dir().path_join("phoenix_hardening_test")
+	DirAccess.make_dir_recursive_absolute(folder)
+	# More textured materials than the GLB admits: the rest keep their colour, and a note says how many.
+	var count := Limits.GLB_IMAGES + 2
+	_write(folder, "many.mod", _model_chunk())
+	_write(folder, "many.geo", _geo_bytes([{name = "wing", material = 0, triangles = 2}], count, "textures"))
+	for index: int in count:
+		_write(folder, "t%d.bmp" % index, _texture_bytes())
+	var many: Dictionary = Converter.convert(folder.path_join("many.mod"))
+	check("textures beyond the GLB limit are reported", many.ok and many.diagnostics.any(func(d: Dictionary) -> bool:
+		return d.message == Converter.TEXTURES_LIMITED and d.arguments == [str(Limits.GLB_IMAGES), "2"]))
+	if many.ok:
+		check("a model without a type keeps the appearance-only note", many.diagnostics.any(func(d: Dictionary) -> bool:
+			return d.message == Converter.APPEARANCE_ONLY) and not many.diagnostics.any(func(d: Dictionary) -> bool:
+			return d.message == Converter.ROTORCRAFT))
+		check("reopened Phoenix sources rebuild their notes", Converter.source_notes(many.value.source).any(
+			func(d: Dictionary) -> bool: return d.message == Converter.APPEARANCE_ONLY))
+	for name: String in DirAccess.get_files_at(folder):
+		DirAccess.remove_absolute(folder.path_join(name))
+	DirAccess.remove_absolute(folder)
+	# A copied installation whose folder names changed case still finds the shared textures.
+	var install := OS.get_user_data_dir().path_join("phoenix_case_test")
+	var model_dir := install.path_join("RESOURCES/Objects/demo")
+	var shared_dir := install.path_join("RESOURCES/Textures/AIRCRAFT")
+	DirAccess.make_dir_recursive_absolute(model_dir)
+	DirAccess.make_dir_recursive_absolute(shared_dir)
+	_write(model_dir, "demo.mod", _model_chunk())
+	_write(model_dir, "demo.geo", _geo_bytes([{name = "wing", material = 0, triangles = 2}]))
+	_write(shared_dir, "Demo.bmp", _texture_bytes())
+	var copied: Dictionary = Converter.convert(model_dir.path_join("demo.mod"))
+	check("shared textures are found in a copied installation with other folder case", copied.ok
+		and copied.value.receipt.textures.has("Demo.bmp"))
+	for dir: String in [shared_dir, model_dir]:
+		for name: String in DirAccess.get_files_at(dir):
+			DirAccess.remove_absolute(dir.path_join(name))
+	for dir: String in [shared_dir, install.path_join("RESOURCES/Textures"), model_dir, install.path_join("RESOURCES/Objects"),
+			install.path_join("RESOURCES"), install]:
+		DirAccess.remove_absolute(dir)
+	var geo: Dictionary = Geo.parse(_geo_bytes([{name = "wing", material = 0, triangles = 2}])).value
+	# A helicopter receipt: the rotorcraft note on import and on reopen, never the fixed-wing set-up note.
+	var heli := GlbWriter.build(geo, {}, 1.0, {model_type = "Helicopter", name = "Heli", span_m = 1.2, mass_kg = 3.1})
+	var heli_source: Variant = SourceImporter.inspect_bytes(heli.value.bytes, "heli.glb").value
+	var heli_notes := Converter.source_notes(heli_source)
+	check("Phoenix helicopters are told they import as appearance only", heli_notes.any(func(d: Dictionary) -> bool:
+		return d.message == Converter.ROTORCRAFT) and not heli_notes.any(func(d: Dictionary) -> bool:
+		return d.message == Converter.LAYOUT or d.message == Converter.APPEARANCE_ONLY))
+	check("the reopened summary comes from the receipt", heli_notes.any(func(d: Dictionary) -> bool:
+		return d.message == Converter.SUMMARY and d.arguments == ["Heli", "1.2", "3.1"]))
+	check("other sources get no Phoenix notes", Converter.source_notes(null).is_empty())
+	# An aeroplane with its own physics: a size change after set-up blocks flight until set-up runs again.
+	var model := _physics_model()
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var data := {datum = [0.0, 0.02, 0.03], half_span_m = 0.75, root_chord_m = 0.25, tip_chord_m = 0.2,
+		dihedral_deg = 3.0, propeller_found = true, pusher = false, biplane = false, physics = block,
+		layout = {"horizontal_tail/span": 0.5, "horizontal_tail/position/0": 0.45}}
+	var marked := GlbWriter.build(geo, {}, 1.0, {creator_setup = data}, [], [Installation.PHOENIX_NAMESPACE])
+	var source: Variant = SourceImporter.inspect_bytes(marked.value.bytes, "physics.glb").value
+	var proposed: Dictionary = PhoenixSetup.propose(source, Authoring.span_domain())
+	var doc := Authoring.new()
+	doc.set_source(source)
+	doc.set_axis("nose_axis", "+z")
+	doc.set_axis("up_axis", "+y")
+	doc.set_units("m")
+	doc.set_datum([0.0, 0.02, 0.03])
+	var applied: Dictionary = doc.apply_clearview_setup(proposed.value, doc.revision) if proposed.ok else proposed
+	var power := str(doc.definition().get("power_package", ""))
+	check("set-up derives the Phoenix packages", applied.ok and PhoenixPhysics.is_derived(power))
+	if not (applied.ok and PhoenixPhysics.is_derived(power)):
+		return
+	check("the flown size matches the derived packages", not doc.phoenix_size_changed()
+		and not _has_message(doc.compile(), Authoring.PHOENIX_RESIZED))
+	var snapshot: Dictionary = doc.snapshot()
+	doc.set_units("cm")
+	check("a size change after set-up blocks flight with a clear note", doc.phoenix_size_changed()
+		and _has_message(doc.compile(), Authoring.PHOENIX_RESIZED))
+	# A draft whose derivation an earlier version made reopens on its base packages and asks for set-up again.
+	var stale: Dictionary = snapshot.duplicate(true)
+	for key: String in ["power_package", "airframe_package"]:
+		var parts := str(stale[key]).split("|")
+		parts[parts.size() - 1] = "0000000000000000"
+		stale[key] = "|".join(parts)
+	var fresh := Authoring.new()
+	var reopened: Dictionary = fresh.restore(stale, source)
+	check("an outdated derivation reopens the draft on its base packages", reopened.ok
+		and not PhoenixPhysics.is_derived(str(fresh.definition().get("power_package", "")))
+		and fresh.needs_source_installation() and fresh.restore_notes.any(func(d: Dictionary) -> bool:
+			return d.message == Authoring.PHOENIX_DERIVATION_RESET))
+	var current := Authoring.new()
+	check("a current derivation reopens unchanged", current.restore(snapshot, source).ok
+		and str(current.definition().get("power_package", "")) == power and current.restore_notes.is_empty())
+
+
+func _has_message(result: Dictionary, message: String) -> bool:
+	return not result.get("ok", false) and (result.get("diagnostics", []) as Array).any(func(d: Dictionary) -> bool:
+		return d.message == message)
+
+
+# ------------------------------------------------------------------------------- Phoenix tuning (IAQ-03d)
+
+func _derived_airframe(model: Dictionary) -> Dictionary:
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var ids := PhoenixPhysics.derive(block, "conventional-trainer-estimated-v1", "electric-3s-1250kv-9x6-estimated-v1", 1.0)
+	return {block = block, airframe = Packages.airframe(ids.airframe).value if not ids.is_empty() else {},
+		power = Packages.power(ids.power).value if not ids.is_empty() else {}}
+
+
+func _physics_tuning() -> void:
+	var plain := _derived_airframe(_physics_model())
+	var tuned_model := _physics_model()
+	tuned_model.attributes.Fine_tuning = {Lift = 150, Elevator = 120, Aileron = 80, Thrust = 100, Stall = {severity = 100}}
+	var tuned := _derived_airframe(tuned_model)
+	check("Phoenix tuning is recorded", (tuned.block.get("tuning", {}) as Dictionary) == {lift = 1.5, elevator = 1.2, aileron = 0.8})
+	if plain.airframe.is_empty() or tuned.airframe.is_empty():
+		check("tuned packages derive", false)
+		return
+	check("lift tuning scales the zero-angle lift", is_equal_approx(float(tuned.airframe.wing.zero_alpha_lift.value),
+		1.5 * float(plain.airframe.wing.zero_alpha_lift.value)))
+	check("lift tuning raises the lift limit", float(tuned.airframe.envelope.CL_max.value) > float(plain.airframe.envelope.CL_max.value))
+	check("elevator tuning scales its effectiveness", is_equal_approx(float(tuned.airframe.tail.elevator_effectiveness.value),
+		minf(1.2 * float(plain.airframe.tail.elevator_effectiveness.value), PhoenixPhysics.MAX_SURFACE_EFFECTIVENESS)))
+	check("aileron tuning scales the roll power", is_equal_approx(float(tuned.airframe.borrowed_coefficients.Clda_left.value),
+		0.8 * float(plain.airframe.borrowed_coefficients.Clda_left.value)))
+	var thrusty_model := _physics_model()
+	thrusty_model.attributes.Fine_tuning = {Thrust = 50}
+	var thrusty := _derived_airframe(thrusty_model)
+	check("thrust tuning shrinks the propeller", float(thrusty.power.propeller.diameter.value)
+		< float(plain.power.propeller.diameter.value))
+	var broken: Dictionary = (tuned.block as Dictionary).duplicate(true)
+	broken.tuning = {lift = 9.0}
+	check("out-of-range tuning is refused", not PhoenixPhysics.valid_block(broken))
+	# Zero-length ailerons are inactive: a rudder-steered model keeps only a token roll power.
+	var rudder_model := _physics_model()
+	rudder_model.airfoils[0].controlSurfaces[0].attributes.Length = 0.0
+	var rudder := _derived_airframe(rudder_model)
+	check("inactive ailerons leave a token roll power", float(rudder.block.get("aileron_roll_power", -1.0)) == 0.0
+		and not rudder.airframe.is_empty() and absf(float(rudder.airframe.borrowed_coefficients.Clda_left.value))
+		<= 0.11 * absf(float(plain.airframe.borrowed_coefficients.Clda_left.value)))
+	# A chordless aileron is unknown data, not an inactive one: the base set stays.
+	var chordless_model := _physics_model()
+	chordless_model.airfoils[0].controlSurfaces[0].attributes.erase("Root_chord")
+	chordless_model.airfoils[0].controlSurfaces[0].attributes.erase("Tip_chord")
+	var chordless := _derived_airframe(chordless_model)
+	check("a chordless aileron does not disable rolling", not chordless.block.has("aileron_roll_power"))
+	# A disabled entry before a working aileron: the working one sets the roll power.
+	var second_model := _physics_model()
+	var working: Dictionary = (second_model.airfoils[0].controlSurfaces[0] as Dictionary).duplicate(true)
+	second_model.airfoils[0].controlSurfaces[0].attributes.Length = 0.0
+	second_model.airfoils[0].controlSurfaces.append(working)
+	var second := _derived_airframe(second_model)
+	check("a disabled aileron entry before a working one is skipped", float(second.block.get("aileron_roll_power", 0.0)) > 0.0
+		and is_equal_approx(float(second.block.aileron_roll_power), float(plain.block.aileron_roll_power)))
+	# Thrust-line angles come from the decoded propeller and are limited like the throws.
+	var model := {airfoils = [{isMirrored = 1, attributes = {Position = {x = 0.0, y = 0.0, z = 0.0}, Length = 0.75,
+		Root_chord = 0.25, Tip_chord = 0.2}}],
+		propulsion = [{type = "propeller", pivot = {x = 0.0, y = 0.0, z = 30.0}, attributes = {Down_thrust = 8.0, Right_thrust = -0.5}}]}
+	var values := Converter.definition_values(model, 0.01, [0.0, 0.0, 0.0], [0])
+	check("thrust angles come from the propeller", float(values.get("equipment/thrust_angles_deg/0", 0.0)) == 8.0
+		and float(values.get("equipment/thrust_angles_deg/1", 0.0)) == -0.5)
+	check("thrust angles are limited to the installation range",
+		PhoenixSetup.THROW_RANGES.has("equipment/thrust_angles_deg/0") and PhoenixSetup.THROW_RANGES["equipment/thrust_angles_deg/0"] == [-5.0, 5.0])

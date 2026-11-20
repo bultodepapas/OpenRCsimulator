@@ -10,6 +10,8 @@
 #   <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- \
 #       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=trim_sweep,stall_power_off,vmax,roll_rate] [--full-traces]
 # Writes <out>/<aircraft>/profile.json, profile.md and one 20 Hz CSV per flown test (--full-traces: every tick).
+# --record=<json> flies a non-catalog record ({aircraft_id, record}: e.g. a compiled Creator record; IAQ-00) and
+# uses --aircraft only as the output label.
 # --list prints the fixed-wing catalog IDs the card can fly and exits. Table rows carry a stable `case` ID so two
 # profiles compare case by case (research/flight-test/compare.py).
 extends SceneTree
@@ -17,6 +19,7 @@ extends SceneTree
 const FlightSession := preload("res://sim/flight_session.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const RecordLoader := preload("res://workshop/creator/record_loader.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -41,6 +44,7 @@ var session: Node
 var model: Dictionary
 var aircraft_id := ""
 var data_override := ""
+var record_path := ""
 var out_dir := ""
 var only: PackedStringArray = []
 var full_traces := false
@@ -68,6 +72,8 @@ func _initialize() -> void:
 			out_dir = arg.substr(6)
 		elif arg.begins_with("--data="):
 			data_override = arg.substr(7)
+		elif arg.begins_with("--record="):
+			record_path = arg.substr(9)
 		elif arg.begins_with("--only="):
 			only = arg.substr(7).split(",")
 		elif arg == "--full-traces":
@@ -77,6 +83,23 @@ func _initialize() -> void:
 	if aircraft_id.is_empty() or out_dir.is_empty():
 		push_error("usage: -- --aircraft=<catalog id> --out=<dir>")
 		quit(2)
+		return
+	if not record_path.is_empty():
+		# A frozen non-catalog record (an exported Creator trial: {aircraft_id, data}), flown exactly as the Workshop
+		# trial loads it. `--aircraft` is then only the output label; runway tests report themselves unsupported.
+		var frozen: Variant = JSON.parse_string(FileAccess.get_file_as_string(record_path))
+		if not frozen is Dictionary or not frozen.get("record") is String or not frozen.get("aircraft_id") is String:
+			push_error("--record must name a JSON file {aircraft_id, record}")
+			quit(2)
+			return
+		var data: Dictionary = RecordLoader.load_bytes(str(frozen.record).to_utf8_buffer(), str(frozen.aircraft_id))
+		if not data.get("ok", false):
+			push_error("--record: the record does not load: %s" % str(data.get("errors", [])))
+			quit(2)
+			return
+		session = FlightSession.new()
+		session.setup("workshop://flight-card", str(frozen.aircraft_id), data)
+		_start_session()
 		return
 	var entry: Dictionary = Catalog.entry(aircraft_id)
 	if entry.is_empty():
@@ -100,6 +123,10 @@ func _initialize() -> void:
 		session.free()
 		quit(2)
 		return
+	_start_session()
+
+
+func _start_session() -> void:
 	root.add_child(session)
 	session.input_enabled = false
 	session.crash_auto_restart = false

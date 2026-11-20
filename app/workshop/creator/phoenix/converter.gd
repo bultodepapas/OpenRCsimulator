@@ -18,9 +18,12 @@ const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
 const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
+const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
+const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 
 const FORMAT := "openrc-phoenix-visual-v1"
 const AEROPLANE_TYPES := ["Airplane", "Glider"]
+const ROTORCRAFT_TYPES := ["Helicopter", "Multi-rotor"]
 const NAMESPACE := "openrc_phoenix"
 const STEP := "import"
 const MAX_DEFINITION_BYTES := 8 * Limits.MIB
@@ -40,6 +43,8 @@ const NO_SIZE := "The Phoenix model \"%s\" has no usable size, so its real dimen
 const NO_GEOMETRY := "The geometry file \"%s\" was not found next to the Phoenix model."
 const TEXTURE_SKIPPED := "The texture \"%s\" could not be used; those parts keep their plain colour."
 const APPEARANCE_ONLY := "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+const ROTORCRAFT := "Phoenix helicopters and multirotors are imported for their appearance only: OpenRC cannot fly them from their Phoenix data yet."
+const TEXTURES_LIMITED := "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
 const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg."
 const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 ## Alpha textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
@@ -99,12 +104,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	var shared := _shared_texture_folders(folder)
 	var textures := {}
 	var texture_hashes := {}
+	var over_limit := {}
 	for material: Dictionary in geo.value.materials:
 		var wanted: Variant = material.get("texture")
 		if not wanted is String or str(wanted).is_empty() or textures.has(str(wanted).to_lower()):
 			continue
-		if textures.size() >= Limits.GLB_IMAGES:
-			break  # The GLB admits at most this many images; further materials keep their colour.
 		# The model folder first, then the installation's shared aircraft textures (glass, rotor discs).
 		var found := _resolve(listing, str(wanted))
 		var found_dir := folder
@@ -115,6 +119,10 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 					found_dir = shared_dir
 					break
 		if found.is_empty():
+			continue
+		if textures.size() >= Limits.GLB_IMAGES:
+			# The GLB admits at most this many images; further materials keep their colour.
+			over_limit[str(wanted).to_lower()] = true
 			continue
 		var bytes := _read(found_dir.path_join(found), Limits.PNG_BYTES)
 		var decoded := PhoenixTexture.decode(bytes.value) if bytes.ok else bytes
@@ -128,6 +136,9 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 			notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, TEXTURE_SKIPPED, "source", STEP, [found], R.SEVERITY_WARNING))
 		if _cancelled(cancelled):
 			return _cancel()
+	if not over_limit.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_LIMIT, TEXTURES_LIMITED, "source", STEP,
+			[str(Limits.GLB_IMAGES), str(over_limit.size())], R.SEVERITY_WARNING))
 	var scale := size / UNITS_PER_SIZE
 	var summary := summarize(model, scale)
 	var placement := _placement(summary)
@@ -140,7 +151,15 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		geometry = {file = geo_name, sha256 = geo.value.sha256},
 		textures = texture_hashes, metres_per_unit = scale, size = size,
 		coordinate_frame = "gltf: +X left, +Y up, +Z forward", physics_imported = false,
+		model_type = str(model.get("type", "")),
 	}
+	var main_span := 0.0
+	for wing: Dictionary in summary.wings:
+		main_span = maxf(main_span, float(wing.span_m) if is_finite(float(wing.span_m)) else 0.0)
+	if main_span > 0.0:
+		receipt.span_m = main_span
+	if is_finite(float(summary.mass_kg)):
+		receipt.mass_kg = float(summary.mass_kg)
 	var setup := creator_setup(summary, placement, values)
 	if not setup.is_empty():
 		setup.biplane = lifting.size() >= 2
@@ -170,10 +189,7 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	if not admitted.ok:
 		return admitted
 	notes.append_array(admitted.diagnostics)
-	notes.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY, APPEARANCE_ONLY, "source", STEP, [], R.SEVERITY_WARNING))
-	var main_span := 0.0
-	for wing: Dictionary in summary.wings:
-		main_span = maxf(main_span, float(wing.span_m) if is_finite(float(wing.span_m)) else 0.0)
+	notes.append_array(_route_notes(receipt, markers))
 	notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, SUMMARY, "source", STEP,
 		[summary.name, String.num(main_span, 2), String.num(float(summary.mass_kg), 2) if is_finite(float(summary.mass_kg)) else "?"],
 		R.SEVERITY_INFO))
@@ -182,10 +198,40 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	var bindings := proposed_bindings(glb.value.pivots)
 	if not bindings.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, MOVING_PARTS, "source", STEP, [str(glb.value.pivots.size())], R.SEVERITY_INFO))
-	if not markers.is_empty():
-		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, LAYOUT, "source", STEP, [], R.SEVERITY_INFO))
 	return R.ok({source = admitted.value, receipt = receipt, placement = placement, summary = summary,
 		bindings = bindings, values = values}, notes)
+
+
+## What the player can do with the model: set up for flight (aeroplanes with a decoded layout), appearance
+## only (rotorcraft, or an aeroplane without a usable layout), and whether its own physics is available.
+static func _route_notes(receipt: Dictionary, markers: Array) -> Array:
+	var notes: Array = []
+	if str(receipt.get("model_type", "")) in ROTORCRAFT_TYPES:
+		notes.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY, ROTORCRAFT, "source", STEP, [], R.SEVERITY_WARNING))
+	elif markers.is_empty():
+		notes.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY, APPEARANCE_ONLY, "source", STEP, [], R.SEVERITY_WARNING))
+	else:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, LAYOUT, "source", STEP, [], R.SEVERITY_INFO))
+	return notes
+
+
+## The import notes of a reopened Phoenix source, rebuilt from its receipt (the installation is not needed);
+## [] for any other source.
+static func source_notes(source: InspectedSource) -> Array:
+	var receipt := PhoenixSetup.receipt(source)
+	if receipt.get("format") != FORMAT:
+		return []
+	var markers: Array = [Installation.PHOENIX_NAMESPACE] if Installation.provider(source) == "phoenix" else []
+	var notes := _route_notes(receipt, markers)
+	var span: Variant = receipt.get("span_m")
+	var mass: Variant = receipt.get("mass_kg")
+	if (span is float or span is int) and (mass is float or mass is int):
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, SUMMARY, "source", STEP,
+			[str(receipt.get("name", "")).substr(0, Limits.NAME_CHARACTERS), String.num(float(span), 2), String.num(float(mass), 2)],
+			R.SEVERITY_INFO))
+	if not markers.is_empty() and PhoenixSetup.creator_setup(source).get("physics", {}).is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, NO_PHYSICS, "source", STEP, [], R.SEVERITY_WARNING))
+	return notes
 
 
 ## The decoded layout for `phoenix/setup.gd`: main-wing half span, chords and dihedral, the datum (GLB
@@ -405,6 +451,11 @@ static func definition_values(model: Dictionary, scale: float, datum: Array, lif
 					if float(hub[0]) < 0.0:
 						values["fuselage/nose_x"] = float(hub[0]) + HUB_SETBACK_M
 						values["fuselage/center_z"] = hub[2]
+				# Phoenix thrust-line offsets (degrees; down positive, as in Creator).
+				for angle: Array in [["Down_thrust", 0], ["Right_thrust", 1]]:
+					var degrees := _number(_dig(unit.get("attributes"), [angle[0]]))
+					if is_finite(degrees) and degrees != 0.0:
+						values["equipment/thrust_angles_deg/%d" % angle[1]] = degrees
 				break
 	for role: String in travel:
 		values["controls/%s_deg" % role] = travel[role]
@@ -513,8 +564,9 @@ static func _airfoil_polars(folder: String, model: Dictionary, cancelled: Callab
 			if not name.is_empty():
 				wanted[name] = true
 	var out := {}
-	var library := _resources_folder(folder).path_join("airfoils")
-	if wanted.is_empty() or not DirAccess.dir_exists_absolute(library):
+	var resources := _resources_folder(folder)
+	var library := _sub_folder(resources, ["airfoils"]) if not resources.is_empty() else ""
+	if wanted.is_empty() or library.is_empty():
 		return out
 	var files: PackedStringArray = DirAccess.get_files_at(library)
 	files.sort() # the same polars on every platform, whatever the directory order
@@ -550,15 +602,34 @@ static func _resources_folder(folder: String) -> String:
 	return ""
 
 
+## `base/<parts…>` with each folder name matched case-insensitively (a copied installation on a
+## case-sensitive file system may change case); "" when missing or ambiguous.
+static func _sub_folder(base: String, parts: Array) -> String:
+	var current := base
+	for part: Variant in parts:
+		if not DirAccess.dir_exists_absolute(current):
+			return ""
+		var found_name := ""
+		for name: String in DirAccess.get_directories_at(current):
+			if name.to_lower() == str(part).to_lower():
+				if not found_name.is_empty():
+					return "" # case-distinct duplicates: refuse rather than guess
+				found_name = name
+		if found_name.is_empty():
+			return ""
+		current = current.path_join(found_name)
+	return current
+
+
 ## `resources/textures/aircraft` and `resources/textures/misc` of the installation holding `folder`.
 static func _shared_texture_folders(folder: String) -> Dictionary:
 	var out := {}
 	var current := folder
 	for _level: int in 8:
 		if current.get_file().to_lower() == "resources":
-			for sub: String in ["textures/aircraft", "textures/misc"]:
-				var path := current.path_join(sub)
-				if DirAccess.dir_exists_absolute(path):
+			for sub: Array in [["textures", "aircraft"], ["textures", "misc"]]:
+				var path := _sub_folder(current, sub)
+				if not path.is_empty():
 					out[path] = _folder(path)
 			break
 		var parent := current.get_base_dir()

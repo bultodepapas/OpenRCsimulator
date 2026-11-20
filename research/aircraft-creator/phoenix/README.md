@@ -16,6 +16,16 @@ The code uses Python 3.10+ and its standard library; the recorded checks ran on 
 
 Point them only at a local installation; never commit stock bytes or their converted output.
 
+## Creator corpus and flight cards (IAQ-00)
+
+[creator_corpus.gd](creator_corpus.gd) runs the real Creator sequence on every fixed-wing and glider model of a local installation: convert, placement and bindings, "Set up for flight", compile, then the Workshop's airborne and hand-launch start checks. It writes `corpus.json`, and with `--export-trials` one compiled record per model. [flight_cards.py](flight_cards.py) flies those records through the [flight-test card](../../flight-test/README.md) (`--record`) and tabulates stall speed, maximum level speed, cruise throttle, climb, glide ratio, roll rate and hands-off behaviour in `cards.json`/`cards.md`.
+
+    <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/aircraft-creator/phoenix/creator_corpus.gd" -- \
+        --install="<PhoenixRC folder>" --out=<new folder> [--only=<name part>] [--export-trials]
+    python3 research/aircraft-creator/phoenix/flight_cards.py --godot <godot> --trials <out>/trials --out <new folder> [--jobs 4]
+
+Both are opt-in and never run in CI. Their output holds converted stock data: keep it local (for example on U:) and never commit it. The cards are software evidence of what OpenRC does with the derived packages, not a comparison with Phoenix.
+
 ## Bulk ZIP corpus scan (research only)
 
 Use [scan_bulk_zip.py](scan_bulk_zip.py) and [test_scan_bulk_zip.py](test_scan_bulk_zip.py) for deterministic, read-only, bounded ZIP32 discovery over explicitly selected PKGs. This is *not* a runtime importer, and it never extracts aircraft files.

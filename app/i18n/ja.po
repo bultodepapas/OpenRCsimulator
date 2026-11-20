@@ -13607,3 +13607,15 @@ msgstr "このモデルの隣に Phoenix の翼型ライブラリが見つから
 
 msgid "Propeller and motor from the Phoenix model — estimated installation"
 msgstr "Phoenix モデルのプロペラとモーター — 推定構成"
+
+msgid "Phoenix helicopters and multirotors are imported for their appearance only: OpenRC cannot fly them from their Phoenix data yet."
+msgstr "Phoenix のヘリコプターとマルチローターは外観のみインポートされます。OpenRC はまだ Phoenix のデータで飛ばせません。"
+
+msgid "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
+msgstr "このモデルは %s 個を超えるテクスチャを使用しています。%s 個はインポートされなかったため、該当部品は単色のままです。"
+
+msgid "This model's Phoenix flight data was derived for another size. Use Set up for flight again."
+msgstr "このモデルの Phoenix 飛行データは別のサイズ用に導出されました。もう一度「飛行用に設定」を使ってください。"
+
+msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
+msgstr "この下書きの Phoenix 飛行データは以前の OpenRC バージョンのものです。もう一度「飛行用に設定」を使って導出してください。"

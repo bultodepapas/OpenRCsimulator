@@ -588,7 +588,7 @@ static func _inspect(job: ImportJob) -> void:
 	if not job.opening.is_empty():
 		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
 		if job.result.ok:
-			job.annotations = ClearViewConverter.source_notes(job.result.value)
+			job.annotations = ClearViewConverter.source_notes(job.result.value) + PhoenixConverter.source_notes(job.result.value)
 			_inspect_observations(job,job.result.value)
 		return
 	var captured: Dictionary = Importer.read_bounded(job.path)
@@ -596,7 +596,7 @@ static func _inspect(job: ImportJob) -> void:
 		captured = Importer.inspect_bytes(captured.value, job.path.get_file())
 	job.result = captured
 	if captured.ok:
-		job.annotations = ClearViewConverter.source_notes(captured.value)
+		job.annotations = ClearViewConverter.source_notes(captured.value) + PhoenixConverter.source_notes(captured.value)
 		_inspect_observations(job,captured.value)
 
 
@@ -674,7 +674,7 @@ func _adopt_import(job: ImportJob) -> void:
 			return
 		if result.get("ok", false) and result.get("value") is InspectedSource:
 			if _finish_open(str(job.opening.kind), job.opening.value, result.value,job.observations):
-				_clearview_notes = job.annotations
+				_clearview_notes = job.annotations + _doc.restore_notes
 				_refresh()
 		else:
 			set_note("\n".join(PackedStringArray([tr(OPEN_FAILED), _diagnostics_text(result.get("diagnostics", []))])).strip_edges())
@@ -2642,6 +2642,9 @@ func _fly_airship(source: InspectedSource) -> void:
 
 func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:
 	var applied: Dictionary = _doc.apply_clearview_setup(setup, revision)
+	if applied.ok:
+		_clearview_notes = _clearview_notes.filter(func(note: Variant) -> bool:
+			return not (note is Dictionary and str(note.get("message", "")) in [Authoring.PHOENIX_DERIVATION_RESET, Authoring.PHOENIX_RESIZED]))
 	if not applied.ok:
 		set_note(_diagnostics_text(applied.diagnostics))
 	elif bool(applied.value.get("scaled", false)):

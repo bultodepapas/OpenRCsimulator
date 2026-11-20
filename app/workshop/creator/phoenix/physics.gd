@@ -57,7 +57,13 @@ const EQUIVALENT_ITERATIONS := 6
 const EQUIVALENT_TOLERANCE := 0.02
 ## Bumped whenever `derive` maps the same physics block to different packages, so an earlier draft's ids
 ## no longer restore silently onto changed values.
-const DERIVATION_VERSION := 3
+const DERIVATION_VERSION := 4
+## Phoenix `Fine_tuning` multipliers applied (percent / 100), kept inside these factors.
+const TUNING_KEYS := ["Lift", "Elevator", "Aileron", "Rudder", "Thrust", "Engine"]
+const TUNING_RANGE := [0.25, 2.0]
+## Roll power kept for declared but inactive ailerons, relative to the base set: the record accepts a wing
+## aileron effectiveness of at least 0.01, and the base set is about 0.13.
+const INACTIVE_AILERON_SHARE := 0.1
 ## Pitch/diameter of the propeller behind every base package's Ct/Cp tables (UIUC APC Sport 11×6).
 const TABLE_PITCH_RATIO := 6.0 / 11.0
 
@@ -190,6 +196,16 @@ static func physics_block(model: Dictionary, scale: float, datum: Array, polars:
 	var aileron := _aileron_power(wing, span, root, tip, area, wing_slope)
 	if is_finite(aileron):
 		block.aileron_roll_power = aileron
+	elif _has_inactive_ailerons(wing):
+		block.aileron_roll_power = 0.0  # declared but zero-length: the model steers with its rudder
+	var tuning := {}
+	var fine: Dictionary = _dict(_dict(model.get("attributes")).get("Fine_tuning"))
+	for key: String in TUNING_KEYS:
+		var percent := _num(fine.get(key), 100.0)
+		if percent > 0.0 and percent != 100.0:
+			tuning[key.to_lower()] = clampf(percent / 100.0, float(TUNING_RANGE[0]), float(TUNING_RANGE[1]))
+	if not tuning.is_empty():
+		block.tuning = tuning
 	# Propulsion: the first valid propeller and how many there are (twins and four-engine models fly on
 	# one equivalent propeller), or the summed jet thrust when the model has no propeller.
 	var propulsion: Variant = model.get("propulsion")
@@ -254,7 +270,7 @@ static func _aileron_power(wing: Dictionary, span: float, root: float, tip: floa
 		var from_tip := maxf(0.0, _num(sat.get("Tip_distance"), 0.0))
 		var surface_chord := 0.5 * (_num(sat.get("Root_chord"), 0.0) + _num(sat.get("Tip_chord"), 0.0))
 		if not (length > 0.0 and surface_chord > 0.0):
-			return NAN
+			continue # a disabled (zero-length) or chordless entry; a later aileron may be usable
 		var outer := clampf(half - from_tip, 0.0, half)
 		var inner := clampf(outer - length, 0.0, outer)
 		var middle := 0.5 * (inner + outer)
@@ -330,6 +346,13 @@ static func valid_block(block: Variant) -> bool:
 	for key: String in ["cg_aft_m", "elevator_effectiveness", "rudder_effectiveness", "aileron_roll_power", "jet_thrust_n"]:
 		if block.has(key) and not _in(block[key], -100.0, 100000.0):
 			return false
+	var tuning: Variant = block.get("tuning", {})
+	if not tuning is Dictionary:
+		return false
+	for key: Variant in tuning:
+		if str(key) != str(key).to_lower() or str(key).capitalize() not in TUNING_KEYS \
+				or not _in(tuning[key], float(TUNING_RANGE[0]), float(TUNING_RANGE[1])):
+			return false
 	var prop: Variant = block.get("propeller", {})
 	if not prop is Dictionary:
 		return false
@@ -382,8 +405,12 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 		str(block.get("airfoil", "")), str(base.get("id", ""))]
 	# Lift: the wing's section lift at its setting angle, carried to the finite wing by the lift-slope ratio.
 	var ratio := float(block.wing_lift_slope) / float(section.slope)
-	package.wing.zero_alpha_lift = _quantity(float(section.cl_at_incidence) * ratio, "1", "borrowed",
-		note + ": section CL at the wing incidence × finite/section lift-slope ratio")
+	# Phoenix `Fine_tuning.Lift` scales the zero-angle lift and the lift limits; the lift slope follows the
+	# geometry in the compiler and is not tuned.
+	var lift := _tuning(block, "lift")
+	var tuned := "" if lift == 1.0 else ", × Phoenix lift tuning %s" % String.num(lift, 2)
+	package.wing.zero_alpha_lift = _quantity(float(section.cl_at_incidence) * ratio * lift, "1", "borrowed",
+		note + ": section CL at the wing incidence × finite/section lift-slope ratio" + tuned)
 	package.wing.minimum_drag_lift = _quantity(float(section.cl_min_drag) * ratio, "1", "borrowed", note + ": CL at minimum section drag")
 	package.wing.profile_drag = _quantity(float(section.cd_min) + float(block.body_drag_ratio), "1", "borrowed",
 		note + ": minimum section CD plus %s × the fuselage frontal area over the wing area" % String.num(BODY_DRAG_COEFFICIENT, 2))
@@ -396,13 +423,13 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 	var wing_slope := float(block.wing_lift_slope)
 	var zero_lift := float(package.wing.zero_alpha_lift.value)
 	var width := float(section.stall_width_deg)
-	var cl_max := maxf(WING_PEAK_SHARE * float(section.cl_max), floor_lift)
-	var cl_min := minf(WING_PEAK_SHARE * float(section.cl_min), -floor_lift)
+	var cl_max := maxf(WING_PEAK_SHARE * float(section.cl_max) * lift, floor_lift)
+	var cl_min := minf(WING_PEAK_SHARE * float(section.cl_min) * lift, -floor_lift)
 	# Linear-line angle of each limit; the blend (half its width before the limit) must start beyond 8°.
 	cl_max = maxf(cl_max, zero_lift + wing_slope * deg_to_rad(STALL_START_MIN_DEG + 0.5 * width))
 	cl_min = minf(cl_min, zero_lift - wing_slope * deg_to_rad(STALL_START_MIN_DEG + 0.5 * width))
 	package.envelope.CL_max = _quantity(clampf(cl_max, 0.4, 2.5), "1", "borrowed",
-		note + ": section peak lift × %s, kept above the flat-plate lift and the linear region" % String.num(WING_PEAK_SHARE, 2))
+		note + ": section peak lift × %s, kept above the flat-plate lift and the linear region" % String.num(WING_PEAK_SHARE, 2) + tuned)
 	package.envelope.CL_min = _quantity(clampf(cl_min, -2.5, -0.3), "1", "borrowed",
 		note + ": section negative peak × %s, kept beyond the flat-plate lift and the linear region" % String.num(WING_PEAK_SHARE, 2))
 	package.envelope.stall_blend_width = _quantity(width, "deg", "borrowed",
@@ -415,20 +442,53 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 		reason = "Phoenix-derived mass and wing; light foam to heavy scale models"}
 	package.domain.thrust_to_weight = {min = DERIVED_THRUST_RANGE[0], max = DERIVED_THRUST_RANGE[1],
 		reason = "Phoenix-derived propeller; heavy scale models fly from an airborne start below 0.5"}
-	for key: String in ["elevator_effectiveness", "rudder_effectiveness"]:
-		if block.has(key) and float(block[key]) > 0.05:
-			package.tail[key] = _quantity(clampf(float(block[key]), 0.15, MAX_SURFACE_EFFECTIVENESS), "1", "borrowed",
-				SOURCE % "control surface" + ": plain-flap τ × span coverage")
-	if block.has("aileron_roll_power") and float(block.aileron_roll_power) > 1e-4:
-		var factor := float(block.aileron_roll_power) / BASE_CLDA
+	# Control power: the surface geometry, times Phoenix's elevator/rudder/aileron tuning.
+	for pair: Array in [["elevator_effectiveness", "elevator"], ["rudder_effectiveness", "rudder"]]:
+		var key: String = pair[0]
+		var power := _tuning(block, pair[1])
+		var base_value := float(block[key]) if block.has(key) and float(block[key]) > 0.05 else float(package.tail[key].value)
+		if (block.has(key) and float(block[key]) > 0.05) or power != 1.0:
+			package.tail[key] = _quantity(clampf(base_value * power, 0.15, MAX_SURFACE_EFFECTIVENESS), "1", "borrowed",
+				SOURCE % "control surface" + ": plain-flap τ × span coverage" + ("" if power == 1.0 else
+				" × Phoenix %s tuning %s" % [pair[1], String.num(power, 2)]))
+	var roll := _tuning(block, "aileron")
+	var factor := roll
+	var reason := "Phoenix aileron tuning %s on the base ailerons" % String.num(roll, 2)
+	if block.has("aileron_roll_power"):
+		# Declared zero-length ailerons (a rudder-steered model) keep a token roll power the record accepts.
+		factor *= maxf(float(block.aileron_roll_power) / BASE_CLDA, INACTIVE_AILERON_SHARE)
+		reason = "strip roll power τ·a·∫c·y dy/(S·b), base ratios kept" if float(block.aileron_roll_power) > 1e-4 \
+			else "the Phoenix ailerons are inactive (zero length); token roll power only"
+		if roll != 1.0:
+			reason += ", × Phoenix aileron tuning %s" % String.num(roll, 2)
+	if factor != 1.0 or block.has("aileron_roll_power"):
 		var borrowed: Dictionary = package.borrowed_coefficients
 		for key: String in ["Clda_left", "Clda_right", "CLda_each", "CDda_each", "Cmda_each", "Cnda_left", "Cnda_right"]:
 			if borrowed.has(key):
 				var entry: Dictionary = borrowed[key]
 				entry.value = float(entry.value) * factor
 				entry.kind = "derived"
-				entry.source = SOURCE % "aileron geometry" + ": strip roll power τ·a·∫c·y dy/(S·b), base ratios kept"
+				entry.source = SOURCE % "aileron geometry" + ": " + reason
 	return package
+
+
+## A Phoenix `Fine_tuning` factor of the block (1 when untuned).
+static func _tuning(block: Dictionary, key: String) -> float:
+	var tuning: Variant = block.get("tuning", {})
+	return float(tuning.get(key, 1.0)) if tuning is Dictionary else 1.0
+
+
+## True when the wing declares ailerons and every one has an explicit zero length (Phoenix disables a
+## surface that way). Ailerons with missing data are unknown, not inactive: the base set then stays.
+static func _has_inactive_ailerons(wing: Dictionary) -> bool:
+	var found := false
+	for surface: Variant in (wing.get("controlSurfaces") if wing.get("controlSurfaces") is Array else []):
+		if surface is Dictionary and str(_dict(surface.get("attributes")).get("Input", "")).to_lower().contains("aileron"):
+			var length := _num(_dict(surface.get("attributes")).get("Length"), NAN)
+			if not (is_finite(length) and length <= 0.0):
+				return false
+			found = true
+	return found
 
 
 ## The power package for the Phoenix propeller. Phoenix specifies some aerobatic models with very large
@@ -444,15 +504,16 @@ static func _power(base: Dictionary, block: Dictionary, id: String, scale: float
 		if jet > 0.0:
 			# The Phoenix thrust-to-weight ratio is kept (thrust and weight both scale with the cube of the
 			# size); with the flying mass it refers to the weight that actually flies.
-			var jet_share := jet / (float(block.mass_kg) * Packages.GRAVITY)
+			var jet_share := jet / (float(block.mass_kg) * Packages.GRAVITY) * _tuning(block, "thrust") * _tuning(block, "engine")
 			return _equivalent_power(base, block, id, scale, minf(jet_share, THRUST_CAP) * weight,
 				JET_PITCH_SPEED_MPS, JET_PITCH_RATIO, true)
 		return _equivalent_power(base, block, id, scale, GLIDER_THRUST_SHARE * weight, GLIDER_PITCH_SPEED_MPS,
 			TABLE_PITCH_RATIO, false)
-	var package := _power_at(base, block, id, scale, 1.0)
+	# Phoenix thrust tuning acts as a diameter share (thrust ∝ D⁴); the cap below still limits the result.
+	var share := pow(_tuning(block, "thrust"), 0.25)
+	var package := _power_at(base, block, id, scale, share)
 	if not (is_finite(weight) and weight > 0.0):
 		return package
-	var share := 1.0
 	for iteration: int in THRUST_CAP_ITERATIONS:
 		var probe := package.duplicate(true)
 		probe.id = "%s#thrust-cap-%d" % [id, iteration]
@@ -478,8 +539,9 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 	var count := maxi(1, int(prop.get("count", 1)))
 	var diameter := float(prop.diameter_m) * scale * share * pow(count, 0.25)
 	var base_diameter := float(package.propeller.diameter.value)
-	var note := ": Diameter at the flown size" if share >= 0.999 else \
-		": Diameter at the flown size × %s, limiting static thrust to %s × the weight" % [String.num(share, 3), String.num(THRUST_CAP, 1)]
+	var note := ": Diameter at the flown size" if absf(share - 1.0) < 0.001 else \
+		": Diameter at the flown size × %s (Phoenix thrust tuning, then a static-thrust limit of %s × the weight)" % [
+			String.num(share, 3), String.num(THRUST_CAP, 1)]
 	if count > 1:
 		note += "; one propeller of %s propellers' combined thrust (D·N^¼)" % count
 	package.propeller.diameter = _quantity(diameter, "m", "borrowed", SOURCE % "propeller" + note)
@@ -504,7 +566,8 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 	# static shaft power P = Cp(0)·ρ·n³·D⁵ there: Kv for that RPM at LOADED_VOLTAGE_SHARE of the pack voltage,
 	# and motor plus battery resistance for SUPPLY_DROP of the voltage at that current.
 	var voltage := float(package.motor.no_load_voltage_v.value)
-	var rpm := float(prop.max_rpm) / sqrt(scale)
+	# Phoenix engine tuning scales the power; at a fixed propeller P ∝ n³.
+	var rpm := float(prop.max_rpm) / sqrt(scale) * pow(_tuning(block, "engine"), 1.0 / 3.0)
 	var cp_rows: Array = package.propeller.cp_table.value
 	var cp0 := float(cp_rows[0][1]) if not cp_rows.is_empty() else 0.04
 	var shaft_power := cp0 * Packages.AIR_DENSITY * pow(rpm / 60.0, 3) * pow(diameter, 5)
@@ -539,6 +602,7 @@ static func _equivalent_power(base: Dictionary, block: Dictionary, id: String, s
 	var package: Dictionary = {}
 	for iteration: int in EQUIVALENT_ITERATIONS:
 		var source := block.duplicate(true)
+		source.erase("tuning") # the target thrust already holds the Phoenix thrust and engine tuning
 		source.propeller = {diameter_m = diameter / scale, pitch_m = ratio * diameter / scale,
 			max_rpm = 60.0 * speed / (ratio * diameter) * sqrt(scale), blades = 2}
 		package = _power_at(base, source, id, scale, 1.0)
