@@ -10,6 +10,7 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
+const SceneryWalls := preload("res://physics/ground_vehicle/scenery_walls.gd")
 const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 const M := preload("res://physics/math3d.gd")
 
@@ -27,7 +28,10 @@ static var _cached_lake_bank_bounds := PackedFloat64Array()
 
 ## Bridge a FieldLoader result to the ground-vehicle course contract.
 ## `surface_table_result` is GroundSurfaces.load_table() output; an empty value loads its default table.
-static func build(field_result: Dictionary, surface_table_result: Dictionary = {}, lake: Dictionary = {}) -> Dictionary:
+## CR-AUD-14: `collision_world` (scenery/collision_world.gd, as the aircraft install it) adds the field's shared
+## scenery as car wall boxes (SceneryWalls); {} keeps the course walls only. Its identity enters the course identity.
+static func build(field_result: Dictionary, surface_table_result: Dictionary = {}, lake: Dictionary = {},
+		collision_world: Dictionary = {}) -> Dictionary:
 	var errors := PackedStringArray()
 	if not bool(field_result.get("ok", false)):
 		return _failure(_errors_from(field_result, "validated airfield did not load"))
@@ -137,6 +141,18 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 				course.spawns.append(shore)
 
 	var field_digest := _sha256_text(JSON.stringify(field, "", true, true))
+	var scenery_digest := ""
+	if not collision_world.is_empty():
+		# Reach is judged above the course's own ground (terrain, lake and circuit relief) at each obstacle.
+		var ground_up := func(north: float, east: float) -> float:
+			return float(sample(course, north, east).get("height_m", NAN))
+		var ground_key := "%s|%s|%s" % [field_digest, str(lake_copy.get("identity", "")), track_digest]
+		var scenery: Dictionary = SceneryWalls.build(collision_world, course.get("track", {}).get("walls", []),
+			ground_up, ground_key)
+		course["scenery_walls"] = scenery.walls
+		course["scenery_bins"] = scenery.bins
+		course["scenery_summary"] = scenery.summary
+		scenery_digest = str(scenery.sha256)
 	var surface_source_path := str(table_result.get("source_path", DEFAULT_SURFACE_TABLE_PATH))
 	var surface_source_digest := str(table_result.get("source_sha256", ""))
 	if surface_source_digest.is_empty() and FileAccess.file_exists(surface_source_path):
@@ -154,6 +170,9 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 		"script_artifacts": script_artifacts,
 		"lake_identity": lake_digest,
 		"track_sha256": track_digest,
+		"scenery_world_identity": str(collision_world.get("identity", "")),
+		"scenery_walls_sha256": scenery_digest,
+		"scenery_policy_version": SceneryWalls.POLICY_VERSION,
 		"dry_pavement_mu": DRY_PAVEMENT_MU,
 		"environment_version": WetPhysics.VERSION,
 	}
@@ -243,9 +262,34 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 		"track_coverage": coverage,
 		"walls": Track.nearby_walls(track, north_m, east_m),
 	}
+	# CR-AUD-14: the shared scenery near this point, nearest first, within the dynamics' wall budget; what does not fit
+	# is counted (walls_omitted) instead of being dropped silently.
+	var scenery_value: Variant = course.get("scenery_walls")
+	if typeof(scenery_value) == TYPE_ARRAY and not (scenery_value as Array).is_empty():
+		var room: int = VehicleDynamics.MAX_WALL_CONTACT_BOXES - (result.walls as Array).size()
+		var near: Dictionary = SceneryWalls.nearby(scenery_value, course.get("scenery_bins", {}), north_m, east_m, room)
+		if not (near.walls as Array).is_empty():
+			var combined: Array = (result.walls as Array).duplicate()
+			combined.append_array(near.walls)
+			result.walls = combined
+		result["walls_omitted"] = int(near.omitted)
+		if int(near.omitted) > 0:
+			_note_omitted_walls(int(near.omitted))
 	result.merge(wet)
 	if float(wet.get("mud_fraction", 0.0)) > 0.5: result.surface_id = "mud"
 	return result
+
+
+## CR-AUD-14: scenery walls beyond the dynamics' per-sample budget, counted for diagnostics (never physics) and
+## warned once per process, so a dense scene cannot drop contacts silently.
+static var walls_omitted_total := 0
+
+
+static func _note_omitted_walls(count: int) -> void:
+	if walls_omitted_total == 0:
+		push_warning("Ground vehicle: %d scenery wall(s) beyond the %d-wall contact budget near one road sample" % [
+			count, VehicleDynamics.MAX_WALL_CONTACT_BOXES])
+	walls_omitted_total += count
 
 
 ## Content-keyed bounds only; no sampled height or quantized position is cached.
@@ -393,6 +437,7 @@ static func _script_artifacts() -> Dictionary:
 		"res://physics/ground_vehicle/vehicle_environment.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
 		"res://physics/ground_vehicle/airfield_track.gd",
+		"res://physics/ground_vehicle/scenery_walls.gd",
 	]:
 		artifacts[path] = VehicleDynamics._reference_implementation_artifact(path)
 	return artifacts
@@ -408,6 +453,7 @@ static func _script_artifacts_are_valid(artifacts: Dictionary) -> bool:
 		"res://physics/ground_vehicle/vehicle_environment.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
 		"res://physics/ground_vehicle/airfield_track.gd",
+		"res://physics/ground_vehicle/scenery_walls.gd",
 	]:
 		var artifact: Variant = artifacts.get(path)
 		if typeof(artifact) != TYPE_DICTIONARY \

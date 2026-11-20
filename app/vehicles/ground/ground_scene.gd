@@ -20,6 +20,8 @@ const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd"
 const World = preload("res://render/world/world.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
 const Scenery = preload("res://scenery/scenery.gd")
+const CollisionSetup = preload("res://scenery/collision_setup.gd")
+const AirfieldTrack = preload("res://physics/ground_vehicle/airfield_track.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const SkyConfig = preload("res://environment/sky_appearance_config.gd")
@@ -470,7 +472,17 @@ func _prepare_airfield() -> bool:
 		startup_error = "; ".join(lake.errors)
 		return false
 	camera_rig.pilot_position = Frames.ned_to_render([field.pilot.north, field.pilot.east, field.pilot.down - field.pilot.eye_height])
-	return session.prepare_airfield(loaded, {}, lake.lake, vehicle_id)
+	# CR-AUD-14: the same obstacle inventory the aircraft collide with; a refused build keeps the course walls only.
+	# The car circuit's dressing (tyre stacks) is part of that inventory on its field.
+	var circuit: Dictionary = {}
+	if AirfieldTrack.matches_field(field):
+		var circuit_result: Dictionary = AirfieldTrack.load_default()
+		circuit = circuit_result.track if bool(circuit_result.get("ok", false)) else {}
+	var obstacles: Dictionary = CollisionSetup.build(field, circuit)
+	if not bool(obstacles.get("ok", false)):
+		push_warning("Ground vehicle scenery collision unavailable: " + "; ".join(obstacles.get("errors", [])))
+	return session.prepare_airfield(loaded, {}, lake.lake, vehicle_id,
+		obstacles.get("world", {}) if bool(obstacles.get("ok", false)) else {})
 
 func _build_audio() -> void:
 	if _vehicle_entry.nitro:

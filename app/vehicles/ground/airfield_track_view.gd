@@ -356,7 +356,7 @@ static func _add_walls(root: Node3D, track: Dictionary) -> void:
 
 static func _add_tyre_stacks(root: Node3D, road: Callable) -> void:
 	# Worn 0.6 m tyres sit beyond the road shoulder, not on the contact course.
-	# No extra collision is implied by this scenery-only dressing.
+	# CR-AUD-14: these stacks are solid for the car through the shared scenery world (RcTrack dressing), not here.
 	var source := TRACK_TYRE.instantiate()
 	var meshes := source.find_children("*", "MeshInstance3D", true, false)
 	if meshes.is_empty():

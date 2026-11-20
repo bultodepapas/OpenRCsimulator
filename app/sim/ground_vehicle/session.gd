@@ -156,8 +156,10 @@ func prepare_default(experiment: Dictionary = {}, vehicle_id: String = "mt8-biso
 
 ## Prepare the selected ground vehicle on the validated airplane field, sampling the same ground
 ## model as aircraft. The selected kernel computes model-specific static support at that spawn.
+## CR-AUD-14: `collision_world` is the field's shared obstacle inventory (as the aircraft install it); the course
+## turns it into car wall boxes. {} keeps the course walls only.
 func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lake: Dictionary = {},
-		vehicle_id: String = "mt8-bisonte") -> bool:
+		vehicle_id: String = "mt8-bisonte", collision_world: Dictionary = {}) -> bool:
 	var base_vehicle_result: Dictionary = _load_vehicle(vehicle_id)
 	if not bool(base_vehicle_result.get("ok", false)):
 		load_error = "; ".join(_result_errors(base_vehicle_result, "vehicle data did not load"))
@@ -170,7 +172,7 @@ func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lak
 			return false
 	base_vehicle_result["vehicle_id"] = vehicle_id
 	vehicle_result["vehicle_id"] = vehicle_id
-	var course_result: Dictionary = AirfieldCourse.build(field_result, {}, lake)
+	var course_result: Dictionary = AirfieldCourse.build(field_result, {}, lake, collision_world)
 	if not bool(course_result.get("ok", false)):
 		load_error = "; ".join(_result_errors(course_result, "airfield course could not be built"))
 		return false

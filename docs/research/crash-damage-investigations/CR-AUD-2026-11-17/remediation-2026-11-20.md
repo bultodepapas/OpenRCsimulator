@@ -29,7 +29,7 @@ This page is the single status ledger for CR-AUD-01…34 and the improved execut
 | 11 | **Fixed** | Wreck scenery is provisioned for every non-water crash | `test_crash_integration` |
 | 12 | **Fixed** | Effect age consumes the whole supplied time; chip motion substeps (≤ 8 × 50 ms) | `test_crash_effects` |
 | 13 | **Fixed** | `apply_energy` owns kerosene fire duration from the accepted fuel sample | `test_crash_effects` |
-| 14 | Planned R3 | Car general-scenery collision (capability) | — |
+| 14 | **Fixed (R3)** | Both cars collide with the field's shared scenery world through the course's wall boxes (`SceneryWalls`): exact boxes, perimeter shells for rotated boxes, columns for capsules; the world enters the course identity | `test_rcv_scenery_collision` |
 | 15 | Fixed earlier | `35787fb5` | `test_parked_aircraft_collision` |
 | 16 | **Fixed** | Delayed rotor release uses the current airframe frame for hub, axis and blade | `test_heli_wreck_delayed_frames` (promoted probe, 90 checks) |
 | 17 | **Fixed** | A checkpoint requested inside the crash tick is refused; the next one carries the crash, cut and tape | `test_mr_graded_crashes` |
@@ -59,7 +59,7 @@ The original eight slices ordered work by theme. The remaining items are now ord
 |---|---|---|---|
 | **R1 native batch** (done except 27) | 02, 03, 18, 19, 24, 34 | `flight_session.gd`, `helicopter_flight_session.gd`, `rotorcraft/impact_detector.gd`, `hull_contact.gd` (mirrored); `lake_collision.gd` | One native rebuild and requalification on Windows, Linux and macOS (NK gates). Companion rebind. Flight-log baseline/candidate comparison for any trajectory change; re-record goldens only for an explained physics change. |
 | **R2 vehicle physics** (done) | 20, 21, 22, 25 | `multirotor/controlled_plant.gd`, `sim/airship/*` | Quad and airship replay/golden checks; contact energy invariant tests; recording identity test with real `.orfl` files. |
-| **R3 car scenery** | 14 | ground-vehicle course/session adapter over the shared collision world | Explicit capability matrix; wall dedupe; bounded candidates with visible overflow; both stock cars, driven passes. |
+| **R3 car scenery** (done) | 14 | ground-vehicle course/session adapter over the shared collision world | Explicit capability matrix; wall dedupe; bounded candidates with visible overflow; both stock cars, driven passes. |
 | **R4 contact-time policy** | 23, 31, 32, 33 | `sim/scenery_collision.gd`, lake policy | Flight-log comparison at 240/480 Hz; no false-clear results; owner decision on transient water. |
 | **R5 presentation follow-ups** | — | wreck/effects | Per-section compound core proxy with slide/rebound retuning (a compound box set made sideways slides tumble on gear boxes, so it needs its own tuning). Quad/airship obstacle identity for lens strikes. 1080p captures of asymmetric, slope and scenery crashes. |
 
@@ -127,3 +127,17 @@ None of the R2 files is native-mirrored, so no kernel requalification is needed;
 | Regression sweep: every `test_mr_*`, `test_race_*`, `test_airship_*`, quad and controller-audit suite plus golden flights (56 suites, including race replay and the quad/airship flight logs) | 0 failures |
 
 **Review outcomes.** An independent review found the first aftermath version (a bounded bounce every crashed tick) kept a wreck hopping and spinning on a roof; it now uses the terrain aftermath law at the endpoint only. The disc query now also takes the deepest rim/hub sample and falls back to an outward normal; the passivity comparison has a round-off tolerance. Kept limits: when shaft braking alone (an extreme yaw rate) raises the coupled energy the kick is removed but the braking stays; the disc contact samples are a bounded search, not an exact disc–box distance; replay of logs recorded before R2 reports `solver_changed`.
+
+## R3 car scenery — verification
+
+The car dynamics (GDScript and native) already collide hull probes with axis-aligned wall boxes from the road sample, so the shared world reaches both backends without a dynamics or native change. `AirfieldCourse.build` converts the world once (cached by world, ground and course walls); `sample` adds the nearest scenery walls after the course walls within the dynamics' 8-wall budget and counts the rest (`walls_omitted`, one warning per process). The ground scene builds the world with `CollisionSetup.build(field, car circuit)`, the aircraft's inventory policy.
+
+**Declared conversion policy.** A box keeps one box when that box overreaches its rotated footprint by at most 0.3 m; otherwise a 0.2 m perimeter shell cut into segments keeps the overreach at most 0.3 m. Capsules become their bounding column (0.41 × radius at the corners). Soft foliage stays drivable; obstacles whose bottom is more than 2 m above the local ground are out of reach; an obstacle mostly inside one course wall is a duplicate. Stock world: 4,305 obstacles admitted as 5,852 boxes (79 shelled, none capped), 1,733 drivable, 113 out of reach, 5 duplicates, 0 unsupported. Scenery damage is not tracked for cars.
+
+| Check (Windows, Godot 4.8 beta 2) | Result |
+|---|---|
+| `test_rcv_scenery_collision` (both cars) | 37 checks, 0 failures: tyre stack and church walls load the solver (10 and 13 contact witnesses), runway clear, slalom wall single, budget held, identity with/without world, shell coverage with worst overreach 0.109 m, coasting at 5 m/s into the church stops 0.27–0.30 m outside and into a rotated barn 0.36–0.38 m outside, while the same approaches without the world enter 1.15–1.29 m |
+| All six spawns, stock lake included | no scenery wall within 1 m |
+| Cost | course preparation +120–145 ms the first time, ~15 ms afterwards (cache); road sample +4–5 µs where obstacles are near; tick time unchanged within noise |
+
+**Review outcomes.** The first conversion used one bounding box per rotated slice, which overreached by up to 6.34 m on rotated buildings (41 of 112); it was replaced by the bounded shell. Reach now uses the local ground, duplicate detection compares one course wall at a time, ties keep the conversion order, and omitted walls are counted and warned. Limits: the course identity now differs between sessions prepared with and without a world (scene versus bare `prepare_airfield`), so a checkpoint from one does not restore into the other; low obstacles under 0.15 m (7 in the stock world) behave as curbs; obstacles are rigid for cars (no breakage or damage record).
