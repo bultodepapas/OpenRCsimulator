@@ -30,7 +30,13 @@ Use the [checked runner](../tools/godot/README.md) for focused tests: Godot can 
 
 Node's version is pinned in [`.nvmrc`](../.nvmrc) for tree authoring and the frozen three.js prototype; the production app and static site do not need Node. [CI](../.github/workflows/ci.yml) owns the Linux package prerequisites and job commands.
 
-Use ignored `tmp/` or `output/` for new scratch results; retain accepted evidence with its owning track. Cleanup must preserve source deliveries, `references/`, tool environments and registered worktrees (`git worktree list`), including those inside scratch directories. Captures and performance evidence follow the [1080p-first resolution policy](../AGENTS.md#display-resolution-priorities).
+## Scratch and caches
+
+On the owner's Windows workstation, prefer the available `U:` volume for new temporary files and outputs where the tool supports choosing a location. On other hosts, use available local scratch storage; ignored `tmp/` or `output/` are the repository defaults. Use a unique output directory for each run and retain accepted evidence with its owning track.
+
+Honor each tool's cache/output contract. `app/get-godot.sh` keeps its verified binaries in `.tools/`; changing generic temporary-directory variables does not relocate that cache. The [test queue](../tools/testqueue/README.md) owns its enrolled-host storage, and the [CI guide](../tools/ci/README.md) explains temporary space for artifact downloads. Do not relocate those paths as a side effect of setup.
+
+Cleanup must preserve source deliveries, `references/`, tool environments and registered worktrees (`git worktree list`), including those inside scratch directories. Captures and performance evidence follow the [resolution policy](../AGENTS.md#display-resolution-priorities), including native pixels on Apple Silicon Retina displays.
 
 ## App and release commands
 

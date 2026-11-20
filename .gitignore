@@ -33,3 +33,7 @@ app/captures/
 .claude/worktrees/
 # Owner delivery drop folder: the extracted blimp deliveries live in assets/source-deliveries/rc-blimp-5m.
 /BLIMP/
+
+# Personal Claude instructions and machine-specific settings.
+CLAUDE.local.md
+.claude/settings.local.json

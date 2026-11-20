@@ -28,7 +28,7 @@ These are starting points for **local development**, not path-only exemptions or
 
 | Change and likely boundary | Start with existing checks | Escalate when |
 | --- | --- | --- |
-| Home/menu layout or text in `app/ui/home.gd` | `test_ui_home_layout.gd`, `test_ui_screen_stack.gd`; targeted native 1080p capture for visible layout changes | Screen navigation, global theme, accessibility, input routing or shared widgets also change: add affected UI suites and transitions |
+| Home/menu layout or text in `app/ui/home.gd` | `test_ui_home_layout.gd`, `test_ui_screen_stack.gd`; targeted native capture at the [applicable display target](../../AGENTS.md#display-resolution-priorities) for visible layout changes | Screen navigation, global theme, accessibility, input routing or shared widgets also change: add affected UI suites and transitions |
 | Radio-calibration wizard (`app/input/rc_calibration.gd` or `app/ui/radio_calibration_setup.gd`) | `test_rc_calibration.gd`, `test_controller_preflight_calibration.gd` | Saved profiles, mappings or live flight-input paths change: add `test_controller_setup.gd`, `test_controller_integration.gd` and the [D6b calibration verifier](../TOOLS.md#radio-diagnostics); hardware observations stay separately pending |
 | Shared radio/controller processing (`app/input/rc_input.gd`, profiles or service) | `test_controller_conditioning.gd`, `test_controller_profile.gd`, `test_controller_integration.gd` | Flight controls, replay, failsafe or ground vehicles consume changed values: test those boundaries too; full suite if impact cannot be bounded |
 | Aircraft law, simulation kernel, physics or shared vehicle contract | Closest physics units, affected aircraft/runtime, deterministic flight/replay evidence | Shared kernel, numeric contracts or multiple vehicles change: run broad/full verification on the stable candidate, preserving golden/replay and native qualification gates |
@@ -69,7 +69,9 @@ Each integration gate is an isolated section: `section "label"; section_body() {
 
 ## One Godot script
 
-Use the [checked runner](../../tools/godot/README.md) to catch engine, script and shader errors even when Godot exits zero:
+For compatible independent headless checks, use the configured [test pool](../../tools/testqueue/README.md) through MCP or its CLI; its workers use the checked runner. When no pool is configured, use the local command below. On enrolled hosts the checked runner must obtain local admission; an unavailable authority cannot be bypassed. Unenrolled hosts retain standalone execution.
+
+The [checked runner](../../tools/godot/README.md) catches engine, script and shader errors even when Godot exits zero:
 
 ```sh
 python3 tools/godot/run_checked.py --timeout 90 -- \
@@ -118,7 +120,7 @@ The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Its ce
 
 ## External tools
 
-Use codebase-memory-mcp for code discovery, following [AGENTS](../../AGENTS.md#discover-code); index the repository if needed and verify stored line ranges against current source. Use `rg` for literals, non-code files or insufficient graph results.
+Use codebase-memory-mcp for code discovery, following [AGENTS](../../AGENTS.md#discover-code); index the repository if needed and verify stored line ranges against current source. Use `rg` for literals, non-code files, an unavailable graph tool or insufficient graph results.
 
 [CodeRabbit setup](../TOOLS.md#coderabbit-reviews) owns hosted/CLI review instructions. Other tools and exact dependency versions belong to their own READMEs; availability in one developer's environment is not a repository guarantee.
 

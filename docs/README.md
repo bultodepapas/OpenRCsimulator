@@ -6,7 +6,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 
 | Need | Authoritative home |
 | --- | --- |
-| Display resolution priorities: 1080p first, above 1080p second, 720p last | [Shared resolution policy](../AGENTS.md#display-resolution-priorities) |
+| Display targets: 1080p first generally; native pixels on Apple Silicon Retina displays | [Shared resolution policy](../AGENTS.md#display-resolution-priorities) |
 | Transparent runtime telemetry, consent and GitHub summaries | [TELEM plan and activation steps](plans/telemetry.md); [receiver](../services/telemetry/README.md); [68 investigations across both research rounds](research/telemetry/TELEM-00-R1/README.md) |
 | Project overview and downloads | [README](../README.md) |
 | Launch, controls, calibration and player diagnostics | [FIRST-LAUNCH](FIRST-LAUNCH.md); release notes describe each download separately |
@@ -21,7 +21,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Performance/visual implementation order, gates and idea decisions | [Global implementation plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |
 | Measured optimization opportunities and follow-up priorities | [Optimization priorities](plans/optimization-priorities.md); the global plan owns acceptance gates |
 | Automated full-session flight and performance benchmark | [GOD TEST implementation plan](plans/god-test.md) |
-| Apple Silicon performance, Metal/MetalFX integration and sustained 1080p qualification | [Technical background](APPLE-SILICON-TECHNICAL-BACKGROUND.md); [master implementation plan](plans/apple-silicon-performance.md); [four-technology MetalFX subplan](plans/apple-metalfx.md) |
+| Apple Silicon performance, Metal/MetalFX and native Retina or standard-display qualification | [Technical background](APPLE-SILICON-TECHNICAL-BACKGROUND.md); [master implementation plan](plans/apple-silicon-performance.md); [four-technology MetalFX subplan](plans/apple-metalfx.md) |
 | Connect to the shared M1 and run native development checks | [M1 access and workflow](tools/macos-m1.md) |
 | Linux support, packages, downloads and release qualification | [Linux execution plan](plans/linux-support-distribution.md); [repository audit and primary sources, 2026-10-28](research/desktop-delivery-investigations/DT-LNX-00/README.md) |
 | Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [automatic graphics audit and plan (VQ-07h-A0…A7)](plans/automatic-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
@@ -42,6 +42,28 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Cinematic trailer, storyboard and filming workflow | [Trailer production plan](plans/cinematic-trailer.md) |
 
 Each download is described by its tagged release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
+
+## Agent instruction files
+
+Keep one shared rule source and use existing topic guides. There is no required bundle of extra agent documents; add a file only when it has a distinct purpose and owner.
+
+| File or location | Responsibility |
+| --- | --- |
+| Root [AGENTS.md](../AGENTS.md) | Durable shared rules, essential commands, nonobvious invariants and task-specific routes |
+| Root [CLAUDE.md](../CLAUDE.md) | A real `@AGENTS.md` import and the small Claude-specific entry point |
+| Nested `AGENTS.md` | Rules unique to that subtree; read applicable files before editing and pass them to helpers |
+| [CONTRIBUTING](../CONTRIBUTING.md), [TOOLS](TOOLS.md) and tool READMEs | Human contribution workflow, setup and exact executable procedures |
+| [STACK](STACK.md), owning guides and plans | Architecture, domain contracts, current work and acceptance gates |
+| [SUBAGENTS](SUBAGENTS.md), [Codex profiles](../.codex/agents/) and [Claude profiles](../.claude/agents/) | Delegation workflow/specialties and actual client model/tool configuration |
+| [DECISIONS](DECISIONS.md), [LEARNINGS](LEARNINGS.md) and [research](research/README.md) | Rationale, reusable lessons and dated source/measurement evidence |
+
+Keep instructions concise enough to scan. Do not copy the tool manual, role catalog, milestone status, run logs or client-version history into startup files. Keep machine paths and personal preferences in local/user configuration; `CLAUDE.local.md` and `.claude/settings.local.json` are ignored. Repository instructions do not change client permissions or guarantee tool/model access.
+
+**Loading:** Codex startup discovery follows the root-to-working-directory chain; it does not preload every nested file. Current Claude Code can read `AGENTS.md` natively, but the default changes when a project `CLAUDE.md` or `CLAUDE.local.md` exists. Retain the explicit import for compatibility and read relevant nested rules explicitly; a Markdown link alone is not an automatic import. Do not import every guide/catalog into the root file: imports still consume startup context.
+
+**Maintenance:** review instruction changes like code. Check commands against their scripts, local links/anchors and imports, inbound references to changed paths/headings, and preservation of project contracts. For changes to loading or runtime profiles, verify discovery in the affected client when available and report untested clients. Keep existing CI gates; prose review is not a permission or runtime-enforcement mechanism.
+
+The [19 November 2026 source refresh](research/agent-orchestration-2026-11-15.md#instruction-file-audit--2026-11-19) records official guidance, GitHub discussion, design choices and the limits of this audit.
 
 ## Tracks, plans and step IDs
 

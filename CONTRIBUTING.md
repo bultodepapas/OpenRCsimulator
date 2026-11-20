@@ -16,14 +16,14 @@ For handling feedback, describe the maneuver, speed if known, stick input, expec
 4. Record any new reusable lesson using [LEARNINGS.md's criteria](docs/LEARNINGS.md#keeping-this-useful), and include the applicable plan step and proof in the commit or pull request: test, capture, trace or measurement.
 5. In a commit or pull request, explain the problem, resulting behavior and validation. State any pending manual checks, especially real-radio, GPU or native-platform testing. Resolve a failed CI gate before considering software verification of a direct `main` change complete.
 
-Documentation-only changes need link and content checks; they do not require rerunning the flight simulation.
+Documentation-only changes need content, local-link/anchor and explicit import checks, plus `git diff --check`; they do not require rerunning the flight simulation locally. Check inbound references before removing paths or headings. Required hosted CI remains governed by the [verification scope](docs/tools/shared.md#verification-scope).
 
 ## Preserve the simulation contract
 
 - Keep simulation state in 64-bit GDScript `float`s. Do not use `Vector3`, `Basis`, `Quaternion` or `Transform3D` for state in `sim/` or `physics/`; rendering converts at the boundary.
 - Sessions install one `VehicleModel` into the shared kernel; keep vehicle-specific laws in that model. See [kernel boundaries](docs/STACK.md#boundaries-and-data-flow).
 - Aircraft parameters use [openrc-aircraft v2](docs/AIRCRAFT_CONTRACT.md) in `app/data/aircraft/`. Physical quantities carry `{value, unit, kind, source}`. Label estimates; invalid data must refuse flight.
-- Regenerate generated geometry and physics data through their source scripts. Do not hand-edit generated files. [AGENTS.md](AGENTS.md) identifies the relevant tracks and ownership boundaries.
+- Regenerate generated geometry and physics data through their source scripts. Do not hand-edit generated files. The [ownership registry](docs/README.md#tracks-plans-and-step-ids) identifies the relevant tracks and shared boundaries.
 - Preserve aircraft node names and control-surface hinge interfaces. Re-record golden flights only for an intentional, explained physics change.
 - Do not leave broken scripts in `app/`: the test runner parses every script. Keep drafts outside the app until ready to validate.
 
@@ -35,7 +35,7 @@ For a new landscape, follow the [landscape contributor guide](docs/LANDSCAPES.md
 
 ## Documentation
 
-Use the [documentation map](docs/README.md) for authoritative topic homes, track ownership, step IDs and writing conventions. Keep current guides concise and accurate to implementation. Preserve sources and required evidence; consolidate useful information before removing completed/superseded plans. Commands belong in [TOOLS](docs/TOOLS.md), controls in [FIRST-LAUNCH](docs/FIRST-LAUNCH.md), and aircraft authoring in [AIRCRAFT_CONTRACT](docs/AIRCRAFT_CONTRACT.md).
+Use the [documentation map](docs/README.md) for authoritative topic homes, track ownership, step IDs and writing conventions. Keep current guides concise and accurate to implementation. Preserve sources and required evidence; consolidate useful information before removing completed/superseded plans. Commands belong in [TOOLS](docs/TOOLS.md), controls in [FIRST-LAUNCH](docs/FIRST-LAUNCH.md), and aircraft authoring in [AIRCRAFT_CONTRACT](docs/AIRCRAFT_CONTRACT.md). For `AGENTS.md`, `CLAUDE.md` and scoped instructions, follow the [instruction-file conventions](docs/README.md#agent-instruction-files).
 
 ## Releases
 

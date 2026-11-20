@@ -1,5 +1,7 @@
 # Agent orchestration investigation — 2026-11-15
 
+The original investigation is retained below. The [19 November instruction-file refresh](#instruction-file-audit--2026-11-19) records the later source review and documentation changes.
+
 ## Scope and conclusion
 
 This follow-up challenges the first agent-guidance revision at
@@ -535,3 +537,48 @@ CI checker. Claude **2.1.211** was identified, without invoking its helpers.
 Effective profile execution, provider model/effort and performance remain
 unverified; startup success does not establish them. Required hosted CI remains
 separate from these documentation/configuration checks.
+
+## Instruction-file audit — 2026-11-19
+
+**DX-06 follow-up.** Reviewed `main` at `e0a733937e255bacfe95ff09db0fb3838697239f` for the owner's requested instruction/documentation audit. The actual filenames are `AGENTS.md` and `CLAUDE.md`; no `cloud.md` was present. This dated section extends the existing research record; [instruction-file conventions](../README.md#agent-instruction-files) own ongoing maintenance.
+
+### Sources and applicability
+
+Sources were retrieved on 19 November 2026 (America/Bogota). A retrieval date is not a publication date. Current official documentation defines supported behavior; first-person GitHub reports identify limitations to corroborate. Proposals in issue threads are not adopted standards.
+
+| Source | Established guidance or limitation | Applied here |
+| --- | --- | --- |
+| [OpenAI: custom instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md) — current documentation | Codex builds its startup chain through the working directory; per-directory override selection and a default 32 KiB combined project limit apply | Explicitly read applicable nested files; keep the root compact |
+| [OpenAI: rethinking skills and prompts](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra) — Eric Provencher, 2026-09-11 | Revisit accumulated rules, route documentation by task and remove unnecessary mandatory reading/testing | Preserve relevant gates; shorten startup instructions and link procedures |
+| [AGENTS.md open format](https://agents.md/) and its [GitHub repository](https://github.com/agentsmd/agents.md) — current project guidance | Plain Markdown with no required field set; agent guidance complements the human README | Use existing guides instead of inventing a required companion-document bundle |
+| [Anthropic: project memory](https://code.claude.com/docs/en/memory) — current documentation | Native AGENTS support is version/configuration dependent; explicit imports remain supported and deduplicated. Imports still consume context. Under 200 lines is a recommendation, not a universal parser limit | Keep a small `CLAUDE.md` import adapter; do not bulk-import supporting guides |
+| [Anthropic: best practices](https://code.claude.com/docs/en/best-practices) — current documentation | Persist nonobvious project knowledge; use scoped rules/procedures when appropriate. Instructions are not enforceable permission configuration | Preserve simulator invariants, separate runtime configuration and avoid duplicated manuals |
+| [Anthropic: steering Claude Code](https://claude.com/resources/articles/steering-claude-code-skills-hooks-rules-subagents-and-more) — 2026-06-18 | Startup instructions, scoped rules, skills, hooks and subagents have different purposes/context costs | Add no new framework, hook or skill solely for document organization |
+| [Claude Code issue #108279](https://github.com/anthropics/claude-code/issues/108279) — opened 2026-11-08 | A user reports AGENTS loading differences for `--add-dir`; official memory docs also identify that limitation | Do not assume native AGENTS support makes every client/session load files identically |
+| [AGENTS issue #135](https://github.com/agentsmd/agents.md/issues/135) — opened 2026-01-08, closed 2026-08-24; [#149](https://github.com/agentsmd/agents.md/issues/149) — opened 2026-02-08 | Discussions propose clarified scope and extensions for skills/subagents; their proposals do not establish mandatory formats | Retain plain Markdown and one shared policy source |
+
+### Repository findings and decisions
+
+The first pass compared root/scoped guidance, helper profiles, current commands and canonical guides. An independent Good Enemy then checked loading, queue admission, guarded source rules and display targets against implementation. The revised candidate receives a separate review for lost contracts and invalid references.
+
+| Finding | Resolution |
+| --- | --- |
+| `CLAUDE.md` repeated root and subagent workflow rules | Keep the import and short Claude entry point; the shared root and subagent guide own policy/details |
+| Root-started tasks could miss seven existing nested `AGENTS.md` files | Require applicable-path discovery and passing scoped rules to helpers; preserve all seven existing scoped files |
+| Mandatory test-pool routing lacked a usable path for unenrolled contributors | Prefer the configured pool, use the checked local runner when no pool is configured, and preserve enrolled-host admission/refusal |
+| Root float64 guidance described a narrower rule than the source guard | Describe the actual noncomment type-name guard outside the guarded directories; keep shader clock requirements visible across the app |
+| Graph guidance assumed the MCP tool existed | Keep graph-first discovery when available and explicitly allow source search when absent |
+| An unconditional Windows drive instruction conflicted with portable setup and tool-owned storage | Preserve the owner's `U:` preference in the setup guide, conditional on availability and supported output paths; retain cache/queue contracts |
+| Documentation map and two current Apple-plan paragraphs omitted Retina external displays | Align them with the existing native-Retina policy; preserve historical measurements and acceptance gates |
+| Physics guidance said every intended change fails goldens | Qualify it as a possible effect of trajectory changes; intentional re-recording still needs an explanation |
+| CI release-preflight summary omitted Windows NK-4 inputs required by the script | Correct the summary without changing CI, receipts or gates |
+
+Preserved: explicit commit/push/merge authorization within the task's scope; selected senior lead; Terra/max and Sonnet/high preferences; independent review and lead integration; generated-data provenance; float64/kernel separation; focused local verification and required CI; golden/replay, physical/pilot/hardware distinctions; graphics scaling and display policy; active plans, 26 specialist definitions and original evidence. No runtime code, permissions, helper tool allowlists or model pins changed. Personal Claude preference files are ignored rather than committed as shared policy.
+
+### Verification scope and limits
+
+This is a documentation/configuration-description change. Validation covers the actual diff, local paths/anchors and explicit imports in all changed documents, inbound references to changed headings, source-checked commands, Codex TOML syntax, declared Claude profile headers and preservation of scoped rules. Ignore behavior is checked in a fresh clone. Static checks do not establish instruction adherence or effective model routing in a live Claude/Codex session.
+
+`tools/ci/check_docs.py` is a Git-object/event/receipt checker, not a general working-tree command. Its six-source allowlist does not cover `CLAUDE.md`, all nested instructions or `SUBAGENTS.md`; this audit therefore checks the complete changed-document set separately. No simulator or performance suite is needed for these prose changes locally. Required CI remains unchanged and any unrun gate must remain unclaimed.
+
+Completed checks on the revised candidate: **1,364 local links/anchors across 19 Markdown files**, the explicit Claude import, all seven scoped instruction files and inbound references to six removed headings passed. All 26 specialist definitions remain byte-identical; four Codex TOML files parse and the three Claude profile headers match their documented model/effort/tool declarations. A fresh sparse clone reproduced all 16 changed files exactly and passed `git diff --check` and intended local-file ignore checks. Source/command review and an independent candidate review resolved the identified documentation issues. No live Claude/Codex discovery session, simulator suite or hardware qualification is claimed.
