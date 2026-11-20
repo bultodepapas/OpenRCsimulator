@@ -120,6 +120,8 @@ var _reference_loads := Callable()
 var _reference_rotor := Callable()
 var _body_only := false
 var _installed_model: RefCounted = null
+## The exact stage Callable installed: the bare native stage, or the helicopter's lake-gated wrapper.
+var _installed_stage := Callable()
 var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
@@ -173,7 +175,7 @@ func owns_stage(session: Node) -> bool:
 	if _body_only:
 		return not _installed_model.stage.is_valid() and _installed_model.loads == Callable(_native, "body_loads") \
 			and _installed_model.rotor_momentum == Callable(_native, "body_rotor")
-	return _installed_model.stage == Callable(_native, "stage")
+	return _installed_model.stage == _installed_stage
 
 
 ## Detach without changing this helper. A transaction can restore its pointer and original model on refusal.
@@ -392,7 +394,13 @@ func install(session: Node) -> Callable:
 			_reference_pre_tick = Callable()
 			reason = "cannot retain the native tick handoff owner"
 			return Callable()
-	if not _body_only: model.stage = Callable(_native, "stage")
+	if not _body_only:
+		_installed_stage = Callable(_native, "stage")
+		# The reference helicopter _stage refuses possible water contact at every RK stage; a bare native stage
+		# would skip it. Lake-free flights keep the bare native callable (no per-stage GDScript at all).
+		if _family == "helicopter" and not session.environment.lake.is_empty():
+			_installed_stage = Callable(session, "_native_gated_stage").bind(_installed_stage)
+		model.stage = _installed_stage
 	if not _macos_domain_context.is_empty():
 		session._collision_world = _macos_domain_context.world
 		session._runway_field = _macos_domain_context.field
@@ -413,6 +421,7 @@ func uninstall(session: Node) -> Callable:
 	_reference_rotor = Callable()
 	_body_only = false
 	_installed = false
+	_installed_stage = Callable()
 	_prepared = false
 	_installed_model = null
 	reason = "uninstalled"

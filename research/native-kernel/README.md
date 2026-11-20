@@ -446,11 +446,13 @@ The existing helicopter reference rejects spatial/OU/column weather, and its hot
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
 claimed as native must execute in C++; matching reference fallbacks cannot establish native coverage.
 
-Helicopter native admission requires an empty published lake context. The session and both direct preparation
-paths refuse lake terrain; a successful stock Club lake attachment therefore selects the reference evaluator.
-The [H03/H05 correction](../../docs/research/helicopter/HELI-33/README.md) carries composed bank/bed terrain
-through the reference consumers and defines the unsupported-water policy. The historical fleet evidence
-above predates this admission boundary; reference fallback does not establish native lake coverage.
+Helicopter native lakes (branch `heli-native-lake`, 2026-11-20): snapshot v2 carries the published lake, decoded
+by the fixed-wing template (`nk_lake_decode.hpp`); skids and hub height sample the composed lake. The reference's
+per-RK-stage water-contact refusal stays in GDScript: `NativeStage` installs `session._native_gated_stage` bound
+around the native stage only when a lake is published. Unsupported water remains refused exactly as in the
+[H03/H05 correction](../../docs/research/helicopter/HELI-33/README.md). `helicopter_oracle.gd` compares stock and
+pad-lake states (open water, bank blend, dry ground) against the reference stage. Earlier fleet evidence predates
+lake admission.
 
 ## Normal-flight backend selection
 
@@ -466,7 +468,7 @@ unsupported or unverified configurations report reference fallback. The interact
 requested/actual backend and refusal reason.
 A stale or missing build is also an engine warning on normal flights (`app/app_state/native_fallback.gd`):
 a refused source/package identity on any host except the macOS release, and a missing library on Windows/Linux
-x86_64. Expected domain refusals (lakes, weather, custom spawn) stay a log line. The debug bridge `state` reports
+x86_64. Expected domain refusals (weather, custom spawn, RC circuit) stay a log line. The debug bridge `state` reports
 `flight.physics_backend` as `{backend, requested, kind, reason}`; check `kind == "native"` before measuring.
 Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
 reference CSV bytes. In source builds, the exact verified Godot executable, binary and mirrored source/data hashes must match.

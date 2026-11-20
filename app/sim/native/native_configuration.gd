@@ -108,8 +108,9 @@ static func prepare(session: Node, builder: Callable) -> Dictionary:
 ## Rotorcraft provide separate prepared helicopter and weather inputs. Their
 ## reference stage and lifecycle/layout are distinct from fixed-wing sessions.
 static func prepare_helicopter(session: Node) -> Dictionary:
-	if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
-		return {ok = false, reason = "native helicopter terrain does not support lakes"}
+	var lake_refusal: String = HelicopterAdapter.lake_refusal(session)
+	if not lake_refusal.is_empty():
+		return {ok = false, reason = lake_refusal}
 	var weather: Dictionary = NativeWeather.prepare_helicopter(session)
 	if not weather.get("ok", false):
 		return {ok = false, reason = str(weather.get("reason", "helicopter weather refused"))}
@@ -117,10 +118,11 @@ static func prepare_helicopter(session: Node) -> Dictionary:
 	if session.sim.model.stage != expected_stage:
 		return {ok = false, reason = "mismatched helicopter reference stage owner"}
 	var snapshot: Dictionary = HelicopterAdapter.snapshot(session)
-	if snapshot.get("format") != "openrc-nk3-helicopter-snapshot-v1" \
+	if snapshot.get("format") != HelicopterAdapter.SNAPSHOT_FORMAT \
 			or var_to_bytes(snapshot.get("context")) != var_to_bytes(session.aircraft.context) \
 			or var_to_bytes(snapshot.get("skids")) != var_to_bytes(session.aircraft.skids) \
-			or var_to_bytes(snapshot.get("surfaces")) != var_to_bytes(session.environment.surfaces):
+			or var_to_bytes(snapshot.get("surfaces")) != var_to_bytes(session.environment.surfaces) \
+			or var_to_bytes(snapshot.get("lake")) != var_to_bytes(session.environment.lake):
 		return {ok = false, reason = "helicopter stage config differs from its live source identity"}
 	var identity := _capture_identity(session, expected_stage, "helicopter", HELICOPTER_SESSION_FIELDS)
 	var detached: Dictionary = snapshot.duplicate(true)

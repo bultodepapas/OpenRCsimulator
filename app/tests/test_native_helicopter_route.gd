@@ -36,9 +36,6 @@ func _activity(args: PackedStringArray, requested: String) -> void:
 		if requested == NativeStage.BACKEND_REFERENCE:
 			_check("explicit reference is owned", status.identity == NativeStage.reference_identity() \
 				and status.reason.is_empty() and session.is_flyable(), str(status))
-		elif not session.lake_context().is_empty():
-			_check("published lake explicitly falls back to reference", status.identity == NativeStage.reference_identity() \
-				and "does not support lakes" in status.reason and session.is_flyable(), str(status))
 		elif NativeStage.library_status().ok and NativeStage._mirrored_source_error().is_empty():
 			_check("verified native stage is owned", status.identity.get("backend") == NativeStage.BACKEND_NATIVE \
 				and session._native_stage != null and session._native_stage.owns_stage(session) \
@@ -65,7 +62,7 @@ func _root_activity(args: PackedStringArray, requested: String) -> void:
 	if session != null:
 		var status: Dictionary = session.stage_backend_status()
 		var expected := NativeStage.BACKEND_NATIVE if requested == NativeStage.BACKEND_NATIVE \
-			and session.lake_context().is_empty() and NativeStage.library_status().ok \
+			and NativeStage.library_status().ok \
 			and NativeStage._mirrored_source_error().is_empty() else NativeStage.BACKEND_REFERENCE
 		_check("app root reports the actual " + requested + " backend", status.identity.backend == expected \
 			and session.is_flyable(), str(status))

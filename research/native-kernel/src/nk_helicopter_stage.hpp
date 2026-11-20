@@ -157,6 +157,7 @@ struct HeliStageModel {
 	HeliDriveModel drive;
 	HeliSkidModel skids;
 	SurfaceTable surfaces;
+	LakeTerrain lake; // present == false is the exact lake-free path
 	R mass_kg = 0.0, gravity_m_s2 = 0.0, spin_inertia = 0.0;
 	std::array<R, 6> inertia{}, inertia_inverse{};
 	Vec3 coupling_b{};
@@ -199,7 +200,7 @@ inline HeliStageResult heli_stage(const R *body, const R *continuous, int contin
 	if (continuous_size == 14) {
 		for (int i = 0; i < 8; ++i) memory[i] = continuous[6 + i];
 	}
-	const HeliSkidResult contact = heli_skids(body, m.skids, m.surfaces, continuous_size == 14 ? &memory : nullptr);
+	const HeliSkidResult contact = heli_skids(body, m.skids, m.surfaces, m.lake, continuous_size == 14 ? &memory : nullptr);
 	if (!contact.ok) {
 		return {};
 	}
@@ -222,8 +223,7 @@ inline HeliStageResult heli_stage(const R *body, const R *continuous, int contin
 	const R hub_q[4] = {state[6] / hub_qnorm, state[7] / hub_qnorm, state[8] / hub_qnorm, state[9] / hub_qnorm};
 	const Vec3 hub = {m.aero.main.hub_x_m, m.aero.main.hub_y_m, m.aero.main.hub_z_m};
 	const Vec3 hub_offset = q_rotate3(hub_q, hub.data());
-	static const LakeTerrain no_lake;
-	const Vec3 ground = terrain_sample_validated(state[0] + hub_offset[0], state[1] + hub_offset[1], m.surfaces, no_lake);
+	const Vec3 ground = terrain_sample_validated(state[0] + hub_offset[0], state[1] + hub_offset[1], m.surfaces, m.lake);
 	const R height = (-state[2] - hub_offset[2] - ground[0]) / m.aero.main.rotor_radius_m;
 	if (!is_nan(height) && !is_finite(height)) return heli_stage_failure("invalid helicopter evaluation arguments");
 	if (!is_nan(height) && height < 0.0 && height != -1.0) {

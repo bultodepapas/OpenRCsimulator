@@ -8,6 +8,7 @@ const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
 const Detector = preload("res://physics/rotorcraft/impact_detector.gd")
 const Adapter = preload("res://sim/native/helicopter_stage_adapter.gd")
 const NativeConfig = preload("res://sim/native/native_configuration.gd")
+const NativeStage = preload("res://sim/native_stage.gd")
 const Main = preload("res://helicopter_main.gd")
 const Audio = preload("res://audio/helicopter_audio.gd")
 const RB = preload("res://physics/rigid_body.gd")
@@ -126,8 +127,18 @@ func _run() -> void:
 	check("water entry explicitly unsupported", s._water_contact_possible(water,water))
 	var high: PackedFloat64Array=water.duplicate(); high[2]=-4.0
 	check("high overflight remains admitted", not s._water_contact_possible(high,high))
-	check("direct native adapter rejects lake", not Adapter.prepare(s,null).ok)
-	check("direct native configuration rejects lake", not NativeConfig.prepare_helicopter(s).ok)
+	# Native helicopter lakes: a valid published lake is carried to the native stage, an invalid one is refused.
+	check("direct native adapter accepts a valid lake", Adapter.lake_refusal(s).is_empty(), Adapter.lake_refusal(s))
+	var configured: Dictionary=NativeConfig.prepare_helicopter(s)
+	check("direct native configuration carries the lake", configured.get("ok",false) \
+		and configured.snapshot.format==Adapter.SNAPSHOT_FORMAT \
+		and var_to_bytes(configured.snapshot.lake)==var_to_bytes(s.environment.lake), str(configured.get("reason","")))
+	var valid_lake: Dictionary=s.environment.lake
+	var broken: Dictionary=valid_lake.duplicate(true)
+	broken.erase("bank_ne_m")
+	s.environment.lake=broken
+	check("direct native adapter refuses an invalid lake definition", Adapter.lake_refusal(s)=="helicopter lake definition is invalid")
+	s.environment.lake=valid_lake
 	check("compatible lake checkpoint restores", s.restore_checkpoint(old).ok)
 	var in_water: Dictionary=old.duplicate(true)
 	in_water.simulation.state=water.duplicate(); in_water.simulation.previous=water.duplicate()
@@ -166,7 +177,18 @@ func _run() -> void:
 		s.environment.lake={}; installed.restore.call()
 	s.free()
 	var native: Node=_new_session(field,lake,"native")
-	check("native requested lake falls back before preparation", native.reset() and native.stage_backend_status().identity.backend=="gdscript_reference" and native.stage_backend_error.contains("does not support lakes"), native.stage_backend_error)
+	# Native helicopter lakes (branch heli-native-lake): a lake no longer refuses native; an unavailable library still
+	# falls back explicitly, never with the retired lake reason.
+	var native_ready: bool=native.reset()
+	var native_status: Dictionary=native.stage_backend_status()
+	if NativeStage.library_status().ok and NativeStage._mirrored_source_error().is_empty():
+		check("native requested lake owns the gated native stage", native_ready and native_status.identity.backend=="native" \
+			and native.stage_backend_error.is_empty() and native._native_stage!=null and native._native_stage.owns_stage(native) \
+			and native.sim.model.stage!=Callable(native._native_stage._native,"stage"), str(native_status))
+	else:
+		check("unavailable native stage falls back explicitly with a lake", native_ready \
+			and native_status.identity.backend=="gdscript_reference" and not native.stage_backend_error.is_empty() \
+			and not native.stage_backend_error.contains("lake"), native.stage_backend_error)
 	native.free()
 	var translated: Dictionary=lake.duplicate(true)
 	for key: String in ["shoreline_ne_m","bank_ne_m"]:

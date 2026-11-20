@@ -61,6 +61,102 @@ func _checks() -> void:
 				_check_malformed_stages(session, start)
 				_check_heli_refusals(session, snapshot, start)
 			session.free()
+	_check_lake_sessions(loaded_field.field)
+
+
+## Native helicopter lakes: the stock Club lake and a copy moved over the helicopter pad. States sample skids and
+## the hub over open water, the bank blend and dry ground. The installed native stage runs behind the reference
+## water-contact refusal (session._native_gated_stage), so states that refusal stops are counted, not compared;
+## every other state must match the reference _stage byte for byte.
+func _check_lake_sessions(field: Dictionary) -> void:
+	var loaded: Dictionary = LakeLoader.load_from()
+	if not loaded.get("ok", false):
+		_failures.append("stock lake failed to load")
+		return
+	var stock: Dictionary = loaded.lake
+	var pad_lake: Dictionary = stock.duplicate(true)
+	for key: String in ["shoreline_ne_m", "bank_ne_m"]:
+		var polygon: PackedFloat64Array = pad_lake[key]
+		for i: int in range(0, polygon.size(), 2):
+			polygon[i] -= 104.0
+			polygon[i + 1] -= 125.0
+		pad_lake[key] = polygon
+	pad_lake.origin_north_m -= 104.0
+	pad_lake.origin_east_m -= 125.0
+	pad_lake.identity = LakeLoader.identity(pad_lake)
+	for case: Array in [["stock", stock], ["pad", pad_lake]]:
+		for start: String in ["ground", "airborne"]:
+			var session: Node = HelicopterSession.new()
+			session.input_enabled = false
+			if not session.setup(HELICOPTER_PATH, HELICOPTER_ID) or not session.set_field(field) \
+					or not session.set_lake_context(case[1]) or not session.set_start_choice(start) \
+					or not session.setup_weather(HeliWindConfig.preset("calm")) or not session.reset():
+				# A start the reference itself refuses (for example the pad covered by water) is not a native gap.
+				_tally("helicopter_lake_" + str(case[0]), "reference_start_refused_" + start)
+				session.free()
+				continue
+			var prepared: Dictionary = _native.prepare_helicopter(_snapshot(session))
+			if not prepared.ok:
+				_failures.append("helicopter lake prepare %s/%s: %s" % [case[0], start, str(prepared.error)])
+				session.free()
+				continue
+			_check_lake_states(session, str(case[0]), start, case[1])
+			session.free()
+
+
+func _check_lake_states(session: Node, lake_name: String, start: String, lake: Dictionary) -> void:
+	var initial_body: PackedFloat64Array = session.sim.state.duplicate()
+	var initial_continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	var surfaces: PackedFloat64Array = session.ground_surfaces
+	var origin_down: float = Terrain.sample_validated(initial_body[0], initial_body[1], surfaces, lake)[0]
+	var shoreline: PackedFloat64Array = lake.shoreline_ne_m
+	var bank: PackedFloat64Array = lake.bank_ne_m
+	var group := "helicopter_lake_" + lake_name + "_" + start
+	var count := maxi(24, int(ceil(float(_states) / 8.0)))
+	for i in count:
+		var body := initial_body.duplicate()
+		var continuous := initial_continuous.duplicate()
+		var target := [initial_body[0], initial_body[1]]
+		match i % 4:
+			0: # a bank vertex nudged inward or outward: the composed bank slope
+				var v := 2 * (_rng.randi() % (bank.size() / 2))
+				var t := _rng.randf_range(0.0, 1.0)
+				var w := 2 * (_rng.randi() % (shoreline.size() / 2))
+				target = [lerpf(bank[v], shoreline[w], t), lerpf(bank[v + 1], shoreline[w + 1], t)]
+			1: # open water, near a shoreline vertex pulled toward the lake origin
+				var w := 2 * (_rng.randi() % (shoreline.size() / 2))
+				target = [lerpf(shoreline[w], float(lake.origin_north_m), _rng.randf_range(0.2, 0.9)),
+					lerpf(shoreline[w + 1], float(lake.origin_east_m), _rng.randf_range(0.2, 0.9))]
+			2: # dry ground far from the bank
+				target = [initial_body[0] + _rng.randf_range(-30.0, 30.0), initial_body[1] + _rng.randf_range(-30.0, 30.0)]
+			3: # around the start position (pad, which the pad lake covers)
+				target = [initial_body[0] + _rng.randf_range(-1.5, 1.5), initial_body[1] + _rng.randf_range(-1.5, 1.5)]
+		body[0] = target[0]
+		body[1] = target[1]
+		var down: float = Terrain.sample_validated(body[0], body[1], surfaces, lake)[0]
+		if start == "ground":
+			body[2] = initial_body[2] + origin_down - down + _rng.randf_range(-0.008, 0.008)
+			for axis in 8: continuous[6 + axis] = _rng.randf_range(-0.0002, 0.0002)
+		else:
+			body[2] = initial_body[2] + origin_down - down - _rng.randf_range(0.0, 25.0)
+		for axis in 3:
+			body[3 + axis] += _rng.randf_range(-0.5, 0.5)
+			body[10 + axis] = _rng.randf_range(-0.3, 0.3)
+		session.sim.inputs = PackedFloat64Array([_rng.randf_range(-0.5, 0.5), _rng.randf_range(-0.5, 0.5),
+			_rng.randf_range(-0.5, 0.5), _rng.randf_range(0.1, 0.9)])
+		_tally(group, "states")
+		if session._water_contact_possible(body, body, true):
+			# The gated native stage refuses before any native evaluation, exactly as the reference _stage.
+			session._stage_failure = ""
+			var refused: Dictionary = session._stage(body, continuous, 0.0)
+			if not refused.is_empty() or not str(session._stage_failure).begins_with("Helicopter water contact"):
+				_failures.append("reference did not refuse a water-contact state the gate refuses: " + group)
+			_tally(group, "water_gated")
+			continue
+		var accepted := _compare_stage(session, body, continuous, 0.0, [lake_name, start, i, target])
+		_tally(group, "accepted" if accepted else "refused")
+		if down != Terrain.sample_validated(body[0], body[1], surfaces, {})[0]:
+			_tally(group, "lake_composed_terrain")
 
 
 func _make_session(field: Dictionary, start: String, weather_id: String) -> Node:
@@ -101,8 +197,8 @@ func _make_session(field: Dictionary, start: String, weather_id: String) -> Node
 
 
 func _snapshot(session: Node) -> Dictionary:
-	return {format = "openrc-nk3-helicopter-snapshot-v1", context = session.aircraft.context,
-		skids = session.aircraft.skids, surfaces = session.ground_surfaces.duplicate()}
+	return {format = "openrc-nk3-helicopter-snapshot-v2", context = session.aircraft.context,
+		skids = session.aircraft.skids, surfaces = session.ground_surfaces.duplicate(), lake = session.environment.lake}
 
 
 func _tick(session: Node) -> Dictionary:

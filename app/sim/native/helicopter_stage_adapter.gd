@@ -7,11 +7,25 @@ const WeatherAdapter := preload("weather_adapter.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+## v2: the published lake travels with the snapshot ({} without a lake); decoded like the fixed-wing lake.
+const SNAPSHOT_FORMAT := "openrc-nk3-helicopter-snapshot-v2"
 
 
 static func snapshot(session: Node) -> Dictionary:
-	return {format = "openrc-nk3-helicopter-snapshot-v1", context = session.aircraft.context,
-		skids = session.aircraft.skids, surfaces = session.ground_surfaces.duplicate()}
+	return {format = SNAPSHOT_FORMAT, context = session.aircraft.context,
+		skids = session.aircraft.skids, surfaces = session.ground_surfaces.duplicate(),
+		lake = session.environment.lake}
+
+
+## "" when the session's lake can drive the native stage: none, or a definition the reference skids also accept.
+static func lake_refusal(session: Node) -> String:
+	if not is_instance_valid(session.environment):
+		return "helicopter environment is unavailable"
+	var lake: Dictionary = session.environment.lake
+	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
+		return "helicopter lake definition is invalid"
+	return ""
 
 
 ## Helicopter currently supports only the built-in uniform provider, without
@@ -47,8 +61,8 @@ static func tick(session: Node, inputs: PackedFloat64Array) -> Dictionary:
 
 
 static func prepare(session: Node, native: Object) -> Dictionary:
-	if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
-		return {ok = false, error = "native helicopter terrain does not support lakes"}
+	var refusal := lake_refusal(session)
+	if not refusal.is_empty(): return {ok = false, error = refusal}
 	var weather := weather_snapshot(session)
 	if weather.is_empty(): return {ok = false, error = "helicopter weather provider differs from the supported session"}
 	return native.prepare_heli_stage(snapshot(session), weather)
@@ -65,8 +79,9 @@ static func install(session: Node, native: Object) -> Dictionary:
 	if not previous_stage.is_valid() or previous_stage != Callable(session, "_stage"):
 		return {ok = false, error = "helicopter model stage is not the built-in session evaluator"}
 	var context_state := {ok = true}
+	var lake_identity := str(session.environment.lake.get("identity", ""))
 	var wrapped := func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> Variant:
-		if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
+		if not is_instance_valid(session.environment) or str(session.environment.lake.get("identity", "")) != lake_identity:
 			context_state.ok = false
 			return PackedFloat64Array()
 		var next: Variant = previous_pre_tick.call(aux, inputs, dt) if previous_pre_tick.is_valid() else aux
@@ -77,7 +92,10 @@ static func install(session: Node, native: Object) -> Dictionary:
 	if not native.set_heli_tick_context(tick(session, session.sim.inputs)):
 		return {ok = false, error = str(native.heli_last_failure())}
 	model.pre_tick = wrapped
-	model.stage = Callable(native, "stage")
+	var stage := Callable(native, "stage")
+	if not session.environment.lake.is_empty():
+		stage = Callable(session, "_native_gated_stage").bind(stage)
+	model.stage = stage
 	var restore := func() -> void:
 		model.stage = previous_stage
 		model.pre_tick = previous_pre_tick

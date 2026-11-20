@@ -31,6 +31,7 @@
 #include "nk_wake_binding.hpp"
 #include "nk_wake_spatial_binding.hpp"
 #include "nk_glow_binding.hpp"
+#include "nk_lake_decode.hpp"
 #include "nk_helicopter_binding.hpp"
 #include "nk_liquid_binding.hpp"
 #include "nk_prescribed_binding.hpp"
@@ -496,50 +497,8 @@ bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 }
 
 bool decode_lake(Decoder &dec, const Dictionary &lake, nk::LakeTerrain &out) {
-	out = nk::LakeTerrain();
-	if (lake.is_empty()) {
-		return true;
-	}
-	out.present = true;
-	if (!dec.vec(lake, "shoreline_ne_m", out.shoreline, true) || !dec.vec(lake, "bank_ne_m", out.bank, true) ||
-			!dec.number(lake, "water_level_down_m", out.water_level_down, true)) {
-		return false;
-	}
-	if (out.shoreline.size() < 6 || out.shoreline.size() % 2 != 0 || out.bank.size() < 6 || out.bank.size() % 2 != 0) {
-		return dec.fail("lake polygons");
-	}
-	if (!lake.has("bed_profile") || lake["bed_profile"].get_type() != Variant::ARRAY) {
-		return dec.fail("lake bed_profile");
-	}
-	const Array profile = lake["bed_profile"];
-	if (profile.is_empty()) {
-		return dec.fail("empty lake bed_profile");
-	}
-	for (int64_t i = 0; i < profile.size(); ++i) {
-		if (profile[i].get_type() != Variant::DICTIONARY) {
-			return dec.fail("lake bed_profile row");
-		}
-		const Dictionary row = profile[i];
-		nk::R inset = 0.0, depth = 0.0;
-		if (!dec.number(row, "inset_m", inset, true) || !dec.number(row, "depth_m", depth, true)) {
-			return false;
-		}
-		out.profile_inset.push_back(inset);
-		out.profile_depth.push_back(depth);
-	}
-	// lake_surface.gd _polygon_aabb of the bank.
-	double north_min = nk::kInf, north_max = -nk::kInf, east_min = nk::kInf, east_max = -nk::kInf;
-	for (size_t index = 0; index < out.bank.size(); index += 2) {
-		north_min = nk::minf(north_min, out.bank[index]).v;
-		north_max = nk::maxf(north_max, out.bank[index]).v;
-		east_min = nk::minf(east_min, out.bank[index + 1]).v;
-		east_max = nk::maxf(east_max, out.bank[index + 1]).v;
-	}
-	out.bank_aabb[0] = north_min;
-	out.bank_aabb[1] = north_max;
-	out.bank_aabb[2] = east_min;
-	out.bank_aabb[3] = east_max;
-	return true;
+	// Same template body the helicopter stage uses (nk_lake_decode.hpp); behavior unchanged.
+	return nk::decode_lake_prepared(dec, lake, out);
 }
 
 bool decode_prop(Decoder &dec, const Dictionary &prop, nk::PropModel &out) {
