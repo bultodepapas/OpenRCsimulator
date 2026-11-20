@@ -6,12 +6,13 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from build_locales import LOCALES
+from build_locales import LOCALES, clearview_guide_file
 
 SITE = Path(__file__).resolve().parent
 REPOSITORY = "bultodepapas/OpenRCsimulator"
 REMOTE = f"https://github.com/{REPOSITORY}.git"
 FILES = tuple(config["file"] for config in LOCALES.values()) + ("sitemap.xml", "style.css", "details.css", "cinema.css", "content.js", "main.js", "details.js", "viewer.js", "cinema.js", "inspector.js", "downloads.js", "vitals.js", "favicon.svg", ".nojekyll")
+FILES += tuple(clearview_guide_file(lang) for lang in LOCALES)
 
 
 def run(*args, cwd=None):
