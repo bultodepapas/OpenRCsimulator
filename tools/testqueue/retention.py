@@ -61,7 +61,9 @@ def _read(path):
 
 
 def _key(path) -> str:
-    return os.path.normcase(os.path.normpath(str(path)))
+    # Resolve links, junctions and 8.3 names: receipts store resolved paths and a
+    # mismatch here would release a live input (TQ-05 review).
+    return os.path.normcase(os.path.realpath(str(path)))
 
 
 def _age_hours(path: Path, now: float) -> float:
@@ -290,7 +292,7 @@ def _pool_root(config: Path | None) -> Path | None:
     config = config or (Path(os.environ["OPENRC_TESTPOOL_CONFIG"]) if os.environ.get("OPENRC_TESTPOOL_CONFIG")
                         else DEFAULT_POOL_CONFIG)
     data = _read(config) if config.exists() else None
-    return Path(data["state_root"]) if data and data.get("state_root") else None
+    return Path(data["state_root"]).resolve() if data and data.get("state_root") else None
 
 
 def main(argv=None):

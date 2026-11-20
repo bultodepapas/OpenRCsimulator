@@ -70,9 +70,40 @@ class CompactStatusTests(unittest.TestCase):
                          ("angela", "TEST_FAILED", 1.9, "process_exit"))
         self.assertEqual(item["log_tail"], ["FAIL thing: expected 2 got 3", "SUMMARY 5 checks, 1 failures"])
         self.assertEqual(item["missing_markers"], ["0 failures"])
+        from tools.testqueue.collection import FORMAT
         passed = agent_view.compact_row({"phase": "DONE", "request_id": "j2", "input": {"script": "b"},
-                                         "status": {"outcome": "PASSED"}, "collection": {"log": str(log)}})
+                                         "status": {"state": "FINISHED", "outcome": "PASSED", "evidence": "COMPLETE",
+                                                    "cleanup": "CONFIRMED"},
+                                         "collection": {"log": str(log), "pool_job": "j2", "pool_outcome": "PASSED",
+                                                        "diagnostic_only": False, "collection_format": FORMAT}})
+        self.assertEqual(passed["outcome"], "PASSED")
         self.assertNotIn("log_tail", passed)
+
+    def test_import_timeout_names_cause_and_reads_diagnostic_log(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            collection_dir = Path(tmp) / "collection-x"
+            log = collection_dir / "artifacts/import/import-1/engine.log"
+            log.parent.mkdir(parents=True)
+            log.write_text("[ 30% ] reimport | a.jpg\nERROR: GDExtension dynamic library not found\n", encoding="utf-8")
+            row = {"phase": "DONE", "request_id": "j3", "input": {"script": "s", "platform": "any"},
+                   "status": {"outcome": "INFRA_FAILED", "pool_host": "angel",
+                              "import": {"complete": False, "ok": False, "reason": "timeout"}},
+                   "collection": {"pool_report": str(collection_dir / "pool-infra-report.json"),
+                                  "diagnostic_only": True}}
+            item = agent_view.compact_row(row)
+        self.assertEqual(item["why"], "import timeout")
+        self.assertIn("importing project assets", item["hint"])
+        self.assertEqual(item["log_tail"], ["ERROR: GDExtension dynamic library not found"])
+        view = agent_view.compact_status({"request_id": "z", "summary": {
+            "next_action": "inspect attention[].evidence and attention[].log; fix"}, "jobs": []})
+        self.assertEqual(view["summary"]["next_action"], "inspect tests[].report and tests[].log_tail; fix")
+
+    def test_unverified_pass_is_not_shown_as_a_plain_pass(self):
+        row = {"phase": "DONE", "request_id": "j4", "input": {"script": "s"},
+               "status": {"outcome": "PASSED", "evidence": "INCOMPLETE", "cleanup": "UNCONFIRMED"}, "collection": {}}
+        item = agent_view.compact_row(row)
+        self.assertEqual(item["outcome"], "PASSED_UNVERIFIED")
+        self.assertIn("does not qualify", item["why"])
 
     def test_compact_status_is_small_and_keeps_top_level_result(self):
         rows = [_row("WAITING") for _ in range(40)]

@@ -435,6 +435,10 @@ class Pool:
             if existing is not None:
                 if not _plain_file(existing):
                     raise ValueError('Cached archive must be a regular file, not a link or reparse point')
+                try:
+                    os.utime(archive)  # reuse counts as recent for retention's age floor
+                except OSError:
+                    pass
                 return archive
             # This is an advisory check on the actual archive volume, not a
             # reservation against concurrent writes. Failure cleanup remains

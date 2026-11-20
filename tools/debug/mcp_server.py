@@ -174,9 +174,9 @@ STATUS_QUEUE_LIMIT = 8
 TEST_QUEUE_LIMIT = 16
 # Test-pool calls touch only durable receipts (no process-global stdout or
 # environment), so they get their own lane and never wait behind a long
-# simulator call. Two workers let a waiting sim_test_run coexist with a launch.
+# simulator call. Four workers let waiting sim_test_run calls coexist with launches.
 TEST_LANE = {"sim_test_launch", "sim_test_recover", "sim_test_run", "sim_fleet", "sim_test_list"}
-TEST_WORKERS = 2
+TEST_WORKERS = 4
 OUTPUT_QUEUE_LIMIT = 64
 MAX_INPUT_CHARS = 1024 * 1024
 OUTPUT_ENQUEUE_SECONDS = 0.2

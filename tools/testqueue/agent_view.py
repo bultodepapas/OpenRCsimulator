@@ -193,6 +193,19 @@ def _tail_lines(path, limit: int = 8) -> list[str]:
     return [line[:300] for line in (flagged[-limit:] if flagged else lines[-min(limit, 5):])]
 
 
+def _diagnostic_log(collection: dict):
+    """The engine log inside a diagnostic-only collection, which has no ``log`` key."""
+    report = collection.get("pool_report") or collection.get("report")
+    if not report:
+        return None
+    artifacts = Path(report).parent / "artifacts"
+    for pattern in ("check/*/engine.log", "import/*/engine.log"):
+        found = sorted(artifacts.glob(pattern))
+        if found:
+            return str(found[0])
+    return None
+
+
 def compact_row(row: dict) -> dict:
     status, collection = row.get("status") or {}, row.get("collection") or {}
     item = {"script": (row.get("input") or {}).get("script"), "platform": (row.get("input") or {}).get("platform"),
@@ -202,6 +215,11 @@ def compact_row(row: dict) -> dict:
         item["host"] = host
     if status.get("outcome") or collection.get("pool_outcome"):
         item["outcome"] = status.get("outcome") or collection.get("pool_outcome")
+        if item["outcome"] == "PASSED" and row.get("phase") == "DONE":
+            from tools.testqueue.pool_batch import _finished_success
+            if not _finished_success(row):
+                item["outcome"] = "PASSED_UNVERIFIED"
+                item["why"] = "evidence incomplete, cleanup unconfirmed or collection unverified; does not qualify"
     seconds = collection.get("elapsed_seconds")
     if isinstance(seconds, (int, float)):
         item["seconds"] = round(seconds, 1)
@@ -214,12 +232,18 @@ def compact_row(row: dict) -> dict:
         item["error"] = str(error)[:300]
     if item.get("outcome") and item["outcome"] != "PASSED" or item["phase"] in {"BLOCKED", "COLLECTION_BLOCKED"}:
         checked = status.get("checked") or {}
+        imported = status.get("import") if isinstance(status.get("import"), dict) else {}
         why = collection.get("reason") or checked.get("reason")
+        if not why and imported.get("reason"):
+            why = f"import {imported['reason']}"  # the test itself never started
         if why:
             item["why"] = why
+            if why == "import timeout":
+                item["hint"] = ("the host spent the whole timeout importing project assets; "
+                                "raise timeout or prefer a host with a warm import")
         if collection.get("missing_required_text"):
             item["missing_markers"] = collection["missing_required_text"][:5]
-        log = collection.get("log") or collection.get("diagnostic_log")
+        log = collection.get("log") or collection.get("diagnostic_log") or _diagnostic_log(collection)
         if log:
             item["log"] = log
             item["log_tail"] = _tail_lines(log)
@@ -232,6 +256,9 @@ def compact_status(full: dict) -> dict:
     """The default sim_test_status reply: summary, one compact line per test."""
     summary = dict(full.get("summary") or {})
     summary.pop("attention", None)  # the per-test rows below carry the same detail
+    if isinstance(summary.get("next_action"), str):
+        summary["next_action"] = summary["next_action"].replace("attention[].evidence", "tests[].report") \
+            .replace("attention[].log", "tests[].log_tail").replace("attention[]", "tests[]")
     rows = [compact_row(row) for row in full.get("jobs") or []]
     if not rows and isinstance(full.get("request_jobs"), list):
         rows = [{"script": job.get("script"), "platform": job.get("platform"), "phase": "NOT_FROZEN"}

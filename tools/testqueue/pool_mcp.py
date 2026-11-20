@@ -171,7 +171,7 @@ def run(jobs, request_id=None, source=None, wait_s=60, *, config=None):
         if view["summary"].get("result") in {"PASSED", "FAILED"} or time.monotonic() >= deadline:
             break
         if not view.get("supervisor_active") and view["summary"].get("next_action", "").startswith(
-                ("sim_test_recover", "inspect", "snapshot", "source freeze")):
+                ("sim_test_recover", "inspect", "snapshot", "source freeze", "needs attention")):
             break  # the supervisor stopped; waiting longer cannot change the answer
         time.sleep(min(RUN_POLL_SECONDS, max(0.0, deadline - time.monotonic())))
     view["waited_seconds"] = round(wait_s - max(0.0, deadline - time.monotonic()), 1)

@@ -4,7 +4,7 @@ One pass:
 
 * resumes, via the idempotent ``pool_mcp.recover``, every MCP request that has
   a frozen manifest, no final result, no live supervisor, is not
-  ``NEEDS_OPERATOR`` and changed within ``--max-age-hours`` (default 24). Older
+  ``NEEDS_OPERATOR`` and changed within ``--max-age-hours`` (default 6). Older
   ones are reported as stale, never resumed: their queued tests would run days
   old source.
 * with ``--serve-engine``, starts ``testctl serve`` when the local authority does
@@ -93,7 +93,7 @@ def start_authority(engine: str, log: Path) -> None:
                                    "--engine", engine], output)
 
 
-def run_once(config=None, *, max_age_hours=24.0, dry_run=False, serve_engine=None) -> dict:
+def run_once(config=None, *, max_age_hours=6.0, dry_run=False, serve_engine=None) -> dict:
     pool = Pool(config or default_config())
     now = time.time()
     report = {"at": now, **plan(pool, max_age_hours=max_age_hours, now=now)}
@@ -118,6 +118,8 @@ def run_once(config=None, *, max_age_hours=24.0, dry_run=False, serve_engine=Non
             results.append({"request_id": identifier, "resumed": False, "error": str(error)[:200]})
     report["results"] = results
     report["resume_history"] = {key: value for key, value in history.items() if value}
+    from tools.testqueue.common import state_root
+    report["authority_root"] = str(state_root())
     if serve_engine:
         answers = authority_answers()
         report["authority"] = "answers" if answers else ("would start" if dry_run else "started")
@@ -134,7 +136,7 @@ def run_once(config=None, *, max_age_hours=24.0, dry_run=False, serve_engine=Non
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", default=None)
-    parser.add_argument("--max-age-hours", type=float, default=24.0)
+    parser.add_argument("--max-age-hours", type=float, default=6.0)
     parser.add_argument("--serve-engine", default=None, help="start testctl serve with this engine when it does not answer")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--loop", action="store_true")

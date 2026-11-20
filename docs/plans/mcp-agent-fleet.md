@@ -15,6 +15,21 @@ R step, that R step's gate also applies (§6).
 **Status: in progress (20 November 2026).** F0.1, F0.3, F0.6, F1.1–F1.6 and
 F2.1–F2.2 are implemented; F0.2, F0.4 and F0.5 partly. Each row records its proof.
 F2.3–F2.6, F3, F4 and F5 remain.
+
+An independent review of the implemented code (20 Nov) led to these fixes:
+
+- Retention compares fully resolved paths.
+- A reused archive refreshes its mtime.
+- The watchdog records its authority root and resumes only requests changed within 6 h.
+- A `PASSED` row without verified evidence shows as `PASSED_UNVERIFIED`.
+- `sim_test_run` stops waiting on `NEEDS_OPERATOR`.
+- The test lane has four workers.
+
+Open policy questions from that review:
+
+- `ERROR` is never auto-resumed, even for a transient cause.
+- `NEEDS_OPERATOR` caused by a host outage is not auto-resumed when the host returns.
+- The circuit half-open can admit several queued jobs at once.
 An independent review challenged the first draft; its accepted corrections are
 folded in.
 
@@ -175,7 +190,7 @@ remote protocol change also requires R-plan invariant 10 pinning on every host.
 | TQ-05-F3.1 | Content-addressed snapshots: a read-only verified file store keyed by hash. Each snapshot is a manifest over it: base tree plus dirty/untracked overlay. A warm re-snapshot hashes only files whose size/mtime changed. The manifest digest remains the exact identity. | Warm snapshot ≤ 3 s; identical manifests for identical bytes; store files read-only |
 | TQ-05-F3.2 | Remote base plus overlay: each remote keeps verified base archives. Only changed files are sent and assembled into the job's private tree on the remote. Measure real bandwidth per host. | Warm transfer ≤ 2 s; `cached_inputs` from verified remote inventory (R8) |
 | TQ-05-F3.3 | Attempt materialization stays a real copy for anything Godot can write (`res://` sidecars such as `.import`/`.uid`, `.godot`, profile, output). Hard links are allowed only for files proved unwritten, with read-only permissions tested on NTFS, APFS and ext4. Otherwise keep copying but skip the second full re-hash when the store already verified the bytes. | Isolation fixtures, including a sidecar write attempt; local setup time measured |
-| TQ-05-F3.4 | Import cache keyed by engine identity plus the digest of every input that affects import and class/UID caches (assets, `.import`, scripts, `project.godot`). Warm hits only for identical inputs; a miss imports and populates; a mismatch is never used. | Remote import p50 measured cold/warm; stale-cache negative fixture |
+| TQ-05-F3.4 | Import cache keyed by engine identity plus the digest of every input that affects import and class/UID caches (assets, `.import`, scripts, `project.godot`). Warm hits only for identical inputs; a miss imports and populates; a mismatch is never used. **Do this first in F3.** On 20 Nov a live `test_math3d` run on ANGEL (load ~20) ended `INFRA_FAILED`: the default 90 s budget expired at 31 % of a cold full-project reimport, and the test never started. Until this lands, compact status reports such rows as `why: import timeout` with a hint. | Remote import p50 measured cold/warm; stale-cache negative fixture |
 
 ### F4: close the bypass (A3)
 
