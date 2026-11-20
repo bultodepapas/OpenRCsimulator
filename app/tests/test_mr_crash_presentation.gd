@@ -11,9 +11,21 @@ const Activity := preload("res://vehicles/multirotor/multirotor_scene.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 const Plant := preload("res://physics/multirotor/controlled_plant.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Session := preload("res://sim/multirotor/session.gd")
 
 var _count := 0
 var _failures := 0
+
+
+class VisualStandIn extends RefCounted:
+	var root := Node3D.new()
+
+
+## Records the severity the crash presentation hands the audio kit (no sound is built).
+class CaptureAudio extends Node3D:
+	var reports: Array[Dictionary] = []
+	func impact(_position: Vector3, severity: Dictionary, _turbine: bool) -> void:
+		reports.append(severity.duplicate(true))
 
 
 func _check(label: String, ok: bool, detail := "") -> void:
@@ -32,6 +44,7 @@ func _run() -> void:
 	_mix()
 	await _activity()
 	await _camera()
+	_crash_severity()
 	print("crash presentation: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -211,3 +224,74 @@ func _rattle() -> void:
 	activity._update_audio(flying, 0.5)
 	_check("a broken prop rattles in flight and the rattle stops with the motors on pause", playing and rattle.stream_paused)
 	activity.free()
+
+
+## Audit CR-AUD-29: the hard-impact transition settles the inward velocity before the session signals the crash, so
+## the presentation must grade the crash by the previous accepted tick. A real session is dropped near the flat ground
+## at a prescribed speed; the production activity handler and crash kit receive the real crash signal.
+func _crash_severity() -> void:
+	var powers := {}
+	for down_mps: float in [16.0, 19.0, 28.0]:
+		var session: Node = Session.new()
+		root.add_child(session)
+		var ready: bool = session.prepare({}, {crash_model = "graded", start = "air", altitude_m = 1.0,
+			north_offset_m = 0.0, east_offset_m = 0.0, heading_deg = 0.0})
+		var activity: Node3D = Activity.new()
+		var visual := VisualStandIn.new()
+		var fx: Node3D = Fx.new()
+		var audio := CaptureAudio.new()
+		activity.session = session
+		activity.visual = visual
+		activity.crash_fx = fx
+		fx.enable_audio = false
+		fx.enable_effects = false
+		fx.audio = audio
+		session.crashed.connect(Callable(activity, "_on_crashed"))
+		var settled := -1.0
+		var admitted := false
+		if ready:
+			var pilot := FC.neutral_input(0)
+			var frame: Dictionary = session.frame()
+			var body: PackedFloat64Array = frame.body.duplicate()
+			body[RB.VEL] = 0.0
+			body[RB.VEL + 1] = 0.0
+			body[RB.VEL + 2] = down_mps
+			for i in 3:
+				body[RB.RATE + i] = 0.0
+			frame.body = body
+			var continuous: PackedFloat64Array = frame.continuous.duplicate()
+			for rotor in 4:
+				continuous[Plant.C_SPEED + rotor] = 0.0
+			frame.continuous = continuous
+			var prepared: Dictionary = session.sim.prepare_reset_frame(frame, pilot) if session.plant.state_validator(frame, {}) else {}
+			admitted = bool(prepared.get("ok", false)) and session.sim.commit_prepared_reset_frame(prepared) and session.resume()
+			for _step in 60:
+				if not admitted or not session.tick_once(pilot) or not session.crash.is_empty():
+					break
+			var state: PackedFloat64Array = session.sim.state
+			settled = Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
+		var reports: Array[Dictionary] = audio.reports
+		var power: float = float(reports[0].get("severity", -1.0)) if reports.size() == 1 else -1.0
+		powers[down_mps] = power
+		_check("a %.0f m/s drop into flat ground is one hard-impact report with the drive cut" % down_mps, ready and admitted
+			and str(session.crash.get("reason", "")) == "Hard impact" and reports.size() == 1
+			and session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_CRASHED, "%s" % [reports])
+		_check("the settled state is gentle, so only the previous accepted tick can carry the impact", settled >= 0.0
+			and settled < 0.5 and Vector3(session.sim.previous[RB.VEL], session.sim.previous[RB.VEL + 1],
+			session.sim.previous[RB.VEL + 2]).length() > 0.9 * down_mps, "settled %.4f m/s" % settled)
+		_check("%.0f m/s crash severity is the pre-impact speed / %.0f, not the settled speed" % [down_mps, Fx.FULL_CRASH_SPEED_MPS],
+			power > 0.0 and absf(power - clampf(down_mps / Fx.FULL_CRASH_SPEED_MPS, 0.0, 1.0)) < 0.02, "power %.4f" % power)
+		activity.crash_fx = null
+		activity.visual = null
+		activity.session = null
+		fx.audio = null
+		(visual.root as Node).free()
+		session.free()
+		activity.free()
+		fx.free()
+		audio.free()
+	_check("a faster impact reads clearly stronger than a slower one (16 vs 28 m/s)",
+		float(powers.get(28.0, -1.0)) > float(powers.get(16.0, 2.0)) + 0.15, str(powers))
+	_check("a 28 m/s impact is at least as strong as 19 m/s and saturates at the top of the ladder",
+		float(powers.get(28.0, -1.0)) >= float(powers.get(19.0, 2.0)) and float(powers.get(28.0, -1.0)) <= 1.0 and float(powers.get(28.0, -1.0)) > 0.9,
+		str(powers))

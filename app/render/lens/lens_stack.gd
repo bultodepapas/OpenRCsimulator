@@ -382,27 +382,41 @@ func strike_surface(kind: String, strength: float, point: Vector3, speed_mps: fl
 	_apply_visibility()
 
 
-## Routes whose sessions report a crash only as a reason and a position (FPV quad, helicopter) name what was hit here:
+## Routes whose sessions report a crash only as a reason and a position (FPV quad, airship) name what was hit here:
 ## the installed obstacle inventory is asked, read-only, what lies within `radius_m` of the accepted crash point. A
 ## person draws blood; another obstacle or the ground leaves grime. Nothing is written back to the session.
+## Audit CR-AUD-30: a session that names the struck obstacle (the helicopter's `obstacle_kind`) passes it as
+## `struck_kind`, a String ("" for a terrain or ground crash). The identity is authoritative: no proximity query runs, so
+## a spectator standing next to a ground crash is not presented as hit, while a "person" strike still is. The default
+## (null) keeps the proximity query for the routes that only report a reason; the caller gates that query itself.
 func strike_from_crash(point_ned: PackedFloat64Array, speed_mps: float, obstacle_world: Dictionary, event_key: Variant,
-		radius_m: float = 0.6) -> void:
+		radius_m: float = 0.6, struck_kind: Variant = null) -> void:
 	if not configured or point_ned.size() != 3:
 		return
 	var point := Frames.ned_to_render(Array(point_ned))
 	var strength := clampf(speed_mps / 20.0, 0.0, 1.0)
 	var obstacle := false
-	if not obstacle_world.is_empty():
+	if struck_kind != null:
+		var kind := str(struck_kind)
+		if kind == "person":
+			_strike_person_at(point_ned, point, speed_mps, event_key)
+			return
+		obstacle = not kind.is_empty()
+	elif not obstacle_world.is_empty():
 		for proxy: Dictionary in CollisionWorld.nearby(obstacle_world, point_ned[0], point_ned[1], point_ned[2], radius_m):
 			if str(proxy.get("kind", "")) == "person":
-				var player := _near_station(point_ned, 1.2)
-				if player and _player_struck:
-					return # the pilot-strike sweep already showed this strike
-				var energy := 0.5 * _mass_kg * speed_mps * speed_mps
-				strike_person(ImpactTrigger.person_strength(energy, false), point, player, event_key)
+				_strike_person_at(point_ned, point, speed_mps, event_key)
 				return
 			obstacle = true
 	strike_surface("obstacle" if obstacle else "ground", strength, point, speed_mps, event_key)
+
+
+func _strike_person_at(point_ned: PackedFloat64Array, point: Vector3, speed_mps: float, event_key: Variant) -> void:
+	var player := _near_station(point_ned, 1.2)
+	if player and _player_struck:
+		return # the pilot-strike sweep already showed this strike
+	var energy := 0.5 * _mass_kg * speed_mps * speed_mps
+	strike_person(ImpactTrigger.person_strength(energy, false), point, player, event_key)
 
 
 ## RC cars and trucks: wheels throwing mud and water at a camera close behind them (the rally-game classic). `mud` and

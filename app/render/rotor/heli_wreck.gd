@@ -23,6 +23,11 @@ var _main_rotor_hub := Vector3.ZERO
 var _main_rotor_axis := Vector3.UP
 var _tail_rotor_hub := Vector3.ZERO
 var _tail_rotor_axis := Vector3.RIGHT
+## CR-AUD-16: the rotor hubs and axes in the airframe model frame, so a delayed release uses the frame it leaves from.
+var _main_rotor_hub_model := Vector3(0.0, 0.0, 0.35)
+var _main_rotor_axis_model := Vector3.UP
+var _tail_rotor_hub_model := Vector3(-0.95, 0.2, 0.0)
+var _tail_rotor_axis_model := Vector3.RIGHT
 var _main_rotor_omega := 0.0
 var _tail_rotor_omega := 0.0
 var _rotor_spin_energy_budget_j := 0.0
@@ -305,11 +310,12 @@ func _limit_ground_rebound(body: RigidBody3D) -> void:
 	var half := shape.size * 0.5
 	var basis := body.global_transform.basis
 	var support := absf(basis.x.dot(normal)) * half.x + absf(basis.y.dot(normal)) * half.y + absf(basis.z.dot(normal)) * half.z
-	var signed_distance := (body.global_position - _ground_point).dot(normal)
+	var box_offset := _shape_nodes[body_index].global_position - body.global_position
+	var signed_distance := (body.global_position + box_offset - _ground_point).dot(normal)
 	var clear_distance := support + 0.015
 	if signed_distance < clear_distance:
 		body.global_position += normal * minf(clear_distance - signed_distance, 0.35)
-	signed_distance = (body.global_position - _ground_point).dot(normal)
+	signed_distance = (body.global_position + box_offset - _ground_point).dot(normal)
 	var normal_speed := body.linear_velocity.dot(normal)
 	if signed_distance <= support + 0.15 and normal_speed < 0.0:
 		body.linear_velocity -= normal * normal_speed * (1.0 + float(_ground_contact.bounce))
@@ -328,7 +334,8 @@ func _update_contact_shadow(index: int) -> void:
 	var half := shape.size * 0.5
 	var body_basis := body.global_transform.basis
 	var support := absf(body_basis.x.dot(normal)) * half.x + absf(body_basis.y.dot(normal)) * half.y + absf(body_basis.z.dot(normal)) * half.z
-	var height := maxf((body.global_position - _ground_point).dot(normal) - support, 0.0)
+	var box_center := _shape_nodes[index].global_position
+	var height := maxf((box_center - _ground_point).dot(normal) - support, 0.0)
 	var fade := clampf(1.0 - height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0)
 	var shrink := lerpf(1.0, 0.35, clampf(height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0))
 	var local_x := Vector3.RIGHT.slide(normal).normalized()
@@ -342,7 +349,7 @@ func _update_contact_shadow(index: int) -> void:
 	width = absf(body_basis.x.dot(local_x)) * half.x + absf(body_basis.y.dot(local_x)) * half.y + absf(body_basis.z.dot(local_x)) * half.z
 	depth = absf(body_basis.x.dot(local_z)) * half.x + absf(body_basis.y.dot(local_z)) * half.y + absf(body_basis.z.dot(local_z)) * half.z
 	var alpha := 0.22 * fade
-	var projected := body.global_position - normal * (body.global_position - _ground_point).dot(normal)
+	var projected := box_center - normal * (box_center - _ground_point).dot(normal)
 	var shadow_basis := Basis(local_x, normal, local_z).scaled(Vector3(
 		maxf(width * 2.0 + 0.35, 0.65) * shrink, 1.0,
 		maxf(depth * 2.0 + 0.35, 0.65) * shrink))
@@ -350,13 +357,14 @@ func _update_contact_shadow(index: int) -> void:
 	_apply_shadow_alpha(index, alpha) # SA-20: celestial strength and native handoff, as for the fixed-wing wreck
 
 
-func _rebuild_attached_core_bounds(pose: Transform3D, velocity: Vector3, angular: Vector3, cg_model: Vector3) -> void:
+func _rebuild_attached_core_bounds(pose: Transform3D, velocity: Vector3, angular: Vector3, _cg_model: Vector3) -> void:
 	if _twin == null or _core_body == null or not is_instance_valid(_core_body):
 		return
 	var excluded: Array = []
 	for i in range(1, _groups.size()):
 		var group: Dictionary = _groups[i]
-		if bool(group.get("detached", false)):
+		# CR-AUD-08: a pending release still belongs to the core until its transaction runs.
+		if bool(group.get("activated", false)):
 			excluded.append_array(group.get("members", []))
 	var aggregate := {"has": false, "bounds": AABB()}
 	_collect_mesh_bounds(_twin, _twin, excluded, aggregate)
@@ -367,12 +375,19 @@ func _rebuild_attached_core_bounds(pose: Transform3D, velocity: Vector3, angular
 	_groups[0].bounds = bounds
 	_groups[0].center = center
 	_set_shape_bounds(0, bounds)
+	_shape_nodes[0].position = Vector3.ZERO
+	_core_origin_model = center
 	_core_body.global_transform = pose * Transform3D(Basis.IDENTITY, center)
 	_twin.transform = Transform3D(Basis.IDENTITY, -center)
-	_set_center_of_mass(_core_body, _core_moment(), _core_body.mass, center)
-	_core_body.linear_velocity = _clamp_vector(velocity + angular.cross(pose.basis * (center - cg_model)), MAX_POINT_SPEED_MPS)
+	# CR-AUD-06: only the body origin moves; the centre of mass and its velocity (set by Wreck.start) stay put.
+	_set_center_of_mass(_core_body, _core_moment_model, _core_mass_kg, center)
 	_groups[0].base_velocity = velocity
 	_groups[0].base_angular_velocity = angular
+
+
+## Keep the impact-local plane start_impact() placed; Wreck's sampled-terrain reference is for fixed-wing crashes.
+func _set_ground_reference(_pose: Transform3D, _severity: Dictionary) -> void:
+	pass
 
 
 func _set_local_ground_plane(point: Vector3, normal: Vector3) -> void:
@@ -456,6 +471,11 @@ func _cache_rotor_kinematics(report: Dictionary, pose: Transform3D) -> void:
 	_tail_rotor_axis = (pose.basis * tail_axis_model).normalized()
 	if _main_rotor_axis.length_squared() < 0.5: _main_rotor_axis = pose.basis * Vector3.UP
 	if _tail_rotor_axis.length_squared() < 0.5: _tail_rotor_axis = pose.basis * Vector3.RIGHT
+	var model_from_world := pose.affine_inverse()
+	_main_rotor_hub_model = model_from_world * _main_rotor_hub
+	_main_rotor_axis_model = (model_from_world.basis * _main_rotor_axis).normalized()
+	_tail_rotor_hub_model = model_from_world * _tail_rotor_hub
+	_tail_rotor_axis_model = (model_from_world.basis * _tail_rotor_axis).normalized()
 
 
 func _rotor_release_velocity(group: Dictionary) -> Vector3:
@@ -473,8 +493,10 @@ func _rotor_release_velocity(group: Dictionary) -> Vector3:
 		return Vector3.ZERO
 	var tail := family == "tail"
 	var omega := _tail_rotor_omega if tail else _main_rotor_omega
-	var axis := _tail_rotor_axis if tail else _main_rotor_axis
-	var hub := _tail_rotor_hub if tail else _main_rotor_hub
+	# CR-AUD-16: hub, axis and blade centre all in the airframe's current frame (a delayed blade leaves the moved
+	# wreck, not the crash-time pose).
+	var hub := _current_pose_for_center(_tail_rotor_hub_model if tail else _main_rotor_hub_model)
+	var axis := _current_basis() * (_tail_rotor_axis_model if tail else _main_rotor_axis_model)
 	if absf(omega) < 1.0e-6 or axis.length_squared() < 0.5:
 		return Vector3.ZERO
 	var model_center: Vector3 = group.get("center", Vector3.ZERO)
@@ -545,6 +567,12 @@ func _shaft_rotor_inertia(family: String) -> float:
 	if reflected <= main_inertia or ratio <= 0.0:
 		return 0.0
 	return (reflected - main_inertia) / (ratio * ratio)
+
+
+func _current_basis() -> Basis:
+	if _core_body != null and is_instance_valid(_core_body) and _twin != null:
+		return _core_body.global_transform.basis * _twin.transform.basis
+	return Basis.IDENTITY
 
 
 func _current_pose_for_center(model_center: Vector3) -> Vector3:

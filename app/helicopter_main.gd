@@ -340,7 +340,10 @@ func _lens_crash() -> void:
  var body: Variant=session.crash.get("body",PackedFloat64Array())
  if speed<=0.0 and body is PackedFloat64Array and (body as PackedFloat64Array).size()>=6:
   speed=Vector3(body[3],body[4],body[5]).length()
- _lens.strike_from_crash(point,speed,_camera_obstacles,"heli:%d" % int(session.crash.get("tick",0)),1.2)
+ # Audit CR-AUD-30: the crash names what the airframe struck (scenery `obstacle_kind`; a ground crash has none). That
+ # identity grades the lens strike; a spectator merely standing near a ground crash is not presented as hit.
+ var struck: String=str(session.crash.get("obstacle_kind",""))
+ _lens.strike_from_crash(point,speed,_camera_obstacles,"heli:%d" % int(session.crash.get("tick",0)),1.2,struck)
 
 func _present(dt: float, requested_fraction: float=-1.0) -> void:
  if session==null or session.sim.state.is_empty(): return

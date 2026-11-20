@@ -136,6 +136,8 @@ func prop_damage(event: Dictionary, velocity: Vector3) -> void:
 
 
 ## The terminal crash: the shared impact ladder and debris, by impact speed (m/s), at the quad's render position.
+## `velocity` must be the motion into the impact (the activity passes the previous accepted tick's CG velocity): the
+## state after the hard-impact response has already settled the inward velocity and would read as a gentle touch.
 func crash(reason: String, position: Vector3, velocity: Vector3) -> void:
 	if _crashed:
 		return

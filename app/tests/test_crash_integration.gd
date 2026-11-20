@@ -7,6 +7,24 @@ const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const HullContact = preload("res://physics/hull_contact.gd")
+const CrashDirector = preload("res://render/crash/director.gd")
+const CrashPresentationContext = preload("res://render/crash/presentation_context.gd")
+const CrashFlightSession = preload("res://sim/flight_session.gd")
+const CrashSimulation = preload("res://sim/simulation.gd")
+const CrashImpactSnapshot = preload("res://physics/impact_snapshot.gd")
+
+
+class QuietWreck extends "res://render/crash/wreck.gd":
+	func start(_pose: Transform3D, _velocity: Vector3, _angular_velocity: Vector3, _severity: Dictionary) -> void:
+		pass
+
+
+class QuietEffects extends "res://render/crash/effects.gd":
+	func start(_point: Vector3, _velocity: Vector3, _severity: Dictionary, _kerosene: float, _hot: bool, _wind: Vector3) -> void:
+		pass
+
+	func apply_energy(_outcome: Dictionary) -> void:
+		pass
 
 var _count := 0
 var _failures := 0
@@ -24,6 +42,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_test_director_normal_and_scenery()
 	for aircraft_id: String in Catalog.airplane_flyable_ids(): # TT-06: a preview refuses the flight scene (main.gd)
 		await _test_aircraft(aircraft_id)
 	print("%d checks, %d failed" % [_count, _failures])
@@ -228,6 +247,109 @@ func _test_aircraft(aircraft_id: String) -> void:
 	await process_frame
 	_check("%s: cleanup leaves no production scene orphan or audio bus" % aircraft_id,
 		root.get_child_count() == base_root_children and AudioServer.bus_count == base_bus_count)
+
+
+## CR-AUD-28 / CR-AUD-11: Director._start grades every snapshot kind against its own contact normal and
+## provisions the aftermath scenery for any non-water crash. Prescribed hull-point snapshot: mass 2 kg, inertia
+## 1 kg m^2, arm (1,0,0) m, point velocity (7,0,7.2) m/s NED. Oracle: m_eff = 1/(1/m + (r x n)^T I^-1 (r x n)).
+func _test_director_normal_and_scenery() -> void:
+	var session: Variant = CrashFlightSession.new()
+	var sim: Variant = CrashSimulation.new()
+	sim.mass = 2.0
+	sim.inertia = PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+	sim.modes = PackedInt64Array([0])
+	sim.tick = 1
+	session.sim = sim
+	session.aircraft = {ok = false, model = {
+		propulsion = {kind = "electric"}, reference = {b = 2.0, c = 1.0},
+		start_speed = 10.0, crash_hull_components = PackedStringArray(["nose"]),
+	}}
+	var source := Node3D.new()
+	var bindings: Variant = CrashPresentationContext.ModelBindings.new()
+	bindings.root = source
+	bindings.empty = false
+	var context: Variant = CrashPresentationContext.new()
+	context.session = session
+	context.model_bindings = bindings
+	context.field = {}
+	context.cg_model = Vector3.ZERO
+	context.pose_provider = func() -> Dictionary:
+		return {basis = Basis.IDENTITY, pos = Vector3(0.0, 2.0, 0.0)}
+	context.wind_provider = func(_t: float) -> Vector3: return Vector3.ZERO
+	var director: Variant = CrashDirector.new()
+	director.context = context
+	director._audio_enabled = false
+	var wreck := QuietWreck.new()
+	var effects := QuietEffects.new()
+	director.wreck = wreck
+	director.effects = effects
+
+	var velocity := PackedFloat64Array([7.0, 0.0, 7.2])
+	var state: PackedFloat64Array = RB.make_state(PackedFloat64Array([0.0, 0.0, -2.0]), velocity,
+		PackedFloat64Array([1.0, 0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
+	var snapshot: Variant = CrashImpactSnapshot.hull_point(state, 1, PackedFloat64Array([1.0, 0.0, 0.0]), 0)
+	session.crash = {impact = snapshot}
+	_check("director fixture: prescribed point snapshot and live mass sample",
+		snapshot.has_kinematics and snapshot.trigger != "scenery" and bool(session.mass_properties().get("ok", false)))
+
+	var flat: Dictionary = _director_report(director, snapshot, PackedFloat64Array([0.0, 0.0, -1.0]))
+	var inv_sqrt2: float = 1.0 / sqrt(2.0)
+	var slope: Dictionary = _director_report(director, snapshot, PackedFloat64Array([inv_sqrt2, 0.0, -inv_sqrt2]))
+	# Flat: closing 7.2 m/s, m_eff 2/3 kg, normal KE 17.28 J. Slope: closing 0.2/sqrt(2) m/s, m_eff 1 kg, KE 0.01 J.
+	_check("flat normal control keeps m_eff 0.666667 kg, 17.28 J, class 2",
+		absf(float(flat.effective_mass_kg) - 2.0 / 3.0) < 1.0e-6 and absf(float(flat.normal_energy_j) - 17.28) < 1.0e-6
+		and int(flat["class"]) == 2)
+	_check("sloped normal uses m_eff 1 kg along the snapshot normal",
+		absf(float(slope.effective_mass_kg) - 1.0) < 1.0e-6)
+	_check("sloped normal closing speed 0.141421 m/s gives 0.01 J and class 0",
+		absf(float(slope.normal_energy_j) - 0.01) < 1.0e-6 and int(slope["class"]) == 0)
+	var scaled: Dictionary = _director_report(director, snapshot, PackedFloat64Array([2.0, 0.0, -2.0]))
+	_check("a non-unit normal is normalised (same result as the unit slope)",
+		absf(float(scaled.normal_energy_j) - float(slope.normal_energy_j)) < 1.0e-9
+		and absf(float(scaled.effective_mass_kg) - 1.0) < 1.0e-6)
+	var bad_normals: Array[PackedFloat64Array] = [PackedFloat64Array(), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([NAN, 0.0, -1.0]), PackedFloat64Array([1.0, 0.0])]
+	var fallback_ok := true
+	for bad: PackedFloat64Array in bad_normals:
+		var report: Dictionary = _director_report(director, snapshot, bad)
+		fallback_ok = fallback_ok and absf(float(report.normal_energy_j) - 17.28) < 1.0e-6 and int(report["class"]) == 2
+	_check("missing, zero, non-finite or short normals fall back to the flat convention", fallback_ok)
+	snapshot.soft_rule = "impact"
+	var soft: Dictionary = _director_report(director, snapshot, PackedFloat64Array([inv_sqrt2, 0.0, -inv_sqrt2]))
+	snapshot.soft_rule = ""
+	_check("a soft-hull rule still floors presentation at class 2 on the sloped normal",
+		int(soft["class"]) == 2 and soft.get("soft_rule") == "impact")
+
+	# CR-AUD-11: no world, no provisioning; with a world a ground/hull-triggered crash provisions nearby scenery.
+	_check("no collision world provisions no scenery contacts", int(director.stats().scenery_contacts) == 0)
+	context.collision_world = {proxies = [{
+		id = "test_box", shape = "box", response_class = "rigid", north = 3.0, east = 0.0, down = -1.0,
+		half_x = 0.5, half_z = 0.5, half_down = 1.0, sin_heading = 0.0, cos_heading = 1.0,
+		bounds_north_min = 2.5, bounds_north_max = 3.5, bounds_east_min = -0.5, bounds_east_max = 0.5,
+		bounds_down_min = -2.0, bounds_down_max = 0.0,
+	}]}
+	_director_report(director, snapshot, PackedFloat64Array([0.0, 0.0, -1.0]))
+	_check("a hull-triggered crash provisions the nearby wreck scenery when a world exists",
+		str(snapshot.trigger) != "scenery" and int(director.stats().scenery_contacts) == 1)
+	_director_report(director, snapshot, PackedFloat64Array([0.0, 0.0, -1.0]))
+	_check("restarting replaces rather than accumulates the scenery contacts", int(director.stats().scenery_contacts) == 1
+		and director.get_child_count() == 1)
+
+	director.wreck = null
+	director.effects = null
+	session.sim = null
+	wreck.free()
+	effects.free()
+	director.free()
+	source.free()
+	sim.free()
+	session.free()
+
+
+func _director_report(director: Variant, snapshot: Variant, normal: PackedFloat64Array) -> Dictionary:
+	snapshot.normal_ned = normal
+	director._start()
+	return director.report.duplicate(true)
 
 
 func _make_main(aircraft_id: String, effects_enabled: bool, node_name: String) -> Variant:

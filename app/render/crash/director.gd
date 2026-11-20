@@ -79,6 +79,7 @@ func configure(next_context: PresentationContext, audio_enabled: bool = true) ->
 	_audio_enabled = audio_enabled
 	wreck = Wreck.new()
 	wreck.shadow_strength_provider = context.shadow_strength
+	wreck.ground_sampler = _sample_mark_ground # CR-AUD-05: the wreck lands on the sampled terrain, not the datum
 	add_child(wreck)
 	wreck.prepare(context.model_bindings.root)
 	SceneryBodies.prepare(context.collision_world) # CR-22e: one world scan at setup, not at the crash.
@@ -215,8 +216,12 @@ func _start() -> void:
 	_impact_point = Frames.ned_to_render(Array(point))
 	if impact.trigger not in ["scenery", "lake_bank"]:
 		_impact_point.y = 0.025
-	var normal_speed := maxf(0.0,point_velocity[2])
-	var tangent_speed := sqrt(point_velocity[0]*point_velocity[0]+point_velocity[1]*point_velocity[1])
+	# CR-AUD-28: every snapshot kind reports against its own validated contact normal (the RC-track producer
+	# stores the composed terrain normal); a missing, non-finite or zero normal keeps the flat NED "up" convention.
+	var contact_normal := _contact_normal(impact)
+	var signed_closing := -M.dot(point_velocity, contact_normal)
+	var normal_speed := maxf(0.0,signed_closing)
+	var tangent_speed := sqrt(maxf(0.0,M.dot(point_velocity,point_velocity)-signed_closing*signed_closing))
 	var model: Dictionary = context.session.aircraft.model
 	var named := component_for(str(impact.trigger), int(impact.point_index), impact.body_point,
 		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
@@ -238,13 +243,13 @@ func _start() -> void:
 	if not impact.body_point.is_empty():
 		if live_ok and (mass_is_dynamic or bool(live.get("finite_fuel", false))):
 			# The contact arm is measured from the live CG, not the fixed datum (R05-B).
-			effective_mass = float(EffectiveMass.at_point_properties(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), live).effective_mass_kg)
+			effective_mass = float(EffectiveMass.at_point_properties(q, impact.body_point, contact_normal, live).effective_mass_kg)
 		else:
-			effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, context.session.sim.inertia)
+			effective_mass = EffectiveMass.at_point(q, impact.body_point, contact_normal, mass, context.session.sim.inertia)
 	# The CG's own normal velocity bounds the slapdown that follows a first contact off the CG.
 	# X8-08: a tolerant airframe (EPO foam) declares its presentation durability; balsa/ply keep 1.
 	var durability := float(model.get("crash_tolerance", {}).get("presentation_durability", 1.0))
-	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,durability,v_ned[2])
+	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,durability,-M.dot(v_ned,contact_normal))
 	if impact.trigger == "scenery":
 		# Preserve the actual obstacle normal and height; ground-only projections would misreport a wall hit.
 		surface = str(impact.obstacle_kind)
@@ -253,12 +258,9 @@ func _start() -> void:
 		report["obstacle_id"] = str(impact.obstacle_id)
 		report["response_class"] = str(impact.response_class)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
-		# CR-22e: the installed world without its per-call deep copy; broken proxies are skipped as before.
-		# The nearest contacts exist now; update() adds the farther ones over the next frames.
-		_scenery_contacts = SceneryBodies.build_near_staged(context.collision_world, point, context.session.scenery_damage(),
-			SCENERY_CONTACTS_FIRST) if not context.collision_world.is_empty() \
-			else SceneryBodies.build_near_staged(context.session.collision_world(true), point, {}, SCENERY_CONTACTS_FIRST)
-		add_child(_scenery_contacts)
+	# CR-AUD-11: the bounded aftermath scenery neighbourhood is provisioned for any non-water crash, not only
+	# a scenery-triggered one, so debris from a ground or hull crash meets nearby obstacles too.
+	_provision_scenery_contacts(point)
 	report["trigger"] = impact.trigger
 	# E3d1: the soft-contact rule ends a flight only at C2 energy (transfer-free), so it never shows as a scrape.
 	var soft_rule := str(impact.get("soft_rule")) if impact.get("soft_rule") != null else ""
@@ -349,6 +351,40 @@ func _start() -> void:
 	active = true
 	_age = 0.0
 	impact_usec = Time.get_ticks_usec()-began
+
+## CR-AUD-28: unit contact normal (NED) of a snapshot; flat NED "up" when absent, non-finite or zero.
+static func _contact_normal(impact: Object) -> PackedFloat64Array:
+	var flat := PackedFloat64Array([0.0,0.0,-1.0])
+	var raw: Variant = impact.get("normal_ned")
+	if not raw is PackedFloat64Array:
+		return flat
+	var normal: PackedFloat64Array = raw
+	if normal.size() != 3 or not (is_finite(normal[0]) and is_finite(normal[1]) and is_finite(normal[2])):
+		return flat
+	var length := M.norm(normal)
+	if not is_finite(length) or length <= 0.0:
+		return flat
+	return M.scale(normal,1.0/length)
+
+## CR-AUD-11 / CR-22e: nearest wreck-scenery contacts now (SCENERY_CONTACTS_FIRST), the farther ones staged by
+## update(). Uses the installed world without its per-call deep copy, else the session's active (unbroken) view.
+## Creates nothing when no collision world is available.
+func _provision_scenery_contacts(point: PackedFloat64Array) -> void:
+	if is_instance_valid(_scenery_contacts):
+		_scenery_contacts.free()
+	_scenery_contacts = null
+	var contacts: Node3D = null
+	if not context.collision_world.is_empty():
+		contacts = SceneryBodies.build_near_staged(context.collision_world, point, context.session.scenery_damage(),
+			SCENERY_CONTACTS_FIRST)
+	elif context.session.has_method("collision_world"):
+		var world: Dictionary = context.session.collision_world(true)
+		if not world.is_empty():
+			contacts = SceneryBodies.build_near_staged(world, point, {}, SCENERY_CONTACTS_FIRST)
+	if contacts == null:
+		return
+	_scenery_contacts = contacts
+	add_child(_scenery_contacts)
 
 ## CR-01d: the struck component. A labelled hull point names it (the nearest hull point, not a structural section);
 ## without labels, a marked geometric region estimate remains. Gear overtravel is always the gear.

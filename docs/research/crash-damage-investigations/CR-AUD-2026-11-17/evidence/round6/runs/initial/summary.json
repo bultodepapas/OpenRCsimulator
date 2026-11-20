@@ -1,0 +1,158 @@
+{
+  "format": "openrc-nonfatal-contact-round6-reproduction-v1",
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "project": "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+  "runs": [
+    {
+      "name": "geometry",
+      "kind": "audit-probe",
+      "script_sha256": "e9aa4fa206e51f26240d2819ecc6a37633889f98e28be28e8bb4ebd56f270caf",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/geometry/geometry-gis6d4yi/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/geometry/geometry-gis6d4yi/engine.log"
+    },
+    {
+      "name": "water-prop",
+      "kind": "audit-probe",
+      "script_sha256": "dc7eba09d6c743f88f03fd4b507d29e488b1786d6fe6c172452899175043e741",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/water-prop/water-prop-235qtzbe/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/water-prop/water-prop-235qtzbe/engine.log"
+    },
+    {
+      "name": "test_soft_contacts",
+      "kind": "existing-control",
+      "script_sha256": "daad6e1d76cca1e349d43f22ca2e6206ac4ea1bd61417d4bb1d3c964cddb872f",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_soft_contacts/test_soft_contacts-ssi9zhhz/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_soft_contacts/test_soft_contacts-ssi9zhhz/engine.log"
+    },
+    {
+      "name": "test_hull_friction_observation",
+      "kind": "existing-control",
+      "script_sha256": "cc836d383c04c87a38dea01a425aef6b43cf3ffae9a5af93a4af7dc2482136bc",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_friction_observation/test_hull_friction_observation-d1kp7ooc/engine.log"
+    },
+    {
+      "name": "test_hull_scrape_session",
+      "kind": "existing-control",
+      "script_sha256": "e7113d413a2e56425059a62a4a0425182c6f60f3f2eddf23a00112d6fd6808e6",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 11,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_session/test_hull_scrape_session-j08br3b8/engine.log"
+    },
+    {
+      "name": "test_hull_scrape_audio",
+      "kind": "existing-control",
+      "script_sha256": "61dce56560d0439c8bca6219b976685c50c16dc034d668feee5ab14b8a2afa5c",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_hull_scrape_audio/test_hull_scrape_audio-35obojif/engine.log"
+    },
+    {
+      "name": "test_prop_strike",
+      "kind": "existing-control",
+      "script_sha256": "d019c7f3c741276ecbb383327b72c8e7c230f747275eb7bc680c22ecbeabf765",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_prop_strike/test_prop_strike-9mvn0iyv/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_prop_strike/test_prop_strike-9mvn0iyv/engine.log"
+    },
+    {
+      "name": "test_lake_collision",
+      "kind": "existing-control",
+      "script_sha256": "f68a9ea82506a405fdbdd5f95609436b5a6e95458fa9dfe492b704c8ee2e06b4",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_lake_collision/test_lake_collision-q2f7ytdd/engine.log"
+    },
+    {
+      "name": "test_collision_tie_order",
+      "kind": "existing-control",
+      "script_sha256": "1f8bda6cfe6abd75d677a8ecc717b0720da68cd62981b1d63d822c1c7fd54e7d",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_collision_tie_order/test_collision_tie_order-murq8wfw/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_collision_tie_order/test_collision_tie_order-murq8wfw/engine.log"
+    },
+    {
+      "name": "test_airframe_contacts",
+      "kind": "existing-control",
+      "script_sha256": "4a4a3c5c93e788a9106ab4a85f25d1c8a929fa029a042c885a15b2b1e40ec808",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/initial/test_airframe_contacts/test_airframe_contacts-x6zb9jye/engine.log"
+    }
+  ]
+}

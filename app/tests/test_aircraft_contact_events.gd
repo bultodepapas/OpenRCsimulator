@@ -5,6 +5,9 @@ const EventNormalizer := preload("res://sim/aircraft_contact_events.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const HullCrossing := preload("res://physics/hull_crossing.gd")
+const HullContactLaw := preload("res://physics/hull_contact.gd")
+const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 
@@ -28,6 +31,103 @@ func _bindings() -> Dictionary:
 		"support_points": [{"id": "main_left"}],
 		"rotor_disc": {"hub": PackedFloat64Array([0.0, 0.0, 0.0]), "radius": 0.2},
 	}
+
+
+## CR-AUD-04: the flattened event must say which point owns crossing_fraction.
+func _staggered_snapshot(late_first: bool) -> Dictionary:
+	# Two rigid points enter within one interpolated interval: one at fraction 0.2 (lateral -0.1), a faster
+	# one at 0.8 (lateral +0.1). The terminal policy selects the faster point; the typed snapshot keeps the
+	# earliest whole-hull crossing separately.
+	var q_after := M.q_from_euler(0.0, 0.0, 0.04)
+	var v_world := M.v3(0.0, 0.0, 12.0)
+	var rate := M.v3(9.6, 0.0, 0.0)
+	var before := RB.make_state(M.v3(0.0, 0.0, -0.02), v_world, M.q_identity(), rate)
+	var after := RB.make_state(M.v3(0.0, 0.0, 0.03), M.q_rotate(M.q_conj(q_after), v_world), q_after, rate)
+	var early := PackedFloat64Array([0.0, -0.1, _depth_r_for_crossing(0.2, -0.1)])
+	var late := PackedFloat64Array([0.0, 0.1, _depth_r_for_crossing(0.8, 0.1)])
+	var hull: PackedFloat64Array = (late + early) if late_first else (early + late)
+	var prepared: Dictionary = HullContactLaw.prepare(hull, 1.0, PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]))
+	var hit: Dictionary = HullContactLaw.terminal(before, after, prepared)
+	var snapshot := ImpactSnapshot.hull_point(after, 1, hull, int(hit.index), before, str(hit.rule))
+	return {"snapshot": snapshot, "hit": hit}
+
+
+func _depth_r_for_crossing(fraction: float, lateral: float) -> float:
+	var half_theta := 0.02
+	var roll := 2.0 * atan2(fraction * sin(half_theta), 1.0 - fraction + fraction * cos(half_theta))
+	return -((-0.02 + 0.05 * fraction) + sin(roll) * lateral) / cos(roll)
+
+
+func _test_staggered_crossings() -> void:
+	var bindings := {"hull_probes": [{"id": "probe_a"}, {"id": "probe_b"}]}
+	for late_first: bool in [false, true]:
+		var label := "reversed order" if late_first else "early point first"
+		var staged := _staggered_snapshot(late_first)
+		var snapshot: ImpactSnapshot.Snapshot = staged.snapshot
+		var selected_index := 0 if late_first else 1
+		var witness_index := 1 if late_first else 0
+		_check("staggered fixture (%s) selects the faster late point" % label, int(staged.hit.index) == selected_index
+			and snapshot.point_index == selected_index and snapshot.crossing.available
+			and snapshot.crossing.point_index == witness_index and absf(snapshot.crossing.fraction - 0.2) < 1e-9)
+		var event := EventNormalizer.impact_event(snapshot, bindings, HullContactLaw.law())
+		_check("staggered event (%s) serializes and validates" % label,
+			not event.is_empty() and EventNormalizer.validate_events([event], snapshot.tick, bindings))
+		_check("staggered event (%s) keeps the selected identity" % label, event.get("point_index", -1) == selected_index
+			and event.get("contact_id", "") == bindings.hull_probes[selected_index].id)
+		_check("staggered event (%s) names the earliest crossing witness with its 0.2 fraction" % label,
+			event.get("format", "") == EventNormalizer.FORMAT_V2
+			and event.get("crossing_point_index", -1) == witness_index
+			and event.get("crossing_probe_id", "") == bindings.hull_probes[witness_index].id
+			and absf(float(event.get("crossing_fraction", -1.0)) - 0.2) < 1e-9
+			and event.get("crossing_is_selected", true) == false)
+		_check("staggered event (%s) does not claim the selected point's own crossing" % label,
+			not event.has("selected_crossing_fraction"))
+		var mislabeled: Dictionary = event.duplicate(true)
+		mislabeled["crossing_is_selected"] = true
+		_check("staggered event (%s) cannot claim the selected point is the witness" % label,
+			not EventNormalizer.validate_events([mislabeled], snapshot.tick, bindings))
+		var swapped: Dictionary = event.duplicate(true)
+		swapped["crossing_probe_id"] = event.contact_id
+		_check("staggered event (%s) cannot name the selected probe as the witness" % label,
+			not EventNormalizer.validate_events([swapped], snapshot.tick, bindings))
+
+
+func _test_crossing_witness_validation(v2_event: Dictionary, bindings: Dictionary) -> void:
+	var legacy: Dictionary = v2_event.duplicate(true)
+	legacy["format"] = EventNormalizer.FORMAT
+	for key: String in ["crossing_point_index", "crossing_probe_id", "crossing_is_selected", "selected_crossing_fraction"]:
+		legacy.erase(key)
+	_check("legacy v1 impact event with crossing_fraction still validates",
+		EventNormalizer.validate_events([legacy], 11, bindings))
+	var v1_with_witness: Dictionary = v2_event.duplicate(true)
+	v1_with_witness["format"] = EventNormalizer.FORMAT
+	_check("closed v1 rejects the witness keys", not EventNormalizer.validate_events([v1_with_witness], 11, bindings))
+	for key: String in ["crossing_point_index", "crossing_probe_id", "crossing_is_selected", "crossing_fraction"]:
+		var missing: Dictionary = v2_event.duplicate(true)
+		missing.erase(key)
+		_check("v2 requires %s" % key, not EventNormalizer.validate_events([missing], 11, bindings))
+	var wrong_probe: Dictionary = v2_event.duplicate(true)
+	wrong_probe["crossing_probe_id"] = "hull_point_001"
+	_check("v2 witness probe must match the bound index", not EventNormalizer.validate_events([wrong_probe], 11, bindings))
+	var drifted: Dictionary = v2_event.duplicate(true)
+	drifted["selected_crossing_fraction"] = 0.5
+	_check("selected witness fraction must equal crossing_fraction", not EventNormalizer.validate_events([drifted], 11, bindings))
+	var bad_type: Dictionary = v2_event.duplicate(true)
+	bad_type["crossing_point_index"] = "0"
+	_check("witness index must be an integer", not EventNormalizer.validate_events([bad_type], 11, bindings))
+
+
+func _test_unidentified_crossing_is_withheld(selected: ImpactSnapshot.Snapshot, bindings: Dictionary) -> void:
+	var unidentified := HullCrossing.Result.new()
+	unidentified.available = true
+	unidentified.fraction = 0.4 # point_index stays -1: nobody to attribute the fraction to
+	var original: HullCrossing.Result = selected.crossing
+	selected.crossing = unidentified
+	var event := EventNormalizer.impact_event(selected, bindings, "legacy-terminal-hull-v1")
+	selected.crossing = original
+	_check("an unidentifiable crossing is withheld, not exported ambiguously", not event.is_empty()
+		and event.get("format", "") == EventNormalizer.FORMAT and not event.has("crossing_fraction")
+		and not event.has("crossing_point_index") and EventNormalizer.validate_events([event], selected.tick, bindings))
 
 
 func _initialize() -> void:
@@ -91,6 +191,7 @@ func _initialize() -> void:
 	var crossing := HullCrossing.Result.new()
 	crossing.available = true
 	crossing.fraction = 0.4
+	crossing.point_index = 0
 	hull_impact.crossing = crossing
 	var impact_record: Dictionary = EventNormalizer.impact_event(hull_impact, bindings, "legacy-terminal-hull-v1")
 	_check("hull impact resolves its stable binding and observed tick", impact_record.get("source", "") == "hull"
@@ -102,6 +203,13 @@ func _initialize() -> void:
 	impact_record.point_ned[0] = 100.0
 	_check("serialized impact vectors do not alias snapshot", hull_impact.point_ned[0] == 0.0)
 	_check("hull impact validates", EventNormalizer.validate_events([impact_record], 11, bindings))
+	_check("hull impact names its crossing witness in v2", impact_record.get("format", "") == EventNormalizer.FORMAT_V2
+		and impact_record.get("crossing_point_index", -1) == 0 and impact_record.get("crossing_probe_id", "") == "hull_point_000"
+		and impact_record.get("crossing_is_selected", false) == true
+		and impact_record.get("selected_crossing_fraction", -1.0) == 0.4)
+	_test_crossing_witness_validation(impact_record, bindings)
+	_test_unidentified_crossing_is_withheld(hull_impact, bindings)
+	_test_staggered_crossings()
 
 	var gear_impact := ImpactSnapshot.Snapshot.new()
 	gear_impact.trigger = "gear_limit"

@@ -1,0 +1,2541 @@
+{
+  "schema": "openrc-game-collision-research-v1",
+  "date": "2026-11-20",
+  "game_count": 20,
+  "round_counts": {
+    "1": 10,
+    "2": 10
+  },
+  "scope": "Twenty additional games/simulators, separate from the prior twenty general investigations; source/documentation reading, not execution.",
+  "application_revision": "48580b75a796fc6048fb77cdd69875c94ebb69e0",
+  "documentation_base_revision": "7a43cd1a0e2a17a96dc06a0512c900f08b808351",
+  "canonical_integration": "docs/plans/crash-realism.md#11-game-source-integration-two-rounds-of-ten--20-november-2026",
+  "source_anchor_count": 109,
+  "games": [
+    {
+      "id": "G01",
+      "title": "PicaSim",
+      "repo": "https://github.com/Rowlhouse/PicaSim",
+      "commit": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+      "access_level": "Full public source: shallow clone inspected at exact HEAD; no game execution; web indexed docs plus local source",
+      "license_evidence": {
+        "summary": "PolyForm Noncommercial 1.0.0 for PicaSim source and some data; third-party code and assets have separate terms. README says SystemData text/XML are covered, but not .ac/.png; its images and models may be used in direct PicaSim derivatives but require permission for other projects. Bundled Bullet is zlib. No code or assets imported.",
+        "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/README.md#L444-L481",
+        "other_url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/LICENSE.txt"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L213-L236",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "AeroplanePhysics::Init"
+          ],
+          "observed": "Wing/fuselage box geometry contributes mass and, if collide is set, points for hull construction; the compound construction shapes are later replaced by one convex collision hull.",
+          "limits": "Hull merges part identity; this does not itself demonstrate wingtip-specific physics.",
+          "id": "G01-S01",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L301-L337",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "AeroplanePhysics::Init",
+            "CrashObject"
+          ],
+          "observed": "Configured crash boxes carry an optional engine name and prop-speed threshold and use CF_NO_CONTACT_RESPONSE.",
+          "limits": "A box overlap is coarse; this is not swept blade contact or measured force.",
+          "id": "G01-S02",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L399-L430",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "AeroplanePhysics::Init"
+          ],
+          "observed": "One convex hull is built from colliding points; body friction is configurable and body restitution is set to zero.",
+          "limits": "No proof of realistic prop deformation or separate wingtip contact from hull alone.",
+          "id": "G01-S03",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L689-L783",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "AeroplanePhysics::EntityUpdate"
+          ],
+          "observed": "After physics, body-frame linear and angular velocity changes are compared with size-scaled axis thresholds; wheel suspension force independently sets an undercarriage flag.",
+          "limits": "The velocity-change checks do not themselves require a collision event and may reflect other forces; flags are global categories.",
+          "id": "G01-S04",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L915-L950",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "CrashCallback"
+          ],
+          "observed": "The callback filters out its own aircraft and regards a contact distance <= 0 as an overlap.",
+          "limits": "The callback reports a boolean, not a normal/tangential contact impulse or damage energy.",
+          "id": "G01-S05",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/AeroplanePhysics.cpp#L989-L1045",
+          "path": "source/PicaSim/AeroplanePhysics.cpp",
+          "symbols": [
+            "AeroplanePhysics::UpdateComponentsPostPhysics"
+          ],
+          "observed": "Contact time comes from rigid-body manifolds or suspension force. The separate sensor test skips a known engine below its speed threshold, otherwise any overlap sets the global propeller-crash flag.",
+          "limits": "If the named engine is absent, this code does not apply that speed skip; it does not quantify contact severity.",
+          "id": "G01-S06",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/AeroplanePhysics.cpp",
+          "blob_sha": "f3754f5143876bdf88eda0d47cb778587ffdc770",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/PropellerEngine.cpp#L295-L304",
+          "path": "source/PicaSim/PropellerEngine.cpp",
+          "symbols": [
+            "PropellerEngine::UpdatePrePhysics"
+          ],
+          "observed": "The propeller-crash flag zeroes prop rotation, control and wash before further propeller physics.",
+          "limits": "Flag is global to the aircraft; this is not graduated per-blade damage.",
+          "id": "G01-S07",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/PropellerEngine.cpp",
+          "blob_sha": "2ff34ff022d13eb4e15c61d28ffec4b2cc3116d9",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Rowlhouse/PicaSim/blob/5b2c5871b82aecae4ae6293b862f31600a6a949c/source/PicaSim/Wheel.cpp#L150-L158",
+          "path": "source/PicaSim/Wheel.cpp",
+          "symbols": [
+            "Wheel::GetCollapsed"
+          ],
+          "observed": "Collapse flag compares current raycast suspension force to a configured scaled threshold.",
+          "limits": "The flag alone does not establish a detached wheel or debris body.",
+          "id": "G01-S08",
+          "revision": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+          "repository_path": "source/PicaSim/Wheel.cpp",
+          "blob_sha": "756a9374f0a9a910f5ec53038b5424cc9f816ce7",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "PicaSim builds a physical aircraft hull and separate no-response crash sensors. Its sensor callback reports overlap; the post-physics consumer can set a propeller crash flag, which the engine then uses to stop its propeller behavior. Wheel collapse has a separate suspension-force path. This is useful evidence of distinct component channels, but the overlap callback does not return a contact point, normal, blade phase or impulse.",
+      "accepted_proposal": "Give an accepted wingtip, propeller, wheel or skid observation an explicit component/capability identity before selecting feedback or damage. A wingtip scrape could produce a short local rub and scuff while the aircraft continues; a propeller observation must go through the supported blade/shaft response instead of reusing hull severity. Preserve current E3d1 continuation and E3d2 behavior. The new increment is better evidence and qualification of intermediate states, not another set of crash sensors.",
+      "rejected_transfer": "Do not copy an any-overlap failure rule or assume low RPM, shallow overlap or an engine-off state makes contact harmless. A coarse sensor is a candidate, not a physical witness. PicaSim is source-available under noncommercial terms, not a blanket open-source reuse grant.",
+      "proposed_experiment": "Use a 3-by-3 matrix of clearance/contact depth and stopped/coasting/powered shaft states. Compare a candidate sensor with independently known geometry. Report local blade velocity only when the witness, frame and signed shaft state exist; otherwise record unavailable. Require clear controls to stay free of contact damage/cues.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "E3d2",
+        "E3d3",
+        "GP-10",
+        "GP-14",
+        "GP-16",
+        "GP-17",
+        "CR-20"
+      ],
+      "prior_research_questions": [
+        1,
+        5,
+        8,
+        13
+      ],
+      "focus": "Separate component sensing from contact response",
+      "featured_source_ids": [
+        "G01-S02",
+        "G01-S05",
+        "G01-S06",
+        "G01-S07",
+        "G01-S08"
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "Rigs of Rods",
+      "repo": "https://github.com/RigsOfRods/rigs-of-rods",
+      "commit": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+      "access_level": "Full public source: shallow clone inspected at exact HEAD; official vehicle authoring docs consulted; no game execution",
+      "license_evidence": {
+        "summary": "Project README states GPLv3 or later. Inspected ActorForcesEuler.cpp and Collisions.cpp headers state GPL version 3 without an or-later clause. Mods, assets and dependencies have separate terms; no uniform file-level grant or reuse is assumed.",
+        "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/README.md#L49-L51",
+        "other_url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/README.md#L73-L97",
+        "inspected_header_url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/ActorForcesEuler.cpp#L1"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/ActorForcesEuler.cpp#L1602-L1619",
+          "path": "source/main/physics/ActorForcesEuler.cpp",
+          "symbols": [
+            "Actor::CalcNodes"
+          ],
+          "observed": "Each eligible node queries ground and mesh contacts at PHYSICS_DT, accumulates force and stores contact state.",
+          "limits": "This is a node/beam vehicle with a fixed physics step, not the OpenRC whole-aircraft solver.",
+          "id": "G02-S01",
+          "revision": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+          "repository_path": "source/main/physics/ActorForcesEuler.cpp",
+          "blob_sha": "c45ffe8e195d51aa4cb511734df0316f2d3c65a2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/collision/Collisions.cpp#L1241-L1254",
+          "path": "source/main/physics/collision/Collisions.cpp",
+          "symbols": [
+            "Collisions::groundCollision"
+          ],
+          "observed": "Terrain depth, terrain normal and ground model are passed to primitiveCollision and the resulting force is added to the node.",
+          "limits": "Terrain and mesh contact sampling differ; not a swept aircraft prop or wing.",
+          "id": "G02-S02",
+          "revision": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+          "repository_path": "source/main/physics/collision/Collisions.cpp",
+          "blob_sha": "e1cdce464ee1d5b5d5f01781d2e66d747c693a07",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/collision/Collisions.cpp#L1257-L1336",
+          "path": "source/main/physics/collision/Collisions.cpp",
+          "symbols": [
+            "RoR::primitiveCollision"
+          ],
+          "observed": "Velocity and existing force are split into normal and tangential components. Solid contact reaction includes incoming normal speed and depth/dt; a low-slip/low-tangential-force adhesion branch otherwise switches to a speed-dependent Stribeck-like sliding force.",
+          "limits": "The explicit mass/dt/depth law is time-step and tuning dependent; smoothing is not proof of bounded energy or perfect static friction.",
+          "id": "G02-S03",
+          "revision": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+          "repository_path": "source/main/physics/collision/Collisions.cpp",
+          "blob_sha": "e1cdce464ee1d5b5d5f01781d2e66d747c693a07",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/ActorForcesEuler.cpp#L1317-L1378",
+          "path": "source/main/physics/ActorForcesEuler.cpp",
+          "symbols": [
+            "Actor::CalcBeams"
+          ],
+          "observed": "Beam spring-damper stress tests compression and extension yield separately; plastic change adjusts rest length, and tensile yielding decreases strength.",
+          "limits": "This is structural beam force and plastic state, not a debris body or a measurement of OpenRC contact work.",
+          "id": "G02-S04",
+          "revision": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+          "repository_path": "source/main/physics/ActorForcesEuler.cpp",
+          "blob_sha": "c45ffe8e195d51aa4cb511734df0316f2d3c65a2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/RigsOfRods/rigs-of-rods/blob/ebf31a2187bbc31a38331a86b233dfa7e60c52fb/source/main/physics/ActorForcesEuler.cpp#L1380-L1437",
+          "path": "source/main/physics/ActorForcesEuler.cpp",
+          "symbols": [
+            "Actor::CalcBeams"
+          ],
+          "observed": "Over-strength beams can be marked broken/disabled; positive detacher groups disable matching group beams and set matching wheel-detached flags, subject to a collision-triangle connectivity safeguard.",
+          "limits": "The inspected block does not establish pooled fragments, independent rigid-body impulse conservation or an OpenRC-compatible full solver.",
+          "id": "G02-S05",
+          "revision": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb",
+          "repository_path": "source/main/physics/ActorForcesEuler.cpp",
+          "blob_sha": "c45ffe8e195d51aa4cb511734df0316f2d3c65a2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://docs.rigsofrods.org/vehicle-creation/vehicle-concepts/",
+          "path": "official docs: vehicle concepts",
+          "symbols": [
+            "nodes",
+            "beams"
+          ],
+          "observed": "Official docs describe massless spring/damper beams and permanent deformation beyond sufficient force.",
+          "limits": "General explanation; the pinned implementation is the authoritative source for exact branch behavior.",
+          "id": "G02-S06",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        },
+        {
+          "url": "https://developer.rigsofrods.org/d2/d8c/_collisions_8cpp_source.html",
+          "path": "official Doxygen: Collisions.cpp",
+          "symbols": [
+            "RoR::primitiveCollision"
+          ],
+          "observed": "The official generated 2026.01 source rendering independently shows the normal reaction, tangential slip and static-versus-sliding branches.",
+          "limits": "Generated documentation, not a verified immutable commit; use the pinned GitHub source for exact revision.",
+          "id": "G02-S07",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Rigs of Rods separates normal reaction from tangential slip/adhesion in primitiveCollision. Its beam path distinguishes compression and tension yield, changes rest length during plastic response, and has a separate break decision with connectivity guards. These are inspectable mechanisms behind intermediate outcomes; they are not measured RC component properties.",
+      "accepted_proposal": "Extend one qualified GP-16/17 component trial with separate reversible deflection, permanent set and failed-attached states. Make a sustained scrape read through local friction cues and damage evidence, rather than treating speed as an instant breakup trigger. Instrument load direction, slip, recoverable energy and separately justified dissipative work so a bent gear leg and a lightly rubbed wingtip have different histories. Keep the existing compliant support and traction foundations.",
+      "rejected_transfer": "Do not transplant the high-node-count beam solver, material constants or time-step-dependent reaction formula. GP-19 endpoint friction power is not accumulated work. A passive diagnostic can be required to leave physics unchanged; disabling actual damage cannot be required to do so.",
+      "proposed_experiment": "Run matched compression, tension and tangential-load histories on one authored component, including unload/reload. Keep an observation-only baseline. Predeclare tolerances for energy accounting and state transitions; calculate accepted work through the owning integrator, not a sum of endpoint power samples presented as exact work.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "GP-11",
+        "GP-12",
+        "GP-16",
+        "GP-17",
+        "GP-19",
+        "CR-07"
+      ],
+      "prior_research_questions": [
+        2,
+        3,
+        7,
+        8,
+        13
+      ],
+      "focus": "Distinguish sliding, elastic response, permanent set and breakage",
+      "featured_source_ids": [
+        "G02-S03",
+        "G02-S04",
+        "G02-S05"
+      ]
+    },
+    {
+      "id": "G03",
+      "title": "BeamNG.drive",
+      "repo": null,
+      "commit": null,
+      "access_level": "First-party JBeam schema and authoring/debug documentation; proprietary engine implementation not inspected",
+      "license_evidence": "Public documentation access is not a license to redistribute the proprietary game, vehicle assets, or engine. No code or assets imported.",
+      "sources": [
+        {
+          "url": "https://documentation.beamng.com/modding/vehicle/sections/beams/",
+          "symbols": [
+            "beamDeform",
+            "beamStrength",
+            "breakGroupType",
+            "deformationTriggerRatio"
+          ],
+          "observed": "Separate permanent-deformation and break thresholds; groups distinguish triggers from followers. Deformation-trigger callbacks carry an explicit cost warning.",
+          "limits": "Schema behavior, not inspected solver implementation or RC-calibrated parameters.",
+          "id": "G03-S01",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        },
+        {
+          "url": "https://documentation.beamng.com/modding/vehicle/intro_jbeam/jbeamtips/",
+          "symbols": [
+            "DeformGroups",
+            "Ground collision"
+          ],
+          "observed": "The trigger-ratio property, not a group name alone, incurs deformation callback work; node/collision density is an authoring cost tradeoff.",
+          "limits": "No OpenRC timing or safe omission of a wingtip collision follows.",
+          "id": "G03-S02",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        },
+        {
+          "url": "https://documentation.beamng.com/modding/vehicle/intro_jbeam/common_issues/",
+          "symbols": [
+            "Instability",
+            "Leaking properties"
+          ],
+          "observed": "Authoring guidance documents instability from stiffness/damping relative to node mass and damage groups unintentionally leaking into unrelated parts.",
+          "limits": "No transferable numerical constants or solver stability proof.",
+          "id": "G03-S03",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        },
+        {
+          "url": "https://documentation.beamng.com/modding/vehicle/intro_jbeam/debugtools/",
+          "symbols": [
+            "Clusters",
+            "Stress",
+            "Break Groups",
+            "Deform Groups"
+          ],
+          "observed": "Debug views distinguish connected clusters, stress, permanent deformation and triggered groups.",
+          "limits": "Inspection/debug inspiration, not physical validation.",
+          "id": "G03-S04",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "first_party_public_documentation_only",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "BeamNG’s first-party JBeam documentation distinguishes deformation from breaking and provides trigger/follower break-group behavior. Its authoring guidance warns about costly deformation-trigger checks, poor node/beam choices and unstable mass/stiffness combinations. The debug documentation exposes stress, deformation and group views. This investigation reads public authoring contracts, not BeamNG’s proprietary solver.",
+      "accepted_proposal": "Add a small authored graph validator and debug view to the existing attachment work: identify a root load-bearing connection, a follower cover or fairing, and the explicit states that can change. A cover may peel after its supporting connection fails without making the opposite wing detach. Use sparse callbacks only where the visual or physical consumer needs them. Construction-specific failure evidence remains with CR-07 and the aircraft generators.",
+      "rejected_transfer": "Do not interpret graph connectivity as a force law, import BeamNG thresholds, or replace OpenRC’s flight kernel. A real asymmetric impact can move and load the entire aircraft; the mirror control should forbid spurious group-trigger damage, not legitimate transmitted force.",
+      "proposed_experiment": "Validate a small left/right wing graph with one follower cover, one alternative connection and one deliberately misnamed group. Trigger one connection in isolation and inspect the separated sets; then use a separate physical fixture to distinguish genuine transmitted loads from group leakage.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-06",
+        "CR-07",
+        "GP-16",
+        "GP-17"
+      ],
+      "prior_research_questions": [
+        6,
+        7,
+        8,
+        10
+      ],
+      "focus": "Use typed attachment groups and inspect unintended propagation",
+      "featured_source_ids": [
+        "G03-S01",
+        "G03-S02",
+        "G03-S03",
+        "G03-S04"
+      ]
+    },
+    {
+      "id": "G04",
+      "title": "VDrift",
+      "repo": "https://github.com/VDrift/vdrift",
+      "commit": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+      "access_level": "Full public source: shallow clone inspected at exact HEAD; docs inspected; no game execution",
+      "license_evidence": {
+        "summary": "The source repository README says GPLv3; the inspected fracturebody.cpp file header says version 3 or later. Car and track data are separately distributed; asset-specific rights have not been audited, so no blanket asset reuse is inferred. No code or assets imported.",
+        "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/README.md",
+        "other_url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/docs/Getting_the_development_version.md"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/cardynamics.cpp#L1311-L1369",
+          "path": "src/physics/cardynamics.cpp",
+          "symbols": [
+            "CarDynamics::SetupWheelConstraints"
+          ],
+          "observed": "Wheel forward and lateral axes are projected into the contact plane; a normal axis and per-surface tread/non-tread friction feed separate constraints.",
+          "limits": "Wheel model, not proof of hull or prop contact accuracy.",
+          "id": "G04-S01",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/cardynamics.cpp",
+          "blob_sha": "ae62b4b0c8dde4586f22bf88a273976036ff102d",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/cardynamics.cpp#L1378-L1404",
+          "path": "src/physics/cardynamics.cpp",
+          "symbols": [
+            "CarDynamics::ApplyWheelContactDrag"
+          ],
+          "observed": "For loaded wheels, tangential point velocity is multiplied by surface rolling drag and dt; linear and torque impulses are accumulated, then capped against body linear speed.",
+          "limits": "This is rolling drag, not automatically a Coulomb friction bound; the cap is not proof that coupled rotational energy cannot rise.",
+          "id": "G04-S02",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/cardynamics.cpp",
+          "blob_sha": "ae62b4b0c8dde4586f22bf88a273976036ff102d",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/cardynamics.cpp#L386-L489",
+          "path": "src/physics/cardynamics.cpp",
+          "symbols": [
+            "BodyLoader",
+            "AeroDeviceFracture"
+          ],
+          "observed": "Configured linked bodies have elastic and plastic limits if damage and link settings are enabled; the fracture callback clears the attached aerodynamic device.",
+          "limits": "Connection construction alone does not prove live fracture runs with the documented Bullet version.",
+          "id": "G04-S03",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/cardynamics.cpp",
+          "blob_sha": "ae62b4b0c8dde4586f22bf88a273976036ff102d",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/dynamicsworld.cpp#L192-L201",
+          "path": "src/physics/dynamicsworld.cpp",
+          "symbols": [
+            "DynamicsWorld::solveConstraints"
+          ],
+          "observed": "Bullet constraints are solved first, then a fracture callback is invoked; an upstream TODO notes the solver is not rerun after fracture.",
+          "limits": "Current callback invocation does not guarantee any fracture code is compiled.",
+          "id": "G04-S04",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/dynamicsworld.cpp",
+          "blob_sha": "1785499dc2ed89e5feba1bd545637f5589914026",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/dynamicsworld.cpp#L236-L286",
+          "path": "src/physics/dynamicsworld.cpp",
+          "symbols": [
+            "DynamicsWorld::fractureCallback"
+          ],
+          "observed": "Only under BT_BULLET_VERSION < 281, manifold normal applied impulses above epsilon are accumulated by connection, processed and detached bodies added.",
+          "limits": "The entire callback body is preprocessor-guarded; documented minimum Bullet 2.83 makes it inactive in that configuration. No later alternate caller of applyImpulse was found in this source tree.",
+          "id": "G04-S05",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/dynamicsworld.cpp",
+          "blob_sha": "1785499dc2ed89e5feba1bd545637f5589914026",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/fracturebody.cpp#L121-L190",
+          "path": "src/physics/fracturebody.cpp",
+          "symbols": [
+            "FractureBody::applyImpulse",
+            "updateConnection",
+            "breakConnection"
+          ],
+          "observed": "In that guarded path, each active connection accumulates impulses; exceeding elastic but not plastic limits weakens both limits, then the accumulator resets. Breaking removes the child shape, initializes linear velocity from the parent velocity at the child body origin and sets child angular velocity to zero.",
+          "limits": "Per-callback accumulation is not integrated fatigue; zero child spin and no parent mass/COM update in this function are not a momentum-preserving template.",
+          "id": "G04-S06",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/fracturebody.cpp",
+          "blob_sha": "592ebeba2401862a20169a119a4dc9cad798dd0e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/src/physics/cardynamics.cpp#L1213-L1228",
+          "path": "src/physics/cardynamics.cpp",
+          "symbols": [
+            "CarDynamics::UpdateWheelContacts"
+          ],
+          "observed": "A child wheel already in the world is treated as separated and no longer gets a raycast wheel contact.",
+          "limits": "Consumer exists, but guarded fracture path must be active for this connection to cause separation.",
+          "id": "G04-S07",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "src/physics/cardynamics.cpp",
+          "blob_sha": "ae62b4b0c8dde4586f22bf88a273976036ff102d",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VDrift/vdrift/blob/f4767dd0eb98f55a61d64c8c1462e254e0a23fa6/docs/Compiling.md#L103",
+          "path": "docs/Compiling.md:103",
+          "symbols": [
+            "Bullet minimum"
+          ],
+          "observed": "Documented dependency is Bullet minimum version 2.83.",
+          "limits": "Version guard means old code is historical/conditional evidence; no build was executed.",
+          "id": "G04-S08",
+          "revision": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6",
+          "repository_path": "docs/Compiling.md",
+          "blob_sha": "fb7f08dcb13a41d067a8ff7c177339def5162506",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "VDrift has wheel contact constraints, tangential contact-drag code and fracture-related callbacks. Crucially, the fracture callback body is guarded by BT_BULLET_VERSION < 281 while the same repository’s compilation guide requires Bullet 2.83 or newer. The inspected child-release code uses point velocity at the child-body origin and sets its angular velocity to zero. Neither the presence of this code nor that handoff proves a currently active, conserved fracture system.",
+      "accepted_proposal": "Require an implementation receipt that traces configuration, build guard, caller and consumer for each proposed contact capability. For OpenRC release, inspect parent plus pending and active sections in one declared frame; retire the old wheel/aerodynamic/structural contribution when an authoritative component actually detaches. Use CR-AUD-06/07/08 to repair visual delayed-release accounting before more spectacular breakup.",
+      "rejected_transfer": "Do not port the inactive fracture path or call OpenRC’s existing inventory COM and bounded scatter a fully conserved atomic handoff. Current presentation clamps and delayed release are the diagnostic baseline. Decorative release timing must not delay real mass loss.",
+      "proposed_experiment": "Trace one asymmetric delayed visual release and one separately supported authoritative detachment. Account for mass, COM, linear/angular momentum, external forces, damping, caps and explicit scatter immediately before/after each release. Record current discrepancies; only the repaired candidate is expected to satisfy its declared conservation contract.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09",
+        "GP-18",
+        "CR-AUD-06",
+        "CR-AUD-07",
+        "CR-AUD-08"
+      ],
+      "prior_research_questions": [
+        8,
+        9,
+        10
+      ],
+      "focus": "Verify that a fracture path is active before learning from it",
+      "featured_source_ids": [
+        "G04-S01",
+        "G04-S02",
+        "G04-S05",
+        "G04-S06",
+        "G04-S07",
+        "G04-S08"
+      ]
+    },
+    {
+      "id": "G05",
+      "title": "SuperTuxKart",
+      "repo": "https://github.com/supertuxkart/stk-code",
+      "commit": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+      "access_level": "Public source; shallow filtered clone inspected; no execution",
+      "license_evidence": "COPYING says code GPL-3.0-or-later; data files mixed GPL, CC-BY, CC-BY-SA and public domain, with per-file licenses. https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/COPYING ; indexed web_.",
+      "sources": [
+        {
+          "url": "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/physics/physics.cpp#L176",
+          "path": "src/physics/physics.cpp:176-215,565-696",
+          "symbols": [
+            "Physics::update",
+            "Physics::solveGroup"
+          ],
+          "observed": "The step collects selected projectile, kart and object pairs for post-step handling and defers cleanup; kart/track handling directly invokes kart->crashed with triangle material and normal inside solveGroup.",
+          "limits": "Do not claim every contact is deferred or that Bullet behavior establishes OpenRC physics.",
+          "id": "G05-S01",
+          "revision": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+          "repository_path": "src/physics/physics.cpp",
+          "blob_sha": "f5a789fc1027a8487010d3709a4d39cbc5a1ba84",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/physics/physics.hpp#L43",
+          "path": "src/physics/physics.hpp:43-124",
+          "symbols": [
+            "Physics::CollisionPair",
+            "Physics::CollisionList::push_back"
+          ],
+          "observed": "Sorted object pairs keep local contact points and a linear search rejects duplicates by object identity; the",
+          "limits": "Same object pair may include distinct patches; STK pair-level collapse is not appropriate to copy verbatim.",
+          "id": "G05-S02",
+          "revision": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+          "repository_path": "src/physics/physics.hpp",
+          "blob_sha": "7b88a6b75098d9ed29fce1231999012a13dc3081",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/karts/kart.cpp#L2062",
+          "path": "src/karts/kart.cpp:2062-2111,2365-2368,2497-2556",
+          "symbols": [
+            "Kart::handleMaterialGFX",
+            "Kart::crashed",
+            "Kart::playCrashSFX"
+          ],
+          "observed": "Material selects drive/skid effects; crash sound has a 60-tick guard and uses total relative speed for kart-kart and own speed for wall.",
+          "limits": "The source does not use the proposed normal closing speed.",
+          "id": "G05-S03",
+          "revision": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+          "repository_path": "src/karts/kart.cpp",
+          "blob_sha": "c05aa5c9e189a3f3aa5149c3a14854be7b57e4ec",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/karts/kart_gfx.cpp#L391",
+          "path": "src/karts/kart_gfx.cpp:169-206,391-435",
+          "symbols": [
+            "KartGFX::addEffect",
+            "KartGFX::updateTerrain"
+          ],
+          "observed": "Quality settings suppress some emitters; terrain emitter follows a rear-wheel world contact, is gated on grounded/not jumping, and rate based on skid/speed is clamped.",
+          "limits": "This is graphical terrain feedback, not a structural destruction model.",
+          "id": "G05-S04",
+          "revision": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+          "repository_path": "src/karts/kart_gfx.cpp",
+          "blob_sha": "358100c5893049b9c867408c13eca0fdcd3982a9",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/supertuxkart/stk-code/blob/b2a9f223326422aa2dd4eea28319b0c5115fde03/src/items/flyable.cpp#L564",
+          "path": "src/items/flyable.cpp:564-636",
+          "symbols": [
+            "Flyable::explode",
+            "Flyable::getHitEffect"
+          ],
+          "observed": "Projectile explosion chooses direct/secondary game effects separately from manually supplied visual/sound feedback.",
+          "limits": "Arcade kart/weapon behavior is not a model of RC airframe damage.",
+          "id": "G05-S05",
+          "revision": "b2a9f223326422aa2dd4eea28319b0c5115fde03",
+          "repository_path": "src/items/flyable.cpp",
+          "blob_sha": "2000fc7161eda2e42888bd405a6c98f394f8ce11",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "SuperTuxKart queues and deduplicates selected collision pairs for later processing, but kart-track material callbacks also occur directly in solveGroup. Rear-wheel contact drives localized material effects. Its crash audio uses a tick guard and a speed measure that is not a general normal-closing-speed criterion. The source therefore demonstrates useful separation and locality, with limits on what the deduplication and severity policy mean.",
+      "accepted_proposal": "Build on GP-19’s existing paced scrape grains. Use material, contact patch, component and episode identity to place a grass brush, runway rub or rough-ground chatter at the actual feature. Coalesce true duplicate presentation requests, while retaining two simultaneous patches, distinct impact/tear layers and a later release/recontact. This should make a near accident audible and visible without requiring a terminal crash.",
+      "rejected_transfer": "Do not merge physical contacts just because they share an object pair, impose one cue per entire incident, or use total speed alone to trigger fatality. A cooldown that hides repeated solver callbacks can also hide a genuine second impact.",
+      "proposed_experiment": "Replay a scrape crossing a material seam, two simultaneous wing/gear patches, and a brief release followed by recontact. Count identified onsets, paced grains and teardowns separately. Vary rendering and audio settings; accepted contact state and causal IDs must agree while cosmetic density may differ.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "GP-14",
+        "GP-19",
+        "CR-02c",
+        "CR-03c",
+        "AUD-11",
+        "AUD-15",
+        "AUD-16"
+      ],
+      "prior_research_questions": [
+        2,
+        13,
+        19,
+        20
+      ],
+      "focus": "Make grazing feedback local without suppressing real recontacts",
+      "featured_source_ids": [
+        "G05-S01",
+        "G05-S02",
+        "G05-S03",
+        "G05-S04"
+      ]
+    },
+    {
+      "id": "G06",
+      "title": "Pioneer",
+      "repo": "https://github.com/pioneerspacesim/pioneer",
+      "commit": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+      "access_level": "Full public source: shallow clone inspected at exact HEAD; primary licensing file consulted; no game execution",
+      "license_evidence": {
+        "summary": "AUTHORS says core code/extensions GPLv3 and art, music and other assets CC BY-SA 3.0; listed third-party components have their own licenses. No code or assets imported.",
+        "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/AUTHORS.txt#L138-L149",
+        "other_url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/licenses/GPL-3.txt"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/Space.cpp#L903-L960",
+          "path": "src/Space.cpp",
+          "symbols": [
+            "OnCollision",
+            "hitCallback"
+          ],
+          "observed": "For two dynamic bodies, relative normal speed at the contact point includes angular velocity. Bodies separating on the normal return early; handlers run before a normal restitution impulse. Slide coefficient damps each whole linear-velocity vector.",
+          "limits": "The slide term is not a tangential friction impulse; handler can veto response, so separation is not unconditional.",
+          "id": "G06-S01",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/Space.cpp",
+          "blob_sha": "a9b90b4368f80b0a489dd64490cb37dbd020a3ed",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/Space.cpp#L962-L1027",
+          "path": "src/Space.cpp",
+          "symbols": [
+            "hitCallback"
+          ],
+          "observed": "For a static partner, the code calculates a normal impulse, applies bounded depth correction and damps whole linear velocity with a low-speed zeroing rule; source itself notes velocity should be projected onto normal to treat bounce and friction on correct components.",
+          "limits": "Scalar angular inertia and global damping are simplifications; do not assume contact tangent friction, correct general 3D inertia, or robust extreme-time-acceleration behavior.",
+          "id": "G06-S02",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/Space.cpp",
+          "blob_sha": "a9b90b4368f80b0a489dd64490cb37dbd020a3ed",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/Space.cpp#L1031-L1074",
+          "path": "src/Space.cpp",
+          "symbols": [
+            "CollideWithTerrain",
+            "Space::TimeStep"
+          ],
+          "observed": "A temporary one-point terrain test constructs a contact; each Space timestep invokes frame collision and then terrain collision before body motion.",
+          "limits": "Single terrain point and space-scale assumptions do not validate detailed RC landing geometry.",
+          "id": "G06-S03",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/Space.cpp",
+          "blob_sha": "a9b90b4368f80b0a489dd64490cb37dbd020a3ed",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/DynamicBody.cpp#L312-L335",
+          "path": "src/DynamicBody.cpp",
+          "symbols": [
+            "DynamicBody::OnCollision"
+          ],
+          "observed": "Non-missile collisions map relative normal speed squared and a mass choice to a scaled damage value; non-cargo damage under 0.001 is ignored while response can still continue.",
+          "limits": "This is a game damage heuristic, not literal Joules, a reduced-mass energy calculation, integrated work, or an RC failure calibration.",
+          "id": "G06-S04",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/DynamicBody.cpp",
+          "blob_sha": "f131e9e84341e9dcabf9458918b81f2bf2d5a64d",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/Ship.cpp#L554-L603",
+          "path": "src/Ship.cpp",
+          "symbols": [
+            "Ship::OnDamage"
+          ],
+          "observed": "Damage first consumes shield mass, then hull mass; a depleted hull invokes explosion while lesser damage remains nonterminal.",
+          "limits": "This path supplies no component fracture, no prop/rotor state and no debris budget.",
+          "id": "G06-S05",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/Ship.cpp",
+          "blob_sha": "a2a4a557a683d0cdbb7d698cb28b57b8e008f1d6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/pioneerspacesim/pioneer/blob/f03f979f58cb3acad6c4e3187f44074732fec8bc/src/Ship.cpp#L609-L653",
+          "path": "src/Ship.cpp",
+          "symbols": [
+            "Ship::OnCollision"
+          ],
+          "observed": "Specific docking/entrance collisions return true for bounce and some landed cases return false; ordinary collisions delegate to DynamicBody damage.",
+          "limits": "This demonstrates exceptions and coupling, not a universally independent damage channel.",
+          "id": "G06-S06",
+          "revision": "f03f979f58cb3acad6c4e3187f44074732fec8bc",
+          "repository_path": "src/Ship.cpp",
+          "blob_sha": "a2a4a557a683d0cdbb7d698cb28b57b8e008f1d6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Pioneer computes relative velocity at a contact point, including angular contributions, rejects separating contacts and applies a normal collision response. Its damage path can ignore a small collision while physical response continues. Its additional slide damping scales the whole linear velocity; the source itself does not present this as properly projected tangential friction. Damage constants and inertia treatment are game approximations.",
+      "accepted_proposal": "Expose the local normal and tangential components already required by the contact contract. At the same aircraft speed, a glancing wingtip contact and a nose-first strike should produce different loads, cues and possible outcomes. Add moving-surface-relative diagnostics where the interface supports them. Preserve independent physical response, damage and terminal decisions; a non-damaging contact can still change motion.",
+      "rejected_transfer": "Do not copy whole-body velocity damping, scalar-inertia shortcuts or game damage units as joules. Current scenery/parked-aircraft proxies do not establish a two-moving-aircraft solver; mutual dynamic exchange remains coordinated with AFC-23.",
+      "proposed_experiment": "Use matched speed with shallow and steep approach angles, plus matched point-relative velocities on supported stationary/moving fixtures. Compare normal/tangential diagnostics, angular response and continuation. Include a separating control and a high tangential-speed clear pass.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "E3d1",
+        "E3d3",
+        "GP-10",
+        "GP-14",
+        "GP-19",
+        "AFC-23"
+      ],
+      "prior_research_questions": [
+        1,
+        2,
+        3,
+        13,
+        19
+      ],
+      "focus": "Use local relative motion to distinguish a graze from a direct hit",
+      "featured_source_ids": [
+        "G06-S01",
+        "G06-S02",
+        "G06-S04",
+        "G06-S05",
+        "G06-S06"
+      ]
+    },
+    {
+      "id": "G07",
+      "title": "OpenClonk",
+      "repo": "https://github.com/openclonk/openclonk",
+      "commit": "36de799544af0459014ea088867fe263779a8bdd",
+      "access_level": "Public source and game scripts; shallow filtered clone inspected; no execution",
+      "license_evidence": "Root COPYING identifies ISC and third-party exceptions; project development docs say ISC for engine and scripts, and media mix CC-BY, CC0, and CC-BY-SA. Item-level review needed. https://github.com/openclonk/openclonk/blob/36de799544af0459014ea088867fe263779a8bdd/COPYING",
+      "sources": [
+        {
+          "url": "https://github.com/openclonk/openclonk/blob/36de799544af0459014ea088867fe263779a8bdd/planet/Objects.ocd/Items.ocd/Tools.ocd/Dynamite.ocd/Script.c#L195",
+          "path": "planet/Objects.ocd/Items.ocd/Tools.ocd/Dynamite.ocd/Script.c:195-218",
+          "symbols": [
+            "Dynamite::DoExplode"
+          ],
+          "observed": "Game dynamite starts nearby fuses and calls Explode(26).",
+          "limits": "Specific scripted game action, not OpenRC battery behavior.",
+          "id": "G07-S01",
+          "revision": "36de799544af0459014ea088867fe263779a8bdd",
+          "repository_path": "planet/Objects.ocd/Items.ocd/Tools.ocd/Dynamite.ocd/Script.c",
+          "blob_sha": "55f9afc0dddb35a637badbe02c23dd2f5187c846",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/openclonk/openclonk/blob/36de799544af0459014ea088867fe263779a8bdd/planet/System.ocg/Explode.c#L115",
+          "path": "planet/System.ocg/Explode.c:115-178,199-270",
+          "symbols": [
+            "Explode",
+            "DoExplosion",
+            "BlastObjects"
+          ],
+          "observed": "Source snapshots object data and removes it before blast; outside sequence is BlastObjects, IncinerateLandscape, ExplosionEffect, BlastFree, explicitly preventing newly freed terrain from being hit by the object blast. Containment can stop propagation.",
+          "limits": "2D game rules and ordering do not establish RC fire physics.",
+          "id": "G07-S02",
+          "revision": "36de799544af0459014ea088867fe263779a8bdd",
+          "repository_path": "planet/System.ocg/Explode.c",
+          "blob_sha": "cc540bb039d3d10a10bb1c8c19619f938801071e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/openclonk/openclonk/blob/36de799544af0459014ea088867fe263779a8bdd/src/landscape/C4Landscape.cpp#L612",
+          "path": "src/landscape/C4Landscape.cpp:612-666,737-753",
+          "symbols": [
+            "C4Landscape::BlastFreeShape",
+            "C4Landscape::P::BlastMaterial2Objects",
+            "C4Landscape::P::BlastFreePix"
+          ],
+          "observed": "Freed material is accumulated by type and per-material ratios convert quantities into loose pixels and/or objects.",
+          "limits": "No inference of 3D fracture or physical mass conservation.",
+          "id": "G07-S03",
+          "revision": "36de799544af0459014ea088867fe263779a8bdd",
+          "repository_path": "src/landscape/C4Landscape.cpp",
+          "blob_sha": "681189de513ecba5c5e6f42a9de514989d493912",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://docs.openclonk.org/en/sdk/material/ocm.html",
+          "path": "docs/sdk/material/ocm.xml",
+          "symbols": [
+            "Blast2PXSRatio",
+            "Blast2Object",
+            "Blast2ObjectRatio"
+          ],
+          "observed": "Primary docs explain material conversion settings; the pinned Earth and Rock definitions instantiate distinct recipes.",
+          "limits": "Docs are live and not version-pinned.",
+          "id": "G07-S04",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        },
+        {
+          "url": "https://github.com/openclonk/openclonk/blob/36de799544af0459014ea088867fe263779a8bdd/planet/Objects.ocd/System.ocg/Effects.c#L12",
+          "path": "planet/Objects.ocd/System.ocg/Effects.c:12-78",
+          "symbols": [
+            "ExplosionEffect"
+          ],
+          "observed": "Sound grade depends on blast level and liquid; bubbles or glimmer are selected by environment, with bounded smoke-trail placement attempts.",
+          "limits": "Authored size and medium rules are not physically calibrated.",
+          "id": "G07-S05",
+          "revision": "36de799544af0459014ea088867fe263779a8bdd",
+          "repository_path": "planet/Objects.ocd/System.ocg/Effects.c",
+          "blob_sha": "81669641e84be750d2953433d32bee21f50bd455",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "OpenClonk’s explosion path applies object blast, incinerates terrain, emits effects and then frees landscape material. That ordering matters: newly freed material is not in the original object-blast pass. Material definitions control loose pixels/objects, and the game selects different sound and particle cues by medium. These are game destruction and presentation rules, not an airframe fracture model.",
+      "accepted_proposal": "Select bounded cosmetic recipes from the existing RC construction evidence: a few visible balsa splinters, film strips, foam chips or a compact dust puff, with a retained major silhouette. Carry a birth-generation/request identity so a newly spawned visual fragment does not receive the originating event twice. Use the proposed common lifecycle and budget as adapters around existing pools.",
+      "rejected_transfer": "Do not derive removed physical mass from a cosmetic particle ratio, add a second fire owner, or implement voxel terrain destruction to solve wingtip scraping. Existing CR-09e/f already supply splinters and interior/film details; the increment is better material allocation and event ordering.",
+      "proposed_experiment": "Feed one admitted break outcome into three construction recipes with identical physical state. Track major part IDs, decorative birth IDs and requested/admitted/dropped counts. Verify that the original damage is committed once and that later genuine fragment impacts remain separately observable.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-06",
+        "CR-07",
+        "CR-09",
+        "CR-22c",
+        "CR-22e"
+      ],
+      "prior_research_questions": [
+        7,
+        9,
+        10,
+        13,
+        14,
+        20
+      ],
+      "focus": "Give breakup a material-specific mixture and explicit birth order",
+      "featured_source_ids": [
+        "G07-S01",
+        "G07-S02",
+        "G07-S03",
+        "G07-S05"
+      ]
+    },
+    {
+      "id": "G08",
+      "title": "OpenRA: Red Alert",
+      "repo": "https://github.com/OpenRA/OpenRA",
+      "commit": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+      "access_level": "Game rules plus their C# trait implementations inspected in an exact Git checkout; not played",
+      "license_evidence": "Inspected trait headers and README specify GPL-3.0-or-later for code. Original game art/audio have separate provenance; no assets or code imported.",
+      "sources": [
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/OpenRA.Mods.Common/Traits/SpawnActorOnDeath.cs",
+          "path": "OpenRA.Mods.Common/Traits/SpawnActorOnDeath.cs",
+          "symbols": [
+            "INotifyKilled.Killed",
+            "INotifyRemovedFromWorld.RemovedFromWorld"
+          ],
+          "observed": "Death eligibility is recorded before removal; replacement actors are scheduled after removal callbacks, carrying parent, position, faction and owner information.",
+          "limits": "Frame-end game-actor scheduling is not authority to postpone OpenRC physical detachment.",
+          "id": "G08-S01",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "OpenRA.Mods.Common/Traits/SpawnActorOnDeath.cs",
+          "blob_sha": "0a7e23c09098860f658ccb310595c58e8716d2c3",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/OpenRA.Mods.Common/Traits/ThrowsParticle.cs",
+          "path": "OpenRA.Mods.Common/Traits/ThrowsParticle.cs",
+          "symbols": [
+            "ThrowsParticle",
+            "ITick.Tick"
+          ],
+          "observed": "Thrown turret/spinner sprites use cosmetic randomness, a prescribed quadratic path and decaying visual spin; updates stop at path completion.",
+          "limits": "Not collision-resolved debris, momentum-conserving fracture, or a scene-wide budget.",
+          "id": "G08-S02",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "OpenRA.Mods.Common/Traits/ThrowsParticle.cs",
+          "blob_sha": "68c7fa9fccef7514ed8373e9585a6185a27c49ba",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/mods/ra/rules/husks.yaml",
+          "path": "mods/ra/rules/husks.yaml",
+          "symbols": [
+            "2TNK.Husk",
+            "MGG.Husk"
+          ],
+          "observed": "Red Alert game content actually installs the thrown-part traits on named husks.",
+          "limits": "Counts the Red Alert game once; other OpenRA mods are not separate studies.",
+          "id": "G08-S03",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "mods/ra/rules/husks.yaml",
+          "blob_sha": "dccb65b370755945113ff0256062073bd9b08bc8",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/mods/ra/rules/aircraft.yaml",
+          "path": "mods/ra/rules/aircraft.yaml",
+          "symbols": [
+            "BADR",
+            "LeavesTrails",
+            "GrantConditionOnDamageState"
+          ],
+          "observed": "Aircraft rules enable smoke through a damage-state condition independently of the death/husk path.",
+          "limits": "Health-state art direction does not establish a fuel leak or combustion event.",
+          "id": "G08-S04",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "mods/ra/rules/aircraft.yaml",
+          "blob_sha": "a5501bc65c9321b4a7fc461c9e61370cc02c705e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/OpenRA.Mods.Common/Traits/Render/LeavesTrails.cs",
+          "path": "OpenRA.Mods.Common/Traits/Render/LeavesTrails.cs",
+          "symbols": [
+            "ITick.Tick",
+            "TraitEnabled"
+          ],
+          "observed": "Trail emission has terrain filters, moving/stationary intervals, local offsets and enable/reset position handling; sprite selection uses cosmetic randomness.",
+          "limits": "A local interval is not a global fleet resource bound.",
+          "id": "G08-S05",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "OpenRA.Mods.Common/Traits/Render/LeavesTrails.cs",
+          "blob_sha": "076c8bf82b0e513b0ccfc9cf434e89599ca73995",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/OpenRA/OpenRA/blob/4cc9a9f6299c807c373bb233d9729518c0160c77/OpenRA.Mods.Common/Traits/Conditions/GrantConditionOnDamageState.cs",
+          "path": "OpenRA.Mods.Common/Traits/Conditions/GrantConditionOnDamageState.cs",
+          "symbols": [
+            "DamageStateChanged",
+            "GrantConditionOnValidDamageState"
+          ],
+          "observed": "Condition grant/revoke controls one-shot transition sounds; permanent grant is an explicit option.",
+          "limits": "The game uses health bands, not structural force or work measurements.",
+          "id": "G08-S06",
+          "revision": "4cc9a9f6299c807c373bb233d9729518c0160c77",
+          "repository_path": "OpenRA.Mods.Common/Traits/Conditions/GrantConditionOnDamageState.cs",
+          "blob_sha": "0012915ae996754278e79064ea3c2eb27e6f5e4a",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "The Red Alert game in OpenRA uses damage-condition-driven trails separately from death/husk creation. SpawnActorOnDeath checks eligibility before removal and creates the replacement after removal callbacks. ThrowsParticle, actually configured on tank husks, follows an authored visual arc rather than collision-resolved rigid-body motion. These separate paths make state and ownership transitions inspectable.",
+      "accepted_proposal": "For a qualified damaged component, allow a restrained local cue before terminal destruction; a scratched wing must not acquire engine smoke merely because an aggregate health tier changed. During terminal handoff, retire the old source and bind any continuing emitter/voice to the surviving part or an explicit world fallback. Extend existing isolated random seeds with a recorded cross-effect seed only if replay requires it.",
+      "rejected_transfer": "Do not use a scripted turret arc for an important aircraft fragment or infer structural failure from a visual health state. Deduplication means at-most-once for each identified onset/teardown; paced scrape grains and independent layers remain valid. Pooled engine-instance IDs may differ across presets.",
+      "proposed_experiment": "Replay a local nonterminal cue, terminal handoff, source deletion, reset and re-entry after culling. Assert stable causal identities, no duplicate onset/teardown and no source restart. Compare accepted state across presets while allowing different particle allocations.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09",
+        "CR-22b",
+        "CR-22d",
+        "SM-19",
+        "SM-20",
+        "AUD-15"
+      ],
+      "prior_research_questions": [
+        8,
+        9,
+        15,
+        18,
+        19,
+        20
+      ],
+      "focus": "Keep damage cues and wreck handoff coherent",
+      "featured_source_ids": [
+        "G08-S01",
+        "G08-S02",
+        "G08-S03",
+        "G08-S04",
+        "G08-S05"
+      ]
+    },
+    {
+      "id": "G09",
+      "title": "Teardown",
+      "repo": null,
+      "commit": null,
+      "access_level": "First-party scripting API 2.2.0 read on 2026-11-20; proprietary engine implementation not inspected",
+      "license_evidence": "Public modding API access does not license proprietary engine code or game assets. No code or assets imported.",
+      "sources": [
+        {
+          "url": "https://teardowngame.com/modding/api.html",
+          "symbols": [
+            "IsShapeBroken",
+            "GetShapeBody",
+            "MakeHole",
+            "ParticleSticky",
+            "ParticleCollide",
+            "IsBodyActive"
+          ],
+          "observed": "Shapes can change owning body without losing voxels. Hole sizes distinguish material classes. Cosmetic particle APIs expose sticking and time-varying collision; inactive bodies leave simulation. Plain and smoke particles are separate types.",
+          "limits": "API contracts only. The page does not expose the engine's voxel fracture, collision solver, smoke implementation or performance measurements. All listed mechanisms share this one source, not six independent studies.",
+          "id": "G09-S01",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "first_party_public_documentation_only",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Teardown’s public API distinguishes broken shape material from a shape changing body ownership. It exposes material-sensitive hole sizes, particle sticking/collision controls and body activity. These are API contracts; the proprietary collision, fracture and smoke implementations were not inspected.",
+      "accepted_proposal": "Keep an intact detached panel distinct from a chipped edge: topology changes need not produce dust or remove material. Use support-aware settling for small decorative chips and explicit representation tiers for important parts, chips and smoke. A brief collision grace period may be considered for a cosmetic particle born inside its emitter geometry, with no effect on structural contacts.",
+      "rejected_transfer": "Do not turn a voxel-hole API into an RC fracture law, disable important-part collision to escape a bad birth position, or freeze a body to conceal sliding. Sleeping needs a qualified support and wake/recontact policy.",
+      "proposed_experiment": "Release an intact panel and a chipped tip beside a wall and on a slope. Count disconnected parts separately from removed material; inspect birth overlap, support, sleep, wake and culling re-entry. Keep the important body’s logical contacts and source anchor intact.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-06",
+        "CR-09",
+        "CR-19",
+        "CR-22c",
+        "CR-22e"
+      ],
+      "prior_research_questions": [
+        6,
+        9,
+        12,
+        14,
+        20
+      ],
+      "focus": "Separate intact detachment, material removal and cosmetic settling",
+      "featured_source_ids": [
+        "G09-S01"
+      ]
+    },
+    {
+      "id": "G10",
+      "title": "Space Station 14",
+      "repo": "https://github.com/space-wizards/space-station-14",
+      "commit": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+      "access_level": "Public game content source; shallow filtered clone inspected; no execution. RobustToolbox submodule pinned 1afd6929b473dd537b42cb668a961c84a2e2e7c6 is the supporting engine, not another game.",
+      "license_evidence": "Content repository README states code MIT; most assets CC-BY-SA 3.0, some CC-BY-NC-SA 3.0 or similar and each asset carries metadata. https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/README.md",
+      "sources": [
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Resources/Prototypes/Entities/Objects/Weapons/Throwable/grenades.yml#L1",
+          "path": "Resources/Prototypes/Entities/Objects/Weapons/Throwable/grenades.yml:1-22",
+          "symbols": [
+            "ExGrenade",
+            "ExplodeOnTrigger",
+            "Explosive",
+            "TimerTrigger"
+          ],
+          "observed": "The game grenade prototype specifies a timer, explosive trigger, type and intensity.",
+          "limits": "Game trigger configuration, not an RC fuel or battery model.",
+          "id": "G10-S01",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Resources/Prototypes/Entities/Objects/Weapons/Throwable/grenades.yml",
+          "blob_sha": "3d40372d2667028e8f281cd2946735c31d6d1639",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Content.Server/Explosion/EntitySystems/ExplosionSystem.cs#L139",
+          "path": "Content.Server/Explosion/EntitySystems/ExplosionSystem.cs:139-178,276-330",
+          "symbols": [
+            "TriggerExplosive",
+            "QueueExplosion"
+          ],
+          "observed": "A repeatability guard precedes queueing and optional deletion; same-type nearby same-map pending explosions can combine by adding intensity.",
+          "limits": "Combination affects authoritative gameplay; it is not a presentation-only policy.",
+          "id": "G10-S02",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Content.Server/Explosion/EntitySystems/ExplosionSystem.cs",
+          "blob_sha": "c6e5dd69504df066e5eb679b8a6a89e24a82407e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Resources/Prototypes/Entities/Structures/Windows/window.yml#L100",
+          "path": "Resources/Prototypes/Entities/Structures/Windows/window.yml:100-124",
+          "symbols": [
+            "Window",
+            "DamageTrigger",
+            "SpawnEntitiesBehavior"
+          ],
+          "observed": "At damage 80, Window threshold invokes shatter sound and spawns 1–2 ShardGlass entities.",
+          "limits": "Game-specific units and thresholds do not calibrate RC materials.",
+          "id": "G10-S03",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Resources/Prototypes/Entities/Structures/Windows/window.yml",
+          "blob_sha": "28bd1e8e62fbb74241a5707d1d0c25a49b2a7278",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Content.Server/Destructible/DestructibleSystem.cs#L72",
+          "path": "Content.Server/Destructible/DestructibleSystem.cs:72-150",
+          "symbols": [
+            "OnDamageChanged",
+            "Triggered"
+          ],
+          "observed": "Threshold behavior activation is state-tracked and processing stops on deletion",
+          "limits": "No evidence of specific airframe fracture.",
+          "id": "G10-S04",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Content.Server/Destructible/DestructibleSystem.cs",
+          "blob_sha": "fea2400ab477a5bf1a95b2c8e3b90964418e413a",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Content.Server/Explosion/EntitySystems/ExplosionSystem.Processing.cs#L195",
+          "path": "Content.Server/Explosion/EntitySystems/ExplosionSystem.Processing.cs:74-159,195-278,785-806",
+          "symbols": [
+            "Update",
+            "ExplodeTile",
+            "TryGetNextTileEnumerator"
+          ],
+          "observed": "A processed set avoids repeat entity damage; post-damage query throws newly spawned shards. Queue processing is tick/time bounded. Above the large-area throw setting, outer-ring throws remain allowed.",
+          "limits": "The budget affects server gameplay. Do not transplant tick deferral into OpenRC physics.",
+          "id": "G10-S05",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Content.Server/Explosion/EntitySystems/ExplosionSystem.Processing.cs",
+          "blob_sha": "df00da36479433c482f38d148567c3718c451492",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/space-wizards/space-station-14/blob/748af5f9acfc73eeab81e34a49d7ae42dc4b0e84/Content.Shared/CCVar/CCVars.Explosion.cs#L7",
+          "path": "Content.Shared/CCVar/CCVars.Explosion.cs:7-100",
+          "symbols": [
+            "ExplosionTilesPerTick",
+            "ExplosionThrowLimit",
+            "ExplosionMaxProcessingTime",
+            "ExplosionSingleTickAreaLimit"
+          ],
+          "observed": "Defaults include 100 tiles/tick, throw threshold 400, and 7ms max tick time; comments explicitly say time limit is imperfect due to non-interruptible spawning and external deletion work.",
+          "limits": "Threshold 400 has the outer-ring exception in Processing.cs; max tick time is not a strict cap.",
+          "id": "G10-S06",
+          "revision": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84",
+          "repository_path": "Content.Shared/CCVar/CCVars.Explosion.cs",
+          "blob_sha": "858276538355908dfb5dead3817b62dce3ab93eb",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 1,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Space Station 14 has an explosive repeat guard, a processed-entity set and a post-damage query that can find newly created shards. Real window/destructible prototypes exercise fragment creation. Its explosion queue and time budget also defer gameplay processing; the nominal budget is not a strict bound on every downstream operation. Nearby event merging and throw thresholds are game policies.",
+      "accepted_proposal": "Prefer explicit spawn receipts for a bounded secondary visual burst instead of rediscovering newborn pieces with another spatial query. Instrument queued, admitted, dropped and expired work, including deferred callbacks. This extends the one proposed presentation budget and lifecycle; it does not authorize deferring OpenRC’s accepted collision/damage tick.",
+      "rejected_transfer": "Do not import merged physical severity, delayed authoritative blast/damage, or claim a documented millisecond allowance is a hard end-to-end cap. Production companion/fleet crash attachment is still open; a ten-source stress case must be labeled synthetic unless that adapter is independently qualified.",
+      "proposed_experiment": "Use ten bounded synthetic source events, including duplicate submissions and secondary fragment births. Check each birth/transition identity once, preserve real subsequent contacts, and record backlog/overflow. Effects-off/low/high must preserve accepted state and causal IDs, not necessarily cosmetic instance IDs.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09",
+        "CR-22c",
+        "CR-22e",
+        "GP-22",
+        "SM-21",
+        "AUD-15"
+      ],
+      "prior_research_questions": [
+        9,
+        14,
+        18,
+        19,
+        20
+      ],
+      "focus": "Account for secondary births without moving authoritative damage in time",
+      "featured_source_ids": [
+        "G10-S01",
+        "G10-S02",
+        "G10-S03",
+        "G10-S04",
+        "G10-S05",
+        "G10-S06"
+      ]
+    },
+    {
+      "id": "G11",
+      "title": "FlightGear (YASim)",
+      "repo": "https://github.com/FlightGear/flightgear",
+      "commit": "807e406dd3bceca816942490a999970e157dbcfa",
+      "access_level": "Public official GitHub mirror, pinned shallow source checkout; no executable run or asset import.",
+      "license_evidence": {
+        "summary": "Project README points to GPL; the official contribution policy requires GPLv2 or later for the flightgear repository. Aircraft and scenery are separate content with their own licensing context; official FGAddon submissions must be GPL compatible, and third-party assets need individual review. No code or assets imported.",
+        "url": "https://www.flightgear.org/about/policy/",
+        "other_url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/LICENSE.md"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Model.cpp#L192-L242",
+          "path": "src/FDM/YASim/Model.cpp",
+          "symbols": [
+            "yasim::Model::updateGround",
+            "YASim::copyToYASim"
+          ],
+          "observed": "The YASim update caller requests a global ground plane for each gear point and passes its ground velocity, surface material and body identity into the gear; it separately calls each rotor ground-effect/ground-contact routine.",
+          "limits": "This documents a sampled local plane and a callback velocity, not a fully resolved water surface or continuous rotor collision.",
+          "related_urls": [
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/YASim.cxx#L389-L395"
+          ],
+          "id": "G11-S01",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/Model.cpp",
+          "blob_sha": "3dd19700312afa3e1407102f3e2117ddb09be499",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/FGFDM.cpp#L1088-L1103",
+          "path": "src/FDM/YASim/FGFDM.cpp",
+          "symbols": [
+            "FGFDM gear parser"
+          ],
+          "observed": "Gear definitions can configure on-water, on-solid, planing and stiction; stiction defaults to disabled. The parser adds the resulting gear to the airplane.",
+          "limits": "Feature availability is configuration-dependent. This is not a universal watercraft model.",
+          "related_urls": [],
+          "id": "G11-S02",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/FGFDM.cpp",
+          "blob_sha": "858f3f3a9d57ba1c5c7c8e236b6562fe16dba9b8",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Gear.cpp#L440-L602",
+          "path": "src/FDM/YASim/Gear.cpp",
+          "symbols": [
+            "Gear::calcForce",
+            "Model::calcForces"
+          ],
+          "observed": "The active gear path rejects an unsupported surface class, derives contact-point velocity including angular motion, subtracts ground velocity, computes normal spring/damping, and resolves steer/skid tangents. Model::calcForces applies that force to the body at the contact point.",
+          "limits": "The water and solid parameters are simplified tuning, not validated hydrodynamics; a retracting gear or mismatched material returns without contact force.",
+          "related_urls": [
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Gear.cpp#L111-L155",
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Model.cpp#L388-L401"
+          ],
+          "id": "G11-S03",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/Gear.cpp",
+          "blob_sha": "5a52cf69b413cf56e101887942af13a45d7d63a4",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Gear.cpp#L604-L635",
+          "path": "src/FDM/YASim/Gear.cpp",
+          "symbols": [
+            "Gear::calcForceWithStiction",
+            "Gear::calcFrictionFluid"
+          ],
+          "observed": "When stiction is configured, solid contact retrieves the hit body transform by body ID and moves a stored stuck point with that body; fluid takes a separate friction path.",
+          "limits": "Default stiction is off. The relative-velocity and body-frame paths are not proof of fluid added mass, spray or a conservative water simulation.",
+          "related_urls": [
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Gear.cpp#L809-L836"
+          ],
+          "id": "G11-S04",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/Gear.cpp",
+          "blob_sha": "5a52cf69b413cf56e101887942af13a45d7d63a4",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Rotor.cpp#L1093-L1102",
+          "path": "src/FDM/YASim/Rotor.cpp",
+          "symbols": [
+            "Rotor::compile",
+            "Rotor::updateDirectionsAndPositions"
+          ],
+          "observed": "Rotor compilation chooses min(number of rotor parts, 16) contact points, arranged around a rotor-disc rim based on its base and directions.",
+          "limits": "These are fixed disc samples updated with rotor orientation; the point positions shown do not include blade azimuth or a swept temporal blade path.",
+          "related_urls": [
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Rotor.cpp#L1158-L1179"
+          ],
+          "id": "G11-S05",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/Rotor.cpp",
+          "blob_sha": "65239e29959b5a8ef2d2c3847f79b099f5d52ea7",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Rotor.cpp#L834-L868",
+          "path": "src/FDM/YASim/Rotor.cpp",
+          "symbols": [
+            "Rotor::findGroundEffectAltitude",
+            "Rotor::testForRotorGroundContact",
+            "Rotorpart::inititeration",
+            "Rotorpart::calcForce"
+          ],
+          "observed": "The called routine tests each sample against a local ground plane; negative height reduces a bounded rotor-balance variable. Rotorpart reads balance on iteration and later multiplies its modeled centripetal force and scalar torque by the resulting factor, which Model adds to aircraft forces.",
+          "limits": "Penetration accumulation has no explicit dt term in this check; it is not an impact impulse, contact torque measurement, blade failure calibration, or phase-resolved swept CCD.",
+          "related_urls": [
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Rotorpart.cpp#L74-L106",
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Rotorpart.cpp#L548-L564",
+            "https://github.com/FlightGear/flightgear/blob/807e406dd3bceca816942490a999970e157dbcfa/src/FDM/YASim/Model.cpp#L318-L345"
+          ],
+          "id": "G11-S06",
+          "revision": "807e406dd3bceca816942490a999970e157dbcfa",
+          "repository_path": "src/FDM/YASim/Rotor.cpp",
+          "blob_sha": "65239e29959b5a8ef2d2c3847f79b099f5d52ea7",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "FlightGear YASim passes ground plane, ground velocity, material and body identity into gear handling. Configured stiction can retain a point on a moving support. Its water branch is a separate heuristic. Rotor contact checks a limited set of fixed rim points and decreases rotor balance on penetration; the result later affects modeled rotor forces. It is neither a harmless proximity warning nor swept blade-phase collision detection.",
+      "accepted_proposal": "Make supported geometry and kinematics explicit in a contact capability record. Compare YASim-style sampling with OpenRC’s existing fast-rotor whole-disc terrain interval query and an independent swept-blade oracle. Treat conservative envelope overlap, actual blade contact, clearance and unresolved search as different outcomes. The current slow-rotor phase proxy and general obstacle coverage need their own qualifications.",
+      "rejected_transfer": "Do not replace the existing disc query with sparse rim samples, claim blade-phase CCD is already solved, or copy wet friction into a transient wing skim. A moving water interface and the water-particle flow velocity are different inputs; none of these sources establishes an RC safe skim envelope.",
+      "proposed_experiment": "Use flat and sloped supports with matching relative velocity vectors, compression, geometry and wind/input frames. For blades, include inter-sample and within-tick contact plus stopped/coasting cases. Add one explicitly authored wet feature only after its entry/exit, force, energy and recovery domain is stated.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "E3d2",
+        "E3d3",
+        "GP-10",
+        "GP-14",
+        "GP-16",
+        "GP-17",
+        "GP-18",
+        "CR-20"
+      ],
+      "prior_research_questions": [
+        1,
+        4,
+        5
+      ],
+      "focus": "Qualify moving support, wet contact and rotor geometry separately",
+      "featured_source_ids": [
+        "G11-S01",
+        "G11-S02",
+        "G11-S03",
+        "G11-S04",
+        "G11-S05",
+        "G11-S06"
+      ]
+    },
+    {
+      "id": "G12",
+      "title": "DOOM 3",
+      "repo": "https://github.com/id-Software/DOOM-3",
+      "commit": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+      "access_level": "Public id Software source release, pinned shallow checkout; no executable run or game assets obtained.",
+      "license_evidence": {
+        "summary": "The inspected physics source header says GPLv3 or later plus additional terms, reproduced after the GPL in COPYING.txt; README identifies excluded third-party code and says game data remain under the original EULA. No source or assets imported.",
+        "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L1-L24",
+        "other_url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/COPYING.txt#L625-L660"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L172-L196",
+          "path": "neo/game/physics/Physics_RigidBody.cpp",
+          "symbols": [
+            "idPhysics_RigidBody::CheckForCollisions",
+            "idPhysics_RigidBody::Evaluate"
+          ],
+          "observed": "The body first integrates a proposed state; clip.Motion sweeps from current to next position and rotation, and on a hit sets next pose to the trace endpoint and restores the old linear and angular momentum.",
+          "limits": "This is a whole-body sweep, not a rotating prop blade sweep. The old momentum restoration also discards the proposed integrated momentum on the hit path.",
+          "related_urls": [
+            "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L890-L914"
+          ],
+          "id": "G12-S01",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/physics/Physics_RigidBody.cpp",
+          "blob_sha": "caf0893626efd9864025f18387a2f09b421226a6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L823-L829",
+          "path": "neo/game/physics/Physics_RigidBody.cpp",
+          "symbols": [
+            "idPhysics_RigidBody::Evaluate"
+          ],
+          "observed": "After the sweep it commits the impact pose, applies the collision impulse, evaluates contacts/rest/friction, and returns without a second integration of the unconsumed part of the step. The comment explicitly says the remainder is ignored.",
+          "limits": "Neither a scaled remainder nor a resumed remainder step was found in this path; do not report this as a complete time-of-impact loop.",
+          "related_urls": [
+            "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L890-L955"
+          ],
+          "id": "G12-S02",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/physics/Physics_RigidBody.cpp",
+          "blob_sha": "caf0893626efd9864025f18387a2f09b421226a6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L114-L161",
+          "path": "neo/game/physics/Physics_RigidBody.cpp",
+          "symbols": [
+            "idPhysics_RigidBody::CollisionImpulse"
+          ],
+          "observed": "Relative collision-point velocity includes angular motion and the other entity velocity; normal impulse uses inverse mass/inertia and bounciness, updates linear and angular momentum, then invokes the entity collision callback.",
+          "limits": "Near-zero trace fraction halves both momenta as a safety shortcut. Numerical constants are not RC-scale validated.",
+          "related_urls": [],
+          "id": "G12-S03",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/physics/Physics_RigidBody.cpp",
+          "blob_sha": "caf0893626efd9864025f18387a2f09b421226a6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L211-L263",
+          "path": "neo/game/physics/Physics_RigidBody.cpp",
+          "symbols": [
+            "idPhysics_RigidBody::ContactFriction"
+          ],
+          "observed": "Contact response removes a component along each contact normal and computes a tangential impulse from point velocity, updating both momenta.",
+          "limits": "The source says each contact is solved in isolation and uses absolute velocity rather than velocity relative to the contacting body; this is not a moving-ground solution or a full coupled Coulomb solve.",
+          "related_urls": [],
+          "id": "G12-S04",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/physics/Physics_RigidBody.cpp",
+          "blob_sha": "caf0893626efd9864025f18387a2f09b421226a6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/physics/Physics_RigidBody.cpp#L274-L350",
+          "path": "neo/game/physics/Physics_RigidBody.cpp",
+          "symbols": [
+            "idPhysics_RigidBody::TestIfAtRest"
+          ],
+          "observed": "Rest is gated on at least three contacts and a support polygon, projected COM within that polygon, a sufficiently level normal, and bounded linear and angular velocities.",
+          "limits": "Heuristic rest criteria miss valid cases and use game-specific thresholds; they do not establish realistic support for arbitrary RC fragments.",
+          "related_urls": [],
+          "id": "G12-S05",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/physics/Physics_RigidBody.cpp",
+          "blob_sha": "caf0893626efd9864025f18387a2f09b421226a6",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/Projectile.cpp#L2142-L2240",
+          "path": "neo/game/Projectile.cpp",
+          "symbols": [
+            "idDebris::Launch",
+            "idDebris::Think",
+            "idDebris::Collide",
+            "idDebris::Fizzle",
+            "idProjectile::Collide"
+          ],
+          "observed": "Debris is configured with mass, friction, bounce and optional smoke; its server fuse schedules fizzle/explode or immediate removal. Think stops smoke when its emitter is finished; debris collision plays its optional bounce sound once then clears it. Separately, projectile bounce sound uses speed thresholds.",
+          "limits": "A one-shot debris sound is not the speed-scaled projectile sound; source establishes no fixed-size global debris pool or conserved fragment birth.",
+          "related_urls": [
+            "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/Projectile.cpp#L2267-L2303",
+            "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/Projectile.cpp#L2309-L2340",
+            "https://github.com/id-Software/DOOM-3/blob/a9c49da5afb18201d31e3f0a429a037e56ce2b9a/neo/game/Projectile.cpp#L540-L553"
+          ],
+          "id": "G12-S06",
+          "revision": "a9c49da5afb18201d31e3f0a429a037e56ce2b9a",
+          "repository_path": "neo/game/Projectile.cpp",
+          "blob_sha": "f972645d7d0d1ccea316ee9a882c5e6d2bc70881",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "DOOM 3 sweeps position and orientation for rigid-body collision, but Evaluate explicitly ignores the remaining integration time after the hit. A near-zero collision-fraction shortcut halves momentum. Its rest test considers contacts, support and COM; its contact-friction path does not generally use moving-surface-relative tangential velocity. idDebris has separate launch, lifetime and bounce-sound behavior.",
+      "accepted_proposal": "Use the discarded-time shortcut as a counterexample for CR-AUD-32: every accepted step must account for its elapsed interval. Use support and COM diagnostics to investigate why an OpenRC wreck fragment keeps moving, then qualify its shape/contact behavior before reducing protective damping. Distinct impact onset and rest should have different audio behavior.",
+      "rejected_transfer": "Do not import a second rigid-body solver, momentum halving, arbitrary contact-count thresholds or one permanent bounce-sound suppression rule. Live-flight continuation belongs to E3d3/GP; post-terminal visual settling belongs to CR-09d3/19, and wreck audio to CR-02c/03c with AUD.",
+      "proposed_experiment": "Combine a live glancing-hit fixture with an explicit remainder-of-tick check and a separate visual body dropped onto flat/sloped supports. Record COM/support, recontacts, sleep/wake and impact cues. Require no unexplained time loss and no repeated resting-contact burst, within declared supported geometry.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "E3d3",
+        "GP-08",
+        "GP-10",
+        "GP-14",
+        "CR-09d3",
+        "CR-19",
+        "CR-02c",
+        "CR-03c",
+        "AUD-11"
+      ],
+      "prior_research_questions": [
+        1,
+        3,
+        12,
+        19
+      ],
+      "focus": "Audit time remaining and supported rest before adding damping",
+      "featured_source_ids": [
+        "G12-S01",
+        "G12-S02",
+        "G12-S03",
+        "G12-S04",
+        "G12-S05",
+        "G12-S06"
+      ]
+    },
+    {
+      "id": "G13",
+      "title": "Overgrowth",
+      "repo": "https://github.com/WolfireGames/overgrowth",
+      "commit": "245fe4828631c84c0023d29d1525f5716ccb6106",
+      "access_level": "Public official game-code repository, pinned shallow checkout; no execution or game asset import.",
+      "license_evidence": {
+        "summary": "The repository says its code is Apache-2.0 unless noted otherwise; source and character script headers confirm Apache-2.0. README says original game art/levels are commercial data and redistribution requires Wolfire written permission. Third-party dependencies may differ. No code or assets imported.",
+        "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/README.md#L1-L23",
+        "other_url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/LICENSE"
+      },
+      "sources": [
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Physics/bulletworld.cpp#L221-L225",
+          "path": "Source/Physics/bulletworld.cpp",
+          "symbols": [
+            "SceneGraph::Update",
+            "BulletWorld::Update"
+          ],
+          "observed": "The scene update calls the Bullet world update; it steps the world, handles collision effects, and updates object transforms.",
+          "limits": "This is the game’s own Bullet world; no claims about OpenRC live physics follow from it.",
+          "related_urls": [
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Main/scenegraph.cpp#L903-L920"
+          ],
+          "id": "G13-S01",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Source/Physics/bulletworld.cpp",
+          "blob_sha": "77d24ad4fef584e8d5773d6ef6791f8784eb7dc2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Physics/bulletworld.cpp#L1438-L1496",
+          "path": "Source/Physics/bulletworld.cpp",
+          "symbols": [
+            "BulletWorld::HandleCollisionEffects",
+            "BulletWorld::HandleContactEffect"
+          ],
+          "observed": "For a manifold where at least one owner is active, each contact is passed to the effect handler. A true-impact flag requires negative distance, lifetime under 3 and applied impulse above 0.1; midpoint, normal and impulse are passed to each available BulletObject.",
+          "limits": "The threshold is not RC-calibrated; lifetime under 3 can admit more than one update and does not guarantee exactly-once dispatch. The same B-normal is supplied to both; the downstream script does not receive that normal.",
+          "related_urls": [],
+          "id": "G13-S02",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Source/Physics/bulletworld.cpp",
+          "blob_sha": "77d24ad4fef584e8d5773d6ef6791f8784eb7dc2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/riggedobject.cpp#L2990-L2996",
+          "path": "Source/Objects/riggedobject.cpp",
+          "symbols": [
+            "RiggedObject::SetSkeletonOwner",
+            "BulletObject::Collided"
+          ],
+          "observed": "Character loading assigns the MovementObject as owner for each physical bone, and BulletObject forwards the specific colliding body pointer to that owner.",
+          "limits": "Identity is an implementation pointer within this game, not a stable network ID or a standalone physical bone index.",
+          "related_urls": [
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/movementobject.cpp#L1410-L1426",
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Physics/bulletobject.cpp#L571-L574"
+          ],
+          "id": "G13-S03",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Source/Objects/riggedobject.cpp",
+          "blob_sha": "6d8c22c6cf5fe17ae560024b00e50c3f04db5948",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/movementobject.cpp#L4260-L4279",
+          "path": "Source/Objects/movementobject.cpp",
+          "symbols": [
+            "MovementObject::Collided",
+            "RiggedObject::InHeadChain"
+          ],
+          "observed": "Every dispatched callback invokes Contact; only true impacts continue to material hardness lookup. Body identity distinguishes a head-chain body for a hardness multiplier, after which the script receives position, impulse and hardness.",
+          "limits": "The extra multiplier is a game-specific character rule; the script callback receives five floats, not the sub-body pointer or contact normal.",
+          "related_urls": [
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/riggedobject.cpp#L1885-L1889"
+          ],
+          "id": "G13-S04",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Source/Objects/movementobject.cpp",
+          "blob_sha": "75af8890342063f82902862692f0cfa1da68921c",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L1296-L1312",
+          "path": "Data/Scripts/aschar.as",
+          "symbols": [
+            "Contact",
+            "Collided"
+          ],
+          "observed": "Contact records the last contact time; the impact handler uses impulse and material hardness for its own game-specific decisions. A later guarded block selects material feedback tiers and short independent cooldowns.",
+          "limits": "Cooldowns are per tier rather than a global pool or hard overall cap; the heavy branch can emit two material events. No gore, combat or asset policy is proposed for transfer.",
+          "related_urls": [
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Data/Scripts/aschar.as#L1346-L1395"
+          ],
+          "id": "G13-S05",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Data/Scripts/aschar.as",
+          "blob_sha": "420b3b1df733f73214d7b774f9130c06766a5c3e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/riggedobject.cpp#L2925-L2948",
+          "path": "Source/Objects/riggedobject.cpp",
+          "symbols": [
+            "RiggedObject::ApplyForceToRagdoll",
+            "RiggedObject::Ragdoll"
+          ],
+          "observed": "On ragdoll transition physical bones activate and link to the Bullet world; the separate localized force helper distributes a specified force among non-fixed bodies by normalized mass-weighted inverse-square distance and also supports a direct body force.",
+          "limits": "This is a distinct force helper, not proof that the collision callback invokes it. Full articulated bodies, weighting constants and animation systems are not justified for OpenRC.",
+          "related_urls": [
+            "https://github.com/WolfireGames/overgrowth/blob/245fe4828631c84c0023d29d1525f5716ccb6106/Source/Objects/riggedobject.cpp#L2516-L2534"
+          ],
+          "id": "G13-S06",
+          "revision": "245fe4828631c84c0023d29d1525f5716ccb6106",
+          "repository_path": "Source/Objects/riggedobject.cpp",
+          "blob_sha": "6d8c22c6cf5fe17ae560024b00e50c3f04db5948",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Overgrowth routes Bullet contact callbacks through the contacted body’s owner. Its true-impact filter uses penetration, contact age and impulse, so a contact can still qualify more than once. MovementObject derives hardness and a head-related multiplier before sending a reduced script event; the script does not receive the original body pointer and normal. Separate character-script tiers choose impact cues. A ragdoll-force helper exists, but this inspection did not establish it as that callback’s direct consumer.",
+      "accepted_proposal": "Keep actual entity, component/region, surface material and evidence provenance until the relevant consumer has used them. A wing touching a car, a person proxy or a parked aircraft must not be attributed to a nearby person. Localized non-graphic cloth, body or hard-object cues can make the event readable without using a generic explosion. This strengthens CR-AUD-30 and GP-14 identity work.",
+      "rejected_transfer": "Do not import combat damage/head multipliers, require gore or treat a static person proxy as an articulated dynamic body. A cue emitted from a region does not itself prove correct impulse exchange or human-impact physics.",
+      "proposed_experiment": "Place person, vehicle and solid-object proxies close together and contact exactly one known region. Include two patches and release/recontact. Require the observed identity or explicit unknown to survive callbacks; compare local cues without changing accepted state or inventing an attacker.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-AUD-30",
+        "GP-14",
+        "GP-19",
+        "CR-02c",
+        "CR-03c",
+        "AUD-11"
+      ],
+      "prior_research_questions": [
+        2,
+        13,
+        19,
+        20
+      ],
+      "focus": "Preserve actual contacted entity and region for local feedback",
+      "featured_source_ids": [
+        "G13-S01",
+        "G13-S02",
+        "G13-S03",
+        "G13-S04",
+        "G13-S05",
+        "G13-S06"
+      ]
+    },
+    {
+      "id": "G14",
+      "title": "Beyond All Reason",
+      "repo": "https://github.com/beyond-all-reason/Beyond-All-Reason",
+      "commit": "79359265a30f00716baa10c97d590ef8968e379d",
+      "access_level": "Public game code read in filtered clone; no execution. Recoil is separately pinned supporting engine, not another game.",
+      "license_evidence": "https://github.com/beyond-all-reason/Beyond-All-Reason/blob/79359265a30f00716baa10c97d590ef8968e379d/LICENSE.md states GPL-2.0-or-later for code including BOS/COB/Lua unless stated otherwise; art/audio are licensed individually, including BAR Project License, CC-BY-SA and other terms; some await grant. Older indexed license_general.txt is stale for this pin.",
+      "sources": [
+        {
+          "url": "https://github.com/beyond-all-reason/Beyond-All-Reason/blob/79359265a30f00716baa10c97d590ef8968e379d/units/ArmBots/T2/armsnipe.lua#L2",
+          "path": "units/ArmBots/T2/armsnipe.lua:2-72",
+          "symbols": [
+            "armsnipe",
+            "featuredefs.dead",
+            "featuredefs.heap"
+          ],
+          "observed": "Named ARMSNIPE.cob, corpse DEAD, explosion definition, blocking reclaimable DEAD with featuredead HEAP, and nonblocking reclaimable HEAP are authored game data.",
+          "limits": "Configuration alone does not prove runtime corpse selection.",
+          "id": "G14-S01",
+          "revision": "79359265a30f00716baa10c97d590ef8968e379d",
+          "repository_path": "units/ArmBots/T2/armsnipe.lua",
+          "blob_sha": "26e1debfed527b6ccdc7d78184d8bf58e5d78c26",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/beyond-all-reason/Beyond-All-Reason/blob/79359265a30f00716baa10c97d590ef8968e379d/scripts/Units/armsnipe.bos#L799",
+          "path": "scripts/Units/armsnipe.bos:799-839",
+          "symbols": [
+            "Killed(severity, corpsetype)"
+          ],
+          "observed": "Four severity branches assign per-piece flags FIRE, SMOKE, FALL, BITMAPONLY or EXPLODE_ON_HIT and return levels 1–3.",
+          "limits": "Configured COB has same basename, but its provenance from this exact BOS revision was not verified; severity is game-scripted, not RC energy.",
+          "id": "G14-S02",
+          "revision": "79359265a30f00716baa10c97d590ef8968e379d",
+          "repository_path": "scripts/Units/armsnipe.bos",
+          "blob_sha": "9715e97b0c2958155ca3f2d8c8d973c1db3f9615",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/beyond-all-reason/RecoilEngine/blob/2aecf51203ebc554f67a7078b411ed1fe116859f/rts/Sim/Units/Scripts/UnitScript.cpp#L891",
+          "path": "RecoilEngine rts/Sim/Units/Scripts/UnitScript.cpp:891-946",
+          "symbols": [
+            "CUnitScript::Explode"
+          ],
+          "observed": "Contemporary supporting engine passes unit as piece-projectile owner and disables requested smoke/fire flags at particle saturation >=0.95.",
+          "limits": "Engine pin 2aecf51203ebc554f67a7078b411ed1fe116859f is separately sampled and not proven paired to game build; threshold is not a hard global cap.",
+          "id": "G14-S03",
+          "revision": "2aecf51203ebc554f67a7078b411ed1fe116859f",
+          "repository_path": "rts/Sim/Units/Scripts/UnitScript.cpp",
+          "blob_sha": "5e2748fc336d30f050faaab96bd9ff3c0c0916f1",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/beyond-all-reason/RecoilEngine/blob/2aecf51203ebc554f67a7078b411ed1fe116859f/rts/Sim/Projectiles/PieceProjectile.h#L8",
+          "path": "RecoilEngine rts/Sim/Projectiles/PieceProjectile.h:8-18",
+          "symbols": [
+            "PF_Fall",
+            "PF_Smoke",
+            "PF_Fire"
+          ],
+          "observed": "PF_Fall is explicitly marked unused in sampled Recoil; smoke/fire describe unsynced saturation gating.",
+          "limits": "Do not infer engine semantics from BAR macro names/comments.",
+          "id": "G14-S04",
+          "revision": "2aecf51203ebc554f67a7078b411ed1fe116859f",
+          "repository_path": "rts/Sim/Projectiles/PieceProjectile.h",
+          "blob_sha": "137edf446e1bb7ca2f631b35ac43c11e9547765f",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/beyond-all-reason/RecoilEngine/blob/2aecf51203ebc554f67a7078b411ed1fe116859f/rts/Sim/Units/Unit.cpp#L104",
+          "path": "RecoilEngine rts/Sim/Units/Unit.cpp:104-118; CobInstance.cpp:717-726",
+          "symbols": [
+            "CUnit::~CUnit",
+            "CCobInstance::ThreadCallback"
+          ],
+          "observed": "COB return becomes delayedWreckLevel; destructor calls CreateWreck(level-1) after death script.",
+          "limits": "Separate engine revision; exact BAR engine build unverified.",
+          "id": "G14-S05",
+          "revision": "2aecf51203ebc554f67a7078b411ed1fe116859f",
+          "repository_path": "rts/Sim/Units/Unit.cpp",
+          "blob_sha": "d9553d3a45ae4d55244221e83b941ed5eec58236",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/beyond-all-reason/Beyond-All-Reason/blob/79359265a30f00716baa10c97d590ef8968e379d/luarules/gadgets/feature_dead_explosion.lua#L14",
+          "path": "luarules/gadgets/feature_dead_explosion.lua:14-41",
+          "symbols": [
+            "gadget:FeatureDestroyed"
+          ],
+          "observed": "Corpse-category feature with resurrection progress under 0.98 gets CEG and sound at its position; callback has no attacker.",
+          "limits": "Not evidence of causal attacker attribution or material fracture.",
+          "id": "G14-S06",
+          "revision": "79359265a30f00716baa10c97d590ef8968e379d",
+          "repository_path": "luarules/gadgets/feature_dead_explosion.lua",
+          "blob_sha": "cbac0c557018193e3d2fe900a1fe027b88aa55e2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Beyond All Reason’s armsnipe unit defines a compiled death script and dead/heap features; the corresponding BOS text assigns different pieces different effect flags by severity. Exact BOS-to-COB provenance was not verified. A separately inspected contemporary Recoil engine suppresses smoke/fire flags under particle saturation and marks PF_Fall unused. That engine revision was not proven to be the one paired with this game pin. A feature-death effect callback also lacks attacker data.",
+      "accepted_proposal": "Choose cosmetic part recipes from admitted identity with explicit provenance: a known structural outcome when available, otherwise an honest visual estimate. Preserve a readable major wing/fuselage silhouette before allocating secondary chips, trails or lights. Retain the original event/source reference through later wreck effects, even when the original scene object is gone. Use the one proposed shared budget.",
+      "rejected_transfer": "Do not equate a visual breakup class or labeled hull contact with a qualified structural section failure. Do not copy severity buckets, an unrelated saturation threshold, a macro’s apparent meaning or assume all authored flags execute in the inspected build.",
+      "proposed_experiment": "Feed twelve fixed terminal outcomes into two existing part layouts at low/high budgets and offscreen. Inspect major-part retention, duplicate births, evidence labels, causal identity and drops. Physics/outcomes remain identical; render recipes may differ. No original game assets are needed.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09",
+        "CR-19",
+        "CR-22b",
+        "CR-22c",
+        "CR-22e",
+        "GP-14"
+      ],
+      "prior_research_questions": [
+        7,
+        9,
+        10,
+        14,
+        18,
+        20
+      ],
+      "focus": "Protect major part readability while scaling secondary detail",
+      "featured_source_ids": [
+        "G14-S01",
+        "G14-S02",
+        "G14-S03",
+        "G14-S04",
+        "G14-S05",
+        "G14-S06"
+      ]
+    },
+    {
+      "id": "G15",
+      "title": "Veloren",
+      "repo": "https://gitlab.com/veloren/veloren",
+      "commit": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+      "access_level": "Official GitLab upstream read in filtered clone; official GitHub mirror at 131d1193387861d35c74655662148f303c22c5b4 has identical inspected particle and pipeline blobs; no execution.",
+      "license_evidence": "Upstream README says game GPLv3. Asset-specific notices exist including font licenses and a CC-BY-SA-4.0 README image; verify the individual file. https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/README.md#L95",
+      "sources": [
+        {
+          "url": "https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/voxygen/src/scene/mod.rs#L479",
+          "path": "voxygen/src/scene/mod.rs:479-489,781",
+          "symbols": [
+            "Scene::handle_outcome",
+            "ParticleMgr::maintain"
+          ],
+          "observed": "Scene passes gameplay outcomes to particle and sound managers.",
+          "limits": "Outcome is rendering input, not proof of debris physics.",
+          "mirror_url": "https://github.com/veloren/veloren/blob/131d1193387861d35c74655662148f303c22c5b4/voxygen/src/scene/mod.rs#L479",
+          "id": "G15-S01",
+          "revision": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+          "repository_path": "voxygen/src/scene/mod.rs",
+          "blob_sha": "31c0af3798d3c7d2580eb0b9f44d556a39b54eb0",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/voxygen/src/scene/particle.rs#L997",
+          "path": "voxygen/src/scene/particle.rs:997-1006,1526-1561",
+          "symbols": [
+            "maintain_body_particles",
+            "maintain_bomb_particles"
+          ],
+          "observed": "Bomb/firework body calls heartbeat-driven spark and smoke births; smoke birth position offsets source velocity by elapsed time.",
+          "limits": "Do not re-propose OpenRC existing moving emitter or newborn advection.",
+          "mirror_url": "https://github.com/veloren/veloren/blob/131d1193387861d35c74655662148f303c22c5b4/voxygen/src/scene/particle.rs#L997",
+          "id": "G15-S02",
+          "revision": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+          "repository_path": "voxygen/src/scene/particle.rs",
+          "blob_sha": "a65ef3a1f23ea4bf629ebef4e0020cd13d622daf",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/voxygen/src/scene/particle.rs#L723",
+          "path": "voxygen/src/scene/particle.rs:723-779,4931-4975",
+          "symbols": [
+            "ParticleMgr::maintain",
+            "push_particle",
+            "add_particles",
+            "Particle::new"
+          ],
+          "observed": "Expiry retains alive_until > now; disabled mode clears particles and timers; push uses probability, batch add scales amount and truncates.",
+          "limits": "No proof of a global live-particle cap.",
+          "mirror_url": "https://github.com/veloren/veloren/blob/131d1193387861d35c74655662148f303c22c5b4/voxygen/src/scene/particle.rs#L723",
+          "id": "G15-S03",
+          "revision": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+          "repository_path": "voxygen/src/scene/particle.rs",
+          "blob_sha": "a65ef3a1f23ea4bf629ebef4e0020cd13d622daf",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/voxygen/src/scene/particle.rs#L4862",
+          "path": "voxygen/src/scene/particle.rs:4862-4928",
+          "symbols": [
+            "HeartbeatScheduler::maintain",
+            "heartbeats"
+          ],
+          "observed": "Frequency-keyed timers retain incomplete intervals, returning u8 heartbeat counts.",
+          "limits": "Scheduler is shared by frequency, not per emitter; no global cap. Official contemporaneous design explanation.",
+          "mirror_url": "https://github.com/veloren/veloren/blob/131d1193387861d35c74655662148f303c22c5b4/voxygen/src/scene/particle.rs#L4862",
+          "id": "G15-S04",
+          "revision": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+          "repository_path": "voxygen/src/scene/particle.rs",
+          "blob_sha": "a65ef3a1f23ea4bf629ebef4e0020cd13d622daf",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://gitlab.com/veloren/veloren/-/blob/6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c/voxygen/src/scene/particle.rs#L3716",
+          "path": "voxygen/src/scene/particle.rs:3716-3736,4790-4801",
+          "symbols": [
+            "maintain_block_particles",
+            "upload_particles"
+          ],
+          "observed": "512 limits per-chunk per-kind rate before dt; upload collects a new CPU vector and creates renderer instances; source notes writes need optimization.",
+          "limits": "512 is not a limit on all live particles or effects.",
+          "mirror_url": "https://github.com/veloren/veloren/blob/131d1193387861d35c74655662148f303c22c5b4/voxygen/src/scene/particle.rs#L3716",
+          "id": "G15-S05",
+          "revision": "6c99b292e0c3cbb5ab9c76e2c2f83a3ce73b295c",
+          "repository_path": "voxygen/src/scene/particle.rs",
+          "blob_sha": "a65ef3a1f23ea4bf629ebef4e0020cd13d622daf",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Veloren routes game outcomes to particle and sound consumers. Its frequency-keyed scheduler retains fractional intervals but stores whole heartbeat counts as u8; long stalls can exceed that count, so catch-up is not lossless. Particles have expiry times. A named 512 limit applies to a per-chunk, per-kind emission rate before dt, not global live particles. Upload code collects a fresh instance vector and notes optimization work. The inspected upstream and official-mirror particle/pipeline blobs match.",
+      "accepted_proposal": "Use a bounded fractional emission policy inside the proposed aftermath lifecycle. Retain useful timing under frame jitter, but expire unused debt instead of releasing a giant catch-up burst after an emitter ends. Measure upload allocations and bytes before choosing buffer changes. Preserve existing SM-19/20 fractional scheduling, moving sources and immediate newborn advection; the increment is a qualified crash adapter and bounded discontinuity policy.",
+      "rejected_transfer": "Do not claim OpenRC has Veloren’s allocation pattern or needs a new smoke solver. Current live profile smoke deliberately rebases after large discontinuities. A common aftermath clock/budget is still proposed, and equal visual counts across quality levels are not a requirement.",
+      "proposed_experiment": "Replay a ten-second source at 30/60/144 render FPS, with 200-ms and 250-ms stalls plus a 300-ms count-overflow control, hide/show, manual pause and reset. Record elapsed source age, requested/admitted/dropped/expired births, upload work and expiry. Require no expired-source restart; declare the selected catch-up/drop policy before comparing candidates.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-22c",
+        "CR-22d",
+        "CR-22e",
+        "SM-19",
+        "SM-20",
+        "SM-21"
+      ],
+      "prior_research_questions": [
+        14,
+        15,
+        18,
+        20
+      ],
+      "focus": "Make particle birth and expiry robust to frame jitter",
+      "mirror_repo": "https://github.com/veloren/veloren",
+      "mirror_commit": "131d1193387861d35c74655662148f303c22c5b4",
+      "mirror_verified_paths": {
+        "voxygen/src/scene/particle.rs": "a65ef3a1f23ea4bf629ebef4e0020cd13d622daf",
+        "voxygen/src/scene/mod.rs": "31c0af3798d3c7d2580eb0b9f44d556a39b54eb0",
+        "voxygen/src/render/pipelines/particle.rs": "97a6e7c16129d9c545776aeac8f29cd3798c8416"
+      },
+      "featured_source_ids": [
+        "G15-S01",
+        "G15-S02",
+        "G15-S03",
+        "G15-S04",
+        "G15-S05"
+      ]
+    },
+    {
+      "id": "G16",
+      "title": "Endless Sky",
+      "repo": "https://github.com/endless-sky/endless-sky",
+      "commit": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+      "access_level": "Pinned public C++ source, game effect definitions and primary authoring documentation; no execution",
+      "license_evidence": "Inspected C++ and effects-data headers specify GPL-3.0-or-later. README directs artwork users to the separate copyright manifest; no art or code imported. https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/README.md",
+      "sources": [
+        {
+          "url": "https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/source/Visual.cpp",
+          "path": "source/Visual.cpp",
+          "symbols": [
+            "Visual::Visual",
+            "Visual::Move"
+          ],
+          "observed": "Visual birth can inherit/blend source and hit velocity or explicitly override it; random velocity/spin are separate. Motion advances independently until lifetime marks removal.",
+          "limits": "Two-dimensional cosmetic motion, without contact response, inertia, drag or physical fragment mass.",
+          "id": "G16-S01",
+          "revision": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+          "repository_path": "source/Visual.cpp",
+          "blob_sha": "02d85fbb0caea5b960b8aab03d4c9c1941d5bc7b",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/source/Ship.cpp",
+          "path": "source/Ship.cpp",
+          "symbols": [
+            "Ship::StepDestroyed",
+            "Ship::StepLeaks",
+            "drawLeaks"
+          ],
+          "observed": "Destruction births visual smoke with ship velocity plus scatter. The debris count scales with ship mass and vector reserve anticipates allocation. Leak positions are selected on the ship outline, and the drawing path emits from transformed positions.",
+          "limits": "A reserve is not an upper bound; the debris variable names cosmetic smoke. Draw-path emission and staged ship removal are not suitable physical event timing.",
+          "id": "G16-S02",
+          "revision": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+          "repository_path": "source/Ship.cpp",
+          "blob_sha": "1cdca1d98bd95080491e2898a9a99c58ec8a82f8",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/source/Engine.cpp",
+          "path": "source/Engine.cpp",
+          "symbols": [
+            "visual.Move",
+            "Prune(visuals)",
+            "Append(visuals, newVisuals)"
+          ],
+          "observed": "Existing visuals move and prune before newly generated visuals are appended, avoiding an extra full movement step on birth.",
+          "limits": "This is game-step ordering; OpenRC requires fractional accepted event time and its own presentation clock.",
+          "id": "G16-S03",
+          "revision": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+          "repository_path": "source/Engine.cpp",
+          "blob_sha": "51c2f90262e27b50e1bfa030f13bc3fc589078c9",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/source/Effect.cpp",
+          "path": "source/Effect.cpp",
+          "symbols": [
+            "Effect::Load"
+          ],
+          "observed": "The effect schema explicitly distinguishes lifetime, random lifetime, inherited velocity scale and absolute velocity/angle options.",
+          "limits": "The schema does not validate physical units or OpenRC source semantics.",
+          "id": "G16-S04",
+          "revision": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+          "repository_path": "source/Effect.cpp",
+          "blob_sha": "f398c741d9e4fc07ab014928d40c854231e498f0",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/endless-sky/endless-sky/blob/1bad2cd27a9a137377907116768e6dbc12dd0428/data/effects.txt",
+          "path": "data/effects.txt",
+          "symbols": [
+            "effect smoke",
+            "velocity scale"
+          ],
+          "observed": "Actual game definitions instantiate the effect options.",
+          "limits": "Art presets are not transferable RC coefficients.",
+          "id": "G16-S05",
+          "revision": "1bad2cd27a9a137377907116768e6dbc12dd0428",
+          "repository_path": "data/effects.txt",
+          "blob_sha": "b5fafd2251a9c1937f259bfd8cb587808aceca30",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/endless-sky/endless-sky/wiki/CreatingEffects",
+          "symbols": [
+            "velocity scale",
+            "absolute velocity",
+            "lifetime"
+          ],
+          "observed": "First-party authoring documentation explicitly classifies effects as non-interacting visuals and describes their velocity/lifetime options.",
+          "limits": "Live wiki; exact runtime facts were checked against the pinned code.",
+          "id": "G16-S06",
+          "retrieval": "Public first-party documentation read; mutable page, not a pinned engine implementation."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Endless Sky gives visual effects explicit inherited or absolute velocity policies plus separate random scatter/spin. Its engine advances old effects and appends newly created ones afterward. Ship destruction emits authored stages, and a mass-derived smoke count uses reserve rather than a hard cap. Some leak emission runs from a drawing path. These are inspectable 2D visual policies, not a conserved 3D fragment solver.",
+      "accepted_proposal": "Give aircraft chips, ground dust and water spray different source-velocity policies. A chip can inherit local part motion; ground dust should not automatically inherit the aircraft’s full forward speed. Existing smoke should leave its emitter and advect immediately. For events with qualified fractional time, initialize age consistently; endpoint-only observations must retain endpoint/unavailable timing provenance.",
+      "rejected_transfer": "Do not emit from OpenRC’s draw path, use a mass-proportional count without a scene allocation, or treat visual scatter as free physical energy. Existing seed isolation and live smoke interpolation are foundations. A visual breakup schedule cannot define authoritative detachment time.",
+      "proposed_experiment": "Use controlled early/middle/late event fractions, plus a real endpoint-only GP-19 observation, with a moving/rotating source. Compare source/emission velocity, initial age and plume continuity across render rates. Keep physical fragment momentum checks in CR-09/GP-18, separate from cosmetic velocity policies.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09",
+        "CR-22b",
+        "CR-22c",
+        "CR-22d",
+        "SM-19",
+        "SM-20"
+      ],
+      "prior_research_questions": [
+        9,
+        11,
+        13,
+        15,
+        18,
+        20
+      ],
+      "focus": "Distinguish source motion, emission velocity and birth age",
+      "featured_source_ids": [
+        "G16-S01",
+        "G16-S02",
+        "G16-S03",
+        "G16-S04",
+        "G16-S05",
+        "G16-S06"
+      ]
+    },
+    {
+      "id": "G17",
+      "title": "Warzone 2100",
+      "repo": "https://github.com/Warzone2100/warzone2100",
+      "commit": "16030329a0049a7800ff200a102d4b0806fba9f4",
+      "access_level": "Public game source read in filtered clone; no execution.",
+      "license_evidence": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/README-LICENSING.md says whole game GPL-3.0-or-later; file headers govern, original source/data may be GPL-2.0-or-later, some assets have nongpl exceptions/additional terms. effects.cpp states GPL-2.0-or-later. Indexed.",
+      "sources": [
+        {
+          "url": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/src/droid.cpp#L650",
+          "path": "src/droid.cpp:650-724",
+          "symbols": [
+            "destroyDroid",
+            "removeDroidFX"
+          ],
+          "observed": "Death visual path is locally visibility-gated, inherits visual velocity and schedules droid destruction; removal follows even when visuals are skipped.",
+          "limits": "Not a physical airframe solver.",
+          "id": "G17-S01",
+          "revision": "16030329a0049a7800ff200a102d4b0806fba9f4",
+          "repository_path": "src/droid.cpp",
+          "blob_sha": "71694d3141769e85ba7e42d139b7e2b56c6b0153",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/src/effects.cpp#L1095",
+          "path": "src/effects.cpp:1095-1265,2134-2163",
+          "symbols": [
+            "updateDestruction",
+            "effectSetupDestruction"
+          ],
+          "observed": "Destruction effect spawns type-selected smoke/explosions or graviton visuals over a lifespan.",
+          "limits": "Random effects are not structural fracture.",
+          "id": "G17-S02",
+          "revision": "16030329a0049a7800ff200a102d4b0806fba9f4",
+          "repository_path": "src/effects.cpp",
+          "blob_sha": "8ee9be1827804d4f245c16676c27fbb135170406",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/src/effects.cpp#L960",
+          "path": "src/effects.cpp:960-1092",
+          "symbols": [
+            "updateGraviton"
+          ],
+          "observed": "Visual debris uses graphics-time gravity/trails; up to three eligible land bounces from specific=0 and <=2; halves velocities, then non-giblets generate a small effect and are removed; water removes.",
+          "limits": "It does not settle persistently. No RC restitution or water model inferred.",
+          "id": "G17-S03",
+          "revision": "16030329a0049a7800ff200a102d4b0806fba9f4",
+          "repository_path": "src/effects.cpp",
+          "blob_sha": "8ee9be1827804d4f245c16676c27fbb135170406",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/src/effects.cpp#L1317",
+          "path": "src/effects.cpp:1317-1398,2107-2113",
+          "symbols": [
+            "updateFire",
+            "effectSetupFire"
+          ],
+          "observed": "Fire visual uses 300ms delay, radius/lifespan and spawns smoke/flare; expires or leaves map.",
+          "limits": "Not a fuel chemistry model.",
+          "id": "G17-S04",
+          "revision": "16030329a0049a7800ff200a102d4b0806fba9f4",
+          "repository_path": "src/effects.cpp",
+          "blob_sha": "8ee9be1827804d4f245c16676c27fbb135170406",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Warzone2100/warzone2100/blob/16030329a0049a7800ff200a102d4b0806fba9f4/src/effects.cpp#L493",
+          "path": "src/effects.cpp:493-515",
+          "symbols": [
+            "processEffects"
+          ],
+          "observed": "Effect update occurs before clipXY render-submission test.",
+          "limits": "No global effects cap established.",
+          "id": "G17-S05",
+          "revision": "16030329a0049a7800ff200a102d4b0806fba9f4",
+          "repository_path": "src/effects.cpp",
+          "blob_sha": "8ee9be1827804d4f245c16676c27fbb135170406",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Warzone 2100’s graviton effects use graphics-time motion and trails. Starting at bounce counter zero, the <=2 condition permits up to three eligible land bounces, reversing/halving vertical velocity and halving horizontal velocity. They then disappear, with a small visual explosion for non-giblets; water removes them. Effects update before render-visibility submission. This does not demonstrate persistent, naturally settled physical debris.",
+      "accepted_proposal": "Define two visual responsibilities: important wreck bodies require support, part anchoring and recontact/wake behavior to be implemented or qualified; tiny cosmetic debris may use bounded lifetime and cheaper motion. Add impact-episode cue checks so resting fragments do not repeatedly thump, spark or emit dust. Preserve existing pools, CCD and sleep. Moving emission already exists in live profile smoke; part-following terminal aftermath remains a proposed adapter.",
+      "rejected_transfer": "Do not use a three-bounce disappearance rule to repair a sliding wing, force a sleeping body to freeze, or generate a little explosion every time a chip lands. Fixed-wing terminal water currently resets the wreck pool; a water trajectory fixture must be synthetic or await an explicit adapter.",
+      "proposed_experiment": "Compare seeded land trajectories for major bodies and small chips at several render rates with audio toggled. Measure cue repeats, support, wake, source anchors and lifetime. Exercise water/off-map cosmetic cleanup separately; do not present it as an existing water-wreck physics test.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-09d3",
+        "CR-19",
+        "CR-02c",
+        "CR-03c",
+        "CR-22c",
+        "CR-22e"
+      ],
+      "prior_research_questions": [
+        11,
+        12,
+        13,
+        18,
+        19,
+        20
+      ],
+      "focus": "Use cheap debris only where disappearing is acceptable",
+      "featured_source_ids": [
+        "G17-S01",
+        "G17-S02",
+        "G17-S03",
+        "G17-S04",
+        "G17-S05"
+      ]
+    },
+    {
+      "id": "G18",
+      "title": "Mindustry",
+      "repo": "https://github.com/Anuken/Mindustry",
+      "commit": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+      "access_level": "Pinned public Java game source and actual liquid definitions; no execution",
+      "license_evidence": "Repository LICENSE is GPL version 3. Dependencies and art/audio need their own provenance review; this investigation imports nothing. https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/LICENSE",
+      "sources": [
+        {
+          "url": "https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/core/src/mindustry/entities/comp/BuildingComp.java",
+          "path": "core/src/mindustry/entities/comp/BuildingComp.java",
+          "symbols": [
+            "onDestroyed",
+            "explosionItemCap"
+          ],
+          "observed": "Destruction derives separate flammability, explosiveness and power inputs from stored item/liquid amounts and buffered power, with per-item contribution limits; sound branches distinguish these inputs.",
+          "limits": "Game units, base explosiveness and heuristics are not a conserved fuel or energy ledger.",
+          "id": "G18-S01",
+          "revision": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+          "repository_path": "core/src/mindustry/entities/comp/BuildingComp.java",
+          "blob_sha": "16c9bcd537cf5e6f559f38430bcf4ead73b39ee2",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/core/src/mindustry/entities/Damage.java",
+          "path": "core/src/mindustry/entities/Damage.java",
+          "symbols": [
+            "dynamicExplosion"
+          ],
+          "observed": "Lightning, fireballs and damage waves have separate local count limits and scheduled timing; visual shockwaves and final effect are separately requested.",
+          "limits": "Delayed callbacks also apply gameplay damage. Local count limits do not bound total concurrent scene work or guarantee a time budget.",
+          "id": "G18-S02",
+          "revision": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+          "repository_path": "core/src/mindustry/entities/Damage.java",
+          "blob_sha": "50cce3cf86fe46497cdfc6964707decd56d36d2f",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/core/src/mindustry/entities/Fires.java",
+          "path": "core/src/mindustry/entities/Fires.java",
+          "symbols": [
+            "create",
+            "extinguish",
+            "remove",
+            "register"
+          ],
+          "observed": "A tile registry reuses an existing fire and refreshes it instead of creating another; creation respects game/environment rules, and extinguishing advances its age.",
+          "limits": "Repeated create calls can restart lifetime, which OpenRC must not do merely because a source is visible again.",
+          "id": "G18-S03",
+          "revision": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+          "repository_path": "core/src/mindustry/entities/Fires.java",
+          "blob_sha": "18a838af5e834723769d46641096b5d9dd917e01",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/core/src/mindustry/entities/comp/FireComp.java",
+          "path": "core/src/mindustry/entities/comp/FireComp.java",
+          "symbols": [
+            "FireComp.update",
+            "FireComp.remove"
+          ],
+          "observed": "Pooled fire ages, responds to environment wetness, conditionally extends life and spreads, and performs timed damage updates.",
+          "limits": "This is an interacting gameplay fire, not proof of finite chemically conserved fuel or an OpenRC thermal model.",
+          "id": "G18-S04",
+          "revision": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+          "repository_path": "core/src/mindustry/entities/comp/FireComp.java",
+          "blob_sha": "83658c4848c3ce36e072539866cf1dc4df320333",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/Anuken/Mindustry/blob/19a0f40d44514f4802a8b79770456e7e32e34da0/core/src/mindustry/content/Liquids.java",
+          "path": "core/src/mindustry/content/Liquids.java",
+          "symbols": [
+            "oil"
+          ],
+          "observed": "Actual oil content configures flammability and explosiveness independently.",
+          "limits": "Do not import those dimensionless tuning values into RC fuel models.",
+          "id": "G18-S05",
+          "revision": "19a0f40d44514f4802a8b79770456e7e32e34da0",
+          "repository_path": "core/src/mindustry/content/Liquids.java",
+          "blob_sha": "432b4463ccf9ad45f1359fa4b31d8c504ce6cd76",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "Mindustry destruction combines distinct flammability, explosiveness and stored-power contributions. Dynamic explosions use locally bounded effect counts and scheduled gameplay damage. The fire registry can refresh an existing fire, while fire lifetime/spread use gameplay rules and environmental conditions. These mechanisms show useful state separation but do not establish conserved fuel chemistry or a global workload bound.",
+      "accepted_proposal": "Within CR-22’s existing fuel-kind effects, separate source type, estimated released quantity, emission demand and residual lifetime. The same source receipt moving to a detached part must not refill or restart its fuel. A hard impact with no admitted combustible release can remain a dust/chip event; a delayed battery visual sequence and a fuel-fed plume need distinct finite policies. Count scheduled callbacks as well as visible particles.",
+      "rejected_transfer": "Do not copy resource-to-lightning conversion, queue authoritative damage, or let repeated source observations refresh fire indefinitely. Onboard fuel is not proof of leakage, and a bright fireball does not authorize a physical blast or repair charge.",
+      "proposed_experiment": "Compare no-source, bounded-release, repeated-identical-receipt and source-handoff cases, including delayed visual pulses. Require finite emission, no double allocation/refill, explicit unknown fuel evidence and bounded pending work. Vary effects quality without changing accepted damage or independent economics.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-22b",
+        "CR-22c",
+        "CR-22d",
+        "CR-22e",
+        "SM-21"
+      ],
+      "prior_research_questions": [
+        16,
+        17,
+        18,
+        20
+      ],
+      "focus": "Keep flammability, explosion potential and resource quantity separate",
+      "featured_source_ids": [
+        "G18-S01",
+        "G18-S02",
+        "G18-S03",
+        "G18-S04",
+        "G18-S05"
+      ]
+    },
+    {
+      "id": "G19",
+      "title": "The Powder Toy",
+      "repo": "https://github.com/The-Powder-Toy/The-Powder-Toy",
+      "commit": "9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb",
+      "access_level": "Pinned public C++ game source: material definitions, transition callbacks and particle lifetime consumer; no execution",
+      "license_evidence": "Repository README and LICENSE identify GNU GPL, with version 3 license text; libraries and other assets are separately listed. No code, presets or artwork imported. https://github.com/The-Powder-Toy/The-Powder-Toy/blob/9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb/README.md",
+      "sources": [
+        {
+          "url": "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb/src/simulation/elements/FIRE.cpp",
+          "path": "src/simulation/elements/FIRE.cpp",
+          "symbols": [
+            "Element_FIRE",
+            "Element_FIRE_update",
+            "create"
+          ],
+          "observed": "Fire has a finite positive birth lifetime; near expiry, a sufficiently cool fire particle can become smoke with a new finite lifetime. Neighbor ignition replaces eligible material particles with fire using material flags and random tests.",
+          "limits": "Not every fire becomes smoke. The source is a 2D cellular game with game-specific transitions, not a combustion/oxygen-conservation solver.",
+          "id": "G19-S01",
+          "revision": "9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb",
+          "repository_path": "src/simulation/elements/FIRE.cpp",
+          "blob_sha": "ee3011884c2ec0f8b153804483fc9b37bfb9457e",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb/src/simulation/elements/SMKE.cpp",
+          "path": "src/simulation/elements/SMKE.cpp",
+          "symbols": [
+            "Element_SMKE",
+            "graphics"
+          ],
+          "observed": "Smoke has its own appearance and lifetime flags, and a high-temperature transition back to fire.",
+          "limits": "Do not transfer smoke-to-fire as a general RC rule. Zero-life manually created smoke differs from finite fire-generated smoke.",
+          "id": "G19-S02",
+          "revision": "9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb",
+          "repository_path": "src/simulation/elements/SMKE.cpp",
+          "blob_sha": "e34754add903918316785c1e23a7f78f40ed92a0",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb/src/simulation/Simulation.cpp",
+          "path": "src/simulation/Simulation.cpp",
+          "symbols": [
+            "PROP_LIFE_DEC",
+            "PROP_LIFE_KILL_DEC",
+            "PROP_LIFE_KILL"
+          ],
+          "observed": "The particle update consumer decrements eligible positive lives and removes particles according to distinct kill flags, with explicit stasis exceptions.",
+          "limits": "Frame-count rules are not OpenRC seconds, and the lifetime property has element-specific meaning.",
+          "id": "G19-S03",
+          "revision": "9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb",
+          "repository_path": "src/simulation/Simulation.cpp",
+          "blob_sha": "94495d28b2b19bf040737889ec8d220425608422",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/The-Powder-Toy/The-Powder-Toy/blob/9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb/src/simulation/elements/WOOD.cpp",
+          "path": "src/simulation/elements/WOOD.cpp",
+          "symbols": [
+            "Element_WOOD",
+            "update",
+            "graphics"
+          ],
+          "observed": "Wood retains a peak-temperature-like value and uses it in its darkened appearance after cooling; thermal transformation is a separate branch.",
+          "limits": "The stored value and thresholds are game conventions, not balsa/plywood thermal data or structural strength.",
+          "id": "G19-S04",
+          "revision": "9ccccc7606a1e0fa45318eeb48f0cb5fc017bfeb",
+          "repository_path": "src/simulation/elements/WOOD.cpp",
+          "blob_sha": "876eb2766f552ae20c0d9eea5ae27c1c02908664",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "The Powder Toy’s generated fire has a positive lifetime; some cooling fire becomes smoke with a new lifetime. Smoke and fire have distinct update/appearance paths, and a hot-smoke transition can create fire. The wood element retains peak-temperature information that affects appearance after cooling. Zero-life editor-created smoke does not follow the same finite path as generated smoke. These are cellular game rules, not calibrated combustion.",
+      "accepted_proposal": "Keep quiet, emitting, residual and expired presentation states explicit. Allow an admitted finite residual plume to outlive flame while preserving a charred/scuffed material state after the plume clears. Culling, cooling or moving the source must not visually repair the aircraft. Reuse existing marks, interior details and the proposed source owner; add a bounded state/material fixture before any thermal damage work.",
+      "rejected_transfer": "Do not transplant cell temperatures, oxygen assumptions or automatic hot-smoke reignition into RC batteries/fuel. Persistent visual discoloration is evidence presentation, not a physical loss-of-strength calculation or an economics input.",
+      "proposed_experiment": "Compare an unheated scuff, an authored short thermal sequence, a residual-only state and reset. Observe with culling and replay. Require finite admitted residual lifetime, persistent marks until the chosen reset policy, no repeated ignition and no physical/economic change from visual settings.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "CR-07",
+        "CR-22b",
+        "CR-22c",
+        "CR-22d",
+        "SM-19",
+        "SM-20",
+        "SM-21"
+      ],
+      "prior_research_questions": [
+        7,
+        15,
+        16,
+        17,
+        18,
+        20
+      ],
+      "focus": "Let smoke end while the material keeps its damage history",
+      "featured_source_ids": [
+        "G19-S01",
+        "G19-S02",
+        "G19-S03",
+        "G19-S04"
+      ]
+    },
+    {
+      "id": "G20",
+      "title": "VoxeLibre",
+      "repo": "https://github.com/VoxeLibre/VoxeLibre",
+      "commit": "4492ce6ff8d856daa4567abe2ea689f4e7a39842",
+      "access_level": "Public official GitHub mirror of Luanti game; game Lua read in filtered clone; no engine counted or game executed.",
+      "license_evidence": "https://github.com/VoxeLibre/VoxeLibre/blob/4492ce6ff8d856daa4567abe2ea689f4e7a39842/LEGAL.md says source GPL-3.0-or-later with mod-specific alternatives and separate media licenses; mods/ITEMS/mcl_tnt/README.txt lists MIT mod code/media and named CC0 sounds. Indexed.",
+      "sources": [
+        {
+          "url": "https://github.com/VoxeLibre/VoxeLibre/blob/4492ce6ff8d856daa4567abe2ea689f4e7a39842/mods/CORE/mcl_explosions/init.lua#L170",
+          "path": "mods/CORE/mcl_explosions/init.lua:170-234,241-316,367-415,456-480",
+          "symbols": [
+            "trace_explode",
+            "mcl_explosions.explode"
+          ],
+          "observed": "Destruction rays subtract cached material blast resistance; a separate 16-ray entity exposure pass tests walkable nodes; damage and node callbacks precede bulk replacements.",
+          "limits": "Different paths/properties; current implementation signature direct, source differs from older API.md.",
+          "id": "G20-S01",
+          "revision": "4492ce6ff8d856daa4567abe2ea689f4e7a39842",
+          "repository_path": "mods/CORE/mcl_explosions/init.lua",
+          "blob_sha": "37e6d16d710c43229264be6f16ff93f21b3d0829",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VoxeLibre/VoxeLibre/blob/4492ce6ff8d856daa4567abe2ea689f4e7a39842/mods/ITEMS/mcl_core/nodes_liquid.lua#L53",
+          "path": "mods/ITEMS/mcl_core/nodes_liquid.lua:53-91,106-150",
+          "symbols": [
+            "mcl_core:water_flowing",
+            "mcl_core:water_source"
+          ],
+          "observed": "Both water definitions set blast resistance 100 and walkable false.",
+          "limits": "Water can impede terrain rays but alone does not block walkable-based entity exposure; no real underwater shielding claim.",
+          "id": "G20-S02",
+          "revision": "4492ce6ff8d856daa4567abe2ea689f4e7a39842",
+          "repository_path": "mods/ITEMS/mcl_core/nodes_liquid.lua",
+          "blob_sha": "3724464170c2e9baf3d72f3844ea7d17233fccab",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VoxeLibre/VoxeLibre/blob/4492ce6ff8d856daa4567abe2ea689f4e7a39842/mods/ITEMS/mcl_tnt/init.lua#L107",
+          "path": "mods/ITEMS/mcl_tnt/init.lua:21-42,107-110",
+          "symbols": [
+            "tnt.ignite",
+            "TNT on_blast"
+          ],
+          "observed": "Ignition stores supplied owner; on_blast ignites without owner and uses randomized shorter fuse.",
+          "limits": "Lua pairs means no fixed ordering across destroyed nodes.",
+          "id": "G20-S03",
+          "revision": "4492ce6ff8d856daa4567abe2ea689f4e7a39842",
+          "repository_path": "mods/ITEMS/mcl_tnt/init.lua",
+          "blob_sha": "a1ac1612e66239e483054cf4bb8529f993701c3b",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        },
+        {
+          "url": "https://github.com/VoxeLibre/VoxeLibre/blob/4492ce6ff8d856daa4567abe2ea689f4e7a39842/mods/ITEMS/mcl_tnt/init.lua#L224",
+          "path": "mods/ITEMS/mcl_tnt/init.lua:224-245",
+          "symbols": [
+            "TNT:on_step"
+          ],
+          "observed": "Owner lookup is commented; calls explode(..., source, self.object), source not locally assigned in file; core forwards direct/source received to deal_damage.",
+          "limits": "No reliable player-cause propagation is established; source resolves as a global rather than necessarily nil.",
+          "id": "G20-S04",
+          "revision": "4492ce6ff8d856daa4567abe2ea689f4e7a39842",
+          "repository_path": "mods/ITEMS/mcl_tnt/init.lua",
+          "blob_sha": "a1ac1612e66239e483054cf4bb8529f993701c3b",
+          "retrieval": "Git source at exact revision; indexed web access not required."
+        }
+      ],
+      "round": 2,
+      "reading_date": "2026-11-20",
+      "evidence_class": "pinned_game_source_read",
+      "execution": "Not executed; no gameplay, capture or benchmark result claimed.",
+      "reviewed_observation": "VoxeLibre’s terrain-destruction rays consume blast resistance, while separate entity-exposure rays test walkable nodes. Water has high blast resistance but is nonwalkable, so the two queries do not imply the same shielding behavior. Entity processing precedes destroyed-node callbacks. TNT can store an owner, but the inspected expiry path comments out its local owner lookup and chain ignition omits an owner; reliable player attribution is not established.",
+      "accepted_proposal": "Declare the role of each material query: solid-contact support, vegetation brushing, fluid flow, visual response or a separately supported thermal/blast interaction. Carry the known event/source/part identity through delayed visual work and source deletion, with explicit unknowns. Keep this distinct from inferred flight-cause narrative and from a human/attacker identity. Snapshot a presentation request once, then retain genuine later events.",
+      "rejected_transfer": "Do not let a single water/material flag answer collision, shielding, wet damage and fire questions. Do not copy voxel blast rays or infer a culprit, fuel release or physical explosion from an emitter. VoxeLibre is a useful counterexample for provenance loss, not proof that it solved attribution.",
+      "proposed_experiment": "Trace a nonfatal graze, a terminal hard-surface impact and an admitted delayed source event through source deletion at two budgets. Require the IDs/evidence actually present to survive, or remain explicitly unknown; preserve later impacts and accepted state. Test wet policy separately from dry material cues.",
+      "experiment_status": "proposed_not_executed",
+      "existing_owners": [
+        "GP-10",
+        "GP-14",
+        "CR-09",
+        "CR-19",
+        "CR-22b",
+        "CR-22d"
+      ],
+      "prior_research_questions": [
+        4,
+        9,
+        13,
+        16,
+        18,
+        20
+      ],
+      "focus": "Keep query roles and causal provenance distinct",
+      "featured_source_ids": [
+        "G20-S01",
+        "G20-S02",
+        "G20-S03",
+        "G20-S04"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-nonfatal-contact-round6-reproduction-v1",
+  "source_commit": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "project": "/workspace/scratch/40820211f477/nonfatal-fixture/app",
+  "runs": [
+    {
+      "name": "test_hull_scrape_session",
+      "kind": "existing-control",
+      "script_sha256": "e7113d413a2e56425059a62a4a0425182c6f60f3f2eddf23a00112d6fd6808e6",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 139,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_hull_scrape_session/test_hull_scrape_session-flhmv535/engine.log"
+    },
+    {
+      "name": "test_airframe_contacts",
+      "kind": "existing-control",
+      "script_sha256": "4a4a3c5c93e788a9106ab4a85f25d1c8a929fa029a042c885a15b2b1e40ec808",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_airframe_contacts/test_airframe_contacts-tef2r7gf/report.json",
+      "log": "/workspace/scratch/40820211f477/nonfatal-runs/dependency-retry/test_airframe_contacts/test_airframe_contacts-tef2r7gf/engine.log"
+    }
+  ]
+}

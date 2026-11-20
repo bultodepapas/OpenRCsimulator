@@ -42,6 +42,7 @@ func _run() -> void:
 	_flat_touchdown()
 	_grazes()
 	_world_swap()
+	_crash_checkpoint()
 	print("graded crashes: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -548,3 +549,33 @@ func _world_swap() -> void:
 		and s.plant.obstacle_class.is_valid() and str(s.plant.obstacle_class.call(3.0, 0.0, -1.0)) == "soft_foliage_impulse")
 	s.free()
 
+
+## CR-AUD-17: a checkpoint taken by an observer of the kernel's own crash event would pair the crashed motor state with
+## a session that has not yet recorded the crash (empty record, short tape), and restoring it would allow a resume. The
+## session refuses a checkpoint while its tick is in progress; the checkpoint after the tick is complete.
+func _crash_checkpoint() -> void:
+	var s := _session("strict", {start = "air", altitude_m = 3.0})
+	var seen: Array[Dictionary] = []
+	s.sim.events_located.connect(func(_tick: int, events: Array[Dictionary]) -> void:
+		for event: Dictionary in events:
+			if str(event.get("type", "")) == "crash":
+				seen.append(s.checkpoint()))
+	_fly(s, Fixtures.pilot(0.0, 0.0, 0.0, 0.0, 0), 480)
+	_check("strict 3 m drop crashes once", str(s.crash.get("reason", "")) == "Hard impact", str(s.crash))
+	_check("a checkpoint requested inside the crash tick is refused, not half-updated", seen.size() == 1 and seen[0].is_empty())
+	var after: Dictionary = s.checkpoint()
+	_check("the checkpoint after the tick carries the crash, the cut and the full tape",
+		not after.is_empty() and not after.crash.is_empty() and int(after.tape_ticks) == int(s.sim.tick)
+		and int(after.kernel.modes[FC.MODE_MOTOR]) == FC.MOTOR_CRASHED and after.crash == s.crash)
+	var restored := _session("strict", {start = "air", altitude_m = 3.0})
+	restored.pause("probe")
+	_check("restoring it keeps the crash: reported, and resume is refused", restored.restore_checkpoint(after)
+		and not restored.crash.is_empty() and bool(restored.telemetry().get("crashed", false)) and not restored.resume())
+	var before := _session("strict", {start = "air", altitude_m = 3.0})
+	var early: Dictionary = before.checkpoint()
+	var good := _session("strict", {start = "air", altitude_m = 3.0})
+	good.pause("probe")
+	_check("an ordinary pre-crash checkpoint still restores and resumes", not early.is_empty()
+		and good.restore_checkpoint(early) and good.resume() and good.crash.is_empty())
+	for session: Node in [s, restored, before, good]:
+		session.free()

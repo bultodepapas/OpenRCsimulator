@@ -173,6 +173,16 @@ var _key_share := {} # CR-09e: share of its kind's weight for each group key
 const REVEAL_META := "crash_reveal"
 var _reveal_nodes: Array = []
 var _rng := RandomNumberGenerator.new()
+## CR-AUD-07/08/09: the core body owns the mass, first moment (model frame) and collision boxes of every section that
+## is still attached, pending releases included. A release moves all three in one transaction (_activate_group).
+var _core_mass_kg := 0.0
+var _core_moment_model := Vector3.ZERO
+var _core_origin_model := Vector3.ZERO
+## CR-AUD-05: read-only [height_up, dh/dnorth, dh/deast] ground provider (the director's mark sampler). Without a valid
+## sample the wreck keeps the field datum plane.
+var ground_sampler: Callable
+var _ground_ref_point := Vector3.ZERO
+var _ground_ref_normal := Vector3.UP
 
 
 func _ready() -> void:
@@ -304,15 +314,44 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		if not bool(_groups[i].detached) and not bool(_groups[i].get("carried", false)):
 			_groups[0].undetached_weight += _group_weight(String(_groups[i].key))
 	_last_group_weight_total = total_weight
-	var core_bounds: AABB = _whole_bounds if class_level < 3 else _core_bounds
+	_section_masses = _inventory_masses(severity.get("inventory_boxes", []), total_mass)
+	# CR-AUD-07/08/09: at impact the core owns every section, including those scheduled to leave later. Each release
+	# then moves the section's mass, first moment and box out of the core in one transaction.
+	var core_bounds: AABB = _core_bounds
+	var parts_mass := 0.0
+	var parts_moment := Vector3.ZERO
+	for i in range(1, _groups.size()):
+		var part: Dictionary = _groups[i]
+		part.on_core = false
+		if not bool(part.get("carried", false)):
+			part.mass = _group_mass(part, total_mass, total_weight)
+			var part_moment: Variant = _group_moment(part)
+			part.moment = Vector3(part_moment) if part_moment != null else Vector3(part.center) * float(part.mass)
+			part.on_core = true
+			parts_mass += float(part.mass)
+			parts_moment += Vector3(part.moment)
+			core_bounds = core_bounds.merge(part.bounds)
+		_groups[i] = part
+	var own_mass: float
+	var own_moment: Vector3
+	if _section_masses.is_empty():
+		# Fixed shares: the core's own share is whatever the (floored) sections leave of the aircraft mass.
+		own_mass = maxf(total_mass - parts_mass, MIN_SECTION_MASS_KG)
+		own_moment = _core_bounds.get_center() * own_mass
+	else:
+		own_mass = maxf(float(_section_masses.core.mass), 0.0)
+		own_moment = Vector3(_section_masses.core.moment)
+	_core_mass_kg = own_mass + parts_mass
+	_core_moment_model = own_moment + parts_moment
 	_groups[0].bounds = core_bounds
 	_groups[0].center = core_bounds.get_center()
-	_set_shape_bounds(0, core_bounds)
 	var core_center: Vector3 = _groups[0].center
+	_core_origin_model = core_center
 	_core_body = _bodies[0]
-	_section_masses = _inventory_masses(severity.get("inventory_boxes", []), total_mass)
-	_core_body.mass = _core_mass(total_mass, total_weight)
-	_set_center_of_mass(_core_body, _core_moment(), _core_body.mass, core_center)
+	_configure_core_shapes()
+	_core_body.mass = maxf(_core_mass_kg, MIN_SECTION_MASS_KG)
+	_set_center_of_mass(_core_body, _core_moment_model, _core_mass_kg, core_center)
+	_set_ground_reference(pose, severity)
 	_core_body.global_transform = pose * Transform3D(Basis.IDENTITY, core_center)
 	_twin.reparent(_core_body, false)
 	_twin.transform = Transform3D(Basis.IDENTITY, -core_center)
@@ -331,9 +370,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			body.collision_mask = 0
 			continue
 		_set_shape_bounds(i, group.bounds) # a carrying boom's box from this crash, not a previous one
-		body.mass = _group_mass(group, total_mass, total_weight)
-		group.mass = body.mass
-		_set_center_of_mass(body, _group_moment(group), body.mass, Vector3(group.center))
+		# Mass and centre of mass move to this body only when it is released (_activate_group).
 		group.due_s = float(GROUP_DELAYS_S.get(group.kind, 0.10))
 		if _component_matches(String(group.kind), component_hint):
 			group.due_s = 0.0
@@ -479,6 +516,14 @@ func reset() -> void:
 			body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
 	_has_contact = false
 	_contact_model = Vector3.ZERO
+	_core_mass_kg = 0.0
+	_core_moment_model = Vector3.ZERO
+	_core_origin_model = Vector3.ZERO
+	if not _shape_nodes.is_empty():
+		_shape_nodes[0].position = Vector3.ZERO
+	_ground_ref_point = Vector3.ZERO
+	_ground_ref_normal = Vector3.UP
+	_apply_ground_plane()
 
 
 func get_stats() -> Dictionary:
@@ -882,14 +927,49 @@ func _activate_group(index: int) -> void:
 	_reveal(String(group.kind))
 	var aircraft_pose: Transform3D = _core_body.global_transform * _twin.transform
 	var center: Vector3 = group.center
+	# CR-AUD-07/08: one ownership transaction. Mass, first moment and box leave the core together; both bodies take
+	# the rigid point velocity at their own new centre of mass, v = v_COM + ω × (r − r_COM). Without a scatter
+	# impulse this conserves mass, first moment and linear momentum exactly.
+	var section_mass := maxf(_finite_number(group.get("mass", 0.0), 0.0), 0.0)
+	var section_moment: Vector3 = group.get("moment", center * section_mass)
+	var omega := _core_body.angular_velocity
+	var section_velocity := _core_body.linear_velocity
+	if bool(group.get("on_core", false)) and _core_mass_kg > 0.0:
+		var available := _core_mass_kg - MIN_SECTION_MASS_KG
+		if section_mass > available:
+			# Infeasible allocation (floors on a tiny airframe): the core keeps its floor; the section keeps its centre.
+			var keep := maxf(available, 0.0) / section_mass if section_mass > 0.0 else 0.0
+			section_mass *= keep
+			section_moment *= keep
+		var core_com := _core_moment_model / _core_mass_kg
+		var remaining_mass := _core_mass_kg - section_mass
+		var remaining_moment := _core_moment_model - section_moment
+		var basis := aircraft_pose.basis
+		if section_mass > 0.0:
+			section_velocity += omega.cross(basis * (section_moment / section_mass - core_com))
+		var remaining_velocity := _core_body.linear_velocity
+		if remaining_mass > 0.0:
+			remaining_velocity += omega.cross(basis * (remaining_moment / remaining_mass - core_com))
+		_core_mass_kg = remaining_mass
+		_core_moment_model = remaining_moment
+		_core_body.mass = maxf(remaining_mass, MIN_SECTION_MASS_KG)
+		_set_center_of_mass(_core_body, remaining_moment, remaining_mass, _core_origin_model)
+		_core_body.linear_velocity = remaining_velocity
+		_groups[0].mass = _core_body.mass
+		group.on_core = false
+		_groups[index] = group
+		_configure_core_shapes()
+	group.mass = section_mass
+	group.moment = section_moment
+	_groups[index] = group
+	_set_shape_bounds(index, group.bounds)
 	body.global_transform = aircraft_pose * Transform3D(Basis.IDENTITY, center)
+	body.mass = maxf(section_mass, MIN_SECTION_MASS_KG * 0.01)
+	_set_center_of_mass(body, section_moment, section_mass, center)
 	for member: Node3D in group.members:
 		if is_instance_valid(member):
 			member.reparent(body, true)
-	var local_offset: Vector3 = aircraft_pose.basis * (center - _groups[0].center)
-	var inherited_velocity := _core_body.linear_velocity + _core_body.angular_velocity.cross(local_offset)
-	var inherited_angular := _core_body.angular_velocity
-	_apply_launch(body, group, aircraft_pose, inherited_velocity, inherited_angular, Vector3.ZERO, false)
+	_apply_launch(body, group, aircraft_pose, section_velocity, omega, Vector3.ZERO, false)
 
 
 func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transform3D, inherited_velocity: Vector3, inherited_angular: Vector3, cg_model: Vector3, is_core: bool) -> void:
@@ -902,7 +982,10 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 	body.linear_damp = AIR_LINEAR_DAMP
 	body.angular_damp = AIR_ANGULAR_DAMP
 	var center: Vector3 = group.center
-	var world_offset: Vector3 = aircraft_pose.basis * (center - cg_model)
+	# CR-AUD-06: a rigid body's linear velocity is its centre-of-mass velocity, so the core takes the incoming motion
+	# at its own (inventory) centre of mass, not at its box centre. Sections arrive with their COM velocity already.
+	var com_model := _core_moment_model / _core_mass_kg if is_core and _core_mass_kg > 0.0 else center
+	var world_offset: Vector3 = aircraft_pose.basis * (com_model - cg_model)
 	var point_velocity: Vector3 = inherited_velocity + inherited_angular.cross(world_offset) if is_core else inherited_velocity
 	body.linear_velocity = _clamp_vector(_finite_vector(point_velocity), MAX_POINT_SPEED_MPS)
 	body.angular_velocity = _clamp_vector(_finite_vector(inherited_angular), MAX_ANGULAR_SPEED_RAD_S)
@@ -1083,27 +1166,6 @@ func _group_weight_with_carried(group: Dictionary) -> float:
 	return weight
 
 
-func _core_mass(total_mass: float, total_weight: float) -> float:
-	if _section_masses.is_empty():
-		return maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
-	var mass := float(_section_masses.core.mass)
-	for i in range(1, _groups.size()):
-		if not bool(_groups[i].get("detached", false)) and not bool(_groups[i].get("carried", false)):
-			mass += _section_mass(String(_groups[i].key), total_mass, total_weight)
-	return maxf(mass, MIN_SECTION_MASS_KG)
-
-
-func _core_moment() -> Variant:
-	if _section_masses.is_empty():
-		return null
-	var moment: Vector3 = _section_masses.core.moment
-	for i in range(1, _groups.size()):
-		var kind := String(_groups[i].key)
-		if not bool(_groups[i].get("detached", false)) and not bool(_groups[i].get("carried", false)) and _section_masses.has(kind):
-			moment += Vector3(_section_masses[kind].moment)
-	return moment
-
-
 func _section_moment(kind: String) -> Variant:
 	return Vector3(_section_masses[kind].moment) if _section_masses.has(kind) else null
 
@@ -1197,25 +1259,27 @@ func _update_contact_shadow(index: int) -> void:
 		if _shadow_cache_valid[index] != 0:
 			_shadow_cache_valid[index] = 0
 		return
-	var shape := _shape_nodes[index].shape as BoxShape3D
+	var local := _body_local_bounds(index)
 	var body_transform := body.global_transform
-	var shape_size := shape.size
+	var shape_size := local.size
 	if _shadow_cache_valid[index] != 0 \
 		and _shadow_cache_transforms[index] == body_transform \
 		and _shadow_cache_shape_sizes[index] == shape_size:
 		return
-	var half := shape.size * 0.5
+	var half := local.size * 0.5
 	var basis := body_transform.basis
+	var center: Vector3 = body_transform * local.get_center()
 	var horizontal_x := absf(basis.x.x) * half.x + absf(basis.y.x) * half.y + absf(basis.z.x) * half.z
 	var horizontal_z := absf(basis.x.z) * half.x + absf(basis.y.z) * half.y + absf(basis.z.z) * half.z
 	var vertical_extent := absf(basis.x.y) * half.x + absf(basis.y.y) * half.y + absf(basis.z.y) * half.z
-	var height := maxf(body_transform.origin.y - vertical_extent, 0.0)
+	var ground_y := _ground_y_at(center)
+	var height := maxf(center.y - vertical_extent - ground_y, 0.0)
 	var fade := clampf(1.0 - height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0)
 	var shrink := lerpf(1.0, 0.35, clampf(height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0))
 	var alpha := 0.22 * fade
 	shadow.global_transform = Transform3D(
 		Basis.IDENTITY.scaled(Vector3(maxf(horizontal_x * 2.0 + 0.35, 0.65) * shrink, 1.0, maxf(horizontal_z * 2.0 + 0.35, 0.65) * shrink)),
-		Vector3(body_transform.origin.x, 0.012, body_transform.origin.z)
+		Vector3(center.x, ground_y + 0.012, center.z)
 	)
 	_apply_shadow_alpha(index, alpha)
 	_shadow_cache_transforms[index] = body_transform
@@ -1417,21 +1481,78 @@ func _limit_ground_rebound(body: RigidBody3D) -> void:
 	var body_index := _bodies.find(body)
 	if body_index < 0:
 		return
-	var shape := _shape_nodes[body_index].shape as BoxShape3D
+	var local := _body_local_bounds(body_index)
 	var basis := body.global_transform.basis
-	var half := shape.size * 0.5
+	var half := local.size * 0.5
+	var center: Vector3 = body.global_transform * local.get_center()
 	var vertical_extent := absf(basis.x.y) * half.x + absf(basis.y.y) * half.y + absf(basis.z.y) * half.z
+	# CR-AUD-05: measured from the supporting ground under the box, not from the field datum.
+	var height := center.y - _ground_y_at(center)
 	var clear_y := vertical_extent + 0.015
-	if body.global_position.y < clear_y:
-		body.global_position += Vector3.UP * minf(clear_y - body.global_position.y, 0.35)
-	if body.global_position.y <= vertical_extent + 0.15 and body.linear_velocity.y < 0.0:
+	if height < clear_y:
+		body.global_position += Vector3.UP * minf(clear_y - height, 0.35)
+	if height <= vertical_extent + 0.15 and body.linear_velocity.y < 0.0:
 		body.linear_velocity.y = minf(-body.linear_velocity.y * float(_ground_contact.bounce), 5.0)
+
+
+## A body's collision box in its own frame (the core's box can sit off its origin).
+func _body_local_bounds(index: int) -> AABB:
+	var shape_node := _shape_nodes[index]
+	var size := (shape_node.shape as BoxShape3D).size
+	return AABB(shape_node.position - size * 0.5, size)
+
+
+## CR-AUD-09: the core's box is the bounds of its own meshes merged with every section it still carries, in the core
+## body's frame; it is rebuilt at each release, so a released section's space leaves and an attached one stays covered.
+## One box keeps the tuned slide/rebound behaviour of an intact wreck; per-section compound proxies are later work.
+func _configure_core_shapes() -> void:
+	var bounds := _core_bounds
+	for part in range(1, _groups.size()):
+		if bool(_groups[part].get("on_core", false)):
+			bounds = bounds.merge(_groups[part].bounds)
+	var own := _shape_nodes[0]
+	(own.shape as BoxShape3D).size = Vector3(maxf(bounds.size.x, MIN_BOX_EDGE_M), maxf(bounds.size.y, MIN_BOX_EDGE_M), maxf(bounds.size.z, MIN_BOX_EDGE_M))
+	own.position = bounds.get_center() - _core_origin_model
+	_invalidate_shadow_cache(0)
+
+
+## CR-AUD-05: the wreck's ground plane follows the terrain sampled under the impact (height and slope), falling back
+## to the field datum without a valid sample. One plane per crash: a bounded local stand-in, not the full terrain.
+func _set_ground_reference(pose: Transform3D, severity: Dictionary) -> void:
+	var at: Vector3 = severity.contact_point_world if _has_contact else pose.origin
+	_ground_ref_point = Vector3(at.x, 0.0, at.z)
+	_ground_ref_normal = Vector3.UP
+	if ground_sampler.is_valid() and at.is_finite():
+		var sample: Variant = ground_sampler.call(at)
+		if sample is PackedFloat64Array and (sample as PackedFloat64Array).size() == 3 \
+				and is_finite(sample[0]) and is_finite(sample[1]) and is_finite(sample[2]):
+			_ground_ref_point.y = float(sample[0])
+			var normal := Vector3(-float(sample[2]), 1.0, float(sample[1])).normalized()
+			if normal.is_finite() and normal.y > 0.2:
+				_ground_ref_normal = normal
+	_apply_ground_plane()
+
+
+func _apply_ground_plane() -> void:
+	if _ground == null:
+		return
+	var plane_shape := _ground.get_node("WreckPlaneShape") as CollisionShape3D
+	(plane_shape.shape as WorldBoundaryShape3D).plane = Plane(_ground_ref_normal, 0.0)
+	if _ground.is_inside_tree():
+		_ground.global_transform = Transform3D(Basis.IDENTITY, _ground_ref_point)
+	else:
+		_ground.transform = Transform3D(Basis.IDENTITY, _ground_ref_point)
+
+
+## Height of the wreck's ground plane under a world point.
+func _ground_y_at(point: Vector3) -> float:
+	return _ground_ref_point.y - (_ground_ref_normal.x * (point.x - _ground_ref_point.x) + _ground_ref_normal.z * (point.z - _ground_ref_point.z)) / _ground_ref_normal.y
 
 
 func _on_body_entered(other: Node, fragment: RigidBody3D) -> void:
 	if not _started or _paused or _secondary_lockout_s > 0.0 or not is_instance_valid(fragment):
 		return
-	if other == null or (other != _ground and not _is_pool_body(other)):
+	if other == null or (other != _ground and not _is_pool_body(other) and not _is_scenery_contact(other)):
 		return
 	var relative_speed := fragment.linear_velocity.length()
 	if other is RigidBody3D:
@@ -1487,23 +1608,19 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 	if _c3_contact_exposure_index_j + 0.0001 < threshold:
 		return
 	var group_weight := _group_weight(String(group.get("key", kind)))
-	var release_mass := _section_mass(String(group.get("key", kind)), _last_mass_kg, _last_group_weight_total)
-	if not is_finite(release_mass) or release_mass <= 0.0 or release_mass >= _core_body.mass:
+	var release_mass := _finite_number(group.get("mass", 0.0), 0.0)
+	if not bool(group.get("on_core", false)) or release_mass <= 0.0 or release_mass >= _core_mass_kg:
 		return
-	# Transfer the group's estimated mass out of the core; no new scatter impulse is added.
-	_core_body.mass -= release_mass
+	# The release transaction moves the section's mass, moment and box out of the core; no scatter impulse is added.
 	var core_group: Dictionary = _groups[0]
-	core_group.mass = _core_body.mass
 	core_group.undetached_weight = maxf(float(core_group.get("undetached_weight", 0.0)) - group_weight, 0.0)
 	_groups[0] = core_group
 	group.detached = true
 	group.activated = false
 	group.due_s = 0.0
-	group.mass = release_mass
 	group.scatter_energy_j = 0.0
 	group.severity_scale = 0.0
 	_groups[index] = group
-	_bodies[index].mass = release_mass
 	_activate_group(index)
 
 
@@ -1519,6 +1636,14 @@ func _next_c3_contact_release_index() -> int:
 				break
 			return i
 	return -1
+
+
+## CR-AUD-10: a provisioned wreck-scenery body (LU-05 SceneryBodies) is a valid secondary contact: a static body on
+## the isolated debris layer that names its authoritative obstacle. Any other body stays ignored.
+func _is_scenery_contact(candidate: Node) -> bool:
+	return candidate is StaticBody3D and is_instance_valid(candidate) \
+		and ((candidate as StaticBody3D).collision_layer & DEBRIS_LAYER) != 0 \
+		and candidate.has_meta("obstacle_id")
 
 
 func _is_pool_body(candidate: Node) -> bool:

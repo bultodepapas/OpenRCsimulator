@@ -1,0 +1,106 @@
+{
+  "format": "openrc-collision-audit-round4-manifest-v1",
+  "root": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round4",
+  "files": [
+    {
+      "path": "derive_gear_support.py",
+      "bytes": 3999,
+      "sha256": "b2773c0eaa0c29451d3b9025da750f1cc8a3f6afd4217f9f9178655d33d7f993"
+    },
+    {
+      "path": "derived/gear-support-projection.json",
+      "bytes": 1756,
+      "sha256": "84f38669078d635672fadd1debedc030057701b20972a3412c2cec3bd4533e6c"
+    },
+    {
+      "path": "probe-revisions/car-region-v0-type-inference.gd",
+      "bytes": 20743,
+      "sha256": "d6b337487b0323480a18d2f6b194ccaabf12018adb913a88e614306152580bd0"
+    },
+    {
+      "path": "probes/probe_car_damage_region.gd",
+      "bytes": 20748,
+      "sha256": "7446cf73ec30f09ac22ccacf56a560b698cc479d3467e29eff784440093fa308"
+    },
+    {
+      "path": "probes/probe_fixedwing_gear_scenery.gd",
+      "bytes": 17016,
+      "sha256": "6de29313d86e466760c0607e55757d77c2a0facf1bdd03d6ad3dd0009da62c7c"
+    },
+    {
+      "path": "probes/probe_quad_disc_box_separation.gd",
+      "bytes": 14936,
+      "sha256": "e05b0a81c93c8c7860e362da76486aa14db68b9f5c6aa5a6993bee95ecb6f95c"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 4825,
+      "sha256": "22eabe161c85d9f04398790b9e7519af764ed5565faafdfa2b05ff23e77e27ec"
+    },
+    {
+      "path": "run_probes.py",
+      "bytes": 4294,
+      "sha256": "2dfa9734242c789d2bb1fa0b5702a84caab81c8f0e8e1f24c16325bce86a1855"
+    },
+    {
+      "path": "runs/earlier-attempts/car-parse/engine.log",
+      "bytes": 563,
+      "sha256": "c4535cf2c0a45e620e7332faa958a1d9b06df8a50569c252b9de299fc5cb699d"
+    },
+    {
+      "path": "runs/earlier-attempts/car-parse/report.json",
+      "bytes": 2078,
+      "sha256": "97f9e0a70c37bd79424161263dc0ff9a3cec15b5a94e30be8653cdcfb595e44d"
+    },
+    {
+      "path": "runs/probes/car-damage-region/engine.log",
+      "bytes": 360591,
+      "sha256": "3e2bcdfdf715ab9efe0931b4ce988acb57f8dd060f287dae69977071d7d9a4a4"
+    },
+    {
+      "path": "runs/probes/car-damage-region/observations.json",
+      "bytes": 359052,
+      "sha256": "3fcfa11abafe9b6456a87d2283475585ee6d7b8b7f2894ae11403583179468f6"
+    },
+    {
+      "path": "runs/probes/car-damage-region/report.json",
+      "bytes": 1293,
+      "sha256": "91e6c999efdd0de9b54ce578742734c8b74aa29e3fae7c11b9d25ec4939dff8f"
+    },
+    {
+      "path": "runs/probes/fixedwing-gear-scenery/engine.log",
+      "bytes": 177100,
+      "sha256": "8ea6ae3992c252e74843a99276bf19e340c607a0c4b74aa897a14c4409e44426"
+    },
+    {
+      "path": "runs/probes/fixedwing-gear-scenery/observations.json",
+      "bytes": 175614,
+      "sha256": "bab5d1c9790c9e7eb29ad5acdaa6dcbeb1a9099d818df0f66b2e17305773c90a"
+    },
+    {
+      "path": "runs/probes/fixedwing-gear-scenery/report.json",
+      "bytes": 1306,
+      "sha256": "b38f78c43fbcb4e5cd13f0542da249b71ee14f418e9781da5fa0d230d2074e48"
+    },
+    {
+      "path": "runs/probes/quad-disc-box-separation/engine.log",
+      "bytes": 45536,
+      "sha256": "c87dbe21b9f793f9a3092b28ab4cb44851328c74258b6ebea47ad0599ce5b74a"
+    },
+    {
+      "path": "runs/probes/quad-disc-box-separation/observations.json",
+      "bytes": 45357,
+      "sha256": "b550524220d5b7b2da8a02a87cd94e8a426e9267ac5cd471fd2dcde4868bc731"
+    },
+    {
+      "path": "runs/probes/quad-disc-box-separation/report.json",
+      "bytes": 1325,
+      "sha256": "a18630ab84635ce45ae956e3a1bcd1b573a6ff9e70695724a8c10b5de6bde731"
+    },
+    {
+      "path": "setup.json",
+      "bytes": 464,
+      "sha256": "2ce60cdc1bb05098a5f7ac4920d1c47d88e9ee190145403e07ae7a189974fcdd"
+    }
+  ]
+}

@@ -9,6 +9,11 @@ const CollisionWorld := preload("res://scenery/collision_world.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const Session := preload("res://sim/flight_session.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const QuadSession := preload("res://sim/multirotor/session.gd")
+const BlimpSession := preload("res://sim/airship/session.gd")
+const QuadController := preload("res://physics/multirotor/flight_controller.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -27,6 +32,7 @@ func _initialize() -> void:
 	_test_outside_parity(lake)
 	_test_audit_bank_ticks(lake)
 	_test_sampled_bank_tolerance(lake)
+	_test_quad_and_blimp_lake(lake)
 	print("%d lake session checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -240,6 +246,141 @@ func _proxy(id: String, north: float, east: float, down: float, half_n: float,
 		"bounds_north_min": north - half_n, "bounds_north_max": north + half_n,
 		"bounds_east_min": east - half_e, "bounds_east_max": east + half_e,
 		"bounds_down_min": down - half_down, "bounds_down_max": down + half_down}
+
+## CR-AUD-01: the quad and the blimp compose the field's enabled lake into their terrain, refuse a start over water and
+## end the flight at the first water contact with an explicit, observable outcome. Lake disabled stays dry.
+func _test_quad_and_blimp_lake(lake: Dictionary) -> void:
+	var loaded: Dictionary = FieldLoader.load_from()
+	_check("default field loads for the quad and blimp", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
+	if not bool(loaded.get("ok", false)):
+		return
+	var field: Dictionary = loaded.field
+	var interior_n: float = 110.0
+	var interior_e: float = 125.0
+	var interior: Dictionary = LakeSurface.sample_terrain_validated(lake, interior_n, interior_e)
+	_check("interior sample is submerged lake bed", str(interior.get("region", "")) == "bed"
+		and absf(float(interior.get("ground_down_m", 0.0)) - 5.45) < 1.0e-9, str(interior))
+	var probes: Array[PackedFloat64Array] = [PackedFloat64Array([interior_n, interior_e]),
+		PackedFloat64Array([lake.shoreline_ne_m[0], lake.shoreline_ne_m[1]]),
+		PackedFloat64Array([lake.bank_ne_m[0], lake.bank_ne_m[1]]), PackedFloat64Array([15.0, 0.0])]
+	var kinds: Array[Dictionary] = [
+		{name = "quad", script = QuadSession, options = {crash_model = "graded", start = "air", altitude_m = 3.0}},
+		{name = "blimp", script = BlimpSession, options = {}}]
+	for kind: Dictionary in kinds:
+		var label: String = str(kind.name)
+		var base: Dictionary = kind.options
+		var dry: Node = kind.script.new()
+		root.add_child(dry)
+		var none_ok: bool = dry.prepare(field, base.duplicate(true))
+		var empty: Node = kind.script.new()
+		root.add_child(empty)
+		var empty_options: Dictionary = base.duplicate(true)
+		empty_options["lake"] = {}
+		var empty_ok: bool = empty.prepare(field, empty_options)
+		var wet: Node = kind.script.new()
+		root.add_child(wet)
+		var wet_options: Dictionary = base.duplicate(true)
+		wet_options["lake"] = lake
+		var wet_ok: bool = wet.prepare(field, wet_options)
+		_check(label + " prepares dry, with an empty lake and with the lake", none_ok and empty_ok and wet_ok,
+			"%s | %s | %s" % [dry.load_error, empty.load_error, wet.load_error])
+		if not (none_ok and empty_ok and wet_ok):
+			dry.free()
+			empty.free()
+			wet.free()
+			continue
+		var dry_ground: PackedFloat64Array = dry.environment.ground(interior_n, interior_e)
+		_check(label + " lake disabled stays dry: no provider, no option, byte-identical identity and terrain",
+			dry.environment.lake.is_empty() and empty.environment.lake.is_empty() and not dry.options.has("lake")
+			and not empty.options.has("lake") and dry.lake_context().is_empty()
+			and var_to_bytes(dry.identity()) == var_to_bytes(empty.identity())
+			and var_to_bytes(dry_ground) == var_to_bytes(empty.environment.ground(interior_n, interior_e))
+			and absf(dry_ground[0]) < 0.05, str(dry_ground))
+		var env: RefCounted = wet.environment
+		_check(label + " lake enabled composes the bed: interior render height is -5.45 m, not dry ground",
+			not env.lake.is_empty() and wet.lake_context().identity == lake.identity
+			and absf(env.ground(interior_n, interior_e)[0] + float(interior.ground_down_m)) < 1.0e-9
+			and absf(env.ground(interior_n, interior_e)[0] - dry_ground[0]) > 5.0
+			and not env.water(interior_n, interior_e).is_empty(), str(env.ground(interior_n, interior_e)))
+		var agree: bool = true
+		for point: PackedFloat64Array in probes:
+			agree = agree and var_to_bytes(env.ground(point[0], point[1])) \
+				== var_to_bytes(GroundTerrain.sample_validated(point[0], point[1], env.surfaces, lake))
+		_check(label + " interior, shore, bank and outside terrain agree with the lake provider", agree)
+		var outside: PackedFloat64Array = probes[3]
+		_check(label + " outside the bank the terrain is byte-identical to the dry session",
+			var_to_bytes(wet.environment.ground(outside[0], outside[1])) == var_to_bytes(dry.environment.ground(outside[0], outside[1])))
+		_check(label + " lake identity enters the session identity", var_to_bytes(wet.identity()) != var_to_bytes(dry.identity())
+			and str(wet.identity().environment.lake) == str(lake.identity))
+		var contact: PackedFloat64Array = wet.plant.ground.call(interior_n, interior_e) if label == "quad" \
+			else wet._ground.call(interior_n, interior_e)
+		_check(label + " contact callback sees the lake bed", absf(contact[0] + float(interior.ground_down_m)) < 1.0e-4, str(contact))
+		# A stale or malformed lake is refused and the running flight is kept.
+		var stale: Dictionary = lake.duplicate(true)
+		stale["identity"] = "0".repeat(64)
+		var refused_options: Dictionary = base.duplicate(true)
+		refused_options["lake"] = stale
+		var before: PackedFloat64Array = wet.environment.ground(interior_n, interior_e)
+		_check(label + " stale lake identity is refused and keeps the prepared session", not wet.prepare(field, refused_options)
+			and wet.prepared and not wet.load_error.is_empty()
+			and var_to_bytes(wet.environment.ground(interior_n, interior_e)) == var_to_bytes(before))
+		refused_options["lake"] = 3
+		_check(label + " a non-dictionary lake option is refused", not wet.prepare(field, refused_options))
+		# A start over or beside the water is refused (water contact is terminal).
+		var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0})
+		var over_water: Dictionary = base.duplicate(true)
+		over_water["lake"] = lake
+		over_water["north_offset_m"] = interior_n - float(pilot.north)
+		over_water["east_offset_m"] = interior_e - float(pilot.east)
+		_check(label + " a start over the lake is refused", not wet.prepare(field, over_water) and wet.load_error.contains("lake"),
+			wet.load_error)
+		over_water.erase("lake")
+		_check(label + " the same start without a lake is accepted", wet.prepare(field, over_water))
+		var reset_ok: bool = wet.prepare(field, wet_options) and (wet.reset_to_pad() if label == "quad" else wet.reset())
+		_check(label + " reset keeps the lake", reset_ok and wet.lake_context().identity == lake.identity)
+		_water_entry(label, wet, interior_n, interior_e)
+		# Control: lake disabled at the same place has no water outcome.
+		_place(dry, interior_n, interior_e, 1.0)
+		var control_ok: bool = _resume_and_tick(dry)
+		_check(label + " lake disabled gives no water outcome at the same point", control_ok
+			and str(dry.crash.get("reason", "")) != "Water contact", str(dry.crash))
+		dry.free()
+		empty.free()
+		wet.free()
+
+
+## Put the accepted kernel state of a prepared session at (north, east, down).
+func _place(session: Node, north: float, east: float, down: float) -> void:
+	var state: PackedFloat64Array = session.sim.state
+	state[0] = north
+	state[1] = east
+	state[2] = down
+	session.sim.state = state
+
+
+func _neutral(session: Node) -> PackedFloat64Array:
+	return QuadController.neutral_input() if session.has_method("reset_to_pad") else PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+
+
+func _resume_and_tick(session: Node) -> bool:
+	return session.resume() and session.tick_once(_neutral(session))
+
+
+func _water_entry(label: String, session: Node, north: float, east: float) -> void:
+	var reasons: Array[String] = []
+	session.crashed.connect(func(reason: String) -> void: reasons.append(reason))
+	_place(session, north, east, -3.0)
+	var above_ok: bool = _resume_and_tick(session)
+	_check(label + " three metres above the water is no contact", above_ok and session.crash.is_empty() and reasons.is_empty(),
+		str(session.crash))
+	_place(session, north, east, 1.0)
+	var entered: bool = session.tick_once(_neutral(session))
+	_check(label + " water entry ends the flight with an explicit water crash", entered
+		and str(session.crash.get("reason", "")) == "Water contact" and reasons == ["Water contact"] and session.paused
+		and int(session.crash.get("tick", 0)) == int(session.sim.tick), str(session.crash))
+	_check(label + " the water crash refuses resume and further ticks", not session.resume()
+		and not session.tick_once(_neutral(session)))
+
 
 func _world(proxy: Dictionary) -> Dictionary:
 	var bins: Dictionary = {}

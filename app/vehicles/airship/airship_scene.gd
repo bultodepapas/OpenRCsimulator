@@ -19,6 +19,8 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
+const Scenery = preload("res://scenery/scenery.gd")
 const AirshipLog = preload("res://sim/airship/flight_log.gd")
 const Catalog = preload("res://vehicles/airship/airship_catalog.gd")
 const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
@@ -76,6 +78,9 @@ var hud: CanvasLayer
 var camera: Camera3D
 var input = PilotInput.new()
 var field := {}
+## CR-AUD-01: the field's enabled lake, resolved once like the field builder resolves it and passed to every session
+## preparation so the physics terrain matches the rendered basin ({} = no lake or a refused one).
+var _lake := {}
 var presentation := {}
 var camera_mode := 0
 var ballast_index := 2
@@ -325,6 +330,10 @@ func _load_field() -> bool:
 	sky_config = checked_sky.config
 	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
 	field = loaded.field
+	var lake_resolution: Dictionary = LakeWorld.resolve(field, Scenery.options())
+	_lake = lake_resolution.lake if lake_resolution.ok else {}
+	if not lake_resolution.ok:
+		push_warning("Blimp field lake refused: " + "; ".join(lake_resolution.errors))
 	var pilot: Dictionary = field.pilot
 	_pilot_position = Frames.ned_to_render([pilot.north, pilot.east, pilot.down - pilot.eye_height])
 	return true
@@ -363,6 +372,8 @@ func _session_options() -> Dictionary:
 		wind_speed_mps = Hud.WIND_MPS[wind_index], wind_from_deg = 270.0, start = "air" if start_index == 0 else "ground"}
 	if not _trial_raw.is_empty():
 		options.data = _trial_raw
+	if not _lake.is_empty():
+		options.lake = _lake
 	return options
 
 

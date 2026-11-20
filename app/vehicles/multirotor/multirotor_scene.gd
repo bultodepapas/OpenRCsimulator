@@ -24,6 +24,8 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
+const Scenery = preload("res://scenery/scenery.gd")
 const Track = preload("res://sim/race/track.gd")
 const RaceDirector = preload("res://sim/race/race_director.gd")
 const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
@@ -105,6 +107,9 @@ var hud: CanvasLayer
 var camera: Camera3D
 var input = PilotInput.new()
 var field := {}
+## CR-AUD-01: the field's enabled lake, resolved like the field builder resolves it and passed to every session
+## preparation so the quad's terrain and water outcome match the rendered basin ({} = no lake or a refused one).
+var _lake := {}
 var _lighting := {}
 var _environment: Environment
 var _last_input := {}
@@ -338,6 +343,10 @@ func _load_field() -> bool:
 	sky_config = checked_sky.config
 	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
 	field = loaded.field
+	var lake_resolution: Dictionary = LakeWorld.resolve(field, Scenery.options())
+	_lake = lake_resolution.lake if lake_resolution.ok else {}
+	if not lake_resolution.ok:
+		push_warning("Quad field lake refused: " + "; ".join(lake_resolution.errors))
 	_race_option = _course_option(race_track)
 	return true
 
@@ -406,9 +415,12 @@ func _pad_grass_exclusions() -> Array:
 ## The throttle policy follows the input source and is fixed for the flight it prepares; so is the pilot's throttle
 ## limit (a session option: changing it takes a fresh prepare on the pad, never a change mid-flight).
 func _session_options() -> Dictionary:
-	return {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
+	var options := {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
 		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option,
 		rc_track = _rc_track, crash_model = crash_model}
+	if not _lake.is_empty():
+		options.lake = _lake
+	return options
 
 
 ## The prepared flight's throttle limit.
@@ -960,9 +972,11 @@ func _on_crashed(reason: String) -> void:
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
 	# The OSD hint already names the cause (no duplicate flash).
 	_lens_crash(reason)
-	# DR-19d: the shared crash ladder (sound and debris) and a full camera jolt.
+	# DR-19d: the shared crash ladder (sound and debris) and a full camera jolt. Audit CR-AUD-29: the severity comes
+	# from the motion into the impact (the previous accepted tick), never from the state the hard-impact transition has
+	# already settled (a 19 or 28 m/s impact left about 0.05 to 0.09 m/s and a power of about 0.003).
 	if crash_fx != null and visual != null:
-		crash_fx.crash(reason, visual.root.position, _render_velocity())
+		crash_fx.crash(reason, visual.root.position, _pre_impact_render_velocity())
 	view.shake(1.0)
 
 
@@ -1024,7 +1038,8 @@ func _lens_crash(reason: String) -> void:
 	var state: PackedFloat64Array = session.sim.state
 	if state.size() < RB.SIZE:
 		return
-	var speed := Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
+	var before: PackedFloat64Array = _pre_impact_state()
+	var speed := Vector3(before[RB.VEL], before[RB.VEL + 1], before[RB.VEL + 2]).length()
 	# Only an obstacle strike can have hit a person; a ground crash next to one is still a ground crash.
 	_lens.strike_from_crash(state.slice(RB.POS, RB.POS + 3), speed,
 		_obstacle_world if reason == "Obstacle strike" else {}, "quad:%d" % int(session.sim.tick))
@@ -1068,7 +1083,23 @@ func _on_impact(event: Dictionary) -> void:
 
 ## The accepted CG velocity in render axes (presentation).
 func _render_velocity() -> Vector3:
-	var state: PackedFloat64Array = session.sim.state
+	return _render_velocity_of(session.sim.state)
+
+
+## Audit CR-AUD-29: the accepted state the crash tick started from (the kernel's `previous`, written before the tick's
+## response). The crash signal fires after the plant has settled the inward normal velocity, so the settled state says
+## nothing of the impact. Falls back to the current accepted state only when no previous state exists.
+func _pre_impact_state() -> PackedFloat64Array:
+	var before: PackedFloat64Array = session.sim.previous
+	return before if before.size() >= RB.SIZE else session.sim.state
+
+
+## The accepted CG velocity into the impact, in render axes (presentation).
+func _pre_impact_render_velocity() -> Vector3:
+	return _render_velocity_of(_pre_impact_state())
+
+
+func _render_velocity_of(state: PackedFloat64Array) -> Vector3:
 	if state.size() < RB.SIZE:
 		return Vector3.ZERO
 	var world: PackedFloat64Array = M.q_rotate(RB._att(state), M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))

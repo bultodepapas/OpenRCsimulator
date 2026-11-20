@@ -9,6 +9,47 @@ func check(label: String, ok: bool) -> void:
 	print(("ok " if ok else "FAIL ")+label)
 func _initialize() -> void:
 	run.call_deferred()
+## Collision audit 2026-11-17 regressions: CR-AUD-05 (impact height), CR-AUD-12 (one clock), CR-AUD-13 (accepted fuel).
+func _audit_regressions(fx: Node3D) -> void:
+	var report := {"class":3,"severity":0.7,"surface":"tree_trunk","component_group":"fuselage"}
+	fx.start(Vector3(2,10,3),Vector3(5,-2,0),report,0.0,false,Vector3.ZERO)
+	check("CR-AUD-05 an elevated impact keeps its height",absf(fx._origin.y - 10.0) < 1.0e-4 and absf(fx.dust.global_position.y - 10.0) < 1.0e-4)
+	var lowest := INF
+	for i in fx._fragment_count:
+		lowest = minf(lowest, fx._positions[i].y)
+	check("CR-AUD-05 chips spawn at the elevated impact",fx._fragment_count > 0 and lowest > 9.25)
+	check("CR-AUD-05 no ground gouge under an elevated impact",fx.stats().marks == 0)
+	for i in 600:
+		fx.update(1.0/60.0,false)
+	var settled := INF
+	for i in fx._fragment_count:
+		settled = minf(settled, fx._positions[i].y)
+	check("CR-AUD-05 chips fall to the ground below",absf(settled - 0.012) < 1.0e-3)
+	fx.ground_sampler = func(_point: Vector3) -> PackedFloat64Array: return PackedFloat64Array([1.5,0.0,0.0])
+	fx.start(Vector3(0,1.5,0),Vector3(5,-2,0),{"class":3,"severity":0.7},0.0,false,Vector3.ZERO)
+	check("CR-AUD-05 a raised ground gets its gouge and floor",fx.stats().marks == 1 and is_equal_approx(fx._ground_y,1.5) and fx._origin.y >= 1.54 - 1.0e-4)
+	fx.ground_sampler = Callable()
+	var slow: Node3D = load("res://render/crash/effects.gd").new()
+	root.add_child(slow)
+	slow.prepare()
+	for target: Node3D in [fx, slow]:
+		target.start(Vector3.ZERO,Vector3(5,-2,0),report,0.0,false,Vector3.ZERO)
+	for i in 60:
+		fx.update(1.0/60.0,false)
+	for i in 10:
+		slow.update(0.1,false)
+	check("CR-AUD-12 equal supplied time gives equal age at 60 and 10 Hz",absf(fx._age - 1.0) < 1.0e-4 and absf(slow._age - 1.0) < 1.0e-4)
+	slow.free()
+	var hot := {"class":4,"severity":1.0,"tank_ruptured":true}
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),hot,1.28,true,Vector3.ZERO)
+	fx.apply_energy(Effects.energy_outcome({"kerosene": 0.035},hot,true,true))
+	check("CR-AUD-13 kerosene fire lasts for the accepted fuel sample",is_equal_approx(fx._fire_duration,0.035/Effects.KEROSENE_BURN_KG_S))
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),hot,1.28,true,Vector3.ZERO)
+	fx.apply_energy(Effects.energy_outcome({"kerosene": 0.0},hot,true,true))
+	check("CR-AUD-13 an empty accepted tank leaves no kerosene fire",fx._fire_duration == 0.0 and fx.fire_strength() == 0.0)
+	fx.reset()
+
+
 func run() -> void:
 	var fx := Effects.new()
 	root.add_child(fx)
@@ -71,6 +112,7 @@ func run() -> void:
 	check("reset clears aftermath",fx.stats().marks == 0 and fx.stats().splinters == 0 and not fx.light.visible)
 	for p in fx.emitters:
 		check("reset hides and stops every emitter",not p.visible and not p.emitting)
+	_audit_regressions(fx)
 	fx.free()
 	print("%d checks, %d failures" % [checks,failures])
 	quit(1 if failures else 0)

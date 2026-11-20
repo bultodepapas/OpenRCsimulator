@@ -1,0 +1,2502 @@
+{
+  "schema": "openrc-collision-audit-static-revalidation-v1",
+  "review_date": "2026-11-19",
+  "reviewer": "prior_crash_work subagent",
+  "baseline_commit": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+  "current_main_commit": "372053ac9448942e154801e3299cf77669161d08",
+  "method": "Git blob comparison and direct diff inspection of changed files; historical source anchors mapped to named functions, with function SHA-256 including trailing comments through the next function declaration. No engine executions, visual runs, new probes, or source mutations.",
+  "status_semantics": {
+    "unchanged_critical_source": "All enumerated critical sources are byte-identical. Historical finding logic retained; no fresh runtime closure.",
+    "changed_files_finding_logic_unchanged": "One or more source files changed, but inspected diffs are unrelated to the finding; relevant algorithm remains.",
+    "fixed_by_static_inspection": "Specific previously failing source predicate is corrected. Await parent-led execution before runtime closure."
+  },
+  "summary": {
+    "unchanged_critical_source": 13,
+    "changed_files_finding_logic_unchanged": 13,
+    "fixed_by_static_inspection": 1
+  },
+  "context_changes": [
+    {
+      "path": "app/sim/native_stage.gd",
+      "change": "Windows release-package native loader added; do not generalize reference/Linux reruns to every native target."
+    },
+    {
+      "path": "app/sim/native_macos_domain.gd",
+      "change": "Mac stock collision identity changed and expected proxy count 6092 -> 6139. This is a context admission change, not a demonstrated collision fix."
+    },
+    {
+      "path": "app/project.godot",
+      "change": "Exported builds can start in saved renderer mode using user://renderer.cfg override.template; editor/research path remains project renderer."
+    },
+    {
+      "path": "app/vehicles/multirotor/quad_crash_fx.gd",
+      "change": "_at_ground fixes repeated lifting/drifting of old particle emitters across later events. This should be preserved; CR-AUD-05 concerns fixed-wing shared effect/ground datum, CR-AUD-20 concerns physical wall aftermath."
+    },
+    {
+      "path": "app/main.gd and app/data/ai/companions",
+      "change": "Owner/context files also changed; identical direct algorithms are not a claim that the whole launch/transitive environment is identical."
+    }
+  ],
+  "findings": [
+    {
+      "id": "CR-AUD-01",
+      "subject": "Quad and blimp omit the lake from their collision environment",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/lake_session_probe.gd",
+      "sources": [
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "baseline_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "current_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 225,
+              "end_line": 249
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_build",
+              "baseline": {
+                "name": "_build",
+                "start_line": 151,
+                "end_line": 334,
+                "sha256": "90eb35dd92e8860ec267a321b76d2835a72d4c8c6f75b96f278b32c7689d69f8"
+              },
+              "current": {
+                "name": "_build",
+                "start_line": 151,
+                "end_line": 334,
+                "sha256": "90eb35dd92e8860ec267a321b76d2835a72d4c8c6f75b96f278b32c7689d69f8"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/airship/session.gd",
+          "baseline_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+          "current_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 105,
+              "end_line": 122
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "prepare",
+              "baseline": {
+                "name": "prepare",
+                "start_line": 85,
+                "end_line": 173,
+                "sha256": "936d98dc402e59daaec4afc0bcab391a37d5089d5ed06aac8ae2337b828ab849"
+              },
+              "current": {
+                "name": "prepare",
+                "start_line": 85,
+                "end_line": 173,
+                "sha256": "936d98dc402e59daaec4afc0bcab391a37d5089d5ed06aac8ae2337b828ab849"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-02",
+      "subject": "Helicopters discard nonterminal scenery-contact candidates",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/heli_soft_contact_probe.gd",
+      "sources": [
+        {
+          "path": "app/physics/rotorcraft/impact_detector.gd",
+          "baseline_blob": "c48f8928eedd4968860dbb7be8d2094aaf49f1c8",
+          "current_blob": "c48f8928eedd4968860dbb7be8d2094aaf49f1c8",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 721,
+              "end_line": 730
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_first_scenery_contact",
+              "baseline": {
+                "name": "_first_scenery_contact",
+                "start_line": 721,
+                "end_line": 767,
+                "sha256": "35ab908c44e91166f85a6cab3beb5d3ee2171c08897507ae06ea5e04baf0ca62"
+              },
+              "current": {
+                "name": "_first_scenery_contact",
+                "start_line": 721,
+                "end_line": 767,
+                "sha256": "35ab908c44e91166f85a6cab3beb5d3ee2171c08897507ae06ea5e04baf0ca62"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-03",
+      "subject": "A coasting propeller bypasses the ground-strike guard after a source cut",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/test_spinning_source_off_prop_strike.gd",
+      "sources": [
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3322,
+              "end_line": 3332
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_check_prop_strike",
+              "baseline": {
+                "name": "_check_prop_strike",
+                "start_line": 3322,
+                "end_line": 3336,
+                "sha256": "fe7d57b41b08295ab340d0e7374ce4d504c82bba085e9a3e815b7147fcb44617"
+              },
+              "current": {
+                "name": "_check_prop_strike",
+                "start_line": 3322,
+                "end_line": 3336,
+                "sha256": "fe7d57b41b08295ab340d0e7374ce4d504c82bba085e9a3e815b7147fcb44617"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-04",
+      "subject": "Crossing time is serialized without its witness identity",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "director.gd only gains the SA-20 shadow-strength provider assignment in configure. Selected/earliest contact serialization and _start consumption are unchanged.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/test_staggered_hull_crossing_event.gd",
+      "sources": [
+        {
+          "path": "app/physics/impact_snapshot.gd",
+          "baseline_blob": "7baeb3157ca65950f05221219055c83ecc60dd4f",
+          "current_blob": "7baeb3157ca65950f05221219055c83ecc60dd4f",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 65,
+              "end_line": 77
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "hull_contact",
+              "baseline": {
+                "name": "hull_contact",
+                "start_line": 48,
+                "end_line": 66,
+                "sha256": "ed01d664c0cc04e16bbbf9d9cc6f5560fee80d24e2071fd867882069c2d01250"
+              },
+              "current": {
+                "name": "hull_contact",
+                "start_line": 48,
+                "end_line": 66,
+                "sha256": "ed01d664c0cc04e16bbbf9d9cc6f5560fee80d24e2071fd867882069c2d01250"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/aircraft_contact_events.gd",
+          "baseline_blob": "5c64279aa7e6a387bb3442adb74567dca50c32c5",
+          "current_blob": "5c64279aa7e6a387bb3442adb74567dca50c32c5",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 97,
+              "end_line": 105
+            },
+            {
+              "start_line": 444,
+              "end_line": 449
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "impact_event",
+              "baseline": {
+                "name": "impact_event",
+                "start_line": 87,
+                "end_line": 175,
+                "sha256": "d9b3eb531ca9887e0b3b7190bfe2bb3cf1f19cc1bec9a02f6ed287dd6eb88d4a"
+              },
+              "current": {
+                "name": "impact_event",
+                "start_line": 87,
+                "end_line": 175,
+                "sha256": "d9b3eb531ca9887e0b3b7190bfe2bb3cf1f19cc1bec9a02f6ed287dd6eb88d4a"
+              },
+              "identical": true
+            },
+            {
+              "function": "_event_add_snapshot_values",
+              "baseline": {
+                "name": "_event_add_snapshot_values",
+                "start_line": 425,
+                "end_line": 451,
+                "sha256": "739bea4df0c36abf1899031e3a82b04a16ae56d1f6f526b4807bfba7d45ae796"
+              },
+              "current": {
+                "name": "_event_add_snapshot_values",
+                "start_line": 425,
+                "end_line": 451,
+                "sha256": "739bea4df0c36abf1899031e3a82b04a16ae56d1f6f526b4807bfba7d45ae796"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/render/crash/director.gd",
+          "baseline_blob": "38b126e9b9495a9b26de522e7c1fdff1dd121959",
+          "current_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 205,
+              "end_line": 246
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_start",
+              "baseline": {
+                "name": "_start",
+                "start_line": 195,
+                "end_line": 353,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "current": {
+                "name": "_start",
+                "start_line": 196,
+                "end_line": 354,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-05",
+      "subject": "Elevated impacts are flattened onto the field datum",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "effects.gd is byte-identical. wreck.gd adds light-aware shadow opacity and storage; its ground plane remains fixed and its geometric shadow projection still uses global y=0.012. _ensure_pool has one shadow-array append, not terrain support.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/effects.gd",
+          "baseline_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "current_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 299,
+              "end_line": 311
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "start",
+              "baseline": {
+                "name": "start",
+                "start_line": 299,
+                "end_line": 346,
+                "sha256": "dfa80c72f1baa1b67f27f86fb45d70f764914080dcb0293f595f7a182a524371"
+              },
+              "current": {
+                "name": "start",
+                "start_line": 299,
+                "end_line": 346,
+                "sha256": "dfa80c72f1baa1b67f27f86fb45d70f764914080dcb0293f595f7a182a524371"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 550,
+              "end_line": 563
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_ensure_pool",
+              "baseline": {
+                "name": "_ensure_pool",
+                "start_line": 550,
+                "end_line": 606,
+                "sha256": "1b7baf687150af63c1b9459bea1f7a38953e41892a76c505d3d58d34d9765cb7"
+              },
+              "current": {
+                "name": "_ensure_pool",
+                "start_line": 562,
+                "end_line": 619,
+                "sha256": "726ad11f42972003553fc5727718be1a3c222ebe80e4b7f0b6bf19227417bba8"
+              },
+              "identical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-06",
+      "subject": "Launch velocity is evaluated at the wrong mass center",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "wreck.gd has SA-20-only shadow changes; start and _apply_launch retain the geometric-center velocity versus custom COM mismatch.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 299,
+              "end_line": 307
+            },
+            {
+              "start_line": 891,
+              "end_line": 895
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "start",
+              "baseline": {
+                "name": "start",
+                "start_line": 233,
+                "end_line": 373,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "current": {
+                "name": "start",
+                "start_line": 241,
+                "end_line": 381,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "identical": true
+            },
+            {
+              "function": "_apply_launch",
+              "baseline": {
+                "name": "_apply_launch",
+                "start_line": 882,
+                "end_line": 927,
+                "sha256": "fa11fffb03261fcc56c4618cf7d77192362bd1ebb4eb3ef317a2420342345344"
+              },
+              "current": {
+                "name": "_apply_launch",
+                "start_line": 895,
+                "end_line": 940,
+                "sha256": "fa11fffb03261fcc56c4618cf7d77192362bd1ebb4eb3ef317a2420342345344"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-07",
+      "subject": "C3 component release changes first moment and momentum",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "wreck.gd C3 release and core mass/COM transition logic are unchanged; unrelated shadow additions do not repair conservation.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 1446,
+              "end_line": 1464
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_release_pending_c3_contact_group",
+              "baseline": {
+                "name": "_release_pending_c3_contact_group",
+                "start_line": 1432,
+                "end_line": 1466,
+                "sha256": "093647c487f10d1e0d194f52bc67c0262a6426a77ef73361d31fa59313343026"
+              },
+              "current": {
+                "name": "_release_pending_c3_contact_group",
+                "start_line": 1475,
+                "end_line": 1509,
+                "sha256": "093647c487f10d1e0d194f52bc67c0262a6426a77ef73361d31fa59313343026"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-08",
+      "subject": "Delayed fragments temporarily stop contributing active mass",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "wreck.gd delayed-release scheduling, _core_mass and activation ownership are unchanged. _process adds a shadow-light refresh without changing elapsed-time semantics.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 1073,
+              "end_line": 1080
+            },
+            {
+              "start_line": 316,
+              "end_line": 348
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_core_mass",
+              "baseline": {
+                "name": "_core_mass",
+                "start_line": 1073,
+                "end_line": 1082,
+                "sha256": "92f8471bb86277a21a88af3f2f44e02726d2c5acca0648cfa4a97f440d145a10"
+              },
+              "current": {
+                "name": "_core_mass",
+                "start_line": 1086,
+                "end_line": 1095,
+                "sha256": "92f8471bb86277a21a88af3f2f44e02726d2c5acca0648cfa4a97f440d145a10"
+              },
+              "identical": true
+            },
+            {
+              "function": "start",
+              "baseline": {
+                "name": "start",
+                "start_line": 233,
+                "end_line": 373,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "current": {
+                "name": "start",
+                "start_line": 241,
+                "end_line": 381,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-09",
+      "subject": "The core shape does not track which parts remain attached",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "wreck.gd start, _collect_fragment_groups and bounds membership are unchanged; light opacity changes do not alter collision shapes.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 299,
+              "end_line": 302
+            },
+            {
+              "start_line": 637,
+              "end_line": 645
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "start",
+              "baseline": {
+                "name": "start",
+                "start_line": 233,
+                "end_line": 373,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "current": {
+                "name": "start",
+                "start_line": 241,
+                "end_line": 381,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "identical": true
+            },
+            {
+              "function": "_collect_fragment_groups",
+              "baseline": {
+                "name": "_collect_fragment_groups",
+                "start_line": 617,
+                "end_line": 702,
+                "sha256": "915831061f2a63828e0daa467c232208eb312dbc1e786882442e9f02fa7d42fe"
+              },
+              "current": {
+                "name": "_collect_fragment_groups",
+                "start_line": 630,
+                "end_line": 715,
+                "sha256": "915831061f2a63828e0daa467c232208eb312dbc1e786882442e9f02fa7d42fe"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-10",
+      "subject": "Valid scenery contacts are rejected by the secondary-breakage callback",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "wreck.gd _on_body_entered filter is unchanged. Scenery body contact admission is not changed by SA-20.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 1388,
+              "end_line": 1403
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_on_body_entered",
+              "baseline": {
+                "name": "_on_body_entered",
+                "start_line": 1388,
+                "end_line": 1405,
+                "sha256": "d07eaf9690340fa10a8785d958e1bc5ec8948a975468f6d341ccc1d45383b948"
+              },
+              "current": {
+                "name": "_on_body_entered",
+                "start_line": 1431,
+                "end_line": 1448,
+                "sha256": "d07eaf9690340fa10a8785d958e1bc5ec8948a975468f6d341ccc1d45383b948"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-11",
+      "subject": "A ground-triggered wreck is not given nearby scenery colliders",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "director.gd only adds a shadow provider assignment; _start still provisions wreck scenery under the initial scenery-impact branch.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": null,
+      "sources": [
+        {
+          "path": "app/render/crash/director.gd",
+          "baseline_blob": "38b126e9b9495a9b26de522e7c1fdff1dd121959",
+          "current_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 247,
+              "end_line": 260
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_start",
+              "baseline": {
+                "name": "_start",
+                "start_line": 195,
+                "end_line": 353,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "current": {
+                "name": "_start",
+                "start_line": 196,
+                "end_line": 354,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-12",
+      "subject": "Effect and wreck clocks diverge under long update deltas",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "effects.gd is byte-identical. wreck._process adds only _refresh_shadow_light(); elapsed_s and secondary lockout still consume the nonnegative full supplied delta.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/crash_adversarial_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/effects.gd",
+          "baseline_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "current_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 483,
+              "end_line": 515
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "update",
+              "baseline": {
+                "name": "update",
+                "start_line": 474,
+                "end_line": 523,
+                "sha256": "aea2dc39771b32ab3ee5de64079eac0fd0e8e6b1c894dd9b60473e657d59907d"
+              },
+              "current": {
+                "name": "update",
+                "start_line": 474,
+                "end_line": 523,
+                "sha256": "aea2dc39771b32ab3ee5de64079eac0fd0e8e6b1c894dd9b60473e657d59907d"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 529,
+              "end_line": 540
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_process",
+              "baseline": {
+                "name": "_process",
+                "start_line": 529,
+                "end_line": 549,
+                "sha256": "c27f5216132872c7441a03f4009047bdc0c85ab8bb3482ff1bc13536e4fe291c"
+              },
+              "current": {
+                "name": "_process",
+                "start_line": 540,
+                "end_line": 561,
+                "sha256": "e8432e27ad214fbe6079d17834478b14e55a4cc2e4f1933dd44eec46a4d31f0e"
+              },
+              "identical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-13",
+      "subject": "Kerosene fire uses a stale fuel quantity",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "effects.gd is byte-identical. director.gd configuration/start fuel handoff is unchanged except the unrelated shadow-provider assignment.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/scenario_and_fuel_probe.gd",
+      "sources": [
+        {
+          "path": "app/render/crash/director.gd",
+          "baseline_blob": "38b126e9b9495a9b26de522e7c1fdff1dd121959",
+          "current_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 99,
+              "end_line": 110
+            },
+            {
+              "start_line": 295,
+              "end_line": 317
+            },
+            {
+              "start_line": 340,
+              "end_line": 345
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "configure",
+              "baseline": {
+                "name": "configure",
+                "start_line": 75,
+                "end_line": 116,
+                "sha256": "af2cc8629e76dd664dcd60256d7d1e7e0b3cb98452c1af3218dbb746d585ecae"
+              },
+              "current": {
+                "name": "configure",
+                "start_line": 75,
+                "end_line": 117,
+                "sha256": "4faff4508db640333c30373da03552cfced8e6003ef4cace85643cc028cb52e3"
+              },
+              "identical": false
+            },
+            {
+              "function": "_start",
+              "baseline": {
+                "name": "_start",
+                "start_line": 195,
+                "end_line": 353,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "current": {
+                "name": "_start",
+                "start_line": 196,
+                "end_line": 354,
+                "sha256": "cf3e72eab93e46c54f90687e3bf5b07258f0634297357dd2c4c3811216d6c361"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/render/crash/effects.gd",
+          "baseline_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "current_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 573,
+              "end_line": 603
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "energy_outcome",
+              "baseline": {
+                "name": "energy_outcome",
+                "start_line": 540,
+                "end_line": 573,
+                "sha256": "7e933e4dc25c0c2370b104d8d315b816742b2c5221839b20a755a22a680bb074"
+              },
+              "current": {
+                "name": "energy_outcome",
+                "start_line": 540,
+                "end_line": 573,
+                "sha256": "7e933e4dc25c0c2370b104d8d315b816742b2c5221839b20a755a22a680bb074"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-14",
+      "subject": "Cars' general scenery collision coverage is narrower than the rendered field",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "evidence/probes/ground_scenery_probe.gd",
+      "sources": [
+        {
+          "path": "app/sim/ground_vehicle/session.gd",
+          "baseline_blob": "dcc6fe9563afa417584d8559cbac9ebcda90ac14",
+          "current_blob": "dcc6fe9563afa417584d8559cbac9ebcda90ac14",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 159,
+              "end_line": 177
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "prepare_airfield",
+              "baseline": {
+                "name": "prepare_airfield",
+                "start_line": 159,
+                "end_line": 181,
+                "sha256": "2d2493e8085cd72887775be3c655e734e312d0ab968b87fee3d9aa57e1e894fd"
+              },
+              "current": {
+                "name": "prepare_airfield",
+                "start_line": 159,
+                "end_line": 181,
+                "sha256": "2d2493e8085cd72887775be3c655e734e312d0ab968b87fee3d9aa57e1e894fd"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-15",
+      "subject": "A parked-aircraft regression expects the old shelter geometry",
+      "status": "fixed_by_static_inspection",
+      "current_runtime_verified": false,
+      "note": "_test_shelter_elevation replaces shelter_parts==19 with shelter_posts==18, shelter_roof_strips==6, shelter_other==0 and aircraft_support_parts==0. It retains proxy presence, exact height and damage-profile assertions. collision_world.gd is byte-identical and intentionally builds 18 posts and six roof strips. Static correction only; no fresh execution by this agent.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/findings.md",
+      "reproduction": "app/tests/test_parked_aircraft_collision.gd",
+      "sources": [
+        {
+          "path": "app/tests/test_parked_aircraft_collision.gd",
+          "baseline_blob": "43ec10947e837e1749c4a5491335ba6aec788850",
+          "current_blob": "7a55320cd6bb6b11222e7ae9b6b5921bf6ed8668",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 103,
+              "end_line": 137
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_test_shelter_elevation",
+              "baseline": {
+                "name": "_test_shelter_elevation",
+                "start_line": 103,
+                "end_line": 139,
+                "sha256": "0c27aef85fe661cd02809f7e8826124d7569199a87156e438d112ba6b38d86f7"
+              },
+              "current": {
+                "name": "_test_shelter_elevation",
+                "start_line": 103,
+                "end_line": 149,
+                "sha256": "cb9981f6dc650e261fc4db91c2d97a1367824f22e7072b137bf1356d23bcfc38"
+              },
+              "identical": false
+            }
+          ]
+        },
+        {
+          "path": "app/scenery/collision_world.gd",
+          "baseline_blob": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+          "current_blob": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 729,
+              "end_line": 757
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_add_pit_shelter",
+              "baseline": {
+                "name": "_add_pit_shelter",
+                "start_line": 729,
+                "end_line": 759,
+                "sha256": "d00603bf60b20d8ecd37bd196909c3bab60a8341b6786e0a8b9d67d25d6ce22d"
+              },
+              "current": {
+                "name": "_add_pit_shelter",
+                "start_line": 729,
+                "end_line": 759,
+                "sha256": "d00603bf60b20d8ecd37bd196909c3bab60a8341b6786e0a8b9d67d25d6ce22d"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ],
+      "fix_commit": "35787fb583f3b654b28381c951783be7a85be0e0"
+    },
+    {
+      "id": "CR-AUD-16",
+      "subject": "Delayed rotor release mixes crash-time and current reference frames",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "heli_wreck.gd only replaces direct shadow alpha writes with inherited _apply_shadow_alpha. Rotor hub/axis storage and release functions are unchanged. Base wreck changes are SA-20 shadow-only.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/deep-dive-2026-11-18.md",
+      "reproduction": "evidence/round2/probes/probe_heli_delayed_frames.gd",
+      "sources": [
+        {
+          "path": "app/render/rotor/heli_wreck.gd",
+          "baseline_blob": "cb3d287904613303f653cb2ac534bef969efe729",
+          "current_blob": "c436c11f7a3c0acc0765f00434a494aeae7afc3e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 437,
+              "end_line": 484
+            },
+            {
+              "start_line": 551,
+              "end_line": 554
+            },
+            {
+              "start_line": 275,
+              "end_line": 294
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_cache_rotor_kinematics",
+              "baseline": {
+                "name": "_cache_rotor_kinematics",
+                "start_line": 437,
+                "end_line": 461,
+                "sha256": "2afe30ddc0f7ae08c60f7eb1a4bf7594a2cf411fd81fdfa3f2bae5fc3c34c012"
+              },
+              "current": {
+                "name": "_cache_rotor_kinematics",
+                "start_line": 436,
+                "end_line": 460,
+                "sha256": "2afe30ddc0f7ae08c60f7eb1a4bf7594a2cf411fd81fdfa3f2bae5fc3c34c012"
+              },
+              "identical": true
+            },
+            {
+              "function": "_current_pose_for_center",
+              "baseline": {
+                "name": "_current_pose_for_center",
+                "start_line": 551,
+                "end_line": 556,
+                "sha256": "e2c2bec074fa81767625b0fd776ddf97528b494e19a228747eebdc8e205a402a"
+              },
+              "current": {
+                "name": "_current_pose_for_center",
+                "start_line": 550,
+                "end_line": 555,
+                "sha256": "e2c2bec074fa81767625b0fd776ddf97528b494e19a228747eebdc8e205a402a"
+              },
+              "identical": true
+            },
+            {
+              "function": "_activate_group",
+              "baseline": {
+                "name": "_activate_group",
+                "start_line": 275,
+                "end_line": 296,
+                "sha256": "c9c5066fc3ff0d2ebe64d1aad19667b6a9377200043995c6212a27207bfefc61"
+              },
+              "current": {
+                "name": "_activate_group",
+                "start_line": 275,
+                "end_line": 296,
+                "sha256": "c9c5066fc3ff0d2ebe64d1aad19667b6a9377200043995c6212a27207bfefc61"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/render/crash/wreck.gd",
+          "baseline_blob": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+          "current_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 316,
+              "end_line": 335
+            },
+            {
+              "start_line": 529,
+              "end_line": 540
+            },
+            {
+              "start_line": 862,
+              "end_line": 879
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "start",
+              "baseline": {
+                "name": "start",
+                "start_line": 233,
+                "end_line": 373,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "current": {
+                "name": "start",
+                "start_line": 241,
+                "end_line": 381,
+                "sha256": "2949e131fef5f69d249fce58fb1429bf753818ced82911c1bcdd5f7378613224"
+              },
+              "identical": true
+            },
+            {
+              "function": "_process",
+              "baseline": {
+                "name": "_process",
+                "start_line": 529,
+                "end_line": 549,
+                "sha256": "c27f5216132872c7441a03f4009047bdc0c85ab8bb3482ff1bc13536e4fe291c"
+              },
+              "current": {
+                "name": "_process",
+                "start_line": 540,
+                "end_line": 561,
+                "sha256": "e8432e27ad214fbe6079d17834478b14e55a4cc2e4f1933dd44eec46a4d31f0e"
+              },
+              "identical": false
+            },
+            {
+              "function": "_activate_group",
+              "baseline": {
+                "name": "_activate_group",
+                "start_line": 862,
+                "end_line": 881,
+                "sha256": "8f8c39879ce4a7f5ad6c34f9aa5dd8034bbd0d96c53225d9073997456d37b7b8"
+              },
+              "current": {
+                "name": "_activate_group",
+                "start_line": 875,
+                "end_line": 894,
+                "sha256": "8f8c39879ce4a7f5ad6c34f9aa5dd8034bbd0d96c53225d9073997456d37b7b8"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-17",
+      "subject": "A crash observer can capture and restore an incomplete quad session boundary",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/deep-dive-2026-11-18.md",
+      "reproduction": "evidence/round2/probes/probe_quad_crash_checkpoint.gd",
+      "sources": [
+        {
+          "path": "app/sim/simulation.gd",
+          "baseline_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+          "current_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 691,
+              "end_line": 704
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "step",
+              "baseline": {
+                "name": "step",
+                "start_line": 387,
+                "end_line": 706,
+                "sha256": "5423247fa4ca468a7b0642664694edb4e7e67a6dad43f3af0ba62ab1d106fe6f"
+              },
+              "current": {
+                "name": "step",
+                "start_line": 387,
+                "end_line": 706,
+                "sha256": "5423247fa4ca468a7b0642664694edb4e7e67a6dad43f3af0ba62ab1d106fe6f"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "baseline_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "current_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 386,
+              "end_line": 388
+            },
+            {
+              "start_line": 593,
+              "end_line": 624
+            },
+            {
+              "start_line": 867,
+              "end_line": 919
+            },
+            {
+              "start_line": 549,
+              "end_line": 559
+            },
+            {
+              "start_line": 827,
+              "end_line": 842
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_on_events",
+              "baseline": {
+                "name": "_on_events",
+                "start_line": 386,
+                "end_line": 392,
+                "sha256": "6703dd08b6783e59cbb513866160b2cd395d01aea20b7418adf85e0ddcd58c5d"
+              },
+              "current": {
+                "name": "_on_events",
+                "start_line": 386,
+                "end_line": 392,
+                "sha256": "6703dd08b6783e59cbb513866160b2cd395d01aea20b7418adf85e0ddcd58c5d"
+              },
+              "identical": true
+            },
+            {
+              "function": "tick_once",
+              "baseline": {
+                "name": "tick_once",
+                "start_line": 576,
+                "end_line": 628,
+                "sha256": "486f01e8452fcac735eb909fbc261da2af1e1281f48a28cea5141b6cc26f87a2"
+              },
+              "current": {
+                "name": "tick_once",
+                "start_line": 576,
+                "end_line": 628,
+                "sha256": "486f01e8452fcac735eb909fbc261da2af1e1281f48a28cea5141b6cc26f87a2"
+              },
+              "identical": true
+            },
+            {
+              "function": "identity",
+              "baseline": {
+                "name": "identity",
+                "start_line": 854,
+                "end_line": 868,
+                "sha256": "ac85f7fdb44527f64ad77bcfd7a6e60e6933a772804c3c42d0837b6bb4c043fa"
+              },
+              "current": {
+                "name": "identity",
+                "start_line": 854,
+                "end_line": 868,
+                "sha256": "ac85f7fdb44527f64ad77bcfd7a6e60e6933a772804c3c42d0837b6bb4c043fa"
+              },
+              "identical": true
+            },
+            {
+              "function": "discard_results",
+              "baseline": {
+                "name": "discard_results",
+                "start_line": 545,
+                "end_line": 549,
+                "sha256": "eaeb5a9baedaf3fcfc39161e3599c8312c4d2371f4d1eb04dae2e29518800fc7"
+              },
+              "current": {
+                "name": "discard_results",
+                "start_line": 545,
+                "end_line": 549,
+                "sha256": "eaeb5a9baedaf3fcfc39161e3599c8312c4d2371f4d1eb04dae2e29518800fc7"
+              },
+              "identical": true
+            },
+            {
+              "function": "plant_frame",
+              "baseline": {
+                "name": "plant_frame",
+                "start_line": 823,
+                "end_line": 827,
+                "sha256": "1e01f8b28980a800e9cc8ef1989b5d12a3894922d9d463989d5cbc4224f35f40"
+              },
+              "current": {
+                "name": "plant_frame",
+                "start_line": 823,
+                "end_line": 827,
+                "sha256": "1e01f8b28980a800e9cc8ef1989b5d12a3894922d9d463989d5cbc4224f35f40"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-18",
+      "subject": "Scenery arbitration masks a qualifying soft-ground impact",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/deep-dive-2026-11-18.md",
+      "reproduction": "evidence/round2/probes/probe_contact_order.gd",
+      "sources": [
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3492,
+              "end_line": 3532
+            },
+            {
+              "start_line": 3459,
+              "end_line": 3468
+            },
+            {
+              "start_line": 3146,
+              "end_line": 3159
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_resolve_collision_candidate",
+              "baseline": {
+                "name": "_resolve_collision_candidate",
+                "start_line": 3477,
+                "end_line": 3544,
+                "sha256": "70517140121bc870deddba5c18d22c8cc07ab98060e0551e1d7322d3f7e4f66a"
+              },
+              "current": {
+                "name": "_resolve_collision_candidate",
+                "start_line": 3477,
+                "end_line": 3544,
+                "sha256": "70517140121bc870deddba5c18d22c8cc07ab98060e0551e1d7322d3f7e4f66a"
+              },
+              "identical": true
+            },
+            {
+              "function": "_resolve_collision_step",
+              "baseline": {
+                "name": "_resolve_collision_step",
+                "start_line": 3451,
+                "end_line": 3476,
+                "sha256": "bfd280e89aca5fe3470513e5d08d8e6c57f74c06cea80b4d61b8ea9f417b8e1e"
+              },
+              "current": {
+                "name": "_resolve_collision_step",
+                "start_line": 3451,
+                "end_line": 3476,
+                "sha256": "bfd280e89aca5fe3470513e5d08d8e6c57f74c06cea80b4d61b8ea9f417b8e1e"
+              },
+              "identical": true
+            },
+            {
+              "function": "_session_after_input",
+              "baseline": {
+                "name": "_session_after_input",
+                "start_line": 3143,
+                "end_line": 3176,
+                "sha256": "5c0fc43c9c09e0f602f4a7baeb8b0a30391f6ab8dabc8cd936bce0fdc6a7e2b5"
+              },
+              "current": {
+                "name": "_session_after_input",
+                "start_line": 3143,
+                "end_line": 3176,
+                "sha256": "5c0fc43c9c09e0f602f4a7baeb8b0a30391f6ab8dabc8cd936bce0fdc6a7e2b5"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-19",
+      "subject": "Crash pause publication precedes the reason and damage commit",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/deep-dive-2026-11-18.md",
+      "reproduction": "evidence/round2/probes/probe_crash_pause_log.gd",
+      "sources": [
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3748,
+              "end_line": 3778
+            },
+            {
+              "start_line": 2580,
+              "end_line": 2605
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_crash",
+              "baseline": {
+                "name": "_crash",
+                "start_line": 3748,
+                "end_line": 3781,
+                "sha256": "899e51c89e4c53ba647bde9bc46b2e7aa359d5b48b199fa19c0fe8da321dbad2"
+              },
+              "current": {
+                "name": "_crash",
+                "start_line": 3748,
+                "end_line": 3781,
+                "sha256": "899e51c89e4c53ba647bde9bc46b2e7aa359d5b48b199fa19c0fe8da321dbad2"
+              },
+              "identical": true
+            },
+            {
+              "function": "_on_sim_stepped",
+              "baseline": {
+                "name": "_on_sim_stepped",
+                "start_line": 2580,
+                "end_line": 2617,
+                "sha256": "a648ff75e442db3838d4485b7c5e0621f83ef8c0043ef8b42cc7008e6f4eac5b"
+              },
+              "current": {
+                "name": "_on_sim_stepped",
+                "start_line": 2580,
+                "end_line": 2617,
+                "sha256": "a648ff75e442db3838d4485b7c5e0621f83ef8c0043ef8b42cc7008e6f4eac5b"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/flight_log.gd",
+          "baseline_blob": "efc778b4fffc89a236591500636df0933b70ae90",
+          "current_blob": "efc778b4fffc89a236591500636df0933b70ae90",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 322,
+              "end_line": 332
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_event",
+              "baseline": {
+                "name": "_event",
+                "start_line": 322,
+                "end_line": 328,
+                "sha256": "07984cbc7533c4d27a713b177ccf1a1bab0cd99188615b65d6dfeccf11191ef2"
+              },
+              "current": {
+                "name": "_event",
+                "start_line": 322,
+                "end_line": 328,
+                "sha256": "07984cbc7533c4d27a713b177ccf1a1bab0cd99188615b65d6dfeccf11191ef2"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-20",
+      "subject": "A terminal quad obstacle strike has no solid-preserving aftermath response",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "controlled_plant.gd is byte-identical. multirotor_scene adds only projected shadow setup. quad_crash_fx._at_ground changes persistence of emitter positions between events, not terminal body motion or obstacle response. The contact and terminal aftermath finding therefore remains unrepaired by source inspection.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/deep-dive-2026-11-18.md",
+      "reproduction": "evidence/round2/probes/probe_quad_obstacle_aftermath.gd",
+      "sources": [
+        {
+          "path": "app/physics/multirotor/controlled_plant.gd",
+          "baseline_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "current_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 977,
+              "end_line": 1021
+            },
+            {
+              "start_line": 624,
+              "end_line": 667
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_graded_impacts",
+              "baseline": {
+                "name": "_graded_impacts",
+                "start_line": 965,
+                "end_line": 981,
+                "sha256": "5a155f969d1b297faa57f0ab6996c43b81bc3b03dfc0e58570acda66c233f4c5"
+              },
+              "current": {
+                "name": "_graded_impacts",
+                "start_line": 965,
+                "end_line": 981,
+                "sha256": "5a155f969d1b297faa57f0ab6996c43b81bc3b03dfc0e58570acda66c233f4c5"
+              },
+              "identical": true
+            },
+            {
+              "function": "_contact_loads",
+              "baseline": {
+                "name": "_contact_loads",
+                "start_line": 531,
+                "end_line": 625,
+                "sha256": "e05ad00d1aa317fb7ae49a8e56d8cf3c82f2bb8c65487329920110fabf8dc496"
+              },
+              "current": {
+                "name": "_contact_loads",
+                "start_line": 531,
+                "end_line": 625,
+                "sha256": "e05ad00d1aa317fb7ae49a8e56d8cf3c82f2bb8c65487329920110fabf8dc496"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/vehicles/multirotor/multirotor_scene.gd",
+          "baseline_blob": "c87a5a01603233cec70bca69f6e0b12f68dbc957",
+          "current_blob": "e5ccd21494da9cccf9a4f149b972e2b0e5b1e7eb",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 954,
+              "end_line": 963
+            },
+            {
+              "start_line": 1096,
+              "end_line": 1164
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_on_crashed",
+              "baseline": {
+                "name": "_on_crashed",
+                "start_line": 954,
+                "end_line": 967,
+                "sha256": "346b5ca122f8c5f76248a125e42ac630ccf9513e49daa875a1316cf01a6b5380"
+              },
+              "current": {
+                "name": "_on_crashed",
+                "start_line": 957,
+                "end_line": 970,
+                "sha256": "346b5ca122f8c5f76248a125e42ac630ccf9513e49daa875a1316cf01a6b5380"
+              },
+              "identical": true
+            },
+            {
+              "function": "_physics_process",
+              "baseline": {
+                "name": "_physics_process",
+                "start_line": 1096,
+                "end_line": 1150,
+                "sha256": "c09929cb763502042974edc5f4545e86930c389b243e7a0a35d4d415aad89f34"
+              },
+              "current": {
+                "name": "_physics_process",
+                "start_line": 1099,
+                "end_line": 1153,
+                "sha256": "c09929cb763502042974edc5f4545e86930c389b243e7a0a35d4d415aad89f34"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/vehicles/multirotor/quad_crash_fx.gd",
+          "baseline_blob": "b67cbc44bef49f61c4a09af53b82dd05eba8c028",
+          "current_blob": "66ac5c03fa208be958ef58cfdc55b04c6b19f3a7",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 138,
+              "end_line": 157
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "prop_damage",
+              "baseline": {
+                "name": "prop_damage",
+                "start_line": 119,
+                "end_line": 138,
+                "sha256": "cf646f8a7404f2432949e6425893fdd928eda6e9cb1a71a7dc58dfdfbb73c19a"
+              },
+              "current": {
+                "name": "prop_damage",
+                "start_line": 119,
+                "end_line": 138,
+                "sha256": "cf646f8a7404f2432949e6425893fdd928eda6e9cb1a71a7dc58dfdfbb73c19a"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-21",
+      "subject": "A glancing quad prop strike can add energy",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/edge-cases-2026-11-18.md",
+      "reproduction": "evidence/round3/probes/probe_quad_prop_strike_energy.gd",
+      "sources": [
+        {
+          "path": "app/physics/multirotor/controlled_plant.gd",
+          "baseline_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "current_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 1161,
+              "end_line": 1190
+            },
+            {
+              "start_line": 1025,
+              "end_line": 1068
+            },
+            {
+              "start_line": 449,
+              "end_line": 460
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_graded_ground",
+              "baseline": {
+                "name": "_graded_ground",
+                "start_line": 1074,
+                "end_line": 1165,
+                "sha256": "13ef473ec40db1e6847f7cdab8ad753e62b5d63fd010f710ecf3fc0e96bb8ab1"
+              },
+              "current": {
+                "name": "_graded_ground",
+                "start_line": 1074,
+                "end_line": 1165,
+                "sha256": "13ef473ec40db1e6847f7cdab8ad753e62b5d63fd010f710ecf3fc0e96bb8ab1"
+              },
+              "identical": true
+            },
+            {
+              "function": "_graded_frame_obstacle",
+              "baseline": {
+                "name": "_graded_frame_obstacle",
+                "start_line": 982,
+                "end_line": 1027,
+                "sha256": "bc701ad8376c3d309f5fc58798034396bed3e07adf5a3a231a27f86b9209ddb7"
+              },
+              "current": {
+                "name": "_graded_frame_obstacle",
+                "start_line": 982,
+                "end_line": 1027,
+                "sha256": "bc701ad8376c3d309f5fc58798034396bed3e07adf5a3a231a27f86b9209ddb7"
+              },
+              "identical": true
+            },
+            {
+              "function": "_evaluate",
+              "baseline": {
+                "name": "_evaluate",
+                "start_line": 357,
+                "end_line": 472,
+                "sha256": "2ef08161e2e3f4039c1d70bb3e67c48b203a1713865d43cff69869a74ea901d4"
+              },
+              "current": {
+                "name": "_evaluate",
+                "start_line": 357,
+                "end_line": 472,
+                "sha256": "2ef08161e2e3f4039c1d70bb3e67c48b203a1713865d43cff69869a74ea901d4"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/physics/multirotor_data.gd",
+          "baseline_blob": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+          "current_blob": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 100,
+              "end_line": 131
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "load_document",
+              "baseline": {
+                "name": "load_document",
+                "start_line": 94,
+                "end_line": 100,
+                "sha256": "e48f5c2bd0871396494ffc682b271db20fe7151ab6e7277487dd435563e84aab"
+              },
+              "current": {
+                "name": "load_document",
+                "start_line": 94,
+                "end_line": 100,
+                "sha256": "e48f5c2bd0871396494ffc682b271db20fe7151ab6e7277487dd435563e84aab"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/tests/test_mr_graded_crashes.gd",
+          "baseline_blob": "4fef7fb85abcd98281eb3f79b6948e887c5741cd",
+          "current_blob": "4fef7fb85abcd98281eb3f79b6948e887c5741cd",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 155,
+              "end_line": 194
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_prop_wear",
+              "baseline": {
+                "name": "_prop_wear",
+                "start_line": 137,
+                "end_line": 180,
+                "sha256": "a9bf03f3123b9fc9d2a2f754b783ad67d3c88bd8214e933767dc2d51dd30a432"
+              },
+              "current": {
+                "name": "_prop_wear",
+                "start_line": 137,
+                "end_line": 180,
+                "sha256": "a9bf03f3123b9fc9d2a2f754b783ad67d3c88bd8214e933767dc2d51dd30a432"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-22",
+      "subject": "A paused world change invalidates an airship recording",
+      "status": "changed_files_finding_logic_unchanged",
+      "current_runtime_verified": false,
+      "note": "Airship session and recorder/verification code are byte-identical. airship_scene.gd adds projected shadow setup and skin shadow rebinding only; world setter and recording identity boundaries are unchanged. No runtime revalidation performed.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/edge-cases-2026-11-18.md",
+      "reproduction": "evidence/round3/probes/probe_airship_collision_recording.gd",
+      "sources": [
+        {
+          "path": "app/sim/airship/session.gd",
+          "baseline_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+          "current_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 281,
+              "end_line": 312
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "tick_once",
+              "baseline": {
+                "name": "tick_once",
+                "start_line": 256,
+                "end_line": 282,
+                "sha256": "1b018156f0cf58dbb33f595ae4017e87726996f7d1fc1b303bfb10b49a28f1af"
+              },
+              "current": {
+                "name": "tick_once",
+                "start_line": 256,
+                "end_line": 282,
+                "sha256": "1b018156f0cf58dbb33f595ae4017e87726996f7d1fc1b303bfb10b49a28f1af"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/airship/flight_log.gd",
+          "baseline_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+          "current_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 45,
+              "end_line": 89
+            },
+            {
+              "start_line": 303,
+              "end_line": 351
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_init",
+              "baseline": {
+                "name": "_init",
+                "start_line": 41,
+                "end_line": 45,
+                "sha256": "99a91e19d886106cc3e887dac80f2c41672f250e788fbeefb0169ce2a66536df"
+              },
+              "current": {
+                "name": "_init",
+                "start_line": 41,
+                "end_line": 45,
+                "sha256": "99a91e19d886106cc3e887dac80f2c41672f250e788fbeefb0169ce2a66536df"
+              },
+              "identical": true
+            },
+            {
+              "function": "_replay",
+              "baseline": {
+                "name": "_replay",
+                "start_line": 303,
+                "end_line": 351,
+                "sha256": "fa0de4ef592ac722d91e78799b2422e897937035c0738f06fcd80e50167224e5"
+              },
+              "current": {
+                "name": "_replay",
+                "start_line": 303,
+                "end_line": 351,
+                "sha256": "fa0de4ef592ac722d91e78799b2422e897937035c0738f06fcd80e50167224e5"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "baseline_blob": "a083d6a32b07d0d5ae77e539b0930ee0ef30119a",
+          "current_blob": "9b47e156df42baa6697ad4a35c5ff2ff5837d326",
+          "identical_blob": false,
+          "historical_anchors": [
+            {
+              "start_line": 100,
+              "end_line": 112
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_ready",
+              "baseline": {
+                "name": "_ready",
+                "start_line": 98,
+                "end_line": 180,
+                "sha256": "a30df8128b12400acf51ceab729145f71ef8ace0fb963971d1f89ece7dad1e50"
+              },
+              "current": {
+                "name": "_ready",
+                "start_line": 98,
+                "end_line": 182,
+                "sha256": "ce2372bb60cb9cb59e41d290a86de38d30981d0cde955a14da92195484697c93"
+              },
+              "identical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-23",
+      "subject": "A tiny hard-capsule entry becomes an undetected through-passage",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/edge-cases-2026-11-18.md",
+      "reproduction": "evidence/round3/probes/probe_slow_capsule_entry.gd",
+      "sources": [
+        {
+          "path": "app/sim/scenery_collision.gd",
+          "baseline_blob": "60760397c8e4e79db48145381f48391ce1fbd482",
+          "current_blob": "60760397c8e4e79db48145381f48391ce1fbd482",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 523,
+              "end_line": 580
+            },
+            {
+              "start_line": 228,
+              "end_line": 249
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_segment_capsule",
+              "baseline": {
+                "name": "_segment_capsule",
+                "start_line": 523,
+                "end_line": 565,
+                "sha256": "e1954375c1f3c8785f70eed538d38c1a2098df1e92f86270fe58044e8a3d4b8c"
+              },
+              "current": {
+                "name": "_segment_capsule",
+                "start_line": 523,
+                "end_line": 565,
+                "sha256": "e1954375c1f3c8785f70eed538d38c1a2098df1e92f86270fe58044e8a3d4b8c"
+              },
+              "identical": true
+            },
+            {
+              "function": "_event_at",
+              "baseline": {
+                "name": "_event_at",
+                "start_line": 228,
+                "end_line": 294,
+                "sha256": "256faf9e8ade5932ab0f3dee57eadbc4568feea3b2a813dac817847bdc39ed31"
+              },
+              "current": {
+                "name": "_event_at",
+                "start_line": 228,
+                "end_line": 294,
+                "sha256": "256faf9e8ade5932ab0f3dee57eadbc4568feea3b2a813dac817847bdc39ed31"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/scenery/collision_world.gd",
+          "baseline_blob": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+          "current_blob": "ad8b30cd854d3052b4590b40de3ddd1e49557cad",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 533,
+              "end_line": 538
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_add_field_tree_proxies",
+              "baseline": {
+                "name": "_add_field_tree_proxies",
+                "start_line": 533,
+                "end_line": 551,
+                "sha256": "e42c5ac8ef884bd56ed199bba71b9b6fec08155d665968f5511f117ce52670da"
+              },
+              "current": {
+                "name": "_add_field_tree_proxies",
+                "start_line": 533,
+                "end_line": 551,
+                "sha256": "e42c5ac8ef884bd56ed199bba71b9b6fec08155d665968f5511f117ce52670da"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3477,
+              "end_line": 3532
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_resolve_collision_candidate",
+              "baseline": {
+                "name": "_resolve_collision_candidate",
+                "start_line": 3477,
+                "end_line": 3544,
+                "sha256": "70517140121bc870deddba5c18d22c8cc07ab98060e0551e1d7322d3f7e4f66a"
+              },
+              "current": {
+                "name": "_resolve_collision_candidate",
+                "start_line": 3477,
+                "end_line": 3544,
+                "sha256": "70517140121bc870deddba5c18d22c8cc07ab98060e0551e1d7322d3f7e4f66a"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-24",
+      "subject": "A powered propeller rim overlaps a dry bank while the selected point remains clear",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/edge-cases-2026-11-18.md",
+      "reproduction": "evidence/round3/probes/probe_prop_bank_rim.gd",
+      "sources": [
+        {
+          "path": "app/physics/hull_contact.gd",
+          "baseline_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+          "current_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 93,
+              "end_line": 131
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "slip_regularization",
+              "baseline": {
+                "name": "slip_regularization",
+                "start_line": 89,
+                "end_line": 94,
+                "sha256": "655c905db1925b82a061822384f49330341353d11caee89f9dc0b68ddab9ff48"
+              },
+              "current": {
+                "name": "slip_regularization",
+                "start_line": 89,
+                "end_line": 94,
+                "sha256": "655c905db1925b82a061822384f49330341353d11caee89f9dc0b68ddab9ff48"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "baseline_blob": "ee208e4da8ee3c368cb7cf2dcca6ba1a3866dbc5",
+          "current_blob": "ee208e4da8ee3c368cb7cf2dcca6ba1a3866dbc5",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 184,
+              "end_line": 207
+            },
+            {
+              "start_line": 486,
+              "end_line": 501
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_first_hit_core",
+              "baseline": {
+                "name": "_first_hit_core",
+                "start_line": 80,
+                "end_line": 240,
+                "sha256": "3f68190ea5de700a2bbf9d19361e37bb9d62073c3a53ba6877ebd26de0d05524"
+              },
+              "current": {
+                "name": "_first_hit_core",
+                "start_line": 80,
+                "end_line": 240,
+                "sha256": "3f68190ea5de700a2bbf9d19361e37bb9d62073c3a53ba6877ebd26de0d05524"
+              },
+              "identical": true
+            },
+            {
+              "function": "_probe_body_point",
+              "baseline": {
+                "name": "_probe_body_point",
+                "start_line": 486,
+                "end_line": 503,
+                "sha256": "f28f2148c4012122d25201bf01a5267384cecfd74beb9211fed0ec589438f841"
+              },
+              "current": {
+                "name": "_probe_body_point",
+                "start_line": 486,
+                "end_line": 503,
+                "sha256": "f28f2148c4012122d25201bf01a5267384cecfd74beb9211fed0ec589438f841"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3141,
+              "end_line": 3173
+            },
+            {
+              "start_line": 3320,
+              "end_line": 3336
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_physics_process",
+              "baseline": {
+                "name": "_physics_process",
+                "start_line": 3095,
+                "end_line": 3142,
+                "sha256": "b47619f1c075abc8e02ea8511485019e3a29fa2e4667441e1d6859823818cf54"
+              },
+              "current": {
+                "name": "_physics_process",
+                "start_line": 3095,
+                "end_line": 3142,
+                "sha256": "b47619f1c075abc8e02ea8511485019e3a29fa2e4667441e1d6859823818cf54"
+              },
+              "identical": true
+            },
+            {
+              "function": "_external_number_is_in_range",
+              "baseline": {
+                "name": "_external_number_is_in_range",
+                "start_line": 3313,
+                "end_line": 3321,
+                "sha256": "82f247d61dc9ee389430ff2b549aba3b5bae39045b5744ede799380c1c0f2f1a"
+              },
+              "current": {
+                "name": "_external_number_is_in_range",
+                "start_line": 3313,
+                "end_line": 3321,
+                "sha256": "82f247d61dc9ee389430ff2b549aba3b5bae39045b5744ede799380c1c0f2f1a"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/tests/test_prop_strike.gd",
+          "baseline_blob": "019a4bab9fdc31a97e83cdf0d00934762d1718fc",
+          "current_blob": "019a4bab9fdc31a97e83cdf0d00934762d1718fc",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 35,
+              "end_line": 43
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_geometry",
+              "baseline": {
+                "name": "_geometry",
+                "start_line": 35,
+                "end_line": 46,
+                "sha256": "5e1efe7f32d7fd81f0c3569e430ec157dbb553b19b773910a2bb3f3f82d2e55c"
+              },
+              "current": {
+                "name": "_geometry",
+                "start_line": 35,
+                "end_line": 46,
+                "sha256": "5e1efe7f32d7fd81f0c3569e430ec157dbb553b19b773910a2bb3f3f82d2e55c"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/tests/test_lake_collision.gd",
+          "baseline_blob": "efbd8c80989f39903d476565cc4377ca3207c6b1",
+          "current_blob": "efbd8c80989f39903d476565cc4377ca3207c6b1",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 216,
+              "end_line": 224
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_test_hull_contact_context",
+              "baseline": {
+                "name": "_test_hull_contact_context",
+                "start_line": 191,
+                "end_line": 226,
+                "sha256": "2d6218399d116ce171e535ae33d49973def8d01dfbebae8f35d7c5eb0d55e456"
+              },
+              "current": {
+                "name": "_test_hull_contact_context",
+                "start_line": 191,
+                "end_line": 226,
+                "sha256": "2d6218399d116ce171e535ae33d49973def8d01dfbebae8f35d7c5eb0d55e456"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-25",
+      "subject": "Hub clearance is insufficient to decide finite prop-disc contact",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/contact-ownership-2026-11-18.md",
+      "reproduction": "evidence/round4/probes/probe_quad_disc_box_separation.gd",
+      "sources": [
+        {
+          "path": "app/physics/multirotor/controlled_plant.gd",
+          "baseline_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "current_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 940,
+              "end_line": 974
+            },
+            {
+              "start_line": 1024,
+              "end_line": 1068
+            },
+            {
+              "start_line": 1193,
+              "end_line": 1207
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_prepare_frame_box",
+              "baseline": {
+                "name": "_prepare_frame_box",
+                "start_line": 919,
+                "end_line": 940,
+                "sha256": "25fdb67460e734c6201ad32bac4dcf146208f6f3937c8117e7812c06c29f2ac9"
+              },
+              "current": {
+                "name": "_prepare_frame_box",
+                "start_line": 919,
+                "end_line": 940,
+                "sha256": "25fdb67460e734c6201ad32bac4dcf146208f6f3937c8117e7812c06c29f2ac9"
+              },
+              "identical": true
+            },
+            {
+              "function": "_graded_frame_obstacle",
+              "baseline": {
+                "name": "_graded_frame_obstacle",
+                "start_line": 982,
+                "end_line": 1027,
+                "sha256": "bc701ad8376c3d309f5fc58798034396bed3e07adf5a3a231a27f86b9209ddb7"
+              },
+              "current": {
+                "name": "_graded_frame_obstacle",
+                "start_line": 982,
+                "end_line": 1027,
+                "sha256": "bc701ad8376c3d309f5fc58798034396bed3e07adf5a3a231a27f86b9209ddb7"
+              },
+              "identical": true
+            },
+            {
+              "function": "_prop_strike_kick",
+              "baseline": {
+                "name": "_prop_strike_kick",
+                "start_line": 1166,
+                "end_line": 1194,
+                "sha256": "10633c37d6f1f0c4b728159316b034e7e71442ed333d73a11bae8b347d2a3831"
+              },
+              "current": {
+                "name": "_prop_strike_kick",
+                "start_line": 1166,
+                "end_line": 1194,
+                "sha256": "10633c37d6f1f0c4b728159316b034e7e71442ed333d73a11bae8b347d2a3831"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/sim/multirotor/session.gd",
+          "baseline_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "current_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 669,
+              "end_line": 713
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "collision_identity",
+              "baseline": {
+                "name": "collision_identity",
+                "start_line": 665,
+                "end_line": 676,
+                "sha256": "1cb5b920f587a7c271a09c866352f6693869cdde1a67a4e9764202cb6b9f562d"
+              },
+              "current": {
+                "name": "collision_identity",
+                "start_line": 665,
+                "end_line": 676,
+                "sha256": "1cb5b920f587a7c271a09c866352f6693869cdde1a67a4e9764202cb6b9f562d"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-26",
+      "subject": "Car body damage follows travel direction instead of contacting region",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/contact-ownership-2026-11-18.md",
+      "reproduction": "evidence/round4/probes/probe_car_damage_region.gd",
+      "sources": [
+        {
+          "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+          "baseline_blob": "af8bb186efbcbc4eac78cf74dfcaf08feae4caf2",
+          "current_blob": "af8bb186efbcbc4eac78cf74dfcaf08feae4caf2",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 85,
+              "end_line": 136
+            },
+            {
+              "start_line": 504,
+              "end_line": 517
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "advance",
+              "baseline": {
+                "name": "advance",
+                "start_line": 85,
+                "end_line": 199,
+                "sha256": "39e7db348ccb2d81eff929caf5f605109e884fa9656a9a34bee5e761fb0181e3"
+              },
+              "current": {
+                "name": "advance",
+                "start_line": 85,
+                "end_line": 199,
+                "sha256": "39e7db348ccb2d81eff929caf5f605109e884fa9656a9a34bee5e761fb0181e3"
+              },
+              "identical": true
+            },
+            {
+              "function": "_impact_region",
+              "baseline": {
+                "name": "_impact_region",
+                "start_line": 504,
+                "end_line": 514,
+                "sha256": "58e57fbd604c5077a5c9e93d9b39231f0c06c5895e863f5b7cdac4e4b0b30e50"
+              },
+              "current": {
+                "name": "_impact_region",
+                "start_line": 504,
+                "end_line": 514,
+                "sha256": "58e57fbd604c5077a5c9e93d9b39231f0c06c5895e863f5b7cdac4e4b0b30e50"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+          "baseline_blob": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+          "current_blob": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 863,
+              "end_line": 902
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_apply_wall_contacts",
+              "baseline": {
+                "name": "_apply_wall_contacts",
+                "start_line": 765,
+                "end_line": 929,
+                "sha256": "238145764f3fe7ddf4a825fe5e7500b2e88eb05e130fc58aa6b5df6ff2ae00fa"
+              },
+              "current": {
+                "name": "_apply_wall_contacts",
+                "start_line": 765,
+                "end_line": 929,
+                "sha256": "238145764f3fe7ddf4a825fe5e7500b2e88eb05e130fc58aa6b5df6ff2ae00fa"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/vehicles/ground/ground_damage_view.gd",
+          "baseline_blob": "d934b259ef19524df2c5265e3995f09188246f3e",
+          "current_blob": "d934b259ef19524df2c5265e3995f09188246f3e",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 109,
+              "end_line": 139
+            },
+            {
+              "start_line": 191,
+              "end_line": 217
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "update",
+              "baseline": {
+                "name": "update",
+                "start_line": 109,
+                "end_line": 141,
+                "sha256": "a12373a71609da821aa0a3697aa0456a392bb305a453ba37626f479ad9524ca8"
+              },
+              "current": {
+                "name": "update",
+                "start_line": 109,
+                "end_line": 141,
+                "sha256": "a12373a71609da821aa0a3697aa0456a392bb305a453ba37626f479ad9524ca8"
+              },
+              "identical": true
+            },
+            {
+              "function": "_dent_vertex",
+              "baseline": {
+                "name": "_dent_vertex",
+                "start_line": 191,
+                "end_line": 219,
+                "sha256": "329f19e417f83014ceca538fa94a7885be277cd0dfe27195e97e4dbeb687710e"
+              },
+              "current": {
+                "name": "_dent_vertex",
+                "start_line": 191,
+                "end_line": 219,
+                "sha256": "329f19e417f83014ceca538fa94a7885be277cd0dfe27195e97e4dbeb687710e"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CR-AUD-27",
+      "subject": "Deployed wheel support does not participate in scenery response",
+      "status": "unchanged_critical_source",
+      "current_runtime_verified": false,
+      "note": "The defect-bearing source paths and functions are byte-identical at both commits. This establishes retained source logic, not fresh runtime reproduction or full transitive-input equivalence.",
+      "audit_document": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/contact-ownership-2026-11-18.md",
+      "reproduction": "evidence/round4/probes/probe_fixedwing_gear_scenery.gd",
+      "sources": [
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "current_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 3640,
+              "end_line": 3646
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_scenery_hit",
+              "baseline": {
+                "name": "_scenery_hit",
+                "start_line": 3640,
+                "end_line": 3648,
+                "sha256": "98727079404df0763d3e6315b42b5d4106c7dde5d659bc08e2a2eccd7713b24e"
+              },
+              "current": {
+                "name": "_scenery_hit",
+                "start_line": 3640,
+                "end_line": 3648,
+                "sha256": "98727079404df0763d3e6315b42b5d4106c7dde5d659bc08e2a2eccd7713b24e"
+              },
+              "identical": true
+            }
+          ]
+        },
+        {
+          "path": "app/physics/ground_wheels.gd",
+          "baseline_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+          "current_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+          "identical_blob": true,
+          "historical_anchors": [
+            {
+              "start_line": 34,
+              "end_line": 60
+            }
+          ],
+          "function_checks": [
+            {
+              "function": "_damping",
+              "baseline": {
+                "name": "_damping",
+                "start_line": 26,
+                "end_line": 34,
+                "sha256": "c75447afb1c72d46bfb63446d55dc9ac259216ccded7d0d35457da9d8d0d319f"
+              },
+              "current": {
+                "name": "_damping",
+                "start_line": 26,
+                "end_line": 34,
+                "sha256": "c75447afb1c72d46bfb63446d55dc9ac259216ccded7d0d35457da9d8d0d319f"
+              },
+              "identical": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "baseline_application_tree": "f72e113b9f0cc068579c6c5d7cf5a216a3e67fac",
+  "current_application_tree": "b4c85a73e0ce36ea8ca88f2aac079ff6c0183895",
+  "phase_note": "This is the frozen static comparison. Per-record current_runtime_verified=false describes that review phase only. The lead subsequently executed the checks in round5/manifest.json; use that execution record for current runtime evidence.",
+  "lead_verification": {
+    "all_31_unique_source_blob_pairs_independently_checked": true,
+    "CR-AUD-15": "Repaired by current-main 45-check parked-aircraft suite; see manifest.json.",
+    "current_execution_manifest": "manifest.json"
+  }
+}

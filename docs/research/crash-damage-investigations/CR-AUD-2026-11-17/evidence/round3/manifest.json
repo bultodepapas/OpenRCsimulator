@@ -1,0 +1,195 @@
+{
+  "format": "openrc-collision-audit-round3-manifest-v1",
+  "root": "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/evidence/round3",
+  "excludes": [
+    "manifest.json (self-hash)"
+  ],
+  "document_hashes_in": "provenance.json",
+  "files": [
+    {
+      "path": "probe-revisions/airship-recording-v0-invalid-constant.gd",
+      "bytes": 11472,
+      "sha256": "4fbe25edaf974de6201b0bbf0d5b9126b04da601a6ae700d1ceb582586a5811b"
+    },
+    {
+      "path": "probe-revisions/prop-bank-rim-v0-legacy-hard-guard.gd",
+      "bytes": 9076,
+      "sha256": "467745131e692765da13b744669edc6cd8bc947efa97c1e822c56572de6b6556"
+    },
+    {
+      "path": "probe-revisions/prop-bank-rim-v1-initial-overlap.gd",
+      "bytes": 9772,
+      "sha256": "8d56ddb259434e5229d16b07900885c6497b47921862ac7392fec0cf9513cad8"
+    },
+    {
+      "path": "probe-revisions/prop-bank-rim-v2-mislabeled-roll.gd",
+      "bytes": 9773,
+      "sha256": "d8e11896e26be25d89d99bc93b0b0ea6bd857d459339dd3f34b53863672fe26b"
+    },
+    {
+      "path": "probes/probe_airship_collision_recording.gd",
+      "bytes": 11470,
+      "sha256": "484ba589dfda7523cb124dea02e4127d93dd5227746c67e0b4dba904b891e490"
+    },
+    {
+      "path": "probes/probe_prop_bank_rim.gd",
+      "bytes": 9815,
+      "sha256": "973851af9379f0a1b727e82d42a76f581639b3696a94b4e7b72598ca26524d36"
+    },
+    {
+      "path": "probes/probe_quad_prop_strike_energy.gd",
+      "bytes": 11350,
+      "sha256": "27ddb64229c19f1e4b0a0f94e4efbaa3818abf2a130d792acd95f7324d20d34f"
+    },
+    {
+      "path": "probes/probe_slow_capsule_entry.gd",
+      "bytes": 20274,
+      "sha256": "e69fa8ffa769e146cc9f1a9f9408eebe8bcbe7dbb8aeba18bf989813f14bb8d3"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 9067,
+      "sha256": "25bc0949c0e301eb7fcf0a2be3069d08826e67863ee709a5cf0949b4c1877b67"
+    },
+    {
+      "path": "recordings/changed-world.orfl",
+      "bytes": 4688,
+      "sha256": "2832bb6ae675b2f2b405de446ee760a23e067e02d646bc2f435b01b736bf5c5c"
+    },
+    {
+      "path": "recordings/pre-record-world.orfl",
+      "bytes": 4316,
+      "sha256": "85284ff8b56ec4e18eacdea3670f147643f2c085ac7b9646c806265dea19b301"
+    },
+    {
+      "path": "recordings/unchanged-world.orfl",
+      "bytes": 4424,
+      "sha256": "eecc9380171bfc1a44df4c8614d0e5d4868281a4f3fecad9effacd045ab48f59"
+    },
+    {
+      "path": "run_probes.py",
+      "bytes": 4525,
+      "sha256": "d5174b7ef556d3c8096cae4eb9461e953b8d39a660cdd8624bd6061c056fe03e"
+    },
+    {
+      "path": "runs/earlier-attempts/airship-parse/engine.log",
+      "bytes": 558,
+      "sha256": "961322000159747d2f59f65ea77301c98265766d477e0e4ab39aada23b2526c2"
+    },
+    {
+      "path": "runs/earlier-attempts/airship-parse/report.json",
+      "bytes": 2267,
+      "sha256": "304b7bdef60508289cb6a08b0b0384d3f9ff61417a8e4bf37adeae331dba1099"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-initial-overlap/engine.log",
+      "bytes": 30510,
+      "sha256": "1569d0e999d257c71581854c32619d69e499ce3e7b3fb6626bf26a7cbd3a9892"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-initial-overlap/observations.json",
+      "bytes": 49424,
+      "sha256": "3ae3be280767c741ec9212bb7a9fc917ec1e9aeab343b1146f7582616958270d"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-initial-overlap/report.json",
+      "bytes": 1279,
+      "sha256": "2507be5a0e9d8be1033d1be0e0de471c021055e0190da310667ac25fddf232a7"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-legacy-guard/engine.log",
+      "bytes": 32347,
+      "sha256": "3a14287610d3bd918f11a5772b6b1e3bb35661e50bfa0e6fe7ba2895abb2faba"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-legacy-guard/observations.json",
+      "bytes": 52102,
+      "sha256": "bd9bc68877701868ab8d3761602a83a7f64d8575592db756be931b4c95fb8984"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-legacy-guard/report.json",
+      "bytes": 1270,
+      "sha256": "d6c8e8fdb072c0913e19dedaa8abbe199cf1dc85f916ae3eacb54838efebf408"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-mislabeled-roll/engine.log",
+      "bytes": 31429,
+      "sha256": "59e8b7ba03ec24f75d7daf9de4b061f6695357f6e4e49c77c3c2f4975292f2da"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-mislabeled-roll/observations.json",
+      "bytes": 51048,
+      "sha256": "29010724a071c6689d6700756a3dad017727831b8877e23650a64fac6958750b"
+    },
+    {
+      "path": "runs/earlier-attempts/prop-bank-mislabeled-roll/report.json",
+      "bytes": 1279,
+      "sha256": "d95f0ca4268e10dcc692e9e5cde02ef3cca836f4761eadcd859700d431322d2f"
+    },
+    {
+      "path": "runs/probes/airship-collision-recording/engine.log",
+      "bytes": 12041,
+      "sha256": "0bbb2eba203b656634eec7bb4b4c460bb089661b8db774c39bf81d508f622d93"
+    },
+    {
+      "path": "runs/probes/airship-collision-recording/observations.json",
+      "bytes": 17575,
+      "sha256": "d92b8b2ef7b44bde9c6d84bb0a242101da299a55cf54cce4f49baf5cc6cc5bb5"
+    },
+    {
+      "path": "runs/probes/airship-collision-recording/report.json",
+      "bytes": 1469,
+      "sha256": "ceff3708f4dbb4325fcc36ed94b55c4a8595846713fecd00c3dde721a9cf6ae8"
+    },
+    {
+      "path": "runs/probes/prop-bank-rim/engine.log",
+      "bytes": 31540,
+      "sha256": "e07fdf54d5544a5300bb4536a89e3173ce6393d58498886b812080d263c0c2ff"
+    },
+    {
+      "path": "runs/probes/prop-bank-rim/observations.json",
+      "bytes": 51183,
+      "sha256": "ac44850bd37f9ee184d0b67a430c14e31d2b3dc8376d0937499a8a50d9eaacee"
+    },
+    {
+      "path": "runs/probes/prop-bank-rim/report.json",
+      "bytes": 1279,
+      "sha256": "37a062fbe107a45b953ddd1fea56a895ba9f8833b25f072ea2df867e42ee3367"
+    },
+    {
+      "path": "runs/probes/quad-prop-strike-energy/engine.log",
+      "bytes": 15795,
+      "sha256": "966f8b3c2de3c75f20dff72623b6a985bf11568fbf39312e8b21d3bc5e0aaf2c"
+    },
+    {
+      "path": "runs/probes/quad-prop-strike-energy/observations.json",
+      "bytes": 24681,
+      "sha256": "f6635fea45522a646666ffbb58a53448ea4a80517559152cbfe10f1b30a1001f"
+    },
+    {
+      "path": "runs/probes/quad-prop-strike-energy/report.json",
+      "bytes": 1320,
+      "sha256": "143cd801f6f3f8c10d51be655382acd4639ef0f135dd7eb19664cb9d3ad7ba0a"
+    },
+    {
+      "path": "runs/probes/slow-capsule-entry/engine.log",
+      "bytes": 78308,
+      "sha256": "dad56d8517873b08155755c81e780b206aa3d80dc2c53648a1efdb4b1f3cb99b"
+    },
+    {
+      "path": "runs/probes/slow-capsule-entry/observations.json",
+      "bytes": 169279,
+      "sha256": "2c6d54a3440ec6304317c361c483cb2eb6537bbad8b43996cdc6d5c5c27391aa"
+    },
+    {
+      "path": "runs/probes/slow-capsule-entry/report.json",
+      "bytes": 1289,
+      "sha256": "c505a520303a2637a82a98ca933497ea4a9f5d69e4c6632740a1168ba4e6d42f"
+    },
+    {
+      "path": "setup.json",
+      "bytes": 460,
+      "sha256": "45efe7fd7196416b768b932ea254cb2f8e7530f5e3a3ef8d1819bfc480932c74"
+    }
+  ]
+}

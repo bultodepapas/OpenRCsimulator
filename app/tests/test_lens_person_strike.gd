@@ -10,16 +10,21 @@ const World := preload("res://scenery/collision_world.gd")
 const ImpactTrigger := preload("res://render/lens/impact_trigger.gd")
 const LensSettings := preload("res://render/lens/lens_settings.gd")
 const LensStack := preload("res://render/lens/lens_stack.gd")
+const HeliMain := preload("res://helicopter_main.gd")
 
 var _checks := 0
 var _failures := 0
 
 
-func _check(label: String, ok: bool) -> void:
+class PrescribedSession extends Node:
+	var crash: Dictionary = {}
+
+
+func _check(label: String, ok: bool, detail: String = "") -> void:
 	_checks += 1
 	if not ok:
 		_failures += 1
-	print(("ok   " if ok else "FAIL ") + label)
+	print(("ok   " if ok else "FAIL ") + label + (" " + detail if not detail.is_empty() else ""))
 
 
 func _initialize() -> void:
@@ -77,6 +82,76 @@ func _initialize() -> void:
 	stack.queue_free()
 	camera.queue_free()
 	s.queue_free()
+	_helicopter_attribution()
 	await process_frame
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _spectator_world(north: float) -> Dictionary:
+	return World.build({pilot = {north = -60.0, east = 0.0, down = 0.0}, objects = []},
+		{groups = [{id = "spectators", prefab = "person_standing", placements = [{north = north, east = 0.0, heading = 0.0}]}]})
+
+
+## Audit CR-AUD-30: the helicopter lens grades a strike by the crash's own obstacle identity, never by a spectator
+## standing near the impact point. A ground crash 1.3 m from a spectator (capsule clearance about 1 m, inside the
+## 1.2 m bounds query) is still a ground crash; a crash whose `obstacle_kind` is "person" is a person strike. The real
+## HelicopterMain._lens_crash runs with a prescribed crash record (no flight is integrated).
+func _helicopter_attribution() -> void:
+	var holder := Node3D.new()
+	root.add_child(holder)
+	var camera := Camera3D.new()
+	holder.add_child(camera)
+	var stack := LensStack.new()
+	holder.add_child(stack)
+	var configured: bool = stack.configure({"settings": LensSettings.resolve({}, true, LensSettings.DEFAULTS), "camera": camera,
+		"view_provider": func() -> String: return "chase", "station": PackedFloat64Array([-60.0, 0.0, 0.0]),
+		"eye_height": 1.7, "mass_kg": 1.0, "seed": 3})
+	_check("the helicopter lens stack configures", configured)
+	var heli := HeliMain.new() # detached: adding it to the tree would launch its _ready() route
+	var session := PrescribedSession.new()
+	heli.session = session
+	heli._lens = stack
+	var counts := [0, 0]
+	stack.person_struck.connect(func(player: bool) -> void: counts[1 if player else 0] += 1)
+	var close: Dictionary = _spectator_world(1.3)
+	var actual: Dictionary = _spectator_world(0.0)
+	var built: bool = close.ok and actual.ok
+	_check("the spectator worlds build", built)
+	if configured and built:
+		var near: Array = World.nearby(close.world, 0.0, 0.0, 0.0, 1.2)
+		_check("the ground point is inside the production 1.2 m bounds query of the spectator", near.size() == 1
+			and str(near[0].kind) == "person")
+		stack.reset()
+		session.crash = {"tick": 1, "reason": "fuselage ground strike", "surface": "grass",
+			"surface_detail": {"kind": "terrain"}, "point_world_ned": PackedFloat64Array([0.0, 0.0, 0.0]),
+			"normal_speed_mps": 14.0, "body": PackedFloat64Array()}
+		heli._camera_obstacles = close.world
+		heli._lens_crash()
+		var terrain_snapshot: Dictionary = stack.snapshot()
+		_check("a ground crash beside a spectator is no person strike and no blood", counts[0] == 0 and counts[1] == 0
+			and not bool(terrain_snapshot.blood), "person events %d" % counts[0])
+		var person: Dictionary = {}
+		for proxy: Dictionary in actual.world.proxies:
+			if str(proxy.kind) == "person":
+				person = proxy
+		stack.reset()
+		session.crash = {"tick": 2, "reason": "fuselage scenery impact (person)", "surface": "person",
+			"surface_detail": {"kind": "person", "id": str(person.get("id", ""))}, "obstacle_kind": "person",
+			"obstacle_id": str(person.get("id", "")), "point_world_ned": PackedFloat64Array([0.0, 0.0, -0.9]),
+			"normal_speed_mps": 14.0, "body": PackedFloat64Array()}
+		heli._camera_obstacles = actual.world
+		heli._lens_crash()
+		_check("a crash that names a person is one spectator strike with blood", counts[0] == 1 and counts[1] == 0
+			and bool(stack.snapshot().blood), "person events %d" % counts[0])
+		stack.reset()
+		session.crash = {"tick": 3, "reason": "fuselage scenery impact (tree)", "surface": "tree",
+			"surface_detail": {"kind": "tree", "id": "t1"}, "obstacle_kind": "tree", "obstacle_id": "t1",
+			"point_world_ned": PackedFloat64Array([0.0, 0.0, 0.0]), "normal_speed_mps": 14.0, "body": PackedFloat64Array()}
+		heli._camera_obstacles = close.world
+		heli._lens_crash()
+		_check("a non-person obstacle beside a spectator is no person strike either", counts[0] == 1 and counts[1] == 0
+			and not bool(stack.snapshot().blood))
+	heli.free()
+	session.free()
+	holder.queue_free()

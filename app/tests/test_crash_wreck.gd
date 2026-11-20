@@ -14,6 +14,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	await _check_ownership_transactions()
 	for entry: Dictionary in AircraftCatalog.ENTRIES:
 		await _check_aircraft(entry)
 	print("%d checks, %d failed" % [_checks, _failures])
@@ -66,8 +67,11 @@ func _check_aircraft(entry: Dictionary) -> void:
 	var low_stats: Dictionary = wreck.stats()
 	_check(String(entry.id) + " C2 keeps the airframe together", int(low_stats.detached_group_count) == 0 and int(low_stats.active_body_count) == 1)
 	_check(String(entry.id) + " visible core carries real mesh geometry", wreck._twin.visible and _visible_mesh_count(wreck._twin) > 0)
-	var expected_core_velocity: Vector3 = incoming + angular.cross(pose.basis * (wreck._groups[0].center - severity.cg_model))
-	_check(String(entry.id) + " core inherits angular velocity about model-space CG", wreck._bodies[0].linear_velocity.is_equal_approx(expected_core_velocity))
+	# CR-AUD-06: a rigid body's linear velocity is its centre-of-mass velocity: v(COM) = v(CG) + ω × (COM − CG).
+	var core_com_model: Vector3 = Vector3(wreck._groups[0].center) + wreck._bodies[0].center_of_mass
+	var expected_core_velocity: Vector3 = incoming + angular.cross(pose.basis * (core_com_model - severity.cg_model))
+	_check(String(entry.id) + " core inherits angular velocity about model-space CG", wreck._bodies[0].center_of_mass_mode == RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+		and wreck._bodies[0].linear_velocity.distance_to(expected_core_velocity) < 1.0e-4)
 	_check(String(entry.id) + " low class injects no separation energy", is_zero_approx(float(low_stats.scatter_energy_j)))
 	wreck.reset()
 	_check(String(entry.id) + " reset hides pooled bodies and twin", not wreck._twin.visible and int(wreck.stats().active_body_count) == 0)
@@ -228,15 +232,144 @@ func _check_c3_contact_release(wreck: Variant, source_airplane: Node3D, source_s
 	await process_frame
 	_check("large C3 contact still releases at most one next section", int(wreck.stats().detached_group_count) == before_followup + 1)
 	_check("C3 mass stays conserved across a second progressive release", absf(_visible_mass_sum(wreck) - float(severity.mass_kg)) < 0.001)
+	# CR-AUD-09: the core box covers its own meshes and exactly the sections still attached, not released ones.
+	var attached_bounds: AABB = wreck._core_bounds
+	for group: Dictionary in wreck._groups.slice(1):
+		if bool(group.get("on_core", false)):
+			attached_bounds = attached_bounds.merge(group.bounds)
 	var expected_core_box := Vector3(
-		maxf(wreck._core_bounds.size.x, 0.035),
-		maxf(wreck._core_bounds.size.y, 0.035),
-		maxf(wreck._core_bounds.size.z, 0.035)
+		maxf(attached_bounds.size.x, 0.035),
+		maxf(attached_bounds.size.y, 0.035),
+		maxf(attached_bounds.size.z, 0.035)
 	)
 	var core_box := (wreck._shape_nodes[0].shape as BoxShape3D).size
 	_check("C3 detached sections do not enlarge the core collision proxy", core_box.is_equal_approx(expected_core_box))
+	_check("C3 core box centre follows the attached set", wreck._shape_nodes[0].position.is_equal_approx(attached_bounds.get_center() - wreck._core_origin_model))
 	wreck.reset()
 	_check("C3 reset clears exposure and restores the source hierarchy", is_zero_approx(float(wreck.stats().c3_contact_exposure_index_j)) and source_signature == _tree_signature(source_airplane))
+
+
+## CR-AUD-05..10 regressions (collision audit 2026-11-17): an asymmetric 4 kg point inventory (3 kg at x 0, 1 kg
+## propeller at x 3.25, CG x 0.8125) on a synthetic two-box model, and a four-section model with separated boxes.
+## Properties are inspected immediately, without a physics frame, so no external impulse can enter.
+func _check_ownership_transactions() -> void:
+	const SceneryBodies = preload("res://render/landscape_upgrade/scenery_bodies.gd")
+	var model := Node3D.new()
+	for spec in [["fuselage", Vector3.ZERO, Vector3(2, 1, 1)], ["propeller", Vector3(3, 0, 0), Vector3.ONE]]:
+		var node := MeshInstance3D.new()
+		node.name = spec[0]
+		node.position = spec[1]
+		var box := BoxMesh.new()
+		box.size = spec[2]
+		node.mesh = box
+		model.add_child(node)
+	var sections := Node3D.new()
+	for spec in [["fuselage", Vector3.ZERO, Vector3.ONE], ["wing_left", Vector3(-3, 0, 0), Vector3(1, 0.3, 1)],
+			["wing_right", Vector3(3, 0, 0), Vector3(1, 0.3, 1)], ["propeller", Vector3(0, 0, -3), Vector3.ONE]]:
+		var node := MeshInstance3D.new()
+		node.name = spec[0]
+		node.position = spec[1]
+		var box := BoxMesh.new()
+		box.size = spec[2]
+		node.mesh = box
+		sections.add_child(node)
+	var wreck: Variant = WreckController.new()
+	var shape_wreck: Variant = WreckController.new()
+	for node: Node in [model, sections, wreck, shape_wreck]:
+		root.add_child(node)
+	await process_frame
+	wreck.set_process(false)
+	shape_wreck.set_process(false)
+	_check("ownership fixture prepares", wreck.prepare(model) and shape_wreck.prepare(sections) and _group_index(wreck, "propeller") > 0)
+	var pose := Transform3D(Basis.IDENTITY, Vector3(0, 10, 0))
+	var velocity := Vector3(1, 0, 0)
+	var omega := Vector3(0, 0, 2)
+	var severity := func(level: int) -> Dictionary:
+		return {"class": level, "component": "fuselage", "mass_kg": 4.0, "cg_model": Vector3(0.8125, 0, 0), "seed": 1,
+			"normal_speed_mps": 0.0, "scatter_energy_fraction": 0.0, "inventory_boxes": [
+				{mass = 3.0, center = Vector3.ZERO, size = Vector3.ZERO}, {mass = 1.0, center = Vector3(3.25, 0, 0), size = Vector3.ZERO}]}
+	# CR-AUD-06: the intact core moves at the incoming CG velocity, whatever its box centre.
+	wreck.start(pose, velocity, omega, severity.call(1))
+	var core: RigidBody3D = wreck._core_body
+	_check("CR-AUD-06 core COM is the inventory CG", (Vector3(wreck._groups[0].center) + core.center_of_mass).distance_to(Vector3(0.8125, 0, 0)) < 1.0e-4)
+	_check("CR-AUD-06 core launches at the CG velocity", core.linear_velocity.distance_to(velocity) < 1.0e-4, str(core.linear_velocity))
+	# CR-AUD-10: a provisioned scenery body is a secondary contact; an unrelated body is not.
+	var obstacle: StaticBody3D = SceneryBodies._body({"shape": "box", "north": 0.0, "east": 0.0, "down": -10.0,
+		"half_x": 0.5, "half_down": 0.5, "half_z": 0.5, "id": "test-wall"}, 0)
+	var stranger := StaticBody3D.new()
+	root.add_child(obstacle)
+	root.add_child(stranger)
+	var hits: Array[float] = []
+	wreck.secondary_impact.connect(func(_at: Vector3, strength: float) -> void: hits.append(strength))
+	for other: Node in [wreck._ground, obstacle, stranger]:
+		wreck._secondary_lockout_s = 0.0
+		core.linear_velocity = Vector3(10, 0, 0)
+		core.body_entered.emit(other)
+	_check("CR-AUD-10 ground and provisioned scenery are secondary contacts, other bodies are not", hits.size() == 2, str(hits.size()))
+	obstacle.free()
+	stranger.free()
+	# CR-AUD-08: a scheduled section's mass stays on the active core until it is released.
+	wreck.reset()
+	wreck.start(pose, velocity, omega, severity.call(4))
+	var prop := _group_index(wreck, "propeller")
+	_check("CR-AUD-08 pending section keeps its mass on the active core", float(wreck._groups[prop].due_s) > 0.0 and absf(_visible_mass_sum(wreck) - 4.0) < 1.0e-4,
+		"%.4f kg" % _visible_mass_sum(wreck))
+	wreck._process(float(wreck._groups[prop].due_s) + 0.01)
+	_check("CR-AUD-08 release keeps the active mass", absf(_visible_mass_sum(wreck) - 4.0) < 1.0e-4)
+	# CR-AUD-07: a zero-scatter C3 release conserves mass, first moment and linear momentum.
+	wreck.reset()
+	wreck.start(pose, velocity, omega, severity.call(3))
+	core = wreck._core_body
+	var com_before: Vector3 = core.global_transform * core.center_of_mass
+	var v_before := core.linear_velocity
+	var momentum_before := _linear_momentum(wreck)
+	wreck._record_c3_contact_exposure(100.0)
+	wreck._release_pending_c3_contact_group(wreck._run_generation)
+	var section: RigidBody3D = wreck._bodies[prop]
+	var moment_after: Vector3 = core.mass * (core.global_transform * core.center_of_mass) + section.mass * (section.global_transform * section.center_of_mass)
+	_check("CR-AUD-07 release conserves mass", section.visible and absf(_visible_mass_sum(wreck) - 4.0) < 1.0e-4)
+	_check("CR-AUD-07 release conserves the first moment", moment_after.distance_to(4.0 * com_before) < 1.0e-3, str(moment_after))
+	_check("CR-AUD-07 section moves at its inventory-COM point velocity",
+		section.linear_velocity.distance_to(v_before + omega.cross(pose * Vector3(3.25, 0, 0) - com_before)) < 1.0e-3)
+	_check("CR-AUD-07 release conserves linear momentum", _linear_momentum(wreck).distance_to(momentum_before) < 1.0e-3)
+	# CR-AUD-09: an attached section stays inside the core box; a released one leaves it.
+	shape_wreck.start(pose, Vector3.ZERO, Vector3.ZERO, {"class": 3, "component": "left_wing_tip", "mass_kg": 4.0, "normal_speed_mps": 0.0})
+	var right: Dictionary = shape_wreck._groups[_group_index(shape_wreck, "wing_right")]
+	var left: Dictionary = shape_wreck._groups[_group_index(shape_wreck, "wing_left")]
+	_check("CR-AUD-09 attached right wing is covered by the core box", bool(right.on_core) and _core_box_contains(shape_wreck, pose * Vector3(right.center)))
+	_check("CR-AUD-09 released left wing is not", bool(left.activated) and not _core_box_contains(shape_wreck, pose * Vector3(left.center)))
+	shape_wreck.reset()
+	shape_wreck.start(pose, Vector3.ZERO, Vector3.ZERO, {"class": 2, "component": "propeller", "mass_kg": 4.0, "normal_speed_mps": 0.0})
+	var released: Dictionary = shape_wreck._groups[_group_index(shape_wreck, "propeller")]
+	_check("CR-AUD-09 released propeller's space leaves the core box", bool(released.activated) and not _core_box_contains(shape_wreck, pose * Vector3(released.center)))
+	# CR-AUD-05: the wreck ground follows a sampled slope under the impact instead of the field datum.
+	wreck.reset()
+	wreck.ground_sampler = func(_at: Vector3) -> PackedFloat64Array: return PackedFloat64Array([2.0, 0.1, 0.0])
+	wreck.start(pose, velocity, Vector3.ZERO, severity.call(1))
+	var plane: Plane = (wreck._ground.get_node("WreckPlaneShape").shape as WorldBoundaryShape3D).plane
+	_check("CR-AUD-05 wreck ground sits at the sampled height", is_equal_approx(wreck._ground.global_position.y, 2.0))
+	_check("CR-AUD-05 wreck ground tilts with the sampled slope", plane.normal.distance_to(Vector3(0.0, 1.0, 0.1).normalized()) < 1.0e-5)
+	wreck.reset()
+	_check("CR-AUD-05 reset restores the datum plane", is_zero_approx(wreck._ground.global_position.y)
+		and (wreck._ground.get_node("WreckPlaneShape").shape as WorldBoundaryShape3D).plane.normal == Vector3.UP)
+	for node: Node in [wreck, shape_wreck, model, sections]:
+		node.free()
+	await process_frame
+
+
+func _core_box_contains(wreck: Variant, world_point: Vector3) -> bool:
+	var collision: CollisionShape3D = wreck._shape_nodes[0]
+	var local: Vector3 = collision.global_transform.affine_inverse() * world_point
+	var half: Vector3 = (collision.shape as BoxShape3D).size * 0.5
+	return absf(local.x) <= half.x + 1.0e-4 and absf(local.y) <= half.y + 1.0e-4 and absf(local.z) <= half.z + 1.0e-4
+
+
+func _linear_momentum(wreck: Variant) -> Vector3:
+	var total := Vector3.ZERO
+	for body: RigidBody3D in wreck._bodies:
+		if body.visible:
+			total += body.mass * body.linear_velocity
+	return total
 
 
 func _submit_c3_core_contact(wreck: Variant, energy_j: float) -> void:

@@ -21,6 +21,9 @@ const BOTTOMING_TRIGGER_RATIO := 0.96
 const BOTTOMING_RELEASE_RATIO := 0.72
 const MIN_OVERTRAVEL_DAMAGE_M := 0.004
 const CONTACT_POWER_CAP_W := 10000.0
+## A probe maps to a body face only when its horizontal offset from the center of gravity is at least this
+## fraction of the largest probe offset; central, roof and floor probes have no face and use the travel heuristic.
+const PROBE_FACE_MIN_OFFSET_FRACTION := 0.3
 const M := preload("res://physics/math3d.gd")
 
 const STATE_LAYOUT := [
@@ -130,7 +133,9 @@ func advance(
 		)
 		if damaging_wall_energy > DAMAGE_EPSILON_J:
 			if previous_hull_wall or next_hull_wall:
-				_apply_hull_impact(next_values, region, damaging_wall_energy)
+				var wall_faces := _probe_face_weights(model, previous_telemetry.hull_wall_load_n,
+					next_telemetry.hull_wall_load_n)
+				_apply_hull_impact(next_values, region, damaging_wall_energy, wall_faces)
 			else:
 				_apply_wheel_wall_impact(next_values, damaging_wall_energy,
 					previous_telemetry, next_telemetry)
@@ -153,7 +158,9 @@ func advance(
 			energy_before, next_values[HULL_EPISODE_ENERGY],
 		)
 		if damaging_hull_energy > DAMAGE_EPSILON_J:
-			_apply_hull_impact(next_values, region, damaging_hull_energy)
+			var hull_faces := _probe_face_weights(model, _contact_flags_as_weights(previous_telemetry.hull_in_contact),
+				_contact_flags_as_weights(next_telemetry.hull_in_contact))
+			_apply_hull_impact(next_values, region, damaging_hull_energy, hull_faces)
 		if added_hull_energy > 0.0:
 			next_values[LAST_IMPACT_ENERGY] = next_values[HULL_EPISODE_ENERGY]
 		if not next_hull:
@@ -512,9 +519,67 @@ func _impact_region(previous_state: PackedFloat64Array, next_state: PackedFloat6
 	return BODY_RIGHT if right >= 0.0 else BODY_LEFT
 
 
-func _apply_hull_impact(values: PackedFloat64Array, region: int, energy_j: float) -> void:
-	values[region] = clampf(values[region] + energy_j / BODY_DAMAGE_ENERGY_J, 0.0, 1.0)
+## `faces` holds contact weight per body face (BODY_FRONT..BODY_BOTTOM) with the unmapped share in the last
+## slot; it is empty when no contacting probe has an identified face. The whole episode energy is split once.
+func _apply_hull_impact(values: PackedFloat64Array, region: int, energy_j: float,
+		faces: PackedFloat64Array = PackedFloat64Array()) -> void:
+	var total_weight := 0.0
+	for weight in faces:
+		total_weight += weight
+	if total_weight <= 0.0:
+		values[region] = clampf(values[region] + energy_j / BODY_DAMAGE_ENERGY_J, 0.0, 1.0)
+	else:
+		for face in faces.size():
+			if faces[face] <= 0.0:
+				continue
+			var face_energy := energy_j * faces[face] / total_weight
+			var target := region if face == faces.size() - 1 else face
+			values[target] = clampf(values[target] + face_energy / BODY_DAMAGE_ENERGY_J, 0.0, 1.0)
 	values[DRIVE] = clampf(values[DRIVE] + energy_j / DRIVE_DAMAGE_ENERGY_J, 0.0, 1.0)
+
+
+## The contacting probe, not the travel direction, owns the damaged face. Returns BODY_BOTTOM + 2 slots (faces,
+## then unmapped) or an empty array when the model has no valid probe layout or no contacting probe has a face.
+## Probe offsets are body FRD meters relative to the center of gravity (+x front, +y right).
+func _probe_face_weights(model: Dictionary, previous_load: Variant, next_load: Variant) -> PackedFloat64Array:
+	var centers: Variant = model.get("hull_probe_centers_frd_m")
+	if typeof(model.get("hull_probe_radii_m")) != TYPE_PACKED_FLOAT64_ARRAY:
+		return PackedFloat64Array()
+	var radii: PackedFloat64Array = model["hull_probe_radii_m"]
+	if typeof(centers) != TYPE_PACKED_FLOAT64_ARRAY or centers.size() != 3 * radii.size() \
+			or not _finite_packed(centers) or typeof(previous_load) != TYPE_PACKED_FLOAT64_ARRAY \
+			or typeof(next_load) != TYPE_PACKED_FLOAT64_ARRAY or previous_load.size() != radii.size() \
+			or next_load.size() != radii.size():
+		return PackedFloat64Array()
+	var reach := 0.0
+	for probe in radii.size():
+		reach = maxf(reach, sqrt(centers[3 * probe] * centers[3 * probe] + centers[3 * probe + 1] * centers[3 * probe + 1]))
+	var faces := PackedFloat64Array()
+	faces.resize(BODY_BOTTOM + 2)
+	var mapped := false
+	for probe in radii.size():
+		var weight := maxf(previous_load[probe], next_load[probe])
+		if weight <= 0.0:
+			continue
+		var forward: float = centers[3 * probe]
+		var right: float = centers[3 * probe + 1]
+		var face := BODY_BOTTOM + 1
+		if reach > 0.0 and sqrt(forward * forward + right * right) >= PROBE_FACE_MIN_OFFSET_FRACTION * reach:
+			if absf(forward) >= absf(right):
+				face = BODY_FRONT if forward >= 0.0 else BODY_REAR
+			else:
+				face = BODY_RIGHT if right >= 0.0 else BODY_LEFT
+			mapped = true
+		faces[face] += weight
+	return faces if mapped else PackedFloat64Array()
+
+
+func _contact_flags_as_weights(flags: PackedByteArray) -> PackedFloat64Array:
+	var weights := PackedFloat64Array()
+	weights.resize(flags.size())
+	for index in flags.size():
+		weights[index] = 1.0 if flags[index] != 0 else 0.0
+	return weights
 
 
 func _apply_wheel_wall_impact(

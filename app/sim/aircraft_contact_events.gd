@@ -7,6 +7,9 @@ const HullContact := preload("res://physics/hull_contact.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 
 const FORMAT := "openrc-aircraft-contact-events v1"
+## v2 adds the crossing witness keys below to hull impact events; v1 stays valid and closed (no witness keys).
+## Readers that only know v1 must ignore v2 events or upgrade. Events without a crossing estimate stay v1.
+const FORMAT_V2 := "openrc-aircraft-contact-events v2"
 const SUPPORT_FORMAT := "openrc-aircraft-support-events v2"
 const SUPPORT_POLICY := "accepted-endpoint-gear-support-v1"
 const TERMINAL_PROP_FORMAT := "openrc-aircraft-propeller-observation v2"
@@ -29,7 +32,14 @@ const _OPTIONAL_KEYS := [
 	"point_index", "measure", "point_ned", "normal_ned", "velocity_ned",
 	"crossing_fraction", "time_fraction", "probe_source", "probe_id", "lake_id",
 	"material", "obstacle_kind", "obstacle_part", "response_class", "response_status", "rule",
+	"crossing_point_index", "crossing_probe_id", "crossing_is_selected", "selected_crossing_fraction",
 ]
+## v2 only. `crossing_fraction` is the earliest whole-hull crossing in the tick, which is the crossing of
+## `crossing_point_index`/`crossing_probe_id`, NOT necessarily of the selected `point_index`/`contact_id`.
+## `selected_crossing_fraction` is present only when the selected point is that earliest witness
+## (`crossing_is_selected`); otherwise the selected point's own crossing is unknown, never inferred.
+const _CROSSING_WITNESS_KEYS := ["crossing_point_index", "crossing_probe_id", "crossing_is_selected",
+	"selected_crossing_fraction"]
 
 
 ## Normalizes the source feed and emits one flat event for each active or ended hull contact.
@@ -157,6 +167,7 @@ static func impact_event(impact: ImpactSnapshot.Snapshot, bindings: Dictionary, 
 
 	if source in ["hull", "gear"]:
 		_event_add_snapshot_values(event, impact)
+		_event_add_crossing_witness(event, impact, bindings)
 	elif source == "scenery":
 		_event_add_impact_details(event, impact, probe_source, probe_id)
 		for property_name: String in ["obstacle_kind", "obstacle_part", "response_class", "response_status"]:
@@ -228,7 +239,7 @@ static func validate_events(value: Variant, tick: int, bindings: Dictionary) -> 
 		for key: String in _COMMON_KEYS:
 			if not event.has(key):
 				return false
-		if str(event.get("format", "")) != FORMAT:
+		if str(event.get("format", "")) not in [FORMAT, FORMAT_V2]:
 			return false
 		var event_type_value: Variant = event.get("event_type")
 		var source_value: Variant = event.get("source")
@@ -263,7 +274,7 @@ static func validate_events(value: Variant, tick: int, bindings: Dictionary) -> 
 		seen_contacts[contact_key] = true
 		if not _event_reference_is_valid(event, event_type, source, contact_id, lifecycle, response, bindings):
 			return false
-		if not _optional_fields_are_valid(event):
+		if not _optional_fields_are_valid(event) or not _crossing_witness_is_valid(event, event_type, source, bindings):
 			return false
 	return true
 
@@ -387,9 +398,13 @@ static func _optional_fields_are_valid(event: Dictionary) -> bool:
 	for key: String in _VECTOR_KEYS:
 		if event.has(key) and not _finite_vector(event.get(key)):
 			return false
-	for key: String in ["crossing_fraction", "time_fraction"]:
+	for key: String in ["crossing_fraction", "time_fraction", "selected_crossing_fraction"]:
 		if event.has(key) and not _fraction_is_valid(event.get(key)):
 			return false
+	if "crossing_point_index" in event and typeof(event.crossing_point_index) != TYPE_INT:
+		return false
+	if "crossing_is_selected" in event and typeof(event.crossing_is_selected) != TYPE_BOOL:
+		return false
 	if event.has("measure"):
 		var measure_value: Variant = event.get("measure")
 		if typeof(measure_value) != TYPE_DICTIONARY:
@@ -402,7 +417,7 @@ static func _optional_fields_are_valid(event: Dictionary) -> bool:
 			if typeof(scalar) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(scalar)):
 				return false
 	for key: String in ["probe_source", "probe_id", "lake_id", "material", "obstacle_kind",
-			"obstacle_part", "response_class", "response_status", "rule"]:
+			"obstacle_part", "response_class", "response_status", "rule", "crossing_probe_id"]:
 		if event.has(key) and (typeof(event.get(key)) != TYPE_STRING or str(event.get(key)).strip_edges().is_empty()):
 			return false
 	if event.has("rule") and str(event.rule) not in ["impact", "depth"]:
@@ -447,6 +462,58 @@ static func _event_add_snapshot_values(event: Dictionary, impact: ImpactSnapshot
 			event["_invalid_snapshot"] = true
 			return
 		event["crossing_fraction"] = crossing_value.fraction
+		event["_crossing_point_index"] = crossing_value.point_index
+
+
+## Names the earliest-crossing witness next to `crossing_fraction`; withholds the fraction if the witness cannot be
+## resolved through the bindings. Only hull impacts carry a crossing estimate.
+static func _event_add_crossing_witness(event: Dictionary, impact: ImpactSnapshot.Snapshot, bindings: Dictionary) -> void:
+	var index_value: Variant = event.get("_crossing_point_index")
+	event.erase("_crossing_point_index")
+	if index_value == null or event.has("_invalid_snapshot"):
+		return
+	if event.source != "hull":
+		return # Gear impacts keep their historical v1 crossing_fraction; v2 witness naming covers hull impacts.
+	var crossing_index := int(index_value)
+	var probe_id := _binding_id_at(bindings, "hull_probes", crossing_index)
+	if crossing_index < 0 or probe_id.is_empty():
+		event.erase("crossing_fraction") # An unidentifiable crossing is withheld rather than left ambiguous.
+		return
+	event.format = FORMAT_V2
+	event["crossing_point_index"] = crossing_index
+	event["crossing_probe_id"] = probe_id
+	event["crossing_is_selected"] = crossing_index == impact.point_index
+	if crossing_index == impact.point_index:
+		event["selected_crossing_fraction"] = event.get("crossing_fraction")
+
+
+## v1 forbids the witness keys; v2 requires all of them (selected_crossing_fraction only for the selected witness)
+## on a hull impact whose crossing_fraction is present, with the witness probe resolved through the bindings.
+static func _crossing_witness_is_valid(event: Dictionary, event_type: String, source: String,
+		bindings: Dictionary) -> bool:
+	var has_any := false
+	for key: String in _CROSSING_WITNESS_KEYS:
+		has_any = has_any or event.has(key)
+	if str(event.get("format", "")) != FORMAT_V2:
+		return not has_any
+	if event_type != "impact" or source != "hull" or not event.has("crossing_fraction"):
+		return false
+	for key: String in ["crossing_point_index", "crossing_probe_id", "crossing_is_selected"]:
+		if not event.has(key):
+			return false
+	var index_value: Variant = event.get("crossing_point_index")
+	var selected_value: Variant = event.get("crossing_is_selected")
+	if typeof(index_value) != TYPE_INT or typeof(selected_value) != TYPE_BOOL or int(index_value) < 0 \
+			or typeof(event.get("crossing_probe_id")) != TYPE_STRING:
+		return false
+	var expected := _binding_id_at(bindings, "hull_probes", int(index_value))
+	if expected.is_empty() or str(event.crossing_probe_id) != expected \
+			or bool(selected_value) != (int(index_value) == int(event.get("point_index", -1))):
+		return false
+	if bool(selected_value):
+		return event.has("selected_crossing_fraction") \
+			and float(event.selected_crossing_fraction) == float(event.crossing_fraction)
+	return not event.has("selected_crossing_fraction")
 
 
 static func _event_add_impact_details(event: Dictionary, impact: ImpactSnapshot.Snapshot,

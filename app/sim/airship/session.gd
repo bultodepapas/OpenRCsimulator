@@ -12,6 +12,8 @@ const Data := preload("res://physics/airship/airship_data.gd")
 const Dynamics := preload("res://physics/airship/airship_dynamics.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
 const WindFieldLaw := preload("res://physics/wind_field.gd")
 const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
@@ -24,6 +26,11 @@ const MAX_WIND_MPS := 4.0
 const ARM_THROTTLE := 0.05
 const ARM_YAW := 0.1
 const FOCUS_PAUSE := "Paused: the window lost focus."
+## CR-AUD-01: an enabled lake is part of the collision environment. The blimp has no water force model, so any hull,
+## gear or propeller point reaching the water is a terminal, observable crash (never dry ground, never invented
+## flotation). Starts over or beside the water are refused.
+const WATER_CRASH := "Water contact"
+const WATER_START_MARGIN_M := 0.5
 
 signal tick_advanced(tick: int, time_s: float)
 signal crashed(reason: String)
@@ -116,6 +123,12 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var candidate_env := SimEnvironment.new()
 	candidate_env.surfaces = surfaces
 	candidate_env.weather = built_weather.field
+	# CR-AUD-01: the field's validated lake (option `lake`, the scene's published normalized definition; {} or absent
+	# = no water) is composed into every terrain query. A disabled lake keeps the exact dry arithmetic and options.
+	var lake_check := _install_lake(candidate_env, opts)
+	if not lake_check.is_empty():
+		load_error = lake_check
+		return false
 	var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
 	var north := float(pilot.north) + float(opts.north_offset_m)
 	var east := float(pilot.east) + float(opts.east_offset_m)
@@ -132,6 +145,11 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	if not derived.ok:
 		load_error = "; ".join(derived.errors)
 		return false
+	if not candidate_env.lake.is_empty():
+		var distance := LakeSurface.shore_distance_validated(candidate_env.lake, north, east)
+		if not is_finite(distance) or distance > -(float(derived.model.bound_radius) + WATER_START_MARGIN_M):
+			load_error = "airship start refused: the start is over or beside the lake and water contact is a crash"
+			return false
 	var vehicle := VehicleModel.new()
 	vehicle.input_size = 4
 	vehicle.aux_size = 0
@@ -285,7 +303,9 @@ func _observe_accepted() -> void:
 	var contact := Dynamics.observe_contacts(model, sim.state, sim.continuous, _ground)
 	var reason := ""
 	var obstacle := _obstacle_hit()
-	if not obstacle.is_empty():
+	if not environment.lake.is_empty() and _water_contact():
+		reason = WATER_CRASH
+	elif not obstacle.is_empty():
 		reason = "Obstacle strike: %s" % obstacle
 	elif contact.get("prop_contact", false):
 		reason = "Propeller strike"
@@ -295,6 +315,62 @@ func _observe_accepted() -> void:
 		crash = {reason = reason, tick = sim.tick, time_s = sim.time(), state = sim.state.duplicate()}
 		_set_paused(true, reason + ". Restart to fly again.")
 		crashed.emit(reason)
+
+
+## Validate option `lake` and install a detached copy into `env`. "" on success; an absent or empty lake removes the
+## key so a dry session is exactly as before.
+static func _install_lake(env: SimEnvironment, opts: Dictionary) -> String:
+	var value: Variant = opts.get("lake", {})
+	if typeof(value) != TYPE_DICTIONARY:
+		return "option lake must be a normalized lake definition or empty"
+	var lake: Dictionary = value
+	if lake.is_empty():
+		opts.erase("lake")
+		return ""
+	if not LakeSurface.is_valid_definition(lake):
+		return "option lake is not a valid lake definition"
+	var identity: String = LakeLoader.identity(lake)
+	if identity.is_empty() or identity != str(lake.get("identity", "")):
+		return "option lake identity does not match its geometry"
+	env.lake = lake.duplicate(true)
+	return ""
+
+
+## The detached, normalized lake composed into this session's terrain ({} = dry).
+func lake_context() -> Dictionary:
+	return environment.lake.duplicate(true)
+
+
+## True when any hull, gear or propeller witness of the accepted state is at or below the wave-displaced water surface
+## over the water polygon. Gates first: the bounding sphere clear of the highest possible surface costs a comparison,
+## and only witnesses that low are sampled.
+func _water_contact() -> bool:
+	var lake: Dictionary = environment.lake
+	var s: PackedFloat64Array = sim.state
+	var highest_surface := float(lake.water_level_down_m) - float(lake.wave_bounds.max_amplitude_m)
+	if s[2] + float(model.bound_radius) < highest_surface:
+		return false
+	var q := PackedFloat64Array([s[6], s[7], s[8], s[9]])
+	var t: float = sim.time()
+	var points := PackedFloat64Array()
+	points.append_array(model.contacts.hull_points)
+	points.append_array(Dynamics.prop_points(model, sim.continuous))
+	for gear_item: Dictionary in model.contacts.gear:
+		points.append_array(gear_item.point)
+	for i in points.size() / 3:
+		if _point_in_water(lake, s, q, points.slice(3 * i, 3 * i + 3), t, highest_surface):
+			return true
+	return false
+
+
+static func _point_in_water(lake: Dictionary, s: PackedFloat64Array, q: PackedFloat64Array, point: PackedFloat64Array,
+		time_s: float, highest_surface: float) -> bool:
+	var offset := M.q_rotate(q, point)
+	var down := s[2] + offset[2]
+	if down < highest_surface:
+		return false
+	var surface := LakeSurface.water_height_down(lake, s[0] + offset[0], s[1] + offset[1], time_s)
+	return is_finite(surface) and down >= surface
 
 
 ## Install the field obstacle inventory before reset; refused while a flight is under way.

@@ -288,9 +288,108 @@ func _run() -> void:
 		and extending_overtravel.snapshot()[Damage.BOTTOMING_LATCH_BASE] == 0.0,
 		"pre-existing overtravel while extending does not create bottoming wear")
 
+	_test_probe_face_ownership()
 	_test_view()
 	print("RCV damage: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## CR-AUD-26: the contacting probe, not the travel direction, owns the damaged body face.
+func _face_model() -> Dictionary:
+	var model := _model()
+	# Body FRD offsets from the center of gravity: front, rear, left, right, center.
+	model["hull_probe_radii_m"] = PackedFloat64Array([0.04, 0.04, 0.04, 0.04, 0.06])
+	model["hull_probe_centers_frd_m"] = PackedFloat64Array([
+		0.29, 0.0, 0.0,
+		-0.29, 0.0, 0.0,
+		0.0, -0.18, -0.1,
+		0.0, 0.18, -0.1,
+		0.01, 0.0, 0.0,
+	])
+	return model
+
+
+func _loaded_telemetry(loads: PackedFloat64Array, energy_j: float) -> Dictionary:
+	var telemetry := _telemetry(false, false, energy_j)
+	var flags := PackedByteArray()
+	var total := 0.0
+	for load in loads:
+		flags.append(1 if load > 0.0 else 0)
+		total += load
+	telemetry["hull_in_contact"] = flags
+	telemetry["hull_wall_load_n"] = loads
+	telemetry["wall_normal_load_n"] = total
+	telemetry["wall_contact_count"] = 1 if total > 0.0 else 0
+	return telemetry
+
+
+func _moving_state(forward: float, right: float) -> PackedFloat64Array:
+	var state := _state(forward)
+	state[Damage.STATE_VEL + 1] = right
+	return state
+
+
+## Previous tick carries the loaded probes too, as an episode that started the tick before the damaging one.
+func _face_impact(model: Dictionary, loads: PackedFloat64Array, forward: float, right: float) -> PackedFloat64Array:
+	var damage := Damage.new()
+	var before := _loaded_telemetry(loads, 100.0)
+	var after := _loaded_telemetry(loads, 90.0)
+	if not damage.advance(_moving_state(forward, right), _moving_state(forward * 0.8, right * 0.8),
+			before, after, model, 1.0 / 120.0):
+		return PackedFloat64Array()
+	return damage.snapshot()
+
+
+func _test_probe_face_ownership() -> void:
+	var model := _face_model()
+	var front_only := PackedFloat64Array([30.0, 0.0, 0.0, 0.0, 0.0])
+	for right_speed: float in [6.0, -6.0, 0.0]:
+		var hit := _face_impact(model, front_only, 2.0, right_speed)
+		_check(hit.size() == Damage.STATE_SIZE and hit[Damage.BODY_FRONT] > 0.0 and hit[Damage.BODY_REAR] == 0.0
+			and hit[Damage.BODY_LEFT] == 0.0 and hit[Damage.BODY_RIGHT] == 0.0 and hit[Damage.BODY_BOTTOM] == 0.0
+			and hit[Damage.DRIVE] > 0.0,
+			"front-probe-only impact damages the front channel with sideways velocity %.1f" % right_speed)
+	var rear_hit := _face_impact(model, PackedFloat64Array([0.0, 30.0, 0.0, 0.0, 0.0]), 2.0, 6.0)
+	_check(rear_hit[Damage.BODY_REAR] > 0.0 and rear_hit[Damage.BODY_FRONT] == 0.0 and rear_hit[Damage.BODY_RIGHT] == 0.0,
+		"rear-probe-only impact damages the rear channel regardless of velocity")
+	var left_hit := _face_impact(model, PackedFloat64Array([0.0, 0.0, 30.0, 0.0, 0.0]), 6.0, 0.5)
+	_check(left_hit[Damage.BODY_LEFT] > 0.0 and left_hit[Damage.BODY_FRONT] == 0.0 and left_hit[Damage.BODY_RIGHT] == 0.0,
+		"left-probe impact damages the left channel even while moving forward")
+	var right_side := _face_impact(model, PackedFloat64Array([0.0, 0.0, 0.0, 30.0, 0.0]), 0.5, 6.0)
+	_check(right_side[Damage.BODY_RIGHT] > 0.0 and right_side[Damage.BODY_LEFT] == 0.0 and right_side[Damage.BODY_FRONT] == 0.0,
+		"side impact on the right probe still damages the right channel")
+	var corner := _face_impact(model, PackedFloat64Array([30.0, 0.0, 0.0, 10.0, 0.0]), 2.0, 6.0)
+	_check(corner[Damage.BODY_FRONT] > 0.0 and corner[Damage.BODY_RIGHT] > 0.0
+		and absf(corner[Damage.BODY_FRONT] / corner[Damage.BODY_RIGHT] - 3.0) < 1e-9,
+		"simultaneous probes share one episode's energy by their loads")
+	var single := _face_impact(model, front_only, 2.0, 6.0)
+	_check(absf((corner[Damage.BODY_FRONT] + corner[Damage.BODY_RIGHT]) - single[Damage.BODY_FRONT]) < 1e-9
+		and absf(corner[Damage.DRIVE] - single[Damage.DRIVE]) < 1e-12,
+		"splitting the energy across probe faces never counts it twice")
+	var center_hit := _face_impact(model, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 30.0]), 2.0, 6.0)
+	_check(center_hit[Damage.BODY_RIGHT] > 0.0 and center_hit[Damage.BODY_FRONT] == 0.0,
+		"a central probe has no face and falls back to the travel direction")
+	var no_layout := _model()
+	var fallback := Damage.new()
+	_check(fallback.advance(_moving_state(2.0, 6.0), _moving_state(1.6, 4.8), _telemetry(false, true, 100.0, 0.0, true),
+		_telemetry(false, true, 90.0, 0.0, true), no_layout, 1.0 / 120.0)
+		and fallback.snapshot()[Damage.BODY_RIGHT] > 0.0 and fallback.snapshot()[Damage.BODY_FRONT] == 0.0,
+		"a model without probe centers keeps the travel-direction region")
+	var malformed := _face_model()
+	malformed["hull_probe_centers_frd_m"] = PackedFloat64Array([0.29, 0.0, 0.0])
+	var bad_layout := _face_impact(malformed, front_only, 2.0, 6.0)
+	_check(bad_layout.size() == Damage.STATE_SIZE and bad_layout[Damage.BODY_RIGHT] > 0.0 and bad_layout[Damage.BODY_FRONT] == 0.0,
+		"a malformed probe layout falls back to the travel-direction region")
+	var scrape := Damage.new()
+	var scrape_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0])
+	var scrape_before := _loaded_telemetry(scrape_loads, 100.0)
+	var scrape_after := _loaded_telemetry(scrape_loads, 90.0)
+	scrape_before["wall_contact_count"] = 0
+	scrape_before["hull_in_contact"] = PackedByteArray([1, 0, 0, 0, 0])
+	scrape_after["hull_in_contact"] = PackedByteArray([1, 0, 0, 0, 0])
+	_check(scrape.advance(_moving_state(2.0, 6.0), _moving_state(1.6, 4.8), scrape_before, scrape_after, model, 1.0 / 120.0)
+		and scrape.snapshot()[Damage.BODY_FRONT] > 0.0 and scrape.snapshot()[Damage.BODY_RIGHT] == 0.0,
+		"a front-probe ground scrape also follows the contacting probe")
 
 
 func _test_view() -> void:

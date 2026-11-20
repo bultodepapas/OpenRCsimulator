@@ -22,6 +22,8 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
 const WindFieldLaw := preload("res://physics/wind_field.gd")
 const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
@@ -38,6 +40,12 @@ const MAX_WIND_MPS := 8.0
 const FOCUS_PAUSE := "Paused: the window lost focus."
 const TAPE_FULL := "Paused: the input tape is full (30 minutes); reset to fly again."
 const READY := "Ready. Cycle the arm switch OFF then ON at low throttle."
+## CR-AUD-01: an enabled lake is part of the collision environment. The quad has no water force model, so water contact
+## is a terminal, observable crash (never silent dry ground, never invented flotation).
+const WATER_CRASH := "Water contact"
+const WATER_PAUSE := "Water contact: the quad is down. Restart on the pad to fly again."
+## Clearance (m) added to the airframe radius when refusing a start beside the water.
+const WATER_START_MARGIN_M := 0.5
 ## Obstacle query reach beyond the airframe sphere (m); the plant decides a strike at the sphere radius.
 const OBSTACLE_SLACK_M := 0.5
 ## Contact terrain law (DR-22/R1, contact_ground): linearization square (m), memo bound (entries) and the coordinate
@@ -102,6 +110,9 @@ var _pending_events: Array = []
 ## Immutable scenery obstacle inventory (scenery/collision_world.gd); empty = terrain only.
 var _collision_world: Dictionary = {}
 var _body_radius := 0.0
+## True while the kernel steps inside tick_once: session state (tape, crash record) is then mid-transition, so a
+## checkpoint taken by an observer of the kernel's own signals would be incomplete (CR-AUD-17).
+var _stepping := false
 
 
 func _init() -> void:
@@ -234,6 +245,12 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var candidate_env := SimEnvironment.new()
 	candidate_env.surfaces = surfaces
 	candidate_env.weather = built_weather.field
+	# CR-AUD-01: the field's validated lake (option `lake`, the scene's published normalized definition; {} or absent
+	# = no water) is composed into every terrain query, so the bed depression is honoured by contact, impact and
+	# telemetry. A disabled lake keeps the exact dry arithmetic and leaves the options untouched.
+	var lake_check: String = _install_lake(candidate_env, opts)
+	if not lake_check.is_empty():
+		return _refused(lake_check)
 	# RC-TRACK: the club field's RC car circuit, when the pilot shows it, is solid relief for the quad as for the
 	# airplanes and cars (the same float64 overlay on the field terrain); {} keeps the plain field.
 	if typeof(opts.get("rc_track")) != TYPE_DICTIONARY:
@@ -299,6 +316,8 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 		start.east_m = float(race_course.pad.east)
 		start.heading_deg = float(race_course.pad.heading_deg)
 		start.race_course = str(race_course.identity)
+	if not candidate_env.lake.is_empty() and _start_near_water(candidate_env.lake, start, radius):
+		return _refused("multirotor start refused: the start is over or beside the lake and water contact is a crash")
 	var gate_frames: Array = _frame_proxies(race_course.get("frames", []))
 	if not _collision_world.is_empty() or not gate_frames.is_empty():
 		candidate_plant.obstacle = _obstacle_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
@@ -334,6 +353,49 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 
 static func _refused(message: String) -> Dictionary:
 	return {ok = false, error = message}
+
+
+## Validate option `lake` and install a detached copy into `env`. "" on success; an absent or empty lake removes the
+## key so a dry session is exactly as before.
+static func _install_lake(env: SimEnvironment, opts: Dictionary) -> String:
+	var value: Variant = opts.get("lake", {})
+	if typeof(value) != TYPE_DICTIONARY:
+		return "option lake must be a normalized lake definition or empty"
+	var lake: Dictionary = value
+	if lake.is_empty():
+		opts.erase("lake")
+		return ""
+	if not LakeSurface.is_valid_definition(lake):
+		return "option lake is not a valid lake definition"
+	var identity: String = LakeLoader.identity(lake)
+	if identity.is_empty() or identity != str(lake.get("identity", "")):
+		return "option lake identity does not match its geometry"
+	env.lake = lake.duplicate(true)
+	return ""
+
+
+## True when a start position lies over the water polygon or within the airframe radius (plus margin) of it.
+static func _start_near_water(lake: Dictionary, start: Dictionary, radius: float) -> bool:
+	var distance: float = LakeSurface.shore_distance_validated(lake, float(start.north_m), float(start.east_m))
+	return not is_finite(distance) or distance > -(radius + WATER_START_MARGIN_M)
+
+
+## True when the airframe bounding sphere (centre `body[0..2]`, NED) touches the lake water at `time_s`: the sphere's
+## lowest point is at or below the wave-displaced surface over the water polygon. Cheap gates first: no lake, or the
+## sphere clear of the highest possible surface, costs a comparison.
+static func _water_contact(lake: Dictionary, body: PackedFloat64Array, radius: float, time_s: float) -> bool:
+	if lake.is_empty() or body.size() < 3:
+		return false
+	var bottom: float = body[2] + radius
+	if bottom < float(lake.water_level_down_m) - float(lake.wave_bounds.max_amplitude_m):
+		return false
+	var surface: float = LakeSurface.water_height_down(lake, body[0], body[1], time_s)
+	return is_finite(surface) and bottom >= surface
+
+
+## The detached, normalized lake composed into this session's terrain ({} = dry).
+func lake_context() -> Dictionary:
+	return environment.lake.duplicate(true)
 
 
 ## The start frame: on the pad at the document's rest height, or (research/test) in the air with the shafts at the
@@ -593,7 +655,9 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 	var before: int = sim.tick
 	_pending_events = []
 	sim.inputs = kernel_input
+	_stepping = true
 	sim.step()
+	_stepping = false
 	if not sim.fault_reason.is_empty():
 		if fault_reason.is_empty():
 			_on_kernel_fault(sim.fault_reason)
@@ -621,6 +685,13 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 			if kind == "race_finish" or kind == "race_abort":
 				# The terminal record is a projection of this committed frame; the start bound kept room for it.
 				_publish_result(race.result(frame()))
+	# CR-AUD-01: an enabled lake's water is terminal. The adjudication is on the accepted endpoint and after the plant's own
+	# events, so a ground crash of the same tick keeps its reason.
+	if crash.is_empty() and not environment.lake.is_empty() \
+			and _water_contact(environment.lake, sim.state, _body_radius, sim.time()):
+		crash = {reason = WATER_CRASH, tick = int(sim.tick), time_s = sim.time()}
+		_set_paused(true, WATER_PAUSE)
+		crashed.emit(WATER_CRASH)
 	tick_advanced.emit(sim.tick, sim.time())
 	return true
 
@@ -867,7 +938,7 @@ func identity() -> Dictionary:
 ## Full envelope: the kernel checkpoint (body, shafts, pack, controller block, modes, inputs, clock) plus the session
 ## crash record, pause flag and identities. {} when not prepared or faulted.
 func checkpoint() -> Dictionary:
-	if not prepared:
+	if not prepared or _stepping:
 		return {}
 	var kernel: Dictionary = sim.checkpoint()
 	if kernel.is_empty():

@@ -73,7 +73,16 @@ var _mark_index := 0
 var _fragment_count := 0
 var _fragments_settled := true
 var _origin := Vector3.ZERO
+## CR-AUD-05: render height of the supporting ground under the impact (sampled, else the field datum 0).
+var _ground_y := 0.0
 var last_update_usec := 0
+## CR-AUD-12: event age consumes the whole supplied time (like the wreck clock); only the chip integration is
+## subdivided, at most MAX_MOTION_SUBSTEPS steps of MAX_MOTION_STEP_S per update. Beyond that budget the motion
+## remainder is dropped (bounded catch-up), never the age.
+const MAX_MOTION_STEP_S := 0.05
+const MAX_MOTION_SUBSTEPS := 8
+## CR-AUD-05: an impact this far above its supporting ground leaves no ground gouge at the impact point.
+const GROUND_MARK_MAX_HEIGHT_M := 0.75
 
 
 ## A numeric 4.8 version is insufficient: some development builds expose
@@ -294,13 +303,15 @@ func _build_splinters() -> void:
 	_rotations.resize(MAX_SPLINTERS)
 	_spins.resize(MAX_SPLINTERS)
 
-## `kerosene_fuel_kg` is deliberately the legacy kerosene-only scalar. Other tagged liquid sources
-## are handled by `energy_outcome()` and `apply_energy()` so Glow spill staining remains typed.
+## `kerosene_fuel_kg` is deliberately the legacy kerosene-only scalar. Tagged liquid sources, including the accepted
+## kerosene sample (CR-AUD-13), are handled by `energy_outcome()` and `apply_energy()`, which supersedes it.
 func start(point: Vector3, velocity: Vector3, severity: Dictionary, kerosene_fuel_kg: float, hot_turbine: bool, wind: Vector3) -> void:
 	reset()
 	_active = true
-	_origin = point
-	_origin.y = 0.04
+	# CR-AUD-05: keep the impact's own height (a roof, tree or wall hit stays up there); never below the ground.
+	_ground_y = ground_height(point)
+	_origin = point if point.is_finite() else Vector3(0.0, _ground_y, 0.0)
+	_origin.y = maxf(_origin.y, _ground_y + 0.04)
 	var level := clampi(int(severity.get("class",0)),0,4)
 	var power := clampf(float(severity.get("severity",0.0)),0.0,1.0)
 	var radius := 0.15 + 0.35*power
@@ -328,7 +339,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, kerosene_fue
 	_emit(smoke, _fire_duration > 0)
 	light.global_position = _origin + Vector3.UP*0.6
 	light.visible = _fire_duration > 0
-	if level > 0:
+	if level > 0 and _origin.y - _ground_y <= GROUND_MARK_MAX_HEIGHT_M:
 		mark(_origin, velocity, radius, _fire_duration > 0)
 	_fragment_count = splinter_count(level, power)
 	_fragments_settled = _fragment_count == 0
@@ -401,6 +412,15 @@ func chip_color(index: int, hot_turbine: bool) -> Color:
 	return debris_colors[index % debris_colors.size()]
 
 
+## CR-AUD-05: render height of the ground under `point` from `ground_sampler`; the field datum 0 without a valid sample.
+func ground_height(point: Vector3) -> float:
+	if ground_sampler.is_valid() and point.is_finite():
+		var sample: PackedFloat64Array = ground_sampler.call(point)
+		if sample.size() == 3 and is_finite(sample[0]):
+			return float(sample[0])
+	return 0.0
+
+
 func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = false) -> MeshInstance3D:
 	# Reserve the primary gouge/scorch for the lifetime of this aftermath.
 	var slot := 0 if _mark_index == 0 else 1+((_mark_index-1) % (MAX_MARKS-1))
@@ -446,7 +466,7 @@ func touch(point: Vector3, velocity: Vector3, strength: float, surface := "grass
 		return
 	touch_dust.color_ramp = _gradient([Color(profile[0], 0.0), Color(profile[0], 0.6), Color(profile[1], 0.0)], [0.0, 0.1, 1.0])
 	var slide := Vector3(velocity.x, 0.0, velocity.z)
-	touch_dust.global_position = Vector3(point.x, 0.03, point.z)
+	touch_dust.global_position = Vector3(point.x, ground_height(point) + 0.03, point.z)
 	touch_dust.direction = (slide.normalized() * 0.8 + Vector3.UP * 0.6).normalized() if slide.length() > 0.5 else Vector3.UP
 	touch_dust.initial_velocity_max = 0.8 + 3.0 * level
 	touch_dust.visible = true
@@ -459,7 +479,7 @@ func touch(point: Vector3, velocity: Vector3, strength: float, surface := "grass
 func prop_break(point: Vector3, velocity: Vector3, surface := "grass") -> void:
 	touch(point, velocity, 0.6, surface)
 	var slide := Vector3(velocity.x, 0.0, velocity.z)
-	blade_chips.global_position = Vector3(point.x, maxf(point.y, 0.03), point.z)
+	blade_chips.global_position = Vector3(point.x, maxf(point.y, ground_height(point) + 0.03), point.z)
 	blade_chips.direction = (slide.normalized() * 0.5 + Vector3.UP).normalized() if slide.length() > 0.5 else Vector3.UP
 	blade_chips.visible = true
 	blade_chips.restart()
@@ -480,8 +500,8 @@ func update(delta: float, paused: bool) -> void:
 	if not _active or paused:
 		last_update_usec = Time.get_ticks_usec()-began
 		return
-	var dt := clampf(delta,0,0.05)
-	_age += dt
+	var supplied := maxf(delta, 0.0) if is_finite(delta) else 0.0
+	_age += supplied
 	var burning := fire_strength()
 	var venting := _age >= _vent_start_s and _age < _vent_end_s
 	_emit(vent, venting)
@@ -496,29 +516,40 @@ func update(delta: float, paused: bool) -> void:
 	if flash > 0.0:
 		light.visible = true
 		light.light_energy = maxf(light.light_energy, 8.0 * flash)
-	if _age < 12.0 and not _fragments_settled:
-		# The same ballistic increment applies to every chip this frame.
-		var gravity_step := Vector3.DOWN*9.81*dt
-		var drag := exp(-dt*0.65)
-		_fragments_settled = true
+	if _age - supplied < 12.0 and not _fragments_settled:
+		var steps := clampi(int(ceil(supplied / MAX_MOTION_STEP_S)), 1, MAX_MOTION_SUBSTEPS)
+		var dt := minf(supplied / steps, MAX_MOTION_STEP_S)
+		for step in steps:
+			_integrate_chips(dt)
+			if _fragments_settled:
+				break
 		for i in _fragment_count:
-			if _velocities[i].length_squared() < 0.002 and _positions[i].y <= 0.015:
-				continue
-			_fragments_settled = false
-			_velocities[i] += gravity_step
-			_velocities[i] *= drag
-			_positions[i] += _velocities[i]*dt
-			_rotations[i] += _spins[i]*dt
-			if _positions[i].y < 0.012:
-				_positions[i].y = 0.012
-				_velocities[i].y = absf(_velocities[i].y)*0.2
-				_velocities[i].x *= 0.55
-				_velocities[i].z *= 0.55
-				_spins[i] *= 0.35
-				if _velocities[i].length_squared() < 0.12:
-					_velocities[i] = Vector3.ZERO
 			fragments.multimesh.set_instance_transform(i,Transform3D(Basis.from_euler(_rotations[i]),_positions[i]))
 	last_update_usec = Time.get_ticks_usec()-began
+
+
+## One ballistic chip step over the supporting ground (CR-AUD-05: its sampled height, not the field datum).
+func _integrate_chips(dt: float) -> void:
+	var gravity_step := Vector3.DOWN*9.81*dt
+	var drag := exp(-dt*0.65)
+	var floor_y := _ground_y + 0.012
+	_fragments_settled = true
+	for i in _fragment_count:
+		if _velocities[i].length_squared() < 0.002 and _positions[i].y <= floor_y + 0.003:
+			continue
+		_fragments_settled = false
+		_velocities[i] += gravity_step
+		_velocities[i] *= drag
+		_positions[i] += _velocities[i]*dt
+		_rotations[i] += _spins[i]*dt
+		if _positions[i].y < floor_y:
+			_positions[i].y = floor_y
+			_velocities[i].y = absf(_velocities[i].y)*0.2
+			_velocities[i].x *= 0.55
+			_velocities[i].z *= 0.55
+			_spins[i] *= 0.35
+			if _velocities[i].length_squared() < 0.12:
+				_velocities[i] = Vector3.ZERO
 
 ## CR-22d: 1 at ignition, fading to 0 over the flash duration; 0 when no flash.
 func flash_strength() -> float:
@@ -570,7 +601,7 @@ static func energy_outcome(sources: Dictionary, report: Dictionary, engine_runni
 	return out
 
 
-## CR-22b: applies the non-kerosene outcomes (kerosene fire stays in start()): gasoline fire, fuel stain, LiPo venting.
+## CR-22b: applies the energy outcome: fuel fire (gasoline or kerosene, CR-AUD-13), flash, fuel stain, LiPo venting.
 func apply_energy(outcome: Dictionary) -> void:
 	if not _active:
 		return
@@ -587,9 +618,14 @@ func apply_energy(outcome: Dictionary) -> void:
 		fireball.restart()
 		fireball.emitting = true
 		light.visible = true
-	if str(outcome.get("fire_kind", "")) == "gasoline":
-		_fire_duration = float(outcome.fire_s)
-		light.visible = true
+	# CR-AUD-13: the outcome is built from the accepted impact fuel sample, so it owns every fuel fire's duration;
+	# start()'s legacy declared-kerosene scalar only stands until it arrives. No fire kind → no fire.
+	var fire_kind := str(outcome.get("fire_kind", ""))
+	if fire_kind == "gasoline" or fire_kind == "kerosene":
+		_fire_duration = maxf(_finite_or_zero(outcome.get("fire_s", 0.0)), 0.0)
+		light.visible = _fire_duration > 0.0
+	elif outcome.has("fire_kind"):
+		_fire_duration = 0.0
 	if bool(outcome.get("stain", false)):
 		var stain := mark(_origin, Vector3.ZERO, 0.7)
 		(stain.material_override as StandardMaterial3D).albedo_color = Color(0.05, 0.05, 0.04, 0.55)
@@ -601,8 +637,16 @@ func apply_energy(outcome: Dictionary) -> void:
 		_flare_end_s = _vent_start_s + FLARE_S if bool(outcome.get("flare", false)) else -INF
 		vent.global_position = _origin + Vector3.UP * 0.1
 
+static func _finite_or_zero(value: Variant) -> float:
+	if not (value is float or value is int):
+		return 0.0
+	var number := float(value)
+	return number if is_finite(number) else 0.0
+
+
 func reset() -> void:
 	_active = false
+	_ground_y = 0.0
 	_paused = false
 	_age = 0
 	_fire_duration = 0
