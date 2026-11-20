@@ -662,6 +662,33 @@ records, journals, locks, shared snapshots and caches remain protected, includin
 failed, incomplete and `UNKNOWN` work. Full capture evidence can live inside an
 attempt's source tree. The queue does not yet provide shared-cache garbage collection
 or atomic storage reservations; remote upload can still leave a partial file before
+### Remote import cache
+
+Remote jobs never receive `.godot`, so each one used to import the whole project
+cold. With the current assets that took 4–9 minutes on a Mac, and on a loaded
+host it exceeded the default 90-second budget (`why: import timeout`). Each
+remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
+
+- **Seeding.** Before the import stage, and outside the test budget, the
+  supervisor copies that directory into the job's `app/.godot/imported/`.
+  It uses a copy-on-write clone on APFS (`cp -c`) or Linux (`cp --reflink=auto`)
+  and otherwise a plain copy. It never hard-links, because Godot rewrites
+  imported files in place.
+- **Validation.** Godot still checks every asset against its recorded source
+  md5 and reimports what changed. The class, UID and filesystem caches are not
+  seeded; they are rebuilt from the job's own source.
+- **Publication.** After the check, and only if the import was complete and
+  passed, the job's `imported/` replaces the cache by rename. Leftovers from
+  an interrupted publication are removed first. Jobs hold the host lock, so
+  there is one writer.
+- **Failure.** A seeding or publication fault never fails the job; the job
+  starts cold.
+- **Reporting.** `import_cache` in the job status records the seeding
+  (files, bytes, seconds, source job) and the publication.
+
+The cache is one directory per engine, about the size of one import. `pool gc`
+does not touch it. Remove `<root>/import-cache` on an idle host to reclaim it.
+
 remote admission checks. A completed infrastructure-failure collection does not
 prove that all remote diagnostics were inventoried. Preserve remote evidence until
 independently verified. For a bounded read-only size inventory, use

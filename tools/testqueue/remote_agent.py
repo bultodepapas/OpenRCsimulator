@@ -806,6 +806,96 @@ def isolate_project(source, identifier):
             "isolated_sha256": hashlib.sha256(data).hexdigest(), "project_name": "OpenRC pool " + identifier}
 
 
+IMPORT_CACHE = "import-cache"
+
+
+def _tree_stats(path):
+    files = size = 0
+    for current, _dirs, names in os.walk(path):
+        for name in names:
+            try:
+                info = os.lstat(os.path.join(current, name))
+            except OSError:
+                continue
+            if stat.S_ISREG(info.st_mode):
+                files += 1
+                size += info.st_size
+    return files, size
+
+
+def _clone_tree(source, destination, timeout):
+    """Copy a tree, as a copy-on-write clone where the filesystem supports it.
+
+    Never hard links: Godot rewrites imported files in place, which would
+    change a shared inode.
+    """
+    commands = {"darwin": ["cp", "-cR"], "linux": ["cp", "-a", "--reflink=auto"]}
+    command = commands.get(sys.platform)
+    if command:
+        try:
+            subprocess.run(command + [str(source), str(destination)], check=True, timeout=timeout,
+                           capture_output=True)
+            return
+        except (OSError, subprocess.SubprocessError):
+            if destination.exists():
+                shutil.rmtree(destination, ignore_errors=True)
+    shutil.copytree(source, destination, symlinks=True)
+
+
+def seed_import_cache(root, source, engine_sha256):
+    """Start the import from this host's last good ``.godot/imported`` (TQ-05-F3.4).
+
+    Godot revalidates every imported asset against its source md5 and
+    reimports what changed. Only ``imported/`` is seeded, so the class, UID
+    and filesystem caches are always rebuilt from this job's own source.
+    """
+    cache = Path(root) / IMPORT_CACHE / engine_sha256 / "imported"
+    target = Path(source) / "app/.godot/imported"
+    if not cache.is_dir():
+        return {"seeded": False, "reason": "no cache for this engine yet"}
+    if target.exists():
+        return {"seeded": False, "reason": "workspace already has imports"}
+    files, size = _tree_stats(cache)
+    if shutil.disk_usage(source).free < size + RESERVE:
+        return {"seeded": False, "reason": "insufficient disk for the import cache copy"}
+    started = time.monotonic()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        _clone_tree(cache, target, 600)
+    except BaseException:
+        shutil.rmtree(target, ignore_errors=True)  # a partial seed would only slow Godot down; start cold
+        raise
+    meta = read_json(cache.parent / "cache.json") if (cache.parent / "cache.json").is_file() else {}
+    return {"seeded": True, "files": files, "bytes": size, "seconds": round(time.monotonic() - started, 2),
+            "from_job": meta.get("job")}
+
+
+def publish_import_cache(root, source, engine_sha256, identifier):
+    """Keep this job's verified-good imports for the next job on this host.
+
+    Called only after a complete, successful import, while this supervisor
+    holds the host's pool lock, so there is a single writer.
+    """
+    imported = Path(source) / "app/.godot/imported"
+    if not imported.is_dir():
+        return {"published": False, "reason": "import produced no cache"}
+    base = Path(root) / IMPORT_CACHE / engine_sha256
+    base.mkdir(parents=True, exist_ok=True)
+    for leftover in list(base.glob("staging-*")) + list(base.glob("old-*")):
+        shutil.rmtree(leftover, ignore_errors=True)  # from an interrupted earlier publication
+    files, size = _tree_stats(imported)
+    if shutil.disk_usage(base).free < size + RESERVE:
+        return {"published": False, "reason": "insufficient disk"}
+    staging, old, current = base / ("staging-" + identifier), base / ("old-" + identifier), base / "imported"
+    _clone_tree(imported, staging, 600)
+    if current.exists():
+        os.rename(current, old)
+    os.rename(staging, current)
+    write_json(base / "cache.json", {"job": identifier, "published_at": time.time(), "files": files, "bytes": size})
+    shutil.rmtree(old, ignore_errors=True)
+    return {"published": True, "files": files, "bytes": size}
+
+
 def external_engine_present(engine):
     if os.name == "nt":
         # The pool deliberately leaves Windows admission to the enrolled worker.
@@ -1035,6 +1125,11 @@ def supervise(root, identifier):
         expected_engine = request.get("expected_engine_sha256")
         if expected_engine is not None and state["engine"]["sha256"] != expected_engine:
             raise Refused("engine SHA-256 differs from the selected host probe")
+        # Seeding happens before the test budget starts and never fails the job.
+        try:
+            state["import_cache"] = seed_import_cache(root, source, state["engine"]["sha256"])
+        except Exception as error:
+            state["import_cache"] = {"seeded": False, "error": f"{type(error).__name__}: {error}"[:300]}
         end = time.monotonic() + request["options"].get("timeout", 600)
         started = True
         imported = execute_stage(root, directory, state, "import", end)
@@ -1048,6 +1143,14 @@ def supervise(root, identifier):
         state["checked"] = result
         if digest(request["engine_path"]) != state["engine"]["sha256"]:
             raise Refused("engine executable changed during the attempt")
+        if imported.get("ok") is True and imported.get("complete") is True:
+            # After the check, so publication never consumes the test budget.
+            try:
+                state["import_cache"] = {**(state.get("import_cache") or {}),
+                                         **publish_import_cache(root, source, state["engine"]["sha256"], identifier)}
+            except Exception as error:
+                state["import_cache"] = {**(state.get("import_cache") or {}), "published": False,
+                                         "publish_error": f"{type(error).__name__}: {error}"[:300]}
         complete = bool(imported.get("complete") is True and result and result.get("complete") is True)
         ok = bool(complete and imported.get("ok") is True and result.get("ok") is True)
         state.update(state="FINISHED", outcome="PASSED" if ok else "TEST_FAILED" if complete else "INFRA_FAILED",

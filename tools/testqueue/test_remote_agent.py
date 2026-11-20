@@ -433,5 +433,98 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertEqual(status["import"]["reason"], "result_unreadable")
 
 
+IMPORTING_RUNNER = FAKE_RUNNER.replace(
+    "    folder = Path(out_dir) / \"run\"\n",
+    "    folder = Path(out_dir) / \"run\"\n"
+    "    if \"--import\" in command:\n"
+    "        imported = Path(command[3]) / \".godot/imported\"\n"
+    "        warm = (imported / \"asset.ctex\").is_file()\n"
+    "        imported.mkdir(parents=True, exist_ok=True)\n"
+    "        (imported / \"asset.ctex\").write_text(\"texture\")\n"
+    "        (imported / \"asset.md5\").write_text(\"source_md5=1\")\n"
+    "        Path(out_dir).mkdir(parents=True, exist_ok=True)\n"
+    "        (Path(out_dir) / \"warmth.txt\").write_text(\"WARM\" if warm else \"COLD\")\n")
+
+
+class ImportCacheTests(unittest.TestCase):
+    """TQ-05-F3.4: a host reuses its last good import instead of a cold full reimport."""
+
+    # Reuse the fixtures only; inheriting would rerun every lifecycle test.
+    setUp = RemoteAgentTests.setUp
+    archive = RemoteAgentTests.archive
+    request = RemoteAgentTests.request
+    accepted = RemoteAgentTests.accepted
+
+    def importing_archive(self, name):
+        return self.archive([
+            ("app/project.godot", '[application]\nconfig/name="OpenRC Simulator"\n'),
+            ("app/tests/test_sample.gd", "extends SceneTree\n"),
+            ("tools/godot/run_checked.py", IMPORTING_RUNNER),
+        ], name)
+
+    def run_job(self, identifier):
+        request = self.request(self.importing_archive(identifier + ".tar"), identifier)
+        self.accepted(request)
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False):
+            self.assertEqual(agent.supervise(self.root, identifier), 0)
+        return agent.status(self.root, identifier)
+
+    def warmth(self, identifier):
+        return (self.root / "jobs" / identifier / "import/warmth.txt").read_text()
+
+    def test_second_job_starts_from_the_first_jobs_imports(self):
+        first = self.run_job("job1")
+        self.assertEqual(first["outcome"], "PASSED", first)
+        self.assertEqual(self.warmth("job1"), "COLD")
+        self.assertFalse(first["import_cache"]["seeded"])
+        self.assertTrue(first["import_cache"]["published"])
+        engine = agent.digest(self.engine)
+        cache = self.root / agent.IMPORT_CACHE / engine
+        self.assertEqual(agent.read_json(cache / "cache.json")["job"], "job1")
+        second = self.run_job("job2")
+        self.assertEqual(second["outcome"], "PASSED", second)
+        self.assertEqual(self.warmth("job2"), "WARM")
+        self.assertEqual((second["import_cache"]["seeded"], second["import_cache"]["from_job"]), (True, "job1"))
+        self.assertEqual(agent.read_json(cache / "cache.json")["job"], "job2")
+        self.assertEqual(sorted(path.name for path in cache.iterdir()), ["cache.json", "imported"])
+        # The seed is a copy: the job's files are not the cache's inodes.
+        job_file = self.root / "jobs/job2/source/app/.godot/imported/asset.ctex"
+        self.assertNotEqual(os.stat(job_file).st_ino, os.stat(cache / "imported/asset.ctex").st_ino)
+
+    def test_failed_import_never_publishes(self):
+        runner = IMPORTING_RUNNER.replace('"complete": True, "ok": True', '"complete": True, "ok": "--import" not in command')
+        request = self.request(self.archive([
+            ("app/project.godot", '[application]\nconfig/name="OpenRC Simulator"\n'),
+            ("app/tests/test_sample.gd", "extends SceneTree\n"),
+            ("tools/godot/run_checked.py", runner)], "bad.tar"), "bad1")
+        self.accepted(request)
+        with mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                mock.patch.object(agent, "external_engine_present", return_value=False):
+            agent.supervise(self.root, "bad1")
+        self.assertFalse((self.root / agent.IMPORT_CACHE).exists())
+
+    def test_seed_failure_starts_cold_and_does_not_fail_the_job(self):
+        self.run_job("job1")
+        with mock.patch.object(agent, "_clone_tree", side_effect=OSError("clone broke")):
+            second = self.run_job("job2")
+        self.assertEqual(second["outcome"], "PASSED", second)
+        self.assertEqual(self.warmth("job2"), "COLD")
+        self.assertIn("clone broke", second["import_cache"]["error"])
+
+    def test_publish_replaces_cache_and_clears_interrupted_leftovers(self):
+        source = self.root / "src"
+        (source / "app/.godot/imported").mkdir(parents=True)
+        (source / "app/.godot/imported/new.ctex").write_text("new")
+        base = self.root / agent.IMPORT_CACHE / "e"
+        for name in ("imported", "staging-crashed", "old-crashed"):
+            (base / name).mkdir(parents=True)
+        (base / "imported/old.ctex").write_text("old")
+        result = agent.publish_import_cache(self.root, source, "e", "jobx")
+        self.assertTrue(result["published"])
+        self.assertEqual(sorted(path.name for path in base.iterdir()), ["cache.json", "imported"])
+        self.assertEqual(sorted(path.name for path in (base / "imported").iterdir()), ["new.ctex"])
+
+
 if __name__ == "__main__":
     unittest.main()
