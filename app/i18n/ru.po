@@ -14319,5 +14319,35 @@ msgstr "Файл \"%s\" пуст или превышает лимит %s МиБ.
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "Подготовлено подвижных частей по шарнирам Phoenix: %s; проверьте их в разделе «Подвижные части»."
 
-msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
-msgstr "Крыло, хвостовое оперение, положение винта и ходы рулей заполнены по модели Phoenix как оценки; подтвердите их перед полётом."
+msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
+msgstr "Пригодность моделей Phoenix к полёту ещё не подтверждена численно. Вы можете изменить и сохранить этот черновик."
+
+msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+msgstr "Пробные полёты используют эту оценочную конфигурацию OpenRC, а не лётную модель Phoenix. Поведение не воспроизводит оригинал."
+
+msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "Публикация преобразованных моделей Phoenix пока недоступна. Сохраните черновик; его можно снова открыть и выполнить пробный полёт."
+
+msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
+msgstr "Выбрана независимая оценочная конфигурация OpenRC. Настройки полёта Phoenix остаются справочными данными из источника."
+
+msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Использует систему координат модели Phoenix, её крыло, оперение и положение винта и заполняет каждое пустое значение помеченными оценками OpenRC. Введённые вами значения не заменяются."
+
+msgid "Automatic setup is only available for converted Phoenix aeroplanes."
+msgstr "Автоматическая настройка доступна только для преобразованных самолётов Phoenix."
+
+msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
+msgstr "Лётные данные Phoenix этой модели неполны. Задайте крыло и оперение в разделе «Компоновка самолёта»."
+
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
+msgstr "Ориентация, метры и передняя кромка крыла берутся из модели Phoenix. Её крыло, оперение, положение винта и ходы рулей становятся помеченными начальными оценками."
+
+msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
+msgstr "Крыло Phoenix (сужение %s, удлинение %s) вне диапазона оценочной конфигурации, поэтому его хорды приведены к ближайшей поддерживаемой форме."
+
+msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
+msgstr "Некоторые ходы рулей Phoenix выходят за диапазон оценочной конфигурации и ограничены им."
+
+msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
+msgstr "Используйте «Настроить для полёта», чтобы применить крыло, оперение, положение винта и ходы рулей Phoenix как помеченные оценки."

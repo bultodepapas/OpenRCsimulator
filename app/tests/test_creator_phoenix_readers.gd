@@ -9,6 +9,11 @@ const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
 const SourceImporter := preload("res://workshop/creator/source_importer.gd")
 const Converter := preload("res://workshop/creator/phoenix/converter.gd")
 const VisualBuilderRef := preload("res://workshop/creator/visual_builder.gd")
+const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
+const Authoring := preload("res://workshop/creator/authoring.gd")
+const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
+const ClearViewDonor := preload("res://workshop/creator/clearview/donor.gd")
 const NO_MATERIAL := 0xFFFFFFFF
 var failures := 0
 var checks := 0
@@ -22,6 +27,8 @@ func _initialize() -> void:
 	_converter()
 	_articulation()
 	_layout()
+	_setup()
+	_biplane()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -552,3 +559,69 @@ func _layout() -> void:
 		matching = matching and values.has(path) and is_equal_approx(float(values[path]), float(expected[path]))
 	check("Phoenix layout maps into the Creator structural frame", matching)
 	check("no layout without a datum", Converter.definition_values(model, 0.01, []).is_empty())
+
+
+# ------------------------------------------------------------------------------------------ setup
+
+func _setup() -> void:
+	var fit: Dictionary = PhoenixSetup.fit_planform(1.6, 0.4, 0.12)
+	check("a planform outside the taper and aspect ranges is fitted", fit.changed
+		and is_equal_approx(fit.tip / fit.root, 0.6 * 1.005) and 1.6 / (0.5 * (fit.root + fit.tip)) >= 4.0)
+	check("an in-range planform is kept", not PhoenixSetup.fit_planform(1.5, 0.25, 0.2).changed)
+	var nodes: Array = [{name = "wing", material = 0, triangles = 2}, {name = "fuse", material = 0, triangles = 2},
+		{name = "body", material = 0, triangles = 2}]
+	var geo: Dictionary = Geo.parse(_geo_bytes(nodes)).value
+	var data := {datum = [0.0, 1.0, 1.5], half_span_m = 1.5, root_chord_m = 0.3, tip_chord_m = 0.25, dihedral_deg = 3.0,
+		propeller_found = true, pusher = false, biplane = true,
+		layout = {"horizontal_tail/span": 0.6, "controls/elevator_deg": 45.0, "equipment/hub_position/0": -0.2}}
+	var plain := GlbWriter.build(geo, {}, 1.0, {creator_setup = data})
+	var marked := GlbWriter.build(geo, {}, 1.0, {creator_setup = data}, [], [Installation.PHOENIX_NAMESPACE])
+	var plain_source: Variant = SourceImporter.inspect_bytes(plain.value.bytes, "plain.glb").value
+	var source: Variant = SourceImporter.inspect_bytes(marked.value.bytes, "marked.glb").value
+	check("only the aeroplane marker makes a Phoenix provider source", Installation.provider(plain_source) == ""
+		and Installation.provider(source) == "phoenix" and Installation.required(source))
+	check("Phoenix sources get their own messages", Installation.flight_unavailable(source) == Installation.PHOENIX_FLIGHT_UNAVAILABLE
+		and Installation.flight_unavailable(plain_source) == Installation.FLIGHT_UNAVAILABLE)
+	check("ClearView setup and donors refuse a Phoenix source", not ClearViewSetup.propose(source, [[0.9, 2.2]]).ok
+		and not ClearViewDonor.propose(source, true).ok)
+	var proposed: Dictionary = PhoenixSetup.propose(source, Authoring.span_domain())
+	check("Phoenix setup proposes from the receipt", proposed.ok)
+	if not proposed.ok:
+		return
+	var value: Dictionary = proposed.value
+	check("a 3 m model is scaled into the trainer class", value.scaled and value.range_index == 1
+		and float(value.flown_span_m) < float(value.source_span_m) and value.units == "")
+	check("throws are limited to the package range", value.throws_fitted and float(value.layout["controls/elevator_deg"]) == 30.0)
+	check("biplane and propeller flags pass through", value.biplane and value.propeller_found and not value.pusher)
+	check("the setup can resize metres set at import", value.owns_scale)
+	check("ordinary sources get no Phoenix setup", not PhoenixSetup.propose(plain_source, Authoring.span_domain()).ok)
+	var doc := Authoring.new()
+	doc.set_source(source)
+	doc.set_axis("nose_axis", "+z")
+	doc.set_axis("up_axis", "+y")
+	doc.set_units("m")
+	doc.set_datum([0.0, 1.0, 1.5])
+	check("a Phoenix source needs a declared configuration", doc.needs_source_installation())
+	var applied: Dictionary = doc.apply_clearview_setup(value, doc.revision)
+	check("the shared setup declares the estimated configuration", applied.ok and not doc.needs_source_installation())
+	if applied.ok:
+		check("the model was resized for the trainer class", float(doc.placement().unit_scale) < 1.0)
+		check("the decoded tail span enters as an estimate", doc.is_estimated("horizontal_tail/span"))
+
+
+func _biplane() -> void:
+	# Ailerons only on the narrower lower wing: the reference wing is still the widest, and both wings'
+	# area forms the equivalent wing at the main wing's span and taper.
+	var model := {airfoils = [
+		{isMirrored = 1, attributes = {Position = {x = 0.0, y = 20.0, z = 2.0}, Length = 0.8, Root_chord = 0.2,
+			Tip_chord = 0.2, Dihedral = 0.0}},
+		{isMirrored = 1, attributes = {Position = {x = 0.0, y = 0.0, z = 4.0}, Length = 0.7, Root_chord = 0.2,
+			Tip_chord = 0.2, Dihedral = 4.0},
+			controlSurfaces = [{attributes = {Input = "Left Aileron", Length = 0.3, Max_travel = 20.0}}]}]}
+	var summary: Dictionary = Converter.summarize(model, 0.01)
+	var lifting: Array = Converter.lifting_wings(summary)
+	check("stacked wings are found, widest first", lifting.size() == 2 and is_equal_approx(float(lifting[0].span_m), 1.6))
+	var values: Dictionary = Converter.definition_values(model, 0.01, [0.0, 0.1, 0.03], lifting)
+	var area := 1.6 * 0.2 + 1.4 * 0.2
+	check("equivalent wing keeps the widest span and adds the area", is_equal_approx(float(values["wing/span"]), 1.6)
+		and is_equal_approx(float(values["wing/root_chord"]) * 1.6, area) and is_equal_approx(float(values["wing/dihedral_deg"]), 2.0))

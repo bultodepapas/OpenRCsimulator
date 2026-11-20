@@ -48,7 +48,7 @@ static func prepare(resolved: Variant) -> Dictionary:
 		return _refused("The saved model source is not admitted.")
 	var source: Source = source_value
 	if not source.is_admitted() or Installation.required(source):
-		return _refused(Installation.FLIGHT_UNAVAILABLE)
+		return _refused(Installation.flight_unavailable(source))
 	var source_bytes: PackedByteArray = source.source_bytes()
 	var source_sha: String = source.sha256()
 	if source_bytes.is_empty() or not Bytes.is_sha256(source_sha) or Bytes.sha256(source_bytes) != source_sha:

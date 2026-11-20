@@ -22,8 +22,35 @@ const ROTORCRAFT := "This is a ClearView helicopter, so the aeroplane setup does
 ## Shown once the configuration is confirmed: physics come only from the OpenRC packages.
 const EXPERIMENTAL := "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
 
+## Converted fixed-wing Phoenix models (AC-PX). The marker is written by the Phoenix converter only for
+## aeroplanes and gliders; Phoenix rotorcraft stay appearance-only sources.
+const PHOENIX_NAMESPACE := "openrc_phoenix_aeroplane"
+const PHOENIX_FLIGHT_UNAVAILABLE := "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
+const PHOENIX_ESTIMATED_FLIGHT := "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+const PHOENIX_PUBLISH_UNAVAILABLE := "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+
+## The recognised converter that produced `source`: "clearview", "phoenix" or "" for an ordinary model.
+static func provider(source: Source) -> String:
+	if source == null or not source.is_admitted():
+		return ""
+	if source.has_asset_metadata(NAMESPACE):
+		return "clearview"
+	if source.has_asset_metadata(PHOENIX_NAMESPACE):
+		return "phoenix"
+	return ""
+
+## A recognised converted source needs an explicitly declared estimated OpenRC configuration.
 static func required(source: Source) -> bool:
-	return source != null and source.is_admitted() and source.has_asset_metadata(NAMESPACE)
+	return not provider(source).is_empty()
+
+static func flight_unavailable(source: Source) -> String:
+	return PHOENIX_FLIGHT_UNAVAILABLE if provider(source) == "phoenix" else FLIGHT_UNAVAILABLE
+
+static func estimated_flight(source: Source) -> String:
+	return PHOENIX_ESTIMATED_FLIGHT if provider(source) == "phoenix" else ESTIMATED_FLIGHT
+
+static func publish_unavailable(source: Source) -> String:
+	return PHOENIX_PUBLISH_UNAVAILABLE if provider(source) == "phoenix" else PUBLISH_UNAVAILABLE
 
 ## ClearView helicopters (modelType 0). The only Creator configuration is a fixed-wing trainer,
 ## so a helicopter gets no configuration: preview, moving parts and drafts only. The tag can only

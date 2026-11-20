@@ -61,7 +61,7 @@ static func capture(document: Variant, step: String = "") -> Dictionary:
 		return R.fail(R.SOURCE_MISSING, "Import a model first.", "source", "import")
 	# The first milestone does not authorize recognized ClearView sources, even if reviewed.
 	if Installation.required(source) or not document.source_installation_proposal().is_empty():
-		return R.fail(R.UNSUPPORTED_CAPABILITY, Installation.FLIGHT_UNAVAILABLE, "flight_qualification", "review_test")
+		return R.fail(R.UNSUPPORTED_CAPABILITY, Installation.flight_unavailable(source), "flight_qualification", "review_test")
 	if not document.placement_result().ok:
 		return R.fail(R.DATUM_UNRESOLVED, "Confirm the model orientation, size and datum.", "placement", "orient_size")
 	var bound: Dictionary = VisualBuilder.validate_bindings(source, document.bindings())

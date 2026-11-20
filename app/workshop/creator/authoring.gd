@@ -278,7 +278,10 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 		if str(placed.get(which, "")).is_empty():
 			placed[which] = proposed[which]
 	var units_value := _units
-	var owns_scale := float(placed.get("unit_scale", 0.0)) <= 0.0
+	# A Phoenix setup may resize a model whose metres were pre-filled at import (`owns_scale`); a player
+	# who changed the scale or units since import keeps them.
+	var owns_scale := float(placed.get("unit_scale", 0.0)) <= 0.0 \
+		or (bool(setup.get("owns_scale", false)) and _units == "m" and is_equal_approx(float(placed.unit_scale), 1.0))
 	if owns_scale:
 		placed["unit_scale"] = float(proposed.unit_scale)
 		units_value = unit_name
@@ -300,7 +303,7 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 	if needs_source_installation():
 		_airframe_package = size_class.airframe
 		_power_package = size_class.tractor
-		if not bool(setup.get("propeller_found", true)):
+		if not bool(setup.get("propeller_found", true)) or bool(setup.get("pusher", false)):
 			_power_package = size_class.pusher
 			if size_class.has("large_pusher") and float(setup.get("flown_span_m", 0.0)) >= LARGE_JET_SPAN_M:
 				_power_package = size_class.large_pusher
@@ -325,7 +328,14 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 			var number := float(setup.get(measured[1], NAN)) * float(measured[2])
 			if is_finite(number) and number >= 0.0 and not _values.has(measured[0]) and not _invalid.has(measured[0]):
 				_set_estimate(measured[0], number)
-		_fill_estimates()
+		# Lengths of a source layout are metres at the source size; angles do not scale.
+		var layout := {}
+		var source_layout: Variant = setup.get("layout", {})
+		if source_layout is Dictionary:
+			for path: Variant in source_layout:
+				var number := float(source_layout[path])
+				layout[path] = number if str(path).ends_with("_deg") else number * float(placed.unit_scale)
+		_fill_estimates(layout)
 		var summary: Dictionary = Compiler.summarize(definition())
 		var excess := _size_excess(summary)
 		if not owns_scale or source_span <= 0.0 or domain.size() != 2:
@@ -375,8 +385,13 @@ const PUSHER_GAP_M := 0.04
 const PUSHER_TAIL_CLEARANCE_M := 0.08
 
 ## Fills empty fields with starting estimates, proposes the inventory and fits the estimates.
-func _fill_estimates() -> void:
+func _fill_estimates(overrides: Dictionary = {}) -> void:
 	var starting: Dictionary = starting_values()
+	# Source-derived dimensions (a decoded Phoenix layout) replace the scaled template values; they are
+	# still estimates, so the fit below may adjust them exactly as it adjusts the template's.
+	for path: Variant in overrides:
+		if starting.has(path) and is_finite(float(overrides[path])):
+			starting[path] = float(overrides[path])
 	var filled := {}
 	for path: String in starting:
 		if not _values.has(path) and not _invalid.has(path):
@@ -384,7 +399,10 @@ func _fill_estimates() -> void:
 			filled[path] = true
 	# A pusher sits in a slot just behind the wing root, as on electric park jets: its thrust line
 	# stays near the balance point. Only estimated mounts move.
-	if _power_package in PUSHER_PACKAGES and filled.has("equipment/hub_position/0") and _values.has("wing/root_chord"):
+	# A source-derived hub position (a decoded Phoenix pusher) is kept where the source puts it when the
+	# package can carry it there (inside the fuselage section); a pylon-mounted pusher uses the slot.
+	if _power_package in PUSHER_PACKAGES and filled.has("equipment/hub_position/0") and _values.has("wing/root_chord") \
+			and not (overrides.has("equipment/hub_position/0") and _hub_in_fuselage()):
 		var hub_x := float(_values["wing/root_chord"]) + PUSHER_GAP_M
 		# A deep (or biplane-equivalent) root chord must not push the propeller past the tail.
 		if _values.has("fuselage/tail_x"):
@@ -399,6 +417,16 @@ func _fill_estimates() -> void:
 			if item is Dictionary and _inventory.size() < Limits.INVENTORY_ITEMS:
 				_inventory.append((item as Dictionary).duplicate(true))
 	_fit_estimates(filled)
+
+
+## True when the current hub lies inside the current fuselage cross-section (the packages' mount rule).
+func _hub_in_fuselage() -> bool:
+	for path: String in ["fuselage/width", "fuselage/height", "fuselage/center_z", "equipment/hub_position/1",
+			"equipment/hub_position/2"]:
+		if not _values.has(path) or not is_finite(float(_values[path])):
+			return false
+	return absf(float(_values["equipment/hub_position/1"])) <= 0.5 * float(_values["fuselage/width"]) \
+		and absf(float(_values["equipment/hub_position/2"]) - float(_values["fuselage/center_z"])) <= 0.5 * float(_values["fuselage/height"])
 
 
 ## True when the estimate is still tail-heavy beyond the package's static-margin range.

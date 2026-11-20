@@ -14490,5 +14490,35 @@ msgstr "Le fichier \"%s\" est vide ou dépasse la limite de %s Mio."
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "%s pièces mobiles ont été préparées à partir des charnières Phoenix ; vérifiez-les dans Pièces mobiles."
 
-msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
-msgstr "L’aile, l’empennage, la position de l’hélice et les débattements ont été remplis depuis le modèle Phoenix comme estimations ; confirmez-les avant de voler."
+msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
+msgstr "La qualification numérique du vol des modèles Phoenix n’est pas encore établie. Vous pouvez modifier et enregistrer ce brouillon."
+
+msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+msgstr "Les vols d'essai utilisent cette configuration OpenRC estimée, pas le modèle de vol de Phoenix. Le comportement ne reproduit pas l'original."
+
+msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "La publication des modèles Phoenix convertis n'est pas encore disponible. Enregistrez le brouillon pour le conserver ; vous pourrez le rouvrir et le tester en vol."
+
+msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
+msgstr "Configuration OpenRC estimée et indépendante sélectionnée. Les paramètres de vol Phoenix restent des références issues de la source."
+
+msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Utilise le repère du modèle Phoenix, son aile, son empennage et la position de l’hélice, et remplit chaque valeur vide avec des estimations OpenRC signalées. Rien de ce que vous avez saisi n’est remplacé."
+
+msgid "Automatic setup is only available for converted Phoenix aeroplanes."
+msgstr "La configuration automatique n’est disponible que pour les avions Phoenix convertis."
+
+msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
+msgstr "Les données de vol Phoenix de ce modèle sont incomplètes. Définissez l’aile et l’empennage dans Géométrie de l’avion."
+
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
+msgstr "L’orientation, les mètres et le bord d’attaque de l’aile proviennent du modèle Phoenix. Son aile, son empennage, la position de l’hélice et les débattements deviennent des estimations initiales signalées."
+
+msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
+msgstr "L’aile Phoenix (effilement %s, allongement %s) sort de la plage de la configuration estimée ; ses cordes sont donc ajustées à la forme prise en charge la plus proche."
+
+msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
+msgstr "Certains débattements Phoenix sortent de la plage de la configuration estimée et y sont limités."
+
+msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
+msgstr "Utilisez Configurer pour le vol pour appliquer l’aile, l’empennage, la position de l’hélice et les débattements Phoenix comme estimations signalées."

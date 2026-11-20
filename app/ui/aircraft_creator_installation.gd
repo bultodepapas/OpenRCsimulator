@@ -14,6 +14,8 @@ const CHOOSE := "Create an estimated OpenRC configuration"
 const SETUP := "Set up for flight automatically"
 const SETUP_HINT := "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
 const CHOSEN := "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+const PHOENIX_SETUP_HINT := "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+const PHOENIX_CHOSEN := "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
 var _title: Label
@@ -30,6 +32,7 @@ var _proposal := {}
 var _selected := false
 var _busy := false
 var _helicopter := false
+var _provider := "clearview"
 
 func _init() -> void:
 	name = "SourceInstallation"
@@ -68,7 +71,8 @@ func _init() -> void:
 
 ## `helicopter`: the source is a converted ClearView helicopter. The aeroplane configuration does not apply;
 ## the one action offered is the donor helicopter flight.
-func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool,busy: bool,helicopter := false) -> void:
+func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool,busy: bool,helicopter := false,
+		provider := "clearview") -> void:
 	if source_id != _source_id or revision != _revision:
 		_review.set_pressed_no_signal(false)
 	_source_id = source_id
@@ -77,6 +81,7 @@ func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool
 	_selected = selected
 	_busy = busy
 	_helicopter = helicopter
+	_provider = provider
 	visible = helicopter or not proposal.is_empty()
 	_proposal_label.visible = not helicopter
 	_review.visible = not selected and not helicopter
@@ -99,13 +104,13 @@ func _notification(what: int) -> void:
 
 func _translate() -> void:
 	_title.text = tr(TITLE)
-	_proposal_label.text = tr(CHOSEN if _selected else PROPOSAL)
+	_proposal_label.text = tr((PHOENIX_CHOSEN if _provider == "phoenix" else CHOSEN) if _selected else PROPOSAL)
 	_retained.text = tr(RETAINED)
 	_review.text = tr(REVIEW)
 	_choose.text = tr(CHOOSE)
 	_setup.text = tr(HeliDonor.OFFER if _helicopter else SETUP)
-	_setup_hint.text = tr(HeliDonor.OFFER_HINT if _helicopter else SETUP_HINT)
-	_qualification.text = tr(Installation.ESTIMATED_FLIGHT)
+	_setup_hint.text = tr(HeliDonor.OFFER_HINT if _helicopter else (PHOENIX_SETUP_HINT if _provider == "phoenix" else SETUP_HINT))
+	_qualification.text = tr(Installation.PHOENIX_ESTIMATED_FLIGHT if _provider == "phoenix" else Installation.ESTIMATED_FLIGHT)
 
 func _label() -> Label:
 	var label := Label.new()

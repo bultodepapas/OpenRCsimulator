@@ -13518,5 +13518,35 @@ msgstr "文件 \"%s\" 为空或超过 %s MiB 上限。"
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "已根据 Phoenix 铰链准备了 %s 个活动部件；请在“活动部件”中检查。"
 
-msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
-msgstr "机翼、尾翼、螺旋桨位置和舵面行程已根据 Phoenix 模型作为估算值填写；飞行前请确认。"
+msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
+msgstr "Phoenix 模型的飞行尚未通过数值资格验证。您仍可编辑并保存此草稿。"
+
+msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+msgstr "试飞使用此估计的 OpenRC 配置，而不是 Phoenix 飞行模型。操控表现并非原机的再现。"
+
+msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "暂不支持发布已转换的 Phoenix 模型。请保存草稿以保留它；之后可以重新打开并试飞。"
+
+msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
+msgstr "已选择独立的估算 OpenRC 配置。Phoenix 飞行设置仍作为来源参考信息保留。"
+
+msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "使用 Phoenix 模型的坐标系、机翼、尾翼和螺旋桨位置，并用带标记的 OpenRC 估算值填写所有空值。不会替换你输入的任何内容。"
+
+msgid "Automatic setup is only available for converted Phoenix aeroplanes."
+msgstr "自动设置仅适用于已转换的 Phoenix 固定翼飞机。"
+
+msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
+msgstr "此模型的 Phoenix 飞行数据不完整。请在“飞机布局”中设置机翼和尾翼。"
+
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
+msgstr "方向、米制单位和机翼前缘来自 Phoenix 模型。其机翼、尾翼、螺旋桨位置和舵面行程将成为带标记的初始估算值。"
+
+msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
+msgstr "Phoenix 机翼（梢根比 %s，展弦比 %s）超出估算配置的范围，因此其弦长已调整为最接近的支持形状。"
+
+msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
+msgstr "部分 Phoenix 舵面行程超出估算配置的范围，已限制在该范围内。"
+
+msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
+msgstr "使用“设置以便飞行”将 Phoenix 的机翼、尾翼、螺旋桨位置和舵面行程作为带标记的估算值应用。"

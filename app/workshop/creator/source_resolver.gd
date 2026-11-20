@@ -160,7 +160,7 @@ static func resolve(library_root: String, reference: Variant) -> Dictionary:
 		return _invalid("source")
 	# Do not turn a recognised ClearView source into a public capability by resolving it.
 	if Installation.required(source):
-		return R.fail(R.UNSUPPORTED_CAPABILITY, Installation.FLIGHT_UNAVAILABLE, "flight_qualification", "review_test")
+		return R.fail(R.UNSUPPORTED_CAPABILITY, Installation.flight_unavailable(source), "flight_qualification", "review_test")
 	var placement: Variant = saved.get("placement")
 	var bindings: Variant = saved.get("bindings")
 	var appearance: Variant = saved.get("appearance")

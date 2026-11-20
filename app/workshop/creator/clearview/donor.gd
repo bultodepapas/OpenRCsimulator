@@ -39,7 +39,7 @@ const AIRSHIP := "The estimated OpenRC configuration cannot fly this model: %s\n
 ## {donor_id, placement, source_span_m, flown_span_m, message} for a model a donor can fly, or a refusal.
 ## Elevon flying wings get the X8; with `fallback`, any other aeroplane model gets the trainer.
 static func propose(source: InspectedSource, fallback := false) -> Dictionary:
-	if not Setup.Installation.required(source):
+	if Setup.Installation.provider(source) != "clearview":
 		return R.fail(R.SOURCE_UNSUPPORTED, "Automatic setup is only available for converted ClearView models.", "source", "import")
 	if Setup.is_helicopter(source):
 		return R.fail(R.UNSUPPORTED_CAPABILITY, Setup.HELICOPTER, "source", "import")

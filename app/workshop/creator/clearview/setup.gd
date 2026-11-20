@@ -62,7 +62,7 @@ const DONE := "The model is set up with an estimated OpenRC configuration. Revie
 ## used): a model outside it is proposed at the nearest supported size, as an explicitly scaled
 ## configuration (`scaled`), never silently. Without a range the source size is kept.
 static func propose(source: InspectedSource, span_range: Array = []) -> Dictionary:
-	if not Installation.required(source):
+	if Installation.provider(source) != "clearview":
 		return R.fail(R.SOURCE_UNSUPPORTED, "Automatic setup is only available for converted ClearView models.", "source", "import")
 	if is_helicopter(source):
 		return R.fail(R.UNSUPPORTED_CAPABILITY, HELICOPTER, "source", "import")

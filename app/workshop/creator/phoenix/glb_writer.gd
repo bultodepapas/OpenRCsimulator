@@ -45,13 +45,15 @@ const _PART_HINT := "openrc-creator-part-hint-v1"
 ## hinge: [x, y, z] (direction; empty for a propeller), axis: "x"|"z", sign}`. Each group becomes a pivot
 ## node at `origin` whose local `axis` is the hinge (or the forward axis for a propeller), with the
 ## member meshes expressed in that frame so the neutral pose is unchanged. `value.pivots` returns
-## `{role, node, axis, sign}` per built group. Groups are skipped when meshes are merged.
-static func build(geo: Dictionary, texture := {}, scale := 1.0, receipt := {}, articulation: Array = []) -> Dictionary:
+## `{role, node, axis, sign}` per built group. Groups are skipped when meshes are merged. `markers` adds
+## asset extras keys such as the fixed-wing provider marker read by `source_installation.gd`.
+static func build(geo: Dictionary, texture := {}, scale := 1.0, receipt := {}, articulation: Array = [],
+		markers: Array = []) -> Dictionary:
 	if not (scale > 0.0 and scale <= MAX_SCALE):
 		return R.fail(R.FIELD_INVALID, "The model scale must be greater than zero and at most %s.", "scale", STEP,
 			[str(MAX_SCALE)])
 	var writer := Writer.new()
-	return writer.run(geo, texture, scale, receipt, articulation)
+	return writer.run(geo, texture, scale, receipt, articulation, markers)
 
 
 class Writer extends RefCounted:
@@ -62,7 +64,8 @@ class Writer extends RefCounted:
 	var bin := PackedByteArray()
 	var error := {}
 
-	func run(source: Dictionary, texture: Dictionary, factor: float, receipt: Dictionary, articulation: Array) -> Dictionary:
+	func run(source: Dictionary, texture: Dictionary, factor: float, receipt: Dictionary, articulation: Array,
+			markers: Array) -> Dictionary:
 		geo = source
 		scale = factor
 		vertices = source.vertex_data
@@ -74,6 +77,10 @@ class Writer extends RefCounted:
 		gltf = {asset = {version = "2.0", generator = Geo.PROFILE, extras = {openrc_phoenix = extras}},
 			scene = 0, scenes = [{nodes = []}], nodes = [], meshes = [], accessors = [],
 			bufferViews = [], materials = [], buffers = []}
+		# Provider markers are separate asset extras keys (Creator records extras key names, never values).
+		for marker: Variant in markers:
+			if typeof(marker) == TYPE_STRING and str(marker) != "openrc_phoenix":
+				gltf.asset.extras[str(marker)] = {format = str(marker) + "-v1"}
 		# One decoded texture for every textured material, or a map of lower-case texture name -> texture.
 		var by_name := {}
 		if texture.get("image") is Image:

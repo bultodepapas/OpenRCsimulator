@@ -44,6 +44,7 @@ const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
 const PACKAGE_PROPOSAL := "Estimated package proposal. Choose a configuration on Import."
 const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
 const PhoenixConverter := preload("res://workshop/creator/phoenix/converter.gd")
+const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
 const BACKUP_DELAY_S := 2.0
@@ -657,11 +658,9 @@ func _adopt_import(job: ImportJob) -> void:
 		result = R.ok(result.value.source, result.diagnostics)
 	var phoenix_placement := {}
 	var phoenix_bindings := {}
-	var phoenix_values := {}
 	if job.phase == "phoenix_convert" and result.get("ok", false):
 		phoenix_placement = result.value.placement
 		phoenix_bindings = result.value.get("bindings", {})
-		phoenix_values = result.value.get("values", {})
 		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
@@ -696,14 +695,8 @@ func _adopt_import(job: ImportJob) -> void:
 				var bound: Dictionary = VisualBuilder.validate_bindings(result.value, phoenix_bindings)
 				if bound.ok:
 					_doc.set_bindings(bound.value)
-			# Source dimensions (wing, tails, hub, throws) enter as labelled estimates to confirm.
-			# They are layered over the scaled starting estimates (which would otherwise replace them later),
-			# and the estimated mass inventory follows the resulting geometry.
-			if not phoenix_values.is_empty():
-				var layout: Dictionary = _doc.starting_values()
-				layout.merge(phoenix_values, true)
-				_doc.apply_values(layout, true)
-				_doc.propose_inventory()
+			# Decoded dimensions enter only through the explicit "Set up for flight" action (PhoenixSetup), which
+			# declares the estimated configuration exactly as for ClearView models.
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])
@@ -2257,7 +2250,7 @@ func _refresh() -> void:
 	var pending := _doc.needs_source_installation()
 	var busy := _opening or _import_state in ["inspecting","choosing"]
 	_installation.show_state(source.get_instance_id() if source != null else 0,_doc.revision,
-		_doc.source_installation_proposal(),not pending,busy,_shown_helicopter)
+		_doc.source_installation_proposal(),not pending,busy,_shown_helicopter,Authoring.Installation.provider(source))
 	for card: Button in _configuration_cards:
 		if card.name == "PowerElectric":
 			card.set_meta("detail", _power_label())
@@ -2323,7 +2316,7 @@ func _refresh_footer() -> void:
 	# Publishing needs what a test flight needs, a compiled aircraft, and a library that can be written.
 	var publish_reason := reason if not reason.is_empty() else ("" if _can_save() else _store_reason)
 	if publish_reason.is_empty() and _doc.source_installation_proposal().size() > 0:
-		publish_reason = tr(Authoring.Installation.PUBLISH_UNAVAILABLE)
+		publish_reason = tr(Authoring.Installation.publish_unavailable(_doc.source()))
 	if publish_reason.is_empty():
 		var compiled: Dictionary = _doc.compile()
 		if not compiled.get("ok", false):
@@ -2529,7 +2522,14 @@ func _refresh_readouts() -> void:
 func _ask_clearview_setup(revision: int) -> void:
 	if _opening or _import_state in ["inspecting","choosing"]:
 		return
-	var setup: Dictionary = ClearViewSetup.propose(_doc.source(), Authoring.span_domain())
+	var phoenix: bool = Authoring.Installation.provider(_doc.source()) == "phoenix"
+	var setup: Dictionary = PhoenixSetup.propose(_doc.source(), Authoring.span_domain()) if phoenix \
+		else ClearViewSetup.propose(_doc.source(), Authoring.span_domain())
+	if phoenix and not setup.ok:
+		# The ClearView donors read the ClearView frame and geometry; a Phoenix model keeps its own route.
+		set_note(_diagnostics_text(setup.diagnostics))
+		_refresh()
+		return
 	if not setup.ok and str(setup.diagnostics[0].message) == ClearViewSetup.ELEVONS:
 		# An elevon flying wing has a donor instead: the stock X8 physics with this model's look.
 		var donor: Dictionary = FixedWingDonor.propose(_doc.source())
@@ -2559,8 +2559,13 @@ func _ask_clearview_setup(revision: int) -> void:
 		lines.append(tr(ClearViewSetup.PARK_FLYER))
 	if bool(setup.value.get("biplane", false)):
 		lines.append(tr(ClearViewSetup.BIPLANE))
-	lines.append_array([tr(ClearViewSetup.CONFIRM_FRAME), tr(ClearViewSetup.CONFIRM_ESTIMATES),
-		tr(Authoring.Installation.ESTIMATED_FLIGHT)])
+	if bool(setup.value.get("throws_fitted", false)):
+		lines.append(tr(PhoenixSetup.THROWS_FITTED))
+	if bool(setup.value.get("planform_fitted", false)):
+		lines.append(tr(PhoenixSetup.PLANFORM_FITTED) % [String.num(float(setup.value.source_taper), 2),
+			String.num(float(setup.value.source_aspect), 1)])
+	lines.append_array([tr(PhoenixSetup.CONFIRM_FRAME if phoenix else ClearViewSetup.CONFIRM_FRAME),
+		tr(ClearViewSetup.CONFIRM_ESTIMATES), tr(Authoring.Installation.estimated_flight(_doc.source()))])
 	_ask(tr("Set up this model for flight?"), "\n\n".join(lines), tr("Set up for flight"),
 		_apply_clearview_setup.bind(setup.value, revision))
 
@@ -2591,7 +2596,8 @@ func _power_label() -> String:
 
 
 func _fly_donor(source: InspectedSource, donor: Dictionary) -> void:
-	if source != _doc.source() or _closing:
+	# Donors read the ClearView frame and geometry: no other provider may reach them.
+	if source != _doc.source() or _closing or Authoring.Installation.provider(source) != "clearview":
 		return
 	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
 	set_note("")
@@ -2605,7 +2611,7 @@ func _fly_donor(source: InspectedSource, donor: Dictionary) -> void:
 ## with the model's appearance, stating why. Nothing in the draft changes.
 func _offer_trainer(reason: String) -> void:
 	var source: InspectedSource = _doc.source()
-	if source == null or HeliDonor.is_helicopter(source):
+	if source == null or HeliDonor.is_helicopter(source) or Authoring.Installation.provider(source) != "clearview":
 		return
 	var donor: Dictionary = FixedWingDonor.propose(source, true)
 	if donor.ok and str(donor.value.donor_id) == FixedWingDonor.AIRSHIP_DONOR:
@@ -2622,7 +2628,7 @@ func _offer_trainer(reason: String) -> void:
 
 ## The blimp donor request: the stock RC blimp physics with this model's appearance, from the blimp's start.
 func _fly_airship(source: InspectedSource) -> void:
-	if source != _doc.source() or _closing:
+	if source != _doc.source() or _closing or Authoring.Installation.provider(source) != "clearview":
 		return
 	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
 	set_note("")
@@ -2641,7 +2647,7 @@ func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:
 	# The estimate is complete but the compiler refuses it (a body too long, a balance out of range):
 	# the reason stays in the note, and the trainer physics are offered so the model still flies.
 	var compiled: Dictionary = _doc.compile() if applied.ok else applied
-	if not compiled.ok:
+	if not compiled.ok and Authoring.Installation.provider(_doc.source()) == "clearview":
 		_offer_trainer.call_deferred(_diagnostics_text(compiled.diagnostics))
 
 

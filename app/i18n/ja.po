@@ -13569,5 +13569,35 @@ msgstr "ファイル \"%s\" は空か、%s MiB の上限を超えています。
 msgid "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 msgstr "Phoenix のヒンジから %s 個の可動部品を準備しました。「可動パーツ」で確認してください。"
 
-msgid "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
-msgstr "主翼、尾翼、プロペラ位置、舵角は Phoenix モデルから推定値として入力されました。飛行前に確認してください。"
+msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
+msgstr "Phoenixモデルの飛行は、数値的な適格性がまだ確認されていません。この下書きは編集して保存できます。"
+
+msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+msgstr "試験飛行はこの推定 OpenRC 構成を使い、Phoenix の飛行モデルは使いません。挙動は元の機体の再現ではありません。"
+
+msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "変換した Phoenix モデルの公開はまだできません。下書きとして保存すれば、再度開いて試験飛行できます。"
+
+msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
+msgstr "独立して作成する推定OpenRC構成が選択されました。Phoenixの飛行設定は元データの参照情報として保持されます。"
+
+msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Phoenix モデルの座標系、主翼、尾翼、プロペラ位置を使い、空欄にはラベル付きの OpenRC 推定値を入力します。入力済みの値は置き換えません。"
+
+msgid "Automatic setup is only available for converted Phoenix aeroplanes."
+msgstr "自動設定は変換済みの Phoenix 飛行機でのみ利用できます。"
+
+msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
+msgstr "このモデルの Phoenix 飛行データは不完全です。「機体レイアウト」で主翼と尾翼を設定してください。"
+
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
+msgstr "向き、メートル単位、主翼前縁は Phoenix モデルから取得します。主翼、尾翼、プロペラ位置、舵角はラベル付きの初期推定値になります。"
+
+msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
+msgstr "Phoenix の主翼（テーパー比 %s、アスペクト比 %s）は推定構成の範囲外のため、翼弦を最も近い対応形状に調整します。"
+
+msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
+msgstr "Phoenix の一部の舵角は推定構成の範囲外のため、その範囲に制限されます。"
+
+msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
+msgstr "「飛行用に設定」を使うと、Phoenix の主翼、尾翼、プロペラ位置、舵角をラベル付きの推定値として適用します。"

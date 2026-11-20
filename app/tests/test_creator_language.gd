@@ -92,6 +92,16 @@ func _catalogs() -> void:
 		preload("res://workshop/creator/clearview/donor.gd").FLYING_WING,"Fly this flying wing?","Fly with the X8 physics",preload("res://workshop/creator/clearview/donor.gd").TRAINER_TITLE,preload("res://workshop/creator/clearview/donor.gd").TRAINER_BUTTON,preload("res://workshop/creator/clearview/donor.gd").TRAINER,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP_TITLE,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP_BUTTON,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP,preload("res://vehicles/airship/airship_scene.gd").CREATOR_LABEL,preload("res://vehicles/airship/airship_scene.gd").CREATOR_UNAVAILABLE,ClearViewSetup.HELICOPTER,ClearViewSetup.BIPLANE,ClearViewSetup.PARK_FLYER,preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-4s-800kv-apc12x6-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-3s-1250kv-9x6-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-3s-1250kv-9x6-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-4s-1900kv-6x45-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-6s-1200kv-7x5-pusher-estimated-v1"],
 		HeliDonor.OFFER,HeliDonor.OFFER_HINT,HeliDonor.CONFIRM_TITLE,HeliDonor.CONFIRM,HeliDonor.CONFIRM_PLACEMENT,
 		HeliDonor.ACCEPT,HeliDonor.LABEL,HeliDonor.LABEL_SCALED,HeliDonor.UNAVAILABLE])
+	# AC-PX / IAQ-03: the Phoenix import notes and its flight setup.
+	var phoenix_setup := preload("res://workshop/creator/phoenix/setup.gd")
+	var phoenix_converter := preload("res://workshop/creator/phoenix/converter.gd")
+	messages.append_array([Installation.PHOENIX_FLIGHT_UNAVAILABLE,Installation.PHOENIX_ESTIMATED_FLIGHT,
+		Installation.PHOENIX_PUBLISH_UNAVAILABLE,InstallationPanel.PHOENIX_SETUP_HINT,InstallationPanel.PHOENIX_CHOSEN,
+		phoenix_setup.NOT_PHOENIX,phoenix_setup.UNAVAILABLE,phoenix_setup.CONFIRM_FRAME,phoenix_setup.PLANFORM_FITTED,
+		phoenix_setup.THROWS_FITTED,phoenix_converter.APPEARANCE_ONLY,phoenix_converter.SUMMARY,phoenix_converter.PLACED,
+		phoenix_converter.MOVING_PARTS,phoenix_converter.LAYOUT,phoenix_converter.NOT_PHOENIX,phoenix_converter.NO_MODEL,
+		phoenix_converter.SEVERAL_MODELS,phoenix_converter.NO_SIZE,phoenix_converter.NO_GEOMETRY,
+		phoenix_converter.TEXTURE_SKIPPED,"Phoenix RC model"])
 	for step: String in Authoring.STEPS:
 		messages.append(str(Authoring.STEP_TITLES[step]))
 	for entry: Dictionary in Authoring.FIELDS:

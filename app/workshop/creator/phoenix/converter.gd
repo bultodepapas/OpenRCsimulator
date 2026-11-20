@@ -15,8 +15,10 @@ const ScriptContainer := preload("res://workshop/creator/phoenix/script_containe
 const Geo := preload("res://workshop/creator/phoenix/geo.gd")
 const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
 const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
 
 const FORMAT := "openrc-phoenix-visual-v1"
+const AEROPLANE_TYPES := ["Airplane", "Glider"]
 const NAMESPACE := "openrc_phoenix"
 const STEP := "import"
 const MAX_DEFINITION_BYTES := 8 * Limits.MIB
@@ -40,11 +42,15 @@ const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values a
 const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 ## Alpha textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
 const UNIFORM_PIXELS := 64 * 64
+## Stacked wings: a second mirrored airfoil this large and this close fore-and-aft (both relative to the main
+## wing span) is another lifting wing, not a tailplane.
+const BIPLANE_MIN_SHARE := 0.6
+const BIPLANE_STAGGER_SHARE := 0.25
 const BINDINGS_FORMAT := "openrc-creator-bindings v1"
 ## Phoenix surface inputs -> Creator control roles (left/right decided by the airfoil side).
 const _INPUT_ROLES := {"aileron": "aileron", "left aileron": "aileron", "right aileron": "aileron",
 	"elevator": "elevator", "left elevator": "elevator", "right elevator": "elevator", "rudder": "rudder"}
-const LAYOUT := "Wing, tail, propeller position and control throws were filled from the Phoenix model as estimates; confirm them before flying."
+const LAYOUT := "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
 ## Fuselage nose just aft of a tractor hub (the package allows the hub 0 to 0.12 m ahead of the nose).
 const HUB_SETBACK_M := 0.03
 const PLACED := "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
@@ -118,6 +124,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		if _cancelled(cancelled):
 			return _cancel()
 	var scale := size / UNITS_PER_SIZE
+	var summary := summarize(model, scale)
+	var placement := _placement(summary)
+	var lifting := lifting_wings(summary)
+	var values := definition_values(model, scale, placement.datum, lifting)
+	var aeroplane := str(model.get("type", "")) in AEROPLANE_TYPES
 	var receipt := {
 		format = FORMAT, model_id = model_id, name = str(model.get("name", model_id)),
 		definition = {file = label, sha256 = CreatorBytes.sha256(mod_bytes.value)},
@@ -125,8 +136,15 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		textures = texture_hashes, metres_per_unit = scale, size = size,
 		coordinate_frame = "gltf: +X left, +Y up, +Z forward", physics_imported = false,
 	}
+	var setup := creator_setup(summary, placement, values)
+	if not setup.is_empty():
+		setup.biplane = lifting.size() >= 2
+	if aeroplane and not setup.is_empty():
+		receipt.creator_setup = setup
 	var articulation := articulation_groups(model)
-	var glb := GlbWriter.build(geo.value, textures, scale, receipt, articulation)
+	# Only aeroplanes and gliders with a usable decoded layout join the declared-configuration route.
+	var markers: Array = [Installation.PHOENIX_NAMESPACE] if aeroplane and not setup.is_empty() else []
+	var glb := GlbWriter.build(geo.value, textures, scale, receipt, articulation, markers)
 	if not glb.ok:
 		return glb
 	notes.append_array(glb.diagnostics)
@@ -137,8 +155,6 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	if not admitted.ok:
 		return admitted
 	notes.append_array(admitted.diagnostics)
-	var summary := summarize(model, scale)
-	var placement := _placement(summary)
 	notes.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY, APPEARANCE_ONLY, "source", STEP, [], R.SEVERITY_WARNING))
 	var main_span := 0.0
 	for wing: Dictionary in summary.wings:
@@ -151,11 +167,29 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	var bindings := proposed_bindings(glb.value.pivots)
 	if not bindings.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, MOVING_PARTS, "source", STEP, [str(glb.value.pivots.size())], R.SEVERITY_INFO))
-	var values := definition_values(model, scale, placement.datum)
-	if not values.is_empty():
+	if not markers.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, LAYOUT, "source", STEP, [], R.SEVERITY_INFO))
 	return R.ok({source = admitted.value, receipt = receipt, placement = placement, summary = summary,
 		bindings = bindings, values = values}, notes)
+
+
+## The decoded layout for `phoenix/setup.gd`: main-wing half span, chords and dihedral, the datum (GLB
+## metres), the source layout without the wing (the setup fits the planform), and the propeller layout.
+## {} when the main wing or datum is unusable.
+static func creator_setup(summary: Dictionary, placement: Dictionary, values: Dictionary) -> Dictionary:
+	var datum: Array = placement.get("datum", [])
+	if datum.size() != 3 or not values.has("wing/span") or not values.has("wing/root_chord") or not values.has("wing/tip_chord"):
+		return {}
+	var layout := {}
+	for path: String in values:
+		if not path.begins_with("wing/"):
+			layout[path] = values[path]
+	var propellers: Array = summary.get("propellers", [])
+	var hub_aft := float(values.get("equipment/hub_position/0", -1.0))
+	return {datum = datum.duplicate(), half_span_m = 0.5 * float(values["wing/span"]),
+		root_chord_m = values["wing/root_chord"], tip_chord_m = values["wing/tip_chord"],
+		dihedral_deg = float(values.get("wing/dihedral_deg", 0.0)), propeller_found = not propellers.is_empty(),
+		pusher = not propellers.is_empty() and hub_aft > 0.0, layout = layout}
 
 
 ## Read-only facts from the decoded definition, in metres, kilograms and degrees where established.
@@ -182,6 +216,7 @@ static func summarize(model: Dictionary, scale: float) -> Dictionary:
 				dihedral_deg = _number(_dig(attributes, ["Dihedral"])), sweep_deg = _number(_dig(attributes, ["Sweep"])),
 				leading_edge = _point(position, scale), mirrored = mirrored,
 				surfaces = (airfoil.get("controlSurfaces") as Array).size() if airfoil.get("controlSurfaces") is Array else 0,
+				surfaces_roles = _surface_roles(airfoil),
 			})
 	var propulsion: Variant = model.get("propulsion")
 	if propulsion is Array:
@@ -200,15 +235,39 @@ static func summarize(model: Dictionary, scale: float) -> Dictionary:
 
 ## The main wing is the widest mirrored airfoil; its root leading edge on the centreline is the datum.
 static func _placement(summary: Dictionary) -> Dictionary:
-	var best: Dictionary = {}
-	for wing: Dictionary in summary.wings:
-		var edge: Variant = wing.leading_edge
-		if wing.mirrored and edge is Array and is_finite(float(wing.span_m)) and (best.is_empty() or float(wing.span_m) > float(best.span_m)):
-			best = wing
+	var wings := lifting_wings(summary)
 	var datum: Array = []
-	if not best.is_empty():
-		datum = [0.0, float(best.leading_edge[1]), float(best.leading_edge[2])]
+	if not wings.is_empty():
+		# One wing: its root leading edge. Stacked wings (biplane, triplane): the mean of their leading edges,
+		# where the equivalent single wing of the estimated configuration sits.
+		var y := 0.0
+		var z := 0.0
+		for wing: Dictionary in wings:
+			y += float(wing.leading_edge[1])
+			z += float(wing.leading_edge[2])
+		datum = [0.0, y / wings.size(), z / wings.size()]
 	return {nose_axis = NOSE_AXIS, up_axis = UP_AXIS, units = "m", datum = datum}
+
+
+## The main wing (widest mirrored airfoil with a leading edge) first, then any stacked wings of a
+## biplane or triplane: mirrored, at least BIPLANE_MIN_SHARE of its span and close to it fore and aft.
+static func lifting_wings(summary: Dictionary) -> Array:
+	var main: Dictionary = {}
+	for wing: Dictionary in summary.get("wings", []):
+		if wing.mirrored and wing.leading_edge is Array and is_finite(float(wing.span_m)) \
+				and (main.is_empty() or float(wing.span_m) > float(main.span_m)):
+			main = wing
+	if main.is_empty():
+		return []
+	var out: Array = [main]
+	for wing: Dictionary in summary.get("wings", []):
+		if wing == main or not wing.mirrored or not wing.leading_edge is Array or not is_finite(float(wing.span_m)):
+			continue
+		if float(wing.span_m) >= BIPLANE_MIN_SHARE * float(main.span_m) \
+				and absf(float(wing.leading_edge[2]) - float(main.leading_edge[2])) <= BIPLANE_STAGGER_SHARE * float(main.span_m) \
+				and wing.surfaces_roles.find("elevator") < 0:
+			out.append(wing)
+	return out
 
 
 ## Rigid moving groups for the GLB writer, from decoded control surfaces and the first propeller.
@@ -218,7 +277,7 @@ static func _placement(summary: Dictionary) -> Dictionary:
 ## Creator layout fields from the decoded airfoils and propeller, in the structural frame
 ## [aft, right, up] metres from `datum` (GLB metres, the main-wing root leading edge). These are source
 ## dimensions to be confirmed, applied as estimates; mass, inertia and aerodynamics stay OpenRC's own.
-static func definition_values(model: Dictionary, scale: float, datum: Array) -> Dictionary:
+static func definition_values(model: Dictionary, scale: float, datum: Array, lifting: Array = []) -> Dictionary:
 	var values := {}
 	if datum.size() != 3:
 		return values
@@ -248,6 +307,9 @@ static func definition_values(model: Dictionary, scale: float, datum: Array) -> 
 			tail = airfoil
 		elif "rudder" in roles and fin == null:
 			fin = airfoil
+	# Stacked wings: the reference wing is the widest one, as for the datum and the half span.
+	if lifting.size() >= 2:
+		wing = null
 	if wing == null:
 		var widest := 0.0
 		for airfoil: Variant in airfoils:
@@ -271,6 +333,19 @@ static func definition_values(model: Dictionary, scale: float, datum: Array) -> 
 		var dihedral := _number(_dig(at, ["Dihedral"]))
 		if is_finite(dihedral) and dihedral >= 0.0:
 			values["wing/dihedral_deg"] = dihedral
+	# Stacked wings fly as one equivalent wing: the main wing's span and taper with the total lifting area.
+	if lifting.size() >= 2 and values.has("wing/span") and values.has("wing/root_chord") and values.has("wing/tip_chord"):
+		var area := 0.0
+		var dihedral_sum := 0.0
+		for entry: Dictionary in lifting:
+			area += float(entry.span_m) * 0.5 * (float(entry.root_chord_m) + float(entry.tip_chord_m))
+			dihedral_sum += float(entry.dihedral_deg) if is_finite(float(entry.dihedral_deg)) else 0.0
+		var span := float(values["wing/span"])
+		var taper := float(values["wing/tip_chord"]) / float(values["wing/root_chord"])
+		if area > 0.0 and span > 0.0 and is_finite(taper) and taper > 0.0:
+			values["wing/root_chord"] = 2.0 * (area / span) / (1.0 + taper)
+			values["wing/tip_chord"] = taper * float(values["wing/root_chord"])
+			values["wing/dihedral_deg"] = maxf(0.0, dihedral_sum / lifting.size())
 	if tail is Dictionary:
 		var at: Variant = tail.get("attributes")
 		var length := _number(_dig(at, ["Length"]))
@@ -295,6 +370,8 @@ static func definition_values(model: Dictionary, scale: float, datum: Array) -> 
 			if unit is Dictionary and str(unit.get("type", "")) == "propeller":
 				var hub: Array = structural.call(unit.get("pivot"))
 				if not hub.is_empty():
+					# Creator flies one centreline propeller: an off-centre (twin or offset) hub is centred.
+					hub[1] = 0.0
 					for axis: int in 3:
 						values["equipment/hub_position/%d" % axis] = hub[axis]
 					# A tractor hub sits on the fuselage nose: the model box would otherwise put the nose at
@@ -306,6 +383,17 @@ static func definition_values(model: Dictionary, scale: float, datum: Array) -> 
 	for role: String in travel:
 		values["controls/%s_deg" % role] = travel[role]
 	return values
+
+
+static func _surface_roles(airfoil: Dictionary) -> Array:
+	var roles: Array = []
+	if airfoil.get("controlSurfaces") is Array:
+		for surface: Variant in airfoil.controlSurfaces:
+			if surface is Dictionary:
+				var role := str(_INPUT_ROLES.get(str(_dig(surface, ["attributes", "Input"])).to_lower(), ""))
+				if not role.is_empty():
+					roles.append(role)
+	return roles
 
 
 static func _copy(values: Dictionary, path: String, number: float) -> void:
