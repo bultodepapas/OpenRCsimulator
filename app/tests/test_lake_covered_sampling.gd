@@ -396,7 +396,22 @@ func _paired_hull_results(lake: Dictionary, north: float, east: float,
 	}
 	var old_result: Dictionary = BaseHull.prop_disc_depth(state, disc, lake, TEST_TIME_S)
 	var new_result: Dictionary = CandidateHull.prop_disc_depth(state, disc, lake, TEST_TIME_S)
-	return {"same": _same_variant(old_result, new_result), "base": old_result, "candidate": new_result}
+	var same: bool = _same_variant(old_result, new_result)
+	# CR-AUD-24: near the bank the candidate also scans the rim and may report a deeper rim point. Sampling parity
+	# still holds when that point's depth, recomputed with the full reference sampler, is exactly the reported one.
+	if not same and float(new_result.depth) > float(old_result.depth):
+		same = _reference_point_depth(lake, new_result.point_ned) == float(new_result.depth)
+	return {"same": same, "base": old_result, "candidate": new_result}
+
+
+func _reference_point_depth(lake: Dictionary, point: PackedFloat64Array) -> float:
+	var terrain: Dictionary = BaseLake.sample_terrain_validated(lake, point[0], point[1])
+	if not bool(terrain.get("covered", false)):
+		return point[2]
+	var surface_down: float = CandidateLake.water_height_down(lake, point[0], point[1], TEST_TIME_S)
+	if not is_finite(surface_down):
+		surface_down = float(terrain.ground_down_m)
+	return point[2] - surface_down
 
 
 func _test_concave_aabb_miss() -> void:

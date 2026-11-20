@@ -173,3 +173,25 @@ Installed-native markers passed for stage (97 checks), session (343), replay (17
 `native exercised=true`), each with zero failures. The [CI diagnostics](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43328373987/artifacts/13993918385)
 expire on 2026-11-19. This source/debug job does not establish a Windows packaged-native backend or release-wide CI
 success; Windows release flight remains on the reference evaluator. Promotion to required CI remains open.
+
+## Local requalification: CR-AUD R1 (2026-11-20)
+
+The [CR-AUD R1 batch](../../crash-damage-investigations/CR-AUD-2026-11-17/remediation-2026-11-20.md#r1-native-batch--verification)
+edited mirrored sources (`flight_session.gd`, `helicopter_flight_session.gd`, `rotorcraft/impact_detector.gd`,
+`hull_contact.gd`); no C++ changed. Both local installations were rebuilt, gated and reinstalled after the final edit:
+
+| Platform | Toolchain / tool root | Installed binary SHA-256 |
+|---|---|---|
+| Windows | MinGW-w64 GCC 15.2.0; `U:/OpenRCsimulator-native/nk` | `65b6025342dbfe78c79f45f5356c6e8f181794a0cfcc71ae803815f1c86491c3` |
+| Linux (WSL Ubuntu) | GCC 13.3.0; `$HOME/openrc-nk-linux` | `85f60e6dbde02b6c081830771754b33c6a1c4812a8097ac11228bc86eceb82b0` |
+
+All 19 installer gates passed on both platforms with identical comparison counts: stage 128,664/128,664,
+trajectory 21,771, propeller 50,310, electric 32,010, liquid 15,572, glow 49,606, wake 19,138, wake-spatial 20,347,
+gear 35,452, weather 21,549, helicopter 50,336, electric-stage 66,988, liquid-stage 64,136, glow-stage 79,881,
+helicopter-stage 61,281, weather-stage 59,340, prescribed-stage 49,571 and legacy-ground 14,806. The mutant failed as
+required (Windows 100,349/128,664 identical, Linux 100,359). Windows installed-native markers after installation:
+stage 104 checks, session 343, replay 209, helicopter session 399 (`native exercised=true`), helicopter route 21 and
+fallback 71; Linux: stage 104, session 343, replay 209 and helicopter session 399 (`native exercised=true`); all with
+zero failures. The D: tool roots used before were deleted; the godot-cpp checkout on exFAT `U:`
+needs a process-scoped `safe.directory`. Hosted CI and macOS qualify their own builds; this local evidence does not
+replace them.

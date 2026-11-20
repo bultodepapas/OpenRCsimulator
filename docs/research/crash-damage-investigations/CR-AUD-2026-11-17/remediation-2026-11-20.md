@@ -17,8 +17,8 @@ This page is the single status ledger for CR-AUD-01…34 and the improved execut
 | ID | Status | Change | Regression |
 |---|---|---|---|
 | 01 | **Fixed** | Quad and blimp scenes resolve the field lake like the field builder and pass it to every session preparation; terrain queries see the bed, lake identity enters session identity, starts at the water are refused, and water entry is an explicit terminal "Water contact" crash | `test_lake_session` |
-| 02 | Planned R1 | Helicopter nonterminal scenery response | — |
-| 03 | Planned R1 | Prop-strike guard from shaft speed, not `engine_running` | — |
+| 02 | **Fixed (R1)** | The helicopter detector reports the earliest nonterminal body–scenery contact beside its terminal impact; the session applies the shared bounded scenery response inside the candidate step (a failed response refuses the tick) | `test_heli_scenery_response` |
+| 03 | **Fixed (R1)** | The nonterminal prop-strike guard uses the accepted shaft speed, so a coasting or windmilling propeller strikes like a powered one; a stopped one never does. The terminal economics observation keeps its powered-only rule | `test_prop_strike_coasting` (promoted probe) |
 | 04 | **Fixed** | Contact events v2 name the earliest-crossing witness (`crossing_point_index`, `crossing_probe_id`, `crossing_is_selected`, `selected_crossing_fraction`); v1 stays valid | `test_aircraft_contact_events` |
 | 05 | **Fixed** | Effects keep the impact height and land chips/marks on the sampled ground; the fixed-wing wreck plane follows sampled terrain height and slope | `test_crash_effects`, `test_crash_wreck` |
 | 06 | **Fixed** | Core launches at its inventory-COM velocity | `test_crash_wreck` |
@@ -33,23 +33,23 @@ This page is the single status ledger for CR-AUD-01…34 and the improved execut
 | 15 | Fixed earlier | `35787fb5` | `test_parked_aircraft_collision` |
 | 16 | **Fixed** | Delayed rotor release uses the current airframe frame for hub, axis and blade | `test_heli_wreck_delayed_frames` (promoted probe, 90 checks) |
 | 17 | **Fixed** | A checkpoint requested inside the crash tick is refused; the next one carries the crash, cut and tape | `test_mr_graded_crashes` |
-| 18 | Planned R1 | Mixed soft-ground/scenery arbitration | — |
-| 19 | Planned R1 | Crash pause published after reason/event/damage | — |
+| 18 | **Fixed (R1)** | With soft hull contacts, a terminal scenery hit yields to the ground when the soft-ground terminal rule already holds at the obstacle's contact pose (ground-first tie; the obstacle takes no damage). A documented tick-boundary rule, not a measured first impact | `test_soft_ground_scenery_order` (promoted probe) |
+| 19 | **Fixed (R1)** | The crash record, reason, contact events and scenery damage are committed before the pause is published; the pause still precedes the change notifications | `test_crash_pause_log` (promoted probe, real `.orfl`) |
 | 20 | Planned R2 | Quad keeps solid response after a terminal wall strike; also cut the drive after a water crash | — |
 | 21 | Planned R2 | Quad prop contact energy invariant | — |
 | 22 | Planned R2 | Airship recording identity on a paused world change | — |
 | 23 | Planned R4 | Submicron capsule entry tolerance | — |
-| 24 | Planned R1 | Prop rim vs dry bank | — |
+| 24 | **Fixed (R1)** | Near the lake's bounded bank the disc depth also scans 64 rim phases against the covered terrain; flat ground keeps its exact lowest point. A sampled rim proves the overlaps it finds, not clearance between samples (sagitta 0.18 mm at 15 cm) | `test_prop_bank_rim` (promoted probe) |
 | 25 | Planned R2 | Finite quad prop disc vs box | — |
 | 26 | **Fixed** | Car body damage follows the contacting probe's face; travel direction only as fallback | `test_rcv_damage` |
-| 27 | Planned R1 | Deployed wheel vs scenery (capability) | — |
+| 27 | Design R1b | Deployed wheel vs scenery (capability). Not patched: see *CR-AUD-27 proposal* below | — |
 | 28 | **Fixed** | Director grades every snapshot against its own validated normal; the soft-rule C2 floor stays | `test_crash_integration` |
 | 29 | **Fixed** | Quad crash FX and lens use the previous accepted state (motion into the impact) | `test_mr_crash_presentation` |
 | 30 | **Fixed** | Helicopter lens uses the crash's `obstacle_kind`; a ground crash beside a spectator is ground-only | `test_lens_person_strike` |
 | 31 | Planned R4 | Rotational padding must not become a contact | — |
 | 32 | Planned R4 | Remaining-tick motion after a nonterminal scenery response | — |
 | 33 | Planned R4 | Transient water contact policy (capability) | — |
-| 34 | Planned R1 | Water normal speed includes interface motion | — |
+| 34 | **Fixed (R1)** | Water normal speed is relative to the moving wave surface (`interface_down_speed_mps` on the event); calm water is bit-identical | `test_lake_collision` |
 
 ## Improved plan
 
@@ -57,13 +57,25 @@ The original eight slices ordered work by theme. The remaining items are now ord
 
 | Batch | Findings | Files | Gate in addition to the audit's acceptance |
 |---|---|---|---|
-| **R1 native batch** | 02, 03, 18, 19, 24, 27, 34 | `flight_session.gd`, `rotorcraft/impact_detector.gd`, `hull_contact.gd`, `ground_wheels.gd`, `lake_surface.gd` (mirrored) | One native rebuild and requalification on Windows, Linux and macOS (NK gates). Companion rebind. Flight-log baseline/candidate comparison for any trajectory change; re-record goldens only for an explained physics change. |
+| **R1 native batch** (done except 27) | 02, 03, 18, 19, 24, 34 | `flight_session.gd`, `helicopter_flight_session.gd`, `rotorcraft/impact_detector.gd`, `hull_contact.gd` (mirrored); `lake_collision.gd` | One native rebuild and requalification on Windows, Linux and macOS (NK gates). Companion rebind. Flight-log baseline/candidate comparison for any trajectory change; re-record goldens only for an explained physics change. |
 | **R2 vehicle physics** | 20, 21, 22, 25 | `multirotor/controlled_plant.gd`, `sim/airship/*` | Quad and airship replay/golden checks; contact energy invariant tests; recording identity test with real `.orfl` files. |
 | **R3 car scenery** | 14 | ground-vehicle course/session adapter over the shared collision world | Explicit capability matrix; wall dedupe; bounded candidates with visible overflow; both stock cars, driven passes. |
 | **R4 contact-time policy** | 23, 31, 32, 33 | `sim/scenery_collision.gd`, lake policy | Flight-log comparison at 240/480 Hz; no false-clear results; owner decision on transient water. |
 | **R5 presentation follow-ups** | — | wreck/effects | Per-section compound core proxy with slide/rebound retuning (a compound box set made sideways slides tumble on gear boxes, so it needs its own tuning). Quad/airship obstacle identity for lens strikes. 1080p captures of asymmetric, slope and scenery crashes. |
 
 Promote each audit probe into the owning suite when its finding is fixed, as done for 01, 04–13, 16, 17 and 26–30. Do not change an expected value to match a defect.
+
+## CR-AUD-27 proposal (R1b)
+
+Copying wheel points into the crash hull is wrong twice over: event indices are bound to `hull_probes`, and the undeformed support reference sits up to the wheel's compression below the terrain, so it would hit the buried part of any obstacle resting on the ground. The capability needs its own owner:
+
+1. One contact point per deployed wheel at its **compressed** bottom (support reference moved up the strut by the accepted compression), swept against obstacle proxies only, never terrain.
+2. A `gear_probes` binding and event source, so contact identity stays separate from hull probes.
+3. Response by obstacle class: frangible/soft → the shared dissipative impulse at the wheel; hard → impulse plus a gear damage observation below the gear's declared tolerance, a terminal `gear` incident above it.
+4. One incident per tick: earliest wins, a hull/wheel tie goes to the hull; no duplicate damage.
+5. Gates: the audit's Avanti taxi box, a curb series, gear-up belly support and ordinary landings unchanged, replay identity.
+
+It touches `ground_wheels.gd` and `flight_session.gd` (mirrored), so it ships with the next native requalification.
 
 ## Decisions taken here
 
@@ -87,3 +99,18 @@ Promote each audit probe into the owning suite when its finding is fixed, as don
 | `test_aircraft_contact_events` 74, `test_rcv_damage` 187, `test_rcv_damage_session` 19, `test_rcv_session` 162, `test_flight_log` 4417, crash-cost suites | 0 failures |
 
 Two existing oracles in `test_crash_wreck` encoded the defects themselves and were corrected: core velocity at the box centre (06) and a core box that excluded still-attached sections (09).
+
+## R1 native batch — verification
+
+The R1 changes touch native-mirrored sources, so the installed native kernel was rebuilt and requalified on Windows (MinGW-w64 GCC 15.2.0) and Linux (WSL Ubuntu, GCC 13.3.0) after the final edits. Both platforms passed all 19 installer gates. Every pass compared byte-identical: stage 128,664/128,664, trajectory 21,771, propeller 50,310, electric 32,010, liquid 15,572, glow 49,606, wake 19,138, wake-spatial 20,347, gear 35,452, weather 21,549, helicopter 50,336, electric-stage 66,988, liquid-stage 64,136, glow-stage 79,881, helicopter-stage 61,281, weather-stage 59,340, prescribed-stage 49,571 and legacy-ground 14,806. The mutant negative control failed as required. Evidence is recorded in [NK-4](../../native-kernel/NK-4/README.md#local-requalification-cr-aud-r1-2026-11-20).
+
+| Check (reference evaluator unless noted) | Result |
+|---|---|
+| Audit probes: coasting prop (03) 23, contact order (18) 11, crash-pause log (19) 15, prop bank rim (24) 16 | Desired failures before → 0 after; promoted to the named tests |
+| `test_heli_scenery_response` (02): open air vs frangible box, one accepted tick | 11 checks, 0 failures; north speed 2.00 → 0.016 m/s through the box |
+| CR-AUD-34 rising wave on a still point | reported 0.0471178 m/s vs analytic 0.0471178 m/s |
+| Regression sweep: 93 suites (golden flights, prop strike, soft contacts, scenery, RC track, hull, lake, water, gear, contact policy, accident/crash-cost, flight log, companions, all 52 helicopter suites) | 0 failures |
+| `test_lake_covered_sampling` 761 | 0 failures. The byte parity oracle now accepts a deeper rim point when the full reference sampler recomputes the same depth |
+| Native production paths after install (Windows): stage, session, replay, helicopter session/route, fallback | see NK-4 |
+
+**Limits retained from review.** The helicopter applies the nonterminal response but still records no scenery damage, contact event or statistic; it responds to the earliest body contact per tick, and rotor–scenery nonterminal contacts remain terminal-only. Its heading memory and rotor state keep the tick-end values while the body takes the contact-time pose (same approximation as the fixed wing). The 18 rule refuses the tick when sampled mass properties fail, as the existing glow terminal check does. The rim scan runs only when the disc is below the lake's highest possible surface and inside its bank bounds.

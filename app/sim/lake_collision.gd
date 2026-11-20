@@ -16,6 +16,8 @@ const MAX_TRANSLATION_STEP_M := 1000.0
 const FRACTION_TIE := 1.0e-12
 const NORMAL_EPSILON := 1.0e-10
 const WATER_SLOPE_EPSILON_M := 0.025
+## CR-AUD-34: central-difference half step (s) for the wave surface's down-velocity.
+const WATER_RATE_EPSILON_S := 0.001
 const LAW := "positive-down-lake-sweep-aircraft-tolerance-v2"
 
 
@@ -29,6 +31,9 @@ class WaterEvent:
 	var probe_order: int = 0 # Stable hull-first tie break; indexes stay local to each source list.
 	var material: String = "water"
 	var specific_j_per_kg: float = 0.0
+	## CR-AUD-34: down-velocity of the wave surface at the contact (m/s, NED; 0 on calm water or a bank).
+	## `normal_speed_mps` is the closing speed relative to it.
+	var interface_down_speed_mps: float = 0.0
 
 
 ## First terminal water or bank impact in a tick. `soft_bank` follows the existing HullContact thresholds;
@@ -316,6 +321,7 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var slope_north: float = 0.0
 	var slope_east: float = 0.0
 	var depth: float = 0.0
+	var interface_down_speed: float = 0.0
 	if material == "water":
 		var shore_fade_override: float = float(local_hit.get("shore_fade_override", -1.0))
 		surface_down = LakeSurface._water_height_down_validated(lake, point[0], point[1], time_s,
@@ -334,6 +340,15 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 		slope_north = (slope_n - slope_s) / (2.0 * WATER_SLOPE_EPSILON_M)
 		slope_east = (slope_e - slope_w) / (2.0 * WATER_SLOPE_EPSILON_M)
 		depth = LakeSurface._bed_depth_at(lake, point[0], point[1])
+		# CR-AUD-34: the wave surface moves; its down-velocity enters the normal speed below. Calm water gives exactly
+		# zero, so the static-surface arithmetic is unchanged there.
+		var later: float = LakeSurface._water_height_down_validated(lake, point[0], point[1],
+			time_s + WATER_RATE_EPSILON_S, lake.get("waves", []), shore_fade_override)
+		var earlier: float = LakeSurface._water_height_down_validated(lake, point[0], point[1],
+			time_s - WATER_RATE_EPSILON_S, lake.get("waves", []), shore_fade_override)
+		if not is_finite(later) or not is_finite(earlier):
+			return null
+		interface_down_speed = (later - earlier) / (2.0 * WATER_RATE_EPSILON_S)
 	else:
 		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
 		if not bool(terrain.get("covered", false)):
@@ -348,7 +363,11 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var velocity_body: PackedFloat64Array = M.add(RB._slice3(state, RB.VEL),
 		M.cross(RB._slice3(state, RB.RATE), body_point))
 	var velocity: PackedFloat64Array = M.q_rotate(q, velocity_body)
-	var normal_component: float = M.dot(velocity, normal)
+	# CR-AUD-34: closing speed is relative to the interface. A height-field surface moving down at w has normal
+	# velocity (0, 0, w)·n, so a rising wave closes on a still point. No fluid-particle velocity is assumed.
+	var relative: PackedFloat64Array = velocity if interface_down_speed == 0.0 \
+		else PackedFloat64Array([velocity[0], velocity[1], velocity[2] - interface_down_speed])
+	var normal_component: float = M.dot(relative, normal)
 	var crash_depth: float = HullContact.crash_depth(hull_contact) if soft_bank else HullContact.CRASH_DEPTH_M
 	if not is_finite(normal_component) or (material == "bank_ground" and normal_component >= -NORMAL_EPSILON
 			and depth <= crash_depth):
@@ -418,6 +437,7 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	out.dissipated_energy_j = 0.0
 	out.time_fraction = fraction
 	out.normal_speed_mps = normal_speed
+	out.interface_down_speed_mps = interface_down_speed
 	out.effective_mass_kg = effective_mass
 	out.impact_energy_j = energy
 	out.terminal = true

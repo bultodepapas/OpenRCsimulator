@@ -10,6 +10,7 @@ const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const Hover = preload("res://physics/rotorcraft/trim.gd")
 const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
 const ImpactDetector = preload("res://physics/rotorcraft/impact_detector.gd")
+const SceneryCollision = preload("res://sim/scenery_collision.gd")
 const CollisionWorld = preload("res://scenery/collision_world.gd")
 const GroundStart = preload("res://physics/rotorcraft/ground_start.gd")
 const Lifecycle = preload("res://physics/rotorcraft/lifecycle.gd")
@@ -333,6 +334,19 @@ func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f:
  if not detected.get("ok",false):
   _stage_failure="Contact detection refused: "+str(detected.get("error","invalid input"))
   return PackedFloat64Array()
+ # CR-AUD-02: a nonterminal body contact (frangible box, foliage, parked airframe) gets the shared bounded scenery
+ # response inside this candidate step, as for the fixed wing: the accepted body leaves the contact pose with the
+ # dissipative impulse. A rejected trial publishes nothing. A failed response is refused rather than ignored.
+ var scenery_event: Variant=detected.get("nonterminal_scenery")
+ if detected.impact.is_empty() and scenery_event is SceneryCollision.Event:
+  var response: Dictionary=SceneryCollision.apply_response(scenery_event.contact_state(),scenery_event,sim.mass,sim.inertia)
+  if not response.get("ok",false) or not Sim.state_is_valid(response.state):
+   _stage_failure="Helicopter scenery response refused: "+str(response.get("reason","invalid response"))
+   return PackedFloat64Array()
+  body=response.state
+  var responded: PackedFloat64Array=body.duplicate()
+  responded.append_array(continuous)
+  result.state=responded
  _pending_impact={tick=sim.tick+1,body=body.duplicate(),continuous=continuous.duplicate(),phase=phase.duplicate(),impact=detected.impact.duplicate(true)}
  return result
 

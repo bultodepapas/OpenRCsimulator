@@ -90,6 +90,9 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 		return {"ok": true, "impact": {}, "error": ""}
 	var probes: Array[Dictionary] = prepared.probes
 	var best: Dictionary = {}
+	# CR-AUD-02: the earliest nonterminal body-scenery contact, returned beside the terminal impact so the session can
+	# apply its bounded response instead of silently dropping it.
+	var nonterminal: Dictionary = {}
 	if bool(sweep.terrain_possible):
 		best = _terrain_contact(previous_body, body, continuous, context, skids,
 			surfaces, phase, probes, int(sweep.steps), rotor_speeds, max_height, lake)
@@ -101,7 +104,7 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 		var rotor_candidates: Array[int] = nearby.rotors
 		if not body_candidates.is_empty():
 			var scenery: Dictionary = _first_scenery_contact(previous_body, body, world, context, prepared,
-				rotor_speeds, best)
+				rotor_speeds, best, nonterminal)
 			best = _arbitrate(best, scenery)
 			if not bool(best.get("ok", true)):
 				return {"ok": false, "impact": {}, "error": str(best.error)}
@@ -111,7 +114,9 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 			best = _arbitrate(best, rotor_scenery)
 			if not bool(best.get("ok", true)):
 				return {"ok": false, "impact": {}, "error": str(best.error)}
-	return {"ok": true, "impact": best, "error": ""}
+	if not best.is_empty() or nonterminal.is_empty():
+		return {"ok": true, "impact": best, "error": ""}
+	return {"ok": true, "impact": best, "error": "", "nonterminal_scenery": nonterminal.event}
 
 
 static func _geometry_input_error(context: Dictionary, skids: Dictionary) -> String:
@@ -720,16 +725,21 @@ static func _rotor_shaft_inverse_mobility(q: PackedFloat64Array, normal_world: P
 
 static func _first_scenery_contact(previous: PackedFloat64Array, current: PackedFloat64Array,
 		world: Dictionary, context: Dictionary, prepared: Dictionary,
-		rotor_speeds: PackedFloat64Array, terrain_best: Dictionary) -> Dictionary:
+		rotor_speeds: PackedFloat64Array, terrain_best: Dictionary, nonterminal: Dictionary = {}) -> Dictionary:
 	var probes: Array[Dictionary] = prepared.probes
 	var events: Array[SceneryCollision.Event] = SceneryCollision.contacts(previous, current, prepared.hull,
 		world, int(world.get("tick", 0)), float(context.mass_kg), context.inertia_body_kg_m2,
 		world.get("damage", {}))
 	for event: SceneryCollision.Event in events:
-		if event == null or not event.terminal or not event.has_kinematics:
+		if event == null or not event.has_kinematics:
 			continue
 		if not bool(terrain_best.get("disc_onset_interval", false)) \
 				and float(event.time_fraction) >= float(terrain_best.get("time_fraction", INF)):
+			continue
+		if not event.terminal:
+			if event.point_index >= 0 and event.point_index < probes.size() and (not nonterminal.has("event")
+					or float(event.time_fraction) < float(nonterminal.event.time_fraction)):
+				nonterminal["event"] = event
 			continue
 		var contact_state: PackedFloat64Array = event.contact_state()
 		var q: PackedFloat64Array = contact_state.slice(RB.ATT, RB.ATT + 4)

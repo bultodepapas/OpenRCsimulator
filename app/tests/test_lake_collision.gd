@@ -31,6 +31,7 @@ func _initialize() -> void:
 	_test_hull_contact_context(lake)
 	_test_surface_normals()
 	_test_aircraft_bank_tolerance(lake)
+	_test_moving_interface_speed(lake)
 	print("all lake collision checks passed" if _failures == 0 else "%d lake collision checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
@@ -169,8 +170,11 @@ func _test_rotating_wing(lake: Dictionary) -> void:
 		_check("rotating wing event preserves point angular velocity", M.norm(event.velocity_ned) > 25.0
 			and event._state_at_contact.size() == RB.SIZE and event.crossing.available,
 			"velocity=%s fraction=%.6f" % [event.velocity_ned, event.time_fraction])
+		# CR-AUD-34: the complete point velocity, relative to the moving wave surface it meets.
+		var relative: PackedFloat64Array = M.sub(event.velocity_ned,
+			PackedFloat64Array([0.0, 0.0, event.interface_down_speed_mps]))
 		_check("rotating point impact speed projects its complete velocity", absf(event.normal_speed_mps
-			- maxf(0.0, -M.dot(event.velocity_ned, event.normal_ned))) < 1.0e-10)
+			- maxf(0.0, -M.dot(relative, event.normal_ned))) < 1.0e-10)
 
 
 func _test_prop_disc(lake: Dictionary) -> void:
@@ -291,6 +295,40 @@ func _test_aircraft_bank_tolerance(lake: Dictionary) -> void:
 		_check("non-soft separating depth retains its shared policy in both APIs", hard_sampled.ok
 			and hard_sampled.event != null and LakeCollision.first_hit(lake, separating, separating,
 				hull, {}, 1, 0.01, MASS, _inertia, false, {}, prepared) != null)
+
+
+## CR-AUD-34: a wave rising through a stationary point closes on it; the reported normal speed is relative to the moving
+## interface (analytic derivative of the authored sine), and calm water keeps zero interface speed.
+func _test_moving_interface_speed(lake: Dictionary) -> void:
+	const N := 110.0
+	const E := 125.0
+	const DT := 1.0 / 240.0
+	var amplitude := 0.03
+	var wavelength := 12.0
+	var period := 4.0
+	var wave_lake: Dictionary = lake.duplicate(true)
+	var phase_offset: float = PI - TAU * N / wavelength
+	wave_lake.waves = [{"amplitude_m": amplitude, "wavelength_m": wavelength,
+		"period_s": period, "heading_rad": 0.0, "phase_rad": phase_offset}]
+	wave_lake.identity = Loader.identity(wave_lake)
+	var calm: Dictionary = lake.duplicate(true)
+	calm.waves = []
+	calm.identity = Loader.identity(calm)
+	var point_down: float = LakeSurface.water_height_down(wave_lake, N, E, 0.0) - 0.0001
+	var still := _state([N, E, point_down], [0.0, 0.0, 0.0], M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var point := PackedFloat64Array([0.0, 0.0, 0.0])
+	var event: LakeCollision.WaterEvent = LakeCollision.first_hit(wave_lake, still, still, point, {}, 1, DT, MASS, _inertia)
+	var clear: LakeCollision.WaterEvent = LakeCollision.first_hit(calm, still, still, point, {}, 1, DT, MASS, _inertia)
+	_check("CR-AUD-34 rising wave contacts a still point; calm control stays clear", event != null and clear == null)
+	if event == null:
+		return
+	var phase: float = TAU * N / wavelength - TAU * event.time_fraction * DT / period + phase_offset
+	var down_rate: float = amplitude * TAU / period * cos(phase)
+	var slope: float = -amplitude * TAU / wavelength * cos(phase)
+	var analytic: float = -down_rate / sqrt(1.0 + slope * slope)
+	_check("CR-AUD-34 normal speed is relative to the rising interface", analytic > 0.04
+		and absf(event.normal_speed_mps - analytic) < 1.0e-5,
+		"reported %.9f analytic %.9f" % [event.normal_speed_mps, analytic])
 
 
 func _state(pos: Array, vel: Array, attitude: PackedFloat64Array, rate: Array) -> PackedFloat64Array:

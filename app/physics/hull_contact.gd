@@ -128,7 +128,70 @@ static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dicti
 			if not is_finite(surface_down):
 				surface_down = float(terrain.ground_down_m)
 			depth = point_ned[2] - surface_down
+		# CR-AUD-24: over the lake's bounded bank and basin the support is not the flat datum, so the disc's deepest
+		# point relative to it can lie anywhere on the rim. Scan the rim there; the flat field keeps the exact
+		# lowest-point answer above. A sampled rim proves an overlap it finds, not clearance between its samples.
+		if _disc_near_lake(s, disc, lake):
+			var rim: Dictionary = _deepest_rim_point(s, disc, lake, time_s)
+			# Over flat datum ground the rim cannot beat the exact lowest point except by rounding: keep that answer.
+			if float(rim.depth) > depth + PROP_RIM_MARGIN_M:
+				depth = float(rim.depth)
+				point_ned = rim.point_ned
 	return {depth = depth, point_ned = point_ned}
+
+
+## Rim phases sampled near the lake: the chord sagitta is radius × (1 − cos(π / 64)), 0.18 mm on a 15 cm propeller.
+const PROP_RIM_SAMPLES := 64
+const PROP_RIM_MARGIN_M := 1.0e-9
+
+
+## Depth (m, positive below the support) of a world point: the water or bank where the lake covers it, else the datum.
+static func _disc_point_depth(point_ned: PackedFloat64Array, lake: Dictionary, time_s: float) -> float:
+	var terrain: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, point_ned[0], point_ned[1])
+	if not bool(terrain.get("covered", false)):
+		return point_ned[2]
+	var surface_down: float = LakeSurface.water_height_down(lake, point_ned[0], point_ned[1], time_s)
+	if not is_finite(surface_down):
+		surface_down = float(terrain.ground_down_m)
+	return point_ned[2] - surface_down
+
+
+## True when the disc can reach the lake's covered support: below its highest possible surface (bank terrain lies
+## between the datum and the mean water level; waves rise by at most their validated amplitude, as in
+## LakeSurface.sweep_probe) and inside the bank bounds, both padded by the radius with the quaternion-length slack
+## of _hull_clear_of_lake. The height test runs first, so a disc in flight costs one comparison. A nonfinite state
+## compares true and keeps the rim scan.
+static func _disc_near_lake(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary) -> bool:
+	var hub: PackedFloat64Array = _point_ned(s, disc.hub)
+	var qq: float = s[RB.ATT] * s[RB.ATT] + s[RB.ATT + 1] * s[RB.ATT + 1] \
+		+ s[RB.ATT + 2] * s[RB.ATT + 2] + s[RB.ATT + 3] * s[RB.ATT + 3]
+	var radius: float = float(disc.radius) * (1.0 + 4.0 * qq) + 0.001
+	var highest_down: float = minf(0.0, float(lake.water_level_down_m) - float(lake.wave_bounds.max_amplitude_m))
+	if hub[2] + radius < highest_down:
+		return false
+	var bounds: PackedFloat64Array = _polygon_bounds(lake.bank_ne_m)
+	return not (hub[0] + radius < bounds[0] or hub[0] - radius > bounds[1]
+		or hub[1] + radius < bounds[2] or hub[1] - radius > bounds[3])
+
+
+static func _deepest_rim_point(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary, time_s: float) -> Dictionary:
+	var a: PackedFloat64Array = disc.axis
+	# Any unit vector not parallel to the axis spans the disc plane with the axis.
+	var seed := PackedFloat64Array([0.0, 0.0, 1.0]) if absf(a[2]) < 0.9 else PackedFloat64Array([1.0, 0.0, 0.0])
+	var u: PackedFloat64Array = M.cross(a, seed)
+	u = M.scale(u, 1.0 / M.norm(u))
+	var v: PackedFloat64Array = M.cross(a, u)
+	var radius := float(disc.radius)
+	var best := {depth = -INF, point_ned = PackedFloat64Array()}
+	for k in PROP_RIM_SAMPLES:
+		var phase := TAU * float(k) / float(PROP_RIM_SAMPLES)
+		var body_point: PackedFloat64Array = M.add(disc.hub,
+			M.add(M.scale(u, radius * cos(phase)), M.scale(v, radius * sin(phase))))
+		var point_ned: PackedFloat64Array = _point_ned(s, body_point)
+		var depth := _disc_point_depth(point_ned, lake, time_s)
+		if depth > float(best.depth):
+			best = {depth = depth, point_ned = point_ned}
+	return best
 
 
 const _DIRECTIONS := [

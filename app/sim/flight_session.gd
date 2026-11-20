@@ -2585,11 +2585,14 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
 	_committing_contacts = true
 	_observe_contact_tick(tick)
+	var crash_pause_pending := false
 	if _pending_contact_tick == tick:
 		_last_scenery_event = _pending_scenery_event
 		_last_lake_event = _pending_lake_event
 		if _pending_crash != null:
-			_crash(_pending_crash, _pending_crash_state)
+			# CR-AUD-19: the pause is published below, after the scenery damage of this incident is committed.
+			_crash(_pending_crash, _pending_crash_state, false)
+			crash_pause_pending = true
 		elif _pending_scenery_event != null:
 			_append_contact_event(ContactEvents.impact_event(
 				_pending_scenery_event, _contact_bindings, _impact_policy(_pending_scenery_event)))
@@ -2599,6 +2602,10 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		for damage_id: String in _pending_scenery_damage:
 			_scenery_damage[damage_id] = _pending_scenery_damage[damage_id].duplicate(true)
 	_clear_pending_scenery_damage()
+	# The incident's record, reason, events and damage are complete; the pause keeps its place before the
+	# change notifications, inside the contact commit, as it was published before.
+	if crash_pause_pending:
+		sim.set_paused(true)
 	if damage_changed:
 		scenery_damage_changed.emit()
 	_committing_contacts = false
@@ -3319,8 +3326,10 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 
 ## E3d2: a turning propeller whose disc reaches the field breaks: the engine stops (dead stick) and the flight goes on.
 ## Once per flight; scripted and trace routes never call it (soft_hull_contacts off).
+## CR-AUD-03: "turning" is the accepted shaft speed, not the power source: a coasting or windmilling propeller after a
+## cut strikes the field like a powered one. A stopped propeller (below STRIKE_MIN_RPM) still never strikes.
 func _check_prop_strike() -> void:
-	if not prop_strike.is_empty() or not engine_running or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
+	if not prop_strike.is_empty() or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
 	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
 	if float(disc.depth) <= 0.0:
@@ -3523,9 +3532,15 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 	if scenery_hit == null:
 		_last_scenery_event = null
 		return candidate
+	var contact_state: PackedFloat64Array = scenery_hit.contact_state()
+	var ground_owner: int = _soft_ground_owns_terminal(previous, contact_state, next_tick, mass_at_fraction) \
+		if scenery_hit.terminal else 0
+	if ground_owner < 0:
+		return PackedFloat64Array()
+	if ground_owner > 0:
+		return contact_state
 	_last_scenery_event = scenery_hit
 	_stage_scenery_damage(scenery_hit)
-	var contact_state: PackedFloat64Array = scenery_hit.contact_state()
 	if scenery_hit.terminal:
 		scenery_hit.response_status = "terminal"
 		_crash(scenery_hit, contact_state)
@@ -3618,9 +3633,15 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		_crash(lake_hit, lake_hit.contact_state())
 		return lake_hit.contact_state()
 	_last_lake_event = null
+	var scenery_state: PackedFloat64Array = scenery_hit.contact_state()
+	var ground_owner: int = _soft_ground_owns_terminal(previous, scenery_state, next_tick, mass_at_fraction) \
+		if scenery_hit.terminal else 0
+	if ground_owner < 0:
+		return PackedFloat64Array()
+	if ground_owner > 0:
+		return scenery_state
 	_last_scenery_event = scenery_hit
 	_stage_scenery_damage(scenery_hit)
-	var scenery_state: PackedFloat64Array = scenery_hit.contact_state()
 	if scenery_hit.terminal:
 		scenery_hit.response_status = "terminal"
 		_crash(scenery_hit, scenery_state)
@@ -3635,6 +3656,36 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 	scenery_hit.restitution = float(response.restitution)
 	scenery_hit.dissipated_energy_j = float(response.dissipated_energy_j)
 	return response.state
+
+
+## CR-AUD-18: with soft hull contacts the ground has no swept candidate of its own, so a terminal scenery hit could
+## become the tick's incident although the soft-ground terminal rule already holds on the way to the obstacle. Policy:
+## when that rule is met at the obstacle's contact pose (the earlier pose of the tick), the ground owns the incident,
+## the legacy ground-first tie; the obstacle gets no damage. A tick-boundary rule, not a measured first impact.
+## Returns 1 when the ground owns the incident (staged here), 0 when the scenery keeps it, and -1 when the sampled
+## mass properties cannot decide: the tick is refused, as _resolve_collision_step refuses that same failure.
+func _soft_ground_owns_terminal(previous: PackedFloat64Array, contact_state: PackedFloat64Array, next_tick: int,
+		mass_at_fraction: Callable) -> int:
+	if not soft_hull_contacts or _hull_contact.is_empty() or not Sim.state_is_valid(contact_state) \
+			or -contact_state[RB.POS + 2] > float(_hull_contact.reach):
+		return 0
+	var hit: Dictionary
+	if mass_at_fraction.is_valid():
+		var result: Dictionary = HullContact.terminal_at_properties(previous, contact_state, _hull_contact,
+			mass_at_fraction.call(0.0))
+		if not result.get("ok", false):
+			return -1
+		hit = result.get("event", {})
+	else:
+		hit = HullContact.terminal(previous, contact_state, _hull_contact)
+	if int(hit.get("index", -1)) < 0:
+		return 0
+	_last_scenery_event = null
+	_last_lake_event = null
+	_clear_pending_scenery_damage()
+	_crash(ImpactSnapshot.hull_point(contact_state, next_tick, aircraft.model.crash_hull, int(hit.index),
+		previous, str(hit.rule)), contact_state)
+	return 1
 
 
 func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
@@ -3745,7 +3796,11 @@ func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: Pack
 	return {impact = best, fraction = best_fraction}
 
 
-func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = PackedFloat64Array()) -> void:
+## CR-AUD-19: the whole incident (crash record, reason, contact events and, from _on_sim_stepped, scenery damage) is
+## committed before the pause is published, so a pause listener such as the flight logger sees a complete crash.
+## `publish_pause` false leaves the pause to the caller, which publishes it after its own commits.
+func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = PackedFloat64Array(),
+		publish_pause := true) -> void:
 	if _resolving_contact:
 		# Engine modes already belong to Simulation's transaction and roll back on failure.
 		if impact.trigger == "water":
@@ -3763,9 +3818,11 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	if not impact_state.is_empty():
 		sink = M.q_rotate(RB._att(s), RB._slice3(s, RB.VEL))[2]
 	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why, impact = impact }
-	sim.set_paused(true)
 	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - %s" % [speed, sink, "" if why.is_empty() else ", " + why, "restarting" if crash_auto_restart else "[R] restart"]
 	print(pause_reason)
+	# Hold the change notification until the pause is published, keeping the pause-first order observers saw before.
+	var outer_commit: bool = _committing_contacts
+	_committing_contacts = true
 	_append_contact_event(ContactEvents.impact_event(impact, _contact_bindings, _impact_policy(impact)))
 	# A terminal boundary must retain a simultaneous powered disc/ground fact.
 	# Observe only: the frozen flight keeps its original engine/rotor/checkpoint state.
@@ -3776,6 +3833,11 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 			var strike := {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
 				velocity_ned = M.q_rotate(RB._att(sim.state), RB._slice3(sim.state, RB.VEL))}
 			_append_contact_event(ContactEvents.terminal_prop_event(strike, sim.tick, HullContact.law(), _contact_bindings))
+	_committing_contacts = outer_commit
+	if publish_pause:
+		sim.set_paused(true)
+	if not outer_commit:
+		contact_events_changed.emit()
 
 
 ## The shell may retain an armed radio when restarting under the same device/profile ownership.
