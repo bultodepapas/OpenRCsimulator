@@ -302,3 +302,82 @@ The focused harness uses production files based on `6dfe1b9179af408f6b765b91ca16
 The two inspected captures remain outside Git under `C:/Users/bulto/AppData/Local/Temp/openrc-clearview-evidence-20261116/`: `clearview-installation-import-1080.png` SHA-256 `0372262d1149de18d716d6bf39e76cff599143ff6be5d1bb94b070f35ba69cc4`, and `clearview-installation-power-1080.png` SHA-256 `5279ce176bed018194468ce4b2c053f095138dd3f476f26dce06851cab617196`. This establishes functional 1080p layout evidence, not performance, independent visual fidelity or physical qualification.
 
 Superseded unplaced supervisors were stopped before dispatch; failed inputs and reports remain available. Shared storage pressure required releasing only completed owned writable copies after checking terminal state, complete evidence and cleanup. Exact historical/current Mac input archives were retained with verified SHA-256 under `D:/OpenRCsimulator-clearview-scratch/retained-mac-inputs-20261116/`; native inventories and logs remain at their original locations. Windows admission resumed after the host left DRAINING, without closing another task's session. The simulation kernel, physical packages and generated aircraft data were not changed. Parameter adoption, numerical/domain flight qualification, Home, portable closure, required CI and exported/resource gates remain open; no AC-CV step is closed by this slice.
+
+### Concise player guide and source recheck (AC-CV / WEB-11, 2026-11-19)
+
+Reviewed current source `b2f81d1771031964446a1cbddd83770d6d1c87ff` from Workshop and the ZIP picker through archive/parameter/visual conversion, source declarations, motion proposals, draft persistence and trial/publication/Home refusals. The [quick guide](../../../site/clearview-import-en.md) documents the existing preview/draft workflow in all eleven website languages. Its Markdown and static website editions share the same localized copy. No application or physics source changed.
+
+[ClearView's community catalog](https://rcflightsim.com/models.html) and [Gary Gunnerson's ClearView catalog](https://gunnerson.homestead.com/files/clearview_models.htm) were reachable; six actual ZIP downloads were inspected. The latter is an additional source, not a compatibility promise. The official catalog mixes airplanes, helicopters and landscapes. Its paint-scheme section can contain complete models; complete packaging does not guarantee conversion. The [Absolute RC page](https://rcflightsim.com/models1.html) describes that simulator's URL/`.lst` workflow, which OpenRC does not implement. The DHC-2 Beaver link still returned HTTP 403. The website's v0.2.7 download predates ZIP import: the [tagged Creator](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.7/app/ui/aircraft_creator.gd) offers only STL/GLB, unlike the reviewed current source.
+
+The [dated check record](clearview-guide-checks-2026-11-19.json) retains engine/source identity, archive URLs and SHA-256s, per-model outcomes and check-log hashes. On official Linux x86_64 Godot `4.8.beta2.official.cafc17a19`, unchanged production readers/converter and downstream GLB admission gave:
+
+| Actual download | Result |
+| --- | --- |
+| MC Extra 330 Red | Admitted visual, 3,776 triangles; the short guide's tested example. Read the import notes: marker/zero-area omissions and unbound hinge proposals remain. |
+| Ken Northup Plane Pack 1 | 20 model roots; 14 admitted visuals, six refusals. Select one model; the whole pack is not declared compatible. |
+| Calmato 40 Sports; Gunnerson Firebird Stratos | Refused unsupported JPEG encoding/metadata. |
+| MC 300S Air Guard | Refused intersecting edges in `Fuse` polygon 129 despite being a complete repaint/model package. |
+| Gunnerson FMS-PT-17 Stearman | Refused a `$`-prefixed parameter field. This is the parser's current subset limit, not a damaged ZIP; “FMS” names the model manufacturer here. |
+
+Six focused checked suites passed **1,097 checks**, with complete runs and zero engine errors/warnings: readers 87, visual 48, JPEG 363, motion 221, source observations 290 and publication binding 88. The isolated project used unchanged production dependencies; the full application was not imported. Initial motion/observation harness attempts lacked catalogs/data and were corrected. A separate source-installation/trial run emitted errors from missing scenery assets and is **not** counted as passing, regardless of its zero-failed-assertion line.
+
+Website verification: all eleven generated pages and Markdown guides are current; seven static locale/publication tests and eight existing download tests pass. The guide is complete without JavaScript, preserves exact translated app button labels where those app languages exist, and uses English UI labels for Korean/Arabic. Browser layout review was unavailable: standalone Chromium could not create a required socket and the cloud browser could not reach the local preview. This review establishes neither rendered fidelity nor flight, exported-platform, performance or physical qualification. It does not close the existing ClearView flight gates.
+
+### Importer v1 coverage and parity (AC-CV, 2026-11-19)
+
+Reran the six-archive corpus of the [check record](clearview-guide-checks-2026-11-19.json) through unchanged archive/package capture, conversion and GLB admission in the full application, using Godot 4.8 beta2 on Windows. Before this change, 15 of 25 model roots were admitted. Every refusal had a concrete cause:
+
+| Cause | Models | Change |
+| --- | --- | --- |
+| JPEG APP1 (EXIF), APP2 (ICC) or APP13 (Photoshop) segments; Godot decodes the images | Calmato 40, Beech99, Bellanca C-27, Firebird Stratos | APPn segments other than JFIF/Adobe are skipped as opaque metadata, at most 1 MiB in total, with a note. Progressive and other codings stay refused |
+| `smoke.gif` on `Prop`/`PropDisk` objects | 701f, 701F2, Brown-B1 Racer | New bounded GIF87a/89a first-frame decoder. The real file's RGBA is bit-identical to Pillow's (SHA-256 `f24565cd9b557d5cbe40b5806d83fbbde1acbb2f5eee07161f788da92321af4c`) |
+| Quad with two coincident consecutive corners | Ascent Park Glider, `fuse` polygon 91 | Exact duplicates collapse before the intersection test; shape and UVs are unchanged |
+| Genuine bow-tie, about 1.5 × 18 mm | MC 300S Air Guard, `Fuse` polygon 129 | Omitted and reported; more than 16 refuse the model. Exactly cancelling bow-ties remain refused |
+| `$PlaneMidWindDhD01 paramsAgriDuck` first line | FMS-PT-17 Stearman | `$` tag lines are ignored and counted; they cannot supply identity keys |
+
+After the JPEG fix, the Bellanca C-27 exposed a further case. Ear clipping of its 64-corner `Ruder` outline produced a triangle from three exactly collinear corners. Its float64 source cross product is exactly zero, so it covers no area, and it is now skipped. Previously admitted models cannot contain such a triangle or the changed polygons, so their GLB bytes are unchanged. The new receipt field appears only when nonzero.
+
+**Result: 25 of 25 model roots admitted.** Corpus ZIPs stay outside Git under the owner's scratch path, verified by the recorded SHA-256s.
+
+Parity, per the [DECISIONS entry](../../DECISIONS.md#ac-cv-v1-parity): after the configuration is confirmed, ClearView models test-fly and save through the same gates as STL/GLB.
+
+- The trial identity pins the confirmed configuration, and `verify` refuses a ClearView trial without it.
+- The store refuses a definition or snapshot whose configuration names another model.
+- The resolver, `published_trial.prepare` and v4 capture keep their refusals. Published flight remains closed for all Creator aircraft.
+
+An independent read-only review found two problems in the first design, and both were corrected before integration:
+
+- Production publishes through the legacy flat path. No production code selects the v4 servo law, so changes to v4 capture alone would have been dead code.
+- Removing the resolver's ClearView refusal would have let unconfirmed legacy records resolve.
+
+Verification: each suite below completed with zero failures and no `SCRIPT ERROR`/`ERROR:` lines.
+
+| Suite | Checks |
+| --- | --- |
+| GIF (new) | 144 |
+| JPEG | 376 |
+| Readers | 91 |
+| ClearView visual | 56 |
+| Observations | 290 |
+| Motion | 221 |
+| Source installation | 89 |
+| Servo document | 72 |
+| Compile binding | 88 |
+| ClearView UI | 70 |
+| Store | 509 |
+| Publication UI | 28 |
+| Persistence UI | 95 |
+| Source reference | 230 |
+| Published trial | 62 |
+| Selection state | 43 |
+| Creator UI | 201 |
+| Compiler | 196 |
+| Flight | 56 |
+| GLB | 356 |
+| Creator visual | 231 |
+| STL | 262 |
+| PNG | 207 |
+
+Language, trial, flow, import and bytes also passed.
+
+Website: `build_locales.py --check`, seven locale tests and eight download tests passed. Rendered browser layout was not reviewed. This establishes conversion coverage on this corpus and parity with the existing experimental Creator gates. It does not establish physical realism, packaged-target behaviour, or saved-aircraft flight.

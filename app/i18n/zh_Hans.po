@@ -13263,3 +13263,27 @@ msgstr "遥测：开启 · 设置 → 界面"
 
 msgid "Telemetry is off · Settings → Interface"
 msgstr "遥测：关闭 · 设置 → 界面"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "测试飞行使用此估算的 OpenRC 配置，而不是 ClearView 飞行模型。这些飞行属于实验性质。"
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "所选的 OpenRC 配置属于另一个模型。请为此模型重新选择配置。"
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "已省略 %s 个自相交的面。"
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "多边形 %s（部件 \"%s\"）有相交的边，且模型中此类面过多，无法省略。"
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "已忽略 JPEG 元数据（相机、颜色配置文件或编辑器数据）。"
+
+msgid "Only the first GIF frame was imported."
+msgstr "仅导入了 GIF 的第一帧。"
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "已忽略模型参数中的 %s 行编辑器标记。"
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "尚不支持此纹理格式。请将纹理转换为标准 PNG、JPEG、GIF 或未压缩的 24 位 BMP，并更新模型中的引用。"

@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 
 from build_locales import BASE, SITE, LOCALES, build, locale_url
+from publish import FILES
 
 
 class LocalePublicationTests(unittest.TestCase):
@@ -74,6 +75,37 @@ class LocalePublicationTests(unittest.TestCase):
                 self.assertEqual(page.select_one('[data-i18n="donateGoal"] a')['href'], steam_fee)
                 for key in ('donateHero', 'donateHeading', 'donateGoal', 'donateWhy', 'donateRoadmap', 'donateCta'):
                     self.assertTrue(page.select_one(f'[data-i18n="{key}"]').get_text(strip=True))
+
+    def test_clearview_guide_is_visible_and_its_markdown_is_publishable(self):
+        for lang, page in self.pages.items():
+            with self.subTest(lang=lang):
+                guide = page.select_one('#clearview')
+                self.assertIsNotNone(guide)
+                self.assertFalse(guide.select('[hidden], details'))
+                self.assertEqual(len(guide.select('.clearview-steps li')), 3)
+                self.assertIsNotNone(page.select_one('.download-help a[href="#clearview"]'))
+                self.assertEqual([a['href'] for a in guide.select('.clearview-sources a')], [
+                    'https://rcflightsim.com/models.html',
+                    'https://gunnerson.homestead.com/files/clearview_models.htm',
+                ])
+                route = guide.select_one('[data-i18n="clearviewMarkdown"]')['href']
+                self.assertIn(route, FILES)
+                markdown = (SITE / route).read_text(encoding='utf-8')
+                self.assertEqual(len(re.findall(r'^\d\. ', markdown, re.M)), 3)
+                for filename in ('.zip', 'params.txt', '.ac', '.lst'):
+                    self.assertIn(f'`{filename}`', markdown)
+                self.assertIn('64 MiB', markdown)
+                # The first release with ZIP import; flight/save need a later build.
+                self.assertIn('v0.2.9', markdown)
+                self.assertNotIn('v0.2.7', markdown)
+                for format_name in ('PNG', 'JPEG', 'GIF', 'BMP'):
+                    self.assertIn(format_name, markdown)
+                self.assertNotIn('<strong>', markdown)
+                self.assertNotIn('<code>', markdown)
+                translations = re.findall(r'\]\((clearview-import-[^)]+\.md)\)', markdown)
+                self.assertEqual(len(set(translations)), len(LOCALES))
+                for translation in translations:
+                    self.assertTrue((SITE / translation).is_file())
 
     def test_assets_and_internal_links_resolve_in_project_subdirectory(self):
         for lang, page in self.pages.items():

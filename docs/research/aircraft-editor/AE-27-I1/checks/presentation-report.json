@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e61c6bd2-7573-4ac0-b905-ed268772b645",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_presentation.gd"
+  ],
+  "cwd": "/workspace/scratch/adcec33b29c5/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:46:30.858951+00:00",
+  "label": "ae27-presentation",
+  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-presentation-q1bh8x5y/engine.log",
+  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-presentation-q1bh8x5y/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop presentation:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.080867,
+  "log_bytes": 113,
+  "log_sha256": "41f308845c84962ba5b6b41df06f5d0654f8cd77be072b73651ace96ef7fb405"
+}

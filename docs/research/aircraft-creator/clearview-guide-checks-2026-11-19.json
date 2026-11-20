@@ -1,0 +1,467 @@
+{
+  "date": "2026-11-19",
+  "source_commit": "b2f81d1771031964446a1cbddd83770d6d1c87ff",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "platform": "Linux x86_64; isolated headless dependency subset; production modules unchanged",
+  "scope": "Reader, converter, image, motion, observation and publication-binding checks; package capture and normalized GLB admission. No new rendered, flight, full-app, exported-platform or physical-fidelity qualification.",
+  "checks": [
+    {
+      "script": "res://tests/test_creator_clearview_readers.gd",
+      "checks": 87,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "1972fcb68b6b001bd6e656608e6eb4b2890e82b207c91cf97f2026d9ad6baab1"
+    },
+    {
+      "script": "res://tests/test_creator_clearview_visual.gd",
+      "checks": 48,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "e8ed4a0e98cd3fb28c7639a1753cd14327a8e9667e16b12ad9c32d2a33633563"
+    },
+    {
+      "script": "res://tests/test_creator_clearview_jpeg.gd",
+      "checks": 363,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "fe8d193d427a1babfeb1718c4ca7e1cbf820d960d75b61b1d139f7ef14261aff"
+    },
+    {
+      "script": "res://tests/test_creator_clearview_motion.gd",
+      "checks": 221,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "828d3b013cf0816153f6a6787eddd22fbcf29c996743cf4e3f634808bb4a953b"
+    },
+    {
+      "script": "res://tests/test_creator_clearview_observations.gd",
+      "checks": 290,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "3e40c14ad868309db158117003c23800cae2cc4c75d3192d1fa1a76a65211b5d"
+    },
+    {
+      "script": "res://tests/test_creator_compile_binding.gd",
+      "checks": 88,
+      "failures": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "log_sha256": "5a7810d21c4bb18748dd3303b76a704aeecc1f95edcee8aeea566d60e62d39b6"
+    }
+  ],
+  "checks_total": 1097,
+  "sample_probes": [
+    {
+      "log_sha256": "e430307eac1d04c939c9d2b3c022b4f4f82b95ec204f1b42b536b4d8313f8dfe",
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "log_sha256": "b4c5320f04b59b36fde63d8424ad9bf6372ef38f5c834dcc01f717fc88fa364f",
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    }
+  ],
+  "sample_summary": {
+    "archives": 6,
+    "models": 25,
+    "admitted_visuals": 15,
+    "refused": 10
+  },
+  "archives": [
+    {
+      "url": "https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip",
+      "bytes": 1414972,
+      "sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_INVALID: An empty legacy directory size hint was ignored: MC 3D Hobby Shops Extra 330 Red/wavdata/.",
+            "SOURCE_UNSUPPORTED: 9 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: 6 visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview.",
+            "SOURCE_UNSUPPORTED: 1 servo mappings were left unprepared. Review their source declarations before binding those parts.",
+            "SOURCE_UNSUPPORTED: Hinge \"LElevon\": use one listed rotation servo with an unambiguous surface, render group and axis.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 8 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "e41c8a27f5cf0511937929e5fc9fbf4f7df4cd01a92cb9844430b809f23991b8",
+          "name": "MC 3D Hobby Shops Extra 330 Red",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 6,
+          "root": "MC 3D Hobby Shops Extra 330 Red",
+          "triangles": 3776,
+          "unresolved": 1
+        }
+      ]
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/tb-models/Calmato_40_sports.zip",
+      "bytes": 1183603,
+      "sha256": "cb53aa60dc46a919e4a27fbfca4a0d83960cb3a15d4c5cd468e34c6085553017",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+          ],
+          "name": "Calmato 40 Sports",
+          "ok": false,
+          "phase": "conversion",
+          "root": "Calmato 40 Sports"
+        }
+      ]
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/mc-models/NP22/MC_300S-Air_Guard.zip",
+      "bytes": 1301722,
+      "sha256": "39ee27cecb946ce5b4929ed95ab64cd37011f8a56ef4d021ff353b46f8e26e9c",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "SOURCE_INVALID: Polygon 129 in part \"Fuse\" has intersecting edges."
+          ],
+          "name": "MC 300S-Air Guard",
+          "ok": false,
+          "phase": "conversion",
+          "root": "MC 300S-Air Guard"
+        }
+      ]
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/kendata/cvplanepaks/CVPlanesPk1.zip",
+      "bytes": 10557890,
+      "sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+          ],
+          "name": "701f",
+          "ok": false,
+          "phase": "conversion",
+          "root": "701f"
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 11 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 1 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "67ee1a1d67c6abfee5f1245344af2db5caa311a8b52327cce65c39d710998015",
+          "name": "B-25",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "B-25",
+          "triangles": 7453,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+          ],
+          "name": "701F2",
+          "ok": false,
+          "phase": "conversion",
+          "root": "701F2"
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 5 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 2 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "9e71f72f0095e2170edf18462c8cb6a94882afc7e5a9b9d595f7c76dd92163e4",
+          "name": "BD-5J",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "BD-5J",
+          "triangles": 6458,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 13 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "6561cac12d3618769c6f5b9a1a5f597b719b0590beac7f43ac2bd33d5ade4949",
+          "name": "C-130",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "C-130",
+          "triangles": 4175,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 7 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 19 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "dec47574cbebe193c4aa850a650e05864ac765a1c14fdb60eee756a0388db300",
+          "name": "Beluga",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "Beluga",
+          "triangles": 5075,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 8 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "1920af335a3718be084b9f5f6193a252252808f6cc14c02846c2149d588889ac",
+          "name": "A6-Zero",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "A6-Zero",
+          "triangles": 4042,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+          ],
+          "name": "Beech99",
+          "ok": false,
+          "phase": "conversion",
+          "root": "Beech99"
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 9 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 24 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "c89f59f0ec07e54d4a95ad45706b9ae30e07f2dc78cdb4e924a9537df5b2f1a4",
+          "name": "A-10_GWS",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "A-10_GWS",
+          "triangles": 4926,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 5 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "fcc361b677610baf9ee93d30d2d763fe0830b60053960e5d18ce13bec8654023",
+          "name": "AlleyCat",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "AlleyCat",
+          "triangles": 1441,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 7 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "4d8a923bfae1e99ff6417e684cf30baed67b5b5c6275f07a86ea7d7e1326f01d",
+          "name": "Beginair",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "Beginair",
+          "triangles": 2117,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 9 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "43751764078869accdaab30616d35f594aee9858b513defc621b7e4a09bc5697",
+          "name": "Bell X-5",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "Bell X-5",
+          "triangles": 3852,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 6 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "481babbf3ac8229e72feb13ce6a6587e8b501b3b7dd56ee6277633b9a166a3c9",
+          "name": "A-7 Corsair",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "A-7 Corsair",
+          "triangles": 3205,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 8 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "6a48e01c3f3a8819c1903dd9197d7699e0bba8b582ef400cf4dd4d21a18692c4",
+          "name": "A-6 Intruder",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "A-6 Intruder",
+          "triangles": 4511,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 14 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "b82f7ae472d71cb8bb3d67a3dba1c66901a1d3ab70dd727c03eed5c920837eef",
+          "name": "B-26 Marauder",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "B-26 Marauder",
+          "triangles": 7517,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+          ],
+          "name": "Bellanca C-27",
+          "ok": false,
+          "phase": "conversion",
+          "root": "Bellanca C-27"
+        },
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+          ],
+          "name": "Brown-B1 Racer",
+          "ok": false,
+          "phase": "conversion",
+          "root": "Brown-B1 Racer"
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 11 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
+            "SOURCE_INVALID: 10 zero-area surfaces were omitted."
+          ],
+          "glb_sha256": "4cb7ee32445a9e6497ffb52f83580e95b8abbbdd1eacb159b4fb3a3c29bf79e5",
+          "name": "Agri Duck Duster",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 0,
+          "root": "Agri Duck Duster",
+          "triangles": 6553,
+          "unresolved": 0
+        },
+        {
+          "diagnostics": [
+            "SOURCE_INVALID: Polygon 91 in part \"fuse\" has intersecting edges."
+          ],
+          "name": "Ascent Park Glider",
+          "ok": false,
+          "phase": "conversion",
+          "root": "Ascent Park Glider"
+        },
+        {
+          "diagnostics": [
+            "UNSUPPORTED_CAPABILITY: Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
+            "SOURCE_UNSUPPORTED: 41 coordinate markers were hidden and retained as source evidence.",
+            "SOURCE_UNSUPPORTED: 23 visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview.",
+            "SOURCE_UNSUPPORTED: 3 servo mappings were left unprepared. Review their source declarations before binding those parts.",
+            "SOURCE_UNSUPPORTED: Hinge \"Gear\": provide one named render frame and a separate visible part group.",
+            "SOURCE_UNSUPPORTED: Hinge \"LWing\": provide one named render frame and a separate visible part group.",
+            "SOURCE_UNSUPPORTED: Hinge \"RWing\": provide one named render frame and a separate visible part group.",
+            "SOURCE_UNSUPPORTED: Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+          ],
+          "glb_sha256": "eedbf15ca3236d7460e5f1322c7064c8b1ec073cef9b3e64f31dcb7bd4ac778b",
+          "name": "B-52-Stratofortress",
+          "ok": true,
+          "phase": "conversion",
+          "prepared": 23,
+          "root": "B-52-Stratofortress",
+          "triangles": 18967,
+          "unresolved": 3
+        }
+      ]
+    },
+    {
+      "url": "https://gunnerson.homestead.com/files/clearview/FMS-PT-17-Stearman.zip",
+      "bytes": 495999,
+      "sha256": "228543e151e01af0eaadc58eeea07207079cec7db4f8fef157fb4c156de0ed0b",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "SOURCE_INVALID: ClearView model FMS-PT-17-Stearman: SOURCE_INVALID: The model parameter file contains an invalid field or too many records."
+          ],
+          "ok": false,
+          "phase": "package"
+        }
+      ]
+    },
+    {
+      "url": "https://gunnerson.homestead.com/files/clearview/HobbyZone-Firebird-Stratos.zip",
+      "bytes": 340895,
+      "sha256": "2e1fa6a8dd95a03670dcf2b516fb2338a0fffb48c4f45d28e531cdaa0fc2d794",
+      "outcomes": [
+        {
+          "diagnostics": [
+            "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+          ],
+          "name": "HobbyZone-Firebird-Stratos",
+          "ok": false,
+          "phase": "conversion",
+          "root": "HobbyZone-Firebird-Stratos"
+        }
+      ]
+    }
+  ],
+  "not_counted": [
+    "Initial motion and observation harness attempts omitted production PO catalogs or data; completed focused retries supplied those unchanged inputs.",
+    "The source-installation/trial harness printed zero failed assertions but emitted script/engine errors from absent full-app assets; the checked runner rejected it. No pass is claimed."
+  ],
+  "website_verification": {
+    "languages": 11,
+    "static_locale_tests": 7,
+    "download_tests": 8,
+    "browser_layout": "Not verified: standalone Chromium could not create its required socket; the cloud browser could not reach the local preview."
+  }
+}

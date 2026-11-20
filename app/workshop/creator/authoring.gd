@@ -848,8 +848,8 @@ func issues() -> Array:
 	var found: Array = []
 	if needs_source_installation():
 		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import"))
-	if Installation.required(_source):
-		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.FLIGHT_UNAVAILABLE,"flight_qualification","review_test"))
+	# A confirmed ClearView installation compiles to the same physical bytes as any other source
+	# (compiler.gd strips source metadata), so it follows the ordinary experimental trial gate.
 	if _source == null:
 		found.append(R.diagnostic(R.SOURCE_MISSING, "Import a model first.", "source", "import"))
 	else:

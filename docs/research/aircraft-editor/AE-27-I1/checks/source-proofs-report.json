@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fffbfcd7-fc6f-4137-82ae-dd0c4199438c",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_presentation_sources.gd"
+  ],
+  "cwd": "/workspace/scratch/adcec33b29c5/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:46:33.025067+00:00",
+  "label": "ae27-source-proofs",
+  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-source-proofs-7_4bihr4/engine.log",
+  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-source-proofs-7_4bihr4/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Presentation source proofs:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.414443,
+  "log_bytes": 121,
+  "log_sha256": "c4ddbca056acce5c474293333ea65e5653cb922346f94aa678dc1eb9927eff3a"
+}

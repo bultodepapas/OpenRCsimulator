@@ -96,6 +96,37 @@ func _conversion() -> void:
 	check("repeated marker references are bounded", not refused.ok and refused.diagnostics[0].code == "SOURCE_LIMIT")
 	var bow := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 1 1\n0 1 1\n1 0 0").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 1\n2 0 1\n3 1 0")
 	check("cancelling bow-tie is refused", not _convert(bow).ok)
+	# Real downloads: a quad whose two consecutive corners coincide is a triangle (Ascent Park Glider).
+	var coincident := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 0 0\n1 0 0\n0 1 1").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 0\n2 1 0.5\n3 0 1")
+	var collapsed := _convert(coincident)
+	check("coincident consecutive corners collapse to the same shape", collapsed.ok and collapsed.value.source.triangle_count() == 1
+		and not collapsed.value.receipt.has("omitted_self_intersecting_surfaces"))
+	var closing := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 0 0\n0 1 1\n0 0 0").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 0\n2 0 1\n3 0 0")
+	check("a repeated closing corner collapses too", _convert(closing).ok and _convert(closing).value.source.triangle_count() == 1)
+	# A genuine (non-cancelling) bow-tie has no interior: omitted and reported, never fanned (MC 300S).
+	var sliver := "OBJECT poly\nname \"sliver\"\nnumvert 4\n0 0 0\n4 2 0\n4 0 0\n0 4 0\nnumsurf %d\n"
+	var crossed := sliver % 1 + "SURF 0x30\nmat 0\nrefs 4\n0 0 0\n1 0 0\n2 0 0\n3 0 0\nkids 0\n"
+	result = _convert(body.replace("kids 1","kids 2") + crossed)
+	check("self-intersecting surface omitted and counted", result.ok and result.value.source.triangle_count() == 1
+		and result.value.receipt.omitted_self_intersecting_surfaces == 1)
+	check("omission reported at import", result.ok and result.diagnostics.any(func(d: Dictionary) -> bool:
+		return d.message == Converter.SELF_INTERSECTING_NOTE and d.arguments == ["1"]))
+	check("omission reported after reopening", result.ok and Converter.source_notes(result.value.source).any(func(d: Dictionary) -> bool:
+		return d.message == Converter.SELF_INTERSECTING_NOTE and d.arguments == ["1"]))
+	var many_crossed := sliver % (Converter.MAX_SELF_INTERSECTING + 1)
+	for face: int in Converter.MAX_SELF_INTERSECTING + 1:
+		many_crossed += "SURF 0x30\nmat 0\nrefs 4\n0 0 0\n1 0 0\n2 0 0\n3 0 0\n"
+	refused = _convert(body.replace("kids 1","kids 2") + many_crossed + "kids 0\n")
+	check("too many self-intersecting surfaces refuse the model", not refused.ok and refused.diagnostics[0].code == "SOURCE_INVALID")
+	# Real downloads (Bellanca C-27 rudder): collinear outline corners make a zero-area ear.
+	var outline := "OBJECT poly\nname \"rudder\"\nnumvert 5\n0 0 0\n0 0 1\n0 0 2\n0 0 3\n2 0 1.5\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 5\n0 0 0\n1 0 0.3\n2 0 0.6\n3 0 1\n4 1 0.5\nkids 0\n"
+	var straight := _convert(body.replace("kids 1","kids 2") + outline)
+	if not straight.ok:
+		printerr("Collinear outline: ", straight)
+	# One fixture triangle plus at most three non-degenerate rudder triangles; never a refusal.
+	check("collinear outline corners keep the shape without a zero-area triangle", straight.ok
+		and straight.value.source.triangle_count() >= 2 and straight.value.source.triangle_count() <= 4)
+	check("unchanged models carry no new receipt field", not _convert(body).value.receipt.has("omitted_self_intersecting_surfaces"))
 	var large := body.replace("0 0 0\n1 0 0\n0 1 1", "100000000 0 0\n100000001 0 1\n100000000 1 1")
 	check("render quantization cannot silently erase detail", not _convert(large).ok)
 	var collapse := body.replace("0 0 0\n1 0 0\n0 1 1", "100000000 0 0\n100000001 0 0\n100000096 100000000 100000000")

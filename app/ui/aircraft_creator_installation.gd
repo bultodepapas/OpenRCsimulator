@@ -1,5 +1,6 @@
 extends VBoxContainer
-## UI intent only: no coefficients are imported and this choice never qualifies a flight.
+## UI intent only: no coefficients are imported. The confirmed configuration flies exactly like an
+## STL/GLB Creator aircraft with the same values: experimental, never a ClearView flight model.
 signal choice_requested(proposal: Dictionary,revision: int)
 const TITLE := "OpenRC configuration"
 const PROPOSAL := "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
@@ -72,7 +73,7 @@ func _translate() -> void:
 	_retained.text = tr(RETAINED)
 	_review.text = tr(REVIEW)
 	_choose.text = tr(CHOOSE)
-	_qualification.text = tr(Installation.FLIGHT_UNAVAILABLE)
+	_qualification.text = tr(Installation.EXPERIMENTAL)
 
 func _label() -> Label:
 	var label := Label.new()

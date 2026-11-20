@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "42bbab1f-00a6-45cb-8f5c-dc4ac963c162",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_attachment_selection.gd"
+  ],
+  "cwd": "/workspace/scratch/adcec33b29c5/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:45:56.528986+00:00",
+  "label": "ae27-selection",
+  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-selection-0i3t_duk/engine.log",
+  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-selection-0i3t_duk/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Attachment selection:",
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.878094,
+  "log_bytes": 4612,
+  "log_sha256": "429e78ca88dafa7bf6719ea145058853f6a068c435159f6610dc98f545a43d1b"
+}

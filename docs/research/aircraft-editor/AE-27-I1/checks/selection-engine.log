@@ -1,0 +1,124 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   Original is explicit in every slot
+ok   explicit Original validates
+ok   JSON round trip retains the canonical selection
+ok   integer and JSON float version canonicalize equally
+ok   input order canonicalizes
+ok   catalogue digest is stable SHA-256
+ok   jensen-das-ugly-stik-60 retains explicit Original
+ok   gp-extra-300s-60 retains explicit Original
+ok   stik-electric-6s retains explicit Original
+ok   stik-glow-61fx-2t retains explicit Original
+ok   stik-glow-55ax-2t retains explicit Original
+ok   stik-glow-fs64v-4t retains explicit Original
+ok   turbo-lumber-evolution retains explicit Original
+ok   p51d-mustang-120 retains explicit Original
+ok   f4u-corsair-250 retains explicit Original
+ok   sebart-avanti-s-a200-p100rx retains explicit Original
+ok   moonrunner-x99 retains explicit Original
+ok   unregistered-aircraft retains explicit Original
+ok   missing or non-document value
+ok   missing or non-document value
+ok   missing or non-document value
+ok   missing or non-document value
+ok   missing or non-document value
+ok   missing or non-document value
+ok   missing document key format
+ok   missing document key version
+ok   missing document key catalog_sha256
+ok   missing document key selections
+ok   refuse injected availability
+ok   refuse injected factory
+ok   refuse injected path
+ok   refuse injected scale
+ok   refuse injected mass
+ok   refuse injected flight_eligible
+ok   invalid version <null>
+ok   invalid version true
+ok   invalid version 1
+ok   invalid version 0
+ok   invalid version 2
+ok   invalid version -1
+ok   invalid version 1.1
+ok   invalid version nan
+ok   invalid version inf
+ok   unknown format
+ok   unknown or stale catalogue digest
+ok   unknown or stale catalogue digest
+ok   unknown or stale catalogue digest
+ok   unknown or stale catalogue digest
+ok   unknown or stale catalogue digest
+ok   explicit missing slot wheels
+ok   explicit missing slot landing_gear
+ok   explicit missing slot propeller
+ok   explicit missing slot spinner
+ok   unknown slot
+ok   non-object selections
+ok   non-object selections
+ok   non-object selections
+ok   non-object selections
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   malformed option ID
+ok   unknown ID never falls back
+ok   unknown ID on unregistered aircraft never falls back
+ok   known option in the wrong slot
+ok   pilot study resolves as preview-only with a reason
+ok   resolution contains no flight authorization
+ok   omitted scale cannot imply 100 percent
+ok   existing base-ID grammar retains Original
+ok   existing base-ID grammar retains Original
+ok   no inferred configuration support: gp-extra-300s-60
+ok   no inferred configuration support: stik-electric-6s
+ok   no inferred configuration support: stik-glow-61fx-2t
+ok   no inferred configuration support: stik-glow-55ax-2t
+ok   no inferred configuration support: stik-glow-fs64v-4t
+ok   no inferred configuration support: unregistered-aircraft
+ok   no inferred configuration support: skywalker-x8
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   malformed aircraft context
+ok   invalid scale <null>
+ok   invalid scale true
+ok   invalid scale 1
+ok   invalid scale []
+ok   invalid scale nan
+ok   invalid scale inf
+ok   invalid scale -inf
+ok   invalid scale 0
+ok   invalid scale -1
+ok   invalid scale 0.099
+ok   invalid scale 5.001
+ok   Original accepts the valid size domain
+ok   study has no unmeasured scale domain
+ok   Original accepts the valid size domain
+ok   study has no unmeasured scale domain
+ok   Original accepts the valid size domain
+ok   study has no unmeasured scale domain
+ok   Original accepts the valid size domain
+ok   study has no unmeasured scale domain
+ok   integer scale one is valid
+ok   resolution never mutates its input
+ok   catalogue/result copies cannot promote availability
+ok   catalogue copy cannot grant compatibility
+ok   catalogue copy cannot change its digest
+ok   Original documents do not share mutable selections
+ok   existing presentation stays at version four
+ok   current profile cannot accidentally persist the internal study
+ok   visual selections remain outside the physical recipe
+Attachment selection: 121 checks, 0 failed

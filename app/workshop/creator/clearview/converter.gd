@@ -12,6 +12,9 @@ const Motion := preload("motion.gd")
 const Observations := preload("observations.gd")
 const VERSION := "openrc-clearview-visual-v1"
 const MAX_POLYGON_WORK := 4000000
+## A few self-intersecting slivers are omitted and reported; more indicates a damaged model.
+const MAX_SELF_INTERSECTING := 16
+const SELF_INTERSECTING_NOTE := "%s self-intersecting surfaces were omitted."
 var _bin := PackedByteArray()
 var _gltf := {}
 var _materials := {}
@@ -27,6 +30,7 @@ var _pixels := 0
 var _triangles := 0
 var _polygon_work := 0
 var _dropped := 0
+var _self_intersecting := 0
 var _error := {}
 var _cancel := Callable()
 var _package: Package
@@ -89,13 +93,18 @@ static func source_notes(source: InspectedSource) -> Array:
 	var dropped: Variant = receipt.get("dropped_degenerate_surfaces",0)
 	if typeof(dropped) in [TYPE_FLOAT,TYPE_INT] and float(dropped) == floor(float(dropped)) and dropped > 0 and dropped <= Ac3d.MAX_SURFACES:
 		notes.append(R.diagnostic(R.SOURCE_INVALID,"%s zero-area surfaces were omitted.","source","import",[str(int(dropped))],R.SEVERITY_INFO))
+	var crossed: Variant = receipt.get("omitted_self_intersecting_surfaces",0)
+	if typeof(crossed) in [TYPE_FLOAT,TYPE_INT] and float(crossed) == floor(float(crossed)) and crossed > 0 and crossed <= MAX_SELF_INTERSECTING:
+		notes.append(R.diagnostic(R.SOURCE_INVALID,SELF_INTERSECTING_NOTE,"source","import",[str(int(crossed))],R.SEVERITY_INFO))
 	var image_notes: Variant = receipt.get("image_notes",[])
 	notes.append_array(_motion_notes(receipt.get("coordinate_frames")))
 	if image_notes is Array:
-		for entry: Variant in image_notes.slice(0,Limits.GLB_IMAGES):
-			if entry is Dictionary and typeof(entry.get("message")) == TYPE_STRING and entry.message == "JPEG comments were ignored.":
-				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"JPEG comments were ignored.","source","import",[],R.SEVERITY_INFO))
-				break
+		# Only fixed, known messages are re-shown; untrusted receipt text never reaches the UI.
+		for known: String in ["JPEG comments were ignored.", Images.JpegCheck.METADATA_NOTE, Images.Gif.FRAME_NOTE]:
+			for entry: Variant in image_notes.slice(0,Limits.GLB_IMAGES):
+				if entry is Dictionary and typeof(entry.get("message")) == TYPE_STRING and entry.message == known:
+					notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,known,"source","import",[],R.SEVERITY_INFO))
+					break
 	var archive_notes: Variant = receipt.get("archive_notes",[])
 	if archive_notes is Array:
 		for entry: Variant in archive_notes.slice(0,33):
@@ -142,6 +151,9 @@ func _convert() -> Dictionary:
 		material_conversion = "AC3D Phong to metallic-roughness approximation; ambient/specular originals retained below",
 		original_materials = _scene.materials, observations = _model.params.records, markers = _markers,
 		image_notes = _texture_notes, archive_notes = _package.archive().diagnostics(),coordinate_frames = motion.value}
+	# Present only when nonzero, so earlier conversions keep their exact bytes.
+	if _self_intersecting > 0:
+		receipt.omitted_self_intersecting_surfaces = _self_intersecting
 	_gltf.asset.extras = {openrc_clearview = receipt}
 	if not _parameters.is_empty():
 		receipt.parameters = _parameters
@@ -179,6 +191,8 @@ func _convert() -> Dictionary:
 	notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.", "source", "import", [], R.SEVERITY_INFO))
 	if _dropped > 0:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, "%s zero-area surfaces were omitted.", "source", "import", [str(_dropped)], R.SEVERITY_INFO))
+	if _self_intersecting > 0:
+		notes.append(R.diagnostic(R.SOURCE_INVALID, SELF_INTERSECTING_NOTE, "source", "import", [str(_self_intersecting)], R.SEVERITY_INFO))
 	return R.ok({source = inspected.value, receipt = receipt}, notes)
 
 func _admit(label: String) -> Dictionary:
@@ -264,6 +278,8 @@ func _mesh(node: Dictionary) -> Array:
 		var order := _triangulate(node, face, normal, face_index)
 		if not _error.is_empty():
 			break
+		if order.is_empty():
+			continue # An omitted self-intersecting surface, counted and reported.
 		var material := _material(face.material, node.texture, bool(int(face.flags) & 32))
 		if material < 0:
 			break
@@ -277,6 +293,10 @@ func _mesh(node: Dictionary) -> Array:
 			var c := _vector(node.vertices[face.refs[triangle[2]].vertex])
 			var source_cross := _triangle_cross(node.vertices[face.refs[triangle[0]].vertex],
 				node.vertices[face.refs[triangle[1]].vertex],node.vertices[face.refs[triangle[2]].vertex])
+			# Collinear consecutive outline corners can yield an ear with exactly zero source area.
+			# It covers nothing, so the polygon's shape is unchanged without it.
+			if source_cross == [0.0, 0.0, 0.0]:
+				continue
 			var render_cross := _triangle_cross([a.x,a.y,a.z],[b.x,b.y,b.z],[c.x,c.y,c.z])
 			var preserved: float = source_cross[0]*render_cross[0] + source_cross[1]*render_cross[1] + source_cross[2]*render_cross[2]
 			if preserved <= 0.0 or not is_finite(preserved):
@@ -322,11 +342,23 @@ func _triangulate(node: Dictionary, face: Dictionary, normal: Vector3, face_inde
 	var helper := Vector3.UP if absf(normal.y) < 0.9 else Vector3.RIGHT
 	var u := normal.cross(helper).normalized()
 	var v := normal.cross(u).normalized()
-	var origin: Array = node.vertices[face.refs[0].vertex]
+	# Coincident consecutive corners form a zero-length edge, which does not change the polygon's
+	# shape. Collapse them (exact source coordinates) before the intersection test, then map the
+	# triangulation back to the original corners so UVs and smoothing still come from the source.
+	var ring: Array[int] = []
+	for corner: int in face.refs.size():
+		if ring.is_empty() or node.vertices[face.refs[ring[-1]].vertex] != node.vertices[face.refs[corner].vertex]:
+			ring.append(corner)
+	while ring.size() > 1 and node.vertices[face.refs[ring[-1]].vertex] == node.vertices[face.refs[ring[0]].vertex]:
+		ring.pop_back()
+	if ring.size() < 3:
+		_error = R.fail(R.SOURCE_UNSUPPORTED, "An AC3D polygon cannot be triangulated without changing its shape.", "source", "import")
+		return PackedInt32Array()
+	var origin: Array = node.vertices[face.refs[ring[0]].vertex]
 	var points := PackedVector2Array()
 	var original: Array = []
-	for ref: Dictionary in face.refs:
-		var point: Array = node.vertices[ref.vertex]
+	for corner: int in ring:
+		var point: Array = node.vertices[face.refs[corner].vertex]
 		var dx: float = point[0] - origin[0]
 		var dy: float = point[1] - origin[1]
 		var dz: float = point[2] - origin[2]
@@ -346,11 +378,17 @@ func _triangulate(node: Dictionary, face: Dictionary, normal: Vector3, face_inde
 				_error = R.fail(R.SOURCE_LIMIT, "The model exceeds the polygon conversion work limit.", "source", "import")
 				return PackedInt32Array()
 			if _intersects(original[a], original[next], original[b], original[(b + 1) % points.size()]):
-				_error = R.fail(R.SOURCE_INVALID, "Polygon %s in part \"%s\" has intersecting edges.", "source", "import", [str(face_index),str(node.name)])
+				# A self-intersecting polygon has no defined interior; a fan would invent one.
+				_self_intersecting += 1
+				if _self_intersecting > MAX_SELF_INTERSECTING:
+					_error = R.fail(R.SOURCE_INVALID, "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit.", "source", "import", [str(face_index),str(node.name)])
 				return PackedInt32Array()
 	var result := Geometry2D.triangulate_polygon(points)
 	if result.size() != (points.size() - 2) * 3:
 		_error = R.fail(R.SOURCE_UNSUPPORTED, "An AC3D polygon cannot be triangulated without changing its shape.", "source", "import")
+		return PackedInt32Array()
+	for index: int in result.size():
+		result[index] = ring[result[index]]
 	return result
 
 func _material(index: int, texture: String, double_sided: bool) -> int:

@@ -14064,3 +14064,27 @@ msgstr "Телеметрия включена · Настройки → Инте
 
 msgid "Telemetry is off · Settings → Interface"
 msgstr "Телеметрия отключена · Настройки → Интерфейс"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "Тестовые полёты используют эту оценочную конфигурацию OpenRC, а не лётную модель ClearView. Они экспериментальные."
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "Выбранная конфигурация OpenRC относится к другой модели. Выберите конфигурацию для этой модели заново."
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "Пропущено самопересекающихся поверхностей: %s."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "У многоугольника %s в детали \"%s\" пересекаются рёбра, и в модели слишком много таких поверхностей, чтобы их пропустить."
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "Метаданные JPEG (камера, цветовой профиль или данные редактора) проигнорированы."
+
+msgid "Only the first GIF frame was imported."
+msgstr "Импортирован только первый кадр GIF."
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "Проигнорировано строк-меток редактора в параметрах модели: %s."
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "Этот формат текстуры пока не поддерживается. Преобразуйте текстуру в стандартный PNG, JPEG, GIF или несжатый 24-битный BMP и обновите ссылку на неё в модели."

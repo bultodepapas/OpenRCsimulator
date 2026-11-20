@@ -1,9 +1,10 @@
 # Workshop aircraft attachments
 
-**Date:** 2026-11-19. **Status:** plan; no attachment implementation or qualification is claimed.
+**Date:** 2026-11-19. **Status:** checked internal implementation; no player-facing attachment or fit qualification is claimed.
 **Owner:** Aircraft Workshop (AE), with AS/model authors for bindings and GP/physics for physical installations.
 **Steps:** AE-27-00a through AE-27-07d. **Baseline:** `main` at `e0a733937e255bacfe95ff09db0fb3838697239f`.
 **Planning branch:** `plan/workshop-aircraft-attachments-2026-11-19`.
+**Implementation integration base:** `main` at `b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`.
 
 This is the authoritative attachment subplan of the [Aircraft Editor plan](aircraft-editor.md).
 The [dated source review](../research/aircraft-editor/AE-27-00/README.md) records the inspected Workshop,
@@ -13,6 +14,8 @@ implemented player behavior.
 The [twenty internet investigations](../research/aircraft-editor/AE-27-R1/README.md) reinforce this
 plan with simulator workflows, RC assemblies, open-source tools and community questions. Their
 recommendations are incorporated below; they do not qualify an asset or physical installation.
+The [first implementation record](../research/aircraft-editor/AE-27-I1/README.md) records the internal
+selection contract, native wheel study, executed checks and the remaining player-facing work.
 
 ## 1. Product goal and delivery rule
 
@@ -99,6 +102,31 @@ use the pinned source inventory in the dated review for this work.
 
 Paths in this table are relative to `app/`. Source locations and relevant functions are linked in
 the [review](../research/aircraft-editor/AE-27-00/README.md#2-workshop-integration-map).
+
+### 2.1 Implementation preflight against GitHub
+
+The implementation preflight compared this branch at `9f20493631aa3013fbf28341bc9bcc9704fe48fd`
+with GitHub `main`, still `e0a733937e255bacfe95ff09db0fb3838697239f`. There was no upstream
+source drift at that check. Before publication, `main` advanced to
+`b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`; its three ClearView importer/guide commits were
+merged into this branch without conflicts. They change the Creator's import/configuration workflow,
+not the attachment registration or stock Stik model. Imported aircraft still receive no inferred
+part compatibility. The focused implementation checks ran on the combined source.
+Reading the actual consumers tightened the delivery order:
+
+| Observed code boundary | Consequence for the first increments |
+| --- | --- |
+| `presentation.gd` is itself in the shared presentation proof set. The customization generator hashes it into every family's slot pin. | A profile edit is a fleet-wide presentation migration, even when only the Stik receives alternate wheels. Build the isolated contract first; regenerate every affected family together at integration. |
+| Profile, smoke, rebind, transfer, mechanical-audio editing and airship adapters have explicit version branches. The exporter rejects mixed proof versions. | Allocate profile/binding/proof versions as one change. Preserve v1–v4 shapes, airship behavior, overlays and old source identities; test each reader rather than only changing a constant. |
+| Thumbnails **and bundle import** call `Trial.freeze`; physical start qualification does not inspect presentation eligibility. | Separate visual preparation from strict flight admission at those two callers, and recheck the trusted selection at Workshop and CLI launch. A successfully compiled physical model is not attachment flight approval. |
+| Preview reuses the airplane for Original/Draft, detects paint/marking/binding changes, and measures bounds when it builds the model. | Add explicit part invalidation, apply-error handling and bounds refresh during the full lifecycle increment. An isolated mesh swap is not complete preview integration. |
+| Stik wheels already have named pivot/node handles and four material surfaces. The current contact test subtracts the **profile radius**, not a measured mesh radius. | Stage replacements on the existing mesh nodes, preserving observers and per-instance overrides. Independently measure the tire envelope and lowest vertex; the old contact test alone cannot qualify a larger wheel. |
+
+The first **internal** increment therefore delivers a closed selection/resolution contract and a
+same-envelope native tread prototype without changing the current profile, generated pins or public
+Workshop flow. It does not complete AE-27-00b or qualify AE-27-01a. A separate integration increment
+must finish the migration and complete player journey before a Parts selector is offered. This
+keeps the first usable feature small while making its cross-cutting work explicit.
 
 ## 3. Aircraft rollout and restrictions
 
@@ -222,6 +250,18 @@ bundles, dirty-state comparisons and stale-write protection. Allocate schema/pro
 with the decal, lighting and smoke owners when implementation starts; this plan does not reserve a
 conflicting numeric version or assume another branch is merged.
 
+Editing the current presentation validator changes the shared proof and therefore every generated
+family's `slots_sha256`. Keep historical records structurally readable, but do not advertise
+uninterrupted launch of old pinned builds. Current store rules prohibit in-place rebinding; use
+reviewed rebind/Save a copy when supported and explain unavailability otherwise. Some historical
+smoke profiles are deliberately not rebindable. Include the airship adapter, customization overlays,
+export package marker, profile transfer, audio-edit promotion and all stock/empty predicates in the
+migration review. An explicit unknown attachment must never be mistaken for an unbound default.
+
+Keep `Trial.freeze` strict for flight by default. Thumbnail rendering and bundle import need an
+explicit caller-owned visual preparation path; purpose/eligibility never comes from imported JSON.
+The flight launcher must still enforce attachment eligibility before physical start qualification.
+
 Cosmetic choices change presentation identity. **Within the same accepted source/descriptor/manifest
 and physical recipe**, they must leave resolved aircraft bytes, physical model/wheel-profile hashes,
 trial identity and deterministic physical results unchanged. The existing trial identity also includes
@@ -269,20 +309,23 @@ MVP. Tool-code licenses and downloadable asset licenses are separate; preserve t
 
 Every row below is a separate reviewable subphase, with a working original/default route. Dependencies
 run in phase order; fleet extensions can follow independently after their shared contract is stable.
-All implementation rows are **planned**. Only the source/planning portion of AE-27-00a is complete.
+The source/planning portion of AE-27-00a is complete. [AE-27-I1](../research/aircraft-editor/AE-27-I1/README.md)
+implements the isolated selection/resolver and native wheel study with 594 passing focused checks.
+AE-27-00b and AE-27-01a are **partial**; all player-facing integration and qualification gates below
+remain open. No option is promoted to cosmetic flight by these internal checks.
 
 ### Phase 0 — Freeze the contract and the pilot
 
 | ID | Work | Proof / exit condition |
 | --- | --- | --- |
 | AE-27-00a | Source/fleet audit, ownership and first Ugly Stick fit inventory. Record actual node/assembly references and original-state evidence. | Source review delivered on this branch. Native fit measurements/captures remain to do; no replacement is marked qualified. |
-| AE-27-00b | Define the versioned catalogue/profile/binding extension, compatibility resolver and migration behavior. Add original-only/no-op adapters and fixtures. | Old profiles remain readable, unknown/stale IDs refuse explicitly, defaults reproduce the existing assembly, and the physical recipe rejects visual fields. Coordinate profile versions and source proof before publishing generated bindings. |
+| AE-27-00b | **Partial:** internal closed v1 selection/resolver and refusal fixtures implemented. Finish the presentation/profile/binding extension and migration behavior. | Old profiles remain readable, unknown/stale IDs refuse explicitly, defaults reproduce the existing assembly, and the physical recipe rejects visual fields. Coordinate profile versions and source proof before publishing generated bindings; current presentation stays v4. |
 
 ### Phase 1 — Ugly Stick wheels, the first complete feature
 
 | ID | Work | Proof / exit condition |
 | --- | --- | --- |
-| AE-27-01a | Author one modest alternative wheel set on the baseline Stik. Keep all three pivots, linked main wheels, nose steering, gear flex and section metadata. Establish visual-only fit approval. | Source pipeline reproduces the set; original/alternative instances isolate materials; native rest/steering/compression review establishes whether it is cosmetic-flight eligible. |
+| AE-27-01a | **Partial:** detached same-envelope Twin-groove study implemented and measured headlessly. Keep all three pivots, linked main wheels, nose steering, gear flex and section metadata. Finish source proof and visual fit approval. | Original/alternative instances isolate materials; exact hardware buffers and Original recovery are checked. Native rendered rest/steering/compression review still establishes whether it is cosmetic-flight eligible. |
 | AE-27-01b | Add Appearance → Parts → Wheels. Connect preview, Original/Draft, one-step Undo/Redo, reset, Save/load/recovery, thumbnail and trial/return through the shared document. | One accepted set survives the complete player journey. A refused set preserves the draft and prior flight. Cosmetic identity changes; physical identity and same-input flight results do not. |
 | AE-27-01c | Add Small/Large/XL presets one at a time using the same binding. Clearly retain preview-only options when the visual fit fails. | A recorded fit result per preset and approved scale domain. No universal wheel-size slider or automatic certification of giant tires. |
 
@@ -379,7 +422,8 @@ AE-27-07a work. The JSBSim gas-cell schema reviewed in R15 does not supply a flo
 
 ## 6. Acceptance gates and proportionate verification
 
-These are future implementation gates, not tests performed for this planning branch. Use the
+These are full feature gates; the internal [AE-27-I1 checks](../research/aircraft-editor/AE-27-I1/README.md#verification)
+cover only the stated contract/mesh preparation and stock regressions, not complete C1–C5. Use the
 [existing tool routes](../tools/README.md) and [Workshop commands](../TOOLS.md#aircraft-workshop).
 Select focused checks for each changed boundary; broaden for the integrated release and required CI.
 Do not rerun every native suite for a local selector or documentation edit.
@@ -439,10 +483,23 @@ laws or silently close their open gates. A future aerodynamic wing/tail package 
 
 ## 8. First implementation handoff
 
-The first implementation PR should cover **AE-27-00b + AE-27-01a/01b**, stopping at one baseline
-Ugly Stick wheel alternative. Build the original-only contract first, then the alternate asset and
-the complete player flow. Give the alternative a flight-eligibility result from actual fit evidence;
-if it fails, retain the working preview/save feature and narrow the proposed geometry.
+The first **player-facing** implementation PR should cover **AE-27-00b + AE-27-01a/01b**, stopping
+at one baseline Ugly Stick wheel alternative. Precede it with reviewable internal increments:
+
+1. Strict, independently versioned selection contract and trusted resolution, with explicit Original
+   selections and unknown/stale-ID refusal. Keep it disconnected from v4 persistence and flight until
+   the whole migration is ready; do not silently allocate a presentation version.
+2. A native, same-envelope Stik tread prototype on the three existing mesh handles. Stage all resources
+   before publishing, restore the exact original meshes/overrides, and test independent mesh bounds,
+   instance isolation and failed staging. Keep its status unqualified and internal.
+3. Coordinate the fleet-wide profile/binding/proof migration, then connect preview, history,
+   save/recovery, thumbnail, bundle import, Workshop/CLI launch and return. Add the public selector only
+   when those paths enforce the same trusted compatibility result.
+4. Record native rest/steering/compression fit and lifecycle evidence. Give the alternative its actual
+   flight-eligibility result; if it fails, retain the preview/save feature and narrow the geometry.
+
+The internal tread prototype is a mechanism check, not a substitute for the Small/Large/XL work in
+AE-27-01c and not an assertion that oversized tires preserve the original support geometry.
 
 The PR is ready when it has a source-generated binding, strict profile and launch validation,
 unchanged original behavior, one-step history, save/recovery/thumbnail integration, C1–C4 evidence for
