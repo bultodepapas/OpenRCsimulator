@@ -57,20 +57,33 @@ def _jobs(jobs):
 
 BACKGROUND_CREATIONFLAGS = ((subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW)
                             if os.name == "nt" else 0)
+CREATE_BREAKAWAY_FROM_JOB = 0x01000000
+
+
+def spawn_background(argv, output):
+    """Start a supervisor that outlives the MCP client (TQ-05-F2.1).
+
+    MCP clients (Claude Code, Codex) start their servers inside a Windows Job
+    Object, so a plain child dies when the agent session closes. That left
+    batches claiming RUNNING for days. Break away when the job allows it.
+    If it does not, start normally; the watchdog resumes the batch later.
+    """
+    options = {"stdin": subprocess.DEVNULL, "stdout": output, "stderr": output,
+               "cwd": str(REPO), "close_fds": True}
+    if os.name != "nt":
+        return subprocess.Popen(argv, start_new_session=True, **options)
+    # A private hidden console, not DETACHED_PROCESS: every descendant
+    # (git, ssh, Godot console wrappers, shells) inherits it instead of
+    # opening its own visible window on the user's desktop.
+    try:
+        return subprocess.Popen(argv, creationflags=BACKGROUND_CREATIONFLAGS | CREATE_BREAKAWAY_FROM_JOB, **options)
+    except PermissionError:
+        return subprocess.Popen(argv, creationflags=BACKGROUND_CREATIONFLAGS, **options)
 
 
 def _start(directory):
     with (directory / "supervisor.log").open("ab") as output:
-        options = {"stdin": subprocess.DEVNULL, "stdout": output, "stderr": output,
-                   "cwd": str(REPO), "close_fds": True}
-        if os.name == "nt":
-            # A private hidden console, not DETACHED_PROCESS: every descendant
-            # (git, ssh, Godot console wrappers, shells) inherits it instead of
-            # opening its own visible window on the user's desktop.
-            options["creationflags"] = BACKGROUND_CREATIONFLAGS
-        else:
-            options["start_new_session"] = True
-        subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "--worker", str(directory)], **options)
+        spawn_background([sys.executable, str(Path(__file__).resolve()), "--worker", str(directory)], output)
 
 
 def _active(directory):
@@ -269,6 +282,8 @@ def summarize(result, pool=None):
                   + "); fix that cause, then run again with a new request_id")
     elif state == "ERROR" and not active:
         action = "inspect supervisor.error; then sim_test_recover with the same request_id"
+    elif state == "NEEDS_OPERATOR" and not active:
+        action = f"needs attention: {supervisor.get('detail')}; {supervisor.get('action')}"
     elif not active and overall == "INCOMPLETE" and (result.get("recovery_required") or state not in {None, "ACCEPTED"}):
         action = "sim_test_recover with the same request_id (supervisor is not running)"
     elif not active and overall == "INCOMPLETE":
@@ -328,6 +343,45 @@ def recover(request_id, *, config=None):
     return status(request_id, config=config)
 
 
+SUPERVISOR_PAUSE_SECONDS = 2.0
+BLOCKED_RECOVER_SECONDS = 300.0
+STUCK_SECONDS = 15 * 60
+IDLE_SECONDS = 6 * 3600
+_STUCK_PHASES = {"BLOCKED", "COLLECTION_BLOCKED"}
+_FINAL_PHASES = {"DONE", "REJECTED"}
+
+
+class Progress:
+    """Decide when observing further cannot help (TQ-05-F2.2).
+
+    A batch whose remaining rows are all blocked for STUCK_SECONDS, or which
+    has not changed at all for IDLE_SECONDS (e.g. waiting for an offline host),
+    stops with NEEDS_OPERATOR and a reason. It never cancels accepted work.
+    """
+
+    def __init__(self, clock=time.monotonic):
+        self.clock, self.signature, self.changed = clock, None, clock()
+
+    def observe(self, rows):
+        signature = tuple((row.get("request_id"), row.get("phase"), (row.get("status") or {}).get("state"))
+                          for row in rows)
+        now = self.clock()
+        if signature != self.signature:
+            self.signature, self.changed = signature, now
+            return None
+        open_rows = [row for row in rows if row.get("phase") not in _FINAL_PHASES]
+        quiet = now - self.changed
+        if open_rows and all(row.get("phase") in _STUCK_PHASES for row in open_rows) and quiet >= STUCK_SECONDS:
+            return {"detail": f"{len(open_rows)} test(s) blocked without change for {int(quiet)} s",
+                    "action": "inspect tests[].error; testctl pool status/recover/reconcile with each job id, "
+                              "then sim_test_recover; never resubmit them under a new id",
+                    "blocked_jobs": [row.get("request_id") for row in open_rows][:20]}
+        if open_rows and quiet >= IDLE_SECONDS:
+            return {"detail": f"no progress for {int(quiet)} s; observation stopped, nothing was cancelled",
+                    "action": "check sim_fleet (offline or busy hosts), then sim_test_recover to keep waiting"}
+        return None
+
+
 def supervise(directory):
     directory = Path(directory).resolve()
     # A status observer briefly holds worker.lock to test liveness; retry so a
@@ -357,25 +411,33 @@ def supervise(directory):
             update("SNAPSHOTTING")
             snapshot = pool.snapshot(Path(request["source"]))
             write_json(manifest, {"snapshot": str(snapshot), "jobs": request["jobs"]})
-        deadline = time.monotonic() + 3600
-        while time.monotonic() < deadline:
+        # TQ-05-F2.2: observe until a final result or a stop rule, not for a
+        # fixed hour. A stop never cancels work; recover resumes observation.
+        progress = Progress()
+        recovered_at = {}
+        while True:
             update("RUNNING")
             batch_path = directory / "batch.json"
             if batch_path.exists():
                 for row in _read(batch_path)["jobs"]:
-                    if row["phase"] == "BLOCKED" and (pool.root / "jobs" / (row["request_id"] + ".json")).exists():
+                    identifier = row["request_id"]
+                    if (row["phase"] == "BLOCKED" and (pool.root / "jobs" / (identifier + ".json")).exists()
+                            and time.monotonic() - recovered_at.get(identifier, -1e9) >= BLOCKED_RECOVER_SECONDS):
+                        recovered_at[identifier] = time.monotonic()
                         try:
-                            pool.recover(row["request_id"])
+                            pool.recover(identifier)
                         except (OSError, RuntimeError, ValueError, subprocess.SubprocessError):
-                            pass  # retry only this exact receipt on the next observation
-            batch = run_batch(pool, request["config"], manifest, batch_path,
-                              timeout=min(30, max(0.1, deadline - time.monotonic())))
+                            pass  # retry only this exact receipt after the interval
+            batch = run_batch(pool, request["config"], manifest, batch_path, timeout=30)
             if batch["result"] in {"PASSED", "FAILED"}:
                 update("FINISHED", result=batch["result"])
                 return
+            stop = progress.observe(batch["jobs"])
+            if stop:
+                update("NEEDS_OPERATOR", result="INCOMPLETE", **stop)
+                return
             update("WAITING", result="INCOMPLETE")
-            time.sleep(5)
-        update("INCOMPLETE", detail="Supervisor observation deadline reached; recover the same request to continue. Remote jobs are not cancelled.")
+            time.sleep(SUPERVISOR_PAUSE_SECONDS)
     except Exception as error:
         update("ERROR", error=str(error))
     finally:

@@ -79,10 +79,44 @@ The detached flow below remains for long batches:
    different host. Repeating `sim_test_launch` with the same ID and inputs is
    idempotent; reusing the ID with changed inputs is refused.
 
-The supervisor observes the batch for up to one hour, retrying receipt recovery
-and artifact collection without rerunning tests. It may then stop with an
-incomplete batch; recovery resumes that batch. Stopping observation does not
-cancel remote jobs. Infrastructure failures retain their available diagnostics
+The supervisor observes the batch until it has a final result, retrying receipt
+recovery and artifact collection without rerunning tests (TQ-05-F2.2). It stops
+early with `NEEDS_OPERATOR`, a `detail` and an `action` in two cases:
+
+- every remaining test has been `BLOCKED`/`COLLECTION_BLOCKED` without change for
+  15 minutes;
+- nothing has changed for six hours, for example while waiting for an offline host.
+
+Stopping observation never cancels work, and `sim_test_recover` resumes it.
+`BLOCKED` receipts are re-observed at most every five minutes.
+
+On Windows the supervisor breaks away from the MCP client's Job Object. MCP
+clients start their servers inside a kill-on-close job, so a plain child used to
+die with the agent session and leave a batch claiming `RUNNING` for days.
+
+### Watchdog
+
+`tools/testqueue/watchdog.py` runs from the `\OpenRC\TestWatchdog` logon
+scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 60
+--serve-engine <pinned console engine>`. Each pass:
+
+- resumes, through the idempotent `recover`, every MCP request with a frozen
+  manifest, no final result, no live supervisor and a change within 24 hours;
+- skips `ERROR` and `NEEDS_OPERATOR`, and stops resuming a request after six
+  resumes in a day;
+- reports older requests as stale and never resumes them: their queued tests
+  would run old source;
+- starts `testctl serve` when the authority does not answer, for example after a
+  reboot. The machine-wide singleton refuses a second worker.
+
+The last pass is in `<pool root>/watchdog.json`. A running watchdog keeps the
+code it started with, so restart the task after updating it:
+
+```powershell
+python tools/testqueue/watchdog.py --dry-run
+Stop-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog; Start-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog
+Unregister-ScheduledTask -TaskPath \OpenRC\ -TaskName TestWatchdog   # remove
+``` Infrastructure failures retain their available diagnostics
 and cannot qualify a passing batch.
 If freezing is interrupted before a snapshot manifest exists, exact inputs were not
 frozen and no tests were dispatched. Submit a new request ID for a stable source.
