@@ -750,6 +750,12 @@ func _physics_propulsion() -> void:
 	jet_model.propulsion = [{type = "turbine", attributes = {Max_Thrust = 20.0, Max_RPM = 25000}}]
 	var jet := _derived_static_thrust(jet_model, base)
 	check("a jet records its Phoenix thrust", not jet.is_empty() and is_equal_approx(float(jet.block.get("jet_thrust_n", 0.0)), 20.0))
+	if not jet.is_empty():
+		var motor: Dictionary = jet.power.motor
+		var kt := 60.0 / (TAU * float(motor.kv_rpm_per_volt.value))
+		var supply := float(motor.resistance_ohm.value) + float(jet.power.battery.resistance_ohm.value)
+		check("a small fast rotor keeps the shaft time constant the runtime assumes",
+			float(jet.power.propeller.rotating_inertia.value) * supply / (kt * kt) >= PhoenixPhysics.SHAFT_TIME_CONSTANT_S * 0.999)
 	check("the jet's equivalent propeller delivers the Phoenix thrust", not jet.is_empty()
 		and absf(jet.thrust - 20.0) <= 20.0 * 0.05 and str(jet.power.propeller.name).contains("jet"))
 	# A glider without propulsion: an estimated launch motor of GLIDER_THRUST_SHARE × weight.

@@ -312,7 +312,10 @@ func _aerodynamics() -> void:
 	check("CYdr = a_v·S_v/S·tau", _close(c.CYdr.value, fin_force * fin.control_effectiveness.value, 1e-8))
 	check("Cndr = -CYdr·l/b", _close(c.Cndr.value, -fin_force * fin.control_effectiveness.value * fin_arm / span, 1e-8))
 	check("Cldr = CYdr·(z_v - z_ARP)/b", _close(c.Cldr.value, fin_force * fin.control_effectiveness.value * fin_height / span, 1e-8))
-	check("Cnb = a_v·S_v/S·l/b", _close(c.Cnb.value, fin_force * fin_arm / span, 1e-8) and fin_arm > 0.0)
+	# IAQ-04: the isolated fin plus the declared body term (fin efficiency and fuselage, the Stik study's terms).
+	check("Cnb = a_v·S_v/S·l/b + body_cn_beta", _close(c.Cnb.value, fin_force * fin_arm / span
+		+ record.aero.surfaces.body_cn_beta.value, 1e-8) and fin_arm > 0.0 and record.aero.surfaces.body_cn_beta.value < 0.0
+		and record.aero.surfaces.body_cn_beta.value >= -0.5)
 	check("CYb and Clb carry fin plus the declared body terms",
 		_close(c.CYb.value, -fin_force + record.aero.surfaces.body_cy_beta.value, 1e-8)
 		and _close(c.Clb.value, -fin_force * fin_height / span + record.aero.surfaces.wing_body_cl_beta.value, 1e-8))
@@ -330,7 +333,8 @@ func _aerodynamics() -> void:
 		and _close(c.Cmq.value, -c.CLq.value * tail_arm, 1e-10))
 	check("elevator: Cmde = -CLde·l_h/c and control_effectiveness = Cmde/Cma", _close(c.Cmde.value, -c.CLde.value * tail_arm, 1e-11)
 		and _close(tail.control_effectiveness.value, c.Cmde.value / c.Cma.value, 1e-11))
-	check("Cnr = -2·(l_v/b)·Cnb - CD0/3", _close(c.Cnr.value, -2.0 * fin_arm / span * c.Cnb.value - c.CD0.value / 3.0, 1e-11))
+	check("Cnr = -2·(l_v/b)·Cnb_fin - CD0/3 on the isolated fin", _close(c.Cnr.value,
+		-2.0 * fin_arm / span * (fin_force * fin_arm / span) - c.CD0.value / 3.0, 1e-11))
 	check("Cm0 = section moment + Cma × tail incidence", _close(c.Cm0.value,
 		record.aero.surfaces.wing_section_cm_ac.value + c.Cma.value * tail.incidence.value, 1e-11))
 	check("aileron effectiveness follows the donor rule", _close(record.aero.surfaces.wing_aileron_effectiveness.value,
@@ -436,21 +440,28 @@ func _dihedral() -> void:
 	var fin: Dictionary = donor_record.aero.surfaces.vertical
 	var fin_share: float = -fin.lift_slope.value * fin.area.value / donor_record.reference.wing_area.value \
 		* (fin.position.value[2] - donor_record.reference.aero_reference_point.value[2]) / donor_record.reference.wing_span.value
-	check("the donor's own dihedral reproduces the borrowed wing-body term and the previous Clb",
-		_close(donor_record.aero.surfaces.wing_body_cl_beta.value, -0.0537, 1e-12)
-		and _close(donor_record.aero.coefficients.Clb.value, fin_share - 0.0537, 1e-12)
-		and _close(donor_record.aero.coefficients.Clb.value, -0.074898, 0.000001), str(donor_record.aero.coefficients.Clb.value))
-	# -0.0537 - 0.7192·1.0634808·(Γ - 2.86°) in radians: 0 deg -0.015521, 5 deg -0.082267, 8 deg -0.122315.
-	var expected := {0.0: -0.015521, 5.0: -0.082267, 8.0: -0.122315}
+	# IAQ-04: the template's box fuselage moves the donor's high-wing interference (-0.01549, D10-R5) by
+	# 1.2·√AR·(z_w/b)·(2D/b) of its own box: z_w = centre_z, D = √(4·w·h/π). Recomputed here independently.
+	var body: Dictionary = Definition.template().fuselage
+	var template_span := float(Definition.template().wing.span)
+	var template_aspect := template_span * template_span / 0.45
+	var interference := 1.2 * sqrt(template_aspect) * (float(body.center_z) / template_span) \
+		* (2.0 * sqrt(4.0 * float(body.width) * float(body.height) / PI) / template_span) + 0.01549
+	check("the donor's own dihedral reproduces the borrowed wing-body term moved by the fuselage interference",
+		_close(donor_record.aero.surfaces.wing_body_cl_beta.value, -0.0537 + interference, 1e-9)
+		and _close(donor_record.aero.coefficients.Clb.value, fin_share - 0.0537 + interference, 1e-9)
+		and _close(donor_record.aero.coefficients.Clb.value, -0.074898 + interference, 0.000001), str(donor_record.aero.coefficients.Clb.value))
+	# -0.0537 - 0.7192·1.0634808·(Γ - 2.86°) in radians: 0 deg -0.015521, 5 deg -0.082267, 8 deg -0.122315; plus the interference.
+	var expected := {0.0: -0.015521 + interference, 5.0: -0.082267 + interference, 8.0: -0.122315 + interference}
 	for angle: float in expected:
 		var surfaces: Dictionary = records[angle].aero.surfaces
 		check("wing-body term at %s deg: donor term moved by the relation" % angle,
 			_close(surfaces.wing_body_cl_beta.value, expected[angle], 0.000002)
-			and _close(surfaces.wing_body_cl_beta.value, -0.0537 + factor * slope / 4.0 * deg_to_rad(2.86 - angle), 1e-12)
+			and _close(surfaces.wing_body_cl_beta.value, -0.0537 + interference + factor * slope / 4.0 * deg_to_rad(2.86 - angle), 1e-9)
 			and _close(records[angle].aero.coefficients.Clb.value, fin_share + surfaces.wing_body_cl_beta.value, 1e-12)
 			and surfaces.wing_body_cl_beta.kind == "derived", str(surfaces.wing_body_cl_beta.value))
-	check("a flat wing keeps only the donor's interference share (-0.0155, D10-R5)",
-		_close(records[0.0].aero.surfaces.wing_body_cl_beta.value, -0.0155, 0.00005))
+	check("a flat wing keeps only the interference share of its own fuselage (D10-R5 rescaled)",
+		_close(records[0.0].aero.surfaces.wing_body_cl_beta.value, -0.0155 + interference, 0.00005))
 	check("more dihedral, more negative Clb", records[0.0].aero.coefficients.Clb.value > records[2.86].aero.coefficients.Clb.value
 		and records[2.86].aero.coefficients.Clb.value > records[5.0].aero.coefficients.Clb.value
 		and records[5.0].aero.coefficients.Clb.value > records[8.0].aero.coefficients.Clb.value)
@@ -479,7 +490,7 @@ func _dihedral() -> void:
 	var taper: Dictionary = _compile(tapered)
 	check("taper 0.6 at AR 5: the planform factor 2.2/9.6 replaces 1/4", taper.ok
 		and _close(_record(taper.value).aero.surfaces.wing_body_cl_beta.value,
-			-0.0537 - factor * slope * (five * 2.2 / 9.6 - deg_to_rad(2.86) / 4.0), 1e-12), _pairs(taper))
+			-0.0537 + interference - factor * slope * (five * 2.2 / 9.6 - deg_to_rad(2.86) / 4.0), 1e-9), _pairs(taper))
 
 	# Evidence: the record has no field for the angle; the derived terms name it and who supplied it.
 	var typed: String = records[5.0].aero.surfaces.wing_body_cl_beta.source

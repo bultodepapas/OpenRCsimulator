@@ -172,6 +172,17 @@ static func tail_pitch_damping(free_slope: float, area_ratio: float, arm_over_ch
 	return -2.0 * free_slope * area_ratio * arm_over_chord * arm_over_chord
 
 
+## IAQ-04 lateral-directional terms (see airframe_aero): the fin-efficiency factor is kept in this range, and
+## the loader accepts body_cn_beta in [−0.5, 0]. The Stik donor's own high-wing interference share of its
+## wing-body Clβ (D10-R5: z_w −0.0595 m, D 0.1126 m, AR 5, b 1.524 m).
+const FIN_FACTOR_RANGE := [0.4, 1.1]
+const BODY_CN_BETA_RANGE := [-0.5, 0.0]
+## The loader's range for aero.surfaces.wing_body_cl_beta.
+const WING_BODY_CL_BETA_RANGE := [-0.3, 0.1]
+const STIK_DONOR_PATH := "app/data/aircraft/synthetic_stik_electric_4s_battery.json"
+const STIK_DONOR_HIGH_WING_CL_BETA := -0.01549
+
+
 ## Yaw damping: fin −2·(l_v/b)·Cnb_fin plus the wing profile term −CD0/3.
 static func yaw_damping(arm_over_span: float, fin_cnb: float, profile_drag: float) -> float:
 	return -2.0 * arm_over_span * fin_cnb - profile_drag / 3.0
@@ -212,6 +223,13 @@ static func geometry(definition: Dictionary) -> Dictionary:
 	out.h_position = h_position
 	out.v_position = v_position
 	out.dihedral_deg = finite(wing.get("dihedral_deg"))
+	# The box fuselage, for the directional and wing-body terms (IAQ-04): optional, absent while incomplete.
+	var fuselage: Dictionary = _dictionary(definition.get("fuselage"))
+	var body := {length = finite(fuselage.get("tail_x")) - finite(fuselage.get("nose_x")), width = positive(fuselage.get("width")),
+		height = positive(fuselage.get("height")), center_z = finite(fuselage.get("center_z"))}
+	if is_finite(float(body.length)) and float(body.length) > 0.0 and is_finite(float(body.width)) \
+			and is_finite(float(body.height)) and is_finite(float(body.center_z)):
+		out.fuselage = body
 	return out
 
 
@@ -284,6 +302,42 @@ static func airframe_aero(package: Dictionary, shape: Dictionary) -> Dictionary:
 	var donor_dihedral_term := dihedral_effect(helmbold(float(donor.aspect_ratio)), float(donor.taper_ratio),
 		deg_to_rad(float(donor.dihedral_deg)), dihedral_factor)
 	var wing_body_cl := number(package, "body", "dihedral_effect") + (dihedral_term - donor_dihedral_term)
+	# IAQ-04: the directional and wing-body terms of the Stik study (D10-R2/R5, research/flight-dynamics/
+	# stik-lateral-directional/directional_prediction.py) on the player's box fuselage: the DATCOM fin efficiency
+	# η_v(1 + dσ/dβ) relative to the package's η already in the fin slope, Raymer's fuselage Cnβ, and the
+	# high-wing interference rescaled from the donor's. Without them the isolated fin overstates Cnβ and the
+	# spiral mode diverges on most Creator aircraft.
+	var body_cn := 0.0
+	var high_wing := 0.0
+	var fin_factor := 1.0
+	var clamped := PackedStringArray()
+	if shape.has("fuselage"):
+		var body: Dictionary = shape.fuselage
+		var z_w: float = float(body.center_z) # the wing root (z = 0) below the fuselage centreline, positive down
+		# Wing position within the fuselage depth; a wing far outside the box is treated as at its edge.
+		var position := clampf(z_w / float(body.height), -1.0, 1.0)
+		if position != z_w / float(body.height):
+			clamped.append("wing height")
+		var total := 0.724 + 3.06 * (v_area / area) / 2.0 + 0.4 * position + 0.009 * aspect
+		fin_factor = clampf(total / efficiency, FIN_FACTOR_RANGE[0], FIN_FACTOR_RANGE[1])
+		if fin_factor != total / efficiency:
+			clamped.append("fin efficiency")
+		# The box volume times the package's fuselage taper share (a shell-mass share, reused as the volume share).
+		var volume: float = float(body.length) * float(body.width) * float(body.height) \
+			* number(package, "mass_proposal", "fuselage_taper_factor")
+		var raymer := -1.3 * volume / (area * span) * sqrt(clampf(float(body.height) / float(body.width), 0.25, 4.0))
+		var unbounded := (fin_factor - 1.0) * cnb + raymer
+		body_cn = clampf(unbounded, BODY_CN_BETA_RANGE[0], BODY_CN_BETA_RANGE[1])
+		if body_cn != unbounded:
+			clamped.append("body Cnβ")
+		if str(donor.path) == STIK_DONOR_PATH:
+			var d_eq := sqrt(4.0 * float(body.width) * float(body.height) / PI)
+			high_wing = 1.2 * sqrt(aspect) * (z_w / span) * (2.0 * d_eq / span) - STIK_DONOR_HIGH_WING_CL_BETA
+			var bounded := clampf(wing_body_cl + high_wing, WING_BODY_CL_BETA_RANGE[0], WING_BODY_CL_BETA_RANGE[1])
+			if bounded != wing_body_cl + high_wing:
+				clamped.append("wing-body Clβ")
+			wing_body_cl = bounded
+	var clamp_note := "" if clamped.is_empty() else "; limited to the loader's range: " + ", ".join(clamped)
 	var clp := number(package, "wing", "roll_damping_reference") * wing_slope / helmbold(float(donor.aspect_ratio)) \
 		* roll_damping_taper(taper) / roll_damping_taper(float(donor.taper_ratio))
 	var borrowed: Dictionary = package.borrowed_coefficients
@@ -309,8 +363,8 @@ static func airframe_aero(package: Dictionary, shape: Dictionary) -> Dictionary:
 	quantities.Cma = _derived(cma, "−a_h·(S_h/S)·(l_h/c) about the wing quarter chord; fuselage and propeller contributions neglected")
 	quantities.Cmq = _derived(cmq, "−2·a_h,free·(S_h/S)·(l_h/c)², arm from the aero reference point")
 	quantities.Cmde = _derived(cmde, "−CLde·l_h/c")
-	quantities.Cnb = _derived(cnb, "a_v·(S_v/S)·(l_v/b); fuselage contribution neglected")
-	quantities.Cnr = _derived(yaw_damping(v_arm / span, cnb, cd0), "−2·(l_v/b)·Cnb − CD0/3")
+	quantities.Cnb = _derived(cnb + body_cn, "a_v·(S_v/S)·(l_v/b) + body_cn_beta: (fin efficiency %s − 1)·fin term + Raymer fuselage term (DATCOM η_v(1 + dσ/dβ) over the package η, Raymer eq. 16.50 on the box fuselage)%s" % [String.num(fin_factor, 3), clamp_note])
+	quantities.Cnr = _derived(yaw_damping(v_arm / span, cnb, cd0), "−2·(l_v/b)·Cnb_fin − CD0/3, Cnb_fin the isolated fin's term (the fin efficiency and fuselage terms of Cnb are not applied, as in the Stik study)")
 	quantities.Cndr = _derived(-cy_rudder * v_arm / span, "−CYdr·l_v/b")
 	return {
 		wing_area = area, mean_chord = chord, aspect_ratio = aspect, taper_ratio = taper,
@@ -322,7 +376,9 @@ static func airframe_aero(package: Dictionary, shape: Dictionary) -> Dictionary:
 		tail_incidence = incidence, tail_control_effectiveness = elevator_tau / keep,
 		wing_aileron_effectiveness = roll_power / (0.125 * cla),
 		wing_body_cl_beta = _derived(wing_body_cl,
-			"donor wing-body term at the donor's %s deg dihedral + κ·[D(player wing, player dihedral) − D(donor wing, donor dihedral)], D = −a_w·Γ·(1 + 2λ)/(6·(1 + λ)) (strip theory), κ the package's antisymmetric-loading factor; the wing-fuselage interference share is not rescaled" % str(donor.dihedral_deg)),
+			"donor wing-body term at the donor's %s deg dihedral + κ·[D(player wing, player dihedral) − D(donor wing, donor dihedral)], D = −a_w·Γ·(1 + 2λ)/(6·(1 + λ)) (strip theory), κ the package's antisymmetric-loading factor; plus the high-wing interference 1.2·√AR·(z_w/b)·(2D/b) of the player's box fuselage less the donor's (%s)" % [
+				str(donor.dihedral_deg), String.num(high_wing, 4)]),
+		body_cn_beta = _derived(body_cn, "(fin efficiency %s − 1) × the isolated fin's Cnβ + Raymer −1.3·Vol/(S·b)·√(h/w) on the box fuselage (Vol × the package's fuselage taper factor); the Stik study's terms (D10-R2), with the DATCOM factor divided by the package η already in the fin slope%s" % [String.num(fin_factor, 3), clamp_note]),
 		dihedral_term = dihedral_term,
 		neutral_point_x = arp[0] - cma / cla * chord,
 		flat_plate_drag = number(package, "envelope", "flat_plate_base")
@@ -366,6 +422,7 @@ static func aero_block(package: Dictionary, aero: Dictionary) -> Dictionary:
 				"|Clda_right|/(0.125·CLa), the donor's strip rule"), "1"),
 			wing_section_cm_ac = _copy_quantity(package.wing.section_moment),
 			body_cy_beta = _copy_quantity(package.body.side_force),
+			body_cn_beta = _quantity(aero.body_cn_beta, "1/rad"),
 			wing_body_cl_beta = _quantity(aero.wing_body_cl_beta, "1/rad"),
 			attached_limit = _copy_quantity(tail.attached_limit),
 			tail_local_limit = _copy_quantity(tail.local_limit),

@@ -20,6 +20,7 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RecordLoader := preload("res://workshop/creator/record_loader.gd")
+const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -98,6 +99,14 @@ func _initialize() -> void:
 			quit(2)
 			return
 		session = FlightSession.new()
+		# As a Creator trial starts (workshop/creator/trial.gd): airborne at the product's cruise trim throttle.
+		session.start_choice = FlightSession.START_AIRBORNE
+		session.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE
+		# The evaluator every Creator trial uses, selected before setup as the trial does (its servo law needs it).
+		if not session.setup_stage_backend(CreatorTrial.FLIGHT_BACKEND):
+			push_error("--record: the Creator trial evaluator could not be selected: %s" % str(session.stage_backend_error))
+			quit(2)
+			return
 		session.setup("workshop://flight-card", str(frozen.aircraft_id), data)
 		_start_session()
 		return

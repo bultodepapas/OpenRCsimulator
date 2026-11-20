@@ -57,7 +57,10 @@ const EQUIVALENT_ITERATIONS := 6
 const EQUIVALENT_TOLERANCE := 0.02
 ## Bumped whenever `derive` maps the same physics block to different packages, so an earlier draft's ids
 ## no longer restore silently onto changed values.
-const DERIVATION_VERSION := 4
+const DERIVATION_VERSION := 5
+## Smallest electric drive time constant J·R/Kt² a derived power package may have (propulsion.gd shaft_step
+## assumes τ ≈ 0.2 s ≫ dt).
+const SHAFT_TIME_CONSTANT_S := 0.2
 ## Phoenix `Fine_tuning` multipliers applied (percent / 100), kept inside these factors.
 const TUNING_KEYS := ["Lift", "Elevator", "Aileron", "Rudder", "Thrust", "Engine"]
 const TUNING_RANGE := [0.25, 2.0]
@@ -585,6 +588,15 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 			"Share of the supply resistance sized for the Phoenix propeller power")
 		package.battery.capacity_ah = _quantity(maxf(float(package.battery.capacity_ah.value), current * FLIGHT_HOURS_AT_FULL),
 			"Ah", "derived", "At least %s minutes at the static current" % String.num(FLIGHT_HOURS_AT_FULL * 60.0, 0))
+		# The runtime steps the shaft explicitly and assumes its time constant is far above the tick: a small fast
+		# rotor (a ducted-fan equivalent) would otherwise make it diverge. J·R/Kt² is the electric drive's time
+		# constant; the rotor inertia is raised to keep it at SHAFT_TIME_CONSTANT_S.
+		var kt := 60.0 / (TAU * kv)
+		var floor_inertia := SHAFT_TIME_CONSTANT_S * kt * kt / supply
+		if float(inertia.value) < floor_inertia:
+			inertia.value = floor_inertia
+			inertia.source = "Raised so the motor-propeller time constant J·R/Kt² is %s s, the runtime's explicit shaft step assumption (the D⁴-scaled rotor was %s kg·m²)" % [
+				String.num(SHAFT_TIME_CONSTANT_S, 2), String.num(float(base.propeller.rotating_inertia.value) * pow(diameter / base_diameter, 4), 9)]
 	package.description = "Phoenix-derived power: %s m propeller, pitch ratio %s, %s rpm; motor resistance, battery and ESC from %s." % [
 		String.num(diameter, 3), String.num(ratio, 2), String.num(float(prop.max_rpm), 0), str(base.get("id", ""))]
 	return package
