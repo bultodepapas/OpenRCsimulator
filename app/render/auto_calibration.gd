@@ -10,18 +10,23 @@ extends Node
 ##   that verdict is then 0, so the cheaper Standard renderer is not penalised twice);
 ## - a CPU-bound frame (see evaluate) never moves up: more detail adds draw calls. GPU verdicts use GPU time only,
 ##   so a slow CPU never rejects High or lowers detail by itself.
-## A verdict applies only to its GPU, renderer and a similar output size (within 1.5x pixels); otherwise the next
-## flight measures again. It never changes an explicit choice and never adapts continuously.
+## A verdict applies only to its GPU, renderer and a comparable workload: a similar output size and internal 3D
+## size (each within 1.5x pixels) and the same 3D MSAA; otherwise the next flight measures again. It never changes
+## an explicit choice and never adapts continuously.
 ## "Restore graphics defaults" (once kept) deletes all verdicts.
 
 const TimingLease := preload("res://render/render_timing_lease.gd")
 const GpuCapability := preload("res://render/gpu_capability.gd")
 const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 
 const CALIBRATION_PATH := "user://graphics_calibration.cfg"
 ## 3 (VQ-07h-A4): verdicts record the Scene detail level they measured. Older verdicts are discarded and measured
 ## again once, because Automatic can now start at Extreme and an offset only means something for its own level.
-const FORMAT := 3
+## 4 (audit 2026-11-19 F04/F07): `pixels` is the root viewport's output size in window pixels (format 3 stored the
+## logical UI canvas, which hides 1440p/4K behind 1080p), and verdicts add their internal 3D size and 3D MSAA.
+## Format 3 sizes cannot be relabelled, so those verdicts are discarded and measured again once.
+const FORMAT := 4
 const LEVEL_ORDER: Array[String] = ["low", "medium", "high", "extreme"]
 const WARMUP_S := 10.0
 const SAMPLE_S := 20.0
@@ -57,6 +62,12 @@ var _interval_samples: PackedFloat64Array = []
 var _last_frame_usec := 0
 var _separate_render_thread := uses_separate_render_thread()
 var _last_read_usec := 0
+## SubViewport GPU work is outside the root timing. Activity is checked every sampled frame, not only when the
+## sample ends: a view that rendered for part of it still taints it. One tree scan when sampling starts, then
+## node_added keeps the short list current, so no frame in the sample pays a whole-tree scan.
+var _subviewports_seen := false
+var _views: Array[SubViewport] = []
+var _tracking_views := false
 
 
 ## `level` is the Scene detail level this flight renders (SceneDetail.level()); the verdict is relative to it.
@@ -78,6 +89,9 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	_last_frame_usec = 0 # the Workshop detaches the flight; time spent outside the tree is not a frame
+	if get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
+	_tracking_views = false # re-scan on re-entry: views may have come and gone while detached
 	if _token != 0:
 		TimingLease.release(_token)
 		_token = 0
@@ -93,6 +107,9 @@ func _process(delta: float) -> void:
 	_active_s += delta
 	if _active_s < WARMUP_S:
 		return
+	if not _tracking_views:
+		_track_views()
+	_subviewports_seen = _subviewports_seen or _subviewports_active()
 	if reads_timings(_separate_render_thread, now, _last_read_usec):
 		_last_read_usec = now
 		var rid := get_viewport().get_viewport_rid()
@@ -105,16 +122,15 @@ func _process(delta: float) -> void:
 	elif interval_ms > 0.0:
 		_interval_samples.append(interval_ms) # no timing read this frame (separate render thread)
 	if _active_s >= WARMUP_S + SAMPLE_S:
-		var size := get_viewport().get_visible_rect().size
 		var refresh := DisplayServer.screen_get_refresh_rate()
 		var vsync := DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED
-		var result := evaluate(_samples, not _subviewports_active(), RenderingServer.get_current_rendering_method(),
+		var result := evaluate(_samples, not _subviewports_seen, RenderingServer.get_current_rendering_method(),
 			_cpu_samples, _interval_samples, interval_floor_ms(refresh, vsync, Engine.max_fps))
 		result["refresh_hz"] = refresh
 		result["level"] = _level
 		result["adapter"] = _adapter
 		result["method"] = RenderingServer.get_current_rendering_method()
-		result["pixels"] = int(size.x) * int(size.y)
+		result.merge(current_workload(get_viewport()), true)
 		save_result(result) # an unmeasurable flight stores a neutral verdict instead of retrying forever
 		finished.emit(result)
 		set_process(false)
@@ -138,10 +154,25 @@ static func reads_timings(separate: bool, now_usec: int, last_read_usec: int) ->
 	return not separate or last_read_usec == 0 or now_usec - last_read_usec >= SEPARATE_READ_INTERVAL_USEC
 
 
+func _track_views() -> void:
+	_tracking_views = true
+	_views.clear()
+	for node: Node in get_tree().root.find_children("*", "SubViewport", true, false):
+		_views.append(node as SubViewport)
+	if not get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.connect(_on_node_added)
+
+
+func _on_node_added(node: Node) -> void:
+	if node is SubViewport:
+		_views.append(node as SubViewport)
+
+
 ## Planar reflections and other SubViewports render outside the root viewport's GPU time.
 func _subviewports_active() -> bool:
-	for node: Node in get_tree().root.find_children("*", "SubViewport", true, false):
-		if (node as SubViewport).render_target_update_mode != SubViewport.UPDATE_DISABLED:
+	for view: SubViewport in _views:
+		if is_instance_valid(view) and view.is_inside_tree() \
+				and view.render_target_update_mode != SubViewport.UPDATE_DISABLED:
 			return true
 	return false
 
@@ -166,6 +197,10 @@ static func interval_floor_ms(refresh_hz: float, vsync: bool, max_fps: int) -> f
 	return floor_ms
 
 
+## The decision quantile: the order statistic at index floor(0.95 * N) of the sorted samples (0-based). This is
+## deliberately stricter than the HUD's nearest-rank p95 (index ceil(0.95 * N) - 1): with exactly a 5% slow tail
+## it reports the slow value, so such a tail rejects High (test_auto_calibration pins this). The HUD shows a
+## different metric and convention; the two numbers are not expected to agree (audit 2026-11-19 F10).
 static func _p95(samples: PackedFloat64Array) -> float:
 	var sorted := samples.duplicate()
 	sorted.sort()
@@ -231,6 +266,8 @@ static func load_result(adapter: String, method: String) -> Dictionary:
 		"reject_high": bool(cfg.get_value(section, "reject_high", false)) and method == HIGH_METHOD,
 		"complete": bool(cfg.get_value(section, "complete", false)),
 		"pixels": maxi(int(cfg.get_value(section, "pixels", 0)), 0),
+		"render_pixels": maxi(int(cfg.get_value(section, "render_pixels", 0)), 0),
+		"msaa_3d": int(cfg.get_value(section, "msaa_3d", -1)),
 		"gpu_p95_ms": float(cfg.get_value(section, "gpu_p95_ms", 0.0)),
 		"cpu_p95_ms": float(cfg.get_value(section, "cpu_p95_ms", 0.0)),
 		"interval_p95_ms": float(cfg.get_value(section, "interval_p95_ms", 0.0)),
@@ -251,6 +288,8 @@ static func save_result(result: Dictionary) -> bool:
 	cfg.set_value(section, "reject_high", bool(result.get("reject_high", false)))
 	cfg.set_value(section, "complete", bool(result.get("complete", false)))
 	cfg.set_value(section, "pixels", maxi(int(result.get("pixels", 0)), 0))
+	cfg.set_value(section, "render_pixels", maxi(int(result.get("render_pixels", 0)), 0))
+	cfg.set_value(section, "msaa_3d", int(result.get("msaa_3d", -1)))
 	cfg.set_value(section, "gpu_p95_ms", float(result.get("gpu_p95_ms", 0.0)))
 	cfg.set_value(section, "samples", int(result.get("samples", 0)))
 	cfg.set_value(section, "cpu_p95_ms", float(result.get("cpu_p95_ms", 0.0)))
@@ -262,22 +301,67 @@ static func save_result(result: Dictionary) -> bool:
 
 
 ## Whether `pixels` is within PIXEL_TOLERANCE of the verdict's measured output size (unknown sizes match).
+## Both sides are window (output) pixels: the root viewport's render target, also Window.size.
 static func size_matches(verdict: Dictionary, pixels: int) -> bool:
-	var measured := int(verdict.get("pixels", 0))
+	return _pixels_match(int(verdict.get("pixels", 0)), pixels)
+
+
+static func _pixels_match(measured: int, pixels: int) -> bool:
 	if measured <= 0 or pixels <= 0:
 		return true
 	var ratio := float(maxi(measured, pixels)) / float(mini(measured, pixels))
 	return ratio <= PIXEL_TOLERANCE
 
 
+## The GPU workload identity of `viewport` (the root viewport by default): output pixels, the internal 3D pixels
+## after the applied 3D scale (the selected reconstruction after any fallback) and the 3D MSAA. {} when unknown.
+static func current_workload(viewport: Viewport = null) -> Dictionary:
+	if viewport == null:
+		var tree := Engine.get_main_loop() as SceneTree
+		viewport = tree.root if tree != null else null
+	if not is_instance_valid(viewport):
+		return {}
+	var output := Reconstruction.viewport_output_size(viewport)
+	if (output.x <= 0 or output.y <= 0) and viewport is Window:
+		output = (viewport as Window).size
+	if output.x <= 0 or output.y <= 0:
+		return {}
+	var internal := Reconstruction.nominal_input_size(output, viewport.scaling_3d_scale)
+	return {"pixels": output.x * output.y, "render_pixels": internal.x * internal.y, "msaa_3d": int(viewport.msaa_3d)}
+
+
+## Whether a verdict's internal 3D size and 3D MSAA describe `workload` (unknown values on either side match).
+## The output size is compared separately (size_matches): callers pass it from their own boundary.
+static func workload_matches(verdict: Dictionary, workload: Dictionary) -> bool:
+	if not _pixels_match(int(verdict.get("render_pixels", 0)), int(workload.get("render_pixels", 0))):
+		return false
+	var measured_msaa := int(verdict.get("msaa_3d", -1))
+	var msaa := int(workload.get("msaa_3d", -1))
+	return measured_msaa < 0 or msaa < 0 or measured_msaa == msaa
+
+
+## Whether a complete stored measurement rejects automatic High for an output of up to `pixels` (the screen, the
+## largest output a launch can open) on this GPU. One-sided: a High miss at a smaller or similar output also
+## holds for a larger one (a 1080p window on a 4K screen keeps its veto), while a miss measured at a materially
+## larger output (4K) says nothing about a smaller screen (1080p). Unknown sizes keep the veto.
+static func rejects_high(adapter: String, pixels: int) -> bool:
+	var verdict := load_result(adapter, HIGH_METHOD)
+	var measured := int(verdict.get("pixels", 0))
+	return bool(verdict.get("reject_high", false)) and bool(verdict.get("complete", false)) \
+		and (measured <= 0 or pixels <= 0 or float(measured) <= PIXEL_TOLERANCE * float(pixels))
+
+
 ## Whether a flight on this GPU and renderer at `pixels` should be measured. `automatic_level` is the uncalibrated
 ## Automatic Scene detail when Automatic decides it: a verdict measured below it, without a "down" result that
 ## already caps it, leaves that level unmeasured (for example after a policy update starts Automatic at Extreme).
-static func needed(adapter: String, method: String, pixels: int = 0, automatic_level: String = "") -> bool:
+## `workload` defaults to the root viewport's current_workload(); a changed 3D scale or MSAA measures again.
+static func needed(adapter: String, method: String, pixels: int = 0, automatic_level: String = "",
+		workload: Dictionary = {}) -> bool:
 	if adapter.is_empty():
 		return false
 	var verdict := load_result(adapter, method)
-	if verdict.is_empty() or not size_matches(verdict, pixels):
+	if verdict.is_empty() or not size_matches(verdict, pixels) \
+			or not workload_matches(verdict, workload if not workload.is_empty() else current_workload()):
 		return true
 	var measured := LEVEL_ORDER.find(str(verdict.get("level", "")))
 	return LEVEL_ORDER.find(automatic_level) > measured and int(verdict.get("scene_offset", 0)) >= 0

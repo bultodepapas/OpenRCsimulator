@@ -191,6 +191,10 @@ class RawStore(_Db):
         with self.connection() as conn:
             return conn.execute("SELECT min(receipt_unix) FROM batches").fetchone()[0]
 
+    def newest_receipt(self):
+        with self.connection() as conn:
+            return conn.execute("SELECT max(receipt_unix) FROM batches").fetchone()[0]
+
 
 class AggStore(_Db):
     pragmas = ("PRAGMA synchronous=FULL", "PRAGMA foreign_keys=ON", "PRAGMA busy_timeout=5000")
@@ -215,6 +219,9 @@ class AggStore(_Db):
         create_attempts INTEGER NOT NULL DEFAULT 0, issue_number INTEGER,
         created_unix INTEGER NOT NULL, updated_unix INTEGER NOT NULL,
         PRIMARY KEY(repository, key)) WITHOUT ROWID;
+    CREATE TABLE IF NOT EXISTS ingest_counts(
+        day TEXT NOT NULL, category TEXT NOT NULL, count INTEGER NOT NULL,
+        PRIMARY KEY(day, category)) WITHOUT ROWID;
     """
     # hist0..hist7: per-bucket frame-interval counts (upper bounds contract.HISTOGRAM_UPPER_US, in µs).
     HISTOGRAM_COLUMNS = tuple(f"hist{i}" for i in range(8))
@@ -276,9 +283,31 @@ class AggStore(_Db):
         cutoff = (today - timedelta(days=days)).isoformat()
         deleted = 0
         with self.transaction() as conn:
-            for table in ("daily_gpu", "daily_vehicle", "daily_status"):
+            for table in ("daily_gpu", "daily_vehicle", "daily_status", "ingest_counts"):
                 deleted += conn.execute(f"DELETE FROM {table} WHERE day < ?", (cutoff,)).rowcount
         return {"deleted_aggregate_rows": deleted}
+
+    # TELEM-20 ingest counters: ID-free (day, fixed category) totals ------------------------
+
+    def add_ingest_counts(self, items):
+        """items: [(day, category, count)]; added to existing totals in one transaction."""
+        with self.transaction() as conn:
+            conn.executemany(
+                "INSERT INTO ingest_counts(day, category, count) VALUES(?,?,?) "
+                "ON CONFLICT(day, category) DO UPDATE SET count=count+excluded.count", items)
+
+    def ingest_counts(self, day):
+        with self.connection() as conn:
+            rows = conn.execute("SELECT category, count FROM ingest_counts WHERE day=? ORDER BY category",
+                                (day,)).fetchall()
+        return dict(rows)
+
+    def day_statuses(self, day):
+        """{'<release_id>/<table>': status} for one rolled-up day."""
+        with self.connection() as conn:
+            rows = conn.execute("SELECT release_id, tbl, status FROM daily_status WHERE day=? "
+                                "ORDER BY release_id, tbl", (day,)).fetchall()
+        return {f"{release}/{table}": status for release, table, status in rows}
 
     # Publication intents -------------------------------------------------------------------
 

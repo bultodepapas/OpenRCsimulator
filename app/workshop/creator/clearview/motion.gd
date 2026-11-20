@@ -8,9 +8,13 @@ const FORMAT := "openrc-clearview-frames-v1"
 const ORTHOGONAL_TOLERANCE := 0.001
 const LENGTH_SEPARATION := 1.1
 const IDENTITY := [1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0]
+## A helper with more vertices than this is not treated as a hidden coordinate marker.
+const MAX_UNREADABLE_VERTICES := 64
+const UNREADABLE_NOTE := "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
 
 static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable()) -> Dictionary:
 	var frames: Array = []
+	var unreadable: Array = []
 	var marked := {}
 	var world: Array = []
 	var render_world: Array = []
@@ -27,7 +31,14 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 		if group.is_empty() or group.begins_with(".") or group.ends_with(".") or ".." in group:
 			frame = {}
 		if frame.is_empty():
-			return R.fail(R.SOURCE_UNSUPPORTED,"Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing.","source","import",[str(node.name)])
+			# ClearView names invisible coordinate helpers `*.XYZObject`. One that cannot be read
+			# unambiguously (extra vertices, near-equal axis lengths) is still a helper: hide it,
+			# keep its exact geometry, and leave its moving part to a manual binding.
+			if not node.children.is_empty() or node.vertices.size() > MAX_UNREADABLE_VERTICES:
+				return R.fail(R.SOURCE_UNSUPPORTED,"Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing.","source","import",[str(node.name)])
+			unreadable.append({node = index,name = node.name,group = group,vertices = node.vertices})
+			marked[index] = true
+			continue
 		frame.node = index
 		frame.name = node.name
 		frame.group = str(node.name).trim_suffix(".XYZObject")
@@ -39,7 +50,7 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 			surfaces = node.surfaces,texture = node.texture,texrep = node.texrep,texoff = node.texoff}
 		frames.append(frame)
 		marked[index] = true
-	return R.ok({frames = frames,marked = marked,world = world,render_world = render_world,requests = _requests(params)})
+	return R.ok({frames = frames,unreadable = unreadable,marked = marked,world = world,render_world = render_world,requests = _requests(params)})
 
 ## Called only on the converter's trusted parsed IR. Never reads a saved GLB receipt as authority.
 static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, cancel := Callable()) -> Dictionary:
@@ -55,6 +66,8 @@ static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, 
 			if frame.group == group:
 				matches.append(frame)
 		var reason := str(request.reason)
+		if reason.is_empty() and matches.is_empty() and inspected.unreadable.any(func(entry: Dictionary) -> bool: return entry.group == group):
+			reason = "unreadable_render_frame"
 		if reason.is_empty() and matches.size() != 1:
 			reason = "missing_or_duplicate_render_frame"
 		if not reason.is_empty():
@@ -185,8 +198,12 @@ static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, 
 		gltf.nodes.append({name = plan.group + " [ClearView " + str(plan.axis).to_upper() + " pivot]",matrix = matrix(transform),children = children,
 			extras = {openrc_creator_part = {format = "openrc-creator-part-hint-v1",axis = "x"}}})
 		prepared.append({group = plan.group,node = pivot,axis = "x",source_axis = plan.axis,marker_node = plan.frame.node,children = children,servos = plan.servos})
-	return R.ok({format = FORMAT,float_encoding = "ieee754-binary64-le-hex",orthogonal_tolerance = exact(ORTHOGONAL_TOLERANCE),
-		length_separation = exact(LENGTH_SEPARATION),frames = exact(inspected.frames),prepared = prepared,unresolved = unresolved})
+	var output := {format = FORMAT,float_encoding = "ieee754-binary64-le-hex",orthogonal_tolerance = exact(ORTHOGONAL_TOLERANCE),
+		length_separation = exact(LENGTH_SEPARATION),frames = exact(inspected.frames),prepared = prepared,unresolved = unresolved}
+	# Present only when nonzero, so earlier conversions keep their exact bytes.
+	if not inspected.unreadable.is_empty():
+		output.unreadable_frames = exact(inspected.unreadable)
+	return R.ok(output)
 
 static func _frame(node: Dictionary) -> Dictionary:
 	if node.type != "poly" or not node.children.is_empty() or node.get("has_data",false) or node.vertices.size() != 4 or node.surfaces.size() != 2:

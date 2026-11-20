@@ -9,6 +9,7 @@ const MAX_LINE := 4096
 const MAX_RECORDS := 4096
 const MAX_SECTIONS := 256
 const IDENTITY := ["verNumber", "modelType", "modelName"]
+const TAG_NOTE := "%s editor tag lines in the model parameters were ignored."
 
 static func read(bytes: PackedByteArray) -> Dictionary:
 	if bytes.is_empty() or bytes.size() > MAX_BYTES:
@@ -28,11 +29,16 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 	var sectioned := false
 	var flat := false
 	var identities := {}
+	var tags := 0
 	for index: int in lines.size():
 		if lines[index].length() > MAX_LINE:
 			return R.fail(R.SOURCE_LIMIT, "A model parameter line is too long.", "source", "import")
 		var line := lines[index].strip_edges()
 		if line.is_empty() or line.begins_with("//"):
+			continue
+		# Some editors write a `$name value` tag line. It is not a parameter; skip it, report it.
+		if line.begins_with("$"):
+			tags += 1
 			continue
 		if line.begins_with("#"):
 			var marker := line.replace("\t", " ").split(" ", false)
@@ -90,8 +96,11 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 	var note := R.diagnostic(R.UNSUPPORTED_CAPABILITY,
 		"Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
 		"source", "import", [], R.SEVERITY_WARNING)
+	var notes: Array = [note]
+	if tags > 0:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, TAG_NOTE, "source", "import", [str(tags)], R.SEVERITY_INFO))
 	return R.ok({version = version, model_type = model_type, model_name = model_name, records = records,
-		sections = sections, sha256 = CreatorBytes.sha256(bytes)}, [note])
+		sections = sections, sha256 = CreatorBytes.sha256(bytes)}, notes)
 
 static func _identifier(value: String) -> bool:
 	if value.is_empty() or value.length() > 128:

@@ -23,7 +23,9 @@ signal state_changed
 const WARMUP_US := 10000000
 const SEAL_INTERVAL_US := 60000000
 const SESSION_MAX_US := 14400000000 # four hours
-const ACTIVITY_SLICE_US := 1800000000
+## TELEM-19: a running activity is summarized every 5 minutes, so quitting from a flight (nothing is flushed at exit)
+## loses only its last slice and unsealed events (about 6 minutes at most) instead of the whole flight.
+const ACTIVITY_SLICE_US := 300000000
 
 ## TelemetryRelease.current() result; {ok = false} keeps everything unavailable.
 var release: Dictionary = {"ok": false, "reason": "unset"}
@@ -73,7 +75,7 @@ var _last_usec := -1
 var _last_drawn := 0
 var _activity: Dictionary = {}
 ## True once this admission has observed the moment an activity begins (a non-activity frame or a reset); an
-## activity already running when telemetry was admitted, or a later 30-minute slice, is not a complete observation.
+## activity already running when telemetry was admitted, or a later 5-minute slice, is not a complete observation.
 var _activity_from_start := false
 var _errors: Dictionary = {}
 

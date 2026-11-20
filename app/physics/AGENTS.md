@@ -1,5 +1,6 @@
 # Physics kernel
 
 - Tools and validation for physics changes: [docs/tools/physics.md](../../docs/tools/physics.md); bugs: [debugging-physics](../../docs/tools/debugging-physics.md).
+- For new laws, event policies or execution-order changes, select the applicable [numerical change checks](../../docs/tools/physics.md#numerical-change-checks).
 - Simulation state stays float64: no 32-bit Godot math types in `sim/` or `physics/`. `app/test.sh` greps every file here, Markdown included, for their names.
 - A trajectory-affecting physics change can fail the golden flights; re-record only with an explanation ([golden flights](../../docs/tools/physics.md#golden-flights)).

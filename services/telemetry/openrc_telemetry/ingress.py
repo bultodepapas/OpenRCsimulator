@@ -4,6 +4,7 @@ Never logs request bodies, addresses, headers or validation messages: only fixed
 """
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from hashlib import sha256
 import hmac
 import ipaddress
@@ -19,6 +20,7 @@ from starlette.routing import Route
 from . import report as report_mod
 from .config import Config
 from .contract import MAX_BODY, ContractError, body_digest, http_status, load_contracts
+from .counters import IngestCounters, flush as flush_counters
 from .limits import RateLimiter
 from .storage import AggStore, RawStore, StorageUnavailable
 
@@ -57,11 +59,12 @@ def _json_content_type(value):
 
 
 def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limiter=None,
-               raw=None, aggregates=None):
+               raw=None, aggregates=None, counters=None):
     config = config or Config.from_env()
     contracts = load_contracts(config.schema_dir)
     raw = raw or RawStore(config.raw_path, config.max_raw_bytes)
     aggregates = aggregates or AggStore(config.aggregates_path)
+    counters = counters or IngestCounters()
     limiter = limiter or RateLimiter(
         config.client_burst, config.client_refill_per_s, config.global_burst, config.global_refill_per_s,
         max_clients=config.max_clients, monotonic=monotonic)
@@ -69,17 +72,23 @@ def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limite
     suspended = frozenset(config.suspended_releases)
     token_digest = sha256(config.report_token.encode("utf-8")).digest() if config.report_token else None
 
+    def count(category):
+        counters.add(category, clock())
+
     def store(body):
         """Validate then commit in one transaction; returns the HTTP status."""
         if config.suspend_all:
+            count("suspended_all")
             return 410  # operator off switch: clients stop collecting for the rest of their process
         try:
             payload = contracts.validate_ingest(body, releases | suspended)
         except ContractError as exc:
             log.info("ingest status=%d category=%s", http_status(exc), str(exc))
+            count(f"rejected:{exc}")
             return http_status(exc)
         if payload["build"]["release_id"] in suspended:
             log.info("ingest status=410 category=suspended_release")
+            count("suspended_release")
             return 410  # a valid batch from a release the operator suspended is never stored
         seqs = [event["seq"] for event in payload["events"]]
         try:
@@ -87,28 +96,39 @@ def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limite
                                  clock())
         except StorageUnavailable:
             log.warning("ingest status=503 category=storage_unavailable")
+            count("storage_unavailable")
             return 503
         log.info("ingest outcome=%s", outcome)
+        count(outcome)
         return 409 if outcome == "conflict" else 202
 
     async def post_batches(request):
+        if "x-forwarded-for" in request.headers:
+            # Tells the operator whether the front proxy forwards client addresses (TRUST_PROXY decision).
+            count("forwarded_for_present")
         wait = limiter.check(client_address(request, config.trust_proxy))
         if wait:
+            count("rate_limited")
             return error(429, {"Retry-After": str(wait)})
         if not _json_content_type(request.headers.get("content-type")):
+            count("unsupported_media")
             return error(415)
         if request.headers.get("content-encoding", "identity").strip().lower() not in ("", "identity"):
+            count("unsupported_media")
             return error(415)
         declared = request.headers.get("content-length")
         if declared is not None:
             if not declared.isascii() or not declared.isdigit():
+                count("bad_length")
                 return error(400)
             if int(declared) > MAX_BODY:
+                count("too_large")
                 return error(413)
         body = bytearray()
         async for chunk in request.stream():
             body += chunk
             if len(body) > MAX_BODY:
+                count("too_large")
                 return error(413)
         status = await run_in_threadpool(store, bytes(body))
         if status == 202:
@@ -161,7 +181,20 @@ def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limite
         status = exc.status_code if exc.status_code in (404, 405) else 404
         return error(status)
 
+    @asynccontextmanager
+    async def lifespan(_app):
+        # uvicorn re-raises SIGTERM after its graceful shutdown, so code after uvicorn.run() never runs under
+        # systemd; persist the in-memory counters here, while the server is still shutting down.
+        try:
+            yield
+        finally:
+            try:
+                await run_in_threadpool(flush_counters, counters, aggregates)
+            except StorageUnavailable:
+                log.warning("counters category=storage_unavailable")
+
     app = Starlette(
+        lifespan=lifespan,
         routes=[
             Route("/v1/batches", guarded(post_batches), methods=["POST"]),
             Route("/healthz", guarded(healthz), methods=["GET"]),
@@ -171,4 +204,5 @@ def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limite
     )
     app.router.redirect_slashes = False
     app.state.raw, app.state.aggregates, app.state.limiter = raw, aggregates, limiter
+    app.state.counters = counters
     return app

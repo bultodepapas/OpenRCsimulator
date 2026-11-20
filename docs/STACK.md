@@ -53,6 +53,14 @@ Finite-fuel mass, CG and inertia updates use [MassInventory](../app/physics/mass
 
 A native backend may replace one evaluator boundary, never the kernel's tick transaction. Its receipt pins the toolchain, ABI, backend version and library hashes; missing or mismatched artifacts select the GDScript reference path. Adoption requires byte-identical reference agreement on at least 10,000 states including malformed inputs, exact kernel trajectories, fleet fingerprints and target-host p50/p95 tick cost. No catalog entry may require a native backend. A fixed-wing port requires an optimized GDScript workload still exceeding the 500 µs target-host budget and an owner decision; [SF-08](research/simulation-foundation/README.md#6-backend-policy-sf-08) records the policy and evidence.
 
+## Godot runtime boundaries
+
+- **Workers and the scene tree:** keep active scene-tree changes on the main thread. Give workers detached inputs and single ownership of mutable resources; synchronize shared plain data. Preserve the existing job owner through completion and discard abandoned results. A mutex does not make arbitrary engine/resource operations thread-safe. The [flight scene loader](../app/ui/flight_scene_load.gd) shows the project's completion and retirement boundary; its engine-specific workaround is not a universal loader recipe.
+- **Resource ownership:** repeated `load()` calls and scene instances can share resources. Share immutable assets; isolate the material or subresource that needs independent edits and check what the chosen duplication method actually copies. Do not assume a second load or a shallow duplicate provides independent mutable state, or deep-copy whole asset graphs without a need. [Observed aliasing and lifecycle lessons](learnings/runtime-and-delivery.md#godot-execution-and-test-isolation).
+- **Scene reuse:** removing and reattaching a node does not normally rerun `_ready()`, and `remove_child()` does not free it. Define suspend/resume and final disposal explicitly, preserving signal connections and focus state without duplicate initialization. The [screen stack](../app/ui/screen_stack.gd) owns OpenRC's reused-screen handoff; use `request_ready()` only when reinitialization is intended.
+
+For input, retain the [separate menu-focus and flight-input paths](learnings/runtime-and-delivery.md#radio-input-and-menus). For loading, follow [selected preparation](plans/menu-redesign.md#selected-preparation-while-home-is-visible) and its version-scoped evidence. Confirm changed engine behavior with the pinned build; the [practice review](research/development-practices-2026-11-19.md#godot-and-game-development) records the external API sources and their limits.
+
 ## Repository layout
 
 | Path | Responsibility |

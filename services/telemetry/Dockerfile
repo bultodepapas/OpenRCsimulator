@@ -17,6 +17,8 @@ COPY services/telemetry/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 COPY research/telemetry/contracts/batch.schema.json research/telemetry/contracts/report.schema.json /app/contracts/
+# check-release validates this canonical batch with the candidate tag (it looks beside the schema directory).
+COPY research/telemetry/examples/batch.json /app/examples/batch.json
 COPY services/telemetry/openrc_telemetry /app/openrc_telemetry
 
 # Two volumes: /data/raw (48 h records; never back up, snapshot or replicate; tmpfs is acceptable) and

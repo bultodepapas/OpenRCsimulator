@@ -12,6 +12,7 @@ Build OpenRC Simulator incrementally: robust physics, realistic behavior and evi
 | --- | --- |
 | Setup, launch, dependencies or exports | [Tooling guide](docs/TOOLS.md) |
 | Architecture or shared interfaces | [STACK](docs/STACK.md); [track ownership](docs/README.md#tracks-plans-and-step-ids) |
+| Godot scenes, resources or worker jobs | [Godot runtime boundaries](docs/STACK.md#godot-runtime-boundaries) |
 | Choose a test, capture or debugging tool | [Tool index](docs/tools/README.md); [verification scope](docs/tools/shared.md#verification-scope) |
 | Aircraft data, geometry or generators | [Aircraft contract](docs/AIRCRAFT_CONTRACT.md); the owning aircraft guide |
 | Flight handling, controls or physics tuning | [Flight logging workflow](docs/FLIGHT-LOGGING.md) |
@@ -70,4 +71,4 @@ Write short, precise English. Give each topic one authoritative home and link to
 
 Reuse suitable free tools, assets and data; preserve licenses, provenance and redistribution rights. Keep unnecessary images, raw logs and temporary outputs out of Git; follow the [evidence conventions](docs/README.md#conventions-for-documents).
 
-Use the owning track's step IDs and include verification evidence in commits or PRs. Record decisions in [DECISIONS](docs/DECISIONS.md) and reusable lessons under [LEARNINGS criteria](docs/LEARNINGS.md#keeping-this-useful). Keep changing status and dated results out of these instructions.
+Use the owning track's step IDs and include verification evidence in commit messages. Record decisions in [DECISIONS](docs/DECISIONS.md) and reusable lessons under [LEARNINGS criteria](docs/LEARNINGS.md#keeping-this-useful). Keep changing status and dated results out of these instructions.

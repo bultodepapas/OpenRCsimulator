@@ -68,14 +68,28 @@ static func baked(seed: int) -> bool:
 ## Keep this binding current across seed and mode changes. Pending/failed/capacity cases use analytic noise.
 ## `mode` identifies the consumer, not a different tile: both modes share a validated texture for each seed.
 static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground", slot: int = 0) -> void:
+	var bound := _bind(mat, seed, mode, slot)
+	if bound.is_empty():
+		return
+	if bound.has("previous"):
+		_release_if_abandoned(int(bound.previous))
+	_sync_consumer(bound.id)
+	_retry_capacity()
+
+
+## Register or retarget one consumer without touching the tile cache. Returns {} when nothing is bound, else
+## {id, previous?}, where `previous` is the seed this consumer just abandoned. Audit 2026-11-19 F28: a batch
+## retargets every slot first, so admission and eviction see the complete desired owner set.
+static func _bind(mat: ShaderMaterial, seed: int, mode: String, slot: int) -> Dictionary:
 	if not is_instance_valid(mat) or mode not in ["ground", "sky"] or slot < 0 or slot >= MAX_TILES \
 			or (slot > 0 and mode != "sky"):
-		return
+		return {}
 	_sync_settings()
 	var id: Variant = _consumer_key(mat, slot)
 	if not _requested(_settings, mode):
 		_disable_consumer(id, mat, slot)
-		return
+		return {}
+	var bound := {id = id}
 	var entry: Dictionary = _consumers.get(id, {})
 	if not entry.is_empty() and entry.material.get_ref() != mat:
 		_consumers.erase(id)
@@ -89,21 +103,25 @@ static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground", slot:
 		_consumers[id] = entry
 		_generation += 1
 	elif int(entry.seed) != seed or str(entry.mode) != mode:
-		var previous_seed := int(entry.seed)
+		if int(entry.seed) != seed:
+			bound.previous = int(entry.seed)
 		entry.seed = seed
 		entry.mode = mode
 		_generation += 1
-		# SA-10: an abandoned bake is wasted GPU work and blocks a cache slot; ready/failed tiles stay warm
-		# until a new seed needs their slot (_reclaim_unreferenced).
-		if previous_seed != seed and _tiles.get(previous_seed, {}).get("status", "") == "pending" \
-				and not _seed_referenced(previous_seed):
-			_release_tile(previous_seed)
-	_sync_consumer(id)
-	_retry_capacity()
+	return bound
+
+
+## SA-10: an abandoned bake is wasted GPU work and blocks a cache slot; ready/failed tiles stay warm until a new
+## seed needs their slot (_reclaim_unreferenced).
+static func _release_if_abandoned(seed: int) -> void:
+	if _tiles.get(seed, {}).get("status", "") == "pending" and not _seed_referenced(seed):
+		_release_tile(seed)
 
 
 ## Bind up to MAX_TILES distinct eligible sky-layer seeds. Extra layers remain analytic.
 ## Clearing unused slots also removes stale bindings after a preset change.
+## Audit 2026-11-19 F28: every slot is retargeted before any tile is admitted or evicted. Rebinding slot by slot
+## made a shifted set ([A,B,C,D] -> [E,A,B,C]) evict and rebake every retained tile; now only D goes.
 static func apply_sky(mat: ShaderMaterial, seeds: Array) -> void:
 	if not is_instance_valid(mat):
 		return
@@ -111,11 +129,22 @@ static func apply_sky(mat: ShaderMaterial, seeds: Array) -> void:
 	for raw: Variant in seeds:
 		if typeof(raw) == TYPE_INT and not unique.has(int(raw)):
 			unique.append(int(raw))
+	var ids: Array = []
+	var abandoned: Array[int] = []
 	for slot in MAX_TILES:
 		if slot < unique.size():
-			apply(mat, unique[slot], "sky", slot)
+			var bound := _bind(mat, unique[slot], "sky", slot)
+			if not bound.is_empty():
+				ids.append(bound.id)
+				if bound.has("previous"):
+					abandoned.append(int(bound.previous))
 		else:
 			_disable_consumer(_consumer_key(mat, slot), mat, slot)
+	for seed: int in abandoned:
+		_release_if_abandoned(seed)
+	for id: Variant in ids:
+		_sync_consumer(id)
+	_retry_capacity()
 
 
 static func _consumer_key(mat: ShaderMaterial, slot: int) -> Variant:

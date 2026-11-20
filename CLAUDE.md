@@ -14,4 +14,4 @@ For delegation, use the ordinary named profiles in [`.claude/agents/`](.claude/a
 
 These profiles request `sonnet` with `high` effort. They omit shell, writes, MCP, `Skill` and `Agent`; supply missing evidence or use an already-permitted capable helper for work needing those tools. A conversation fork does not select an ordinary profile.
 
-Follow [model routing, discovery and fallback](docs/SUBAGENTS.md#claude-code). Verify loaded instructions with `/memory`; verify requested versus observable helper settings without claiming an unobserved runtime. Keep client details in that guide and shared rules in `AGENTS.md`.
+Follow [model routing, discovery and fallback](docs/SUBAGENTS.md#claude-code). Check startup instruction files under `/context all` → Memory files; read applicable nested rules separately. Verify requested versus observable helper settings without claiming an unobserved runtime. Keep client details in that guide and shared rules in `AGENTS.md`.

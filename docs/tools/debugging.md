@@ -12,7 +12,7 @@ Reproduce, observe, fix, verify. Domain playbooks: [physics](debugging-physics.m
    - a recorded [flight log](physics.md#flight-log-and-replay) when the bug needs pilot input;
    - a [debug-bridge](../../tools/debug/README.md) `run` script when the bug needs menus, keys or a sequence of
      actions in the running app (`run repro.txt --fail-on-error`). A `monkey` failure already wrote one.
-3. Repeat the reproducer when the failure appears intermittent or its deterministic behavior is in question. The simulation is deterministic at 240 Hz: a bug that does not repeat points at wall-clock time, threads, `user://` sharing between concurrent runs, or a working tree that changed under you.
+3. Repeat the reproducer when the failure appears intermittent or its deterministic behavior is in question. First match the initial state, effective input tape, source/data, engine/backend and runtime configuration; fixed 240 Hz alone does not prove equivalence. Then inspect wall-clock dependencies, thread ordering, `user://` sharing and source drift. Keep exact-replay claims within the [recorded identity and completion rules](physics.md#flight-log-and-replay).
 4. If the failure is in CI, map the job to its shard (`Godot app (units N)` → `OPENRC_UNIT_SHARD=N`) and read `gh run view <id> --log-failed` ([CI](shared.md#ci)).
 
 ## 2. Observe

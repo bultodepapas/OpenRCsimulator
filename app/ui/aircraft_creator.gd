@@ -3079,10 +3079,10 @@ func _on_publish_pressed() -> void:
 	if not _can_save():
 		set_note(_store_reason)
 		return
-	# Saving a draft remains available, but publishing must obey the same qualification
-	# gate as the footer even when this handler is called without pressing the button.
-	if _doc.source_installation_proposal().size() > 0:
-		set_note(tr(Authoring.Installation.FLIGHT_UNAVAILABLE))
+	# A ClearView model is published only with its confirmed OpenRC configuration, even when this
+	# handler is called without pressing the button.
+	if _doc.needs_source_installation():
+		set_note(tr(Authoring.Installation.REQUIRED))
 		return
 	if _doc.name.is_empty():
 		set_note(tr(NEEDS_NAME))
