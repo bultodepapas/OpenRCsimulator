@@ -11,12 +11,43 @@ import re
 import signal
 import subprocess
 import sys
+import time
 
 from PIL import Image
 
 
+def _saved_record(log: Path, output: Path) -> bool:
+    text = re.sub(r'\x1b\[[0-9;]*m', '', log.read_text(errors='replace'))
+    return any(line.startswith(f'saved {output} (error 0)') for line in text.splitlines())
+
+
+def _wait_with_exit_grace(process, log: Path, output: Path, timeout: float, exit_grace: float) -> int:
+    """Vulkan shadow captures only: lavapipe can hang at quit after the capture is complete. Once the PNG and its
+    successful save record exist, allow exit_grace seconds to exit, then stop the group and accept the evidence."""
+    deadline = time.monotonic() + timeout
+    saved_at = None
+    while True:
+        status = process.poll()
+        if status is not None:
+            return status
+        now = time.monotonic()
+        if saved_at is None and output.exists() and _saved_record(log, output):
+            saved_at = now
+        if saved_at is not None and now - saved_at >= exit_grace:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            with log.open('a') as note:
+                note.write(f'capture_runner: stopped after the saved capture (exit grace {exit_grace}s)\n')
+            return 0
+        if now >= deadline:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            raise subprocess.TimeoutExpired(process.args, timeout)
+        time.sleep(0.05)
+
+
 def run_capture(command: list[str], output: Path, kind: str, scene: str,
-                timeout: float = 60.0) -> dict:
+                timeout: float = 60.0, exit_grace: float = 0.0) -> dict:
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest = output.with_suffix('.json')
@@ -29,10 +60,14 @@ def run_capture(command: list[str], output: Path, kind: str, scene: str,
             process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
                                        start_new_session=True)
             try:
-                status = process.wait(timeout=timeout)
+                if exit_grace > 0:
+                    status = _wait_with_exit_grace(process, log, output, timeout, exit_grace)
+                else:
+                    status = process.wait(timeout=timeout)
             except subprocess.TimeoutExpired as error:
                 # xvfb-run and Godot belong to this group; don't leave a renderer writing late evidence.
-                os.killpg(process.pid, signal.SIGKILL)
+                if process.poll() is None:
+                    os.killpg(process.pid, signal.SIGKILL)
                 process.wait()
                 raise RuntimeError(f'capture timed out after {timeout}s') from error
         text = log.read_text(errors='replace')
@@ -94,13 +129,15 @@ def main() -> int:
     parser.add_argument('--kind', choices=['flight', 'ui'], required=True)
     parser.add_argument('--scene', required=True)
     parser.add_argument('--timeout', type=float, default=60.0)
+    # Vulkan (lavapipe) shadow captures only; 0 keeps the strict clean-exit requirement.
+    parser.add_argument('--exit-grace', type=float, default=0.0)
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
-    if not command or args.timeout <= 0:
+    if not command or args.timeout <= 0 or args.exit_grace < 0:
         parser.error('a command and positive timeout are required')
     try:
-        run_capture(command, args.out, args.kind, args.scene, args.timeout)
+        run_capture(command, args.out, args.kind, args.scene, args.timeout, args.exit_grace)
     except RuntimeError as error:
         print(error, file=sys.stderr)
         return 1

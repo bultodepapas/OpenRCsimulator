@@ -91,6 +91,8 @@ else:
         sys.exit(42)
     if mode == "engine_error":
         print("  SHADER ERROR: deliberate capture failure", flush=True)
+    if mode == "hang_after_save":
+        time.sleep(30)
 '''
 
 
@@ -152,6 +154,20 @@ class CaptureRunnerTests(unittest.TestCase):
 
     def test_nonzero_exit_fails_even_after_writing_valid_artifacts(self):
         self.assert_failed_and_clean("exit42_after_save")
+
+    def test_exit_grace_accepts_a_saved_capture_that_hangs_at_quit(self):
+        data = run_capture(self.command("hang_after_save"), self.output, "flight", SCENE, timeout=20.0,
+                           exit_grace=0.3)
+        self.assertEqual(data["capture_scene"], SCENE)
+        self.assertIn("stopped after the saved capture", self.log_path.read_text())
+
+    def test_hang_after_save_still_times_out_without_exit_grace(self):
+        self.assert_failed_and_clean("hang_after_save", timeout=1.5)
+
+    def test_exit_grace_never_accepts_a_hang_before_save(self):
+        with self.assertRaisesRegex(RuntimeError, "timed out"):
+            run_capture(self.command("sleep"), self.output, "flight", SCENE, timeout=0.5, exit_grace=0.1)
+        self.assertFalse(self.output.exists())
 
     def test_timeout_cannot_reuse_old_png_or_manifest(self):
         self.seed_stale_evidence()

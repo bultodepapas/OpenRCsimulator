@@ -73,10 +73,11 @@ trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE
 start_phase setup
 GODOT="$("$HERE/get-godot.sh")"
 case "${OPENRC_CAPTURE_RENDERER:-compatibility}" in
-  compatibility) RENDER_ARGS=(--rendering-driver opengl3); EXTRA_TIMEOUT=0 ;;
+  compatibility) RENDER_ARGS=(--rendering-driver opengl3); EXTRA_TIMEOUT=0; EXIT_GRACE=0 ;;
   # lavapipe compiles every Vulkan pipeline on the CPU at first use: a cold first shot took 51-55 s on a fast host.
   mobile|forward_plus) RENDER_ARGS=(--rendering-method "$OPENRC_CAPTURE_RENDERER" --rendering-driver vulkan)
-    EXTRA_TIMEOUT=540 ;;
+    # lavapipe can also hang at quit after saving; the runner then stops it once its evidence exists.
+    EXTRA_TIMEOUT=540; EXIT_GRACE=20 ;;
   *) echo "OPENRC_CAPTURE_RENDERER must be compatibility, mobile or forward_plus" >&2; exit 2 ;;
 esac
 if [[ -n "$RUN_ID" ]]; then
@@ -121,7 +122,7 @@ shot() { # shot <file suffix> <user args...>
     entry=()
   fi
   "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" \
-    --timeout "$((60 + EXTRA_TIMEOUT))" -- \
+    --timeout "$((60 + EXTRA_TIMEOUT))" --exit-grace "$EXIT_GRACE" -- \
     xvfb-run -a -s "-screen 0 1280x720x24" \
     "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
   sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "${out%.png}.log" >> "$counters"
