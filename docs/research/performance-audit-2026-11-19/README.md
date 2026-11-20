@@ -3,6 +3,8 @@
 Date: **2026-11-19**. Audited source: [`894357de83762ff6e0fdc47b0024e60f3d8286b7`](https://github.com/bultodepapas/OpenRCsimulator/commit/894357de83762ff6e0fdc47b0024e60f3d8286b7).
 Report branch: `audit/cpu-gpu-optimization-2026-11-19`. This is a dated evidence snapshot; implementation ownership stays with the existing tracks.
 
+**Second pass:** [Round two: traced correctness failures and optimization boundaries](round-2.md) adds **F36–F45**: five reproduced defects, four source-supported defects and one counted optimization candidate. It includes Angle-controller and accepted-session terrain counterexamples, settings/replay failures, lake consistency calculations, twelve checked launches and retained evidence. The branch now holds **45 findings and review items across both rounds**; this first report's 35-item snapshot remains unchanged below. The terrain counterexample confirms an already tracked concern; neither round claims measured GPU or FPS improvements.
+
 ## Executive assessment
 
 The most useful next work is to **repair event/calibration correctness, then measure complete accepted-tick observers and render transitions**. OpenRC already has extensive optimized GDScript, native C++ stage evaluation, bounded history/cache designs and explicit fallback contracts. A wholesale language rewrite is not the evidence-supported starting point.

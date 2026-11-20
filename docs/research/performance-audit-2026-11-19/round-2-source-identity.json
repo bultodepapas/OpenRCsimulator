@@ -1,0 +1,2702 @@
+{
+  "format": "openrc-audit-round2-source-identity-v1",
+  "date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "generated_utc": "2026-11-20T01:35:04.121400+00:00",
+  "runtime_baseline": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "parent_audit_commit": "dbdd5eddceb4a4e36d58e4b83919303a70707a79",
+  "fresh_main_checked": "b69ac2d54871b0d798af7c61ac62d8f17e6abd3d",
+  "branch": "audit/cpu-gpu-optimization-2026-11-19",
+  "fixture_input_count": 155,
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "source_note": "SHA-256 pins checked-out bytes copied into fixtures. Canonical Git blobs establish source equality across refs. default.json has eol=crlf by repository attributes; this is not a runtime edit.",
+  "main_delta": [
+    "M\tREADME.md",
+    "M\tapp/i18n/de.po",
+    "M\tapp/i18n/es.po",
+    "M\tapp/i18n/fr.po",
+    "M\tapp/i18n/it.po",
+    "M\tapp/i18n/ja.po",
+    "M\tapp/i18n/pt_BR.po",
+    "M\tapp/i18n/ru.po",
+    "M\tapp/i18n/zh_Hans.po",
+    "M\tapp/project.godot",
+    "A\tapp/tests/test_creator_clearview_gif.gd",
+    "A\tapp/tests/test_creator_clearview_gif.gd.uid",
+    "M\tapp/tests/test_creator_clearview_jpeg.gd",
+    "M\tapp/tests/test_creator_clearview_readers.gd",
+    "M\tapp/tests/test_creator_clearview_ui.gd",
+    "M\tapp/tests/test_creator_clearview_visual.gd",
+    "M\tapp/tests/test_creator_language.gd",
+    "M\tapp/tests/test_creator_servo_document.gd",
+    "M\tapp/tests/test_creator_source_installation.gd",
+    "M\tapp/ui/aircraft_creator.gd",
+    "M\tapp/ui/aircraft_creator_installation.gd",
+    "M\tapp/workshop/creator/authoring.gd",
+    "M\tapp/workshop/creator/clearview/converter.gd",
+    "A\tapp/workshop/creator/clearview/gif.gd",
+    "A\tapp/workshop/creator/clearview/gif.gd.uid",
+    "M\tapp/workshop/creator/clearview/images.gd",
+    "M\tapp/workshop/creator/clearview/jpeg_check.gd",
+    "M\tapp/workshop/creator/clearview/params.gd",
+    "M\tapp/workshop/creator/source_installation.gd",
+    "M\tapp/workshop/creator/store.gd",
+    "M\tapp/workshop/creator/trial.gd",
+    "M\tdocs/AIRCRAFT-WORKSHOP.md",
+    "M\tdocs/DECISIONS.md",
+    "M\tdocs/README.md",
+    "M\tdocs/plans/automatic-graphics.md",
+    "M\tdocs/plans/clearview-aircraft-import.md",
+    "M\tdocs/plans/drone-racing.md",
+    "A\tdocs/releases/v0.2.9.md",
+    "A\tdocs/research/aero-consistency/D11g/2026-11-19-release-v029-qualification.json",
+    "M\tdocs/research/aero-consistency/D11g/README.md",
+    "M\tdocs/research/aircraft-creator/clearview-2026-11-15.md",
+    "A\tdocs/research/aircraft-creator/clearview-guide-checks-2026-11-19.json",
+    "M\tresearch/aero/d11g/apply_rate_derivatives.py",
+    "M\tresearch/aero/d11g/derive_rate_derivatives.gd",
+    "M\tsite/README.md",
+    "M\tsite/ar.html",
+    "M\tsite/build_locales.py",
+    "A\tsite/clearview-import-ar.md",
+    "A\tsite/clearview-import-de.md",
+    "A\tsite/clearview-import-en.md",
+    "A\tsite/clearview-import-es.md",
+    "A\tsite/clearview-import-fr.md",
+    "A\tsite/clearview-import-it.md",
+    "A\tsite/clearview-import-ja.md",
+    "A\tsite/clearview-import-ko.md",
+    "A\tsite/clearview-import-pt.md",
+    "A\tsite/clearview-import-ru.md",
+    "A\tsite/clearview-import-zh-Hans.md",
+    "M\tsite/content.js",
+    "M\tsite/de.html",
+    "M\tsite/details.css",
+    "M\tsite/en.html",
+    "M\tsite/fr.html",
+    "M\tsite/index.html",
+    "M\tsite/it.html",
+    "M\tsite/ja.html",
+    "M\tsite/ko.html",
+    "M\tsite/locales/ar.json",
+    "M\tsite/locales/de.json",
+    "M\tsite/locales/fr.json",
+    "M\tsite/locales/it.json",
+    "M\tsite/locales/ja.json",
+    "M\tsite/locales/ko.json",
+    "M\tsite/locales/pt.json",
+    "M\tsite/locales/ru.json",
+    "M\tsite/locales/zh-Hans.json",
+    "M\tsite/pt.html",
+    "M\tsite/publish.py",
+    "M\tsite/ru.html",
+    "M\tsite/test_locales.py",
+    "M\tsite/zh-Hans.html"
+  ],
+  "project_version_delta": "diff --git a/app/project.godot b/app/project.godot\nindex 7e66d58b..88177f83 100644\n--- a/app/project.godot\n+++ b/app/project.godot\n@@ -6,7 +6,7 @@ config_version=5\n config/name=\"OpenRC Simulator\"\n ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,\n ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.\n-config/version=\"0.2.8\"\n+config/version=\"0.2.9\"\n ; The lightweight brand entrance hands off to app_root, which owns route selection.\n run/main_scene=\"res://ui/startup.tscn\"\n boot_splash/show_image=false",
+  "app_changed_paths": [
+    "M\tapp/i18n/de.po",
+    "M\tapp/i18n/es.po",
+    "M\tapp/i18n/fr.po",
+    "M\tapp/i18n/it.po",
+    "M\tapp/i18n/ja.po",
+    "M\tapp/i18n/pt_BR.po",
+    "M\tapp/i18n/ru.po",
+    "M\tapp/i18n/zh_Hans.po",
+    "M\tapp/project.godot",
+    "A\tapp/tests/test_creator_clearview_gif.gd",
+    "A\tapp/tests/test_creator_clearview_gif.gd.uid",
+    "M\tapp/tests/test_creator_clearview_jpeg.gd",
+    "M\tapp/tests/test_creator_clearview_readers.gd",
+    "M\tapp/tests/test_creator_clearview_ui.gd",
+    "M\tapp/tests/test_creator_clearview_visual.gd",
+    "M\tapp/tests/test_creator_language.gd",
+    "M\tapp/tests/test_creator_servo_document.gd",
+    "M\tapp/tests/test_creator_source_installation.gd",
+    "M\tapp/ui/aircraft_creator.gd",
+    "M\tapp/ui/aircraft_creator_installation.gd",
+    "M\tapp/workshop/creator/authoring.gd",
+    "M\tapp/workshop/creator/clearview/converter.gd",
+    "A\tapp/workshop/creator/clearview/gif.gd",
+    "A\tapp/workshop/creator/clearview/gif.gd.uid",
+    "M\tapp/workshop/creator/clearview/images.gd",
+    "M\tapp/workshop/creator/clearview/jpeg_check.gd",
+    "M\tapp/workshop/creator/clearview/params.gd",
+    "M\tapp/workshop/creator/source_installation.gd",
+    "M\tapp/workshop/creator/store.gd",
+    "M\tapp/workshop/creator/trial.gd"
+  ],
+  "out_of_scope_drift": "Later ClearView importer/UI/localization/tests changed on main; finding runtime paths and pinned fixture inputs remain identical. No qualification of those later importer changes is claimed.",
+  "finding_runtime_sources_unchanged_on_checked_main": true,
+  "files": {
+    "AGENTS.md": {
+      "sha256": "405a8b1dd2946f738e3341d63d86f6acd5dbf30981bdf18feeec92832d97c716",
+      "lines": 95,
+      "baseline_git_blob": "40c9af2f2f33af3cdc5be5d89f9fe1c08e3b8c5d",
+      "checkout_git_blob": "40c9af2f2f33af3cdc5be5d89f9fe1c08e3b8c5d",
+      "main_git_blob": "40c9af2f2f33af3cdc5be5d89f9fe1c08e3b8c5d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_root.gd": {
+      "sha256": "8c13800592bddfb5fae693d9a3ebe5e15f8475f9245c8baf3c603af5fdc7adfd",
+      "lines": 5126,
+      "baseline_git_blob": "e2e3fe4438520345aac4c0376fb2390fcc5a454e",
+      "checkout_git_blob": "e2e3fe4438520345aac4c0376fb2390fcc5a454e",
+      "main_git_blob": "e2e3fe4438520345aac4c0376fb2390fcc5a454e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/bad_settings_backup.gd": {
+      "sha256": "60391eb1054f37367aa1a13938ebf2923883bb1aeb9648a1b3a252e41b38a619",
+      "lines": 21,
+      "baseline_git_blob": "3b18c86d926bac9d80f4987e2a74bba799afb7ea",
+      "checkout_git_blob": "3b18c86d926bac9d80f4987e2a74bba799afb7ea",
+      "main_git_blob": "3b18c86d926bac9d80f4987e2a74bba799afb7ea",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/build_info.gd": {
+      "sha256": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+      "lines": 61,
+      "baseline_git_blob": "5e92f2a656d01bf1e8d807820754092aa5c2390d",
+      "checkout_git_blob": "5e92f2a656d01bf1e8d807820754092aa5c2390d",
+      "main_git_blob": "5e92f2a656d01bf1e8d807820754092aa5c2390d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/display_preferences.gd": {
+      "sha256": "f467a1f56dbf3fa4ae630b92dc5b5ce1a309dca56c5ab7a44d4f77d271b03f61",
+      "lines": 510,
+      "baseline_git_blob": "acb1828db19aa7cddcae4de29e0f0ec63b2c6d46",
+      "checkout_git_blob": "acb1828db19aa7cddcae4de29e0f0ec63b2c6d46",
+      "main_git_blob": "acb1828db19aa7cddcae4de29e0f0ec63b2c6d46",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/native_package.gd": {
+      "sha256": "d60f6746ac437a5a264c48d362f90fc710a1cffbdfad6a12bbf788b909899613",
+      "lines": 428,
+      "baseline_git_blob": "1677c243c678ecd45a805e767c6e36216f601aa6",
+      "checkout_git_blob": "1677c243c678ecd45a805e767c6e36216f601aa6",
+      "main_git_blob": "1677c243c678ecd45a805e767c6e36216f601aa6",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/preferences.gd": {
+      "sha256": "3d215b0fefbbf6a57a9a9ba2f1ec3fbd160f8215791ba644dbbef3635cf3fe29",
+      "lines": 462,
+      "baseline_git_blob": "a2f9ca98597e1738db374a0c4a717340d2c5b467",
+      "checkout_git_blob": "a2f9ca98597e1738db374a0c4a717340d2c5b467",
+      "main_git_blob": "a2f9ca98597e1738db374a0c4a717340d2c5b467",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/renderer_preference.gd": {
+      "sha256": "0654d9b355982658f86626a8294accd3618fe595811ecf4e9410430b9f3fbbe5",
+      "lines": 230,
+      "baseline_git_blob": "0a48a8cee1b29bb89060fc9ba7434403faf859fb",
+      "checkout_git_blob": "0a48a8cee1b29bb89060fc9ba7434403faf859fb",
+      "main_git_blob": "0a48a8cee1b29bb89060fc9ba7434403faf859fb",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/app_state/update_check.gd": {
+      "sha256": "30ebbca4c01f44378b916cbe9bba81d259ba07b5ac277a688453f0e3f066a250",
+      "lines": 450,
+      "baseline_git_blob": "f0bd81e4af3dd703d4661533ac7b676aa2d9c4c9",
+      "checkout_git_blob": "f0bd81e4af3dd703d4661533ac7b676aa2d9c4c9",
+      "main_git_blob": "f0bd81e4af3dd703d4661533ac7b676aa2d9c4c9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/airships/rc-blimp-5m.json": {
+      "sha256": "9840c67bb24568f284cfc46a231d1f966640df8113efe36f1a44cecd75a25ba1",
+      "lines": 2031,
+      "baseline_git_blob": "980fbb69471572ee3c4b236fcbb8150e7d9118e0",
+      "checkout_git_blob": "980fbb69471572ee3c4b236fcbb8150e7d9118e0",
+      "main_git_blob": "980fbb69471572ee3c4b236fcbb8150e7d9118e0",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/field_loader.gd": {
+      "sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "lines": 1199,
+      "baseline_git_blob": "9a37b7b5203fcf7efc3b5e4a375f84fb40f3e7d0",
+      "checkout_git_blob": "9a37b7b5203fcf7efc3b5e4a375f84fb40f3e7d0",
+      "main_git_blob": "9a37b7b5203fcf7efc3b5e4a375f84fb40f3e7d0",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/fields/default.json": {
+      "sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "lines": 8834,
+      "baseline_git_blob": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "checkout_git_blob": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "main_git_blob": "a631028d482bd77a300496652004fe915c7ae9e3",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": false
+    },
+    "app/data/fields/lake.json": {
+      "sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+      "lines": 71,
+      "baseline_git_blob": "264ba6fa63813a0af8d45e41b0c180a7d354cb2d",
+      "checkout_git_blob": "264ba6fa63813a0af8d45e41b0c180a7d354cb2d",
+      "main_git_blob": "264ba6fa63813a0af8d45e41b0c180a7d354cb2d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/gpu/capability.json": {
+      "sha256": "84edc3050b607045ce9545199cc63d9c8d89f1ef83f198203dfdf563d9d125b3",
+      "lines": 2959,
+      "baseline_git_blob": "7efa6eb811122d5a31cd66c24ccad45f205d44e1",
+      "checkout_git_blob": "7efa6eb811122d5a31cd66c24ccad45f205d44e1",
+      "main_git_blob": "7efa6eb811122d5a31cd66c24ccad45f205d44e1",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/ground/surface_friction.json": {
+      "sha256": "6eef216dc77e6e131388ba0646c6180a82b7ae2fe0b01aec604e4262c79180c1",
+      "lines": 94,
+      "baseline_git_blob": "49b30dc7215433a02e94945aa69d2dad84a704d9",
+      "checkout_git_blob": "49b30dc7215433a02e94945aa69d2dad84a704d9",
+      "main_git_blob": "49b30dc7215433a02e94945aa69d2dad84a704d9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/ground_vehicle/airfield_track.json": {
+      "sha256": "31ee093d4fc968d8bfb083a7ee89315030373ce886f87195b78115000e680e29",
+      "lines": 151,
+      "baseline_git_blob": "97f9a8673e660b49c0e57eada2d369a207fd1cc9",
+      "checkout_git_blob": "97f9a8673e660b49c0e57eada2d369a207fd1cc9",
+      "main_git_blob": "97f9a8673e660b49c0e57eada2d369a207fd1cc9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/lake_loader.gd": {
+      "sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "lines": 392,
+      "baseline_git_blob": "65916fc3882ead509a039b65839ce338563b232c",
+      "checkout_git_blob": "65916fc3882ead509a039b65839ce338563b232c",
+      "main_git_blob": "65916fc3882ead509a039b65839ce338563b232c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/data/multirotors/openrc-fpv5-x1.json": {
+      "sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "lines": 1002,
+      "baseline_git_blob": "348e504445186a5ab51295fff18c68eaaa487da6",
+      "checkout_git_blob": "348e504445186a5ab51295fff18c68eaaa487da6",
+      "main_git_blob": "348e504445186a5ab51295fff18c68eaaa487da6",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/get-godot.sh": {
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "lines": 189,
+      "baseline_git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "checkout_git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "main_git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/i18n/fonts.gd": {
+      "sha256": "9c03dd7785558a38a84f874bd2fd42ccecd08f027e2e553c93597227c8e5cb9c",
+      "lines": 52,
+      "baseline_git_blob": "f10a73aff9e4a659f251441e78f6442d173c58c0",
+      "checkout_git_blob": "f10a73aff9e4a659f251441e78f6442d173c58c0",
+      "main_git_blob": "f10a73aff9e4a659f251441e78f6442d173c58c0",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/i18n/languages.gd": {
+      "sha256": "de345d7b8a5e854b7cf6745e4b140f6647b465ba36588642a19f15e080165078",
+      "lines": 22,
+      "baseline_git_blob": "daf047ee980b945fd4787320027fb9cfb60be766",
+      "checkout_git_blob": "daf047ee980b945fd4787320027fb9cfb60be766",
+      "main_git_blob": "daf047ee980b945fd4787320027fb9cfb60be766",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/action_axis_capture.gd": {
+      "sha256": "805c80de95c95dd78eb17d24e33f0c75ae1748678d9f62ddb0176af026ff9d3a",
+      "lines": 60,
+      "baseline_git_blob": "8c6250966fbdde5fe1fa4e9c388230564c7f86b4",
+      "checkout_git_blob": "8c6250966fbdde5fe1fa4e9c388230564c7f86b4",
+      "main_git_blob": "8c6250966fbdde5fe1fa4e9c388230564c7f86b4",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/airship_input.gd": {
+      "sha256": "10ce8254fb7f05b0a9c022a7b1d329b1cfa1590cf6216eacf10b50c0f7199e04",
+      "lines": 117,
+      "baseline_git_blob": "9202fea3084fb8c8031204557fed0adfe1e30756",
+      "checkout_git_blob": "9202fea3084fb8c8031204557fed0adfe1e30756",
+      "main_git_blob": "9202fea3084fb8c8031204557fed0adfe1e30756",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/commands.gd": {
+      "sha256": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+      "lines": 112,
+      "baseline_git_blob": "31b53519748cfb0a0c7f365225906f60b5232347",
+      "checkout_git_blob": "31b53519748cfb0a0c7f365225906f60b5232347",
+      "main_git_blob": "31b53519748cfb0a0c7f365225906f60b5232347",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/controller_actions.gd": {
+      "sha256": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "lines": 774,
+      "baseline_git_blob": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "checkout_git_blob": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "main_git_blob": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/controller_profile.gd": {
+      "sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+      "lines": 819,
+      "baseline_git_blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "checkout_git_blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "main_git_blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/edgetx_radio.gd": {
+      "sha256": "26291a2a3ec1b93bfaf9f513cb82946d41439b36ef9f3df9627becd70ab71349",
+      "lines": 86,
+      "baseline_git_blob": "c1235e67ba39170676d55af149c0040e4b62dc0c",
+      "checkout_git_blob": "c1235e67ba39170676d55af149c0040e4b62dc0c",
+      "main_git_blob": "c1235e67ba39170676d55af149c0040e4b62dc0c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/jeti_radio.gd": {
+      "sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef",
+      "lines": 168,
+      "baseline_git_blob": "b1b549ed2d85caeafe07405da7f1190db24bd51b",
+      "checkout_git_blob": "b1b549ed2d85caeafe07405da7f1190db24bd51b",
+      "main_git_blob": "b1b549ed2d85caeafe07405da7f1190db24bd51b",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/radio_menu.gd": {
+      "sha256": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41",
+      "lines": 295,
+      "baseline_git_blob": "6ad7d41005c5338177ea951363dead17c5c50d47",
+      "checkout_git_blob": "6ad7d41005c5338177ea951363dead17c5c50d47",
+      "main_git_blob": "6ad7d41005c5338177ea951363dead17c5c50d47",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/rc_input.gd": {
+      "sha256": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+      "lines": 710,
+      "baseline_git_blob": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "checkout_git_blob": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "main_git_blob": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/input/smoke_aux.gd": {
+      "sha256": "f0a0e54b59ce541fe380531d4432e916004c61a0e69503aec0a8c4d6387208f7",
+      "lines": 380,
+      "baseline_git_blob": "f5ba47f5014975f04a33476567266b95a27e6328",
+      "checkout_git_blob": "f5ba47f5014975f04a33476567266b95a27e6328",
+      "main_git_blob": "f5ba47f5014975f04a33476567266b95a27e6328",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/main.gd": {
+      "sha256": "b2a12f7e5cd1e5f6d08ea066aa75ff7f2c3781787e7f55047ab238d4fda98dc5",
+      "lines": 4242,
+      "baseline_git_blob": "228728daa62c25ffc8d85543825f84871aa9875b",
+      "checkout_git_blob": "228728daa62c25ffc8d85543825f84871aa9875b",
+      "main_git_blob": "228728daa62c25ffc8d85543825f84871aa9875b",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/aero.gd": {
+      "sha256": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8",
+      "lines": 1414,
+      "baseline_git_blob": "d6f266279929e864b2b7744f26f41b06e497653d",
+      "checkout_git_blob": "d6f266279929e864b2b7744f26f41b06e497653d",
+      "main_git_blob": "d6f266279929e864b2b7744f26f41b06e497653d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/air_data.gd": {
+      "sha256": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+      "lines": 38,
+      "baseline_git_blob": "f4088c88c8336c777ad66533b38dfd5866710fad",
+      "checkout_git_blob": "f4088c88c8336c777ad66533b38dfd5866710fad",
+      "main_git_blob": "f4088c88c8336c777ad66533b38dfd5866710fad",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/aircraft_contract.gd": {
+      "sha256": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278",
+      "lines": 426,
+      "baseline_git_blob": "6a5ddb2cf0be8b89fdacf5a526a328750c2e9318",
+      "checkout_git_blob": "6a5ddb2cf0be8b89fdacf5a526a328750c2e9318",
+      "main_git_blob": "6a5ddb2cf0be8b89fdacf5a526a328750c2e9318",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/aircraft_data.gd": {
+      "sha256": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497",
+      "lines": 2674,
+      "baseline_git_blob": "afbb31b2a5b9ed94cd8264b49a7bdc109194eec2",
+      "checkout_git_blob": "afbb31b2a5b9ed94cd8264b49a7bdc109194eec2",
+      "main_git_blob": "afbb31b2a5b9ed94cd8264b49a7bdc109194eec2",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/aircraft_ground_profile.gd": {
+      "sha256": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2",
+      "lines": 318,
+      "baseline_git_blob": "a24fa58a6c10cbc5948531334b426d030c483e15",
+      "checkout_git_blob": "a24fa58a6c10cbc5948531334b426d030c483e15",
+      "main_git_blob": "a24fa58a6c10cbc5948531334b426d030c483e15",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/aircraft_modules.gd": {
+      "sha256": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5",
+      "lines": 403,
+      "baseline_git_blob": "3a3df71e5b925d800b7aba2b6288e3e90c7096fd",
+      "checkout_git_blob": "3a3df71e5b925d800b7aba2b6288e3e90c7096fd",
+      "main_git_blob": "3a3df71e5b925d800b7aba2b6288e3e90c7096fd",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/airship/airship_data.gd": {
+      "sha256": "91bdd61980a45e7da024a890bc2021374c541b1baba2f5f8f6b46110bdb14c24",
+      "lines": 697,
+      "baseline_git_blob": "0cbdb3892a6b2d7eab7a85aa668d91f25a3aeb46",
+      "checkout_git_blob": "0cbdb3892a6b2d7eab7a85aa668d91f25a3aeb46",
+      "main_git_blob": "0cbdb3892a6b2d7eab7a85aa668d91f25a3aeb46",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/airship/airship_dynamics.gd": {
+      "sha256": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef",
+      "lines": 607,
+      "baseline_git_blob": "2923270d4ff426830bcb3bc255d53651083e4112",
+      "checkout_git_blob": "2923270d4ff426830bcb3bc255d53651083e4112",
+      "main_git_blob": "2923270d4ff426830bcb3bc255d53651083e4112",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/atmosphere.gd": {
+      "sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+      "lines": 177,
+      "baseline_git_blob": "1fcbb9ae8369e649b870cce705648d329f8d3aa5",
+      "checkout_git_blob": "1fcbb9ae8369e649b870cce705648d329f8d3aa5",
+      "main_git_blob": "1fcbb9ae8369e649b870cce705648d329f8d3aa5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/battery/battery_data.gd": {
+      "sha256": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+      "lines": 319,
+      "baseline_git_blob": "f6dea3e744fe4c8803febf9b6ff76dd1d0e69ae1",
+      "checkout_git_blob": "f6dea3e744fe4c8803febf9b6ff76dd1d0e69ae1",
+      "main_git_blob": "f6dea3e744fe4c8803febf9b6ff76dd1d0e69ae1",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/battery/esc_supervisor.gd": {
+      "sha256": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+      "lines": 113,
+      "baseline_git_blob": "d038af769eb5d2678ac66d42292169149b769c96",
+      "checkout_git_blob": "d038af769eb5d2678ac66d42292169149b769c96",
+      "main_git_blob": "d038af769eb5d2678ac66d42292169149b769c96",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/battery/pack_ecm.gd": {
+      "sha256": "ff5dd20f3c2ac83e747a12126198d29e4f7dc4bc35fd35f2ee23a0fe60ae89d9",
+      "lines": 284,
+      "baseline_git_blob": "079fb8fa9bb57b8f3f445f04db3f09e9fb3361d3",
+      "checkout_git_blob": "079fb8fa9bb57b8f3f445f04db3f09e9fb3361d3",
+      "main_git_blob": "079fb8fa9bb57b8f3f445f04db3f09e9fb3361d3",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/control_actuators.gd": {
+      "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "lines": 180,
+      "baseline_git_blob": "b091a0281375b7889e32a305c2b4904a9a2bf918",
+      "checkout_git_blob": "b091a0281375b7889e32a305c2b4904a9a2bf918",
+      "main_git_blob": "b091a0281375b7889e32a305c2b4904a9a2bf918",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/control_surfaces.gd": {
+      "sha256": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447",
+      "lines": 94,
+      "baseline_git_blob": "ee777ea9cc04663f8053aa7011f9c39116f04020",
+      "checkout_git_blob": "ee777ea9cc04663f8053aa7011f9c39116f04020",
+      "main_git_blob": "ee777ea9cc04663f8053aa7011f9c39116f04020",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/dynamics.gd": {
+      "sha256": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+      "lines": 147,
+      "baseline_git_blob": "a525cf9fe540e216e6a7f723cf0eb77970130c40",
+      "checkout_git_blob": "a525cf9fe540e216e6a7f723cf0eb77970130c40",
+      "main_git_blob": "a525cf9fe540e216e6a7f723cf0eb77970130c40",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/effective_mass.gd": {
+      "sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+      "lines": 140,
+      "baseline_git_blob": "f3499556283ca772f24b954fce6a0c77b1e51d92",
+      "checkout_git_blob": "f3499556283ca772f24b954fce6a0c77b1e51d92",
+      "main_git_blob": "f3499556283ca772f24b954fce6a0c77b1e51d92",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/electric_motor.gd": {
+      "sha256": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+      "lines": 91,
+      "baseline_git_blob": "61609b5b0526e8b1d1e4b1d974c0a7686f162ef2",
+      "checkout_git_blob": "61609b5b0526e8b1d1e4b1d974c0a7686f162ef2",
+      "main_git_blob": "61609b5b0526e8b1d1e4b1d974c0a7686f162ef2",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/electric_supply.gd": {
+      "sha256": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+      "lines": 290,
+      "baseline_git_blob": "3c2e737e0e0a4873cae99729b249518c3d2aba75",
+      "checkout_git_blob": "3c2e737e0e0a4873cae99729b249518c3d2aba75",
+      "main_git_blob": "3c2e737e0e0a4873cae99729b249518c3d2aba75",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/event_bracket.gd": {
+      "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "lines": 28,
+      "baseline_git_blob": "7afdf31864c45cd634a27f943199445273cb0e15",
+      "checkout_git_blob": "7afdf31864c45cd634a27f943199445273cb0e15",
+      "main_git_blob": "7afdf31864c45cd634a27f943199445273cb0e15",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/event_step.gd": {
+      "sha256": "b8d29d8d7b990ffbef9e4c9809f542d433bc10948b93242729ebd7cf4ba0a888",
+      "lines": 159,
+      "baseline_git_blob": "aa449f31501e9edc9bbb5b8bc695e4d7f2a0a33c",
+      "checkout_git_blob": "aa449f31501e9edc9bbb5b8bc695e4d7f2a0a33c",
+      "main_git_blob": "aa449f31501e9edc9bbb5b8bc695e4d7f2a0a33c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/fixed_datum_body.gd": {
+      "sha256": "bb0c9ec1238acbbe4b786db4e54ae61a647658b3656f36257a7de7824d715e1e",
+      "lines": 91,
+      "baseline_git_blob": "a78510c0473ef526baa9afee814c63764c6ed1ce",
+      "checkout_git_blob": "a78510c0473ef526baa9afee814c63764c6ed1ce",
+      "main_git_blob": "a78510c0473ef526baa9afee814c63764c6ed1ce",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/flaps.gd": {
+      "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "lines": 25,
+      "baseline_git_blob": "63fa22af65d87ad17a007cdb9ac077634e6dbf55",
+      "checkout_git_blob": "63fa22af65d87ad17a007cdb9ac077634e6dbf55",
+      "main_git_blob": "63fa22af65d87ad17a007cdb9ac077634e6dbf55",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/fuel_properties.gd": {
+      "sha256": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+      "lines": 157,
+      "baseline_git_blob": "1e2c9d534c1e7a132b4545430ca140ba6b30de06",
+      "checkout_git_blob": "1e2c9d534c1e7a132b4545430ca140ba6b30de06",
+      "main_git_blob": "1e2c9d534c1e7a132b4545430ca140ba6b30de06",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/generalized_coordinates.gd": {
+      "sha256": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d",
+      "lines": 236,
+      "baseline_git_blob": "460366e2fb983b12530a46b986fe702034e9c31f",
+      "checkout_git_blob": "460366e2fb983b12530a46b986fe702034e9c31f",
+      "main_git_blob": "460366e2fb983b12530a46b986fe702034e9c31f",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/carburetor.gd": {
+      "sha256": "2f172faf92565467067df370293052d2ac253c4d68631e597c9986d58dc42e8a",
+      "lines": 132,
+      "baseline_git_blob": "9cc3869166d851ae63c9c07b345ac25c69994e09",
+      "checkout_git_blob": "9cc3869166d851ae63c9c07b345ac25c69994e09",
+      "main_git_blob": "9cc3869166d851ae63c9c07b345ac25c69994e09",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/four_stroke.gd": {
+      "sha256": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+      "lines": 417,
+      "baseline_git_blob": "810ce4e2c5d77be3c2e888ffb74fd21672e05240",
+      "checkout_git_blob": "810ce4e2c5d77be3c2e888ffb74fd21672e05240",
+      "main_git_blob": "810ce4e2c5d77be3c2e888ffb74fd21672e05240",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/fuel_feed.gd": {
+      "sha256": "d90e14139fcfc98dd724f7c97f2e5c6d403db59ed935477cd1dc0cd4e81d8101",
+      "lines": 272,
+      "baseline_git_blob": "9a6a73c27247c21526d384c99b8c550fc4774f28",
+      "checkout_git_blob": "9a6a73c27247c21526d384c99b8c550fc4774f28",
+      "main_git_blob": "9a6a73c27247c21526d384c99b8c550fc4774f28",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/fuel_mass.gd": {
+      "sha256": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+      "lines": 77,
+      "baseline_git_blob": "48318b0b5fe5b5c767181273aae6e8324d475a0e",
+      "checkout_git_blob": "48318b0b5fe5b5c767181273aae6e8324d475a0e",
+      "main_git_blob": "48318b0b5fe5b5c767181273aae6e8324d475a0e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/installation.gd": {
+      "sha256": "743669589c65ac083aa32f5bccf899ef5039f2f9476f943786cec59b28f59593",
+      "lines": 652,
+      "baseline_git_blob": "35cc5bded9d206c04450ad93837f925d636fdc57",
+      "checkout_git_blob": "35cc5bded9d206c04450ad93837f925d636fdc57",
+      "main_git_blob": "35cc5bded9d206c04450ad93837f925d636fdc57",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/operating_point.gd": {
+      "sha256": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b",
+      "lines": 81,
+      "baseline_git_blob": "834d6c799a56faed75cff8298b26e0581e33c043",
+      "checkout_git_blob": "834d6c799a56faed75cff8298b26e0581e33c043",
+      "main_git_blob": "834d6c799a56faed75cff8298b26e0581e33c043",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/profile.gd": {
+      "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "lines": 201,
+      "baseline_git_blob": "5df9b8806534b18bdd912692c2d8bf9bd3b0ac55",
+      "checkout_git_blob": "5df9b8806534b18bdd912692c2d8bf9bd3b0ac55",
+      "main_git_blob": "5df9b8806534b18bdd912692c2d8bf9bd3b0ac55",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/propeller.gd": {
+      "sha256": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+      "lines": 153,
+      "baseline_git_blob": "09f4c151c6b6c6aa77a2d86f851c00ee46350f56",
+      "checkout_git_blob": "09f4c151c6b6c6aa77a2d86f851c00ee46350f56",
+      "main_git_blob": "09f4c151c6b6c6aa77a2d86f851c00ee46350f56",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/source.gd": {
+      "sha256": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+      "lines": 173,
+      "baseline_git_blob": "74c932f56457533bf5ddcdbf8775613abb5beed8",
+      "checkout_git_blob": "74c932f56457533bf5ddcdbf8775613abb5beed8",
+      "main_git_blob": "74c932f56457533bf5ddcdbf8775613abb5beed8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/glow/two_stroke.gd": {
+      "sha256": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+      "lines": 399,
+      "baseline_git_blob": "bc14d42c196b5ecf72e778fc4fe9ca4a9b2ec35a",
+      "checkout_git_blob": "bc14d42c196b5ecf72e778fc4fe9ca4a9b2ec35a",
+      "main_git_blob": "bc14d42c196b5ecf72e778fc4fe9ca4a9b2ec35a",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_contact.gd": {
+      "sha256": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+      "lines": 494,
+      "baseline_git_blob": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19",
+      "checkout_git_blob": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19",
+      "main_git_blob": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_effect.gd": {
+      "sha256": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+      "lines": 98,
+      "baseline_git_blob": "de26a6a766911b1e8a07c48e1120f26375272708",
+      "checkout_git_blob": "de26a6a766911b1e8a07c48e1120f26375272708",
+      "main_git_blob": "de26a6a766911b1e8a07c48e1120f26375272708",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_support.gd": {
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "lines": 139,
+      "baseline_git_blob": "598dfb47a3f900730a5b05ecc092dff6c93e8931",
+      "checkout_git_blob": "598dfb47a3f900730a5b05ecc092dff6c93e8931",
+      "main_git_blob": "598dfb47a3f900730a5b05ecc092dff6c93e8931",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_surfaces.gd": {
+      "sha256": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+      "lines": 131,
+      "baseline_git_blob": "8bbc652914c596db81180e6dc5cacdc008b00d27",
+      "checkout_git_blob": "8bbc652914c596db81180e6dc5cacdc008b00d27",
+      "main_git_blob": "8bbc652914c596db81180e6dc5cacdc008b00d27",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_terrain.gd": {
+      "sha256": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+      "lines": 306,
+      "baseline_git_blob": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "checkout_git_blob": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "main_git_blob": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_vehicle/airfield_course.gd": {
+      "sha256": "5164d012df12ddd0579a54ab8c71419c7a856bc443aacbe5a0d9684350f7e746",
+      "lines": 453,
+      "baseline_git_blob": "ec717102ba05d284da658472ddfe1a8639fe95bb",
+      "checkout_git_blob": "ec717102ba05d284da658472ddfe1a8639fe95bb",
+      "main_git_blob": "ec717102ba05d284da658472ddfe1a8639fe95bb",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_vehicle/airfield_track.gd": {
+      "sha256": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2",
+      "lines": 387,
+      "baseline_git_blob": "2dcf48c94b5fa54446841169dc3c559972740aa8",
+      "checkout_git_blob": "2dcf48c94b5fa54446841169dc3c559972740aa8",
+      "main_git_blob": "2dcf48c94b5fa54446841169dc3c559972740aa8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_vehicle/course.gd": {
+      "sha256": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e",
+      "lines": 560,
+      "baseline_git_blob": "15b6f81fdff43859975322e1898bae5c4dd3dd09",
+      "checkout_git_blob": "15b6f81fdff43859975322e1898bae5c4dd3dd09",
+      "main_git_blob": "15b6f81fdff43859975322e1898bae5c4dd3dd09",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": {
+      "sha256": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+      "lines": 2282,
+      "baseline_git_blob": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+      "checkout_git_blob": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+      "main_git_blob": "94e2e920f9740e0bdbdf44f65aad527555f8954c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_vehicle/vehicle_environment.gd": {
+      "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+      "lines": 134,
+      "baseline_git_blob": "6caca980e1bed83c625a09a93236e02cfd6297aa",
+      "checkout_git_blob": "6caca980e1bed83c625a09a93236e02cfd6297aa",
+      "main_git_blob": "6caca980e1bed83c625a09a93236e02cfd6297aa",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/ground_wheels.gd": {
+      "sha256": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+      "lines": 274,
+      "baseline_git_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+      "checkout_git_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+      "main_git_blob": "cc48b34b5c0a42ba8d1f211324a36d0c8af79a5f",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/hull_contact.gd": {
+      "sha256": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+      "lines": 813,
+      "baseline_git_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "checkout_git_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "main_git_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/hull_crossing.gd": {
+      "sha256": "6492dfdf6255047fdf45882ba6c881769ac55542ff1b09447db045bf3e8d4d8a",
+      "lines": 189,
+      "baseline_git_blob": "3786171eee48c72a450d9d13d909059c8508aea8",
+      "checkout_git_blob": "3786171eee48c72a450d9d13d909059c8508aea8",
+      "main_git_blob": "3786171eee48c72a450d9d13d909059c8508aea8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/impact_snapshot.gd": {
+      "sha256": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+      "lines": 129,
+      "baseline_git_blob": "7baeb3157ca65950f05221219055c83ecc60dd4f",
+      "checkout_git_blob": "7baeb3157ca65950f05221219055c83ecc60dd4f",
+      "main_git_blob": "7baeb3157ca65950f05221219055c83ecc60dd4f",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/integrator.gd": {
+      "sha256": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+      "lines": 50,
+      "baseline_git_blob": "83a715a7101a4a8d5657ddbc2d9dde63cd9a7324",
+      "checkout_git_blob": "83a715a7101a4a8d5657ddbc2d9dde63cd9a7324",
+      "main_git_blob": "83a715a7101a4a8d5657ddbc2d9dde63cd9a7324",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/intended_hull_support.gd": {
+      "sha256": "c4e9c16ddb9a99a383799bc96df3b051f86a695ac9b44e418171e4be67780819",
+      "lines": 264,
+      "baseline_git_blob": "7c5cf00c3e586691e04a816742abffac724e70e3",
+      "checkout_git_blob": "7c5cf00c3e586691e04a816742abffac724e70e3",
+      "main_git_blob": "7c5cf00c3e586691e04a816742abffac724e70e3",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/lake_surface.gd": {
+      "sha256": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+      "lines": 799,
+      "baseline_git_blob": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "checkout_git_blob": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "main_git_blob": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/mass_inventory.gd": {
+      "sha256": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+      "lines": 508,
+      "baseline_git_blob": "f22935dc5786f6dc89fba89c9958245216097946",
+      "checkout_git_blob": "f22935dc5786f6dc89fba89c9958245216097946",
+      "main_git_blob": "f22935dc5786f6dc89fba89c9958245216097946",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/math3d.gd": {
+      "sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+      "lines": 190,
+      "baseline_git_blob": "63300f4d4d181477626a6a9e80f52c32d7a4e59e",
+      "checkout_git_blob": "63300f4d4d181477626a6a9e80f52c32d7a4e59e",
+      "main_git_blob": "63300f4d4d181477626a6a9e80f52c32d7a4e59e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/actuator_map.gd": {
+      "sha256": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+      "lines": 74,
+      "baseline_git_blob": "92ce53a3f6b652d566de6c2a9a03354cd70b3028",
+      "checkout_git_blob": "92ce53a3f6b652d566de6c2a9a03354cd70b3028",
+      "main_git_blob": "92ce53a3f6b652d566de6c2a9a03354cd70b3028",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/airframe.gd": {
+      "sha256": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+      "lines": 14,
+      "baseline_git_blob": "bdbcf5be619e23f993b4eb84a8439ac6f4248f42",
+      "checkout_git_blob": "bdbcf5be619e23f993b4eb84a8439ac6f4248f42",
+      "main_git_blob": "bdbcf5be619e23f993b4eb84a8439ac6f4248f42",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/allocator.gd": {
+      "sha256": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+      "lines": 598,
+      "baseline_git_blob": "d10049fe0a661a9aa61b10ad22af94fef890fba8",
+      "checkout_git_blob": "d10049fe0a661a9aa61b10ad22af94fef890fba8",
+      "main_git_blob": "d10049fe0a661a9aa61b10ad22af94fef890fba8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/controlled_plant.gd": {
+      "sha256": "e8c3ad8b39041b45eecabfa78222dbd75e72c72bc549698f7b898148a7f8049f",
+      "lines": 1391,
+      "baseline_git_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+      "checkout_git_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+      "main_git_blob": "7e08926a43d63a65fc4a45deeaf92c0fbd63c806",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/electric_bus.gd": {
+      "sha256": "e7a29eecf04e28b8fcbc1561b36cbc11eda8fb71f09956e58830aaeb58f05839",
+      "lines": 124,
+      "baseline_git_blob": "6e9de195b8b2db8a26ca66f61ad023fc6327b86b",
+      "checkout_git_blob": "6e9de195b8b2db8a26ca66f61ad023fc6327b86b",
+      "main_git_blob": "6e9de195b8b2db8a26ca66f61ad023fc6327b86b",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/flight_controller.gd": {
+      "sha256": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+      "lines": 475,
+      "baseline_git_blob": "36b36010b2eb6127e9baf1a59e516ac38db111c1",
+      "checkout_git_blob": "36b36010b2eb6127e9baf1a59e516ac38db111c1",
+      "main_git_blob": "36b36010b2eb6127e9baf1a59e516ac38db111c1",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/powertrain.gd": {
+      "sha256": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+      "lines": 20,
+      "baseline_git_blob": "0f8718b137503b9be2ee8cce32257c0419319f71",
+      "checkout_git_blob": "0f8718b137503b9be2ee8cce32257c0419319f71",
+      "main_git_blob": "0f8718b137503b9be2ee8cce32257c0419319f71",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/rates.gd": {
+      "sha256": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+      "lines": 549,
+      "baseline_git_blob": "22383080681066891dcd12bc782d1c31f53759f8",
+      "checkout_git_blob": "22383080681066891dcd12bc782d1c31f53759f8",
+      "main_git_blob": "22383080681066891dcd12bc782d1c31f53759f8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor/rotor.gd": {
+      "sha256": "9210aaf70c8a85d15b378da5594131331e957f20d68741d10f3e7997894abb0e",
+      "lines": 35,
+      "baseline_git_blob": "2417111df3eba52670228e1a9f53bfe1b3d7d927",
+      "checkout_git_blob": "2417111df3eba52670228e1a9f53bfe1b3d7d927",
+      "main_git_blob": "2417111df3eba52670228e1a9f53bfe1b3d7d927",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/multirotor_data.gd": {
+      "sha256": "b1aa9b31db8cd1d5c6b4109499ec991bb0fcc1a180390d304659973eeee06ffa",
+      "lines": 1156,
+      "baseline_git_blob": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+      "checkout_git_blob": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+      "main_git_blob": "dcecb2b3bd95faf34cf69f7f2cf535ed221a12ea",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/normal_compliance.gd": {
+      "sha256": "7fdda97336cffec821a420d0666e6f8eb530ae77c628e767b212b1d31590d785",
+      "lines": 187,
+      "baseline_git_blob": "eaa221b7199588dfb3bebd6b2fb6ab355df9a637",
+      "checkout_git_blob": "eaa221b7199588dfb3bebd6b2fb6ab355df9a637",
+      "main_git_blob": "eaa221b7199588dfb3bebd6b2fb6ab355df9a637",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/physical_identity.gd": {
+      "sha256": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628",
+      "lines": 139,
+      "baseline_git_blob": "bb0fa8b785b8b95f05e67ca1cd44e41ee5c31d1d",
+      "checkout_git_blob": "bb0fa8b785b8b95f05e67ca1cd44e41ee5c31d1d",
+      "main_git_blob": "bb0fa8b785b8b95f05e67ca1cd44e41ee5c31d1d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/propulsion.gd": {
+      "sha256": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f",
+      "lines": 741,
+      "baseline_git_blob": "0a5b1ffc5a8b36bec60ab4092b6af3c7dc08adf5",
+      "checkout_git_blob": "0a5b1ffc5a8b36bec60ab4092b6af3c7dc08adf5",
+      "main_git_blob": "0a5b1ffc5a8b36bec60ab4092b6af3c7dc08adf5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/rigid_body.gd": {
+      "sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "lines": 137,
+      "baseline_git_blob": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "checkout_git_blob": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "main_git_blob": "c2bb9c954d90aed8ef4b9ee58f63ea97d21bb8ed",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/rotor_coupling.gd": {
+      "sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+      "lines": 525,
+      "baseline_git_blob": "101c2665a9d361944f63b7b8b404ef22b8c6f7be",
+      "checkout_git_blob": "101c2665a9d361944f63b7b8b404ef22b8c6f7be",
+      "main_git_blob": "101c2665a9d361944f63b7b8b404ef22b8c6f7be",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/slew_trajectory.gd": {
+      "sha256": "13be929d8345a2bab5cbd92473d6d700d7e84ce226ddf23b0ebe5c6fc83f1dd8",
+      "lines": 89,
+      "baseline_git_blob": "f10673014e9be84a6ea709b1eaddeacb18521018",
+      "checkout_git_blob": "f10673014e9be84a6ea709b1eaddeacb18521018",
+      "main_git_blob": "f10673014e9be84a6ea709b1eaddeacb18521018",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/slipstream.gd": {
+      "sha256": "aa33272176a6f622136539ed367ebf309300d981a8272823e1fcb90f4551be19",
+      "lines": 640,
+      "baseline_git_blob": "54abbea29e75f20d5c48e4a2642cc558afdd256b",
+      "checkout_git_blob": "54abbea29e75f20d5c48e4a2642cc558afdd256b",
+      "main_git_blob": "54abbea29e75f20d5c48e4a2642cc558afdd256b",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/swirl_loads.gd": {
+      "sha256": "930ee14099f8dd273bf60a7417f67320d4903b944601eaf67ffc0348fca1a0b0",
+      "lines": 383,
+      "baseline_git_blob": "31af9955a6ee4b2ed7d6daa4c103f5e1edd83a7d",
+      "checkout_git_blob": "31af9955a6ee4b2ed7d6daa4c103f5e1edd83a7d",
+      "main_git_blob": "31af9955a6ee4b2ed7d6daa4c103f5e1edd83a7d",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/trim.gd": {
+      "sha256": "2a20692b6f1629a0fee381688cd4e86d8628d12f984065106f7875465f57c6fa",
+      "lines": 473,
+      "baseline_git_blob": "be0c99bf94645aeff7d4d3e4c69eb0cd4104c6d1",
+      "checkout_git_blob": "be0c99bf94645aeff7d4d3e4c69eb0cd4104c6d1",
+      "main_git_blob": "be0c99bf94645aeff7d4d3e4c69eb0cd4104c6d1",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/turbine.gd": {
+      "sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+      "lines": 190,
+      "baseline_git_blob": "04b6eeb43a768fecb2df060b523fc270cc1b0f17",
+      "checkout_git_blob": "04b6eeb43a768fecb2df060b523fc270cc1b0f17",
+      "main_git_blob": "04b6eeb43a768fecb2df060b523fc270cc1b0f17",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wheel_geometry.gd": {
+      "sha256": "219c9654f8cab79bfeb518c0994117eb7387857f9d0f02f03e6c1a573ac5d60b",
+      "lines": 283,
+      "baseline_git_blob": "aa247362b986807e8b894414aa35375dfae4a9d2",
+      "checkout_git_blob": "aa247362b986807e8b894414aa35375dfae4a9d2",
+      "main_git_blob": "aa247362b986807e8b894414aa35375dfae4a9d2",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wheel_profiles.gd": {
+      "sha256": "bdb76ff17b575b19eb0374375fcd62a10c4f6df2a99a74bc816c08094097d2a0",
+      "lines": 248,
+      "baseline_git_blob": "dd0f7d221d59afa4c8a8b4d50b7a9355a38ef14a",
+      "checkout_git_blob": "dd0f7d221d59afa4c8a8b4d50b7a9355a38ef14a",
+      "main_git_blob": "dd0f7d221d59afa4c8a8b4d50b7a9355a38ef14a",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_aircraft_flow.gd": {
+      "sha256": "0328fc032c902d959da37d8c72f926785af554b1cea86ef34aa0ed883bc90386",
+      "lines": 438,
+      "baseline_git_blob": "9e8d24563857870cdfc036065400ed0cba84c844",
+      "checkout_git_blob": "9e8d24563857870cdfc036065400ed0cba84c844",
+      "main_git_blob": "9e8d24563857870cdfc036065400ed0cba84c844",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_config.gd": {
+      "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66",
+      "lines": 318,
+      "baseline_git_blob": "4961f1dc7e522e6dd7110cdb4b3214995efcd875",
+      "checkout_git_blob": "4961f1dc7e522e6dd7110cdb4b3214995efcd875",
+      "main_git_blob": "4961f1dc7e522e6dd7110cdb4b3214995efcd875",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_field.gd": {
+      "sha256": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+      "lines": 209,
+      "baseline_git_blob": "ed235d4023670f14f060d3ebbf92cf277017e2b5",
+      "checkout_git_blob": "ed235d4023670f14f060d3ebbf92cf277017e2b5",
+      "main_git_blob": "ed235d4023670f14f060d3ebbf92cf277017e2b5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_spatial_config.gd": {
+      "sha256": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+      "lines": 546,
+      "baseline_git_blob": "ac4cac57de7e2fb8a6e05a4d811a707b07a39204",
+      "checkout_git_blob": "ac4cac57de7e2fb8a6e05a4d811a707b07a39204",
+      "main_git_blob": "ac4cac57de7e2fb8a6e05a4d811a707b07a39204",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_spatial_field.gd": {
+      "sha256": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+      "lines": 440,
+      "baseline_git_blob": "6c223c5529d38c825aa2ab5b038b2a727ac8edea",
+      "checkout_git_blob": "6c223c5529d38c825aa2ab5b038b2a727ac8edea",
+      "main_git_blob": "6c223c5529d38c825aa2ab5b038b2a727ac8edea",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_spatial_presets.gd": {
+      "sha256": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+      "lines": 184,
+      "baseline_git_blob": "de4260fe2633046154f8455bf8221606cd3d4246",
+      "checkout_git_blob": "de4260fe2633046154f8455bf8221606cd3d4246",
+      "main_git_blob": "de4260fe2633046154f8455bf8221606cd3d4246",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wind_thermal_field.gd": {
+      "sha256": "2e2b33f3cf0ae0247d7bef8a8ff75ea03d814dbd4d4eb1c2a60ae6c9a71e075e",
+      "lines": 430,
+      "baseline_git_blob": "d8d58be0a542168920bb1fe25c4b966a13758b43",
+      "checkout_git_blob": "d8d58be0a542168920bb1fe25c4b966a13758b43",
+      "main_git_blob": "d8d58be0a542168920bb1fe25c4b966a13758b43",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/physics/wing_polar.gd": {
+      "sha256": "0bac361ded5d5276464121c531dcd21f4b5168ee91d1656382821376d105cf56",
+      "lines": 144,
+      "baseline_git_blob": "f5be238c7ae06f58009d8c867cffa0e625f84c7c",
+      "checkout_git_blob": "f5be238c7ae06f58009d8c867cffa0e625f84c7c",
+      "main_git_blob": "f5be238c7ae06f58009d8c867cffa0e625f84c7c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/project.godot": {
+      "sha256": "71269ff5876ffa7d912ba1657ef9a385e368ae10cca27de06b68c1bb74c72725",
+      "lines": 88,
+      "baseline_git_blob": "7e66d58bcd13cbb3e17b437958ab4d813db7a1bb",
+      "checkout_git_blob": "7e66d58bcd13cbb3e17b437958ab4d813db7a1bb",
+      "main_git_blob": "88177f8317fd78be8b213027800cef7e0faae461",
+      "unchanged_on_checked_main": false,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/auto_calibration.gd": {
+      "sha256": "4242ce1f99da8f7f40291cd2aa7535a1cc32101a2d7f2628b549f9ac4a2f9ccc",
+      "lines": 316,
+      "baseline_git_blob": "9ddd62af706057729c3e1053b9e7bebf02f160a8",
+      "checkout_git_blob": "9ddd62af706057729c3e1053b9e7bebf02f160a8",
+      "main_git_blob": "9ddd62af706057729c3e1053b9e7bebf02f160a8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/auto_graphics_policy.gd": {
+      "sha256": "acec25d0e3b7e7edab3b0f57a60ad06817f4d0fddfc44e203b8cb5ed9b540c60",
+      "lines": 186,
+      "baseline_git_blob": "059299ad7d5a2d24feaa1250d962a4b3d9b3ff73",
+      "checkout_git_blob": "059299ad7d5a2d24feaa1250d962a4b3d9b3ff73",
+      "main_git_blob": "059299ad7d5a2d24feaa1250d962a4b3d9b3ff73",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/auto_graphics_report.gd": {
+      "sha256": "a93dd40df8787abc214f3cc1c5845f02f5654854da81f61c9f5d32e88187b3dd",
+      "lines": 84,
+      "baseline_git_blob": "5c361e73717093fb43624c2ea69882f2cf27a1e3",
+      "checkout_git_blob": "5c361e73717093fb43624c2ea69882f2cf27a1e3",
+      "main_git_blob": "5c361e73717093fb43624c2ea69882f2cf27a1e3",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/camera/camera_settings.gd": {
+      "sha256": "d5fb145e8f5bcc0a5909990f3c3f69c6ae5f561c51b4c0fe711573de7e921e95",
+      "lines": 98,
+      "baseline_git_blob": "16d8e48d756e7ec4ae1fd2d3a865ea010ad0f7e6",
+      "checkout_git_blob": "16d8e48d756e7ec4ae1fd2d3a865ea010ad0f7e6",
+      "main_git_blob": "16d8e48d756e7ec4ae1fd2d3a865ea010ad0f7e6",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/frames.gd": {
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+      "lines": 69,
+      "baseline_git_blob": "47c72e226cd6fe157f3209e6fcc2b169b93edf85",
+      "checkout_git_blob": "47c72e226cd6fe157f3209e6fcc2b169b93edf85",
+      "main_git_blob": "47c72e226cd6fe157f3209e6fcc2b169b93edf85",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/gpu_capability.gd": {
+      "sha256": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+      "lines": 140,
+      "baseline_git_blob": "1aaf926e64e86e4aa8a6dfd056fe167ec1a42c61",
+      "checkout_git_blob": "1aaf926e64e86e4aa8a6dfd056fe167ec1a42c61",
+      "main_git_blob": "1aaf926e64e86e4aa8a6dfd056fe167ec1a42c61",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/high_graphics_profile.gd": {
+      "sha256": "7c000089779c7ea39a1c792f1edd27cc50e1a77381fba73b2b5b1a8998dc47ee",
+      "lines": 151,
+      "baseline_git_blob": "5a2e4b16876f90e87f70668c6611e65580091ac5",
+      "checkout_git_blob": "5a2e4b16876f90e87f70668c6611e65580091ac5",
+      "main_git_blob": "5a2e4b16876f90e87f70668c6611e65580091ac5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/lake_plants.gd": {
+      "sha256": "8f0a754727e1caff69e211b2759c06a4c10c3c28475d41b8f0d1490368b90991",
+      "lines": 219,
+      "baseline_git_blob": "bc0b998b5e4433962bc8b267234ce32e102f347e",
+      "checkout_git_blob": "bc0b998b5e4433962bc8b267234ce32e102f347e",
+      "main_git_blob": "bc0b998b5e4433962bc8b267234ce32e102f347e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/lake_terrain.gd": {
+      "sha256": "4564088be3fc06e5afe693360703e1998c15bb1c084153c2efdf8b0e7c36de0c",
+      "lines": 251,
+      "baseline_git_blob": "34b6d6b934aa89ecdd579a4702ca681e792f5619",
+      "checkout_git_blob": "34b6d6b934aa89ecdd579a4702ca681e792f5619",
+      "main_git_blob": "34b6d6b934aa89ecdd579a4702ca681e792f5619",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/lake_world.gd": {
+      "sha256": "ec143036d1f1dbd2ead38a6f5c3559d160ac5a2c07bf177b79995f97721a663a",
+      "lines": 133,
+      "baseline_git_blob": "920896548625b40549705e2e0babf2585e2185a4",
+      "checkout_git_blob": "920896548625b40549705e2e0babf2585e2185a4",
+      "main_git_blob": "920896548625b40549705e2e0babf2585e2185a4",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/lily_pad.gdshader": {
+      "sha256": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+      "lines": 63,
+      "baseline_git_blob": "e114319aff94092439f0119a27f5e2441e79f6da",
+      "checkout_git_blob": "e114319aff94092439f0119a27f5e2441e79f6da",
+      "main_git_blob": "e114319aff94092439f0119a27f5e2441e79f6da",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/water.gdshader": {
+      "sha256": "f889ca8b88aef5f8c27e42071105e24272ec096ade47d265327ba041cce99d02",
+      "lines": 277,
+      "baseline_git_blob": "b4f44999464becc4112bc6b5a8b99be0c8cb6f12",
+      "checkout_git_blob": "b4f44999464becc4112bc6b5a8b99be0c8cb6f12",
+      "main_git_blob": "b4f44999464becc4112bc6b5a8b99be0c8cb6f12",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lake/water_material.gd": {
+      "sha256": "e386e699ab9d095d167fd717fa28b29489c89a36fcbdf69cdbbba24049bbc25e",
+      "lines": 200,
+      "baseline_git_blob": "e46a4aa2c3c7f90fbb7bd4b60dc3268d3db1b49e",
+      "checkout_git_blob": "e46a4aa2c3c7f90fbb7bd4b60dc3268d3db1b49e",
+      "main_git_blob": "e46a4aa2c3c7f90fbb7bd4b60dc3268d3db1b49e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lens/lens_settings.gd": {
+      "sha256": "1ee58936d070be5e4d27d2dd86f04df1fb4c0b7ca9722fd701bef30ec137c1aa",
+      "lines": 112,
+      "baseline_git_blob": "3892514e6216788cb36e521a98cecd5229c7daf0",
+      "checkout_git_blob": "3892514e6216788cb36e521a98cecd5229c7daf0",
+      "main_git_blob": "3892514e6216788cb36e521a98cecd5229c7daf0",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lighting/lighting_patterns.gd": {
+      "sha256": "b85510348bcec11e0f730de03cf1ccb4725af4e9b000747da727ba49316fc468",
+      "lines": 215,
+      "baseline_git_blob": "3e77f821307ad2e51dd59fa43695b3ad9a5201da",
+      "checkout_git_blob": "3e77f821307ad2e51dd59fa43695b3ad9a5201da",
+      "main_git_blob": "3e77f821307ad2e51dd59fa43695b3ad9a5201da",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/lighting/lighting_policy.gd": {
+      "sha256": "8e1722281534a5ea5e288b57b2a67c892adb6ebc09f02e8ccdd7f6add8cf9d8b",
+      "lines": 43,
+      "baseline_git_blob": "d40e9d3117c568bc87f8079aeba0e1c4c6ff7d9a",
+      "checkout_git_blob": "d40e9d3117c568bc87f8079aeba0e1c4c6ff7d9a",
+      "main_git_blob": "d40e9d3117c568bc87f8079aeba0e1c4c6ff7d9a",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/metalfx_policy.gd": {
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "lines": 109,
+      "baseline_git_blob": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "checkout_git_blob": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "main_git_blob": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/nvidia_reflex.gd": {
+      "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+      "lines": 96,
+      "baseline_git_blob": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "checkout_git_blob": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "main_git_blob": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/pilot_camera.gd": {
+      "sha256": "fbf1960c9977c39bb95fdf4ce4bc5205dacdf789b869e0de5013d8201991be56",
+      "lines": 138,
+      "baseline_git_blob": "15dac3b5343d209147fb14ba4724f51c7ec73009",
+      "checkout_git_blob": "15dac3b5343d209147fb14ba4724f51c7ec73009",
+      "main_git_blob": "15dac3b5343d209147fb14ba4724f51c7ec73009",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/reconstruction.gd": {
+      "sha256": "ec9990942fe03ffcf162b03ea2951dd0e9cdde7602924760cf0559bff60f61dd",
+      "lines": 786,
+      "baseline_git_blob": "7137e38bafbe26ce5a7120aa0c97eb9d4326e87c",
+      "checkout_git_blob": "7137e38bafbe26ce5a7120aa0c97eb9d4326e87c",
+      "main_git_blob": "7137e38bafbe26ce5a7120aa0c97eb9d4326e87c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/render_timing_lease.gd": {
+      "sha256": "406063ea71136de95fb9411babca1d5623d81d8271aace2f9c306c995df46f42",
+      "lines": 135,
+      "baseline_git_blob": "da6da678939f0208d3a6c75bb81f4038013469a9",
+      "checkout_git_blob": "da6da678939f0208d3a6c75bb81f4038013469a9",
+      "main_git_blob": "da6da678939f0208d3a6c75bb81f4038013469a9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/scene_detail.gd": {
+      "sha256": "d744ced85a45dc3b3e5a98d17723c5e772d716f78f5f065dcc8bfe496f8019b0",
+      "lines": 152,
+      "baseline_git_blob": "a1aa81cd422c65e48ed04e3eadd725f82a469cd9",
+      "checkout_git_blob": "a1aa81cd422c65e48ed04e3eadd725f82a469cd9",
+      "main_git_blob": "a1aa81cd422c65e48ed04e3eadd725f82a469cd9",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/shader_clock.gd": {
+      "sha256": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da",
+      "lines": 37,
+      "baseline_git_blob": "377776528a9a557f887bec775708a40b463627b5",
+      "checkout_git_blob": "377776528a9a557f887bec775708a40b463627b5",
+      "main_git_blob": "377776528a9a557f887bec775708a40b463627b5",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/shadow_settings.gd": {
+      "sha256": "af001e5a3a2b1ef79d567b0b64bab0b8669648e3daa81d9c2b33e848061cc8f9",
+      "lines": 323,
+      "baseline_git_blob": "125c089f4718425b674fcc4b5affc03f286a8261",
+      "checkout_git_blob": "125c089f4718425b674fcc4b5affc03f286a8261",
+      "main_git_blob": "125c089f4718425b674fcc4b5affc03f286a8261",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/render/world/world.gd": {
+      "sha256": "9a1e9144ae33172cc30265eefbb64b3ca84a1a645e99818a999e59d2b25e56e8",
+      "lines": 1458,
+      "baseline_git_blob": "d83fe162b954790ee4d37af95f8df7a8592418f4",
+      "checkout_git_blob": "d83fe162b954790ee4d37af95f8df7a8592418f4",
+      "main_git_blob": "d83fe162b954790ee4d37af95f8df7a8592418f4",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/scenery/rc_track_option.gd": {
+      "sha256": "0cb5883119c1f192af26d05b82145d8ce35e95bdf07eb91bc3397cab608098e6",
+      "lines": 67,
+      "baseline_git_blob": "797afa24d5f69752329db4d1969500f0269408d6",
+      "checkout_git_blob": "797afa24d5f69752329db4d1969500f0269408d6",
+      "main_git_blob": "797afa24d5f69752329db4d1969500f0269408d6",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/airship/flight_log.gd": {
+      "sha256": "adf991b551f42ae867f99c30fa3eab12c0d1988f7109cd479be6cf53b1ecc1c1",
+      "lines": 351,
+      "baseline_git_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+      "checkout_git_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+      "main_git_blob": "d6e070e78c859b0a18563f50234c00172e78bf7a",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/airship/session.gd": {
+      "sha256": "38273a350b3783861e2427810f36d5a066641e9ff76c7dddf4b853a771e5f69b",
+      "lines": 543,
+      "baseline_git_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+      "checkout_git_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+      "main_git_blob": "6fb53afe3349e88196f0026199a64442b1384e2c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/environment.gd": {
+      "sha256": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1",
+      "lines": 198,
+      "baseline_git_blob": "030875ea984475813df78d9a1c05b0a843b77d62",
+      "checkout_git_blob": "030875ea984475813df78d9a1c05b0a843b77d62",
+      "main_git_blob": "030875ea984475813df78d9a1c05b0a843b77d62",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/flight_log.gd": {
+      "sha256": "42e98ae1cde5054a18a944a1aa411bcd0bdd8bc8a90fff1c045ecdfd43cb6fe6",
+      "lines": 501,
+      "baseline_git_blob": "efc778b4fffc89a236591500636df0933b70ae90",
+      "checkout_git_blob": "efc778b4fffc89a236591500636df0933b70ae90",
+      "main_git_blob": "efc778b4fffc89a236591500636df0933b70ae90",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/flight_session.gd": {
+      "sha256": "83a47286921fb721945160c3191680f65211f672058c9364f794738b8393d5d5",
+      "lines": 6635,
+      "baseline_git_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "checkout_git_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "main_git_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/multirotor/flight_log.gd": {
+      "sha256": "ac6bf1450e27e9ae9245a84cc21583244329a96482aef34e6675e25132a76932",
+      "lines": 464,
+      "baseline_git_blob": "59e2de59aa78675a5b808a4931df3a23d70903cd",
+      "checkout_git_blob": "59e2de59aa78675a5b808a4931df3a23d70903cd",
+      "main_git_blob": "59e2de59aa78675a5b808a4931df3a23d70903cd",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/multirotor/session.gd": {
+      "sha256": "d9fdc1df58f5b5da7ab858b7474ae5956138857c8881853befd6dff2cc14bb04",
+      "lines": 1014,
+      "baseline_git_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+      "checkout_git_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+      "main_git_blob": "2d7f3410962de9a967418e9e1004ec4a7ad1ca0e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/race/gate_crossing.gd": {
+      "sha256": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7",
+      "lines": 76,
+      "baseline_git_blob": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "checkout_git_blob": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "main_git_blob": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/race/race_director.gd": {
+      "sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+      "lines": 389,
+      "baseline_git_blob": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "checkout_git_blob": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "main_git_blob": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/race/race_model.gd": {
+      "sha256": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3",
+      "lines": 347,
+      "baseline_git_blob": "ed25d4b0a039566bd8492dd0fbbca30e810aa8f2",
+      "checkout_git_blob": "ed25d4b0a039566bd8492dd0fbbca30e810aa8f2",
+      "main_git_blob": "ed25d4b0a039566bd8492dd0fbbca30e810aa8f2",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/race/track.gd": {
+      "sha256": "4f6b8d822708b638159b47e5b95a43f15f151b2dd17f324352394e87837fb3e6",
+      "lines": 515,
+      "baseline_git_blob": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "checkout_git_blob": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "main_git_blob": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/scenarios.gd": {
+      "sha256": "0e70abc105875b9b7ac930ac61e8b51f29147f9175299b0f239c64b1526f8d1b",
+      "lines": 32,
+      "baseline_git_blob": "b7cbcd033b829676c4c95e1efed80de8fda91ea3",
+      "checkout_git_blob": "b7cbcd033b829676c4c95e1efed80de8fda91ea3",
+      "main_git_blob": "b7cbcd033b829676c4c95e1efed80de8fda91ea3",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/scenery_collision.gd": {
+      "sha256": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+      "lines": 730,
+      "baseline_git_blob": "60760397c8e4e79db48145381f48391ce1fbd482",
+      "checkout_git_blob": "60760397c8e4e79db48145381f48391ce1fbd482",
+      "main_git_blob": "60760397c8e4e79db48145381f48391ce1fbd482",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/scenery_damage.gd": {
+      "sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+      "lines": 42,
+      "baseline_git_blob": "00c0b4c042d703cb14b67ed206a58d575e8ce840",
+      "checkout_git_blob": "00c0b4c042d703cb14b67ed206a58d575e8ce840",
+      "main_git_blob": "00c0b4c042d703cb14b67ed206a58d575e8ce840",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/simulation.gd": {
+      "sha256": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+      "lines": 1453,
+      "baseline_git_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "checkout_git_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "main_git_blob": "d24478fefb93cc753a9e203b81543d58d38c2643",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/sim/vehicle_model.gd": {
+      "sha256": "d9cb12ae11bac4724661f4f4faf16c2f15c7e9f6a2365c1b7ed3a205b5e474bc",
+      "lines": 234,
+      "baseline_git_blob": "6b6685541ff65d7711da3fabff0f7f946e11802a",
+      "checkout_git_blob": "6b6685541ff65d7711da3fabff0f7f946e11802a",
+      "main_git_blob": "6b6685541ff65d7711da3fabff0f7f946e11802a",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/spec.gd": {
+      "sha256": "8d5f216cb6dab23a366c92d17150f0379a06019f86ae24478b9fda778b5f0ef5",
+      "lines": 81,
+      "baseline_git_blob": "1f23310eae82aa29d7721ccbddd58e994df6525e",
+      "checkout_git_blob": "1f23310eae82aa29d7721ccbddd58e994df6525e",
+      "main_git_blob": "1f23310eae82aa29d7721ccbddd58e994df6525e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/statistics/detector.gd": {
+      "sha256": "ee5b76a7e50650f1f727fc2cd477848198b61921c3fe610391806772e3745abb",
+      "lines": 1054,
+      "baseline_git_blob": "3849139d4af7876451265dabfacfe7828dd60fbb",
+      "checkout_git_blob": "3849139d4af7876451265dabfacfe7828dd60fbb",
+      "main_git_blob": "3849139d4af7876451265dabfacfe7828dd60fbb",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/tests/test_mr_controlled_plant.gd": {
+      "sha256": "b767bc7171c8f308fb9a984104914e4245417349dc588e2c72c630818dd668c9",
+      "lines": 557,
+      "baseline_git_blob": "efb8fd21dc6652298c3ea10e547fb05dafad3945",
+      "checkout_git_blob": "efb8fd21dc6652298c3ea10e547fb05dafad3945",
+      "main_git_blob": "efb8fd21dc6652298c3ea10e547fb05dafad3945",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/tools/airship_flight_log_cli.gd": {
+      "sha256": "896b99e28cbfb95d6e2b4a7844418962ad2d005f3fc24a6a29c133101693ba42",
+      "lines": 77,
+      "baseline_git_blob": "eddd5480b7070c515c2aeec94dcf2bd0641acc75",
+      "checkout_git_blob": "eddd5480b7070c515c2aeec94dcf2bd0641acc75",
+      "main_git_blob": "eddd5480b7070c515c2aeec94dcf2bd0641acc75",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/crystal_surface.gd": {
+      "sha256": "62ccb53c5761250dd07442237bf96cfdfc9e53778b6345079ff9fdb3f854d1ac",
+      "lines": 340,
+      "baseline_git_blob": "22b567e1454786d9aaee601f80a91c82d0a81253",
+      "checkout_git_blob": "22b567e1454786d9aaee601f80a91c82d0a81253",
+      "main_git_blob": "22b567e1454786d9aaee601f80a91c82d0a81253",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/screen.gd": {
+      "sha256": "25c6628037a746fcaa8e069473e673325ff5b81917b6048114d66cb2257ced2c",
+      "lines": 161,
+      "baseline_git_blob": "52ee5736f5da53d46193b15803133fb609f971ae",
+      "checkout_git_blob": "52ee5736f5da53d46193b15803133fb609f971ae",
+      "main_git_blob": "52ee5736f5da53d46193b15803133fb609f971ae",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/settings_screen.gd": {
+      "sha256": "0fcbc783e504c50db676b2339ce39be1743ce945d02d81bfc44f00db28b24a10",
+      "lines": 1907,
+      "baseline_git_blob": "ebd6d4046e89d03feb78d3fbe8b1d24efdb89746",
+      "checkout_git_blob": "ebd6d4046e89d03feb78d3fbe8b1d24efdb89746",
+      "main_git_blob": "ebd6d4046e89d03feb78d3fbe8b1d24efdb89746",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/shaders/crystal.gdshader": {
+      "sha256": "00a82730ed8ff21caa43e781c309dac41ccef299299a2af44d33e125e303adea",
+      "lines": 135,
+      "baseline_git_blob": "f3419ca4a0ef25194950475cc4aaf5d5c5b97009",
+      "checkout_git_blob": "f3419ca4a0ef25194950475cc4aaf5d5c5b97009",
+      "main_git_blob": "f3419ca4a0ef25194950475cc4aaf5d5c5b97009",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/startup.gd": {
+      "sha256": "07652ea90a180b13582047f7d018c467f1336da9073a876374a15f22ccfe624e",
+      "lines": 494,
+      "baseline_git_blob": "0db0336f50d5a5278135636a599a7df52b910810",
+      "checkout_git_blob": "0db0336f50d5a5278135636a599a7df52b910810",
+      "main_git_blob": "0db0336f50d5a5278135636a599a7df52b910810",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/ui_theme.gd": {
+      "sha256": "80530912874851144e3773f4a8206eef0bd233b94ceb4fabeb0da23fa7c08ae1",
+      "lines": 405,
+      "baseline_git_blob": "8e6884ef396f93e64b2f2f44950cc898331b4a26",
+      "checkout_git_blob": "8e6884ef396f93e64b2f2f44950cc898331b4a26",
+      "main_git_blob": "8e6884ef396f93e64b2f2f44950cc898331b4a26",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/ui/widgets.gd": {
+      "sha256": "2aa4dfbf4c99ebbc589895af2d364b7c713a4746dbfba8bec607878fd2d9758f",
+      "lines": 162,
+      "baseline_git_blob": "985ea8bd86ca70bde50baa3c4d23cd5b2b7c9dd0",
+      "checkout_git_blob": "985ea8bd86ca70bde50baa3c4d23cd5b2b7c9dd0",
+      "main_git_blob": "985ea8bd86ca70bde50baa3c4d23cd5b2b7c9dd0",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/vehicles/airship/airship_scene.gd": {
+      "sha256": "2b5032b787327e6d192bdded715bc94b65994563ca83dcee3eb9407cca16f8a9",
+      "lines": 862,
+      "baseline_git_blob": "9b47e156df42baa6697ad4a35c5ff2ff5837d326",
+      "checkout_git_blob": "9b47e156df42baa6697ad4a35c5ff2ff5837d326",
+      "main_git_blob": "9b47e156df42baa6697ad4a35c5ff2ff5837d326",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "app/vehicles/multirotor/multirotor_scene.gd": {
+      "sha256": "8ee678d15b034a9d6b05eda8e8dc5dbd867c94bcf2066dbb209038ad80a73482",
+      "lines": 1632,
+      "baseline_git_blob": "e5ccd21494da9cccf9a4f149b972e2b0e5b1e7eb",
+      "checkout_git_blob": "e5ccd21494da9cccf9a4f149b972e2b0e5b1e7eb",
+      "main_git_blob": "e5ccd21494da9cccf9a4f149b972e2b0e5b1e7eb",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "docs/FLIGHT-LOGGING.md": {
+      "sha256": "96cbed625da14bba3943255f3c4b9d09bc34fd786914c0010ddbe7d279cd83fb",
+      "lines": 401,
+      "baseline_git_blob": "fd7360e9a05031fcb6601e0309482744705acb0e",
+      "checkout_git_blob": "fd7360e9a05031fcb6601e0309482744705acb0e",
+      "main_git_blob": "fd7360e9a05031fcb6601e0309482744705acb0e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "docs/plans/drone-racing.md": {
+      "sha256": "d8a53f93ccffce8433ced15e13ec318fa168d5db9e7c9c420a0e81fd07854d64",
+      "lines": 665,
+      "baseline_git_blob": "a03383374a4f52f5c195d3c85f30f70a7c381007",
+      "checkout_git_blob": "a03383374a4f52f5c195d3c85f30f70a7c381007",
+      "main_git_blob": "8bcf5ec31edaa0c7c00a360a8d19eee081445d38",
+      "unchanged_on_checked_main": false,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "docs/research/drone-racing/audit-2026-11-16/follow-up.md": {
+      "sha256": "c33f5acc782fd106c5dbdfb497736b743a4fc55574548b71bb3fda32a9974ee9",
+      "lines": 127,
+      "baseline_git_blob": "e5327b542968070c5b3d42fd1c3bfa79b54fdf67",
+      "checkout_git_blob": "e5327b542968070c5b3d42fd1c3bfa79b54fdf67",
+      "main_git_blob": "e5327b542968070c5b3d42fd1c3bfa79b54fdf67",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "docs/research/performance-report-2026-11-09.md": {
+      "sha256": "541100424c3bf9efd4227d9a947ee2bea53d5eec4938d092e2b304ea82834f5f",
+      "lines": 198,
+      "baseline_git_blob": "db2efaaadd3b65242cd862eb90220beab6df2865",
+      "checkout_git_blob": "db2efaaadd3b65242cd862eb90220beab6df2865",
+      "main_git_blob": "db2efaaadd3b65242cd862eb90220beab6df2865",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "docs/tools/shared.md": {
+      "sha256": "287faa5e5f42010bd5c24752c27b915d3efc6d61d5f3885bbea1f7992f691ade",
+      "lines": 137,
+      "baseline_git_blob": "f8b1ec60eea72d4974b3a194c3c06090ffe7f17c",
+      "checkout_git_blob": "f8b1ec60eea72d4974b3a194c3c06090ffe7f17c",
+      "main_git_blob": "f8b1ec60eea72d4974b3a194c3c06090ffe7f17c",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "tools/godot/run_checked.py": {
+      "sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+      "lines": 506,
+      "baseline_git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+      "checkout_git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+      "main_git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    },
+    "tools/graphics/native/fsr3.cpp": {
+      "sha256": "2c27b437a32fcdd6241824e3675307d3ceec41ed036be5e63124afd3979d47e7",
+      "lines": 841,
+      "baseline_git_blob": "71ed2a5efcef0a91f8497726ce2c6e733124d79e",
+      "checkout_git_blob": "71ed2a5efcef0a91f8497726ce2c6e733124d79e",
+      "main_git_blob": "71ed2a5efcef0a91f8497726ce2c6e733124d79e",
+      "unchanged_on_checked_main": true,
+      "working_tree_bytes_equal_git_blob_bytes": true
+    }
+  },
+  "final_run": {
+    "output_path": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published",
+    "generated_utc": "2026-11-20T01:34:15.822543+00:00",
+    "checked_launches": 12,
+    "baseline_observations_reproduced": true,
+    "all_logs_and_receipts_verified": true,
+    "all_published_executable_reproduction_assets_match_execution_hashes": true,
+    "documentation_only_post_collection_changes": []
+  },
+  "scope": "Headless source/component and bounded accepted-session evidence; no GPU/native/frame-time/release-package qualification.",
+  "setup_failures_not_application_defects": [
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/angle-discontinuity-controls-m9er9a5m/report.json",
+      "label": "angle-discontinuity-controls",
+      "reason": "engine_error",
+      "counts": {
+        "error": 6,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 8,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 13,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 18,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 23,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 28,
+          "message": "String formatting error: unsupported format character.",
+          "context": [
+            "   at: validated_evaluate (core/variant/variant_op.h:818)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _initialize (res://angle_probe.gd:63)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/angle-discontinuity-controls-uzp1oops/report.json",
+      "label": "angle-discontinuity-controls",
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Cannot infer the type of \"pitch\" variable because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://angle_probe.gd:37)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed to load script \"res://angle_probe.gd\" with error \"Parse error\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/deep-alias-xs50j9fu/report.json",
+      "label": "deep-alias",
+      "reason": "launch_error",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/terrain-early-out-s3fii6fo/report.json",
+      "label": "terrain-early-out",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/terrain-session-83grxqj7/report.json",
+      "label": "terrain-session",
+      "reason": "engine_error",
+      "counts": {
+        "error": 19,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 7,
+          "message": "Parse Error: Preload file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 9,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 11,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:101)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 13,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:102)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 15,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:103)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 17,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:104)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 19,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:105)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 21,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:106)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 23,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:107)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 25,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:108)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 27,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:109)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 29,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:110)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 31,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:111)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 33,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 35,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://sim/multirotor/session.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 37,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://terrain_session_probe.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 39,
+          "message": "Failed to load script \"res://terrain_session_probe.gd\" with error \"Compilation failed\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+            "ADMISSION track_valid=true field_match=true",
+            "SESSION_TERRAIN_CASES [{\"advanced\":true,\"cg_clearance_m\":0.700000000103969,\"cg_ground\":[0.0352516549949188,0.000757228584183581,0.0255295963693472],\"contact_force\":[0.0,0.0,0.0],\"crash\":{},\"fault\":\"\",\"global_ground_max\":2.732,\"initial_body\":[39.0,-4.327,-0.735251655098887,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],\"mode\":\"strict\",\"point\":[0.0719677289456018,0.072591582156611,0.0260183486238532],\"point_depth_m\":0.277758412437659,\"post_health\":[1.0,1.0,1.0,1.0],\"prepared\":true,\"resumed\":true,\"rotor_hits\":[0,1],\"rotor_speeds\":[929.268984762524,929.268984762524,929.268984762524,929.268984762524],\"strict_crash_reason\":\"\",\"substeps\":1,\"tick\":1},{\"advanced\":true,\"cg_clearance_m\":0.700000000103969,\"cg_ground\":[0.0352516549949188,0.000757228584183581,0.0255295963693472],\"contact_force\":[0.0,0.0,0.0],\"crash\":{},\"fault\":\"\",\"global_ground_max\":2.732,\"initial_body\":[39.0,-4.327,-0.735251655098887,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],\"mode\":\"graded\",\"point\":[0.0719677289456018,0.072591582156611,0."
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/cpu/runs/terrain-session-jpvtzpxy/report.json",
+      "label": "terrain-session",
+      "reason": "engine_error",
+      "counts": {
+        "error": 13,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://data/lake_loader.gd\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://physics/ground_vehicle/airfield_course.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Cannot infer the type of \"LakeLoader\" constant because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://physics/ground_vehicle/airfield_course.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 7,
+          "message": "Parse Error: Cannot infer the type of \"lake_identity\" variable because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://physics/ground_vehicle/airfield_course.gd:53)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 9,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://sim/environment.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 11,
+          "message": "Parse Error: Preload file \"res://render/treeline.gd\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 13,
+          "message": "Parse Error: Cannot infer the type of \"Treeline\" constant because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 15,
+          "message": "Parse Error: Preload file \"res://render/flightline_barrier.gd\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:12)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 17,
+          "message": "Parse Error: Cannot infer the type of \"FlightlineBarrier\" constant because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:12)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 19,
+          "message": "Parse Error: Cannot infer the type of \"front_azimuth\" variable because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:313)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 21,
+          "message": "Parse Error: Cannot infer the type of \"detail_asset\" variable because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/collision_world.gd:324)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 23,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://sim/multirotor/session.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 25,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://terrain_session_probe.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 27,
+          "message": "Failed to load script \"res://terrain_session_probe.gd\" with error \"Compilation failed\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+            "ADMISSION track_valid=true field_match=true",
+            "SESSION_TERRAIN_CASES [{\"advanced\":true,\"cg_clearance_m\":0.700000000103969,\"cg_ground\":[0.0352516549949188,0.000757228584183581,0.0255295963693472],\"contact_force\":[0.0,0.0,0.0],\"crash\":{},\"fault\":\"\",\"global_ground_max\":2.732,\"initial_body\":[39.0,-4.327,-0.735251655098887,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],\"mode\":\"strict\",\"point\":[0.0719677289456018,0.072591582156611,0.0260183486238532],\"point_depth_m\":0.277758412437659,\"post_health\":[1.0,1.0,1.0,1.0],\"prepared\":true,\"resumed\":true,\"rotor_hits\":[0,1],\"rotor_speeds\":[929.268984762524,929.268984762524,929.268984762524,929.268984762524],\"strict_crash_reason\":\"\",\"substeps\":1,\"tick\":1},{\"advanced\":true,\"cg_clearance_m\":0.700000000103969,\"cg_ground\":[0.0352516549949188,0.000757228584183581,0.0255295963693472],\"contact_force\":[0.0,0.0,0.0],\"crash\":{},\"fault\":\"\",\"global_ground_max\":2.732,\"initial_body\":[39.0,-4.327,-0.735251655098887,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],\"mode\":\"graded\",\"point\":[0.0719677289456018,0.072591582156611,0."
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/gpu/runs/settings-transaction-clean-_c8t0jl8/report.json",
+      "label": "settings-transaction-clean",
+      "reason": "engine_error",
+      "counts": {
+        "error": 39,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 7,
+          "message": "Parse Error: Preload file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 9,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 11,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/scenery_loader.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 13,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:7)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 15,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:8)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 17,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 19,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:10)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 21,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:11)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 23,
+          "message": "Parse Error: Preload file \"res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:12)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 25,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:13)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 27,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:14)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 29,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/building_roofs.gd:15)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 31,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:101)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 33,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:102)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 35,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:103)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 37,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:104)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 39,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:105)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 41,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:106)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/gpu/runs/settings-transaction-g5udrc_c/report.json",
+      "label": "settings-transaction",
+      "reason": "engine_error",
+      "counts": {
+        "error": 69,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://assets/landscape/turf/detail.png\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/ground.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Cannot infer the type of \"TURF_DETAIL\" constant because the value doesn't have a set type.",
+          "context": [
+            "          at: GDScript::reload (res://render/ground.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 7,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 9,
+          "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 11,
+          "message": "Parse Error: Preload file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 13,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 15,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://render/landscape_upgrade/scenery_grass_mask.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 17,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "          at: GDScript::reload (res://render/near_grass.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 19,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:8)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 21,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:9)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 23,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:10)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 25,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:11)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 27,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:12)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 29,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:13)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 31,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:14)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 33,
+          "message": "Parse Error: Preload file \"res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/pilot_station.gd:15)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 35,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:101)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 37,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:102)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 39,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:103)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 41,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://render/flightline_barrier.gd:104)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/root/runs/round2-replay-control-a_nj9dmh/report.json",
+      "label": "round2-replay-control",
+      "reason": "engine_error",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Couldn't open directory at path \"res://failures\".",
+          "context": [
+            "   at: get_files_at (core/io/dir_access.cpp:574)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _source_paths (res://sim/flight_log.gd:497)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 13,
+          "message": "Couldn't open directory at path \"res://failures\".",
+          "context": [
+            "   at: get_directories_at (core/io/dir_access.cpp:584)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _source_paths (res://sim/flight_log.gd:500)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    },
+    {
+      "original_report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/root/runs/round2-replay-control-tpyjrvn9/report.json",
+      "label": "round2-replay-control",
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: The member \"Container\" shadows a native class.",
+          "context": [
+            "          at: GDScript::reload (res://replay_probe.gd:5)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed to load script \"res://replay_probe.gd\" with error \"Parse error\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+          ]
+        }
+      ],
+      "qualifies_application_finding": false
+    }
+  ],
+  "other_nonqualifying_attempts": [
+    {
+      "label": "packaged-pass1",
+      "reason": "Receipt glob matched settings import and settings run; wrapper rejected ambiguous receipt. Exact-label matching corrected."
+    },
+    {
+      "label": "packaged-pass2/pass3/packaged-final",
+      "reason": "Earlier successful collections superseded by final frozen package after adding custom/terrain/half-turn coverage and exact source anchors. Not counted as additional independent defects."
+    }
+  ],
+  "artifact_sha256": {
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/README.md": "9ea10b14bc63918ff6015a7abf1ec22060d4e9250359134e2f9656f8697bad91",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/corroboration/terrain-helper-provenance.json": "7684be9cb924ad1718b19830b4e35200d0e8e6165de27aa337d3c0721a83c678",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/corroboration/terrain-real-sources-engine.log": "a83b5b9741e56ec9c0811ea0e07b7bac94584c69ea421ba9b2f7052f157691b7",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/corroboration/terrain-real-sources-report.json": "3652498e09b0029334a41fdd846f185753bf70f5f4fbdde728ddd0927e016265",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-angle-half-turn-0pj7u0qm/engine.log": "bdcfef7729d6d28f78a62f0d10be7b27f5abf0a961088911edbd215a7e4842c1",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-angle-half-turn-0pj7u0qm/report.json": "60ddfd41bd29cdd3ee49f83e9d66aa620291a76a22fd71dc089ed76c55ca40eb",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-angle-u5g4rrtt/engine.log": "0feff01947dd34ae3ae17a6fc255f65874aea6f51d1edf7de7248416275d948d",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-angle-u5g4rrtt/report.json": "f894ddb6c54d629d30df24da39d6d192b1bceced8f7f5621b82e9c5e58a2b470",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-core-import-vv8tiy6b/engine.log": "41afd814389eb3a5a257983bf7be0fc6bc709737516252643d9ae3f84b569177",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-core-import-vv8tiy6b/report.json": "ca8a05625f23c97608b22d3cb9d94a138fc471d58ecf0c46ebe7aef327e1d8a8",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-custom-waves-76ama7g0/engine.log": "c7ffd6de33d2f6c271e0b92822f61ddd9d4b2a579dffa5a38775bd00b5f47ca6",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-custom-waves-76ama7g0/report.json": "302c0c05ff190b5deac78ec89248c5c8e7a34e72de784a62516c6feac05f7dc8",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-input-kg4zit6r/engine.log": "3ea011989d88eae96f7ae6bf90fbc83b31bea82e50d4d79613a000b892c8bd97",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-input-kg4zit6r/report.json": "4da2278e126f07f7c0255885998448debef0f0e75a66899033523c553619f455",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-lake-pn0ibksb/engine.log": "350bff403b6735af9ba38178f987fb79a9763c794aeb066d34bc45031c526db9",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-lake-pn0ibksb/report.json": "9005e29cadf30ff009a927cd6ad7ef8f50186f0dbe3d696d04c03ff33fa247a3",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-replay-control-wxu27hwc/engine.log": "f9728770553e4785085f281551df5fa9c09937bb66bee83d338c494cedddd86a",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-replay-control-wxu27hwc/report.json": "54c1478224b60d12c98a45e3b1a458ac441a61164efaf342f977392b6b94e474",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-replay-source-change-zeqz9vd1/engine.log": "7e77cd53c1033637fd11e780d0dbbfb378d6bd73d34de9b4d908b7faad0ec88b",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-replay-source-change-zeqz9vd1/report.json": "1bf1712ac96f1a5fbf90341c35d970c8eeb94e303e4f70534c4c6e7c40446a07",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-settings-63s1gw9w/engine.log": "52b50a7499d66338737ed5fea5aacad3ef96ab5c209f14df6ce2d87d17f5b55d",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-settings-63s1gw9w/report.json": "cef7461391969d2af6eae39eb2d8daab3e4bb5ffc8b33f27104805fef91bf16a",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-settings-import-ijiltd2g/engine.log": "94f7b6a1663a197d96c900a33cb6bd4f1f5a722d3c9de12fed9471a2592526aa",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-settings-import-ijiltd2g/report.json": "bb6a12e86657bf2217ec6babb448830bf46c2692aa3761a562e293f4454c42c9",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-terrain-component-5mz0zdwz/engine.log": "a400ba9e88a460f38e353bc7f53d3482af7d80558b5dc79c9c333d7a419a43c7",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-terrain-component-5mz0zdwz/report.json": "199b1d82094ed09b8a45cea8da3394474f552db500c104bbbd7902e7e3d2f9e8",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-terrain-session-hmkdcj9o/engine.log": "a83b5b9741e56ec9c0811ea0e07b7bac94584c69ea421ba9b2f7052f157691b7",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence/runs/r2-terrain-session-hmkdcj9o/report.json": "866afefb347881eb5ef8da935144613be78146902bcd079ef9fdadf8f7bd4e4f",
+    "research/performance/audit-2026-11-19/round2/README.md": "30c02140c5749e542376fc0b009768cf210159b028335652ac55f0e504186592",
+    "research/performance/audit-2026-11-19/round2/angle_half_turn_probe.gd": "9025faf6b29c83f84be06439c9f78fea4efda375df2d7b1ecbc9717fbcb6fcbe",
+    "research/performance/audit-2026-11-19/round2/angle_probe.gd": "9c07cc25cbcfc7fce9319e9caafd46eaa4db20d6ba2fec4342c0040158bda68e",
+    "research/performance/audit-2026-11-19/round2/custom_wave_probe.gd": "72ee622de2e8366d373cb695e540b23ee029a81ed0e2f203b1e6b8aa16f94ee7",
+    "research/performance/audit-2026-11-19/round2/fixture_sources.json": "90c93c8219ecd9f0160ea58d305d5e46bd6ee0d5daaa88549a78ce6cbf35d5b9",
+    "research/performance/audit-2026-11-19/round2/input_probe.gd": "c5710a859ff6636fe4c65061919bf69d5d9118fb7183b9fae4e478f685812cea",
+    "research/performance/audit-2026-11-19/round2/lake_wave_probe.gd": "6fec6a98ed1497754d2fffb0271b40eb92a864171371b53c44b334e442698f77",
+    "research/performance/audit-2026-11-19/round2/plant_layout_extracted.gd": "46ad0e9df8157aa03d4114c8a4625d4fcd039e22b30008b43303509450243e34",
+    "research/performance/audit-2026-11-19/round2/replay_probe.gd": "1606f2efdeae857949b9f6f986c78fc287a7c6924e1dcbd6980d00acf7db770c",
+    "research/performance/audit-2026-11-19/round2/run.py": "ffc35c68df0f292b451a9153a6ca119e6959ba22237a6433becab2b0b403cfd3",
+    "research/performance/audit-2026-11-19/round2/settings_probe.gd": "a9dad3dafe0c913daa8555682ad5044d0f09b94533bb37e3110fb6fb9209bed4",
+    "research/performance/audit-2026-11-19/round2/stubs/app_state/preferences.gd": "ef11573cad32a4218bcec140ddbaad350a6d395ca593cc732ae1855b3b4c2927",
+    "research/performance/audit-2026-11-19/round2/stubs/scenery/collision_setup.gd": "9e079056680393ae880caf78419026d2d3c8f8c46630064d6b7059609fb53f30",
+    "research/performance/audit-2026-11-19/round2/stubs/scenery/collision_world.gd": "b3f977ec4407b39a55970647b2c5be57af87d683f558400b8093280634ef9754",
+    "research/performance/audit-2026-11-19/round2/terrain_component_probe.gd": "86d160c9ad2a8379e5888d793a1db1477af385166694e739904e0965fc49ba57",
+    "research/performance/audit-2026-11-19/round2/terrain_session_probe.gd": "252d90506aa7bf7d7d53d96c1a2d8eb4ff0978df9aaa7bd641fe055726fd7439",
+    "docs/research/performance-audit-2026-11-19/round-2.md": "b378487d7a14d0eb53400ca3bdbf1cc16cf4ac5c43ac44e672023b9f2be9057b",
+    "docs/research/performance-audit-2026-11-19/round-2-findings.json": "f0330176f209051d7df95894256e4476b59683667d683f1d40542a9d618d216f",
+    "docs/research/performance-audit-2026-11-19/round-2-evidence.json": "40d8e9c9b5fd8d878e8e28f273b4f40a3aeb474007f697a55aef4b4ed39d1fed",
+    "docs/research/performance-audit-2026-11-19/round-2-sources.json": "bd43e8285c79343f63199b9be304c3d254865e797820fe9efaf1e1cb8e1f9241"
+  }
+}

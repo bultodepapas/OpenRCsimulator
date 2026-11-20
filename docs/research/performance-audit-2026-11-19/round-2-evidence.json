@@ -1,0 +1,2800 @@
+{
+  "format": "openrc-performance-audit-round2-results-v1",
+  "generated_utc": "2026-11-20T01:34:15.822543+00:00",
+  "runtime_base": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "fixture_source_hashes": {
+    "app/app_state/bad_settings_backup.gd": "60391eb1054f37367aa1a13938ebf2923883bb1aeb9648a1b3a252e41b38a619",
+    "app/app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+    "app/app_state/display_preferences.gd": "f467a1f56dbf3fa4ae630b92dc5b5ce1a309dca56c5ab7a44d4f77d271b03f61",
+    "app/app_state/native_package.gd": "d60f6746ac437a5a264c48d362f90fc710a1cffbdfad6a12bbf788b909899613",
+    "app/app_state/preferences.gd": "3d215b0fefbbf6a57a9a9ba2f1ec3fbd160f8215791ba644dbbef3635cf3fe29",
+    "app/app_state/renderer_preference.gd": "0654d9b355982658f86626a8294accd3618fe595811ecf4e9410430b9f3fbbe5",
+    "app/app_state/update_check.gd": "30ebbca4c01f44378b916cbe9bba81d259ba07b5ac277a688453f0e3f066a250",
+    "app/data/airships/rc-blimp-5m.json": "9840c67bb24568f284cfc46a231d1f966640df8113efe36f1a44cecd75a25ba1",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/gpu/capability.json": "84edc3050b607045ce9545199cc63d9c8d89f1ef83f198203dfdf563d9d125b3",
+    "app/data/ground/surface_friction.json": "6eef216dc77e6e131388ba0646c6180a82b7ae2fe0b01aec604e4262c79180c1",
+    "app/data/ground_vehicle/airfield_track.json": "31ee093d4fc968d8bfb083a7ee89315030373ce886f87195b78115000e680e29",
+    "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "app/data/multirotors/openrc-fpv5-x1.json": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+    "app/i18n/fonts.gd": "9c03dd7785558a38a84f874bd2fd42ccecd08f027e2e553c93597227c8e5cb9c",
+    "app/i18n/languages.gd": "de345d7b8a5e854b7cf6745e4b140f6647b465ba36588642a19f15e080165078",
+    "app/input/commands.gd": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+    "app/input/controller_actions.gd": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+    "app/input/controller_profile.gd": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+    "app/input/edgetx_radio.gd": "26291a2a3ec1b93bfaf9f513cb82946d41439b36ef9f3df9627becd70ab71349",
+    "app/input/jeti_radio.gd": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef",
+    "app/input/radio_menu.gd": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41",
+    "app/input/rc_input.gd": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+    "app/input/smoke_aux.gd": "f0a0e54b59ce541fe380531d4432e916004c61a0e69503aec0a8c4d6387208f7",
+    "app/physics/aero.gd": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8",
+    "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "app/physics/aircraft_contract.gd": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278",
+    "app/physics/aircraft_data.gd": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497",
+    "app/physics/aircraft_ground_profile.gd": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2",
+    "app/physics/aircraft_modules.gd": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5",
+    "app/physics/airship/airship_data.gd": "91bdd61980a45e7da024a890bc2021374c541b1baba2f5f8f6b46110bdb14c24",
+    "app/physics/airship/airship_dynamics.gd": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef",
+    "app/physics/atmosphere.gd": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+    "app/physics/battery/battery_data.gd": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+    "app/physics/battery/esc_supervisor.gd": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+    "app/physics/battery/pack_ecm.gd": "ff5dd20f3c2ac83e747a12126198d29e4f7dc4bc35fd35f2ee23a0fe60ae89d9",
+    "app/physics/control_actuators.gd": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+    "app/physics/control_surfaces.gd": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447",
+    "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "app/physics/effective_mass.gd": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+    "app/physics/electric_motor.gd": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+    "app/physics/electric_supply.gd": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+    "app/physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "app/physics/event_step.gd": "b8d29d8d7b990ffbef9e4c9809f542d433bc10948b93242729ebd7cf4ba0a888",
+    "app/physics/fixed_datum_body.gd": "bb0c9ec1238acbbe4b786db4e54ae61a647658b3656f36257a7de7824d715e1e",
+    "app/physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+    "app/physics/fuel_properties.gd": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+    "app/physics/generalized_coordinates.gd": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d",
+    "app/physics/glow/carburetor.gd": "2f172faf92565467067df370293052d2ac253c4d68631e597c9986d58dc42e8a",
+    "app/physics/glow/four_stroke.gd": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+    "app/physics/glow/fuel_feed.gd": "d90e14139fcfc98dd724f7c97f2e5c6d403db59ed935477cd1dc0cd4e81d8101",
+    "app/physics/glow/fuel_mass.gd": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+    "app/physics/glow/installation.gd": "743669589c65ac083aa32f5bccf899ef5039f2f9476f943786cec59b28f59593",
+    "app/physics/glow/operating_point.gd": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b",
+    "app/physics/glow/profile.gd": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+    "app/physics/glow/propeller.gd": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+    "app/physics/glow/source.gd": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+    "app/physics/glow/two_stroke.gd": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+    "app/physics/ground_contact.gd": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+    "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "app/physics/ground_support.gd": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+    "app/physics/ground_surfaces.gd": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/ground_vehicle/airfield_course.gd": "5164d012df12ddd0579a54ab8c71419c7a856bc443aacbe5a0d9684350f7e746",
+    "app/physics/ground_vehicle/airfield_track.gd": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2",
+    "app/physics/ground_vehicle/course.gd": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+    "app/physics/ground_vehicle/vehicle_environment.gd": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "app/physics/ground_wheels.gd": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+    "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "app/physics/hull_crossing.gd": "6492dfdf6255047fdf45882ba6c881769ac55542ff1b09447db045bf3e8d4d8a",
+    "app/physics/impact_snapshot.gd": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+    "app/physics/integrator.gd": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+    "app/physics/intended_hull_support.gd": "c4e9c16ddb9a99a383799bc96df3b051f86a695ac9b44e418171e4be67780819",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/mass_inventory.gd": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/multirotor/actuator_map.gd": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+    "app/physics/multirotor/airframe.gd": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+    "app/physics/multirotor/allocator.gd": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+    "app/physics/multirotor/controlled_plant.gd": "e8c3ad8b39041b45eecabfa78222dbd75e72c72bc549698f7b898148a7f8049f",
+    "app/physics/multirotor/electric_bus.gd": "e7a29eecf04e28b8fcbc1561b36cbc11eda8fb71f09956e58830aaeb58f05839",
+    "app/physics/multirotor/flight_controller.gd": "d9a1155de833b9c761101c0a6f4a9b63a5d3c153e11d18b27723379c65de7e42",
+    "app/physics/multirotor/powertrain.gd": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+    "app/physics/multirotor/rates.gd": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+    "app/physics/multirotor/rotor.gd": "9210aaf70c8a85d15b378da5594131331e957f20d68741d10f3e7997894abb0e",
+    "app/physics/multirotor_data.gd": "b1aa9b31db8cd1d5c6b4109499ec991bb0fcc1a180390d304659973eeee06ffa",
+    "app/physics/normal_compliance.gd": "7fdda97336cffec821a420d0666e6f8eb530ae77c628e767b212b1d31590d785",
+    "app/physics/physical_identity.gd": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628",
+    "app/physics/propulsion.gd": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+    "app/physics/slew_trajectory.gd": "13be929d8345a2bab5cbd92473d6d700d7e84ce226ddf23b0ebe5c6fc83f1dd8",
+    "app/physics/slipstream.gd": "aa33272176a6f622136539ed367ebf309300d981a8272823e1fcb90f4551be19",
+    "app/physics/swirl_loads.gd": "930ee14099f8dd273bf60a7417f67320d4903b944601eaf67ffc0348fca1a0b0",
+    "app/physics/trim.gd": "2a20692b6f1629a0fee381688cd4e86d8628d12f984065106f7875465f57c6fa",
+    "app/physics/turbine.gd": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+    "app/physics/wheel_geometry.gd": "219c9654f8cab79bfeb518c0994117eb7387857f9d0f02f03e6c1a573ac5d60b",
+    "app/physics/wheel_profiles.gd": "bdb76ff17b575b19eb0374375fcd62a10c4f6df2a99a74bc816c08094097d2a0",
+    "app/physics/wind_aircraft_flow.gd": "0328fc032c902d959da37d8c72f926785af554b1cea86ef34aa0ed883bc90386",
+    "app/physics/wind_config.gd": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66",
+    "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "app/physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+    "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+    "app/physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+    "app/physics/wind_thermal_field.gd": "2e2b33f3cf0ae0247d7bef8a8ff75ea03d814dbd4d4eb1c2a60ae6c9a71e075e",
+    "app/physics/wing_polar.gd": "0bac361ded5d5276464121c531dcd21f4b5168ee91d1656382821376d105cf56",
+    "app/render/auto_calibration.gd": "4242ce1f99da8f7f40291cd2aa7535a1cc32101a2d7f2628b549f9ac4a2f9ccc",
+    "app/render/auto_graphics_policy.gd": "acec25d0e3b7e7edab3b0f57a60ad06817f4d0fddfc44e203b8cb5ed9b540c60",
+    "app/render/auto_graphics_report.gd": "a93dd40df8787abc214f3cc1c5845f02f5654854da81f61c9f5d32e88187b3dd",
+    "app/render/camera/camera_settings.gd": "d5fb145e8f5bcc0a5909990f3c3f69c6ae5f561c51b4c0fe711573de7e921e95",
+    "app/render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+    "app/render/gpu_capability.gd": "0dec2cf434e97eed987935ccad6bf9bcc636d4bd86b702f82488dd8903b02e8a",
+    "app/render/high_graphics_profile.gd": "7c000089779c7ea39a1c792f1edd27cc50e1a77381fba73b2b5b1a8998dc47ee",
+    "app/render/lake/lake_plants.gd": "8f0a754727e1caff69e211b2759c06a4c10c3c28475d41b8f0d1490368b90991",
+    "app/render/lake/lake_terrain.gd": "4564088be3fc06e5afe693360703e1998c15bb1c084153c2efdf8b0e7c36de0c",
+    "app/render/lake/lily_pad.gdshader": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+    "app/render/lake/water.gdshader": "f889ca8b88aef5f8c27e42071105e24272ec096ade47d265327ba041cce99d02",
+    "app/render/lake/water_material.gd": "e386e699ab9d095d167fd717fa28b29489c89a36fcbdf69cdbbba24049bbc25e",
+    "app/render/lens/lens_settings.gd": "1ee58936d070be5e4d27d2dd86f04df1fb4c0b7ca9722fd701bef30ec137c1aa",
+    "app/render/lighting/lighting_patterns.gd": "b85510348bcec11e0f730de03cf1ccb4725af4e9b000747da727ba49316fc468",
+    "app/render/lighting/lighting_policy.gd": "8e1722281534a5ea5e288b57b2a67c892adb6ebc09f02e8ccdd7f6add8cf9d8b",
+    "app/render/metalfx_policy.gd": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+    "app/render/nvidia_reflex.gd": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+    "app/render/pilot_camera.gd": "fbf1960c9977c39bb95fdf4ce4bc5205dacdf789b869e0de5013d8201991be56",
+    "app/render/reconstruction.gd": "ec9990942fe03ffcf162b03ea2951dd0e9cdde7602924760cf0559bff60f61dd",
+    "app/render/render_timing_lease.gd": "406063ea71136de95fb9411babca1d5623d81d8271aace2f9c306c995df46f42",
+    "app/render/scene_detail.gd": "d744ced85a45dc3b3e5a98d17723c5e772d716f78f5f065dcc8bfe496f8019b0",
+    "app/render/shader_clock.gd": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da",
+    "app/render/shadow_settings.gd": "af001e5a3a2b1ef79d567b0b64bab0b8669648e3daa81d9c2b33e848061cc8f9",
+    "app/scenery/rc_track_option.gd": "0cb5883119c1f192af26d05b82145d8ce35e95bdf07eb91bc3397cab608098e6",
+    "app/sim/airship/flight_log.gd": "adf991b551f42ae867f99c30fa3eab12c0d1988f7109cd479be6cf53b1ecc1c1",
+    "app/sim/airship/session.gd": "38273a350b3783861e2427810f36d5a066641e9ff76c7dddf4b853a771e5f69b",
+    "app/sim/environment.gd": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1",
+    "app/sim/flight_log.gd": "42e98ae1cde5054a18a944a1aa411bcd0bdd8bc8a90fff1c045ecdfd43cb6fe6",
+    "app/sim/multirotor/session.gd": "d9fdc1df58f5b5da7ab858b7474ae5956138857c8881853befd6dff2cc14bb04",
+    "app/sim/race/gate_crossing.gd": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7",
+    "app/sim/race/race_director.gd": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+    "app/sim/race/race_model.gd": "2762e0882441c1c0b731e56919554afff85f552272f20bc8390754f3089f04f3",
+    "app/sim/race/track.gd": "4f6b8d822708b638159b47e5b95a43f15f151b2dd17f324352394e87837fb3e6",
+    "app/sim/scenarios.gd": "0e70abc105875b9b7ac930ac61e8b51f29147f9175299b0f239c64b1526f8d1b",
+    "app/sim/scenery_collision.gd": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+    "app/sim/scenery_damage.gd": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+    "app/sim/simulation.gd": "8da099ff3cefb7af4c218d2b692b6c6aa3a96e132b71e2ee4299aa866eeab6db",
+    "app/sim/vehicle_model.gd": "d9cb12ae11bac4724661f4f4faf16c2f15c7e9f6a2365c1b7ed3a205b5e474bc",
+    "app/spec.gd": "8d5f216cb6dab23a366c92d17150f0379a06019f86ae24478b9fda778b5f0ef5",
+    "app/ui/crystal_surface.gd": "62ccb53c5761250dd07442237bf96cfdfc9e53778b6345079ff9fdb3f854d1ac",
+    "app/ui/screen.gd": "25c6628037a746fcaa8e069473e673325ff5b81917b6048114d66cb2257ced2c",
+    "app/ui/settings_screen.gd": "0fcbc783e504c50db676b2339ce39be1743ce945d02d81bfc44f00db28b24a10",
+    "app/ui/shaders/crystal.gdshader": "00a82730ed8ff21caa43e781c309dac41ccef299299a2af44d33e125e303adea",
+    "app/ui/ui_theme.gd": "80530912874851144e3773f4a8206eef0bd233b94ceb4fabeb0da23fa7c08ae1",
+    "app/ui/widgets.gd": "2aa4dfbf4c99ebbc589895af2d364b7c713a4746dbfba8bec607878fd2d9758f",
+    "tools/godot/run_checked.py": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+  },
+  "reproduction_asset_hashes": {
+    "settings_probe.gd": "a9dad3dafe0c913daa8555682ad5044d0f09b94533bb37e3110fb6fb9209bed4",
+    "replay_probe.gd": "1606f2efdeae857949b9f6f986c78fc287a7c6924e1dcbd6980d00acf7db770c",
+    "plant_layout_extracted.gd": "46ad0e9df8157aa03d4114c8a4625d4fcd039e22b30008b43303509450243e34",
+    "custom_wave_probe.gd": "72ee622de2e8366d373cb695e540b23ee029a81ed0e2f203b1e6b8aa16f94ee7",
+    "terrain_session_probe.gd": "252d90506aa7bf7d7d53d96c1a2d8eb4ff0978df9aaa7bd641fe055726fd7439",
+    "lake_wave_probe.gd": "6fec6a98ed1497754d2fffb0271b40eb92a864171371b53c44b334e442698f77",
+    "input_probe.gd": "c5710a859ff6636fe4c65061919bf69d5d9118fb7183b9fae4e478f685812cea",
+    "angle_probe.gd": "9c07cc25cbcfc7fce9319e9caafd46eaa4db20d6ba2fec4342c0040158bda68e",
+    "fixture_sources.json": "90c93c8219ecd9f0160ea58d305d5e46bd6ee0d5daaa88549a78ce6cbf35d5b9",
+    "README.md": "30c02140c5749e542376fc0b009768cf210159b028335652ac55f0e504186592",
+    "run.py": "ffc35c68df0f292b451a9153a6ca119e6959ba22237a6433becab2b0b403cfd3",
+    "terrain_component_probe.gd": "86d160c9ad2a8379e5888d793a1db1477af385166694e739904e0965fc49ba57",
+    "angle_half_turn_probe.gd": "9025faf6b29c83f84be06439c9f78fea4efda375df2d7b1ecbc9717fbcb6fcbe",
+    "stubs/scenery/collision_world.gd": "b3f977ec4407b39a55970647b2c5be57af87d683f558400b8093280634ef9754",
+    "stubs/scenery/collision_setup.gd": "9e079056680393ae880caf78419026d2d3c8f8c46630064d6b7059609fb53f30",
+    "stubs/app_state/preferences.gd": "ef11573cad32a4218bcec140ddbaad350a6d395ca593cc732ae1855b3b4c2927"
+  },
+  "local_test_pool_configured": false,
+  "scope": "Headless component/settings observations and scalar transform math; no GPU, native backend, timing or full-flight qualification",
+  "fixture_substitutions": {
+    "collision": "Two assertion stubs; terrain-only airship/drone sessions install no scenery obstacle inventory; neither stub executes",
+    "settings": "Only the player-preferences DEFAULT_PATH constant is supplied; UI fonts use ThemeDB.fallback_font",
+    "lake": "Unchanged layout/anchor/spacing source blocks extracted; scalar math plus Transform3D, no shader execution",
+    "source_change": {
+      "fixture_path": "core/physics/math3d.gd",
+      "before_sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+      "after_sha256": "4075f28932783385ad38ba70f17eee33705a7c829c51c46a2af83e85de7bb561",
+      "description": "Comment appended between fresh processes; original recording bytes retained; fixture source restored"
+    }
+  },
+  "runs": [
+    {
+      "label": "r2-core-import",
+      "group": "core",
+      "report": "runs/r2-core-import-vv8tiy6b/report.json",
+      "log": "runs/r2-core-import-vv8tiy6b/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "faa33188-e107-4af6-9b9b-68f56431f9c4",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:33:46.326041+00:00",
+        "label": "r2-core-import",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-core-import-vv8tiy6b/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-core-import-vv8tiy6b/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 9.742565,
+        "log_bytes": 8483,
+        "log_sha256": "41afd814389eb3a5a257983bf7be0fc6bc709737516252643d9ae3f84b569177"
+      }
+    },
+    {
+      "label": "r2-settings-import",
+      "group": "settings",
+      "report": "runs/r2-settings-import-ijiltd2g/report.json",
+      "log": "runs/r2-settings-import-ijiltd2g/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b2824dd3-7c2c-4e65-94b9-db206cb81a45",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/settings",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:33:56.148431+00:00",
+        "label": "r2-settings-import",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-settings-import-ijiltd2g/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-settings-import-ijiltd2g/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.604013,
+        "log_bytes": 3032,
+        "log_sha256": "94f7b6a1663a197d96c900a33cb6bd4f1f5a722d3c9de12fed9471a2592526aa"
+      }
+    },
+    {
+      "label": "r2-settings",
+      "group": "settings",
+      "report": "runs/r2-settings-63s1gw9w/report.json",
+      "log": "runs/r2-settings-63s1gw9w/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "438807d3-8f04-4651-92a2-62ad43fd01e1",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/settings",
+          "--script",
+          "res://settings_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:03.827945+00:00",
+        "label": "r2-settings",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-settings-63s1gw9w/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-settings-63s1gw9w/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "PROBE_COMPLETE failures=0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.474104,
+        "log_bytes": 1491,
+        "log_sha256": "52b50a7499d66338737ed5fea5aacad3ef96ab5c209f14df6ce2d87d17f5b55d"
+      }
+    },
+    {
+      "label": "r2-angle",
+      "group": "core",
+      "report": "runs/r2-angle-u5g4rrtt/report.json",
+      "log": "runs/r2-angle-u5g4rrtt/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "54e8332e-4895-4f2f-80e6-73a36d2bcc97",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://angle_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:05.368654+00:00",
+        "label": "r2-angle",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-u5g4rrtt/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-u5g4rrtt/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "angle discontinuity reproduced"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.481421,
+        "log_bytes": 902,
+        "log_sha256": "0feff01947dd34ae3ae17a6fc255f65874aea6f51d1edf7de7248416275d948d"
+      }
+    },
+    {
+      "label": "r2-angle-half-turn",
+      "group": "core",
+      "report": "runs/r2-angle-half-turn-0pj7u0qm/report.json",
+      "log": "runs/r2-angle-half-turn-0pj7u0qm/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "3f162681-a0d5-44fb-98a4-a26b9e9595ac",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://angle_half_turn_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:05.912274+00:00",
+        "label": "r2-angle-half-turn",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-half-turn-0pj7u0qm/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-half-turn-0pj7u0qm/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "half-turn representation dependence reproduced"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.404114,
+        "log_bytes": 565,
+        "log_sha256": "bdcfef7729d6d28f78a62f0d10be7b27f5abf0a961088911edbd215a7e4842c1"
+      }
+    },
+    {
+      "label": "r2-input",
+      "group": "core",
+      "report": "runs/r2-input-kg4zit6r/report.json",
+      "log": "runs/r2-input-kg4zit6r/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2380dc2c-1263-4950-8f5a-97959044b4e9",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://input_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:06.385053+00:00",
+        "label": "r2-input",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-input-kg4zit6r/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-input-kg4zit6r/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "INPUT_PROBE_COMPLETE expected_observation=true"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.485343,
+        "log_bytes": 442,
+        "log_sha256": "3ea011989d88eae96f7ae6bf90fbc83b31bea82e50d4d79613a000b892c8bd97"
+      }
+    },
+    {
+      "label": "r2-lake",
+      "group": "core",
+      "report": "runs/r2-lake-pn0ibksb/report.json",
+      "log": "runs/r2-lake-pn0ibksb/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5e427af7-e8d3-4e67-b170-886e342d2a2b",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://lake_wave_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:06.947433+00:00",
+        "label": "r2-lake",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-lake-pn0ibksb/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-lake-pn0ibksb/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "PROBE_COMPLETE result=PASS pads=105 flowers=14"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.429055,
+        "log_bytes": 835,
+        "log_sha256": "350bff403b6735af9ba38178f987fb79a9763c794aeb066d34bc45031c526db9"
+      }
+    },
+    {
+      "label": "r2-custom-waves",
+      "group": "core",
+      "report": "runs/r2-custom-waves-76ama7g0/report.json",
+      "log": "runs/r2-custom-waves-76ama7g0/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a944d8c0-df53-4381-a441-453ffb467c86",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://custom_wave_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:07.464754+00:00",
+        "label": "r2-custom-waves",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-custom-waves-76ama7g0/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-custom-waves-76ama7g0/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "PROBE_COMPLETE result=PASS"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.403874,
+        "log_bytes": 647,
+        "log_sha256": "c7ffd6de33d2f6c271e0b92822f61ddd9d4b2a579dffa5a38775bd00b5f47ca6"
+      }
+    },
+    {
+      "label": "r2-terrain-component",
+      "group": "core",
+      "report": "runs/r2-terrain-component-5mz0zdwz/report.json",
+      "log": "runs/r2-terrain-component-5mz0zdwz/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8845a88c-cf51-491f-8459-38cf678bcbbd",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://terrain_component_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:07.939483+00:00",
+        "label": "r2-terrain-component",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-terrain-component-5mz0zdwz/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-terrain-component-5mz0zdwz/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "terrain early-out reproduced"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.777119,
+        "log_bytes": 1368,
+        "log_sha256": "a400ba9e88a460f38e353bc7f53d3482af7d80558b5dc79c9c333d7a419a43c7"
+      }
+    },
+    {
+      "label": "r2-terrain-session",
+      "group": "core",
+      "report": "runs/r2-terrain-session-hmkdcj9o/report.json",
+      "log": "runs/r2-terrain-session-hmkdcj9o/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "76c00a8d-37a9-4b7d-a45b-98a3bccd8087",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://terrain_session_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:08.783585+00:00",
+        "label": "r2-terrain-session",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-terrain-session-hmkdcj9o/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-terrain-session-hmkdcj9o/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "session terrain early-out reproduced"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.276703,
+        "log_bytes": 1419,
+        "log_sha256": "a83b5b9741e56ec9c0811ea0e07b7bac94584c69ea421ba9b2f7052f157691b7"
+      }
+    },
+    {
+      "label": "r2-replay-control",
+      "group": "core",
+      "report": "runs/r2-replay-control-wxu27hwc/report.json",
+      "log": "runs/r2-replay-control-wxu27hwc/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7db2f7d4-97dc-4d04-82d4-565be42fd602",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://replay_probe.gd"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:11.142254+00:00",
+        "label": "r2-replay-control",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-replay-control-wxu27hwc/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-replay-control-wxu27hwc/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "REPLAY_PROBE_COMPLETE expected_observation=true"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.282347,
+        "log_bytes": 2123,
+        "log_sha256": "f9728770553e4785085f281551df5fa9c09937bb66bee83d338c494cedddd86a"
+      }
+    },
+    {
+      "label": "r2-replay-source-change",
+      "group": "core",
+      "report": "runs/r2-replay-source-change-zeqz9vd1/report.json",
+      "log": "runs/r2-replay-source-change-zeqz9vd1/engine.log",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "28195890-a946-4fbf-9a11-1df4363154b5",
+        "command": [
+          "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+          "--script",
+          "res://replay_probe.gd",
+          "--",
+          "--verify-changed-source"
+        ],
+        "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+        "started_utc": "2026-11-20T01:34:13.510602+00:00",
+        "label": "r2-replay-source-change",
+        "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-replay-source-change-zeqz9vd1/engine.log",
+        "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-replay-source-change-zeqz9vd1/report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "REPLAY_PROBE_COMPLETE expected_observation=true"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.919395,
+        "log_bytes": 834,
+        "log_sha256": "7e77cd53c1033637fd11e780d0dbbfb378d6bd73d34de9b4d908b7faad0ec88b"
+      }
+    }
+  ],
+  "observations": {
+    "settings": [
+      {
+        "case": "seed",
+        "status": "PASS",
+        "observation": {
+          "path": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"
+        }
+      },
+      {
+        "case": "revert_leaves_reset_pending",
+        "status": "PASS",
+        "observation": {
+          "dirty_after_restore": true,
+          "file_exists": true,
+          "pending_after_revert": true
+        }
+      },
+      {
+        "case": "unrelated_keep_erases_verdict",
+        "status": "PASS",
+        "observation": {
+          "file_exists": false,
+          "live_calibration": {},
+          "saved_master_volume": 0.5,
+          "saved_max_fps": 60
+        }
+      },
+      {
+        "case": "seed",
+        "status": "PASS",
+        "observation": {
+          "path": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"
+        }
+      },
+      {
+        "case": "defaults_equal_keep_disabled",
+        "status": "PASS",
+        "observation": {
+          "file_exists": true,
+          "keep_disabled": true,
+          "pending": true,
+          "revert_disabled": true
+        }
+      },
+      {
+        "case": "expired_trial_keeps_reset_pending",
+        "status": "PASS",
+        "observation": {
+          "dirty": false,
+          "file_exists": true,
+          "pending": true
+        }
+      },
+      {
+        "case": "post_expiry_unrelated_keep_erases_verdict",
+        "status": "PASS",
+        "observation": {
+          "file_exists": false,
+          "saved_master_volume": 0.4
+        }
+      },
+      {
+        "case": "seed",
+        "status": "PASS",
+        "observation": {
+          "path": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"
+        }
+      },
+      {
+        "case": "close_reopen_discards_pending_reset",
+        "status": "PASS",
+        "observation": {
+          "file_after_close": true,
+          "file_after_later_keep": true,
+          "live_calibration": {
+            "sentinel": true
+          },
+          "pending_after_reopen": false
+        }
+      }
+    ],
+    "angle": {
+      "cases": [
+        {
+          "filtered_roll_jump": 0.0,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.774596672403761,
+                0.0,
+                0.632455528160693,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 0.0,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.055,
+                1.0,
+                0.055
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": 1.36943839600457,
+              "raw_target": [
+                0.0,
+                -6.98131700797732
+              ],
+              "sampled_setpoint": [
+                0.0,
+                -6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                1.9298798670242e-17,
+                -0.88336969875,
+                -8.67361737988404e-18
+              ],
+              "torque_request": [
+                0.0,
+                -0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.774596666079206,
+                0.0,
+                0.632455535906659,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 0.0,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.055,
+                1.0,
+                0.055
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": 1.36943841600457,
+              "raw_target": [
+                0.0,
+                -6.98131700797732
+              ],
+              "sampled_setpoint": [
+                0.0,
+                -6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                1.9298798670242e-17,
+                -0.88336969875,
+                -8.67361737988404e-18
+              ],
+              "torque_request": [
+                0.0,
+                -0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.99999997674283e-08,
+          "pitch_sign": 1.0,
+          "raw_roll_jump": 0.0,
+          "roll": 0.0,
+          "roll_torque_jump": 0.0
+        },
+        {
+          "filtered_roll_jump": 1.10445598357585,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.765898786738338,
+                0.115754280144282,
+                0.625353734326057,
+                -0.0945129730009377,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 1.38777871279445e-16,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.51025673835711,
+                0.856633661069886,
+                0.055
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": 1.36943839600457,
+              "raw_target": [
+                -1.50873112361882,
+                -6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -1.32293886531826,
+                -6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.231930547316796,
+                -0.651439151433204,
+                -0.00116712178217803
+              ],
+              "torque_request": [
+                -0.480491395883593,
+                -0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.765898780484801,
+                0.115754279199153,
+                0.625353741985045,
+                -0.0945129741584805,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": -0.305811137786234,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.184387184446603,
+                0.979890062470625,
+                0.055
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": 1.36943841600457,
+              "raw_target": [
+                -0.249166406932501,
+                -6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -0.218482881742415,
+                -6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.0313613406994225,
+                -0.852008358050577,
+                -0.00116712178217835
+              ],
+              "torque_request": [
+                -0.079352982648845,
+                -0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.999999974723e-08,
+          "pitch_sign": 1.0,
+          "raw_roll_jump": 1.25956471668632,
+          "roll": 0.3,
+          "roll_torque_jump": 0.401138413234747
+        },
+        {
+          "filtered_roll_jump": 5.32328024939144,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.41851636821754,
+                0.651800624756512,
+                0.341717180224274,
+                -0.532192976128576,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 2.77555742558891e-16,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.705047221225936,
+                0.705047221225936,
+                0.055
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": 1.36943839600457,
+              "raw_target": [
+                -6.98131700797732,
+                -5.14257008135996
+              ],
+              "sampled_setpoint": [
+                -6.12160474214094,
+                -4.50928977453298,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.441684849375,
+                -0.441684849375,
+                -0.00116712178217857
+              ],
+              "torque_request": [
+                -0.9,
+                -0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.418516364800368,
+                0.651800619434583,
+                0.341717184409438,
+                -0.532192982646583,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": -1.9923280495531,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                1.0,
+                0.390947341681756,
+                0.917247700650593,
+                0.055
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": 1.36943841600457,
+              "raw_target": [
+                -0.910440414545251,
+                -6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -0.798324492749503,
+                -6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.13666057725831,
+                -0.74670912149169,
+                -0.00116712178217823
+              ],
+              "torque_request": [
+                -0.28995145576662,
+                -0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.99999999106308e-08,
+          "pitch_sign": 1.0,
+          "raw_roll_jump": 6.07087659343207,
+          "roll": 2.0,
+          "roll_torque_jump": 0.61004854423338
+        },
+        {
+          "filtered_roll_jump": 0.0,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.774596672403761,
+                0.0,
+                -0.632455528160693,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 0.0,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.055,
+                1.0,
+                0.055,
+                1.0
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": -1.36943839600457,
+              "raw_target": [
+                0.0,
+                6.98131700797732
+              ],
+              "sampled_setpoint": [
+                0.0,
+                6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                0.0,
+                0.88336969875,
+                0.0
+              ],
+              "torque_request": [
+                0.0,
+                0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.774596666079206,
+                0.0,
+                -0.632455535906659,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 0.0,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.055,
+                1.0,
+                0.055,
+                1.0
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": -1.36943841600457,
+              "raw_target": [
+                0.0,
+                6.98131700797732
+              ],
+              "sampled_setpoint": [
+                0.0,
+                6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                0.0,
+                0.88336969875,
+                0.0
+              ],
+              "torque_request": [
+                0.0,
+                0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.99999997674283e-08,
+          "pitch_sign": -1.0,
+          "raw_roll_jump": 0.0,
+          "roll": 0.0,
+          "roll_torque_jump": 0.0
+        },
+        {
+          "filtered_roll_jump": 1.10445598357585,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.765898786738338,
+                0.115754280144282,
+                -0.625353734326057,
+                0.0945129730009377,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": -1.38777871279445e-16,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.51025673835711,
+                1.0,
+                0.055,
+                0.856633661069886
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": -1.36943839600457,
+              "raw_target": [
+                -1.50873112361882,
+                6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -1.32293886531826,
+                6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.231930547316796,
+                0.651439151433204,
+                0.00116712178217804
+              ],
+              "torque_request": [
+                -0.480491395883593,
+                0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.765898780484801,
+                0.115754279199153,
+                -0.625353741985045,
+                0.0945129741584805,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 0.305811137786234,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.184387184446603,
+                1.0,
+                0.055,
+                0.979890062470625
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": -1.36943841600457,
+              "raw_target": [
+                -0.249166406932501,
+                6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -0.218482881742415,
+                6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.0313613406994225,
+                0.852008358050578,
+                0.00116712178217834
+              ],
+              "torque_request": [
+                -0.079352982648845,
+                0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.999999974723e-08,
+          "pitch_sign": -1.0,
+          "raw_roll_jump": 1.25956471668632,
+          "roll": 0.3,
+          "roll_torque_jump": 0.401138413234747
+        },
+        {
+          "filtered_roll_jump": 5.32328024939144,
+          "observations": [
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.41851636821754,
+                0.651800624756512,
+                -0.341717180224274,
+                0.532192976128576,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": -2.77555742558891e-16,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.705047221225936,
+                1.0,
+                0.055,
+                0.705047221225936
+              ],
+              "nose_horizontal": 0.200000009797959,
+              "pitch": -1.36943839600457,
+              "raw_target": [
+                -6.98131700797732,
+                5.14257008135996
+              ],
+              "sampled_setpoint": [
+                -6.12160474214094,
+                4.50928977453298,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.441684849375,
+                0.441684849375,
+                0.00116712178217858
+              ],
+              "torque_request": [
+                -0.9,
+                0.9,
+                0.0
+              ]
+            },
+            {
+              "body": [
+                0.0,
+                0.0,
+                -20.0,
+                0.0,
+                0.0,
+                0.0,
+                0.418516364800368,
+                0.651800619434583,
+                -0.341717184409438,
+                0.532192982646583,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "heading": 1.9923280495531,
+              "initial_aux": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "initial_modes": [
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "motor_commands": [
+                0.390947341681756,
+                1.0,
+                0.055,
+                0.917247700650593
+              ],
+              "nose_horizontal": 0.199999990202041,
+              "pitch": -1.36943841600457,
+              "raw_target": [
+                -0.910440414545251,
+                6.98131700797732
+              ],
+              "sampled_setpoint": [
+                -0.798324492749503,
+                6.12160474214094,
+                0.0
+              ],
+              "torque_allocated": [
+                -0.13666057725831,
+                0.74670912149169,
+                0.00116712178217823
+              ],
+              "torque_request": [
+                -0.28995145576662,
+                0.9,
+                0.0
+              ]
+            }
+          ],
+          "orientation_distance_rad": 1.99999999106308e-08,
+          "pitch_sign": -1.0,
+          "raw_roll_jump": 6.07087659343207,
+          "roll": 2.0,
+          "roll_torque_jump": 0.61004854423338
+        }
+      ],
+      "controller_input": {
+        "actuator": {
+          "full_speed": 3140.0,
+          "idle": 0.055,
+          "k_q": 1.33879670574871e-08,
+          "k_t": 8.36747941092945e-07,
+          "law": "first-order-lab-v1",
+          "top": 1.0
+        },
+        "controller_config": {
+          "actuator": {
+            "full_speed": 3140.0,
+            "idle": 0.055,
+            "k_q": 1.33879670574871e-08,
+            "k_t": 8.36747941092945e-07,
+            "law": "first-order-lab-v1",
+            "top": 1.0
+          },
+          "allocator": {
+            "a": [
+              0.0303030303030303,
+              0.0303030303030303,
+              0.0303030303030303,
+              0.0303030303030303,
+              -1.21212121212121,
+              -1.21212121212121,
+              1.21212121212121,
+              1.21212121212121,
+              -1.21212121212121,
+              1.21212121212121,
+              -1.21212121212121,
+              1.21212121212121,
+              -0.303030303030303,
+              0.303030303030303,
+              0.303030303030303,
+              -0.303030303030303
+            ],
+            "b": [
+              1.0,
+              1.0,
+              1.0,
+              1.0,
+              -0.0537,
+              -0.0537,
+              0.0537,
+              0.0537,
+              -0.0537,
+              0.0537,
+              -0.0537,
+              0.0537,
+              -0.016,
+              0.016,
+              0.016,
+              -0.016
+            ],
+            "b_inverse": [
+              0.25,
+              -4.65549348230912,
+              -4.65549348230912,
+              -15.625,
+              0.25,
+              -4.65549348230912,
+              4.65549348230912,
+              15.625,
+              0.25,
+              4.65549348230912,
+              -4.65549348230912,
+              15.625,
+              0.25,
+              4.65549348230912,
+              4.65549348230912,
+              -15.625
+            ],
+            "condition": 46.0,
+            "errors": [],
+            "h": [
+              3.03122130394858,
+              -0.0909090909090908,
+              -0.0909090909090908,
+              -2.84573002754821,
+              -0.0909090909090908,
+              3.03122130394858,
+              -2.84573002754821,
+              -0.0909090909090908,
+              -0.0909090909090908,
+              -2.84573002754821,
+              3.03122130394858,
+              -0.0909090909090908,
+              -2.84573002754821,
+              -0.0909090909090908,
+              -0.0909090909090908,
+              3.03122130394858
+            ],
+            "h_norm": 3.03122130394858,
+            "law": "multirotor-bounded-wls-allocator-v1",
+            "ok": true,
+            "scales": [
+              33.0,
+              0.88605,
+              0.88605,
+              0.264
+            ],
+            "w_diag": [
+              0.0303030303030303,
+              22.5720896111958,
+              22.5720896111958,
+              18.9393939393939
+            ],
+            "weights": [
+              1.0,
+              20.0,
+              20.0,
+              5.0
+            ]
+          },
+          "angle_gain": 6.0,
+          "angle_max_tilt": 0.959931088596881,
+          "angle_rate_limit": 6.98131700797732,
+          "arm_low_throttle": 0.05,
+          "dterm_alpha": 0.792120423649238,
+          "gyro_alpha": 0.905219775157845,
+          "i_max": [
+            0.08,
+            0.08,
+            0.06
+          ],
+          "identity": "0e5ef7180141058c3e9bf7508cef589778214fa3a59c7a54d0c3060c55ef1b8a",
+          "kaw": [
+            20.0,
+            20.0,
+            20.0
+          ],
+          "kd": [
+            0.002,
+            0.0021,
+            0.0
+          ],
+          "kff": [
+            0.00118,
+            0.00126,
+            0.0
+          ],
+          "ki": [
+            0.1,
+            0.11,
+            0.2
+          ],
+          "kp": [
+            0.08,
+            0.085,
+            0.09
+          ],
+          "law": "openrc-fc-acro-angle-turtle-v2",
+          "period_s": 0.00416666666666667,
+          "rates": {
+            "center_dps": [
+              200.0,
+              200.0,
+              200.0
+            ],
+            "expo": [
+              0.58,
+              0.58,
+              0.58
+            ],
+            "extra_dps": [
+              470.0,
+              470.0,
+              470.0
+            ],
+            "family": "ACTUAL",
+            "family_code": 0,
+            "format": "openrc-rates v1",
+            "identity": "8273da56f9afde1c4ec929143c86d696ef4f04079359bbe0032430e489822317",
+            "limit_dps": [
+              1998.0,
+              1998.0,
+              1998.0
+            ],
+            "origin": "openrc_product_default",
+            "profile_index": -1,
+            "rate_eff": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "super_rate": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "sample_hz": 240,
+          "setpoint_alpha": 0.876855288929867,
+          "tau_limit": [
+            0.9,
+            0.9,
+            0.35
+          ],
+          "throttle_limit": 1.0,
+          "throttle_policy": 0,
+          "throttle_rate": 0.8
+        },
+        "dt_s": 0.00416666666666667,
+        "initial_angular_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_body_velocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pilot": [
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "rates_profile": {
+          "axes": {
+            "pitch": {
+              "expo": 58,
+              "rate_limit": 1998,
+              "rc_rate": 20,
+              "srate": 67
+            },
+            "roll": {
+              "expo": 58,
+              "rate_limit": 1998,
+              "rc_rate": 20,
+              "srate": 67
+            },
+            "yaw": {
+              "expo": 58,
+              "rate_limit": 1998,
+              "rc_rate": 20,
+              "srate": 67
+            }
+          },
+          "family": "ACTUAL",
+          "format": "openrc-rates v1",
+          "source": {
+            "commit": "024f8e13d4e642eb6a380308685b9ea3aa3ef1a2",
+            "firmware": "betaflight",
+            "profile_index": -1,
+            "version": "4.5.2"
+          }
+        },
+        "rotor_thrust_max": 8.25,
+        "rotors": [
+          {
+            "hub_frd": [
+              -0.0537,
+              0.0537,
+              0.0
+            ],
+            "spin": -1
+          },
+          {
+            "hub_frd": [
+              0.0537,
+              0.0537,
+              0.0
+            ],
+            "spin": 1
+          },
+          {
+            "hub_frd": [
+              -0.0537,
+              -0.0537,
+              0.0
+            ],
+            "spin": 1
+          },
+          {
+            "hub_frd": [
+              0.0537,
+              -0.0537,
+              0.0
+            ],
+            "spin": -1
+          }
+        ],
+        "supply_voltage": 0.0
+      },
+      "description": "Angle-mode heading boundary, actual production GDScript; controlled component fixture, not full flight",
+      "source_locations": [
+        "app/physics/multirotor/flight_controller.gd:330-342",
+        "app/physics/multirotor/flight_controller.gd:365-394",
+        "app/physics/multirotor/flight_controller.gd:447-475",
+        "app/physics/multirotor/controlled_plant.gd:288-304",
+        "app/physics/multirotor/controlled_plant.gd:324-325",
+        "app/sim/multirotor/session.gd:278"
+      ]
+    },
+    "angle_half_turn": [
+      {
+        "heading": 0.0,
+        "q": [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "rotated_up": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "target": [
+          -6.98131700797732,
+          0.0
+        ]
+      },
+      {
+        "heading": 0.0,
+        "q": [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "rotated_up": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "target": [
+          6.98131700797732,
+          0.0
+        ]
+      },
+      {
+        "heading": 0.0,
+        "q": [
+          1e-10,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "rotated_up": [
+          0.0,
+          2e-10,
+          1.0
+        ],
+        "target": [
+          -6.98131700797732,
+          0.0
+        ]
+      },
+      {
+        "heading": 0.0,
+        "q": [
+          -1e-10,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "rotated_up": [
+          0.0,
+          2e-10,
+          1.0
+        ],
+        "target": [
+          -6.98131700797732,
+          0.0
+        ]
+      }
+    ],
+    "input": {
+      "rows": [
+        {
+          "armed": true,
+          "axes": 2400,
+          "buttons": 30720,
+          "input_error": "",
+          "kind": "active",
+          "polls": 240,
+          "profile_error": "",
+          "throttle": 0.0
+        },
+        {
+          "armed": true,
+          "axes": 2400,
+          "buttons": 30720,
+          "input_error": "",
+          "kind": "held/menu",
+          "polls": 240,
+          "profile_error": "",
+          "throttle": 0.0
+        }
+      ],
+      "scope": "callback counts, not device latency or timing"
+    },
+    "lake": [
+      {
+        "case": "pad",
+        "analytical_faded_height_m": 0.00909381340101539,
+        "base_offset_m": 0.035,
+        "clock_s": 1.25,
+        "delta_minus_unscaled_height_m": -0.0063513440902549,
+        "east_m": 162.683731079102,
+        "formula_m": -0.00635133411186883,
+        "instance_scale": 0.301576375961304,
+        "north_m": 114.915634155273,
+        "result": "PASS",
+        "shore_m": 6.31892147557421,
+        "transformed_vertical_delta_m": 0.0027424693107605
+      },
+      {
+        "case": "flower",
+        "analytical_faded_height_m": -0.0032747974157289,
+        "base_offset_m": 0.05,
+        "clock_s": 1.25,
+        "delta_minus_unscaled_height_m": -0.000818700575832994,
+        "east_m": 165.106872558594,
+        "formula_m": -0.000818699353932224,
+        "instance_scale": 1.25,
+        "north_m": 119.600997924805,
+        "result": "PASS",
+        "shore_m": 3.09672213494795,
+        "transformed_vertical_delta_m": -0.00409349799156189
+      }
+    ],
+    "custom_waves": [
+      {
+        "case": "custom_fade",
+        "physics_and_plant_50_fade": 0.039744,
+        "result": "PASS",
+        "same_sample_distance_m": 6.0,
+        "validated_fade_m": 50.0,
+        "validation_ok": true,
+        "water_clamped_12_fade": 0.5
+      },
+      {
+        "case": "custom_period_wrap",
+        "east_m": 164.906234741211,
+        "model_shader_down_after_wrap_using_time_0": 0.449616792763534,
+        "modeled_shader_change_m": -0.0265582650652856,
+        "north_m": 120.338134765625,
+        "physics_change_m": 3.39056522731251e-05,
+        "physics_down_at_1023_999": 0.476175057828819,
+        "physics_down_at_1024": 0.476208963481092,
+        "result": "PASS",
+        "validated_period_s": 3.0,
+        "validation_ok": true
+      }
+    ],
+    "terrain_component": [
+      {
+        "body": [
+          39.0,
+          -4.327,
+          -0.625,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "deep_point": [
+          -0.0732154353676201,
+          0.072591582156611,
+          0.0260183486238532
+        ],
+        "force": [
+          0.0,
+          -262.505276597659,
+          -17.5622827527407
+        ],
+        "graded_events": [
+          {
+            "broken": false,
+            "cause": "ground",
+            "first": true,
+            "health": 0.892388531588025,
+            "point_ned": [
+              38.9267845646324,
+              -4.25440841784339,
+              -0.620981651376147
+            ],
+            "rotor": 0,
+            "time_s": 0.0,
+            "type": "prop_damage"
+          },
+          {
+            "broken": false,
+            "cause": "ground",
+            "first": true,
+            "health": 0.892388531588025,
+            "point_ned": [
+              39.0719677289456,
+              -4.25440841784339,
+              -0.620981651376147
+            ],
+            "rotor": 1,
+            "time_s": 0.0,
+            "type": "prop_damage"
+          }
+        ],
+        "graded_health": [
+          0.892388531588025,
+          0.892388531588025,
+          1.0,
+          1.0
+        ],
+        "height_above_cg_ground_m": 0.59,
+        "max_point_depth_m": 0.385712178345663,
+        "moment": [
+          1.29824426125314,
+          -0.0109562864879483,
+          0.163764759712301
+        ],
+        "rotor_witnesses": [
+          0,
+          1
+        ],
+        "strict_crash_reason": "Propeller strike"
+      },
+      {
+        "body": [
+          39.0,
+          -4.327,
+          -0.735,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "deep_point": [
+          -0.0732154353676201,
+          0.072591582156611,
+          0.0260183486238532
+        ],
+        "force": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "graded_events": [],
+        "graded_health": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "height_above_cg_ground_m": 0.7,
+        "max_point_depth_m": 0.275712178345663,
+        "moment": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotor_witnesses": [
+          0,
+          1
+        ],
+        "strict_crash_reason": ""
+      }
+    ],
+    "terrain_session": [
+      {
+        "advanced": true,
+        "cg_clearance_m": 0.700000000103969,
+        "cg_ground": [
+          0.0352516549949188,
+          0.000757228584183581,
+          0.0255295963693472
+        ],
+        "contact_force": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "crash": {},
+        "fault": "",
+        "global_ground_max": 2.732,
+        "initial_body": [
+          39.0,
+          -4.327,
+          -0.735251655098887,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mode": "strict",
+        "point": [
+          0.0719677289456018,
+          0.072591582156611,
+          0.0260183486238532
+        ],
+        "point_depth_m": 0.277758412437659,
+        "post_health": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "prepared": true,
+        "resumed": true,
+        "rotor_hits": [
+          0,
+          1
+        ],
+        "rotor_speeds": [
+          929.268984762524,
+          929.268984762524,
+          929.268984762524,
+          929.268984762524
+        ],
+        "strict_crash_reason": "",
+        "substeps": 1,
+        "tick": 1
+      },
+      {
+        "advanced": true,
+        "cg_clearance_m": 0.700000000103969,
+        "cg_ground": [
+          0.0352516549949188,
+          0.000757228584183581,
+          0.0255295963693472
+        ],
+        "contact_force": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "crash": {},
+        "fault": "",
+        "global_ground_max": 2.732,
+        "initial_body": [
+          39.0,
+          -4.327,
+          -0.735251655098887,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mode": "graded",
+        "point": [
+          0.0719677289456018,
+          0.072591582156611,
+          0.0260183486238532
+        ],
+        "point_depth_m": 0.277758412437659,
+        "post_health": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "prepared": true,
+        "resumed": true,
+        "rotor_hits": [
+          0,
+          1
+        ],
+        "rotor_speeds": [
+          929.268984762524,
+          929.268984762524,
+          929.268984762524,
+          929.268984762524
+        ],
+        "strict_crash_reason": "",
+        "substeps": 1,
+        "tick": 1
+      }
+    ],
+    "replay_control": {
+      "checkpoint_tick": 12,
+      "current_solver": "1ca88b5fb399c22bb707ab6d851280077f52d4570dab653f0f7779f8e60ecd79",
+      "final_recorded_tick": 36,
+      "first_recorded_tick": 13,
+      "mode": "same-source-control",
+      "original_recording_sha256": "e7ee9d7042af804220f612d41fe2e0d8d572152591ecc8d46d4fd768f467dfb4",
+      "parsed_record_metadata_cases": [
+        {
+          "case": "duplicate_tick",
+          "first_ticks": [
+            13,
+            13,
+            15,
+            16
+          ],
+          "footer_final": 36,
+          "footer_first": 12,
+          "report": {
+            "error": "",
+            "exact": true,
+            "first_mismatch_tick": -1,
+            "identity_match": true,
+            "ok": true,
+            "recorded_crash": "",
+            "replayed_crash": "",
+            "solver_changed": false
+          }
+        },
+        {
+          "case": "gap_tick",
+          "first_ticks": [
+            13,
+            114,
+            15,
+            16
+          ],
+          "footer_final": 36,
+          "footer_first": 12,
+          "report": {
+            "error": "",
+            "exact": true,
+            "first_mismatch_tick": -1,
+            "identity_match": true,
+            "ok": true,
+            "recorded_crash": "",
+            "replayed_crash": "",
+            "solver_changed": false
+          }
+        },
+        {
+          "case": "reordered_ticks",
+          "first_ticks": [
+            14,
+            13,
+            15,
+            16
+          ],
+          "footer_final": 36,
+          "footer_first": 12,
+          "report": {
+            "error": "",
+            "exact": true,
+            "first_mismatch_tick": -1,
+            "identity_match": true,
+            "ok": true,
+            "recorded_crash": "",
+            "replayed_crash": "",
+            "solver_changed": false
+          }
+        },
+        {
+          "case": "footer_bounds",
+          "first_ticks": [
+            13,
+            14,
+            15,
+            16
+          ],
+          "footer_final": -20,
+          "footer_first": -10,
+          "report": {
+            "error": "",
+            "exact": true,
+            "first_mismatch_tick": -1,
+            "identity_match": true,
+            "ok": true,
+            "recorded_crash": "",
+            "replayed_crash": "",
+            "solver_changed": false
+          }
+        }
+      ],
+      "physics_hz": 240,
+      "recorded_solver": "1ca88b5fb399c22bb707ab6d851280077f52d4570dab653f0f7779f8e60ecd79",
+      "report": {
+        "complete": true,
+        "error": "",
+        "exact": true,
+        "first_mismatch_tick": -1,
+        "format": "openrc-airship-flight-log-report v1",
+        "identity_match": true,
+        "log": "user://round2-valid-airship.orfl",
+        "ok": true,
+        "recorded_crash": "",
+        "replayed_crash": "",
+        "rows": 24,
+        "solver_changed": false
+      }
+    },
+    "replay_changed_source": {
+      "checkpoint_tick": 12,
+      "current_solver": "4b13b9c55af590f20823ef1b03a3c1f16860b5ee183e37d5c781173cfee7e3be",
+      "final_recorded_tick": 36,
+      "first_recorded_tick": 13,
+      "mode": "new-process-comment-only-source-change",
+      "original_recording_sha256": "e7ee9d7042af804220f612d41fe2e0d8d572152591ecc8d46d4fd768f467dfb4",
+      "parsed_record_metadata_cases": [],
+      "physics_hz": 240,
+      "recorded_solver": "1ca88b5fb399c22bb707ab6d851280077f52d4570dab653f0f7779f8e60ecd79",
+      "report": {
+        "complete": true,
+        "error": "",
+        "exact": true,
+        "first_mismatch_tick": -1,
+        "format": "openrc-airship-flight-log-report v1",
+        "identity_match": true,
+        "log": "user://round2-valid-airship.orfl",
+        "ok": true,
+        "recorded_crash": "",
+        "replayed_crash": "",
+        "rows": 24,
+        "solver_changed": true
+      }
+    }
+  },
+  "expected_baseline_observations": {
+    "settings_six_cases_and_three_seeds": true,
+    "angle_banked_discontinuity_and_zero_bank_controls": true,
+    "angle_half_turn_sign_dependence_and_nearby_control": true,
+    "button_callback_count": true,
+    "wave_transform_difference": true,
+    "custom_lake_fade_and_clock": true,
+    "terrain_component_counterexample_and_control": true,
+    "terrain_actual_session_accepts_one_tick": true,
+    "valid_recording_same_source_control": true,
+    "changed_source_still_exact": true,
+    "recording_bytes_unchanged": true,
+    "four_parsed_metadata_cases_still_exact": true,
+    "fixture_source_restored": true
+  },
+  "baseline_observations_reproduced": true
+}

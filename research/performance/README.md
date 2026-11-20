@@ -6,6 +6,8 @@ These tools do not change aircraft data, simulation, graphics settings or user p
 
 [2026-11-19 audit reproduction](audit-2026-11-19/README.md) runs isolated, source-hashed event/calibration counterexamples and the existing 54-check solver control. These are baseline correctness/policy observations, not a performance benchmark; the [full audit](../../docs/research/performance-audit-2026-11-19/README.md) owns findings and limits.
 
+[Round-two reproduction](audit-2026-11-19/round2/README.md) adds twelve checked launches for Settings, Angle-controller boundaries, input callback counts, lake math, terrain components/sessions and airship replay. The [ten additional findings](../../docs/research/performance-audit-2026-11-19/round-2.md) distinguish actual component/session counterexamples from source/transform calculations and an unmeasured optimization candidate. Runtime files remain unchanged.
+
 On an enrolled shared host, `session_baseline.py` and `run_visibility_capture.py`
 require an exclusive inherited test-queue attempt with headless and rendered scope,
 respectively. Standalone admission adapters are unavailable. See the

@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+INPUT_JSON {"rows":[{"armed":true,"axes":2400,"buttons":30720,"input_error":"","kind":"active","polls":240,"profile_error":"","throttle":0.0},{"armed":true,"axes":2400,"buttons":30720,"input_error":"","kind":"held/menu","polls":240,"profile_error":"","throttle":0.0}],"scope":"callback counts, not device latency or timing"}
+INPUT_PROBE_COMPLETE expected_observation=true

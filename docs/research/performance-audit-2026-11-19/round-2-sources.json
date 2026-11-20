@@ -1,0 +1,453 @@
+{
+  "format": "openrc-performance-audit-round2-sources-v1",
+  "date": "2026-11-19",
+  "primary_repository": {
+    "url": "https://github.com/bultodepapas/OpenRCsimulator",
+    "commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+    "fresh_main_checked": "b69ac2d54871b0d798af7c61ac62d8f17e6abd3d"
+  },
+  "external_primary_references": [
+    {
+      "url": "https://docs.godotengine.org/en/latest/tutorials/shaders/shader_reference/spatial_shader.html",
+      "publisher": "Godot Engine documentation",
+      "accessed_utc_date": "2026-11-20",
+      "supports": "Default spatial-shader vertex coordinates are local/model; MODEL_MATRIX maps local to world; world_vertex_coords changes the mode.",
+      "limit": "Latest documentation supplies API context, not proof of a pinned-engine bug, GPU performance or visual impact."
+    }
+  ],
+  "application_evidence": "All application claims use pinned repository paths and actual probes with explicit limits; no secondary technical sources used.",
+  "source_ranges": [
+    {
+      "path": "app/app_root.gd",
+      "start_line": 959,
+      "end_line": 1008,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L959-L1008"
+    },
+    {
+      "path": "app/app_root.gd",
+      "start_line": 1023,
+      "end_line": 1071,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L1023-L1071"
+    },
+    {
+      "path": "app/app_root.gd",
+      "start_line": 1726,
+      "end_line": 1747,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L1726-L1747"
+    },
+    {
+      "path": "app/app_root.gd",
+      "start_line": 1944,
+      "end_line": 1949,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_root.gd#L1944-L1949"
+    },
+    {
+      "path": "app/app_state/native_package.gd",
+      "start_line": 39,
+      "end_line": 59,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/native_package.gd#L39-L59"
+    },
+    {
+      "path": "app/app_state/native_package.gd",
+      "start_line": 126,
+      "end_line": 146,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/native_package.gd#L126-L146"
+    },
+    {
+      "path": "app/app_state/native_package.gd",
+      "start_line": 187,
+      "end_line": 193,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/native_package.gd#L187-L193"
+    },
+    {
+      "path": "app/app_state/preferences.gd",
+      "start_line": 1,
+      "end_line": 25,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/app_state/preferences.gd#L1-L25"
+    },
+    {
+      "path": "app/data/lake_loader.gd",
+      "start_line": 128,
+      "end_line": 149,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/data/lake_loader.gd#L128-L149"
+    },
+    {
+      "path": "app/data/lake_loader.gd",
+      "start_line": 154,
+      "end_line": 180,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/data/lake_loader.gd#L154-L180"
+    },
+    {
+      "path": "app/input/airship_input.gd",
+      "start_line": 100,
+      "end_line": 110,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/input/airship_input.gd#L100-L110"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "start_line": 288,
+      "end_line": 405,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/input/rc_input.gd#L288-L405"
+    },
+    {
+      "path": "app/main.gd",
+      "start_line": 1070,
+      "end_line": 1074,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L1070-L1074"
+    },
+    {
+      "path": "app/main.gd",
+      "start_line": 1501,
+      "end_line": 1504,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/main.gd#L1501-L1504"
+    },
+    {
+      "path": "app/physics/ground_vehicle/airfield_track.gd",
+      "start_line": 20,
+      "end_line": 47,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/ground_vehicle/airfield_track.gd#L20-L47"
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "start_line": 124,
+      "end_line": 130,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/hull_contact.gd#L124-L130"
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "start_line": 452,
+      "end_line": 467,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/lake_surface.gd#L452-L467"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 75,
+      "end_line": 88,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L75-L88"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 288,
+      "end_line": 325,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L288-L325"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 531,
+      "end_line": 537,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L531-L537"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 690,
+      "end_line": 721,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L690-L721"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 740,
+      "end_line": 753,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L740-L753"
+    },
+    {
+      "path": "app/physics/multirotor/controlled_plant.gd",
+      "start_line": 1071,
+      "end_line": 1078,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/controlled_plant.gd#L1071-L1078"
+    },
+    {
+      "path": "app/physics/multirotor/flight_controller.gd",
+      "start_line": 310,
+      "end_line": 342,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/flight_controller.gd#L310-L342"
+    },
+    {
+      "path": "app/physics/multirotor/flight_controller.gd",
+      "start_line": 365,
+      "end_line": 394,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/flight_controller.gd#L365-L394"
+    },
+    {
+      "path": "app/physics/multirotor/flight_controller.gd",
+      "start_line": 447,
+      "end_line": 475,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/physics/multirotor/flight_controller.gd#L447-L475"
+    },
+    {
+      "path": "app/render/auto_calibration.gd",
+      "start_line": 242,
+      "end_line": 260,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L242-L260"
+    },
+    {
+      "path": "app/render/auto_calibration.gd",
+      "start_line": 301,
+      "end_line": 304,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/auto_calibration.gd#L301-L304"
+    },
+    {
+      "path": "app/render/lake/lake_plants.gd",
+      "start_line": 38,
+      "end_line": 40,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_plants.gd#L38-L40"
+    },
+    {
+      "path": "app/render/lake/lake_plants.gd",
+      "start_line": 89,
+      "end_line": 99,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_plants.gd#L89-L99"
+    },
+    {
+      "path": "app/render/lake/lake_plants.gd",
+      "start_line": 120,
+      "end_line": 125,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_plants.gd#L120-L125"
+    },
+    {
+      "path": "app/render/lake/lake_plants.gd",
+      "start_line": 147,
+      "end_line": 168,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_plants.gd#L147-L168"
+    },
+    {
+      "path": "app/render/lake/lake_plants.gd",
+      "start_line": 159,
+      "end_line": 168,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_plants.gd#L159-L168"
+    },
+    {
+      "path": "app/render/lake/lake_terrain.gd",
+      "start_line": 75,
+      "end_line": 80,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_terrain.gd#L75-L80"
+    },
+    {
+      "path": "app/render/lake/lake_world.gd",
+      "start_line": 10,
+      "end_line": 32,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lake_world.gd#L10-L32"
+    },
+    {
+      "path": "app/render/lake/lily_pad.gdshader",
+      "start_line": 19,
+      "end_line": 32,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/lily_pad.gdshader#L19-L32"
+    },
+    {
+      "path": "app/render/lake/water.gdshader",
+      "start_line": 126,
+      "end_line": 133,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water.gdshader#L126-L133"
+    },
+    {
+      "path": "app/render/lake/water_material.gd",
+      "start_line": 21,
+      "end_line": 52,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water_material.gd#L21-L52"
+    },
+    {
+      "path": "app/render/lake/water_material.gd",
+      "start_line": 44,
+      "end_line": 52,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/lake/water_material.gd#L44-L52"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "start_line": 8,
+      "end_line": 36,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/shader_clock.gd#L8-L36"
+    },
+    {
+      "path": "app/render/world/world.gd",
+      "start_line": 1038,
+      "end_line": 1040,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/render/world/world.gd#L1038-L1040"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 46,
+      "end_line": 76,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L46-L76"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 111,
+      "end_line": 134,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L111-L134"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 250,
+      "end_line": 270,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L250-L270"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 277,
+      "end_line": 350,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L277-L350"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 277,
+      "end_line": 288,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L277-L288"
+    },
+    {
+      "path": "app/sim/airship/flight_log.gd",
+      "start_line": 324,
+      "end_line": 350,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/flight_log.gd#L324-L350"
+    },
+    {
+      "path": "app/sim/airship/session.gd",
+      "start_line": 507,
+      "end_line": 524,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/airship/session.gd#L507-L524"
+    },
+    {
+      "path": "app/sim/environment.gd",
+      "start_line": 117,
+      "end_line": 120,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/environment.gd#L117-L120"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "start_line": 86,
+      "end_line": 88,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_log.gd#L86-L88"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "start_line": 467,
+      "end_line": 493,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_log.gd#L467-L493"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "start_line": 3087,
+      "end_line": 3120,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/flight_session.gd#L3087-L3120"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "start_line": 55,
+      "end_line": 88,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L55-L88"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "start_line": 330,
+      "end_line": 340,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L330-L340"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "start_line": 414,
+      "end_line": 438,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L414-L438"
+    },
+    {
+      "path": "app/sim/multirotor/flight_log.gd",
+      "start_line": 452,
+      "end_line": 456,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/flight_log.gd#L452-L456"
+    },
+    {
+      "path": "app/sim/multirotor/session.gd",
+      "start_line": 237,
+      "end_line": 365,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/sim/multirotor/session.gd#L237-L365"
+    },
+    {
+      "path": "app/tests/test_mr_controlled_plant.gd",
+      "start_line": 193,
+      "end_line": 220,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/tests/test_mr_controlled_plant.gd#L193-L220"
+    },
+    {
+      "path": "app/tools/airship_flight_log_cli.gd",
+      "start_line": 34,
+      "end_line": 49,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/tools/airship_flight_log_cli.gd#L34-L49"
+    },
+    {
+      "path": "app/tools/airship_flight_log_cli.gd",
+      "start_line": 60,
+      "end_line": 66,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/tools/airship_flight_log_cli.gd#L60-L66"
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "start_line": 463,
+      "end_line": 465,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/settings_screen.gd#L463-L465"
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "start_line": 1105,
+      "end_line": 1110,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/settings_screen.gd#L1105-L1110"
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "start_line": 1344,
+      "end_line": 1406,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/settings_screen.gd#L1344-L1406"
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "start_line": 1612,
+      "end_line": 1627,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/settings_screen.gd#L1612-L1627"
+    },
+    {
+      "path": "app/ui/startup.gd",
+      "start_line": 70,
+      "end_line": 73,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/ui/startup.gd#L70-L73"
+    },
+    {
+      "path": "app/vehicles/airship/airship_scene.gd",
+      "start_line": 773,
+      "end_line": 782,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/vehicles/airship/airship_scene.gd#L773-L782"
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_scene.gd",
+      "start_line": 1325,
+      "end_line": 1334,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/app/vehicles/multirotor/multirotor_scene.gd#L1325-L1334"
+    },
+    {
+      "path": "docs/FLIGHT-LOGGING.md",
+      "start_line": 393,
+      "end_line": 401,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/FLIGHT-LOGGING.md#L393-L401"
+    },
+    {
+      "path": "docs/plans/drone-racing.md",
+      "start_line": 203,
+      "end_line": 218,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/drone-racing.md#L203-L218"
+    },
+    {
+      "path": "docs/plans/drone-racing.md",
+      "start_line": 364,
+      "end_line": 374,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/plans/drone-racing.md#L364-L374"
+    },
+    {
+      "path": "docs/research/drone-racing/audit-2026-11-16/follow-up.md",
+      "start_line": 103,
+      "end_line": 105,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/drone-racing/audit-2026-11-16/follow-up.md#L103-L105"
+    },
+    {
+      "path": "docs/research/performance-report-2026-11-09.md",
+      "start_line": 1,
+      "end_line": 35,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/894357de83762ff6e0fdc47b0024e60f3d8286b7/docs/research/performance-report-2026-11-09.md#L1-L35"
+    }
+  ]
+}

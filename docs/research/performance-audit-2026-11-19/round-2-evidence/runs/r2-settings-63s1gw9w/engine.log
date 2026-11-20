@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+DATA_DIR /workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/
+PROBE seed PASS {"path":"/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"}
+PROBE revert_leaves_reset_pending PASS {"dirty_after_restore":true,"file_exists":true,"pending_after_revert":true}
+PROBE unrelated_keep_erases_verdict PASS {"file_exists":false,"live_calibration":{},"saved_master_volume":0.5,"saved_max_fps":60}
+PROBE seed PASS {"path":"/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"}
+PROBE defaults_equal_keep_disabled PASS {"file_exists":true,"keep_disabled":true,"pending":true,"revert_disabled":true}
+PROBE expired_trial_keeps_reset_pending PASS {"dirty":false,"file_exists":true,"pending":true}
+PROBE post_expiry_unrelated_keep_erases_verdict PASS {"file_exists":false,"saved_master_volume":0.4}
+PROBE seed PASS {"path":"/workspace/scratch/74aa0272b109/audit_tmp/round2/published/xdg/settings/data/godot/app_userdata/OpenRC-Audit-Round2-settings/graphics_calibration.cfg"}
+PROBE close_reopen_discards_pending_reset PASS {"file_after_close":true,"file_after_later_keep":true,"live_calibration":{"sentinel":true},"pending_after_reopen":false}
+PROBE_COMPLETE failures=0

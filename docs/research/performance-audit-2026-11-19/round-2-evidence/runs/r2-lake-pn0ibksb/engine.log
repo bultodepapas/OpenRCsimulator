@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+CASE pad {"analytical_faded_height_m":0.00909381340101539,"base_offset_m":0.035,"clock_s":1.25,"delta_minus_unscaled_height_m":-0.0063513440902549,"east_m":162.683731079102,"formula_m":-0.00635133411186883,"instance_scale":0.301576375961304,"north_m":114.915634155273,"result":"PASS","shore_m":6.31892147557421,"transformed_vertical_delta_m":0.0027424693107605}
+CASE flower {"analytical_faded_height_m":-0.0032747974157289,"base_offset_m":0.05,"clock_s":1.25,"delta_minus_unscaled_height_m":-0.000818700575832994,"east_m":165.106872558594,"formula_m":-0.000818699353932224,"instance_scale":1.25,"north_m":119.600997924805,"result":"PASS","shore_m":3.09672213494795,"transformed_vertical_delta_m":-0.00409349799156189}
+PROBE_COMPLETE result=PASS pads=105 flowers=14

@@ -3,6 +3,8 @@
 Report: [CPU/GPU audit](../../../docs/research/performance-audit-2026-11-19/README.md).
 Audited source: `894357de83762ff6e0fdc47b0024e60f3d8286b7`.
 
+The [round-two package](round2/README.md) extends this collection with controller, terrain, settings, replay, input-count and lake-math probes for [F36–F45](../../../docs/research/performance-audit-2026-11-19/round-2.md). The recipe below preserves the original event/calibration snapshot.
+
 These are isolated **baseline observations**, including counterexamples to current
 behavior. A successful run means the recorded baseline was reproduced; it does
 not mean the reported bugs are fixed or that GPU/flight performance is qualified.

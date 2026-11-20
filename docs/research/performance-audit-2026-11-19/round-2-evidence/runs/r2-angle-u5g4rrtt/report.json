@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "54e8332e-4895-4f2f-80e6-73a36d2bcc97",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+    "--script",
+    "res://angle_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:34:05.368654+00:00",
+  "label": "r2-angle",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-u5g4rrtt/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-u5g4rrtt/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "angle discontinuity reproduced"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.481421,
+  "log_bytes": 902,
+  "log_sha256": "0feff01947dd34ae3ae17a6fc255f65874aea6f51d1edf7de7248416275d948d"
+}

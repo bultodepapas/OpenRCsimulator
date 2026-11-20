@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ANGLE_CASE sign=1 roll=0.000 distance=0.000000020000 raw_jump=0.000000000000 filtered_jump=0.000000000000 torque_jump=0.000000000000
+ANGLE_CASE sign=1 roll=0.300 distance=0.000000020000 raw_jump=1.259564716686 filtered_jump=1.104455983576 torque_jump=0.401138413235
+ANGLE_CASE sign=1 roll=2.000 distance=0.000000020000 raw_jump=6.070876593432 filtered_jump=5.323280249391 torque_jump=0.610048544233
+ANGLE_CASE sign=-1 roll=0.000 distance=0.000000020000 raw_jump=0.000000000000 filtered_jump=0.000000000000 torque_jump=0.000000000000
+ANGLE_CASE sign=-1 roll=0.300 distance=0.000000020000 raw_jump=1.259564716686 filtered_jump=1.104455983576 torque_jump=0.401138413235
+ANGLE_CASE sign=-1 roll=2.000 distance=0.000000020000 raw_jump=6.070876593432 filtered_jump=5.323280249391 torque_jump=0.610048544233
+angle discontinuity reproduced

@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+TRACK_VALID true
+TERRAIN_CENTER [0.035, 0.0, 0.0]
+TERRAIN_CASES [{"body":[39.0,-4.327,-0.625,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],"deep_point":[-0.0732154353676201,0.072591582156611,0.0260183486238532],"force":[0.0,-262.505276597659,-17.5622827527407],"graded_events":[{"broken":false,"cause":"ground","first":true,"health":0.892388531588025,"point_ned":[38.9267845646324,-4.25440841784339,-0.620981651376147],"rotor":0,"time_s":0.0,"type":"prop_damage"},{"broken":false,"cause":"ground","first":true,"health":0.892388531588025,"point_ned":[39.0719677289456,-4.25440841784339,-0.620981651376147],"rotor":1,"time_s":0.0,"type":"prop_damage"}],"graded_health":[0.892388531588025,0.892388531588025,1.0,1.0],"height_above_cg_ground_m":0.59,"max_point_depth_m":0.385712178345663,"moment":[1.29824426125314,-0.0109562864879483,0.163764759712301],"rotor_witnesses":[0,1],"strict_crash_reason":"Propeller strike"},{"body":[39.0,-4.327,-0.735,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],"deep_point":[-0.0732154353676201,0.072591582156611,0.0260183486238532],"force":[0.0,0.0,0.0],"graded_events":[],"graded_health":[1.0,1.0,1.0,1.0],"height_above_cg_ground_m":0.7,"max_point_depth_m":0.275712178345663,"moment":[0.0,0.0,0.0],"rotor_witnesses":[0,1],"strict_crash_reason":""}]
+terrain early-out reproduced

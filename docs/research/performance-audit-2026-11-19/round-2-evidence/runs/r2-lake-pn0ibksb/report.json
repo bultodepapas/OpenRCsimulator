@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5e427af7-e8d3-4e67-b170-886e342d2a2b",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+    "--script",
+    "res://lake_wave_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:34:06.947433+00:00",
+  "label": "r2-lake",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-lake-pn0ibksb/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-lake-pn0ibksb/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PROBE_COMPLETE result=PASS pads=105 flowers=14"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.429055,
+  "log_bytes": 835,
+  "log_sha256": "350bff403b6735af9ba38178f987fb79a9763c794aeb066d34bc45031c526db9"
+}

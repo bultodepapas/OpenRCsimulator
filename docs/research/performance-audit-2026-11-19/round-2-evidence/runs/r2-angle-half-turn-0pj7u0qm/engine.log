@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+HALF_TURN_CASES [{"heading":0.0,"q":[0.0,1.0,0.0,0.0],"rotated_up":[0.0,0.0,1.0],"target":[-6.98131700797732,0.0]},{"heading":0.0,"q":[0.0,-1.0,0.0,0.0],"rotated_up":[0.0,0.0,1.0],"target":[6.98131700797732,0.0]},{"heading":0.0,"q":[0.0000000001,1.0,0.0,0.0],"rotated_up":[0.0,0.0000000002,1.0],"target":[-6.98131700797732,0.0]},{"heading":0.0,"q":[-0.0000000001,-1.0,0.0,0.0],"rotated_up":[0.0,0.0000000002,1.0],"target":[-6.98131700797732,0.0]}]
+half-turn representation dependence reproduced

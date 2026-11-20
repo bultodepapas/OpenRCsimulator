@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+REPLAY_JSON {"checkpoint_tick":12,"current_solver":"4b13b9c55af590f20823ef1b03a3c1f16860b5ee183e37d5c781173cfee7e3be","final_recorded_tick":36,"first_recorded_tick":13,"mode":"new-process-comment-only-source-change","original_recording_sha256":"e7ee9d7042af804220f612d41fe2e0d8d572152591ecc8d46d4fd768f467dfb4","parsed_record_metadata_cases":[],"physics_hz":240,"recorded_solver":"1ca88b5fb399c22bb707ab6d851280077f52d4570dab653f0f7779f8e60ecd79","report":{"complete":true,"error":"","exact":true,"first_mismatch_tick":-1,"format":"openrc-airship-flight-log-report v1","identity_match":true,"log":"user://round2-valid-airship.orfl","ok":true,"recorded_crash":"","replayed_crash":"","rows":24,"solver_changed":true}}
+REPLAY_PROBE_COMPLETE expected_observation=true

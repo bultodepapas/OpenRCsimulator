@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+CASE custom_fade {"physics_and_plant_50_fade":0.039744,"result":"PASS","same_sample_distance_m":6.0,"validated_fade_m":50.0,"validation_ok":true,"water_clamped_12_fade":0.5}
+CASE custom_period_wrap {"east_m":164.906234741211,"model_shader_down_after_wrap_using_time_0":0.449616792763534,"modeled_shader_change_m":-0.0265582650652856,"north_m":120.338134765625,"physics_change_m":0.0000339056522731251,"physics_down_at_1023_999":0.476175057828819,"physics_down_at_1024":0.476208963481092,"result":"PASS","validated_period_s":3.0,"validation_ok":true}
+PROBE_COMPLETE result=PASS

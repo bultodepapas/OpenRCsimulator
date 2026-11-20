@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3f162681-a0d5-44fb-98a4-a26b9e9595ac",
+  "command": [
+    "/workspace/scratch/74aa0272b109/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/core",
+    "--script",
+    "res://angle_half_turn_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/74aa0272b109/OpenRCsimulator",
+  "started_utc": "2026-11-20T01:34:05.912274+00:00",
+  "label": "r2-angle-half-turn",
+  "log": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-half-turn-0pj7u0qm/engine.log",
+  "report": "/workspace/scratch/74aa0272b109/audit_tmp/round2/published/runs/r2-angle-half-turn-0pj7u0qm/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "half-turn representation dependence reproduced"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.404114,
+  "log_bytes": 565,
+  "log_sha256": "bdcfef7729d6d28f78a62f0d10be7b27f5abf0a961088911edbd215a7e4842c1"
+}
