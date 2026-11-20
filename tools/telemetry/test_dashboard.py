@@ -221,7 +221,13 @@ class DashboardCase(unittest.TestCase):
         page = dashboard.render(data)
         for tab in ("overview", "players", "downloads", "github", "website", "receiver"):
             self.assertIn(f'id="panel-{tab}"', page)
-        self.assertIn("Repository views, 14 days", page)
+        overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
+        for text in ("Last 7 full days", "2027-01-13 to 2027-01-19", "Package downloads", "Repository views",
+                     "New stars", "Recent releases", "<td>v0.3.10</td>", "Downloads by platform",
+                     "Repository referrers, 14 days", "Downloads per day", "Interest per day",
+                     "Website (GA4)</b> not connected", "Telemetry batches"):
+            self.assertIn(text, overview)
+        self.assertIn("Old snapshot.", page)  # the fixture is from 2027-01-20
         self.assertIn("&lt;b&gt;evil&lt;/b&gt;", page)  # referrer text is escaped
         self.assertNotIn("<b>evil</b>", page)
         self.assertIn("Release v0.3.10", page)  # release marker in a tooltip
@@ -244,8 +250,9 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("&lt;b&gt;evil&lt;/b&gt;", website)  # country text is escaped
         self.assertNotIn("<b>evil</b>", page)
         overview = page.split('id="panel-overview"')[1].split('id="panel-players"')[0]
-        self.assertIn("Website users, 7 days", overview)
-        self.assertIn("Website visitors per day", overview)
+        for text in ("Website sessions", "Website download requests", "8% of 30-day users request a download",
+                     "Top countries", "Where people come from", "Website, 30 days", "<td>github</td>"):
+            self.assertIn(text, overview)
         rows = dashboard.ingest_rows(data)
         self.assertNotIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
         data["website"] = test_ga4.model(fail={(("date",), "download_request")})
@@ -256,6 +263,13 @@ class DashboardCase(unittest.TestCase):
         page = dashboard.render(data)
         self.assertIn("HTTP 403: &lt;denied&gt;", page)
         self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
+
+    def test_week_over_week_delta(self):
+        self.assertIn("▲ 50% (+5) vs prior 7 days", dashboard.delta_html(15, 10))
+        self.assertIn("▼ 25% (-5) vs prior 7 days", dashboard.delta_html(15, 20))
+        self.assertIn("nothing in either week", dashboard.delta_html(0, 0))
+        self.assertIn("new (+3)", dashboard.delta_html(3, 0))
+        self.assertIn("no comparison yet", dashboard.delta_html(3, None))
 
     def test_build_writes_page_and_health_atomically(self):
         import test_ga4

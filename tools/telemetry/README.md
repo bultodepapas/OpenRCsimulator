@@ -26,7 +26,7 @@ The receiver snapshot uses only the service's public read paths (`status_report`
 
 | Tab | Content and source |
 | --- | --- |
-| Overview | Alerts; players (newest insight week), package downloads, latest release, repository views and clones over 14 days, stars, forks, watchers and issues; 30-day charts of downloads, visits, stars and accepted telemetry batches, with final releases marked |
+| Overview | Alerts, then data freshness per source (receiver, GitHub, GA4). Last 7 full UTC days against the 7 before: package downloads, website sessions, website download requests, repository views, new stars and telemetry batches, each with its change. Recent releases (days live, downloads, per day) and downloads by platform. Where people come from (website sources with download conversion; repository referrers) and top countries. 30-day charts of downloads (package and website requests) and interest (repository views and website sessions), with final releases marked |
 | Players | Weekly insights per ISO week and release: frame cadence by GPU, pacing, resolution, OS/driver and vehicle; menu cadence; vehicle usage; errors; hardware and settings mix. Bars sorted by value, the grey combined row last |
 | Downloads | Package counters: total and platform share, latest release, last 7 days, increases per collection day, every release by Windows / macOS / Linux |
 | GitHub | Stars, forks, watchers, open issues; page views and unique visitors, clones and unique cloners per day (archived beyond GitHub's 14 days); stars over time; releases with dates and downloads; top referrers and popular pages (GitHub's 14-day window) |

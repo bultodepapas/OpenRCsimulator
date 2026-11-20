@@ -832,68 +832,208 @@ def latest_week_players(snapshot):
     return None
 
 
+def delta_html(current, previous):
+    """Week-over-week change in text ink (a change is not a status, so no status color)."""
+    if current is None or previous is None:
+        return '<span class="delta">no comparison yet</span>'
+    diff = current - previous
+    if current == 0 and previous == 0:
+        return '<span class="delta">nothing in either week</span>'
+    if previous == 0:
+        text = "new" if current else "no change"
+        glyph = "▲" if current else "–"
+    else:
+        glyph = "▲" if diff > 0 else "▼" if diff < 0 else "–"
+        text = f"{abs(diff) * 100 / previous:.0f}%"
+    sign = "+" if diff > 0 else ""
+    label = f"{glyph} {text} ({sign}{fmt_int(diff)}) vs prior 7 days"
+    return f'<span class="delta" aria-label="{e(label, quote=True)}">{e(label)}</span>'
+
+
+def kpi_tiles(items):
+    """items: [(label, value text, delta html, sub text)]"""
+    return '<div class="tiles">' + "".join(
+        f'<div class="tile"><div class="tl">{e(a)}</div><div class="tv">{e(b)}</div>{c}'
+        f'<div class="ts">{e(d)}</div></div>' for a, b, c, d in items) + "</div>"
+
+
+def collected_text(age):
+    return "collected with this snapshot" if age < 300 else f"collected {fmt_age(age)}"
+
+
+def freshness_strip(snapshot):
+    """One chip per data source: is each number on this page current?"""
+    now = snapshot["generated_unix"]
+    chips = [("good", "Receiver", "snapshot of this page")]
+    model, website = snapshot.get("github"), snapshot.get("website")
+    if model is None:
+        chips.append(("warning", "GitHub", "no history archive"))
+    else:
+        age = downloads.age_s(model, now)
+        chips.append(("good" if age is not None and age <= DOWNLOADS_STALE_S else "warning", "GitHub",
+                      collected_text(age) if age is not None else "never collected"))
+    if website is None:
+        chips.append(("warning", "Website (GA4)", "not connected"))
+    elif website.get("error"):
+        chips.append(("critical", "Website (GA4)", "collection failed"))
+    else:
+        stamp = datetime.fromisoformat(website["collected_utc"].replace("Z", "+00:00")).timestamp()
+        chips.append(("good" if now - stamp <= 2 * 3600 else "warning", "Website (GA4)",
+                      collected_text(max(0, now - stamp))))
+    glyph = {"good": "✓", "warning": "!", "critical": "✖"}
+    return '<div class="chips" aria-label="Data freshness">' + "".join(
+        f'<span class="chip"><i class="badge st-{level}" aria-hidden="true">{glyph[level]}</i>'
+        f'<b>{e(name)}</b> {e(detail)}</span>' for level, name, detail in chips) + "</div>"
+
+
+def release_panel(model, now):
+    """Recent releases: age, downloads so far and the daily pace, newest first."""
+    totals = {tag: (counts, total) for tag, counts, total in downloads.per_release(model)}
+    recent = sorted(model.get("releases") or [], key=lambda r: r["published"], reverse=True)[:6]
+    if not recent:
+        return panel("Recent releases", None, '<p class="empty">No releases collected yet.</p>')
+    rows = []
+    for release in recent:
+        published = datetime.fromisoformat(release["published"].replace("Z", "+00:00")).timestamp()
+        days_live = max((now - published) / 86400, 0)
+        total = totals.get(release["tag"], (None, 0))[1]
+        pace = total / max(days_live, 1)
+        kind = " (pre-release)" if release["prerelease"] else ""
+        rows.append(f"<tr><td>{e(release['tag'])}{e(kind)}</td><td>{e(release['published'][:10])}</td>"
+                    f"<td>{days_live:.1f}</td><td>{fmt_int(total)}</td><td>{pace:.1f}</td></tr>")
+    latest = recent[0]
+    counts = totals.get(latest["tag"], ({p: 0 for p, _ in PLATFORM_SLOTS}, 0))[0]
+    split = " · ".join(f"{p} {fmt_int(counts[p])}" for p, _ in PLATFORM_SLOTS if counts.get(p))
+    table = scroll("<table><thead><tr><th>Release</th><th>Published (UTC)</th><th>Days live</th><th>Downloads</th>"
+                   f"<th>Per day</th></tr></thead><tbody>{''.join(rows)}</tbody></table>")
+    sub = f"latest {latest['tag']}: {split}" if split else f"latest {latest['tag']}"
+    return panel("Recent releases", sub + "; a newer release takes over downloads, so older totals stop growing",
+                 table)
+
+
+def platform_panel(model):
+    releases = downloads.per_release(model)
+    platforms = [(p, sum(c[p] for _, c, _ in releases), cls) for p, cls in PLATFORM_SLOTS]
+    total = sum(n for _, n, _ in platforms)
+    rows = [(p, n, [f"{fmt_int(n)} downloads", f"{n * 100 / total:.0f}% of all package downloads"], False)
+            for p, n, _ in platforms if n]
+    return panel("Downloads by platform", "all releases, GitHub package counters",
+                 hbar_chart(rows, fmt_int, "Package downloads by platform") if rows else
+                 '<p class="empty">No packages yet.</p>')
+
+
+def sources_panel(website, model):
+    """Where people come from: website sources with conversion, then GitHub referrers."""
+    blocks = []
+    funnel = ((website or {}).get("funnels") or {}).get("source") if website and not website.get("error") else None
+    if funnel:
+        body = "".join(f"<tr><td>{e(r['name'] or '(not set)')}</td><td>{fmt_int(r['users'])}</td>"
+                       f"<td>{pct(r['requesting'], r['users'])}</td></tr>" for r in funnel[:6])
+        blocks.append("<h3>Website, 30 days</h3>" + scroll(
+            "<table><thead><tr><th>Source</th><th>Users</th><th>Requested a download</th></tr></thead>"
+            f"<tbody>{body}</tbody></table>"))
+    referrers = (model or {}).get("referrers") or []
+    if referrers:
+        body = "".join(f"<tr><td>{e(r['name'])}</td><td>{fmt_int(r['count'])}</td><td>{fmt_int(r['uniques'])}</td></tr>"
+                       for r in referrers[:6])
+        blocks.append("<h3>Repository referrers, 14 days</h3>" + scroll(
+            "<table><thead><tr><th>Referrer</th><th>Views</th><th>Unique visitors</th></tr></thead>"
+            f"<tbody>{body}</tbody></table>"))
+    return panel("Where people come from", None, "".join(blocks) or '<p class="empty">No source data yet.</p>')
+
+
+def countries_panel(website):
+    rows = ((website or {}).get("tables") or {}).get("countries") if website and not website.get("error") else None
+    if not rows:
+        return panel("Top countries", None, '<p class="empty">Website analytics not connected.</p>')
+    return panel("Top countries", "website users, 30 days",
+                 hbar_chart(ga_rows(rows[:8], "activeUsers", [("activeUsers", "Users"), ("sessions", "Sessions")]),
+                            fmt_int, "Top countries by website users"))
+
+
 def overview_section(snapshot, rows, alert_items):
-    now, model = snapshot["generated_unix"], snapshot.get("github")
-    days = window_days(now, 30)
-    last14, last7 = days[-14:], days[-7:]
+    """Where the project stands this week, then the 30-day context (TELEM-24 overview)."""
+    now, model, website = snapshot["generated_unix"], snapshot.get("github"), snapshot.get("website")
+    if website and website.get("error"):
+        website = None
+    days, base = window_days(now, 30), window_days(now, 15)
+    current, previous = base[7:14], base[:7]  # the last 7 full UTC days and the 7 before (today is partial)
     markers = release_days(model)
+    tiles = []
+    if model:
+        by_day = downloads.per_day(model)
+        week = lambda span: sum(by_day[d][0] for d in span if d in by_day)  # noqa: E731
+        releases = downloads.per_release(model)
+        tiles.append(("Package downloads", fmt_int(week(current)), delta_html(week(current), week(previous)),
+                      f"{fmt_int(sum(t for _, _, t in releases))} all time"))
+        traffic = model.get("traffic") or []
+        known = {r["day"] for r in traffic}
+        has_prev = any(d in known for d in previous)
+        tiles.append(("Repository views", fmt_int(downloads.window_sum(traffic, current)),
+                      delta_html(downloads.window_sum(traffic, current),
+                                 downloads.window_sum(traffic, previous) if has_prev else None),
+                      f"{fmt_int(downloads.window_sum(traffic, current, 'uniques'))} visitor-days"))
+        star_days = model.get("star_days") or {}
+        counters = (model.get("counters") or [None])[-1]
+        tiles.append(("New stars", fmt_int(sum(star_days.get(d, 0) for d in current)),
+                      delta_html(sum(star_days.get(d, 0) for d in current),
+                                 sum(star_days.get(d, 0) for d in previous)),
+                      f"{fmt_int(counters['stars'])} total" if counters else "current total unknown"))
+    if website:
+        daily = {r["day"]: r for r in website.get("daily") or []}
+        ga_week = lambda span, key: sum((daily.get(d) or {}).get(key, 0) for d in span)  # noqa: E731
+        ga_prev_known = any(d in daily for d in previous)
+        tiles.insert(1, ("Website sessions", fmt_int(ga_week(current, "sessions")),
+                         delta_html(ga_week(current, "sessions"),
+                                    ga_week(previous, "sessions") if ga_prev_known else None),
+                         f"{fmt_int((website.get('totals') or {}).get('users', 0))} users in 30 days"))
+        dl = {r["day"]: r["count"] for r in website.get("downloads_daily") or []}
+        if "downloads" in (website.get("errors") or {}):
+            tiles.insert(2, ("Website download requests", "-", "", "download requests: report failed"))
+        else:
+            tiles.insert(2, ("Website download requests", fmt_int(sum(dl.get(d, 0) for d in current)),
+                             delta_html(sum(dl.get(d, 0) for d in current),
+                                        sum(dl.get(d, 0) for d in previous) if ga_prev_known else None),
+                             f"{pct(website.get('downloads_users'), (website.get('totals') or {}).get('users'))} "
+                             "of 30-day users request a download"))
+    accepted = {r["day"]: r["counts"]["accepted"] for r in rows}
     players = latest_week_players(snapshot)
-    accepted7 = sum(r["counts"]["accepted"] for r in rows[-7:])
-    items = [("Player session-days", fmt_int(players[2]) if players else "-",
-              f"session-days {players[0]} · {players[1]}" if players else f"{fmt_int(accepted7)} batches in 7 days")]
+    tiles.append(("Telemetry batches", fmt_int(sum(accepted.get(d, 0) for d in current)),
+                  delta_html(sum(accepted.get(d, 0) for d in current),
+                             sum(accepted.get(d, 0) for d in previous) if rows else None),
+                  f"{fmt_int(players[2])} player session-days, {players[0]}" if players else
+                  "consenting players' sessions; none yet"))
+
     charts = []
     if model:
-        releases = downloads.per_release(model)
-        total = sum(t for _, _, t in releases)
-        latest = next((r for r in sorted(model.get("releases") or [], key=lambda r: r["published"], reverse=True)), None)
-        latest_total = next((t for tag, _, t in releases if latest and tag == latest["tag"]), 0)
-        views14 = downloads.window_sum(model.get("traffic") or [], last14)
-        clones14 = downloads.window_sum(model.get("clones") or [], last14)
-        counters = (model.get("counters") or [None])[-1]
-        stars7 = sum(n for d, n in (model.get("star_days") or {}).items() if d in set(last7))
-        items += [
-            ("Package downloads", fmt_int(total), f"+{fmt_int(downloads.recent_increase(model, now, 7))} in 7 days"),
-            ("Latest release", e(latest["tag"]) if latest else "-",
-             f"{latest['published'][:10]} · {fmt_int(latest_total)} downloads" if latest else ""),
-            ("Repository views, 14 days", fmt_int(views14), "GitHub page views"),
-            ("Git clones, 14 days", fmt_int(clones14), "includes automated clones"),
-            ("Stars", fmt_int(counters["stars"]) if counters else "-", f"+{stars7} in 7 days"),
-            ("Forks · watchers · issues", " · ".join(fmt_int(counters[k]) for k in ("forks", "watchers", "open_issues"))
-             if counters else "-", "current GitHub counters"),
-        ]
         by_day = downloads.per_day(model)
-        charts.append(panel("Downloads per day", "package counter increases; triangles mark releases", line_chart(
-            days, [("Downloads", [by_day[d][0] if d in by_day else None for d in days], "s1")],
-            "Downloads per day", markers, 200)))
-        traffic = model.get("traffic") or []
-        charts.append(panel("Repository visits per day", None, legend([("v", "Page views", "s1"), ("u", "Unique visitors", "s2")])
-                            + line_chart(days, [("Page views", daily_values(traffic, days, "count"), "s1"),
-                                                ("Unique visitors", daily_values(traffic, days, "uniques"), "s2")],
-                                         "Repository visits per day", markers, 200, partial_notes(traffic))))
-        charts.append(panel("Stars", "cumulative current stargazers", line_chart(
-            days, [("Stars", downloads.stars_cumulative(model, days), "s1")], "Stars", markers, 200)))
-    else:
-        items.append(("GitHub", "-", "no history archive"))
-    website = snapshot.get("website")
-    if website and not website.get("error"):
-        daily, ga_days = website.get("daily") or [], (website.get("days") or [])[-30:]  # property-time-zone days
-        dl_failed = "downloads" in (website.get("errors") or {})
-        items.append((f"Website users, {len(website.get('days') or [])} days",
-                      fmt_int((website.get("totals") or {}).get("users", 0)),
-                      "download requests: report failed" if dl_failed else
-                      f"{fmt_int(ga4.window(website, 7))} download requests in 7 days"))
-        series = [("Active users", daily_values(daily, ga_days, "users"), "s1")]
-        if not dl_failed:
-            series.append(("Download requests", daily_values(website.get("downloads_daily") or [], ga_days,
-                                                             "count"), "s2"))
-        charts.append(panel("Website visitors per day", "GA4 active users and download requests",
-                            legend([("u", "Active users", "s1"), ("d", "Download requests", "s2")][:len(series)])
-                            + line_chart(ga_days, series, "Website visitors per day", markers, 200)))
-    charts.append(panel("Telemetry batches accepted per day", "consenting players' sessions reaching the receiver",
-                        line_chart(days, [("Accepted", daily_values(
-                            [{"day": r["day"], "count": r["counts"]["accepted"]} for r in rows], days, "count"), "s1")],
-                            "Telemetry batches per day", markers, 200)))
-    return (alerts_panel(alert_items) + stat_tiles(items)
+        series = [("Package downloads", [by_day[d][0] if d in by_day else None for d in days], "s1")]
+        if website and "downloads" not in (website.get("errors") or {}):
+            dl = {r["day"]: r["count"] for r in website.get("downloads_daily") or []}
+            series.append(("Website download requests", [dl.get(d) for d in days], "s2"))
+        charts.append(panel("Downloads per day", "GitHub package counter increases and website requests; "
+                            "triangles mark releases", legend([(s[0], s[0], s[2]) for s in series]) + line_chart(
+                                days, series, "Downloads per day", markers, 220)))
+        interest = [("Repository views", daily_values(model.get("traffic") or [], days, "count"), "s1")]
+        if website:
+            interest.append(("Website sessions", daily_values(website.get("daily") or [], days, "sessions"), "s2"))
+        charts.append(panel("Interest per day", "GitHub repository page views and website sessions",
+                            legend([(s[0], s[0], s[2]) for s in interest]) + line_chart(
+                                days, interest, "Interest per day", markers, 220,
+                                partial_notes(model.get("traffic") or []))))
+    if any(accepted.values()):
+        charts.append(panel("Telemetry batches accepted per day", "consenting players' sessions reaching the "
+                            "receiver", line_chart(days, [("Accepted", [accepted.get(d) for d in days], "s1")],
+                                                   "Telemetry batches per day", markers, 220)))
+    pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
+    context = ""
+    if model:
+        context += pair(release_panel(model, now), platform_panel(model))
+    context += pair(sources_panel(website, model), countries_panel(website))
+    return (alerts_panel(alert_items) + freshness_strip(snapshot)
+            + f'<h2>Last 7 full days</h2><p class="sub">{e(current[0])} to {e(current[-1])} (UTC), compared with '
+            f'the 7 days before; today is partial and not included</p>' + kpi_tiles(tiles)
+            + context
             + f'<h2>Last 30 days</h2><div class="pair">{"".join(charts)}</div>')
 
 
@@ -1174,6 +1314,11 @@ padding:8px 12px;border-radius:6px;margin:12px 0;color:var(--ink2)}.banner[hidde
 .tile,.card,.panel{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px 16px;min-width:0}
 .tl{color:var(--ink2);font-size:13px}.tv{font-size:21px;font-weight:600;margin:4px 0;overflow-wrap:anywhere}
 .ts{color:var(--muted);font-size:12px;display:block}
+.delta{display:block;color:var(--ink2);font-size:12.5px;font-variant-numeric:tabular-nums;margin-bottom:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--ring);
+border-radius:999px;padding:4px 12px 4px 4px;font-size:12.5px;color:var(--ink2)}.chip b{color:var(--ink)}
+.chip .badge{width:20px;height:20px;font-size:11px;vertical-align:0}
 .alerts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:8px;margin-top:12px}
 .alert{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--ring);
 border-radius:8px;padding:8px 12px}.alert b{display:block}.alert code{font-size:12px}
