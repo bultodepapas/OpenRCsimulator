@@ -1,0 +1,261 @@
+{
+  "base_commit": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "production_changes": false,
+  "scope": "Isolated Linux headless fixture with exact production sources; not full app/export/rendering or physics qualification. Probe completion is not product acceptance.",
+  "checks": [
+    {
+      "name": "test_creator_clearview_readers",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_readers/report.json",
+      "report_sha256": "e07ef2eabee099aa8fe9803a5641b73bf4f8fb2c97481587c56222dbb491dbd6",
+      "log": "evidence/runs/test_creator_clearview_readers/engine.log",
+      "log_sha256": "1972fcb68b6b001bd6e656608e6eb4b2890e82b207c91cf97f2026d9ad6baab1",
+      "elapsed_seconds": 0.752114,
+      "summary": [
+        "ClearView readers: 87 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_clearview_visual",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_visual/report.json",
+      "report_sha256": "efff53bf4b0f4b665771721c570a253d683f52301c27465fab393f70205d33d9",
+      "log": "evidence/runs/test_creator_clearview_visual/engine.log",
+      "log_sha256": "e8ed4a0e98cd3fb28c7639a1753cd14327a8e9667e16b12ad9c32d2a33633563",
+      "elapsed_seconds": 0.943743,
+      "summary": [
+        "ClearView visual: 48 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_clearview_jpeg",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_jpeg/report.json",
+      "report_sha256": "f371004530ce032373876fdbb294b71fda94a9ab5a86b3d2e74ddb49f98e1993",
+      "log": "evidence/runs/test_creator_clearview_jpeg/engine.log",
+      "log_sha256": "fe8d193d427a1babfeb1718c4ca7e1cbf820d960d75b61b1d139f7ef14261aff",
+      "elapsed_seconds": 1.022108,
+      "summary": [
+        "ClearView JPEG: 363 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_clearview_motion",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_motion/report.json",
+      "report_sha256": "5280d24089ebe9388332b98254eb533d76ae7fab509373d249475408bde335bd",
+      "log": "evidence/runs/test_creator_clearview_motion/engine.log",
+      "log_sha256": "828d3b013cf0816153f6a6787eddd22fbcf29c996743cf4e3f634808bb4a953b",
+      "elapsed_seconds": 1.573853,
+      "summary": [
+        "ClearView motion: 221 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_clearview_observations",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_observations/report.json",
+      "report_sha256": "5e254ff133e1c0fbe5cbaf55a9c739f4854cc0fc4776a4532b7579ef263e0f81",
+      "log": "evidence/runs/test_creator_clearview_observations/engine.log",
+      "log_sha256": "3e40c14ad868309db158117003c23800cae2cc4c75d3192d1fa1a76a65211b5d",
+      "elapsed_seconds": 3.385411,
+      "summary": [
+        "ClearView observations: 290 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_source_installation",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_source_installation/report.json",
+      "report_sha256": "81100385d8d1f80044230866063bb43e5dc7d8236fc5d61bf89193c1b54f277d",
+      "log": "evidence/runs/test_creator_source_installation/engine.log",
+      "log_sha256": "025a4549a01b34d8d3b6c1f17ff9d9f23ecde00f6c5f0ec0ae2a965571e6bdbc",
+      "elapsed_seconds": 6.755484,
+      "summary": [
+        "Creator source installation: 88 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_compiler",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_compiler/report.json",
+      "report_sha256": "84dd0379a6c2a08904dacc0e37be88ce7ca24b0a265802b4ae9591182e0d6f54",
+      "log": "evidence/runs/test_creator_compiler/engine.log",
+      "log_sha256": "de1d587655925841f597db099dde0689d8ca7cb1953adece9f42553a853e65f2",
+      "elapsed_seconds": 2.986548,
+      "summary": [
+        "AC-05/06 creator compiler: 196 checks, 0 failed"
+      ]
+    },
+    {
+      "name": "test_creator_compile_binding",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_compile_binding/report.json",
+      "report_sha256": "4e465c27bd040a9f6e61c3624c54148e9001f3adbf907878cc7d5d4af1bf9050",
+      "log": "evidence/runs/test_creator_compile_binding/engine.log",
+      "log_sha256": "f6a6c1fe79595252cfa4c00b1e087621fa5471d07e112aa2360dd29a221156fd",
+      "elapsed_seconds": 2.880073,
+      "summary": [
+        "Creator compile binding: 88 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_source_ref",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_source_ref/report.json",
+      "report_sha256": "2fb87e2bc76b98d4d1791051c608dab81bcba44c7be24bee442dc6c775797426",
+      "log": "evidence/runs/test_creator_source_ref/engine.log",
+      "log_sha256": "f6157aee094dd3efacbef5d37a18905a3b0b180d98c1fc4aeb845b825d0e26f7",
+      "elapsed_seconds": 9.688147,
+      "summary": [
+        "Creator source reference: 230 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_published_trial",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_published_trial/report.json",
+      "report_sha256": "b9ca8b564621cf9b53817ddc32cb7814c79b94fb291e0fedc57f8f85d6d93d50",
+      "log": "evidence/runs/test_creator_published_trial/engine.log",
+      "log_sha256": "2541a87849bbca0531753c765d67dd5a0661a4c7040f34df619f91c6c4309d0a",
+      "elapsed_seconds": 3.809659,
+      "summary": [
+        "Creator published trial: 62 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_selection_state",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_selection_state/report.json",
+      "report_sha256": "ac5ca4a8a8c11d895450873def367645b4d304b451e250b1542a719b49871791",
+      "log": "evidence/runs/test_creator_selection_state/engine.log",
+      "log_sha256": "876f55610a036a555388579a34c8ea6f989f74282cb06a6f86fa1ebdf58f34c9",
+      "elapsed_seconds": 2.417734,
+      "summary": [
+        "Creator selection state: 43 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_trial",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_trial/report.json",
+      "report_sha256": "796b55dfd32d56a23a66d6bc8b29c1b65d811316dc21039a13c2d3cf79eb23f6",
+      "log": "evidence/runs/test_creator_trial/engine.log",
+      "log_sha256": "f6d185f42cb49b23a6eb65d2fcec5c1e3dab41d31b3947c480d8a2ad97878a99",
+      "elapsed_seconds": 8.396868,
+      "summary": [
+        "Creator trial: 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_store",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_store/report.json",
+      "report_sha256": "ddc08691b2805c0325b531b96bf86855fb852b64b64f84c72ae0fc55e6d2b573",
+      "log": "evidence/runs/test_creator_store/engine.log",
+      "log_sha256": "f6ae93248cc7ba800c9716dfbcbb0bd080d951f9bf8e298108105bbc1873ab04",
+      "elapsed_seconds": 15.650694,
+      "summary": [
+        "Creator store: 509 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_clearview_ui",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_clearview_ui/report.json",
+      "report_sha256": "e31001ed1957a957a599affe6526a8e6a835f4e95ed468f58820d0dcf47f545e",
+      "log": "evidence/runs/test_creator_clearview_ui/engine.log",
+      "log_sha256": "241686b08c5d617f65c4189488fd8d282f72fe661b7c27549c77e5a9ad45ed77",
+      "elapsed_seconds": 8.29573,
+      "summary": [
+        "ClearView UI: 68 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "test_creator_publication_ui",
+      "kind": "existing test",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/test_creator_publication_ui/report.json",
+      "report_sha256": "b42454e9b38ea2d9dc5a34663ea3cd0a69705d5604f8493592656021ae020045",
+      "log": "evidence/runs/test_creator_publication_ui/engine.log",
+      "log_sha256": "749dac5a56873b63461ead666290d3d12a1f5f878d716bed7bfac69315be26d7",
+      "elapsed_seconds": 3.730878,
+      "summary": [
+        "Creator publication UI: 28 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "corpus",
+      "kind": "observational probe",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/corpus/report.json",
+      "report_sha256": "b2904c3ceb78d330d50bead50c8ec44318c3f8329ba22f4283df500200f2b9de",
+      "log": "evidence/runs/corpus/engine.log",
+      "log_sha256": "d4d74ab68de7687ffae46e36bc995a0f16bb53221db122e149509d8a68ac2f12",
+      "elapsed_seconds": 37.230321
+    },
+    {
+      "name": "motion-and-cancel",
+      "kind": "observational probe",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/motion-and-cancel/report.json",
+      "report_sha256": "cfc6affc936152a5f8858efc5aa06b1738e01cc5edf1aa47b1726059e0342198",
+      "log": "evidence/runs/motion-and-cancel/engine.log",
+      "log_sha256": "f9899c264545e4597bd5b8829ff38c83ccae6679e505c973bcc11aaf9397d5a3",
+      "elapsed_seconds": 1.584716
+    },
+    {
+      "name": "v4-trial",
+      "kind": "observational probe",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/v4-trial/report.json",
+      "report_sha256": "068ad9a29864819c8314c2db86ad56475eab62f84657d8e6cf5f265834b14bf4",
+      "log": "evidence/runs/v4-trial/engine.log",
+      "log_sha256": "492d462f7fa9db3f3e81abc35806f454b55e413c4c60778cbd6995656676d30b",
+      "elapsed_seconds": 4.849949
+    },
+    {
+      "name": "fixture-resource-import",
+      "kind": "fixture setup",
+      "ok": true,
+      "complete": true,
+      "report": "evidence/runs/fixture-resource-import/report.json",
+      "report_sha256": "16a8eb899353c2ffa6db623d9ae4615e718d2586d63b0ab6ae16dd8da8143a49",
+      "log": "evidence/runs/fixture-resource-import/engine.log",
+      "log_sha256": "42c251d5991ca262770fcd2ed1d193b79076c4fef330e6efad680bc63c0daa43",
+      "elapsed_seconds": 5.147847
+    }
+  ]
+}

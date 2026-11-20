@@ -4,9 +4,9 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Use v0.2.9 or later and choose **ClearView aircraft ZIP** in the file picker. Test flights and saving as an aircraft need the next release or a development build.
+Use v0.3.0 or later and choose **ClearView aircraft ZIP** in the file picker. Automatic setup and helicopter flights arrive in the version after v0.3.0; v0.2.9 imports the preview only.
 
-**Experimental.** The model keeps its ClearView look but flies with an estimated OpenRC trainer configuration, not ClearView’s flight model. Saved aircraft cannot be launched from Home yet.
+**Experimental.** The model keeps its ClearView look but flies with OpenRC physics, not ClearView’s flight model: airplanes with an estimated configuration sized to the model, flying wings with the stock Skywalker X8 physics and helicopters with the X-Cell .60 reference physics. Saved aircraft cannot be launched from Home yet.
 
 ## Where to download
 
@@ -19,14 +19,14 @@ Tested example: [MC Extra 330 Red](https://time2rc.s3.amazonaws.com/mc-models/RP
 
 1. Download the model’s `.zip` and keep it zipped.
 2. Open **Workshop → Create aircraft… → Import → Choose model…**. Select the ZIP; for a pack, choose one aircraft.
-3. Check the preview and messages. Confirm the review, select **Create an estimated OpenRC configuration**, set orientation and size, then use **Test fly**. Name it and choose **Save aircraft** or **Save draft**.
+3. Check the preview and messages. Choose **Set up for flight automatically** (for a helicopter, **Fly as a helicopter**), review the estimates, then use **Test fly**. Name it and choose **Save aircraft** or **Save draft**.
 
 ## Which files work?
 
-Complete **ClearView v5/v6 airplane ZIPs**, up to **64 MiB**: `params.txt`, its referenced `.ac` model and textures in their original folders. Repaints need the complete model.
+Complete **ClearView airplane, VTOL and helicopter ZIPs**, up to **64 MiB**: `params.txt`, its `.ac` model and textures in their original folders. Repaints need the complete model.
 
 ## Limits
 
-ClearView flight physics is not transferred. Helicopters, scenery, raw FMS files and `.lst` lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.
+ClearView flight physics is not transferred, so handling is not a reproduction of the original. Flying wings and helicopters keep their own look on a stock aircraft’s physics, with that aircraft’s size and power. Scenery, raw FMS files and `.lst` lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.
 
 Keep the author’s credits and respect each model’s license.

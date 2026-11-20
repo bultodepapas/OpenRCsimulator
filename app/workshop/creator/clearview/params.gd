@@ -9,7 +9,9 @@ const MAX_LINE := 4096
 const MAX_RECORDS := 4096
 const MAX_SECTIONS := 256
 const IDENTITY := ["verNumber", "modelType", "modelName"]
-const TAG_NOTE := "%s editor tag lines in the model parameters were ignored."
+const DEFAULT_MODEL := "body.ac"
+const DEFAULT_NOTE := "The parameters name no model file; the ClearView default %s was used."
+const TAG_NOTE :="%s editor tag lines in the model parameters were ignored."
 
 static func read(bytes: PackedByteArray) -> Dictionary:
 	if bytes.is_empty() or bytes.size() > MAX_BYTES:
@@ -79,15 +81,22 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 			identities[key] = value
 	if not section.is_empty() or (sectioned and (flat or "params" not in sections)):
 		return _invalid("The model parameter sections are incomplete or mixed with flat fields.")
-	for key: String in IDENTITY:
-		if not identities.has(key):
-			return _invalid("The model parameters must declare verNumber, modelType and modelName.")
+	if not identities.has("verNumber") or not identities.has("modelType"):
+		return _invalid("The model parameters must declare verNumber, modelType and modelName.")
 	var version := _integer_identity(identities.verNumber)
 	var model_type := _integer_identity(identities.modelType)
-	if (version == 5 and sectioned) or (version == 6 and not sectioned) or version not in [5, 6]:
-		return R.fail(R.SOURCE_UNSUPPORTED, "Only flat ClearView v5 and sectioned v6 model parameters are supported.", "source", "import")
+	# Flat dialects v0-v5 (older helicopters, Harrier/VTOL, airships) and sectioned v6.
+	if version < 0 or version > 6 or (version < 6 and sectioned) or (version == 6 and not sectioned):
+		return R.fail(R.SOURCE_UNSUPPORTED, "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported.", "source", "import")
 	if model_type not in [0, 1]:
 		return R.fail(R.SOURCE_UNSUPPORTED, "The ClearView model type is unsupported.", "source", "import")
+	var defaulted := false
+	if not identities.has("modelName"):
+		# Pre-v5 files (CVHeliPak) omit modelName; ClearView then loads data/body.ac.
+		if version >= 5:
+			return _invalid("The model parameters must declare verNumber, modelType and modelName.")
+		identities.modelName = DEFAULT_MODEL
+		defaulted = true
 	var model_name: String = identities.modelName
 	if model_name.begins_with("\"") and model_name.ends_with("\"") and model_name.length() >= 2:
 		model_name = model_name.substr(1, model_name.length() - 2)
@@ -99,6 +108,8 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 	var notes: Array = [note]
 	if tags > 0:
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, TAG_NOTE, "source", "import", [str(tags)], R.SEVERITY_INFO))
+	if defaulted:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, DEFAULT_NOTE, "source", "import", [DEFAULT_MODEL], R.SEVERITY_INFO))
 	return R.ok({version = version, model_type = model_type, model_name = model_name, records = records,
 		sections = sections, sha256 = CreatorBytes.sha256(bytes)}, notes)
 

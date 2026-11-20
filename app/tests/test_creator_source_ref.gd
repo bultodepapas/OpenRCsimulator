@@ -21,6 +21,7 @@ const CvFixture := preload("res://tests/test_creator_clearview_readers.gd")
 const Placement := preload("res://workshop/creator/placement.gd")
 const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
+const Binding := preload("res://workshop/creator/compile_binding.gd")
 
 const UUID := "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
 const SHA := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -210,6 +211,7 @@ func _store_cases(source: RefCounted) -> void:
 		and Resolver.resolve(root, ref_a).ok)
 	_recovery_cases(root, cap_a.value)
 	_indexed_mismatch_cases(root, cap_a.value, source)
+	_indexed_semantic_pair_case(root, cap_a.value, cap_b.value)
 	_blob_failure_cases(root, cap_a.value)
 	_warning_case(root, old)
 	_clearview_case(store, root)
@@ -504,6 +506,34 @@ func _indexed_mismatch_cases(root: String, captured: RefCounted, source: RefCoun
 			return
 		check("document join rejects indexed " + field + " mismatch", not Publication.match_document(document, loaded.value).ok)
 		check("exact resolver rejects indexed " + field + " mismatch", not Resolver.resolve(path, ref).ok)
+
+
+## B's real physics with A's real definition, hashes and receipt recomputed, committed through the real
+## Store transaction. Structurally valid everywhere; only derivation can refuse it (follow-up 02, §4).
+func _indexed_semantic_pair_case(root: String, captured_a: RefCounted, captured_b: RefCounted) -> void:
+	var path := root + "_indexed_semantic_pair"
+	var seed := _seed(path, captured_a)
+	if seed.is_empty():
+		return
+	var raw_b: PackedByteArray = captured_b.publication().raw_bytes
+	var raw_b_sha := Bytes.sha256(raw_b)
+	var record: Dictionary = seed.record.duplicate(true)
+	record.aircraft = Store._blob(raw_b_sha, raw_b.size(), Store.MEDIA_AIRCRAFT)
+	record.compile_binding = Binding.make(record.definition.sha256, raw_b_sha)
+	var ref := _commit_indexed_variant(seed.store, seed.ref, record, [{bytes = raw_b, sha256 = raw_b_sha}])
+	seed.store.close()
+	if ref.is_empty():
+		return
+	var opened: Dictionary = Store.open(path, {read_only = true})
+	check("semantic-pair fixture opens its current index", opened.ok and not opened.value.recovered_from_previous())
+	if not opened.ok:
+		return
+	var loaded: Dictionary = opened.value.load_aircraft(ref.aircraft_uuid, 1)
+	opened.value.close()
+	check("Store loads the structurally valid recomputed cross-pair", loaded.ok and loaded.value.raw_bytes == raw_b)
+	var refused: Dictionary = Resolver.resolve(path, ref)
+	check("exact resolver refuses the recomputed cross-pair by derivation", not refused.ok
+		and refused.diagnostics[0].field == "saved_aircraft/derivation")
 
 
 func _blob_failure_cases(root: String, captured: RefCounted) -> void:

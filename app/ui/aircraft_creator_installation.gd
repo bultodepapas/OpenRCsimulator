@@ -2,24 +2,34 @@ extends VBoxContainer
 ## UI intent only: no coefficients are imported. The confirmed configuration flies exactly like an
 ## STL/GLB Creator aircraft with the same values: experimental, never a ClearView flight model.
 signal choice_requested(proposal: Dictionary,revision: int)
+## One-click ClearView setup: orientation, estimated datum, values, inventory and this choice.
+signal setup_requested(revision: int)
+## A ClearView helicopter: test fly its appearance on the X-Cell .60 donor helicopter physics.
+signal helicopter_requested(revision: int)
 const TITLE := "OpenRC configuration"
 const PROPOSAL := "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
 const RETAINED := "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
 const REVIEW := "I have reviewed the retained values for this model."
 const CHOOSE := "Create an estimated OpenRC configuration"
+const SETUP := "Set up for flight automatically"
+const SETUP_HINT := "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
 const CHOSEN := "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
 const Installation := preload("res://workshop/creator/source_installation.gd")
+const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
 var _title: Label
 var _proposal_label: Label
 var _retained: Label
 var _review: CheckButton
 var _choose: Button
+var _setup: Button
+var _setup_hint: Label
 var _qualification: Label
 var _source_id := 0
 var _revision := -1
 var _proposal := {}
 var _selected := false
 var _busy := false
+var _helicopter := false
 
 func _init() -> void:
 	name = "SourceInstallation"
@@ -27,6 +37,18 @@ func _init() -> void:
 	add_theme_constant_override("separation",10)
 	_title = _label()
 	_proposal_label = _label()
+	_setup = Button.new()
+	_setup.name = "SetupClearView"
+	_setup.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_setup.pressed.connect(func() -> void:
+		if _busy:
+			return
+		if _helicopter:
+			helicopter_requested.emit(_revision)
+		elif not _selected:
+			setup_requested.emit(_revision))
+	add_child(_setup)
+	_setup_hint = _label()
 	_retained = _label()
 	_review = CheckButton.new()
 	_review.name = "ReviewSourceInstallation"
@@ -44,7 +66,9 @@ func _init() -> void:
 	_translate()
 	visible = false
 
-func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool,busy: bool) -> void:
+## `helicopter`: the source is a converted ClearView helicopter. The aeroplane configuration does not apply;
+## the one action offered is the donor helicopter flight.
+func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool,busy: bool,helicopter := false) -> void:
 	if source_id != _source_id or revision != _revision:
 		_review.set_pressed_no_signal(false)
 	_source_id = source_id
@@ -52,16 +76,22 @@ func show_state(source_id: int,revision: int,proposal: Dictionary,selected: bool
 	_proposal = proposal.duplicate(true)
 	_selected = selected
 	_busy = busy
-	visible = not proposal.is_empty()
-	_review.visible = not selected
+	_helicopter = helicopter
+	visible = helicopter or not proposal.is_empty()
+	_proposal_label.visible = not helicopter
+	_review.visible = not selected and not helicopter
+	_setup.visible = not selected or helicopter
+	_setup.disabled = busy
+	_setup_hint.visible = not selected or helicopter
 	_review.disabled = busy
-	_retained.visible = not selected
-	_choose.visible = not selected
+	_retained.visible = not selected and not helicopter
+	_choose.visible = not selected and not helicopter
+	_qualification.visible = not helicopter
 	_choose.disabled = busy or selected or not _review.button_pressed
 	_translate()
 
 func focus_target() -> Control:
-	return _review if _review.visible else _choose
+	return _setup if _setup.visible else (_review if _review.visible else _choose)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_instance_valid(_qualification):
@@ -73,7 +103,9 @@ func _translate() -> void:
 	_retained.text = tr(RETAINED)
 	_review.text = tr(REVIEW)
 	_choose.text = tr(CHOOSE)
-	_qualification.text = tr(Installation.EXPERIMENTAL)
+	_setup.text = tr(HeliDonor.OFFER if _helicopter else SETUP)
+	_setup_hint.text = tr(HeliDonor.OFFER_HINT if _helicopter else SETUP_HINT)
+	_qualification.text = tr(Installation.ESTIMATED_FLIGHT)
 
 func _label() -> Label:
 	var label := Label.new()

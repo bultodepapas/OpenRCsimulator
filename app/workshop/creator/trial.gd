@@ -30,6 +30,9 @@ const CHECK_FORMAT := "openrc-creator-start-check v1"
 const TRIAL_KEYS := ["ok", "errors", "vehicle", "data", "scale", "raw_bytes", "identity", "creator", "display_context"]
 const VEHICLE := "creator"
 const START_CHOICES: PackedStringArray = [Session.START_AIRBORNE, Session.START_HAND_LAUNCH]
+## The one evaluator every Creator trial uses, for both the start check and the live flight (AC-11).
+## The servo law requires this explicit selection before setup(); a reference default is not enough.
+const FLIGHT_BACKEND := "gdscript_reference"
 ## Hands-off flight after a hand launch that must stay clear of the ground for the start to be offered.
 const CLIMB_OUT_SECONDS := 3.0
 const CLIMB_OUT_MIN_HEIGHT_M := 0.5
@@ -223,6 +226,11 @@ static func check_start(trial: Dictionary, normalized_field: Dictionary, weather
 	session.crash_auto_restart = false
 	session.start_choice = start_choice
 	session.trim_throttle = Session.CRUISE_TRIM_THROTTLE
+	# Select the backend the live flight uses before setup(), exactly as Main does.
+	if not session.setup_stage_backend(FLIGHT_BACKEND):
+		var backend_reason: String = str(session.stage_backend_error)
+		session.free()
+		return _failure("The reference evaluator could not be selected: " + backend_reason, start_choice, field_id, started_usec)
 	session.setup("workshop://" + str(trial.identity.trial_id), aircraft_id, (trial.data as Dictionary).duplicate(true))
 	if not session.aircraft.get("ok", false):
 		var load_reason: String = str(session.aircraft.get("errors", ["The frozen aircraft could not be prepared."])[0])

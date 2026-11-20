@@ -16,6 +16,7 @@ Python 3.12, Starlette + uvicorn, jsonschema (Draft 2020-12), stdlib `sqlite3` a
 | `openrc_telemetry/report.py` | Deterministic weekly Markdown and digest |
 | `openrc_telemetry/publisher.py` | Reconcile-then-create GitHub issue publisher with a durable intent ledger |
 | `openrc_telemetry/counters.py` | ID-free daily ingest counters per fixed status category (TELEM-20) |
+| `openrc_telemetry/insights.py` | Unsuppressed ID-free daily cells for several context dimensions and the weekly operator insights report with per-cell disclosure (TELEM-16/17) |
 | `openrc_telemetry/cli.py`, `__main__.py` | `serve`, `purge`, `rollup`, `report`, `publish`, `status`, `check-release` |
 | `tests/` | `unittest` suite incl. equivalence with `reference.py` and a fake GitHub server |
 
@@ -45,8 +46,8 @@ The default schema directory resolves `../../research/telemetry/contracts` relat
 | `OPENRC_TELEMETRY_DATA_DIR` | `./data` | Default directory for both databases |
 | `OPENRC_TELEMETRY_RAW_DIR` / `_AGGREGATES_DIR` | the data directory | Separate locations; the container uses `/data/raw` and `/data/aggregates` (two volumes) |
 | `OPENRC_TELEMETRY_SCHEMA_DIR` | `../../research/telemetry/contracts` | Folder with `batch.schema.json` and `report.schema.json` (container: `/app/contracts`) |
-| `OPENRC_TELEMETRY_RELEASES` | empty | Comma list of accepted `build.release_id` values |
-| `OPENRC_TELEMETRY_SUSPEND_RELEASES` | empty | Releases answered with `410`: clients stop collecting for the rest of their process; nothing is stored |
+| `OPENRC_TELEMETRY_RELEASES` | empty | Comma list of accepted `build.release_id` values: exact tags or series prefixes `vX.*` / `vX.Y.*` (for example `v0.2.*,v0.3.*`), so a new tag in an accepted series is never dropped because it was not added in time. Anything else refuses to start |
+| `OPENRC_TELEMETRY_SUSPEND_RELEASES` | empty | Releases (tags or prefixes) answered with `410`: clients stop collecting for the rest of their process; nothing is stored |
 | `OPENRC_TELEMETRY_SUSPEND_ALL` | unset | `1` answers every batch with `410` (operator off switch) |
 | `OPENRC_TELEMETRY_PURGE_INTERVAL_S` | `300` (30–1800) | `serve` purges raw rows this often, cutting interval + 60 s before 48 h so no row outlives 48 h and none is deleted before its day's 47 h rollup deadline |
 | `OPENRC_TELEMETRY_TRUST_PROXY` | `0` | `1`: use the right-most `X-Forwarded-For` entry. Set only when every request passes the trusted proxy, which must append the peer address |
@@ -88,6 +89,23 @@ Error bodies are `{"code": "<fixed category>"}` and never echo input. Request bo
 | Purge (second line of defence) | hourly; alert if the oldest raw row nears 48 h | `python -m openrc_telemetry purge` |
 | Daily rollup | every day 01:30 | `python -m openrc_telemetry rollup --day yesterday` |
 | Weekly report | Monday after 23:00 UTC (Sunday + 47 h, when no day of the week can change) | `python -m openrc_telemetry report --week 2026-W47 --release v0.2.7` |
+| Weekly insights | same time | `python -m openrc_telemetry insights --week 2026-W47 --release v0.2.7` |
+
+### Weekly insights (TELEM-16/17)
+
+Each daily `rollup` also stores ID-free cells in `daily_cells` (aggregates database, 180 days) without suppression:
+
+| Group | Tables (dimensions) | Values |
+| --- | --- | --- |
+| Flight frame cadence (complete steady windows with observed draws) | GPU family; frame-pacing limit (`vsync_or_fps_cap` when VSync or any FPS cap is on — the refresh rate is not reported, so the limit itself is unknown; `unlimited`; `unknown`); resolution class; OS + graphics driver; vehicle | windows, observed time, frames, 8-bucket interval histogram, excluded gaps |
+| Menu and workshop cadence | screen (`home`, `workshop`, `other`) | same |
+| Vehicle usage | vehicle | activity summaries, active and simulated time, takeoffs/landings/crashes for supported fixed-wing summaries |
+| Software errors | error category | occurrences |
+| Hardware and settings mix | OS + architecture, CPU family + threads, RAM, GPU family, renderer + driver, resolution class, frame-pacing limit, graphics settings, input | sessions |
+
+Every count is distinct session tokens per UTC day and cell (session-day observations), capped at 120 windows or summaries per token and day. `python -m openrc_telemetry insights --week 2026-W48 --release v0.3.0 [--floor 20] [--format json]` pools the rolled-up days of the week and applies disclosure **per cell**: a cell is shown only with at least `--floor` session-days (default 20, minimum 10, labelled "private floor" below 20). Cells below the floor form one combined row; while that row is below the floor or would hold a single cell, the smallest shown cell joins it; a table whose whole population is below the floor is not shown. So every shown table adds up to its full population and never leaves a withheld remainder that another table's total could reveal. Stored cells are re-validated when read.
+
+**Insights are operator-only and must not be published.** Tables share the same sessions, so nested dimensions (for example a GPU family inside a renderer/driver cell) can still be differenced, and the weekly floor counts session-days: a new temporary session starts at each launch, each UTC day and every four hours, so one very active player can fill a cell. The older `report` (daily whole-table suppression, digest-bound `publish`) is unchanged and stays the conservative public form; never publish both for the same week and release.
 
 ### Is data arriving? (TELEM-20)
 
@@ -99,6 +117,8 @@ Error bodies are `{"code": "<fixed category>"}` and never echo input. Request bo
 | `python -m openrc_telemetry check-release vX.Y.Z` | Before tagging a release: exit 0 only if the tag matches the client pattern, is allowlisted, is not suspended and the canonical example carrying it passes full ingest validation; exit 2 with the reason otherwise |
 
 A rising `rejected:unapproved_release` means a published tag is missing from `OPENRC_TELEMETRY_RELEASES`; `rate_limited` behind a proxy usually means `OPENRC_TELEMETRY_TRUST_PROXY` does not match the proxy; `forwarded_for_present` with `TRUST_PROXY=0` shows the proxy does forward client addresses.
+
+The [operator dashboard](../../tools/telemetry/README.md) renders `status`, the daily counters, rollup coverage and recent weekly insights from the live receiver as one local HTML page.
 
 Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation; a missed deadline yields a missing day, never extended raw retention. It is an idempotent upsert keyed by (day, release, table). Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens; each token counts at most 120 windows (or activity summaries).
 

@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+AUDIT_SEMANTIC_PAIR_JSON: {"base_commit":"08f948265d40d83fbb4726a302b9e1c9490ccfce","compiled_bytes_differ":true,"cross_pair_match_document_diagnostics":[],"cross_pair_match_document_ok":true,"cross_pair_valid_pair":true,"definition_a_sha256":"3d0f8cbc77a222fd209b18b807188d69e8c9d4c753009b8b29b9fe310bfe85d1","raw_a_sha256":"f65fdf2a02984489c59eb2bc42e234fbe391860a5ff546c0fdd0930ab333e08a","raw_b_sha256":"2516287db091e0cf063ed9e133e691af9155816f2297aa36f612efea34a7390d","recomputed_binding_matches":true,"same_law":true,"same_uuid":true,"scope":"Read-only helpers; no Store publication, external bundle admission or flight was performed.","servo_time_a":0.14,"servo_time_b":0.2,"trusted_capture_keeps_corresponding_bytes":true}
+AUDIT_SEMANTIC_PAIR_COMPLETE

@@ -150,7 +150,7 @@ The Compatibility and Forward+ fits reproduce their four points within about 5%.
 
 ## 3. Renderer strategy (Forward+, Mobile, Compatibility)
 
-**The owner's hypothesis:** Forward+ should be the default for almost all hardware, and Compatibility may be unnecessary. **Verdict: partly confirmed.**
+**The owner's hypothesis:** Forward+ should be the default for almost all hardware, and Compatibility may be unnecessary. **Verdict: partly confirmed.** Since 2026-11-20 Compatibility is a [frozen legacy renderer](../DECISIONS.md#compatibility-is-a-frozen-legacy-renderer); the four removal gates are in the [legacy modes audit](../research/legacy-modes-audit-2026-11-20/README.md#gates-before-compatibility-can-become-fallback-only).
 
 - **Forward+ (High)** should be the default for every dedicated GPU whose predicted cost fits the budget. That is already about 82% of the Steam top-45 share at 1080p. It is faster than Compatibility at 1080p on the measured card, carries the High lighting features, and its CPU cost is a quarter of Compatibility's.
 - **The best default for weak and integrated GPUs is not Forward+.** Forward+ has the highest per-pixel cost, and Intel's Vulkan driver is the one with the most Godot issues. The evidence points to **Mobile on Vulkan, D3D12 or Metal** as an "Efficient" profile, with the caveats in §2. Mobile is already the Apple Silicon decision (DT-MAC-05b), where it gave 1.33× Compatibility's frame rate on the M1.

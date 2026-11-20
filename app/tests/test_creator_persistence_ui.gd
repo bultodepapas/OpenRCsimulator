@@ -9,6 +9,8 @@ const Store := preload("res://workshop/creator/store.gd")
 const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const Fixtures := preload("res://tests/creator_fixtures.gd")
 const R := preload("res://workshop/creator/result.gd")
+const Importer := preload("res://workshop/creator/source_importer.gd")
+const AuthoringFixture := preload("res://tests/creator_authoring_fixture.gd")
 
 const WORKER_TIMEOUT_MS := 20000
 const BACKUP_TIMEOUT_MS := 8000
@@ -198,6 +200,7 @@ func _run() -> void:
 		fourth.free()
 		await _settle(3)
 
+	await _inventory_text_reopen()
 	Creator.reap_abandoned_imports()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(_glb_path))
 	_remove_tree(ProjectSettings.globalize_path(_root_path))
@@ -209,6 +212,65 @@ func _run() -> void:
 		Node.print_orphan_nodes()
 	print("Creator persistence UI: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+## Rejected inventory text typed in the real mass control is dirty, backed up, saved and shown again
+## after reopening (import closeout follow-up 02, finding 1). Uses its own library folder.
+func _inventory_text_reopen() -> void:
+	var inspected: Dictionary = Importer.inspect_bytes(Fixtures.airplane_glb(), "inventory.glb")
+	check("inventory reopen fixture is admitted", inspected.ok)
+	if not inspected.ok:
+		return
+	var path := _root_path + "-inventory"
+	var wizard := Creator.new() as Control
+	wizard.set("store_root", path)
+	wizard.theme = UiTheme.build()
+	root.add_child(wizard)
+	await _settle(3)
+	var doc: RefCounted = AuthoringFixture.populated(inspected.value)
+	wizard._adopt_document(doc, "weight_balance")
+	await _settle()
+	check("inventory fixture saves a clean draft", wizard._save_draft() and not wizard.has_unsaved_changes())
+	await _settle()
+	var edit := _find(wizard, "ItemMassItemWingAirframe") as LineEdit
+	check("the real inventory mass control exists", edit != null)
+	if edit == null:
+		wizard.free()
+		return
+	await _enter(edit, "not-a-number")
+	var error := _find(wizard, "ItemErrorItemWingAirframe") as Label
+	check("rejected inventory text makes the draft dirty", wizard.has_unsaved_changes()
+		and wizard.document().is_item_invalid("item_wing_airframe", "mass"))
+	wizard._write_backup(true)
+	check("rejected inventory text is backed up", _has_backup_in(path, doc.draft_id))
+	check("the draft with rejected inventory text saves", wizard._save_draft() and not wizard.has_unsaved_changes())
+	var view: Dictionary = Store.open(path, {"read_only": true})
+	var loaded: Dictionary = view.value.load_draft(doc.draft_id) if view.ok else {ok = false}
+	if view.ok:
+		view.value.close()
+	check("the stored draft keeps the rejected text", loaded.ok and JSON.stringify(loaded.value.snapshot).contains("not-a-number"))
+	if loaded.ok:
+		check("reopening the draft succeeds", wizard._finish_open("draft", loaded.value, inspected.value))
+		await _settle(3)
+		edit = _find(wizard, "ItemMassItemWingAirframe") as LineEdit
+		error = _find(wizard, "ItemErrorItemWingAirframe") as Label
+		check("reopening shows the rejected text and its error again", edit != null and edit.text == "not-a-number"
+			and wizard.document().is_item_invalid("item_wing_airframe", "mass") and (error == null or error.visible)
+			and not wizard.document().compile().ok)
+	wizard.free()
+	await _settle(3)
+	_remove_tree(ProjectSettings.globalize_path(path))
+
+
+func _has_backup_in(path: String, draft_id: String) -> bool:
+	var opened: Dictionary = Store.open(path, {"read_only": true})
+	if not opened.ok:
+		return false
+	var found := false
+	for entry: Dictionary in opened.value.list_recovery():
+		found = found or str(entry.draft_id) == draft_id
+	opened.value.close()
+	return found
 
 
 ## Import the GLB fixture, place it, fill it, bind its parts and paint it. Returns {} on a setup failure.

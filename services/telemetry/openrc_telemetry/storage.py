@@ -222,6 +222,10 @@ class AggStore(_Db):
     CREATE TABLE IF NOT EXISTS ingest_counts(
         day TEXT NOT NULL, category TEXT NOT NULL, count INTEGER NOT NULL,
         PRIMARY KEY(day, category)) WITHOUT ROWID;
+    CREATE TABLE IF NOT EXISTS daily_cells(
+        day TEXT NOT NULL, release_id TEXT NOT NULL, tbl TEXT NOT NULL, dims TEXT NOT NULL,
+        sessions INTEGER NOT NULL, metrics TEXT NOT NULL,
+        PRIMARY KEY(day, release_id, tbl, dims)) WITHOUT ROWID;
     """
     # hist0..hist7: per-bucket frame-interval counts (upper bounds contract.HISTOGRAM_UPPER_US, in µs).
     HISTOGRAM_COLUMNS = tuple(f"hist{i}" for i in range(8))
@@ -283,7 +287,7 @@ class AggStore(_Db):
         cutoff = (today - timedelta(days=days)).isoformat()
         deleted = 0
         with self.transaction() as conn:
-            for table in ("daily_gpu", "daily_vehicle", "daily_status", "ingest_counts"):
+            for table in ("daily_gpu", "daily_vehicle", "daily_status", "ingest_counts", "daily_cells"):
                 deleted += conn.execute(f"DELETE FROM {table} WHERE day < ?", (cutoff,)).rowcount
         return {"deleted_aggregate_rows": deleted}
 
@@ -301,6 +305,31 @@ class AggStore(_Db):
             rows = conn.execute("SELECT category, count FROM ingest_counts WHERE day=? ORDER BY category",
                                 (day,)).fetchall()
         return dict(rows)
+
+    # TELEM-16/17 insight cells: unsuppressed, ID-free daily cells (operator-only; disclosure control at report time)
+
+    def put_cells(self, day, release_id, rows, now):
+        """Idempotent replace of one (day, release) set. rows: [(tbl, dims_json, sessions, metrics_json)]."""
+        with self.transaction() as conn:
+            conn.execute("DELETE FROM daily_cells WHERE day=? AND release_id=?", (day, release_id))
+            conn.executemany("INSERT INTO daily_cells(day, release_id, tbl, dims, sessions, metrics) "
+                             "VALUES(?,?,?,?,?,?)", [(day, release_id, *row) for row in rows])
+            conn.execute(
+                "INSERT INTO daily_status(day, release_id, tbl, status, computed_unix) VALUES(?,?,?,?,?) "
+                "ON CONFLICT(day, release_id, tbl) DO UPDATE SET status=excluded.status, "
+                "computed_unix=excluded.computed_unix",
+                (day, release_id, "cells", "ready" if rows else "no_data", int(now)))
+
+    def get_cells(self, day, release_id):
+        with self.connection() as conn:
+            return conn.execute("SELECT tbl, dims, sessions, metrics FROM daily_cells WHERE day=? AND release_id=? "
+                                "ORDER BY tbl, dims", (day, release_id)).fetchall()
+
+    def cells_status(self, day, release_id):
+        with self.connection() as conn:
+            row = conn.execute("SELECT status FROM daily_status WHERE day=? AND release_id=? AND tbl='cells'",
+                               (day, release_id)).fetchone()
+        return row[0] if row else None
 
     def day_statuses(self, day):
         """{'<release_id>/<table>': status} for one rolled-up day."""

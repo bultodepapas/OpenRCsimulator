@@ -18,6 +18,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Aircraft data or generated assets | [Source pipelines](physics.md#aircraft-data-and-generators); edit the owner, regenerate, then `--check`. |
 | Flight feel, exact replay or candidate replay | [Flight logs](../FLIGHT-LOGGING.md); preserve a baseline and the same input tape. |
 | RC blimp flight log replay or CSV | [Blimp logs](../FLIGHT-LOGGING.md#rc-blimp-logs): `res://tools/airship_flight_log_cli.gd`. |
+| See project statistics: players (telemetry), downloads, GitHub visits, clones, stars, receiver health | [Statistics dashboard](../../tools/telemetry/README.md): `dashboard.py fetch`; local operator-only HTML. |
 | Recover an interrupted manual T recording | [Telemetry chunk recovery](../../tools/trace/README.md); only verified published prefixes, always marked incomplete. |
 | Native flight backend development | [NK-3 C++ tools](../../research/native-kernel/README.md#c-development-tools-nk-3): sanitizers, symbols, exactness and timing. |
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
@@ -29,7 +30,9 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | An agent driving the app: menus, options, flights | `debugctl.py look` / `choose` / `catalog` / `setup`, or the MCP server `tools/debug/mcp_server.py`; [agents and MCP](../../tools/debug/README.md#agents-and-mcp-pt1h-r11). |
 | Running-app UI, keys, sticks, state, logs or screenshots | `python3 tools/debug/debugctl.py launch`; [debug bridge](../../tools/debug/README.md#quick-start). Add `--headless` when rendering is unnecessary. |
 | Running-app regression pass | `python3 tools/debug/debugctl.py smoke`; [scenarios and limits](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |
-| Stutter, script CPU, leaks, watchpoints or UI fuzzing | [Debug bridge diagnostics](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8): `frames`, `timeline`, `profile`, `objects`, `soak`, `break`, `monkey`. |
+| Intermittent FPS drops, stutters or freezes during a whole session | [Session watch](../../tools/debug/README.md#automatic-session-watch-pt1h-r15-s2): `frames watch --out NEW_DIR`; automatic incidents with lead-up/recovery, per-route session statistics, FPS-per-second report. |
+| Stutters, FPS lows or sustained slow frames | [Frame-pacing captures](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15): `frames`, `frames --out NEW_DIR`, offline `frames --input frames.json --out NEW_DIR`, `timeline --stutter`; slowdown episodes, HTML, CSV, JSON and Perfetto evidence. [Choose the next investigation](../../tools/debug/README.md#choose-the-next-investigation); [remaining implementation plan](../plans/stutter-diagnostics.md). |
+| Script CPU, leaks, watchpoints or UI fuzzing | [Debug bridge diagnostics](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8): `profile`, `objects`, `soak`, `break`, `monkey`. |
 | What the GPU spends a running frame on; rewinding a flight | [Debug bridge GPU cost and rewind](../../tools/debug/README.md#gpu-cost-and-rewind-pt1h-r9): `render`, `layers`, `ablate`, `viewmode`, `rewind`. |
 | Flight-model overlay; a bug report with its exact flight state | [Flight gizmos and BugIt](../../tools/debug/README.md#flight-gizmos-and-bugit-pt1h-r10): `gizmos`, `bugit`, `bugitgo`. |
 | GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`; [warning baseline](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |

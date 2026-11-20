@@ -256,3 +256,11 @@ The independent review of 2026-11-11 measured two things it could not explain. B
 - Stall, spin, sideslip beyond the blend, wind and turbulence were not exercised beyond the two upset cases. Corners other than the template flew only in the research probe and the AC-12 campaign, not in a pilot's hands.
 - The GDScript language-server warning scan (`tools/debug/gdscript_warnings.py`) was not run on the new files.
 - Battery, motor and propeller data are the donor's synthetic values; no measured power system.
+
+## Size-class siblings (2026-11-17)
+
+The realism batch adds `conventional-parkflyer-estimated-v1` (this package's aerodynamics with foam areal densities 0.90/0.75/0.70 kg/m2, 9 g servos; calibrated on EasyStar II, FMS Ranger 1220, Apprentice 15e and FMS P-51D 1100 flying weights), `electric-3s-1250kv-9x6-estimated-v1` and its pusher (SunnySky X2212-10 1250 kV winding data; 3S 2.2 Ah, 9x6), and two EDF stand-in pushers tuned with the runtime solver: `electric-4s-1900kv-6x45-pusher-estimated-v1` (16 N static) and `electric-6s-1200kv-7x5-pusher-estimated-v1` (27.5 N). All new propellers reuse the APC Sport 11x6 nondimensional tables (no UIUC table for 6-9 in props is in the repository); jet and EDF motor values are engineering estimates. The JSON files are the source of record; each value carries its kind and source.
+
+## Pusher sibling (2026-11-17)
+
+`power-electric-4s-800kv-apc12x6-pusher-estimated-v1` reuses this power package's donor data with `"layout": "pusher"`. The motor and firewall sit ahead of the hub. The record emits the stock electric `single_pusher` layout, whose loader requires the hub aft of the centre of gravity. The mirrored APC pusher propeller is assumed to share the tractor CT/CP tables, as the stock pusher record assumes. It exists for imported models without a propeller (park-jet estimate). Propeller wash, the fuselage wake at the disc, and ducted-fan or turbine behaviour are not modelled. [Decision](../../DECISIONS.md) · [evidence](import-closeout-2026-11-17/closeout-plan.md#packet-4--park-jets-and-balance-2026-11-17).

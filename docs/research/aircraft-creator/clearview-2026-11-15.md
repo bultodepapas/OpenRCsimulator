@@ -381,3 +381,75 @@ Verification: each suite below completed with zero failures and no `SCRIPT ERROR
 Language, trial, flow, import and bytes also passed.
 
 Website: `build_locales.py --check`, seven locale tests and eight download tests passed. Rendered browser layout was not reviewed. This establishes conversion coverage on this corpus and parity with the existing experimental Creator gates. It does not establish physical realism, packaged-target behaviour, or saved-aircraft flight.
+### Owner download corpus (AC-CV, 2026-11-19)
+
+The owner's local download folder held 123 ZIPs. Of these, 59 contain a ClearView `params.txt`. After SHA-256 deduplication, 49 are new archives with 172 model roots. They are kept outside Git. Before this round the importer admitted 105 roots. Every in-scope airplane refusal had a concrete cause:
+
+| Cause | Real models | Change |
+| --- | --- | --- |
+| Unreadable `.XYZObject` marker: extra vertices, or axis lengths within the 10% separation rule (0.063/0.0665/0.0758) | 18 airplanes, including Avro Lancaster, Eflite P-47, Cap 232, Edge 540, SU-26/31, IAF Kfir and RN Buccaneer | Marker hidden and recorded as `unreadable_frames`. Its hinge is unresolved with reason `unreadable_render_frame`, and the player binds it manually. A marker with children, or more than 64 vertices, still refuses |
+| AC3D `subdiv` | GP Cap 232, Twist 3D 40, Hawker Hunter (plus 9 helicopters) | Control shape shown unsmoothed with a warning; receipt `unsubdivided_parts` |
+| Adobe APP14 flags `0x8000`/`0xC000` | Mig-15, Parkzone Vapor, Eflite P-47 | Encoder-hint flags ignored; only transform 0/1 is accepted |
+| Collinear triangle whose float64 cross product is about 1e-20 (prints as `-0.0`) | DR 107, two MC Cap 580 packages | Array equality distinguished `-0.0`, so zero tests are now numeric. Collapsing ears with doubled area at or below extent² × 1e-9 are dropped. Visible flips still refuse |
+| Point/line or two-point `COORD_*` helper held to render precision | E-starter, Force One | Nodes with no face of three distinct corners render nothing and are skipped |
+| 14.5 mm aerial 5 m from its node origin; float32 rounding 1.6e-5 of its size | RN Buccaneer | Precision bound changed from 1e-5 to 1e-4 of the part's size. The 1e8-offset and collapsed-edge refusal tests still pass |
+| Exactly cancelling bow-tie | Red Arrows, both variants | Omitted and counted with other self-intersecting surfaces |
+| BMP with 2 trailing alignment bytes, declared in the file size | Sopwith Camel | Up to 3 trailing bytes accepted |
+| `.bmp` referenced, same-named `.jpg` shipped | SU-31 Matador | The single same-named image in the folder is used, with a warning. Two candidates keep the missing-file refusal |
+
+Converting only the changed cases keeps earlier admitted GLBs byte-identical: every new receipt field appears only when nonzero. An empty primitive left after a fully dropped sliver is no longer emitted, because its infinite bounds were refused by GLB admission.
+
+**Result: 148 of 172 roots admitted; the first corpus stays 25/25.** Remaining refusals are out of v1 scope:
+
+- Helicopter packs in another parameter dialect (16).
+- The Blade mSR helicopter (precision).
+- VTOL and blimp parameter formats: Harrier, VJ-101, XFV-1, Hindenburg.
+- Two landscape packs.
+
+One in-scope airplane remains refused: Wee Jock has 142 meshes, against the Creator-wide 128-mesh limit.
+
+All 28 `test_creator_*` suites passed with zero engine errors. Visual: 71 checks. JPEG: 379. Motion: 225.
+### Helicopters, VTOL dialects and the mesh-limit exception (AC-CV, 2026-11-19)
+
+At the owner's request, the 24 remaining refusals in the download corpus were reworked. Helicopter pack 1 now expands to 20 roots, so the corpus has 191 roots.
+
+| Cause | Real models | Change |
+| --- | --- | --- |
+| Flat `verNumber` 0 to 3 with no `modelName` (helicopter packs use v3 with `modelType 0`) | CVHeliPak 1 and 2, Harrier, VJ-101, XFV-1, Hindenburg | Flat dialects v0 to v5 are accepted, and sectioned files stay v6 only. Before v5, a missing `modelName` defaults to `data/body.ac` with a note; every helicopter root ships that file |
+| Helicopter flight model | All `modelType 0` | A visual-only import. The GLB carries `openrc_clearview_rotorcraft` and gets no fixed-wing configuration. Choosing a configuration, compiling, `check_pair`, trials and publishing all refuse with a dedicated message. The tag can only remove capability. Helicopters converted before this change carry no tag |
+| 142 meshes against the 128-mesh limit | Wee Jock | The first pass is unchanged. Only when the emitted meshes exceed the limit is the model converted again, with static, undotted, rigid leaf parts merged per parent and their transforms baked in float64. The node limit is also checked. Models that fitted before keep their exact bytes |
+| 35 or 36 distinct colour and texture combinations | T-Rex SA White and Orange | The Creator-wide `GLB_MATERIALS` limit is raised from 32 to 64. Past the limit, identical materials are reused |
+| Absolute texture path on the author's PC | Cobra (`C:/Program Files/SVKSystems/…/mapping.jpg`, absent) | The texture is looked up by file name in the model folder. If it is absent, those parts get the plain material colour, with a warning. A relative missing texture still refuses |
+| JPEG luma sampling 4:2:2 (`0x21`) | EF-Sabre | The MCU walk is generalized to h×v ∈ {1,2}² |
+| Corners 1e-9 m apart that project to one float32 point | Honey Bee FP Flames | Such corners collapse like exact duplicates; fewer than 3 corners counts as zero area |
+| 1.6 mm part 6 m from its node origin (0.24 µm rounding) | Blade mSR V2 | An absolute floor of 1 µm is added to the 1e-4 relative render-precision bound |
+
+An independent read-only review of the integrated diff found three defects, all fixed before integration:
+
+- Absent external textures were counted toward the image limit.
+- The merge was triggered by "renderable" nodes rather than meshes actually emitted, which could have changed models that previously fit. A regression test now pins this with collinear parts.
+- The node limit was ignored.
+
+The same review added a defensive rotorcraft refusal in `check_pair` and loosened rotation rigidity to 1e-5, because AC3D prints six decimals.
+
+**Result: 189 of 191 roots admitted. The only refusals are the two landscape packs, which contain no aircraft. The reference corpus stays 25/25.** All 28 `test_creator_*` suites passed with zero engine errors. The ClearView visual suite has 90 checks, JPEG 383 and readers 96. The website guide now states that helicopters are preview/draft only in all eleven languages: `build_locales.py --check`, seven locale tests and eight download tests passed.
+
+### Closeout: every corpus aircraft flies (AC-CV, 2026-11-20)
+
+The uncommitted 2026-11-17 closeout worktree (automatic setup, size classes, park jets, X8 and X-Cell donors; see its [packet log](import-closeout-2026-11-17/closeout-plan.md#6-implementation-status)) was committed as `9d11d13a6` and merged with main. Conversion stays main's (25/25 and 189/191); the merge kept main's parity decision and removed the old servo-interval refusal. Changes on top:
+
+| Gap | Change |
+| --- | --- |
+| Helicopters were visual-only on main | **Fly as a helicopter** on the X-Cell .60 physics; the Creator panel now shows for rotorcraft, and a reopened helicopter draft keeps the offer (stale flag found by the Good Enemy review, regression test checked by mutation) |
+| Seven aircraft could not compile an estimate | A body longer than the reach limit is proposed smaller (IAF Kfir now flies its own estimate). The rest (Kellett autogyro, Hindenburg, XFV-1, Tricopter, two Meteor F8: balance 0.006 against 0.08) are offered the stock electric trainer physics with the reason |
+| Liveries looked washed out at 1080p | Textured AC3D emission (0.57–0.72 on the Extra 330 and Roboheli skins) was a flat grey emissive; it is now the texture at 35 % |
+
+**Flight probe** (scratch, headless Windows, Godot 4.8 beta2; not in Git): every root of both corpora through package → conversion → automatic setup or donor → compile → frozen trial → airborne start check → 10 s hands-off, full-aileron and full-elevator pulses in the session loop; helicopters start the real `helicopter_main` donor route and fly 6 s. **214 of 214 aircraft roots fly**: 149 on the estimated configuration, 10 flying wings on the X8, 49 helicopters on the X-Cell .60, 6 on the trainer (follow-up below: the Hindenburg moved to the RC blimp). The only refusals are the two landscape packs. Zero script errors, no NaN, no crash; every flight responded to both pulses (roll > 30 °/s, pitch > 20 °/s). This proves startup and controllability, not handling realism.
+
+**Real renderer, 1920×1080:** Extra 330 Red, Avro Lancaster, Sopwith Camel, Spitfire, Zagi (X8), Harrier, Meteor F8 (trainer), IAF Kfir, Roboheli Red and T-Rex G4 (X-Cell), Hindenburg (trainer), chase and close-up views, 35–120 fps. Liveries show their source colours after the emission change.
+
+**Checks:** all 31 `test_creator_*` suites pass (new: trainer fallback and its UI offer, long-body reach, reopened helicopter draft, textured emission). Companion pins renewed for the `app_root.gd`/`main.gd` edits (`test_companions_profiles` 95/0, `test_companions_behavior_manifest` 39/0); `test_workshop_integration`, `test_workshop_trial`, `test_main_startup_cleanup`, `test_heli_session`, `test_heli_visual`, `test_heli_crash_presentation`, `test_airship_workshop_flow` pass. Website: `build_locales.py --check` and 7 locale tests pass.
+
+**Limits:** donors fly the donor's mass, size and power; donor elevons and rotors do not move; a T-Rex 450 is shown 2.2–2.4× larger on the X-Cell; drafts converted before this change keep their washed-out GLB until re-imported. Saved-aircraft flight from Home (AC-18) remains a Creator gate.
+
+**Follow-up, same day (owner: "we have an airship").** The Hindenburg now flies on OpenRC's RC blimp activity (`airship_scene.gd` `creator_visual`): the stock envelope is hidden and the imported model is drawn in its place, scaled to the 5 m envelope length and centred on it; the blimp physics, HUD and Return to Workshop are unchanged. ClearView declares it `modelType 1`, so the fallback recognizes an airship by shape (width and height < 0.35 of the length) and refuses that route when a part is named `rotor` (the Kellett autogyro, also slender, stays on the trainer). Corpus probe: Hindenburg FLIES-BLIMP (envelope shown at 69 %, 119 accepted ticks under throttle), Kellett and the other four still on the trainer. 1080p chase and orbit renders show the model flying at 5.5 m AGL. New checks: blimp offer and rotor exclusion, the activity's fitted model and running physics, AppRoot dispatch and Return to Workshop; `test_airship_activity` 15/0 and `test_airship_workshop_flow` 19/0 unchanged. Companion pin renewed for `app_root.gd`.

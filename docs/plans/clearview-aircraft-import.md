@@ -1,8 +1,8 @@
 # ClearView importer completion plan
 
-**Updated:** 2026-11-19, revision 2. **Status:** ClearView importer v1 delivered for the declared subset. Import, preview, configuration, experimental test flight, saving and reopening work. Saved-aircraft flight from Home, portable bundles and packaged-target qualification are Creator gates that ClearView inherits. **Owner:** Aircraft Creator / Workshop. **Step IDs:** AC-CV-00…14.
+**Updated:** 2026-11-20, revision 3. **Status:** ClearView importer v1 closed. Every aircraft root of both corpora (214) imports and test-flies: airplanes and VTOLs on an automatic estimated configuration, elevon flying wings on the stock X8 physics, helicopters on the stock X-Cell .60 physics, the Hindenburg on OpenRC's own RC blimp, and the few the estimate cannot represent on the stock electric trainer physics. Saved-aircraft flight from Home, portable bundles and packaged-target qualification are Creator gates that ClearView inherits. **Owner:** Aircraft Creator / Workshop. **Step IDs:** AC-CV-00…14.
 
-This plan owns ClearView-specific work. The [Creator plan](aircraft-creator.md) owns the shared gates (AC-12 numerical qualification, AC-18 Home, AC-19 bundles, AC-20 release evidence). [Dated research](../research/aircraft-creator/clearview-2026-11-15.md#importer-v1-coverage-and-parity-ac-cv-2026-11-19) owns findings and receipts. Design decisions live in [DECISIONS](../DECISIONS.md#ac-cv-v1-parity).
+This plan owns ClearView-specific work. The [Creator plan](aircraft-creator.md) owns the shared gates (AC-12 numerical qualification, AC-18 Home, AC-19 bundles, AC-20 release evidence). [Dated research](../research/aircraft-creator/clearview-2026-11-15.md#closeout-every-corpus-aircraft-flies-ac-cv-2026-11-20) owns findings and receipts; the [2026-11-17 closeout plan](../research/aircraft-creator/import-closeout-2026-11-17/closeout-plan.md) keeps the packet history of the automatic setup and donors. Design decisions live in [DECISIONS](../DECISIONS.md#ac-cv-v1-parity).
 
 ## 1. Review of revision 1
 
@@ -21,20 +21,22 @@ A player can do all of the following in the normal UI:
 
 1. Select a local ClearView ZIP, and pick one aircraft when it is a pack.
 2. See the original appearance and a concise report of omissions.
-3. Confirm the independent estimated OpenRC configuration (conventional wing and aft tail, one tractor electric motor, 4S battery).
-4. Confirm orientation, real size, datum and moving parts.
+3. Choose **Set up for flight automatically**. It takes the ClearView frame (metres, nose −X, up +Y), estimates the wing leading edge, planform and size class, fills every empty value with labelled estimates and declares the independent OpenRC configuration. A helicopter offers **Fly as a helicopter** instead; an elevon flying wing offers the stock X8 physics; a model the estimate cannot fly offers the stock electric trainer physics, with the reason.
+4. Review the estimates, orientation, size, datum and moving parts; anything the player set is kept.
 5. Test-fly it (Airborne or Hand-launch, labelled experimental).
 6. Save it as a draft or an aircraft revision, then reopen it from the library.
 
 | Area | Requirement |
 | --- | --- |
-| Input | Bounded v5/v6 airplane ZIPs: 64 MiB ZIP, 256 MiB expansion, 32 MiB per member, 4,096 entries, 64 model roots. AC3Db visual. PNG, baseline JPEG (APPn metadata skipped), first GIF frame and 24-bit BMP textures |
-| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Exactly zero-area ears are dropped. Up to 16 self-intersecting surfaces are omitted and reported; more refuse the model. An exactly cancelling bow-tie (zero Newell normal) still refuses. Never a triangle fan |
-| Flight | Only the confirmed OpenRC configuration flies. ClearView physics are never adopted, and the trial identity pins the configuration |
+| Input | Bounded airplane and helicopter ZIPs, flat parameter dialects v0–v5 or sectioned v6 (pre-v5 files without `modelName` use `data/body.ac`): 64 MiB ZIP, 256 MiB expansion, 32 MiB per member, 4,096 entries, 64 model roots. AC3Db visual. Textures: PNG; baseline JPEG, with APPn metadata skipped and Adobe encoder flags ignored; the first GIF frame; 24-bit BMP, up to 3 trailing alignment bytes. A missing texture is replaced by the one same-named image in the same folder, with a warning. An absolute path to the author's PC is looked up by file name in the model folder; if absent, those parts keep their plain colour, with a warning. JPEG luma sampling 4:4:4, 4:2:2 and 4:2:0 |
+| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Ears that collapse at render precision with negligible source area (below extent² × 10⁻⁹) are dropped. Up to 16 self-intersecting or exactly cancelling surfaces are omitted and reported; more refuse the model. Never a triangle fan. Float32 vertex rounding is accepted up to 10⁻⁴ of the part's size or 1 µm; corners that project to one render point collapse; a visible triangle that flips still refuses. A model whose emitted meshes exceed the 128-mesh limit is converted again with static leaf parts merged per parent (transforms baked in float64, dotted group parts kept separate), with a warning. `subdiv` parts show their unsmoothed control shape, with a warning |
+| Markers | `.XYZObject` helpers that cannot be read unambiguously are hidden and recorded; their moving parts are bound manually. Point/line helpers are not held to render precision |
+| Helicopters | ClearView `modelType 0` (tagged `openrc_clearview_rotorcraft`) test-flies on the stock X-Cell .60 helicopter physics with its own appearance, sitting on the donor's skids; a model whose rotor differs from the donor's by more than 1.5× is shown scaled to it, and the HUD says so. Disc and blade parts switch with rotor speed. No fixed-wing configuration or aircraft revision; drafts save |
+| Flight | Only OpenRC physics flies. Airplanes and VTOLs: the confirmed estimated configuration (size classes 0.7–1.45 m park flyer with 3S, 1.45–2.2 m trainer with 4S; models without a propeller as pusher park jets). Donors: elevon flying wings on the stock MoonRunner X99 (Skywalker X8); helicopters on the X-Cell .60; a slender wingless body without a rotor (an airship) on the stock RC blimp activity, its appearance fitted to the 5 m envelope; any other model whose estimate cannot compile (autogyro, tail-sitter, multirotor, out-of-range balance) on the stock Ugly Stick electric 6S, airborne start. A donor flies its own mass, size and power, labelled in the confirmation. ClearView physics are never adopted |
 | Saving | Drafts and aircraft revisions carry the v3 definition with its source-bound configuration. The store refuses a configuration that names another model |
 | Language | All new app strings are in the eight app catalogs; the guide is in all eleven website languages |
 
-**Outside v1:** ClearView flight-model adoption, runway starts and gear, glow/gasoline, elevons/V-tail/canards, multi-engine, helicopters and scenery, ClearView sounds/scripts, and original-ZIP storage. AC-CV-10…13 keep the future aircraft families.
+**Outside v1:** ClearView flight-model adoption, runway starts and gear, glow/gasoline, moving elevons and rotors on donor flights, multi-engine, a helicopter or multirotor flight package of their own size, scenery, ClearView sounds/scripts, and original-ZIP storage. AC-CV-10…13 keep the future aircraft families.
 
 ## 3. Unchanged boundaries
 
@@ -49,14 +51,14 @@ A player can do all of the following in the normal UI:
 | --- | --- |
 | AC-CV-00 | **Done.** Corpus: 6 archives / 25 model roots ([check record](../research/aircraft-creator/clearview-guide-checks-2026-11-19.json), rerun 2026-11-19). Third-party ZIPs stay outside Git; CI uses synthetic fixtures |
 | AC-CV-01 | **Done.** Bounded archive and parameter readers; `$` tag lines are ignored and reported |
-| AC-CV-02/03 | **Done for the corpus.** 25/25 convert. Next coverage candidates, unseen in the corpus: JPEGs with EXIF before JFIF, and exactly cancelling bow-ties. Independent Blender/Assimp fidelity comparison remains optional quality work |
+| AC-CV-02/03 | **Done for both corpora.** Reference set 25/25; owner download set 189/191. The two refusals are landscape packs with no aircraft. Textured AC3D emission is modulated by its texture, so liveries keep their colours. Follow-ups: real AC3D subdivision smoothing, JPEGs with EXIF before JFIF, an independent Blender/Assimp fidelity comparison |
 | AC-CV-04 | **Partial.** v6 hinge proposals plus manual bindings. v5 and propeller proposals are still manual |
-| AC-CV-05 | **Done.** Source report, explicit configuration, v3 definitions saved and reopened |
-| AC-CV-06 | **Done at parity.** Experimental test flight with a pinned configuration. Saved-aircraft flight follows AC-12 |
+| AC-CV-05 | **Done.** Source report, one-click automatic setup or explicit configuration, v3 definitions saved and reopened |
+| AC-CV-06 | **Done.** All 214 corpus aircraft test-fly: 149 on the estimated configuration, 10 flying wings on the X8, 49 helicopters on the X-Cell .60, the Hindenburg on the RC blimp and 5 on the trainer fallback ([evidence](../research/aircraft-creator/clearview-2026-11-15.md#closeout-every-corpus-aircraft-flies-ac-cv-2026-11-20)). Saved-aircraft flight follows AC-12 |
 | AC-CV-07/08 | **Save/reopen done.** Home launch, restart-to-fly and `.orcaircraft` bundles follow AC-18/AC-19 |
 | AC-CV-09 | **Inherited.** Packaged Windows/Linux/macOS evidence follows AC-20; include one ClearView model in that journey |
 | AC-CV-10…13 | **Deferred**, outside v1 |
-| AC-CV-14 | **Done.** Guide and website in eleven languages, with v0.2.9 availability and the next-build note |
+| AC-CV-14 | **Done.** Guide and website in eleven languages: automatic setup, helicopter and donor flights, next-build note |
 
 ## 5. Hooks for the inherited gates
 

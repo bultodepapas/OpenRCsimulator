@@ -1,0 +1,290 @@
+{
+  "format": "openrc-creator-power-package v1",
+  "id": "electric-3s-1250kv-9x6-estimated-v1",
+  "qualification": "experimental",
+  "description": "One complete small electric installation for foam park flyers: SunnySky X2212-10 class 1250 rpm/V outrunner, ideal ESC, 3S 2.2 Ah LiPo (open-circuit voltage and resistance law) and a 9x6 propeller. Motor winding data from the X2212-10 1250 kV II listing; battery, ESC and propeller values are catalogue-class estimates; the propeller uses the APC Sport 11x6 nondimensional tables. Realism audit 2026-11-17.",
+  "donor": {
+    "path": "app/data/creator/power-electric-4s-800kv-apc12x6-estimated-v1.json"
+  },
+  "motor": {
+    "kv_rpm_per_volt": {
+      "value": 1250.0,
+      "unit": "rpm/V",
+      "kind": "borrowed",
+      "source": "SunnySky X2212-10 1250 kV II listing (getfpv.com/sunnysky-x2212-10-1250kv-ii.html)"
+    },
+    "resistance_ohm": {
+      "value": 0.079,
+      "unit": "ohm",
+      "kind": "borrowed",
+      "source": "SunnySky X2212-10 1250 kV II listing (getfpv.com/sunnysky-x2212-10-1250kv-ii.html): internal resistance"
+    },
+    "no_load_current_a": {
+      "value": 0.9,
+      "unit": "A",
+      "kind": "borrowed",
+      "source": "SunnySky X2212-10 1250 kV II listing (getfpv.com/sunnysky-x2212-10-1250kv-ii.html): no-load current (low confidence: variants differ)"
+    },
+    "no_load_voltage_v": {
+      "value": 11.1,
+      "unit": "V",
+      "kind": "borrowed",
+      "source": "SunnySky X2212-10 1250 kV II listing (getfpv.com/sunnysky-x2212-10-1250kv-ii.html): no-load test voltage"
+    },
+    "no_load_rpm": {
+      "value": 13875.0,
+      "unit": "rpm",
+      "kind": "derived",
+      "source": "Kv × 11.1 V"
+    },
+    "no_load_temperature_c": {
+      "value": 25.0,
+      "unit": "°C",
+      "kind": "estimated",
+      "source": "Donor propulsion.motor.no_load_context.temperature_c (synthetic)"
+    }
+  },
+  "battery": {
+    "capacity_ah": {
+      "value": 2.2,
+      "unit": "Ah",
+      "kind": "estimated",
+      "source": "Typical 3S 2200 mAh park-flyer LiPo (catalogue class)"
+    },
+    "resistance_ohm": {
+      "value": 0.02,
+      "unit": "ohm",
+      "kind": "estimated",
+      "source": "About 7 milliohm per cell for a 2200 mAh 25-30C pack (catalogue class)"
+    },
+    "auxiliary_current_a": {
+      "value": 0.1,
+      "unit": "A",
+      "kind": "estimated",
+      "source": "Receiver and four 9 g servos at rest"
+    },
+    "ocv_points": {
+      "value": [
+        [
+          0.0,
+          9.0
+        ],
+        [
+          1.0,
+          12.6
+        ]
+      ],
+      "unit": "1, V",
+      "kind": "estimated",
+      "source": "Linear 3.0 to 4.2 V per cell over state of charge, as in the 4S package"
+    }
+  },
+  "propeller": {
+    "name": "9x6 sport propeller (UIUC APC Sport 11x6 coefficients)",
+    "diameter": {
+      "value": 0.2286,
+      "unit": "m",
+      "kind": "manual",
+      "source": "9 in nominal"
+    },
+    "rotating_inertia": {
+      "value": 6e-05,
+      "unit": "kg·m2",
+      "kind": "estimated",
+      "source": "12 g 9 in propeller as a slender rod m·D²/12 = 5.2e-5 plus about 0.8e-5 for a 22 mm motor bell"
+    },
+    "ct_table": {
+      "value": [
+        [
+          0.0,
+          0.113
+        ],
+        [
+          0.373,
+          0.0796
+        ],
+        [
+          0.414,
+          0.0725
+        ],
+        [
+          0.457,
+          0.0633
+        ],
+        [
+          0.504,
+          0.0537
+        ],
+        [
+          0.55,
+          0.0437
+        ],
+        [
+          0.592,
+          0.0351
+        ],
+        [
+          0.634,
+          0.0271
+        ],
+        [
+          0.679,
+          0.018
+        ],
+        [
+          0.724,
+          0.0095
+        ],
+        [
+          0.767,
+          0.001
+        ],
+        [
+          0.788,
+          -0.0034
+        ]
+      ],
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Borrowed: nondimensional UIUC APC Sport 11x6 table (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt) applied to a 9x6 by T = Ct·ρ·n²·D⁴ and P = Cp·ρ·n³·D⁵: no UIUC table for this propeller is in the repository; P/D 0.67 against 0.55 and a lower chord Reynolds number make it an estimate"
+    },
+    "cp_table": {
+      "value": [
+        [
+          0.0,
+          0.0471
+        ],
+        [
+          0.373,
+          0.0489
+        ],
+        [
+          0.457,
+          0.0442
+        ],
+        [
+          0.55,
+          0.036
+        ],
+        [
+          0.634,
+          0.0278
+        ],
+        [
+          0.724,
+          0.0176
+        ],
+        [
+          0.788,
+          0.0092
+        ]
+      ],
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Borrowed: nondimensional UIUC APC Sport 11x6 table (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt) applied to a 9x6 by T = Ct·ρ·n²·D⁴ and P = Cp·ρ·n³·D⁵: no UIUC table for this propeller is in the repository; P/D 0.67 against 0.55 and a lower chord Reynolds number make it an estimate"
+    }
+  },
+  "installation": {
+    "motor_behind_hub": {
+      "value": 0.025,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Motor centre behind the propeller hub: 0.01 m adapter plus half of a 0.03 m 22 mm outrunner"
+    },
+    "firewall_behind_hub": {
+      "value": 0.04,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Motor rear face behind the propeller hub: 0.01 m adapter plus a 0.03 m outrunner"
+    },
+    "spinner_length": {
+      "value": 0.02,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Prop nut or small spinner ahead of the hub, for the crash-hull nose point"
+    }
+  },
+  "hardware": [
+    {
+      "id": "item_motor_main",
+      "mount": "motor",
+      "mass": {
+        "value": 0.058,
+        "unit": "kg",
+        "kind": "borrowed",
+        "source": "SunnySky X2212-10 1250 kV II listing (getfpv.com/sunnysky-x2212-10-1250kv-ii.html): 56-58 g"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.028,
+          0.028
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "22 mm stator class outrunner envelope"
+      }
+    },
+    {
+      "id": "item_propeller_main",
+      "mount": "hub",
+      "mass": {
+        "value": 0.015,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "9x6 propeller about 0.012 kg plus prop adapter"
+      },
+      "size": {
+        "value": [
+          0.008,
+          0.2286,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "9 in propeller envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "item_esc_main",
+      "mount": "esc",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Typical 30 A brushless speed controller with leads"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.025,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Typical 30 A speed controller envelope"
+      }
+    },
+    {
+      "id": "item_battery_main",
+      "mount": "battery",
+      "energy_source": "lipo",
+      "mass": {
+        "value": 0.185,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Typical 3S 2200 mAh 25-30C LiPo (catalogue range 0.17-0.20 kg)"
+      },
+      "size": {
+        "value": [
+          0.105,
+          0.034,
+          0.024
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Typical 3S 2200 mAh pack envelope, long axis fore-aft"
+      }
+    }
+  ]
+}

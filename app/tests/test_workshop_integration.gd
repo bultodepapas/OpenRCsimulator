@@ -207,13 +207,23 @@ func _run() -> void:
 		bad.recipe.scale = 0.0
 		host._start_workshop_trial(bad)
 		check("invalid draft retains original flight and editor", host.flight == original and host.screens.top() == editor_from_pause)
-		var valid_field_path: String = host.field_path
 		var retained_exposure: float = original._env.tonemap_exposure
-		host.field_path = "user://workshop_missing_field_fixture.json"
+		# Fail only after the previous flight was detached: scratch qualification ignores lighting,
+		# the candidate Main refuses it (import closeout follow-up 02). Disposable injection.
+		var log_path := "user://workshop_rollback_%d.orfl" % Time.get_ticks_usec()
+		check("previous flight log starts", original.flight_log.start(log_path) == OK and original.flight_log.recording)
+		var valid_lighting: Dictionary = original.lighting_config.duplicate(true)
+		original.lighting_config = {mode = "invalid"}
 		host._start_workshop_trial(payload)
-		host.field_path = valid_field_path
+		original.lighting_config = valid_lighting
 		check("failed candidate startup preserves old flight and camera", host.flight == original and original.is_inside_tree() and root.get_camera_3d() == original._camera)
 		check("failed candidate startup preserves old recorder", original.recorder != null and original.session.sim.tick == checkpoint.tick)
+		var tick_before: int = original.session.sim.tick
+		original.session.sim.step()
+		check("failed candidate startup keeps the same log open for a later tick", original.flight_log.recording
+			and original.flight_log.failure.is_empty() and original.flight_log.path == log_path
+			and original.session.sim.tick == tick_before + 1)
+		checkpoint = original.session.sim.checkpoint()
 		check("failed candidate startup preserves adapted exposure", is_equal_approx(original._env.tonemap_exposure, retained_exposure) and is_equal_approx(Exposure.last, retained_exposure))
 		payload.recipe.scale = 0.5
 		# Direct CLI flight routes expose Workshop without constructing this Home service.
@@ -222,6 +232,9 @@ func _run() -> void:
 		host._start_workshop_trial(payload)
 		host.display_preferences = retained_display_preferences
 		check("50% trial from Pause starts independently", host.flight != original and not original.is_inside_tree())
+		check("a committed trial finalizes the previous flight log once", host.flight == original or not original.flight_log.recording)
+		if not original.flight_log.recording:
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(log_path))
 		check("trial starts without the Home display-preference service", host.flight != original
 			and host.flight.startup_error.is_empty())
 		if host.flight != original:

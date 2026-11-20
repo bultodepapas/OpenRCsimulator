@@ -36,7 +36,7 @@ These are starting points for **local development**, not path-only exemptions or
 
 A focused check that passes is evidence for **that scope only**. Do not run unrelated physics suites for a cosmetic menu change, or substitute a UI-only check for radio mapping and safety boundaries. Do not downgrade assertions, accept missing test cases or silently skip failures to gain speed. Record the commands, scope rationale, changed source identity and pending checks with the change. CI's conservative shadow-mode full gate remains in force until [its rollout plan](../../docs/plans/release-ci-efficiency.md) is independently qualified.
 
-Flight-feel, controls and aircraft-physics tuning still require the [flight-log baseline and candidate workflow](physics.md#flight-log-and-replay). Generated data and new aircraft configurations retain their owning generator and acceptance checks. Full software checks do not establish physical or target-hardware qualification.
+Fixed-wing tuning uses the [flight-log baseline and compatible-candidate workflow](physics.md#flight-log-and-replay). Its post-conditioning tape does not retest changed device, calibration, mapping, rates or expo processing; include the affected input and live-flight checks. Other vehicle families retain their own replay contracts. Generated data and new aircraft configurations keep their owning generator and acceptance checks. Full software checks do not establish physical or target-hardware qualification.
 
 ## Full app suite
 
@@ -116,7 +116,7 @@ Trace output includes initial state and fixed ticks; check identities, completio
 
 Use `gh run list --limit 5`, then `gh run view <id> --log-failed`. App jobs map to the unit/integration partitions above; diagnostic artifacts are retained for seven days.
 
-The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Its central source/release preflight precedes expensive work. Export depends on Linux/Windows ground-native builds and the Linux NK-3 build. Publication requires export and `CI required`, which checks the selected job results and parse/unit rosters. Shadow selection keeps all app partitions, visuals and the frozen prototype required; website checks are included when selected. A green export or a single app partition is not a green release. [Orchestration and rollout limits](../../tools/ci/README.md).
+The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Its central source/release preflight precedes expensive work. Preserve the required native build and actual-package qualification dependencies for each platform; a source-editor pass does not replace an exported-executable gate. Publication requires export and `CI required`, which checks the selected job results and parse/unit rosters, plus the workflow's required package jobs. Shadow selection keeps all app partitions, visuals and the frozen prototype required; website checks are included when selected. A green export or a single app partition is not a green release. [Orchestration and rollout limits](../../tools/ci/README.md).
 
 ## External tools
 

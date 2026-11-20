@@ -115,7 +115,7 @@ static func validate(value: Variant) -> Dictionary:
 			return _invalid()
 	if value.format != FORMAT or value.policy != POLICY or value.number_encoding != "ieee754-binary64-le-hex" \
 			or value.archive_association != "declared" or value.member_integrity != "declared" or value.physical_verification != "none" \
-			or value.dialect not in ["5","6"] or not Bytes.is_sha256(value.visual_sha256) \
+			or value.dialect not in ["0","1","2","3","4","5","6"] or not Bytes.is_sha256(value.visual_sha256) \
 			or not Bytes.is_sha256(value.archive_sha256) or not Bytes.is_sha256(value.parameters_sha256) \
 			or not _text(value.model_root,512) or not _text(value.parameters_member,512) \
 			or not Archive.safe_name(value.parameters_member,false) or not _integer_text(value.omitted,0,Params.MAX_RECORDS) \

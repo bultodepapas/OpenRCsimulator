@@ -1,0 +1,1855 @@
+{
+  "schema": "openrc-rc-source-research-v1",
+  "observed_date": "2026-11-17",
+  "openrc_main": "a986b99ca453db90f0a05399483c11cc55d17afd",
+  "research_branch_base": "09ff600a362e9d2bc847882fcfa4be9665220e68",
+  "scope": "Availability, file structure and permission evidence; no conversion or flight qualification.",
+  "hash_meaning": "Identifies inspected bytes; does not establish publisher authenticity, permissions or compatibility.",
+  "third_party_assets_committed": false,
+  "downloaded_packages": [
+    {
+      "id": "fms-4f-51",
+      "simulator": "FMS",
+      "url": "https://gunnerson.homestead.com/files/4F-51.zip",
+      "bytes": 336765,
+      "sha256": "c891334f70d369a58d06851cd9415eae0d47d4697056265ee35abfd73fae88dc",
+      "verification": "downloaded_zip_members_and_bounded_text_inspected",
+      "members": [
+        {
+          "path": "4F-51_readme.txt",
+          "bytes": 458
+        },
+        {
+          "path": "4F-51.mqo",
+          "bytes": 78386
+        },
+        {
+          "path": "4F-51.par",
+          "bytes": 13148
+        },
+        {
+          "path": "4F-51.wav",
+          "bytes": 108102
+        },
+        {
+          "path": "4F-51_prv.JPG",
+          "bytes": 12306
+        },
+        {
+          "path": "4F-51.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "4F-51.x",
+          "bytes": 120322
+        }
+      ],
+      "geometry_header": "xof 0302txt 0064",
+      "definition": "VERSION 1.0 PAR with sections",
+      "editable_source": "Metasequoia MQO included",
+      "rights": "Author credits present; no general cross-project redistribution grant found in inspected text.",
+      "conversion_tested": false,
+      "bmp_headers": [
+        {
+          "path": "4F-51.bmp",
+          "dib_bytes": 40,
+          "width": 512,
+          "height": 512,
+          "planes": 1,
+          "bits_per_pixel": 24,
+          "compression": 0,
+          "pixel_offset": 54,
+          "palette_entries_declared": 0
+        }
+      ],
+      "x_texture_reference_scan": [
+        {
+          "path": "4F-51.x",
+          "texture_references": [
+            "4F-51.bmp"
+          ],
+          "exact_member_matches": [
+            "4F-51.bmp"
+          ],
+          "unmatched_texture_references": []
+        }
+      ],
+      "additional_scope": "BMP fixed-header and X TextureFilename scan; not full image/mesh decoding.",
+      "image_compatibility_note": "Existing ClearView BMP reader accepts 24-bit uncompressed BITMAPINFOHEADER only; observed 8-bit indexed images need additional bounded palette support."
+    },
+    {
+      "id": "fms-beginair",
+      "simulator": "FMS",
+      "url": "https://gunnerson.homestead.com/files/beginair.zip",
+      "bytes": 493502,
+      "sha256": "89f9a0a5cfacf57f9ae075bce2fca8dd6a9fd7716a647fa7576a857610b3280f",
+      "verification": "downloaded_zip_members_and_bounded_text_inspected",
+      "members": [
+        {
+          "path": "beginair_readme.txt",
+          "bytes": 676
+        },
+        {
+          "path": "beginair.mqo",
+          "bytes": 148573
+        },
+        {
+          "path": "beginair.par",
+          "bytes": 13139
+        },
+        {
+          "path": "beginair.wav",
+          "bytes": 39484
+        },
+        {
+          "path": "beginair.x",
+          "bytes": 233038
+        },
+        {
+          "path": "beginair_prv.jpg",
+          "bytes": 10018
+        },
+        {
+          "path": "beginair.bmp",
+          "bytes": 786486
+        }
+      ],
+      "geometry_header": "xof 0302txt 0064",
+      "definition": "VERSION 1.0 PAR with sections",
+      "editable_source": "Metasequoia MQO included",
+      "rights": "Author credits present; no general cross-project redistribution grant found in inspected text.",
+      "conversion_tested": false,
+      "bmp_headers": [
+        {
+          "path": "beginair.bmp",
+          "dib_bytes": 40,
+          "width": 512,
+          "height": 512,
+          "planes": 1,
+          "bits_per_pixel": 24,
+          "compression": 0,
+          "pixel_offset": 54,
+          "palette_entries_declared": 0
+        }
+      ],
+      "x_texture_reference_scan": [
+        {
+          "path": "beginair.x",
+          "texture_references": [
+            "beginair.bmp"
+          ],
+          "exact_member_matches": [
+            "beginair.bmp"
+          ],
+          "unmatched_texture_references": []
+        }
+      ],
+      "additional_scope": "BMP fixed-header and X TextureFilename scan; not full image/mesh decoding.",
+      "image_compatibility_note": "Existing ClearView BMP reader accepts 24-bit uncompressed BITMAPINFOHEADER only; observed 8-bit indexed images need additional bounded palette support."
+    },
+    {
+      "id": "fms-m_minimag",
+      "simulator": "FMS",
+      "url": "https://hitecrcd.co.jp/material/software/fms/m_minimag.zip",
+      "bytes": 807256,
+      "sha256": "24a9a9e66ef1a0198e1eac47bd940c628da4cbe5c40b0b0e8aecedfbbeab3924",
+      "verification": "downloaded_zip_members_and_bounded_text_inspected",
+      "members": [
+        {
+          "path": "MiniMagWeiß.bmp",
+          "bytes": 66614
+        },
+        {
+          "path": "MiniMag.wav",
+          "bytes": 322630
+        },
+        {
+          "path": "MiniMag.x",
+          "bytes": 296083
+        },
+        {
+          "path": "MiniMag_prv.jpg",
+          "bytes": 27901
+        },
+        {
+          "path": "MiniMag_readme.txt",
+          "bytes": 912
+        },
+        {
+          "path": "MiniMagDek1.bmp",
+          "bytes": 1049654
+        },
+        {
+          "path": "MiniMagDek2.bmp",
+          "bytes": 1049654
+        },
+        {
+          "path": "MiniMag.par",
+          "bytes": 984
+        }
+      ],
+      "geometry_header": "xof 0302txt 0064",
+      "definition": "legacy positional PAR with trailing comments",
+      "editable_source": "No editable source in inspected archive",
+      "rights": "Author credits present; no general cross-project redistribution grant found in inspected text.",
+      "conversion_tested": false,
+      "bmp_headers": [
+        {
+          "path": "MiniMagWeiß.bmp",
+          "dib_bytes": 40,
+          "width": 256,
+          "height": 256,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "MiniMagDek1.bmp",
+          "dib_bytes": 40,
+          "width": 1024,
+          "height": 1024,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "MiniMagDek2.bmp",
+          "dib_bytes": 40,
+          "width": 1024,
+          "height": 1024,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        }
+      ],
+      "x_texture_reference_scan": [
+        {
+          "path": "MiniMag.x",
+          "texture_references": [
+            "MiniMagDek1.bmp",
+            "MiniMagDek2.bmp",
+            "MiniMagWeiß.bmp"
+          ],
+          "exact_member_matches": [
+            "MiniMagDek1.bmp",
+            "MiniMagDek2.bmp",
+            "MiniMagWeiß.bmp"
+          ],
+          "unmatched_texture_references": []
+        }
+      ],
+      "additional_scope": "BMP fixed-header and X TextureFilename scan; not full image/mesh decoding.",
+      "image_compatibility_note": "Existing ClearView BMP reader accepts 24-bit uncompressed BITMAPINFOHEADER only; observed 8-bit indexed images need additional bounded palette support."
+    },
+    {
+      "id": "fms-m_funjet",
+      "simulator": "FMS",
+      "url": "https://hitecrcd.co.jp/material/software/fms/m_funjet.zip",
+      "bytes": 649663,
+      "sha256": "79ef37a9d55cb820acb67a4eac2b6e73ff232a172d56f534944c4f9be3f1e20f",
+      "verification": "downloaded_zip_members_and_bounded_text_inspected",
+      "members": [
+        {
+          "path": "FunJetWeiß.bmp",
+          "bytes": 66614
+        },
+        {
+          "path": "FunJet.wav",
+          "bytes": 31470
+        },
+        {
+          "path": "FunJet.x",
+          "bytes": 627882
+        },
+        {
+          "path": "FunJet_prv.jpg",
+          "bytes": 37746
+        },
+        {
+          "path": "FunJet_readme.txt",
+          "bytes": 1192
+        },
+        {
+          "path": "FunJetDek1.bmp",
+          "bytes": 1049654
+        },
+        {
+          "path": "FunJetDek2.bmp",
+          "bytes": 263222
+        },
+        {
+          "path": "FunJetRotWeiß.bmp",
+          "bytes": 3126
+        },
+        {
+          "path": "FunJet.par",
+          "bytes": 987
+        }
+      ],
+      "geometry_header": "xof 0302txt 0064",
+      "definition": "legacy positional PAR with trailing comments",
+      "editable_source": "No editable source in inspected archive",
+      "rights": "Author credits present; no general cross-project redistribution grant found in inspected text.",
+      "conversion_tested": false,
+      "bmp_headers": [
+        {
+          "path": "FunJetWeiß.bmp",
+          "dib_bytes": 40,
+          "width": 256,
+          "height": 256,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "FunJetDek1.bmp",
+          "dib_bytes": 40,
+          "width": 1024,
+          "height": 1024,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "FunJetDek2.bmp",
+          "dib_bytes": 40,
+          "width": 512,
+          "height": 512,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "FunJetRotWeiß.bmp",
+          "dib_bytes": 40,
+          "width": 32,
+          "height": 32,
+          "planes": 1,
+          "bits_per_pixel": 24,
+          "compression": 0,
+          "pixel_offset": 54,
+          "palette_entries_declared": 0
+        }
+      ],
+      "x_texture_reference_scan": [
+        {
+          "path": "FunJet.x",
+          "texture_references": [
+            "FunJetDek1.bmp",
+            "FunJetDek2.bmp",
+            "FunJetRotWeiß.bmp",
+            "FunJetWeiß.bmp"
+          ],
+          "exact_member_matches": [
+            "FunJetDek1.bmp",
+            "FunJetDek2.bmp",
+            "FunJetRotWeiß.bmp",
+            "FunJetWeiß.bmp"
+          ],
+          "unmatched_texture_references": []
+        }
+      ],
+      "additional_scope": "BMP fixed-header and X TextureFilename scan; not full image/mesh decoding.",
+      "image_compatibility_note": "Existing ClearView BMP reader accepts 24-bit uncompressed BITMAPINFOHEADER only; observed 8-bit indexed images need additional bounded palette support."
+    },
+    {
+      "id": "fms-m_easystar",
+      "simulator": "FMS",
+      "url": "https://hitecrcd.co.jp/material/software/fms/m_easystar.zip",
+      "bytes": 508491,
+      "sha256": "631f906dc0c371b33fd89ae0f75bc366d13cc739d9d482e91e2f461767eadf07",
+      "verification": "downloaded_zip_members_and_bounded_text_inspected",
+      "members": [
+        {
+          "path": "EasyStar.wav",
+          "bytes": 322630
+        },
+        {
+          "path": "EasyStar_prv.jpg",
+          "bytes": 22702
+        },
+        {
+          "path": "EasyStar.par",
+          "bytes": 965
+        },
+        {
+          "path": "EasyStar_readme.txt",
+          "bytes": 585
+        },
+        {
+          "path": "EasyStarPurBlau.bmp",
+          "bytes": 17462
+        },
+        {
+          "path": "EasyStarPurWeiss.bmp",
+          "bytes": 17462
+        },
+        {
+          "path": "EasyStarV2Weiss.bmp",
+          "bytes": 66614
+        },
+        {
+          "path": "EasyStarV1Blau.bmp",
+          "bytes": 263222
+        },
+        {
+          "path": "EasyStarV1Weiss.bmp",
+          "bytes": 66614
+        },
+        {
+          "path": "EasyStarV2Blau.bmp",
+          "bytes": 263222
+        },
+        {
+          "path": "EasyStar.x",
+          "bytes": 241096
+        },
+        {
+          "path": "EasyStarK.bmp",
+          "bytes": 66614
+        }
+      ],
+      "geometry_header": "xof 0302txt 0064",
+      "definition": "legacy positional PAR with trailing comments",
+      "editable_source": "No editable source in inspected archive",
+      "rights": "Author credits present; no general cross-project redistribution grant found in inspected text.",
+      "conversion_tested": false,
+      "bmp_headers": [
+        {
+          "path": "EasyStarPurBlau.bmp",
+          "dib_bytes": 40,
+          "width": 128,
+          "height": 128,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarPurWeiss.bmp",
+          "dib_bytes": 40,
+          "width": 128,
+          "height": 128,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarV2Weiss.bmp",
+          "dib_bytes": 40,
+          "width": 256,
+          "height": 256,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarV1Blau.bmp",
+          "dib_bytes": 40,
+          "width": 512,
+          "height": 512,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarV1Weiss.bmp",
+          "dib_bytes": 40,
+          "width": 256,
+          "height": 256,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarV2Blau.bmp",
+          "dib_bytes": 40,
+          "width": 512,
+          "height": 512,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        },
+        {
+          "path": "EasyStarK.bmp",
+          "dib_bytes": 40,
+          "width": 256,
+          "height": 256,
+          "planes": 1,
+          "bits_per_pixel": 8,
+          "compression": 0,
+          "pixel_offset": 1078,
+          "palette_entries_declared": 256
+        }
+      ],
+      "x_texture_reference_scan": [
+        {
+          "path": "EasyStar.x",
+          "texture_references": [
+            "EasyStarK.bmp",
+            "EasyStarPurBlau.bmp",
+            "EasyStarPurWeiss.bmp",
+            "EasyStarV1Blau.bmp",
+            "EasyStarV1Weiss.bmp",
+            "EasyStarV2Blau.bmp",
+            "EasyStarV2Weiss.bmp"
+          ],
+          "exact_member_matches": [
+            "EasyStarK.bmp",
+            "EasyStarPurBlau.bmp",
+            "EasyStarPurWeiss.bmp",
+            "EasyStarV1Blau.bmp",
+            "EasyStarV1Weiss.bmp",
+            "EasyStarV2Blau.bmp",
+            "EasyStarV2Weiss.bmp"
+          ],
+          "unmatched_texture_references": []
+        }
+      ],
+      "additional_scope": "BMP fixed-header and X TextureFilename scan; not full image/mesh decoding.",
+      "image_compatibility_note": "Existing ClearView BMP reader accepts 24-bit uncompressed BITMAPINFOHEADER only; observed 8-bit indexed images need additional bounded palette support."
+    },
+    {
+      "id": "crrc-community-ouraganedf_v2",
+      "simulator": "CRRCSim",
+      "url": "https://sourceforge.net/projects/threedairplanemodels/files/OuraganEDF_V2.zip/download",
+      "sha256": "db99092850abb873811535c03aa6a78cc76986d8dc79649567e44b00457ccec1",
+      "verification": "downloaded_zip_members_and_xml_inspected",
+      "members": [
+        {
+          "path": "OuraganEDF_V2.3ds",
+          "bytes": 60587
+        },
+        {
+          "path": "OuraganEDF_V2.xml",
+          "bytes": 6925
+        }
+      ],
+      "dependencies": [
+        "Alternate zagi-xs.ac referenced by XML but absent."
+      ],
+      "rights": "No README/LICENSE in ZIP; author catalog GPL statement conflicts with SourceForge personal-use wording.",
+      "catalog_url": "https://sites.google.com/site/crrcsiminfo/new-models-created-for-crrcsim",
+      "conversion_tested": false
+    },
+    {
+      "id": "crrc-community-ye2_v32",
+      "simulator": "CRRCSim",
+      "url": "https://sourceforge.net/projects/threedairplanemodels/files/YE2_V32.zip/download",
+      "sha256": "80899614c1b4df448da2d90c64a8b3114021a7bf93e732f88d4a7c4588b75e7d",
+      "verification": "downloaded_zip_members_and_xml_inspected",
+      "members": [
+        {
+          "path": "YE2_V32_OneTen.3ds",
+          "bytes": 67764
+        },
+        {
+          "path": "YE2_V32_OneTen.xml",
+          "bytes": 10464
+        }
+      ],
+      "dependencies": [],
+      "rights": "No README/LICENSE in ZIP; author catalog GPL statement conflicts with SourceForge personal-use wording.",
+      "catalog_url": "https://sites.google.com/site/crrcsiminfo/new-models-created-for-crrcsim",
+      "conversion_tested": false
+    },
+    {
+      "id": "crrc-community-pc9tenscalev2",
+      "simulator": "CRRCSim",
+      "url": "https://sourceforge.net/projects/threedairplanemodels/files/PC9TenScaleV2.zip/download",
+      "sha256": "4bf953d71940fbc746e8ac231af780e66a52681472229b1f8e6dd3cdc376739c",
+      "verification": "downloaded_zip_members_and_xml_inspected",
+      "members": [
+        {
+          "path": "PC9TenScaleV2/PC9TenScale_v10rG.3ds",
+          "bytes": 120142
+        },
+        {
+          "path": "pc910scale.xml",
+          "bytes": 10033
+        }
+      ],
+      "dependencies": [],
+      "rights": "No README/LICENSE in ZIP; author catalog GPL statement conflicts with SourceForge personal-use wording.",
+      "catalog_url": "https://sites.google.com/site/crrcsiminfo/new-models-created-for-crrcsim",
+      "conversion_tested": false
+    },
+    {
+      "id": "rc10_metaseq_model",
+      "simulator": "Aerofly RC10 author workshop",
+      "url": "https://www.ikarus.net/downloads/workshops/rc10_metaseq_model.zip",
+      "bytes": 870029,
+      "sha256": "6d1b0c2a806f2cde60f2923cde4560b867a4a0531a748a49b1ec5580684cf5e3",
+      "verification": "downloaded_zip_members_and_selected_definitions_inspected",
+      "member_count": 39,
+      "relevant_members": [
+        {
+          "path": "rc10_metaseq_model/convert_aircraft.tmc",
+          "bytes": 1862
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/000000000_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/000000000_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/000000000_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/000000000_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/000000000_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/176176176_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/176176176_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/176176176_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/176176176_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/176176176_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/255000000_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/255000000_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/255000000_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/255000000_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/255000000_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/Dekor_bump.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/Dekor_color.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/dekor_deproni.bmp",
+          "bytes": 3145784
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/Dekor_reflection.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/Dekor_specular.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/Dekor_specular_alpha.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/my_aircraft.mqo",
+          "bytes": 414419
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/my_aircraft.tmc",
+          "bytes": 1289
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/my_aircraft.tmd",
+          "bytes": 32004
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/propellerdisk_bump.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/propellerdisk_color.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/propellerdisk_reflection.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/propellerdisk_specular.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/propellerdisk_specular_alpha.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_metaseq_model/my_metasequoia_aircraft/my_aircraft/white_color.bmp",
+          "bytes": 786488
+        }
+      ],
+      "rights": "No explicit cross-project license found in inspected ZIP.",
+      "conversion_tested": false
+    },
+    {
+      "id": "rc10_blender_model",
+      "simulator": "Aerofly RC10 author workshop",
+      "url": "https://www.ikarus.net/downloads/workshops/rc10_blender_model.zip",
+      "bytes": 655936,
+      "sha256": "961d32f3d524eca7fab048726cec6f8ee046d5806e468c6dacbf303ee3bb3ca1",
+      "verification": "downloaded_zip_members_and_selected_definitions_inspected",
+      "member_count": 36,
+      "relevant_members": [
+        {
+          "path": "rc10_blender_model/convert_aircraft.tmc",
+          "bytes": 1858
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/000000000_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/176176176_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_bump.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_color.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_reflection.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_specular.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/255000000_specular_alpha.bmp",
+          "bytes": 12342
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_bump.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_color.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/dekor_deproni.bmp",
+          "bytes": 3145784
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_reflection.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_specular.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/Dekor_specular_alpha.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.blend",
+          "bytes": 1112824
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.tmc",
+          "bytes": 1289
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/my_aircraft.tmd",
+          "bytes": 32004
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_bump.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_color.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_reflection.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_specular.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/propellerdisk_specular_alpha.bmp",
+          "bytes": 786486
+        },
+        {
+          "path": "rc10_blender_model/my_blender_aircraft/my_aircraft/white_color.bmp",
+          "bytes": 786488
+        }
+      ],
+      "rights": "No explicit cross-project license found in inspected ZIP.",
+      "conversion_tested": false
+    },
+    {
+      "id": "sss-2.19.3",
+      "simulator": "SSS",
+      "url": "https://rowlhouse.co.uk/sss/sss-2.19.3-skybox.zip",
+      "bytes": 36029880,
+      "sha256": "26b5bccac0820c9575a552051dab465d2e07bbb38cd801ca17133fbdf03fcfaa",
+      "verification": "downloaded_zip_members_and_selected_definitions_inspected",
+      "member_count": 398,
+      "relevant_members": [
+        {
+          "path": "sss-2.19.3-skybox/gliders/a10.3ds",
+          "bytes": 62108
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/ask13.3ds",
+          "bytes": 28156
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/banana.3ds",
+          "bytes": 82491
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/bellrang.3ds",
+          "bytes": 209811
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/discus.3ds",
+          "bytes": 101269
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/eagle.3ds",
+          "bytes": 98695
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/f18.3ds",
+          "bytes": 42076
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/f86.3ds",
+          "bytes": 55978
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/genie25.3ds",
+          "bytes": 31048
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_1Paraglider_NC.dat",
+          "bytes": 10284
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_1Paraglider_NC_G.dat",
+          "bytes": 883
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_1Paraglider_NC_R.dat",
+          "bytes": 883
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_1Paraglider_NC_Y.dat",
+          "bytes": 883
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_1Paraglider_SC.dat",
+          "bytes": 15100
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_A10.dat",
+          "bytes": 4610
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_aileron.dat",
+          "bytes": 4214
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_aileron_rudder.dat",
+          "bytes": 4275
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_ask13.dat",
+          "bytes": 4400
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_banana.dat",
+          "bytes": 4789
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_broomstick.dat",
+          "bytes": 6336
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_corsair.dat",
+          "bytes": 4727
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_allegro.dat",
+          "bytes": 1107
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_apogee.dat",
+          "bytes": 1103
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_biplane2.dat",
+          "bytes": 1111
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_f3f.dat",
+          "bytes": 1091
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_k2-f3f.dat",
+          "bytes": 1103
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_k2.dat",
+          "bytes": 1087
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_outrage.dat",
+          "bytes": 1107
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_skorpion.dat",
+          "bytes": 1138
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_sovereign.dat",
+          "bytes": 1115
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_spirit.dat",
+          "bytes": 1103
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_sport.dat",
+          "bytes": 1099
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_stratosz10.dat",
+          "bytes": 1119
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_superzagi.dat",
+          "bytes": 1115
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_zagi.dat",
+          "bytes": 1095
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_zip60.dat",
+          "bytes": 1099
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_crrcsim_zipper.dat",
+          "bytes": 1103
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_deltaflex-1.dat",
+          "bytes": 4567
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_deltaflex.dat",
+          "bytes": 4481
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_discus.dat",
+          "bytes": 4786
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_eagle.dat",
+          "bytes": 4158
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_f18.dat",
+          "bytes": 4606
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_f3b.dat",
+          "bytes": 4208
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_F86.dat",
+          "bytes": 4610
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_fast.dat",
+          "bytes": 3994
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_genie25blue.dat",
+          "bytes": 4807
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_hawk.dat",
+          "bytes": 4751
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_heli.dat",
+          "bytes": 3813
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_heli_3ds.dat",
+          "bytes": 796
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_heli_full.dat",
+          "bytes": 3754
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_heli_full_fake.dat",
+          "bytes": 3807
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_heli_twitchy.dat",
+          "bytes": 3814
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_hg1.dat",
+          "bytes": 1225
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_magpie.dat",
+          "bytes": 5064
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_minimoa.dat",
+          "bytes": 4404
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_moth.dat",
+          "bytes": 4590
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_mugi.dat",
+          "bytes": 4751
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_mustang.dat",
+          "bytes": 4890
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_mustang_oleyeller_leadsled.dat",
+          "bytes": 4967
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_neoslope.dat",
+          "bytes": 4765
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_phase6.dat",
+          "bytes": 4793
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_rudder.dat",
+          "bytes": 4203
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_scale.dat",
+          "bytes": 4357
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_sierra_mk2.dat",
+          "bytes": 4902
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_sledge.dat",
+          "bytes": 5630
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_sledge2.dat",
+          "bytes": 5554
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_twinjet.dat",
+          "bytes": 647
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_v.dat",
+          "bytes": 4643
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_v_tail.dat",
+          "bytes": 660
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_weasel.dat",
+          "bytes": 4598
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_wing.dat",
+          "bytes": 3841
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_wizard.dat",
+          "bytes": 6449
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/glider_xs142pink.dat",
+          "bytes": 697
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/hawk.3ds",
+          "bytes": 15513
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/hg-xs142p.3ds",
+          "bytes": 52650
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/LAmodel.3ds",
+          "bytes": 29961
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/magpie.3ds",
+          "bytes": 56669
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/minimoa.3ds",
+          "bytes": 16747
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/moth.3ds",
+          "bytes": 20521
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/mugi.3ds",
+          "bytes": 647
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/mustang.3ds",
+          "bytes": 82137
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/mustang_oleyeller.3ds",
+          "bytes": 65372
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/neo_slope.3ds",
+          "bytes": 25830
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/Paraglider_B.3ds",
+          "bytes": 171226
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/Paraglider_G.3ds",
+          "bytes": 171226
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/Paraglider_R.3ds",
+          "bytes": 171226
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/Paraglider_Y.3ds",
+          "bytes": 171226
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/phase6.3ds",
+          "bytes": 20944
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/quidditch.3DS",
+          "bytes": 21170
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/sledge.3ds",
+          "bytes": 21830
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/test.3ds",
+          "bytes": 7368
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/twinjet.3ds",
+          "bytes": 10408
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/v_tail.3ds",
+          "bytes": 15682
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/weasel.3ds",
+          "bytes": 4830
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/wizard.3ds",
+          "bytes": 21170
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/XS142phd.3ds",
+          "bytes": 145438
+        },
+        {
+          "path": "sss-2.19.3-skybox/gliders/XSwss.3ds",
+          "bytes": 64214
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot.dat",
+          "bytes": 1792
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_calm.dat",
+          "bytes": 1736
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_chase.dat",
+          "bytes": 1790
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_chase2.dat",
+          "bytes": 1811
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_chase3.dat",
+          "bytes": 1811
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_chase_plain.dat",
+          "bytes": 1726
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_cruise.dat",
+          "bytes": 1791
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_large.dat",
+          "bytes": 1698
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_Paraglider.dat",
+          "bytes": 1719
+        },
+        {
+          "path": "sss-2.19.3-skybox/robots/robot_screensaver.dat",
+          "bytes": 1779
+        },
+        {
+          "path": "sss-2.19.3-skybox/terrains/Oliver.dat",
+          "bytes": 4210708
+        },
+        {
+          "path": "sss-2.19.3-skybox/terrains/terrain_flat.dat",
+          "bytes": 4628
+        }
+      ],
+      "rights": "Package GPLv2; contributed aircraft need individual provenance review.",
+      "conversion_tested": false
+    },
+    {
+      "id": "aerofly-rc10-panda",
+      "simulator": "Aerofly RC10",
+      "url": "https://www.ikarus.net/downloads/rc10-user-aircraft/rc10_as-panda.zip",
+      "bytes": 244868,
+      "sha256": "c59ff43167ea15ca6076c830bd841f9bbdac5ca0b34986ce5414750031c53cfd",
+      "verification": "downloaded_zip_members_inspected",
+      "observed": [
+        "as-panda.tmb",
+        "as-panda.tmc",
+        "as-panda.tmd",
+        "12 TTX image/preview files"
+      ],
+      "not_present": [
+        "MQO",
+        "BLEND",
+        "TGI",
+        "original BMP images",
+        "README/LICENSE"
+      ],
+      "rights": "No cross-project asset license established.",
+      "geometry_reader": "No qualified TMB/TTX reader demonstrated.",
+      "conversion_tested": false
+    },
+    {
+      "id": "crrcsim-addon-models-fedora-0.2.0-30",
+      "simulator": "CRRCSim",
+      "url": "https://rpmfind.net/linux/fedora-secondary/development/rawhide/Everything/s390x/os/Packages/c/crrcsim-addon-models-0.2.0-30.fc45.noarch.rpm",
+      "sha256": "be950de0910592c4a6c7f800c2d2690cc5871f1e226d89d32ea5f8c6589b81e9",
+      "bytes": 2234584,
+      "note": "Third-party mirror URL; content inspected, publisher signature not independently verified. Fedora package manifest is official.",
+      "verification": "downloaded_rpm_payload_inspected_as_data",
+      "official_manifest": "https://packages.fedoraproject.org/pkgs/crrcsim-addon-models/crrcsim-addon-models/fedora-rawhide.html",
+      "license_evidence": {
+        "legalcode": {
+          "path": "usr/share/doc/crrcsim-addon-models/legalcode.txt",
+          "sha256": "5138a74ac20f2965d97b2a9c35219ca74e24f4a93618b33f0e36e4b3c7873197",
+          "heading": "Creative Commons Legal Code, Attribution 3.0 Unported",
+          "note": "CC BY 3.0 permits commercial use subject to license conditions. The mere inclusion of this document does not establish authorship or authority for all archive content."
+        },
+        "arthur_correspondence_sha256": "a46f3c36274d98ffc0e078d892a4c937f11a99d51f24390b39da976f8e939bed",
+        "jan_correspondence_sha256": "55e9d2153431884e606e4bd74ca7592420f9a806af60763537d67c537f4b1561",
+        "summary": "2013 correspondence proposes CC BY 3.0; Arthur agrees with an informal business remark, Jan agrees but disclaims original model ownership. Nine XMLs explicitly credit Arthur for original definition, geometry and texture; later edits and Skorpion coverage require scope review.",
+        "decision": "Positive license evidence and specific acquisition lead; no blanket clearance declared."
+      },
+      "models": [
+        {
+          "name": "Ellipse 2V",
+          "definition": "EllipseV2.xml",
+          "definition_sha256": "2ff196035eefe71de6611f78439443149532c88ef87f1db4d5e4e85fe616fea7",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Ellipse2V.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "1cda8b8bc94eba64048664c367435b13a0dd7d58d8752010ba6e0638fa1d5473",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/ellipse2v.rgb",
+                  "basename": "ellipse2v.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "da5dc4de6262d7a2a501e68bf1f7f7f248825b5043a606933405f679b6e683b8"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Erwin XL",
+          "definition": "ErwinXL.xml",
+          "definition_sha256": "ce55d7902d8bdade85ad6904481f25c38b21fc6fe81cb43e93cb4b51cc5e4313",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.6beta3",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "ErwinXL.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "238e7fef26f1621f6dc041d42d45a8c74a2a018dc9edd7700b475a1b67591564",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim/textures/ErwinXLTextur.rgb",
+                  "basename": "ErwinXLTextur.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "c568b7ecea84f9589838d836d8650ad9b4018b1f932a3f7d52e2b5c75e781f3e"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Europhia 2x",
+          "definition": "Europhia2X.xml",
+          "definition_sha256": "4a8c079075a53baf7d1b355948ec5725e0096624146ff555f1ccd789b23ad6ea",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Europhia2X_w_bl.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "b3de3b1fa28ab661fd0353f0183d0e79e64e107565124681deab78f662d987f5",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Europhia2k_w_bl.rgb",
+                  "basename": "Europhia2k_w_bl.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "70bd9da6e979a9cd8858054fb4abb60d34e1d8e004cb506c3202f67ee56735a1"
+                }
+              ]
+            },
+            {
+              "object": "Europhia2X_y_bl.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "763607169774928dfc2d0d8595e0125fb12f396089da4e688c321a981c800a3f",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Europhia2k_y_bl.rgb",
+                  "basename": "Europhia2k_y_bl.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "dbaed2f08c83d827ab2a76f2e3a58736f4c07d3ac4b2702aa5def387de2841d5"
+                }
+              ]
+            },
+            {
+              "object": "Europhia2X_w_r.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "42cc9d6cf7947df4eda8538f1e8476e9a117a788096a622a1dc73ff29d4ebd4a",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Europhia2k.rgb",
+                  "basename": "Europhia2k.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "32211ed5a8bc10721bff86a64cc099d2b26988fdf4ee66dc2dc5f70822b454ab"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "MD1-Fox",
+          "definition": "Fox.xml",
+          "definition_sha256": "379ab4daa75a377fa1fd2019ed8e2d883d2bcda302c02845d192278f3fa23cd1",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Fox.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "16ac36888f504ced5cc6f82260ca9cbac9865c7c817b6e54a850742b5e8a6ef3",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/FoxTextur.rgb",
+                  "basename": "FoxTextur.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "b36ec2ff798c049c43c2e15d5681f729a49d471784f6daff0568fa1bbf0f79cc"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "NYX",
+          "definition": "Nyx.xml",
+          "definition_sha256": "e869fa9cc9fcf9b5bcb697f52783eb1d8b668d8ba95794f535262709b230dd34",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Nyx.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "cdf8f37e0a4e3441c71bbd3f8dba2ac96f2bb5ce96e3f40257411c923d2f5844",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Nyx.rgb",
+                  "basename": "Nyx.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "7654a48a058317b44e24f82e008070cba9e95f91dfd51da73e789a503abefb4f"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Skorpion-F3F",
+          "definition": "Skorpion-F3F.xml",
+          "definition_sha256": "2fc55886aec89ef23638feb7cf29ab368df6d9d9ace823aa09b4c61556259300",
+          "credited_contributors": [
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Skorpion_white_redblend.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "3f032434409f31a313172ed694ff901c46bae0ae1f0ea2edd407b63850e5d8e8",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Skorpion_white_redblend.rgb",
+                  "basename": "Skorpion_white_redblend.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "4e4a7eda38bcc8215ba7aeeea3c617b1ee86fda2a2b93ee0a2cfafdc48319800"
+                }
+              ]
+            },
+            {
+              "object": "Skorpion_yellow_violblend.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "49853b2f43d55e41275ea2e4b5a133c36ceff60c124fd941c6c26dfa43e56572",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Skorpion_yellow_violblend.rgb",
+                  "basename": "Skorpion_yellow_violblend.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "606e9e8ec0fcaa128c1fdf4f44ed62d802323974d17d58c0c51264739e0831f4"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Aris",
+          "definition": "aris.xml",
+          "definition_sha256": "c60d6ddc04afb052fb60223e2a8f55e7b177487c2aaa7d8c49a700e98487b800",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Aris.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "71ecec367b260abdf2c9394f0029995da8583c2d507fecbc6cca3182c57dec94",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/Aris.rgb",
+                  "basename": "Aris.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "e75217c2b080d88822123534702ace1cece85ee08d7e7af409798c1a073770ae"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Fireworks III",
+          "definition": "fireworks3_C.xml",
+          "definition_sha256": "e053454ab194c60a5e98d9f4f291327fa1eddf6639042acb28642d693fb8d183",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.6beta3",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "Fireworks_C.ac",
+              "present_in_fedora_rpm": false
+            },
+            {
+              "object": "Fireworks.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "d87f672eccc70b2d99abcc787e8aa51233eddecc68f99bc570a781fa6e4ac161",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/FireworksTexture2.rgb",
+                  "basename": "FireworksTexture2.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "5e9781e6cbf8cf80da3a9f526079d8fcf88a5cda30633f76aa9574e10c2c251d"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        },
+        {
+          "name": "Freestyler",
+          "definition": "freestyler.xml",
+          "definition_sha256": "00c14943ef664e53e3ce62ba9ad9cfcf6aea5b6962941ff9fd81ba25901a26b8",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "freestyler.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "7d59f3cab5efe0b428d0c5662f66c9395f9bda1928431b7c64b7607c0d1c39d2",
+              "texture_refs": [
+                {
+                  "literal": "C:/Programme/CRRCSim neu/textures/freestyler.rgb",
+                  "basename": "freestyler.rgb",
+                  "present_in_fedora_rpm": true,
+                  "sha256": "78423d43ebdb8318110240b73fdcd1d4f95501d0502194676945082860178629"
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glidersound.wav"
+          ]
+        },
+        {
+          "name": "Sting",
+          "definition": "sting.xml",
+          "definition_sha256": "cde17e5f2dbfbbbbcf7a6572e6beb41c3613e94858d5739d80bff9dd0a4a7d61",
+          "credited_contributors": [
+            "Arthur Frenslich",
+            "CRRCSim 0.9.5",
+            "Jan Reucker"
+          ],
+          "graphics": [
+            {
+              "object": "sting.ac",
+              "present_in_fedora_rpm": true,
+              "object_sha256": "6b8a187f0ccda9537639e5f8677796a501384e91802bb3a127a55da5f4ac3959",
+              "texture_refs": [
+                {
+                  "literal": "sting.png",
+                  "basename": "sting.png",
+                  "present_in_fedora_rpm": false,
+                  "sha256": null
+                }
+              ]
+            }
+          ],
+          "sound_references": [
+            "glider.wav"
+          ]
+        }
+      ],
+      "dependency_findings": [
+        "RPM includes no Fireworks_C.ac although fireworks3_C.xml lists it as the first graphic; Fireworks.ac is available.",
+        "Sting.ac references sting.png but RPM includes sting.rgb and not sting.png. Availability of a fallback in CRRCSim is not established here.",
+        "Sound references generally name files not included in this add-on RPM; do not infer reuse rights from add-on package classification."
+      ],
+      "conversion_tested": false
+    }
+  ],
+  "repository_sources": [
+    {
+      "simulator": "CRRCSim",
+      "repository": "https://github.com/gcmcnutt/CRRCsim",
+      "commit": "14b5311add9492a96fce1898c2b6345d1c12bd7e",
+      "provenance": "Community continuation/mirror; original project is SourceForge crrcsim.",
+      "definitions_read": [
+        "models/Angel_S30E.xml",
+        "models/wasabi.xml",
+        "models/sport.xml",
+        "models/PilatusB4.xml"
+      ],
+      "mesh_read": "objects/Angel_S30E.ac",
+      "formats": [
+        "CRRCSim_airplane XML",
+        "AC3Db",
+        "SGI RGB",
+        "some community 3DS"
+      ],
+      "findings": [
+        "Units are section-specific.",
+        "Configurations/graphics variants and external power dependencies coexist.",
+        "Named hinges and control mappings can be translated independently."
+      ],
+      "rights": "Project GPLv2 and asset contributor notices; do not equate root license with every external aircraft."
+    },
+    {
+      "simulator": "RC Desk Pilot",
+      "repository": "https://github.com/davyloots/rcdeskpilot",
+      "commit": "6a3b987475830ba20d4cdde0efb1089ad3d8624a",
+      "definition_read": "RCSim/Aircraft/extra/Xtra.par",
+      "mesh_sample_read": "RCSim/Aircraft/extra/extra_fixed.x",
+      "source_read": [
+        "RCSim/DataClasses/AircraftParameters.cs",
+        "RCSim/AirplaneModel.cs"
+      ],
+      "aircraft_folders_observed": [
+        "Contender",
+        "Depron P-51",
+        "FT Baby Blender v2",
+        "SF260",
+        "Slope soarer",
+        "Tiger",
+        "cessna",
+        "extra",
+        "glider",
+        "trainer"
+      ],
+      "count_note": "Tiger is a helicopter; folders/configurations are not a count of distinct fixed-wing aircraft.",
+      "formats": [
+        "XML inside PAR",
+        "xof 0302txt 0064",
+        "PNG/JPG/DDS"
+      ],
+      "findings": [
+        "Separate body/control meshes with offset/axis/channel/travel.",
+        "Some axis vectors are non-cardinal and not normalized.",
+        "Do not execute any supplied flight-model plugin."
+      ],
+      "rights": "Root GPLv3 coexists with restrictive RCSim/license.txt; bundled asset scope unresolved."
+    },
+    {
+      "simulator": "PicaSim",
+      "repository": "https://github.com/Rowlhouse/PicaSim",
+      "commit": "5b2c5871b82aecae4ae6293b862f31600a6a949c",
+      "aircraft_paths": [
+        "data/SystemData/Aeroplanes/Extra3D",
+        "data/SystemData/Aeroplanes/Jackdaw",
+        "data/SystemData/Aeroplanes/ASW15",
+        "data/SystemData/Aeroplanes/F18Jet",
+        "data/SystemData/Aeroplanes/GeeBee"
+      ],
+      "definitions_read": [
+        "Extra3D/Aeroplane.xml",
+        "Jackdaw/Aeroplane.xml"
+      ],
+      "source_read": "source/PicaSim/AeroplaneGraphics.cpp",
+      "findings": [
+        "model3DS can name AC geometry.",
+        "Extra3D modelScale is 0.0254.",
+        "Shared aerofoils/presets may be external dependencies.",
+        "Some definitions have multiple top-level XML sections."
+      ],
+      "rights": "Current code/text/XML: PolyForm Noncommercial 1.0.0; images/models separate permissions for PicaSim/direct derivatives, other projects need author permission."
+    }
+  ],
+  "other_leads": [
+    {
+      "simulator": "RC Desk Pilot",
+      "url": "https://www.flitetest.com/articles/36-add-on-planes-for-rc-desk-pilot",
+      "status": "Author article and archive link verified; archive not downloaded.",
+      "advertised": "36 aircraft by rcspaceflight; some editable SketchUp files.",
+      "rights": "No general cross-project commercial license established."
+    },
+    {
+      "simulator": "Phoenix RC",
+      "url": "https://www.supermotoxl.com/projects-articles/ready-to-drive-fly-models/hobby-king-pitts-special-bi-plane-phoenix-r-c-simulator.html",
+      "models": [
+        "Pitts Special",
+        "Wing Wing Z-84",
+        "Durafly P-51D"
+      ],
+      "source_offer": "Separate Pitts OBJ ZIP advertised by author.",
+      "status": "Pitts OBJ and Z-84 binary GET returned HTTP 403; no contents or hash verified.",
+      "rights": "Free noncommercial distribution stated; adaptation and commercial scope unresolved.",
+      "geometry_reader": "No general Phoenix compiled-geometry reader demonstrated."
+    },
+    {
+      "simulator": "RealFlight",
+      "url": "https://www.catv296.ne.jp/~myergo/rf_hangar.html",
+      "models": [
+        "Extreme Flight Edge540T 104",
+        "Pilot RC Laser V3 103",
+        "Skywing Edge540 104",
+        "Pilot RC Sbach 342 V2 103",
+        "RC Factory CLIK25"
+      ],
+      "status": "Author EA links verified. CLIK25 exact resource page inspected via HTTP, requires login for download. No RFX inspected.",
+      "resource_example": "https://forums.realflight.com/index.php?resources/rc-factory-clik25_ea.32859/",
+      "format_reference": "https://forums.realflight.com/KEmax/",
+      "finding": "EA complete aircraft differs from base-dependent AV and CS. KEX is proprietary visual geometry; KEmax is an exporter into RealFlight.",
+      "geometry_reader": "No qualified KEX reader demonstrated.",
+      "rights": "Per-aircraft permissions unresolved."
+    },
+    {
+      "simulator": "HELI-X",
+      "url": "https://www.heli-x.info/cms/models/",
+      "models": [
+        "EasyStar",
+        "Extra300",
+        "Extra330",
+        "PiperJ3",
+        "Funray",
+        "ASW28"
+      ],
+      "actual_file": "https://www.heli-x.info/models10/EasyStar/EasyStar.xml",
+      "actual_file_bytes": 9574,
+      "status": "Actual Plane XML read; complete current fixed-wing geometry not obtained.",
+      "finding": "PlaneMonoStandard, mass/inertia and pivots. Same-basename OBJ returned 404; manual OBJ developer material is partly legacy.",
+      "rights": "Simulator EULA is not a cross-project asset grant."
+    },
+    {
+      "simulator": "REFLEX XTR2",
+      "url": "https://erdlenbruch.de/Burkhard/Modellflug/textReflex.html",
+      "models": [
+        "Das Ugly Stik",
+        "Kwik Fli III",
+        "Telemaster",
+        "MDM-1 Fox",
+        "Bergfalke"
+      ],
+      "status": "Author catalog and MOD/PAR explanation inspected; no package or qualified MOD decoder obtained.",
+      "rights": "Author/component-specific grants unresolved."
+    }
+  ]
+}

@@ -13,6 +13,7 @@ const Limits := preload("res://workshop/creator/limits.gd")
 const Placement := preload("res://workshop/creator/placement.gd")
 const Definition := preload("res://workshop/creator/definition.gd")
 const Compiler := preload("res://workshop/creator/compiler.gd")
+const Packages := preload("res://workshop/creator/packages.gd")
 const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 
@@ -36,6 +37,23 @@ const Observations := preload("res://workshop/creator/clearview/observations.gd"
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const AIRFRAME_PACKAGE := "conventional-trainer-estimated-v1"
 const POWER_PACKAGE := "electric-4s-800kv-apc12x6-estimated-v1"
+## The same estimated installation as a pusher behind the wing, for models without a propeller (park jets).
+const PUSHER_PACKAGE := "electric-4s-800kv-apc12x6-pusher-estimated-v1"
+## Realism batch 2026-11-17: size classes of the automatic ClearView setup. Under 1.45 m a model is a foam
+## park flyer (9 g servos, 3S 9x6); larger models keep the trainer airframe and 4S power. Models without a
+## propeller (jets) get the class's pusher: the 3S 9x6 in a slot, or a fast 4S 1900 kV 6x4.5 standing in for
+## a 70 mm ducted fan. The original 4S 12x6 pusher stays installed for drafts saved with it.
+const PARKFLYER_AIRFRAME := "conventional-parkflyer-estimated-v1"
+const SMALL_POWER := "electric-3s-1250kv-9x6-estimated-v1"
+const SMALL_PUSHER := "electric-3s-1250kv-9x6-pusher-estimated-v1"
+const JET_PUSHER := "electric-4s-1900kv-6x45-pusher-estimated-v1"
+## Jets of LARGE_JET_SPAN_M or more (3-4 kg) get the 6S 90 mm EDF stand-in: the 4S one leaves them under
+## the package's minimum thrust-to-weight.
+const LARGE_JET_PUSHER := "electric-6s-1200kv-7x5-pusher-estimated-v1"
+const LARGE_JET_SPAN_M := 1.9
+const AIRFRAME_PACKAGES: PackedStringArray = [AIRFRAME_PACKAGE, PARKFLYER_AIRFRAME]
+const POWER_PACKAGES: PackedStringArray = [POWER_PACKAGE, PUSHER_PACKAGE, SMALL_POWER, SMALL_PUSHER, JET_PUSHER, LARGE_JET_PUSHER]
+const PUSHER_PACKAGES: PackedStringArray = [PUSHER_PACKAGE, SMALL_PUSHER, JET_PUSHER, LARGE_JET_PUSHER]
 
 ## Scalar fields of the definition: path, English label, unit and owning step. Vector components
 ## use the index as the last path segment. Lengths are metres in the leading-edge frame.
@@ -81,6 +99,10 @@ const _VECTORS := {
 	"equipment/esc_position": [-1, -1, -1], "equipment/thrust_angles_deg": [-1, -1],
 }
 const _INVENTORY_KINDS: PackedStringArray = ["estimated", "measured", "manual"]
+## Inventory numbers `set_item_raw` accepts, with their English captions (the UI translates them).
+const ITEM_KEYS := {"mass": "Mass", "x": "Aft", "y": "Right", "z": "Upward"}
+## Field prefix of a diagnostic about rejected inventory text: `inventory_item/<item id>/<key>`.
+const ITEM_FIELD_PREFIX := "inventory_item/"
 
 var revision := 0
 ## Display name. Control characters are dropped: they cannot be stored and are never meant.
@@ -103,6 +125,13 @@ var _source_installation := {}
 var _installation_proposal := {}
 var _servo_integration := ""
 var _inventory: Array = []
+## The estimated power package; only the ClearView setup chooses the pusher variant.
+var _power_package := POWER_PACKAGE
+## The estimated airframe package; only the ClearView setup chooses the park-flyer class.
+var _airframe_package := AIRFRAME_PACKAGE
+## "<item id>/<key>" -> typed inventory text that is not a number (empty included). The item keeps
+## its last accepted number only as a stale preview: compilation is refused until it is corrected.
+var _item_invalid := {}
 var _compiled := {}
 var _compiled_revision := -1
 ## Presentation only: which model parts move with which control, and the paint. Neither changes
@@ -177,7 +206,9 @@ func set_source(admitted: InspectedSource, observations: Observations.CheckedRep
 		_source_observations = observations.context()
 	_review_observations = _source_observations.duplicate(true)
 	_source = admitted
-	_installation_proposal = Installation.make(_source,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
+	_power_package = POWER_PACKAGE
+	_airframe_package = AIRFRAME_PACKAGE
+	_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
 	_placement = Placement.unresolved()
 	_units = ""
 	_bindings = {}
@@ -213,17 +244,319 @@ func needs_source_installation() -> bool:
 ## The declaration is source/package-bound; the revision guards queued UI actions after edits.
 ## Values/inventory are preserved. The player explicitly reviews those for this source.
 func choose_source_installation(expected: Dictionary,expected_revision: int,reviewed: bool) -> Dictionary:
+	if Installation.rotorcraft(_source):
+		return R.fail(R.UNSUPPORTED_CAPABILITY,Installation.ROTORCRAFT,"source_installation","import")
 	if not reviewed or not Installation.required(_source):
 		return R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
 	if expected_revision != revision or expected != _installation_proposal:
 		return R.fail(R.IDENTITY_MISMATCH,Installation.STALE,"source_installation","import")
-	var checked := Installation.validate(expected,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
+	var checked := Installation.validate(expected,_review_observations,_airframe_package,_power_package)
 	if not checked.ok:
 		return checked
 	_source_observations = _review_observations.duplicate(true)
 	_source_installation = checked.value
 	_touch()
 	return R.ok()
+
+
+## One explicit player action for a converted ClearView model: complete what is still unresolved
+## from `setup` (ClearView.Setup.propose: frame rule and an estimated leading edge), fill every
+## still-empty field with labelled starting estimates, propose the inventory when it is empty and
+## declare the independent estimated OpenRC configuration. Nothing the player already set is
+## replaced, and no ClearView flight coefficient is read. `expected_revision` guards a stale dialog.
+func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Dictionary:
+	if not Installation.required(_source):
+		return R.fail(R.UNSUPPORTED_CAPABILITY, "Automatic setup is only available for converted ClearView models.", "source", "import")
+	if expected_revision != revision:
+		return R.fail(R.IDENTITY_MISMATCH, Installation.STALE, "source_installation", "import")
+	var proposed: Variant = setup.get("placement")
+	var unit_name := str(setup.get("units", ""))
+	if not proposed is Dictionary or not Placement.resolve(proposed).ok or (not unit_name.is_empty() and not Placement.UNITS.has(unit_name)):
+		return R.fail(R.DATUM_UNRESOLVED, "The automatic setup is incomplete. Set the orientation, units and datum in Orient and size.", "placement/datum", Placement.STEP)
+	var placed := _placement.duplicate(true)
+	for which: String in ["nose_axis", "up_axis"]:
+		if str(placed.get(which, "")).is_empty():
+			placed[which] = proposed[which]
+	var units_value := _units
+	var owns_scale := float(placed.get("unit_scale", 0.0)) <= 0.0
+	if owns_scale:
+		placed["unit_scale"] = float(proposed.unit_scale)
+		units_value = unit_name
+	if (placed.get("datum", []) as Array).is_empty():
+		placed["datum"] = (proposed.datum as Array).duplicate()
+	if not Placement.resolve(placed).ok:
+		return R.fail(R.FIELD_INVALID, "The existing orientation conflicts with the ClearView frame. Review Orient and size.", "placement/up_axis", Placement.STEP)
+	# The setup's size class chooses the airframe and power; a model without a propeller (a jet) gets the
+	# class's pusher. Both are chosen before the declaration is made.
+	var kept_package := _power_package
+	var kept_airframe := _airframe_package
+	var kept_proposal: Variant = _installation_proposal
+	var classes := setup_classes()
+	if classes.is_empty():
+		return R.fail(R.DEPENDENCY_MISSING, "Package %s is not installed.", "source_installation", "import", [PARKFLYER_AIRFRAME])
+	# A setup proposed without size classes (index -1) keeps the trainer class.
+	var class_index := int(setup.get("range_index", -1))
+	var size_class: Dictionary = classes[class_index if class_index >= 0 and class_index < classes.size() else classes.size() - 1]
+	if needs_source_installation():
+		_airframe_package = size_class.airframe
+		_power_package = size_class.tractor
+		if not bool(setup.get("propeller_found", true)):
+			_power_package = size_class.pusher
+			if size_class.has("large_pusher") and float(setup.get("flown_span_m", 0.0)) >= LARGE_JET_SPAN_M:
+				_power_package = size_class.large_pusher
+		_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
+	# When this setup chose the size, a model too heavy for its wing (or overpowered) at that size is
+	# tried a little larger, up to the package's maximum span: the result stays a labelled scaled
+	# configuration. Every attempt starts again from the same untouched document state.
+	var before := {placement = _placement.duplicate(true), units = _units, values = _values.duplicate(),
+		raw = _raw.duplicate(), origin = _origin.duplicate(), inventory = _inventory.duplicate(true)}
+	var source_span := float(setup.get("source_span_m", 0.0))
+	var domain: Array = size_class.range if _airframe_package == size_class.airframe else []
+	for attempt: int in SETUP_SIZE_ATTEMPTS:
+		_placement = placed.duplicate(true)
+		_units = units_value
+		# The measured wing (props, rotors and wheels excluded) sets the span, not the model's box.
+		if not _values.has("wing/span") and not _invalid.has("wing/span") and float(setup.get("half_span_m", 0.0)) > 0.0:
+			_set_estimate("wing/span", 2.0 * float(setup.half_span_m) * float(placed.unit_scale))
+		# The measured planform (chords and dihedral, already inside the package domain) replaces the
+		# template's AR 5 rectangle, so wing area, loading and roll stability follow the model.
+		for measured: Array in [["wing/root_chord", "root_chord_m", float(placed.unit_scale)],
+				["wing/tip_chord", "tip_chord_m", float(placed.unit_scale)], ["wing/dihedral_deg", "dihedral_deg", 1.0]]:
+			var number := float(setup.get(measured[1], NAN)) * float(measured[2])
+			if is_finite(number) and number >= 0.0 and not _values.has(measured[0]) and not _invalid.has(measured[0]):
+				_set_estimate(measured[0], number)
+		_fill_estimates()
+		var summary: Dictionary = Compiler.summarize(definition())
+		var excess := _size_excess(summary)
+		if not owns_scale or source_span <= 0.0 or domain.size() != 2:
+			break
+		var resized := float(placed.unit_scale)
+		if excess > 1.0:
+			var limit := float(domain[1]) * 0.98 / (source_span * float(Placement.UNITS["m"]))
+			resized = minf(resized * sqrt(excess) * 1.03, limit)
+		elif _unbalanced(summary):
+			# Tail-heavy even with the battery forward and the nose weight capped by the mass range:
+			# a slightly smaller version is lighter and leaves room to balance it.
+			var floor_scale := float(domain[0]) * 1.02 / (source_span * float(Placement.UNITS["m"]))
+			resized = maxf(resized * 0.9, minf(floor_scale, resized)) # shrinking never grows a model
+		# The last attempt keeps its filled state: a remaining excess is then reported by the compiler.
+		if absf(resized - float(placed.unit_scale)) <= float(placed.unit_scale) * 0.001 or attempt == SETUP_SIZE_ATTEMPTS - 1:
+			break
+		placed["unit_scale"] = resized
+		units_value = ""
+		_placement = before.placement.duplicate(true)
+		_units = before.units
+		_values = before.values.duplicate()
+		_raw = before.raw.duplicate()
+		_origin = before.origin.duplicate()
+		_inventory = before.inventory.duplicate(true)
+	_touch()
+	var chosen := choose_source_installation(_installation_proposal, revision, true)
+	if not chosen.ok:
+		# Nothing of a refused setup stays in the draft.
+		_placement = before.placement
+		_units = before.units
+		_values = before.values
+		_raw = before.raw
+		_origin = before.origin
+		_inventory = before.inventory
+		_power_package = kept_package
+		_airframe_package = kept_airframe
+		_installation_proposal = kept_proposal
+		_touch()
+		return chosen
+	var bounds := placed_bounds()
+	return R.ok({scaled = units_value.is_empty() and owns_scale,
+		flown_span_m = float(bounds.max[1]) - float(bounds.min[1]) if not bounds.is_empty() else 0.0})
+
+
+const SETUP_SIZE_ATTEMPTS := 5
+const PUSHER_GAP_M := 0.04
+const PUSHER_TAIL_CLEARANCE_M := 0.08
+
+## Fills empty fields with starting estimates, proposes the inventory and fits the estimates.
+func _fill_estimates() -> void:
+	var starting: Dictionary = starting_values()
+	var filled := {}
+	for path: String in starting:
+		if not _values.has(path) and not _invalid.has(path):
+			_set_estimate(path, float(starting[path]))
+			filled[path] = true
+	# A pusher sits in a slot just behind the wing root, as on electric park jets: its thrust line
+	# stays near the balance point. Only estimated mounts move.
+	if _power_package in PUSHER_PACKAGES and filled.has("equipment/hub_position/0") and _values.has("wing/root_chord"):
+		var hub_x := float(_values["wing/root_chord"]) + PUSHER_GAP_M
+		# A deep (or biplane-equivalent) root chord must not push the propeller past the tail.
+		if _values.has("fuselage/tail_x"):
+			hub_x = minf(hub_x, float(_values["fuselage/tail_x"]) - PUSHER_TAIL_CLEARANCE_M)
+		_set_estimate("equipment/hub_position/0", hub_x)
+		if filled.has("equipment/hub_position/2") and _values.has("fuselage/center_z"):
+			_set_estimate("equipment/hub_position/2", float(_values["fuselage/center_z"]))
+		if filled.has("equipment/esc_position/0"):
+			_set_estimate("equipment/esc_position/0", hub_x - 0.12)
+	if _inventory.is_empty():
+		for item: Variant in Definition.propose_airframe_inventory(definition()):
+			if item is Dictionary and _inventory.size() < Limits.INVENTORY_ITEMS:
+				_inventory.append((item as Dictionary).duplicate(true))
+	_fit_estimates(filled)
+
+
+## True when the estimate is still tail-heavy beyond the package's static-margin range.
+func _unbalanced(summary: Dictionary) -> bool:
+	var airframe: Dictionary = Packages.airframe(_airframe_package)
+	return airframe.ok and summary.has("static_margin") and airframe.value.domain.has("static_margin") 		and float(summary.static_margin) < float(airframe.value.domain.static_margin.min)
+
+
+## How far a size-driven quantity exceeds the package domain: >1 means the aircraft should be larger.
+func _size_excess(summary: Dictionary) -> float:
+	var airframe: Dictionary = Packages.airframe(_airframe_package)
+	if not airframe.ok:
+		return 1.0
+	var domain: Dictionary = airframe.value.domain
+	var excess := 1.0
+	if summary.has("wing_loading_kg_m2") and domain.has("wing_loading_kg_m2"):
+		excess = maxf(excess, float(summary.wing_loading_kg_m2) / (float(domain.wing_loading_kg_m2.max) * 0.95))
+	if summary.has("thrust_to_weight") and domain.has("thrust_to_weight"):
+		excess = maxf(excess, float(summary.thrust_to_weight) / (float(domain.thrust_to_weight.max) * 0.95))
+	return excess
+
+
+## The wingspan ranges [[min, max], ...] in metres the automatic setup chooses from, one per size class
+## (setup_classes()), or [] if a package is unavailable.
+static func span_domain() -> Array:
+	var ranges: Array = []
+	for size_class: Dictionary in setup_classes():
+		ranges.append(size_class.range)
+	return ranges
+
+
+## [{airframe, tractor, pusher, range}] smallest first. Each range is the airframe package's span domain;
+## the trainer starts at SETUP_MIN_SPAN_M, where the park-flyer class ends.
+static func setup_classes() -> Array:
+	var out: Array = []
+	for entry: Array in [[PARKFLYER_AIRFRAME, SMALL_POWER, SMALL_PUSHER], [AIRFRAME_PACKAGE, POWER_PACKAGE, JET_PUSHER]]:
+		var airframe: Dictionary = Packages.airframe(entry[0])
+		if not airframe.ok or not airframe.value.domain.has("wing_span_m"):
+			return []
+		var low := float(airframe.value.domain.wing_span_m.min)
+		var high := float(airframe.value.domain.wing_span_m.max)
+		if entry[0] == AIRFRAME_PACKAGE:
+			low = maxf(low, SETUP_MIN_SPAN_M)
+		var size_class := {airframe = entry[0], tractor = entry[1], pusher = entry[2], range = [low, maxf(low, high)]}
+		if entry[0] == AIRFRAME_PACKAGE:
+			size_class.large_pusher = LARGE_JET_PUSHER
+		out.append(size_class)
+	return out
+
+
+## Realism audit 2026-11-17: the trainer's 4S 800 kV 12x6 installation (about 1 kg of hardware) and balsa
+## densities belong on a Stik-class 1.5 m airframe; below that they made estimates 2-3 times denser than real
+## models (17 of 18 corpus models under 1.3 m diverged hands-off within 10 s). Smaller models use the foam
+## park-flyer class with 3S power, which ends here.
+const SETUP_MIN_SPAN_M := 1.45
+
+
+func _set_estimate(path: String, number: float) -> void:
+	_values[path] = number
+	_raw[path] = format_number(number)
+	_origin[path] = "estimated"
+
+
+## Keeps the estimates this setup just made inside the estimated package's qualified domain, as a
+## builder would: tail chords move the tail volumes inside their range, and the battery is moved to
+## balance the aircraft at SETUP_STATIC_MARGIN. Only `filled` (estimated, never player) values change;
+## source-derived dimensions are left as they are, so a model outside the domain stays refused.
+const SETUP_STATIC_MARGIN := 0.15
+const SETUP_FIT_ITERATIONS := 6
+
+func _fit_estimates(filled: Dictionary) -> void:
+	var airframe: Dictionary = Packages.airframe(_airframe_package)
+	if not airframe.ok:
+		return
+	var domain: Dictionary = airframe.value.domain
+	# A tail-heavy estimate whose battery is already at the nose gets the largest permitted estimated
+	# tailplane, which moves the neutral point aft; a nose weight is the final resort.
+	var tail_heavy := false
+	for _iteration: int in SETUP_FIT_ITERATIONS:
+		var summary: Dictionary = Compiler.summarize(definition())
+		for pair: Array in [["tail_volume_h", "horizontal_tail/chord"], ["tail_volume_v", "vertical_tail/chord"]]:
+			var key: String = pair[0]
+			var path: String = pair[1]
+			if not filled.has(path) or not summary.has(key) or not domain.has(key):
+				continue
+			var volume := float(summary[key])
+			if not is_finite(volume):
+				continue
+			var target := clampf(volume, float(domain[key].min) * 1.1, float(domain[key].max) * 0.9)
+			if tail_heavy and key == "tail_volume_h":
+				target = float(domain[key].max) * 0.9
+			if volume > 0.0 and absf(target - volume) > 1e-9:
+				_set_estimate(path, float(_values[path]) * target / volume)
+		# Keep each estimated tail's aspect ratio in range at the same area (span up, chord down).
+		for shape: Array in [["tail_aspect_ratio", "horizontal_tail/span", "horizontal_tail/chord"],
+				["fin_aspect_ratio", "vertical_tail/height", "vertical_tail/chord"]]:
+			var ratio_key: String = shape[0]
+			var length_path: String = shape[1]
+			var chord_path: String = shape[2]
+			if not filled.has(length_path) or not filled.has(chord_path) or not domain.has(ratio_key) \
+					or not _values.has(length_path) or not _values.has(chord_path):
+				continue
+			var ratio := float(_values[length_path]) / float(_values[chord_path])
+			var wanted := clampf(ratio, float(domain[ratio_key].min) * 1.05, float(domain[ratio_key].max) * 0.95)
+			if ratio > 0.0 and absf(wanted - ratio) > 1e-9:
+				var stretch := sqrt(wanted / ratio)
+				_set_estimate(length_path, float(_values[length_path]) * stretch)
+				_set_estimate(chord_path, float(_values[chord_path]) / stretch)
+		var battery := "equipment/battery_position/0"
+		if filled.has(battery) and summary.has("static_margin"):
+			var before := float(summary.static_margin)
+			if not is_finite(before) or absf(before - SETUP_STATIC_MARGIN) <= 0.005:
+				continue
+			var at := float(_values[battery])
+			_values[battery] = at + 0.01
+			var moved: Dictionary = Compiler.summarize(definition())
+			_values[battery] = at
+			if not moved.has("static_margin"):
+				continue
+			var slope := (float(moved.static_margin) - before) / 0.01
+			if not is_finite(slope) or absf(slope) < 1e-6:
+				continue
+			var low := float(_values.get("fuselage/nose_x", at)) + 0.02
+			var high := float(_values.get("fuselage/tail_x", at)) - 0.02
+			var wanted := at + (SETUP_STATIC_MARGIN - before) / slope
+			_set_estimate(battery, clampf(wanted, minf(low, high), maxf(low, high)))
+			tail_heavy = tail_heavy or wanted < minf(low, high)
+	if filled.has("equipment/battery_position/0"):
+		_add_balance_weight()
+
+
+## A light electric nose cannot balance a long tail: as a builder would, add one visible estimated
+## nose weight that brings the balance point to SETUP_STATIC_MARGIN (at most BALANCE_MAX_KG).
+const BALANCE_ID := "item_balance_estimated"
+const BALANCE_NAME := "Nose balance weight (estimated)"
+const BALANCE_MAX_KG := 1.0
+
+func _add_balance_weight() -> void:
+	if _has_item(BALANCE_ID) or _inventory.size() >= Limits.INVENTORY_ITEMS:
+		return
+	var summary: Dictionary = Compiler.summarize(definition())
+	if not summary.has("static_margin") or float(summary.static_margin) >= SETUP_STATIC_MARGIN - 0.005 \
+			or not summary.has("mean_chord_m") or not summary.has("neutral_point_x_m") or not summary.has("mass_kg"):
+		return
+	var target := float(summary.neutral_point_x_m) - SETUP_STATIC_MARGIN * float(summary.mean_chord_m)
+	var cg := float((summary.cg_m as Array)[0])
+	var at := float(_values.get("fuselage/nose_x", NAN)) + 0.03
+	if not is_finite(at) or at >= target:
+		return
+	var mass := float(summary.mass_kg) * (cg - target) / (target - at)
+	var airframe: Dictionary = Packages.airframe(_airframe_package)
+	if airframe.ok and airframe.value.domain.has("mass_kg"):
+		# Never balance an aircraft out of the package's mass range.
+		mass = minf(mass, float(airframe.value.domain.mass_kg.max) * 0.98 - float(summary.mass_kg))
+	if not is_finite(mass) or mass <= 0.0:
+		return
+	_inventory.append({id = BALANCE_ID, name = BALANCE_NAME, mass = minf(mass, BALANCE_MAX_KG),
+		position = [at, 0.0, 0.0], size = [0.03, 0.03, 0.03], kind = "estimated"})
 
 
 func units() -> String:
@@ -390,6 +723,8 @@ func propose_inventory() -> void:
 		if str(item.get("kind", "")) != "estimated":
 			kept.append(item)
 			kept_ids[str(item.id)] = true
+		else:
+			_forget_item_text(str(item.id))
 	for item: Variant in Definition.propose_airframe_inventory(definition()):
 		if item is Dictionary and not kept_ids.has(str(item.id)) and kept.size() < Limits.INVENTORY_ITEMS:
 			kept.append((item as Dictionary).duplicate(true))
@@ -414,27 +749,51 @@ func remove_item(id: String) -> void:
 	for index: int in _inventory.size():
 		if str(_inventory[index].id) == id:
 			_inventory.remove_at(index)
+			_forget_item_text(id)
 			_touch()
 			return
 
 
 ## Edits one inventory value from typed text. `key` is mass, x, y or z. False when not a number.
+## Text that is not a number (empty included) belongs to the document and is an edit: revision,
+## fingerprint and dirty state change, it is saved, backed up and restored, and it blocks
+## compilation. The item keeps its last accepted number. A later valid edit clears it; repeating
+## the same rejected text is not a new edit. Unknown items and keys record nothing.
 func set_item_raw(id: String, key: String, text: String) -> bool:
-	var parsed := parse_number(text)
-	if is_nan(parsed):
+	if not ITEM_KEYS.has(key):
 		return false
+	text = clean_text(text)
+	var slot := _item_slot(id, key)
 	for item: Dictionary in _inventory:
 		if str(item.id) != id:
 			continue
+		# Over-long text is rejected whole: its stored prefix could otherwise read as a number.
+		var parsed := parse_number(text) if text.length() <= Limits.RAW_NUMBER_CHARACTERS else NAN
+		if is_nan(parsed):
+			var kept := text.substr(0, Limits.RAW_NUMBER_CHARACTERS)
+			if not _item_invalid.has(slot) or str(_item_invalid[slot]) != kept:
+				_item_invalid[slot] = kept
+				_touch()
+			return false
 		match key:
 			"mass": item["mass"] = parsed
 			"x": item.position[0] = parsed
 			"y": item.position[1] = parsed
 			"z": item.position[2] = parsed
-			_: return false
+		_item_invalid.erase(slot)
 		_touch()
 		return true
 	return false
+
+
+## True while an inventory number holds rejected text.
+func is_item_invalid(id: String, key: String) -> bool:
+	return _item_invalid.has(_item_slot(id, key))
+
+
+## The rejected text of an inventory number, or "" when it holds none.
+func item_invalid_text(id: String, key: String) -> String:
+	return str(_item_invalid.get(_item_slot(id, key), ""))
 
 
 func set_item_name(id: String, item_name: String) -> void:
@@ -460,6 +819,31 @@ func _has_item(id: String) -> bool:
 		if str(item.id) == id:
 			return true
 	return false
+
+
+static func _item_slot(id: String, key: String) -> String:
+	return id + "/" + key
+
+
+func _forget_item_text(id: String) -> void:
+	for key: String in ITEM_KEYS:
+		_item_invalid.erase(_item_slot(id, key))
+
+
+func _sorted_item_slots() -> Array:
+	var slots: Array = _item_invalid.keys()
+	slots.sort()
+	return slots
+
+
+func _item_issue(slot: String) -> Dictionary:
+	var parts := slot.rsplit("/", true, 1)
+	var shown := parts[0]
+	for item: Dictionary in _inventory:
+		if str(item.id) == parts[0] and not str(item.get("name", "")).is_empty():
+			shown = str(item.name)
+	return R.diagnostic(R.FIELD_INVALID, "\"%s\" is not a number.", ITEM_FIELD_PREFIX + slot, "weight_balance",
+		["%s · %s" % [shown, str(ITEM_KEYS.get(parts[1], parts[1]))]])
 
 
 # --- Presentation: bound parts and appearance -----------------------------------------------
@@ -522,6 +906,19 @@ func snapshot(step := "") -> Dictionary:
 	if not _servo_integration.is_empty():
 		saved.format = SERVO_SNAPSHOT_FORMAT
 		saved.servo_integration = _servo_integration
+	# Optional member, written only for the pusher variant: every other snapshot is unchanged.
+	if _power_package != POWER_PACKAGE:
+		saved.power_package = _power_package
+	# Optional member, written only for the park-flyer class: every other snapshot is unchanged.
+	if _airframe_package != AIRFRAME_PACKAGE:
+		saved.airframe_package = _airframe_package
+	# Optional member, written only when inventory text was rejected: other snapshots are unchanged.
+	if not _item_invalid.is_empty():
+		var rejected: Array = []
+		for slot: String in _sorted_item_slots():
+			var parts := slot.rsplit("/", true, 1)
+			rejected.append({"item": parts[0], "key": parts[1], "text": str(_item_invalid[slot])})
+		saved.inventory_raw = rejected
 	return saved
 
 
@@ -545,9 +942,15 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 		if not checked.ok or observations == null or not observations.matches(admitted) or checked.value != observations.context():
 			return R.fail(R.IDENTITY_MISMATCH, "The saved source declarations do not match this model. Re-import the ZIP.","source_observations","import")
 		context = checked.value
+	var power_package: Variant = saved.get("power_package", POWER_PACKAGE)
+	if typeof(power_package) != TYPE_STRING or power_package not in POWER_PACKAGES:
+		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
+	var airframe_package: Variant = saved.get("airframe_package", AIRFRAME_PACKAGE)
+	if typeof(airframe_package) != TYPE_STRING or airframe_package not in AIRFRAME_PACKAGES:
+		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	var installation := {}
 	if saved.format == INSTALLATION_SNAPSHOT_FORMAT or (saved.format == SERVO_SNAPSHOT_FORMAT and saved.has("source_installation")):
-		var checked := Installation.validate(saved.get("source_installation"),context,AIRFRAME_PACKAGE,POWER_PACKAGE)
+		var checked := Installation.validate(saved.get("source_installation"),context,airframe_package,power_package)
 		if not checked.ok:
 			return checked
 		if not Installation.required(admitted) or checked.value.source_sha256 != admitted.sha256():
@@ -601,6 +1004,7 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 		var restored: Dictionary = _restored_item(item)
 		if not restored.is_empty() and items.size() < Limits.INVENTORY_ITEMS:
 			items.append(restored)
+	var rejected_text := _restored_item_text(saved.get("inventory_raw", []), items)
 	var placed := Placement.unresolved()
 	var stored_placement: Variant = saved.get("placement", {})
 	if stored_placement is Dictionary:
@@ -620,7 +1024,9 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	_source_installation = installation
 	_servo_integration = servo
 	_review_observations = observations.context() if observations != null and observations.matches(admitted) else context.duplicate(true)
-	_installation_proposal = Installation.make(_source,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
+	_power_package = power_package
+	_airframe_package = airframe_package
+	_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
 	_placement = placed
 	_units = str(saved.get("units", "")) if Placement.UNITS.has(str(saved.get("units", ""))) else ""
 	_values = values
@@ -628,6 +1034,7 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	_invalid = invalid
 	_origin = origin
 	_inventory = items
+	_item_invalid = rejected_text
 	_bindings = _whole_numbers(saved.get("bindings", {})) if saved.get("bindings", {}) is Dictionary and admitted != null else {}
 	_appearance = (saved.get("appearance", {}) as Dictionary).duplicate(true) if saved.get("appearance", {}) is Dictionary \
 		and not (saved.get("appearance", {}) as Dictionary).is_empty() else {"mode": "original"}
@@ -717,6 +1124,34 @@ static func _restored_item(item: Variant) -> Dictionary:
 		position = position, size = size, kind = kind}
 
 
+## Rejected inventory text of a snapshot, "<item id>/<key>" -> text. Like the field `invalid` list,
+## entries that are not exactly {item, key, text} for a restored item, a known key and text that is
+## still not a number are dropped; an absent member (every older snapshot) means none.
+static func _restored_item_text(stored: Variant, items: Array) -> Dictionary:
+	var found := {}
+	if not stored is Array:
+		return found
+	var ids := {}
+	for item: Dictionary in items:
+		ids[str(item.id)] = true
+	for entry: Variant in (stored as Array).slice(0, items.size() * ITEM_KEYS.size()):
+		if not entry is Dictionary or (entry as Dictionary).size() != 3:
+			continue
+		var id: Variant = entry.get("item")
+		var key: Variant = entry.get("key")
+		var text: Variant = entry.get("text")
+		if typeof(id) != TYPE_STRING or typeof(key) != TYPE_STRING or typeof(text) != TYPE_STRING \
+				or not ids.has(id) or not ITEM_KEYS.has(key):
+			continue
+		var typed: String = text
+		# Text cut at the limit is the stored prefix of an over-long rejection and may look numeric.
+		if typed.length() > Limits.RAW_NUMBER_CHARACTERS or clean_text(typed) != typed \
+				or (typed.length() < Limits.RAW_NUMBER_CHARACTERS and not is_nan(parse_number(typed))):
+			continue
+		found[_item_slot(id, key)] = typed
+	return found
+
+
 ## A float64 as the 16 hex digits of its IEEE 754 bytes: exact through any text format.
 static func exact(value: float) -> String:
 	var bytes := PackedByteArray()
@@ -764,7 +1199,7 @@ static func _from_exact_point(stored: Variant) -> Array:
 func definition() -> Dictionary:
 	var record := {
 		"format": Definition.FORMAT, "aircraft_uuid": _uuid,
-		"airframe_package": AIRFRAME_PACKAGE, "power_package": POWER_PACKAGE,
+		"airframe_package": _airframe_package, "power_package": _power_package,
 		"inventory": _inventory.duplicate(true),
 	}
 	for path: String in _values:
@@ -847,7 +1282,7 @@ func summary() -> Dictionary:
 func issues() -> Array:
 	var found: Array = []
 	if needs_source_installation():
-		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import"))
+		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.blocked(_source),"source_installation","import"))
 	# A confirmed ClearView installation compiles to the same physical bytes as any other source
 	# (compiler.gd strips source metadata), so it follows the ordinary experimental trial gate.
 	if _source == null:
@@ -860,10 +1295,12 @@ func issues() -> Array:
 		var entry: Dictionary = field(path)
 		found.append(R.diagnostic(R.FIELD_INVALID, "\"%s\" is not a number.", path, str(entry.get("step", "")),
 			[str(entry.get("label", path))]))
+	for slot: String in _sorted_item_slots():
+		found.append(_item_issue(slot))
 	var checked: Dictionary = Definition.validate_complete(definition())
 	if not checked.ok:
 		found.append_array(checked.diagnostics)
-	elif _invalid.is_empty() and not needs_source_installation():
+	elif _invalid.is_empty() and _item_invalid.is_empty() and not needs_source_installation():
 		var compiled: Dictionary = compile()
 		if not compiled.ok:
 			found.append_array(compiled.diagnostics)
@@ -875,9 +1312,15 @@ func compile() -> Dictionary:
 	if _compiled_revision == revision:
 		return _compiled
 	if needs_source_installation():
-		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
+		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.blocked(_source),"source_installation","import")
 	elif not _invalid.is_empty():
 		_compiled = R.fail(R.FIELD_INVALID, "Correct the highlighted values first.")
+	elif not _item_invalid.is_empty():
+		# Rejected inventory text: the last accepted number is a stale preview, never a flight input.
+		var named: Array = []
+		for slot: String in _sorted_item_slots():
+			named.append(_item_issue(slot))
+		_compiled = R.fail_all(named)
 	else:
 		_compiled = Compiler.compile_candidate(definition())
 	_compiled_revision = revision
@@ -910,6 +1353,8 @@ func step_status(step: String) -> String:
 			resolved += 1
 		if _invalid.has(entry.path):
 			broken = true
+	if step == "weight_balance" and not _item_invalid.is_empty():
+		broken = true
 	if step == "weight_balance" and _inventory.is_empty():
 		return STATUS_NEEDS_ATTENTION if broken else (STATUS_IN_PROGRESS if resolved > 0 else STATUS_NOT_STARTED)
 	if broken:

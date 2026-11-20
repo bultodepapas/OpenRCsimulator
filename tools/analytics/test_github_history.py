@@ -151,6 +151,8 @@ class HistoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory, \
                 mock.patch.object(history, "fetch_traffic", return_value=fake_days), \
                 mock.patch.object(history, "fetch_assets", side_effect=history.CollectionError("unavailable")), \
+                mock.patch.object(history, "fetch_clones", return_value=[]), \
+                mock.patch.object(history, "fetch_community", side_effect=history.CollectionError("unavailable")), \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             result = history.collect(Path(directory), "example/repo", "*.zip")
             self.assertEqual(result, 1)
@@ -161,6 +163,105 @@ class HistoryTests(unittest.TestCase):
             report = (Path(directory) / "report.html").read_text(encoding="utf-8")
             self.assertIn("release assets</td><td>failed", report)
             self.assertIn("traffic</td><td>succeeded", report)
+
+    def test_clones_use_their_own_daily_table(self):
+        started = "2026-10-02T12:00:00.000000Z"
+        with mock.patch.object(history, "github_json", return_value={"clones": [
+                {"timestamp": "2026-10-01T00:00:00Z", "count": 40, "uniques": 7}]}) as api:
+            days = history.fetch_clones("example/repo", started)
+        self.assertIn("traffic/clones?per=day", api.call_args.args[0])
+        history.save_clones(self.db, days, started, "2026-10-02T12:00:01.000000Z")
+        self.assertEqual(self.db.execute("SELECT day_utc, views, uniques FROM clone_days").fetchall(),
+                         [("2026-10-01", 40, 7)])
+        self.assertEqual(self.db.execute("SELECT COUNT(*) FROM traffic_days").fetchone()[0], 0)
+
+    def community_responses(self):
+        return [
+            {"stargazers_count": 3, "forks_count": 1, "subscribers_count": 2, "open_issues_count": 4},
+            [{"referrer": "reddit.com", "count": 9, "uniques": 5}],
+            [{"path": "/o/r/releases", "title": "Releases", "count": 6, "uniques": 4}],
+            [{"tag_name": "v1", "draft": False, "prerelease": True, "published_at": "2026-10-01T10:00:00Z"},
+             {"tag_name": "wip", "draft": True, "published_at": None}],
+            [{"starred_at": "2026-10-01T03:00:00Z", "user": {"login": "someone"}},
+             {"starred_at": "2026-10-01T22:00:00Z", "user": {"login": "another"}},
+             {"starred_at": "2026-10-03T00:00:00Z", "user": {"login": "third"}}],
+        ]
+
+    def test_community_keeps_counters_popular_lists_releases_and_star_days_only(self):
+        with mock.patch.object(history, "github_json", side_effect=self.community_responses()) as api:
+            data = history.fetch_community("example/repo")
+        self.assertEqual(api.call_args_list[-1].kwargs["accept"], "application/vnd.github.star+json")
+        self.assertEqual(data["counters"], {"stars": 3, "forks": 1, "watchers": 2, "open_issues": 4})
+        self.assertEqual(data["star_days"], {"2026-10-01": 2, "2026-10-03": 1})
+        self.assertEqual([r["tag"] for r in data["releases"]], ["v1"])
+        self.assertNotIn("someone", repr(data))
+        history.save_community(self.db, data, "2026-10-04T00:00:00.000000Z", "2026-10-04T00:00:01.000000Z")
+        history.save_community(self.db, {**data, "star_days": {"2026-10-01": 1}},
+                               "2026-10-05T00:00:00.000000Z", "2026-10-05T00:00:01.000000Z")
+        self.assertEqual(self.db.execute("SELECT COUNT(*) FROM repo_counters").fetchone()[0], 2)
+        self.assertEqual(self.db.execute("SELECT * FROM star_days").fetchall(), [("2026-10-01", 1)])
+        self.assertEqual(self.db.execute("SELECT tag, prerelease FROM releases").fetchall(), [("v1", 1)])
+        self.assertEqual(self.db.execute("SELECT referrer, count FROM popular_referrers").fetchall(),
+                         [("reddit.com", 9), ("reddit.com", 9)])
+
+    def test_community_rejects_malformed_entries(self):
+        bad = self.community_responses()
+        bad[1] = [{"referrer": "", "count": 1, "uniques": 1}]
+        with mock.patch.object(history, "github_json", side_effect=bad), self.assertRaises(history.CollectionError):
+            history.fetch_community("example/repo")
+
+    def test_a_database_error_in_one_source_keeps_the_others(self):
+        fake_days = [{"day": "2026-10-01", "views": 3, "uniques": 2, "status": "observed_after_day"}]
+        data = {"counters": {"stars": 1, "forks": 0, "watchers": 0, "open_issues": 0}, "referrers": [],
+                "paths": [], "releases": [], "star_days": {}}
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(history, "fetch_traffic", return_value=fake_days), \
+                mock.patch.object(history, "fetch_assets", return_value=[asset(1, 5)]), \
+                mock.patch.object(history, "fetch_clones", return_value=fake_days), \
+                mock.patch.object(history, "fetch_community", return_value=data), \
+                mock.patch.object(history, "save_community", side_effect=sqlite3.IntegrityError("dup")), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(history.collect(Path(directory), "example/repo", "*.zip"), 1)
+            db = sqlite3.connect(Path(directory) / history.DATABASE_NAME)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM traffic_days").fetchone()[0], 1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM clone_days").fetchone()[0], 1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM asset_counts").fetchone()[0], 1)
+            self.assertEqual(db.execute("SELECT kind, success FROM attempts ORDER BY id").fetchall(),
+                             [("traffic", 1), ("release assets", 1), ("clones", 1), ("community", 0)])
+            db.close()
+            report = (Path(directory) / "report.html").read_text(encoding="utf-8")
+            self.assertIn("community</td><td>failed", report)
+
+    def test_community_dedupes_keys_and_guards_truncated_star_lists(self):
+        responses = self.community_responses()
+        responses[1] = [{"referrer": "a", "count": 2, "uniques": 1}, {"referrer": "a", "count": 1, "uniques": 1}]
+        responses[3].append({"tag_name": "v1", "draft": False, "published_at": "2026-10-02T00:00:00Z"})
+        responses[3].append({"tag_name": "v2", "draft": False, "published_at": None})
+        with mock.patch.object(history, "github_json", side_effect=responses):
+            data = history.fetch_community("example/repo")
+        self.assertEqual([r["count"] for r in data["referrers"]], [2])
+        self.assertEqual([r["tag"] for r in data["releases"]], ["v1"])
+        truncated = self.community_responses()
+        truncated[0] = {**truncated[0], "stargazers_count": 100}
+        with mock.patch.object(history, "github_json", side_effect=truncated), \
+                self.assertRaises(history.CollectionError):
+            history.fetch_community("example/repo")
+
+    def test_version_one_archive_is_upgraded_in_place(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / history.DATABASE_NAME
+            old = sqlite3.connect(path)
+            old.execute("CREATE TABLE settings (repo TEXT NOT NULL, asset_glob TEXT NOT NULL)")
+            old.execute("INSERT INTO settings VALUES ('example/repo', '*.zip')")
+            old.execute("PRAGMA user_version = 1")
+            old.commit()
+            old.close()
+            upgraded = sqlite3.connect(path)
+            history.initialize(upgraded, "example/repo", "*.zip")
+            tables = {row[0] for row in upgraded.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            self.assertTrue({"clone_days", "repo_counters", "star_days", "releases"} <= tables)
+            self.assertEqual(upgraded.execute("PRAGMA user_version").fetchone()[0], 2)
+            upgraded.close()
 
     def test_output_directory_cannot_mix_repository_or_asset_filter(self):
         for repo, pattern in (("other/repo", "*.zip"), ("example/repo", "*.tar.gz")):

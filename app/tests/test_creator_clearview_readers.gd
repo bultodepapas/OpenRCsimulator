@@ -122,10 +122,52 @@ func _zip() -> void:
 		check("model references resolve unique case", pack.value.models()[0].ok and pack.value.models()[0].case_adjusted)
 	var two := Package.inspect_bytes(_zip_bytes([["One/params.txt",v5],["One/data/body.ac",content],["Two/params.txt",v5],["Two/data/body.ac",content]]))
 	check("pack inventory has two distinct model roots", two.ok and two.value.models().size() == 2)
+	# Cancellation is terminal at every poll, including during the last model (audit follow-up 02).
+	var two_bytes := _zip_bytes([["One/params.txt",v5],["One/data/body.ac",content],["Two/params.txt",v5],["Two/data/body.ac",content]])
+	var total := [0]
+	check("uncancelled pack counts its polls", Package.inspect_bytes(two_bytes,"two.zip",func() -> bool:
+		total[0] += 1
+		return false).ok and total[0] > 4)
+	var partial := 0
+	for threshold: int in range(1, total[0] + 1):
+		var seen := [0]
+		var outcome := Package.inspect_bytes(two_bytes,"two.zip",func() -> bool:
+			seen[0] += 1
+			return seen[0] >= threshold)
+		if outcome.ok:
+			partial += 1
+	check("cancellation at any poll never returns a partial inventory", partial == 0)
+	var outer := Package.inspect_bytes(_zip_bytes([["Outer/params.txt",v5],["Outer/data/body.ac",content],["Outer/Inner/params.txt",v5],["Outer/Inner/data/body.ac",content]]))
+	var inner_alone := Package.inspect_bytes(_zip_bytes([["Outer/Inner/params.txt",v5],["Outer/Inner/data/body.ac",content]]))
+	check("nested complete model is named, not silently dropped", outer.ok and outer.value.models().size() == 2
+		and outer.value.models()[0].ok and not outer.value.models()[1].ok and outer.value.models()[1].get("nested", false)
+		and outer.value.models()[1].root == "Outer/Inner" and outer.value.models()[1].diagnostics[0].code == R.SOURCE_UNSUPPORTED)
+	check("nested model alone remains importable", inner_alone.ok and inner_alone.value.models().size() == 1 and inner_alone.value.models()[0].ok)
 
 func _params() -> void:
 	var v5 := "verNumber 5.0\nmodelType 1.0\nmodelName Plane with spaces.ac\nbreakPart Wing 1 2\nbreakPart Tail 3 4\nunknownField 100.0 >=0, description\n"
 	var result := Params.read(v5.to_ascii_buffer())
+	var legacy := Params.read("verNumber 0.0
+modelType 1.0
+modelName body.ac
+".to_ascii_buffer())
+	check("flat legacy v0 parameters are read as their own dialect", legacy.ok and legacy.value.version == 0)
+	var nameless := Params.read("verNumber 3.0
+modelType 0.0
+modelWeight 4.6
+".to_ascii_buffer())
+	check("an old flat dialect without modelName uses the ClearView default body.ac", nameless.ok
+		and nameless.value.model_name == Params.DEFAULT_MODEL and nameless.diagnostics.any(
+			func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
+	check("v5 still requires modelName", not Params.read("verNumber 5.0
+modelType 1.0
+".to_ascii_buffer()).ok)
+	check("sectioned parameters still require v6", not Params.read("verNumber 0.0
+modelType 1.0
+modelName body.ac
+#begin params
+#end params
+".to_ascii_buffer()).ok)
 	check("v5 metadata", result.ok and result.value.version == 5 and result.value.model_name == "Plane with spaces.ac")
 	check("ordered repeated observations", result.ok and result.value.records.size() == 6 and result.value.records[3].key == "breakPart" and result.value.records[4].key == "breakPart")
 	check("bare annotation kept", result.ok and result.value.records[5].raw_rhs == "100.0 >=0, description")
@@ -142,6 +184,16 @@ func _params() -> void:
 	check("editor tag line reported", tagged.ok and tagged.diagnostics.size() == 2 and tagged.diagnostics[1].message == Params.TAG_NOTE \
 		and tagged.diagnostics[1].arguments == ["1"])
 	check("untagged parameters keep a single note", result.ok and result.diagnostics.size() == 1)
+	# Real downloads: CVHeliPak (v3, modelType 0, no modelName) and Harrier/VJ-101 (flat v0).
+	var heli := Params.read("verNumber 3.0\nmodelType 0.0\nmodelWeight 4.6\n".to_ascii_buffer())
+	check("pre-v5 helicopter defaults its model file", heli.ok and heli.value.version == 3 and heli.value.model_type == 0
+		and heli.value.model_name == Params.DEFAULT_MODEL and heli.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
+	var vtol := Params.read("modelMass 15.0\nmodelName body.ac\nmodelType 1.0\nverNumber 0.0\n".to_ascii_buffer())
+	check("flat v0 airplane accepted with its named model", vtol.ok and vtol.value.version == 0 and vtol.value.model_name == "body.ac"
+		and not vtol.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Params.DEFAULT_NOTE))
+	check("v5 still requires modelName", not Params.read("verNumber 5\nmodelType 1\n".to_ascii_buffer()).ok)
+	check("old dialects must be flat", not Params.read("#begin params\nverNumber 3\nmodelType 0\n#end params\n".to_ascii_buffer()).ok)
+	check("unknown future dialect refused", not Params.read("verNumber 7\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()).ok)
 	check("tag line cannot supply the identity", not Params.read("$verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()).ok)
 
 func _ac3d() -> void:

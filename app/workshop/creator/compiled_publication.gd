@@ -146,6 +146,24 @@ static func valid_pair(definition: Dictionary, raw: PackedByteArray, uuid: Strin
 		and loaded.model.controls.get("servo_integration") == Definition.ServoLaw.LAW
 
 
+## Semantic check for a revision this process did not capture: the installed compiler must reproduce
+## these exact physics bytes from this exact definition. Matching hashes and a receipt only record an
+## association; they do not prove derivation (import closeout follow-up 02, finding 4). Compilation is
+## deterministic; package data and the loader belong to Binding.PROFILE, so changing them needs a new
+## profile. A mismatch means "recompile as a new revision", never silent acceptance.
+static func verify_derivation(definition: Dictionary, raw: PackedByteArray, uuid: String) -> Dictionary:
+	if not valid_pair(definition, raw, uuid):
+		return _mismatch("saved_aircraft/compile_binding")
+	var compiler: Script = load("res://workshop/creator/compiler.gd")
+	var compiled: Dictionary = compiler.compile_candidate(definition)
+	if not compiled.get("ok", false) or not AcceptedCandidate.is_accepted(compiled.value):
+		return _mismatch("saved_aircraft/derivation")
+	var candidate: Variant = compiled.value
+	if candidate.raw_bytes() != raw or candidate.aircraft_id() != Definition.aircraft_id(uuid):
+		return _mismatch("saved_aircraft/derivation")
+	return R.ok(true)
+
+
 static func _mismatch(field: String = "saved_aircraft") -> Dictionary:
 	return R.fail(R.IDENTITY_MISMATCH, "The compiled aircraft does not match this document.", field, "review_test")
 

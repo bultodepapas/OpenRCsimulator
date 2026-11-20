@@ -107,8 +107,7 @@ func _run() -> void:
 		printerr(candidate.get("diagnostics",[]),plain_candidate.get("diagnostics",[]))
 		quit(1)
 		return
-	check("a confirmed installation follows the ordinary trial gate",not doc.issues().any(func(d: Dictionary) -> bool:
-		return d.message in [Installation.FLIGHT_UNAVAILABLE,Installation.REQUIRED]))
+	check("a declared estimate under the historical law has no qualification block",not doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
 	var reopened := Authoring.new()
 	var saved: Dictionary = Bytes.decode(Bytes.encode(doc.snapshot()).value.bytes).value.data
 	check("v3 survives exact persisted roundtrip",reopened.restore(saved,source,Observations.inspect(source).value).ok and reopened.snapshot() == doc.snapshot() and reopened.source_installation() == doc.source_installation())

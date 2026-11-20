@@ -94,6 +94,23 @@ func _metadata(valid: PackedByteArray, native: PackedByteArray) -> void:
 	check("metadata total is bounded", not oversized.ok and oversized.diagnostics[0].code == "SOURCE_LIMIT")
 	var truncated := _with_segments(valid,[PackedByteArray([255,0xE1,0,200,1,2])])
 	check("metadata length beyond the file refused", not Jpeg.inspect(truncated,200).ok)
+	# Real downloads (Mig-15, Parkzone Vapor): Adobe APP14 with encoder-hint flags 0x8000/0xC000.
+	for flags: int in [0x80, 0xC0]:
+		var adobe := _with_segments(valid,[_segment(0xEE,PackedByteArray([65,100,111,98,101,0,100,flags,0,0,0,1]))])
+		check("Adobe encoder-hint flags 0x%X00 accepted" % flags, Jpeg.inspect(adobe,200).ok and Images.normalize(adobe).ok)
+	# Real downloads (EF-Sabre): 4:2:2 luma sampling, in both orientations.
+	for sampling: int in [0x21, 0x12]:
+		var base := _jpeg(1,1,PackedByteArray([0,255,217]),true)
+		var at := 0
+		for index: int in base.size() - 2:
+			if base[index] == 3 and base[index + 1] == 1 and base[index + 2] == 0x22:
+				at = index + 2
+		base[at] = sampling
+		check("4:2:2 sampling 0x%X validated and decoded" % sampling, at > 0 and Jpeg.inspect(base,200).ok and Images.normalize(base).ok)
+		var short := base.slice(0, base.size() - 3) + PackedByteArray([255,217])
+		check("4:2:2 sampling 0x%X still checks every block" % sampling, not Jpeg.inspect(short,200).ok)
+	var ycck := _with_segments(valid,[_segment(0xEE,PackedByteArray([65,100,111,98,101,0,100,0,0,0,0,2]))])
+	check("Adobe YCCK transform still refused", not Jpeg.inspect(ycck,200).ok)
 	check("progressive coding still refused", not Jpeg.inspect(_with_segments(valid,[]).slice(0,2) + _segment(0xC2,PackedByteArray([8,0,1,0,1,3,1,0x11,0,2,0x11,0,3,0x11,0])),200).ok)
 
 ## Insert segments after SOI and any leading JFIF APP0, as real files order them.

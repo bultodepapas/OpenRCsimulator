@@ -252,44 +252,98 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 	var valve_gain: float = 0.042 * (0.65 + 0.35 * ratio)
 	var propeller_gain: float = 0.095 * (0.35 + 0.65 * ratio) * (0.7 + 0.3 * load)
 	var fade_alpha: float = 1.0 - exp(-1.0 / (FADE_SECONDS * RATE))
+	# This loop runs RATE times per second. Everything that is constant within the block (branch conditions,
+	# harmonic counts, gains, source coefficients) is resolved once here, and the per-sample state lives in
+	# locals. Each per-sample expression keeps the operand order of the former per-sample helpers (exhaust wave,
+	# band-limited sine, opportunity scheduling), so the PCM is unchanged bit for bit: 5,760 blocks of 2T/4T
+	# telemetry compared byte for byte, 2026-11-19 (docs/research/performance-audit-2026-11-19).
+	# The harmonic weights are authored timbres, not recorded spectra: 2T emphasizes a sharper port/exhaust
+	# pulse, 4T has a rounder exhaust plus its independent cam/valve layer at half crank order.
+	var cycle_revs_f: float = float(cycle_revs)
+	var opportunity_fraction: float = firing_fraction \
+		if running and _finite_nonnegative(snapshot.get("fuel_kg", 1.0), 1.0) > 0.0 else 0.0
+	var target_envelope: float = 1.0 if running else 0.0
+	var combustion_enabled: bool = running and cycle_frequency > 0.0
+	var weights: Array[float] = HARMONICS_2T if family == FAMILY_2T else HARMONICS_4T
+	var harmonic_angles: PackedFloat64Array = PackedFloat64Array()
+	var harmonic_weights: PackedFloat64Array = PackedFloat64Array()
+	for index: int in weights.size():
+		var harmonic: int = index + 1
+		if cycle_frequency * float(harmonic) >= nyquist:
+			break
+		harmonic_angles.append(TAU_VALUE * float(harmonic))
+		harmonic_weights.append(weights[index])
+	var harmonic_count: int = harmonic_angles.size()
+	var mechanical_enabled: bool = rpm > 0.0 and frequency < nyquist
+	var mechanical_second: bool = frequency * 2.0 < nyquist
+	var source_ok: bool = bool(source_mechanical.ok)
+	var source_c1: float = float(source_mechanical.order_1x_cosine_pcm)
+	var source_s1: float = float(source_mechanical.order_1x_sine_pcm)
+	var source_c2: float = float(source_mechanical.order_2x_cosine_pcm)
+	var source_s2: float = float(source_mechanical.order_2x_sine_pcm)
+	var mechanical_second_gain: float = mechanical_gain * 0.20
+	var tau_second: float = TAU_VALUE * 2.0
+	var valve_enabled: bool = family == FAMILY_4T and rpm > 0.0 and cycle_frequency < nyquist
+	var valve_second: bool = cycle_frequency * 2.0 < nyquist
+	var propeller_enabled: bool = blade_frequency > 0.0 and blade_frequency < nyquist
+	var propeller_second: bool = blade_frequency * 2.0 < nyquist
+	var blade_count_f: float = float(blade_count)
+	var shaft: float = _shaft_phase_cycles
+	var envelope: float = _combustion_envelope
+	var scheduled: int = _scheduled_opportunity
+	var accumulator: float = _fraction_accumulator
+	var fires: bool = _opportunity_fires
+	var scheduled_any: bool = false
 	for i: int in frame_count:
-		var opportunity: int = floori(_shaft_phase_cycles / float(cycle_revs))
-		if _scheduled_opportunity < 0:
-			_fraction_accumulator = fposmod(1.0 - firing_fraction, 1.0)
-			_scheduled_opportunity = opportunity - 1
-		while _scheduled_opportunity < opportunity:
-			_schedule_opportunity(firing_fraction if running and _finite_nonnegative(snapshot.get("fuel_kg", 1.0), 1.0) > 0.0 else 0.0)
-			_scheduled_opportunity += 1
-		var cycle_phase: float = fposmod(_shaft_phase_cycles / float(cycle_revs), 1.0)
-		var target_envelope: float = 1.0 if running else 0.0
-		_combustion_envelope += fade_alpha * (target_envelope - _combustion_envelope)
+		var cycle_position: float = shaft / cycle_revs_f
+		var opportunity: int = floori(cycle_position)
+		if scheduled < 0:
+			accumulator = fposmod(1.0 - firing_fraction, 1.0)
+			scheduled = opportunity - 1
+		while scheduled < opportunity:
+			accumulator += opportunity_fraction # _schedule_opportunity(), inlined
+			fires = accumulator >= 1.0
+			if fires:
+				accumulator -= 1.0
+			scheduled_any = true
+			scheduled += 1
+		var cycle_phase: float = fposmod(cycle_position, 1.0)
+		envelope += fade_alpha * (target_envelope - envelope)
 		var combustion: float = 0.0
-		if running and _opportunity_fires and _combustion_envelope > 0.000001 and cycle_frequency > 0.0:
-			combustion = _exhaust_wave(family, cycle_phase, cycle_frequency, nyquist) * combustion_gain * _combustion_envelope
-		var crank_phase: float = fposmod(_shaft_phase_cycles, 1.0)
+		if combustion_enabled and fires and envelope > 0.000001:
+			var wave: float = 0.0 # _exhaust_wave(), inlined
+			for k: int in harmonic_count:
+				wave += harmonic_weights[k] * sin(harmonic_angles[k] * cycle_phase)
+			combustion = wave * combustion_gain * envelope
 		var mechanical: float = 0.0
-		if rpm > 0.0 and frequency < nyquist:
-			if source_mechanical.ok:
+		if mechanical_enabled:
+			var crank_phase: float = fposmod(shaft, 1.0)
+			if source_ok:
 				var crank_angle: float = TAU_VALUE * crank_phase
-				mechanical = source_mechanical.order_1x_cosine_pcm * cos(crank_angle) \
-					+ source_mechanical.order_1x_sine_pcm * sin(crank_angle)
-				if frequency * 2.0 < nyquist:
-					mechanical += source_mechanical.order_2x_cosine_pcm * cos(2.0 * crank_angle) \
-						+ source_mechanical.order_2x_sine_pcm * sin(2.0 * crank_angle)
+				mechanical = source_c1 * cos(crank_angle) + source_s1 * sin(crank_angle)
+				if mechanical_second:
+					mechanical += source_c2 * cos(2.0 * crank_angle) + source_s2 * sin(2.0 * crank_angle)
 			else:
 				mechanical = mechanical_gain * sin(TAU_VALUE * crank_phase)
-				if frequency * 2.0 < nyquist:
-					mechanical += mechanical_gain * 0.20 * sin(TAU_VALUE * 2.0 * crank_phase)
+				if mechanical_second:
+					mechanical += mechanical_second_gain * sin(tau_second * crank_phase)
 		var valve: float = 0.0
-		if family == FAMILY_4T and rpm > 0.0 and cycle_frequency < nyquist:
-			valve = valve_gain * (sin(TAU_VALUE * cycle_phase) + 0.28 * _bandlimited_sine(cycle_phase, 2, cycle_frequency, nyquist))
+		if valve_enabled:
+			valve = valve_gain * (sin(TAU_VALUE * cycle_phase) + 0.28 * (sin(tau_second * cycle_phase) if valve_second else 0.0))
 		var propeller: float = 0.0
-		if blade_frequency > 0.0 and blade_frequency < nyquist:
-			var blade_phase: float = fposmod(_shaft_phase_cycles * float(blade_count), 1.0)
-			propeller = propeller_gain * (sin(TAU_VALUE * blade_phase) + 0.15 * _bandlimited_sine(blade_phase, 2, blade_frequency, nyquist))
+		if propeller_enabled:
+			var blade_phase: float = fposmod(shaft * blade_count_f, 1.0)
+			propeller = propeller_gain * (sin(TAU_VALUE * blade_phase) + 0.15 * (sin(tau_second * blade_phase) if propeller_second else 0.0))
 		var sample: float = clampf(combustion + mechanical + valve + propeller, -0.98, 0.98)
 		out[i] = Vector2(sample, sample)
-		_shaft_phase_cycles += shaft_step
+		shaft += shaft_step
+	_shaft_phase_cycles = shaft
+	_combustion_envelope = envelope
+	_scheduled_opportunity = scheduled
+	_fraction_accumulator = accumulator
+	_opportunity_fires = fires
+	if scheduled_any:
+		last_firing_fraction = opportunity_fraction
 	phase = fposmod(_shaft_phase_cycles, 1.0)
 	return out
 
@@ -308,34 +362,6 @@ func _has_authoritative_cycle_state(snapshot: Dictionary, cycle_revs: int) -> bo
 		and is_finite(opportunity_value) and opportunity_value >= 0.0 and opportunity_value == floor(opportunity_value) \
 		and is_finite(fire_value) and fire_value >= 0.0 and fire_value <= opportunity_value and fire_value == floor(fire_value) \
 		and is_finite(accumulator) and accumulator >= 0.0 and accumulator < 1.0
-
-
-func _schedule_opportunity(firing_fraction: float) -> void:
-	_fraction_accumulator += firing_fraction
-	_opportunity_fires = _fraction_accumulator >= 1.0
-	if _opportunity_fires:
-		_fraction_accumulator -= 1.0
-	last_firing_fraction = firing_fraction
-
-
-func _exhaust_wave(family: String, cycle_phase: float, base_frequency: float, nyquist: float) -> float:
-	# These compact, band-limited harmonic envelopes are authored timbres, not recorded spectra.
-	# The 2T branch emphasizes a sharper port/exhaust pulse; 4T has a rounder exhaust and adds
-	# its independent cam/valve layer at half crank order in render_telemetry().
-	var weights: Array[float] = HARMONICS_2T if family == FAMILY_2T else HARMONICS_4T
-	var result: float = 0.0
-	for index: int in weights.size():
-		var harmonic: int = index + 1
-		if base_frequency * float(harmonic) >= nyquist:
-			break
-		result += weights[index] * sin(TAU_VALUE * float(harmonic) * cycle_phase)
-	return result
-
-
-func _bandlimited_sine(cycles: float, harmonic: int, base_frequency: float, nyquist: float) -> float:
-	if base_frequency * float(harmonic) >= nyquist:
-		return 0.0
-	return sin(TAU_VALUE * float(harmonic) * cycles)
 
 
 static func _finite_nonnegative(value: Variant, fallback: float) -> float:

@@ -25,7 +25,9 @@ const GLB_NODES := 512
 const GLB_DEPTH := 32
 const GLB_MESHES := 128
 const GLB_PRIMITIVES := 256
-const GLB_MATERIALS := 32
+## Raised from 32 (2026-11-19): real ClearView helicopters need 35-36 colour/texture
+## combinations. Geometry remains bounded by the primitive and triangle limits.
+const GLB_MATERIALS := 64
 const GLB_IMAGES := 16
 const GLB_ACCESSORS := 2048
 const GLB_BUFFER_VIEWS := 2048

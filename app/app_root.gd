@@ -60,6 +60,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const CreatorTrial := preload("res://workshop/creator/trial.gd")
+const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
+const FixedWingDonor := preload("res://workshop/creator/clearview/donor.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
@@ -3531,6 +3533,19 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if not screens.is_top("workshop") or not _workshop_screens.is_empty():
 		return
 	var editor: Node = screens.top()
+	if payload.has("creator_helicopter") or payload.has("creator_donor"):
+		_start_creator_helicopter_trial(editor, payload)
+		return
+	# AC-CV: a ClearView airship flies its appearance on the stock RC blimp physics in the blimp activity.
+	if payload.has("creator_airship"):
+		var request: Variant = payload.creator_airship
+		if not request is Dictionary or not FixedWingDonor.Setup.Installation.required(request.get("source")) \
+				or FixedWingDonor.Setup.is_helicopter(request.get("source")) or typeof(request.get("name", "")) != TYPE_STRING:
+			editor.set_note(tr(HeliDonor.UNAVAILABLE))
+			_menu_feedback(&"reject")
+			return
+		_start_workshop_airship_trial(editor, {}, "airborne", {source = request.source, name = str(request.name)})
+		return
 	var chosen_start: Variant = payload.get("start_choice", "airborne")
 	# AC-11: an Aircraft Creator request carries an accepted candidate instead of a catalog base. It has no
 	# landing gear, so its ground start is the hand launch; every other step below is the Workshop trial path.
@@ -3553,12 +3568,17 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
 		_menu_feedback(&"reject")
 		return
-	var selected_field: Dictionary = FieldLoader.load_from(field_path)
+	# Assess and launch the context the running flight actually installed: a direct technical launch
+	# resolves --landscape and wind inside Main only, so Root's own values can be stale (follow-up 02).
+	var installed: Dictionary = _installed_flight_context()
+	var trial_field_path: String = str(installed.get("field_path", field_path))
+	var trial_landscape_id: String = str(installed.get("landscape_id", landscape_id))
+	var selected_field: Dictionary = FieldLoader.load_from(trial_field_path)
 	if not selected_field.get("ok", false):
 		editor.set_note("; ".join(PackedStringArray(selected_field.get("errors", []))))
 		_menu_feedback(&"reject")
 		return
-	var selected_weather: Dictionary = flight.weather_config.duplicate(true) if flight != null \
+	var selected_weather: Dictionary = (installed.weather as Dictionary).duplicate(true) if installed.has("weather") \
 		else preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
 	var qualified: Dictionary = CreatorTrial.check_start(trial, selected_field.field, selected_weather, chosen_start) if creator_request 		else preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
 	if not qualified.get("ok", false) or not qualified.get("available", false):
@@ -3572,13 +3592,13 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if previous != null:
 		if statistics_service != null:
 			statistics_service.suspend_activity()
-		remove_child(previous)
+		_detach_tentatively(previous)
 	if home_scene != null and home_scene.is_inside_tree():
 		remove_child(home_scene)
 		_workshop_home_detached = true
 	var candidate: Node = load(FLIGHT_SCENE).instantiate()
-	candidate.field_path = field_path
-	candidate.landscape_id = landscape_id
+	candidate.field_path = trial_field_path
+	candidate.landscape_id = trial_landscape_id
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
 	candidate.start_choice = chosen_start
@@ -3591,7 +3611,6 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.night_options = _night_options_from_preferences()
 	candidate.remember_lighting_selection = has_home
 	if previous != null:
-		candidate.weather_config = previous.weather_config.duplicate(true)
 		candidate.lighting_config = previous.lighting_config.duplicate(true)
 		candidate.sky_config = previous.sky_config.duplicate(true)
 		candidate.night_options = previous.night_options.duplicate(true)
@@ -3623,6 +3642,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		editor.set_note(tr("Could not start flight: %s") % tr(reason))
 		_menu_feedback(&"reject")
 		return
+	_commit_detached(previous)
 	_workshop_previous_flight = previous
 	_workshop_previous_sky_transport = previous_sky_transport
 	_workshop_previous_world_context = previous_world_context
@@ -3648,9 +3668,161 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_finish_controller_launch.call_deferred(flight.session)
 
 
+## Import closeout: a ClearView helicopter's appearance test flies on the X-Cell .60 donor helicopter route.
+## Same lifecycle as a fixed-wing trial: the retained flight and Home wait detached until the candidate starts,
+## a startup refusal restores them, and Pause returns to the Workshop.
+## Donor trials (import closeout packets 5-6): a stock catalog aircraft flies with its exact physics and an
+## imported model's appearance. `creator_helicopter` uses the X-Cell .60 helicopter route; `creator_donor`
+## {source, name, donor_id, placement} uses the fixed-wing Main with `donor_visual` (flying wings on the X8).
+func _start_creator_helicopter_trial(editor: Node, payload: Dictionary) -> void:
+	var heli := payload.has("creator_helicopter")
+	var request: Variant = payload.get("creator_helicopter" if heli else "creator_donor")
+	var chosen_start: Variant = payload.get("start_choice", "airborne")
+	var donor_id: String = HeliDonor.DONOR_ID
+	if not heli:
+		donor_id = str(request.get("donor_id", "")) if request is Dictionary else ""
+	var valid: bool = request is Dictionary and typeof(chosen_start) == TYPE_STRING 		and request.get("source") is HeliDonor.InspectedSource and typeof(request.get("name", "")) == TYPE_STRING
+	if valid and heli:
+		valid = HeliDonor.is_helicopter(request.get("source")) and chosen_start in ["airborne", "ground"]
+	elif valid:
+		# The trainer donor starts airborne only; the X8 also hand-launches.
+		valid = donor_id in FixedWingDonor.DONORS and Catalog.can_fly(donor_id) \
+			and request.get("placement") is Dictionary and (chosen_start == "airborne" \
+				or (chosen_start == "hand_launch" and donor_id == FixedWingDonor.FLYING_WING_DONOR)) \
+			and FixedWingDonor.Setup.Installation.required(request.get("source"))
+	if not valid:
+		editor.set_note(tr(HeliDonor.UNAVAILABLE))
+		_menu_feedback(&"reject")
+		return
+	var installed: Dictionary = _installed_flight_context()
+	var trial_field_path: String = str(installed.get("field_path", field_path))
+	var trial_landscape_id: String = str(installed.get("landscape_id", landscape_id))
+	var raw_weather: Variant = installed.get("weather", preferences.get("weather_config", WeatherSettings.defaults()))
+	var selected_weather: Dictionary = weather_for_aircraft(donor_id, raw_weather)
+	var admission: Dictionary = {ok = true}
+	if heli:
+		admission = load("res://sim/helicopter_flight_session.gd").validate_weather_selection(selected_weather)
+	if not admission.get("ok", false):
+		editor.set_note(tr("Could not start flight: %s") % tr(str(admission.get("error", ""))))
+		_menu_feedback(&"reject")
+		return
+	var previous: Node = flight
+	var previous_sky_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
+	var previous_world_context: Dictionary = World.presentation_context()
+	if previous != null:
+		if statistics_service != null:
+			statistics_service.suspend_activity()
+		_detach_tentatively(previous)
+	if home_scene != null and home_scene.is_inside_tree():
+		remove_child(home_scene)
+		_workshop_home_detached = true
+	var candidate: Node = _create_flight(donor_id)
+	var shown_name := str(request.get("name", ""))
+	if candidate != null:
+		candidate.aircraft_id = donor_id
+		if heli:
+			candidate.creator_visual = {source = request.source, name = shown_name}
+			candidate.workshop_trial = {display_context = {state = "unsaved", name = shown_name}}
+		else:
+			candidate.donor_visual = {source = request.source, placement = (request.placement as Dictionary).duplicate(true)}
+		candidate.field_path = trial_field_path
+		candidate.landscape_id = trial_landscape_id
+		candidate.start_choice = chosen_start
+		candidate.interactive_start = true
+		candidate.external_controller_selection = controllers != null
+		candidate.weather_config = selected_weather.duplicate(true)
+		candidate.lighting_config = (previous.lighting_config if previous != null else preferences.get("lighting_config", TimeOfDay.defaults())).duplicate(true)
+		candidate.night_options = (previous.night_options if previous != null else _night_options_from_preferences()).duplicate(true)
+		candidate.overlays_enabled = true
+		candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
+		var camera_config: Dictionary = display_preferences.config if display_preferences != null else {}
+		candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(camera_config)
+		# Direct technical launches keep their command line; the trial reads none of it.
+		candidate.set_user_args(PackedStringArray())
+		add_child(candidate)
+	if candidate == null or not candidate.startup_error.is_empty():
+		var reason: String = candidate.startup_error if candidate != null else "Flight scene could not be created."
+		if candidate != null:
+			if candidate.recorder != null:
+				candidate.recorder.detach()
+			remove_child(candidate)
+			candidate.queue_free()
+		if previous != null:
+			add_child(previous)
+			if statistics_service != null:
+				statistics_service.resume_activity()
+			previous._camera.make_current()
+			World.restore_presentation_context(previous_world_context)
+			previous.restore_sky_presentation(previous_sky_transport)
+		if _workshop_home_detached:
+			add_child(home_scene)
+			home_scene.camera.make_current()
+			_workshop_home_detached = false
+			_rebuild_home_scene()
+		editor.set_note(tr("Could not start flight: %s") % tr(reason))
+		_menu_feedback(&"reject")
+		return
+	_commit_detached(previous)
+	_workshop_previous_flight = previous
+	_workshop_previous_sky_transport = previous_sky_transport
+	_workshop_previous_world_context = previous_world_context
+	_workshop_previous_keyboard = _keyboard_reader
+	while screens.top() != null:
+		var node: Node = screens.top()
+		var id: String = "workshop" if node == editor else ("home" if node == home else "pause")
+		var surface: Control = ScreenStack._surface(node)
+		var opener: Control = surface.return_focus if is_instance_valid(surface.return_focus) else null
+		_workshop_screens.push_front({id = id, node = screens.pop(false, false), opener = opener})
+	flight = candidate
+	screens.set_session(flight.session)
+	if controllers != null: controllers.attach_session(flight.session)
+	_keyboard_reader = flight.session.read_raw
+	flight.pause_requested.connect(open_pause)
+	flight.restart_requested.connect(_request_flight_restart)
+	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
+	flight._note = tr("Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause")
+	_attach_calibration_card(flight)
+	_menu_feedback(&"accept")
+	if controllers != null and controllers.registry.selected_device_id("flight") >= 0:
+		_finish_controller_launch.call_deferred(flight.session)
+
+
+## The field and weather the running flight actually installed, or {} without such a flight.
+## Requested properties such as `weather_config` are not evidence of the installed conditions.
+func _installed_flight_context() -> Dictionary:
+	if flight == null or not is_instance_valid(flight) or not "field_path" in flight or not "landscape_id" in flight:
+		return {}
+	var context := {field_path = str(flight.field_path), landscape_id = str(flight.landscape_id)}
+	var running: Variant = flight.get("session")
+	if running is Node and is_instance_valid(running) and running.has_method("weather_configuration"):
+		var weather: Variant = running.weather_configuration()
+		if weather is Dictionary and not (weather as Dictionary).is_empty():
+			context["weather"] = weather
+	if not context.has("weather") and "weather_config" in flight:
+		context["weather"] = (flight.weather_config as Dictionary).duplicate(true)
+	return context
+
+
+## Detach the running flight while a replacement starts. Its recordings stay open so a failed
+## startup can re-add the same flight with the same live log (import closeout follow-up 02).
+func _detach_tentatively(previous: Node) -> void:
+	var tentative := previous.has_method("set_tentative_detach")
+	if tentative:
+		previous.set_tentative_detach(true)
+	remove_child(previous)
+	if tentative:
+		previous.set_tentative_detach(false)
+
+
+## The replacement committed: finalize the detached flight's recordings exactly as a detach did before.
+func _commit_detached(previous: Node) -> void:
+	if previous != null and previous.has_method("close_recorders"):
+		previous.close_recorders()
+
+
 ## BL-19d: the blimp trial occupies the exclusive activity slot while the Workshop, Home and any retained flight wait
 ## detached exactly as for a fixed-wing trial; its own menu offers Return to Workshop (home_requested).
-func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start: String) -> void:
+func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start: String, creator_visual: Dictionary = {}) -> void:
 	if ground_vehicle != null:
 		editor.set_note(tr("Close the running activity before starting a blimp trial."))
 		_menu_feedback(&"reject")
@@ -3661,13 +3833,14 @@ func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start
 	if previous != null:
 		if statistics_service != null:
 			statistics_service.suspend_activity()
-		remove_child(previous)
+		_detach_tentatively(previous)
 	if home_scene != null and home_scene.is_inside_tree():
 		remove_child(home_scene)
 		_workshop_home_detached = true
 	var candidate: Node3D = load("res://vehicles/airship/airship_scene.gd").new()
 	candidate.departure_managed = true
 	candidate.workshop_trial = trial.duplicate(true)
+	candidate.creator_visual = creator_visual
 	candidate.start_index = 1 if chosen_start == "runway" else 0
 	candidate.field_path = field_path
 	candidate.lighting_config = (previous.lighting_config if previous != null else preferences.get("lighting_config", TimeOfDay.defaults())).duplicate(true)
@@ -3697,6 +3870,7 @@ func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start
 		editor.set_note(tr("Could not start flight: %s") % tr(error))
 		_menu_feedback(&"reject")
 		return
+	_commit_detached(previous)
 	_workshop_previous_flight = previous
 	_workshop_previous_sky_transport = previous_sky_transport
 	_workshop_previous_world_context = previous_world_context

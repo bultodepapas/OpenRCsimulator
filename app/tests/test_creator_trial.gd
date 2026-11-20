@@ -23,6 +23,7 @@ func _initialize() -> void:
 	_fields(document)
 	_snapshot(document)
 	_hostile_snapshot(document)
+	_inventory_text(document)
 	_trial(document)
 	print("Creator trial: %d failures" % failures)
 	quit(1 if failures else 0)
@@ -231,6 +232,74 @@ func _snapshot(document: RefCounted) -> void:
 	document.set_raw("fuselage/width", Authoring.format_number(float(document.value("fuselage/width"))))
 	check("an edit after saving is an unsaved change", document.has_unsaved_changes())
 	document.set_appearance({"mode": "original"})
+
+
+## Inventory text that is not a number belongs to the document: an edit that is saved, restored
+## and blocks compilation (import closeout follow-up 02, finding 1). Works on a restored copy.
+func _inventory_text(document: RefCounted) -> void:
+	var source: RefCounted = Importer.inspect_bytes(document.source().source_bytes(), "plane.stl").value
+	var honest: Dictionary = JSON.parse_string(JSON.stringify(document.snapshot("weight_balance")))
+	check("a snapshot without rejected inventory text has no such member", not honest.has("inventory_raw"))
+	var edited := Authoring.new()
+	check("an inventory copy restores", edited.restore(honest, source).ok and not edited.inventory().is_empty())
+	var id := str(edited.inventory()[0].id)
+	var accepted := float(edited.inventory()[0].mass)
+	edited.mark_saved("0".repeat(64))
+	var revision: int = edited.revision
+	var before: String = edited.fingerprint()
+	check("inventory text that is not a number is refused", not edited.set_item_raw(id, "mass", "not-a-number"))
+	check("the document holds the text and keeps the accepted number", edited.is_item_invalid(id, "mass")
+		and edited.item_invalid_text(id, "mass") == "not-a-number" and float(edited.inventory()[0].mass) == accepted)
+	check("rejected inventory text is an edit: revision, fingerprint, dirty", edited.revision == revision + 1
+		and edited.fingerprint() != before and edited.has_unsaved_changes())
+	var again: int = edited.revision
+	check("the same rejected text is not a new edit", not edited.set_item_raw(id, "mass", "not-a-number") and edited.revision == again)
+	var field := Authoring.ITEM_FIELD_PREFIX + id + "/mass"
+	check("rejected inventory text is a named weight-and-balance issue", _has_issue(edited.issues(), R.FIELD_INVALID, field, "weight_balance")
+		and edited.step_status("weight_balance") == Authoring.STATUS_NEEDS_ATTENTION)
+	var refused: Dictionary = edited.compile()
+	check("compilation refuses and names the inventory field", not refused.ok
+		and _has_issue(refused.diagnostics, R.FIELD_INVALID, field, "weight_balance"))
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(edited.snapshot("weight_balance")))
+	check("the snapshot carries the rejected text without a format change", saved.has("inventory_raw")
+		and saved.inventory_raw == [{"item": id, "key": "mass", "text": "not-a-number"}] and saved.format == honest.format)
+	var reopened := Authoring.new()
+	check("restore reproduces the rejected text and still refuses", reopened.restore(saved, source).ok
+		and reopened.item_invalid_text(id, "mass") == "not-a-number" and float(reopened.inventory()[0].mass) == accepted
+		and reopened.fingerprint() == edited.fingerprint() and not reopened.compile().ok)
+	check("an empty inventory edit is rejected text too", not edited.set_item_raw(id, "x", "") and edited.is_item_invalid(id, "x"))
+	check("unknown keys and items record nothing", not edited.set_item_raw(id, "w", "x") and not edited.set_item_raw("nope", "mass", "x")
+		and not edited.is_item_invalid("nope", "mass"))
+	check("a valid edit clears only its own rejected text", edited.set_item_raw(id, "mass", "0,5") and not edited.is_item_invalid(id, "mass")
+		and edited.is_item_invalid(id, "x") and float(edited.inventory()[0].mass) == 0.5 and not edited.compile().ok)
+	var cleared: bool = edited.set_item_raw(id, "x", "0.1")
+	var after: Dictionary = edited.compile()
+	check("clearing the last rejected text removes its refusal", cleared and not edited.snapshot().has("inventory_raw")
+		and (after.ok or not after.diagnostics.any(func(d: Dictionary) -> bool:
+			return str(d.get("field", "")).begins_with(Authoring.ITEM_FIELD_PREFIX))))
+	check("an over-long rejection is kept and survives restore", not edited.set_item_raw(id, "z", "1" + " ".repeat(300) + "x")
+		and edited.item_invalid_text(id, "z").length() == 256 and Authoring.new().restore(
+			JSON.parse_string(JSON.stringify(edited.snapshot())), source).ok)
+	var long_saved: Dictionary = JSON.parse_string(JSON.stringify(edited.snapshot()))
+	var long_reopened := Authoring.new()
+	long_reopened.restore(long_saved, source)
+	check("the restored over-long rejection still blocks", long_reopened.is_item_invalid(id, "z") and not long_reopened.compile().ok)
+	edited.set_item_raw(id, "z", "0")
+	var gone := Authoring.new()
+	gone.restore(honest, source)
+	gone.set_item_raw(id, "mass", "heavy")
+	gone.remove_item(id)
+	check("removing the item drops its rejected text", not gone.snapshot().has("inventory_raw"))
+	# Like the field `invalid` list, malformed entries are dropped instead of trusted.
+	for member: Variant in ["x", [1], [{"item": id, "key": "mass"}], [{"item": id, "key": "mass", "text": 5}],
+			[{"item": id, "key": "mass", "text": "0.5"}], [{"item": "nope", "key": "mass", "text": "heavy"}],
+			[{"item": id, "key": "w", "text": "heavy"}], [{"item": id, "key": "mass", "text": "a".repeat(257)}],
+			[{"item": id, "key": "mass", "text": "heavy", "extra": 1}]]:
+		var hostile: Dictionary = honest.duplicate(true)
+		hostile.inventory_raw = member
+		var careful := Authoring.new()
+		check("malformed inventory_raw %s is dropped" % JSON.stringify(member), careful.restore(hostile, source).ok
+			and not careful.snapshot().has("inventory_raw"))
 
 
 ## A different valid model, to prove a snapshot is bound to its own source.

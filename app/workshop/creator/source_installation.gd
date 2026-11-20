@@ -14,14 +14,29 @@ const STALE := "The model or configuration changed. Review the configuration cho
 const INVALID := "The saved configuration choice is invalid."
 ## Saved-aircraft (Home/published) flight. Unsaved test flights follow the ordinary Creator gate.
 const FLIGHT_UNAVAILABLE := "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+## Shown with every chosen configuration: what a ClearView test flight is, and what it is not.
+const ESTIMATED_FLIGHT := "Test flights use this estimated OpenRC configuration, not the ClearView flight model. Handling is not a reproduction of the original."
+const PUBLISH_UNAVAILABLE := "Publishing converted ClearView models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+const ROTORCRAFT_NAMESPACE := "openrc_clearview_rotorcraft"
+const ROTORCRAFT := "This is a ClearView helicopter, so the aeroplane setup does not apply. Use Fly as a helicopter: it flies with the X-Cell .60 reference helicopter physics and this model's appearance only."
 ## Shown once the configuration is confirmed: physics come only from the OpenRC packages.
 const EXPERIMENTAL := "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
 
 static func required(source: Source) -> bool:
 	return source != null and source.is_admitted() and source.has_asset_metadata(NAMESPACE)
 
+## ClearView helicopters (modelType 0). The only Creator configuration is a fixed-wing trainer,
+## so a helicopter gets no configuration: preview, moving parts and drafts only. The tag can only
+## remove capability; a stripped tag gives no more than an STL of the same helicopter.
+static func rotorcraft(source: Source) -> bool:
+	return required(source) and source.has_asset_metadata(ROTORCRAFT_NAMESPACE)
+
+## The message for a model that cannot compile yet: choose a configuration, or none exists.
+static func blocked(source: Source) -> String:
+	return ROTORCRAFT if rotorcraft(source) else REQUIRED
+
 static func make(source: Source,context: Dictionary,airframe: String,power: String) -> Dictionary:
-	if not required(source):
+	if not required(source) or rotorcraft(source):
 		return {}
 	return {format = FORMAT,mode = MODE,source_sha256 = source.sha256(),
 		report_state = "unavailable" if context.is_empty() else "available",
@@ -53,6 +68,9 @@ static func validate(value: Variant,context: Dictionary,airframe: String,power: 
 ## Called at the source/candidate join, including when a source tag has been removed from a
 ## different GLB. Ordinary v1 candidates retain the existing ordinary-source pairing behavior.
 static func check_pair(summary: Dictionary,source: Source) -> Dictionary:
+	# Defense in depth: no candidate may pair with a helicopter source.
+	if rotorcraft(source):
+		return R.fail(R.UNSUPPORTED_CAPABILITY,ROTORCRAFT,"source_installation","import")
 	if not summary.has("source_installation"):
 		return R.fail(R.UNSUPPORTED_CAPABILITY,REQUIRED,"source_installation","import") if required(source) else R.ok()
 	var identities: Variant = summary.get("identities")

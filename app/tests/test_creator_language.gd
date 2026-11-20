@@ -14,6 +14,9 @@ const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
 const Fixtures := preload("res://tests/creator_fixtures.gd")
 const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
+const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
+const ClearViewConverter := preload("res://workshop/creator/clearview/converter.gd")
+const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
 
 const LOCALES: PackedStringArray = ["es", "pt_BR", "de", "fr", "it", "ru", "ja", "zh_Hans"]
 ## Text that is the same in every language: units, formats, axes, numbers and player data.
@@ -68,11 +71,27 @@ func _catalogs() -> void:
 		Installation.EXPERIMENTAL,"%s self-intersecting surfaces were omitted.",
 		"JPEG metadata (camera, colour profile or editor data) was ignored.","Only the first GIF frame was imported.",
 		"%s editor tag lines in the model parameters were ignored.",
+		"%s coordinate markers could not be read. They were hidden; bind their moving parts manually.",
+		"Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts.",
+		"%s parts use AC3D subdivision. Their unsmoothed control shape is shown.",
+		"Texture %s is missing; the same-named %s was used.",
+		"The parameters name no model file; the ClearView default %s was used.",
+		"Only flat ClearView v0-v5 and sectioned v6 model parameters are supported.",
+		Installation.ROTORCRAFT,
+		"%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts.",
+		"Texture %s points outside the ZIP and is not included. Those parts use their plain colour.",
 		"Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit.",
 		"This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference.",
 		InstallationPanel.TITLE,InstallationPanel.PROPOSAL,InstallationPanel.RETAINED,InstallationPanel.REVIEW,
 		InstallationPanel.CHOOSE,InstallationPanel.CHOSEN,"Flight qualification",
-		"Estimated package proposal. Choose a configuration on Import."])
+		"Estimated package proposal. Choose a configuration on Import.",
+		Installation.ESTIMATED_FLIGHT,Installation.PUBLISH_UNAVAILABLE,InstallationPanel.SETUP,InstallationPanel.SETUP_HINT,
+		ClearViewSetup.UNAVAILABLE,ClearViewSetup.CONFIRM_FRAME,ClearViewSetup.CONFIRM_ESTIMATES,ClearViewSetup.DONE,
+		ClearViewSetup.ELEVONS,"Set up this model for flight?","Set up for flight",
+		ClearViewSetup.SCALED,ClearViewSetup.SCALED_DONE,ClearViewSetup.NO_PROPELLER,
+		preload("res://workshop/creator/clearview/donor.gd").FLYING_WING,"Fly this flying wing?","Fly with the X8 physics",preload("res://workshop/creator/clearview/donor.gd").TRAINER_TITLE,preload("res://workshop/creator/clearview/donor.gd").TRAINER_BUTTON,preload("res://workshop/creator/clearview/donor.gd").TRAINER,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP_TITLE,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP_BUTTON,preload("res://workshop/creator/clearview/donor.gd").AIRSHIP,preload("res://vehicles/airship/airship_scene.gd").CREATOR_LABEL,preload("res://vehicles/airship/airship_scene.gd").CREATOR_UNAVAILABLE,ClearViewSetup.HELICOPTER,ClearViewSetup.BIPLANE,ClearViewSetup.PARK_FLYER,preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-4s-800kv-apc12x6-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-3s-1250kv-9x6-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-3s-1250kv-9x6-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-4s-1900kv-6x45-pusher-estimated-v1"],preload("res://ui/aircraft_creator.gd").POWER_LABELS["electric-6s-1200kv-7x5-pusher-estimated-v1"],
+		HeliDonor.OFFER,HeliDonor.OFFER_HINT,HeliDonor.CONFIRM_TITLE,HeliDonor.CONFIRM,HeliDonor.CONFIRM_PLACEMENT,
+		HeliDonor.ACCEPT,HeliDonor.LABEL,HeliDonor.LABEL_SCALED,HeliDonor.UNAVAILABLE])
 	for step: String in Authoring.STEPS:
 		messages.append(str(Authoring.STEP_TITLES[step]))
 	for entry: Dictionary in Authoring.FIELDS:

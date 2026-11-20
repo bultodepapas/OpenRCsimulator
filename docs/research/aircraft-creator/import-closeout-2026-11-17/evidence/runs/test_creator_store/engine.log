@@ -1,0 +1,18 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+  lock, one process: 5813 ms
+  roots and drafts: 1197 ms
+  instances and recovery: 63 ms
+  published aircraft: 1186 ms
+  archive and quota: 129 ms
+  fault stages: 231 ms
+  tampering: 667 ms
+  forged records: 2169 ms
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+  lock regained 5 ms after the kill
+  lock, two processes: 2677 ms
+Creator store: elapsed 14.1 s
+Creator store: 509 checks, 0 failures

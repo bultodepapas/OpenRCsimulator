@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Capture mode: render t = 3.0 s at 1280x720 under Xvfb (software OpenGL), save PNGs.
+# OPENRC_CAPTURE_RENDERER=mobile|forward_plus renders on Vulkan through Mesa lavapipe instead (shadow evidence for
+# retiring Compatibility, docs/research/legacy-modes-audit-2026-11-20). Contracts and goldens stay on Compatibility.
 set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 # SC-02a: retain the existing landscape baselines; scenery captures select their layer explicitly.
@@ -70,6 +72,11 @@ finish_phase() { printf '%s\t%d\tpass\n' "$PHASE" "$((SECONDS - PHASE_START))" >
 trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE" "$((SECONDS - PHASE_START))" "$status" >> "$CAPTURES/timings.tsv"; fi; if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then python3 "$HERE/../tools/testqueue/entry.py" receipt capture "$status"; fi; exit "$status"' EXIT
 start_phase setup
 GODOT="$("$HERE/get-godot.sh")"
+case "${OPENRC_CAPTURE_RENDERER:-compatibility}" in
+  compatibility) RENDER_ARGS=(--rendering-driver opengl3) ;;
+  mobile|forward_plus) RENDER_ARGS=(--rendering-method "$OPENRC_CAPTURE_RENDERER" --rendering-driver vulkan) ;;
+  *) echo "OPENRC_CAPTURE_RENDERER must be compatibility, mobile or forward_plus" >&2; exit 2 ;;
+esac
 if [[ -n "$RUN_ID" ]]; then
   python3 "$HERE/../tools/ci/capture_groups.py" begin --repo "$HERE/.." --group "$GROUP" \
     --run-id "$RUN_ID" --godot "$GODOT" --out "$CAPTURES"
@@ -113,7 +120,7 @@ shot() { # shot <file suffix> <user args...>
   fi
   "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" -- \
     xvfb-run -a -s "-screen 0 1280x720x24" \
-    "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
+    "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
   sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "${out%.png}.log" >> "$counters"
   CAPTURE_NAMES+=("${out#"$CAPTURES/"}")
 }
@@ -154,7 +161,7 @@ SUN_ALIGNMENT="$CAPTURES/sun-alignment"
 mkdir -p "$SUN_ALIGNMENT"
 rm -f "$SUN_ALIGNMENT/sun_alignment.png" "$SUN_ALIGNMENT/report.json"
 if ! timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" \
-  --rendering-driver opengl3 --audio-driver Dummy --script res://tests/capture_landscape_upgrade.gd \
+  "${RENDER_ARGS[@]}" --audio-driver Dummy --script res://tests/capture_landscape_upgrade.gd \
   -- --out="$SUN_ALIGNMENT" --cases=sun_alignment > "$SUN_ALIGNMENT/run.log" 2>&1 \
   || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$SUN_ALIGNMENT/run.log"; then
   cat "$SUN_ALIGNMENT/run.log"; exit 1
@@ -185,7 +192,7 @@ for lang in en es; do
     ui_timeout=60
     if [[ "$screen" == pause || "$screen" == hint ]]; then ui_timeout=120; fi
     "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" --timeout "$ui_timeout" -- \
-      xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
+      xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy \
       --script res://tests/capture_ui.gd -- --out="$out" --lang="$lang" --screen="$screen"
     CAPTURE_NAMES+=("${out#"$CAPTURES/"}")
   done
@@ -233,7 +240,7 @@ record_check quality:cases
 # FW-62-R1: the night kit must add light, retain its underside cue, and stay bounded under camera zoom.
 mkdir -p "$CAPTURES/aircraft-lights"
 if ! timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$HERE" \
-  --rendering-driver opengl3 --audio-driver Dummy --script res://tests/capture_aircraft_lights.gd \
+  "${RENDER_ARGS[@]}" --audio-driver Dummy --script res://tests/capture_aircraft_lights.gd \
   -- --out="$CAPTURES/aircraft-lights" > "$CAPTURES/aircraft-lights/run.log" 2>&1 \
   || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$CAPTURES/aircraft-lights/run.log"; then
   cat "$CAPTURES/aircraft-lights/run.log"; exit 1
@@ -248,7 +255,7 @@ for suite in "skin_patterns:Lighting skin patterns: " "segment_filter:Lighting s
   xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" --timeout 300 \
     --out-dir "$CAPTURES/lighting-pixels" --label "lighting-${suite%%:*}" \
     --require-text "${suite#*:}" --require-text " checks, 0 failed" -- \
-    "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy --resolution 1920x1080 \
+    "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy --resolution 1920x1080 \
     --script "res://tests/test_lighting_${suite%%:*}.gd" \
     -- --lighting-metrics-out="$CAPTURES/lighting-pixels/${suite%%:*}-metrics.json"
   # The literal markers above cannot reject "0 checks"; require a nonzero assertion count.

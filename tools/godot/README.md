@@ -524,6 +524,14 @@ claims. The generic incident/Perfetto reducers do not ingest this host stream.
 
 ## Incident bundles and Perfetto timelines (PT1h-R5)
 
+These tools consume native fixed-duration `openrc-frametimes v2/v3` reports and
+checked-run evidence. A debug bridge `openrc-debug-frames v1` snapshot uses its own
+[exporter](../debug/README.md#offline-slowdown-analysis-pt1h-r15-s3a); an event-bounded
+`openrc-godtest-frames-v1` stream uses [GOD TEST reports](../godtest/README.md#measurements-and-reports).
+Do not relabel either format or invent fields to pass the native validator. Shared
+attachments and clock correspondence require the explicit adapters in the
+[stutter plan](../../docs/plans/stutter-diagnostics.md#existing-tool-integration).
+
 Capture frame diagnostics and OS counters in the **same checked invocation**:
 
 ```powershell

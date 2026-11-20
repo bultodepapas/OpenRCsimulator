@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 import time
 
-from .config import Config
+from .config import Config, ReleasePatterns
 from .contract import ContractError, load_contracts
 from .counters import flush as flush_counters
 from .publisher import GitHub, publish
@@ -42,6 +42,11 @@ def _parser():
     group = pub.add_mutually_exclusive_group()
     group.add_argument("--dry-run", action="store_true", help="default: print only")
     group.add_argument("--execute", action="store_true", help="perform the remote write")
+    insights = sub.add_parser("insights", help="weekly operator insights with per-cell suppression (TELEM-16/17)")
+    insights.add_argument("--week", required=True, help="YYYY-Www")
+    insights.add_argument("--release", required=True)
+    insights.add_argument("--floor", type=int, default=20, help="cell floor in session-days; 20 public, >= 10 private")
+    insights.add_argument("--format", choices=("markdown", "json"), default="markdown")
     sub.add_parser("status", help="operator status: releases, raw age, today's ingest counters, last rollup")
     check = sub.add_parser("check-release", help="exit 0 only if this receiver accepts batches from the tag")
     check.add_argument("tag")
@@ -137,9 +142,10 @@ def check_release_tag(config, tag, example=None):
         check_release(tag)
     except ContractError:
         return False, "tag does not match the client release pattern (vX.Y.Z, optional -alpha/-beta/-rc and number)"
-    if config.suspend_all or tag in config.suspended_releases:
+    allowed, suspended = ReleasePatterns(config.releases), ReleasePatterns(config.suspended_releases)
+    if config.suspend_all or tag in suspended:
         return False, "tag is suspended (410): its clients would stop"
-    if tag not in config.releases:
+    if tag not in allowed:
         return False, "tag is not in OPENRC_TELEMETRY_RELEASES: its batches would be rejected (422)"
     if not example.is_file():
         return False, "example batch not found beside the schema directory"
@@ -147,7 +153,7 @@ def check_release_tag(config, tag, example=None):
     payload["build"]["release_id"] = tag
     body = json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     try:
-        load_contracts(config.schema_dir).validate_ingest(body, config.releases)
+        load_contracts(config.schema_dir).validate_ingest(body, allowed)
     except ContractError as error:
         return False, f"example batch with this tag is refused: {error}"
     return True, "accepted"
@@ -206,6 +212,20 @@ def _report(config, args):
     return 0
 
 
+def _insights(config, args):
+    from .insights import material as insights_material
+    agg = AggStore(config.aggregates_path)
+    title, body, digest, data = insights_material(agg, args.week, args.release, args.floor)
+    if args.format == "json":
+        print(json.dumps({"title": title, "digest": digest, "body": body, "data": data}, ensure_ascii=False,
+                         indent=2, sort_keys=True))
+    else:
+        sys.stdout.write(body)
+        print(f"title: {title}", file=sys.stderr)
+        print(f"digest: {digest}", file=sys.stderr)
+    return 0
+
+
 def _publish(config, args):
     contracts = load_contracts(config.schema_dir)
     agg = AggStore(config.aggregates_path)
@@ -213,7 +233,7 @@ def _publish(config, args):
     github = GitHub(config.github_api, token) if (args.execute and token) else None
     result = publish(agg, contracts, week=args.week, release=args.release, repository=args.repo,
                      approved_digest=args.approved_digest, execute=args.execute, now=time.time(),
-                     releases=config.releases, bot_author=config.bot_author, label=config.issue_label,
+                     releases=ReleasePatterns(config.releases), bot_author=config.bot_author, label=config.issue_label,
                      github=github)
     print(f"{result.outcome}: {result.message}")
     return result.exit_code
@@ -232,6 +252,8 @@ def main(argv=None):
             return _rollup(config, args)
         if args.command == "report":
             return _report(config, args)
+        if args.command == "insights":
+            return _insights(config, args)
         if args.command == "status":
             return _status(config)
         if args.command == "check-release":

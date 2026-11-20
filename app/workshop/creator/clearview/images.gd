@@ -12,12 +12,19 @@ static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pi
 	if bytes.is_empty() or bytes.size() > Limits.PNG_BYTES:
 		return R.fail(R.SOURCE_LIMIT, "A model texture is empty or larger than 16 MiB.", "source", "import")
 	if bytes.size() >= 8 and bytes.slice(0, 8) == PackedByteArray(PngCheck.SIGNATURE):
+		if _cancelled(cancel):
+			return _cancellation()
 		var header := PngCheck.header(bytes)
 		if not header.ok:
 			return header
 		if header.value.pixels > remaining_pixels:
 			return R.fail(R.SOURCE_LIMIT, "The model exceeds its total texture pixel limit.", "source", "import")
+		# PngCheck is a shared bounded validator without a callback; poll at both edges of it.
+		if _cancelled(cancel):
+			return _cancellation()
 		var checked := PngCheck.decode(bytes)
+		if _cancelled(cancel):
+			return _cancellation()
 		if not checked.ok:
 			return checked
 		return R.ok({png = bytes, width = checked.value.info.width, height = checked.value.info.height,
@@ -49,6 +56,12 @@ static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pi
 			pixels = frame.pixels, has_alpha = frame.has_alpha}, decoded.diagnostics)
 	return R.fail(R.SOURCE_UNSUPPORTED, UNSUPPORTED, "source", "import")
 
+static func _cancelled(cancel: Callable) -> bool:
+	return cancel.is_valid() and bool(cancel.call())
+
+static func _cancellation() -> Dictionary:
+	return R.fail(R.SOURCE_INVALID, "The import was cancelled.", "source", "import")
+
 static func _bmp(bytes: PackedByteArray, cancel: Callable, remaining_pixels: int) -> Dictionary:
 	if bytes.size() < 54 or bytes.decode_u32(14) != 40 or bytes.decode_u16(26) != 1 or bytes.decode_u16(28) != 24 or bytes.decode_u32(30) != 0:
 		return R.fail(R.SOURCE_UNSUPPORTED, "Only 24-bit uncompressed BITMAPINFOHEADER textures are supported.", "source", "import")
@@ -59,7 +72,9 @@ static func _bmp(bytes: PackedByteArray, cancel: Callable, remaining_pixels: int
 		return R.fail(R.SOURCE_LIMIT, "The bitmap dimensions exceed the texture limits.", "source", "import")
 	var stride := (width * 3 + 3) & ~3
 	var offset := bytes.decode_u32(10)
-	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or offset + stride * height != bytes.size() or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
+	# Some writers append up to three alignment bytes after the pixel rows (declared in the file size).
+	var trailing := bytes.size() - (offset + stride * height)
+	if bytes.decode_u32(2) != bytes.size() or bytes.decode_u32(6) != 0 or offset != 54 or trailing < 0 or trailing > 3 or bytes.decode_u32(34) not in [0, stride * height] or bytes.decode_u32(46) != 0:
 		return R.fail(R.SOURCE_INVALID, "The bitmap header, row sizes or pixel data are inconsistent.", "source", "import")
 	var pixels := PackedByteArray()
 	pixels.resize(width * height * 3)

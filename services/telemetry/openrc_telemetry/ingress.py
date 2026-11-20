@@ -18,7 +18,7 @@ from starlette.responses import JSONResponse, Response
 from starlette.routing import Route
 
 from . import report as report_mod
-from .config import Config
+from .config import Config, ReleasePatterns
 from .contract import MAX_BODY, ContractError, body_digest, http_status, load_contracts
 from .counters import IngestCounters, flush as flush_counters
 from .limits import RateLimiter
@@ -68,8 +68,8 @@ def create_app(config=None, *, clock=time.time, monotonic=time.monotonic, limite
     limiter = limiter or RateLimiter(
         config.client_burst, config.client_refill_per_s, config.global_burst, config.global_refill_per_s,
         max_clients=config.max_clients, monotonic=monotonic)
-    releases = frozenset(config.releases)
-    suspended = frozenset(config.suspended_releases)
+    releases = ReleasePatterns(config.releases)
+    suspended = ReleasePatterns(config.suspended_releases)
     token_digest = sha256(config.report_token.encode("utf-8")).digest() if config.report_token else None
 
     def count(category):

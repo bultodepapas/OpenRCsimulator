@@ -1,0 +1,29 @@
+{
+  "base_commit": "2a3cf04dbbdaf486b9c9c8e983463d828f90c64a",
+  "missing_count": 22,
+  "paths": [
+    "app/tests/test_creator_clearview_jpeg.gd.uid",
+    "app/tests/test_creator_clearview_motion.gd.uid",
+    "app/tests/test_creator_clearview_observations.gd.uid",
+    "app/tests/test_creator_clearview_readers.gd.uid",
+    "app/tests/test_creator_clearview_ui.gd.uid",
+    "app/tests/test_creator_clearview_visual.gd.uid",
+    "app/tests/test_creator_source_installation.gd.uid",
+    "app/tests/test_extra_visual_details.gd.uid",
+    "app/ui/aircraft_creator_installation.gd.uid",
+    "app/ui/aircraft_creator_source_report.gd.uid",
+    "app/workshop/creator/clearview/ac3d.gd.uid",
+    "app/workshop/creator/clearview/archive.gd.uid",
+    "app/workshop/creator/clearview/cancellation.gd.uid",
+    "app/workshop/creator/clearview/converter.gd.uid",
+    "app/workshop/creator/clearview/deflate.gd.uid",
+    "app/workshop/creator/clearview/images.gd.uid",
+    "app/workshop/creator/clearview/jpeg_check.gd.uid",
+    "app/workshop/creator/clearview/motion.gd.uid",
+    "app/workshop/creator/clearview/observations.gd.uid",
+    "app/workshop/creator/clearview/package.gd.uid",
+    "app/workshop/creator/clearview/params.gd.uid",
+    "app/workshop/creator/source_installation.gd.uid"
+  ],
+  "method": "Tracked app source blob names at the audited Git commit minus matching tracked .uid names; independently agrees with CI preflight count."
+}

@@ -6,7 +6,7 @@ config_version=5
 config/name="OpenRC Simulator"
 ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
 ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
-config/version="0.2.9"
+config/version="0.3.0"
 ; The lightweight brand entrance hands off to app_root, which owns route selection.
 run/main_scene="res://ui/startup.tscn"
 boot_splash/show_image=false
@@ -60,7 +60,8 @@ common/physics_jitter_fix=0.0
 ; VQ-07d: the native DLSS build uses the validated transformer preset.
 streamline/dlss_preset="K"
 
-; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
+; Compatibility (OpenGL) is a frozen legacy renderer (docs/DECISIONS.md): the baseline for weak GPUs, the engine
+; fallback and CI captures. Exported builds select Forward+ or Mobile through renderer_preference.gd. No web build.
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 ; DT-MAC-05b: Apple Silicon runs Mobile on native Metal (≈1.4× Compatibility on an M1, and the only path to MetalFX).

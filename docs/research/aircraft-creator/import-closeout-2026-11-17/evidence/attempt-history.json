@@ -1,0 +1,768 @@
+{
+  "note": "Setup and harness attempts are recorded, not counted as passes. Final checked evidence is checks.json. Earlier missing fixture resources, translations and cached failed glTF imports were corrected without production source edits; corpus receipt-key typo was corrected in the audit probe.",
+  "attempts": [
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-import/import-audit-core-fr8ej055/report.json",
+      "label": "import-audit-core",
+      "started_utc": "2026-11-17T12:14:34.401653+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "8f8d9ae802f4559caf773f1015464594e32f72d34ed475c2b7efa2d763b1eec8",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-import-complete/import-audit-core-complete-j8w7y6r_/report.json",
+      "label": "import-audit-core-complete",
+      "started_utc": "2026-11-17T12:17:27.848675+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "detail": "",
+      "counts": {
+        "error": 20,
+        "warning": 0
+      },
+      "log_sha256": "027fa24873d962d0a65bb933091f8cfbfc0ae8acb7da07d3bed3eeff30336385",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 96,
+          "message": "glTF: Binary file not found: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.bin",
+          "context": [
+            "   at: _parse_buffers (modules/gltf/gltf_document.cpp:810)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 98,
+          "message": "Condition \"err != OK\" is true. Returning: ERR_PARSE_ERROR",
+          "context": [
+            "   at: _parse_gltf_state (modules/gltf/gltf_document.cpp:7150)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-import-ready/import-audit-core-ready-ei_6r_io/report.json",
+      "label": "import-audit-core-ready",
+      "started_utc": "2026-11-17T12:18:13.069426+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d99f4130e9b106e8f09685f29d2c5e5c20a6cfcc4bef277d1aa1c92a805beadd",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-import-ready-final/import-audit-core-ready-hvq8trzl/report.json",
+      "label": "import-audit-core-ready",
+      "started_utc": "2026-11-17T12:19:07.964950+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "42c4a5f18f5e6313f3c78801aa69730bbb6932dece4c29af4dc749aa1d672b8d",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_clearview_jpeg/test_creator_clearview_jpeg-h2_j6gcd/report.json",
+      "label": "test_creator_clearview_jpeg",
+      "started_utc": "2026-11-17T12:15:02.116708+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fe8d193d427a1babfeb1718c4ca7e1cbf820d960d75b61b1d139f7ef14261aff",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_clearview_motion/test_creator_clearview_motion-yd364xlx/report.json",
+      "label": "test_creator_clearview_motion",
+      "started_utc": "2026-11-17T12:15:02.672691+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "11252337427a92091c2f9cf6f638905585307e19a5fd67904815b5f8969c5a18",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_clearview_observations/test_creator_clearview_observations-5lf4cryg/report.json",
+      "label": "test_creator_clearview_observations",
+      "started_utc": "2026-11-17T12:15:02.932094+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7f8f04297981bc48bb0da7e10d04b77f74c8d2dd9313e8fbe0bd6c540db17f73",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_clearview_readers/test_creator_clearview_readers-yexmq3j5/report.json",
+      "label": "test_creator_clearview_readers",
+      "started_utc": "2026-11-17T12:15:02.110414+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1972fcb68b6b001bd6e656608e6eb4b2890e82b207c91cf97f2026d9ad6baab1",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_clearview_visual/test_creator_clearview_visual-ueq_g6fb/report.json",
+      "label": "test_creator_clearview_visual",
+      "started_utc": "2026-11-17T12:15:02.125630+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e8ed4a0e98cd3fb28c7639a1753cd14327a8e9667e16b12ad9c32d2a33633563",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_compile_binding/test_creator_compile_binding-rli0_acx/report.json",
+      "label": "test_creator_compile_binding",
+      "started_utc": "2026-11-17T12:15:05.948570+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7850fcd529c31e82772d17283be1e8363f53714978d3c82f18b09a2091eff5ca",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_compiler/test_creator_compiler-cmbmqsgz/report.json",
+      "label": "test_creator_compiler",
+      "started_utc": "2026-11-17T12:15:04.277507+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "de1d587655925841f597db099dde0689d8ca7cb1953adece9f42553a853e65f2",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_published_trial/test_creator_published_trial-c_slr52p/report.json",
+      "label": "test_creator_published_trial",
+      "started_utc": "2026-11-17T12:15:07.314174+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2541a87849bbca0531753c765d67dd5a0661a4c7040f34df619f91c6c4309d0a",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_selection_state/test_creator_selection_state-x31w9qyd/report.json",
+      "label": "test_creator_selection_state",
+      "started_utc": "2026-11-17T12:15:08.393965+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "876f55610a036a555388579a34c8ea6f989f74282cb06a6f86fa1ebdf58f34c9",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_source_installation/test_creator_source_installation-5v6ghfcv/report.json",
+      "label": "test_creator_source_installation",
+      "started_utc": "2026-11-17T12:15:03.011241+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "detail": "",
+      "counts": {
+        "error": 43,
+        "warning": 0
+      },
+      "log_sha256": "5f55ecc150b4fba4f08cbfa37389fe2904dc2b6ec25e4149a3ddc4249d921efb",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_source_ref/test_creator_source_ref-3g2r3c4s/report.json",
+      "label": "test_creator_source_ref",
+      "started_utc": "2026-11-17T12:15:06.683476+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1b86881bd52084bb04db2c8b7a2fcf1d37068f7e8638303b8bc4e90977bf2bd8",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_store/test_creator_store-12r0y7nj/report.json",
+      "label": "test_creator_store",
+      "started_utc": "2026-11-17T12:15:10.680132+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "861a426956273cf754ba4215bc42eabde2f187e17aee1cc3af5359bb4eccb95d",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/core-tests/test_creator_trial/test_creator_trial-p4cwwwbm/report.json",
+      "label": "test_creator_trial",
+      "started_utc": "2026-11-17T12:15:10.167081+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "detail": "",
+      "counts": {
+        "error": 51,
+        "warning": 0
+      },
+      "log_sha256": "7c00ddd39ce2bb75712d08f8942ded3fed8f13710c035d397352ff63989e1a4d",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+          "context": [
+            "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/corpus-check-final/corpus-current-main-_ec_w8dc/report.json",
+      "label": "corpus-current-main",
+      "started_utc": "2026-11-17T12:17:45.247697+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d4d74ab68de7687ffae46e36bc995a0f16bb53221db122e149509d8a68ac2f12",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-import/import-audit-final-fixture-wd_rezzz/report.json",
+      "label": "import-audit-final-fixture",
+      "started_utc": "2026-11-17T12:19:58.098166+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "de47d984898f014d582163f5d52a20137fe0fee830daff6d7929a517f2f17a8a",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_jpeg/test_creator_clearview_jpeg-ley93v9l/report.json",
+      "label": "test_creator_clearview_jpeg",
+      "started_utc": "2026-11-17T12:20:10.756913+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fe8d193d427a1babfeb1718c4ca7e1cbf820d960d75b61b1d139f7ef14261aff",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_motion/test_creator_clearview_motion-48a_bp93/report.json",
+      "label": "test_creator_clearview_motion",
+      "started_utc": "2026-11-17T12:20:11.541937+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "828d3b013cf0816153f6a6787eddd22fbcf29c996743cf4e3f634808bb4a953b",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_observations/test_creator_clearview_observations-q1_kg6k6/report.json",
+      "label": "test_creator_clearview_observations",
+      "started_utc": "2026-11-17T12:20:11.740780+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3e40c14ad868309db158117003c23800cae2cc4c75d3192d1fa1a76a65211b5d",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_readers/test_creator_clearview_readers-fyvk9g77/report.json",
+      "label": "test_creator_clearview_readers",
+      "started_utc": "2026-11-17T12:20:10.743541+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1972fcb68b6b001bd6e656608e6eb4b2890e82b207c91cf97f2026d9ad6baab1",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_ui/test_creator_clearview_ui-u8lbxb7v/report.json",
+      "label": "test_creator_clearview_ui",
+      "started_utc": "2026-11-17T12:20:25.881658+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "detail": "",
+      "counts": {
+        "error": 17,
+        "warning": 0
+      },
+      "log_sha256": "2c630e0abd2e51a84861ebf89e3751465464d5fb066aba11e5b4e871c9748db0",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_clearview_visual/test_creator_clearview_visual-s7d_hljb/report.json",
+      "label": "test_creator_clearview_visual",
+      "started_utc": "2026-11-17T12:20:10.749421+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e8ed4a0e98cd3fb28c7639a1753cd14327a8e9667e16b12ad9c32d2a33633563",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_compile_binding/test_creator_compile_binding-l4n0fwdi/report.json",
+      "label": "test_creator_compile_binding",
+      "started_utc": "2026-11-17T12:20:15.177263+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6a6c1fe79595252cfa4c00b1e087621fa5471d07e112aa2360dd29a221156fd",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_compiler/test_creator_compiler-hyr10854/report.json",
+      "label": "test_creator_compiler",
+      "started_utc": "2026-11-17T12:20:13.167669+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "de1d587655925841f597db099dde0689d8ca7cb1953adece9f42553a853e65f2",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_publication_ui/test_creator_publication_ui-t72yoivf/report.json",
+      "label": "test_creator_publication_ui",
+      "started_utc": "2026-11-17T12:20:25.941921+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "749dac5a56873b63461ead666290d3d12a1f5f878d716bed7bfac69315be26d7",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_published_trial/test_creator_published_trial-4sgpcpvg/report.json",
+      "label": "test_creator_published_trial",
+      "started_utc": "2026-11-17T12:20:16.560078+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2541a87849bbca0531753c765d67dd5a0661a4c7040f34df619f91c6c4309d0a",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_selection_state/test_creator_selection_state-dy912ii5/report.json",
+      "label": "test_creator_selection_state",
+      "started_utc": "2026-11-17T12:20:18.103308+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "876f55610a036a555388579a34c8ea6f989f74282cb06a6f86fa1ebdf58f34c9",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_source_installation/test_creator_source_installation-6g5b89kn/report.json",
+      "label": "test_creator_source_installation",
+      "started_utc": "2026-11-17T12:20:11.826640+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "detail": "",
+      "counts": {
+        "error": 16,
+        "warning": 0
+      },
+      "log_sha256": "330116ea097fcf3ec18cf6b6d6d89a050dfccb4b8aeede3697d4e5cd7ebf18cb",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_source_ref/test_creator_source_ref-b79ihowo/report.json",
+      "label": "test_creator_source_ref",
+      "started_utc": "2026-11-17T12:20:16.203658+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6157aee094dd3efacbef5d37a18905a3b0b180d98c1fc4aeb845b825d0e26f7",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_store/test_creator_store-sa2v6ve4/report.json",
+      "label": "test_creator_store",
+      "started_utc": "2026-11-17T12:20:20.569670+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6ae93248cc7ba800c9716dfbcbb0bd080d951f9bf8e298108105bbc1873ab04",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/final-tests/test_creator_trial/test_creator_trial-j42a2e59/report.json",
+      "label": "test_creator_trial",
+      "started_utc": "2026-11-17T12:20:20.412510+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "detail": "",
+      "counts": {
+        "error": 24,
+        "warning": 0
+      },
+      "log_sha256": "6a81912911c72258d5fc3fe3d33439a3382db6e3082afa9fa57f22b62fba06e3",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/gap-check/specific-gap-probes-vmaoi9zo/report.json",
+      "label": "specific-gap-probes",
+      "started_utc": "2026-11-17T12:17:46.480860+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f9899c264545e4597bd5b8829ff38c83ccae6679e505c973bcc11aaf9397d5a3",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/gltf-recovery/import-audit-gltf-recovery-uhlb0lsz/report.json",
+      "label": "import-audit-gltf-recovery",
+      "started_utc": "2026-11-17T12:20:53.149162+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "42c251d5991ca262770fcd2ed1d193b79076c4fef330e6efad680bc63c0daa43",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/probe-parse/corpus-probe-parse-mk89ys3t/report.json",
+      "label": "corpus-probe-parse",
+      "started_utc": "2026-11-17T12:16:53.508413+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/recovered-tests/test_creator_clearview_ui/test_creator_clearview_ui-d8f98bpt/report.json",
+      "label": "test_creator_clearview_ui",
+      "started_utc": "2026-11-17T12:24:23.077134+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "241686b08c5d617f65c4189488fd8d282f72fe661b7c27549c77e5a9ad45ed77",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/recovered-tests/test_creator_source_installation/test_creator_source_installation-zpr15e8o/report.json",
+      "label": "test_creator_source_installation",
+      "started_utc": "2026-11-17T12:24:23.070022+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "025a4549a01b34d8d3b6c1f17ff9d9f23ecde00f6c5f0ec0ae2a965571e6bdbc",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/recovered-tests/test_creator_trial/test_creator_trial-tg5jv40v/report.json",
+      "label": "test_creator_trial",
+      "started_utc": "2026-11-17T12:24:23.068189+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6d185f42cb49b23a6eb65d2fcec5c1e3dab41d31b3947c480d8a2ad97878a99",
+      "diagnostic_samples": []
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/trial-gap-check/v4-trial-probe-mnd1frne/report.json",
+      "label": "v4-trial-probe",
+      "started_utc": "2026-11-17T12:19:59.167203+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "detail": "",
+      "counts": {
+        "error": 16,
+        "warning": 0
+      },
+      "log_sha256": "fb531aad178f372971d7c31090b45718ba2386bc5fcd56676bcdfce496d59904",
+      "diagnostic_samples": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        }
+      ]
+    },
+    {
+      "original_report_path": "tmp/aircraft-import-audit/trial-gap-clean/v4-trial-probe-clean-0sbfjsfm/report.json",
+      "label": "v4-trial-probe-clean",
+      "started_utc": "2026-11-17T12:24:31.508697+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "detail": "",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "492d462f7fa9db3f3e81abc35806f454b55e413c4c60778cbd6995656676d30b",
+      "diagnostic_samples": []
+    }
+  ]
+}

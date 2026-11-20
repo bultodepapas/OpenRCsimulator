@@ -206,8 +206,9 @@ class EligibilityTests(RollupCase):
                 self.roll(refused)
             self.assertEqual(str(caught.exception), "day_not_eligible")
         self.assertIsNone(self.table("gpu"))
-        self.assertEqual(len(self.roll(START + 25 * 3600)), 2)
-        self.assertEqual(len(self.roll(START + 47 * 3600 - 1)), 2)
+        # gpu, vehicle and the TELEM-16/17 insight cells
+        self.assertEqual(len(self.roll(START + 25 * 3600)), 3)
+        self.assertEqual(len(self.roll(START + 47 * 3600 - 1)), 3)
 
     def test_bad_day_strings(self):
         for bad in ("2027-1-14", "2027-02-30", "yesterday", "", "2027-01-14T00:00"):

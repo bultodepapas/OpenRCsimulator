@@ -17,6 +17,11 @@ on:
         type: boolean
         required: false
         default: false
+      vulkan_captures:
+        description: 'Render the core capture group on Vulkan (Mesa lavapipe) with Mobile and Forward+'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -839,6 +844,55 @@ jobs:
           path: tmp/visual-shadow-comparison.json
           if-no-files-found: ignore
           retention-days: 30
+
+  # Legacy modes audit (2026-11-20), Compatibility removal gate 3: the same captures on Vulkan through Mesa lavapipe.
+  # Shadow evidence only: manual opt-in, outside `CI required`; image contracts and goldens stay on Compatibility.
+  vulkan-captures:
+    needs: scope
+    if: needs.scope.outputs.app == 'true' && github.event_name == 'workflow_dispatch' && inputs.vulkan_captures == true
+    name: Vulkan capture shadow (${{ matrix.renderer }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: [mobile, forward_plus]
+    env:
+      OPENRC_CAPTURE_RENDERER: ${{ matrix.renderer }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Install visual and Vulkan software-rendering dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri mesa-vulkan-drivers libvulkan1 libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Capture the core group on Vulkan
+        run: app/capture.sh --group core --out "$RUNNER_TEMP/capture-vulkan" --run-id "gh-$GITHUB_RUN_ID-$OPENRC_CAPTURE_RENDERER"
+      - name: Report phase timings
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/capture-vulkan/timings.tsv" ]]; then
+            { printf '### Vulkan %s core timings\n\n```text\n' "$OPENRC_CAPTURE_RENDERER"; cat "$RUNNER_TEMP/capture-vulkan/timings.tsv"; printf '```\n'; } \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: vulkan-captures-${{ matrix.renderer }}
+          include-hidden-files: true # receipt start and milestone records
+          path: |
+            ${{ runner.temp }}/capture-vulkan/
+            !${{ runner.temp }}/capture-vulkan/.capture-profile/**
+          if-no-files-found: ignore
+          retention-days: 7
 
   native-windows:
     needs: scope

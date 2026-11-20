@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+servo law requires an explicit gdscript_reference backend selection
+AUDIT_TRIAL_JSON: {"base_commit":"2a3cf04dbbdaf486b9c9c8e983463d828f90c64a","check_start":{"available":false,"diagnostics":{"aircraft_id":"user-aircraft-0814ccf8-00e2-4a30-9fe9-2786f6b6ba29","format":"openrc-creator-start-check v1","launch_choice":"unknown","launch_kind":"unknown","physical_reset_committed":false,"raw_sha256":"38a93a3c7168cf8e63dff12f5ba434f206d44fd609a873dcf9ff7182f3a86cca","root_trial_published":false,"start_choice":"airborne","trial_id":"creator-6d238ffa2b5206607e62adfe"},"duration_ms":36.352,"field_id":"default","ok":true,"reason":"servo law requires an explicit gdscript_reference backend selection","start_choice":"airborne"},"compiled":true,"explicit_reference_session":{"after_soft_contacts":{"message":"servo law v1 requires calm reference atmosphere without failures or soft hull contacts","ok":false},"aircraft_ok":true,"before_soft_contacts":{"ok":true}},"frozen":true,"scope":"Public trial/session boundaries only; not a full Main or exported-build journey."}
+AUDIT_TRIAL_COMPLETE

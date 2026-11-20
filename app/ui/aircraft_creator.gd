@@ -35,11 +35,15 @@ const LibraryScript := preload("res://ui/aircraft_creator_library.gd")
 const PartsScript := preload("res://ui/aircraft_creator_parts.gd")
 const ClearViewPackage := preload("res://workshop/creator/clearview/package.gd")
 const ClearViewConverter := preload("res://workshop/creator/clearview/converter.gd")
+const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
+const FixedWingDonor := preload("res://workshop/creator/clearview/donor.gd")
+const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
 const SourceObservations := preload("res://workshop/creator/clearview/observations.gd")
 const SourceReportPanel := preload("res://ui/aircraft_creator_source_report.gd")
 const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
 const PACKAGE_PROPOSAL := "Estimated package proposal. Choose a configuration on Import."
 const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
+const PhoenixConverter := preload("res://workshop/creator/phoenix/converter.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
 const BACKUP_DELAY_S := 2.0
@@ -70,6 +74,15 @@ const ENTER_A_NUMBER := "Enter a number."
 const NO_MODEL := "No model imported yet"
 const STATIC_VISUAL := "Controls simulated · visual is static"
 const ELECTRIC_PACKAGE := "4S · 800 Kv · 12×6 propeller — estimated"
+## The installed estimated power package, by id (the setup chooses one per size class).
+const POWER_LABELS := {
+	"electric-4s-800kv-apc12x6-estimated-v1": ELECTRIC_PACKAGE,
+	"electric-4s-800kv-apc12x6-pusher-estimated-v1": "4S · 800 Kv · 12×6 pusher propeller — estimated",
+	"electric-3s-1250kv-9x6-estimated-v1": "3S · 1250 Kv · 9×6 propeller — estimated",
+	"electric-3s-1250kv-9x6-pusher-estimated-v1": "3S · 1250 Kv · 9×6 pusher propeller — estimated",
+	"electric-4s-1900kv-6x45-pusher-estimated-v1": "4S · 1900 Kv · 6×4.5 pusher propeller, in place of a ducted fan — estimated",
+	"electric-6s-1200kv-7x5-pusher-estimated-v1": "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated",
+}
 const AXIS_CHOICES: PackedStringArray = ["+x", "-x", "+y", "-y", "+z", "-z"]
 const UNIT_CHOICES: PackedStringArray = ["mm", "cm", "m", "in", "ft"]
 const DATUM_NAMES: PackedStringArray = ["Datum X", "Datum Y", "Datum Z"]
@@ -188,6 +201,8 @@ var _import_generation := 0
 var _discarded_imports := 0
 var _job: ImportJob
 var _shown_source: InspectedSource
+## The shown source is a converted ClearView helicopter (read once per source).
+var _shown_helicopter := false
 var _preview_signature := ""
 var _preview_placed := false
 var _pending_clearview: ClearViewPackage
@@ -227,7 +242,6 @@ var _inventory_box: VBoxContainer
 var _inventory_signature := "-"
 var _item_rows := {}
 var _item_texts := {}
-var _item_invalid := {}
 var _rebuilding_items := false
 var _review_sections := {}
 var _issue_box: VBoxContainer
@@ -562,6 +576,12 @@ static func _inspect(job: ImportJob) -> void:
 			job.annotations = job.result.diagnostics
 			_inspect_observations(job,job.result.value.source)
 		return
+	if job.phase == "phoenix_convert":
+		job.result = PhoenixConverter.convert(job.path, job.cancellation.is_cancelled)
+		if job.result.ok:
+			job.annotations = job.result.diagnostics
+			_inspect_observations(job,job.result.value.source)
+		return
 	if not job.opening.is_empty():
 		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
 		if job.result.ok:
@@ -613,6 +633,8 @@ func _start_import(path: String) -> void:
 	job.generation = _import_generation
 	if path.get_extension().to_lower() == "zip":
 		job.phase = "clearview_inventory"
+	elif path.get_extension().to_lower() == "mod":
+		job.phase = "phoenix_convert"
 	job.task_id = _start_task(job)
 	_job = job
 	_import_state = "inspecting"
@@ -632,6 +654,10 @@ func _adopt_import(job: ImportJob) -> void:
 		_show_clearview_package(result.value)
 		return
 	if job.phase == "clearview_convert" and result.get("ok", false):
+		result = R.ok(result.value.source, result.diagnostics)
+	var phoenix_placement := {}
+	if job.phase == "phoenix_convert" and result.get("ok", false):
+		phoenix_placement = result.value.placement
 		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
@@ -654,6 +680,13 @@ func _adopt_import(job: ImportJob) -> void:
 		_import_diagnostics = []
 		_doc.set_source(result.value,job.observations)
 		_clearview_notes = job.annotations
+		if not phoenix_placement.is_empty():
+			# The decoded Phoenix model fixes its frame and metres; the datum is its main-wing root leading edge.
+			_doc.set_axis("nose_axis", str(phoenix_placement.nose_axis))
+			_doc.set_axis("up_axis", str(phoenix_placement.up_axis))
+			_doc.set_units(str(phoenix_placement.units))
+			if not (phoenix_placement.datum as Array).is_empty():
+				_doc.set_datum(phoenix_placement.datum)
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])
@@ -733,7 +766,8 @@ func _choose_model() -> void:
 	_file_dialog.title = tr("Choose a model")
 	# Filter captions are plain text to the dialog: translate them each time it opens.
 	var filters := PackedStringArray()
-	for filter: String in PackedStringArray(["*.stl, *.glb, *.zip ; 3D model"]) + Importer.FILE_FILTERS + PackedStringArray(["*.zip ; ClearView aircraft ZIP"]):
+	for filter: String in PackedStringArray(["*.stl, *.glb, *.zip, *.mod ; 3D model"]) + Importer.FILE_FILTERS \
+			+ PackedStringArray(["*.zip ; ClearView aircraft ZIP", "*.mod ; Phoenix RC model"]):
 		var parts := filter.split(";", true, 1)
 		if parts.size() == 2:
 			filters.append("%s ; %s" % [parts[0].strip_edges(), tr(parts[1].strip_edges())])
@@ -1088,6 +1122,8 @@ func _build_import_page(page: VBoxContainer) -> void:
 	page.add_child(_import_notes)
 	_installation = InstallationPanel.new()
 	_installation.choice_requested.connect(_choose_source_installation)
+	_installation.setup_requested.connect(_ask_clearview_setup)
+	_installation.helicopter_requested.connect(_ask_helicopter_flight)
 	page.add_child(_installation)
 	_source_report = SourceReportPanel.new()
 	page.add_child(_source_report)
@@ -1875,14 +1911,12 @@ func _commit_item_number(id: String, key: String) -> void:
 		return
 	var edit: LineEdit = _item_rows[id][key]
 	var slot := id + "/" + key
-	if edit.text == str(_item_texts.get(slot, "")) and not _item_invalid.has(slot):
+	if edit.text == str(_item_texts.get(slot, "")) and not _doc.is_item_invalid(id, key):
 		return
 	_item_texts[slot] = edit.text
-	if _doc.set_item_raw(id, key, edit.text):
-		_item_invalid.erase(slot)
-	else:
-		# Not a number: the stored value is unchanged and the text stays visible.
-		_item_invalid[slot] = true
+	# Text that is not a number is kept by the document (dirty, saved, backed up and reopened);
+	# the stored number is unchanged and the document's change signal refreshes the row.
+	if not _doc.set_item_raw(id, key, edit.text):
 		_schedule_refresh()
 
 
@@ -1914,7 +1948,6 @@ func _rebuild_inventory(items: Array) -> void:
 	for slot: String in _item_texts.keys():
 		if not live.has(slot):
 			_item_texts.erase(slot)
-			_item_invalid.erase(slot)
 	if items.is_empty():
 		_inventory_box.add_child(_label("No items yet. Propose the airframe items or add your own."))
 	_rebuilding_items = false
@@ -2013,9 +2046,14 @@ func _on_test_fly_pressed() -> void:
 func _diagnostic_text(entry: Dictionary) -> String:
 	var message := tr(str(entry.get("message", "")))
 	var arguments: Array = []
+	var item_subject := str(entry.get("field", "")).begins_with(Authoring.ITEM_FIELD_PREFIX)
 	for argument: Variant in entry.get("arguments", []):
 		if typeof(argument) == TYPE_FLOAT:
 			arguments.append(String.num(argument, 3))
+		elif item_subject and typeof(argument) == TYPE_STRING and (argument as String).contains(" · "):
+			# "<item name> · <caption>": the caption is a catalog entry, the item's name is the player's.
+			var subject := (argument as String).rsplit(" · ", true, 1)
+			arguments.append("%s · %s" % [subject[0], tr(subject[1])])
 		elif typeof(argument) == TYPE_STRING and (_known_labels.has(argument) or (argument as String).contains(" ")):
 			arguments.append(tr(argument))
 		else:
@@ -2033,7 +2071,7 @@ func _diagnostics_text(diagnostics: Array) -> String:
 	return "\n".join(lines)
 
 
-## Invalid text held by the screen (wingspan, datum, inventory): it blocks a test flight like an
+## Invalid text held by the screen (wingspan, datum): it blocks a test flight like an
 ## invalid typed field of the document.
 func _local_issues() -> Array:
 	var found: Array = []
@@ -2042,19 +2080,7 @@ func _local_issues() -> Array:
 	for axis: int in 3:
 		if _datum_invalid[axis]:
 			found.append(R.diagnostic(R.FIELD_INVALID, NOT_A_NUMBER, "local/datum/%d" % axis, "orient_size", [DATUM_NAMES[axis]]))
-	for slot: String in _item_invalid.keys():
-		var parts := slot.rsplit("/", true, 1)
-		if _item(parts[0]).is_empty():
-			# The item is gone: so is its invalid text.
-			_item_invalid.erase(slot)
-			_item_texts.erase(slot)
-			continue
-		var caption := str(parts[1])
-		for number: Array in ITEM_NUMBERS:
-			if str(number[0]) == caption:
-				caption = tr(str(number[1]))
-		found.append(R.diagnostic(R.FIELD_INVALID, NOT_A_NUMBER, "local/item/" + slot, "weight_balance",
-			["%s · %s" % [str(_item(parts[0]).get("name", parts[0])), caption]]))
+	# Rejected inventory text belongs to the document; its issues() names those fields.
 	for entry: Variant in _presentation_check().get("diagnostics", []):
 		if entry is Dictionary and str((entry as Dictionary).get("severity", R.SEVERITY_ERROR)) == R.SEVERITY_ERROR:
 			found.append(entry)
@@ -2127,11 +2153,13 @@ func _focus_target(path: String) -> Control:
 		"placement/datum": return _datum_edits[0]
 		"local/wingspan": return _wingspan_edit
 		"inventory": return _propose_button
+	if path.begins_with(Authoring.ITEM_FIELD_PREFIX):
+		var slot := path.trim_prefix(Authoring.ITEM_FIELD_PREFIX).rsplit("/", true, 1)
+		if slot.size() == 2 and _item_rows.has(slot[0]):
+			return _item_rows[slot[0]].get(slot[1]) as Control
 	var parts := path.split("/")
 	if path.begins_with("local/datum/"):
 		return _datum_edits[clampi(int(parts[2]), 0, 2)]
-	if path.begins_with("local/item/") and parts.size() == 4 and _item_rows.has(parts[2]):
-		return _item_rows[parts[2]].get(parts[3]) as Control
 	if parts[0] == "inventory" and parts.size() >= 2 and parts[1].is_valid_int():
 		var items: Array = _doc.inventory()
 		var index := int(parts[1])
@@ -2207,12 +2235,15 @@ func _refresh() -> void:
 	var source: InspectedSource = _doc.source()
 	if source != _shown_source:
 		_shown_source = source
+		_shown_helicopter = HeliDonor.is_helicopter(source)
 		_reset_orient_inputs()
 	var pending := _doc.needs_source_installation()
 	var busy := _opening or _import_state in ["inspecting","choosing"]
 	_installation.show_state(source.get_instance_id() if source != null else 0,_doc.revision,
-		_doc.source_installation_proposal(),not pending,busy)
+		_doc.source_installation_proposal(),not pending,busy,_shown_helicopter)
 	for card: Button in _configuration_cards:
+		if card.name == "PowerElectric":
+			card.set_meta("detail", _power_label())
 		card.disabled = pending
 		card.set_pressed_no_signal(not pending)
 		card.set_meta("reason",PACKAGE_PROPOSAL if pending else "")
@@ -2274,6 +2305,8 @@ func _refresh_footer() -> void:
 	_reason_label.visible = _test_fly_button.visible and not reason.is_empty()
 	# Publishing needs what a test flight needs, a compiled aircraft, and a library that can be written.
 	var publish_reason := reason if not reason.is_empty() else ("" if _can_save() else _store_reason)
+	if publish_reason.is_empty() and _doc.source_installation_proposal().size() > 0:
+		publish_reason = tr(Authoring.Installation.PUBLISH_UNAVAILABLE)
 	if publish_reason.is_empty():
 		var compiled: Dictionary = _doc.compile()
 		if not compiled.get("ok", false):
@@ -2459,8 +2492,9 @@ func _refresh_inventory() -> void:
 		for number: Array in ITEM_NUMBERS:
 			var key := str(number[0])
 			var slot := id + "/" + key
-			if _item_invalid.has(slot):
+			if _doc.is_item_invalid(id, key):
 				flagged = true
+				_item_texts[slot] = _doc.item_invalid_text(id, key)
 			else:
 				_item_texts[slot] = _number_text(str(_item_texts.get(slot, "")), _item_value(item, key))
 			_show_text(row[key] as LineEdit, str(_item_texts[slot]))
@@ -2472,6 +2506,126 @@ func _refresh_readouts() -> void:
 		var label: Label = readout.label
 		if label.is_visible_in_tree() or not is_inside_tree():
 			label.text = _readout_text({} if _doc.needs_source_installation() else _summary, readout.spec)
+
+
+## The one-click ClearView setup, confirmed first: it states what is estimated and what is kept.
+func _ask_clearview_setup(revision: int) -> void:
+	if _opening or _import_state in ["inspecting","choosing"]:
+		return
+	var setup: Dictionary = ClearViewSetup.propose(_doc.source(), Authoring.span_domain())
+	if not setup.ok and str(setup.diagnostics[0].message) == ClearViewSetup.ELEVONS:
+		# An elevon flying wing has a donor instead: the stock X8 physics with this model's look.
+		var donor: Dictionary = FixedWingDonor.propose(_doc.source())
+		if donor.ok:
+			var donor_lines := PackedStringArray([tr(donor.value.message) % String.num(float(donor.value.flown_span_m), 1),
+				tr(FixedWingDonor.SCALE_NOTE) % [String.num(float(donor.value.source_span_m), 2),
+				String.num(100.0 * float(donor.value.flown_span_m) / float(donor.value.source_span_m), 0)]])
+			_ask(tr(FixedWingDonor.CONFIRM_TITLE), "\n\n".join(donor_lines), tr(FixedWingDonor.CONFIRM_BUTTON),
+				_fly_donor.bind(_doc.source(), donor.value))
+			return
+	if not setup.ok:
+		set_note(_diagnostics_text(setup.diagnostics))
+		_refresh()
+		_offer_trainer(_diagnostics_text(setup.diagnostics))
+		return
+	# Consequential differences first: a changed size or an assumed propeller.
+	var lines := PackedStringArray()
+	var domain: Array = setup.value.get("span_range", [])
+	if bool(setup.value.get("scaled", false)) and domain.size() == 2:
+		lines.append(tr(ClearViewSetup.SCALED) % [String.num(float(setup.value.source_span_m), 2), String.num(float(domain[0]), 1),
+			String.num(float(domain[1]), 1), String.num(float(setup.value.flown_span_m), 2),
+			String.num(100.0 * float(setup.value.flown_span_m) / float(setup.value.source_span_m), 0)])
+	if not bool(setup.value.get("propeller_found", true)):
+		lines.append(tr(ClearViewSetup.NO_PROPELLER))
+	# The size class applies only while the estimated configuration is still to be declared.
+	if int(setup.value.get("range_index", -1)) == 0 and _doc.needs_source_installation():
+		lines.append(tr(ClearViewSetup.PARK_FLYER))
+	if bool(setup.value.get("biplane", false)):
+		lines.append(tr(ClearViewSetup.BIPLANE))
+	lines.append_array([tr(ClearViewSetup.CONFIRM_FRAME), tr(ClearViewSetup.CONFIRM_ESTIMATES),
+		tr(Authoring.Installation.ESTIMATED_FLIGHT)])
+	_ask(tr("Set up this model for flight?"), "\n\n".join(lines), tr("Set up for flight"),
+		_apply_clearview_setup.bind(setup.value, revision))
+
+
+## A ClearView helicopter flies on the X-Cell .60 donor physics, confirmed first: only its appearance is used.
+func _ask_helicopter_flight(revision: int) -> void:
+	if _opening or _import_state in ["inspecting","choosing"] or revision != _doc.revision:
+		return
+	var source: InspectedSource = _doc.source()
+	if not HeliDonor.is_helicopter(source):
+		return
+	_ask(tr(HeliDonor.CONFIRM_TITLE), tr(HeliDonor.CONFIRM) + "\n\n" + tr(HeliDonor.CONFIRM_PLACEMENT), tr(HeliDonor.ACCEPT),
+		_fly_helicopter.bind(source))
+
+
+## The donor flight request: no compiled aircraft, only the admitted appearance and its shown name.
+func _fly_helicopter(source: InspectedSource) -> void:
+	if source != _doc.source() or _closing:
+		return
+	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
+	set_note("")
+	test_fly_requested.emit({creator_helicopter = {source = source, name = shown_name},
+		start_choice = "airborne" if _start_choice == "airborne" else "ground"})
+
+
+func _power_label() -> String:
+	return str(POWER_LABELS.get(str(_doc.definition().get("power_package", "")), ELECTRIC_PACKAGE))
+
+
+func _fly_donor(source: InspectedSource, donor: Dictionary) -> void:
+	if source != _doc.source() or _closing:
+		return
+	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
+	set_note("")
+	var hand: bool = _start_choice == "hand_launch" and donor.donor_id == FixedWingDonor.FLYING_WING_DONOR
+	test_fly_requested.emit({creator_donor = {source = source, name = shown_name, donor_id = donor.donor_id,
+		placement = (donor.placement as Dictionary).duplicate(true)},
+		start_choice = "hand_launch" if hand else "airborne"})
+
+
+## Last resort when the estimated configuration cannot fly this model: offer the stock trainer physics
+## with the model's appearance, stating why. Nothing in the draft changes.
+func _offer_trainer(reason: String) -> void:
+	var source: InspectedSource = _doc.source()
+	if source == null or HeliDonor.is_helicopter(source):
+		return
+	var donor: Dictionary = FixedWingDonor.propose(source, true)
+	if donor.ok and str(donor.value.donor_id) == FixedWingDonor.AIRSHIP_DONOR:
+		_ask(tr(FixedWingDonor.AIRSHIP_TITLE), tr(FixedWingDonor.AIRSHIP) % reason, tr(FixedWingDonor.AIRSHIP_BUTTON),
+			_fly_airship.bind(source))
+		return
+	if not donor.ok or str(donor.value.donor_id) != FixedWingDonor.TRAINER_DONOR:
+		return
+	var text: String = tr(FixedWingDonor.TRAINER) % [reason, String.num(float(donor.value.flown_span_m), 2)]
+	text += "\n\n" + tr(FixedWingDonor.SCALE_NOTE) % [String.num(float(donor.value.source_span_m), 2),
+		String.num(100.0 * float(donor.value.flown_span_m) / float(donor.value.source_span_m), 0)]
+	_ask(tr(FixedWingDonor.TRAINER_TITLE), text, tr(FixedWingDonor.TRAINER_BUTTON), _fly_donor.bind(source, donor.value))
+
+
+## The blimp donor request: the stock RC blimp physics with this model's appearance, from the blimp's start.
+func _fly_airship(source: InspectedSource) -> void:
+	if source != _doc.source() or _closing:
+		return
+	var shown_name: String = _doc.name if not _doc.name.is_empty() else source.file_name().get_basename()
+	set_note("")
+	test_fly_requested.emit({creator_airship = {source = source, name = shown_name}, start_choice = "airborne"})
+
+
+func _apply_clearview_setup(setup: Dictionary, revision: int) -> void:
+	var applied: Dictionary = _doc.apply_clearview_setup(setup, revision)
+	if not applied.ok:
+		set_note(_diagnostics_text(applied.diagnostics))
+	elif bool(applied.value.get("scaled", false)):
+		set_note(tr(ClearViewSetup.DONE) + " " + tr(ClearViewSetup.SCALED_DONE) % String.num(float(applied.value.flown_span_m), 2))
+	else:
+		set_note(tr(ClearViewSetup.DONE))
+	_refresh()
+	# The estimate is complete but the compiler refuses it (a body too long, a balance out of range):
+	# the reason stays in the note, and the trainer physics are offered so the model still flies.
+	var compiled: Dictionary = _doc.compile() if applied.ok else applied
+	if not compiled.ok:
+		_offer_trainer.call_deferred(_diagnostics_text(compiled.diagnostics))
 
 
 func _choose_source_installation(proposal: Dictionary,revision: int) -> void:
@@ -2548,7 +2702,7 @@ func _section_detail(step: String) -> String:
 		"weight_balance":
 			return tr("%s inventory items") % _doc.inventory().size()
 		"power_mount":
-			return "%s · %s" % [tr("Electric"), tr(ELECTRIC_PACKAGE)]
+			return "%s · %s" % [tr("Electric"), tr(_power_label())]
 		"controls_ground":
 			return "%s · %s" % [tr("No gear"), tr(_motion_text())]
 	var look: Dictionary = _doc.appearance()
@@ -3059,8 +3213,8 @@ func _adopt_document(fresh: Authoring, step: String) -> void:
 	_import_diagnostics = []
 	_reset_orient_inputs()
 	_shown_source = source
+	_shown_helicopter = HeliDonor.is_helicopter(source)
 	_item_texts.clear()
-	_item_invalid.clear()
 	_inventory_signature = "-"
 	_issue_signature = "-"
 	_set_inventory_note("")
@@ -3082,7 +3236,7 @@ func _on_publish_pressed() -> void:
 	# A ClearView model is published only with its confirmed OpenRC configuration, even when this
 	# handler is called without pressing the button.
 	if _doc.needs_source_installation():
-		set_note(tr(Authoring.Installation.REQUIRED))
+		set_note(tr(Authoring.Installation.blocked(_doc.source())))
 		return
 	if _doc.name.is_empty():
 		set_note(tr(NEEDS_NAME))

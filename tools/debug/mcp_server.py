@@ -87,6 +87,16 @@ TOOLS = [
     {"name": "sim_home", "description": "End the activity and return to Home.", "inputSchema": _schema()},
     {"name": "sim_state", "description": "Full state: route, screens, focus, flight pose, commands, pause and crash.",
      "inputSchema": _schema()},
+    {"name": "sim_frames", "description": "Frame pacing and stutter diagnostics: 1%/0.1% lows, frame-time tails, "
+     "target-FPS budget overruns, slow runs and bounded event evidence. Changing thresholds or reset=true starts "
+     "a fresh epoch. samples=true adds up to 7200 chronological samples; prefer ordinary summaries while flying. "
+     "Wall intervals are not display presentation; GPU readings and counter changes do not prove causes.",
+     "inputSchema": _schema({"window": {"type": "integer"}, "events": {"type": "integer"},
+                             "target_fps": {"type": "number"}, "budget_tolerance_ms": {"type": "number"},
+                             "stutter_factor": {"type": "number"}, "stutter_min_extra_ms": {"type": "number"},
+                             "stall_ms": {"type": "number"}, "hitch_ms": {"type": "number"},
+                             "factor": {"type": "number"}, "reset": {"type": "boolean"},
+                             "samples": {"type": "boolean"}})},
     {"name": "sim_sticks", "description": "Fly with stick values: roll/pitch/yaw -1..1 (pitch + = nose up), throttle "
      "0..1, for for_s simulated seconds; release=true hands back to the keyboard.",
      "inputSchema": _schema({"roll": {"type": "number"}, "pitch": {"type": "number"}, "yaw": {"type": "number"},
@@ -299,6 +309,8 @@ def call_tool(name: str, args: dict) -> list[dict]:
         return _then_look(_bridge("home", timeout=120.0))
     if name == "sim_state":
         return [_text(json.dumps(_bridge("state", {"fresh": True}), ensure_ascii=False))]
+    if name == "sim_frames":
+        return [_text(json.dumps(_bridge("frames", args), ensure_ascii=False))]
     if name == "sim_sticks":
         return [_text(json.dumps(_bridge("sticks", {k: v for k, v in args.items() if v is not None})))]
     if name == "sim_key":

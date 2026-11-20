@@ -12419,6 +12419,149 @@ msgstr "Validación de vuelo"
 msgid "Estimated package proposal. Choose a configuration on Import."
 msgstr "Propuesta de paquete estimado. Elige una configuración en Importación."
 
+msgid "This model is inside another model's folder. Nested model folders are not supported; move it to its own folder in the ZIP."
+msgstr "Este modelo está dentro de la carpeta de otro modelo. Las carpetas de modelos anidadas no son compatibles; muévelo a su propia carpeta en el ZIP."
+
+msgid "Part \"%s\": only rotating servo motion is imported. Its sliding or input-driven motion was not converted; the part stays static."
+msgstr "Pieza «%s»: solo se importa el movimiento de servo giratorio. Su movimiento deslizante o por entrada no se convirtió; la pieza queda estática."
+
+msgid "This ClearView v5 model declares no moving-part mapping that can be imported. Its control surfaces stay static until you bind them in Moving parts."
+msgstr "Este modelo ClearView v5 no declara ninguna asignación de piezas móviles que pueda importarse. Sus superficies de control quedan estáticas hasta que las asignes en Piezas móviles."
+
+msgid "The wing leading edge could not be found in this ClearView model. Mark it in Orient and size."
+msgstr "No se encontró el borde de ataque del ala en este modelo ClearView. Márcalo en Orientación y tamaño."
+
+msgid "Orientation and units follow the ClearView model frame (metres, nose forward along -X, up along +Y). The wing leading edge is estimated from the model shape; check it in Orient and size."
+msgstr "La orientación y las unidades siguen el sistema del modelo ClearView (metros, morro hacia -X, arriba hacia +Y). El borde de ataque del ala se estima a partir de la forma del modelo; compruébalo en Orientación y tamaño."
+
+msgid "Every empty dimension, mass, battery and control value is filled with an OpenRC estimate scaled to this model and marked Estimated. Values you entered are kept."
+msgstr "Cada dimensión, masa, batería y valor de control vacío se rellena con una estimación de OpenRC escalada a este modelo y marcada como Estimado. Se conservan los valores que introdujiste."
+
+msgid "The model is set up with an estimated OpenRC configuration. Review the estimates, then test fly."
+msgstr "El modelo está configurado con una configuración OpenRC estimada. Revisa las estimaciones y haz un vuelo de prueba."
+
+msgid "This model uses elevons (combined aileron and elevator surfaces). The estimated OpenRC configuration supports separate ailerons, elevator and rudder only."
+msgstr "Este modelo usa elevones (superficies combinadas de alerón y profundidad). La configuración OpenRC estimada solo admite alerones, profundidad y timón separados."
+
+msgid "Automatic setup is only available for converted ClearView models."
+msgstr "La configuración automática solo está disponible para modelos ClearView convertidos."
+
+msgid "The automatic setup is incomplete. Set the orientation, units and datum in Orient and size."
+msgstr "La configuración automática está incompleta. Indica la orientación, las unidades y el punto de referencia en Orientación y tamaño."
+
+msgid "The existing orientation conflicts with the ClearView frame. Review Orient and size."
+msgstr "La orientación existente contradice el sistema del modelo ClearView. Revisa Orientación y tamaño."
+
+msgid "Set up for flight automatically"
+msgstr "Configurar para volar automáticamente"
+
+msgid "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Usa el sistema del modelo ClearView, estima el borde de ataque del ala y rellena cada valor vacío con estimaciones de OpenRC etiquetadas. No se reemplaza nada de lo que introdujiste."
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. Handling is not a reproduction of the original."
+msgstr "Los vuelos de prueba usan esta configuración OpenRC estimada, no el modelo de vuelo de ClearView. El comportamiento no reproduce el original."
+
+msgid "Publishing converted ClearView models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "Todavía no se pueden publicar modelos ClearView convertidos. Guarda el borrador para conservarlo; puedes reabrirlo y hacer un vuelo de prueba."
+
+msgid "Set up this model for flight?"
+msgstr "¿Configurar este modelo para volar?"
+
+msgid "Set up for flight"
+msgstr "Configurar para volar"
+
+msgid "Texture \"%s\" uses an unsupported image format and was omitted; its surfaces keep their colour."
+msgstr "La textura «%s» usa un formato de imagen no compatible y se omitió; sus superficies conservan su color."
+
+msgid "This model is %s m across; the estimated OpenRC configuration supports %s to %s m. It will fly as a %s m version (%s %% of its size): a different configuration, not the original size."
+msgstr "Este modelo mide %s m de envergadura; la configuración OpenRC estimada admite de %s a %s m. Volará como una versión de %s m (%s %% de su tamaño): una configuración distinta, no el tamaño original."
+
+msgid "It flies as a %s m version of the model."
+msgstr "Vuela como una versión de %s m del modelo."
+
+msgid "No propeller was found in this model. It is estimated as an electric pusher park jet, with the propeller in a slot behind the wing. Jet and ducted-fan power are not modelled."
+msgstr "No se encontró ninguna hélice en este modelo. Se estima como un park jet eléctrico con hélice propulsora en una ranura detrás del ala. No se modela la propulsión a reacción ni de ventilador entubado."
+
+msgid "%s self-intersecting polygons were omitted."
+msgstr "Se omitieron %s polígonos que se cruzan a sí mismos."
+
+msgid "Texture \"%s\" is missing from the ZIP and was omitted; its surfaces keep their colour."
+msgstr "La textura «%s» falta en el ZIP y se omitió; sus superficies conservan su color."
+
+msgid "%s subdivided surfaces are shown as their unsmoothed control mesh."
+msgstr "%s superficies subdivididas se muestran como su malla de control sin suavizar."
+
+msgid "Part \"%s\": its coordinate marker is ambiguous. The marker was hidden and the part stays static."
+msgstr "Pieza «%s»: su marcador de coordenadas es ambiguo. El marcador se ocultó y la pieza queda estática."
+
+msgid "Only flat ClearView v0 to v5 and sectioned v6 model parameters are supported."
+msgstr "Solo se admiten parámetros de modelo ClearView planos de v0 a v5 y por secciones v6."
+
+msgid "This model does not name its render file; the ClearView default body.ac is used."
+msgstr "Este modelo no indica su archivo de render; se usa el body.ac predeterminado de ClearView."
+
+msgid "This is a ClearView helicopter, so the aeroplane setup does not apply. Use Fly as a helicopter: it flies with the X-Cell .60 reference helicopter physics and this model's appearance only."
+msgstr "Este es un helicóptero de ClearView, así que la configuración de avión no se aplica. Usa Volar como helicóptero: vuela con la física del helicóptero de referencia X-Cell .60 y solo con la apariencia de este modelo."
+
+msgid "Fly as a helicopter (X-Cell .60 donor)"
+msgstr "Volar como helicóptero (donante X-Cell .60)"
+
+msgid "Flies with the X-Cell .60 reference helicopter physics; this model's appearance only."
+msgstr "Vuela con la física del helicóptero de referencia X-Cell .60; de este modelo solo se usa la apariencia."
+
+msgid "Fly with donor helicopter physics?"
+msgstr "¿Volar con la física de un helicóptero donante?"
+
+msgid "This model flies with the X-Cell .60 reference helicopter physics; only its appearance is used. It is not the ClearView flight model, and no ClearView flight setting is read."
+msgstr "Este modelo vuela con la física del helicóptero de referencia X-Cell .60; solo se usa su apariencia. No es el modelo de vuelo de ClearView y no se lee ningún ajuste de vuelo de ClearView."
+
+msgid "Its ClearView origin is placed on the donor's centre of gravity and its lowest point on the donor's skids. A model whose main rotor is more than 1.5 times larger or smaller than the donor's is shown scaled to the donor rotor."
+msgstr "Su origen de ClearView se coloca en el centro de gravedad del donante y su punto más bajo sobre los patines del donante. Un modelo cuyo rotor principal sea más de 1,5 veces mayor o menor que el del donante se muestra escalado al rotor del donante."
+
+msgid "Fly as a helicopter"
+msgstr "Volar como helicóptero"
+
+msgid "X-Cell .60 reference physics · %s appearance only"
+msgstr "Física de referencia X-Cell .60 · solo la apariencia de %s"
+
+msgid "X-Cell .60 reference physics · %s appearance only, shown at %s %% of its size"
+msgstr "Física de referencia X-Cell .60 · solo la apariencia de %s, mostrado al %s %% de su tamaño"
+
+msgid "This helicopter model could not be shown for flight."
+msgstr "Este modelo de helicóptero no se pudo mostrar para el vuelo."
+
+msgid "Fly this flying wing?"
+msgstr "¿Volar esta ala volante?"
+
+msgid "Fly with the X8 physics"
+msgstr "Volar con la física del X8"
+
+msgid "The model is %s m across and is shown at %s %% of its size."
+msgstr "El modelo mide %s m de envergadura y se muestra al %s %% de su tamaño."
+
+msgid "This flying wing flies with the stock Skywalker X8 (MoonRunner X99) physics, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "Esta ala volante vuela con la física del Skywalker X8 de serie (MoonRunner X99), mostrada con el aspecto de este modelo ajustado a su envergadura de %s m. No es el modelo de vuelo de ClearView."
+
+msgid "This biplane is estimated as one equivalent wing with the lifting area of both wings."
+msgstr "Este biplano se estima como un ala equivalente con la superficie sustentadora de ambas alas."
+
+msgid "Under 1.45 m it is estimated as a foam park flyer: light foam structure, 9 g servos and a 3S electric power system."
+msgstr "Por debajo de 1,45 m se estima como un park flyer de espuma: estructura ligera de espuma, servos de 9 g y un sistema eléctrico 3S."
+
+msgid "4S · 800 Kv · 12×6 pusher propeller — estimated"
+msgstr "4S · 800 Kv · hélice propulsora 12×6 — estimado"
+
+msgid "3S · 1250 Kv · 9×6 propeller — estimated"
+msgstr "3S · 1250 Kv · hélice 9×6 — estimado"
+
+msgid "3S · 1250 Kv · 9×6 pusher propeller — estimated"
+msgstr "3S · 1250 Kv · hélice propulsora 9×6 — estimado"
+
+msgid "4S · 1900 Kv · 6×4.5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "4S · 1900 Kv · hélice propulsora 6×4,5, en lugar de un ventilador entubado — estimado"
+
+msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "6S · 1200 Kv · hélice propulsora 7×5, en lugar de un ventilador entubado — estimado"
 msgid "The controller connection changed: the motors are disarmed. Check the controller, then arm again after resuming."
 msgstr "La conexión del controlador cambió: los motores están desarmados. Revisa el controlador y vuelve a armar al reanudar."
 
@@ -12877,3 +13020,87 @@ msgstr "Se ignoraron %s líneas de etiqueta del editor en los parámetros del mo
 
 msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
 msgstr "Este formato de textura aún no es compatible. Convierte la textura a PNG, JPEG o GIF estándar o a BMP de 24 bits sin comprimir y actualiza su referencia en el modelo."
+
+msgid "%s coordinate markers could not be read. They were hidden; bind their moving parts manually."
+msgstr "No se pudieron leer %s marcadores de coordenadas. Se ocultaron; vincula sus piezas móviles manualmente."
+
+msgid "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
+msgstr "Bisagra «%s»: no se pudo leer su marcador de coordenadas. Vincula esta pieza manualmente en Piezas móviles."
+
+msgid "%s parts use AC3D subdivision. Their unsmoothed control shape is shown."
+msgstr "%s piezas usan subdivisión de AC3D. Se muestra su forma de control sin suavizar."
+
+msgid "Texture %s is missing; the same-named %s was used."
+msgstr "Falta la textura %s; se usó %s, que tiene el mismo nombre."
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "Los parámetros no indican ningún archivo de modelo; se usó %s, el predeterminado de ClearView."
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "Solo se admiten parámetros de modelo ClearView planos v0-v5 y por secciones v6."
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "El vuelo de helicópteros aún no está disponible en el Creador. Puedes previsualizar este modelo, configurar sus piezas móviles y guardarlo como borrador."
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "Se fusionaron %s piezas fijas para cumplir el límite de mallas del Creador. No se pueden vincular como piezas móviles."
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "La textura %s apunta fuera del ZIP y no está incluida. Esas piezas usan su color liso."
+
+msgid "Fly with trainer physics?"
+msgstr "¿Volar con la física de entrenador?"
+
+msgid "Fly with the trainer physics"
+msgstr "Volar con la física de entrenador"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIt can fly with the stock Ugly Stick electric trainer physics instead, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "La configuración estimada de OpenRC no puede hacer volar este modelo: %s\n\nPuede volar en su lugar con la física del entrenador eléctrico Ugly Stick de serie, mostrada con el aspecto de este modelo ajustado a su envergadura de %s m. No es el modelo de vuelo de ClearView."
+
+msgid "Fly as a blimp?"
+msgstr "¿Volar como dirigible?"
+
+msgid "Fly with the blimp physics"
+msgstr "Volar con la física del dirigible"
+
+msgid "The estimated OpenRC configuration cannot fly this model: %s\n\nIts slender body is an airship, so it can fly with OpenRC's RC blimp physics instead, shown with this model's appearance fitted to the blimp's length. It is not the ClearView flight model."
+msgstr "La configuración estimada de OpenRC no puede hacer volar este modelo: %s\n\nSu cuerpo esbelto es un dirigible, así que puede volar con la física del dirigible RC de OpenRC, mostrada con el aspecto de este modelo ajustado a la longitud del dirigible. No es el modelo de vuelo de ClearView."
+
+msgid "RC blimp physics · %s appearance only — experimental"
+msgstr "Física del dirigible RC · solo el aspecto de %s — experimental"
+
+msgid "This model could not be shown on the blimp."
+msgstr "Este modelo no se pudo mostrar en el dirigible."
+
+msgid "Phoenix RC model"
+msgstr "Modelo de Phoenix RC"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Solo se importa la apariencia de Phoenix. Define y valida por separado su configuración de vuelo de OpenRC."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Modelo Phoenix %s: %s m de envergadura, %s kg. Estos valores de Phoenix se muestran solo como referencia."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "La orientación, los metros y el borde de ataque del ala se tomaron del modelo Phoenix; compruébalos en Orientación y tamaño."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" no es una definición de modelo de Phoenix RC."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "El archivo de Phoenix \"%s\" no define ningún modelo de aeronave."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "El archivo de Phoenix \"%s\" define varios modelos; elige el archivo .mod de un solo modelo."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "El modelo Phoenix \"%s\" no tiene un tamaño utilizable, así que sus dimensiones reales son desconocidas."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "No se encontró el archivo de geometría \"%s\" junto al modelo Phoenix."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "No se pudo usar la textura \"%s\"; esas piezas conservan su color liso."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "El archivo \"%s\" está vacío o supera el límite de %s MiB."

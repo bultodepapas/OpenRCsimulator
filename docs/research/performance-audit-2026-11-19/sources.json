@@ -1,0 +1,51 @@
+{
+  "format": "openrc-audit-primary-sources-v1",
+  "consulted": "2026-11-19",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "audited_commit": "894357de83762ff6e0fdc47b0024e60f3d8286b7",
+  "sources": [
+    {
+      "id": "GODOT-ARRAY",
+      "title": "Godot Array: sort_custom()",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_array.html",
+      "scope": "A comparator must give a consistent ordering; unstable sorting does not repair a non-transitive predicate.",
+      "documentation_channel": "stable"
+    },
+    {
+      "id": "GODOT-MULTIMESH",
+      "title": "Optimization using MultiMeshes",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/using_multimesh.html",
+      "scope": "MultiMesh batching, coarse visibility and bulk buffer preparation; context for F30, not an OpenRC benchmark.",
+      "documentation_channel": "latest/unstable"
+    },
+    {
+      "id": "GODOT-THREADS",
+      "title": "Thread-safe APIs",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/performance/thread_safe_apis.html",
+      "scope": "Scene-tree/resource/thread ownership and GPU synchronization considerations for worker proposals.",
+      "documentation_channel": "latest/unstable"
+    },
+    {
+      "id": "GODOT-SCREEN",
+      "title": "Screen-reading shaders",
+      "url": "https://docs.godotengine.org/en/latest/tutorials/shaders/screen-reading_shaders.html",
+      "scope": "3D screen-copy timing after opaque and before transparent rendering; F32.",
+      "documentation_channel": "latest/unstable"
+    },
+    {
+      "id": "GODOT-TEXTURE",
+      "title": "Texture2D: get_image()",
+      "url": "https://docs.godotengine.org/en/latest/classes/class_texture2d.html",
+      "scope": "Texture readback context for F29; actual cost remains backend/workload dependent.",
+      "documentation_channel": "latest/unstable"
+    },
+    {
+      "id": "GODOT-CPU",
+      "title": "CPU optimization",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/performance/cpu_optimization.html",
+      "scope": "Profile custom CPU work and distinguish language overhead from engine operations already implemented natively.",
+      "documentation_channel": "stable"
+    }
+  ],
+  "limitations": "Official documentation supplies API context. latest is unstable and stable is not necessarily the pinned 4.8-beta2; neither qualifies OpenRC performance. No third-party assets were imported."
+}

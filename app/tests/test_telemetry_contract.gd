@@ -174,11 +174,18 @@ func _hardware() -> void:
 	_check("memory buckets use usable bytes", Hardware.ram_bucket(16 * gib) == "9_16" and Hardware.ram_bucket(int(15.7 * gib)) == "9_16"
 		and Hardware.ram_bucket(int(7.8 * gib)) == "5_8" and Hardware.ram_bucket(32 * gib) == "17_32"
 		and Hardware.ram_bucket(4 * gib) == "le4" and Hardware.ram_bucket(128 * gib) == "65_plus" and Hardware.ram_bucket(-1) == "unknown")
-	_check("16:9 resolution classes only", Hardware.resolution_class(Vector2i(1920, 1080)) == "1080p"
-		and Hardware.resolution_class(Vector2i(2560, 1440)) == "1440p" and Hardware.resolution_class(Vector2i(3840, 2160)) == "2160p"
-		and Hardware.resolution_class(Vector2i(1280, 720)) == "below1080p" and Hardware.resolution_class(Vector2i(5120, 2880)) == "above2160p"
-		and Hardware.resolution_class(Vector2i(2560, 1080)) == "other" and Hardware.resolution_class(Vector2i(3200, 1800)) == "other"
-		and Hardware.resolution_class(Vector2i.ZERO) == "unknown")
+	var bands := {Vector2i(1920, 1080): "1080p", Vector2i(2560, 1440): "1440p", Vector2i(3840, 2160): "2160p",
+		Vector2i(1280, 720): "below1080p", Vector2i(1366, 768): "below1080p", Vector2i(5120, 2880): "above2160p",
+		Vector2i(1920, 1200): "1080p", Vector2i(1920, 1009): "1080p", Vector2i(2560, 1080): "1080p",
+		Vector2i(2560, 1600): "1440p", Vector2i(2880, 1864): "1440p", Vector2i(3440, 1440): "1440p",
+		Vector2i(3024, 1964): "2160p", Vector2i(3456, 2234): "2160p", Vector2i(3200, 1800): "2160p",
+		Vector2i.ZERO: "unknown", Vector2i(0, 1080): "unknown"}
+	var wrong := []
+	for size: Vector2i in bands:
+		if Hardware.resolution_class(size) != bands[size]:
+			wrong.append("%s -> %s" % [size, Hardware.resolution_class(size)])
+	_check("resolution classes are pixel-count bands (16:10, MacBook panels, ultrawide, windowed)", wrong.is_empty(),
+		str(wrong))
 	_check("vsync and frame cap", Hardware.vsync(DisplayServer.VSYNC_MAILBOX) == "mailbox" and Hardware.vsync(-1) == "unknown"
 		and Hardware.fps_cap(0) == "unlimited" and Hardware.fps_cap(30) == "le30" and Hardware.fps_cap(144) == "121_plus")
 	_check("platform names map explicitly", Hardware.os_family("macOS") == "macos" and Hardware.os_family("FreeBSD") == "other"

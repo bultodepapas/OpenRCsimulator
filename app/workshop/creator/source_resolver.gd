@@ -203,6 +203,10 @@ static func resolve(library_root: String, reference: Variant) -> Dictionary:
 		var joined: Dictionary = CompiledPublication.match_document(document, saved)
 		if not joined.ok:
 			return joined
+		# A flight-eligible owner requires proven derivation, not only a matching hash pair.
+		var derived: Dictionary = CompiledPublication.verify_derivation(saved.definition, raw, ref.aircraft_uuid)
+		if not derived.ok:
+			return derived
 		provenance = BOUND_V2
 	elif saved.has("compile_binding") or _legacy_servo_marker(saved):
 		return _invalid("legacy_servo")

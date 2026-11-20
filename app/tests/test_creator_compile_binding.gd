@@ -101,6 +101,16 @@ func _run() -> void:
 	bad_presentation.set_bindings(a.bindings())
 	bad_presentation.set_appearance({"mode": "unsupported"})
 	check("invalid appearance refuses capture", not CompiledPublication.capture(bad_presentation).ok)
+	# Same-UUID/same-law cross-pair with freshly recomputed hashes: only derivation can refuse it.
+	var uuid: String = a.aircraft_uuid()
+	var crossed_receipt := Binding.make(ca.value.definition_sha256(), Bytes.sha256(raw_b))
+	check("cross-pair passes structural and receipt checks", CompiledPublication.valid_pair(value_a.definition, raw_b, uuid)
+		and Binding.matches(crossed_receipt, ca.value.definition_sha256(), Bytes.sha256(raw_b)))
+	check("true pair is derived by the installed compiler", CompiledPublication.verify_derivation(value_a.definition, raw_a, uuid).ok
+		and CompiledPublication.verify_derivation(value_b.definition, raw_b, uuid).ok)
+	var crossed := CompiledPublication.verify_derivation(value_a.definition, raw_b, uuid)
+	check("cross-pair with recomputed hashes is refused by derivation", not crossed.ok
+		and crossed.diagnostics[0].code == "IDENTITY_MISMATCH" and crossed.diagnostics[0].field == "saved_aircraft/derivation")
 	_fault_cases(cap_a)
 	_clearview_gate()
 	_store_cases(a, ca, cb, cap_a, cap_b, source)

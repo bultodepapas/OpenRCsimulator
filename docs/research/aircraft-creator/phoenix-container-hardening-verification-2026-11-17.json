@@ -1,0 +1,320 @@
+{
+  "schema": "openrc-phoenix-research-probe-checks-v2",
+  "generated_at_utc": "2026-11-18T02:30:19.701661+00:00",
+  "python": "3.12.14",
+  "python_optimization": 0,
+  "zlib_runtime": "1.3.2",
+  "probe_source_sha256": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+  "checker_on_disk_sha256": "f1adb8a59ee981a82e1c70e684fe8ebc7ef3dbdc49999baef71e440fc4d191fc",
+  "identity_scope": "In-process probe source is captured before execution; checker hash observes its on-disk file. Subprocess checks use on-disk tool files. Neither authenticates local tools.",
+  "scope": "Research framing/tree inspection only; no mesh, simulator, runtime security or flight qualification.",
+  "synthetic_checks": [
+    {
+      "name": "known single-file tree, offset, hash and private-path omission",
+      "result": "passed"
+    },
+    {
+      "name": "numeric label is reported without version interpretation",
+      "result": "passed"
+    },
+    {
+      "name": "path-like name stays JSON data; no extraction API exists",
+      "result": "passed"
+    },
+    {
+      "name": "equal displayed names retain distinct source bytes and decoding",
+      "result": "passed"
+    },
+    {
+      "name": "empty input",
+      "result": "rejected",
+      "reason": "truncated at 0, wanted 1 bytes"
+    },
+    {
+      "name": "wrong marker",
+      "result": "rejected",
+      "reason": "unrecognized package marker"
+    },
+    {
+      "name": "nonnumeric header",
+      "result": "rejected",
+      "reason": "unrecognized package header numeric string: 'not-a-label'"
+    },
+    {
+      "name": "malformed decimal header b'.'",
+      "result": "rejected",
+      "reason": "unrecognized package header numeric string: '.'"
+    },
+    {
+      "name": "malformed decimal header b'..'",
+      "result": "rejected",
+      "reason": "unrecognized package header numeric string: '..'"
+    },
+    {
+      "name": "malformed decimal header b'1..2'",
+      "result": "rejected",
+      "reason": "unrecognized package header numeric string: '1..2'"
+    },
+    {
+      "name": "truncated compressed input",
+      "result": "rejected",
+      "reason": "truncated at 21, wanted 76 bytes"
+    },
+    {
+      "name": "zlib checksum corruption",
+      "result": "rejected",
+      "reason": "zlib failure in chunk 0: Error -3 while decompressing data: incorrect data check"
+    },
+    {
+      "name": "declared inflated size mismatch",
+      "result": "rejected",
+      "reason": "invalid zlib or declared size in chunk 0"
+    },
+    {
+      "name": "extra compressed stream",
+      "result": "rejected",
+      "reason": "invalid zlib or declared size in chunk 0"
+    },
+    {
+      "name": "extra package bytes",
+      "result": "rejected",
+      "reason": "unexpected bytes following package chunks"
+    },
+    {
+      "name": "unknown body prefix",
+      "result": "rejected",
+      "reason": "unrecognized body prefix"
+    },
+    {
+      "name": "unknown tree record kind",
+      "result": "rejected",
+      "reason": "unknown entry kind 2"
+    },
+    {
+      "name": "file with children",
+      "result": "rejected",
+      "reason": "nonzero file child count outside observed profile"
+    },
+    {
+      "name": "nonzero trailing body byte",
+      "result": "rejected",
+      "reason": "unexpected nonzero data following observed tree"
+    },
+    {
+      "name": "padding outside probe profile",
+      "result": "rejected",
+      "reason": "zero padding limit exceeded"
+    },
+    {
+      "name": "oversized name",
+      "result": "rejected",
+      "reason": "string limit exceeded"
+    },
+    {
+      "name": "oversized member before content allocation",
+      "result": "rejected",
+      "reason": "member size limit exceeded"
+    },
+    {
+      "name": "tree depth limit",
+      "result": "rejected",
+      "reason": "tree depth limit exceeded"
+    },
+    {
+      "name": "actual captured input limit",
+      "result": "rejected",
+      "reason": "input size limit exceeded"
+    },
+    {
+      "name": "aggregate inflated-body limit",
+      "result": "rejected",
+      "reason": "body size limit exceeded"
+    },
+    {
+      "name": "entry-count limit",
+      "result": "rejected",
+      "reason": "child count limit exceeded"
+    },
+    {
+      "name": "cumulative entries across sibling lists",
+      "result": "rejected",
+      "reason": "total entry limit exceeded"
+    },
+    {
+      "name": "deep long-name output amplification",
+      "result": "rejected",
+      "reason": "cumulative reported-path byte limit exceeded"
+    },
+    {
+      "name": "report metadata output budget",
+      "result": "rejected",
+      "reason": "report metadata limit exceeded"
+    },
+    {
+      "name": "CLI exact hash",
+      "result": "passed"
+    },
+    {
+      "name": "CLI wrong hash",
+      "result": "passed"
+    }
+  ],
+  "capture_checks": [
+    {
+      "name": "optimized Python cannot emit passing verification receipts",
+      "result": "passed"
+    },
+    {
+      "name": "inventory parse and identity use the same captured bytes",
+      "result": "passed"
+    },
+    {
+      "name": "bounded regular capture",
+      "result": "rejected"
+    },
+    {
+      "name": "directory is not a regular file",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID '../outside'",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID '/absolute'",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID 'a/b'",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID 'a\\\\b'",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID '.'",
+      "result": "rejected"
+    },
+    {
+      "name": "unsafe inventory ID 'C:drive'",
+      "result": "rejected"
+    },
+    {
+      "name": "duplicate inventory keys",
+      "result": "rejected"
+    },
+    {
+      "name": "non-finite inventory value",
+      "result": "rejected"
+    },
+    {
+      "name": "overflowing JSON exponent is not a finite inventory number",
+      "result": "rejected"
+    },
+    {
+      "name": "excessive inventory nesting has a controlled refusal",
+      "result": "rejected"
+    },
+    {
+      "name": "empty inventory",
+      "result": "rejected"
+    },
+    {
+      "name": "verification receipt output budget",
+      "result": "rejected"
+    },
+    {
+      "name": "executed probe source capture has recorded hash",
+      "result": "passed"
+    },
+    {
+      "name": "stale equal-size timestamp pyc cannot replace captured probe source",
+      "result": "passed"
+    },
+    {
+      "name": "report cannot replace a source file",
+      "result": "rejected"
+    },
+    {
+      "name": "confined exact sample capture",
+      "result": "passed"
+    },
+    {
+      "name": "CLI receipt keeps inventory capture hash after on-disk mutation",
+      "result": "passed"
+    },
+    {
+      "name": "sample symlink is refused",
+      "result": "rejected"
+    },
+    {
+      "name": "report symlink cannot overwrite source",
+      "result": "rejected"
+    },
+    {
+      "name": "report hardlink cannot overwrite source",
+      "result": "rejected"
+    },
+    {
+      "name": "FIFO rejected without waiting for a writer",
+      "result": "passed"
+    },
+    {
+      "name": "fixed repository tool source also refuses FIFO capture",
+      "result": "passed"
+    }
+  ],
+  "real_samples": [
+    {
+      "specimen_id": "freewing-su35",
+      "input_sha256": "2111d5c87704eb7670e5888c6a2303933c45f203b6a02a986c500e22373d785e",
+      "input_bytes": 1674324,
+      "member_count": 4,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "extra300",
+      "input_sha256": "412038ee523356ced7a8673324c0c9e4f316a4be243ee6e9ab34ec9151320507",
+      "input_bytes": 6341574,
+      "member_count": 12,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "wasp18",
+      "input_sha256": "9258dc5c4463a0da4bfcab8b33883d2e62859d5a21a8516991b59409bd4aef27",
+      "input_bytes": 1791521,
+      "member_count": 4,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "wasp20",
+      "input_sha256": "20ac9e002b38b19cba75a9d1090a074c83122c93bab079db56b638e267a2bfef",
+      "input_bytes": 1142154,
+      "member_count": 4,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "su37",
+      "input_sha256": "e7943d1a2c1379f4950b11421dd867b3f01922654d9efc430d43f17761aeafe7",
+      "input_bytes": 8367984,
+      "member_count": 24,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "yak54",
+      "input_sha256": "4a9b0cf1af316416c6d28bce0fbf1e8758216904610a485a3f431f2d469ac93e",
+      "input_bytes": 1928595,
+      "member_count": 4,
+      "result": "exact inventory match"
+    },
+    {
+      "specimen_id": "aw109",
+      "input_sha256": "7072023bb8425cd8c703a287219397f35a4fc819cc370674ebaaec12030ff597",
+      "input_bytes": 2595163,
+      "member_count": 4,
+      "result": "exact inventory match"
+    }
+  ],
+  "inventory_sha256": "f1f5060dadf9c32ef7ed848dd7f7e278d164a08af73223339cff2ce43ddfcb53"
+}

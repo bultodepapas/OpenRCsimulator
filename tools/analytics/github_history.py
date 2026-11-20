@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive GitHub traffic and release-asset counter observations locally."""
+"""Archive GitHub traffic, clones, community counters and release-asset observations locally."""
 
 from __future__ import annotations
 
@@ -22,7 +22,8 @@ from datetime import datetime, time, timezone
 DEFAULT_REPO = "bultodepapas/OpenRCsimulator"
 DEFAULT_ASSET_GLOB = "openrc-simulator-*.zip"
 DATABASE_NAME = "github-history.sqlite3"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+READABLE_VERSIONS = (1, 2)  # version 1 archives gain the community tables on the next collect
 
 
 class CollectionError(Exception):
@@ -49,12 +50,12 @@ def nonnegative_int(value: object, field: str) -> int:
     return value
 
 
-def github_json(endpoint: str, paginated: bool = False) -> object:
+def github_json(endpoint: str, paginated: bool = False, accept: str = "application/vnd.github+json") -> object:
     # gh handles its own credential store and GH_TOKEN/GITHUB_TOKEN. Never ask it
     # to print a token, pass a token as an argument, or persist command stderr.
     command = [
         "gh", "api", "--hostname", "github.com",
-        "-H", "Accept: application/vnd.github+json",
+        "-H", f"Accept: {accept}",
         "-H", "X-GitHub-Api-Version: 2022-11-28",
     ]
     if paginated:
@@ -85,13 +86,22 @@ def github_json(endpoint: str, paginated: bool = False) -> object:
 
 
 def fetch_traffic(repo: str, started: str) -> list[dict]:
-    response = github_json(f"repos/{repo}/traffic/views?per=day")
-    if not isinstance(response, dict) or not isinstance(response.get("views"), list):
+    return fetch_daily(repo, started, "views")
+
+
+def fetch_clones(repo: str, started: str) -> list[dict]:
+    return fetch_daily(repo, started, "clones")
+
+
+def fetch_daily(repo: str, started: str, kind: str) -> list[dict]:
+    """GitHub's 14 daily buckets of repository page views or git clones."""
+    response = github_json(f"repos/{repo}/traffic/{kind}?per=day")
+    if not isinstance(response, dict) or not isinstance(response.get(kind), list):
         raise CollectionError("Unexpected traffic response")
     start_day = parse_timestamp(started).date()
     days = []
     seen = set()
-    for entry in response["views"]:
+    for entry in response[kind]:
         if not isinstance(entry, dict):
             raise CollectionError("Invalid traffic day")
         moment = parse_timestamp(entry.get("timestamp"))
@@ -152,9 +162,73 @@ def fetch_assets(repo: str, pattern: str) -> list[dict]:
     return assets
 
 
+def text_field(value: object, field: str, limit: int = 400) -> str:
+    if not isinstance(value, str) or not value or len(value) > limit:
+        raise CollectionError(f"Invalid {field} in GitHub response")
+    return value
+
+
+def fetch_community(repo: str) -> dict:
+    """Repository counters, the 14-day top referrers and paths, published releases and stars per UTC day.
+
+    Stargazer accounts are reduced to the day each star was given; no login or profile is kept."""
+    info = github_json(f"repos/{repo}")
+    if not isinstance(info, dict):
+        raise CollectionError("Unexpected repository response")
+    counters = {name: nonnegative_int(info.get(key), name) for name, key in (
+        ("stars", "stargazers_count"), ("forks", "forks_count"), ("watchers", "subscribers_count"),
+        ("open_issues", "open_issues_count"))}
+    referrers, paths = [], []
+    for kind, target in (("referrers", referrers), ("paths", paths)):
+        response = github_json(f"repos/{repo}/traffic/popular/{kind}")
+        if not isinstance(response, list):
+            raise CollectionError(f"Unexpected popular {kind} response")
+        for entry in response:
+            if not isinstance(entry, dict):
+                raise CollectionError(f"Invalid popular {kind} entry")
+            row = {"count": nonnegative_int(entry.get("count"), f"{kind} count"),
+                   "uniques": nonnegative_int(entry.get("uniques"), f"{kind} uniques")}
+            if kind == "referrers":
+                row["referrer"] = text_field(entry.get("referrer"), "referrer")
+            else:
+                row["path"] = text_field(entry.get("path"), "path")
+                row["title"] = entry.get("title") if isinstance(entry.get("title"), str) else ""
+            target.append(row)
+    releases = []
+    for release in github_json(f"repos/{repo}/releases?per_page=100", paginated=True):
+        if not isinstance(release, dict) or type(release.get("draft")) is not bool:
+            raise CollectionError("Invalid release in GitHub response")
+        if release["draft"] or release.get("published_at") is None:
+            continue
+        releases.append({"tag": text_field(release.get("tag_name"), "release tag", 200),
+                         "published": parse_timestamp(release.get("published_at")).isoformat().replace("+00:00", "Z"),
+                         "prerelease": bool(release.get("prerelease"))})
+    star_days: dict[str, int] = {}
+    for star in github_json(f"repos/{repo}/stargazers?per_page=100", paginated=True,
+                            accept="application/vnd.github.star+json"):
+        if not isinstance(star, dict):
+            raise CollectionError("Invalid stargazer entry")
+        day = parse_timestamp(star.get("starred_at")).date().isoformat()
+        star_days[day] = star_days.get(day, 0) + 1
+    if counters["stars"] >= 50 and sum(star_days.values()) < counters["stars"] // 2:
+        raise CollectionError("Stargazer list is much shorter than the star count; keeping the previous history")
+    return {"counters": counters, "referrers": unique(referrers, "referrer"), "paths": unique(paths, "path"),
+            "releases": unique(releases, "tag"), "star_days": star_days}
+
+
+def unique(rows: list[dict], key: str) -> list[dict]:
+    """First row per key: GitHub lists are not guaranteed duplicate-free, and the archive keys on them."""
+    seen, out = set(), []
+    for row in rows:
+        if row[key] not in seen:
+            seen.add(row[key])
+            out.append(row)
+    return out
+
+
 def initialize(connection: sqlite3.Connection, repo: str, pattern: str) -> None:
     version = connection.execute("PRAGMA user_version").fetchone()[0]
-    if version not in (0, SCHEMA_VERSION):
+    if version not in (0, *READABLE_VERSIONS):
         raise CollectionError(f"Unsupported analytics database version {version}")
     connection.execute("CREATE TABLE IF NOT EXISTS settings (repo TEXT NOT NULL, asset_glob TEXT NOT NULL)")
     connection.execute("CREATE TABLE IF NOT EXISTS observations (id INTEGER PRIMARY KEY, kind TEXT NOT NULL, started_utc TEXT NOT NULL, finished_utc TEXT NOT NULL)")
@@ -166,6 +240,21 @@ def initialize(connection: sqlite3.Connection, repo: str, pattern: str) -> None:
         observation_id INTEGER NOT NULL REFERENCES observations(id), asset_id INTEGER NOT NULL,
         release_id INTEGER NOT NULL, tag TEXT NOT NULL, name TEXT NOT NULL, count INTEGER NOT NULL,
         started_utc TEXT NOT NULL, finished_utc TEXT NOT NULL, PRIMARY KEY(observation_id, asset_id))""")
+    connection.execute("""CREATE TABLE IF NOT EXISTS clone_days (
+        day_utc TEXT PRIMARY KEY, views INTEGER NOT NULL, uniques INTEGER NOT NULL,
+        status TEXT NOT NULL, started_utc TEXT NOT NULL, finished_utc TEXT NOT NULL)""")
+    connection.execute("""CREATE TABLE IF NOT EXISTS repo_counters (
+        observation_id INTEGER PRIMARY KEY REFERENCES observations(id), stars INTEGER NOT NULL,
+        forks INTEGER NOT NULL, watchers INTEGER NOT NULL, open_issues INTEGER NOT NULL)""")
+    connection.execute("""CREATE TABLE IF NOT EXISTS popular_referrers (
+        observation_id INTEGER NOT NULL REFERENCES observations(id), referrer TEXT NOT NULL,
+        count INTEGER NOT NULL, uniques INTEGER NOT NULL, PRIMARY KEY(observation_id, referrer))""")
+    connection.execute("""CREATE TABLE IF NOT EXISTS popular_paths (
+        observation_id INTEGER NOT NULL REFERENCES observations(id), path TEXT NOT NULL, title TEXT NOT NULL,
+        count INTEGER NOT NULL, uniques INTEGER NOT NULL, PRIMARY KEY(observation_id, path))""")
+    connection.execute("""CREATE TABLE IF NOT EXISTS releases (
+        tag TEXT PRIMARY KEY, published_utc TEXT NOT NULL, prerelease INTEGER NOT NULL)""")
+    connection.execute("CREATE TABLE IF NOT EXISTS star_days (day_utc TEXT PRIMARY KEY, stars INTEGER NOT NULL)")
     saved = connection.execute("SELECT repo, asset_glob FROM settings").fetchall()
     if not saved:
         connection.execute("INSERT INTO settings VALUES (?, ?)", (repo, pattern))
@@ -186,13 +275,40 @@ def add_observation(connection: sqlite3.Connection, kind: str, started: str, fin
 
 
 def save_traffic(connection: sqlite3.Connection, days: list[dict], started: str, finished: str) -> None:
-    add_observation(connection, "traffic", started, finished)
+    save_days(connection, "traffic", "traffic_days", days, started, finished)
+
+
+def save_clones(connection: sqlite3.Connection, days: list[dict], started: str, finished: str) -> None:
+    save_days(connection, "clones", "clone_days", days, started, finished)
+
+
+def save_days(connection: sqlite3.Connection, kind: str, table: str, days: list[dict], started: str,
+              finished: str) -> None:
+    """Daily buckets; a later observation replaces GitHub's earlier revision of the same UTC day."""
+    add_observation(connection, kind, started, finished)
     for day in days:
-        connection.execute("""INSERT INTO traffic_days VALUES (?, ?, ?, ?, ?, ?)
+        connection.execute(f"""INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(day_utc) DO UPDATE SET views=excluded.views, uniques=excluded.uniques,
             status=excluded.status, started_utc=excluded.started_utc, finished_utc=excluded.finished_utc
-            WHERE excluded.started_utc >= traffic_days.started_utc""",
+            WHERE excluded.started_utc >= {table}.started_utc""",
             (day["day"], day["views"], day["uniques"], day["status"], started, finished))
+
+
+def save_community(connection: sqlite3.Connection, data: dict, started: str, finished: str) -> None:
+    """One counters/referrers/paths observation; the release list and star days are replaced as a whole."""
+    observation_id = add_observation(connection, "community", started, finished)
+    c = data["counters"]
+    connection.execute("INSERT INTO repo_counters VALUES (?, ?, ?, ?, ?)",
+                       (observation_id, c["stars"], c["forks"], c["watchers"], c["open_issues"]))
+    connection.executemany("INSERT INTO popular_referrers VALUES (?, ?, ?, ?)",
+                           [(observation_id, r["referrer"], r["count"], r["uniques"]) for r in data["referrers"]])
+    connection.executemany("INSERT INTO popular_paths VALUES (?, ?, ?, ?, ?)",
+                           [(observation_id, r["path"], r["title"], r["count"], r["uniques"]) for r in data["paths"]])
+    connection.execute("DELETE FROM releases")
+    connection.executemany("INSERT INTO releases VALUES (?, ?, ?)",
+                           [(r["tag"], r["published"], int(r["prerelease"])) for r in data["releases"]])
+    connection.execute("DELETE FROM star_days")
+    connection.executemany("INSERT INTO star_days VALUES (?, ?)", sorted(data["star_days"].items()))
 
 
 def save_assets(connection: sqlite3.Connection, assets: list[dict], started: str, finished: str) -> None:
@@ -263,7 +379,7 @@ def generate_reports(connection: sqlite3.Connection, output_dir: Path) -> None:
         raise CollectionError("Analytics database has not been initialized")
     repo, pattern = settings
     attempts = []
-    for kind in ("traffic", "release assets"):
+    for kind in ("traffic", "release assets", "clones", "community"):
         row = connection.execute("SELECT started_utc, finished_utc, success FROM attempts WHERE kind = ? ORDER BY id DESC LIMIT 1", (kind,)).fetchone()
         attempts.append((kind, "succeeded" if row and row[2] else "failed" if row else "not attempted",
                          row[0] if row else "—", row[1] if row else "—"))
@@ -319,6 +435,13 @@ def generate_reports(connection: sqlite3.Connection, output_dir: Path) -> None:
     atomic_write(output_dir / "report.html", report)
 
 
+def describe(values: object) -> str:
+    if isinstance(values, dict):
+        return (f"{len(values['referrers'])} referrers, {len(values['paths'])} paths, "
+                f"{len(values['releases'])} releases, {sum(values['star_days'].values())} stars")
+    return f"{len(values)} records"
+
+
 def validate_repo(repo: str) -> None:
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
         raise CollectionError("Repository must have the form owner/name")
@@ -339,16 +462,26 @@ def collect(output_dir: Path, repo: str, pattern: str) -> int:
         for kind, fetch, save in (
             ("traffic", lambda started: fetch_traffic(repo, started), save_traffic),
             ("release assets", lambda _started: fetch_assets(repo, pattern), save_assets),
+            ("clones", lambda started: fetch_clones(repo, started), save_clones),
+            ("community", lambda _started: fetch_community(repo), save_community),
         ):
             started = timestamp()
             try:
                 values = fetch(started)
                 finished = timestamp()
-                save(connection, values, started, finished)
+                # A savepoint per source: a constraint or shape error discards only this source's rows.
+                connection.execute("SAVEPOINT source")
+                try:
+                    save(connection, values, started, finished)
+                except BaseException:
+                    connection.execute("ROLLBACK TO source")
+                    connection.execute("RELEASE source")
+                    raise
+                connection.execute("RELEASE source")
                 connection.execute("INSERT INTO attempts(kind, started_utc, finished_utc, success) VALUES (?, ?, ?, 1)", (kind, started, finished))
-                print(f"Collected {kind}: {len(values)} records")
-            except CollectionError as exc:
-                errors.append(f"{kind}: {exc}")
+                print(f"Collected {kind}: {describe(values)}")
+            except (CollectionError, sqlite3.Error, KeyError, TypeError, ValueError) as exc:
+                errors.append(f"{kind}: {exc.__class__.__name__ if not isinstance(exc, CollectionError) else exc}")
                 connection.execute("INSERT INTO attempts(kind, started_utc, finished_utc, success) VALUES (?, ?, ?, 0)", (kind, started, timestamp()))
         connection.commit()
         connection.execute("BEGIN IMMEDIATE")
@@ -372,7 +505,7 @@ def report(output_dir: Path) -> int:
     connection = sqlite3.connect(path, timeout=1, isolation_level=None)
     try:
         connection.execute("BEGIN IMMEDIATE")
-        if connection.execute("PRAGMA user_version").fetchone()[0] != SCHEMA_VERSION:
+        if connection.execute("PRAGMA user_version").fetchone()[0] not in READABLE_VERSIONS:
             raise CollectionError("Unsupported analytics database version")
         generate_reports(connection, output_dir)
         connection.commit()
