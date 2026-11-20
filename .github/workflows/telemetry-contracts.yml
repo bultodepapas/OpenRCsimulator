@@ -7,11 +7,13 @@ on:
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
+      - 'tools/telemetry/**'
       - '.github/workflows/telemetry-contracts.yml'
   pull_request:
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
+      - 'tools/telemetry/**'
       - '.github/workflows/telemetry-contracts.yml'
   workflow_dispatch:
 
@@ -37,6 +39,7 @@ jobs:
           sparse-checkout: |
             research/telemetry
             services/telemetry
+            tools/telemetry
       - name: Install exact test dependencies in isolation
         run: |
           python3.12 --version
@@ -55,6 +58,9 @@ jobs:
         working-directory: services/telemetry
         run: |
           "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest discover -s tests -t . -v
+      - name: Operator dashboard against the receiver package
+        run: |
+          "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest tools/telemetry/test_dashboard.py -v
       - name: Build and smoke-test the receiver container
         run: |
           docker build -f services/telemetry/Dockerfile -t openrc-telemetry:ci .
