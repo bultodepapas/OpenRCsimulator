@@ -1,6 +1,6 @@
 # Photorealistic flying sites
 
-Initial study: 2026-11-18. Strengthened: 2026-11-19.
+Initial study: 2026-11-18. Strengthened: 2026-11-19. Geographic follow-up: 2026-11-20.
 **Status: research, adversarial review and hybrid design complete; implementation proposed.**
 Owner: scenery, with landscape, camera, field-world/time-of-day, UI, ground/contact,
 native-backend, replay, graphics and desktop-delivery co-owners.
@@ -327,6 +327,58 @@ online runtime terrain dependency, tool installation or engine upgrade is
 required by this plan. The [capture pipeline](../research/photorealistic-flying-sites/2026-11-18/capture-and-asset-pipeline.md)
 defines the per-source and per-output records needed to make the selected chain
 reproducible and redistributable.
+
+## Geographic scenery follow-on
+
+The [2026-11-20 world-scenery research](../research/photorealistic-flying-sites/2026-11-20/README.md)
+consolidates 56 investigations and 172 distinct queries: the preceding
+32-option/100-query geographic survey plus 24 additional investigations and
+72 searches into games, simulators and practical terrain guides. It checks
+current source at `48580b75a796fc6048fb77cdd69875c94ebb69e0`. The
+[precedent dossiers](../research/photorealistic-flying-sites/2026-11-20/game-world-precedents.md)
+explain actual methods and limits; the
+[search record](../research/photorealistic-flying-sites/2026-11-20/search-record.md)
+retains exact queries and inspected source identities.
+
+This is a **later local-site import track**, not an additional prerequisite for
+the existing photographic milestones. Their site scope, acceptance criteria and
+status remain unchanged. SC-PHOTO-02 remains first; ordinary meshes remain the
+SC-PHOTO-11 moving-view control before a justified Terrain3D comparison.
+Geographic runtime work builds on the admitted moving-view boundary. Offline
+preparation research can proceed independently.
+
+The proposed first geographic product is a bounded offline field selected by
+coordinates, with source-quality disclosure and an imported or authored runway.
+Continuous globe travel requires a separate physical-region/frame/replay design;
+it is not implied by geographic selection or visual streaming.
+
+Reuse the following interfaces when that follow-on is selected:
+
+- **03 and 07:** a staged GDAL/PROJ preparation pipeline, QGIS review, geographic
+  metadata, source/repair masks, versioned semantic rules and separate physical/
+  visual package identities. Checkpoint original inputs and hash derived products.
+- **04/04a/04b and GP/NK/replay owners:** explicit height/normal/seam contracts,
+  oriented runway starts, water/NoData semantics and any admitted new obstacle
+  representation. Grading is a new physical revision; visual LOD and cache
+  completion cannot change it.
+- **08 and packaging established by 10:** serialized activation, stale/partial
+  candidate retirement, cold recovery and a later geographic offline package.
+  This does not require the first photographic package to ingest GIS data.
+- **09/11/12:** the same prepared scene in the mesh control and one justified
+  terrain candidate, measured on required devices, followed by explicit activity
+  admission. Keep exact same-contract native/reference equivalence separate from
+  visual/source error budgets.
+
+Arnis/maps4fs/GeoMapgen inform staged generation and semantic rules; BeamNG and
+Landscape Splines inform previewed runway earthworks; OSM Drone Simulator,
+WorldWind and OpenSpace inform bounded visual loading and coverage. Cesium's
+documented culling behavior motivates independently resident physical terrain.
+The [WG01–WG08 proposed fixtures](../research/photorealistic-flying-sites/2026-11-20/README.md#qualification-fixtures)
+cover decoder/NoData, seam ownership, runway grading, bridges/water, geographic
+boundaries, cache/lifecycle, asset semantics and measured renderer comparison.
+
+These are researched proposals. No geographic site, terrain plugin, continuous
+world, performance gain or runtime qualification is delivered by this update.
 
 ## Planning ranges and staffing
 
