@@ -54,6 +54,29 @@ The decoded definition matches the readable community `.mod` grammar already stu
 
 The 6.0 scripts in `resources/` define how Phoenix flies these numbers. `physics.sim` sets `air_density = 1.225`, `airfoil_efficiency = 0.85` and `num_airfoil_sections = 20`; `functions.sim` (`calcAifoilForces`) applies strip theory over those sections with tabulated section polars. The polars are `resources/airfoils/*.sim`: each names one airfoil (matching the definition's `Airfoil` label) and holds flat `[alpha°, CL, CD]` triples from −90° to 90° in 0.5° steps. `Fuselage_drag_area.frontal` is a projected area in m² (multiplied by a drag coefficient), not a CD·S product. Engine `.pxe` files are sound definitions only. Creator turns these facts into its own packages (see [§4](#4-corpus-results)); it executes no Phoenix script.
 
+### 3.6 Field meanings from Phoenix Builder
+
+The owner's Phoenix Builder 1.0.p install (`D:\PhoenixBuilder`, user guide `resources/userGuide/UserGuide.rtf`, February 2014) documents what each definition field means. It was read locally; nothing from it is committed. Census values are from the owner's Phoenix 5.5.k install (`D:\PhoenixRC`, the same 220 stock definitions as the ISO corpus).
+
+| Field | Builder meaning | Stock use |
+| --- | --- | --- |
+| `Physical.Size`, `Weight` | Geometry scale (wingspan, or rotor diameter for helicopters); total flying weight | 220 |
+| `Physical.Fuselage_drag_area` | Frontal, lateral and vertical drag areas (the Builder's "Set" measures them from the mesh) | 220; only frontal is used by Creator |
+| `Physical.Cockpit` | Cockpit shown in cockpit view (Helicopter, Jet_Fighter, Modern, WW2_Fighter, Glider, None) | 220 |
+| `Fine_tuning` | Percent multipliers on thrust, lift, engine power and elevator/aileron/rudder power, plus stall, wash, torque and rudder-roll/rudder-elevator coupling | Non-default on 212 models: lift 49 (75–175 %), elevator/aileron 25 (75–130 %), engine 22, thrust 12, wash 15, couplings 125 |
+| `Controls.*` | Low-rate %, expo (normal/low), servo speed, dead-zone, mixes | 212 |
+| Airfoil `Wash` | Propeller-wash influence on the airfoil and its surfaces | 456 airfoils, 0–150 % |
+| Airfoil `flaps[]` | Hinged flap: travel, lift and drag increase, leading-edge flag | 19 models |
+| Airfoil `airbrakes[]` | Drag increase and lift reduction at full extension | 1 glider |
+| Propeller | Idle/Max RPM, `Down_thrust`/`Right_thrust` angles (0–8° / −0.5–0°), torque %, spool `Response`, spin direction, pusher flag, engine sound | 110 propellers |
+| Turbine | Idle/max RPM, idle/max thrust, spool time | 10 |
+| Gear | Hinge axis, guide (steerable) wheel with direction and travel, breakable, retract time and idle/mid/full poses, wheels (centre, radius, thickness) | 97 fixed-wing |
+| Main/tail rotor | Diameter, chord, blades, inertia, min/mid/max pitch, cyclic response, damping, flybar type and gains, governor, engine power and gear ratio, ground effect, vortex-ring loss; tail drive type, pitch range, gyro type/gain | 96 helicopters |
+| Exhaust, widget, pilot, streamer | Smoke (engine/display, colour), animated covers driven by an input, pilot figure, streamer anchor | see the census in the [quality plan](../../plans/imported-aircraft-quality.md#81-what-the-stock-models-carry) |
+| Scheme project | Replacement textures for a model (`<model>#<Scheme>.bmp`); `<model>_preview.bmp` is the menu preview | 36 schemes, 220 previews |
+
+Engine sounds are plain-text `.pxe` definitions in `resources/engines/` mapping throttle percent to volume and pitch curves over WAV samples in `resources/soundEffects/` (100 WAV files).
+
 ## 4. Corpus results
 
 | Check | Result |

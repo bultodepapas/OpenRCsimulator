@@ -1,6 +1,6 @@
 # Imported aircraft quality: audit and phased plan
 
-Status: active plan, created 2026-11-20; progress in [§7](#7-progress). This file owns `IAQ-00` through `IAQ-08`. It audits how imported aircraft (Creator sources: generic STL/GLB, ClearView conversions and the new Phoenix import) look, fly, control and present in OpenRC today, and orders the work that turns them into first-class aircraft. Format-specific work stays with its owners: [Aircraft Creator](aircraft-creator.md) (AC), [ClearView](clearview-aircraft-import.md) (AC-CV), [Phoenix](phoenix-aircraft-import.md) (AC-PX). This plan sequences and measures their shared player-visible quality; it does not reassign their steps.
+Status: active plan, created 2026-11-20; progress in [§7](#7-progress), next improvements in [§8](#8-re-audit-after-iaq-03b-and-next-improvements-2026-11-20). This file owns `IAQ-00` through `IAQ-08`. It audits how imported aircraft (Creator sources: generic STL/GLB, ClearView conversions and the new Phoenix import) look, fly, control and present in OpenRC today, and orders the work that turns them into first-class aircraft. Format-specific work stays with its owners: [Aircraft Creator](aircraft-creator.md) (AC), [ClearView](clearview-aircraft-import.md) (AC-CV), [Phoenix](phoenix-aircraft-import.md) (AC-PX). This plan sequences and measures their shared player-visible quality; it does not reassign their steps.
 
 ## 1. Method and evidence limits
 
@@ -159,3 +159,72 @@ Recommended order for the next sprint: **IAQ-00 → IAQ-01 → IAQ-02 → IAQ-03
 | IAQ-03 (first slice) | 2026-11-20 | Phoenix wing, tail, fin, propeller hub and control throws mapped into Creator layout fields (structural frame from the main-wing root leading edge) and applied as labelled estimates over the scaled starting values, with the estimated inventory; a tractor hub sets the fuselage nose and axis | Local corpus with the real Creator sequence: 8/114 fixed-wing models compile on the trainer package (Super Cub float, S.E.5a, Corsair, FunCub, Apprentice 15e/S15e, High-wing Trainer, Tutor 40); all 8 pass the airborne start gate, 5 also the hand launch. Refusals: taper 29, span 25, battery balance 12, other 26 | Park-flyer/pusher package choice, battery balancing (reuse `_fit_estimates`), provider guard and donor fallback, wider packages (IAQ-06) |
 | IAQ-03 (provider route) | 2026-11-20 | Phoenix aeroplanes registered as a recognised provider (`openrc_phoenix_aeroplane`); `phoenix/setup.gd` proposes size class, scaled span, fitted planform, limited throws and pusher/biplane flags from the decoded receipt; `Authoring.apply_clearview_setup` reused (optional `layout`, `pusher`, `owns_scale`); provider-specific flight/publish texts; ClearView geometry functions refuse other providers | All 32 Creator tests pass (Phoenix 114/0 incl. setup, ClearView setup 56/0, donor 17/0, source installation 89/0, published trial 62/0, source reference 240/0, language 0 failures). Local corpus, real propose+apply+compile sequence: 110/114 aeroplanes and gliders compile (27 scaled, 85 fitted planforms, stacked wings as one equivalent wing, decoded pusher hubs kept where the package can carry them); 110/110 airborne starts available, 45 hand launches. Refused: Typhoon canards (2), one loader refusal, one nose range. Good Enemy review: no requirement violation; pusher-hub, biplane-reference and donor-guard findings fixed | Live in-app flight check (IAQ-00); `app_root.gd` donor/airship request checks still use `required()` (UI-guarded; change with the AFC-02 manifest renewal); `owns_scale` infers the import default from metres at scale 1; helicopters and multirotors; Phoenix-specific packages (IAQ-06) |
 | IAQ-03b (Phoenix physics) | 2026-11-20 | Each Phoenix aeroplane flies on airframe and power packages derived from its own decoded data (`phoenix/physics.gd`, [decision](../DECISIONS.md#phoenix-aeroplanes-fly-on-packages-derived-from-their-own-data)): polar-based lift, drag and stall, Phoenix span efficiency, body drag from the frontal area, control-surface effectiveness, aileron roll power, mass and CG (source-mass items and balance target), propellers (Froude-scaled RPM, multi-engine equivalent, 2.3 × weight thrust cap), jet thrust equivalents and a glider launch motor; content-addressed ids re-derived on draft restore; setup texts in nine languages say the configuration is derived from the Phoenix data | Local stock corpus, real propose+apply+compile+start sequence: 110/114 compile, 105 airborne starts, 21 hand launches (EasyStar 0.70 kg, Vs 4.9 m/s, level 8.7 m/s at half throttle; A-10 turbine T/W 2.19; Habu 2 T/W 1.32 vs Phoenix 1.36). Refused: two canard Typhoons, a pusher ahead of its CG, HBZ Stratos (own propeller under 0.3 × weight). `test_creator_phoenix_readers` 144/0; all 32 Creator suites pass. Good Enemy review: identity, untrusted-block validation, derive-failure, source-mass re-run, pitch-ratio and registry findings fixed | Live flight audit (IAQ-00); five aircraft (B-17, P-47, UM Spitfire, 4-Site, Grasshopper) need over half throttle at the start speed; jets fly an equivalent propeller (torque and gyroscopic effects present); polars beyond the main wing; mean-chord definition in the CG target; scale changes after setup do not re-derive |
+
+## 8. Re-audit after IAQ-03b and next improvements (2026-11-20)
+
+Since the §2 audit, IAQ-01/02/03/03b delivered materials, moving parts, the provider route and flight on packages derived from each model's Phoenix data (§7). This re-audit measures what the stock definitions carry that the importer still ignores, and re-orders the remaining phases by player impact. Evidence: a census of the 220 decoded local definitions (research script, nothing committed), an independent read-only code audit and lead verification of each claim used below.
+
+### 8.1 What the stock models carry
+
+| Decoded content | Models | Used today |
+| --- | --- | --- |
+| Classes | 107 fixed-wing, 7 gliders, 96 helicopters, 8 multirotors, 2 others | Fixed-wing and gliders only |
+| Landing gear (`gear[]` with wheel collision primitives) | 97 fixed-wing: 80 with a steerable wheel, 21 retractable, 7 on floats | Presence only; Creator records compile `gear = locked_up`, airborne/hand starts |
+| Gear doors and other `widgets` driven by "Retract Gear" | 13 | No |
+| Controls per channel (`Low_Rate`, `Expo`, `Servo_Speed`, `Trim`, mixes) | 212 | No (throws only) |
+| Exhaust smoke mounts with colour (`Display_Smoke`) | 46 | No; profile smoke is gated off for Workshop trials (`main.gd:1210`) |
+| Streamers / pilot figures / onboard cameras | 108 / 68 / 67 | No |
+| Paint schemes (`<model>#<Scheme>.bmp`) / `.var` presets | 36 schemes on 22 models / 29 models | No |
+| `level` (Beginner 46, Intermediate 113, Advanced 61) and `style` | 220 | No |
+| Helicopter rotor heads (diameter, chord, blades, pitch range, RPM, gyro, governor) | 96 | No; rotorcraft import as plain GLBs |
+| Airfoil polars | 21 library files | Main wing only |
+
+### 8.2 Findings
+
+| # | Finding | Impact | Evidence |
+| --- | --- | --- | --- |
+| F1 | Phoenix helicopters and multirotors get no provider marker, so they open as generic GLBs: no refusal, no donor offer, and the player can hand-build a fixed-wing configuration for a helicopter | 104 models (47 %) silently mis-handled | `phoenix/converter.gd:23` (`AEROPLANE_TYPES`), `source_installation.gd` `provider()` |
+| F2 | Every import still shows "Only the Phoenix appearance is imported… define its flight configuration separately" next to the Set-up note | Contradicts the delivered route | `converter.gd:42,173` |
+| F3 | Textures beyond the 16-image GLB limit are dropped silently | Wrong colours without a note | `converter.gd:106-107` |
+| F4 | Reopening a saved Phoenix draft rebuilds notes through the ClearView path, so Phoenix notes are lost | Missing explanations after reopen | `aircraft_creator.gd:591,599` |
+| F5 | Changing the scale after "Set up for flight" keeps packages derived for the old size | Silent physics mismatch | `authoring.gd` setup loop; §7 IAQ-03b |
+| F6 | No runway take-off, landing or taxi although the kernel already flies fixed/retractable tricycle and taildragger records | The most visible realism gap for 97 aeroplanes | `compiler.gd:400`; stock `f4u_corsair_250.json`, `jensen_ugly_stik_60.json` |
+| F7 | One file at a time through a dialog, an explicit set-up step, no browser, schemes or presets | Slow discovery of 220 models | `aircraft_creator.gd:617-791` |
+| F8 | Binding v1: four control roles, one propeller, two parts per role; flaps, elevons, V-tails and extra propellers stay static | Twins, B-17, deltas look wrong | `visual_parts.gd:17-22`, `converter.gd:465-480` |
+| F9 | Inertia stays the scaled UltraStick value; compile warnings report 0.4–2.9× deviations | Pitch/yaw response off on scale and heavy models | corpus probe warnings |
+| F10 | No flight evidence: the live path (IAQ-00) is still blocked, so derived physics is compile- and start-gate-tested only | Physics quality unknown in flight | §1 |
+| F11 | Test gaps: Creator UI import/adopt/cancel of a `.mod`, shared texture folders, the 16-texture limit, rotorcraft handling; resource sub-folder lookup is case-sensitive on copied installs | Regressions and Linux/macOS failures go unseen | `test_creator_phoenix_readers.gd`; `converter.gd` folder helpers |
+
+### 8.3 Next improvements, in order
+
+| Order | Step | Work | Effort | Acceptance |
+| --- | --- | --- | --- | --- |
+| 1 | **IAQ-03c — honest import hardening** | F1: mark Phoenix rotorcraft (`openrc_phoenix_rotorcraft`), refuse fixed-wing set-up for them with a clear note and offer the existing helicopter donor; F2: replace the appearance-only note; F3: a diagnostic naming dropped textures; F4: Phoenix notes kept on reopen; F5: re-derive (or ask) on a scale change; F11: UI import-path, shared-texture and case tests, case-insensitive resource lookup | 2–3 days | Phoenix tests cover each case; 96 helicopters show the rotorcraft note; no stale text in nine languages |
+| 2 | **IAQ-00 — evidence harness** | Fix the live path (U: worktree or debugctl policy); commit the opt-in corpus probe as a tool (local install path argument, JSON report, never stock bytes); a scripted per-model flight card from flight logs: stall speed, level speed at half throttle, climb, roll rate, glide ratio | 3–4 days | One command produces the 114-model card; two models replay exactly; physics changes are compared against the card |
+| 3 | **IAQ-06a — gear and runway** | Derive wheel contact points from `gear[].sides[].collision`, steerable `isGuide` wheels, tail/nose layout and `isRetractable` into the existing gear capabilities; bind gear doors (`widgets`) to the retract input; floats stay airborne-start | 1–2 weeks | 80+ aeroplanes take off from and land on the runway; taildraggers ground-loop plausibly; retracts animate |
+| 4 | **IAQ-07a — library flow** | Installation browser (scan once; list with Phoenix thumbnails, class, level, style and flight status); "Import and set up" in one action; paint-scheme picker (22 models) and `.var` presets (29) | 1–2 weeks | Any of the 220 models imported and flying in two clicks; schemes switch without re-conversion |
+| 5 | **IAQ-04 — controls and feel** | Phoenix rates, expo, servo speed and dual rate into v2 controls; binding v2 for flaps, elevons, V-tail and every propeller; tail polars; inertia from the mesh and item layout instead of the scaled donor; a start policy for the five models that need more than half throttle | 1–2 weeks | Decoded curves reproduced; inertia warnings gone; all propellers and surfaces move |
+| 6 | **IAQ-05 — presentation** | Smoke from the 46 decoded exhaust mounts and colours (lift the Workshop gate only for validated mounts); streamers; pilot figures; onboard cameras as cockpit/FPV stations; engine sound chosen from the Phoenix engine category | 1–2 weeks | Smoke and cockpit view on three imported aircraft at 1080p; disabled effects allocate nothing |
+| 7 | **IAQ-06b — Phoenix helicopters** | Derive a helicopter package from the decoded rotor heads on the existing helicopter kernel (X-Cell research record as base), replacing the donor appearance swap; then the 8 multirotors | 3–5 weeks | Helicopter AC-12-style campaign; 96 helicopters hover and fly with their own rotor data |
+| 8 | **IAQ-07b/08 — saved flight and release** | Home and published flight for derived packages once AC-18/19 and the AC-12 gate pass; Linux/macOS copied installs; community PKG import (AC-PX-01); LOD and 1080p budgets | multi-week | Phoenix aircraft launch from Home; packaged three-platform evidence |
+
+Steps 1 and 2 come first: they remove misleading behaviour and give every later physics change a measurement. Gear (3) is the largest single gain in realism and reuses kernel capabilities that already fly stock aircraft. Phase 6 items 3–5 (gliders, twins, turbines) now have estimated equivalents from IAQ-03b; their own capability work stays in IAQ-06.
+
+| KPI | Now (2026-11-20) | After steps 1–4 | After step 7 |
+| --- | --- | --- | --- |
+| Phoenix models with an honest route (flight, donor or clear refusal) | 110 of 220 | 220 of 220 | 220 of 220 |
+| Aeroplanes with runway take-off | 0 | 80+ | 80+ |
+| Models flying on their own decoded data | 110 | 110 | 200+ |
+| Clicks from installation to flight | file dialog + set-up + confirm + fly | 2 | 2 |
+| Models with a per-model flight card | 0 | 114 | 210 |
+
+### 8.4 What the installed game and Phoenix Builder add
+
+The Builder's user guide gives each field its meaning ([field table](../research/aircraft-creator/phoenix-stock-format-2026-11-20.md#36-field-meanings-from-phoenix-builder)). Four facts change the plan:
+
+1. **Phoenix tunes most models with `Fine_tuning` multipliers that Creator ignores.** Lift is changed on 49 models (75–175 %), elevator and aileron power on 25, engine power or thrust on 34. Applying them to the derived lift, control effectiveness and power is cheap and brings each aircraft closer to how Phoenix flies it. This becomes step 2b below.
+2. **Phoenix models propeller wash per airfoil (`Wash`, 456 airfoils).** That is the mechanism OpenRC lacks and the reason for the 2.3 × weight thrust cap. A kernel propeller-wash capability (physics owners) would remove the cap and fix low-speed rudder and elevator authority. Until then the cap stays.
+3. **Flaps (19 models), down and right thrust (110 propellers) and spool response are decoded.** Stock OpenRC records already fly `flaps = simulated`, so flaps join the gear step. Thrust angles join the power derivation.
+4. **The player's installation holds a preview image for every model and the engine sounds.** `<model>_preview.bmp` serves the library browser. `.pxe` throttle-to-volume/pitch curves over the player's own WAV samples can drive engine audio at runtime, loaded locally like textures and never redistributed.
+
+Added step: **2b. IAQ-03d — Phoenix tuning and thrust angles (2–3 days).** Apply `Fine_tuning` lift, control-power, thrust and engine multipliers, plus `Down_thrust`, `Right_thrust` and idle RPM, inside `phoenix/physics.gd` under a new `DERIVATION_VERSION`. Acceptance: the per-model card from step 2 shows the expected direction of change on the 49 lift-tuned models, and nothing changes for models at 100 %.
