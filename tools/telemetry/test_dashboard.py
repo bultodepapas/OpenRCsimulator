@@ -237,7 +237,9 @@ class DashboardCase(unittest.TestCase):
         website = page.split('id="panel-website"')[1].split('id="panel-receiver"')[0]
         for text in ("Active users, 7 days", "Download requests by platform", "windows", "Not registered in GA4",
                      "<code>download_source</code>", "Web Vitals ratings", "/OpenRCsimulator/ja.html",
-                     "Etc/UTC", "Active users now", "property 123456789"):
+                     "Etc/UTC", "Active users now", "property 123456789", "Download conversion", "8%",
+                     "Phone hand-offs", "Property setup (WEB-17)", "missing: release_version",
+                     "two months", "<td>github</td><td>10</td><td>9</td><td>90%</td>"):
             self.assertIn(text, website)
         self.assertIn("&lt;b&gt;evil&lt;/b&gt;", website)  # country text is escaped
         self.assertNotIn("<b>evil</b>", page)

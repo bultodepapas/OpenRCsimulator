@@ -31,7 +31,7 @@ class FakeGA:
 
     def __init__(self, dimensions=("customEvent:download_platform",), fail=None, streams=None, zone="Etc/UTC"):
         self.calls, self.dimensions, self.fail, self.zone = [], set(dimensions), fail or set(), zone
-        self.ranges = []
+        self.ranges, self.filters = [], []
         self.streams = streams or {"properties/111": "G-OTHER", f"properties/{PROPERTY}": ga4.MEASUREMENT_ID}
 
     def __call__(self, method, url, token=None, body=None, form=None, headers=None):
@@ -57,23 +57,36 @@ class FakeGA:
             return {"dimensions": [{"apiName": n} for n in ["date", "country", *self.dimensions]]}
         if url.endswith(":runRealtimeReport"):
             return {"rows": [{"metricValues": [{"value": "3"}]}]}
+        if url.endswith("/dataRetentionSettings"):
+            return {"eventDataRetention": "TWO_MONTHS"}
+        if url.endswith("/keyEvents"):
+            return {"keyEvents": [{"eventName": "purchase"}]}
         assert url.endswith(f"properties/{PROPERTY}:runReport"), url
         if "probe" in self.fail:
             raise ValueError("unexpected shape")
-        if not body.get("dimensions"):  # the time-zone probe
+        if "dimensionFilter" not in body:  # the time-zone probe
             return {"rows": [{"metricValues": [{"value": "2"}]}], "metadata": {"timeZone": self.zone}}
         self.ranges.append(body["dateRanges"])
+        self.filters.append(body["dimensionFilter"])
         dims = [d["name"] for d in body["dimensions"]]
-        event = ((body.get("dimensionFilter") or {}).get("filter") or {}).get("stringFilter", {}).get("value")
+        found = body["dimensionFilter"].get("andGroup", {}).get("expressions") or [body["dimensionFilter"]]
+        values = {f["filter"]["fieldName"]: f["filter"]["stringFilter"]["value"] for f in found}
+        event = values.get("eventName")
         key = (tuple(dims), event)
-        if key in self.fail or dims[0] in self.fail:
+        if key in self.fail or (dims and dims[0] in self.fail):
             raise ga4.GA4Error("HTTP 400: report refused")
         metrics = [m["name"] for m in body["metrics"]]
         if key == (("date",), None):
             rows = [(["20270114"], ["40", "30", "55", "120", "33"]), (["20270115"], ["12", "9", "14", "31", "8"])]
             totals = ["50", "39", "69", "151", "41"]
         elif key == (("date",), "download_request"):
-            rows, totals = [(["20270110"], ["4"]), (["20270115"], ["2"])], ["6"]
+            rows, totals = [(["20270110"], ["4", "3"]), (["20270115"], ["2", "2"])], ["6", "4"]
+        elif key == ((), "download_handoff"):
+            rows, totals = [([], ["7"])], None
+        elif key == (("sessionSource",), None):
+            rows, totals = [(["github"], ["10"]), (["reddit.com"], ["20"])], None
+        elif key == (("sessionSource",), "download_request"):
+            rows, totals = [(["github"], ["9"])], None
         elif dims == ["country"]:
             rows = [(["Spain"], ["20", "25"][:len(metrics)]), (["<b>evil</b>"], ["1", "1"][:len(metrics)])]
             totals = None
@@ -124,11 +137,39 @@ class GA4Case(unittest.TestCase):
         self.assertEqual(m["errors"], {})
         self.assertEqual(m["time_zone"], "Etc/UTC")
 
+    def test_production_host_filter_funnels_and_setup(self):
+        fake = FakeGA()
+        m = ga4.collect(PROPERTY, "tok", {}, days=7, now=NOW, http=fake)
+        self.assertTrue(fake.filters)
+        for expression in fake.filters:  # every report is restricted to the published site
+            found = expression.get("andGroup", {}).get("expressions") or [expression]
+            self.assertIn({"filter": {"fieldName": "hostName", "stringFilter": {
+                "matchType": "EXACT", "value": "bultodepapas.github.io"}}}, found)
+        self.assertEqual((m["downloads_users"], m["handoffs"]), (4, 7))
+        self.assertEqual(m["funnels"]["source"], [{"name": "github", "users": 10, "requesting": 9},
+                                                  {"name": "reddit.com", "users": 20, "requesting": 0}])
+        self.assertEqual(m["setup"]["retention"], "TWO_MONTHS")
+        self.assertEqual(m["setup"]["key_events"], ["purchase"])
+        self.assertEqual(m["setup"]["dimensions"]["download_platform"], True)
+        self.assertEqual(m["setup"]["dimensions"]["release_version"], False)
+        self.assertEqual(m["missing"]["download_releases"], ["customEvent:release_version"])
+
+    def test_expired_login_says_how_to_fix_it(self):
+        path = self.dir / "user.json"
+        path.write_text(json.dumps({"type": "authorized_user", "client_id": "c", "client_secret": "s",
+                                    "refresh_token": "r"}), encoding="utf-8")
+
+        def refused(*_args, **_kwargs):
+            raise ga4.GA4Error("HTTP 400: Token has been expired or revoked.")
+        with self.assertRaisesRegex(ga4.GA4Error, "ga4.py login"):
+            ga4.access_token(path, http=refused)
+
     def test_report_body_window_and_filter(self):
         body = ga4.report_body(["2027-01-01", "2027-01-02"], ["date"], ["eventCount"], event="download_request",
                                order="eventCount", limit=15)
         self.assertEqual(body["dateRanges"], [{"startDate": "2027-01-01", "endDate": "2027-01-02"}])
-        self.assertEqual(body["dimensionFilter"]["filter"]["stringFilter"]["value"], "download_request")
+        self.assertEqual(body["dimensionFilter"]["andGroup"]["expressions"][1]["filter"]["stringFilter"]["value"],
+                         "download_request")
         self.assertEqual(body["limit"], "15")
 
     def test_every_report_uses_the_property_day_window(self):

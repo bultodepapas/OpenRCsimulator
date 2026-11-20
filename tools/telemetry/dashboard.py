@@ -1009,6 +1009,56 @@ def vitals_panel(model):
                  'INP 200/500 ms, CLS 0.1/0.25). Sampled field data, not a lab measurement.</p>')
 
 
+def pct(part, whole):
+    return f"{part * 100 / whole:.0f}%" if part is not None and whole else "-"
+
+
+def funnel_panel(model):
+    """Users and users who sent download_request, per source, device and OS (TELEM-24b)."""
+    blocks = []
+    for key, title in (("source", "Source"), ("device", "Device"), ("os", "Operating system")):
+        if f"funnel_{key}" in (model.get("errors") or {}):
+            blocks.append(f'<p class="empty">{e(title)}: report failed: {e(model["errors"]["funnel_" + key])}</p>')
+            continue
+        rows = (model.get("funnels") or {}).get(key) or []
+        if not rows:
+            continue
+        body = "".join(f"<tr><td>{e(r['name'] or '(not set)')}</td><td>{fmt_int(r['users'])}</td>"
+                       f"<td>{fmt_int(r['requesting'])}</td><td>{pct(r['requesting'], r['users'])}</td></tr>"
+                       for r in rows[:10])
+        blocks.append(scroll(f"<table><thead><tr><th>{e(title)}</th><th>Users</th><th>Requested a download</th>"
+                             f"<th>Conversion</th></tr></thead><tbody>{body}</tbody></table>"))
+    body = "".join(blocks) or '<p class="empty">No data in this period.</p>'
+    return panel("Download conversion", "users who sent download_request ÷ active users; phones cannot run the "
+                 "simulator", body)
+
+
+def setup_panel(model):
+    """WEB-17 property checklist read through the Admin API."""
+    setup = model.get("setup") or {}
+    items = []
+    retention = setup.get("retention")
+    items.append((retention == "FOURTEEN_MONTHS", "Event data retention 14 months",
+                  "unknown" if retention is None else retention.replace("_", " ").lower()))
+    keys = setup.get("key_events")
+    items.append(("download_request" in (keys or []), "download_request is a key event",
+                  "unknown" if keys is None else (", ".join(keys) or "none")))
+    dims = setup.get("dimensions")
+    if dims is None:
+        items.append((False, "Custom dimensions registered", "unknown"))
+    else:
+        missing = [name for name, ok in dims.items() if not ok]
+        items.append((not missing, "Custom dimensions registered",
+                      "all registered" if not missing else "missing: " + ", ".join(missing)))
+    rows = "".join(f'<tr><td><i class="cov st-{"good" if ok else "warning"}" aria-hidden="true">'
+                   f'{"&#10003;" if ok else "!"}</i> {e(label)}</td><td>{e(detail)}</td></tr>'
+                   for ok, label, detail in items)
+    note = ("Change these in GA4 Admin (the dashboard credential is read-only); see "
+            "docs/plans/website-analytics.md, WEB-17. Custom dimensions report only from registration onwards.")
+    return panel("Property setup (WEB-17)", f"only {model.get('host') or 'the published site'} is counted",
+                 scroll(f'<table class="narrow"><tbody>{rows}</tbody></table>') + f'<p class="note">{e(note)}</p>')
+
+
 def website_section(model, github_model, now):
     head = ('<p class="sub">Public website (GA4 web stream <code>' + e(ga4.MEASUREMENT_ID) + '</code>, through Tag '
             'Manager): page views, <code>download_request</code> events and sampled Web Vitals. Blocked analytics '
@@ -1032,6 +1082,11 @@ def website_section(model, github_model, now):
         (f"Page views, {span}", fmt_int(totals.get("views", 0)), "all locales"),
         (f"Download requests, {span}", "-" if dl_failed else fmt_int(model.get("downloads_total") or 0),
          "report failed" if dl_failed else f"{fmt_int(ga4.window(model, 7))} in the last 7 days"),
+        ("Download conversion", pct(model.get("downloads_users"), totals.get("users")),
+         f"{fmt_int(model['downloads_users'])} of {fmt_int(totals.get('users', 0))} users sent a download request"
+         if model.get("downloads_users") is not None else "report unavailable"),
+        ("Phone hand-offs", "-" if model.get("handoffs") is None else fmt_int(model["handoffs"]),
+         "download links opened on phones or tablets (WEB-20)"),
         ("Active users now", "-" if model.get("realtime_users") is None else fmt_int(model["realtime_users"]),
          f"last 30 minutes · property {model.get('property')}"),
     ]
@@ -1072,7 +1127,11 @@ def website_section(model, github_model, now):
                             "download_source: website or the GitHub README link", "eventCount",
                             [("eventCount", "Requests")]))
             + pair(ga_panel(model, "devices", "Devices", "active users by device category", "activeUsers",
-                            [("activeUsers", "Users")]), vitals_panel(model)))
+                            [("activeUsers", "Users")]), vitals_panel(model))
+            + pair(funnel_panel(model),
+                   ga_panel(model, "download_releases", "Download requests by release", "release_version",
+                            "eventCount", [("eventCount", "Requests")]))
+            + pair(setup_panel(model), ""))
 
 
 def players_section(snapshot, insight_html):

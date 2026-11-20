@@ -28,6 +28,7 @@ import urllib.request
 
 REPO = Path(__file__).resolve().parents[2]
 MEASUREMENT_ID = "G-4Z11DSB2BV"
+PRODUCTION_HOST = "bultodepapas.github.io"
 SCOPE = "https://www.googleapis.com/auth/analytics.readonly"
 DATA_API = "https://analyticsdata.googleapis.com/v1beta"
 ADMIN_API = "https://analyticsadmin.googleapis.com/v1beta"
@@ -152,6 +153,11 @@ def access_token(path=None, http=http_json, now=None):
             raise GA4Error(f"unsupported credential type {kind!r} (service_account or authorized_user)")
     except KeyError as error:
         raise GA4Error(f"credential file lacks {error.args[0]!r}") from None
+    except GA4Error as error:
+        if "invalid_grant" in str(error) or "expired or revoked" in str(error).lower():
+            raise GA4Error("the Google login expired or was revoked: rerun `python tools/telemetry/ga4.py login` "
+                           "(a consent screen in Testing mode expires logins after 7 days; publish it)") from None
+        raise
     token = reply.get("access_token")
     if not token:
         raise GA4Error("token endpoint returned no access_token")
@@ -184,16 +190,25 @@ def discover_property(token, headers, measurement_id=MEASUREMENT_ID, http=http_j
                    f"({len(properties)} properties visible); set OPENRC_GA4_PROPERTY")
 
 
+def exact(field, value):
+    return {"filter": {"fieldName": field, "stringFilter": {"matchType": "EXACT", "value": value}}}
+
+
 def event_filter(name):
-    return {"filter": {"fieldName": "eventName", "stringFilter": {"matchType": "EXACT", "value": name}}}
+    return exact("eventName", name)
+
+
+def report_filter(event=None):
+    """TELEM-24b: every report counts only the published site (local previews reached GA before WEB-18)."""
+    host = exact("hostName", PRODUCTION_HOST)
+    return {"andGroup": {"expressions": [host, event_filter(event)]}} if event else host
 
 
 def report_body(axis, dimensions, metrics, event=None, order=None, limit=None, totals=False):
     """axis: the ISO days of the window, oldest first; explicit dates keep every report on the same days."""
     body = {"dateRanges": [{"startDate": axis[0], "endDate": axis[-1]}],
-            "dimensions": [{"name": d} for d in dimensions], "metrics": [{"name": m} for m in metrics]}
-    if event:
-        body["dimensionFilter"] = event_filter(event)
+            "dimensions": [{"name": d} for d in dimensions], "metrics": [{"name": m} for m in metrics],
+            "dimensionFilter": report_filter(event)}
     if order:
         body["orderBys"] = [{"metric": {"metricName": order}, "desc": True}]
     if limit:
@@ -251,7 +266,14 @@ TABLES = (
      ("customEvent:download_source",)),
     ("vitals", ["customEvent:metric_name", "customEvent:metric_rating"], ["eventCount"], "web_vital", "eventCount",
      ("customEvent:metric_name", "customEvent:metric_rating")),
+    ("download_releases", ["customEvent:release_version"], ["eventCount"], "download_request", "eventCount",
+     ("customEvent:release_version",)),
 )
+# TELEM-24b conversion: (key, dimension) -> users, and users who sent download_request, per value.
+FUNNELS = (("source", "sessionSource"), ("device", "deviceCategory"), ("os", "operatingSystem"))
+# WEB-17 property setup the dashboard checks: custom definitions the site's events need.
+EXPECTED_DIMENSIONS = ("download_platform", "release_version", "download_source", "download_method",
+                       "handoff_action", "metric_name", "metric_rating")
 
 
 def collect(property_id, token, headers=None, days=30, now=None, http=http_json):
@@ -276,18 +298,38 @@ def collect(property_id, token, headers=None, days=30, now=None, http=http_json)
         "days": axis,
         "daily": [{"day": d, **{key: (by_day.get(d) or {}).get(api, 0) for key, api in DAILY}} for d in axis],
         "totals": {key: (totals or {}).get(api, 0) for key, api in DAILY},
-        "downloads_daily": [], "downloads_total": 0, "realtime_users": None,
-        "tables": {}, "missing": {}, "errors": {},
+        "downloads_daily": [], "downloads_total": 0, "downloads_users": None, "handoffs": None,
+        "realtime_users": None, "host": PRODUCTION_HOST,
+        "tables": {}, "funnels": {}, "missing": {}, "errors": {}, "setup": {},
     }
     try:
-        dl_rows, dl_totals = parse_report(run(report_body(axis, ["date"], ["eventCount"], event="download_request",
-                                                          totals=True)), ["eventCount"])
+        dl_rows, dl_totals = parse_report(run(report_body(axis, ["date"], ["eventCount", "totalUsers"],
+                                                          event="download_request", totals=True)),
+                                          ["eventCount", "totalUsers"])
         dl = {iso_day(r["dims"][0]): r["values"]["eventCount"] for r in dl_rows}
         model["downloads_daily"] = [{"day": d, "count": dl.get(d, 0)} for d in axis]
         model["downloads_total"] = (dl_totals or {}).get("eventCount", sum(dl.values()))
+        model["downloads_users"] = (dl_totals or {}).get("totalUsers")
     except GA4Error as error:
         model["errors"]["downloads"] = str(error)
         model["downloads_total"] = None
+    try:
+        handoff_rows, _ = parse_report(run(report_body(axis, [], ["eventCount"], event="download_handoff")),
+                                       ["eventCount"])
+        model["handoffs"] = sum(r["values"]["eventCount"] for r in handoff_rows)
+    except GA4Error as error:
+        model["errors"]["handoffs"] = str(error)
+    for key, dimension in FUNNELS:
+        try:
+            users, _ = parse_report(run(report_body(axis, [dimension], ["activeUsers"], order="activeUsers",
+                                                    limit=25)), ["activeUsers"])
+            requesting, _ = parse_report(run(report_body(axis, [dimension], ["totalUsers"], "download_request",
+                                                         "totalUsers", 50)), ["totalUsers"])
+            asked = {r["dims"][0]: r["values"]["totalUsers"] for r in requesting}
+            model["funnels"][key] = [{"name": r["dims"][0], "users": r["values"]["activeUsers"],
+                                      "requesting": asked.get(r["dims"][0], 0)} for r in users]
+        except GA4Error as error:
+            model["errors"][f"funnel_{key}"] = str(error)
     try:
         available = {d.get("apiName") for d in http("GET", f"{base}/metadata", token, headers=headers)
                      .get("dimensions") or []}
@@ -311,7 +353,26 @@ def collect(property_id, token, headers=None, days=30, now=None, http=http_json)
                                       for r in realtime.get("rows") or [])
     except GA4Error as error:
         model["errors"]["realtime"] = str(error)
+    model["setup"] = property_setup(property_id, token, headers, available, http)
     return model
+
+
+def property_setup(property_id, token, headers, available, http=http_json):
+    """WEB-17 checklist from the Admin API (read-only); each item is None when it could not be read."""
+    setup = {"retention": None, "key_events": None,
+             "dimensions": None if available is None else
+             {name: f"customEvent:{name}" in available for name in EXPECTED_DIMENSIONS}}
+    try:
+        setup["retention"] = http("GET", f"{ADMIN_API}/properties/{property_id}/dataRetentionSettings", token,
+                                  headers=headers).get("eventDataRetention")
+    except GA4Error:
+        pass
+    try:
+        setup["key_events"] = sorted(e.get("eventName", "") for e in http(
+            "GET", f"{ADMIN_API}/properties/{property_id}/keyEvents", token, headers=headers).get("keyEvents") or [])
+    except GA4Error:
+        pass
+    return setup
 
 
 def fetch(days=30, property_id=None, credentials=None, now=None, http=http_json):
