@@ -161,54 +161,90 @@ test('one request per platform and release per page load (WEB-20)', () => {
 });
 
 const PHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1';
-const IPAD = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15';
+// Safari on a Mac and on iPadOS (desktop mode) share this agent; only touch points tell them apart.
+const MACINTOSH = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15';
+const settle = () => new Promise(resolve => setImmediate(resolve));
+const plain = value => JSON.parse(JSON.stringify(value));
 
 test('phones and tablets get a hand-off instead of a desktop ZIP (WEB-20)', async () => {
-  for (const navigator of [{userAgent: PHONE}, {userAgent: IPAD, maxTouchPoints: 5}, {userAgentData: {mobile: true}}]) {
+  for (const navigator of [{userAgent: PHONE}, {userAgent: MACINTOSH, maxTouchPoints: 5}, {userAgentData: {mobile: true}}]) {
     const shared = [];
     navigator.share = data => { shared.push(data); return Promise.resolve(); };
-    const f = fixture('?download=windows&release=v0.1.8&fbclid=abc', {navigator, lang: 'de'});
+    const f = fixture('?download=windows&release=v0.1.8&utm_source=github&utm_campaign=readme&fbclid=abc',
+      {navigator, lang: 'de'});
     f.expire();
     assert.equal(f.navigation.length, 0);
-    assert.deepEqual(JSON.parse(JSON.stringify(f.events().map(e => [e[1], e[2].handoff_action, e[2].download_platform]))),
+    assert.deepEqual(plain(f.events().map(e => [e[1], e[2].handoff_action, e[2].download_platform])),
       [['download_handoff', 'shown', 'windows']]);
-    const button = f.inserted[0].children[0];
+    const [message] = f.inserted;
+    assert.equal(message.attributes.role, undefined);  // plain text; the live region is separate
+    const [button, live] = message.siblings;
     assert.equal(button.textContent, 'Link teilen');
-    button.click();
-    await new Promise(resolve => setImmediate(resolve));
-    assert.ok(!shared[0].url.includes('fbclid'));
-    assert.ok(shared[0].url.includes('download=windows'));
-    assert.equal(f.events().at(-1)[2].handoff_action, 'shared');
+    assert.equal(live.attributes.role, 'status');
+    button.click(); button.click();
+    await settle();
+    const url = new URL(shared[0].url);
+    assert.equal(url.searchParams.get('download'), 'windows');
+    assert.equal(url.searchParams.get('utm_source'), 'handoff');
+    for (const name of ['fbclid', 'utm_campaign']) assert.equal(url.searchParams.get(name), null);
+    assert.deepEqual(plain(f.events().map(e => e[2].handoff_action)), ['shown', 'shared']);  // repeat taps once
     f.links[0].click();  // an explicit tap still downloads and is counted as manual
     assert.equal(f.events().at(-1)[2].download_method, 'manual');
   }
 });
 
-test('the hand-off falls back to copying and counts "shown" once per history entry', async () => {
+test('the hand-off copies when sharing is unavailable or refused, and counts "shown" once', async () => {
   const copied = [];
-  const navigator = {userAgent: PHONE, clipboard: {writeText: text => { copied.push(text); return Promise.resolve(); }}};
-  const f = fixture('?download=macos&release=v0.1.8', {navigator});
-  const button = f.inserted[0].children[0];
+  const clipboard = {writeText: text => { copied.push(text); return Promise.resolve(); }};
+  const f = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent: PHONE, clipboard}});
+  const [button, live] = f.inserted[0].siblings;
   assert.equal(button.textContent, 'Copy link');
   button.click();
-  await new Promise(resolve => setImmediate(resolve));
+  await settle();
   assert.equal(copied.length, 1);
-  assert.equal(button.textContent, 'Link copied');
-  const reload = fixture('?download=macos&release=v0.1.8', {navigator, state: f.history.state});
+  assert.equal(live.textContent, 'Link copied');
+  assert.equal(button.textContent, 'Copy link');  // the focused button keeps its name
+  const reload = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent: PHONE, clipboard}, state: f.history.state});
   assert.equal(reload.events().length, 0);
   assert.equal(reload.inserted.length, 1);  // the message is still shown
+
+  const refusing = {userAgent: PHONE, clipboard, share: () => Promise.reject(Object.assign(new Error('x'), {name: 'NotAllowedError'}))};
+  const r = fixture('?download=macos&release=v0.1.8', {navigator: refusing});
+  r.inserted[0].siblings[0].click();
+  await settle(); await settle();
+  assert.equal(r.events().at(-1)[2].handoff_action, 'copied');
+  const cancelling = {userAgent: PHONE, clipboard, share: () => Promise.reject(Object.assign(new Error('x'), {name: 'AbortError'}))};
+  const c = fixture('?download=macos&release=v0.1.8', {navigator: cancelling});
+  c.inserted[0].siblings[0].click();
+  await settle(); await settle();
+  assert.deepEqual(plain(c.events().map(e => e[2].handoff_action)), ['shown']);  // the visitor cancelled
+
   const bare = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent: PHONE}});
-  assert.equal(bare.inserted[0].children.length, 0);  // no share or clipboard API: no dead button
+  assert.equal(bare.inserted[0].siblings.length, 0);  // no share or clipboard API: no dead button
+});
+
+test('handheld previews show the hand-off without analytics; unknown languages fall back to English', () => {
+  const f = fixture('?download=linux&release=v0.1.8', {navigator: {userAgent: PHONE}, hostname: '127.0.0.1', lang: 'xx'});
+  assert.equal(f.window.dataLayer.length, 0);
+  assert.match(f.inserted[0].textContent, /^OpenRC runs on Windows, Linux and macOS computers/);
+  const arabic = fixture('?download=linux&release=v0.1.8', {navigator: {userAgent: PHONE}, lang: 'ar'});
+  assert.match(arabic.inserted[0].textContent, /^يعمل OpenRC/);
 });
 
 test('desktop Macs and Windows keep the automatic download', () => {
-  for (const userAgent of [IPAD, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0 Safari/537.36']) {
+  for (const userAgent of [MACINTOSH, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0 Safari/537.36']) {
     const f = fixture('?download=macos&release=v0.1.8', {navigator: {userAgent, maxTouchPoints: 0}});
     f.expire();
     assert.deepEqual(f.navigation, [f.links[2].href]);
   }
 });
 
+test('a refused history update cannot block the download', () => {
+  const f = fixture('?download=windows&release=v0.1.8');
+  f.history.replaceState = () => { throw new Error('SecurityError'); };
+  f.expire();
+  assert.deepEqual(f.navigation, [f.links[0].href]);
+});
 test('leaving the page cancels a pending automatic download', () => {
   const f = fixture();
   f.listeners.pagehide(); f.expire(); f.events()[0][2].event_callback();

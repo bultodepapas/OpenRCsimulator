@@ -75,7 +75,11 @@ Remaining work (WEB-17…23: property hygiene, production-only collection, conse
 **Download integrity (WEB-20).**
 
 - `downloads.js` sends at most one `download_request` per platform and release per page load.
-- On phones and tablets, a README `?download=` link does not start a desktop ZIP. It shows a localized explanation and a *Share link* button (*Copy link* without the Web Share API). This sends `download_handoff`, with `handoff_action` set to `shown` (once per history entry), `shared` or `copied`.
+- On phones and tablets, a README `?download=` link does not start a desktop ZIP. It shows a localized explanation and a *Share link* button. *Copy link* is used without the Web Share API, or when sharing fails for a reason other than cancelling.
+  - It sends `download_handoff` with `handoff_action` set to `shown` (once per history entry), `shared` or `copied` (each once per page).
+  - The shared URL keeps `download` and `release`, drops `utm_*` and ad-click IDs, and adds `utm_source=handoff&utm_medium=share`.
+  - The explanation is plain text. A separate empty `role=status` span announces *Link copied*.
+- Limit: Android's *Request desktop site* sends a desktop agent and still receives the ZIP.
 - A deliberate tap on a ZIP link still downloads and is counted as `manual`.
 - Handheld detection: `navigator.userAgentData.mobile`, Android/iPhone/iPad/iPod/Mobile agents, or a Macintosh agent with touch points (iPadOS).
 - No storage is used.
