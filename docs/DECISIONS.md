@@ -588,3 +588,15 @@ Freeze a reviewed publication title and body and preserve an unknown remote-writ
 **TELEM-21 hosting, 2026-11-19 (owner decision).** Host the unchanged receiver on the owner's always-on Proxmox node in an unprivileged container, published with Tailscale Funnel: no cost, no rewrite, full control of logs and copies, and the raw volume excluded from backups by the hypervisor. Rejected: Fly.io (small monthly cost), Cloudflare Workers + D1 (rewrite; D1 keeps 7-day Time Travel copies), Google Cloud e2-micro (US-only, IPv4 charge), Oracle Always Free (idle reclamation), Supabase (rewrite, pausing). Accepted costs: residential availability, and a public node that must not reach the owner's other systems, so Funnel opens only after an isolated node identity. The URL is baked into releases; the node and tailnet names are permanent. Revisit if the node cannot stay available or isolated. [Audit and comparison](research/telemetry/TELEM-AUDIT-2026-11-19/README.md).
 
 **TELEM-04/10 release review, 2026-11-18.** Daily GPU rows keep the summed frame-interval histogram (report v2) so the weekly report can show slow-frame shares within the same 20-session cells; mean FPS alone is capped by VSync and hides stutter. The whole-table suppression floor is unchanged: at low adoption reports will usually be suppressed, and relaxing it is a disclosure decision for the operator. Sessions the game itself restarts with a renderer argument (the RendererGuard Compatibility fallback, a graphics-mode change) stay on the interactive route, otherwise the configurations whose renderer failed would never be measured. A build configured for telemetry fails its export when the endpoint or tag could not actually offer it, instead of shipping silently off.
+
+### Telemetry schema v2 reports the physics backend
+
+**Owner, 2026-11-20 (legacy modes audit).** `activity_summary` gains `physics_backend`, an enum of the native-fallback
+kind (native, reference_selected, reference_domain, reference_stale, reference_missing, not_applicable, unknown), so a
+silent fallback to the slower GDScript physics is visible in the field. It is a new data category, so it ships as
+schema 2 with notice 2026-11-20: the disclosure names it in English and the eight translations, and every saved
+enabled grant from the 2026-11-18 notice is asked again (declined choices stay declined). The refusal text is never
+sent. The receiver accepts v1 under the old notice and v2 under the new one, never a mixed pair, and reports the
+field only as the operator `usage_backend` table. Deploy the receiver before tagging a release with the v2 client;
+`check-release` ingests the v2 example. [Data contract](plans/telemetry/data-contract.md),
+[legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).

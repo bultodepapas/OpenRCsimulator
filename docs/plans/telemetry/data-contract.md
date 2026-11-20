@@ -21,8 +21,8 @@ No DAU, MAU, retention, country, persistent cross-launch individual journey, dev
 
 | Field | Allowed representation / purpose |
 | --- | --- |
-| schema_version | Integer 1; changes require a coordinated decoder/notice review |
-| notice_version | Exact current notice identifier, initially 2026-11-18 |
+| schema_version | Integer 2 since 2026-11-20 (v1 builds keep sending 1, still accepted); changes require a coordinated decoder/notice review |
+| notice_version | Exact current notice identifier: 2026-11-20 with schema 2; 2026-11-18 only with schema 1 |
 | session_id | Exactly 32 lowercase hex characters; random 128 bits. The active collection epoch lasts at most four hours and ends at the UTC day boundary; already sealed RAM-only queue bytes may retain its token for the remainder of their existing ten-minute TTL |
 | batch_id | Independently random 128 bits; exactly 32 lowercase hex characters; immutable retry identity |
 | build.release_id | Bounded published release tag; no arbitrary build description; collector also checks its deployment allowlist |
@@ -68,7 +68,7 @@ Godot physical-memory output may exclude reserved memory. Implement buckets usin
 | --- | --- | --- |
 | session_started | None beyond name/seq | Once after admission; never replay an earlier session |
 | performance_window | mode, vehicle_id, phase, window_complete, interval_count, interval_sum_us, rendered_frames, draw_counter_status, interval_histogram, excluded_gap_count, gpu_status, gpu_ms | About 30 s; close early on context boundaries |
-| activity_summary | vehicle_id, active_seconds, simulated_seconds, outcome, complete_observation, classification, takeoffs, landings, aircraft_crashes | Accepted activity close/reset or 5-minute slice (TELEM-19: quitting from a flight loses only its last slice and unsealed events, about 6 minutes at most); only new post-consent observations |
+| activity_summary | vehicle_id, active_seconds, simulated_seconds, outcome, complete_observation, classification, takeoffs, landings, aircraft_crashes, physics_backend (schema 2: native, reference_selected, reference_domain, reference_stale, reference_missing, not_applicable, unknown; the kind from `native_fallback.gd`, never the refusal text) | Accepted activity close/reset or 5-minute slice (TELEM-19: quitting from a flight loses only its last slice and unsealed events, about 6 minutes at most); only new post-consent observations |
 | error_count | category and count | Coalesced bounded counters; no text or stack |
 
 Approved error categories: renderer_unavailable, asset_load_failed, aircraft_validation_failed, simulation_fault. They identify software outcomes, not diagnoses. Start with capped counters, never one network message per error. The client emits `asset_load_failed` and `renderer_unavailable` ([architecture](architecture.md#implemented-modules)); the other two are reserved.
