@@ -25,6 +25,10 @@ const SURFACE_IDS := {
 const BALANCE_CONFIGURATION := "creator-inventory-v1"
 ## plan_cg is emitted as the inventory's own centre of mass; the tolerance only covers rounding.
 const CG_TOLERANCE_M := 0.000001
+## IAQ T3: an airframe's optional wing.start_alpha start keeps its trim elevator inside this share of the travel,
+## and its start lift at least this coefficient.
+const START_ELEVATOR_SHARE := 0.8
+const MIN_START_LIFT := 0.3
 const KIND_SOURCES := {
 	"measured": "Aircraft Creator definition: player-measured value",
 	"manual": "Aircraft Creator definition: player-entered value",
@@ -209,7 +213,7 @@ static func _study(definition: Dictionary) -> Dictionary:
 		if airframe.ok:
 			var weight: float = float(study.mass) * Packages.GRAVITY
 			var pressure_area: float = 0.5 * Packages.AIR_DENSITY * area
-			summary["level_speed_mps"] = sqrt(weight / (pressure_area * Packages.number(airframe.value, "wing", "cruise_lift")))
+			summary["level_speed_mps"] = sqrt(weight / (pressure_area * _start_lift(airframe.value, study, definition)))
 			summary["stall_speed_mps"] = sqrt(weight / (pressure_area * float(airframe.value.envelope.CL_max.value)))
 	if study.has("aero") and study.has("cg"):
 		summary["static_margin"] = (float(study.aero.neutral_point_x) - float(study.cg[0])) / float(study.aero.mean_chord)
@@ -226,6 +230,39 @@ static func _study(definition: Dictionary) -> Dictionary:
 	study.complete = study.has("aero") and study.has("entries") and study.has("initial_soc") \
 		and summary.has("level_speed_mps")
 	return study
+
+
+## The start's lift coefficient: the package's cruise lift, or (an airframe declaring the optional
+## wing.start_alpha, IAQ T3) the whole aircraft's linear level trim at that body angle, about the CG with the
+## tail's trim load, its elevator inside START_ELEVATOR_SHARE of the travel where an angle at or below
+## start_alpha allows it, never above the cruise lift (the package's slowest start). The product's half-throttle
+## trim searches upward from this speed.
+static func _start_lift(airframe: Dictionary, study: Dictionary, definition: Dictionary) -> float:
+	var cruise := Packages.number(airframe, "wing", "cruise_lift")
+	var wing: Dictionary = airframe.get("wing", {})
+	if not (wing.get("start_alpha") is Dictionary and study.has("aero") and study.has("cg")):
+		return cruise
+	var q: Dictionary = study.aero.quantities
+	var value := func(name: String) -> float: return float(q[name].value) if q.get(name) is Dictionary else float(q.get(name, NAN))
+	var arm := (float(study.cg[0]) - float((study.aero.arp as PackedFloat64Array)[0])) / float(study.aero.mean_chord)
+	# Cm about the CG = Cm(ARP) + CL·(x_cg − x_arp)/c = 0 gives the elevator δ(α) = −(m0 + mα·α)/mδ.
+	var m0: float = value.call("Cm0") + arm * value.call("CL0")
+	var m_alpha: float = value.call("Cma") + arm * value.call("CLa")
+	var m_delta: float = value.call("Cmde") + arm * value.call("CLde")
+	var controls: Variant = definition.get("controls")
+	var travel := deg_to_rad(float(controls.get("elevator_deg", NAN))) if controls is Dictionary else NAN
+	if not (is_finite(m0) and is_finite(m_alpha) and m_alpha < 0.0 and is_finite(m_delta) and absf(m_delta) > 1e-9 and travel > 0.0):
+		return cruise
+	var alpha := float(wing.start_alpha.value)
+	# The elevator is linear in α, so the travel share holds on one interval of α (either sign of mδ): the largest
+	# α ≤ start_alpha inside it. An interval wholly above start_alpha keeps start_alpha (no slower trim is safer).
+	var limit := START_ELEVATOR_SHARE * travel
+	var ends := [-(limit * m_delta + m0) / m_alpha, -(-limit * m_delta + m0) / m_alpha]
+	if minf(ends[0], ends[1]) <= alpha:
+		alpha = minf(alpha, maxf(ends[0], ends[1]))
+	var elevator := -(m0 + m_alpha * alpha) / m_delta
+	var lift: float = value.call("CL0") + value.call("CLa") * alpha + value.call("CLde") * elevator
+	return clampf(lift, MIN_START_LIFT, cruise) if is_finite(lift) else cruise
 
 
 ## Hub, battery and ESC positions, or {} while one is missing.
@@ -417,8 +454,8 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		convention_id = "openrc-le-frd-v1",
 		capabilities = {
 			controls = "conventional", gear = "fixed_" + str(definition["landing_gear"]["layout"]) if not gear.is_empty() else "locked_up",
-			propulsion_layout = "single_pusher" if Packages.is_pusher(power) else "single_tractor",
-			energy = "ocv_resistance", damage = "terminal_hull", flaps = "not_simulated",
+			propulsion_layout = "single_centerline_jet" if Packages.is_jet(power) else ("single_pusher" if Packages.is_pusher(power) else "single_tractor"),
+			energy = "prescribed_fuel" if Packages.is_jet(power) else "ocv_resistance", damage = "terminal_hull", flaps = "not_simulated",
 		},
 		physical_identity_version = 1,
 		reference = reference,
@@ -459,6 +496,9 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 	# Optional member (AC-21): a definition without landing gear compiles to exactly the record it always did.
 	if not gear.is_empty():
 		record["landing_gear"] = gear
+	# Optional stick shaping a source-derived airframe package carries (IAQ T5: Phoenix expo); absent otherwise.
+	if airframe.get("rates") is Dictionary:
+		record.controls["rates"] = (airframe.rates as Dictionary).duplicate(true)
 	return record
 
 
@@ -546,8 +586,9 @@ static func _stated_dihedral(aero: Dictionary, definition: Dictionary) -> Dictio
 
 ## The package writes the two player-supplied propulsion quantities; restate their evidence here.
 static func _stated_propulsion(propulsion: Dictionary, definition: Dictionary) -> Dictionary:
-	for target: Array in [[propulsion.battery.initial_soc, "battery/initial_soc"],
-			[propulsion.propeller.thrust_angles, "equipment/thrust_angles_deg"]]:
+	var stated: Array = [[propulsion.thrust_angles, "equipment/thrust_angles_deg"]] if propulsion.get("kind") == "turbine" else \
+		[[propulsion.battery.initial_soc, "battery/initial_soc"], [propulsion.propeller.thrust_angles, "equipment/thrust_angles_deg"]]
+	for target: Array in stated:
 		(target[0] as Dictionary)["kind"] = Definition.evidence_kind(definition, str(target[1]))
 		(target[0] as Dictionary)["source"] = Definition.evidence_source(definition, str(target[1]))
 	return propulsion

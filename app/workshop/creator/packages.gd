@@ -41,6 +41,13 @@ static var _cache: Dictionary = {}
 static var _thrust_cache: Dictionary = {}
 
 
+## True for a power package whose thrust comes from a ducted fan or turbine (IAQ T4): its optional `jet`
+## member {static_thrust, idle_thrust, efflux_speed, idle_rpm, max_rpm, spool_time} replaces the propeller in
+## the record by OpenRC's `turbine` law (momentum thrust with ram drag, spool limits, no reaction torque).
+static func is_jet(package: Dictionary) -> bool:
+	return package.get("jet") is Dictionary and not (package.jet as Dictionary).is_empty()
+
+
 ## True for a pusher power package: its motor and firewall sit ahead of the hub.
 static func is_pusher(package: Dictionary) -> bool:
 	return str(package.get("layout", "tractor")) == "pusher"
@@ -104,6 +111,26 @@ static func _package_problem(data: Variant, id: String, format: String) -> Strin
 		return "format, id or qualification do not match"
 	if package.has("layout") and package.get("layout") not in ["tractor", "pusher"]:
 		return "the layout is not tractor or pusher"
+	if package.has("jet"):
+		if not is_jet(package):
+			return "the jet member is not an object"
+		for key: String in JET_KEYS:
+			if not (package.jet as Dictionary).has(key):
+				return "the jet member lacks " + key
+			if not ((package.jet as Dictionary)[key] is Dictionary and typeof(package.jet[key].get("value")) in [TYPE_INT, TYPE_FLOAT]):
+				return "the jet member's %s is not a quantity" % key
+		var jet: Dictionary = package.jet
+		# The loader's turbine bounds: rpm ≤ 300 000, thrust ≤ 5000 N, mass flow (thrust/efflux) ≤ 20 kg/s and
+		# spool rate ≤ 10⁶ rpm/s; a package outside them would only fail at the flight loader.
+		var thrust := float(jet.static_thrust.value)
+		var efflux := float(jet.efflux_speed.value)
+		var spool := float(jet.spool_time.value)
+		var idle := float(jet.idle_rpm.value)
+		var top := float(jet.max_rpm.value)
+		if not (thrust > 0.0 and thrust <= JET_MAX_THRUST_N and efflux > 0.0 and thrust / efflux <= JET_MAX_MASS_FLOW
+				and spool > 0.0 and idle >= 1000.0 and top > idle and top <= JET_MAX_RPM and (top - idle) / spool <= JET_MAX_SPOOL_RATE
+				and float(jet.idle_thrust.value) >= 0.0 and float(jet.idle_thrust.value) < thrust):
+			return "the jet member's values are out of range"
 	if format == POWER_FORMAT:
 		if typeof(package.get("hardware")) != TYPE_ARRAY:
 			return "the hardware list is missing"
@@ -176,6 +203,17 @@ static func tail_pitch_damping(free_slope: float, area_ratio: float, arm_over_ch
 ## the loader accepts body_cn_beta in [−0.5, 0]. The Stik donor's own high-wing interference share of its
 ## wing-body Clβ (D10-R5: z_w −0.0595 m, D 0.1126 m, AR 5, b 1.524 m).
 const FIN_FACTOR_RANGE := [0.4, 1.1]
+## Jet power packages (IAQ T4): required members and the record's table sampling.
+const JET_KEYS := ["static_thrust", "idle_thrust", "efflux_speed", "idle_rpm", "max_rpm", "spool_time"]
+const JET_MAX_THRUST_N := 5000.0
+const JET_MAX_MASS_FLOW := 20.0
+const JET_MAX_RPM := 300000.0
+const JET_MAX_SPOOL_RATE := 1.0e6
+const JET_TABLE_ROWS := 5
+const JET_THROTTLE_POINTS: Array[float] = [0.0, 0.05, 0.1, 0.15, 0.5, 1.0]
+const JET_MIN_MASS_FLOW := 1.0e-4
+const JET_GOVERNOR_TAU_S := 0.05
+const JET_ROTOR_INERTIA := 1.0e-5
 const BODY_CN_BETA_RANGE := [-0.5, 0.0]
 ## The loader's range for aero.surfaces.wing_body_cl_beta.
 const WING_BODY_CL_BETA_RANGE := [-0.3, 0.1]
@@ -456,6 +494,8 @@ static func aero_block(package: Dictionary, aero: Dictionary) -> Dictionary:
 ## The record's `propulsion` node. `offset` is hub minus inventory CG, `angles` [down, right] degrees.
 static func propulsion_block(package: Dictionary, propulsion_id: String, initial_soc: float,
 		offset: PackedFloat64Array, angles: PackedFloat64Array) -> Dictionary:
+	if is_jet(package):
+		return _jet_block(package, propulsion_id, offset, angles)
 	var motor: Dictionary = package.motor
 	var battery: Dictionary = package.battery
 	var propeller: Dictionary = package.propeller
@@ -503,9 +543,76 @@ static func propulsion_block(package: Dictionary, propulsion_id: String, initial
 	}
 
 
+## The record's `turbine` propulsion for a jet package. Thrust is linear in the fan speed between the idle
+## and full thrust (as the source declares it), the mass flow is thrust/efflux speed (so the net thrust falls
+## by ṁ·u, the momentum law), the throttle maps linearly to the fan speed with the source's cubic shaping below
+## 15 %, and the spool slews the full range in the source's spool time. The intake sits at the CG station on
+## the thrust line's height (the source gives no intake position). No fuel is consumed: an electric fan's
+## battery is not modelled on this path.
+static func _jet_block(package: Dictionary, propulsion_id: String, offset: PackedFloat64Array,
+		angles: PackedFloat64Array) -> Dictionary:
+	var jet: Dictionary = package.jet
+	var idle := float(jet.idle_rpm.value)
+	var top := float(jet.max_rpm.value)
+	var thrust_max := float(jet.static_thrust.value)
+	var thrust_idle := float(jet.idle_thrust.value)
+	var efflux := float(jet.efflux_speed.value)
+	var rate := (top - idle) / float(jet.spool_time.value)
+	var thrust_rows: Array = []
+	var flow_rows: Array = []
+	var fuel_rows: Array = []
+	for step: int in JET_TABLE_ROWS:
+		var share := float(step) / float(JET_TABLE_ROWS - 1)
+		var rpm := idle + share * (top - idle)
+		var thrust := thrust_idle + share * (thrust_max - thrust_idle)
+		thrust_rows.append([rpm, thrust])
+		flow_rows.append([rpm, maxf(JET_MIN_MASS_FLOW, thrust / efflux)])
+		fuel_rows.append([rpm, 0.0])
+	var throttle_rows: Array = []
+	for command: float in JET_THROTTLE_POINTS:
+		var shaped := command if command >= 0.15 else 0.15 * pow(command / 0.15, 3)
+		throttle_rows.append([command, idle + shaped * (top - idle)])
+	var source := str(jet.static_thrust.source)
+	return {
+		kind = "turbine",
+		id = propulsion_id,
+		description = "Aircraft Creator jet: %s N static thrust, %s m/s efflux (momentum law with ram drag), %s s spool; %s" % [
+			String.num(thrust_max, 1), String.num(efflux, 0), String.num(float(jet.spool_time.value), 2), source],
+		engine = {
+			name = str(jet.get("name", "Ducted fan")),
+			idle_rpm = _copy_quantity(jet.idle_rpm),
+			max_rpm = _copy_quantity(jet.max_rpm),
+			static_thrust = {value = thrust_rows, unit = "rpm, N", kind = "derived",
+				source = "Linear from the idle to the full static thrust over the fan speed: " + source},
+			mass_flow = {value = flow_rows, unit = "rpm, kg/s", kind = "derived",
+				source = "Static thrust / efflux speed %s m/s: net thrust T − ṁ·u, %s" % [String.num(efflux, 0), str(jet.efflux_speed.source)]},
+			fuel_flow = {value = fuel_rows, unit = "rpm, kg/s", kind = "estimated",
+				source = "No fuel: the energy of an electric fan is not modelled on the jet path"},
+			throttle_map = {value = throttle_rows, unit = "1, rpm", kind = "derived",
+				source = "Linear throttle to fan speed with a cubic shaping below 15 % (as the source)"},
+			accel_limit = {value = [[idle, rate], [top, rate]], unit = "rpm, rpm/s", kind = "derived",
+				source = "The full speed range in the spool time: " + str(jet.spool_time.source)},
+			decel_limit = {value = [[idle, rate], [top, rate]], unit = "rpm, rpm/s", kind = "derived",
+				source = "The full speed range in the spool time: " + str(jet.spool_time.source)},
+			installed_factor = {value = 1.0, unit = "1", kind = "estimated", source = "The source's thrust is the installed thrust"},
+			governor_tau = {value = JET_GOVERNOR_TAU_S, unit = "s", kind = "estimated", source = "Short speed-controller lag; the spool limit dominates"},
+			rotor_inertia = {value = JET_ROTOR_INERTIA, unit = "kg·m2", kind = "estimated", source = "Small fan rotor: negligible gyroscopic coupling"},
+			rotor_sense = {value = 1, unit = "1", kind = "estimated", source = "Fan rotation sense not declared by the source"},
+		},
+		thrust_line_offset = {value = Array(offset), unit = "m", kind = DERIVED,
+			source = "equipment/hub_position (the fan's thrust point) minus the inventory centre of mass, [aft, right, up]"},
+		intake_offset = {value = [0.0, 0.0, offset[2]], unit = "m", kind = "estimated",
+			source = "Intake at the CG station on the thrust line's height: the source declares no intake position"},
+		thrust_angles = {value = Array(angles), unit = "deg", kind = "manual",
+			source = "Aircraft Creator definition: equipment/thrust_angles_deg [down, right] (player-entered)"},
+	}
+
+
 ## Static full-throttle operating point of the power package at `initial_soc` in standard air, solved by
 ## the runtime's own electric torque balance. Returns {ok, thrust_n, rpm}.
 static func static_thrust(package: Dictionary, initial_soc: float) -> Dictionary:
+	if is_jet(package):
+		return {ok = true, thrust_n = float(package.jet.static_thrust.value), rpm = float(package.jet.max_rpm.value)}
 	var key := "%s|%s" % [package.id, var_to_str(initial_soc)]
 	if not _thrust_cache.has(key):
 		if _thrust_cache.size() >= 64:

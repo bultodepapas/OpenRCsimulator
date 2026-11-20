@@ -503,6 +503,16 @@ static func definition_values(model: Dictionary, scale: float, datum: Array, lif
 			values["vertical_tail/position/0"] = place[0]
 			values["vertical_tail/position/2"] = place[2]
 	var propulsion: Variant = model.get("propulsion")
+	# A ducted fan or turbine (IAQ T4) pushes at its declared Position; a propeller, when present, wins below.
+	if propulsion is Array and not propulsion.any(func(u: Variant) -> bool: return u is Dictionary and str(u.get("type", "")) == "propeller"):
+		for unit: Variant in propulsion:
+			if unit is Dictionary and str(unit.get("type", "")) == "turbine":
+				var thrust_point: Array = structural.call(_dig(unit.get("attributes"), ["Position"]))
+				if not thrust_point.is_empty():
+					values["equipment/hub_position/0"] = thrust_point[0]
+					values["equipment/hub_position/1"] = 0.0
+					values["equipment/hub_position/2"] = thrust_point[2]
+				break
 	if propulsion is Array:
 		for unit: Variant in propulsion:
 			if unit is Dictionary and str(unit.get("type", "")) == "propeller":

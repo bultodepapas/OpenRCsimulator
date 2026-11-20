@@ -18,6 +18,7 @@ const VisualBuilderRef := preload("res://workshop/creator/visual_builder.gd")
 const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
 const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
 const Packages := preload("res://workshop/creator/packages.gd")
+const Compiler := preload("res://workshop/creator/compiler.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
 const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
@@ -698,6 +699,15 @@ func _physics() -> void:
 			and float(airframe.value.wing.profile_drag.value) > 0.01 and str(airframe.value.wing.profile_drag.source).contains("Phoenix"))
 		check("Phoenix propeller diameter and RPM", float(power.value.propeller.diameter.value) <= 0.25 + 1e-9
 			and float(power.value.motor.kv_rpm_per_volt.value) > 0.0)
+		# IAQ T3: the start reference is the whole aircraft trimmed at start_alpha, capped near 1.2 × the stall speed.
+		var start_wing: Dictionary = airframe.value.wing
+		check("start reference: body angle inside the trim limit, cruise lift at the 1.2 × stall cap",
+			start_wing.get("start_alpha") is Dictionary
+			and is_equal_approx(float(start_wing.start_alpha.value), deg_to_rad(PhoenixPhysics.START_ALPHA_DEG))
+			and float(start_wing.start_alpha.value) < deg_to_rad(8.0)
+			and is_equal_approx(float(start_wing.cruise_lift.value),
+				clampf(PhoenixPhysics.START_LIFT_SHARE * float(airframe.value.envelope.CL_max.value), 0.3, 1.0)))
+	_start_lift()
 	check("a saved draft re-derives the same ids", PhoenixPhysics.restore(block, ids.airframe, ids.power))
 	var altered := block.duplicate(true)
 	altered.mass_kg = 2.0
@@ -718,6 +728,48 @@ func _physics() -> void:
 			and float(big_power.value.propeller.diameter.value) < 0.45)
 	else:
 		check("static thrust held at the cap", false)
+
+
+## IAQ T3: the compiler's start lift is the linear level trim about the CG at the airframe's start_alpha.
+func _start_lift() -> void:
+	var airframe := {wing = {cruise_lift = {value = 0.9}, start_alpha = {value = deg_to_rad(7.0)}}}
+	var quantities := {CL0 = {value = 0.2}, CLa = {value = 5.0}, Cm0 = {value = 0.0}, Cma = {value = -1.0},
+		Cmde = {value = -1.0}, CLde = {value = 0.3}}
+	var study := {aero = {quantities = quantities, arp = PackedFloat64Array([0.05, 0.0, 0.0]), mean_chord = 0.2},
+		cg = PackedFloat64Array([0.05, 0.0, 0.0])}
+	var alpha := deg_to_rad(7.0)
+	var free: float = Compiler._start_lift(airframe, study, {controls = {elevator_deg = 20.0}})
+	check("start lift: whole-aircraft trim at start_alpha", is_equal_approx(free, 0.2 + 5.0 * alpha - 0.3 * alpha))
+	var limited := deg_to_rad(5.0) * Compiler.START_ELEVATOR_SHARE
+	var tight: float = Compiler._start_lift(airframe, study, {controls = {elevator_deg = 5.0}})
+	check("start lift: slower trims stop at the elevator travel share", is_equal_approx(tight, 0.2 + 5.0 * limited - 0.3 * limited))
+	var moved_cg := study.duplicate(true)
+	moved_cg.cg = PackedFloat64Array([0.07, 0.0, 0.0]) # 0.1 chord aft: Cm = CL·0.1 adds a nose-up moment
+	var aft: float = Compiler._start_lift(airframe, moved_cg, {controls = {elevator_deg = 20.0}})
+	var m_alpha := -1.0 + 0.1 * 5.0
+	var m_delta := -1.0 + 0.1 * 0.3
+	var delta := -(0.1 * 0.2 + m_alpha * alpha) / m_delta
+	check("start lift: the moment is taken about the CG", is_equal_approx(aft, 0.2 + 5.0 * alpha + 0.3 * delta))
+	var plain := {wing = {cruise_lift = {value = 0.9}}}
+	check("start lift: without start_alpha the package's cruise lift", is_equal_approx(
+		Compiler._start_lift(plain, study, {controls = {elevator_deg = 20.0}}), 0.9))
+	# The other elevator sign (mδ > 0, δ = +α here) reaches the same travel-limited angle.
+	var flipped := study.duplicate(true)
+	flipped.aero.quantities.Cmde = {value = 1.0}
+	flipped.aero.quantities.CLde = {value = -0.3}
+	check("start lift: either elevator sign stops at the travel share", is_equal_approx(
+		Compiler._start_lift(airframe, flipped, {controls = {elevator_deg = 5.0}}), 0.2 + 5.0 * limited - 0.3 * limited))
+	# A Cm0 so large that only angles above start_alpha keep the elevator inside its share (δ = 0.5 − α): start_alpha stays.
+	var heavy := study.duplicate(true)
+	heavy.aero.quantities.Cm0 = {value = 0.5}
+	var heavy_delta := 0.5 - alpha
+	check("start lift: an interval above start_alpha keeps start_alpha", is_equal_approx(
+		Compiler._start_lift(airframe.merged({wing = {cruise_lift = {value = 1.5}, start_alpha = airframe.wing.start_alpha}}, true),
+			heavy, {controls = {elevator_deg = 20.0}}), 0.2 + 5.0 * alpha + 0.3 * heavy_delta))
+	check("start lift: no elevator travel or an unstable Cmα falls back to the cruise lift",
+		is_equal_approx(Compiler._start_lift(airframe, study, {controls = {}}), 0.9)
+		and is_equal_approx(Compiler._start_lift(airframe, moved_cg.merged({cg = PackedFloat64Array([0.3, 0.0, 0.0])}, true),
+			{controls = {elevator_deg = 20.0}}), 0.9))
 
 
 ## Static thrust (N) of the derived power package for `model`, with its id prefix.
@@ -745,19 +797,49 @@ func _physics_propulsion() -> void:
 	check("a twin records its propeller count", not twin.is_empty() and int(twin.block.propeller.get("count", 1)) == 2)
 	check("a twin's equivalent propeller gives about twice the thrust", not single.is_empty() and not twin.is_empty()
 		and twin.thrust > 1.6 * single.thrust and twin.thrust < 2.4 * single.thrust)
-	# A ducted-fan jet: Phoenix Max_Thrust in newtons sets the equivalent propeller's static thrust.
+	# A ducted-fan jet (IAQ T4): OpenRC's turbine law with the Phoenix thrust, idle, spool and RPM.
 	var jet_model := _physics_model()
-	jet_model.propulsion = [{type = "turbine", attributes = {Max_Thrust = 20.0, Max_RPM = 25000}}]
+	jet_model.propulsion = [{type = "turbine", attributes = {Max_Thrust = 20.0, Idle_Thrust = 0.0, Max_RPM = 25000,
+		Idle_RPM = 0, Spool_Time = 0.5}}]
 	var jet := _derived_static_thrust(jet_model, base)
-	check("a jet records its Phoenix thrust", not jet.is_empty() and is_equal_approx(float(jet.block.get("jet_thrust_n", 0.0)), 20.0))
+	check("a jet records its Phoenix thrust", not jet.is_empty() and is_equal_approx(float(jet.block.get("jet_thrust_n", 0.0)), 20.0)
+		and is_equal_approx(float(jet.block.get("jet_spool_s", 0.0)), 0.5))
+	check("a jet derives a turbine-law power package with the Phoenix thrust", not jet.is_empty() and Packages.is_jet(jet.power)
+		and absf(jet.thrust - 20.0) <= 1e-6 and float(jet.power.jet.efflux_speed.value) == PhoenixPhysics.JET_EFFLUX_MPS
+		and float(jet.power.jet.idle_rpm.value) >= 1000.0)
 	if not jet.is_empty():
-		var motor: Dictionary = jet.power.motor
-		var kt := 60.0 / (TAU * float(motor.kv_rpm_per_volt.value))
-		var supply := float(motor.resistance_ohm.value) + float(jet.power.battery.resistance_ohm.value)
-		check("a small fast rotor keeps the shaft time constant the runtime assumes",
-			float(jet.power.propeller.rotating_inertia.value) * supply / (kt * kt) >= PhoenixPhysics.SHAFT_TIME_CONSTANT_S * 0.999)
-	check("the jet's equivalent propeller delivers the Phoenix thrust", not jet.is_empty()
-		and absf(jet.thrust - 20.0) <= 20.0 * 0.05 and str(jet.power.propeller.name).contains("jet"))
+		var block: Dictionary = Packages.propulsion_block(jet.power, "propulsion_main", 0.95, PackedFloat64Array([0.1, 0.0, 0.0]),
+			PackedFloat64Array([0.0, 0.0]))
+		var rows: Array = block.engine.mass_flow.value
+		check("the jet block is a turbine with momentum ram drag", block.kind == "turbine" and not block.has("propeller")
+			and is_equal_approx(float(rows[-1][1]), 20.0 / PhoenixPhysics.JET_EFFLUX_MPS)
+			and is_equal_approx(float(block.engine.accel_limit.value[0][1]), (25000.0 - 1000.0) / 0.5))
+	# A fast fan with a short spool: the package stays inside the loader's turbine bounds (≤ 10⁶ rpm/s, ≤ 300 000 rpm).
+	var fast_model := _physics_model()
+	fast_model.propulsion = [{type = "turbine", attributes = {Max_Thrust = 20.0, Idle_Thrust = 0.0, Max_RPM = 900000,
+		Idle_RPM = 0, Spool_Time = 0.01}}]
+	var fast := _derived_static_thrust(fast_model, base)
+	check("a fast jet stays inside the loader's rpm and spool-rate bounds", not fast.is_empty()
+		and float(fast.power.jet.max_rpm.value) <= Packages.JET_MAX_RPM
+		and (float(fast.power.jet.max_rpm.value) - float(fast.power.jet.idle_rpm.value)) / float(fast.power.jet.spool_time.value)
+			<= Packages.JET_MAX_SPOOL_RATE * (1.0 + 1e-9))
+	if not jet.is_empty():
+		var bad: Dictionary = jet.power.duplicate(true)
+		bad.jet.static_thrust = 20.0
+		check("a jet member that is not a quantity is refused, not a runtime error",
+			not Packages._package_problem(bad, str(bad.id), str(bad.format)).is_empty())
+	# Many blades and a doubled thrust tuning: the static figure of merit stays at most MAX_FIGURE_OF_MERIT.
+	var bladed_model := _physics_model(0.2, 8000.0)
+	bladed_model.propulsion[0].attributes.Blade_count = 6
+	bladed_model.attributes["Fine_tuning"] = {Thrust = 200}
+	var bladed := _derived_static_thrust(bladed_model, base)
+	if not bladed.is_empty():
+		var ct0 := float(bladed.power.propeller.ct_table.value[0][1])
+		var cp0 := float(bladed.power.propeller.cp_table.value[0][1])
+		check("a many-bladed, tuned propeller keeps a real static figure of merit",
+			pow(ct0, 1.5) / (cp0 * sqrt(2.0 / PI)) <= PhoenixPhysics.MAX_FIGURE_OF_MERIT * (1.0 + 1e-9))
+	else:
+		check("a many-bladed, tuned propeller keeps a real static figure of merit", false)
 	# A glider without propulsion: an estimated launch motor of GLIDER_THRUST_SHARE × weight.
 	var glider_model := _physics_model()
 	glider_model.propulsion = []
@@ -945,8 +1027,21 @@ func _physics_tuning() -> void:
 	var thrusty_model := _physics_model()
 	thrusty_model.attributes.Fine_tuning = {Thrust = 50}
 	var thrusty := _derived_airframe(thrusty_model)
-	check("thrust tuning shrinks the propeller", float(thrusty.power.propeller.diameter.value)
-		< float(plain.power.propeller.diameter.value))
+	var thrust_of := func(power: Dictionary, label: String) -> float:
+		var probe: Dictionary = power.duplicate(true)
+		probe.id = "probe-tuning-" + label
+		return float(Packages.static_thrust(probe, 1.0).get("thrust_n", NAN))
+	# Phoenix multiplies its thrust by the tuning (airplane.sim): the static thrust coefficient carries it.
+	check("thrust tuning halves the static thrust", absf(thrust_of.call(thrusty.power, "half")
+		/ thrust_of.call(plain.power, "plain") - 0.5) < 0.05)
+	check("Phoenix expo maps to OpenRC's cubic expo", PhoenixPhysics.expo_fit(0.0) == 0.0
+		and absf(PhoenixPhysics.expo_fit(30.0) - 0.448) < 0.002 and PhoenixPhysics.expo_fit(200.0) == 0.9)
+	var expo_model := _physics_model()
+	expo_model.attributes.Controls = {Aileron = {Expo = 30}, Elevator = {Expo = 50}}
+	var expo := _derived_airframe(expo_model)
+	check("the derived airframe carries the Phoenix stick expo", not expo.airframe.is_empty() and expo.airframe.has("rates")
+		and absf(float(expo.airframe.rates.normal.elevator_expo.value) - PhoenixPhysics.expo_fit(50.0)) < 1e-9
+		and float(expo.airframe.rates.normal.rudder_expo.value) == 0.0 and float(expo.airframe.rates.normal.aileron.value) == 1.0)
 	var broken: Dictionary = (tuned.block as Dictionary).duplicate(true)
 	broken.tuning = {lift = 9.0}
 	check("out-of-range tuning is refused", not PhoenixPhysics.valid_block(broken))

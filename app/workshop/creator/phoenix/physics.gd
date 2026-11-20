@@ -35,15 +35,15 @@ const MOTOR_EFFICIENCY := 0.8
 const SUPPLY_DROP := 0.12
 const MOTOR_SHARE := 0.6
 const FLIGHT_HOURS_AT_FULL := 0.1
-## Drag coefficient of the fuselage on Phoenix's projected frontal "drag area" (a blunt RC fuselage with
-## canopy, gear and fittings).
-const BODY_DRAG_COEFFICIENT := 0.3
-const THRUST_CAP := 2.3
+## Drag coefficient of the fuselage on Phoenix's projected frontal "drag area": Phoenix's own value
+## (fixedWing/airplane.sim, nFuselageDragCoefficient; docs/research/aircraft-creator/phoenix-flight-model-2026-11-20.md).
+const BODY_DRAG_COEFFICIENT := 0.75
+const THRUST_CAP := 3.0
 const THRUST_CAP_ITERATIONS := 5
 const MIN_DIAMETER_SHARE := 0.4
 const DERIVED_MASS_RANGE := [0.2, 15.0]
 const DERIVED_LOADING_RANGE := [1.0, 25.0]
-const DERIVED_THRUST_RANGE := [0.3, 2.5]
+const DERIVED_THRUST_RANGE := [0.3, 3.2]
 ## Jets and ducted fans (Phoenix `turbine`, `Max_Thrust` in newtons) fly on an equivalent propeller: pitch
 ## equal to its diameter and this pitch speed at the source size, so its thrust falls off far less with
 ## airspeed than a model propeller's. Froude-scaled with the flown size.
@@ -57,7 +57,22 @@ const EQUIVALENT_ITERATIONS := 6
 const EQUIVALENT_TOLERANCE := 0.02
 ## Bumped whenever `derive` maps the same physics block to different packages, so an earlier draft's ids
 ## no longer restore silently onto changed values.
-const DERIVATION_VERSION := 5
+const DERIVATION_VERSION := 16
+const KV_CALIBRATION_ITERATIONS := 4
+## A static figure of merit at the top of measured small propellers (UIUC data reach about 0.75).
+const MAX_FIGURE_OF_MERIT := 0.8
+const START_LIFT_SHARE := 0.69
+const START_ALPHA_DEG := 7.0
+## Phoenix ducted fans and turbines on OpenRC's turbine law (IAQ T4).
+const JET_EFFLUX_MPS := 100.0
+const JET_DEFAULT_SPOOL_S := 0.5
+const JET_MIN_SPOOL_S := 0.05
+const JET_MIN_MAX_RPM := 10000.0
+## Phoenix's propeller law (airplane.sim): static thrust 0.18·Pitch·D³·n² N (n in rev/s; Pitch·D³·RPM²/20000) ×
+## the blade factor, falling linearly to zero at 1.6 × the pitch speed.
+const PHOENIX_THRUST_CONSTANT := 0.18
+const PHOENIX_ZERO_THRUST := 1.6
+const BLADE_FACTORS := {2: 1.0, 3: 1.3, 4: 1.54, 5: 1.85, 6: 2.06}
 ## Smallest electric drive time constant J·R/Kt² a derived power package may have (propulsion.gd shaft_step
 ## assumes τ ≈ 0.2 s ≫ dt).
 const SHAFT_TIME_CONSTANT_S := 0.2
@@ -67,6 +82,16 @@ const TUNING_RANGE := [0.25, 2.0]
 ## Roll power kept for declared but inactive ailerons, relative to the base set: the record accepts a wing
 ## aileron effectiveness of at least 0.01, and the base set is about 0.13.
 const INACTIVE_AILERON_SHARE := 0.1
+## Advance ratio where a Ct table crosses zero (its last row when it never does).
+static func _zero_thrust_advance(rows: Array) -> float:
+	for index: int in range(1, rows.size()):
+		var a: Array = rows[index - 1]
+		var b: Array = rows[index]
+		if float(a[1]) > 0.0 and float(b[1]) <= 0.0:
+			return float(a[0]) + (float(b[0]) - float(a[0])) * float(a[1]) / (float(a[1]) - float(b[1]))
+	return float(rows[-1][0]) if not rows.is_empty() else 0.0
+
+
 ## Pitch/diameter of the propeller behind every base package's Ct/Cp tables (UIUC APC Sport 11×6).
 const TABLE_PITCH_RATIO := 6.0 / 11.0
 
@@ -201,6 +226,12 @@ static func physics_block(model: Dictionary, scale: float, datum: Array, polars:
 		block.aileron_roll_power = aileron
 	elif _has_inactive_ailerons(wing):
 		block.aileron_roll_power = 0.0  # declared but zero-length: the model steers with its rudder
+	# Pilot stick expo per channel (Phoenix Controls.*.Expo, percent): input shaping, not aerodynamics.
+	var controls := _dict(_dict(model.get("attributes")).get("Controls"))
+	for axis: String in ["Aileron", "Elevator", "Rudder"]:
+		var expo := _num(_dict(controls.get(axis)).get("Expo"), 0.0)
+		if expo > 0.0:
+			block["expo_" + axis.to_lower()] = minf(expo, 100.0)
 	var tuning := {}
 	var fine: Dictionary = _dict(_dict(model.get("attributes")).get("Fine_tuning"))
 	for key: String in TUNING_KEYS:
@@ -214,6 +245,10 @@ static func physics_block(model: Dictionary, scale: float, datum: Array, polars:
 	var propulsion: Variant = model.get("propulsion")
 	var propellers := 0
 	var jet_thrust := 0.0
+	var jet_idle_thrust := 0.0
+	var jet_spool := 0.0
+	var jet_max_rpm := 0.0
+	var jet_idle_rpm := 0.0
 	if propulsion is Array:
 		for unit: Variant in propulsion:
 			if not unit is Dictionary:
@@ -233,10 +268,19 @@ static func physics_block(model: Dictionary, scale: float, datum: Array, polars:
 					var thrust := _num(attributes.get("Max_Thrust"), NAN)
 					if thrust > 0.0:
 						jet_thrust += thrust
+						jet_idle_thrust += maxf(0.0, _num(attributes.get("Idle_Thrust"), 0.0))
+						if jet_spool <= 0.0:
+							jet_spool = _num(attributes.get("Spool_Time"), 0.0)
+							jet_max_rpm = _num(attributes.get("Max_RPM"), 0.0)
+							jet_idle_rpm = _num(attributes.get("Idle_RPM"), 0.0)
 	if propellers > 1:
 		block.propeller.count = propellers
 	elif propellers == 0 and jet_thrust > 0.0:
 		block.jet_thrust_n = jet_thrust
+		block.jet_idle_thrust_n = minf(jet_idle_thrust, 0.5 * jet_thrust)
+		block.jet_spool_s = jet_spool if jet_spool > 0.0 else JET_DEFAULT_SPOOL_S
+		block.jet_max_rpm = jet_max_rpm
+		block.jet_idle_rpm = jet_idle_rpm
 	return block
 
 
@@ -346,8 +390,12 @@ static func valid_block(block: Variant) -> bool:
 	if not (_in(block.get("wing_lift_slope"), 0.5, 9.0) and _in(block.get("aspect_ratio"), 0.5, 40.0)
 			and _in(block.get("body_drag_ratio"), 0.0, 1.0) and _in(block.get("mass_kg"), 0.01, 1000.0)):
 		return false
-	for key: String in ["cg_aft_m", "elevator_effectiveness", "rudder_effectiveness", "aileron_roll_power", "jet_thrust_n"]:
-		if block.has(key) and not _in(block[key], -100.0, 100000.0):
+	for key: String in ["expo_aileron", "expo_elevator", "expo_rudder"]:
+		if block.has(key) and not _in(block[key], 0.0, 100.0):
+			return false
+	for key: String in ["cg_aft_m", "elevator_effectiveness", "rudder_effectiveness", "aileron_roll_power", "jet_thrust_n",
+			"jet_idle_thrust_n", "jet_spool_s", "jet_max_rpm", "jet_idle_rpm"]:
+		if block.has(key) and not _in(block[key], -100.0, 1.0e6):
 			return false
 	var tuning: Variant = block.get("tuning", {})
 	if not tuning is Dictionary:
@@ -435,6 +483,16 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 		note + ": section peak lift × %s, kept above the flat-plate lift and the linear region" % String.num(WING_PEAK_SHARE, 2) + tuned)
 	package.envelope.CL_min = _quantity(clampf(cl_min, -2.5, -0.3), "1", "borrowed",
 		note + ": section negative peak × %s, kept beyond the flat-plate lift and the linear region" % String.num(WING_PEAK_SHARE, 2))
+	# The airborne start's reference speed, where the product's half-throttle trim begins its upward search: the
+	# aircraft trimmed level at about START_ALPHA_DEG of body angle (inside the trim's 8° attached-flow limit), never
+	# slower than about 1.2 × the stall speed (CL ≤ START_LIFT_SHARE × CL_max). Phoenix's own law levels many models
+	# at half throttle only between 1.05 and 1.6 × the stall speed (phoenix_reference.py), so a faster reference
+	# skips that band.
+	# The compiler trims the whole aircraft (tail load about the CG) at start_alpha; cruise_lift caps it.
+	package.wing.cruise_lift = _quantity(clampf(START_LIFT_SHARE * float(package.envelope.CL_max.value), 0.3, 1.0), "1", "derived",
+		"%s × CL_max (about 1.2 × the stall speed): the slowest airborne start reference" % String.num(START_LIFT_SHARE, 2))
+	package.wing.start_alpha = _quantity(deg_to_rad(START_ALPHA_DEG), "rad", "derived",
+		"Body angle of the airborne start's reference speed, inside the trim's 8° attached-flow limit (IAQ T3)")
 	package.envelope.stall_blend_width = _quantity(width, "deg", "borrowed",
 		note + ": angle from attached-line departure to the lift peak")
 	# With the model's own mass, lift and drag the package no longer leans on a 2-3 kg donor for these;
@@ -444,7 +502,17 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 	package.domain.wing_loading_kg_m2 = {min = DERIVED_LOADING_RANGE[0], max = DERIVED_LOADING_RANGE[1],
 		reason = "Phoenix-derived mass and wing; light foam to heavy scale models"}
 	package.domain.thrust_to_weight = {min = DERIVED_THRUST_RANGE[0], max = DERIVED_THRUST_RANGE[1],
-		reason = "Phoenix-derived propeller; heavy scale models fly from an airborne start below 0.5"}
+		reason = "Phoenix-derived propeller; heavy scale models fly from an airborne start below 0.5, extreme 3D electrics reach about 3"}
+	# Phoenix stick expo as OpenRC dual-rate shaping (controls.rates): full travel, expo e of (1 − e)·x + e·x³ fitted
+	# by least squares to Phoenix's |x|^(1 + 2E/100) over the stick range.
+	if block.has("expo_aileron") or block.has("expo_elevator") or block.has("expo_rudder"):
+		var normal := {}
+		for axis: String in ["aileron", "elevator", "rudder"]:
+			var expo := float(block.get("expo_" + axis, 0.0))
+			normal[axis] = _quantity(1.0, "1", "borrowed", SOURCE % "controls" + ": full travel (Phoenix's high rate)")
+			normal[axis + "_expo"] = _quantity(expo_fit(expo), "1", "derived",
+				SOURCE % "controls" + ": Expo %s %% fitted to OpenRC's (1 − e)·x + e·x³" % String.num(expo, 0))
+		package.rates = {normal = normal}
 	# Control power: the surface geometry, times Phoenix's elevator/rudder/aileron tuning.
 	for pair: Array in [["elevator_effectiveness", "elevator"], ["rudder_effectiveness", "rudder"]]:
 		var key: String = pair[0]
@@ -475,6 +543,15 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 	return package
 
 
+## OpenRC's expo e (shape (1 − e)·x + e·x³) closest in least squares on [0, 1] to Phoenix's stick curve
+## x^(1 + 2·percent/100): e = ∫(x^p − x)(x³ − x) / ∫(x³ − x)² = 105/8·(1/(p+4) − 1/(p+2) + 2/15).
+static func expo_fit(percent: float) -> float:
+	if not (percent > 0.0):
+		return 0.0
+	var p := 1.0 + 2.0 * percent / 100.0
+	return clampf(105.0 / 8.0 * (1.0 / (p + 4.0) - 1.0 / (p + 2.0) + 2.0 / 15.0), 0.0, 0.9)
+
+
 ## A Phoenix `Fine_tuning` factor of the block (1 when untuned).
 static func _tuning(block: Dictionary, key: String) -> float:
 	var tuning: Variant = block.get("tuning", {})
@@ -495,8 +572,9 @@ static func _has_inactive_ailerons(wing: Dictionary) -> bool:
 
 
 ## The power package for the Phoenix propeller. Phoenix specifies some aerobatic models with very large
-## propellers at high RPM (static thrust several times the weight with a real propeller); OpenRC has no
-## propeller-wash model above about twice the weight. The Phoenix RPM and pitch (hence the pitch speed) are
+## propellers at high RPM (static thrust up to five times the weight); real extreme 3D electrics reach about
+## three times their weight, and OpenRC has no propeller-wash model for the hover authority beyond. The
+## Phoenix RPM and pitch (hence the pitch speed) are
 ## kept and the physical propeller's diameter is reduced until the runtime's own full-pack static thrust is
 ## THRUST_CAP times the weight (thrust ∝ D⁴). The visual propeller is unchanged.
 static func _power(base: Dictionary, block: Dictionary, id: String, scale: float, weight: float) -> Dictionary:
@@ -505,15 +583,10 @@ static func _power(base: Dictionary, block: Dictionary, id: String, scale: float
 			return _power_at(base, block, id, scale, 1.0)
 		var jet := float(block.get("jet_thrust_n", 0.0))
 		if jet > 0.0:
-			# The Phoenix thrust-to-weight ratio is kept (thrust and weight both scale with the cube of the
-			# size); with the flying mass it refers to the weight that actually flies.
-			var jet_share := jet / (float(block.mass_kg) * Packages.GRAVITY) * _tuning(block, "thrust") * _tuning(block, "engine")
-			return _equivalent_power(base, block, id, scale, minf(jet_share, THRUST_CAP) * weight,
-				JET_PITCH_SPEED_MPS, JET_PITCH_RATIO, true)
+			return _jet_power(base, block, id, scale, weight)
 		return _equivalent_power(base, block, id, scale, GLIDER_THRUST_SHARE * weight, GLIDER_PITCH_SPEED_MPS,
 			TABLE_PITCH_RATIO, false)
-	# Phoenix thrust tuning acts as a diameter share (thrust ∝ D⁴); the cap below still limits the result.
-	var share := pow(_tuning(block, "thrust"), 0.25)
+	var share := 1.0
 	var package := _power_at(base, block, id, scale, share)
 	if not (is_finite(weight) and weight > 0.0):
 		return package
@@ -523,7 +596,7 @@ static func _power(base: Dictionary, block: Dictionary, id: String, scale: float
 		var point: Dictionary = Packages.static_thrust(probe, 1.0)
 		if not point.get("ok", false) or float(point.thrust_n) <= THRUST_CAP * weight * 1.01:
 			break
-		share *= pow(THRUST_CAP * weight / float(point.thrust_n), 0.25)
+		share *= pow(THRUST_CAP * weight / float(point.thrust_n), 1.0 / 3.0) # Phoenix law: T ∝ P·D³
 		share = maxf(share, MIN_DIAMETER_SHARE)
 		package = _power_at(base, block, id, scale, share)
 		if share <= MIN_DIAMETER_SHARE:
@@ -553,24 +626,41 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 	var inertia: Dictionary = package.propeller.rotating_inertia
 	inertia.value = float(inertia.value) * pow(diameter / base_diameter, 4)
 	inertia.kind = "derived"
-	# Advance ratios scale with the pitch/diameter ratio (the zero-thrust advance ratio follows the pitch).
+	# Phoenix's propeller law on the base table's shape: static Ct = 0.18·(P/D)·blade factor·thrust tuning/ρ
+	# (thrust 0.18·P·D³·n²) and zero thrust at J = 1.6·P/D. The power coefficient follows Ct·J, so the
+	# propeller's efficiency curve keeps the base table's shape.
 	var ratio := float(prop.pitch_m) * scale / diameter
-	if ratio > 0.0:
-		var stretch := clampf(ratio / TABLE_PITCH_RATIO, 0.5, 2.0)
-		for table_key: String in ["ct_table", "cp_table"]:
-			var table: Dictionary = package.propeller[table_key]
+	var ct_rows: Array = package.propeller.ct_table.value
+	if ratio > 0.0 and not ct_rows.is_empty():
+		var blades := int(prop.get("blades", 2))
+		# Measured propeller data (UIUC APC Sport 11×6, pitch ratio 6/11): the advance-ratio axis stretches with the
+		# pitch ratio and the static coefficient with its square root, the measured family's mild trend. Phoenix's
+		# own static law (0.18·P/D) sits 20–30 % below such data and starves part-throttle cruise, so only its
+		# blade factor and thrust tuning are kept (docs/research/aircraft-creator/phoenix-flight-model-2026-11-20.md).
+		var stretch := clampf(ratio / TABLE_PITCH_RATIO, 0.5, 2.5)
+		var k_ct := sqrt(stretch) * float(BLADE_FACTORS.get(blades, 1.0)) * _tuning(block, "thrust")
+		var k_j := stretch
+		# The static figure of merit Ct^1.5/(Cp·√(2/π)) scales by √k_ct/k_j; many blades, a high thrust tuning or a
+		# low pitch would push it past what real propellers reach, so the power coefficient then rises with it.
+		var k_cp := k_ct * k_j
+		var cp_rows0: Array = package.propeller.cp_table.value
+		if not cp_rows0.is_empty() and float(cp_rows0[0][1]) > 0.0 and float(ct_rows[0][1]) > 0.0:
+			var merit := pow(float(ct_rows[0][1]) * k_ct, 1.5) / (float(cp_rows0[0][1]) * k_cp * sqrt(2.0 / PI))
+			k_cp *= maxf(1.0, merit / MAX_FIGURE_OF_MERIT)
+		for pair: Array in [["ct_table", k_ct], ["cp_table", k_cp]]:
+			var table: Dictionary = package.propeller[pair[0]]
 			var rows: Array = []
 			for row: Variant in table.value:
-				rows.append([float(row[0]) * stretch, float(row[1]) * (stretch if table_key == "cp_table" else sqrt(stretch))])
+				rows.append([float(row[0]) * k_j, float(row[1]) * float(pair[1])])
 			table.value = rows
 			table.kind = "derived"
+			table.source = SOURCE % "propeller" + ": the measured base table, advance ratio × pitch-ratio stretch %s, coefficient × √stretch × Phoenix blade factor and thrust tuning" % String.num(stretch, 3)
 	# Phoenix drives its propeller at the model's maximum RPM. Froude similarity keeps the advance ratio of a
 	# resized model: n·D ∝ √s, so the flown RPM is Max_RPM·s^-½. The installation is sized to deliver the
 	# static shaft power P = Cp(0)·ρ·n³·D⁵ there: Kv for that RPM at LOADED_VOLTAGE_SHARE of the pack voltage,
 	# and motor plus battery resistance for SUPPLY_DROP of the voltage at that current.
 	var voltage := float(package.motor.no_load_voltage_v.value)
-	# Phoenix engine tuning scales the power; at a fixed propeller P ∝ n³.
-	var rpm := float(prop.max_rpm) / sqrt(scale) * pow(_tuning(block, "engine"), 1.0 / 3.0)
+	var rpm := float(prop.max_rpm) / sqrt(scale)
 	var cp_rows: Array = package.propeller.cp_table.value
 	var cp0 := float(cp_rows[0][1]) if not cp_rows.is_empty() else 0.04
 	var shaft_power := cp0 * Packages.AIR_DENSITY * pow(rpm / 60.0, 3) * pow(diameter, 5)
@@ -591,6 +681,23 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 		# The runtime steps the shaft explicitly and assumes its time constant is far above the tick: a small fast
 		# rotor (a ducted-fan equivalent) would otherwise make it diverge. J·R/Kt² is the electric drive's time
 		# constant; the rotor inertia is raised to keep it at SHAFT_TIME_CONSTANT_S.
+		# The nominal-voltage estimate misses the full pack's higher voltage: correct Kv until the runtime's own
+		# static full-throttle RPM is Phoenix's (Phoenix holds its RPM at Max_RPM).
+		var calibrated := false
+		for iteration: int in KV_CALIBRATION_ITERATIONS:
+			var probe := package.duplicate(true)
+			probe.id = "%s#kv-%d-%s" % [id, iteration, String.num(diameter, 9)]
+			var point: Dictionary = Packages.static_thrust(probe, 1.0)
+			if not point.get("ok", false) or not (float(point.rpm) > 0.0):
+				break
+			if absf(float(point.rpm) / rpm - 1.0) < 0.01:
+				calibrated = true
+				break
+			kv *= rpm / float(point.rpm)
+			package.motor.kv_rpm_per_volt.value = kv
+			package.motor.no_load_rpm.value = kv * voltage * NO_LOAD_RPM_SHARE
+		package.motor.kv_rpm_per_volt.source = SOURCE % "propeller" + (": calibrated so the runtime's static full-throttle RPM on a full pack is Max_RPM (Froude-scaled to the flown size)"
+			if calibrated else ": corrected toward the runtime's static full-throttle RPM of Max_RPM (Froude-scaled), not within 1 %% after %d steps" % KV_CALIBRATION_ITERATIONS)
 		var kt := 60.0 / (TAU * kv)
 		var floor_inertia := SHAFT_TIME_CONSTANT_S * kt * kt / supply
 		if float(inertia.value) < floor_inertia:
@@ -599,6 +706,38 @@ static func _power_at(base: Dictionary, block: Dictionary, id: String, scale: fl
 				String.num(SHAFT_TIME_CONSTANT_S, 2), String.num(float(base.propeller.rotating_inertia.value) * pow(diameter / base_diameter, 4), 9)]
 	package.description = "Phoenix-derived power: %s m propeller, pitch ratio %s, %s rpm; motor resistance, battery and ESC from %s." % [
 		String.num(diameter, 3), String.num(ratio, 2), String.num(float(prop.max_rpm), 0), str(base.get("id", ""))]
+	return package
+
+
+## The power package of a Phoenix ducted fan or turbine (IAQ T4): the base package's hardware and the
+## `jet` member Packages compiles into OpenRC's turbine law. Phoenix's law (airplane.sim) is thrust = idle +
+## speed fraction × (Max_Thrust − idle), × (1 − 0.01 × airspeed in m/s): the momentum law with a 100 m/s
+## efflux. The Phoenix thrust-to-weight ratio is kept at the flying weight (thrust and weight both scale with
+## the cube of the size), within the cap; the spool time scales with √s (Froude).
+static func _jet_power(base: Dictionary, block: Dictionary, id: String, scale: float, weight: float) -> Dictionary:
+	var package := base.duplicate(true)
+	package.id = id
+	var share := minf(float(block.jet_thrust_n) / (float(block.mass_kg) * Packages.GRAVITY) * _tuning(block, "thrust"), THRUST_CAP)
+	var thrust := share * weight
+	var idle_share := float(block.get("jet_idle_thrust_n", 0.0)) / float(block.jet_thrust_n)
+	var top := clampf(float(block.get("jet_max_rpm", 0.0)), JET_MIN_MAX_RPM, Packages.JET_MAX_RPM)
+	var idle := clampf(float(block.get("jet_idle_rpm", 0.0)), 1000.0, top - 1000.0)
+	var source := SOURCE % "propulsion"
+	package.jet = {
+		name = "Phoenix turbine" if float(block.get("jet_idle_rpm", 0.0)) >= 10000.0 else "Phoenix ducted fan",
+		static_thrust = _quantity(thrust, "N", "borrowed", source + ": Max_Thrust %s N × thrust tuning at the flying weight (thrust-to-weight %s)" % [
+			String.num(float(block.jet_thrust_n), 1), String.num(share, 2)]),
+		idle_thrust = _quantity(thrust * idle_share, "N", "borrowed", source + ": Idle_Thrust in the same proportion"),
+		efflux_speed = _quantity(JET_EFFLUX_MPS, "m/s", "derived",
+			"Phoenix's turbine law loses 1 % of thrust per m/s: the momentum law T − ṁ·u with a %s m/s efflux" % String.num(JET_EFFLUX_MPS, 0)),
+		idle_rpm = _quantity(idle, "rpm", "borrowed", source + ": Idle_RPM (at least 1000 rpm, the runtime's floor)"),
+		max_rpm = _quantity(top, "rpm", "borrowed", source + ": Max_RPM"),
+		spool_time = _quantity(maxf(maxf(JET_MIN_SPOOL_S, (top - idle) / Packages.JET_MAX_SPOOL_RATE),
+			float(block.get("jet_spool_s", JET_DEFAULT_SPOOL_S)) * sqrt(scale)), "s", "borrowed",
+			source + ": Spool_Time (the full speed range), × √s for the flown size"),
+	}
+	package.description = "Phoenix-derived %s: %s N static thrust, momentum law with ram drag; hardware masses from %s." % [
+		str(package.jet.name).to_lower().trim_prefix("phoenix "), String.num(thrust, 1), str(base.get("id", ""))]
 	return package
 
 
