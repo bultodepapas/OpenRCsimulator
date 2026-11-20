@@ -8,6 +8,7 @@ const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
 const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
 const SourceImporter := preload("res://workshop/creator/source_importer.gd")
 const Converter := preload("res://workshop/creator/phoenix/converter.gd")
+const VisualBuilderRef := preload("res://workshop/creator/visual_builder.gd")
 const NO_MATERIAL := 0xFFFFFFFF
 var failures := 0
 var checks := 0
@@ -19,6 +20,7 @@ func _initialize() -> void:
 	_texture()
 	_glb()
 	_converter()
+	_articulation()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -448,3 +450,79 @@ func _converter() -> void:
 	for name: String in DirAccess.get_files_at(folder):
 		DirAccess.remove_absolute(folder.path_join(name))
 	DirAccess.remove_absolute(folder)
+
+
+# ----------------------------------------------------------------------------------- articulation
+
+## Decoded-definition shape (as the script container returns it) with a mirrored aileron pair, a
+## one-piece elevator, a rudder and a propeller.
+func _articulated_model() -> Dictionary:
+	return {airfoils = [
+		{isMirrored = 1, controlSurfaces = [{attributes = {Input = "Left Aileron"},
+			root_pivot = {x = 1.0, y = 0.5, z = 1.0}, tip_pivot = {x = 4.0, y = 0.5, z = 1.0},
+			sides = [["wing"], ["fuse"]]}]},
+		{isMirrored = 1, controlSurfaces = [{attributes = {Input = "Left Elevator"},
+			root_pivot = {x = -2.0, y = 0.0, z = -3.0}, tip_pivot = {x = 2.0, y = 0.0, z = -3.0}, sides = [["tail"], {}]}]},
+		{isMirrored = 0, controlSurfaces = [{attributes = {Input = "Rudder"},
+			root_pivot = {x = 0.0, y = 0.0, z = -3.0}, tip_pivot = {x = 0.0, y = 2.0, z = -3.0}, sides = [["fin"], {}]}]}],
+		propulsion = [{type = "propeller", pivot = {x = 0.0, y = 0.5, z = 2.0}, spinDirection = 1,
+			spinGeometry = ["hub"], blurGeometry = ["blades"]}]}
+
+
+func _articulation() -> void:
+	var groups: Array = Converter.articulation_groups(_articulated_model())
+	var roles: Array = groups.map(func(g: Dictionary) -> String: return g.role)
+	check("articulation roles", roles == ["aileron_left", "aileron_right", "elevator", "rudder", "propeller"])
+	if groups.size() == 5:
+		check("left aileron hinge points left with a positive sign", groups[0].hinge == [3.0, 0.0, 0.0] and groups[0].sign == 1)
+		check("right aileron is the mirror image", groups[1].origin == [-1.0, 0.5, 1.0] and groups[1].hinge == [-3.0, 0.0, 0.0]
+			and groups[1].sign == -1)
+		check("rudder sign follows the up axis", groups[3].sign == 1 and groups[3].axis == "x")
+		check("propeller groups spin and blur geometry", groups[4].nodes == ["hub", "blades"] and groups[4].axis == "z"
+			and groups[4].hinge.is_empty())
+	var nodes: Array = [{name = "wing", material = 0, triangles = 2}, {name = "fuse", material = 0, triangles = 2},
+		{name = "body", material = 0, triangles = 2}]
+	var geo: Dictionary = Geo.parse(_geo_bytes(nodes)).value
+	var hinge := [{role = "aileron_left", nodes = ["wing"], origin = [1.0, 0.5, 1.0], hinge = [3.0, 0.0, 1.0],
+		axis = "x", sign = 1}, {role = "propeller", nodes = ["fuse"], origin = [0.0, 0.5, 2.0], hinge = [], axis = "z",
+		sign = 1}]
+	var built := GlbWriter.build(geo, {}, 0.5, {}, hinge)
+	check("articulated GLB builds", built.ok and built.value.pivots.size() == 2)
+	if not built.ok:
+		return
+	var document := _chunk_json(built.value.bytes)
+	var pivot: Dictionary = document.nodes[int(built.value.pivots[0].node)]
+	check("pivot carries the part hint", pivot.extras.openrc_creator_part.axis == "x" and pivot.children.size() == 1)
+	# Neutral pose: every child vertex mapped through the pivot matrix lands on the original scaled point.
+	var m: Array = pivot.matrix
+	var child: Dictionary = document.nodes[int(pivot.children[0])]
+	var accessor: Dictionary = document.meshes[int(child.mesh)].primitives[0].attributes
+	var positions := _accessor_floats(built.value.bytes, document, int(accessor.POSITION))
+	var original: PackedFloat32Array = geo.vertex_data
+	var first := Vector3(m[0] * positions[0] + m[4] * positions[1] + m[8] * positions[2] + m[12],
+		m[1] * positions[0] + m[5] * positions[1] + m[9] * positions[2] + m[13],
+		m[2] * positions[0] + m[6] * positions[1] + m[10] * positions[2] + m[14])
+	check("neutral pose is unchanged", first.is_equal_approx(Vector3(original[0], original[1], original[2]) * 0.5))
+	var admitted := SourceImporter.inspect_bytes(built.value.bytes, "pivots.glb")
+	check("articulated GLB admitted", admitted.ok)
+	if admitted.ok:
+		var bindings := Converter.proposed_bindings(built.value.pivots)
+		var checked: Dictionary = VisualBuilderRef.validate_bindings(admitted.value, bindings)
+		check("proposed bindings validate", checked.ok and checked.value.controls.has("aileron_left")
+			and checked.value.propeller.axis == "z")
+	var glassy: Dictionary = Geo.parse(_geo_bytes(nodes)).value
+	glassy.materials[0].name = "canopy_glass"
+	glassy.materials[0].texture = null
+	var glass_built := GlbWriter.build(glassy, {}, 1.0)
+	var glass_doc: Dictionary = _chunk_json(glass_built.value.bytes) if glass_built.ok else {}
+	check("untextured glass is translucent", glass_built.ok and glass_doc.materials[0].get("alphaMode") == "BLEND"
+		and float(glass_doc.materials[0].pbrMetallicRoughness.baseColorFactor[3]) < 1.0)
+
+
+func _accessor_floats(glb: PackedByteArray, document: Dictionary, index: int) -> PackedFloat32Array:
+	var accessor: Dictionary = document.accessors[index]
+	var view: Dictionary = document.bufferViews[int(accessor.bufferView)]
+	var json_length := glb.decode_u32(12)
+	var bin_start := 20 + json_length + 8
+	var start := bin_start + int(view.get("byteOffset", 0))
+	return glb.slice(start, start + int(view.byteLength)).to_float32_array()

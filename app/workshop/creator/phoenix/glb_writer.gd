@@ -180,16 +180,16 @@ class Writer extends RefCounted:
 			notes.append(R.diagnostic(R.SOURCE_LIMIT, "Moving parts were not prepared because the model's parts were merged.",
 				"source", STEP, [], R.SEVERITY_WARNING))
 		if not merged:
-			var by_name := {}
+			var visual_by_name := {}
 			for entry: Dictionary in visual:
-				by_name[str(entry.node.name)] = entry
+				visual_by_name[str(entry.node.name)] = entry
 			# Each visual node joins at most one moving group; the rest stay static scene roots.
 			var claimed := {}
 			var groups: Array = []
 			for group: Dictionary in articulation:
 				var members: Array = []
 				for name: Variant in group.get("nodes", []):
-					if by_name.has(str(name)) and not claimed.has(str(name)) and not str(name) in members:
+					if visual_by_name.has(str(name)) and not claimed.has(str(name)) and not str(name) in members:
 						members.append(str(name))
 				var frame := _frame(group)
 				if members.is_empty() or frame.is_empty():
@@ -207,7 +207,7 @@ class Writer extends RefCounted:
 			for built: Dictionary in groups:
 				var children: Array = []
 				for name: String in built.members:
-					var made := _node_mesh(by_name[name], built.frame, false)
+					var made := _node_mesh(visual_by_name[name], built.frame, false)
 					if made < 0:
 						return error
 					triangles += made
@@ -270,6 +270,11 @@ class Writer extends RefCounted:
 		var z := x.cross(helper).normalized()
 		var y := z.cross(x)
 		return {origin = o, axes = [[x.x, x.y, x.z], [y.x, y.y, y.z], [z.x, z.y, z.z]]}
+
+	## Untextured materials named as glass (the shared glass texture was not found) render translucent.
+	static func _is_glass(material: Dictionary) -> bool:
+		var named := (str(material.get("name", "")) + " " + str(material.get("texture", ""))).to_lower()
+		return named.contains("glass")
 
 	func _node_mesh(entry: Dictionary, frame: Dictionary, root: bool) -> int:
 		var node: Dictionary = entry.node
@@ -339,12 +344,12 @@ class Writer extends RefCounted:
 						var ax: Array = axes[0]
 						var ay: Array = axes[1]
 						var az: Array = axes[2]
-						var px := x * ax[0] + y * ax[1] + z * ax[2]
-						var py := x * ay[0] + y * ay[1] + z * ay[2]
-						var pz := x * az[0] + y * az[1] + z * az[2]
-						var qx := nx * ax[0] + ny * ax[1] + nz * ax[2]
-						var qy := nx * ay[0] + ny * ay[1] + nz * ay[2]
-						var qz := nx * az[0] + ny * az[1] + nz * az[2]
+						var px: float = x * ax[0] + y * ax[1] + z * ax[2]
+						var py: float = x * ay[0] + y * ay[1] + z * ay[2]
+						var pz: float = x * az[0] + y * az[1] + z * az[2]
+						var qx: float = nx * ax[0] + ny * ax[1] + nz * ax[2]
+						var qy: float = nx * ay[0] + ny * ay[1] + nz * ay[2]
+						var qz: float = nx * az[0] + ny * az[1] + nz * az[2]
 						x = px
 						y = py
 						z = pz

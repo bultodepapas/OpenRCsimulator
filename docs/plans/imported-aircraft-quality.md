@@ -1,6 +1,6 @@
 # Imported aircraft quality: audit and phased plan
 
-Status: active plan, created 2026-11-20. This file owns `IAQ-00` through `IAQ-08`. It audits how imported aircraft (Creator sources: generic STL/GLB, ClearView conversions and the new Phoenix import) look, fly, control and present in OpenRC today, and orders the work that turns them into first-class aircraft. Format-specific work stays with its owners: [Aircraft Creator](aircraft-creator.md) (AC), [ClearView](clearview-aircraft-import.md) (AC-CV), [Phoenix](phoenix-aircraft-import.md) (AC-PX). This plan sequences and measures their shared player-visible quality; it does not reassign their steps.
+Status: active plan, created 2026-11-20; progress in [§7](#7-progress). This file owns `IAQ-00` through `IAQ-08`. It audits how imported aircraft (Creator sources: generic STL/GLB, ClearView conversions and the new Phoenix import) look, fly, control and present in OpenRC today, and orders the work that turns them into first-class aircraft. Format-specific work stays with its owners: [Aircraft Creator](aircraft-creator.md) (AC), [ClearView](clearview-aircraft-import.md) (AC-CV), [Phoenix](phoenix-aircraft-import.md) (AC-PX). This plan sequences and measures their shared player-visible quality; it does not reassign their steps.
 
 ## 1. Method and evidence limits
 
@@ -149,3 +149,11 @@ Recommended order for the next sprint: **IAQ-00 → IAQ-01 → IAQ-02 → IAQ-03
 - **Shared-file contention.** Guards, bindings and `main.gd` effects seams are shared; coordinate through the [ownership registry](../README.md#tracks-plans-and-step-ids).
 - **Native kernel staleness.** Physics-side work can silently disable the native backend; requalify after any physics change.
 - **Rights.** Stock content stays on the player's machine; only code and metadata are committed.
+
+## 7. Progress
+
+| Step | Date | Delivered | Evidence | Still open |
+| --- | --- | --- | --- | --- |
+| IAQ-01 | 2026-11-20 | Phoenix glass and alpha materials (`alphaMode BLEND`, tinted clear glass, RGBA textures); shared installation textures (`resources/textures/aircraft`, `misc`); welded vertices (indexed geometry); mipmapped anisotropic filtering for every imported GLB in `visual_builder.gd` | `test_creator_phoenix_readers` 97/0; `test_creator_visual` 231/0, `test_creator_clearview_visual` 94/0, `test_creator_clearview_motion` 225/0, `test_creator_import` 0 failures; Beech 58 EEVEE render shows translucent cabin glass | GEO specular unused; J-3 Cub half-white wing; ClearView/generic material parity review |
+| IAQ-02 | 2026-11-20 | Hinge-aligned pivot nodes from decoded `root_pivot`/`tip_pivot` (right side mirrored) and the propeller pivot; automatic Creator bindings applied on import (player still confirms in Moving parts) | Local corpus: 220/220 converted, 116/116 fixed-wing models get bindings that pass `validate_bindings` (437 control roles, 101 propellers), slowest 2.9 s; Blender renders with 30° deflection show surfaces turning on their hinges | Binding v2 (more than two parts per role, flaps, elevons); helicopters; live in-app check (IAQ-00) |
+
