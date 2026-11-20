@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily OpenRC stats archive backup
+
+[Timer]
+OnCalendar=*-*-* 02:40:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

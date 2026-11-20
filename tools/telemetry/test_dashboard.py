@@ -257,6 +257,45 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("HTTP 403: &lt;denied&gt;", page)
         self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
 
+    def test_build_writes_page_and_health_atomically(self):
+        import test_ga4
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        inbox, www, state = self.dir / "inbox.json", self.dir / "www", self.dir / "state"
+        inbox.write_text(json.dumps(data), encoding="utf-8")
+        args = ["build", "--receiver-snapshot", str(inbox), "--www", str(www), "--state-dir", str(state),
+                "--downloads-dir", str(self.dir / "no-archive"), "--days", "7"]
+        fresh = NOW + 600
+        with unittest.mock.patch.object(dashboard.ga4, "fetch", return_value=test_ga4.model()) as fetch, \
+                unittest.mock.patch.object(dashboard.time, "time", return_value=fresh), \
+                unittest.mock.patch("sys.stdout"):
+            self.assertEqual(dashboard.main(args), 0)
+        fetch.assert_called_once_with(7, None, None)
+        report = json.loads((www / "health.json").read_text(encoding="utf-8"))
+        self.assertEqual((report["status"], report["receiver_age_s"], report["website_connected"]), ("ok", 600, True))
+        self.assertIn("Active users, 7 days", (www / "index.html").read_text(encoding="utf-8"))
+        self.assertTrue((state / "dashboard.snapshot.json").is_file())
+        self.assertFalse((www / "dashboard.snapshot.json").exists())  # the combined snapshot is never served
+        self.assertEqual(sorted(p.name for p in www.iterdir()), ["health.json", "index.html"])  # no temp files
+
+        with unittest.mock.patch.object(dashboard.time, "time", return_value=NOW + 3 * 3600), \
+                unittest.mock.patch("sys.stdout"):  # a receiver snapshot older than 2 h
+            self.assertEqual(dashboard.main(args + ["--no-ga4"]), 0)
+        self.assertEqual(json.loads((www / "health.json").read_text(encoding="utf-8"))["status"], "stale")
+
+        page = (www / "index.html").read_text(encoding="utf-8")
+        inbox.write_text("{not json", encoding="utf-8")
+        with unittest.mock.patch("sys.stdout"):
+            self.assertEqual(dashboard.main(args + ["--no-ga4"]), 1)
+        report = json.loads((www / "health.json").read_text(encoding="utf-8"))
+        self.assertEqual(report["status"], "error")
+        self.assertIn("receiver snapshot unreadable", report["problems"][0])
+        self.assertEqual((www / "index.html").read_text(encoding="utf-8"), page)  # last good page kept
+
+    def test_build_refuses_directories_inside_the_repository(self):
+        with self.assertRaises(SystemExit):
+            dashboard.main(["build", "--receiver-snapshot", "x.json", "--www", str(HERE / "www"),
+                            "--state-dir", str(self.dir)])
+
     def test_render_ga4_refreshes_the_saved_snapshot(self):
         import test_ga4
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)

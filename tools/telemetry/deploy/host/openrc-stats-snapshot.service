@@ -1,0 +1,9 @@
+[Unit]
+Description=OpenRC stats: receiver snapshot from CT 404 into the CT 405 inbox (TELEM-24c)
+After=pve-guests.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/openrc-stats-snapshot.sh
+TimeoutStartSec=6min
+Nice=10

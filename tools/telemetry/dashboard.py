@@ -1355,6 +1355,67 @@ def load_downloads(directory, note):
     return model
 
 
+def write_atomic(path, text):
+    """Replace `path` in one step so a web server never serves a half-written page."""
+    path = Path(path)
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def health(snapshot, now, receiver_max_age_s, github_note, problems):
+    """Machine-readable freshness for monitors (Uptime Kuma keyword `"status": "ok"`)."""
+    receiver_age = None if snapshot is None else round(now - snapshot["generated_unix"])
+    website = (snapshot or {}).get("website")
+    status = "ok"
+    if snapshot is None or problems:
+        status = "error"
+    elif receiver_age > receiver_max_age_s:
+        status = "stale"
+    elif github_note or (website and website.get("error")):
+        status = "degraded"
+    return {"status": status, "built_utc": datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "receiver_age_s": receiver_age, "github_error": github_note,
+            "website_error": (website or {}).get("error"), "website_connected": website is not None,
+            "problems": problems}
+
+
+def build(args):
+    """TELEM-24c: unattended build for an always-on host. Reads a receiver snapshot file (pushed by the Proxmox
+    host), optionally refreshes the GitHub archive and GA4, then writes index.html and health.json atomically into
+    --www and the combined snapshot into --state-dir (not served). A failure keeps the last good page."""
+    www, state = Path(args.www).resolve(), Path(args.state_dir).resolve()
+    for directory in (www, state):
+        if directory.is_relative_to(REPO):
+            raise SystemExit("--www and --state-dir must be outside the repository (operator-only data)")
+        directory.mkdir(parents=True, exist_ok=True)
+    now, problems, snapshot, note = time.time(), [], None, None
+    try:
+        snapshot = json.loads(Path(args.receiver_snapshot).read_text(encoding="utf-8"))
+        if snapshot.get("snapshot_version") not in SNAPSHOT_VERSIONS:
+            raise ValueError(f"unsupported snapshot_version {snapshot.get('snapshot_version')!r}")
+    except (OSError, ValueError) as error:
+        problems.append(f"receiver snapshot unreadable: {error.__class__.__name__}: {error}"[:300])
+        snapshot = None
+    if snapshot is not None:
+        if args.github_collect and args.downloads_dir.is_dir():
+            ok, message = downloads.collect(args.downloads_dir)
+            note = None if ok else message
+        snapshot["github"] = load_downloads(args.downloads_dir, note)
+        snapshot["website"] = None if args.no_ga4 else ga4.fetch(args.days, args.ga4_property, args.ga4_credentials)
+        try:
+            page = render(snapshot)
+        except (ValueError, KeyError, TypeError) as error:
+            problems.append(f"render failed: {error!r}"[:300])
+        else:
+            write_atomic(www / "index.html", page)
+            write_atomic(state / "dashboard.snapshot.json", json.dumps(snapshot, indent=1, sort_keys=True))
+    report = health(snapshot, now, args.receiver_max_age, note, problems)
+    write_atomic(www / "health.json", json.dumps(report, indent=1))
+    print(json.dumps(report))
+    return 0 if report["status"] in ("ok", "degraded", "stale") else 1
+
+
 def default_out():
     base = Path("U:/OpenRC/telemetry-dashboard") if Path("U:/").exists() else (
         Path(os.environ.get("LOCALAPPDATA", Path.home())) / "OpenRCsimulator" / "telemetry-dashboard")
@@ -1383,6 +1444,19 @@ def main(argv=None):
     f.add_argument("--ga4-credentials", default=None,
                    help="GA4 credential JSON (service account or authorized_user); env OPENRC_GA4_CREDENTIALS")
     f.add_argument("--no-ga4", action="store_true", help="skip the website (GA4) collection")
+    b = sub.add_parser("build", help="unattended build from a receiver snapshot file (always-on host, TELEM-24c)")
+    b.add_argument("--receiver-snapshot", required=True, help="JSON written by snapshot.py (pushed by the host)")
+    b.add_argument("--www", required=True, help="served directory: index.html and health.json")
+    b.add_argument("--state-dir", required=True, help="unserved directory for the combined snapshot")
+    b.add_argument("--github-collect", action="store_true", help="refresh the GitHub archive first (needs gh)")
+    b.add_argument("--no-ga4", action="store_true", help="skip the website (GA4) collection")
+    b.add_argument("--ga4-property", default=os.environ.get("OPENRC_GA4_PROPERTY"))
+    b.add_argument("--ga4-credentials", default=None)
+    b.add_argument("--days", type=int, default=30)
+    b.add_argument("--receiver-max-age", type=int, default=2 * 3600,
+                   help="seconds before health.json reports the receiver snapshot as stale")
+    b.add_argument("--downloads-dir", type=Path, default=downloads.default_dir(),
+                   help="GitHub history archive directory; env OPENRC_ANALYTICS_DIR")
     r = sub.add_parser("render", help="render a saved snapshot")
     r.add_argument("--snapshot", required=True)
     r.add_argument("--ga4", action="store_true",
@@ -1393,6 +1467,8 @@ def main(argv=None):
         p.add_argument("--downloads-dir", type=Path, default=downloads.default_dir(),
                        help="GitHub history archive directory (tools/analytics); env OPENRC_ANALYTICS_DIR")
     args = parser.parse_args(argv)
+    if args.command == "build":
+        return build(args)
     out = Path(args.out).resolve()
     if out.is_relative_to(REPO):
         parser.error("--out must be outside the repository: the page holds operator-only data")

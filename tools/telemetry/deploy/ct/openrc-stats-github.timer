@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenRC stats: GitHub archive refresh every 6 hours
+
+[Timer]
+OnCalendar=*-*-* 00/6:20:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

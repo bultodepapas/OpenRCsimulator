@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly OpenRC receiver snapshot for the stats dashboard
+
+[Timer]
+OnCalendar=*-*-* *:05:00
+OnBootSec=3min
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

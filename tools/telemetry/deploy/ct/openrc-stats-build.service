@@ -1,0 +1,25 @@
+[Unit]
+Description=OpenRC stats dashboard build (TELEM-24c)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=openrc-stats
+Group=openrc-stats
+EnvironmentFile=/etc/openrc-stats/env
+Environment=HOME=/var/lib/openrc-stats GH_CONFIG_DIR=/var/lib/openrc-stats/gh OPENRC_ANALYTICS_DIR=/var/lib/openrc-stats/github
+# Hourly: receiver snapshot + GA4, archived GitHub data. openrc-stats-github.service refreshes GitHub.
+ExecStart=/usr/bin/python3 /opt/openrc-stats/current/tools/telemetry/dashboard.py build \
+  --receiver-snapshot /var/lib/openrc-stats/inbox/receiver.json \
+  --www /var/lib/openrc-stats/www --state-dir /var/lib/openrc-stats/state \
+  --downloads-dir /var/lib/openrc-stats/github --days 30
+TimeoutStartSec=10min
+Nice=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/openrc-stats/www /var/lib/openrc-stats/state /var/lib/openrc-stats/github /var/lib/openrc-stats/gh
+CapabilityBoundingSet=
+MemoryMax=192M

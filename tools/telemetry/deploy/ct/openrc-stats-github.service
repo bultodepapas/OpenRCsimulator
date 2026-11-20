@@ -1,0 +1,27 @@
+[Unit]
+Description=OpenRC stats dashboard build with a GitHub archive refresh (TELEM-24c)
+Wants=network-online.target
+After=network-online.target
+# Skipped until a read-only token is configured (GH_TOKEN in /etc/openrc-stats/github.env).
+ConditionPathExists=/etc/openrc-stats/github.env
+
+[Service]
+Type=oneshot
+User=openrc-stats
+Group=openrc-stats
+EnvironmentFile=/etc/openrc-stats/env
+EnvironmentFile=/etc/openrc-stats/github.env
+Environment=HOME=/var/lib/openrc-stats GH_CONFIG_DIR=/var/lib/openrc-stats/gh OPENRC_ANALYTICS_DIR=/var/lib/openrc-stats/github
+ExecStart=/usr/bin/python3 /opt/openrc-stats/current/tools/telemetry/dashboard.py build \
+  --receiver-snapshot /var/lib/openrc-stats/inbox/receiver.json \
+  --www /var/lib/openrc-stats/www --state-dir /var/lib/openrc-stats/state \
+  --downloads-dir /var/lib/openrc-stats/github --days 30 --github-collect
+TimeoutStartSec=10min
+Nice=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/openrc-stats/www /var/lib/openrc-stats/state /var/lib/openrc-stats/github /var/lib/openrc-stats/gh
+CapabilityBoundingSet=
+MemoryMax=192M

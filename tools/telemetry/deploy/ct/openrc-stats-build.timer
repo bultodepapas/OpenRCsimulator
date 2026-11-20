@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly OpenRC stats dashboard build (after the host snapshot at :05)
+
+[Timer]
+OnCalendar=*-*-* *:12:00
+OnBootSec=5min
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
