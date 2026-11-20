@@ -357,6 +357,30 @@ active. [Contract and evidence](research/ai-companions/AFC-03-R2/README.md).
 
 **PT1h-R7/R8.** The opt-in debug-only loopback bridge provides stable state/input/UI operations, invalid-line rejection and main-thread scene mutation. The launcher issues a per-session token; a manually enabled bridge checks a token when configured. Engine profiling and compiler diagnostics avoid implementing another debugger protocol or depending on a stale language parser. The bridge is not exact replay authority; flight logs retain that role. PT1h-R9 attributes GPU cost by elimination (interleaved A-B-A ablation with Godot's measured render times) instead of a GPU capture tool, and rewinds through the existing session checkpoint boundary, handing input back to the pilot by default. PT1h-R10 draws flight-model gizmos with the repository's `ImmediateMesh` overlay pattern instead of a native debug-draw addon, and carries bug reports as the session's own checkpoint JSON (BugIt/BugItGo). PT1h-R11 gives agents an accessibility-style snapshot with per-control refs and field names, one `choose` verb and validated `setup`, and exposes them through a standard-library stdio MCP server instead of an SDK dependency. [Design choice](../tools/debug/README.md#choice-of-design), [limits](../tools/debug/README.md#how-it-works-and-limits), [tool index](tools/README.md).
 
+### Preserve stutter evidence before extending attribution
+
+**PT1h-R15 / S0, 2026-11-19; planning direction.** Extend the existing bounded
+callback recorder and client exporter. Preserve its live detector policy and
+metric formulas; collect one owned incident with explicit lead-up/recovery and
+coverage before adding continuous streaming or native instrumentation. Periodic
+engine maxima, last-read GPU values and physics catch-up are contextual evidence,
+not automatic CPU/GPU cause labels. Keep runtime identity separate from client
+checkout identity, and retain independent clock domains until measured alignment
+is available. GOD TEST owns campaign comparisons; platform profilers remain optional.
+The [24 investigations](research/release-readiness/PT1h-R15/research-2026-11-19.md)
+justify this sequence and its deferred alternatives. The [active plan](plans/stutter-diagnostics.md)
+owns pending S1–S7 work. This decision adds no runtime feature or performance qualification.
+
+**PT1h-R15-S3a, 2026-11-19; offline implementation.** Extend existing debug captures
+and GOD TEST phase reports with observed slow episodes/time, without another recorder
+or runtime instrumentation. Preserve original debug flags and mark disagreement;
+window-edge episodes have unknown boundaries. GOD TEST reduces verified phase
+samples and cannot substitute zero for a missing measurement. The three capture
+formats retain their different thresholds, completion rules and clocks; future
+attachment adapters must preserve originals and prove any joins. The
+[tool integration evidence](research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
+records the eight follow-up investigations and software-only verification.
+
 ### Qualify exported artifacts separately from their source tree
 
 **DT / PT1.** Desktop ZIP exports carry one build identity and their actual resources; package inspection, native launch, signing trust and sustained hardware performance are separate checks. Updating remains manual, and installer/web/mobile expansion is not implied by available export templates. Promote the verified artifact bytes rather than rebuilding an assumed equivalent after acceptance. [Delivery contract](DESKTOP-DELIVERY-PLAN.md#current-delivery), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).

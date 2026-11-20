@@ -1640,5 +1640,135 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(calls, [[], ["--force"]])
 
 
+
+class FrameDiagnosticsTests(unittest.TestCase):
+    def test_capture_requests_one_bounded_snapshot_and_writes_outside_app(self):
+        from tools.debug import frame_capture
+        report = {"frames": 120, "capture_id": "test-capture"}
+        with tempfile.TemporaryDirectory() as folder:
+            destination = Path(folder) / "capture"
+            with patch.object(debugctl, "result_of", return_value=report) as request, \
+                    patch.object(frame_capture, "write_capture", return_value={"html": "report.html"}) as write, \
+                    patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(debugctl.capture_frames(["window=120", "--out", str(destination)]), 0)
+            request.assert_called_once_with("frames", {"window": 120, "samples": True, "events": 200})
+            write.assert_called_once_with(report, destination, sustained_frames=30)
+
+    def test_saved_capture_is_reanalyzed_without_discovering_live_sessions(self):
+        from tools.debug.test_frame_capture import make_report
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "frames.json"
+            source.write_text(json.dumps(make_report()), encoding="utf-8")
+            original = source.read_bytes()
+            destination = Path(folder) / "offline"
+            with patch.object(debugctl, "ambiguous_target", side_effect=AssertionError("must remain offline")), \
+                    patch.object(debugctl, "result_of", side_effect=AssertionError("no bridge")), \
+                    contextlib.redirect_stdout(io.StringIO()) as stdout:
+                self.assertEqual(debugctl.main(["frames", "--input", str(source), "--out", str(destination),
+                                               "sustained_frames=2", "--json"]), 0)
+            self.assertEqual(source.read_bytes(), original)
+            result = json.loads(stdout.getvalue())
+            analysis = json.loads(Path(result["capture"]["analysis"]).read_text())
+            self.assertEqual(analysis["policy"]["sustained_min_frames"], 2)
+
+    def test_offline_usage_errors_never_discover_or_contact_sessions(self):
+        cases = [["--input", "missing"], ["--input"],
+                 ["--out", "--input"], ["--input", "--out", "unused"],
+                 ["--input", "missing", "--out", "unused", "window=20"],
+                 ["--input", "missing", "--out", "unused", "reset=true"],
+                 ["--input", "a", "--input", "b", "--out", "unused"]]
+        for args in cases:
+            with self.subTest(args=args), \
+                    patch.object(debugctl, "ambiguous_target", side_effect=AssertionError("offline")), \
+                    patch.object(debugctl, "result_of", side_effect=AssertionError("offline")), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(debugctl.main(["frames", *args]), 2)
+
+    def test_offline_text_output_accepts_partial_optional_live_summary(self):
+        from tools.debug.test_frame_capture import make_report
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "frames.json"
+            report = make_report()
+            report["p50_ms"] = 16.0  # Optional live formatter fields need not be complete.
+            source.write_text(json.dumps(report))
+            destination = Path(folder) / "out"
+            with patch.object(debugctl, "result_of", side_effect=AssertionError("offline")), \
+                    contextlib.redirect_stdout(io.StringIO()) as stdout:
+                self.assertEqual(debugctl.main(["frames", "--input", str(source), "--out", str(destination)]), 0)
+            self.assertIn("Offline analysis: 4 frames", stdout.getvalue())
+            self.assertTrue((destination / "analysis.json").is_file())
+
+    def test_sustained_policy_is_validated_and_not_sent_to_bridge(self):
+        from tools.debug import frame_capture
+        with tempfile.TemporaryDirectory() as folder:
+            destination = Path(folder) / "capture"
+            for option in ("sustained_frames=true", "sustained_frames=0", "sustained_frames=7201", "sustained_frames=1.5"):
+                with self.subTest(option=option), patch.object(debugctl, "result_of") as request:
+                    with self.assertRaises(ValueError):
+                        debugctl.capture_frames([option, "--out", str(destination)])
+                    request.assert_not_called()
+            with patch.object(debugctl, "result_of", return_value={}) as request, \
+                    patch.object(frame_capture, "write_capture", return_value={}) as write, \
+                    patch.object(debugctl, "show"), contextlib.redirect_stdout(io.StringIO()):
+                debugctl.capture_frames(["sustained_frames=2", "--out", str(destination)])
+            request.assert_called_once_with("frames", {"samples": True, "events": 200})
+            write.assert_called_once_with({}, destination, sustained_frames=2)
+
+    def test_existing_capture_is_refused_before_contacting_app(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(debugctl, "result_of") as request:
+            with self.assertRaises(ValueError):
+                debugctl.capture_frames(["--out", folder])
+            request.assert_not_called()
+
+    def test_capture_never_resets_or_changes_policy_before_export(self):
+        for option in ("reset=true", "reset=false", "target_fps=120", "budget_tolerance_ms=0",
+                       "stutter_factor=2", "stutter_min_extra_ms=2", "stall_ms=30", "hitch_ms=10", "factor=2"):
+            with self.subTest(option=option), tempfile.TemporaryDirectory() as folder, \
+                    patch.object(debugctl, "result_of") as request:
+                destination = Path(folder) / "capture"
+                with self.assertRaisesRegex(ValueError, "configure frames first"):
+                    debugctl.capture_frames([option, "--out", str(destination)])
+                request.assert_not_called()
+                self.assertFalse(destination.exists())
+
+    def test_stutter_timeline_includes_older_retained_legacy_hitches(self):
+        older = {"epoch": 1, "sequence": 1, "frame": 42, "ms": 90, "causes": [],
+                 "log_since": 9000, "log_until": 9002}
+        newer = {"epoch": 1, "sequence": 220, "frame": 300, "ms": 33, "causes": []}
+        logs = {"records": [
+            {"seq": 9001, "level": "info", "frame": 41, "time_ms": 10, "text": "begin"},
+            {"seq": 9002, "level": "info", "frame": 42, "time_ms": 100, "text": "end"}]}
+        with patch.object(debugctl, "refuse_ambiguous", return_value=False), \
+                patch.object(debugctl, "result_of", side_effect=[{"hitches": [older], "stutters": [newer]}, logs]) as request, \
+                contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(debugctl.timeline(["--stutter"]), 0)
+        self.assertEqual(request.call_args_list[-1].args, ("logs", {"since": 9000, "limit": 2000}))
+        self.assertIn("90 ms", output.getvalue())
+
+    def test_stutter_timeline_uses_event_log_cursor_not_start_of_session(self):
+        calls = []
+        event = {"frame": 42, "ms": 33, "causes": [], "log_since": 9000, "log_until": 9002}
+        def result(command, args=None):
+            calls.append((command, args))
+            if command == "frames":
+                return {"stutters": [event], "hitches": []}
+            return {"records": [
+                {"seq": 9001, "level": "info", "frame": 41, "time_ms": 10, "text": "resource load begins"},
+                {"seq": 9002, "level": "info", "frame": 42, "time_ms": 43, "text": "resource ready"},
+                {"seq": 9003, "level": "info", "frame": 42, "time_ms": 90, "text": "outside event"}]}
+        output = io.StringIO()
+        with patch.object(debugctl, "refuse_ambiguous", return_value=False), \
+                patch.object(debugctl, "result_of", side_effect=result), contextlib.redirect_stdout(output):
+            self.assertEqual(debugctl.timeline(["--stutter"]), 0)
+        self.assertEqual(calls, [("frames", {"events": 200}), ("logs", {"since": 9000, "limit": 2000})])
+        self.assertIn("33 ms", output.getvalue())
+        self.assertNotIn("outside event", output.getvalue())
+
+    def test_timeline_rejects_conflicting_event_selectors(self):
+        with patch.object(debugctl, "refuse_ambiguous", return_value=False), patch.object(debugctl, "result_of") as request:
+            with self.assertRaises(ValueError):
+                debugctl.timeline(["--hitch", "--stutter"])
+            request.assert_not_called()
+
 if __name__ == "__main__":
     unittest.main()

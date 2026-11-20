@@ -114,6 +114,26 @@ counts, hashes and trailer. Headless data cannot qualify graphics. Requested ver
 actual window/viewport dimensions, display/GPU/backend and focus/draw observations
 remain separate from physical monitor presentation, which is not measured.
 
+Offline phase reports also show mean callback FPS, time occupied by slow intervals,
+and consecutive slow-run counts/durations. They reuse the existing fixed strict
+thresholds **16.667, 33.333, 50 and 100 ms**, with no added tolerance. FPS and slow-time
+share use the sum of intervals assigned to that phase at interval end, which differs
+from event-bounded `wall_seconds`. A phase change breaks a run, including between
+stream chunks. Boundary runs may be clipped; maximum frame count and maximum
+run duration are separate maxima and need not describe the same run.
+
+A missing `phase_index` channel invalidates phase reduction. Phase percentiles come
+from the verified stream; supplied summary values cannot replace it. A completed
+requested phase without verified samples is ineligible. Its statistics and pacing
+targets remain unavailable, preventing missing data from appearing as a zero-ms pass.
+The existing `report` command rebuilds these views from retained original artifacts.
+
+Debug bridge snapshots have a separate [offline episode report](../debug/README.md#offline-slowdown-analysis-pt1h-r15-s3a)
+with target-plus-tolerance flags and interval-start route samples. Neither that
+format nor this scenario-event stream can be passed directly to native fixed-duration
+frame diagnosis, incident bundling or Perfetto export. Future attachment adapters
+must preserve their original files, identities, clocks and coverage contracts.
+
 GPU readings and engine allocation counters retain FrameDiagnostics' scope and
 availability; engine memory is not process RSS or free VRAM. Optional OS resources
 reuse the pinned existing sampler:

@@ -54,6 +54,13 @@ Effort estimates cover **one bounded experiment, implementation if justified, an
 
 **Start with 0, then choose one of 1-3 from its findings.** Do not combine a data-layout rewrite, native batching and multirate presentation in one experiment: their individual value and regressions would be unidentifiable. Rows 4-6 open only when their workload or delivery requirement justifies them.
 
+For row 0's intermittent stalls, preserve an existing [R15 capture](../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15)
+before selecting a repair. The [stutter-diagnostics plan](stutter-diagnostics.md)
+owns proposed provenance, automatic incident collection and comparison extensions.
+Its [24-question source review](../research/release-readiness/PT1h-R15/research-2026-11-19.md)
+adds monitor cadence, GPU freshness and platform-tool constraints; it neither
+establishes a new bottleneck nor changes this queue's adoption gates.
+
 ## 3. First implementation slices
 
 ### Remaining observers: retain behavior before changing frequency

@@ -66,7 +66,7 @@ const COMMANDS := {
 	"view": "name=pilot|chase|orbit|closeup: camera view (no name: the current one)",
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
-	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
+	"frames": "window=<n> target_fps=60 stutter_factor=1.5 stutter_min_extra_ms=4 stall_ms=50 budget_tolerance_ms=0.5 hitch_ms=50 factor=3 samples=<bool> events=<n> reset=<bool>: frame pacing, lows, bounded stutter evidence",
 	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint (also sees ticks that pause, e.g. a crash)",
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
 	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
@@ -164,17 +164,55 @@ var _watch := {}
 var _rate_mark := {msec = 0, tick = -1}
 ## Frame history (PT1h-R8): wall time per frame, physics ticks per frame, and recent hitches with their context.
 const FRAME_CAPACITY := 7200
+const FrameStatistics := preload("res://debug/frame_statistics.gd")
+const FRAME_FORMAT := "openrc-debug-frames v1"
+const RELATIVE_STUTTER := 1
+const ABSOLUTE_STALL := 2
+const LEGACY_HITCH := 4
+const OVER_BUDGET := 8
+const DIAGNOSTIC_QUERY := 16
+const EVENT_CAPACITY := 200
+const EVENT_DETAIL_INTERVAL_USEC := 100000
+const STUTTER_LOG_INTERVAL_USEC := 1000000
 var _frame_ms := PackedFloat64Array()
 var _frame_ticks := PackedInt32Array()
+var _frame_end_usec := PackedInt64Array()
+var _frame_wall_usec := PackedInt64Array()
+var _frame_ids := PackedInt64Array()
+var _frame_flags := PackedInt32Array()
+var _frame_baselines := PackedFloat64Array()
+var _frame_observer_usec := PackedInt64Array()
+var _frame_routes := PackedStringArray()
 var _frame_count := 0
 var _frame_last_us := 0
+var _frame_origin_us := 0
+var _frame_epoch := 1
 var _frame_ema_ms := 0.0
 var _frame_physics_ticks := 0
 var _frame_monitors := {}
 var _frame_log_seq := 0
+var _frame_route := ""
+var _frame_query_pending := false
+var _frame_observer_last_usec := 0
+var _frame_clock_discontinuities := 0
 var hitch_ms := 50.0
 var hitch_factor := 3.0
+var target_fps := 60.0
+var budget_tolerance_ms := 0.5
+var stutter_factor := 1.5
+var stutter_min_extra_ms := 4.0
+var stall_ms := 50.0
 var _hitches: Array[Dictionary] = []
+var _stutters: Array[Dictionary] = []
+var _hitch_total := 0
+var _relative_stutter_total := 0
+var _stall_total := 0
+var _event_total := 0
+var _event_details_suppressed := 0
+var _event_logs_suppressed := 0
+var _event_last_usec := 0
+var _event_last_ms := 0.0
+var _stutter_log_last_usec := 0
 var _breaks: Array[Dictionary] = []
 var _breaks_tick := -1 # the tick last evaluated (paused flights re-evaluate only on a new tick)
 var _objects_baseline := {}
@@ -260,6 +298,7 @@ func _notification(what: int) -> void:
 func _process(_delta: float) -> void:
 	var started := Time.get_ticks_usec()
 	_record_frame(started)
+	_frame_observer_last_usec = Time.get_ticks_usec() - started
 	_net_mutex.lock()
 	var inbox := _inbox
 	_inbox = []
@@ -1726,17 +1765,19 @@ static func _button(at: Vector2, button: MouseButton, pressed: bool, double: boo
 # ---- frame history and hitches (PT1h-R8) -----------------------------------------------------------------------
 
 const _HITCH_MONITORS := {
-	pipelines = [Performance.PIPELINE_COMPILATIONS_CANVAS, Performance.PIPELINE_COMPILATIONS_MESH,
-		Performance.PIPELINE_COMPILATIONS_SURFACE, Performance.PIPELINE_COMPILATIONS_DRAW,
-		Performance.PIPELINE_COMPILATIONS_SPECIALIZATION],
+	pipeline_canvas = [Performance.PIPELINE_COMPILATIONS_CANVAS],
+	pipeline_mesh = [Performance.PIPELINE_COMPILATIONS_MESH],
+	pipeline_surface = [Performance.PIPELINE_COMPILATIONS_SURFACE],
+	pipeline_draw = [Performance.PIPELINE_COMPILATIONS_DRAW],
+	pipeline_specialization = [Performance.PIPELINE_COMPILATIONS_SPECIALIZATION],
 	objects = [Performance.OBJECT_COUNT], nodes = [Performance.OBJECT_NODE_COUNT],
 	resources = [Performance.OBJECT_RESOURCE_COUNT], orphans = [Performance.OBJECT_ORPHAN_NODE_COUNT],
 	static_memory = [Performance.MEMORY_STATIC],
 }
 
 
-## One sample per frame at the start of the bridge's _process: the wall time since the previous frame and the
-## counter deltas over that interval. A long interval becomes a "hitch" event naming what changed during it.
+## Wall intervals between bridge callbacks, not GPU completion or display presentation.
+## Packed rings and the small periodic median refresh are bounded; reports serialize only on an explicit query.
 func _record_frame(now_us: int) -> void:
 	var monitors := {}
 	for key: String in _HITCH_MONITORS:
@@ -1744,34 +1785,103 @@ func _record_frame(now_us: int) -> void:
 		for monitor: int in _HITCH_MONITORS[key]:
 			total += Performance.get_monitor(monitor)
 		monitors[key] = total
+	# Keep the historical aggregate for readers; attribution uses separate categories.
+	monitors.pipelines = monitors.pipeline_canvas + monitors.pipeline_mesh + monitors.pipeline_surface + monitors.pipeline_draw + monitors.pipeline_specialization
 	var ticks := _frame_physics_ticks
 	_frame_physics_ticks = 0
+	if _frame_last_us != 0 and now_us <= _frame_last_us:
+		_frame_clock_discontinuities += 1
+		_reset_frame_history()
 	if _frame_last_us == 0:
 		_frame_last_us = now_us
+		_frame_origin_us = now_us
 		_frame_monitors = monitors
 		_frame_log_seq = debug_log.last_seq()
+		_frame_route = _route()
+		_frame_query_pending = false
 		_frame_ms.resize(FRAME_CAPACITY)
 		_frame_ticks.resize(FRAME_CAPACITY)
 		_frame_gpu_ms.resize(FRAME_CAPACITY)
+		_frame_end_usec.resize(FRAME_CAPACITY)
+		_frame_wall_usec.resize(FRAME_CAPACITY)
+		_frame_ids.resize(FRAME_CAPACITY)
+		_frame_flags.resize(FRAME_CAPACITY)
+		_frame_baselines.resize(FRAME_CAPACITY)
+		_frame_observer_usec.resize(FRAME_CAPACITY)
+		_frame_routes.resize(FRAME_CAPACITY)
 		return
-	var ms := (now_us - _frame_last_us) / 1000.0
+	var wall_usec := now_us - _frame_last_us
+	var ms := wall_usec / 1000.0
 	_frame_last_us = now_us
 	var index := _frame_count % FRAME_CAPACITY
 	_frame_ms[index] = ms
 	_frame_ticks[index] = ticks
 	_frame_gpu_ms[index] = _render.root_gpu_ms() if _render != null else -1.0
+	_frame_end_usec[index] = now_us
+	_frame_wall_usec[index] = wall_usec
+	_frame_ids[index] = Engine.get_process_frames()
+	_frame_observer_usec[index] = _frame_observer_last_usec
+	_frame_routes[index] = _frame_route
 	_frame_count += 1
-	# Typical = median of the previous (up to) 60 frames, refreshed every 15: robust to the hitches themselves and to
-	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
-	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0:
+	# Previous 60-frame median, refreshed every 15 samples, excluding this interval.
+	# Require eight previous samples before relative detection; startup stalls remain visible.
+	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0 or _frame_count <= 9:
 		_frame_ema_ms = _recent_median(mini(_frame_count - 1, 60))
-	# Before a typical time exists (the first frames after launch), the absolute threshold alone applies: a long
-	# start-up frame (first-use shader compilation) is a hitch too.
+	_frame_baselines[index] = _frame_ema_ms
 	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
+	var flags := 0
+	if _frame_count > 8 and ms > stutter_factor * _frame_ema_ms and ms - _frame_ema_ms > stutter_min_extra_ms:
+		flags |= RELATIVE_STUTTER
+		_relative_stutter_total += 1
+	if ms > stall_ms:
+		flags |= ABSOLUTE_STALL
+		_stall_total += 1
 	if ms > threshold:
-		_hitch(ms, threshold, ticks, monitors)
+		flags |= LEGACY_HITCH
+		_hitch_total += 1
+	if ms > 1000.0 / target_fps + budget_tolerance_ms:
+		flags |= OVER_BUDGET
+	if _frame_query_pending:
+		flags |= DIAGNOSTIC_QUERY
+	_frame_query_pending = false
+	_frame_flags[index] = flags
+	if flags & (RELATIVE_STUTTER | ABSOLUTE_STALL | LEGACY_HITCH):
+		_event_total += 1
+		# Exact flags/counts survive a storm even when detail work is rate limited.
+		# Preserve legacy hitch logging and capture new worst events immediately.
+		if flags & LEGACY_HITCH or _event_last_usec == 0 or now_us - _event_last_usec >= EVENT_DETAIL_INTERVAL_USEC or ms > _event_last_ms:
+			_hitch(ms, threshold, ticks, monitors)
+		else:
+			_event_details_suppressed += 1
+			_event_logs_suppressed += 1
 	_frame_monitors = monitors
 	_frame_log_seq = debug_log.last_seq()
+	_frame_route = _route()
+
+
+func _reset_frame_history() -> void:
+	_frame_count = 0
+	_frame_last_us = 0
+	_frame_origin_us = 0
+	_frame_ema_ms = 0.0
+	_frame_physics_ticks = 0
+	_frame_monitors.clear()
+	_frame_log_seq = debug_log.last_seq()
+	_frame_route = ""
+	_frame_query_pending = false
+	_frame_observer_last_usec = 0
+	_frame_epoch += 1
+	_hitches.clear()
+	_stutters.clear()
+	_hitch_total = 0
+	_relative_stutter_total = 0
+	_stall_total = 0
+	_event_total = 0
+	_event_details_suppressed = 0
+	_event_logs_suppressed = 0
+	_event_last_usec = 0
+	_event_last_ms = 0.0
+	_stutter_log_last_usec = 0
 
 
 ## Median of the `count` frames before the newest one (0 when there are none).
@@ -1785,6 +1895,22 @@ func _recent_median(count: int) -> float:
 	return values[floori(values.size() / 2.0)]
 
 
+static func _frame_contributors(deltas: Dictionary, ticks: int, tick_limit: int) -> Array:
+	var evidence: Array = []
+	var foreground := 0.0
+	for key: String in ["pipeline_canvas", "pipeline_mesh", "pipeline_surface", "pipeline_draw"]:
+		foreground += maxf(0.0, float(deltas.get(key, 0.0)))
+	if foreground > 0.0:
+		evidence.append("foreground pipeline counters increased (correlation only)")
+	if deltas.get("pipeline_specialization", 0.0) > 0.0:
+		evidence.append("background pipeline specialization observed (blocking not established)")
+	if ticks >= tick_limit:
+		evidence.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
+	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
+		evidence.append("scene/resource counters changed (correlation only)")
+	return evidence
+
+
 func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:
 	var deltas := {}
 	for key: String in monitors:
@@ -1794,87 +1920,199 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 	if deltas.has("static_memory"):
 		deltas.static_memory_mib = snappedf(deltas.static_memory, 0.01)
 		deltas.erase("static_memory")
-	var causes: Array = []
-	if deltas.get("pipelines", 0.0) > 0.0:
-		causes.append("pipeline/shader compilation")
-	if ticks >= Engine.max_physics_steps_per_frame:
-		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
-	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
-		causes.append("scene/resource construction")
-	# A positive GPU readback is context only: freshness relative to this frame is unverified.
-	var gpu_ms: float = _render.root_gpu_ms() if _render != null else -1.0
+	var causes := _frame_contributors(deltas, ticks, Engine.max_physics_steps_per_frame)
+	var index := (_frame_count - 1) % FRAME_CAPACITY
+	var flags := _frame_flags[index]
+	var gpu_ms := _frame_gpu_ms[index]
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
 		func(entry: Dictionary) -> String: return str(entry.text).left(160))
-	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
-		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
+	var record := {frame = Engine.get_process_frames(), sequence = _frame_count, epoch = _frame_epoch,
+		start_usec = _frame_end_usec[index] - _frame_wall_usec[index], end_usec = _frame_end_usec[index],
+		ms = ms, threshold_ms = threshold, baseline_ms = _frame_ema_ms,
+		relative_threshold_ms = maxf(stutter_factor * _frame_ema_ms, _frame_ema_ms + stutter_min_extra_ms),
+		flags = flags, physics_ticks = ticks, deltas = deltas, causes = causes, cause_status = "correlation_only",
+		route = _route(), route_from = _frame_route, screens = _screen_ids(), log = lines,
+		log_since = _frame_log_seq, log_until = debug_log.last_seq(),
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
 		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01),
-		gpu_ms = snappedf(gpu_ms, 0.01) if gpu_ms >= 0.0 else null,
-		gpu_timing_status = "unverified_freshness" if gpu_ms >= 0.0 else "unavailable_or_zero"}
+		gpu_ms = gpu_ms if gpu_ms > 0.0 else null,
+		gpu_timing_status = "unverified_freshness" if gpu_ms > 0.0 else "unavailable_or_zero",
+		focused = get_window().has_focus() if is_inside_tree() and _display_name != "headless" else null,
+		diagnostic_query = bool(flags & DIAGNOSTIC_QUERY)}
 	var session := _session()
 	if session != null:
 		record.tick = session.sim.tick
-	_hitches.append(record)
-	if _hitches.size() > 200:
-		_hitches.pop_front()
-	debug_log.event("hitch %.0f ms%s" % [ms, (": " + ", ".join(causes)) if not causes.is_empty() else ""], record)
+		record.paused = _paused(session)
+	if flags & LEGACY_HITCH:
+		_hitches.append(record)
+		if _hitches.size() > EVENT_CAPACITY:
+			_hitches.pop_front()
+	_stutters.append(record)
+	if _stutters.size() > EVENT_CAPACITY:
+		_stutters.pop_front()
+	_event_last_usec = _frame_end_usec[index]
+	_event_last_ms = ms
+	if flags & LEGACY_HITCH or _stutter_log_last_usec == 0 or _event_last_usec - _stutter_log_last_usec >= STUTTER_LOG_INTERVAL_USEC:
+		var kind := "hitch" if flags & LEGACY_HITCH else "stutter"
+		debug_log.event("%s %.0f ms%s" % [kind, ms, (": " + ", ".join(causes)) if not causes.is_empty() else ""], record)
+		_stutter_log_last_usec = _event_last_usec
+	else:
+		_event_logs_suppressed += 1
 
 
 func _cmd_frames(request: Dictionary) -> Dictionary:
-	for key: String in ["hitch_ms", "factor"]:
+	# Validate the whole request before changing any policy or measurement state.
+	var policy := {hitch_ms = hitch_ms, factor = hitch_factor, target_fps = target_fps,
+		budget_tolerance_ms = budget_tolerance_ms, stutter_factor = stutter_factor,
+		stutter_min_extra_ms = stutter_min_extra_ms, stall_ms = stall_ms}
+	var changed := false
+	for key: String in policy:
+		if not request.has(key):
+			continue
+		var value: Variant = _number(request[key])
+		var minimum := 0.0
+		var allow_zero := key in ["budget_tolerance_ms", "stutter_min_extra_ms"]
+		if key == "stutter_factor":
+			minimum = 1.0
+		if value == null or value < minimum or (not allow_zero and value == minimum) or value > 1000000.0:
+			return _fail("%s must be finite, %s %s and at most 1000000" % [key, ">=" if allow_zero else ">", minimum])
+		if key == "target_fps" and (value < 1.0 or value > 1000.0):
+			return _fail("target_fps must be between 1 and 1000")
+		changed = changed or value != policy[key]
+		policy[key] = float(value)
+	var sizes := {}
+	for key: String in ["window", "events"]:
 		if request.has(key):
 			var value: Variant = _number(request[key])
-			if value == null or value <= 0.0:
-				return _fail("%s must be a positive number" % key)
-			if key == "hitch_ms":
-				hitch_ms = value
-			else:
-				hitch_factor = value
-	if _bool(request.get("reset", false)):
-		_frame_count = 0
-		_hitches.clear()
+			if value == null or value < 0.0 or value != floorf(value) or value > 1000000.0:
+				return _fail("%s must be an integer between 0 and 1000000" % key)
+			sizes[key] = int(value)
+	# Keep legacy reset spellings handled by _bool; the new raw-samples switch is strict.
+	if request.has("samples") and not (request.samples is bool or str(request.samples) in ["true", "false"]):
+		return _fail("samples must be a boolean")
+	hitch_ms = policy.hitch_ms
+	hitch_factor = policy.factor
+	target_fps = policy.target_fps
+	budget_tolerance_ms = policy.budget_tolerance_ms
+	stutter_factor = policy.stutter_factor
+	stutter_min_extra_ms = policy.stutter_min_extra_ms
+	stall_ms = policy.stall_ms
+	var reset := changed or _bool(request.get("reset", false))
+	if reset:
+		_reset_frame_history()
 	var available := mini(_frame_count, FRAME_CAPACITY)
-	var window_value: Variant = _number(request.get("window", available))
-	var window := clampi(int(window_value) if window_value != null else available, 0, available)
+	var window := mini(int(sizes.get("window", available)), available)
+	var event_limit := mini(int(sizes.get("events", 20)), EVENT_CAPACITY)
+	var samples := {end_usec = PackedInt64Array(), wall_usec = PackedInt64Array(), process_frame = PackedInt64Array(),
+		physics_ticks = PackedInt32Array(), gpu_ms = PackedFloat64Array(), baseline_ms = PackedFloat64Array(),
+		flags = PackedInt32Array(), observer_usec = PackedInt64Array(), route = PackedStringArray()}
 	var times := PackedFloat64Array()
 	var gpu := PackedFloat64Array()
-	var catch_up := 0
+	var counts := {physics_catch_up_frames = 0, relative_stutter_frames = 0, stall_frames = 0,
+		hitch_frames = 0, event_frames = 0, diagnostic_query_frames = 0}
+	var observer_total := 0
+	var observer_max := 0
 	for i in window:
-		var index := (_frame_count - 1 - i) % FRAME_CAPACITY
+		var index := (_frame_count - window + i) % FRAME_CAPACITY
 		times.append(_frame_ms[index])
-		if _frame_gpu_ms[index] >= 0.0:
+		if _frame_gpu_ms[index] > 0.0:
 			gpu.append(_frame_gpu_ms[index])
 		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
-			catch_up += 1
-	var out := {frames = window, hitch_ms = hitch_ms, factor = hitch_factor, typical_ms = snappedf(_frame_ema_ms, 0.01),
-		hitches = _hitches.slice(maxi(0, _hitches.size() - 20)), hitch_total = _hitches.size(),
-		physics_catch_up_frames = catch_up, max_physics_steps_per_frame = Engine.max_physics_steps_per_frame}
-	if window > 0:
-		var sorted := times.duplicate()
-		sorted.sort()
-		var worst := sorted.slice(sorted.size() - maxi(1, floori(sorted.size() / 100.0)))
-		var mean := 0.0
-		for value: float in times:
-			mean += value
-		mean /= window
-		var worst_mean := 0.0
-		for value: float in worst:
-			worst_mean += value
-		worst_mean /= worst.size()
-		out.merge({mean_ms = snappedf(mean, 0.01), p50_ms = _percentile(sorted, 0.5), p95_ms = _percentile(sorted, 0.95),
-			p99_ms = _percentile(sorted, 0.99), max_ms = snappedf(sorted[sorted.size() - 1], 0.01),
-			fps_mean = snappedf(1000.0 / mean, 0.1), fps_1pct_low = snappedf(1000.0 / worst_mean, 0.1)})
+			counts.physics_catch_up_frames += 1
+		var flags := _frame_flags[index]
+		counts.relative_stutter_frames += int(bool(flags & RELATIVE_STUTTER))
+		counts.stall_frames += int(bool(flags & ABSOLUTE_STALL))
+		counts.hitch_frames += int(bool(flags & LEGACY_HITCH))
+		counts.event_frames += int(bool(flags & (RELATIVE_STUTTER | ABSOLUTE_STALL | LEGACY_HITCH)))
+		counts.diagnostic_query_frames += int(bool(flags & DIAGNOSTIC_QUERY))
+		observer_total += _frame_observer_usec[index]
+		observer_max = maxi(observer_max, _frame_observer_usec[index])
+		if _bool(request.get("samples", false)):
+			samples.end_usec.append(_frame_end_usec[index])
+			samples.wall_usec.append(_frame_wall_usec[index])
+			samples.process_frame.append(_frame_ids[index])
+			samples.physics_ticks.append(_frame_ticks[index])
+			samples.gpu_ms.append(_frame_gpu_ms[index])
+			samples.baseline_ms.append(_frame_baselines[index])
+			samples.flags.append(flags)
+			samples.observer_usec.append(_frame_observer_usec[index])
+			samples.route.append(_frame_routes[index])
+	var first_sequence := _frame_count - window + 1 if window > 0 else 0
+	var hitches := _window_frame_events(_hitches, first_sequence, window, event_limit)
+	var stutters := _window_frame_events(_stutters, first_sequence, window, event_limit)
+	var retained_details := _unique_frame_event_count(_hitches, _stutters)
+	var returned_details := _unique_frame_event_count(hitches, stutters)
+	var out := FrameStatistics.summarize(times, 1000.0 / target_fps, budget_tolerance_ms)
+	out.merge(policy, true)
+	out.merge(counts, true)
+	out.merge({format = FRAME_FORMAT, version = 1, epoch = _frame_epoch,
+		capture_id = "%d-%d-%d" % [OS.get_process_id(), _frame_origin_us, _frame_epoch],
+		clock = "godot_ticks_usec", timing_scope = "bridge_process_wall_intervals_not_presentation",
+		first_sequence = first_sequence, last_sequence = _frame_count if window > 0 else 0,
+		frames_total = _frame_count, retained_frames = available, frames_evicted = maxi(0, _frame_count - FRAME_CAPACITY),
+		sample_start_usec = _frame_end_usec[(_frame_count - window) % FRAME_CAPACITY] - _frame_wall_usec[(_frame_count - window) % FRAME_CAPACITY] if window > 0 else 0,
+		sample_end_usec = _frame_end_usec[(_frame_count - 1) % FRAME_CAPACITY] if window > 0 else 0,
+		typical_ms = snappedf(_frame_ema_ms, 0.01), baseline_window = 60, baseline_refresh_frames = 15,
+		baseline_min_frames = 8, reset_applied = reset, reset_reason = "policy_changed" if changed else ("requested" if reset else ""),
+		hitches = hitches, hitch_total = _hitch_total, hitch_retained = _hitches.size(), hitch_returned = hitches.size(),
+		stutters = stutters, event_total = _event_total, relative_stutter_total = _relative_stutter_total, stall_total = _stall_total,
+		event_retained = retained_details, event_returned = returned_details,
+		event_details_omitted_in_window = counts.event_frames - returned_details,
+		event_details_suppressed = _event_details_suppressed, event_logs_suppressed = _event_logs_suppressed,
+		event_details_evicted = _event_total - _event_details_suppressed - retained_details,
+		max_physics_steps_per_frame = Engine.max_physics_steps_per_frame,
+		observer_mean_usec = float(observer_total) / window if window > 0 else 0.0, observer_max_usec = observer_max,
+		clock_discontinuities = _frame_clock_discontinuities,
+		flag_bits = {relative_stutter = RELATIVE_STUTTER, absolute_stall = ABSOLUTE_STALL, legacy_hitch = LEGACY_HITCH,
+			over_budget = OVER_BUDGET, diagnostic_query = DIAGNOSTIC_QUERY},
+		source = {pid = OS.get_process_id(), godot = Engine.get_version_info().string,
+			display_server = DisplayServer.get_name(), rendering_method = RenderingServer.get_current_rendering_method(),
+			rendering_driver = RenderingServer.get_current_rendering_driver_name(), os = OS.get_name(),
+			cpu_model = OS.get_processor_name(), gpu_adapter = RenderingServer.get_video_adapter_name(),
+			viewport_size = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y] if is_inside_tree() else [],
+			vsync_mode = DisplayServer.window_get_vsync_mode() if DisplayServer.get_name() != "headless" else null,
+			max_fps = Engine.max_fps, runtime_revision = "not_observed"},
+		measurement_notes = ["Wall callback intervals are not CPU busy time, GPU completion or presented frames.",
+			"Performance counters can lag; contributors are correlations, not proven causes.",
+			"Budget counts use target frame time plus the reported tolerance; excess time subtracts the target budget.",
+			"Query/serialization work can affect the next interval; diagnostic_query flags coincidence, not causality. No samples are silently excluded.",
+			"Reset or changed policy starts a new epoch and primes a fresh clock on the next callback.",
+			"Recorder timings cover the previous callback's sampling work, not all bridge overhead or deep profiling.",
+			"Event details are bounded/rate limited; per-frame flags and window counts remain exact."]}, true)
+	if out.duration_s > 0.0:
+		out.events_per_minute = counts.event_frames * 60.0 / out.duration_s
+	if _bool(request.get("samples", false)):
+		out.samples = samples
 	if not gpu.is_empty():
 		gpu.sort()
 		out.gpu = {frames = gpu.size(), p50_ms = _percentile(gpu, 0.5), p95_ms = _percentile(gpu, 0.95),
 			p99_ms = _percentile(gpu, 0.99), max_ms = snappedf(gpu[gpu.size() - 1], 0.01),
 			status = "unverified_freshness", note = "root viewport last-read values; not synchronized to frame or presentation"}
 	out.gpu_timing_status = "unavailable_or_zero" if gpu.is_empty() else "unverified_freshness"
+	_frame_query_pending = true
 	return _ok(out)
 
 
+static func _unique_frame_event_count(first: Array[Dictionary], second: Array[Dictionary]) -> int:
+	var sequences := {}
+	for events: Array[Dictionary] in [first, second]:
+		for event: Dictionary in events:
+			sequences[event.sequence] = true # Both rings are cleared together at every epoch.
+	return sequences.size()
+
+
+static func _window_frame_events(events: Array[Dictionary], first: int, window: int, limit: int) -> Array[Dictionary]:
+	var selected: Array[Dictionary] = []
+	if window == 0 or limit == 0:
+		return selected
+	for event in events:
+		if int(event.sequence) >= first and int(event.sequence) < first + window:
+			selected.append(event)
+	return selected.slice(maxi(0, selected.size() - limit))
+
+
 static func _percentile(sorted: PackedFloat64Array, q: float) -> float:
-	return snappedf(sorted[clampi(int(ceil(q * sorted.size())) - 1, 0, sorted.size() - 1)], 0.01)
+	return FrameStatistics.percentile(sorted, q)
 
 
 # ---- simulation watchpoints (PT1h-R8) --------------------------------------------------------------------------
