@@ -27,6 +27,6 @@ Vollständige **ClearView-v5/v6-Flugzeug-ZIPs** bis **64 MiB**: `params.txt`, da
 
 ## Grenzen
 
-Die ClearView-Flugphysik wird nicht übernommen. Hubschrauber, Szenerien, rohe FMS-Dateien und `.lst`-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.
+Die ClearView-Flugphysik wird nicht übernommen. Hubschrauber werden für Vorschau, bewegliche Teile und Entwürfe importiert, können aber noch nicht fliegen. Szenerien, rohe FMS-Dateien und `.lst`-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.
 
 Bewahre die Urheberangaben und beachte die Lizenz jedes Modells.

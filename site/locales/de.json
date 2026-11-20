@@ -241,7 +241,7 @@
     "clearviewFilesTitle": "Welche Dateien funktionieren?",
     "clearviewHeading": "Ein ClearView-Modell importieren",
     "clearviewKicker": "KURZANLEITUNG / MODELLIMPORT",
-    "clearviewLimits": "Die ClearView-Flugphysik wird nicht übernommen. Hubschrauber, Szenerien, rohe FMS-Dateien und <code>.lst</code>-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.",
+    "clearviewLimits": "Die ClearView-Flugphysik wird nicht übernommen. Hubschrauber werden für Vorschau, bewegliche Teile und Entwürfe importiert, können aber noch nicht fliegen. Szenerien, rohe FMS-Dateien und <code>.lst</code>-Listen gehören nicht zu diesem Ablauf. Texturen können PNG, JPEG, GIF oder 24-Bit-BMP sein. Fehlende Dateien oder nicht unterstützte Geometrie können die Vorschau verhindern; lies die Meldung und versuche ein anderes vollständiges ZIP.",
     "clearviewLimitsTitle": "Grenzen",
     "clearviewLink": "ClearView-Importanleitung",
     "clearviewMarkdown": "Markdown-Anleitung",

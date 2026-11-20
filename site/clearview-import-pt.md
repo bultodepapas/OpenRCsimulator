@@ -27,6 +27,6 @@ Exemplo testado na importação: [MC Extra 330 Red](https://time2rc.s3.amazonaws
 
 ## Limites
 
-A física de voo do ClearView não é transferida. Helicópteros, cenários, arquivos FMS brutos e listas `.lst` ficam fora deste fluxo. As texturas podem ser PNG, JPEG, GIF ou BMP de 24 bits. Arquivos ausentes ou geometria incompatível podem bloquear a pré-visualização; leia a mensagem e tente outro ZIP completo.
+A física de voo do ClearView não é transferida. Helicópteros são importados para pré-visualização, peças móveis e rascunhos, mas ainda não podem voar. Cenários, arquivos FMS brutos e listas `.lst` ficam fora deste fluxo. As texturas podem ser PNG, JPEG, GIF ou BMP de 24 bits. Arquivos ausentes ou geometria incompatível podem bloquear a pré-visualização; leia a mensagem e tente outro ZIP completo.
 
 Mantenha os créditos do autor e respeite a licença de cada modelo.

@@ -165,7 +165,7 @@ func _read_frame(end: int) -> bool:
 			return _reject("The JPEG component identifiers are unsupported.", R.SOURCE_UNSUPPORTED)
 		var sample: int = _data[at + 1]
 		if component == 0:
-			if sample not in [0x11,0x22]:
+			if sample not in [0x11,0x21,0x12,0x22]:
 				return _reject("The JPEG sampling is unsupported.", R.SOURCE_UNSUPPORTED)
 			_sampling = sample
 		elif sample != 0x11:
@@ -408,14 +408,16 @@ func _align() -> bool:
 	return true
 
 func _scan() -> bool:
-	var side := 16 if _sampling == 0x22 else 8
-	var columns := (_width + side - 1) / side
-	var rows := (_height + side - 1) / side
+	# Luma sampling h×v (4:4:4, 4:2:2 either way, 4:2:0); chroma is always 1×1 here.
+	var horizontal := _sampling >> 4
+	var vertical := _sampling & 15
+	var columns := (_width + 8 * horizontal - 1) / (8 * horizontal)
+	var rows := (_height + 8 * vertical - 1) / (8 * vertical)
 	var total := columns * rows
 	var next_restart := 0
 	for mcu: int in total:
 		for component: int in 3:
-			var blocks := 4 if component == 0 and _sampling == 0x22 else 1
+			var blocks := horizontal * vertical if component == 0 else 1
 			for index: int in blocks:
 				if not _block(component):
 					return false

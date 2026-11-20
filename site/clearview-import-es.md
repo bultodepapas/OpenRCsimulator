@@ -27,6 +27,6 @@ Ejemplo con importación comprobada: [MC Extra 330 Red](https://time2rc.s3.amazo
 
 ## Limitaciones
 
-La física de vuelo de ClearView no se transfiere. Este proceso no admite helicópteros, escenarios, archivos FMS sin convertir ni listas `.lst`. Las texturas pueden ser PNG, JPEG, GIF o BMP de 24 bits. Los archivos faltantes o la geometría incompatible pueden impedir la vista previa; lee el mensaje y prueba otro ZIP completo.
+La física de vuelo de ClearView no se transfiere. Los helicópteros se importan para vista previa, piezas móviles y borradores, pero aún no pueden volar. Este proceso no admite escenarios, archivos FMS sin convertir ni listas `.lst`. Las texturas pueden ser PNG, JPEG, GIF o BMP de 24 bits. Los archivos faltantes o la geometría incompatible pueden impedir la vista previa; lee el mensaje y prueba otro ZIP completo.
 
 Conserva los créditos del autor y respeta la licencia de cada modelo.

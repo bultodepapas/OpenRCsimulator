@@ -14126,3 +14126,18 @@ msgstr "%s parti usano la suddivisione AC3D. Viene mostrata la loro forma di con
 
 msgid "Texture %s is missing; the same-named %s was used."
 msgstr "Manca la texture %s; è stato usato il file omonimo %s."
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "I parametri non indicano alcun file di modello; è stato usato %s, il predefinito di ClearView."
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "Sono supportati solo parametri di modello ClearView piatti v0-v5 e a sezioni v6."
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "Il volo in elicottero non è ancora disponibile nel Creator. Puoi visualizzare questo modello, configurarne le parti mobili e salvarlo come bozza."
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "%s parti fisse sono state unite per rispettare il limite di mesh del Creator. Non possono essere collegate come parti mobili."
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "La texture %s punta fuori dallo ZIP e non è inclusa. Quelle parti usano il loro colore semplice."

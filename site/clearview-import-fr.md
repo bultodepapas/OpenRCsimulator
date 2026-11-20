@@ -27,6 +27,6 @@ Des **ZIP complets d’avions ClearView v5/v6** de **64 MiB** maximum : `params.
 
 ## Limites
 
-La physique de vol ClearView n’est pas transférée. Les hélicoptères, décors, fichiers FMS bruts et listes `.lst` sont hors de ce processus. Les textures peuvent être PNG, JPEG, GIF ou BMP 24 bits. Des fichiers manquants ou une géométrie non prise en charge peuvent bloquer l’aperçu ; lisez le message et essayez un autre ZIP complet.
+La physique de vol ClearView n’est pas transférée. Les hélicoptères s’importent pour l’aperçu, les pièces mobiles et les brouillons, mais ne peuvent pas encore voler. Les décors, fichiers FMS bruts et listes `.lst` sont hors de ce processus. Les textures peuvent être PNG, JPEG, GIF ou BMP 24 bits. Des fichiers manquants ou une géométrie non prise en charge peuvent bloquer l’aperçu ; lisez le message et essayez un autre ZIP complet.
 
 Conservez les crédits de l’auteur et respectez la licence de chaque modèle.

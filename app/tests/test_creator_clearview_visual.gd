@@ -5,12 +5,17 @@ const Images := preload("res://workshop/creator/clearview/images.gd")
 const Fixture := preload("res://tests/test_creator_clearview_readers.gd")
 const PngCheck := preload("res://workshop/creator/png_check.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
+const Authoring := preload("res://workshop/creator/authoring.gd")
+const Limits := preload("res://workshop/creator/limits.gd")
+const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 var checks := 0
 var failures := 0
 
 func _initialize() -> void:
 	_images()
 	_conversion()
+	_helicopters_and_limits()
 	print("ClearView visual: %d checks, %d failures" % [checks,failures])
 	quit(1 if failures else 0)
 
@@ -204,8 +209,79 @@ func _conversion() -> void:
 	check("visual case match remains in saved receipt", result.ok and result.value.receipt.members[1].case_adjusted)
 	check("directory explanation survives reopening", result.ok and Converter.source_notes(result.value.source).size() == result.diagnostics.size())
 
-static func _convert(body: String, texture := PackedByteArray()) -> Dictionary:
-	var params := "verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()
+## Owner-download round 3: helicopters, VTOL dialects, the mesh-limit exception and edge cases.
+func _helicopters_and_limits() -> void:
+	var body := Fixture._ac_fixture()
+	# CVHeliPak: v3, modelType 0, no modelName -> data/body.ac, visual only.
+	var heli := _convert(body, PackedByteArray(), "verNumber 3.0\nmodelType 0.0\n")
+	check("pre-v5 helicopter converts from the default body.ac", heli.ok)
+	if heli.ok:
+		var source: InspectedSource = heli.value.source
+		check("helicopter GLB carries the rotorcraft tag", Installation.rotorcraft(source)
+			and _document(source.source_bytes()).asset.extras.has(Converter.ROTORCRAFT_NAMESPACE))
+		var doc := Authoring.new()
+		doc.set_source(source)
+		check("helicopter gets no airplane configuration", doc.source_installation_proposal().is_empty() and doc.needs_source_installation())
+		var chosen := doc.choose_source_installation({}, doc.revision, true)
+		check("helicopter configuration choice is refused with its own reason", not chosen.ok and chosen.diagnostics[0].message == Installation.ROTORCRAFT)
+		check("helicopter issues and compile name the rotorcraft limit", doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.ROTORCRAFT)
+			and not doc.compile().ok and doc.compile().diagnostics[0].message == Installation.ROTORCRAFT)
+	var plane := _convert(body)
+	check("airplanes carry no rotorcraft tag", plane.ok and not Installation.rotorcraft(plane.value.source))
+	# Harrier / VJ-101: flat v0 airplanes with a model name.
+	check("flat v0 airplane converts", _convert(body, PackedByteArray(), "verNumber 0.0\nmodelType 1.0\nmodelName body.ac\n").ok)
+	# Wee Jock: more leaf parts than the Creator mesh limit -> static leaves merged per parent.
+	var count := Limits.GLB_MESHES + 2
+	var many := ""
+	for index: int in count:
+		many += "OBJECT poly\nname \"leaf%d\"\nloc %d 0 0\nnumvert 3\n0 0 0\n1 0 0\n0 1 1\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n" % [index, index]
+	many += "OBJECT poly\nname \"rotor.blade\"\nnumvert 3\n0 0 0\n1 0 0\n0 1 1\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n"
+	var crowded := _convert(body.replace("kids 1", "kids %d" % (count + 2)) + many)
+	if not crowded.ok:
+		printerr("Merge: ", crowded)
+	check("over the mesh limit, static leaves merge and the model converts", crowded.ok and crowded.value.receipt.merged_static_parts == count + 1
+		and crowded.value.source.triangle_count() == count + 2)
+	if crowded.ok:
+		var document := _document(crowded.value.source.source_bytes())
+		check("merged model fits the mesh limit", document.meshes.size() <= Limits.GLB_MESHES)
+		var dotted: bool = document.nodes.any(func(n: Dictionary) -> bool: return n.name == "rotor.blade" and n.has("mesh"))
+		check("group-style dotted parts stay separate and bindable", dotted)
+		var widest := -INF
+		for mesh: Dictionary in document.meshes:
+			if str(mesh.name).ends_with("merged parts"):
+				widest = maxf(widest, float(document.accessors[mesh.primitives[0].attributes.POSITION].max[0]))
+		check("merged geometry keeps each part's own transform (baked in float64)", widest == float(count - 1) + 1.0)
+		check("merge reported at import and after reopening", crowded.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Converter.MERGED_NOTE)
+			and Converter.source_notes(crowded.value.source).any(func(d: Dictionary) -> bool: return d.message == Converter.MERGED_NOTE))
+	check("models under the limit are never merged", not _convert(body).value.receipt.has("merged_static_parts"))
+	# Merging is decided by meshes actually emitted, not by nodes that merely look renderable.
+	var near_limit := ""
+	var parts := Limits.GLB_MESHES + 2
+	for index: int in parts:
+		var corners := "0 0 0\n1 0 0\n2 0 0" if index < 5 else "0 0 0\n1 0 0\n0 1 1"
+		near_limit += "OBJECT poly\nname \"p%d\"\nloc %d 0 0\nnumvert 3\n%s\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n" % [index, index, corners]
+	var fitted := _convert(body.replace("kids 1", "kids %d" % (parts + 1)) + near_limit)
+	check("collinear parts that emit nothing do not trigger a merge", fitted.ok and not fitted.value.receipt.has("merged_static_parts"))
+	# Cobra: a texture referenced by an absolute path on the author's PC.
+	var outside := _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"C:/Program Files/SVKSystems/ClearView/models/x/data/mapping.jpg\""))
+	check("absent external texture leaves the plain colour with a warning", outside.ok
+		and outside.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Converter.EXTERNAL_NOTE and d.arguments == ["mapping.jpg"]))
+	var paint := Image.create_from_data(1,1,false,Image.FORMAT_RGBA8,PackedByteArray([0,255,0,255])).save_png_to_buffer()
+	var local := _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"C:\\\\models\\\\x\\\\paint.png\""), paint)
+	check("external texture found by name in the model's own folder", local.ok and _document(local.value.source.source_bytes()).has("images"))
+	check("a relative missing texture still refuses", not _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"absent.png\"")).ok)
+	# Honey Bee: two corners 1e-9 m apart project to one render point -> zero-length edge, dropped.
+	var near := "OBJECT poly\nname \"paddle\"\nnumvert 3\n0.05032362 -0.0134834 0\n0.050323621 -0.0134834 0\n0.2 0.3 0\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n2 0 0\n0 1 0\n1 0 1\nkids 0\n"
+	var bee := _convert(body.replace("kids 1","kids 2") + near)
+	if not bee.ok:
+		printerr("Near corners: ", bee)
+	check("corners merged by render precision collapse instead of refusing", bee.ok and bee.value.receipt.dropped_degenerate_surfaces == 1)
+	# Blade mSR: a 1.6 mm part whose vertices sit 6 m from its node origin.
+	var tiny := "OBJECT poly\nname \"cylinder\"\nloc -0.0241133 0.000587732 6.02181\nnumvert 3\n0.000755638 0.00466838 -6.03181\n0.002 0.00466838 -6.03181\n0.000755638 0.006 -6.03181\nnumsurf 1\nSURF 0x30\nmat 0\nrefs 3\n0 0 0\n1 1 0\n2 0 1\nkids 0\n"
+	check("sub-micron rounding on a tiny distant part is accepted", _convert(body.replace("kids 1","kids 2") + tiny).ok)
+
+static func _convert(body: String, texture := PackedByteArray(), parameters := "verNumber 5\nmodelType 1\nmodelName body.ac\n") -> Dictionary:
+	var params := parameters.to_ascii_buffer()
 	var files: Array = [["Plane/params.txt",params],["Plane/data/body.ac",body.to_ascii_buffer()]]
 	if not texture.is_empty():
 		files.append(["Plane/data/paint.png",texture])

@@ -409,3 +409,27 @@ Converting only the changed cases keeps earlier admitted GLBs byte-identical: ev
 One in-scope airplane remains refused: Wee Jock has 142 meshes, against the Creator-wide 128-mesh limit.
 
 All 28 `test_creator_*` suites passed with zero engine errors. Visual: 71 checks. JPEG: 379. Motion: 225.
+### Helicopters, VTOL dialects and the mesh-limit exception (AC-CV, 2026-11-19)
+
+At the owner's request, the 24 remaining refusals in the download corpus were reworked. Helicopter pack 1 now expands to 20 roots, so the corpus has 191 roots.
+
+| Cause | Real models | Change |
+| --- | --- | --- |
+| Flat `verNumber` 0 to 3 with no `modelName` (helicopter packs use v3 with `modelType 0`) | CVHeliPak 1 and 2, Harrier, VJ-101, XFV-1, Hindenburg | Flat dialects v0 to v5 are accepted, and sectioned files stay v6 only. Before v5, a missing `modelName` defaults to `data/body.ac` with a note; every helicopter root ships that file |
+| Helicopter flight model | All `modelType 0` | A visual-only import. The GLB carries `openrc_clearview_rotorcraft` and gets no fixed-wing configuration. Choosing a configuration, compiling, `check_pair`, trials and publishing all refuse with a dedicated message. The tag can only remove capability. Helicopters converted before this change carry no tag |
+| 142 meshes against the 128-mesh limit | Wee Jock | The first pass is unchanged. Only when the emitted meshes exceed the limit is the model converted again, with static, undotted, rigid leaf parts merged per parent and their transforms baked in float64. The node limit is also checked. Models that fitted before keep their exact bytes |
+| 35 or 36 distinct colour and texture combinations | T-Rex SA White and Orange | The Creator-wide `GLB_MATERIALS` limit is raised from 32 to 64. Past the limit, identical materials are reused |
+| Absolute texture path on the author's PC | Cobra (`C:/Program Files/SVKSystems/…/mapping.jpg`, absent) | The texture is looked up by file name in the model folder. If it is absent, those parts get the plain material colour, with a warning. A relative missing texture still refuses |
+| JPEG luma sampling 4:2:2 (`0x21`) | EF-Sabre | The MCU walk is generalized to h×v ∈ {1,2}² |
+| Corners 1e-9 m apart that project to one float32 point | Honey Bee FP Flames | Such corners collapse like exact duplicates; fewer than 3 corners counts as zero area |
+| 1.6 mm part 6 m from its node origin (0.24 µm rounding) | Blade mSR V2 | An absolute floor of 1 µm is added to the 1e-4 relative render-precision bound |
+
+An independent read-only review of the integrated diff found three defects, all fixed before integration:
+
+- Absent external textures were counted toward the image limit.
+- The merge was triggered by "renderable" nodes rather than meshes actually emitted, which could have changed models that previously fit. A regression test now pins this with collinear parts.
+- The node limit was ignored.
+
+The same review added a defensive rotorcraft refusal in `check_pair` and loosened rotation rigidity to 1e-5, because AC3D prints six decimals.
+
+**Result: 189 of 191 roots admitted. The only refusals are the two landscape packs, which contain no aircraft. The reference corpus stays 25/25.** All 28 `test_creator_*` suites passed with zero engine errors. The ClearView visual suite has 90 checks, JPEG 383 and readers 96. The website guide now states that helicopters are preview/draft only in all eleven languages: `build_locales.py --check`, seven locale tests and eight download tests passed.

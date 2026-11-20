@@ -213,6 +213,8 @@ func needs_source_installation() -> bool:
 ## The declaration is source/package-bound; the revision guards queued UI actions after edits.
 ## Values/inventory are preserved. The player explicitly reviews those for this source.
 func choose_source_installation(expected: Dictionary,expected_revision: int,reviewed: bool) -> Dictionary:
+	if Installation.rotorcraft(_source):
+		return R.fail(R.UNSUPPORTED_CAPABILITY,Installation.ROTORCRAFT,"source_installation","import")
 	if not reviewed or not Installation.required(_source):
 		return R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
 	if expected_revision != revision or expected != _installation_proposal:
@@ -847,7 +849,7 @@ func summary() -> Dictionary:
 func issues() -> Array:
 	var found: Array = []
 	if needs_source_installation():
-		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import"))
+		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.blocked(_source),"source_installation","import"))
 	# A confirmed ClearView installation compiles to the same physical bytes as any other source
 	# (compiler.gd strips source metadata), so it follows the ordinary experimental trial gate.
 	if _source == null:
@@ -875,7 +877,7 @@ func compile() -> Dictionary:
 	if _compiled_revision == revision:
 		return _compiled
 	if needs_source_installation():
-		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
+		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.blocked(_source),"source_installation","import")
 	elif not _invalid.is_empty():
 		_compiled = R.fail(R.FIELD_INVALID, "Correct the highlighted values first.")
 	else:

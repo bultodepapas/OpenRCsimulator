@@ -14100,3 +14100,18 @@ msgstr "Частей с подразделением AC3D: %s. Показана 
 
 msgid "Texture %s is missing; the same-named %s was used."
 msgstr "Текстура %s отсутствует; использован файл с тем же именем %s."
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "В параметрах не указан файл модели; использован файл ClearView по умолчанию %s."
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "Поддерживаются только плоские параметры модели ClearView v0–v5 и разделённые на секции v6."
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "Полёт вертолётов в конструкторе пока недоступен. Можно просмотреть модель, настроить её подвижные части и сохранить её как черновик."
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "Объединено неподвижных частей: %s, чтобы уложиться в лимит сеток конструктора. Их нельзя привязать как подвижные части."
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "Текстура %s указывает за пределы ZIP и не включена. Эти части используют свой однотонный цвет."

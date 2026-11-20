@@ -143,7 +143,7 @@ Object.assign(translations, {
   "clearviewFilesTitle": "Which files work?",
   "clearviewFiles": "Complete <strong>ClearView v5/v6 airplane ZIPs</strong>, up to <strong>64 MiB</strong>: <code>params.txt</code>, its referenced <code>.ac</code> model and textures in their original folders. Repaints need the complete model.",
   "clearviewLimitsTitle": "Limits",
-  "clearviewLimits": "ClearView flight physics is not transferred. Helicopters, scenery, raw FMS files and <code>.lst</code> lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.",
+  "clearviewLimits": "ClearView flight physics is not transferred. Helicopters import for preview, moving parts and drafts, but cannot fly yet. Scenery, raw FMS files and <code>.lst</code> lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.",
   "clearviewRights": "Keep the author’s credits and respect each model’s license.",
   "clearviewMarkdown": "Markdown guide"
 });

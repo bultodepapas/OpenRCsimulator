@@ -27,6 +27,6 @@ Esempio testato per l’importazione: [MC Extra 330 Red](https://time2rc.s3.amaz
 
 ## Limiti
 
-La fisica di volo di ClearView non viene trasferita. Elicotteri, scenari, file FMS grezzi ed elenchi `.lst` sono esclusi da questo flusso. Le texture possono essere PNG, JPEG, GIF o BMP a 24 bit. File mancanti o geometria non supportata possono bloccare l’anteprima; leggi il messaggio e prova un altro ZIP completo.
+La fisica di volo di ClearView non viene trasferita. Gli elicotteri si importano per anteprima, parti mobili e bozze, ma non possono ancora volare. Scenari, file FMS grezzi ed elenchi `.lst` sono esclusi da questo flusso. Le texture possono essere PNG, JPEG, GIF o BMP a 24 bit. File mancanti o geometria non supportata possono bloccare l’anteprima; leggi il messaggio e prova un altro ZIP completo.
 
 Mantieni i crediti dell’autore e rispetta la licenza di ogni modello.

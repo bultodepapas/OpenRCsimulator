@@ -13350,3 +13350,18 @@ msgstr "%s 個のパーツが AC3D のサブディビジョンを使用してい
 
 msgid "Texture %s is missing; the same-named %s was used."
 msgstr "テクスチャ %s がありません。同じ名前の %s を使用しました。"
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "パラメーターにモデルファイルが指定されていないため、ClearView の既定の %s を使用しました。"
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "対応しているのは、フラット形式の ClearView v0〜v5 とセクション形式の v6 のモデルパラメーターのみです。"
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "ヘリコプターの飛行はクリエイターではまだ利用できません。このモデルのプレビュー、可動パーツの設定、下書きとしての保存は行えます。"
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "クリエイターのメッシュ上限に収めるため、固定パーツ %s 個を結合しました。これらは可動パーツとして割り当てられません。"
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "テクスチャ %s は ZIP の外を指しており、含まれていません。これらのパーツは単色で表示されます。"

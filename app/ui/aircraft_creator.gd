@@ -3082,7 +3082,7 @@ func _on_publish_pressed() -> void:
 	# A ClearView model is published only with its confirmed OpenRC configuration, even when this
 	# handler is called without pressing the button.
 	if _doc.needs_source_installation():
-		set_note(tr(Authoring.Installation.REQUIRED))
+		set_note(tr(Authoring.Installation.blocked(_doc.source())))
 		return
 	if _doc.name.is_empty():
 		set_note(tr(NEEDS_NAME))

@@ -13299,3 +13299,18 @@ msgstr "有 %s 个部件使用 AC3D 细分。显示的是其未平滑的控制�
 
 msgid "Texture %s is missing; the same-named %s was used."
 msgstr "缺少纹理 %s；已使用同名的 %s。"
+
+msgid "The parameters name no model file; the ClearView default %s was used."
+msgstr "参数未指定模型文件；已使用 ClearView 默认的 %s。"
+
+msgid "Only flat ClearView v0-v5 and sectioned v6 model parameters are supported."
+msgstr "仅支持平面格式的 ClearView v0-v5 和分节格式的 v6 模型参数。"
+
+msgid "Helicopter flight is not available in the Creator yet. You can preview this model, set up its moving parts and save it as a draft."
+msgstr "创建器暂不支持直升机飞行。你可以预览此模型、设置其活动部件并将其保存为草稿。"
+
+msgid "%s static parts were merged to fit the Creator mesh limit. They cannot be bound as moving parts."
+msgstr "已合并 %s 个固定部件以满足创建器的网格上限。它们无法绑定为活动部件。"
+
+msgid "Texture %s points outside the ZIP and is not included. Those parts use their plain colour."
+msgstr "纹理 %s 指向 ZIP 之外，未包含在内。这些部件使用纯色。"

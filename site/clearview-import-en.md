@@ -27,6 +27,6 @@ Complete **ClearView v5/v6 airplane ZIPs**, up to **64 MiB**: `params.txt`, its 
 
 ## Limits
 
-ClearView flight physics is not transferred. Helicopters, scenery, raw FMS files and `.lst` lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.
+ClearView flight physics is not transferred. Helicopters import for preview, moving parts and drafts, but cannot fly yet. Scenery, raw FMS files and `.lst` lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.
 
 Keep the author’s credits and respect each model’s license.

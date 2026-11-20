@@ -28,14 +28,15 @@ A player can do all of the following in the normal UI:
 
 | Area | Requirement |
 | --- | --- |
-| Input | Bounded v5/v6 airplane ZIPs: 64 MiB ZIP, 256 MiB expansion, 32 MiB per member, 4,096 entries, 64 model roots. AC3Db visual. Textures: PNG; baseline JPEG, with APPn metadata skipped and Adobe encoder flags ignored; the first GIF frame; 24-bit BMP, up to 3 trailing alignment bytes. A missing texture is replaced by the one same-named image in the same folder, with a warning |
-| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Ears that collapse at render precision with negligible source area (below extent² × 10⁻⁹) are dropped. Up to 16 self-intersecting or exactly cancelling surfaces are omitted and reported; more refuse the model. Never a triangle fan. Float32 vertex rounding is accepted up to 10⁻⁴ of the part's size; a visible triangle that flips still refuses. `subdiv` parts show their unsmoothed control shape, with a warning |
+| Input | Bounded airplane and helicopter ZIPs, flat parameter dialects v0–v5 or sectioned v6 (pre-v5 files without `modelName` use `data/body.ac`): 64 MiB ZIP, 256 MiB expansion, 32 MiB per member, 4,096 entries, 64 model roots. AC3Db visual. Textures: PNG; baseline JPEG, with APPn metadata skipped and Adobe encoder flags ignored; the first GIF frame; 24-bit BMP, up to 3 trailing alignment bytes. A missing texture is replaced by the one same-named image in the same folder, with a warning. An absolute path to the author's PC is looked up by file name in the model folder; if absent, those parts keep their plain colour, with a warning. JPEG luma sampling 4:4:4, 4:2:2 and 4:2:0 |
+| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Ears that collapse at render precision with negligible source area (below extent² × 10⁻⁹) are dropped. Up to 16 self-intersecting or exactly cancelling surfaces are omitted and reported; more refuse the model. Never a triangle fan. Float32 vertex rounding is accepted up to 10⁻⁴ of the part's size or 1 µm; corners that project to one render point collapse; a visible triangle that flips still refuses. A model whose emitted meshes exceed the 128-mesh limit is converted again with static leaf parts merged per parent (transforms baked in float64, dotted group parts kept separate), with a warning. `subdiv` parts show their unsmoothed control shape, with a warning |
 | Markers | `.XYZObject` helpers that cannot be read unambiguously are hidden and recorded; their moving parts are bound manually. Point/line helpers are not held to render precision |
+| Helicopters | ClearView `modelType 0` imports for preview, moving parts and drafts only: no OpenRC configuration, test flight or aircraft revision, because the Creator has only a fixed-wing package. The GLB carries an `openrc_clearview_rotorcraft` tag that can only remove capability. Helicopters converted before 2026-11-19 carry no tag |
 | Flight | Only the confirmed OpenRC configuration flies. ClearView physics are never adopted, and the trial identity pins the configuration |
 | Saving | Drafts and aircraft revisions carry the v3 definition with its source-bound configuration. The store refuses a configuration that names another model |
 | Language | All new app strings are in the eight app catalogs; the guide is in all eleven website languages |
 
-**Outside v1:** ClearView flight-model adoption, runway starts and gear, glow/gasoline, elevons/V-tail/canards, multi-engine, helicopters and scenery, ClearView sounds/scripts, and original-ZIP storage. AC-CV-10…13 keep the future aircraft families.
+**Outside v1:** ClearView flight-model adoption, runway starts and gear, glow/gasoline, elevons/V-tail/canards, multi-engine, helicopter flight, scenery, ClearView sounds/scripts, and original-ZIP storage. AC-CV-10…13 keep the future aircraft families.
 
 ## 3. Unchanged boundaries
 
@@ -50,7 +51,7 @@ A player can do all of the following in the normal UI:
 | --- | --- |
 | AC-CV-00 | **Done.** Corpus: 6 archives / 25 model roots ([check record](../research/aircraft-creator/clearview-guide-checks-2026-11-19.json), rerun 2026-11-19). Third-party ZIPs stay outside Git; CI uses synthetic fixtures |
 | AC-CV-01 | **Done.** Bounded archive and parameter readers; `$` tag lines are ignored and reported |
-| AC-CV-02/03 | **Done for both corpora.** The reference set converts 25/25. The owner download set converts 148/172; all other refusals are helicopters, VTOL/blimp formats or landscapes, except Wee Jock (142 meshes against the Creator-wide 128). Follow-ups: merging static meshes above the limit, real AC3D subdivision smoothing, JPEGs with EXIF before JFIF, and an independent Blender/Assimp fidelity comparison |
+| AC-CV-02/03 | **Done for both corpora.** Reference set 25/25; owner download set 189/191. The two refusals are landscape packs with no aircraft. Helicopters, Harrier/VJ-101/XFV-1, Hindenburg and Wee Jock (merged above the mesh limit) convert. Follow-ups: real AC3D subdivision smoothing, JPEGs with EXIF before JFIF, an independent Blender/Assimp fidelity comparison and a future helicopter flight package |
 | AC-CV-04 | **Partial.** v6 hinge proposals plus manual bindings. v5 and propeller proposals are still manual |
 | AC-CV-05 | **Done.** Source report, explicit configuration, v3 definitions saved and reopened |
 | AC-CV-06 | **Done at parity.** Experimental test flight with a pinned configuration. Saved-aircraft flight follows AC-12 |
