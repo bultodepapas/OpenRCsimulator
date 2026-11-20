@@ -1,0 +1,204 @@
+{
+  "format": "openrc-ae27-internal-verification-v1",
+  "date": "2026-11-19",
+  "scope": "Internal selection contract and detached, unqualified Stik wheel study; no production callers",
+  "branch": "plan/workshop-aircraft-attachments-2026-11-19",
+  "planning_head": "9f20493631aa3013fbf28341bc9bcc9704fe48fd",
+  "source_audit_base": "e0a733937e255bacfe95ff09db0fb3838697239f",
+  "integration_base": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "platform": "Linux x86_64",
+    "runner": "tools/godot/run_checked.py",
+    "execution": "standalone; no shared-pool configuration on this workspace"
+  },
+  "delivered_sources": [
+    {
+      "path": "app/workshop/attachment_selection.gd",
+      "sha256": "7abd161b1fcb22aca83055cd9752981a298b3ea54632c3c23da8bbade23e0f0f"
+    },
+    {
+      "path": "app/render/attachments/stik_wheel_preview.gd",
+      "sha256": "1b89d7930c2ab3b45c566e8532927c13668e5eb587153c6af4418e12b3e15ef7"
+    },
+    {
+      "path": "app/tests/test_attachment_selection.gd",
+      "sha256": "c16e9c71f739d923679cbccadc338afb6bd56b98719de9ab60651fde39b1fc18"
+    },
+    {
+      "path": "app/tests/test_stik_wheel_preview.gd",
+      "sha256": "f49a2ad72cb17a307fd3793a81f10cedd2bdd57610e84a3ef27f6a04f5bb1288"
+    },
+    {
+      "path": "app/workshop/attachment_selection.gd.uid",
+      "sha256": "a49d8d738e5c0effb35aa2145be106429e60d0705f4df6235364e4337886d5a0"
+    },
+    {
+      "path": "app/render/attachments/stik_wheel_preview.gd.uid",
+      "sha256": "6fb042ca7a00f63bc9212a053b57abb64a80be8e92ea1d776590524f43551c83"
+    },
+    {
+      "path": "app/tests/test_attachment_selection.gd.uid",
+      "sha256": "0b68d26cb8b08d8ea137010330b0985eaf944f736ec5b9c1feebe11fa41cd808"
+    },
+    {
+      "path": "app/tests/test_stik_wheel_preview.gd.uid",
+      "sha256": "fd416159e22e2f7dcb954a88d96842edccbe51f841cd8e917fc1692847646235"
+    }
+  ],
+  "unchanged_control_sources": [
+    {
+      "path": "app/workshop/presentation.gd",
+      "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/workshop/parameters.gd",
+      "sha256": "6b72991e44b1eb3ab7dfa07b16f9db82fcebbf0cf33c1775b391cf2a58aa933e",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/render/presentation_sources.gd",
+      "sha256": "3c30f5dea945fce4bb92cea0b2f9c7e6f03bc2bdbd7bead4e68ce11e4ff339da",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "sha256": "93fb697d887e5182518857fdb9c51e73695f9ba4516544b8fa7eb1e9b93a6490",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/aircraft/ugly_stik_equipment.gd",
+      "sha256": "4eb8cc0ca9f9938ceea75715b1e45556d1dd653e402d344efe8f0d31676358de",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/aircraft/ugly_stik_model.gd",
+      "sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/aircraft/ugly_stik_gear_flex.gd",
+      "sha256": "b1e7b21a92f8b18762d0bda854f867adfc414dff04bab39e6df23e8e1b4cd5b0",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/tests/test_workshop_presentation.gd",
+      "sha256": "d34288ebb7e6df3ed09b7c8abf8675bf122018fff7aec9ec2aa8ca1a97ed4a6f",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/tests/test_presentation_sources.gd",
+      "sha256": "072c4022afb02c6f6c17c7d8b53700d18ce4a88d9c6af240022e58c3df1dc45e",
+      "unchanged_from_integration_base": true
+    },
+    {
+      "path": "app/tests/test_gear_flex.gd",
+      "sha256": "a9ba9601dbb3100a17d27f71540b71027eaba68adfad830a57cb4116f3db0fd8",
+      "unchanged_from_integration_base": true
+    }
+  ],
+  "runs": [
+    {
+      "name": "selection",
+      "checks": 121,
+      "summary": "Attachment selection: 121 checks, 0 failed",
+      "report": "checks/selection-report.json",
+      "report_sha256": "47e14e934c178e881855fc9d8491eb14bba89a0ff5ca7788999037a97731ef47",
+      "log": "checks/selection-engine.log",
+      "log_sha256": "429e78ca88dafa7bf6719ea145058853f6a068c435159f6610dc98f545a43d1b",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 1.558873
+    },
+    {
+      "name": "wheel",
+      "checks": 121,
+      "summary": "Stik wheel preview: 121 checks, 0 failed",
+      "report": "checks/wheel-report.json",
+      "report_sha256": "3154fd0ca131511612371a2d24c26ee53f72a3cbecc7a79d5c99ab40da1574f4",
+      "log": "checks/wheel-engine.log",
+      "log_sha256": "6e84ed3eb8da7707f357812775664a626e172ec58b1a83bbe5b42d582fcaa63c",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 4.831791
+    },
+    {
+      "name": "presentation",
+      "checks": 92,
+      "summary": "Workshop presentation: 92 checks, 0 failed",
+      "report": "checks/presentation-report.json",
+      "report_sha256": "9da74663c14acc3895618ca5c159128ac946e32bea55111d54ff9315929b1dd4",
+      "log": "checks/presentation-engine.log",
+      "log_sha256": "41f308845c84962ba5b6b41df06f5d0654f8cd77be072b73651ace96ef7fb405",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 1.652664
+    },
+    {
+      "name": "source-proofs",
+      "checks": 233,
+      "summary": "Presentation source proofs: 233 checks, 0 failures",
+      "report": "checks/source-proofs-report.json",
+      "report_sha256": "ab15b0515500cd6e34e3332be8e0c0553234e796c44d774a22a541f1aee0946d",
+      "log": "checks/source-proofs-engine.log",
+      "log_sha256": "c4ddbca056acce5c474293333ea65e5653cb922346f94aa678dc1eb9927eff3a",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 13.186468
+    },
+    {
+      "name": "gear-flex",
+      "checks": 27,
+      "summary": "US-V10 gear flex: 27 checks, 0 failed",
+      "report": "checks/gear-flex-report.json",
+      "report_sha256": "d5f611f879e3c69fa192c9c2b9ed01b9be6a8b80f0b45a5d7810cc91b90136c9",
+      "log": "checks/gear-flex-engine.log",
+      "log_sha256": "4eb978c9141e458a2d6e1395808c3dc54507375d85f4c5e5c913e0b71621258e",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 4.317463
+    },
+    {
+      "name": "import",
+      "checks": 0,
+      "summary": null,
+      "report": "checks/import-report.json",
+      "report_sha256": "f428fa7737b75d5f04bbfa4d29c93cacd6e942b962412f3fa5e239497ec3f9c8",
+      "log": "checks/import-engine.log",
+      "log_sha256": "e597a9e4d07884398df2a19d46ce926e8fb75ffcfdca3e38e6f0d5e997fe19bd",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 13.119069
+    }
+  ],
+  "total_checks": 594,
+  "failures": 0,
+  "qualification_limits": [
+    "No public Parts selector or v4 profile/binding migration",
+    "No exported attachment source proof",
+    "No full Workshop save/recovery/bundle/trial lifecycle",
+    "No native rendered fit or flight admission",
+    "No physical same-input parity, target-platform or performance qualification",
+    "Eight resource-reuse cycles only; full C5 remains open"
+  ],
+  "notes": [
+    "All five focused suites and the resource import were rerun after the encoded-surface repair and integration of main at d736ee8a2eab0b59b0fa2c561a1eef07f5fae396.",
+    "Raw checked-runner reports retain their original capture paths; use the relative artifact paths in this index.",
+    "The catalogue digest covers internal registration metadata only."
+  ],
+  "date_timezone": "America/Bogota",
+  "raw_report_timestamp_timezone": "UTC"
+}

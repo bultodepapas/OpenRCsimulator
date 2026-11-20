@@ -546,6 +546,29 @@ OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gai
 
 **VQ-04b SA-02/SA-20/SA-21 (2026-11-18).** A caster/receiver/light combination has one direct-shadow owner. While a world sun draws native maps, it owns the aircraft's and the wreck's ground shadow; the planar cue and the wreck planes take over only across the engine's own fade band (the complement of its distance fade) and beyond it. The Vertical cue is a declared pilot aid and is exempt. Planar wreck planes are direct-shadow stand-ins, not ambient contact: they vanish without celestial light, and contact darkening belongs to SSAO. Direct-shadow strength means the visibility of the light's disc, not its energy: fixed and flowing time both use the sky table's disc-beam share (full from 0.5° apparent elevation), and native opacity follows it in both. Rejected: energy-weighted opacity (it lightened fixed-time daytime shadows to 0.81 at 30° and counted the energy twice), keeping both routes in Auto (doubled darkness and edges, reproduced at 1080p), and caster/receiver light masks (Godot has no pairwise shadow matrix). **SA-17/SA-18:** native casters follow what the engine actually casts, so alpha-cut field people now cast in Native at no resolved GPU cost, while blended, unshaded and overlay materials stay out with a reported reason. The aircraft landing light keeps its shadow off: its own airframe occludes the beam (up to 36/255 darker for every tested bias), and separating the airframe would need pinned-builder changes. [Shadow plan](plans/shadows.md), [audit](https://github.com/bultodepapas/OpenRCsimulator/blob/audit/shadows-2026-11-17/docs/research/shadow-audit-2026-11-17/findings.md).
 
+### Separate attachment appearance from installed hardware
+
+**AE-27, 2026-11-19; internal preparation implemented, player integration pending.** Add authored wheel, landing-gear, propeller and
+spinner choices to the existing Workshop presentation profile and shared document. Begin with one
+Ugly Stick wheel set; qualify each aircraft/option explicitly. Cosmetic choices retain the accepted
+physics and installed damage/economic identity. Wheel artwork may use a measured render-only fit;
+unacceptable fits and decorative float kits remain preview-only. No root/contact offset, altered
+collision rule or hidden weight/drag change may make a cosmetic option appear supported.
+
+Later physical installations use separate validated packages and explicit new build identity.
+Functional floats require a fixed-wing water capability, start/contact/event handling and qualification;
+the existing lake response is terminal contact without buoyancy. A blanket selector based on aircraft
+names or automatic physical conversion of saved cosmetics would misrepresent support and invalidate
+source-bound records. Cosmetic parity applies within one accepted source/manifest/descriptor;
+asset-authoring migrations retain explicit rebind/copy or unavailable-state behavior.
+
+Revisit a preview-only restriction after its authored fit or physical installation passes the owning
+gate. The [phased plan](plans/workshop-aircraft-attachments.md) owns implementation details and status;
+the [source review](research/aircraft-editor/AE-27-00/README.md) records the evidence and alternatives.
+The [first internal increment](research/aircraft-editor/AE-27-I1/README.md) keeps current profile and
+source pins intact while testing strict resolution and reversible native wheel replacement. It does
+not admit the unqualified study to flight or reserve a conflicting presentation version.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

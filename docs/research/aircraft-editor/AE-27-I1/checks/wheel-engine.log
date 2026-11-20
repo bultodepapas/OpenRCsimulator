@@ -1,0 +1,127 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   two manifest-bound Stik models build
+ok   study stages as preview-only
+ok   staging leaves every mesh and node untouched
+ok   all three replacements publish together
+ok   node identities, parents, transforms and metadata are unchanged
+ok   second apply is an idempotent no-op
+ok   independent physics contact profile loads
+ok   left retains four material surfaces
+ok   left retains node paint overrides
+ok   left surface 0 keeps its material role
+ok   left surface 0 owns a distinct material
+ok   left surface 1 keeps its material role
+ok   left surface 1 owns a distinct material
+ok   left surface 1 hardware buffers and decoded bytes are unchanged
+ok   left surface 2 keeps its material role
+ok   left surface 2 owns a distinct material
+ok   left surface 2 hardware buffers and decoded bytes are unchanged
+ok   left surface 3 keeps its material role
+ok   left surface 3 owns a distinct material
+ok   left surface 3 hardware buffers and decoded bytes are unchanged
+ok   left actual tire envelope matches stock
+ok   left actual lowest vertex matches the physical radius
+ok   left adds only 480 tire triangles
+ok   left has finite, nondegenerate outward triangles
+ok   left has the two measured grooves and full-radius center support
+ok   left leaves the source resource untouched
+MEASURE left radius_m=0.038100000 width_m=0.024000000 bottom_m=-0.038100000 tire_triangles=1280
+ok   right retains four material surfaces
+ok   right retains node paint overrides
+ok   right surface 0 keeps its material role
+ok   right surface 0 owns a distinct material
+ok   right surface 1 keeps its material role
+ok   right surface 1 owns a distinct material
+ok   right surface 1 hardware buffers and decoded bytes are unchanged
+ok   right surface 2 keeps its material role
+ok   right surface 2 owns a distinct material
+ok   right surface 2 hardware buffers and decoded bytes are unchanged
+ok   right surface 3 keeps its material role
+ok   right surface 3 owns a distinct material
+ok   right surface 3 hardware buffers and decoded bytes are unchanged
+ok   right actual tire envelope matches stock
+ok   right actual lowest vertex matches the physical radius
+ok   right adds only 480 tire triangles
+ok   right has finite, nondegenerate outward triangles
+ok   right has the two measured grooves and full-radius center support
+ok   right leaves the source resource untouched
+MEASURE right radius_m=0.038100000 width_m=0.024000000 bottom_m=-0.038100000 tire_triangles=1280
+ok   nose retains four material surfaces
+ok   nose retains node paint overrides
+ok   nose surface 0 keeps its material role
+ok   nose surface 0 owns a distinct material
+ok   nose surface 1 keeps its material role
+ok   nose surface 1 owns a distinct material
+ok   nose surface 1 hardware buffers and decoded bytes are unchanged
+ok   nose surface 2 keeps its material role
+ok   nose surface 2 owns a distinct material
+ok   nose surface 2 hardware buffers and decoded bytes are unchanged
+ok   nose surface 3 keeps its material role
+ok   nose surface 3 owns a distinct material
+ok   nose surface 3 hardware buffers and decoded bytes are unchanged
+ok   nose actual tire envelope matches stock
+ok   nose actual lowest vertex matches the physical radius
+ok   nose adds only 480 tire triangles
+ok   nose has finite, nondegenerate outward triangles
+ok   nose has the two measured grooves and full-radius center support
+ok   nose leaves the source resource untouched
+MEASURE nose radius_m=0.034925003 width_m=0.022000000 bottom_m=-0.034924999 tire_triangles=1280
+ok   pose 0 left preserves the transformed tire envelope
+ok   pose 0 left preserves pivot motion/section
+ok   pose 0 right preserves the transformed tire envelope
+ok   pose 0 right preserves pivot motion/section
+ok   pose 0 nose preserves the transformed tire envelope
+ok   pose 0 nose preserves pivot motion/section
+ok   pose 1 left preserves the transformed tire envelope
+ok   pose 1 left preserves pivot motion/section
+ok   pose 1 right preserves the transformed tire envelope
+ok   pose 1 right preserves pivot motion/section
+ok   pose 1 nose preserves the transformed tire envelope
+ok   pose 1 nose preserves pivot motion/section
+ok   pose 2 left preserves the transformed tire envelope
+ok   pose 2 left preserves pivot motion/section
+ok   pose 2 right preserves the transformed tire envelope
+ok   pose 2 right preserves pivot motion/section
+ok   pose 2 nose preserves the transformed tire envelope
+ok   pose 2 nose preserves pivot motion/section
+ok   editing a replacement material leaves source and second model unchanged
+ok   the active vehicle-paint override is isolated across models
+ok   restore returns the exact original Mesh resources
+ok   Parts restore preserves a later paint edit
+ok   second restore is an idempotent no-op
+ok   repeat apply/restore reuses the bounded meshes: 0
+ok   repeat apply/restore reuses the bounded meshes: 1
+ok   repeat apply/restore reuses the bounded meshes: 2
+ok   repeat apply/restore reuses the bounded meshes: 3
+ok   repeat apply/restore reuses the bounded meshes: 4
+ok   repeat apply/restore reuses the bounded meshes: 5
+ok   repeat apply/restore reuses the bounded meshes: 6
+ok   repeat apply/restore reuses the bounded meshes: 7
+ok   explicit Original stages a no-op
+ok   missing last wheel refuses staging without changing the first two
+ok   a complete model can be staged again
+ok   intervening mesh replacement refuses the whole commit
+ok   intervening paint change refuses without discarding it
+ok   changed mesh topology refuses before publication
+ok   payload cannot supply flight availability
+ok   unqualified scale refuses before staging
+ok   missing scale refuses before staging
+ok   a misleading scale argument cannot disguise an already scaled root
+ok   a scaled wheel frame refuses staging
+ok   scale-change fixture stages
+ok   root scale changed after staging refuses apply
+ok   wheel scale changed after staging refuses apply
+ok   corrected scale permits the staged study
+ok   restore remains available after a detached scale edit
+ok   shared geometry does not grant another configuration support
+ok   a model in a live scene refuses staging
+ok   an already staged handle cannot mutate a live scene
+ok   attach/restore fixture stages
+ok   detached fixture applies
+ok   restore refuses to mutate a live scene
+ok   detaching permits exact Original recovery
+ok   all failed operations retain the stock meshes
+ok   the other model retains its original wheel surfaces
+ok   a freed model refuses further application
+Stik wheel preview: 121 checks, 0 failed
