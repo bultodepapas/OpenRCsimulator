@@ -38,7 +38,9 @@ class FakeGA:
         self.calls.append({"method": method, "url": url, "token": token, "body": body, "form": form,
                            "headers": headers or {}})
         if url.endswith("/token"):
-            return {"access_token": "tok", "expires_in": 3599}
+            return {"access_token": "tok", "expires_in": 3599, **({"refresh_token": "rt"} if form and
+                                                                   form.get("grant_type") == "authorization_code"
+                                                                   else {})}
         if "accountSummaries" in url:
             if "pageToken" not in url:
                 return {"accountSummaries": [{"propertySummaries": [{"property": "properties/111"}]}],
@@ -224,6 +226,40 @@ class GA4Case(unittest.TestCase):
         path.write_text('{"type": "external_account"}', encoding="utf-8")
         with self.assertRaisesRegex(ga4.GA4Error, "unsupported credential type"):
             ga4.access_token(path, http=FakeGA())
+
+    def test_login_refuses_bad_client_files_and_redirects(self):
+        bad = self.dir / "bad.json"
+        bad.write_text('{"type": "service_account"}', encoding="utf-8")
+        with self.assertRaisesRegex(ga4.GA4Error, "not an OAuth client file"):
+            ga4.login(bad, self.dir / "out.json", "http://localhost:8085/")
+        good = self.dir / "client.json"
+        good.write_text('{"web": {"client_id": "c", "client_secret": "s"}}', encoding="utf-8")
+        for uri in ("https://example.com/", "http://localhost/"):
+            with self.assertRaisesRegex(ga4.GA4Error, "loopback"):
+                ga4.login(good, self.dir / "out.json", uri)
+
+    def test_login_writes_an_authorized_user_file(self):
+        import threading
+        import urllib.request as request
+        client = self.dir / "client.json"
+        client.write_text('{"installed": {"client_id": "cid", "client_secret": "sec"}}', encoding="utf-8")
+        fake, out, opened = FakeGA(), self.dir / "user.json", []
+
+        def browser(url):  # the "user" consents: follow the redirect with the code and the same state
+            query = dict(ga4.urllib.parse.parse_qsl(ga4.urllib.parse.urlsplit(url).query))
+            opened.append(query)
+            back = f"{query['redirect_uri']}?state={query['state']}&code=abc"
+            threading.Timer(0.2, lambda: request.urlopen(back, timeout=5).read()).start()
+            return True
+
+        with mock.patch("webbrowser.open", browser), mock.patch("sys.stdout"):
+            ga4.login(client, out, "http://localhost:18765/", timeout_s=20, http=fake)
+        self.assertEqual(opened[0]["scope"], ga4.SCOPE)
+        self.assertEqual(opened[0]["code_challenge_method"], "S256")
+        exchange = fake.calls[-1]["form"]
+        self.assertEqual((exchange["grant_type"], exchange["code"]), ("authorization_code", "abc"))
+        self.assertTrue(exchange["code_verifier"])
+        self.assertEqual(json.loads(out.read_text(encoding="utf-8"))["type"], "authorized_user")
 
     def test_service_account_assertion_is_a_valid_rs256_jwt(self):
         try:

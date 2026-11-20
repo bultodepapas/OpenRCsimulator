@@ -1326,6 +1326,8 @@ def main(argv=None):
     f.add_argument("--no-ga4", action="store_true", help="skip the website (GA4) collection")
     r = sub.add_parser("render", help="render a saved snapshot")
     r.add_argument("--snapshot", required=True)
+    r.add_argument("--ga4", action="store_true",
+                   help="collect the website (GA4) reports now and save them into the snapshot before rendering")
     for p in (f, r):
         p.add_argument("--out", default=default_out(), help="HTML output path (local, outside the repository)")
         p.add_argument("--no-open", action="store_true", help="do not open the page in a browser")
@@ -1351,6 +1353,9 @@ def main(argv=None):
         snapshot = json.loads(Path(args.snapshot).read_text(encoding="utf-8"))
         if "github" not in snapshot and "downloads" not in snapshot:
             snapshot["github"] = load_downloads(args.downloads_dir, None)
+        if args.ga4:
+            snapshot["website"] = ga4.fetch(len(snapshot.get("ingest") or []) or 30)
+            Path(args.snapshot).write_text(json.dumps(snapshot, indent=1, sort_keys=True), encoding="utf-8")
     try:
         page = render(snapshot)
     except (ValueError, KeyError) as error:

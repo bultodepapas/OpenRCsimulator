@@ -342,3 +342,120 @@ def fetch(days=30, property_id=None, credentials=None, now=None, http=http_json)
 def window(model, count):
     """Sum of the newest `count` days of a daily key list, e.g. download requests in 7 days."""
     return sum(r["count"] for r in (model.get("downloads_daily") or [])[-count:])
+
+
+# ---------------------------------------------------------------------------------------------- CLI: login, check
+
+
+def default_user_file():
+    return Path.home() / ".config" / "openrc" / "ga4-user.json"
+
+
+def login(client_file, out, redirect_uri, timeout_s=300, http=http_json):
+    """One-time browser consent with an OAuth client ("installed" or "web" JSON from the Cloud console): loopback
+    redirect with PKCE, then an authorized_user file for OPENRC_GA4_CREDENTIALS. A web client must list
+    `redirect_uri` exactly under Authorized redirect URIs."""
+    import hashlib
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    import secrets
+    import webbrowser
+
+    raw = json.loads(Path(client_file).read_text(encoding="utf-8"))
+    client = raw.get("installed") or raw.get("web")
+    if not client or not client.get("client_id") or not client.get("client_secret"):
+        raise GA4Error("not an OAuth client file (expected an 'installed' or 'web' entry)")
+    target = urllib.parse.urlsplit(redirect_uri)
+    if target.scheme != "http" or target.hostname not in ("localhost", "127.0.0.1") or not target.port:
+        raise GA4Error("redirect URI must be http://localhost:<port>/ (loopback)")
+    verifier = b64url(secrets.token_bytes(48))
+    state = secrets.token_urlsafe(24)
+    query = {"client_id": client["client_id"], "redirect_uri": redirect_uri, "response_type": "code", "scope": SCOPE,
+             "access_type": "offline", "prompt": "consent", "state": state, "code_challenge_method": "S256",
+             "code_challenge": b64url(hashlib.sha256(verifier.encode("ascii")).digest())}
+    url = (client.get("auth_uri") or "https://accounts.google.com/o/oauth2/auth") + "?" + urllib.parse.urlencode(query)
+    result = {}
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):  # noqa: N802 - http.server API
+            params = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+            if params.get("state", [None])[0] != state:
+                self.send_response(400)
+                self.end_headers()
+                return
+            result.update({k: v[0] for k, v in params.items()})
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(b"<p>OpenRC dashboard: Google Analytics access recorded. You can close this tab.</p>")
+
+        def log_message(self, *args):
+            pass
+
+    server = HTTPServer(("127.0.0.1", target.port), Handler)
+    server.timeout = 5
+    print(f"Open this URL if the browser does not open:\n{url}", flush=True)
+    webbrowser.open(url)
+    deadline = time.time() + timeout_s
+    with server:
+        while not result and time.time() < deadline:
+            server.handle_request()
+    if not result:
+        raise GA4Error("no answer from the browser before the timeout")
+    if "code" not in result:
+        raise GA4Error(f"consent refused: {result.get('error', 'unknown error')}")
+    reply = http("POST", client.get("token_uri") or TOKEN_URI, form={
+        "grant_type": "authorization_code", "code": result["code"], "redirect_uri": redirect_uri,
+        "client_id": client["client_id"], "client_secret": client["client_secret"], "code_verifier": verifier})
+    if not reply.get("refresh_token"):
+        raise GA4Error("Google returned no refresh token; revoke the app's access and log in again")
+    out = Path(out)
+    if out.resolve().is_relative_to(REPO):
+        raise GA4Error("write the GA4 login outside the repository (it is a secret)")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"type": "authorized_user", "client_id": client["client_id"],
+                               "client_secret": client["client_secret"], "refresh_token": reply["refresh_token"],
+                               "token_uri": client.get("token_uri") or TOKEN_URI}, indent=1), encoding="utf-8")
+    return out
+
+
+def main(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser(description="GA4 website statistics for the operator dashboard")
+    sub = parser.add_subparsers(dest="command", required=True)
+    g = sub.add_parser("login", help="one-time browser consent with an OAuth client file")
+    g.add_argument("--client-secret", required=True, help="OAuth client JSON downloaded from the Cloud console")
+    g.add_argument("--out", default=str(default_user_file()), help="authorized_user file to write")
+    g.add_argument("--redirect-uri", default="http://localhost:8085/")
+    c = sub.add_parser("check", help="read the reports once and print a summary")
+    c.add_argument("--property", default=None)
+    c.add_argument("--credentials", default=None)
+    c.add_argument("--days", type=int, default=30)
+    args = parser.parse_args(argv)
+    try:
+        if args.command == "login":
+            out = login(args.client_secret, args.out, args.redirect_uri)
+            print(f"wrote {out}\nset OPENRC_GA4_CREDENTIALS={out}")
+            return 0
+    except (GA4Error, OSError, ValueError) as error:
+        print(f"login failed: {error}", file=sys.stderr)
+        return 1
+    model = fetch(args.days, args.property, args.credentials)
+    if model is None:
+        print("no GA4 credentials configured", file=sys.stderr)
+        return 2
+    if model.get("error"):
+        print(f"GA4 failed: {model['error']}", file=sys.stderr)
+        return 1
+    totals = model["totals"]
+    print(f"property {model['property']} ({model['time_zone']}), {model['days'][0]}..{model['days'][-1]}: "
+          f"{totals['users']} users, {totals['sessions']} sessions, {totals['views']} views, "
+          f"{model['downloads_total']} download requests, {model['realtime_users']} active now")
+    for key, value in sorted(model["missing"].items()):
+        print(f"not registered: {key} needs {', '.join(value)}")
+    for key, value in sorted(model["errors"].items()):
+        print(f"report {key} failed: {value}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

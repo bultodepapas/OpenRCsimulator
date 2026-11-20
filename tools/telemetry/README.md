@@ -52,7 +52,18 @@ $env:OPENRC_GA4_PROPERTY = "<numeric property ID>"   # Admin → Property detail
 python tools/telemetry/dashboard.py fetch
 ```
 
-Signing a service-account key needs the `cryptography` package. Alternatives without it: an application-default user login file (`authorized_user`, created as in Google's [Data API quickstart](https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart-client-libraries); its quota project is sent as `x-goog-user-project`) named by `OPENRC_GA4_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS`, or a ready token in `OPENRC_GA4_ACCESS_TOKEN`. gcloud's default login file is never used implicitly. `--ga4-credentials` wins over a token in the environment, and `--ga4-property` over `OPENRC_GA4_PROPERTY`. Without the property ID, `fetch` searches the visible properties for the web stream with the site's measurement ID and prints the ID to set.
+**With your own Google login instead (current owner setup).** Create an OAuth client in the same Cloud project (type *Desktop app*, or *Web application* with `http://localhost:8085/` under Authorized redirect URIs), download its JSON outside the repository, enable both APIs, then consent once in the browser:
+
+```powershell
+python tools/telemetry/ga4.py login --client-secret "$HOME\.config\openrc\ga4-client.json"   # writes ~/.config/openrc/ga4-user.json
+$env:OPENRC_GA4_CREDENTIALS = "$HOME\.config\openrc\ga4-user.json"
+python tools/telemetry/ga4.py check                      # one-line summary; prints the property ID if discovered
+python tools/telemetry/dashboard.py render --snapshot <saved snapshot> --ga4   # refresh only the Website data
+```
+
+`login` uses a loopback redirect with PKCE and asks only for `analytics.readonly`. A consent screen in *Testing* mode lists the account as a test user; Google may then expire the refresh token after seven days, so publish the consent screen (no verification is needed for personal use) or rerun `login`. Install `tzdata` where Python lacks IANA time zones (Windows), or the tab falls back to UTC days.
+
+Signing a service-account key needs the `cryptography` package. Alternatives without it: an application-default user login file (`authorized_user`, as written by `login` or Google's [Data API quickstart](https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart-client-libraries); a `quota_project_id` in it is sent as `x-goog-user-project`) named by `OPENRC_GA4_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS`, or a ready token in `OPENRC_GA4_ACCESS_TOKEN`. gcloud's default login file is never used implicitly. `--ga4-credentials` wins over a token in the environment, and `--ga4-property` over `OPENRC_GA4_PROPERTY`. Without the property ID, `fetch` searches the visible properties for the web stream with the site's measurement ID and prints the ID to set.
 
 Days follow the property's reporting time zone, not UTC: a first minimal report reads the zone, and every report then uses the same explicit dates. If Python cannot load the zone (Windows without the `tzdata` package), the tab says it fell back to UTC days. Platform, source and Web Vitals breakdowns need event-scoped custom dimensions `download_platform`, `download_source`, `metric_name` and `metric_rating` registered in Admin → Custom definitions; GA4 reports them only from registration onwards, and the tab says which are missing. A failed collection keeps the rest of the page and raises a warning alert; one failed report leaves the others.
 

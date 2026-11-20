@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
+import unittest.mock
 
 HERE = Path(__file__).resolve().parent
 SERVICE = HERE.parents[1] / "services" / "telemetry"
@@ -253,6 +254,20 @@ class DashboardCase(unittest.TestCase):
         page = dashboard.render(data)
         self.assertIn("HTTP 403: &lt;denied&gt;", page)
         self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
+
+    def test_render_ga4_refreshes_the_saved_snapshot(self):
+        import test_ga4
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        data["github"] = None
+        path = self.dir / "dashboard.snapshot.json"
+        path.write_text(json.dumps(data), encoding="utf-8")
+        with unittest.mock.patch.object(dashboard.ga4, "fetch", return_value=test_ga4.model()) as fetch, \
+                unittest.mock.patch("sys.stdout"):
+            dashboard.main(["render", "--snapshot", str(path), "--ga4", "--no-open", "--out",
+                            str(self.dir / "page.html")])
+        fetch.assert_called_once_with(7)
+        self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["website"]["property"], test_ga4.PROPERTY)
+        self.assertIn("Active users, 7 days", (self.dir / "page.html").read_text(encoding="utf-8"))
 
     def test_version_one_archive_loads_without_extras(self):
         import sqlite3
