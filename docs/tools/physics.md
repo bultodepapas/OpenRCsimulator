@@ -4,7 +4,7 @@ Use these tools to change, measure and compare simulated behavior. A software re
 
 ## Flight-test battery
 
-The [flight-test card](../../research/flight-test/README.md) exercises fixed-wing session behavior and reports pilot validity and aircraft response. For flight-feel, controls or physics tuning, first preserve an `.orfl` baseline and verify exact replay under the [flight logging workflow](#flight-log-and-replay); the card is complementary evidence, not a replacement for that comparison.
+The [flight-test card](../../research/flight-test/README.md) exercises fixed-wing session behavior and reports pilot validity and aircraft response. For fixed-wing tuning, first preserve an `.orfl` baseline and verify exact replay under the [flight logging workflow](#flight-log-and-replay). The card supplies complementary evidence; changes to input conditioning also need the affected controller and live-flight checks below.
 
 Freeze the baseline source and engine before editing. Use a separate full source checkout for the candidate, starting from the same snapshot, then change one owning source and regenerate its outputs there. Preserve the app, adjacent assets, card/runner files, configuration and identity of both snapshots. A detached checkout at `HEAD` does not include uncommitted changes unless they are deliberately copied into it. Import each app copy before running Godot. The [FT-04 record](../research/flight-test/FT-04/README.md) explains why comparisons on a moving shared tree can attribute unrelated changes to the candidate.
 
@@ -36,7 +36,11 @@ Check baseline freshness before changing a generator, follow its dependency orde
 
 ## Flight log and replay
 
-The [flight-log manual](../FLIGHT-LOGGING.md) owns recording, export, exact replay, candidate replay and plotting. Preserve the baseline `.orfl`, verify its complete exact replay before making one candidate, and compare the same tick/input tape. Retain markers, source/configuration and solver identities, CSV and reports. Check `complete` and `solver_changed`; a candidate run or recovered prefix is not exact equivalence or physical validation.
+The fixed-wing [flight-log manual](../FLIGHT-LOGGING.md) owns recording, export, exact replay, candidate replay and plotting. Preserve the baseline `.orfl`, verify its complete exact replay, and compare one compatible candidate on the same tick and post-conditioning command tape where supported. Retain markers, source/configuration and solver identities, CSV and reports. Interpret `complete` and `solver_changed` under the manual's acceptance rules: an aircraft-only comparison requires `solver_changed=false`; a deliberate solver/backend experiment declares that change. The current fixed-wing candidate runner selects reference, so replaying a native baseline as a candidate does not isolate an aircraft-only change. When using that runner for an aircraft-only comparison, record and exactly verify a separate explicit-reference baseline; keep native production-flight evidence separately identified. Candidate runs and recovered prefixes are not exact equivalence or physical validation.
+
+The declared servo-interval law supports exact replay in its admitted domain but refuses candidate replay. For it or another unsupported candidate route, use the owning law's controlled comparisons and focused checks, retaining the baseline and reporting the replay limitation. Do not claim those checks are an equivalent candidate replay or weaken admission to run one.
+
+Fixed-wing candidate replay does not rerun the device, calibration, mapping, rates or expo pipeline, re-trim the aircraft or model pilot adaptation. Test changes to those boundaries through the [controller checks](shared.md#local-impact-examples) and controlled live-flight/device observations as applicable; use a new recording when the effective commands change. Other vehicle families retain their own recording/replay contracts. For supported production handling and performance investigations, confirm the actual [native backend](../../AGENTS.md#native-development); reference-only cards and replay remain useful evidence for their declared scope.
 
 For an editor/source recording use the matching engine and backend. A packaged recording must use its matching verified executable for replay/export; see the [package identity rules](../FLIGHT-LOGGING.md#quick-start). The CLI chooses an OS-specific pinned engine unless `--godot` or `GODOT` is supplied.
 
@@ -62,6 +66,19 @@ python3 app/tests/check_atmosphere_trace.py tmp/atmosphere.csv --duration 3.0
 ```
 
 For atmosphere v11 standard-column traces, add `--column` only for the calm preset (zero wind, gust and turbulence). Without it, the atmosphere validator uses the custom-atmosphere v6/v10 path. See [launch flags](shared.md#launch-flags), [wind recording](../WIND-ATMOSPHERE-REFERENCE.md) and [trace integrity](../research/trace-integrity/C7-R2/README.md).
+
+## Numerical change checks
+
+Select these checks when changing the relevant law, integrator, event policy or state boundary; they are not an extra suite for unrelated edits. Use existing tests and the [verification scope](shared.md#verification-scope).
+
+- **Independent expectations:** use an applicable analytic solution, conservation balance, symmetry or independent reference alongside any relevant replay evidence. State the assumptions: prescribed external work and dissipation can invalidate a conservation assertion. [Integrator cases](../../app/tests/test_integrator.gd) and [law properties](../../app/tests/test_sf_law_properties.gd) provide existing examples; reproducing the implementation's formula is not an independent oracle.
+- **Refinement:** for numerically sensitive changes, compare a small timestep-refinement series at common simulated times with the same physical initial conditions and input function in an isolated numerical test. Inspect event timing and post-event state separately; a hybrid/contact split does not inherit fourth-order accuracy merely because a component uses RK4. Keep the production tick contract fixed. Start with [event refinement](../../app/tests/test_sf_event_refinement.gd) and the owning law's checks.
+- **Event detection:** for a new surface or changed event law, establish the supported crossing behavior and test relevant fast excursions, multiple crossings and grazing cases. Equal signs at sampled points do not prove there was no intervening event. The current [resource-event tests](../../app/tests/test_resource_event_step.gd) record this sampling limit; define the supported domain or a justified detection method before claiming coverage. Do not silently change the global tick policy or loosen event acceptance to make a case pass.
+- **Parallel work:** if state-affecting evaluation is parallelized, define reduction and event order independently of worker completion order. Compare accepted states/events from the same checkpoint and input tape across the worker counts for which equivalence is claimed. Locks and atomics alone do not guarantee reproducible ordering; retain the existing replay/backend acceptance criteria.
+- **Random processes:** preserve generator state, relevant algorithm/runtime identity and draw schedule for physics-affecting randomness; a seed alone cannot restore a sequence midway. Check checkpoint continuation and rejection rollback. Keep wind's specific contracts in the [wind reference](../WIND-ATMOSPHERE-REFERENCE.md); do not infer cross-version RNG equivalence.
+- **Inputs and interventions:** define the accepted tick boundary and ordering for new physics-affecting commands. Record the effective input/events required for replay, and verify replay does not read a live device. Where frame dispatch is involved, exercise zero, one and multiple physics ticks per rendered frame. The [flight-log contract](../FLIGHT-LOGGING.md) owns recorded commands and interventions; a bridge command's frame timing is not an exact input tape.
+
+The [practice review](../research/development-practices-2026-11-19.md#simulation-and-numerical-development) records the primary numerical sources, project-specific inferences and reasons for these conditional checks. No single property test or exact replay establishes physical validation.
 
 ## Benches and probes
 

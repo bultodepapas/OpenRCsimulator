@@ -19,13 +19,13 @@ Extends the [shared playbook](debugging.md). Tools: [physics](physics.md). [Back
 - Plot or reduce CSV columns with existing free tools (Python with the visual venv, a spreadsheet, gnuplot). Do not add plotting code to `app/`.
 - Check the input side before the model: servo deflections and `controls` limits, trim, rates (`--rates=full` removes pilot rate shaping), then forces and moments.
 - Separate model paths with `--diagnostics`: oracle versus local surfaces shows which aerodynamic model carries the load. `--only aero_sweep` shows the same without flying.
-- Integration problems: run the frame-rate-independence and golden checks (`test_golden.gd`); a divergence there points at the integrator or tick ordering, not at aircraft data.
+- Integration problems: run the applicable integrator, simulation and golden checks. A golden mismatch identifies a changed or invalid recorded trajectory, not its cause; inspect data, trim, controls, law, solver and tick ordering as applicable. `test_golden.gd` steps synchronously and does not test different rendered-frame cadences; check that boundary separately when it can be affected.
 - Known open physics limits (spins, knife-edge side force, pending rudder and yaw checks) are listed in [TOOLS](../TOOLS.md#app-and-release-commands) and the flight-test findings ([FT-05](../research/flight-test/FT-05/README.md)); confirm your symptom is not one of them.
 
 ## Verify
 
 1. The reproducing trace or test changes as intended.
 2. For flight-feel, control or aircraft-physics tuning, follow the [flight-log baseline and candidate workflow](physics.md#flight-log-and-replay). Run affected battery cases with the same `--aircraft` and `--only` when flight response changes, then `compare.py`. Explain every change beyond tolerance; unexpected changes in other tests are regressions until explained.
-3. Golden flights: an intended physics change fails `test_golden.gd`; re-record with `record_golden.gd` only with the explanation in the commit and the owning research report.
+3. Golden flights: a trajectory-affecting physics change can fail `test_golden.gd`; re-record with `record_golden.gd` only for an intentional change explained in the commit and owning research report. Retain comparison evidence there.
 4. Generated aircraft data: the owning generator's `--check` passes.
 5. Follow the [verification scope](shared.md#verification-scope) for focused and full runs. CI's required app gate includes parsing and the float64 guard.

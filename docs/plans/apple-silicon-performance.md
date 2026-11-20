@@ -502,7 +502,7 @@ Developer sidecars can require local tooling, but the eventual user flow must no
 
 Freeze final source/configuration and release export. Repeat three uninterrupted 30-minute active-flight runs with 30 s warmup, comparable initial conditions, complete v3/resources/required host-state coverage and minimal observers. Compare baseline/finalist early and final windows; report pacing tails/bursts, sim/wall, memory/pressure, thermal and native errors. Run 50 warm Home/flight cycles with relevant Workshop/world transitions, power/focus/sleep/wake/display changes and actual audio/controller reconnect. Perform owner pilot orientation/control acceptance independently of scripted/replayed evidence.
 
-Qualify AC first on the M1 built-in display at its native panel resolution, the MacBook product target. Battery, Low Power and 120 Hz/VRR are distinct profiles. External 1080p and higher outputs follow the general order when available, with 720p last. A built-in-panel result does not establish external 1080p qualification, and no failure can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
+Qualify AC first on the M1 built-in display at its native panel resolution, the MacBook product target. Battery, Low Power and 120 Hz/VRR are distinct profiles. Retina external displays also target native pixels; standard (1×) external displays follow the general 1080p-first order, with 720p last. A built-in-panel result does not establish external 1080p qualification, and no failure can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
 
 **Tests:** T8 final required workload, lifecycle and physical-device matrix; T7 final integrated same-host replay and applicable cross-platform policy. **Exit:** required targets met through the final window and visual/control gates accepted, or named limitation/failure retained without a broad support claim.
 
@@ -813,8 +813,8 @@ session probes, radio-free sustained circuits and event-bounded GOD TEST have
 different scopes/schemas. Never interchange reducers or call an effects-off
 scripted run a wet-lens/physical-controller/settlement benchmark.
 
-On a built-in Retina panel the native panel resolution is the target. On external displays, keep 1920×1080
-actual output first, higher resolutions second and 720p last. A `--require-1080p` render-target estimate cannot
+On Apple Silicon with a built-in or external Retina (2×) display, native panel resolution is the target.
+On standard (1×) external displays, keep 1920×1080 actual output first, higher resolutions second and 720p last. A `--require-1080p` render-target estimate cannot
 close physical output acceptance. Add A/A and whole-product observer-on/off controls, include work after
 `Simulation.step_usec` and synchronous subscribers, and retain unknown channels.
 Use the [existing protocol](#campaign-protocol-and-acceptance-budgets), not copied

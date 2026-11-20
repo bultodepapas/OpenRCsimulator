@@ -5,7 +5,7 @@ Extends the [shared playbook](debugging.md). Tools: [graphics](graphics.md). [Ba
 ## Reproduce
 
 - Fix every input that changes pixels: `--t=<seconds>`, a camera (`--inspect`, `--look_az/--look_el/--look_alt`, `--alt`, `--autozoom=0`), `--time-of-day=`, `--weather=`, `--landscape=`; keep `OPENRC_SCENERY=off` unless scenery is the subject, and `LP_NUM_THREADS=1`.
-- Render the view with a [single capture](graphics.md#single-capture). Repeat when determinism is in question: identical SHA-256 means the view is deterministic. A difference between repeats can reveal wall-clock animation, `TIME` in a shader or unordered placement.
+- Render the view with a [single capture](graphics.md#single-capture). Repeat when determinism is in question: matching hashes establish identical captured bytes for those runs and settings. A difference between matched repeats can reveal wall-clock animation, `TIME` in a shader or unordered placement; do not infer another renderer's or platform's behavior from one configuration.
 - Interactively: `debugctl.py launch` (1920×1080 under Xvfb), reach the view with `fly`, `view name=chase`, `key`
   or `mouse`, then `screenshot max_width=960 format=jpg` and open the file ([debug bridge](../../tools/debug/README.md#quick-start)).
 - If an area checker fails, rerun only that checker with a new `--out` and keep its `summary.json`.
@@ -16,6 +16,7 @@ Extends the [shared playbook](debugging.md). Tools: [graphics](graphics.md). [Ba
 - Diff images: `compare_captures.py compare <before> <after>` ([compare captures](graphics.md#compare-captures)). Look at the PNGs as well; metrics miss small objects.
 - Read the capture log line `saved … draw_calls=… primitives=…` for cost changes, and the engine log for `SHADER ERROR`.
 - Performance: `--frametimes=<json> --frame-diagnostics` on real hardware ([frame diagnosis](graphics.md#frame-diagnosis)). Headless and llvmpipe runs cannot measure the GPU.
+- Attribute the bottleneck before optimizing. Godot's Visual Profiler separates rendering CPU/GPU time; its CPU column is not total script or physics cost. Pair it with the script profiler and full-frame timing for the same workload. Preserve first-use hitches separately from warmed results and follow the [paired measurement protocol](../../research/performance/README.md).
 - Stutter while flying: `debugctl.py frames` lists hitches with what changed in that frame (pipeline compilations,
   objects, memory, physics catch-up); a long single frame breaks down with `launch --verbose` and `timeline`.
   Pipeline counters stay 0 on the VM's Compatibility renderer.

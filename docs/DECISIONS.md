@@ -38,21 +38,25 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 **SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default for the verified Linux x86_64 aircraft catalog and admitted conditions, including coupled electric/battery, finite glow, liquid combustion, turbine and helicopter capabilities. The shared kernel and existing start, weather and runtime contracts remain authoritative. Completed flights, startup refusals, runtime refusals and terminal collisions carry separate evidence. Low-level sessions remain reference by default. NK-4 admits Windows x86_64 source/debug runs on the same evidence rule: a MinGW-w64 build with engine-matching math (no `sincos` fusion, the Windows engine's lerp order, SSE2 `sqrtsd`) is bit-identical, so the D3 NaN-class tolerance tier is not used; its installation sits beside the Linux one, never over it ([NK-4](research/native-kernel/NK-4/README.md)). Windows release packages, macOS admission and target-host Gate P remain separate qualifications.
 
-The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
+The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) retains its historical rationale and qualification requirements; its blanket port deferral and platform inventory are superseded. Its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
 **Owner, 2026-11-20: native is the runtime, GDScript the specification.** Performance and flight-feel work runs on the native backend; confirm the logged backend before measuring. The GDScript reference is not retired: the C++ mirrors it bit for bit, so it remains the specification, the qualification oracle, the fallback and the only physics for imported aircraft, servo law, the airship and the multirotor. Historical `.orfl` baselines and replay keep their recorded backend. A fallback from a native request must be visible, not just a log line. [Legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
 
+**DX-06, 2026-11-20; explicit owner preference.** Prefer native development and the native kernel whenever feasible and appropriate, including when planning new simulation work. The [shared native-development rules](../AGENTS.md#native-development) own that preference and its implementation/target-platform criteria. Choosing native does not require first exceeding 500 µs; the budget, reference contract and qualification gates still apply. GDScript remains appropriate where its integration and maintenance advantages serve the task. This is a development direction, not evidence that a new backend, platform or workload is qualified.
+
 **DT-MAC-04n1–n4, source-editor admission.** The Apple ARM64 port retains that
-stage boundary and float64 authority. The owner subsequently requested a native
-source default. Permit automatic selection only through the exact host, engine,
-receipt, binary and stock-selection marker; otherwise retain reference. Keep
+stage boundary and float64 authority. Initial source-default adoption used an exact
+host, engine, receipt, binary and stock-selection marker. The later
+[DT-MAC-11a decision](#default-to-native-physics-on-supported-apple-silicon-flights)
+removed that marker prerequisite for automatic admission, while retaining the
+screened domain, engine/source/library identity and live guards. Keep
 explicit research opt-in and release diagnostics separate. A changed on-disk
 receipt cannot qualify a different library already loaded in the process. Use a distinct native Mac bundle identity
 that binds the signed dylib, qualification manifest and final reference-bundle
 receipt. Reusing the reference-only identity would make exact replay ambiguous.
 The [Mac native guide](../research/native-kernel/README.md#experimental-macos-arm64)
 owns the implemented contracts and the [source-default evidence](research/native-kernel/DT-MAC-04n4/README.md)
-records the current source-default qualification and its remaining gates.
+records the November 14 source-default qualification and its remaining gates.
 
 The initial assessment deferred automatic admission. The later source-default
 work enforces a smaller verified domain instead of treating failed fleet rows as
@@ -511,6 +515,12 @@ keys: integration on 0.144.5 found that the proposed newer scalar fields caused
 configuration fallback. Keep model/effort pins in the profiles and observe native
 runtime limits. Revisit routing and budgets when client behavior changes or representative
 OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gain.
+
+### One shared agent rule source, with task-specific detail
+
+**DX-06 instruction audit, 2026-11-19.** Keep durable project rules in `AGENTS.md` and a small `CLAUDE.md` with an explicit import. Read applicable nested instructions before editing; keep detailed delegation, commands, architecture, current work and dated evidence in their existing homes. This removes repeated startup context without removing the selected lead, helper preferences, physics/evidence contracts or existing authorization.
+
+Current Claude Code can load AGENTS natively, but compatibility and loading vary by client/session configuration. Retain the import rather than a second copy or a Windows-sensitive symlink. Repository prose does not enforce permissions or prove discovery. The [source review](research/agent-orchestration-2026-11-15.md#instruction-file-audit--2026-11-19) records official guidance, GitHub counterexamples and the source audit; [maintenance conventions](README.md#agent-instruction-files) own future edits. No runtime performance or instruction-adherence improvement is claimed without measurement.
 
 ### Adapt ClearView visuals upstream of Creator admission
 
