@@ -4,6 +4,8 @@ Status: source implementation and focused controller audit corrections delivered
 
 The graphical, guided redesign of calibration and assignment screens is planned separately in the [Controls setup UX plan](controls-setup-ux.md); it keeps these contracts.
 
+The [handheld controller automation subplan](handheld-controller-automation.md) extends this foundation for Steam Deck, current Steam Machine and Windows/Linux handheld PCs. It owns proposed provider metadata, complete controller-operated UI/text entry, optional Steam integration and its device matrix; it preserves the readiness, calibration and activity contracts below.
+
 This plan tracks remaining work and acceptance. It does not treat synthetic tests as controller certification. The current engine is Godot 4.8-beta2; [STACK](../STACK.md) and the verified engine downloader own its exact identity.
 
 The 8 November controller audit produced a focused correctness revision under D6-GP-01/02/03, F3-GP-02 and UI-15-GP-01. It corrects reduced-range direction calibration, ambiguous legacy matching and cache invalidation, truthful absolute-throttle previews, new radio defaults, calibration metadata retention and generic action continuity. [Findings and verification](../research/controller-support-2026-10-14/README.md#controller-audit-corrections-2026-11-08) record those repairs. The later [radio-menu and diagnostics work](../research/controller-support-2026-10-14/README.md#radio-menus-and-diagnostics-2026-11-09) adds the source flows; physical and exported-build qualification remains open.

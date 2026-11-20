@@ -81,6 +81,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Controller support
 
+[Handheld controls research, 2026-11-20](handheld-controls-2026-11-20/README.md) audits the existing automatic startup/profile path and the pinned Godot 4.8-beta2 APIs for Steam Deck, current Steam Machine, ROG Xbox Ally and other Windows/Linux handheld PCs. It identifies the Steam-handle metadata mismatch, desktop text-entry and full-controller-journey gaps, and platform/OEM limits. The [execution plan](../plans/handheld-controller-automation.md) owns implementation and physical qualification; no handheld testing is claimed.
+
 [Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
 
 [D6-JETI-00, 2026-10-19](radio-input/D6-JETI-00/README.md) preserves JETI's email, four-page PDF, USB descriptors and simulator profile, with a dated source audit. [D6-JETI-01 implementation](radio-input/D6-JETI-01/README.md) records conservative family recognition, clean defaults, maintained-switch input/setup, native regressions and EN/ES captures. The [JETI support plan](../plans/jeti-support.md) owns remaining physical mapping and qualification; the reported DC-16II basic flight does not close full model/platform qualification.
