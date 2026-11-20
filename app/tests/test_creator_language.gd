@@ -65,6 +65,11 @@ func _run() -> void:
 func _catalogs() -> void:
 	var messages := PackedStringArray()
 	messages.append_array([Installation.REQUIRED,Installation.STALE,Installation.INVALID,Installation.FLIGHT_UNAVAILABLE,
+		Installation.EXPERIMENTAL,"%s self-intersecting surfaces were omitted.",
+		"JPEG metadata (camera, colour profile or editor data) was ignored.","Only the first GIF frame was imported.",
+		"%s editor tag lines in the model parameters were ignored.",
+		"Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit.",
+		"This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference.",
 		InstallationPanel.TITLE,InstallationPanel.PROPOSAL,InstallationPanel.RETAINED,InstallationPanel.REVIEW,
 		InstallationPanel.CHOOSE,InstallationPanel.CHOSEN,"Flight qualification",
 		"Estimated package proposal. Choose a configuration on Import."])

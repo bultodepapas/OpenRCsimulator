@@ -14235,3 +14235,27 @@ msgstr "Télémétrie activée · Paramètres → Interface"
 
 msgid "Telemetry is off · Settings → Interface"
 msgstr "Télémétrie désactivée · Paramètres → Interface"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "Les vols d’essai utilisent cette configuration OpenRC estimée, pas le modèle de vol ClearView. Ils sont expérimentaux."
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "La configuration OpenRC choisie appartient à un autre modèle. Choisissez de nouveau la configuration pour ce modèle."
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "%s surfaces auto-sécantes ont été omises."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "Le polygone %s de la pièce \"%s\" a des arêtes qui se croisent, et le modèle contient trop de surfaces de ce type pour les omettre."
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "Les métadonnées JPEG (appareil photo, profil de couleur ou données d’éditeur) ont été ignorées."
+
+msgid "Only the first GIF frame was imported."
+msgstr "Seule la première image du GIF a été importée."
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "%s lignes de balise d’éditeur dans les paramètres du modèle ont été ignorées."
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "Ce format de texture n’est pas encore pris en charge. Convertissez la texture en PNG, JPEG ou GIF standard ou en BMP 24 bits non compressé, puis mettez à jour sa référence dans le modèle."

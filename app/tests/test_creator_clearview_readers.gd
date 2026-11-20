@@ -136,6 +136,13 @@ func _params() -> void:
 		check("ambiguous or unsupported parameters refused", not Params.read(text.to_ascii_buffer()).ok)
 	check("NUL refused", not Params.read(v5.to_ascii_buffer() + PackedByteArray([0])).ok)
 	check("empty params refused", not Params.read(PackedByteArray()).ok)
+	# Real downloads (FMS-PT-17 Stearman) begin with an editor tag line such as `$PlaneMidWindDhD01 paramsAgriDuck`.
+	var tagged := Params.read(("$PlaneMidWindDhD01 paramsAgriDuck\n" + v5).to_ascii_buffer())
+	check("editor tag line ignored, not a record", tagged.ok and tagged.value.records.size() == 6 and tagged.value.records[0].key == "verNumber")
+	check("editor tag line reported", tagged.ok and tagged.diagnostics.size() == 2 and tagged.diagnostics[1].message == Params.TAG_NOTE \
+		and tagged.diagnostics[1].arguments == ["1"])
+	check("untagged parameters keep a single note", result.ok and result.diagnostics.size() == 1)
+	check("tag line cannot supply the identity", not Params.read("$verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()).ok)
 
 func _ac3d() -> void:
 	var text := _ac_fixture()

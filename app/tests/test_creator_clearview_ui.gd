@@ -215,8 +215,11 @@ func _revision(wizard: Control) -> void:
 		printerr(compiled.diagnostics)
 		return
 	var context: Dictionary = doc.source_observations()
+	await _settle()
+	check("confirmed configuration enables the experimental test flight",not (wizard.find_child("TestFly",true,false) as Button).disabled)
+	doc.name = "ClearView parity"
 	wizard.call("_on_publish_pressed")
-	check("publication handler preserves the qualification gate",doc.published_revision == 0)
+	check("confirmed configuration saves an aircraft revision like any Creator source",doc.published_revision == 1)
 	check("v3 can still save as a draft",wizard.call("_save_draft"))
 	var store: RefCounted = wizard.get("_store")
 	var saved: Dictionary = store.load_draft(doc.draft_id)
@@ -238,8 +241,14 @@ func _revision(wizard: Control) -> void:
 	var fixture: Dictionary = store.publish_aircraft({aircraft_uuid = doc.aircraft_uuid(),name = doc.name,
 		definition = doc.definition(),raw_bytes = compiled.value.raw_bytes(),source_bytes = doc.source().source_bytes(),
 		source_file_name = doc.source().file_name(),placement = doc.placement(),bindings = doc.bindings(),
-		appearance = doc.appearance(),snapshot = doc.snapshot("import")},0)
+		appearance = doc.appearance(),snapshot = doc.snapshot("import")},1)
 	check("v3 historical fixture stores",fixture.ok)
+	var wrong_source: Dictionary = doc.definition()
+	wrong_source.source_installation.source_sha256 = "0".repeat(64)
+	check("a configuration cannot be stored with another model's bytes",not store.publish_aircraft({aircraft_uuid = doc.aircraft_uuid(),name = doc.name,
+		definition = wrong_source,raw_bytes = compiled.value.raw_bytes(),source_bytes = doc.source().source_bytes(),
+		source_file_name = doc.source().file_name(),placement = doc.placement(),bindings = doc.bindings(),
+		appearance = doc.appearance(),snapshot = doc.snapshot("import")},2).ok)
 	if not fixture.ok:
 		return
 	var revision: Dictionary = store.load_aircraft(doc.aircraft_uuid())
@@ -282,7 +291,7 @@ func _legacy_revision(wizard: Control) -> void:
 	await _wait(wizard)
 	check("historical v2 opens unchanged and requires a new choice",wizard.document().name == legacy.name and wizard.document().definition() == definition and wizard.document().needs_source_installation())
 	check("historical source can still save a draft",wizard.call("_save_draft"))
-	check("qualification is visible and test flight remains unavailable",(wizard.find_child("TestFly",true,false) as Button).disabled)
+	check("unconfirmed historical configuration keeps test flight unavailable",(wizard.find_child("TestFly",true,false) as Button).disabled)
 	var downgraded: Dictionary = loaded.value.duplicate(true)
 	downgraded.snapshot.erase("source_observations")
 	downgraded.snapshot.format = Authoring.SNAPSHOT_FORMAT

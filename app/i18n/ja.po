@@ -13314,3 +13314,27 @@ msgstr "テレメトリー：オン · 設定 → インターフェース"
 
 msgid "Telemetry is off · Settings → Interface"
 msgstr "テレメトリー：オフ · 設定 → インターフェース"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
+msgstr "テスト飛行はこの推定 OpenRC 構成を使用し、ClearView の飛行モデルは使用しません。実験的な機能です。"
+
+msgid "The OpenRC configuration choice belongs to another model. Choose the configuration again for this model."
+msgstr "選択された OpenRC 構成は別のモデルのものです。このモデルの構成をもう一度選択してください。"
+
+msgid "%s self-intersecting surfaces were omitted."
+msgstr "自己交差する面を %s 個省略しました。"
+
+msgid "Polygon %s in part \"%s\" has intersecting edges, and the model has too many such surfaces to omit."
+msgstr "ポリゴン %s（パーツ \"%s\"）の辺が交差しており、このような面が多すぎるため省略できません。"
+
+msgid "JPEG metadata (camera, colour profile or editor data) was ignored."
+msgstr "JPEG メタデータ（カメラ、カラープロファイル、エディターのデータ）は無視されました。"
+
+msgid "Only the first GIF frame was imported."
+msgstr "GIF の最初のフレームのみをインポートしました。"
+
+msgid "%s editor tag lines in the model parameters were ignored."
+msgstr "モデルパラメーター内のエディタータグ行 %s 行を無視しました。"
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG, JPEG, GIF or 24-bit uncompressed BMP and update its model reference."
+msgstr "このテクスチャ形式はまだサポートされていません。テクスチャを標準の PNG、JPEG、GIF、または非圧縮 24 ビット BMP に変換し、モデル内の参照を更新してください。"

@@ -12,7 +12,10 @@ const KEYS := ["format","mode","source_sha256","report_state","report_sha256","a
 const REQUIRED := "Choose an estimated OpenRC configuration for this model and review its retained values."
 const STALE := "The model or configuration changed. Review the configuration choice again."
 const INVALID := "The saved configuration choice is invalid."
+## Saved-aircraft (Home/published) flight. Unsaved test flights follow the ordinary Creator gate.
 const FLIGHT_UNAVAILABLE := "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+## Shown once the configuration is confirmed: physics come only from the OpenRC packages.
+const EXPERIMENTAL := "Test flights use this estimated OpenRC configuration, not the ClearView flight model. They are experimental."
 
 static func required(source: Source) -> bool:
 	return source != null and source.is_admitted() and source.has_asset_metadata(NAMESPACE)

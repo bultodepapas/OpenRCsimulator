@@ -29,7 +29,7 @@ A player can do all of the following in the normal UI:
 | Area | Requirement |
 | --- | --- |
 | Input | Bounded v5/v6 airplane ZIPs: 64 MiB ZIP, 256 MiB expansion, 32 MiB per member, 4,096 entries, 64 model roots. AC3Db visual. PNG, baseline JPEG (APPn metadata skipped), first GIF frame and 24-bit BMP textures |
-| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Exactly zero-area ears are dropped. Up to 16 self-intersecting surfaces are omitted and reported; more refuse the model. Never a triangle fan |
+| Geometry | Correct concave triangulation. Coincident consecutive corners collapse. Exactly zero-area ears are dropped. Up to 16 self-intersecting surfaces are omitted and reported; more refuse the model. An exactly cancelling bow-tie (zero Newell normal) still refuses. Never a triangle fan |
 | Flight | Only the confirmed OpenRC configuration flies. ClearView physics are never adopted, and the trial identity pins the configuration |
 | Saving | Drafts and aircraft revisions carry the v3 definition with its source-bound configuration. The store refuses a configuration that names another model |
 | Language | All new app strings are in the eight app catalogs; the guide is in all eleven website languages |
@@ -49,7 +49,7 @@ A player can do all of the following in the normal UI:
 | --- | --- |
 | AC-CV-00 | **Done.** Corpus: 6 archives / 25 model roots ([check record](../research/aircraft-creator/clearview-guide-checks-2026-11-19.json), rerun 2026-11-19). Third-party ZIPs stay outside Git; CI uses synthetic fixtures |
 | AC-CV-01 | **Done.** Bounded archive and parameter readers; `$` tag lines are ignored and reported |
-| AC-CV-02/03 | **Done for the corpus.** 25/25 convert. Independent Blender/Assimp fidelity comparison remains optional quality work |
+| AC-CV-02/03 | **Done for the corpus.** 25/25 convert. Next coverage candidates, unseen in the corpus: JPEGs with EXIF before JFIF, and exactly cancelling bow-ties. Independent Blender/Assimp fidelity comparison remains optional quality work |
 | AC-CV-04 | **Partial.** v6 hinge proposals plus manual bindings. v5 and propeller proposals are still manual |
 | AC-CV-05 | **Done.** Source report, explicit configuration, v3 definitions saved and reopened |
 | AC-CV-06 | **Done at parity.** Experimental test flight with a pinned configuration. Saved-aircraft flight follows AC-12 |

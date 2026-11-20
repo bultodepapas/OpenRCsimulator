@@ -227,8 +227,8 @@ func _pending_and_installed(doc: RefCounted, source: RefCounted, report: RefCoun
 	var installed: Dictionary = doc.snapshot()
 	var compiled: Dictionary = doc.compile()
 	if not compiled.ok:print("Installed document diagnostics: ",JSON.stringify(compiled.diagnostics))
-	check("installed v4 can compile for review but remains unqualified", compiled.ok
-		and doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
+	check("installed v4 compiles and follows the ordinary trial gate", compiled.ok
+		and not doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
 	check("v4 installation and observations restore together", reopened.restore(installed, source, report).ok
 		and reopened.snapshot() == installed and reopened.source_installation() == doc.source_installation())
 	prior_revision = reopened.revision
