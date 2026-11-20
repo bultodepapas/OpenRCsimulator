@@ -53,7 +53,7 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Take a picture | `$D screenshot max_width=960 format=jpg` (not under `--headless`) |
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
-| Find a stutter / FPS drop / slow load / hot script | `$D frames`; `$D frames --out tmp/stutter-01` saves HTML/CSV/Perfetto; `launch --verbose` + `$D timeline --stutter`; `launch --script-profile` + `$D profile seconds=20` |
+| Find a stutter / FPS drop / slow load / hot script | `$D frames watch --out tmp/watch-01` catches intermittent drops, stutters and freezes automatically; `$D frames`; `$D frames --out tmp/stutter-01` saves HTML/CSV/Perfetto; `launch --verbose` + `$D timeline --stutter`; `launch --script-profile` + `$D profile seconds=20` |
 | Inspect render costs | `$D render` (raw GPU/CPU observations, draw calls), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
 | Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
 | See the forces, velocities and wind on the aircraft | `$D gizmos show=all`, then `$D screenshot` |
@@ -465,7 +465,14 @@ proves a GPU bottleneck or counts actual dropped display frames.
   physics ticks, baseline, flags, route at interval start, prior recorder cost and optional last-read GPU time.
   `first_sequence` identifies the first row; all rows and event details share one `epoch`/`capture_id`.
 - Headless or zero/unavailable GPU readings remain unavailable. Positive readings retain **unverified freshness**.
-  Runtime source revision is reported as `not_observed`; a client checkout is not assumed to identify the running app.
+  `source` reports a random nonsecret `launch_instance` (also in `ping`), `build_source`/`build_describe` and
+  `runtime_revision`. A source-tree run reports `runtime_revision: not_observed`; only an exported build's embedded
+  commit fills it. A client checkout is not assumed to identify the running app. `request_usec` is the engine clock
+  while the request was handled, for later cross-process anchors.
+- `since=<frames_total cursor>` returns only rows after a cursor (with `window` as a cap), `epoch=<n>` returns no
+  rows when the cursor belongs to another epoch, and `lean=true` returns rows, cursor, identity and exact cumulative
+  totals without summary work. `passive=true` keeps a poll from switching on 20 Hz `state` publishing. These exist
+  for the [session watch](#automatic-session-watch-pt1h-r15-s2).
 
 ### Offline slowdown analysis (PT1h-R15-S3a)
 
@@ -516,7 +523,71 @@ written `frames.json` bytes. This hash is not runtime build or launch identity.
 phase stream; native [frame diagnosis](../../docs/tools/graphics.md#frame-diagnosis)
 uses fixed-duration `openrc-frametimes` evidence. Their thresholds, phase assignment
 and completion contracts differ. Use the [integration map](../../docs/plans/stutter-diagnostics.md#existing-tool-integration)
-before combining artifacts. Automatic lead-up/recovery collection remains planned.
+before combining artifacts. Automatic lead-up/recovery collection is the [session watch](#automatic-session-watch-pt1h-r15-s2).
+
+### Automatic session watch (PT1h-R15-S2)
+
+Use the watch when a drop or stutter is intermittent and you do not know when it will happen. Start it, fly or
+use the menus normally, and stop it with Ctrl+C (results are kept) or let `duration_s` end it:
+
+```sh
+python3 tools/debug/debugctl.py frames watch --out tmp/watch-01                  # 10 minutes, all triggers
+python3 tools/debug/debugctl.py frames watch --out tmp/watch-02 duration_s=1800 target_fps=144 max_incidents=20
+python3 tools/debug/debugctl.py frames watch --out tmp/watch-03 triggers=stall,drop,hang lead_frames=1200
+```
+
+It never resets or reconfigures the recorder, so another client's capture is undisturbed. Every 0.5 s it reads
+only the new rows (`frames since=… lean=true passive=true`; about 0.3 ms of game-thread work for 30 rows on the
+reference desktop), checks continuity and evaluates five triggers on the raw intervals:
+
+| Trigger | Rule (defaults) | Catches |
+| --- | --- | --- |
+| `stall` | Bridge absolute-stall flag (> `stall_ms`, 50 ms) | Long single frames, loading hitches |
+| `stutter` | Bridge relative-stutter flag (> 1.5× preceding median and > 4 ms above it) | Short hitches the eye sees |
+| `sustained` | `sustained_frames=30` consecutive intervals above `1000/target_fps + tolerance`; re-arms after `rearm_frames=30` in-budget intervals | Running below the target |
+| `drop` | Median interval of the last `drop_window_s=1` s is ≥ `drop_fraction=0.25` slower than the median of the preceding `drop_baseline_s=10` s on the same route, and ≥ `drop_min_ms=1` ms slower | FPS drops that stay above the target (140 → 75 FPS) |
+| `hang` | A `frames` poll times out after `hang_s=2` s, `ping` answers, and a second ping 0.25 s later shows the same engine frame | Main-thread freezes; when it resumes, the long interval is also a `stall` |
+
+`target_fps` here is the watcher's budget (default: the bridge's current target); it does not change the bridge.
+After a start, route change, gap, new segment or a recovered drop, the drop detector ignores `drop_settle_s=2` s
+of intervals and needs the 1 s window plus 3 s of baseline: it is blind for about 6 s (`drop_blind_s` in
+`watch.json`). A slow gradual decline never triggers it. A refused or closed connection, or a slow poll while the
+engine frame keeps advancing (`slow_polls`), is never a freeze. With `triggers=stutter` alone, a stall frame still
+reports as a stutter. Triggers are screening rules, not perceptual thresholds or causes.
+
+A trigger opens an **incident** with `lead_frames=600` rows before it; later triggers join it until
+`recovery_frames=300` calm rows follow the last one (or `max_incident_frames=3600`). After `max_incidents=10`,
+triggers are counted in `triggers_not_captured`. Output, in a new directory:
+
+| File | Content |
+| --- | --- |
+| `report.html` | FPS per second for each segment with incidents shaded, per-route table (FPS, 1%/0.1% lows, p99, max, over-budget share, stutters, stalls), incident list with links |
+| `watch.json` (`openrc-debug-frame-watch v1`) | Policy, identity, outcome, segments, per-route statistics, per-second series, gaps, freezes, incidents, reconciliation with bridge totals |
+| `seconds.csv` | Per-second frames, FPS, worst interval, over-budget and stutter/stall counts |
+| `incident-NNN/incident.json` (`openrc-debug-frame-incident v1`) | Triggers, lead/recovery coverage and every row of the incident from the polls |
+| `incident-NNN/capture/` | One bounded `openrc-debug-frames v1` snapshot (`snapshot_rows=1200`; `0` disables it) exported as the usual `report.html`, `frames.csv`, `frames.json`, `analysis.json`, `frames.perfetto.json`, with the bridge's event context |
+
+Interpretation and limits:
+
+- Statistics are per **segment** (one epoch of one launch) and per **route**; menus, loading and flight are not
+  pooled. A reset or policy change by another client starts a new segment that is read from its first row.
+- 1%/0.1% lows are exact while the tail fits the 5,000 slowest retained intervals (about 500,000 frames for the 1%
+  low); beyond that they are histogram estimates labelled `histogram_approximation`. Percentiles come from a
+  histogram with 0.05 ms bins below 50 ms and 1 ms bins to 1 s.
+- Whatever ends the watch (duration, Ctrl+C, lost bridge, a protocol error), `watch.json`, `report.html` and
+  `seconds.csv` are written with the results so far; `outcome` and `error` say why it stopped. 16 MiB of
+  `max_output_bytes` (default 256 MiB) stay reserved for them; incident captures stop before that. A capture of an
+  incident longer than `snapshot_rows` holds its newest part (`capture_covers_first_trigger: false`); the
+  incident's own rows file is complete.
+- Rows recorded between the last poll and an epoch reset or process restart are not observed.
+- Rows overwritten before a poll are counted in `gaps`; that segment's counts are lower bounds and its
+  reconciliation reports `agrees: null`. Without gaps, watched stutter/stall/hitch counts must equal the bridge's
+  cumulative deltas.
+- A `hang` duration is a client-side lower bound. The bounded snapshot at incident close costs about 4–9 ms of
+  game-thread work for 600–1,200 rows; the interval it perturbs is excluded from triggering
+  (`observer_excluded_rows`). Polls still flag the following interval as `diagnostic_query`.
+- `--json` prints a one-line machine summary. The watch needs the session's control ownership like any other
+  live command; run it from a second shell or in the background while you fly.
 
 ### Retention, reset and observer effects
 
@@ -557,9 +628,9 @@ Research, decisions and software verification: [PT1h-R15 evidence](../../docs/re
 
 Preserve the five exported files first, then use the observed symptom to choose
 one follow-up. Keep scenario, source/build, renderer/driver, cap/VSync/refresh,
-output/internal resolution and cold/warm state with the report. The running
-revision is currently `not_observed`; the checkout used by the client cannot fill
-that gap. Capture in your owned session and keep any heavy profiling in a separate run.
+output/internal resolution and cold/warm state with the report. A source-tree run
+reports `runtime_revision: not_observed`; the checkout used by the client cannot
+fill that gap. Capture in your owned session and keep any heavy profiling in a separate run.
 
 | Observation | Next check | Interpretation limit |
 | --- | --- | --- |
@@ -580,8 +651,8 @@ disabled state; keep `unverified_freshness` after re-enabling or on sparse viewp
 Do not assume a fixed delay across OpenGL, Vulkan and Metal. Exact-source evidence
 and external-tool constraints are in the [24-investigation follow-up](../../docs/research/release-readiness/PT1h-R15/research-2026-11-19.md).
 
-Automatic lead-up/recovery collection, richer provenance and offline paired-run
-analysis are **proposed**, not additional `frames` options. Their ownership and
+Launcher-asserted source revisions, MCP access to the watch, loading/camera phase
+markers and offline paired-run comparison are **proposed**. Their ownership and
 acceptance checks live in the [implementation plan](../../docs/plans/stutter-diagnostics.md).
 A permanent main-thread hang may leave only the last received capture and a client
 timeout; an unreturned callback cannot supply a completed frame interval.

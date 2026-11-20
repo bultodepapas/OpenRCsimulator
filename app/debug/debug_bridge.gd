@@ -66,7 +66,7 @@ const COMMANDS := {
 	"view": "name=pilot|chase|orbit|closeup: camera view (no name: the current one)",
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
-	"frames": "window=<n> target_fps=60 stutter_factor=1.5 stutter_min_extra_ms=4 stall_ms=50 budget_tolerance_ms=0.5 hitch_ms=50 factor=3 samples=<bool> events=<n> reset=<bool>: frame pacing, lows, bounded stutter evidence",
+	"frames": "window=<n> since=<frames_total cursor> epoch=<n> lean=<bool> passive=<bool> target_fps=60 stutter_factor=1.5 stutter_min_extra_ms=4 stall_ms=50 budget_tolerance_ms=0.5 hitch_ms=50 factor=3 samples=<bool> events=<n> reset=<bool>: frame pacing, lows, bounded stutter evidence",
 	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint (also sees ticks that pause, e.g. a crash)",
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
 	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
@@ -165,6 +165,7 @@ var _rate_mark := {msec = 0, tick = -1}
 ## Frame history (PT1h-R8): wall time per frame, physics ticks per frame, and recent hitches with their context.
 const FRAME_CAPACITY := 7200
 const FrameStatistics := preload("res://debug/frame_statistics.gd")
+const BuildInfo := preload("res://app_state/build_info.gd")
 const FRAME_FORMAT := "openrc-debug-frames v1"
 const RELATIVE_STUTTER := 1
 const ABSOLUTE_STALL := 2
@@ -195,6 +196,10 @@ var _frame_route := ""
 var _frame_query_pending := false
 var _frame_observer_last_usec := 0
 var _frame_clock_discontinuities := 0
+## PT1h-R15-S1: process-constant capture identity, read once (not per poll). The launch instance is a random,
+## nonsecret receipt for joining snapshots of one bridge lifetime; it is never derived from the session token.
+var _frame_source_static := {}
+var _launch_instance := "" # set in _ready before the network thread starts; read-only afterwards
 var hitch_ms := 50.0
 var hitch_factor := 3.0
 var target_fps := 60.0
@@ -259,6 +264,7 @@ func _ready() -> void:
 		if _log_file == null:
 			push_warning("debug bridge: cannot write %s: %s" % [log_path, error_string(FileAccess.get_open_error())])
 	_display_name = DisplayServer.get_name()
+	_launch_id() # before the network thread exists, so `ping` reads an immutable value
 	_render = RenderProbe.new(get_viewport())
 	_render.set_measure(true) # two GPU timestamps per frame; no-op headless. render measure=false turns it off.
 	var err := _server.listen(port, "127.0.0.1")
@@ -466,7 +472,10 @@ func _route_line(peer_id: int, line: String) -> bool:
 		id = int(id) # JSON numbers parse as floats
 	_net_mutex.lock()
 	var expected := token
-	_last_request_ms = Time.get_ticks_msec()
+	# A passive poll (the stutter watcher) must not switch on 20 Hz state publishing on the game thread,
+	# which would perturb the frames it measures. Any ordinary request still does.
+	if not _bool(request.get("passive", false)):
+		_last_request_ms = Time.get_ticks_msec()
 	var snapshot := _snapshot
 	_net_mutex.unlock()
 	if not expected.is_empty() and not _same_secret(str(request.get("token", "")), expected):
@@ -504,8 +513,9 @@ func _thread_reply(cmd: String, request: Dictionary, snapshot: Dictionary) -> Di
 		"logs":
 			return _cmd_logs(request)
 		"ping":
+			# `frame` advancing while ping answers separates a main-thread freeze from a dead bridge (PT1h-R15-S2).
 			return _ok({pid = OS.get_process_id(), godot = Engine.get_version_info().string,
-				frame = Engine.get_process_frames(), fps = Engine.get_frames_per_second(), display = _display_name,
+				launch_instance = _launch_instance, frame = Engine.get_process_frames(), fps = Engine.get_frames_per_second(), display = _display_name,
 				log_seq = debug_log.last_seq(), log_counts = debug_log.counts(),
 				route = snapshot.get("result", {}).get("route", "unknown"), out_dir = out_dir})
 		"state":
@@ -1981,12 +1991,26 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 		changed = changed or value != policy[key]
 		policy[key] = float(value)
 	var sizes := {}
-	for key: String in ["window", "events"]:
+	for key: String in ["window", "events", "since"]:
 		if request.has(key):
 			var value: Variant = _number(request[key])
-			if value == null or value < 0.0 or value != floorf(value) or value > 1000000.0:
-				return _fail("%s must be an integer between 0 and 1000000" % key)
+			var limit := 9007199254740991.0 if key == "since" else 1000000.0
+			if value == null or value < 0.0 or value != floorf(value) or value > limit:
+				return _fail("%s must be an integer between 0 and %d" % [key, int(limit)])
 			sizes[key] = int(value)
+	# PT1h-R15-S1: `since` selects the retained rows after a client's cursor in one atomic newest window, so an
+	# incremental reader cannot race the ring between asking and reading. `window` then caps that selection. A cursor
+	# is only meaningful inside its epoch: `epoch` makes a mismatch return no rows instead of another epoch's rows.
+	# It never resets or reconfigures.
+	if sizes.has("since") and (changed or _bool(request.get("reset", false))):
+		return _fail("since cannot be combined with reset or a policy change")
+	if request.has("epoch"):
+		var expected_epoch: Variant = _number(request.epoch)
+		if not sizes.has("since") or expected_epoch == null or expected_epoch < 1.0 or expected_epoch != floorf(expected_epoch):
+			return _fail("epoch must be a positive integer and accompany since")
+		sizes.epoch = int(expected_epoch)
+	if request.has("lean") and not (request.lean is bool or str(request.lean) in ["true", "false"]):
+		return _fail("lean must be a boolean")
 	# Keep legacy reset spellings handled by _bool; the new raw-samples switch is strict.
 	if request.has("samples") and not (request.samples is bool or str(request.samples) in ["true", "false"]):
 		return _fail("samples must be a boolean")
@@ -2000,8 +2024,33 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	var reset := changed or _bool(request.get("reset", false))
 	if reset:
 		_reset_frame_history()
+	var request_usec := Time.get_ticks_usec() # engine clock while handling this request (cross-process anchor)
 	var available := mini(_frame_count, FRAME_CAPACITY)
-	var window := mini(int(sizes.get("window", available)), available)
+	var requested_window := int(sizes.get("window", available))
+	var since_status := ""
+	var since_evicted := 0
+	var since_truncated := 0
+	if sizes.has("since"):
+		var since: int = sizes.since
+		if sizes.has("epoch") and sizes.epoch != _frame_epoch:
+			requested_window = 0
+			since_status = "epoch_changed"
+		elif since > _frame_count:
+			# The cursor belongs to an earlier epoch (or is invalid): nothing after it exists in this history.
+			requested_window = 0
+			since_status = "cursor_ahead_of_history"
+		else:
+			var after := _frame_count - since
+			since_evicted = maxi(0, after - available)
+			since_truncated = maxi(0, mini(after, available) - requested_window)
+			requested_window = mini(after, requested_window)
+			if since_evicted > 0:
+				since_status = "rows_evicted_after_cursor"
+			elif since_truncated > 0:
+				since_status = "window_truncated_after_cursor"
+			else:
+				since_status = "contiguous"
+	var window := mini(requested_window, available)
 	var event_limit := mini(int(sizes.get("events", 20)), EVENT_CAPACITY)
 	var samples := {end_usec = PackedInt64Array(), wall_usec = PackedInt64Array(), process_frame = PackedInt64Array(),
 		physics_ticks = PackedInt32Array(), gpu_ms = PackedFloat64Array(), baseline_ms = PackedFloat64Array(),
@@ -2012,22 +2061,25 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 		hitch_frames = 0, event_frames = 0, diagnostic_query_frames = 0}
 	var observer_total := 0
 	var observer_max := 0
+	var lean := _bool(request.get("lean", false))
+	var want_samples := lean or _bool(request.get("samples", false))
 	for i in window:
 		var index := (_frame_count - window + i) % FRAME_CAPACITY
-		times.append(_frame_ms[index])
-		if _frame_gpu_ms[index] > 0.0:
-			gpu.append(_frame_gpu_ms[index])
-		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
-			counts.physics_catch_up_frames += 1
 		var flags := _frame_flags[index]
-		counts.relative_stutter_frames += int(bool(flags & RELATIVE_STUTTER))
-		counts.stall_frames += int(bool(flags & ABSOLUTE_STALL))
-		counts.hitch_frames += int(bool(flags & LEGACY_HITCH))
-		counts.event_frames += int(bool(flags & (RELATIVE_STUTTER | ABSOLUTE_STALL | LEGACY_HITCH)))
-		counts.diagnostic_query_frames += int(bool(flags & DIAGNOSTIC_QUERY))
-		observer_total += _frame_observer_usec[index]
-		observer_max = maxi(observer_max, _frame_observer_usec[index])
-		if _bool(request.get("samples", false)):
+		if not lean: # a lean poll returns raw rows only; skip the per-row summary work it would discard
+			times.append(_frame_ms[index])
+			if _frame_gpu_ms[index] > 0.0:
+				gpu.append(_frame_gpu_ms[index])
+			if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
+				counts.physics_catch_up_frames += 1
+			counts.relative_stutter_frames += int(bool(flags & RELATIVE_STUTTER))
+			counts.stall_frames += int(bool(flags & ABSOLUTE_STALL))
+			counts.hitch_frames += int(bool(flags & LEGACY_HITCH))
+			counts.event_frames += int(bool(flags & (RELATIVE_STUTTER | ABSOLUTE_STALL | LEGACY_HITCH)))
+			counts.diagnostic_query_frames += int(bool(flags & DIAGNOSTIC_QUERY))
+			observer_total += _frame_observer_usec[index]
+			observer_max = maxi(observer_max, _frame_observer_usec[index])
+		if want_samples:
 			samples.end_usec.append(_frame_end_usec[index])
 			samples.wall_usec.append(_frame_wall_usec[index])
 			samples.process_frame.append(_frame_ids[index])
@@ -2038,6 +2090,21 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 			samples.observer_usec.append(_frame_observer_usec[index])
 			samples.route.append(_frame_routes[index])
 	var first_sequence := _frame_count - window + 1 if window > 0 else 0
+	if lean:
+		# PT1h-R15-S2 incremental poll: raw rows, cursor and exact cumulative totals only. No summary sort, event
+		# details, provenance or notes, so a frequent poll stays cheap. Not an openrc-debug-frames v1 snapshot.
+		_frame_query_pending = true
+		return _ok({format = "openrc-debug-frame-rows v1", epoch = _frame_epoch,
+			capture_id = "%d-%d-%d" % [OS.get_process_id(), _frame_origin_us, _frame_epoch],
+			launch_instance = _launch_id(), request_usec = request_usec,
+			first_sequence = first_sequence, last_sequence = _frame_count if window > 0 else 0, frames = window,
+			frames_total = _frame_count, retained_frames = available, since_status = since_status,
+			since_rows_evicted = since_evicted, since_rows_truncated = since_truncated,
+			target_fps = target_fps, budget_tolerance_ms = budget_tolerance_ms, stutter_factor = stutter_factor,
+			stutter_min_extra_ms = stutter_min_extra_ms, stall_ms = stall_ms, hitch_ms = hitch_ms, factor = hitch_factor,
+			hitch_total = _hitch_total, relative_stutter_total = _relative_stutter_total, stall_total = _stall_total,
+			event_total = _event_total, clock_discontinuities = _frame_clock_discontinuities,
+			max_physics_steps_per_frame = Engine.max_physics_steps_per_frame, samples = samples})
 	var hitches := _window_frame_events(_hitches, first_sequence, window, event_limit)
 	var stutters := _window_frame_events(_stutters, first_sequence, window, event_limit)
 	var retained_details := _unique_frame_event_count(_hitches, _stutters)
@@ -2065,13 +2132,9 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 		clock_discontinuities = _frame_clock_discontinuities,
 		flag_bits = {relative_stutter = RELATIVE_STUTTER, absolute_stall = ABSOLUTE_STALL, legacy_hitch = LEGACY_HITCH,
 			over_budget = OVER_BUDGET, diagnostic_query = DIAGNOSTIC_QUERY},
-		source = {pid = OS.get_process_id(), godot = Engine.get_version_info().string,
-			display_server = DisplayServer.get_name(), rendering_method = RenderingServer.get_current_rendering_method(),
-			rendering_driver = RenderingServer.get_current_rendering_driver_name(), os = OS.get_name(),
-			cpu_model = OS.get_processor_name(), gpu_adapter = RenderingServer.get_video_adapter_name(),
-			viewport_size = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y] if is_inside_tree() else [],
-			vsync_mode = DisplayServer.window_get_vsync_mode() if DisplayServer.get_name() != "headless" else null,
-			max_fps = Engine.max_fps, runtime_revision = "not_observed"},
+		request_usec = request_usec,
+		since_status = since_status, since_rows_evicted = since_evicted, since_rows_truncated = since_truncated,
+		source = _frame_source(),
 		measurement_notes = ["Wall callback intervals are not CPU busy time, GPU completion or presented frames.",
 			"Performance counters can lag; contributors are correlations, not proven causes.",
 			"Budget counts use target frame time plus the reported tolerance; excess time subtracts the target budget.",
@@ -2091,6 +2154,35 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	out.gpu_timing_status = "unavailable_or_zero" if gpu.is_empty() else "unverified_freshness"
 	_frame_query_pending = true
 	return _ok(out)
+
+
+## Random 128-bit nonsecret receipt of this bridge lifetime (PT1h-R15-S1), independent of PID reuse and the token.
+func _launch_id() -> String:
+	if _launch_instance.is_empty():
+		_launch_instance = Crypto.new().generate_random_bytes(16).hex_encode()
+	return _launch_instance
+
+
+## Capture provenance (PT1h-R15-S1). Process-constant fields are read once per bridge lifetime; display state that
+## can change during a session (viewport, VSync, FPS cap) is read per query. A source-tree run has no embedded
+## commit: its runtime revision stays "not_observed" rather than borrowing the client's checkout.
+func _frame_source() -> Dictionary:
+	if _frame_source_static.is_empty():
+		var build := BuildInfo.current()
+		var revision := "not_observed"
+		if build.source == "export" and str(build.commit) != "":
+			revision = str(build.commit) + ("-dirty" if build.dirty else "")
+		_frame_source_static = {pid = OS.get_process_id(), godot = Engine.get_version_info().string,
+			display_server = DisplayServer.get_name(), rendering_method = RenderingServer.get_current_rendering_method(),
+			rendering_driver = RenderingServer.get_current_rendering_driver_name(), os = OS.get_name(),
+			cpu_model = OS.get_processor_name(), gpu_adapter = RenderingServer.get_video_adapter_name(),
+			runtime_revision = revision, build_source = build.source, build_describe = build.describe,
+			build_version = build.version, launch_instance = _launch_id()}
+	var source := _frame_source_static.duplicate()
+	source.viewport_size = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y] if is_inside_tree() else []
+	source.vsync_mode = DisplayServer.window_get_vsync_mode() if DisplayServer.get_name() != "headless" else null
+	source.max_fps = Engine.max_fps
+	return source
 
 
 static func _unique_frame_event_count(first: Array[Dictionary], second: Array[Dictionary]) -> int:

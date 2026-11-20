@@ -8,7 +8,8 @@ Follow-up: [24 investigations, 2026-11-19](research-2026-11-19.md) inform the
 documentation update preserves the historical verification scope below.
 The later [tool integration follow-up](tools-integration-2026-11-19.md) adds eight
 investigations and PT1h-R15-S3a offline tools; its proof is separate from these
-2026-11-17 runtime/bridge checks.
+2026-11-17 runtime/bridge checks. The [session watch record](watch-2026-11-19.md)
+covers the post-merge plan audit and the S1a/S2a automatic watch.
 
 ## Purpose and boundary
 
@@ -164,5 +165,6 @@ converted into successful test results.
    foreground pipeline preparation, physics catch-up or a native PresentMon/Nsight capture. Repeat comparable
    runs after a targeted fix. A changed counter alone is not a causal verdict.
 
-Automatic trigger/post-trigger capture, richer platform presentation timing and automated before/after
-qualification are useful follow-ups. They are not represented as implemented features of this branch.
+Automatic trigger/post-trigger capture was added later as the
+[session watch](watch-2026-11-19.md). Richer platform presentation timing and automated before/after
+qualification remain follow-ups.

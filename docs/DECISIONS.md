@@ -381,6 +381,17 @@ attachment adapters must preserve originals and prove any joins. The
 [tool integration evidence](research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
 records the eight follow-up investigations and software-only verification.
 
+**PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
+one-shot collector and two-snapshot union with a bounded multi-incident client
+watch. It reads every new row through cheap passive `since`/`lean` polls guarded by
+epoch and launch identity, and evaluates triggers on raw intervals client-side,
+because bridge budget flags cannot see drops above the target and changing the
+target resets other clients. Incidents keep the client rows plus one capped v1
+snapshot; a full-ring fetch costs about 51 ms on the game thread and would cause
+the stall it reports. A freeze is a main-thread poll unanswered while the network
+thread's `ping` answers. Statistics stay per epoch segment and route.
+[Evidence and audit](research/release-readiness/PT1h-R15/watch-2026-11-19.md).
+
 ### Qualify exported artifacts separately from their source tree
 
 **DT / PT1.** Desktop ZIP exports carry one build identity and their actual resources; package inspection, native launch, signing trust and sustained hardware performance are separate checks. Updating remains manual, and installer/web/mobile expansion is not implied by available export templates. Promote the verified artifact bytes rather than rebuilding an assumed equivalent after acceptance. [Delivery contract](DESKTOP-DELIVERY-PLAN.md#current-delivery), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).
@@ -541,6 +552,8 @@ Freeze a reviewed publication title and body and preserve an unknown remote-writ
 [Architecture and alternatives](plans/telemetry/architecture.md), [data contract](plans/telemetry/data-contract.md), [original 38-source-question review](research/telemetry/TELEM-00/README.md). Revisit the adapter/backend choice only when a qualified existing SDK can satisfy the exact consent, identity, logging, retention and performance contracts with less maintained code. Hosting, notice, hardware and publication gates remain open.
 
 **TELEM-02…11 implementation, 2026-11-18.** The pilot receiver uses Starlette/uvicorn with SQLite instead of FastAPI/PostgreSQL: one never-backed-up raw file with secure delete and WAL truncation makes the 48-hour lifetime a property the operator can check, which a PostgreSQL WAL/replica/backup chain does not; PostgreSQL returns if one node cannot carry the admitted volume. Telemetry controls sit on Settings → Interface beside update checks rather than a seventh Settings tab, which would have narrowed the tab row at 1080p. All nine languages carry translations, but only English and Spanish notices are reviewed; the others keep telemetry off until a reviewed notice is added. A release offers telemetry only when its exact clean tag export packs an operator endpoint, name and contact from repository variables; no code change is needed to activate or to stop offering it in later builds. [Implementation verification](research/telemetry/TELEM-02/README.md).
+
+**TELEM-16/17 disclosure at report time, 2026-11-19 (owner decision).** The whole-table daily rule published nothing at pilot volume (one small GPU family suppressed every day). The rollup now also keeps unsuppressed, ID-free daily cells for fixed dimensions in the operator's aggregate database (180 days), and the weekly insights report applies the 20 session-day floor per cell, folding small cells (and, when needed, the smallest shown cell) into one combined row so no table leaves a withheld remainder. Insights are operator-only: nested dimensions shared between tables can still be differenced and a weekly session-day floor can be filled by one very active player; the v2 report keeps the conservative daily rule as the public form, never published for the same week as insights. Accepted cost: small cells exist in operator storage for 180 days. Release allowlists accept series prefixes (`v0.3.*`) so a new tag cannot be dropped because nobody added it. Revisit if anything beyond the operations repository consumes insights. [Receiver README](../services/telemetry/README.md#weekly-insights-telem-1617).
 
 **TELEM-21 hosting, 2026-11-19 (owner decision).** Host the unchanged receiver on the owner's always-on Proxmox node in an unprivileged container, published with Tailscale Funnel: no cost, no rewrite, full control of logs and copies, and the raw volume excluded from backups by the hypervisor. Rejected: Fly.io (small monthly cost), Cloudflare Workers + D1 (rewrite; D1 keeps 7-day Time Travel copies), Google Cloud e2-micro (US-only, IPv4 charge), Oracle Always Free (idle reclamation), Supabase (rewrite, pausing). Accepted costs: residential availability, and a public node that must not reach the owner's other systems, so Funnel opens only after an isolated node identity. The URL is baked into releases; the node and tailnet names are permanent. Revisit if the node cannot stay available or isolated. [Audit and comparison](research/telemetry/TELEM-AUDIT-2026-11-19/README.md).
 

@@ -139,6 +139,43 @@ func run() -> void:
 	feed(bridge, clock, 24000, 60)
 	result = bridge._cmd_frames({events = 200}).result
 	check("sustained lower FPS is a budget failure, not necessarily a stutter", result.over_budget_frames == 60)
+	# PT1h-R15-S1: incremental cursor reads and capture provenance.
+	var cursor: int = result.frames_total
+	feed(bridge, clock, 16000, 7)
+	var since: Dictionary = bridge._cmd_frames({since = cursor, samples = true, events = 0}).result
+	check("since returns exactly the rows after the cursor", since.frames == 7 and since.first_sequence == cursor + 1 and since.last_sequence == since.frames_total and since.since_status == "contiguous" and since.since_rows_evicted == 0)
+	since = bridge._cmd_frames({since = since.frames_total}).result
+	check("since at the newest cursor is an empty, non-error poll", since.frames == 0 and since.last_sequence == 0 and since.since_status == "contiguous")
+	since = bridge._cmd_frames({since = since.frames_total + 5}).result
+	check("a cursor ahead of history (earlier epoch) selects nothing", since.frames == 0 and since.since_status == "cursor_ahead_of_history")
+	cursor = since.frames_total
+	feed(bridge, clock, 16000, Bridge.FRAME_CAPACITY + 50)
+	since = bridge._cmd_frames({since = cursor, samples = true}).result
+	check("rows evicted after the cursor are counted, never invented", since.frames == Bridge.FRAME_CAPACITY and since.since_status == "rows_evicted_after_cursor" and since.since_rows_evicted == 50 and since.first_sequence == cursor + 51)
+	for bad in [{since = -1}, {since = 1.5}, {since = 3, reset = true}, {since = 3, target_fps = 30.0}, {epoch = 1}, {since = 3, epoch = 0}, {since = 3, lean = "maybe"}]:
+		var count_before: int = bridge._frame_count
+		var epoch_before: int = bridge._frame_epoch
+		check("since misuse is refused atomically: %s" % str(bad), not bridge._cmd_frames(bad).ok and bridge.target_fps == 60.0 and bridge._frame_count == count_before and bridge._frame_epoch == epoch_before)
+	cursor = since.frames_total
+	feed(bridge, clock, 16000, 40)
+	since = bridge._cmd_frames({since = cursor, window = 10, samples = true}).result
+	check("window caps a stale cursor's selection and counts the skipped rows", since.frames == 10 and since.first_sequence == cursor + 31 and since.since_rows_truncated == 30 and since.since_status == "window_truncated_after_cursor")
+	var lean: Dictionary = bridge._cmd_frames({since = cursor, epoch = bridge._frame_epoch, lean = true}).result
+	check("lean poll returns rows, cursor and exact totals without summary or provenance", lean.format == "openrc-debug-frame-rows v1" and lean.frames == 40 and lean.samples.wall_usec.size() == 40 and not lean.has("p50_ms") and not lean.has("source") and lean.launch_instance.length() == 32 and lean.has("relative_stutter_total"))
+	lean = bridge._cmd_frames({since = cursor, epoch = bridge._frame_epoch + 1, lean = true}).result
+	check("a cursor from another epoch returns no rows instead of foreign rows", lean.frames == 0 and lean.since_status == "epoch_changed" and lean.epoch == bridge._frame_epoch)
+	# Informational host timings of query + wire encoding on the game thread (not a gate; machine dependent).
+	for probe: Dictionary in [{since = bridge._frame_count - 30, lean = true}, {since = bridge._frame_count - 120, lean = true},
+			{window = 600, samples = true, events = 200}, {window = 1800, samples = true, events = 200},
+			{window = Bridge.FRAME_CAPACITY, samples = true, events = 200}]:
+		var t0 := Time.get_ticks_usec()
+		var bytes := Bridge._encode(bridge._cmd_frames(probe)).size()
+		print("measure frames %s: %d usec, %d bytes" % [str(probe), Time.get_ticks_usec() - t0, bytes])
+	var first_source: Dictionary = since.source
+	var again: Dictionary = bridge._cmd_frames({window = 1}).result
+	check("launch instance is a stable 128-bit nonsecret receipt", str(first_source.launch_instance).length() == 32 and again.source.launch_instance == first_source.launch_instance and str(first_source.launch_instance) != bridge.token)
+	check("source-tree runtime revision stays not_observed", first_source.runtime_revision == "not_observed" and first_source.build_source == "development")
+	check("each reply carries a request-time engine clock anchor; a window read has no cursor status", int(again.request_usec) > 0 and again.since_status == "")
 	# Reproducible fixture for the Python exporter contract (explicitly synthetic).
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--sample-out="):

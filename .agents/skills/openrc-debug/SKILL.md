@@ -32,7 +32,7 @@ $D stop
   each action returns the new snapshot, and `sim_fly` leaves the aircraft flying.
 - Write a repro as a file of these lines and run it with `$D run repro.txt --fail-on-error` (stops at the first
   failure or new engine error; `assert expr=`).
-- Stutter: `$D frames` (percentiles, hitches with causes). Leaks: `$D objects baseline=true` … `diff=true`, or
+- Stutter: `$D frames` (percentiles, hitches with causes); intermittent drops/stutters/freezes over a whole session: `$D frames watch --out tmp/watch-01` (incidents + per-route report). Leaks: `$D objects baseline=true` … `diff=true`, or
   `$D soak scenario.txt`. Physics bugs: `$D break expr="-s[2] < 1" wait=true`. Script CPU: `launch --script-profile`,
   then `$D profile seconds=20`. Render diagnostics (rendered launch, not `--headless`): `$D render` (raw root GPU
   readings with unverified freshness, CPU time and draw counters), `$D ablate` (unverified timing deltas),

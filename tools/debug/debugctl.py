@@ -23,6 +23,8 @@ Observe and hunt bugs
   frames [target_fps=60] [reset=true] [window=N]  stutters, FPS lows, budget; configure/reset before reproduction
   frames [window=N] --out NEW_DIR               preserve one capture as HTML, CSV, JSON and Perfetto
   frames --input frames.json --out NEW_DIR [sustained_frames=30]  analyze a saved capture offline
+  frames watch --out NEW_DIR [duration_s=600] [triggers=stall,stutter,sustained,drop,hang] [target_fps=N]
+                                                watch a session; save each FPS drop/stutter/freeze as an incident
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
   render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
   rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
@@ -780,6 +782,58 @@ def timeline(argv: list[str]) -> int:
     for gap, before, after in gaps[:option("--top", 12)]:
         print(f"{gap:>7} ms  {gap * 100 / max(span, 1):4.1f} %  after: {before['text'][:100]}")
         print(f"{'':>17}  next:  {after['text'][:100]}")
+    return 0
+
+
+def watch_frames(argv: list[str]) -> int:
+    """PT1h-R15-S2: watch the owned session with cheap passive polls; never resets or reconfigures the recorder."""
+    if (argv.count("--out") != 1 or argv.index("--out") + 1 >= len(argv)
+            or argv[argv.index("--out") + 1].startswith("--")):
+        raise ValueError("frames watch --out requires one new output directory")
+    index = argv.index("--out")
+    destination = Path(argv[index + 1]).expanduser().resolve()
+    if destination.exists():
+        raise ValueError(f"watch directory already exists: {destination}")
+    rest = argv[:index] + argv[index + 2:]
+    as_json = "--json" in rest
+    from tools.debug.frame_watch import Watcher, WatchError, policy_from_args
+    policy = policy_from_args(parse_args([value for value in rest if value != "--json"]))
+
+    def fetch(cmd: str, args: dict, timeout: float) -> dict:
+        try:
+            return result_of(cmd, args, timeout=timeout)
+        except Refused as error:
+            # A managed (test-queue) session reports an unanswered bridge request as a refusal; it is a timeout.
+            if "timed out" in str(error).lower() or "timeout" in str(error).lower():
+                raise TimeoutError(str(error)) from error
+            raise WatchError(f"bridge refused {cmd}: {error}") from error
+
+    def log(text: str) -> None:
+        print(f"[{time.strftime('%H:%M:%S')}] {text}", file=sys.stderr, flush=True)
+
+    log(f"watching for {policy.duration_s:g} s (Ctrl+C stops and keeps the results) -> {destination}")
+    summary = Watcher(policy, fetch, destination, now=time.monotonic, sleep=time.sleep, log=log).run()
+    if as_json:
+        print(json.dumps({"watch": str(destination), "outcome": summary["outcome"], "error": summary.get("error"),
+                          "incidents": len(summary["incidents"]), "gaps": len(summary["gaps"]),
+                          "hangs": len(summary["hangs"])}, ensure_ascii=False))
+        return 0
+    print(f"Watch {summary['outcome']} after {summary['elapsed_s']:.0f} s: {len(summary['incidents'])} incident(s), "
+          f"{len(summary['hangs'])} freeze(s), {len(summary['gaps'])} coverage gap(s)")
+    if summary.get("error"):
+        print(f"  stopped by: {summary['error']} (results gathered until then are kept)")
+    for segment in summary["segments"]:
+        for route, stats in [("all", segment["overall"])] + sorted(segment["routes"].items()):
+            if stats.get("frames"):
+                print(f"  segment {segment['index']} {route:<12} {stats['frames']:>7} frames  FPS {stats['fps_mean']:>7}  "
+                      f"1% low {stats['fps_1pct_low']}  max {stats['max_ms']} ms  over budget {stats['over_budget_percent']}%  "
+                      f"stutters {stats['relative_stutter_frames']}  stalls {stats['stall_frames']}")
+    for incident in summary["incidents"]:
+        print(f"  incident {incident['id']}: {incident['outcome']} {incident['trigger_counts']} worst "
+              f"{incident.get('worst_ms')} ms -> {destination / ('incident-%03d' % incident['id'])}")
+    if summary["triggers_not_captured"]:
+        print(f"  not captured (max_incidents reached): {summary['triggers_not_captured']}")
+    print("Report: " + str(destination / "report.html"))
     return 0
 
 
@@ -1893,6 +1947,8 @@ def main(argv: list[str]) -> int:
             return bugit(rest)
         if command == "bugitgo":
             return bugitgo(rest)
+        if command == "frames" and rest[:1] == ["watch"]:
+            return watch_frames(rest[1:])
         if command == "frames" and "--out" in rest:
             return capture_frames(rest)
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]

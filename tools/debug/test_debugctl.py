@@ -19,7 +19,9 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "godot"))
+# Appended, not prepended: tools/godot/test_frame_capture.py must not shadow tools/debug/test_frame_capture.py
+# when `unittest discover -s tools/debug` imports both suites into one process.
+sys.path.append(str(Path(__file__).resolve().parents[1] / "godot"))
 import debugctl  # noqa: E402
 
 
