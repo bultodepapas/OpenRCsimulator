@@ -6,6 +6,16 @@ These read-only Python tools accompany the [package investigation](../../../docs
 
 The code uses Python 3.10+ and its standard library; the recorded checks ran on Python 3.12.14 on Linux. It does not download anything, execute simulator/model code, extract members, follow stored source paths or decode opaque members. No aircraft binaries are committed here. Obtain a permitted local sample using its original creator/community link and the exact ZIP member listed in the [inventory](../../../docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json).
 
+## Stock installation decoders (2026-11-20)
+
+[inspect_geo.py](inspect_geo.py) parses stock `.geo` geometry, converts 3-channel stock textures and writes a research GLB; [inspect_luac.py](inspect_luac.py) decodes the pair-sum script container and abstractly evaluates the Lua 5.0 data chunk of a `.mod` without running Lua. Formats, corpus results and rights boundaries: [stock-format evidence](../../../docs/research/aircraft-creator/phoenix-stock-format-2026-11-20.md).
+
+    python3 research/aircraft-creator/phoenix/inspect_geo.py --corpus "<install>/resources/objects"
+    python3 research/aircraft-creator/phoenix/inspect_luac.py "<install>/.../easystar/easystar.mod"
+    python3 research/aircraft-creator/phoenix/inspect_geo.py MODEL.geo --texture MODEL.bmp --glb NEW.glb --scale SIZE_OVER_100
+
+Point them only at a local installation; never commit stock bytes or their converted output.
+
 ## Bulk ZIP corpus scan (research only)
 
 Use [scan_bulk_zip.py](scan_bulk_zip.py) and [test_scan_bulk_zip.py](test_scan_bulk_zip.py) for deterministic, read-only, bounded ZIP32 discovery over explicitly selected PKGs. This is *not* a runtime importer, and it never extracts aircraft files.
