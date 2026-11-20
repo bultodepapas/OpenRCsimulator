@@ -101,7 +101,7 @@ scheduled task on DEVIL, windowless through `pythonw`, with `--loop --interval 6
 --serve-engine <pinned console engine>`. Each pass:
 
 - resumes, through the idempotent `recover`, every MCP request with a frozen
-  manifest, no final result, no live supervisor and a change within 24 hours;
+  manifest, no final result, no live supervisor and a change within 6 hours;
 - skips `ERROR` and `NEEDS_OPERATOR`, and stops resuming a request after six
   resumes in a day;
 - reports older requests as stale and never resumes them: their queued tests
