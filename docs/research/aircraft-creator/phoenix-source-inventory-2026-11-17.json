@@ -1,0 +1,3168 @@
+{
+  "date_utc": "2026-11-17",
+  "purpose": "Observations only; no geometry decoder, simulator execution or aircraft redistribution.",
+  "grammar_observed": {
+    "package": [
+      "byte 0 is zero",
+      "u16 little-endian numeric-string byte length",
+      "ASCII numeric string (meaning unproven; candidate revision)",
+      "u16 little-endian chunk count",
+      "repeated u32 LE compressed length, u32 LE inflated length, zlib data; end of package"
+    ],
+    "body": [
+      "prefix 01 00 01 00",
+      "recursive list: u16 LE number of children, then child records",
+      "record: u8 kind (1 directory, 0 file), u16 LE name length and name",
+      "directory: nested child list; file: u16 LE source-path length and source path, u32 LE byte length and data, then nested child list (zero in observed files)",
+      "optional trailing zero bytes"
+    ],
+    "caveats": [
+      "These observations cover only selected samples and do not establish an official or complete format specification.",
+      "Source-path strings are not emitted by the probe and must not be trusted as filesystem paths.",
+      "pkg_header_numeric_string is not established as container format version or Phoenix application version.",
+      "Nonzero trailing body data is rejected by this research probe, not proven invalid for all possible packages.",
+      "Mostly-printable-ASCII is heuristic only.",
+      "Different raw name encodings can produce the same displayed path; raw hex components retain identity, but a production alias-resolution policy is not implemented."
+    ]
+  },
+  "examples": {
+    "freewing-su35": {
+      "author": "rickp",
+      "post_url": "https://www.rcgroups.com/forums/showpost.php?p=43982319&postcount=4008",
+      "download_url": "https://www.rcgroups.com/forums/showatt.php?attachmentid=13250203",
+      "zip_member": "SU-35 v23.pkg",
+      "archive": {
+        "bytes": 1622088,
+        "sha256": "cca61f719a796b2378d2c7b7f74df579a5b8b1065c6348ff4f3fdef8cf6e0e03",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "SU-35 v23.pkg",
+            "bytes": 1674324,
+            "compressed_bytes": 1621928,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.000000",
+        "input_bytes": 1674324,
+        "input_sha256": "2111d5c87704eb7670e5888c6a2303933c45f203b6a02a986c500e22373d785e",
+        "chunk_count": 8,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 673101,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 673130,
+            "compressed_bytes": 176076,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 849214,
+            "compressed_bytes": 179469,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1028691,
+            "compressed_bytes": 175966,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1204665,
+            "compressed_bytes": 148709,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1353382,
+            "compressed_bytes": 158308,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1511698,
+            "compressed_bytes": 133967,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1645673,
+            "compressed_bytes": 28651,
+            "inflated_bytes": 165067
+          }
+        ],
+        "body_bytes": 7333067,
+        "body_sha256": "a8d4515d0bf19aff0d3fdb19fc6c328af1b7984b4a3cfa94dddb2d66130a811c",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 208,
+        "directories": 5,
+        "member_count": 4,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "SU_35_v23",
+              "SU-35 Paint 2.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53555f33355f763233",
+              "53552d3335205061696e7420322e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 165,
+            "bytes": 642602,
+            "sha256": "b94bcb912a96102609c2570ac968e847aea0637250b3b3c4102f9d89b917401d",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2047,
+              "height": 2047
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "SU_35_v23",
+              "SU_35_v23.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53555f33355f763233",
+              "53555f33355f7632332e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 642852,
+            "bytes": 6657997,
+            "sha256": "0c15fd437180c9522486b8f69a566153c4f3a715c5fbcdd4071ce1bc75e60327",
+            "prefix_hex": "01000000200000002000000070a60000",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "SU_35_v23",
+              "SU_35_v23.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53555f33355f763233",
+              "53555f33355f7632332e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7300934,
+            "bytes": 15382,
+            "sha256": "b43e2a17418525873bad33ede75d4df108203514046e434e9b17bb884ba72681",
+            "prefix_hex": "6d6f64656c54797065732e53555f3335",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "SU_35_v23",
+              "SU_35_v23_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53555f33355f763233",
+              "53555f33355f7632335f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7316417,
+            "bytes": 16440,
+            "sha256": "bae04aae4d4deec91c2716da9942f051a68eeb7d9a0442206fefde3ba78b9033",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "1.0",
+        "formatVersion": "5.5.f",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "NACA 0009"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": true,
+        "contains_geometry_node_names": true,
+        "selected_observed_values": {
+          "size_numeric": "1.5",
+          "weight_numeric": "3.0",
+          "propulsion_names": [
+            "EDF LEFT",
+            "EDF RIGHT"
+          ],
+          "retract_flag_count": 4,
+          "units_and_physics_semantics": "not independently validated",
+          "thrust_vectoring": "not established by the observed .mod",
+          "propulsion_source_type": "turbine",
+          "max_thrust_numeric_each": "30.0",
+          "spool_time_numeric_each": "0.5",
+          "retract_assemblies": [
+            "NOSE GEAR",
+            "MAIN GEAR",
+            "NOSE LINK",
+            "NOSE DOORS"
+          ],
+          "propulsion_semantic_warning": "EDF source labels using Phoenix turbine nodes do not establish OpenRC turbine-law compatibility."
+        },
+        "engine_field_labels": [
+          "Medium electric"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "SU-35 Paint 2.png": 177,
+          "AILERON": 6654715,
+          "RUDDER": 6655319
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "extra300": {
+      "author": "Bishop_1",
+      "post_url": "https://www.rcgroups.com/forums/showpost.php?p=55234581&postcount=22639",
+      "download_url": "https://www.rcgroups.com/forums/showatt.php?attachmentid=20409163&d=1794147588",
+      "zip_member": "Pau Extra 300SP v07.pkg",
+      "archive": {
+        "bytes": 6210043,
+        "sha256": "a419b945db29a23dc08eed91cde62aa9eaf07867b6905dcaebcd32dfbe990a4c",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "Pau Extra 300SP v07.pkg",
+            "bytes": 6341574,
+            "compressed_bytes": 6209827,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "7.000000",
+        "input_bytes": 6341574,
+        "input_sha256": "412038ee523356ced7a8673324c0c9e4f316a4be243ee6e9ab34ec9151320507",
+        "chunk_count": 17,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 1012793,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1012822,
+            "compressed_bytes": 977969,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1990799,
+            "compressed_bytes": 1002011,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 2992818,
+            "compressed_bytes": 1018323,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 4011149,
+            "compressed_bytes": 390760,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 4401917,
+            "compressed_bytes": 222245,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 4624170,
+            "compressed_bytes": 233105,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 4857283,
+            "compressed_bytes": 218164,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5075455,
+            "compressed_bytes": 105710,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5181173,
+            "compressed_bytes": 114630,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5295811,
+            "compressed_bytes": 142946,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5438765,
+            "compressed_bytes": 153739,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5592512,
+            "compressed_bytes": 146664,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5739184,
+            "compressed_bytes": 150362,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5889554,
+            "compressed_bytes": 188573,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 6078135,
+            "compressed_bytes": 154296,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 6232439,
+            "compressed_bytes": 109135,
+            "inflated_bytes": 812292
+          }
+        ],
+        "body_bytes": 17196292,
+        "body_sha256": "af019e0e1054ff791c3303dea98bbe0d5c965f23a2d217dbab4e1d018db67c62",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 306,
+        "directories": 5,
+        "member_count": 12,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07#Artwork Spirit.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f76303723417274776f726b205370697269742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 227,
+            "bytes": 712435,
+            "sha256": "f95646c3b849ffd256a69b2b1f3a3b4850a25ce523e74df678ac812d926fc231",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07#Russian WW2.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f763037235275737369616e205757322e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 712801,
+            "bytes": 627650,
+            "sha256": "fdc839e82ec9cadd1a22ed868f704f5a169fe6790587231802b4a759999a555b",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07#Steel & Stripes.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f76303723537465656c202620537472697065732e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 1340598,
+            "bytes": 902055,
+            "sha256": "fd2d207456c7e06d4a27e0e1b5b67eb008a746642242d2af751d8eec058f1812",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f7630372e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 2242768,
+            "bytes": 582749,
+            "sha256": "85bed9e385dd69cdbf56c28329adee935c981c203be7d992cb87530ac174fc21",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2048,
+              "height": 2048
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07_Cockpit.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f7630375f436f636b7069742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 2825648,
+            "bytes": 1560525,
+            "sha256": "c763caf98a386d8bd6a42d18d6a4454e2e0a72a040f247c41d35a99f8bf64c09",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2048,
+              "height": 2048
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau Extra 300SP_v07_PropBlur.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061752045787472612033303053505f7630375f50726f70426c75722e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4386306,
+            "bytes": 262200,
+            "sha256": "8f8c5bfea5ccb74ea071eed29d5977ff10e0f2936ca05a99266666a57f19b75e",
+            "prefix_hex": "424d3800040000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 256,
+              "height": 256
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07#Artwork Spirit.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f76303723417274776f726b205370697269742e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4648651,
+            "bytes": 16440,
+            "sha256": "f92538c630e60bbbd19e3edc070df3ef40a4f8f6e81b5026a47c5e31d586030d",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07#Russian WW2.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f763037235275737369616e205757322e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4665230,
+            "bytes": 16440,
+            "sha256": "f92538c630e60bbbd19e3edc070df3ef40a4f8f6e81b5026a47c5e31d586030d",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07#Steel & Stripes.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f76303723537465656c202620537472697065732e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4681817,
+            "bytes": 16440,
+            "sha256": "f92538c630e60bbbd19e3edc070df3ef40a4f8f6e81b5026a47c5e31d586030d",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f7630372e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4698372,
+            "bytes": 12466109,
+            "sha256": "4a7089be43dbcfa0e917e478d9f1b6c7c40da5794b6fe6e589d59839481c4252",
+            "prefix_hex": "010000003400000034000000ab370100",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f7630372e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 17164596,
+            "bytes": 14817,
+            "sha256": "8a35d275c8e9ead987f7edd315d6b0fec19bd2c9f42cb6abed4d6a373c18bdb1",
+            "prefix_hex": "6d6f64656c54797065732e5061755f45",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Pau_Extra_300SP_v07",
+              "Pau_Extra_300SP_v07_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "5061755f45787472615f33303053505f763037",
+              "5061755f45787472615f33303053505f7630375f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 17179544,
+            "bytes": 16440,
+            "sha256": "c4dc2f3ee8935569102444950870d0b66cd94efa331b40237ea76c1071ba2614",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "7.0",
+        "formatVersion": "5.5.c",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "Flat Profile",
+          "NACA 0013"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": true,
+        "contains_geometry_node_names": true,
+        "selected_observed_values": {
+          "size_numeric": "2.67",
+          "weight_numeric": "12.9",
+          "input_names": [
+            "Left Aileron",
+            "Left Elevator",
+            "None",
+            "Rudder"
+          ],
+          "units_and_physics_semantics": "not independently validated"
+        },
+        "engine_field_labels": [
+          "DA 90"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "Pau Extra 300SP_v07.png": 177,
+          "WingLeft": 12459767,
+          "Fuselage": 12461277
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "wasp18": {
+      "author": "rickp",
+      "post_url": "https://www.rcgroups.com/forums/showpost.php?p=55236589&postcount=22642",
+      "download_url": "https://www.rcgroups.com/forums/showatt.php?attachmentid=20411967&d=1794227838",
+      "zip_member": "Airspeed Queen Wasp v18.pkg",
+      "archive": {
+        "bytes": 1672238,
+        "sha256": "55b99360f68102bdd2a26c53e37b89a6899db835ecf8c0b77d4bbbf487e5ca65",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "Airspeed Queen Wasp v18.pkg",
+            "bytes": 1791521,
+            "compressed_bytes": 1672050,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.000000",
+        "input_bytes": 1791521,
+        "input_sha256": "9258dc5c4463a0da4bfcab8b33883d2e62859d5a21a8516991b59409bd4aef27",
+        "chunk_count": 11,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 313900,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 313929,
+            "compressed_bytes": 159996,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 473933,
+            "compressed_bytes": 139040,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 612981,
+            "compressed_bytes": 147105,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 760094,
+            "compressed_bytes": 152681,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 912783,
+            "compressed_bytes": 144715,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1057506,
+            "compressed_bytes": 173442,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1230956,
+            "compressed_bytes": 167823,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1398787,
+            "compressed_bytes": 173994,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1572789,
+            "compressed_bytes": 143252,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1716049,
+            "compressed_bytes": 75472,
+            "inflated_bytes": 486516
+          }
+        ],
+        "body_bytes": 10726516,
+        "body_sha256": "ee812f7dc2107addc77ce2c72a4106e29c430debea05d1ceb937836fb137d90c",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 264,
+        "directories": 5,
+        "member_count": 4,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_v18",
+              "Airspeed Queen Wasp Paint.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f763138",
+              "416972737065656420517565656e2057617370205061696e742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 217,
+            "bytes": 226842,
+            "sha256": "350199a17f47f1cd5e92bce7db22307f4f9ac51ee69711eac6611b412c63542c",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2048,
+              "height": 2048
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_v18",
+              "Airspeed_Queen_Wasp_v18.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f763138",
+              "41697273706565645f517565656e5f576173705f7631382e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 227186,
+            "bytes": 10466627,
+            "sha256": "e2b6f10499d01ee1d33e3ed702ada0f84a87baa4c0f02528c7229205db858ec7",
+            "prefix_hex": "010000002300000027000000c2050100",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_v18",
+              "Airspeed_Queen_Wasp_v18.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f763138",
+              "41697273706565645f517565656e5f576173705f7631382e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 10693940,
+            "bytes": 15727,
+            "sha256": "70027729d1c2609717790e27ab3ed1c829778233cc157bd523dadc89282874ae",
+            "prefix_hex": "6d6f64656c54797065732e4169727370",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_v18",
+              "Airspeed_Queen_Wasp_v18_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f763138",
+              "41697273706565645f517565656e5f576173705f7631385f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 10709810,
+            "bytes": 16440,
+            "sha256": "121d7b960297315da1c1011c342153c4ff75f928d2f6bc26954aea6f3b231882",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "1.0",
+        "formatVersion": "5.5.f",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "NACA 0009",
+          "NACA 2314"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": true,
+        "contains_geometry_node_names": true,
+        "engine_field_labels": [
+          "Original Radial Engine"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "Airspeed Queen Wasp Paint.png": 177
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "wasp20": {
+      "author": "rickp",
+      "post_url": "https://www.rcgroups.com/forums/showpost.php?p=55236589&postcount=22642",
+      "download_url": "https://www.rcgroups.com/forums/showatt.php?attachmentid=20411969&d=1794227841",
+      "zip_member": "Airspeed Queen Wasp Amphib v20.pkg",
+      "archive": {
+        "bytes": 1060484,
+        "sha256": "59a9b56a0c5f22b81e1eb7738466bce05764248579d3557cf44abbc53f4862a6",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "Airspeed Queen Wasp Amphib v20.pkg",
+            "bytes": 1142154,
+            "compressed_bytes": 1060282,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.000000",
+        "input_bytes": 1142154,
+        "input_sha256": "20ac9e002b38b19cba75a9d1090a074c83122c93bab079db56b638e267a2bfef",
+        "chunk_count": 7,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 314160,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 314189,
+            "compressed_bytes": 154300,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 468497,
+            "compressed_bytes": 143276,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 611781,
+            "compressed_bytes": 146784,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 758573,
+            "compressed_bytes": 156062,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 914643,
+            "compressed_bytes": 135898,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1050549,
+            "compressed_bytes": 91605,
+            "inflated_bytes": 656056
+          }
+        ],
+        "body_bytes": 6800056,
+        "body_sha256": "7132c2045fc72e25e164ac08e32cfb4e447591721f82b25e7f412ed49e2c03f2",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 292,
+        "directories": 5,
+        "member_count": 4,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_Amphib_v20",
+              "Airspeed Queen Wasp Paint.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f416d706869625f763230",
+              "416972737065656420517565656e2057617370205061696e742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 231,
+            "bytes": 226842,
+            "sha256": "350199a17f47f1cd5e92bce7db22307f4f9ac51ee69711eac6611b412c63542c",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2048,
+              "height": 2048
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_Amphib_v20",
+              "Airspeed_Queen_Wasp_Amphib_v20.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f416d706869625f763230",
+              "41697273706565645f517565656e5f576173705f416d706869625f7632302e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 227221,
+            "bytes": 6539375,
+            "sha256": "c65fece3ec9e85725b87acd49bc13a1bdc3bd6c731e23b9fa6ce600e5252e1e6",
+            "prefix_hex": "010000001f0000002100000074a30000",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_Amphib_v20",
+              "Airspeed_Queen_Wasp_Amphib_v20.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f416d706869625f763230",
+              "41697273706565645f517565656e5f576173705f416d706869625f7632302e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 6766744,
+            "bytes": 16414,
+            "sha256": "214f8def8b758854b693a94af47e6dd8b48c761bc006c2151b7e0be9f85a8863",
+            "prefix_hex": "6d6f64656c54797065732e4169727370",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Airspeed_Queen_Wasp_Amphib_v20",
+              "Airspeed_Queen_Wasp_Amphib_v20_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "41697273706565645f517565656e5f576173705f416d706869625f763230",
+              "41697273706565645f517565656e5f576173705f416d706869625f7632305f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 6783322,
+            "bytes": 16440,
+            "sha256": "c1b9b4404b9b72ee3d03dd0cc0fe509f7aef4d5b8047b84ec705353d21d744a1",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "1.0",
+        "formatVersion": "5.5.f",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "NACA 0009",
+          "NACA 2314"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": true,
+        "contains_geometry_node_names": true,
+        "engine_field_labels": [
+          "Original Radial Engine"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "Airspeed Queen Wasp Paint.png": 177
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "su37": {
+      "author": "not independently established",
+      "listing_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+      "download_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Planes.zip",
+      "zip_member": "Su_37_Terminator_turbine.pkg",
+      "archive": {
+        "bytes": 63166915,
+        "sha256": "e59a722798df2d024fe60b93238ace6099e96f669f7fbedb2991423cdf3fdeca",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "AV-8B_Harrier turbine.pkg",
+            "bytes": 3084809,
+            "compressed_bytes": 2910761,
+            "encrypted": false
+          },
+          {
+            "name": "B52H_Stratofortress.pkg",
+            "bytes": 4833112,
+            "compressed_bytes": 4306093,
+            "encrypted": false
+          },
+          {
+            "name": "C-5 Galaxy turbine.pkg",
+            "bytes": 2935286,
+            "compressed_bytes": 2421120,
+            "encrypted": false
+          },
+          {
+            "name": "EFLCarbonZYak543X.pkg",
+            "bytes": 1928595,
+            "compressed_bytes": 1891675,
+            "encrypted": false
+          },
+          {
+            "name": "efliteCarbonZCub.pkg",
+            "bytes": 1930802,
+            "compressed_bytes": 1888242,
+            "encrypted": false
+          },
+          {
+            "name": "EFLP-47D.pkg",
+            "bytes": 1686718,
+            "compressed_bytes": 1662968,
+            "encrypted": false
+          },
+          {
+            "name": "EFLRareBear.pkg",
+            "bytes": 1544165,
+            "compressed_bytes": 1508243,
+            "encrypted": false
+          },
+          {
+            "name": "F-14A_Tomcat_turbine.pkg",
+            "bytes": 4237538,
+            "compressed_bytes": 4042165,
+            "encrypted": false
+          },
+          {
+            "name": "F-14-tomcat.pkg",
+            "bytes": 877419,
+            "compressed_bytes": 856496,
+            "encrypted": false
+          },
+          {
+            "name": "Great Lakes Bi-Plane.pkg",
+            "bytes": 813604,
+            "compressed_bytes": 767927,
+            "encrypted": false
+          },
+          {
+            "name": "H9Inverza62.pkg",
+            "bytes": 1331165,
+            "compressed_bytes": 1287393,
+            "encrypted": false
+          },
+          {
+            "name": "KDSAgile55.pkg",
+            "bytes": 2538564,
+            "compressed_bytes": 2466843,
+            "encrypted": false
+          },
+          {
+            "name": "Lockheed-P38.pkg",
+            "bytes": 8003612,
+            "compressed_bytes": 7875857,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_A6MZero.pkg",
+            "bytes": 1963481,
+            "compressed_bytes": 1937110,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_F16.pkg",
+            "bytes": 5464000,
+            "compressed_bytes": 5402466,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_F18turbine.pkg",
+            "bytes": 1506475,
+            "compressed_bytes": 1447180,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_hiroboQuarkSG.pkg",
+            "bytes": 1919392,
+            "compressed_bytes": 1875854,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_TTMiniTitanV2.pkg",
+            "bytes": 2231728,
+            "compressed_bytes": 2187940,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_TTRaptorE700.pkg",
+            "bytes": 2105590,
+            "compressed_bytes": 2073455,
+            "encrypted": false
+          },
+          {
+            "name": "Su_37_Terminator_turbine.pkg",
+            "bytes": 8367984,
+            "compressed_bytes": 8205997,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine MIG 31.pkg",
+            "bytes": 4969264,
+            "compressed_bytes": 4699906,
+            "encrypted": false
+          },
+          {
+            "name": "typhoon3.pkg",
+            "bytes": 1497451,
+            "compressed_bytes": 1447846,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.000000",
+        "input_bytes": 8367984,
+        "input_sha256": "e7943d1a2c1379f4950b11421dd867b3f01922654d9efc430d43f17761aeafe7",
+        "chunk_count": 16,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 1013006,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1013035,
+            "compressed_bytes": 1023268,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 2036311,
+            "compressed_bytes": 1023946,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 3060265,
+            "compressed_bytes": 1024184,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 4084457,
+            "compressed_bytes": 1023155,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 5107620,
+            "compressed_bytes": 1024128,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 6131756,
+            "compressed_bytes": 889608,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7021372,
+            "compressed_bytes": 157978,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7179358,
+            "compressed_bytes": 164323,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7343689,
+            "compressed_bytes": 165379,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7509076,
+            "compressed_bytes": 134331,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7643415,
+            "compressed_bytes": 123640,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7767063,
+            "compressed_bytes": 128379,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 7895450,
+            "compressed_bytes": 152347,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 8047805,
+            "compressed_bytes": 164051,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 8211864,
+            "compressed_bytes": 156120,
+            "inflated_bytes": 968400
+          }
+        ],
+        "body_bytes": 16328400,
+        "body_sha256": "441366c2a4db30779aecd166d7a80751e441dd5df7927b5d044883d274c7ff4d",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 0,
+        "directories": 5,
+        "member_count": 24,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Eject_Seat.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "456a6563745f536561742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 224,
+            "bytes": 16795,
+            "sha256": "821d3da938430c82f778c1f7002df5f59f8a76093dd331fa58ee26916b45c85f",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 256,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Glass_Cockpit.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "476c6173735f436f636b7069742e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 17162,
+            "bytes": 540057,
+            "sha256": "d0e7073c238c7e2cf403ab670b4fb7c4fd14f4a4ed4c7bc18900024ebea59a20",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 512
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Map__20_Raytrace.tga"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "4d61705f5f32305f52617974726163652e746761"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 557368,
+            "bytes": 10779,
+            "sha256": "0a555db31702d61195ee005f3677737c05602368deaf6b96c1594b5c698870de",
+            "prefix_hex": "00000a00000000000000000000020002",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Pilot_usa.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "50696c6f745f7573612e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 568282,
+            "bytes": 27111,
+            "sha256": "ed40edc3af25ca288c82e7d45fb29f0d21f398ad52a295a0cdaf8385ff215c77",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Concept_Lagoul.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f3223436f6e636570745f4c61676f756c2e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 595584,
+            "bytes": 639940,
+            "sha256": "011f99bf7a5af6285ae4fb5d4e54ded20f5a8442f1f8c7087355abc2a908a280",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Concept_Lagoul_2.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f3223436f6e636570745f4c61676f756c5f322e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 1235719,
+            "bytes": 635209,
+            "sha256": "4a24c49decbb6660c3dbe179652e97317bb8a48ac98d14018fec057a604ca95e",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Concept_Lagoul_3.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f3223436f6e636570745f4c61676f756c5f332e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 1871123,
+            "bytes": 707960,
+            "sha256": "b39fdcbeb51ea59c33191139eb621af760edb6c5ef8d577219d3bc3fbc4391fe",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Project_Im@s.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f322350726f6a6563745f496d40732e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 2579270,
+            "bytes": 1309495,
+            "sha256": "484ac7838c1719ee4f77546b4b2489f9cba72bb3c788d6d9f4a88487de5899ff",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Repsol_Honda.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f3223526570736f6c5f486f6e64612e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 3888952,
+            "bytes": 738566,
+            "sha256": "4784f8dc26fadeefb759638c22b22963dc28b765ee428acdd67c76b305c4a21f",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Special.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f32235370656369616c2e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 4627695,
+            "bytes": 706916,
+            "sha256": "7cde99b644bcb75b6563c94b598c6c1b412b36410f8773685ffb26ece742dc32",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2#Valentino_Rossi.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f322356616c656e74696e6f5f526f7373692e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 5334804,
+            "bytes": 798293,
+            "sha256": "a2a0f2f58ffed713df1c2db99b1f8d7b53569a3d8562f5b95a9e3da8bba96f33",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su-37_Terminator_P01_2.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53752d33375f5465726d696e61746f725f5030315f322e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 6133258,
+            "bytes": 892714,
+            "sha256": "f9b6db49b987f2aa25ca81ee915b73513396740b52635841edd520d7e892c8b1",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 1024,
+              "height": 1024
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Concept_Lagoul.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e6523436f6e636570745f4c61676f756c2e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7026167,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Concept_Lagoul_2.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e6523436f6e636570745f4c61676f756c5f322e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7042806,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Concept_Lagoul_3.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e6523436f6e636570745f4c61676f756c5f332e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7059445,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Project_Im@s.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e652350726f6a6563745f496d40732e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7076076,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Repsol_Honda.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e6523526570736f6c5f486f6e64612e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7092707,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Special.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e65235370656369616c2e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7109328,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine#Valentino_Rossi.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e652356616c656e74696e6f5f526f7373692e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7125965,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e652e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7142570,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e652e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 7159175,
+            "bytes": 9117365,
+            "sha256": "decd52e7be6892086d1572daf9d50fa9fefe757fd5e87a736ea9940055356299",
+            "prefix_hex": "010000004200000038000000a8e30000",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e652e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 16276705,
+            "bytes": 18265,
+            "sha256": "132d083b92f6877fa0849a51b374c1cd19a5c13042e4a924f90c049c5efe5764",
+            "prefix_hex": "6d6f64656c54797065732e53755f3337",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "Su_37_Terminator_turbine_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "53755f33375f5465726d696e61746f725f74757262696e655f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 16295151,
+            "bytes": 16440,
+            "sha256": "c16855233c14ae445fd31184c30c55da5beed8789e623bb59239b4e0535023f4",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Airplanes",
+              "Su_37_Terminator_turbine",
+              "TEX_FRCT.jpg"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "416972706c616e6573",
+              "53755f33375f5465726d696e61746f725f74757262696e65",
+              "5445585f465243542e6a7067"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 16311724,
+            "bytes": 16674,
+            "sha256": "cb9c4af303195a43cc71492edd37566760f8a53932343f8c03c81c80a33729b9",
+            "prefix_hex": "ffd8ffe000104a464946000102000064",
+            "classification": {
+              "kind": "JPEG signature"
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "1.0",
+        "formatVersion": "5.0.c",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "Flat Profile"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": true,
+        "contains_geometry_node_names": true,
+        "engine_field_labels": [
+          "Scale turbine"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "AileronL01": 9105821
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "yak54": {
+      "author": "not independently established",
+      "listing_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/",
+      "download_url": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/Planes.zip",
+      "zip_member": "EFLCarbonZYak543X.pkg",
+      "archive": {
+        "bytes": 63166915,
+        "sha256": "e59a722798df2d024fe60b93238ace6099e96f669f7fbedb2991423cdf3fdeca",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "AV-8B_Harrier turbine.pkg",
+            "bytes": 3084809,
+            "compressed_bytes": 2910761,
+            "encrypted": false
+          },
+          {
+            "name": "B52H_Stratofortress.pkg",
+            "bytes": 4833112,
+            "compressed_bytes": 4306093,
+            "encrypted": false
+          },
+          {
+            "name": "C-5 Galaxy turbine.pkg",
+            "bytes": 2935286,
+            "compressed_bytes": 2421120,
+            "encrypted": false
+          },
+          {
+            "name": "EFLCarbonZYak543X.pkg",
+            "bytes": 1928595,
+            "compressed_bytes": 1891675,
+            "encrypted": false
+          },
+          {
+            "name": "efliteCarbonZCub.pkg",
+            "bytes": 1930802,
+            "compressed_bytes": 1888242,
+            "encrypted": false
+          },
+          {
+            "name": "EFLP-47D.pkg",
+            "bytes": 1686718,
+            "compressed_bytes": 1662968,
+            "encrypted": false
+          },
+          {
+            "name": "EFLRareBear.pkg",
+            "bytes": 1544165,
+            "compressed_bytes": 1508243,
+            "encrypted": false
+          },
+          {
+            "name": "F-14A_Tomcat_turbine.pkg",
+            "bytes": 4237538,
+            "compressed_bytes": 4042165,
+            "encrypted": false
+          },
+          {
+            "name": "F-14-tomcat.pkg",
+            "bytes": 877419,
+            "compressed_bytes": 856496,
+            "encrypted": false
+          },
+          {
+            "name": "Great Lakes Bi-Plane.pkg",
+            "bytes": 813604,
+            "compressed_bytes": 767927,
+            "encrypted": false
+          },
+          {
+            "name": "H9Inverza62.pkg",
+            "bytes": 1331165,
+            "compressed_bytes": 1287393,
+            "encrypted": false
+          },
+          {
+            "name": "KDSAgile55.pkg",
+            "bytes": 2538564,
+            "compressed_bytes": 2466843,
+            "encrypted": false
+          },
+          {
+            "name": "Lockheed-P38.pkg",
+            "bytes": 8003612,
+            "compressed_bytes": 7875857,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_A6MZero.pkg",
+            "bytes": 1963481,
+            "compressed_bytes": 1937110,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_F16.pkg",
+            "bytes": 5464000,
+            "compressed_bytes": 5402466,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_F18turbine.pkg",
+            "bytes": 1506475,
+            "compressed_bytes": 1447180,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_hiroboQuarkSG.pkg",
+            "bytes": 1919392,
+            "compressed_bytes": 1875854,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_TTMiniTitanV2.pkg",
+            "bytes": 2231728,
+            "compressed_bytes": 2187940,
+            "encrypted": false
+          },
+          {
+            "name": "PhoenixRC_TTRaptorE700.pkg",
+            "bytes": 2105590,
+            "compressed_bytes": 2073455,
+            "encrypted": false
+          },
+          {
+            "name": "Su_37_Terminator_turbine.pkg",
+            "bytes": 8367984,
+            "compressed_bytes": 8205997,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine MIG 31.pkg",
+            "bytes": 4969264,
+            "compressed_bytes": 4699906,
+            "encrypted": false
+          },
+          {
+            "name": "typhoon3.pkg",
+            "bytes": 1497451,
+            "compressed_bytes": 1447846,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.000000",
+        "input_bytes": 1928595,
+        "input_sha256": "4a9b0cf1af316416c6d28bce0fbf1e8758216904610a485a3f431f2d469ac93e",
+        "chunk_count": 6,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 529506,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 529535,
+            "compressed_bytes": 548618,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1078161,
+            "compressed_bytes": 477081,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1555250,
+            "compressed_bytes": 153105,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1708363,
+            "compressed_bytes": 160418,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1868789,
+            "compressed_bytes": 59806,
+            "inflated_bytes": 291660
+          }
+        ],
+        "body_bytes": 5411660,
+        "body_sha256": "e02dadd4d19ee82142355fffaa94ce8a07407a8dbfc27cf00be51f2e26557f64",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 0,
+        "directories": 5,
+        "member_count": 4,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "Official",
+              "Airplanes",
+              "EFLCarbonZYak543X",
+              "EFLCarbonZYak543X.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "4f6666696369616c",
+              "416972706c616e6573",
+              "45464c436172626f6e5a59616b35343358",
+              "45464c436172626f6e5a59616b353433582e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 228,
+            "bytes": 3145792,
+            "sha256": "fb93513dccdcb2c5b17d286225c2d652f6235fcf286c9021e5dcded1b723849a",
+            "prefix_hex": "ff80402010080402ffffffffffffffff",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "Official",
+              "Airplanes",
+              "EFLCarbonZYak543X",
+              "EFLCarbonZYak543X.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "4f6666696369616c",
+              "416972706c616e6573",
+              "45464c436172626f6e5a59616b35343358",
+              "45464c436172626f6e5a59616b353433582e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 3146169,
+            "bytes": 2225597,
+            "sha256": "7030cf5c0fd2e8018412c818f7d227da4aa5b8cf4a6317b1a5179f3754140039",
+            "prefix_hex": "01000000160000001800000081370000",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "Official",
+              "Airplanes",
+              "EFLCarbonZYak543X",
+              "EFLCarbonZYak543X.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "4f6666696369616c",
+              "416972706c616e6573",
+              "45464c436172626f6e5a59616b35343358",
+              "45464c436172626f6e5a59616b353433582e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 5371915,
+            "bytes": 23130,
+            "sha256": "41b7845bad7f223ba5425b449be9bea8e74635d3d639fc323c5b592453ded5d7",
+            "prefix_hex": "00010204081020401605321a30450061",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "Official",
+              "Airplanes",
+              "EFLCarbonZYak543X",
+              "EFLCarbonZYak543X_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "4f6666696369616c",
+              "416972706c616e6573",
+              "45464c436172626f6e5a59616b35343358",
+              "45464c436172626f6e5a59616b353433585f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 5395210,
+            "bytes": 16448,
+            "sha256": "9fa15a5400eef115f78b08cf4ecefa76ce15f61eee389d5d89045db4a7a4de7e",
+            "prefix_hex": "ff80402010080402ffffffffffffffff",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          }
+        ]
+      },
+      "readable_mod": "not inspected: file bytes are not plain text; no attempt to decode or bypass",
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {}
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    },
+    "aw109": {
+      "author": "not independently established",
+      "listing_url": "https://www.flugsimulatoren.ch/Phoenix-RC.php",
+      "download_url": "https://www.flugsimulatoren.ch/Files/AW-109-Davinci-REGA.zip",
+      "zip_member": "Agusta AW109 v4.pkg",
+      "archive": {
+        "bytes": 8020104,
+        "sha256": "9c4aa7b935fbea92cc208ac183a248f7bcebebfd66013dbe1e526119c8e3f196",
+        "crc_test": "all entries passed ZipFile.testzip()",
+        "members": [
+          {
+            "name": "Agusta AW109 v4 Skids.pkg",
+            "bytes": 2601760,
+            "compressed_bytes": 2595433,
+            "encrypted": false
+          },
+          {
+            "name": "Agusta AW109 v4.pkg",
+            "bytes": 2595163,
+            "compressed_bytes": 2589450,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine Engine Sounds/",
+            "bytes": 0,
+            "compressed_bytes": 0,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine Engine Sounds/Chopper_Rotor.wav",
+            "bytes": 287202,
+            "compressed_bytes": 215891,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine Engine Sounds/heli_Jet_Chopper.pxe",
+            "bytes": 606,
+            "compressed_bytes": 253,
+            "encrypted": false
+          },
+          {
+            "name": "Turbine Engine Sounds/Jet Copter Sound Instructions.txt",
+            "bytes": 191,
+            "compressed_bytes": 120,
+            "encrypted": false
+          },
+          {
+            "name": "Agusta AW109 v3.pkg",
+            "bytes": 2624182,
+            "compressed_bytes": 2617709,
+            "encrypted": false
+          }
+        ]
+      },
+      "pkg_probe": {
+        "pkg_header_numeric_string": "1.200000",
+        "input_bytes": 2595163,
+        "input_sha256": "7072023bb8425cd8c703a287219397f35a4fc819cc370674ebaaec12030ff597",
+        "chunk_count": 4,
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 246597,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 246626,
+            "compressed_bytes": 1022484,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 1269118,
+            "compressed_bytes": 1023234,
+            "inflated_bytes": 1024000
+          },
+          {
+            "offset": 2292360,
+            "compressed_bytes": 302803,
+            "inflated_bytes": 305809
+          }
+        ],
+        "body_bytes": 3377809,
+        "body_sha256": "cfdae5d432408b5b09272895041086bc04b62538063e593091506f4dee7743c7",
+        "body_prefix_hex": "01000100",
+        "trailing_zero_bytes": 240,
+        "directories": 5,
+        "member_count": 4,
+        "members": [
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Helicopters",
+              "Agusta_AW109_v4",
+              "Agusta_AW109_v4.geo"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "48656c69636f7074657273",
+              "4167757374615f41573130395f7634",
+              "4167757374615f41573130395f76342e67656f"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 185,
+            "bytes": 884003,
+            "sha256": "542a3fc0d5bd71a7fe376112f6fa7a019b51a174dd2431ce680e2a96f25ce730",
+            "prefix_hex": "010000000d0000000d00000000160000",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Helicopters",
+              "Agusta_AW109_v4",
+              "Agusta_AW109_v4.mod"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "48656c69636f7074657273",
+              "4167757374615f41573130395f7634",
+              "4167757374615f41573130395f76342e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 884293,
+            "bytes": 14432,
+            "sha256": "ec9354bc93fde0627c5a039175eae715ee9fb2db5bef26e40046c6a6c0b7ca8e",
+            "prefix_hex": "6d6f64656c54797065732e4167757374",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Helicopters",
+              "Agusta_AW109_v4",
+              "Agusta_AW109_v4_preview.bmp"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "48656c69636f7074657273",
+              "4167757374615f41573130395f7634",
+              "4167757374615f41573130395f76345f707265766965772e626d70"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 898846,
+            "bytes": 16440,
+            "sha256": "54261720047a4cfbe92caeb2eec7cf42ef9aca40f6e374b1c3b64be6dbc6333e",
+            "prefix_hex": "424d3840000000000000360000002800",
+            "classification": {
+              "kind": "BMP signature and DIB fields",
+              "width": 64,
+              "height": 64
+            }
+          },
+          {
+            "path_components": [
+              "Downloaded",
+              "Models",
+              "User-Made",
+              "Helicopters",
+              "Agusta_AW109_v4",
+              "Augusta HB XND.png"
+            ],
+            "path_components_raw_hex": [
+              "446f776e6c6f61646564",
+              "4d6f64656c73",
+              "557365722d4d616465",
+              "48656c69636f7074657273",
+              "4167757374615f41573130395f7634",
+              "4175677573746120484220584e442e706e67"
+            ],
+            "path_component_display_decodings": [
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8",
+              "utf-8"
+            ],
+            "body_offset": 915389,
+            "bytes": 2462178,
+            "sha256": "c9d1e2d8ddf405f45a8ccc695dcbc7270f897ed19ff6d124c9079ebfca92e804",
+            "prefix_hex": "89504e470d0a1a0a0000000d49484452",
+            "classification": {
+              "kind": "PNG signature and IHDR",
+              "width": 2048,
+              "height": 2048
+            }
+          }
+        ]
+      },
+      "readable_mod": {
+        "revision": "1.2",
+        "formatVersion": "5.5.f",
+        "minProgramVersion": "5.0.a",
+        "airfoil_names": [
+          "Flat Profile",
+          "NACA 0015",
+          "NACA 2310"
+        ],
+        "contains_controlSurfaces": true,
+        "contains_collision": true,
+        "contains_propulsion": false,
+        "contains_geometry_node_names": true,
+        "engine_field_labels": [
+          "Turbine_Chopper"
+        ],
+        "inspection_method": "Selected literal declarations and manual reading; no full grammar or physical semantics validated."
+      },
+      "geo_string_observations": {
+        "method": "raw byte occurrence only, not semantic mesh/material parsing",
+        "offsets_from_geo_start": {
+          "Augusta HB XND.png": 177
+        }
+      },
+      "rights": {
+        "acquisition": "public creator or community download",
+        "conversion_permission": "not established",
+        "redistribution_permission": "not established",
+        "included_in_repository": false
+      }
+    }
+  },
+  "limitations": [
+    "The tested packages contain binary .geo entries. No mesh, topology, UV, material graph, transforms, controls, or flight behavior was decoded or validated.",
+    "Named airfoil and engine values appear in .mod but these packages do not include matching .sim files; exact lookup locations and semantics remain unresolved.",
+    "Unclassified/opaque .mod and .bmp-named bytes in Yak sample were not decoded or worked around.",
+    "ZIP downloads and creator posts do not grant universal redistribution or commercial licenses.",
+    "A .pkg can bundle many livery files for one aircraft; counting them as separate aircraft is unsupported.",
+    "PKG numeric labels correlate with MOD revisions; their field meaning and encoding-version semantics remain unproven.",
+    "The probe is capped to an observed research profile. Rejection is not proof that an unrecognized file is invalid Phoenix data."
+  ],
+  "external_variant_reference": {
+    "url": "https://github.com/uwafsl/AFSL/blob/c284e970ae6e669ccf0492647cafe7f81d2b6662/ComputingInfo/PhoenixRC/Airplanes/easystar_AFSL_Skywalker_Trainer.var",
+    "repository_git_blob_sha1": "a25c198d80bdff1e5f0c4e362496f1b5015790fe",
+    "bytes_reported_by_github": 11748,
+    "observation": "A Phoenix v5 model variant as stated in the file, with assignment statements to modelTypes.easystar, including physical, controls and airfoil fields. Requires base-model interpretation; no geometry or paint is supplied in this single file. Do not execute as code; licensing not established."
+  },
+  "legacy_phx_observation": {
+    "source": "https://www.freakware.de/technik/Phoenix-Sim/Modelle/phoenixRC_goblin700.phx",
+    "input_bytes": 2081589,
+    "input_sha256": "203c0da7efa4f6492c88d1ee00747263be308d83c363cb2323ffd3ed7a15e7d7",
+    "prefix_ascii": "PHOENIX_UPDATE_FILE followed by NUL",
+    "zlib_offset": 40,
+    "inflated_bytes": 6008201,
+    "inflated_sha256": "ef653e1e1bd931e2949306306bfc5f5992e173394d0a5e8c60fffbd915d27469",
+    "zlib_eof": true,
+    "unused_compressed_bytes": 0,
+    "contains_bytes": [
+      "/Program Folder/resources/objects/aircraft/",
+      ".geo",
+      ".bmp"
+    ],
+    "caveat": "Distinct container; body members not parsed and not proven compatible with PKG tree."
+  },
+  "schema": "openrc-phoenix-source-inventory-v1",
+  "runtime_audit_commit": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "research_branch_preceding_commit": "59a6da558d2f3b68233ba56b3e5ee50b33a772c6",
+  "probe_path": "research/aircraft-creator/phoenix/inspect_pkg.py",
+  "verification_receipt": "docs/research/aircraft-creator/phoenix-probe-verification-2026-11-17.json",
+  "probe_profile": {
+    "max_input_bytes": 67108864,
+    "max_inflated_body_bytes": 134217728,
+    "max_chunk_inflated_bytes": 1024000,
+    "max_member_bytes": 33554432,
+    "max_entries": 2048,
+    "max_depth": 32,
+    "max_string_bytes": 4096,
+    "max_trailing_zero_bytes": 512,
+    "file_children": "must be zero in this observed profile",
+    "member_paths": "reported only; never used for extraction",
+    "image_classification": "header heuristic only; not a decoder or image integrity check",
+    "source_paths": "consumed but omitted from reports",
+    "scope": "research only; no production security or cancellation qualification",
+    "max_reported_path_raw_bytes": 262144,
+    "max_serialized_report_bytes": 8388608,
+    "header_numeric_syntax": "ASCII decimal with six fractional digits; meaning unproven",
+    "name_identity": "Raw component bytes retained as hex; text and selected display decoding are separate."
+  },
+  "supporting_sources": [
+    {
+      "id": "user_su35_thread",
+      "url": "https://www.rcgroups.com/forums/showthread.php?3659985-Freewing-SU-35-Phoenix-Model-Build&perpage=20#post45018991",
+      "captured_bytes": 170404,
+      "sha256": "1f953e36163bdfe045d048bcb2ed7ac8d9f7610770d9297719033522378b5548",
+      "included_in_repository": false
+    },
+    {
+      "id": "user_master_page1510",
+      "url": "https://www.rcgroups.com/forums/showthread.php?2382571-User-Built-Models-for-PhoenixRC/page1510",
+      "captured_bytes": 143502,
+      "sha256": "8945eeb4f0a9ebf69bc7a0f3cdc311a91ec1b6691f194573d315bbc96925c5c0",
+      "included_in_repository": false
+    },
+    {
+      "id": "freewing_release",
+      "url": "https://www.rcgroups.com/forums/showpost.php?p=43982319&postcount=4008",
+      "captured_bytes": 29769,
+      "sha256": "49c2310238e946bf358715cde8911e87ba9fabd49cbb8f41ee6db58c8adcf3af",
+      "included_in_repository": false
+    },
+    {
+      "id": "original_build_log",
+      "url": "https://www.rcgroups.com/forums/showthread.php?2338848-F7F-Phoenix-Model-Build-Log/page7&perpage=20",
+      "captured_bytes": 93534,
+      "sha256": "655ab842b7c00a8a5f404a109c87122dd228996e329bc66e0512f7782cf0377b",
+      "included_in_repository": false
+    },
+    {
+      "id": "stik_tutorial",
+      "url": "https://www.dropbox.com/s/v4dhhleaaj5qw5s/Stik%20Tutorial%20v2.4.pdf?dl=0",
+      "captured_bytes": 39493962,
+      "sha256": "8c741bea2c9241b32ab3418e36e84a6e00d8e7a8e994c6442fadf2db69a2ba31",
+      "included_in_repository": false
+    },
+    {
+      "id": "legacy_creator_archive",
+      "url": "https://www.flugsimulatoren.ch/Files/PhoenixCreator_25a.zip",
+      "captured_bytes": 6619807,
+      "sha256": "787f3a36e01a99f42f32ef78e5f602cd19668d20cd4f424810047362fd9272fb",
+      "included_in_repository": false
+    }
+  ],
+  "catalog_scope": {
+    "unique_complete_aircraft_total": "not established",
+    "page1510_posts": [
+      22636,
+      22650
+    ],
+    "page1510_dates": [
+      "2026-11-08",
+      "2026-11-10"
+    ],
+    "pagination_15_posts": 1512,
+    "pagination_20_posts": 1134,
+    "host_claim_640_plus_models": "https://www.rc-thoughts.com/2020/02/640-phoenix-models-added-to-phoenix-downloads/",
+    "host_claim_2000_schemes": "https://www.flugsimulatoren.ch/Phoenix-RC.php",
+    "counts_are_not_import_compatibility": true
+  }
+}

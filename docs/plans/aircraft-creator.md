@@ -6,6 +6,8 @@ This plan owns the remaining work and acceptance. The [evidence index](../resear
 
 The [ClearView compatibility subplan](clearview-aircraft-import.md) owns AC-CV-00…14: legacy ZIP/AC3Db conversion and attributed physical authoring into these same Creator seams. Its [2026-11-15 research and experimental visual implementation](../research/aircraft-creator/clearview-2026-11-15.md) do not close any Creator numerical, persistence, Home or export gate.
 
+The proposed [Flight Simulator compatibility subplan](flight-simulator-aircraft-import.md) owns AC-FS-00…15: source/package observations, prepared-GLB and bounded visual normalization, attributed RC authoring, and separately qualified legacy/native-2024 routes. Its [2026-11-16 research](../research/aircraft-creator/flight-simulator-2026-11-16/README.md) delivers design only. It shares source-evidence and closure contracts with AC-CV, preserves the ordinary v2 compiler/trial path, and leaves existing numerical, Home, persistence, portability and platform gates open.
+
 **Owns:** `app/workshop/creator/`, `app/data/creator/`, `app/ui/aircraft_creator*.gd`, `app/tests/test_creator_*.gd`, `docs/research/aircraft-creator/`, this plan.
 
 **Coordinates:** the Workshop host, `Trial`, `Store` and Workshop UI with AE; `app/physics/aircraft_data.gd`, sessions and `app/main.gd` with physics; the v2 contract and model bindings with AS; `app/app_root.gd`, Home, preferences and localization with UI; skins with AE/skin owners; propulsion and battery context with EL/BAT; contact and starts with GP. Check the [track registry](../README.md#tracks-plans-and-step-ids) before editing a shared file.

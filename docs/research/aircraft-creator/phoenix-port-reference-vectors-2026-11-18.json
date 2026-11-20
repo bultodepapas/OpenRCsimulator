@@ -1,0 +1,1077 @@
+{
+  "schema": "openrc-phoenix-port-reference-vectors-v1",
+  "date": "2026-11-18",
+  "research_commit": "818581323f437f0c3ee1a5eac55cfcf2079d1ac8",
+  "application_commit": "39fa2746ae4f4ba8698b87db279adcfe84ef5d17",
+  "scope": "Original reference inputs; captured trusted Python research modules executed. Godot/Builder/real aircraft not executed. Source-derived STL and zlib-policy comparisons are not engine test results.",
+  "python": "3.12.14",
+  "zlib_runtime": "1.3.2",
+  "executed_parser_source_sha256": {
+    "inspect_pkg.py": "4f89ac322421842a9812e9c577c2b26f7e8436738ebd07104fb263f94c8cfdf9",
+    "inspect_definition.py": "678268321579b34ef75662102fba1b734deb9421b59d39f3f314c24057402550"
+  },
+  "probe_script_sha256": "e411f170450640b7cd964bf3db4d3529b384b8945bc9d86ceabe2cccbb662360",
+  "probe_script_hash_scope": "Observed script-file bytes after execution began; not an attestation against concurrent script replacement",
+  "source_identity": "Read, hash-check and compile the same captured trusted source bytes; no parser bytecode cache is used.",
+  "fixture_count": 19,
+  "cases": [
+    {
+      "id": "small-window-long-output",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e30303030303001003a1400001614000018950dc3037020060000b0dab66ddbb66ddbb6bfb66ddbb66ddbb6ed6e970b2000e0ff0040013ce88c2ced00000050fe0f08040c020a060e0109050d030b078f8088848c828a868e8189858d838b874f4048444c424a464e4149454d434b47cfc0c8c4ccc2cac6cec1c9c5cdc3cbc72f2028242c222a262e2129252d232b27afa0a8a4aca2aaa6aea1a9a5ada3aba76f6068646c626a666e6169656d636b67efe0e8e4ece2eae6eee1e9e5ede3ebf7cf3f2030283824342c3c22322a3a26362e3e2131293925352d3d23332b3b27372fbfa0b0a8b8a4b4acbca2b2aabaa6b6aebea1b1a9b9a5b5adbda3b3abbba7b7af7f6070687864746c7c62726a7a66766e7e6171697965756d7d63736b7b67776fffe0f0e8f8e4f4ecfce2f2eafae6f6eefee1f1e9f9e5f5edfde3f3ebfbe7f70f0010081804140c1c02120a1a06160e1e0111091905150d1d03130b1b07170f9f8090889884948c9c82928a9a86968e9e8191899985958d9d83938b9b87978f5f4050485844544c5c42524a5a46564e5e4151495945554d5d43534b5b47574fdfc0d0c8d8c4d4ccdcc2d2cadac6d6cedec1d1c9d9c5d5cdddc3d3cbdbc7d7ef9f7f4060507048685878446454744c6c5c7c426252724a6a5a7a466656764e6e5e7e4161517149695979456555754d6d5d7d436353734b6b5b7b476757774f6f5fffc0e0d0f0c8e8d8f8c4e4d4f4ccecdcfcc2e2d2f2caeadafac6e6d6f6ceeedefec1e1d1f1c9e9d9f9c5e5d5f5cdedddfdc3e3d3f3cbebdbfbc7e7d7f7cfef1f0020103008281838042414340c2c1c3c022212320a2a1a3a062616360e2e1e3e0121113109291939052515350d2d1d3d032313330b2b1b3b072717370f2f1fbf80a090b088a898b884a494b48cac9cbc82a292b28aaa9aba86a696b68eae9ebe81a191b189a999b985a595b58dad9dbd83a393b38bab9bbb87a797b78fafdf3fff80c0a0e090d0b0f088c8a8e898d8b8f884c4a4e494d4b4f48cccacec9cdcbcfc82c2a2e292d2b2f28acaaaea9adabafa86c6a6e696d6b6f68eceaeee9edebefe81c1a1e191d1b1f189c9a9e999d9b9f985c5a5e595d5b5f58dcdaded9dddbdfd83c3a3e393d3b3f38bcbabeb9bdbbbfb87c7a7e797d7b7f78fcfafef9fdf3f0040206010503070084828681858387804442464145434740c4c2c6c1c5c3c7c02422262125232720a4a2a6a1a5a3a7a06462666165636760e4e2e6e1e5e3e7e0141216111513171094929691959397905452565155535750d4d2d6d1d5d3d7d03432363135333730b4b2b6b1b5b3b7b07472767175737770f4f2f6f1f5fbf7ffe018141c121a161e1119151d131b171f1098949c929a969e9199959d939b979f9058545c525a565e5159555d535b575f50d8d4dcd2dad6ded1d9d5ddd3dbd7dfd038343c323a363e3139353d333b373f30b8b4bcb2bab6beb1b9b5bdb3bbb7bfb078747c727a767e7179757d737b777f70f8f4fcf2faf6fef1f9f5fdf3fbf7f008040c020a060e0109050d030b070f0088848c828a868e8189858d838b878f8048444c424a464e4149454d434b474f40c8c4ccc2cac6cec1c9c5cdc3cbc7cfc028242c222a262e2129252d232b272f20a8a4aca2aaa6aea1a9a5ada3aba7afa068646c626a666e6169656d636b676f60e8e4ece2eae6eee1e9e5ede3ebe7efffc030283824342c3c22322a3a26362e3e2131293925352d3d23332b3b27372f3f20b0a8b8a4b4acbca2b2aabaa6b6aebea1b1a9b9a5b5adbda3b3abbba7b7afbfa070687864746c7c62726a7a66766e7e6171697965756d7d63736b7b67776f7f60f0e8f8e4f4ecfce2f2eafae6f6eefee1f1e9f9e5f5edfde3f3ebfbe7f7eff000081804140c1c02120a1a06160e1e0111091905150d1d03130b1b07170f1f0090889884948c9c82928a9a86968e9e8191899985958d9d83938b9b87978f9f8050485844544c5c42524a5a46564e5e4151495945554d5d43534b5b47574f5f40d0c8d8c4d4ccdcc2d2cadac6d6cedec1d1c9d9c5d5cdddc3d3cbdbc7d7cfdfef9070406058784868547444645c7c4c6c527242625a7a4a6a567646665e7e4e6e5171416159794969557545655d7d4d6d537343635b7b4b6b577747675f7f4f6f50f0c0e0d8f8c8e8d4f4c4e4dcfcccecd2f2c2e2dafacaead6f6c6e6defeceeed1f1c1e1d9f9c9e9d5f5c5e5ddfdcdedd3f3c3e3dbfbcbebd7f7c7e7dfffcfe010002018380828143404241c3c0c2c123202221a3a0a2a163606261e3e0e2e1131012119390929153505251d3d0d2d133303231b3b0b2b173707271f3f0f2f10b080a098b888a894b484a49cbc8cac92b282a29aba8aaa96b686a69ebe8eae91b181a199b989a995b585a59dbd8dad93b383a39bbb8bab97b787a79fbf8fafdf30f080c0a0e090d0b8f888c8a8e898d8b4f484c4a4e494d4bcfc8cccacec9cdcb2f282c2a2e292d2bafa8acaaaea9adab6f686c6a6e696d6befe8eceaeee9edeb1f181c1a1e191d1b9f989c9a9e999d9b5f585c5a5e595d5bdfd8dcdaded9dddb3f383c3a3e393d3bbfb8bcbabeb9bdbb7f787c7a7e797d7bfff8fcfafef9fd030004020601050387808482868185834740444246414543c7c0c4c2c6c1c5c32720242226212523a7a0a4a2a6a1a5a36760646266616563e7e0e4e2e6e1e5e3171014121611151397909492969195935750545256515553d7d0d4d2d6d1d5d33730343236313533b7b0b4b2b6b1b5b37770747276717573f7f0f4f2f6f1f5fbe71f1018141c121a161e1119151d131b179f9098949c929a969e9199959d939b975f5058545c525a565e5159555d535b57dfd0d8d4dcd2dad6ded1d9d5ddd3dbd73f3038343c323a363e3139353d333b37bfb0b8b4bcb2bab6beb1b9b5bdb3bbb77f7078747c727a767e7179757d737b77fff0f8f4fcf2faf6fef1f9f5fdf3fb070008040c020a060e0109050d030b078f8088848c828a868e8189858d838b874f4048444c424a464e4149454d434b47cfc0c8c4ccc2cac6cec1c9c5cdc3cbc72f2028242c222a262e2129252d232b27afa0a8a4aca2aaa6aea1a9a5ada3aba76f6068646c626a666e6169656d636b67efe0e8e4ece2eae6eee1e9e5ede3ebf7cf3f2030283824342c3c22322a3a26362e3e2131293925352d3d23332b3b27372fbfa0b0a8b8a4b4acbca2b2aabaa6b6aebea1b1a9b9a5b5adbda3b3abbba7b7af7f6070687864746c7c62726a7a66766e7e6171697965756d7d63736b7b67776fffe0f0e8f8e4f4ecfce2f2eafae6f6eefee1f1e9f9e5f5edfde3f3ebfbe7f70f0010081804140c1c02120a1a06160e1e0111091905150d1d03130b1b07170f9f8090889884948c9c82928a9a86968e9e8191899985958d9d83938b9b87978f5f4050485844544c5c42524a5a46564e5e4151495945554d5d43534b5b47574fdfc0d0c8d8c4d4ccdcc2d2cadac6d6cedec1d1c9d9c5d5cdddc3d3cbdbc7d7ef9f7f4060507048685878446454744c6c5c7c426252724a6a5a7a466656764e6e5e7e4161517149695979456555754d6d5d7d436353734b6b5b7b476757774f6f5fffc0e0d0f0c8e8d8f8c4e4d4f4ccecdcfcc2e2d2f2caeadafac6e6d6f6ceeedefec1e1d1f1c9e9d9f9c5e5d5f5cdedddfdc3e3d3f3cbebdbfbc7e7d7f7cfef1f0020103008281838042414340c2c1c3c022212320a2a1a3a062616360e2e1e3e0121113109291939052515350d2d1d3d032313330b2b1b3b072717370f2f1fbf80a090b088a898b884a494b48cac9cbc82a292b28aaa9aba86a696b68eae9ebe81a191b189a999b985a595b58dad9dbd83a393b38bab9bbb87a797b78fafdf3fff80c0a0e090d0b0f088c8a8e898d8b8f884c4a4e494d4b4f48cccacec9cdcbcfc82c2a2e292d2b2f28acaaaea9adabafa86c6a6e696d6b6f68eceaeee9edebefe81c1a1e191d1b1f189c9a9e999d9b9f985c5a5e595d5b5f58dcdaded9dddbdfd83c3a3e393d3b3f38bcbabeb9bdbbbfb87c7a7e797d7b7f78fcfafef9fdf3f0040206010503070084828681858387804442464145434740c4c2c6c1c5c3c7c02422262125232720a4a2a6a1a5a3a7a06462666165636760e4e2e6e1e5e3e7e0141216111513171094929691959397905452565155535750d4d2d6d1d5d3d7d03432363135333730b4b2b6b1b5b3b7b07472767175737770f4f2f6f1f5fbf7ffe018141c121a161e1119151d131b171f1098949c929a969e9199959d939b979f9058545c525a565e5159555d535b575f50d8d4dcd2dad6ded1d9d5ddd3dbd7dfd038343c323a363e3139353d333b373f30b8b4bcb2bab6beb1b9b5bdb3bbb7bfb078747c727a767e7179757d737b777f70f8f4fcf2faf6fef1f9f5fdf3fbf7f008040c020a060e0109050d030b070f0088848c828a868e8189858d838b878f8048444c424a464e4149454d434b474f40c8c4ccc2cac6cec1c9c5cdc3cbc7cfc028242c222a262e2129252d232b272f20a8a4aca2aaa6aea1a9a5ada3aba7afa068646c626a666e6169656d636b676f60e8e4ece2eae6eee1e9e5ede3ebe7efffc030283824342c3c22322a3a26362e3e2131293925352d3d23332b3b27372f3f20b0a8b8a4b4acbca2b2aabaa6b6aebea1b1a9b9a5b5adbda3b3abbba7b7afbfa070687864746c7c62726a7a66766e7e6171697965756d7d63736b7b67776f7f60f0e8f8e4f4ecfce2f2eafae6f6eefee1f1e9f9e5f5edfde3f3ebfbe7f7eff000081804140c1c02120a1a06160e1e0111091905150d1d03130b1b07170f1f0090889884948c9c82928a9a86968e9e8191899985958d9d83938b9b87978f9f8050485844544c5c42524a5a46564e5e4151495945554d5d43534b5b47574f5f40d0c8d8c4d4ccdcc2d2cadac6d6cedec1d1c9d9c5d5cdddc3d3cbdbc7d7cfdfef9070406058784868547444645c7c4c6c527242625a7a4a6a567646665e7e4e6e5171416159794969557545655d7d4d6d537343635b7b4b6b577747675f7f4f6f50f0c0e0d8f8c8e8d4f4c4e4dcfcccecd2f2c2e2dafacaead6f6c6e6defeceeed1f1c1e1d9f9c9e9d5f5c5e5ddfdcdedd3f3c3e3dbfbcbebd7f7c7e7dfffcfe010002018380828143404241c3c0c2c123202221a3a0a2a163606261e3e0e2e1131012119390929153505251d3d0d2d133303231b3b0b2b173707271f3f0f2f10b080a098b888a894b484a49cbc8cac92b282a29aba8aaa96b686a69ebe8eae91b181a199b989a995b585a59dbd8dad93b383a39bbb8bab97b787a79fbf8fafdf30f080c0a0e090d0b8f888c8a8e898d8b4f484c4a4e494d4bcfc8cccacec9cdcb2f282c2a2e292d2bafa8acaaaea9adab6f686c6a6e696d6befe8eceaeee9edeb1f181c1a1e191d1b9f989c9a9e999d9b5f585c5a5e595d5bdfd8dcdaded9dddb3f383c3a3e393d3bbfb8bcbabeb9bdbb7f787c7a7e797d7bfff8fcfafef9fd030004020601050387808482868185834740444246414543c7c0c4c2c6c1c5c32720242226212523a7a0a4a2a6a1a5a36760646266616563e7e0e4e2e6e1e5e3171014121611151397909492969195935750545256515553d7d0d4d2d6d1d5d33730343236313533b7b0b4b2b6b1b5b37770747276717573f7f0f4f2f6f1f5fbe71f1018141c121a161e1119151d131b179f9098949c929a969e9199959d939b975f5058545c525a565e5159555d535b57dfd0d8d4dcd2dad6ded1d9d5ddd3dbd73f3038343c323a363e3139353d333b37bfb0b8b4bcb2bab6beb1b9b5bdb3bbb77f7078747c727a767e7179757d737b77fff0f8f4fcf2faf6fef1f9f5fdf3fb070008040c020a060e0109050d030b078f8088848c828a868e8189858d838b874f4048444c424a464e4149454d434b47cfc0c8c4ccc2cac6cec1c9c5cdc3cbc72f2028242c222a262e2129252d232b27afa0a8a4aca2aaa6aea1a9a5ada3aba76f6068646c626a666e6169656d636b67efe0e8e4ece2eae6eee1e9e5ede3ebf7cf3f2030283824342c3c22322a3a26362e3e2131293925352d3d23332b3b27372fbfa0b0a8b8a4b4acbca2b2aabaa6b6aebea1b1a9b9a5b5adbda3b3abbba7b7af7f6070687864746c7c62726a7a66766e7e6171697965756d7d63736b7b67776fffe0f0e8f8e4f4ecfce2f2eafae6f6eefee1f1e9f9e5f5edfde3f3ebfbe7f70f0010081804140c1c02120a1a06160e1e0111091905150d1d03130b1b07170f9f8090889884948c9c82928a9a86968e9e8191899985958d9d83938b9b87978f5f4050485844544c5c42524a5a46564e5e4151495945554d5d43534b5b47574fdfc0d0c8d8c4d4ccdcc2d2cadac6d6cedec1d1c9d9c5d5cdddc3d3cbdbc7d7ef9f7f4060507048685878446454744c6c5c7c426252724a6a5a7a466656764e6e5e7e4161517149695979456555754d6d5d7d436353734b6b5b7b476757774f6f5fffc0e0d0f0c8e8d8f8c4e4d4f4ccecdcfcc2e2d2f2caeadafac6e6d6f6ceeedefec1e1d1f1c9e9d9f9c5e5d5f5cdedddfdc3e3d3f3cbebdbfbc7e7d7f7cfef1f0020103008281838042414340c2c1c3c022212320a2a1a3a062616360e2e1e3e0121113109291939052515350d2d1d3d032313330b2b1b3b072717370f2f1fbf80a090b088a898b884a494b48cac9cbc82a292b28aaa9aba86a696b68eae9ebe81a191b189a999b985a595b58dad9dbd83a393b38bab9bbb87a797b78fafdf3fff80c0a0e090d0b0f088c8a8e898d8b8f884c4a4e494d4b4f48cccacec9cdcbcfc82c2a2e292d2b2f28acaaaea9adabafa86c6a6e696d6b6f68eceaeee9edebefe81c1a1e191d1b1f189c9a9e999d9b9f985c5a5e595d5b5f58dcdaded9dddbdfd83c3a3e393d3b3f38bcbabeb9bdbbbfb87c7a7e797d7b7f78fcfafef9fdf3f0040206010503070084828681858387804442464145434740c4c2c6c1c5c3c7c02422262125232720a4a2a6a1a5a3a7a06462666165636760e4e2e6e1e5e3e7e0141216111513171094929691959397905452565155535750d4d2d6d1d5d3d7d03432363135333730b4b2b6b1b5b3b7b07472767175737770f4f2f6f1f5fbf7ffe018141c121a161e1119151d131b171f1098949c929a969e9199959d939b979f9058545c525a565e5159555d535b575f50d8d4dcd2dad6ded1d9d5ddd3dbd7dfd038343c323a363e3139353d333b373f30b8b4bcb2bab6beb1b9b5bdb3bbb7bfb078747c727a767e7179757d737b777f70f8f4fcf2faf6fef1f9f5fdf3fbf7f0000ff01c4a8f883",
+      "input_bytes": 5199,
+      "input_sha256": "bac20ac671dbc02e7bfa8a02fde92a79c827cf0210d8005d70d2ee75946c49cc",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 5142,
+        "body_sha256": "996f632dbe5e4f31a3216a9ad7c503316f429398c38a662b60c98542d62aa41e",
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 5178,
+            "inflated_bytes": 5142,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 5142
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x.bin"
+            ],
+            "path_components_raw_hex": [
+              "782e62696e"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 20,
+            "bytes": 5120,
+            "sha256": "4345361085c730756d843f13849c50a996fe2f1fac3a7ac05fb063bb743a423e",
+            "prefix_hex": "000102030405060708090a0b0c0d0e0f",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          512
+        ]
+      },
+      "source_derived_godot_policy": "STATUS_WINDOW before inflate; not an executed engine result"
+    },
+    {
+      "id": "full-window-long-output",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e30303030303001005501000016140000789c63646004420656860abda4cc3c060606112066646266616563e7e0e4e2e6e1e5e3171014121611151397909492969195935750545256515553d7d0d4d2d6d1d5d33730343236313533b7b0b4b2b6b1b5b37770747276717573f7f0f4f2f6f1f5f30f080c0a0e090d0b8f888c8a8e898d8b4f484c4a4e494d4bcfc8cccacec9cdcb2f282c2a2e292d2bafa8acaaaea9adab6f686c6a6e696d6befe8eceaeee9edeb9f3071d2e42953a74d9f3173d6ec3973e7cd5fb070d1e2254b972d5fb172d5ea356bd7addfb071d3e62d5bb76ddfb173d7ee3d7bf7ed3f70f0d0e123478f1d3f71f2d4e93367cf9dbf70f1d2e52b57af5dbf71f3d6ed3b77efdd7ff0f0d1e3274f9f3d7ff1f2d5eb376fdfbdfff0f1d3e72f5fbf7dfff1f3d7ef3f7ffffd1ff5ffa8ff47fd3feaff51ff8ffa7fd4ffa3fe1ff5ffa8ff47fd3feaff51ff8ffa7fd4ffa3fe1ff5ffa8ff87b5ff1900c4a8f883",
+      "input_bytes": 362,
+      "input_sha256": "cd997c0797215abaacbdecf51946837378bd2807ca625db3a03b934361d4e946",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 5142,
+        "body_sha256": "996f632dbe5e4f31a3216a9ad7c503316f429398c38a662b60c98542d62aa41e",
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 341,
+            "inflated_bytes": 5142,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 5142
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x.bin"
+            ],
+            "path_components_raw_hex": [
+              "782e62696e"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 20,
+            "bytes": 5120,
+            "sha256": "4345361085c730756d843f13849c50a996fe2f1fac3a7ac05fb063bb743a423e",
+            "prefix_hex": "000102030405060708090a0b0c0d0e0f",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          32768
+        ]
+      }
+    },
+    {
+      "id": "small-window-short-output",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e3030303030300100240000001e000000189563646004420656860abda4cc3c06060e060606432363135333730b0606002f3b0394",
+      "input_bytes": 57,
+      "input_sha256": "5b6c80fcbe644b3365f28212f9a25f5535b00b9ece8790dee12462f5674a874b",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 30,
+        "body_sha256": "9f71945e85b03c535723445058ba3869250e72a4871911f2d2908436ed6b14b6",
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 36,
+            "inflated_bytes": 30,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 30
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x.bin"
+            ],
+            "path_components_raw_hex": [
+              "782e62696e"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 20,
+            "bytes": 8,
+            "sha256": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+            "prefix_hex": "3132333435363738",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          512
+        ]
+      }
+    },
+    {
+      "id": "record-split-across-chunks",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e3030303030300300110000000b000000789c63646004420656860a3d00015800af1900000011000000789ccbcd4f616050626060c8cd4f49cd09a92c0000248204b1240000001c000000789c4b2dd68bb0adce4bcc4db5552a2ec8c92c51d229b335d43332ad656000008aa30887",
+      "input_bytes": 115,
+      "input_sha256": "47dd22b151e3f2760e2ac46f177d030f3cc49c521953cbf62900cba7b91a5ec4",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 56,
+        "body_sha256": "2bf7cd04062cf2e5e395260c611d76d5182ec111ecb610a392a9ffa0c1694bff",
+        "chunks": [
+          {
+            "offset": 21,
+            "compressed_bytes": 17,
+            "inflated_bytes": 11,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 11
+          },
+          {
+            "offset": 46,
+            "compressed_bytes": 25,
+            "inflated_bytes": 17,
+            "inflated_body_start": 11,
+            "inflated_body_end_exclusive": 28
+          },
+          {
+            "offset": 79,
+            "compressed_bytes": 36,
+            "inflated_bytes": 28,
+            "inflated_body_start": 28,
+            "inflated_body_end_exclusive": 56
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x.mod"
+            ],
+            "path_components_raw_hex": [
+              "782e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 20,
+            "bytes": 34,
+            "sha256": "f35d9438332a3bce49a30bbda11fd52a6cd3e5a1810a79d13390f2f7ba336540",
+            "prefix_hex": "6d6f64656c54797065732e583d7b6e61",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          32768,
+          32768,
+          32768
+        ]
+      }
+    },
+    {
+      "id": "missing-one-file-child-byte",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e30303030303001001a00000016000000789c63646004420656860abda4cc3c06109ba182010016010261",
+      "input_bytes": 47,
+      "input_sha256": "f718181b8a9b88546119064f02125ee272a6258c9b2bcc203aa9a2e3374641a3",
+      "reference": {
+        "accepted": false,
+        "exception": "FormatError",
+        "message": "truncated at 21, wanted 2 bytes"
+      }
+    },
+    {
+      "id": "missing-two-file-child-bytes",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "000800312e30303030303001001900000015000000789c63646004420656860abda4cc3c06109ba1020013a00261",
+      "input_bytes": 46,
+      "input_sha256": "94a4150607f4b38cfce16a5a40c0137945f315298ddb880d43d9e8cad910030e",
+      "reference": {
+        "accepted": false,
+        "exception": "FormatError",
+        "message": "truncated at 21, wanted 2 bytes"
+      }
+    },
+    {
+      "id": "pkg-stl-polyglot-134",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "004700313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131312e30303030303002000900000001000000789c63040000020002210000001a000000789c636064606400a20a06064e060686a633dd2f9a6f5d9df38681010035140700",
+      "input_bytes": 134,
+      "input_sha256": "3d385fa6c3196f91b6f6cafef7bc8f9f1cbfc6c1514650dcc3a5daf70c4d8e1a",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 27,
+        "body_sha256": "1f59e359469ba42c0e5a34a8b89f2fe4e77c04714888b3aebc34a11708c9555f",
+        "chunks": [
+          {
+            "offset": 84,
+            "compressed_bytes": 9,
+            "inflated_bytes": 1,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 1
+          },
+          {
+            "offset": 101,
+            "compressed_bytes": 33,
+            "inflated_bytes": 26,
+            "inflated_body_start": 1,
+            "inflated_body_end_exclusive": 27
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x"
+            ],
+            "path_components_raw_hex": [
+              "78"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 16,
+            "bytes": 9,
+            "sha256": "3dcf286de8bb76e856eeabcdde72f307c66f7cac62f62ab78756e60f3687d23a",
+            "prefix_hex": "82cc8be883dad59cec",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          32768,
+          32768
+        ]
+      },
+      "source_derived_stl_conditions": {
+        "facet_count": 1,
+        "finite_non_degenerate": true,
+        "bounds_min": [
+          9.327042578545982e-42,
+          -4.957339385559376e-38,
+          -8.090738445925745e+17
+        ],
+        "bounds_max": [
+          1.0790727374077952e+18,
+          5.772677973566483e+21,
+          1.6557213814049986e+22
+        ],
+        "actual_godot_executed": false
+      }
+    },
+    {
+      "id": "pkg-mod-stl-polyglot-184",
+      "kind": "pkg",
+      "acceptance_scope": "Research framing/tree only; not runtime namespace or aircraft admission",
+      "input_hex": "004700313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131312e30303030303002000a00000002000000789c6364000000040002520000004c000000789c63646062606065a8d0cbcd4f6160e067606000325273422a0b528bf5226cab6b81228c0c490c0cb240c6ef456ff4c4f4fdaf18bf91e47ff7738fb5d3d93957ff7c3cc01f6811fb5d80810100cdcd17cc",
+      "input_bytes": 184,
+      "input_sha256": "cfe565dc09dfd0931fdea25612b27c6d34c6364c20679e7f6f0941d3db8e8b86",
+      "reference": {
+        "accepted": true,
+        "body_bytes": 78,
+        "body_sha256": "00cba80b00840c1a081333142d65affd11c8d7e9d9ad010437187f842ad6cdd9",
+        "chunks": [
+          {
+            "offset": 84,
+            "compressed_bytes": 10,
+            "inflated_bytes": 2,
+            "inflated_body_start": 0,
+            "inflated_body_end_exclusive": 2
+          },
+          {
+            "offset": 102,
+            "compressed_bytes": 82,
+            "inflated_bytes": 76,
+            "inflated_body_start": 2,
+            "inflated_body_end_exclusive": 78
+          }
+        ],
+        "members": [
+          {
+            "path_components": [
+              "x.mod"
+            ],
+            "path_components_raw_hex": [
+              "782e6d6f64"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 20,
+            "bytes": 15,
+            "sha256": "efb9ac6d60a9baa2f2ec6a130bba36a90976c636b73b95fcf4a5b96bc13792e2",
+            "prefix_hex": "6d6f64656c54797065732e583d7b7d",
+            "classification": {
+              "kind": "mostly printable ASCII"
+            }
+          },
+          {
+            "path_components": [
+              "b"
+            ],
+            "path_components_raw_hex": [
+              "62"
+            ],
+            "path_component_display_decodings": [
+              "utf-8"
+            ],
+            "body_offset": 47,
+            "bytes": 29,
+            "sha256": "9af0ab13d4182fb8fcb646599ba145e1152f61506034fdb9bc721e50ed6492bb",
+            "prefix_hex": "fba2ec2e162f4fd433ec190feef9bc3b",
+            "classification": {
+              "kind": "binary or unclassified"
+            }
+          }
+        ],
+        "declared_zlib_windows": [
+          32768,
+          32768
+        ],
+        "parsed_mod": {
+          "target": "X",
+          "complete_aircraft": false
+        }
+      },
+      "source_derived_stl_conditions": {
+        "facet_count": 2,
+        "finite_non_degenerate": true,
+        "bounds_min": [
+          -7.582869695943095e+31,
+          -4.61943483465177e-10,
+          -3.532193810711075e+32
+        ],
+        "bounds_max": [
+          7.47249373489467e-09,
+          6905372672.0,
+          2.1191759383609966e+24
+        ],
+        "actual_godot_executed": false
+      }
+    },
+    {
+      "id": "numeric-64-bytes",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939397d",
+      "input_bytes": 81,
+      "input_sha256": "e435c8f0b4ac72ee06dfc0622fc33aee1088b80f8137dfd10a7fd6fd2bd23580",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "39393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939",
+            "start_byte": 16,
+            "end_byte_exclusive": 80,
+            "binary64_le_hex_reference": "f5f93fe9034f384d",
+            "exact_decimal_rational": [
+              "9999999999999999999999999999999999999999999999999999999999999999",
+              "1"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "numeric-65-bytes",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d39393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939393939397d",
+      "input_bytes": 82,
+      "input_sha256": "a0f5eaf8e41aa5fc36616c482d4ea18c39364b1fcc428549f1b01e07068ed159",
+      "reference": {
+        "accepted": false,
+        "code": "NUMBER_LIMIT",
+        "offset": 16,
+        "line": 1,
+        "byte_column": 17
+      }
+    },
+    {
+      "id": "minimum-positive-fixed-profile",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d302e30303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030317d",
+      "input_bytes": 81,
+      "input_sha256": "547f1ea7d407aff990790991083f1e50ebd30ee2be936996dd5e631ee3486c80",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "302e3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031",
+            "start_byte": 16,
+            "end_byte_exclusive": 80,
+            "binary64_le_hex_reference": "a822dfdd7d741033",
+            "exact_decimal_rational": [
+              "1",
+              "100000000000000000000000000000000000000000000000000000000000000"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "binary64-midpoint-even-lower",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d312e30303030303030303030303030303031313130323233303234363235313536353430343233363331363638303930383230333132357d",
+      "input_bytes": 72,
+      "input_sha256": "5e714de0cb22a142c1c9bdd9c731d023fa91464e60742523f249839f2b9490b1",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "312e3030303030303030303030303030303131313032323330323436323531353635343034323336333136363830393038323033313235",
+            "start_byte": 16,
+            "end_byte_exclusive": 71,
+            "binary64_le_hex_reference": "000000000000f03f",
+            "exact_decimal_rational": [
+              "9007199254740993",
+              "9007199254740992"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "binary64-midpoint-even-upper",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d312e30303030303030303030303030303033333330363639303733383735343639363231323730383935303034323732343630393337357d",
+      "input_bytes": 72,
+      "input_sha256": "ba2a7c2da5933b8b76be9e768c651d8f5616f7cbaed2ee502a4cfc2b52cd2b67",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "312e3030303030303030303030303030303333333036363930373338373534363936323132373038393530303432373234363039333735",
+            "start_byte": 16,
+            "end_byte_exclusive": 71,
+            "binary64_le_hex_reference": "020000000000f03f",
+            "exact_decimal_rational": [
+              "9007199254740995",
+              "9007199254740992"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "negative-zero",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d2d307d",
+      "input_bytes": 19,
+      "input_sha256": "10c28c8f7baec48bb57d5159b887da946d1ab60f5400c68057030355d9dd1882",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "2d30",
+            "start_byte": 16,
+            "end_byte_exclusive": 18,
+            "binary64_le_hex_reference": "0000000000000080",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "leading-trailing-zero-lexeme",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b763d303030312e323530307d",
+      "input_bytes": 26,
+      "input_sha256": "67a6980e5896a1a775e0a3b09a5cc0b0460436fa17f88a72eb1010b96c708249",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [],
+        "diagnostics": [],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "v"
+            ],
+            "kind": "number",
+            "raw_hex": "303030312e32353030",
+            "start_byte": 16,
+            "end_byte_exclusive": 25,
+            "binary64_le_hex_reference": "000000000000f43f",
+            "exact_decimal_rational": [
+              "5",
+              "4"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "exact-distinct-pivots-collapse",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b616972666f696c733d7b7b636f6e74726f6c53757266616365733d7b7b726f6f745f7069766f743d7b783d31303030303030303030303030303030302c793d302c7a3d307d2c7469705f7069766f743d7b783d31303030303030303030303030303030312c793d302c7a3d307d7d7d7d7d7d",
+      "input_bytes": 128,
+      "input_sha256": "6281d5d57cc71c457ed7a9b0ba69aa782235fd06d1a9c013eb097b148b3267f2",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 49,
+        "node_count": 13,
+        "diagnostic_codes": [
+          "PIVOT_PRECISION_LOSS"
+        ],
+        "diagnostics": [
+          {
+            "code": "PIVOT_PRECISION_LOSS",
+            "severity": "conversion_blocker",
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0
+            ],
+            "span": {
+              "start_byte": 42,
+              "end_byte_exclusive": 124,
+              "line": 1,
+              "byte_column": 43
+            },
+            "detail": "Distinct exact decimal pivots collapse under direct float64 coordinate conversion."
+          }
+        ],
+        "conversion_preflight_blocked": true,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "x"
+            ],
+            "kind": "number",
+            "raw_hex": "3130303030303030303030303030303030",
+            "start_byte": 57,
+            "end_byte_exclusive": 74,
+            "binary64_le_hex_reference": "0080e03779c34143",
+            "exact_decimal_rational": [
+              "10000000000000000",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "y"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 77,
+            "end_byte_exclusive": 78,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "z"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 81,
+            "end_byte_exclusive": 82,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "x"
+            ],
+            "kind": "number",
+            "raw_hex": "3130303030303030303030303030303031",
+            "start_byte": 97,
+            "end_byte_exclusive": 114,
+            "binary64_le_hex_reference": "0080e03779c34143",
+            "exact_decimal_rational": [
+              "10000000000000001",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "y"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 117,
+            "end_byte_exclusive": 118,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "z"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 121,
+            "end_byte_exclusive": 122,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "equal-decimal-pivots",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b616972666f696c733d7b7b636f6e74726f6c53757266616365733d7b7b726f6f745f7069766f743d7b783d312e302c793d302c7a3d307d2c7469705f7069766f743d7b783d312e30302c793d302c7a3d307d7d7d7d7d7d",
+      "input_bytes": 101,
+      "input_sha256": "0cde1f54ff7b491fd98d98d29533826d98d97be594dc6749c6083be36e09c0d5",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 49,
+        "node_count": 13,
+        "diagnostic_codes": [
+          "COINCIDENT_PIVOTS"
+        ],
+        "diagnostics": [
+          {
+            "code": "COINCIDENT_PIVOTS",
+            "severity": "conversion_blocker",
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0
+            ],
+            "span": {
+              "start_byte": 42,
+              "end_byte_exclusive": 97,
+              "line": 1,
+              "byte_column": 43
+            },
+            "detail": "Exactly coincident source pivots cannot define a hinge axis."
+          }
+        ],
+        "conversion_preflight_blocked": true,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "x"
+            ],
+            "kind": "number",
+            "raw_hex": "312e30",
+            "start_byte": 57,
+            "end_byte_exclusive": 60,
+            "binary64_le_hex_reference": "000000000000f03f",
+            "exact_decimal_rational": [
+              "1",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "y"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 63,
+            "end_byte_exclusive": 64,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "root_pivot",
+              "z"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 67,
+            "end_byte_exclusive": 68,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "x"
+            ],
+            "kind": "number",
+            "raw_hex": "312e3030",
+            "start_byte": 83,
+            "end_byte_exclusive": 87,
+            "binary64_le_hex_reference": "000000000000f03f",
+            "exact_decimal_rational": [
+              "1",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "y"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 90,
+            "end_byte_exclusive": 91,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          },
+          {
+            "path": [
+              "X",
+              "airfoils",
+              0,
+              "controlSurfaces",
+              0,
+              "tip_pivot",
+              "z"
+            ],
+            "kind": "number",
+            "raw_hex": "30",
+            "start_byte": 94,
+            "end_byte_exclusive": 95,
+            "binary64_le_hex_reference": "0000000000000000",
+            "exact_decimal_rational": [
+              "0",
+              "1"
+            ]
+          }
+        ],
+        "headers": {}
+      }
+    },
+    {
+      "id": "utf8-display-identity",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b6e616d653d22c3a9227d",
+      "input_bytes": 24,
+      "input_sha256": "d082e8d2b7e05f5ca78c45e77b6056fa6f8244c025006714192a3dcd2f18d8c1",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [
+          "DISPLAY_DECODING_ONLY"
+        ],
+        "diagnostics": [
+          {
+            "code": "DISPLAY_DECODING_ONLY",
+            "severity": "observation",
+            "path": [
+              "X",
+              "name"
+            ],
+            "span": {
+              "start_byte": 19,
+              "end_byte_exclusive": 23,
+              "line": 1,
+              "byte_column": 20
+            },
+            "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+          }
+        ],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "name"
+            ],
+            "kind": "string",
+            "raw_hex": "c3a9",
+            "start_byte": 19,
+            "end_byte_exclusive": 23
+          }
+        ],
+        "headers": {
+          "name": {
+            "kind": "string",
+            "value": {
+              "display": "\u00e9",
+              "raw_hex": "c3a9",
+              "display_decoding": "utf-8"
+            },
+            "value_representation": "quoted content bytes",
+            "source_lexeme_raw_hex": "22c3a922",
+            "span": {
+              "start_byte": 19,
+              "end_byte_exclusive": 23,
+              "line": 1,
+              "byte_column": 20
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "latin1-display-identity",
+      "kind": "mod",
+      "acceptance_scope": "Research syntax/summary returned; conversion blockers remain independently binding",
+      "input_hex": "6d6f64656c54797065732e583d7b6e616d653d22e9227d",
+      "input_bytes": 23,
+      "input_sha256": "286507f52ea09fc37c516bf989961ae4b14d49aadd9d6abe5df533186236508b",
+      "reference": {
+        "accepted": true,
+        "target": "X",
+        "token_count": 9,
+        "node_count": 2,
+        "diagnostic_codes": [
+          "DISPLAY_DECODING_ONLY"
+        ],
+        "diagnostics": [
+          {
+            "code": "DISPLAY_DECODING_ONLY",
+            "severity": "observation",
+            "path": [
+              "X",
+              "name"
+            ],
+            "span": {
+              "start_byte": 19,
+              "end_byte_exclusive": 22,
+              "line": 1,
+              "byte_column": 20
+            },
+            "detail": "Raw bytes are authoritative; UTF-8/Latin-1 display selection does not prove the source encoding."
+          }
+        ],
+        "conversion_preflight_blocked": false,
+        "atoms": [
+          {
+            "path": [
+              "X",
+              "name"
+            ],
+            "kind": "string",
+            "raw_hex": "e9",
+            "start_byte": 19,
+            "end_byte_exclusive": 22
+          }
+        ],
+        "headers": {
+          "name": {
+            "kind": "string",
+            "value": {
+              "display": "\u00e9",
+              "raw_hex": "e9",
+              "display_decoding": "latin-1"
+            },
+            "value_representation": "quoted content bytes",
+            "source_lexeme_raw_hex": "22e922",
+            "span": {
+              "start_byte": 19,
+              "end_byte_exclusive": 22,
+              "line": 1,
+              "byte_column": 20
+            }
+          }
+        }
+      }
+    }
+  ]
+}
