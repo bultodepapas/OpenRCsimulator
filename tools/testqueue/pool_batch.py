@@ -29,6 +29,17 @@ RETRY_INITIAL_SECONDS = 0.25
 RETRY_MAX_SECONDS = 30.0
 
 
+def _error_text(error):
+    """Typed refusals read as written; anything else names its type (TQ-05-F0.6).
+
+    A bare ``str(KeyError('log'))`` reached agents as the reason "'log'".
+    """
+    text = str(error)
+    if isinstance(error, (ValueError, OSError, RuntimeError)) and text:
+        return text
+    return f"{type(error).__name__}: {text}" if text else type(error).__name__
+
+
 def _backoff(attempts):
     return min(RETRY_MAX_SECONDS, RETRY_INITIAL_SECONDS * 2 ** min(max(attempts, 1) - 1, 16))
 
@@ -198,7 +209,7 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                         row.setdefault("previous_results", []).append({
                             "status": row.get("status"), "collection": collection,
                             "reason": "Saved collection failed local verification", "error": str(error)})
-                        row.update(phase="COLLECTION_BLOCKED", collection_error=str(error))
+                        row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))
                         failed_verifications.add(row["request_id"])
                         changed = True
             if state["version"] != BATCH_VERSION:
@@ -315,7 +326,7 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                     row.pop("collection_error", None)
                 except Exception as error:
                     # Collection may be retried on a later invocation; the test never is.
-                    row.update(phase="COLLECTION_BLOCKED", collection_error=str(error))
+                    row.update(phase="COLLECTION_BLOCKED", collection_error=_error_text(error))
                 checked_collections.add(row["request_id"])
                 write_json(state_path, state)
 

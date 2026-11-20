@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -78,9 +79,9 @@ class PoolReconcileTests(unittest.TestCase):
 
 
 class PoolCircuitTests(PoolReconcileTests):
-    def finished(self, identifier, host, outcome, created, source="src"):
-        self.receipt(identifier, host, state="SUBMITTED", created=created, source_digest=source,
-                     last_status={"state": "FINISHED", "outcome": outcome})
+    def finished(self, identifier, host, outcome, created, source="src", **status):
+        self.receipt(identifier, host, state="SUBMITTED", created=time.time() - 100 + created, source_digest=source,
+                     last_status={"state": "FINISHED", "outcome": outcome, **status})
 
     def circuit(self, source="src"):
         return {item["id"]: item.get("busy_reason") for item in self.pool._circuit(
@@ -98,6 +99,19 @@ class PoolCircuitTests(PoolReconcileTests):
         self.assertIsNone(self.circuit(source="other")["mac"])
         self.finished("a4", "mac", "TEST_FAILED", 4)  # a real test result closes it
         self.assertIsNone(self.circuit()["mac"])
+
+    def test_host_transient_refusals_do_not_open_the_circuit(self):
+        """TQ-05-F0.4: the host's own state says nothing about the source."""
+        self.finished("t1", "mac", "INFRA_FAILED", 1, error="Refused: external Godot process detected; it was not touched")
+        self.finished("t2", "mac", "INFRA_FAILED", 2, error="Refused: insufficient disk for archive and reserve")
+        self.assertIsNone(self.circuit()["mac"])
+
+    def test_open_circuit_half_opens_after_the_retry_interval(self):
+        self.finished("o1", "mac", "INFRA_FAILED", 1)
+        self.finished("o2", "mac", "INFRA_FAILED", 2)
+        self.assertIn("CIRCUIT_OPEN", self.circuit()["mac"])
+        with patch.object(self.pool, "CIRCUIT_RETRY_SECONDS", 50):
+            self.assertIsNone(self.circuit()["mac"])  # newest failure is ~98 s old: one more attempt may run
 
 
 if __name__ == "__main__":

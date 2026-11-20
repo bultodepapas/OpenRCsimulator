@@ -124,7 +124,8 @@ any other bridge command.
 - `sim_fly` closes the launch menu and resumes, so the aircraft is flying when it returns.
 - `sim_launch` points that server at its own session.
 
-The same server exposes `sim_test_launch`, `sim_test_status` and `sim_test_recover`
+The same server exposes `sim_test_run` (launch and wait in one call), `sim_test_launch`,
+`sim_test_status`, `sim_test_recover`, `sim_test_list` and `sim_fleet` (host availability)
 for [automatic checked batches](../testqueue/README.md#mcp-checked-batches). These
 use a durable request ID and do not need an interactive `sim_launch` session. Their
 status and recovery are separate from interactive session handles and `sim_stop`.

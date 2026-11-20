@@ -34,8 +34,9 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 
 - Shared-host launch admission and session ownership: [test queue](tools/testqueue/README.md).
   On enrolled hosts use the returned session handle; a bridge port alone is not ownership.
-- Route compatible independent headless GDScript checks through `sim_test_launch` by default;
-  follow them with `sim_test_status` and retain the request ID for `sim_test_recover`.
+- Route compatible independent headless GDScript checks through `sim_test_run` by default (launch
+  and wait in one call; repeat with its request ID while running), or `sim_test_launch` +
+  `sim_test_status` for detached batches; `sim_fleet` shows host availability.
   Use the [test pool CLI](tools/testqueue/README.md) if MCP is unavailable. Preserve the
   required OS; declare `any` only for reviewed portable checks. Graphics, performance,
   composite suites and interactive sessions retain their existing tool and admission paths.

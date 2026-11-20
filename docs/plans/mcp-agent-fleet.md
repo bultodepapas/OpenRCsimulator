@@ -5,6 +5,9 @@ Owner: **TQ shared-host test admission**, steps **TQ-05-F0…F5**. Parents:
 [resilience subplan](mcp-queue-resilience.md) (TQ-04-R1…R9). Operating contract:
 [queue guide](../../tools/testqueue/README.md).
 
+Adding a fifth host, an Intel iGPU Linux container on PRIMIS, is planned separately in
+[TQ-06](primis-intel-test-host.md).
+
 This plan covers what R1–R9 leave open: agent ergonomics, end-to-end speed,
 unattended progress and smarter use of the four machines. Every R-plan invariant
 (its §2) remains binding. In particular, no change may duplicate an accepted
@@ -12,8 +15,9 @@ attempt, kill a foreign process, release a claim without proof, let unverified
 evidence pass or contaminate a performance measurement. Where a step touches an
 R step, that R step's gate also applies (§6).
 
-**Status: in progress (20 November 2026).** F0.1, F0.3 and F1.1–F1.5 are
-implemented, and F0.2, F0.5 and F1.6 partly; each row below records its proof.
+**Status: in progress (20 November 2026).** F0.1, F0.3, F0.6, F1.1–F1.6 and
+F2.1–F2.2 are implemented; F0.2, F0.4 and F0.5 partly. Each row records its proof.
+F2.3–F2.6, F3, F4 and F5 remain.
 An independent review challenged the first draft; its accepted corrections are
 folded in.
 
@@ -134,9 +138,9 @@ reviewable change with focused fixtures.
 | TQ-05-F0.1 | Restore headroom on `C:`. The existing `local_gc.py` found 0 candidates, so `retention.py` adds reference-checked removal of redundant attempt sources, snapshots and archives. See the [queue guide](../../tools/testqueue/README.md#operator-storage-and-reconciliation-tools). | **Done 20 Nov:** 6 fixtures; owner-approved run removed 101.5 GB with 0 errors (C: 1.9 → 93 GB free), held 31 inputs of unfinished work; worker `READY` afterwards. Journal `testpool/retention/retention-20261120-102314.json` |
 | TQ-05-F0.2 | Snapshot hygiene: exclude `__pycache__`, `*.pyc` and `node_modules` from snapshot scope. Refuse, before freezing and with a clear message, a source that is not its own checkout root (e.g. a worktree nested in another checkout's `tmp/`). | **Partial:** `capture` never freezes `__pycache__`/`.pyc`. `Pool.snapshot` retries "changed/disappeared during snapshot" up to 4 times with a fresh destination, removing only its own partial one, because a live MCP run failed when another agent edited `app/`. A failed freeze now says "run again with a new request_id". `capture` already refuses a source that is not a worktree root. 4 fixtures in `test_agent_view` |
 | TQ-05-F0.3 | Remote transfer path (A4 only): move `mkdir`/hash/`scp`/verify/publish inside the guarded section. Use one shared `ssh_options()` (BatchMode, ConnectTimeout, ServerAliveInterval) for every ssh/scp. A failure proved before `run` records a typed `TRANSFER_DEFERRED` receipt state. A repeated ID re-enters the transfer on the same bound host instead of returning `PREPARING`. | **Done:** receipt state `TRANSFER_DEFERRED` with `transfer`/`transfer_history` holds no host. `status`/`recover` report it as `WAITING` without writing. The batch retries the same ID with backoff, and a crash right after the deferral resumes as `RETRY_WAIT`. `ssh_options()` is used by `remote()`, the transfer and collection. 10 fixtures in `test_pool_transfer`. Open: a coordinator crash *during* a transfer still leaves `PREPARING` (needs the R1 outcome-contract decision). Retry is unbounded until F2.2 |
-| TQ-05-F0.4 | Typed causes: remote and local outcomes carry `cause` (`TEST`, `INCOMPLETE_EVIDENCE`, `HOST_TRANSIENT`, `TRANSFER`, `DISK`, `UNKNOWN`). The circuit breaker counts only source-specific causes and goes half-open after a TTL with one probe attempt. | Fixtures: a transient refusal never opens it; a real import failure does |
+| TQ-05-F0.4 | Typed causes: remote and local outcomes carry `cause` (`TEST`, `INCOMPLETE_EVIDENCE`, `HOST_TRANSIENT`, `TRANSFER`, `DISK`, `UNKNOWN`). The circuit breaker counts only source-specific causes and goes half-open after a TTL with one probe attempt. | **Partial:** the circuit ignores host-transient refusals (external Godot, disk, quarantine, busy, desktop) and half-opens 10 min after its newest failure; 2 new fixtures in `test_pool_reconcile`. A typed `cause` field on every outcome is still open: remote `INFRA_FAILED` also covers incomplete checks |
 | TQ-05-F0.5 | Make deferrals visible: coordinator archive space and other `RETRY_WAIT` causes surface as typed reasons in status. They remain deferrals, not failures. | **Partial:** `RETRY_WAIT` rows carry their `reason_code` (`SUBMISSION_DEFERRED`, `TRANSFER_DEFERRED`) into `tests[].waiting` and `summary.waiting`. Archive-space deferral text is not yet a separate code |
-| TQ-05-F0.6 | Typed collection errors instead of raw exception text (A17). | Regression fixture |
+| TQ-05-F0.6 | Typed collection errors instead of raw exception text (A17). | **Done:** collection errors that are not typed refusals now name their exception type (`KeyError: 'log'` instead of `'log'`). The 17 Nov `KeyError` path is no longer present in the current collector |
 | TQ-05-F0.7 | **D** Relocate the authority and pool roots to a larger local volume, after F0.1 and with no `UNKNOWN`/unresolved attempts. Receipts bind absolute roots and the config digest (`pool.py:418, 570`; `pool_mcp.py:236, 269`), so finish or close old batches through supported recovery first, or keep the old root readable for them. Back up SQLite with the supported mechanism. | `hosts` reports the new volume; an old batch still recovers or is closed with a reason |
 
 ### F1: agent-facing MCP, read side first (A12, A15, A16)
@@ -150,7 +154,7 @@ These steps change no execution path. Existing tools keep working.
 | TQ-05-F1.3 | `sim_test_list`: recent batches with one-line results, so a new session can find its own work. | **Done**; fixture |
 | TQ-05-F1.4 | Lanes: give `sim_test_launch`/`sim_test_recover`/`sim_fleet` their own bounded lane, so they never wait behind a 600 s simulator call. Ordered simulator mutations keep their FIFO. | **Done:** two-worker test lane for launch/recover/run/fleet/list; transport fixture with a blocked `sim_launch` |
 | TQ-05-F1.5 | `sim_test_run`: launch plus wait up to `wait_s` (default 60, so it stays under typical client tool timeouts; max 300) in the test lane. It returns the compact result, or the ticket plus estimate. `request_id` is optional; when omitted the server generates a fresh one and returns it, so an explicit rerun is a new attempt. Reusing an ID stays idempotent. | **Done:** fixtures for generated ID, timeout (observe only), early exit on a dead supervisor and `wait_s` bounds. Live run 1 died at snapshot (concurrent edits), which led to the F0.2 retry. Live run 2 froze in 129 s, moved a 1 GB archive in ~95 s and executed in under 1 s on ANGEL, which confirms F3 as the main latency target |
-| TQ-05-F1.6 | Rewrite server `INSTRUCTIONS`, [`tools/debug/README.md`](../../tools/debug/README.md), the `openrc-tools`/`openrc-debug` skills and AGENTS tool notes around the one-call flow and `sim_fleet`. | **Partial:** server `INSTRUCTIONS` and tool descriptions done; README/skills pending |
+| TQ-05-F1.6 | Rewrite server `INSTRUCTIONS`, [`tools/debug/README.md`](../../tools/debug/README.md), the `openrc-tools`/`openrc-debug` skills and AGENTS tool notes around the one-call flow and `sim_fleet`. | **Done:** server `INSTRUCTIONS`, tool descriptions, AGENTS tool note, both `openrc-tools` skill copies, the debug README and the queue guide point to `sim_test_run`/`sim_fleet`. A trial with a fresh agent session is pending |
 
 ### F2: unattended progress and a responsive loop (A1, A9, A10)
 

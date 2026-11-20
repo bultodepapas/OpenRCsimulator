@@ -313,6 +313,15 @@ class Pool:
         return self._reserve(observations)
 
     CIRCUIT_FAILURES = 2
+    CIRCUIT_RETRY_SECONDS = 600
+    # Refusals caused by the host's state, not by the frozen source.
+    _HOST_TRANSIENT = ('external godot', 'external simulator', 'insufficient disk', 'insufficient_disk',
+                       'no space left', 'disk_unknown', 'quarantin', 'busy', 'gui_locked', 'desktop')
+
+    @classmethod
+    def _host_transient(cls, status):
+        text = ' '.join(str(status.get(key) or '') for key in ('error', 'reason', 'detail')).lower()
+        return any(token in text for token in cls._HOST_TRANSIENT)
 
     def _circuit(self, observations, source_digest):
         """Open a per-host, per-source circuit after consecutive INFRA_FAILED results.
@@ -320,7 +329,10 @@ class Pool:
         The newest ``CIRCUIT_FAILURES`` observed finished attempts of this source
         on a host must all be infrastructure failures (for example an import
         that cannot load a platform extension). A different source digest, or a
-        later non-infrastructure result, closes it. Nothing is retried or moved.
+        later non-infrastructure result, closes it. Refusals caused by the host's
+        own state (external Godot, disk, quarantine) are not counted, and after
+        ``CIRCUIT_RETRY_SECONDS`` one new attempt may run (TQ-05-F0.4). Nothing
+        is retried or moved by the circuit itself.
         """
         finished = {}
         for path in (self.root / 'jobs').glob('*.json'):
@@ -329,11 +341,16 @@ class Pool:
                 last = receipt.get('last_status') or {}
                 if receipt.get('source_digest') != source_digest or last.get('state') != 'FINISHED':
                     continue
+                if last.get('outcome') == 'INFRA_FAILED' and self._host_transient(last):
+                    continue  # the host refused for its own reasons; says nothing about this source (TQ-05-F0.4)
                 finished.setdefault(receipt['host'], []).append((float(receipt.get('created', 0)), last.get('outcome'), path.stem))
             except (OSError, ValueError, KeyError, TypeError, AttributeError):
                 continue
+        now = time.time()
         for observation in observations:
             recent = sorted(finished.get(observation['id'], []), reverse=True)[:self.CIRCUIT_FAILURES]
+            if recent and now - recent[0][0] >= self.CIRCUIT_RETRY_SECONDS:
+                continue  # half-open: one new attempt may run; another failure closes it again
             if len(recent) == self.CIRCUIT_FAILURES and all(outcome == 'INFRA_FAILED' for _, outcome, _ in recent):
                 observation['busy'] = True
                 observation['busy_code'] = 'CIRCUIT_OPEN'

@@ -11,8 +11,11 @@ Retain the owning session handle through teardown; a port alone is insufficient.
 Start at the task table in [docs/tools/README.md](../../../docs/tools/README.md) and read only the doc its row names.
 Every tool's README owns its commands; do not copy them into notes or new scripts.
 
-For compatible independent headless GDScript checks, use `sim_test_launch` by default.
-Give it a stable client-chosen `request_id` and a `jobs` array; each job requires `script`
+For compatible independent headless GDScript checks, use `sim_test_run` by default: it launches
+and waits (`wait_s`, default 60) for the compact result in one call; repeat it with the returned
+`request_id` while tests still run. `sim_fleet` shows which hosts are online, idle or busy and why.
+For long detached batches use `sim_test_launch` with a stable client-chosen `request_id`.
+Both take a `jobs` array; each job requires `script`
 and accepts `require` (literal completion markers), `timeout`, `platform` and `host`.
 Optional `source` selects another checkout.
 `platform` defaults to the caller's OS; use `any` only for a reviewed portable check.
@@ -30,7 +33,7 @@ Most-used commands (repository root, Bash):
 
 | Task | Command |
 | --- | --- |
-| Independent headless tests | `sim_test_launch` with one job per script; follow with `sim_test_status` |
+| Independent headless tests | `sim_test_run` with one job per script (or `sim_test_launch` + `sim_test_status`); `sim_fleet` for hosts |
 | Full local app verification for broad changes or release preparation (40+ min); CI runs it as a required gate | `app/test.sh` (on a stable snapshot when other sessions edit the tree) |
 | Headless flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3 --aircraft=<id>` |
 | Handling change: before/after | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,vmax,roll_rate`, then `compare.py` |
