@@ -15,11 +15,20 @@ horizontal roll and intentional aircraft-crash assessment. The commands below
 still run **V1**, including its airborne start and lighting Apply. The plan owns
 the new sequence and acceptance work; existing V1 results do not qualify V2.
 
+The [independent audit](../../docs/research/god-test/2026-11-20-plan-audit.md) found
+V1 execution/monitoring limits as well as V2 design gaps. Read
+[managed-host admission](#managed-host-admission) and
+[current verification limits](#current-verification-limits) before interpreting a
+successful command as a complete rendered screen.
+
 ## Run the complete workload
 
 Use a prepared checkout, the repository's pinned engine, and the Python environment
 with [the existing resource dependencies](../godot/requirements-resources.txt).
 The command creates a fresh output directory and always retains failed cases.
+Examples that pass `--godot`, `--out` or `--snapshot` are for an **unenrolled
+standalone host**. On an enrolled host those options belong to the worker and
+are refused; use the [managed route](#managed-host-admission).
 
 ```sh
 python3 tools/godtest/godtest.py performance-tour --dry-run --repeats 3
@@ -83,6 +92,47 @@ remain in the existing calibrated/experimental GOD TEST scenarios. Menu actions
 exercise real UI handlers; they do not qualify physical keyboard, mouse or radio
 input latency.
 
+## Managed host admission
+
+On an enrolled host, execution through `godtest.py` delegates to the existing
+queue. The queue owns the engine, output and source snapshot; it rejects caller
+`--godot`, `--out` and `--snapshot`, and does not accept `resume` as an execution
+preset. Offline `list`, `--dry-run`, `report` and `compare` are not launches.
+
+Inspect `performance-tour --repeats 3 --dry-run` before requesting resources. Its
+nine default cases declare **8,820 seconds**; the automatic `godtest` adapter
+defaults to **3,600 seconds** at the outer execution boundary. Simply removing
+the rejected flags does not fix that mismatch. The existing explicit
+`testctl.py snapshot` / `submit --preset godtest` route accepts validated `--options`
+with a timeout up to 21,600 s. Follow the [queue guide](../testqueue/README.md) for
+a fresh snapshot outside the source checkout, matching source, owner/platform,
+durable submission receipt, returned job/handle and evidence collection.
+
+This explicit graphical adapter is **Windows-local and experimental**. The local
+worker advertises Linux/macOS as unsupported; checked-pool SSH access is not a
+qualified graphical campaign route. Use standalone instructions only on a genuinely
+unenrolled target; an enrolled unsupported target needs an admitted platform adapter.
+Verify the deployed authority's source and capabilities, not only local source.
+
+Worker options contain the tour arguments without worker-owned paths and a declared
+execution budget above the expanded cases plus adapter preparation/imports, reduction
+and cleanup reserve. The `--options` shape is
+`{"argv":["performance-tour","--repeats","3"],"timeout":N}`, with `N` replaced by
+the preflight's validated execution budget in seconds (at most 21,600).
+The 8,820 s value is an estimate, not an end-to-end bound:
+queue waiting and worker preparation before process creation have separate scope.
+Retain the private submission receipt and returned owner handle; a wait timeout does
+not cancel the job. Inspect `status`/`result` for **FINISHED**, **cleanup CONFIRMED**,
+**evidence COMPLETE**, then the actual `<attempt-output>/godtest` artifacts.
+These states alone do not qualify performance.
+
+Automatic full-roster budget propagation, bounded preparation, graphical platform
+admission and source-bound enrolled-host resume remain
+[GOD-13-R2 work](../../docs/plans/god-test.md#13-execution-steps-and-evidence-ledger).
+If the budget or recovery route cannot be admitted, retain the refusal and start no
+duplicate. Do not bypass enrollment, inherit another owner's handle or split the
+roster into untracked jobs and call them the original complete suite.
+
 ## Target machines and display contract
 
 Run each campaign on its actual OS, physical GPU and visible desktop. Use the
@@ -123,6 +173,8 @@ the output; a dimension mismatch fails the screen. The report distinguishes
 requested window pixels and observed viewport coordinates. Native drawable and
 internal reconstructed 3D pixels still need the [Apple acceptance checks](../../docs/plans/apple-silicon-performance.md).
 This tour seeds native reconstruction; it does not claim MetalFX qualification.
+The standalone example does not establish Mac graphical-worker admission, panel
+pixel proof or native performance; those remain separate prerequisites.
 
 Windows uses the same Python entry point, normally with the console editor:
 
@@ -188,7 +240,7 @@ with a reason. Missing utilization, tool errors, changing devices, exhausted
 sample caps or a worker that fails to stop make monitoring incomplete; they never
 become zero-load readings. Optional unsupported temperature/power counters do not
 invalidate otherwise complete utilization coverage.
-At least two utilization observations per device are required. Startup delay,
+For **GPU** coverage, at least two utilization observations per device are required. Startup delay,
 poll-start spacing and the final observation gap must stay within three requested
 sampling intervals plus 250 ms (3.25 seconds at the standard 1 Hz interval).
 Changed or unreadable observer code, an unexplained worker exit, or absent raw
@@ -213,8 +265,9 @@ qualification or regression pass. Headless runs remain `not_qualified`.
 
 The established flight targets are p95 ≤18 ms, p99 ≤25 ms, and simulation/wall
 pace near one. Startup and loading retain their own scope-specific targets.
-Target misses are surfaced for investigation; they are not silently discarded or
-treated as diagnoses. Inspect the exact affected phase, especially menu/loading
+Pacing and loading misses appear in suite observations; inspect simulation-pace
+target rows in each child `report.json`. These are observations, not diagnoses or
+an automatic target-pass verdict. Inspect the exact affected phase, especially menu/loading
 stalls that should not be averaged into steady flight. Per-phase 1%/0.1% lows use
 the reciprocal of the mean of the slowest `max(1, floor(N*fraction))` intervals.
 Watcher stutter/stall totals are overall; incident snippets cannot establish
@@ -227,6 +280,31 @@ Keep all attempts, including failed runs and thermal outliers, and explain any
 exclusion. The existing `compare --phase loading` and other admitted transition
 comparisons are exploratory. Adaptive pilot routes and repeated A/B significance
 are not yet qualified for an automatic whole-flight regression verdict.
+
+### Current verification limits
+
+These limits were verified against the code in the
+[2026-11-20 audit](../../docs/research/god-test/2026-11-20-plan-audit.md); the
+[plan](../../docs/plans/god-test.md) defines the required corrections. A documentation
+change does not implement them.
+
+| Current V1 observation | Required interpretation |
+| --- | --- |
+| `_tour_success` can accept an otherwise valid/complete suite when every case reports `rendered=false` | Check the requested mode and every required phase's drawing evidence; this is not a successful rendered screen. The current exit code does not enforce that distinction. |
+| CPU `required_coverage=complete` verifies required fields, identity/counters and collection state | It does not bound start, polling or final gaps. Inspect raw temporal coverage before making a resource-window claim. |
+| GPU samples identify observed devices, separately from Godot's renderer | Retain a positive renderer-to-device association and physical-host identity; a sampled idle NVIDIA device does not prove utilization of an Intel renderer. |
+| Samplers and engine phases use different monotonic clock domains | No automatic per-panel, impact or same-frame CPU/GPU attribution exists. A 1 Hz poll can miss a short event even after alignment. |
+| Watcher coverage begins after initial Home; OS sampling begins after bridge readiness | Earlier startup is unobserved by those tools. The first in-app collector interval is a bootstrap span, not guaranteed callback pacing. |
+| Low-FPS tail `available` can still mean one slow tail observation; target booleans exist for short phases | Show count/duration/tail support and keep short-event tails exploratory. Exit 0 / `screen_only` does not mean performance targets passed. |
+| Simulation/wall pace is retained in child `report.json` target rows | Suite/HTML views do not prominently expose it; inspect the child values. Whole-phase pace can mask temporary lag and catch-up. |
+| Retry summaries are retained in `suite.json`; selected cases are revalidated | Earlier failed attempts are not all revalidated/displayed. Preserve and inspect them and their ancestor source paths explicitly. |
+| The transition comparator checks only part of the documented identity/coverage contract | `eligible=true` is exploratory, not proof of the same physical host, actual GPU, observer bytes or complete monitoring. |
+
+An engine hash proves the selected bytes stayed the same; independently verify the
+official pin and platform-native libraries/bundle. A window/viewport size is not
+native drawable or internal 3D pixel proof. A host preflight or separate thermal
+diagnostic does not establish power/thermal state throughout the measured tour.
+Observer-cost controls and all three real-hardware campaigns remain open.
 
 ## Investigate and optimize from the evidence
 
@@ -277,6 +355,16 @@ owner, old index without these receipts, changed observer, another machine or a
 reboot requires reconciliation or a fresh campaign. A preflight refusal retains
 the original case references in the new index. The launcher pins the hashed engine
 path and checks its command and executable bytes again after shutdown.
+
+The `resume` example above is currently an **unenrolled-host** operation; enrolled
+standalone resume is refused. Even on an unenrolled host, a started case missing
+`execution.json` or verified shutdown, a reboot or incompatible retained identity
+can require a fresh campaign. Manual reconciliation does not create an input the
+current resume implementation accepts. Never edit receipts to force a retry.
+Preserve all ancestor suites, failed-attempt directories, frozen source/import paths
+and Mac launch copies/profiles until revalidation is complete. The current report
+uses their original absolute paths and does not fully revalidate old attempt entries;
+relocating an archive is not currently an automatic recovery operation.
 
 For functional development only:
 

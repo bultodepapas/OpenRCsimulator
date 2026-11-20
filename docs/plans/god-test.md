@@ -7,6 +7,13 @@ source/debug implementation executed; scenic/crash tour and hardware qualificati
 This is the authoritative plan requested by the owner. The tool README will own
 implemented commands; this document owns remaining work and acceptance evidence.
 
+The [independent plan audit](../research/god-test/2026-11-20-plan-audit.md) inspected
+revision `66f2e75d545c4c79907e604082a7d4a2a6e4f1b8`. Its strengthened requirements
+below are **planned gates**, not implemented guards. V2 is not ready for acceptance
+runs: numeric profiles, independent coverage receipts, monitoring joins, reporting
+and target-host proof remain open. Calibration and diagnostic runs may collect
+partial evidence, but cannot claim a qualified tour.
+
 ## 1. Purpose and acceptance boundary
 
 Build an official automated benchmark of the real application: normal startup,
@@ -28,9 +35,9 @@ uses the native panel as its primary target; its 1080p run is a separate compari
 
 ## 2. Inspected infrastructure and constraints
 
-The proposal was developed against main `18000e97`; implementation starts from
-the current working tree, which includes concurrent uncommitted work. Every run
-must retain its actual source identity rather than inherit that historical SHA.
+The initial proposal inspected main `18000e97`; the later audit identifies its own
+revision above. Neither is the implicit source of a new run. Every campaign must
+retain the actual source, dirty inputs, engine, observers and reducer identities.
 
 | Existing component | Reuse | Constraint |
 | --- | --- | --- |
@@ -69,6 +76,19 @@ The Python orchestrator resolves manifests, captures source/build identity, crea
 a fresh output/profile, launches and owns one process, enforces wall deadlines,
 collects artifacts and reduces reports. Reuse the debug launcher/bridge rather
 than introduce a competing remote-control protocol. One rendered run at a time.
+
+Admission must cover the **entire expanded roster**, preparation/imports, bounded
+launch/flush/cleanup for each case, final reduction and a declared reserve. Reject
+an insufficient outer job deadline before the first launch. The current automatic
+queue adapter defaults to 3,600 s while a nine-case V1 tour declares 8,820 s before
+all preparation costs; a per-case deadline does not extend that outer lease.
+Queue waiting, pre-creation worker preparation and execution have separate scopes.
+Queued requests currently have no automatic expiry, and the execution timeout does
+not bound earlier preparation; V2 must declare and enforce those additional bounds.
+Worker engine/output ownership and the reviewed explicit queue route are described
+in the [operating guide](../../tools/godtest/PERFORMANCE_TOUR.md#managed-host-admission).
+Retain admission through confirmed cleanup; refusal or a lost response never
+authorizes a second launch with uncertain ownership.
 
 An opt-in in-app observer survives scene transitions, records monotonic phase
 boundaries and controls the scenario. A benchmark pilot observes accepted float64
@@ -185,12 +205,29 @@ is insufficient. The normal scenery, rendering and physics systems remain active
 seeing a tree does not prove that it has a collision proxy. Record observer/capture
 cost under the existing [comparison contract](#10-comparisons-and-observer-cost).
 
+The club gate requires **both** the pavilion and a resolved tree group; the house
+has a separate gate. Freeze minimum projected pixel size, visible fraction,
+occlusion rule, view dwell and camera bounds at the target drawable resolution.
+Frustum inclusion is only a geometric proxy. Acceptance needs independently checked
+rendered visibility evidence linked to the source/profile and the actual view;
+unknown or subpixel visibility is incomplete. Use a matched visual pass for image
+readback, with its correspondence and any route differences explicit; it cannot
+silently prove visibility in a divergent timed run. Any proposed same-run visibility
+observer needs a measured overhead bound and its own rejection checks first.
+
 Choose **one lap by default**, or two for a separately identified campaign, before
 launch. Count accepted positions around the runway, not only heading changes;
 each lap needs its own winding, corridor, altitude and minimum-duration receipt.
 Keep the same lap count across the three aircraft and baseline/candidate runs.
 The existing `--cycles 2` reloads through Home and is not a two-lap flight. This
 plan introduces no new CLI flag until the manifest, pilot and reporter support it.
+
+Lap receipts share one session/attempt and use non-overlapping sample ranges;
+the final point may be the next lap's origin, but swept segments cannot be reused.
+Require increasing ticks/times, a maximum sample gap, displacement consistent with
+elapsed time and admitted speed, and protected-region segment checks. Reacquisition
+resets unfinished credit and preserves the excursion; retries are bounded. Multiple
+small position jumps or replaying the first lap's receipt cannot earn another lap.
 
 The horizontal roll is an aileron roll, not the legacy vertical-loop phase. Require
 approximately 360° accumulated body roll plus bounded altitude, track and cross-axis
@@ -199,11 +236,34 @@ must be calibrated per aircraft; the Stik's current takeoff speed and maneuver
 profile are not fleet defaults. A failed roll must not be reclassified as the
 intentional crash that follows it.
 
+Do not use accumulated body roll rate alone as proof. Retain accepted orientation
+and aileron commands with a conditioned flight-path reference, signed progress
+through ordered quarter-turn/inverted/three-quarter/upright gates, bounded sampling
+gaps and a separate stable recovery dwell. Ambiguous axes, reverse/tumbling paths
+or missed gates fail the maneuver even when the gyro integral reaches 360°.
+
+Takeoff likewise needs initial supported wheels inside the runway, healthy normal
+acceleration and rotation, then loss of wheel support for a calibrated contiguous
+interval with positive climb and terrain-relative clearance. Expected takeoff gear
+contacts are allowed; a preloaded airborne state, impulse or prior airborne damage
+is not. Prove an actual **right** turn with signed accepted heading/track progress;
+the same final heading reached by turning left does not pass. Enforce the altitude
+and terrain/obstacle corridor throughout the turn and scenic transit, with only a
+declared takeoff/climb acquisition interval outside it.
+
+The existing approximately 10 Hz trajectory CSV lacks orientation, accepted control,
+wheel-support and view/contact evidence. V2 needs bounded, independently verifiable
+gate receipts or streamed samples at an admitted cadence; a pilot's final `done`
+flag cannot replace them. Specify maximum gaps, storage bounds and overflow refusal
+before collection; do not increase polling or record unbounded arrays by default.
+
 ### Browse menus without changing settings
 
 Use a fixed route and dwell schedule recorded before the campaign. Visit at least
 three distinct panels from **Home** and three from **Pause**, and exercise focus,
-tabs or scrolling where supported. Preserve first-open and repeated-open timings.
+tabs or scrolling where supported. Freeze exact panel/action IDs and order, not a
+runtime choice of any three convenient panels. Include a second visit wherever
+repeated-open timing is claimed; preserve the first and repeated observations.
 
 | Entry | Planned navigation | Invariant |
 | --- | --- | --- |
@@ -220,8 +280,12 @@ Missing draw/readiness evidence is unavailable data, not zero latency. These are
 application-observed timings; physical input-to-display latency needs its own
 external measurement. An unresponsive panel must time out with the trace retained.
 
-Take semantic readbacks before and after browsing for graphics, display, controls,
-weather and sky/time settings. Any unintended change is a failure. Aircraft preview
+Take semantic readbacks before, throughout and after browsing for graphics, display,
+controls, weather and sky/time settings. Observe accepted draft, effective and saved
+values plus value-publication/commit events at each action boundary, including
+synchronous updates; a change later reverted by Cancel still fails. The current
+Settings UI can apply live previews before Save. Normal no-op initialization is
+allowed; clicking edit controls to exercise a panel is not navigation. Aircraft preview
 selection is an explicitly allowed navigation action in the isolated run profile:
 the current UI saves the selection, so this is not a promise of zero filesystem
 writes. Verify the expected final aircraft and allow normal session bookkeeping.
@@ -229,6 +293,14 @@ Prepare declared benchmark conditions separately from timed menu navigation.
 V2 must replace V1's lighting **Apply** step with open/browse/cancel; it must not
 silently inherit that settings mutation. Verify pause-state invariants and resumed
 input ownership as well as menu state.
+
+Bind each preview request to aircraft, livery and generation, then verify the same
+displayed model, successful readiness and a subsequent drawn dwell. Stale async
+completion, an unchanged old preview or a failure signal cannot pass. Initial Home
+may already have a model loaded, and returning to an aircraft may hit its cache.
+Record first observation, first request and known cache hit/miss separately; do not
+call every first visit cold. Freeze Home preparation/prefetch/dwell, and retain this
+history for Fly timing after the three-aircraft preview tour.
 
 ### Intentional crash and aftermath contract
 
@@ -239,6 +311,17 @@ region, descent/impact profile and control intent. Use ordinary physics contact;
 do not teleport, force a crash flag or replace damage logic. An accident before
 arming or outside the admitted impact contract remains unexpected failure.
 
+Bind impact proof to the current run/session/attempt and a **new terminal impact
+event after arming**. The incident ID may already exist from flight initialization;
+bind its terminal revision and live, non-archived report to this impact and the same
+aircraft/source. Retain accepted event tick, trigger/source, detected contact point
+and surface/object, velocity/normal speed, attitude and damage/effect identity.
+The detector's point is not proof of the physically first contact within the tick;
+retain any crossing estimate separately with its uncertainty.
+An earlier settled contact report, harmless gear touch, stale archive or wrong-region
+impact cannot satisfy it. Freeze entry/impact tolerances and both minimum/maximum
+arm-to-impact bounds; a broad armed interval must not excuse an unrelated accident.
+
 Keep continuous capture across the approach to impact and the aftermath. Initial
 observation windows are **at least five wall seconds before impact and 10–15 wall
 seconds after impact**, with a separate bounded deadline for report readiness;
@@ -246,11 +329,21 @@ freeze the exact windows/deadline in the profile before acceptance. Missing cove
 cannot pass. Physics may legitimately hold after a crash, so aftermath responsiveness
 uses wall time and drawing/UI progress, not a demand for continuing physics ticks.
 
+The contact anchor includes its accepted simulation tick and bounded monotonic
+observation interval; tick-boundary/interpolated contact is not an exact physical
+wall timestamp. Mark intervals crossing that uncertainty range. Watch for unintended
+focus/menu holds: wall time can advance while crash presentation is suspended.
+Do not open Pause until the aftermath and report-inspection observations are done.
+
 Record the accepted contact and accident, worst frame/stutter intervals, CPU/GPU
-and memory changes, existing effects/audio/debris when present, report allocation,
-deferred damage assessment and report readiness. Distinguish impact cost from
+and memory changes, existing effects/audio/debris when present, initial report
+allocation (which may occur during loading), deferred damage assessment, content
+publication and report readiness. Distinguish impact cost from
 report construction and later inspection. Exercise **Inspect wreck** and **Show
-damage breakdown**; verify their availability and response. Preserve the actual
+damage breakdown** through the real UI: live terminal card → Inspect wreck →
+Show accident report (`ReopenAccidentReport`) → expanded damage details. Inspect wreck minimizes the card;
+verify the reopen transition, current toggle state, contents and drawn response
+rather than blindly toggling an already-expanded panel closed. Preserve the actual
 damage/report output without treating its current estimates as physical validation;
 see the [crash/damage scope](../CRASH-DAMAGE-PLAN.md).
 
@@ -260,7 +353,8 @@ as an expected crash. Return Home explicitly; do not let restart hide the afterm
 The report must retain **flight outcome = accident**, alongside expected-impact
 coverage, data validity, application completion and the independent performance
 verdict. Earlier measurements survive a failed terminal phase, but the complete
-tour cannot pass without the terminal phase and clean shutdown.
+tour cannot pass without the terminal phase and clean shutdown. After observation,
+use Pause → Exit options → Return to Home and verify Home readiness/drawing.
 
 ### Implementation and acceptance work
 
@@ -273,7 +367,9 @@ These are requirements for **GOD-12-R2**; current status is maintained in the
 | GOD-12-R2b | One/two same-flight laps and horizontal roll | Independent lap receipts, calibrated roll/recovery and refusal of incomplete geometry; no Home reload or airborne substitution |
 | GOD-12-R2c | Settings-preserving Home/Pause browsing | Declared routes, panel readiness timings, configuration readbacks, aircraft-selection exception and pause/resume invariants |
 | GOD-12-R2d | Expected impact and aftermath reporting | Explicit arm gate, accepted collision, retained accident outcome, report/inspection timings, early-accident/app-failure rejection and clean exit |
-| GOD-12-R2e | Contract checks and target-machine qualification | Focused failure fixtures, continuous native-physics rendered cases for all three aircraft, repeated matched campaigns on actual MacBook, Linux GPU and Windows hosts |
+| GOD-12-R2e | Contract checks and target-machine qualification | Negative controls in section 14, admitted observers and continuous native-physics rendered cases for all three aircraft; repeated matched campaigns on actual MacBook, Linux GPU and Windows hosts |
+| GOD-12-R2f | Clock alignment and monitoring coverage | Bounded host/engine clock correlation, startup/phase scope, per-channel gap and device-binding checks; unresolved subsecond observations remain unavailable |
+| GOD-12-R2g | Qualification and comparison reporting | Explicit render/target gates, time-local simulation pace, metric/sample sufficiency, complete attempt ledger and predeclared paired-decision policy |
 
 Reuse the existing GOD TEST, frame watcher and CPU/GPU samplers. Preserve FPS lows,
 p95/p99/max frame time, stutter duration/count and monitoring availability by phase;
@@ -283,6 +379,11 @@ camera policy, crash profile and hardware identity. Report menus, low scenery,
 roll, impact and aftermath separately to guide optimization. Unavailable GPU data,
 headless execution or a reference-physics fallback cannot qualify the physical
 GPU campaign. V1 evidence remains valid only for its original workload.
+
+For A/B comparisons, match achieved route/view and **actual** impact envelopes,
+including source, surface, speed and angle, as well as the planned profile. A
+different-energy crash or divergent scenery pass makes that phase noncomparable.
+Keep useful event-relative observations, without calling them isolated causal cost.
 
 ## 5. Pilot and calibration
 
@@ -385,6 +486,21 @@ selection_ready, fly_requested, loading_feedback_drawn, flight_ready, flight_dra
 flight_interactive. Define each precisely; readiness, drawing and physical display
 presentation are separate. Align process clocks explicitly or report unavailable.
 
+Clock joins must retain domain, units, epoch, monotonic order, offset/drift method
+and an uncertainty bound established with bracketed observations before/after the
+measured span. Validate synchronization periodically over long runs; resets, drift
+outside the bound or suspend/resume break the join. Do not subtract Godot ticks from
+Python `perf_counter` or wall-clock time directly. CPU deltas cover an interval;
+GPU polls have acquisition latency and may describe a driver-defined earlier window.
+If a sample/uncertainty span crosses phases, retain it as overlapping, not exclusively
+attributed. A 1 Hz poll cannot resolve a short impact or menu transition by itself.
+
+The current watcher starts after initial Home; OS samplers start after bridge
+readiness; the in-app collector begins during deferred driver startup. Its initial
+interval is a bootstrap span, not necessarily callback-to-callback pacing. Preserve
+those boundaries and gaps: full process-start stutter/resources and presented-frame
+latency are unavailable until the corresponding observation path is qualified.
+
 Keep Home dwell/preparation policy and resource-import state. A fresh process is
 not a cold OS/shader cache. Name process-cold, warm, fresh profile and unknown
 cache states accurately. Do not silently purge or modify the user's caches.
@@ -398,10 +514,16 @@ or double count. Paused samples stay outside active-flight distributions. Techni
 simulation pause is a separate case. Unexpected holds/focus pauses cannot masquerade
 as the intended pause.
 
+For V2 request/ready, resume, impact and report events, retain raw intervals around
+each boundary. Count each interval once in aggregate totals using the documented
+interval-end assignment; additionally mark boundary overlap and report a separate
+transition window. Never split a long interval into invented causal costs or count
+it twice. Keep detector warmup, clipped runs and unknown event edges explicit.
+
 ## 9. Metrics and targets
 
 Per-phase and per-run output: loading intervals; frame p50/p95/p99/max/count;
-hitch counts/runs/durations over declared 16.67/33.33/50/100 ms thresholds; accepted
+hitch counts/runs/durations over declared 16.667/33.333/50/100 ms thresholds; accepted
 ticks and simulation/wall ratio; steps/frame; available CPU/GPU metrics; OS RSS and
 motor allocation/resource counters; render draws/primitives; trajectory/error/input
 and saturation; retained resources/teardown; faults, missing channels and limits.
@@ -409,6 +531,35 @@ GPU unavailable/unverified is not zero. Overlapping CPU/GPU intervals are not ad
 Resource-sampler peaks are sampled peaks. Short phases emphasize raw intervals,
 maxima and events rather than a poorly supported p99. Keep first-use hitches visible;
 warmup is separately labeled and never silently erases the user experience.
+
+V2 must show **sample count, elapsed coverage, tail count, missing intervals and
+eligibility** beside each statistic. Fix the minimum duration/sample support per
+metric before collection. Current `available` at 100/1,000 frames permits a 1%/0.1%
+low with only one tail observation; it is not a confidence statement. Short menu,
+roll and impact phases primarily report raw intervals, maxima and repeated event
+latencies; underpowered tails remain exploratory/inconclusive. Do not pad or pool
+unlike phases to manufacture tail support.
+
+Keep fixed-threshold slow intervals/runs separate from the watcher's relative
+stutter, stall and FPS-drop episodes. Declare each detector's thresholds, denominator,
+warmup, boundary rule and coverage. Bounded incident snippets cannot establish full
+per-phase watcher totals; those totals remain unavailable until complete phase-aware
+evidence exists. Threshold-run counts are not a substitute with the same label.
+
+Report active simulation/wall pace in the primary suite JSON **and HTML**, with
+target miss/inconclusive status. Also use predeclared active-flight windows to expose
+local lag/catch-up and worst accumulated lag; a whole-phase ratio of one can hide
+five slow seconds followed by catch-up. Exclude declared pauses/crash holds and
+reject unexpected holds; insufficient windows are unavailable. V1 currently retains
+phase-total pace in child JSON, without equivalent prominence in suite/HTML summaries.
+
+Monitoring requires a declared start/end and maximum inter-sample/tail gap for each
+channel and each claimed window. V1 CPU `required_coverage=complete` checks fields,
+identity/counters and collection state, **not** those timing gaps; GPU has a separate
+bounded-gap check. V2 must validate both from raw samples, bind the sampled GPU to
+the actual rendering device, and retain unavailable values/reasons. Process CPU is
+direct-PID occupancy (100% = one logical CPU); device GPU utilization includes other
+processes. Neither establishes per-frame cost or the cause of a hitch.
 
 **PT1h-R15-S3a implemented offline:** the existing phase reducer now reports callback
 FPS, slow-wall share, run counts and maximum run durations at strict 16.667/33.333/50/100 ms
@@ -439,11 +590,35 @@ and intended VSync/capped pacing are different claims.
 
 Freeze A/B sources and intended intervention. Match other workload/hardware/driver/
 power/display/renderer/backend/audio/settings identities. Alternate role order;
-start with three pairs, expand to five or more when variation prevents a decision.
+use a predeclared number and order of pairs, with at least three for a descriptive screen.
 Use run/phase-level paired changes; correlated frames are not independent trials.
 Report absolute target compliance and baseline regression separately. Preserve
 failed/excluded runs and predeclare exclusion rules. Changed route/coverage cannot
 produce an unconditional whole-flight percentage. Compare equivalent segments.
+
+Before looking at results, freeze the affected workload/primary metrics, meaningful
+change threshold, uncertainty method, maximum pair count, exclusions and any staged
+expansion/stopping rule. Do not add pairs until a preferred result appears. Inferential
+claims across many aircraft/phases need a declared multiplicity policy; otherwise
+report descriptive ranges and inconclusive differences. Apply the owning
+[optimization gate](global-performance-visual-quality.md#gates-to-freeze-in-vq-01c):
+gain beyond paired-run variation and at least 5% of the affected complete workload,
+or removal of a named reproducible hitch/memory defect, without harmful repeatable
+tradeoffs. Keep worst cases, failed attempts and exclusions visible.
+
+The fixed Stik → jet → Corsair order is workload identity, not a fair experiment
+isolating aircraft cost from warming/caches. Primary regression comparisons stay
+within aircraft on the same named physical host. Cross-aircraft attribution needs
+a separately identified controlled replication. Verify actual device, power/thermal
+history, observer hashes, monitor coverage and achieved workload for each pair;
+the current exploratory comparator does not enforce all these identities.
+
+Three repeats are not the owning loading or lifecycle qualification. Loading keeps
+at least five fresh-process and five warm in-process observations under its defined
+protocol. Steady pacing keeps the owning 10 s warmup/60 s sample where applicable;
+the warmup still remains in user-experience reporting. A short maneuver is an event
+workload, not an equivalent steady sample. The 20-cycle screen, 50-cycle requirement
+and 30-minute soak stay separate lanes; a nine-launch tour cannot claim them.
 
 Instrument levels: standard (frames/phases/bounded health/trajectory), diagnostic
 (additional counters/profiling/logging), visual (captures/video). Screenshot readback
@@ -452,6 +627,13 @@ inside an acceptance run. Preserve pilot while changing only audited observers i
 overhead controls. Never subtract noisy observer time from individual frame times.
 `.orfl` is explicit and matched across roles. Reuse bounded streaming and existing
 OS resource/Perfetto tools; no new profiler or growing in-memory full-flight arrays.
+
+Target qualification requires matched observer controls on each target: retain the
+same pilot/route while comparing the applicable no-bridge/history/watch levels with
+independent timing. Freeze the permissible overhead before measurement. Unknown or
+exceeded overhead leaves sensitivity/qualification inconclusive. Record same-run
+power/thermal/background conditions with bounded, costed observation; a prior host
+snapshot or separate diagnostic cannot prove that a long timed tour stayed stable.
 
 The [PT1h-R15 stutter-diagnostics plan](stutter-diagnostics.md) owns proposed bounded
 incident collection and channel/clock provenance. GOD TEST retains campaign control
@@ -485,6 +667,28 @@ adds an explicitly armed terminal aircraft accident while preserving the separat
 flight, execution, data, coverage and performance outcomes. It does not relax the
 current V1 failure rules or permit an application failure to count as crash coverage.
 
+**Requested mode is authoritative.** A requested rendered case must prove drawable
+state and draw progression in every required measured phase, including menus and
+aftermath. Unexpected non-drawing cannot downgrade it into successful headless
+coverage. A rendered manifest with `rendered=false`, incomplete draw evidence or
+an unverified physical adapter fails its rendered execution gate. V1 has a known
+[success-predicate gap](../research/god-test/2026-11-20-plan-audit.md#rendered-success-gap)
+here; `exit 0` is not proof that a requested rendered campaign was observed.
+
+Keep **execution/data/coverage/monitoring**, **absolute target compliance**,
+**baseline regression** and **hardware qualification** as independent verdicts.
+Missing prerequisites are inconclusive or refused, never target-met. V1 `screen_only`
+and exit zero do not mean FPS, simulation or loading targets passed. V2 must expose
+every required aircraft/phase/target plus failures, missing evidence and scope in its
+primary report; all required slots must satisfy the declared gate before promotion.
+
+Resume retains an append-only per-slot attempt ledger, including failures, timeouts,
+refusals, reasons, source-chain references and explicit selected/excluded attempts.
+V2 must validate retained artifacts/hashes and show that ledger in the report.
+V1 retains summaries but does not revalidate or display every earlier failed attempt;
+manual retention/review is required. Never replace failed observations with an
+unmarked successful retry or infer a pass from an absent slot.
+
 ## 12. Declarative interface and files
 
 Initial format: versioned JSON, using existing Python/Godot support. YAML authoring
@@ -493,6 +697,21 @@ start/pilot, environment and seeds, graphics/camera profile, route and ordered p
 measurement level and explicit policies. Expanded profiles contain numeric targets,
 tolerances, bounds and deadlines. Validate unknown fields, types, finite values,
 units, identifiers, capabilities, references and contradictory options.
+
+Before any V2 qualification launch, an expanded **qualification card** must contain
+the fields below, with finite numeric units/bounds and source-backed predicates.
+Reject missing/TBD values and incompatible capabilities; calibration-only runs must
+identify themselves as such. This is a proposed contract, not new accepted V1 JSON.
+
+| Card group | Required resolved fields |
+| --- | --- |
+| Workload | Version, full ordered aircraft/attempt roster, one/two lap count, route/profile/seed and calibration/held-out identities |
+| Flight | Ground-support/rotation/clearance criteria; signed right turn; altitude/speed/corridors; lap sample/time/displacement bounds; orientation roll and recovery gates |
+| Scenery | Resolved pavilion/tree-group/house IDs and coordinates; camera/FOV/zoom; drawable pixel/visibility/dwell rules and linked visual proof |
+| Menus | Exact action/panel IDs, first/repeat order and dwell; request/ack/draw/ready deadlines; per-action state invariants and preview generation binding |
+| Impact | Arm prerequisites/deadline, admitted region/contact surface and speed/attitude bands, incident/report identity, before/after windows and all inspection/return deadlines |
+| Measurement | Clock domains/alignment uncertainty, stream and monitor coverage/gaps, detector/formula versions, tail support and observer-overhead limits |
+| Host and decision | Actual OS/architecture/device/driver/native backend/display/power state, source/engine provenance, target/comparison policy and complete launch/storage/cleanup budget |
 
 Proposed CLI (implemented commands must be documented in the tool README):
 
@@ -541,6 +760,23 @@ actual backend/renderer, output/internal dimensions, reconstruction/VSync/cap/au
 and instrument level. Snapshot mutable inputs for long/paired runs; never stash
 another owner's work. Verify macOS profile isolation separately from Windows/Linux.
 
+Matching engine hashes establish sameness, not an official pin: retain independent
+pinned-engine provenance and native-artifact compatibility for the OS/architecture;
+include relevant bundle/library identities. Associate renderer identity with the
+sampled device's PCI/UUID/registry identity; model-name equality alone is insufficient.
+Apple Silicon needs actual panel/output, drawable and internal 3D dimensions, not
+only matching window coordinates. Intel and Windows AMD utilization are unsupported
+by the current sampler; show unsupported/incomplete until an admitted adapter exists.
+
+Budget storage on the actual output/profile volumes for the full roster, streams,
+failed attempts, frozen imports and every Mac launch copy, plus recovery reserve.
+APFS clone support/volume compatibility must be checked before a Mac campaign;
+clone failure has no silent copy fallback. Do not assume the initial 512 MiB reserve
+covers a whole campaign. Retain all ancestor suites, source/import trees and private
+profiles while referenced; current revalidation uses original absolute paths.
+Relocation needs a verified remapping contract before archives can move. No silent
+cleanup, receipt editing or deletion of failed attempts to make a report pass.
+
 ## 13. Execution steps and evidence ledger
 
 Status is maintained only here; tool instructions describe implemented commands.
@@ -561,8 +797,10 @@ Status is maintained only here; tool instructions describe implemented commands.
 | GOD-12 | Cycles, soak, hardware and overhead | Ten rendered load/flight/Home cycles completed; bounded memory/soak commands implemented; 50-cycle/30-minute and overhead qualification remain pending |
 | GOD-12-R1 | Three-aircraft runway/menu performance campaign | Implemented source/debug tour, continuous frame watcher, position-based lap and resumed-flight guards, process/GPU sampling and suite evidence checks; [operating contract](../../tools/godtest/PERFORMANCE_TOUR.md). Final three-aircraft headless cycle completed with valid/complete evidence and no GPU qualification; [2026-11-20 verification](../research/god-test/2026-11-20-performance-tour.md). Actual MacBook/Linux GPU/Windows qualification remains open. |
 | GOD-12-R2 | Low scenic takeoff, same-flight circuits, browse-only menus, roll and intentional crash | Planned; [owner's revised sequence and acceptance substeps](#4a-planned-scenic-and-crash-tour). Ground-start/roll admission for jet and Corsair, scenery visibility, menu readbacks and expected-impact reporting are not implemented by V1. No V2 execution or hardware result is claimed. |
+| GOD-12-R3 | Independent adversarial audit of plan, tooling claims and acceptance | Documentation hardened after [source review and offline counterexamples](../research/god-test/2026-11-20-plan-audit.md). Runtime corrections and qualification remain open under GOD-12-R2a–g / GOD-13-R2; this audit is not a benchmark pass. |
 | GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release-package lanes remain pending |
 | GOD-13-R1 | Portable tooling and macOS profile adapter | Python tooling workflow is configured for Linux/Windows/macOS; private Mac launch copy changes only the project name. Local verification: 161 Python checks, three checked Godot fixtures and expected Startup profile refusal; [evidence](../research/god-test/2026-11-20-performance-tour.md). Hosted tests and headless control-flow evidence do not qualify target hardware. |
+| GOD-13-R2 | Admitted full-campaign execution and evidence lifecycle | Planned: total outer deadline/storage admission, worker-compatible commands, source-bound recovery and integrity-checked attempt retention/relocation; explicit physical device/host/display and same-run conditions proof. Automatic enrolled-host resume remains unsupported. |
 
 Order: contracts/CLI → supervised normal startup → collectors → basic pilot →
 landmarks/pause → aerobatics/landing → variants/comparison → long campaigns/packages.
@@ -577,14 +815,42 @@ Use existing frame/diagnostic/loading/debug/catalog/controller/takeoff/landing t
 when affected. Deliberate failures run on disposable copies. Existing required CI
 remains required; do not habitually run the complete app suite for each local edit.
 
-Rendered acceptance runs are serial, visible/focused, at verified 1080p on named
-hardware. Headless proves contracts, not GPU qualification. Source/debug results
+Rendered acceptance runs are serial, visible/focused, on named physical hardware:
+1920×1080 first for standard Windows/Linux/Intel-Mac targets; **native panel pixels
+for Apple Silicon Retina** under its owning acceptance contract. Verify output,
+drawable and internal 3D pixels separately. Headless proves contracts, not GPU qualification. Source/debug results
 do not qualify release packages; the current bridge is disabled in release templates.
 Minimal package instrumentation/external observation requires its own delivery.
 
 Cadence: focused local/PR checks; selected rendered GPU comparisons; versioned nightly
 `all` and bounded matrix; independent long campaigns; package checks for release
 candidates. Do not change shared hardware/system power preferences silently.
+
+V2 needs discriminating positive/negative fixtures before rendered qualification:
+
+Each negative fixture rejects its **specific unsupported claim or required gate**.
+An unresolved subsecond resource window stays unavailable while independent frame/UI
+evidence can remain valid; it is not automatically a failure of all collection.
+Missing mandatory campaign monitoring still blocks its declared qualification.
+Optional unsupported temperature/power counters stay unavailable, not fatal.
+
+| Boundary | Negative case that must not pass |
+| --- | --- |
+| Admission | Missing numeric profile/unsupported aircraft; outer deadline or storage too small; lost owner followed by a duplicate launch |
+| Takeoff/turn | Airborne substitute, missing wheel separation or a left turn reaching the same final heading |
+| Scenery | Proximity/frustum-only evidence, hidden/subpixel house, missing tree group or high transit outside the corridor |
+| Laps/roll | Small teleport jumps, stale/reused lap segments, clock gaps, reverse/tumbling roll or rate integral without orientation/recovery proof |
+| Menus/previews | Setting changed then reverted, stale async preview, invisible/disabled panel, missing repeated visit or resumed input ownership |
+| Impact/report | Early/unarmed/wrong-region crash, harmless contact, stale/nonterminal/archived report, wrong incident, hidden card or suspended aftermath |
+| Drawing | Requested rendered case with false rendered state, absent phase draw progress, unexpected focus/hold, unknown physical adapter or wrong drawable size |
+| Monitoring | CPU gap/tail loss, unbound GPU or unsupported required counters passing a mandatory monitoring gate; uncertain clock joins or unresolved short windows passing as resolved resource attribution |
+| Reporting | Missing/corrupt/capped stream, duplicate phase, unsupported tail claim, masked simulation slowdown or missing failed-attempt artifact |
+| Comparison/recovery | Different physical host/device/observer/impact envelope, unsupported exclusion, reboot/unverified shutdown or deleted source-chain dependency |
+
+Run destructive fault fixtures on disposable evidence copies, not a player's
+profile or retained benchmark. The test matrix must verify refusal/inconclusive
+semantics as well as success. Source-level probes and fixture passes do not establish
+real rendering, panel visibility, collision calibration or target performance.
 
 The first usable version must launch normally, select the stock Stik, attempt the
 full reference sequence and settings transitions, close, report per-phase frames/

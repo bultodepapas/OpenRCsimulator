@@ -429,6 +429,17 @@ planned workload, not the implemented V1 command or its historical evidence; the
 [revised GOD TEST contract](plans/god-test.md#4a-planned-scenic-and-crash-tour) owns
 route details and acceptance work.
 
+**GOD-12-R3 / GOD-13-R2, 2026-11-20; independent audit.** Requested rendered
+coverage must fail closed when drawing proof is missing; it cannot be downgraded
+to successful headless execution. Independent coverage receipts, per-action settings
+invariants and a terminal report bound to the accepted impact are required for the
+revised tour. Preserve clock/monitoring uncertainty, sampled-device association,
+failed attempts and absolute targets separately from collection success. Qualification
+requires a resolved profile, admitted full-campaign resources and observer/host
+evidence; documentation cannot close unimplemented guards. The
+[source audit](research/god-test/2026-11-20-plan-audit.md) records counterexamples;
+the [GOD TEST plan](plans/god-test.md) owns corrections and remaining acceptance.
+
 **PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
 one-shot collector and two-snapshot union with a bounded multi-incident client
 watch. It reads every new row through cheap passive `since`/`lean` polls guarded by

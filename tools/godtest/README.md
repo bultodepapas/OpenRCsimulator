@@ -16,6 +16,13 @@ adds low flight after runway takeoff, one/two same-flight circuits, a horizontal
 roll, intentional impact/aftermath and settings-preserving menu browsing.
 It is not yet implemented; the current CLI and its evidence remain V1.
 
+The [independent audit](../../docs/research/god-test/2026-11-20-plan-audit.md) also
+records existing execution and reporting gaps. Read the tour guide's
+[managed-host route](PERFORMANCE_TOUR.md#managed-host-admission) and
+[verification limits](PERFORMANCE_TOUR.md#current-verification-limits): exit zero
+does not prove requested rendering or performance-target compliance, and the
+current comparator remains exploratory.
+
 ## Commands
 
 From the repository root, with the pinned Godot editor and prepared imports:
@@ -86,6 +93,11 @@ project copy. Keep the referenced source directory intact. `resume` keeps valid
 cases from a retained suite index and retries failed cases against their original
 frozen inputs, preserving the prior attempts and instrumentation choice. A retry
 uses the current external supervisor; its identity is recorded separately.
+Tour resume is refused as a standalone command on enrolled hosts. A missing
+execution/shutdown receipt or changed host/boot may require a fresh campaign;
+manual reconciliation is not currently an accepted resume-receipt format. Retain
+all source-suite ancestors and failed attempts at their recorded paths. Selected
+case revalidation does not prove every prior attempt artifact remains present.
 Preparation checks free space with a reserve before copying. Preparation remains
 outside timing. Hashing/copying warms OS caches: these are new
 process runs with unknown OS-cache state, not OS-cold measurements.
@@ -161,6 +173,9 @@ reuse the pinned existing sampler:
 See [resource setup and limits](../godot/README.md#process-ram-io-and-storage-pt1h-r4).
 Resource sampling begins after bridge readiness and cannot prove full-startup RSS
 peaks. No screenshots or video readback occur during the timing run.
+The CPU completeness flag does not currently bound polling/tail gaps. Engine-phase
+and host-sampler clocks are not automatically joined; per-phase resource attribution
+and subsecond crash/menu cost need the planned clock/coverage contract first.
 
 The comparator currently admits matched complete transition phases only. Full
 adaptive-flight geometric equivalence, fixed input-tape rendered replay, repeated
