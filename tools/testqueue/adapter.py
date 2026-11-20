@@ -254,6 +254,11 @@ def validate_evidence(preset, directory, root, options=None):
                 observed.append(report(path))
             complete = complete and all(case.get("coverage") == "complete" for case in observed)
             ok = complete and all(case.get("data") == "valid" for case in observed)
+            requested_tour = (options or {}).get("argv", [])[:1] == ["performance-tour"]
+            if requested_tour or receipt.get("suite") == "performance-tour-v1":
+                from tour_report import report_tour
+                tour = report_tour(directory / "godtest")
+                return tour["coverage"] == "complete", tour["data"] == "valid" and tour["coverage"] == "complete", tour
             return complete, ok, {"suite": str(suite), "cases": len(cases)}
         if not (directory / "godtest/execution.json").exists():
             return False, False, {"missing": "GOD TEST execution.json or suite.json"}

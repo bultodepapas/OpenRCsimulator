@@ -1,0 +1,294 @@
+# Three-aircraft performance tour
+
+The `performance-tour` command runs the existing GOD TEST application driver with
+the existing continuous frame watcher and process resource sampler. It adds a
+runway-position completion check, real Settings/Controls transitions, passive GPU
+utilization sampling, and an independently rebuilt suite report. This is the
+operating guide for **GOD-12-R1 / GOD-13-R1**; the [GOD TEST plan](../../docs/plans/god-test.md)
+owns qualification status. The [general tool guide](README.md) owns source freezing,
+other scenarios, and event-stream semantics.
+
+## Run the complete workload
+
+Use a prepared checkout, the repository's pinned engine, and the Python environment
+with [the existing resource dependencies](../godot/requirements-resources.txt).
+The command creates a fresh output directory and always retains failed cases.
+
+```sh
+python3 tools/godtest/godtest.py performance-tour --dry-run --repeats 3
+python3 tools/godtest/godtest.py performance-tour --repeats 3 \
+  --resolution 1920x1080 --scene-detail medium \
+  --godot /absolute/path/to/the/pinned/Godot \
+  --out tmp/performance-tour/baseline-01
+```
+
+The standard screen is three repeats of three aircraft: **nine separate owned
+application launches**, in Stik → jet → Corsair order for each repeat. `--repeats 1`
+is the first functional smoke run. `--cycles 2` repeats the entire Home/flight/menu
+cycle twice inside each aircraft's launch, which is useful for reload and memory
+investigations. Neither flag silently omits a failed aircraft.
+
+| Aircraft shown to the player | Catalog identity |
+| --- | --- |
+| Jensen Das Ugly Stik 60 | `jensen-das-ugly-stik-60` |
+| Sebart Avanti S A200 / P100-RX jet | `sebart-avanti-s-a200-p100rx` |
+| F4U Corsair 250 | `f4u-corsair-250` |
+
+The tour refuses an aircraft override, partial phase list, alternative landscape,
+or isolated entry that would remove the required workload. For one investigation,
+use `run runway-menus --aircraft <id>` instead. Normal pause, Settings, Controls,
+lighting Apply, Home, and shutdown remain part of every complete tour case.
+
+### What each aircraft actually does
+
+1. Start the real source/debug application through Startup and Home. Wait for a
+   verified frame-watcher cursor before aircraft selection.
+2. Select the required aircraft, Club Field, calm weather, clear sky, day lighting,
+   and the recorded seed through the application. Verify the selected, loaded
+   flight, and model aircraft IDs. Begin with the product's accepted airborne
+   start, then stabilize the physical aircraft with ordinary control input.
+3. Fly a clockwise circuit enclosing the loaded runway. The observer uses accepted
+   north/east positions, requires all four quadrants and a full signed revolution,
+   and keeps the aircraft within a continuous annulus outside the runway corners
+   at 20–140 m AGL for at least ten simulated seconds. Radius scales with trim
+   speed. A corridor excursion resets lap credit; reverse turns, stationary
+   heading changes and partial arcs cannot pass. Bearing jumps over 45° and
+   segments crossing the protected runway radius are rejected; this observer
+   does not independently bound every small displacement by elapsed time.
+4. Pause for at least five wall seconds. Verify the tick and physical state do not
+   change. Resume and verify continuing ticks and a healthy, unobstructed flight.
+5. Open the actual Settings screen through Pause, dwell, return, and resume.
+   Repeat for Controls. Verify enabled/visible buttons, screen ownership, the
+   same bound session, pause invariants, input ownership and healthy tick progress
+   throughout each resumed dwell.
+6. Exercise the existing lighting settings/Apply transition, resume, return Home,
+   and close the owned process. A late accident, fault, pilot failure, missing
+   screen close, reference-backend fallback, dropped recording, or forced exit
+   cannot become a successful performance screen.
+
+The circuit is an orbit around the runway, not a rectangular landing pattern. The
+pilot is experimental and supplies commands through the existing input adapter;
+it does not move the aircraft by teleporting or change the 240 Hz physics laws.
+Takeoff, aerobatics and landing are outside this three-aircraft workload. Those
+remain in the existing calibrated/experimental GOD TEST scenarios. Menu actions
+exercise real UI handlers; they do not qualify physical keyboard, mouse or radio
+input latency.
+
+## Target machines and display contract
+
+Run each campaign on its actual OS, physical GPU and visible desktop. Use the
+[existing host admission](../testqueue/README.md) on enrolled machines. The CLI
+retains its owning session through cleanup; the checked headless pool is not a
+replacement for a rendered performance run. Use [the Mac guide](../../docs/tools/macos-m1.md)
+or [the Linux access guide](../../docs/tools/linux-ssh.md) for configured hosts.
+Hostnames, credentials and personal paths stay outside this repository.
+
+| Target | Automatic tour renderer | Primary display run | GPU utilization source |
+| --- | --- | --- | --- |
+| Apple Silicon MacBook | Mobile / Metal | Native panel pixels, borderless; 1080p is a separate configuration | AGX `ioreg` statistics |
+| Linux with a physical GPU and active X11/Wayland desktop | Forward+ / Vulkan | 1920×1080 first | NVIDIA `nvidia-smi`; AMDGPU read-only sysfs |
+| Windows with a physical GPU and interactive desktop | Forward+ / Vulkan | 1920×1080 first | NVIDIA `nvidia-smi` |
+
+These are explicit benchmark defaults. Check the **actual** renderer, driver,
+resolution, backend and GPU identity in the report. A requested setting is not
+proof it took effect. A software renderer is ineligible. A headless run validates
+control flow and artifacts only; Xvfb/llvmpipe does not qualify the Linux GPU.
+The driver samples applied window mode, VSync, frame cap and window/viewport size
+after Home, at each completed phase, and before shutdown; the rendered reducer
+refuses missing observations or settings that the platform did not apply.
+
+Example for a 2560×1600 MacBook panel, using the prepared native source editor:
+
+```sh
+python3 tools/godtest/godtest.py performance-tour --repeats 3 \
+  --window-mode borderless --resolution 2560x1600 \
+  --rendering-method mobile --rendering-driver metal \
+  --godot /absolute/path/Godot.app/Contents/MacOS/Godot \
+  --out tmp/performance-tour/macbook-native-01
+```
+
+Use the measured panel dimensions for the actual Mac; 2560×1600 is an example,
+not an automatic hardware detection result. Additional Mac panel sizes are
+admitted in borderless mode. Mirroring or a different active screen can change
+the output; a dimension mismatch fails the screen. The report distinguishes
+requested window pixels and observed viewport coordinates. Native drawable and
+internal reconstructed 3D pixels still need the [Apple acceptance checks](../../docs/plans/apple-silicon-performance.md).
+This tour seeds native reconstruction; it does not claim MetalFX qualification.
+
+Windows uses the same Python entry point, normally with the console editor:
+
+```powershell
+python tools/godtest/godtest.py performance-tour --repeats 3 `
+  --resolution 1920x1080 --rendering-method forward_plus --rendering-driver vulkan `
+  --godot 'C:\absolute\path\Godot_v4.8-beta2_win64_console.exe' `
+  --out 'U:\OpenRC-perf\baseline-01'
+```
+
+Prepare and verify the [native physics backend](../../research/native-kernel/README.md#normal-flight-backend-selection)
+for the exact source/engine/architecture before rendered runs. Actual native
+selection is mandatory for this workload. Source/debug execution on macOS has
+an implemented isolation adapter; release-export execution and native target
+hardware acceptance remain separate work.
+
+On macOS the canonical snapshot is unchanged. A verified per-run APFS copy changes
+only `application/config/name` to a unique `OpenRC-GodTest-<uuid>`. Its fresh profile
+is created in macOS Application Support and checked against the running project
+before settings are written. `launch-snapshot.json` records original/launch
+project hashes and the exact profile directory. Preserve that directory with the
+run until evidence retention is complete. Linux and Windows use the existing
+run-local profile redirection. No launcher repurposes the account's `HOME`.
+When a benchmark is requested, Startup exits before reading preferences or
+loading Home if the debug observer or its private-profile check is unavailable.
+Godot's [user-data path contract](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#accessing-persistent-user-data-user)
+explains why the Mac needs the distinct adapter.
+
+### Preflight and repeats
+
+Use the pinned engine and current imports, a matching native artifact, and a fresh
+output directory. Sparse checkouts must include the authoring receipts referenced
+by `app/data/aircraft_models` and `aircraft_model_overlays`; missing inputs are
+refused before launch. Keep the same revision, renderer, viewport, quality, camera,
+aircraft order, weather, seed and pacing settings throughout a comparison.
+
+Connect AC power, keep the lid/display active, and record the power mode, screen
+refresh rate, driver, OS and background load. Stop competing simulator, capture,
+encoder and GPU workloads through their owners. Allow a consistent idle/thermal
+period between comparison blocks. Retain temperature/clock/power readings where
+the backend supplies them. For Mac thermal/energy detail use the existing
+[host-state helper](../godot/README.md) in a separately documented diagnostic run.
+
+The default is uncapped with VSync disabled, so a cap cannot hide available
+capacity. `--max-fps 60 --vsync-mode enabled` defines a separate player-pacing
+campaign. Do not combine these populations. Every launch has fresh preferences;
+source copying and prior launches may warm OS/driver caches. These are not proven
+OS-cold or shader-cold measurements, and the runner does not clear global caches.
+
+## Metrics, evidence and verdicts
+
+| Evidence | What it tells us | Limits retained |
+| --- | --- | --- |
+| Verified GOD TEST frame stream and phase events | Mean callback FPS, p50/p95/p99/worst intervals, 1% and 0.1% lows; time and counts above 16.667/33.333/50/100 ms; startup/loading and menu latency | Callback intervals, not presented frames; short-tail estimates are labeled |
+| Existing continuous `frames watch` | Relative stutter, absolute stalls, sustained slow frames, FPS-drop episodes, frozen-frame observations, bounded incident lead-up/recovery and per-second/route views | Armed after initial Home; gaps, detector warmup, clipped edges and capture limits stay visible |
+| Existing `ResourceSampler` | Direct-process CPU time and percentage, RSS/virtual memory, thread count, available host memory and process I/O | 100% means one logical CPU; may exceed 100%; no descendant totals or same-frame CPU attribution |
+| Passive GPU sampler | Device-wide utilization; clocks, temperature, power and memory when supported; every observed device has its own identity | Other processes contribute; the rendering GPU is not automatically identified; Apple memory is shared memory |
+| Runtime and frozen-source receipts | Aircraft/model/backend/engine/source identity, actual settings, trajectory, pause invariants, laps, completion and clean exit | These are software observations, not aircraft realism or pilot acceptance |
+
+CPU/GPU monitoring is automatic for the tour. Intel GPUs and Windows AMD GPUs do
+not currently have a utilization backend here. Unsupported counters are `null`
+with a reason. Missing utilization, tool errors, changing devices, exhausted
+sample caps or a worker that fails to stop make monitoring incomplete; they never
+become zero-load readings. Optional unsupported temperature/power counters do not
+invalidate otherwise complete utilization coverage.
+At least two utilization observations per device are required. Startup delay,
+poll-start spacing and the final observation gap must stay within three requested
+sampling intervals plus 250 ms (3.25 seconds at the standard 1 Hz interval).
+Changed or unreadable observer code, an unexplained worker exit, or absent raw
+samples prevent complete monitoring even when a summary says `available`.
+On Linux, an absent vendor backend is marked not applicable only when a readable,
+consistent PCI/DRM inventory supports that conclusion; an absent executable by
+itself is insufficient. This inventory does not identify the GPU rendering Godot.
+
+Each suite has `suite.json`, `report.json`, and `report.html`. Each aircraft run
+retains requested/resolved manifests, source/launch receipts, `runtime.json`,
+`events.jsonl`, `trajectory.csv`, frame stream/receipt, `execution.json`, engine
+logs, `resources.json`, `gpu.json`, and `frame-watch/` reports/incidents. The suite
+report rebuilds child reports and verifies roster, source bytes, settings and
+ordered phase coverage; it does not trust a cached `complete` flag. Do not remove
+the referenced frozen source/import directory while reports need revalidation.
+
+`data`, `coverage`, `monitoring` and `performance` are independent. A useful frame
+recording can survive an unavailable GPU counter or a failed maneuver. A rendered
+tour requires valid complete recordings and complete monitoring for successful
+screen execution. Even then `performance=screen_only` is **not** a hardware
+qualification or regression pass. Headless runs remain `not_qualified`.
+
+The established flight targets are p95 ≤18 ms, p99 ≤25 ms, and simulation/wall
+pace near one. Startup and loading retain their own scope-specific targets.
+Target misses are surfaced for investigation; they are not silently discarded or
+treated as diagnoses. Inspect the exact affected phase, especially menu/loading
+stalls that should not be averaged into steady flight. Per-phase 1%/0.1% lows use
+the reciprocal of the mean of the slowest `max(1, floor(N*fraction))` intervals.
+Watcher stutter/stall totals are overall; incident snippets cannot establish
+complete per-phase stutter counts.
+
+Repeats report medians and ranges of per-run phase statistics, never a pooled
+percentile across unlike phases or machines. Compare a baseline and one candidate
+on the **same physical machine**, alternating A/B blocks with matched conditions.
+Keep all attempts, including failed runs and thermal outliers, and explain any
+exclusion. The existing `compare --phase loading` and other admitted transition
+comparisons are exploratory. Adaptive pilot routes and repeated A/B significance
+are not yet qualified for an automatic whole-flight regression verdict.
+
+## Investigate and optimize from the evidence
+
+Use the tour as a repeatable detector, then run the narrow diagnostic indicated by
+the result. Heavy tracing or screenshots are separate from the measured baseline.
+
+| Observed symptom | Next existing tool | Controlled optimization experiment |
+| --- | --- | --- |
+| Brief hitch, freeze or FPS collapse | Retained `frame-watch/report.html`, its incidents, `timeline --stutter`, or `frames --out` | Reproduce the same phase; inspect loading, shader work, allocations, I/O and observer markers |
+| High process CPU with GPU headroom | `launch --script-profile` / `profile`, [native development tools](../../research/native-kernel/README.md#c-development-tools-nk-3) | Change one measured hot path; verify unchanged physics and rerun the same circuit |
+| High GPU utilization / render cost | `render`, `layers`, `ablate`; [graphics ladder](../../research/performance/graphics_ladder/README.md) | One quality feature or resolution change at a time; retain visual acceptance and actual pixels |
+| First-load or menu-only spike | GOD TEST selection/loading/menu phases and verbose `timeline` | Separate asset decode, preparation, upload and scene attachment; compare initial and repeated entries |
+| Increasing memory across Home/flight cycles | `--cycles`, existing `memory`, `objects`, `soak` and [resource tools](../godot/README.md) | Check lifecycle/resource release; distinguish retained caches from monotonic growth |
+| Mac slowdown with clock/thermal changes | Existing Mac host-state helper; Instruments/Metal tools when available | Match power/display/cooling conditions before attributing the effect to a code change |
+| Windows/Linux presentation or GPU-driver question | PresentMon, Nsight, RenderDoc, RGP or system tracing as appropriate to the installed GPU/API | Retain the external trace and exact identity as a separate attachment; quantify observer overhead |
+
+The [debug investigation guide](../debug/README.md#choose-the-next-investigation)
+owns the commands and supported export formats. Do not feed the event-bounded
+GOD TEST stream into a fixed-duration native diagnosis or Perfetto importer as if
+it were that tool's own format. Use the existing debug snapshot exporter for
+HTML/CSV/JSON/Perfetto evidence and preserve its original receipts. GPU polls and
+viewport timestamps may lag; correlation alone does not prove the cause of a hitch.
+
+An optimization closes only with a matched before/after result, no missing cases,
+unchanged required behavior, and a record of remaining platform limits. Do not
+claim a general FPS gain from a headless test, a single counter or one aircraft.
+
+## Recovery and verification
+
+```sh
+python3 tools/godtest/godtest.py report tmp/performance-tour/baseline-01
+python3 tools/godtest/godtest.py resume tmp/performance-tour/baseline-01 \
+  --out tmp/performance-tour/baseline-01-retry
+python3 -m unittest discover -s tools/godtest -p 'test_*.py'
+python3 -m unittest discover -s tools/debug -p 'test_frame_watch.py'
+```
+
+Before retrying after a lost supervisor, reconcile its owned process and host
+admission. Resume retains prior attempts and matching frozen inputs; it must not
+launch a duplicate session with uncertain ownership. Preserve the original suite
+and source receipts so reused cases remain auditable.
+The index retains the entire planned roster before the first launch and preserves
+later completed cases through another interruption or a refused retry. Resume
+requires the original engine bytes, observers, frozen inputs and the same OS
+installation and boot. Host/boot IDs use hashes of the existing host-admission
+identities; cloned machine IDs cannot distinguish physical machines. An unknown
+owner, old index without these receipts, changed observer, another machine or a
+reboot requires reconciliation or a fresh campaign. A preflight refusal retains
+the original case references in the new index. The launcher pins the hashed engine
+path and checks its command and executable bytes again after shutdown.
+
+For functional development only:
+
+```sh
+python3 tools/godtest/godtest.py performance-tour --headless --repeats 1 \
+  --godot /absolute/path/to/the/pinned/Godot --out tmp/performance-tour/functional-01
+```
+
+Run the standalone `research/performance/godtest/test_runway_circuit.gd` through
+the [checked runner](../godot/README.md) with completion marker
+`GOD_RUNWAY_CIRCUIT_TESTS: 0 failed`. The menu guard fixture
+`research/performance/godtest/test_menu_safety.gd` additionally requires
+`OPENRC_GODTEST_TEST_PROFILE` and the OS profile redirection to identify the same
+fresh directory; require `GOD_MENU_SAFETY_TESTS: 0 failed`. Never point that fixture
+at a player's profile. The fixture validates guards and product settings, not a
+rendered flight.
+The Startup refusal fixture `research/performance/godtest/test_startup_guard.gd`
+uses the same checked runner with a fresh redirected profile and completion marker
+`GOD_STARTUP_GUARD_TESTS: 0 failed`.
+
+The `GOD TEST portable tooling` workflow runs Python fixtures on Linux, Windows
+and macOS. Existing full CI gates remain unchanged. Hosted CI, synthetic GPU
+fixtures and headless functional runs do not substitute for the three real
+hardware campaigns above.

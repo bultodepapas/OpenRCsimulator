@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 from tools.godot.run_checked import inspect_log
 
 ORCHESTRATOR_SOURCES = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in Path(__file__).parent.glob("*.py")}
+RESOURCE_SAMPLER_SOURCE_SHA256 = hashlib.sha256((ROOT / "tools/godot/resource_samples.py").read_bytes()).hexdigest()
 
 
 def write_json(path: Path, value: dict) -> None:
@@ -53,6 +54,8 @@ def source_identity() -> dict:
     commit = git("rev-parse", "HEAD").decode().strip()
     status = git("status", "--porcelain=v1", "-z").decode(errors="replace").split("\0")
     listed = git("ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", "app", "tools/godtest", "research/performance/godtest").decode(errors="strict").split("\0")
+    # The pilot uses this exact shared input conversion helper outside its folder.
+    listed.append("research/performance/sustained_input.gd")
     # Installed runtime extensions are intentionally ignored by Git but loaded by
     # the copied extension list. Their exact delivery bytes belong to this workload.
     native_root = ROOT / "app/native"
@@ -69,7 +72,7 @@ def source_identity() -> dict:
             relative = Path(value)
             if ".." in relative.parts or relative.is_absolute():
                 raise ValueError("invalid aircraft authoring path")
-            if (ROOT / relative).is_file(): listed.append(relative.as_posix())
+            listed.append(relative.as_posix())
     for folder in ("aircraft_models", "aircraft_model_overlays"):
         for manifest in (ROOT / "app/data" / folder).glob("*.json"):
             collect_authoring(json.loads(manifest.read_text(encoding="utf-8")))
@@ -109,20 +112,12 @@ def freeze_inputs(directory: Path, identity: dict) -> dict:
     for relative, expected in identity["files"].items():
         source, target = ROOT / relative, destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        expected = file_hash(source)
+        if file_hash(source) != expected:
+            raise ValueError(f"source changed after identity collection: {relative}; retry in a fresh run directory")
         shutil.copy2(source, target)
         if file_hash(target) != expected or file_hash(source) != expected:
             raise ValueError(f"source changed during snapshot: {relative}; retry in a fresh run directory")
         frozen[relative] = expected
-    # The pilot reuses this existing research input conversion helper.
-    relative = "research/performance/sustained_input.gd"
-    source, target = ROOT / relative, destination / relative
-    expected = file_hash(source)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source, target)
-    if file_hash(target) != expected:
-        raise ValueError("input helper changed during snapshot")
-    frozen[relative] = expected
     imported = {}
     for source in cached_files:
         if source.is_symlink() or (hasattr(source, "is_junction") and source.is_junction()):
@@ -210,13 +205,48 @@ def _call(function, arguments) -> tuple[int, dict]:
     return status, result
 
 
+def rendering_options(manifest: dict, host_platform: str | None = None) -> dict:
+    """Resolve this workload's renderer; actual values are checked after launch."""
+    host_platform = host_platform or sys.platform
+    method = manifest.get("rendering_method")
+    driver = manifest.get("rendering_driver")
+    if method == "auto":
+        method = "mobile" if host_platform == "darwin" else "forward_plus"
+    if driver == "auto":
+        driver = "opengl3" if method == "gl_compatibility" else "metal" if host_platform == "darwin" else "vulkan"
+    if method == "gl_compatibility" and driver not in (None, "opengl3"):
+        raise ValueError("Compatibility requires the OpenGL driver")
+    if method in ("mobile", "forward_plus") and driver == "opengl3":
+        raise ValueError("Mobile/Forward+ require Vulkan, Metal or D3D12")
+    if driver == "metal" and host_platform != "darwin":
+        raise ValueError("Metal requires macOS")
+    if driver == "d3d12" and host_platform != "win32":
+        raise ValueError("D3D12 requires Windows")
+    return {key: value for key, value in (("rendering_method", method), ("rendering_driver", driver)) if value}
+
+
+def campaign_host_identity() -> dict:
+    """Reuse the queue's OS identities, retaining only domain-separated hashes."""
+    from tools.testqueue.processes import host_identity
+    identity = host_identity()
+    return {"format": "openrc-godtest-host-v1",
+            **{key + "_sha256": hashlib.sha256(("openrc-godtest-" + key + ":" + identity[key]).encode()).hexdigest()
+               for key in ("host", "boot")},
+            "scope": "OS installation and boot; cloned machine IDs cannot distinguish physical hosts"}
+
+
 def run(manifest: dict, output: Path | None = None, *, godot: str | None = None, resources: bool = False, snapshot: dict | None = None) -> tuple[Path, dict]:
     from tools.testqueue.common import enabled, inherited
     if enabled() and not inherited("rendered"):
         raise ValueError("GOD TEST on an enrolled host requires the admitted godtest.py CLI or inherited attempt")
     validate(manifest)
-    if sys.platform == "darwin":
-        raise ValueError("Mac profile isolation requires the existing isolated-project workflow; this runner has not qualified it")
+    render_options = rendering_options(manifest)
+    host_identity = campaign_host_identity() if manifest.get("monitor_hardware") else None
+    resources = resources or manifest.get("monitor_hardware", False)
+    if resources:
+        # Fail before freezing/launching when the existing pinned CPU backend is missing.
+        from tools.godot.resource_samples import load_backend
+        load_backend()
     path = (output or ROOT / "tmp/godtest" / f"{manifest['id']}-{time.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:8]}").resolve()
     if path.exists():
         raise ValueError(f"output must be new: {path}")
@@ -225,9 +255,10 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
     manifest = dict(manifest, output_dir=str(path))
     validate(manifest, resolved=True)
     write_json(path / "manifest.requested.json", requested)
-    write_json(path / "manifest.resolved.json", manifest)
     before = source_identity()
     write_json(path / "identity.before.json", before)
+    if before.get("excluded_or_missing"):
+        raise ValueError("required snapshot inputs are missing or linked: " + ", ".join(before["excluded_or_missing"][:12]) + "; restore the declared authoring inputs in a sparse checkout before running")
     if snapshot is None:
         print("  freezing current source and prepared imports", flush=True)
         snapshot = freeze_inputs(path, before)
@@ -236,30 +267,50 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         if check_frozen(snapshot):
             raise ValueError("shared suite inputs changed")
         write_json(path / "snapshot.json", snapshot)
+    launch_snapshot = snapshot
+    if sys.platform == "darwin":
+        from tools.godtest.isolation import prepare_macos_launch
+        launch_snapshot = prepare_macos_launch(snapshot, path)
+        isolation = launch_snapshot["profile_isolation"]
+        manifest.update(isolated_user_dir=isolation["user_dir"], isolated_project_name=isolation["project_name"])
+        write_json(path / "launch-snapshot.json", launch_snapshot)
+    validate(manifest, resolved=True)
+    write_json(path / "manifest.resolved.json", manifest)
     bridge = _bridge()
-    launcher = ["--app", str(Path(snapshot["root"]) / "app"), "--out", str(path / "bridge"), "--profile", str(path / "profile"), "--resolution", f"{manifest['resolution'][0]}x{manifest['resolution'][1]}", "--timeout", str(min(180, manifest["timeout_s"]))]
+    launcher = ["--app", str(Path(launch_snapshot["root"]) / "app"), "--out", str(path / "bridge"), "--profile", str(path / "profile"), "--resolution", f"{manifest['resolution'][0]}x{manifest['resolution'][1]}", "--timeout", str(min(180, manifest["timeout_s"]))]
+    for key, value in render_options.items():
+        launcher += ["--" + key.replace("_", "-"), value]
     if manifest["headless"]:
         launcher.append("--headless")
     capture = {"state": "starting", "launch_to_bridge_s": None, "failure": "", "shutdown": {}, "host": dict(platform=platform.platform(), machine=platform.machine()), "resource_scope": "after bridge readiness; does not cover whole startup"}
     capture["resource_sampling"] = resources
+    capture["gpu_sampling"] = resources
+    if host_identity is not None:
+        capture["host_identity"] = host_identity
+    if resources:
+        capture["resource_sampler_source_sha256"] = RESOURCE_SAMPLER_SOURCE_SHA256
+    capture["rendering_requested"] = render_options
+    capture["profile_isolation"] = launch_snapshot.get("profile_isolation", {"kind": "run_directory"})
     capture["orchestrator_sources"] = ORCHESTRATOR_SOURCES
+    watch_requested = manifest.get("watch_frames", False)
+    capture["frame_watch"] = {"requested": watch_requested, "status": "not_started" if watch_requested else "not_requested"}
     sampler = None
+    gpu_sampler = None
+    monitor = None
     launch = {}
     launched = False
     timed_out = False
     interrupted = False
     engine_path = Path(godot).resolve() if godot else Path(bridge.godot()).resolve()
+    if not engine_path.is_file():
+        raise ValueError(f"engine not found: {engine_path}")
     capture["engine_files"] = {str(engine_path): file_hash(engine_path)}
+    capture["engine_command_verified"] = False
     direct = Path(str(engine_path).replace("_console.exe", ".exe"))
     if direct != engine_path and direct.is_file():
         capture["engine_files"][str(direct)] = file_hash(direct)
     launch_began = time.monotonic()
-    child_env = {"OPENRC_GODTEST_CONFIG": str(path / "manifest.resolved.json"), "OPENRC_SCENE_DETAIL": manifest["scene_detail"], "OPENRC_DEBUG_BRIDGE": None, "OPENRC_DIAGNOSTIC_CAPTURE_ID": path.name}
-    if godot:
-        executable = Path(godot).resolve()
-        if not executable.is_file():
-            raise ValueError(f"engine not found: {executable}")
-        child_env["OPENRC_GODOT"] = str(executable)
+    child_env = {"OPENRC_GODTEST_CONFIG": str(path / "manifest.resolved.json"), "OPENRC_SCENE_DETAIL": manifest["scene_detail"], "OPENRC_DEBUG_BRIDGE": None, "OPENRC_DIAGNOSTIC_CAPTURE_ID": path.name, "OPENRC_GODOT": str(engine_path)}
     try:
         with environment(child_env):
             status, launch = _call(bridge.launch, launcher)
@@ -271,12 +322,29 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         session = bridge.session_for(int(launch["port"]))
         command = session.get("command", [])
         capture["command"] = command
+        capture["engine_command_verified"] = isinstance(command, list) and any(
+            isinstance(arg, str) and os.path.normcase(arg) == os.path.normcase(str(engine_path)) for arg in command)
+        if not capture["engine_command_verified"]:
+            raise RuntimeError("launched command does not identify the pinned engine executable")
+        if watch_requested:
+            from tools.godtest.frame_monitor import FrameMonitor
+            monitor = FrameMonitor(bridge, int(launch["port"]), path, timeout_s=manifest["timeout_s"])
+            monitor.start()
         if resources:
             from tools.godot.resource_samples import ResourceSampler
-            sampler = ResourceSampler(int(launch["pid"]), interval=1, max_samples=4000)
+            from tools.godtest.hardware import GpuSampler
+            capture["monitoring_started_perf_counter_s"] = time.perf_counter()
+            sampler = ResourceSampler(int(launch["pid"]), interval=1, max_samples=4000, include_threads=True)
+            sampler.poll(force=True)
+            gpu_sampler = GpuSampler(interval=1, max_samples=4000)
+            gpu_sampler.start()
         deadline = launch_began + float(manifest["timeout_s"]) + 10
         last_phase = None
         while not (path / "runtime.json").exists():
+            if monitor:
+                monitor_failure = monitor.early_failure()
+                if monitor_failure:
+                    raise RuntimeError("frame watch stopped early: " + monitor_failure)
             if not bridge.alive(launch["pid"]):
                 raise RuntimeError("application exited before final runtime report")
             if time.monotonic() > deadline:
@@ -307,13 +375,45 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         capture["state"] = "timeout" if timed_out else "failed"
     finally:
         if sampler:
-            write_json(path / "resources.json", sampler.finish())
+            try:
+                write_json(path / "resources.json", sampler.finish())
+                capture["resources_sha256"] = file_hash(path / "resources.json")
+            except Exception as error:
+                capture["resource_error"] = f"{type(error).__name__}: {error}"
+        if resources:
+            try:
+                capture["resource_sampler_source_changed"] = file_hash(ROOT / "tools/godot/resource_samples.py") != RESOURCE_SAMPLER_SOURCE_SHA256
+            except OSError:
+                capture["resource_sampler_source_changed"] = None
+        if gpu_sampler:
+            try:
+                write_json(path / "gpu.json", gpu_sampler.stop())
+                capture["gpu_sha256"] = file_hash(path / "gpu.json")
+            except Exception as error:
+                capture["gpu_error"] = f"{type(error).__name__}: {error}"
+        if monitor:
+            try:
+                capture["frame_watch"] = monitor.stop()
+            except Exception as error:
+                capture["frame_watch"] = {"requested": True, "status": "incomplete",
+                                          "error": f"monitor cleanup: {type(error).__name__}: {error}"}
+        elif watch_requested:
+            capture["frame_watch"] = {"requested": True, "status": "incomplete",
+                                      "error": "frame watch did not start"}
+        if watch_requested and capture["frame_watch"].get("status") != "complete" and not capture["failure"]:
+            capture["failure"] = "frame watch incomplete: " + str(capture["frame_watch"].get("error"))
+            capture["state"] = "failed"
         if launched:
             with environment({"OPENRC_DEBUG_BRIDGE": launch["port"]}):
                 status, stopped = _call(bridge.stop, [])
                 if status or not stopped.get("stopped"):
                     status, stopped = _call(bridge.stop, ["--force"])
                 capture["shutdown"] = dict(stopped, command_status=status)
+        if monitor and monitor.thread.is_alive():
+            # A socket should have a bounded timeout; tearing down its bridge also
+            # unblocks it if the initial join deadline was exceeded.
+            monitor.thread.join(3.0)
+            capture["frame_watch"]["thread_alive_after_shutdown"] = monitor.thread.is_alive()
         capture["elapsed_wall_s"] = time.monotonic() - launch_began
         log = path / "bridge/engine.log"
         if log.is_file():
@@ -322,7 +422,18 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         write_json(path / "identity.after.json", after)
         capture["working_tree_changed"] = before["digest"] != after["digest"]
         capture["changed_frozen_files"] = check_frozen(snapshot)
+        if launch_snapshot is not snapshot:
+            capture["changed_launch_files"] = check_frozen(launch_snapshot)
+            capture["changed_frozen_files"] += ["mac-source/" + name for name in capture["changed_launch_files"]]
         capture["source_changed"] = bool(capture["changed_frozen_files"])
+        changed_engine = []
+        for name, digest in capture["engine_files"].items():
+            try:
+                if file_hash(Path(name)) != digest:
+                    changed_engine.append(name)
+            except OSError:
+                changed_engine.append(name)
+        capture["engine_files_changed"] = changed_engine
         write_json(path / "execution.json", capture)
     if interrupted:
         raise KeyboardInterrupt

@@ -247,6 +247,40 @@ class ArtifactTests(unittest.TestCase):
 
 
 class SupervisionTests(unittest.TestCase):
+    def test_declared_authoring_input_remains_required_when_sparse_checkout_omits_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = root / "app/data/aircraft_models/fixture.json"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps({"authoring": {"path": "assets/aircraft/missing.json"}}))
+            helper = root / "research/performance/sustained_input.gd"
+            helper.parent.mkdir(parents=True)
+            helper.write_bytes(b"input conversion helper")
+            responses = [b"fixture-commit\n", b"", b"app/data/aircraft_models/fixture.json\0"]
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner.subprocess, "check_output", side_effect=responses):
+                identity = runner.source_identity()
+            self.assertEqual(identity["excluded_or_missing"], ["assets/aircraft/missing.json"])
+            self.assertEqual(identity["files"]["research/performance/sustained_input.gd"], hashlib.sha256(helper.read_bytes()).hexdigest())
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "_bridge") as bridge:
+                with self.assertRaisesRegex(ValueError, "required snapshot inputs"):
+                    runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
+                bridge.assert_not_called()
+
+    def test_snapshot_rejects_source_changed_after_identity_collection(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "app/project.godot"
+            source.parent.mkdir()
+            source.write_bytes(b"changed after source identity")
+            output = root / "run"
+            output.mkdir()
+            identity = {"files": {"app/project.godot": hashlib.sha256(b"original identity").hexdigest()}}
+            with mock.patch.object(runner, "ROOT", root):
+                with self.assertRaisesRegex(ValueError, "source changed after identity collection"):
+                    runner.freeze_inputs(output, identity)
+            self.assertFalse((output / "snapshot.json").exists())
+            self.assertEqual(identity["files"]["app/project.godot"], hashlib.sha256(b"original identity").hexdigest())
+
     def test_reuse_receipt_rejects_escaping_paths(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -281,6 +315,7 @@ class SupervisionTests(unittest.TestCase):
             def launch(arguments):
                 self.assertNotIn("--", arguments)
                 self.assertIn("--profile", arguments)
+                self.assertEqual(os.environ.get("OPENRC_GODOT"), str(engine))
                 print(json.dumps(dict(ok=True, port=49001, pid=10001)))
                 return 0
             def stop(arguments):
@@ -290,11 +325,43 @@ class SupervisionTests(unittest.TestCase):
             bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: False, session_for=lambda port: dict(command=[str(engine)]))
             identity = dict(files={}, digest="same", commit="fixture")
             frozen = dict(root=str(root / "source"), files={}, imports={})
-            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
+            with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
                 path, result = runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
             self.assertIn("exited before", result["failure"])
             self.assertEqual(stopped, [("49001", [])])
             self.assertTrue((path / "execution.json").is_file())
+
+    def test_launched_command_and_final_engine_bytes_must_match_the_pinned_engine(self):
+        for damage in ("command", "bytes"):
+            with self.subTest(damage=damage), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                engine = root / "engine.bin"
+                engine.write_bytes(b"original engine")
+                stopped = []
+                output = root / "run"
+                def launch(arguments):
+                    self.assertEqual(os.environ.get("OPENRC_GODOT"), str(engine))
+                    if damage == "bytes": engine.write_bytes(b"replaced engine")
+                    write_json(output / "runtime.json", {"complete": True})
+                    print(json.dumps(dict(ok=True, port=49003, pid=10003)))
+                    return 0
+                def stop(arguments):
+                    stopped.append(arguments)
+                    print(json.dumps(dict(stopped=True, forced=False, launcher_exit_code=0)))
+                    return 0
+                bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: False,
+                    session_for=lambda port: dict(command=[str(root / "different-engine" if damage == "command" else engine)]))
+                identity = dict(files={}, digest="same", commit="fixture")
+                frozen = dict(root=str(root / "source"), files={}, imports={})
+                with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge):
+                    _, result = runner.run(catalog.scenario("smoke", {"headless": True}), output)
+                self.assertEqual(stopped, [[]])
+                if damage == "command":
+                    self.assertFalse(result["engine_command_verified"])
+                    self.assertIn("pinned engine", result["failure"])
+                else:
+                    self.assertTrue(result["engine_command_verified"])
+                    self.assertEqual(result["engine_files_changed"], [str(engine)])
 
     def test_headless_cannot_establish_rendered_comparison(self):
         with tempfile.TemporaryDirectory() as root:
@@ -322,7 +389,7 @@ class SupervisionTests(unittest.TestCase):
             bridge = SimpleNamespace(launch=launch, stop=stop, godot=lambda: str(engine), alive=lambda pid: True, session_for=lambda port: dict(command=[str(engine)]))
             identity = dict(files={}, digest="same", commit="fixture")
             frozen = dict(root=str(root / "source"), files={}, imports={})
-            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge), mock.patch.object(runner, "read_json", side_effect=progress_busy), mock.patch.object(runner.time, "sleep", side_effect=complete_after_retry):
+            with mock.patch.object(runner.sys, "platform", "linux"), mock.patch.object(runner, "ROOT", root), mock.patch.object(runner, "source_identity", return_value=identity), mock.patch.object(runner, "freeze_inputs", return_value=frozen), mock.patch.object(runner, "check_frozen", return_value=[]), mock.patch.object(runner, "_bridge", return_value=bridge), mock.patch.object(runner, "read_json", side_effect=progress_busy), mock.patch.object(runner.time, "sleep", side_effect=complete_after_retry):
                 path, result = runner.run(catalog.scenario("smoke", {"headless": True}), output)
             self.assertEqual(result["failure"], "")
             self.assertEqual(result["state"], "runtime_finished")

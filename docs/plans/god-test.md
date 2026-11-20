@@ -22,6 +22,8 @@ pilot acceptance, radio qualification and package delivery.
 
 Primary resolution: **1920×1080**. Above-1080p, including 1440p/4K, follows;
 720p is the final compatibility priority. Record requested and actual dimensions.
+The later [Apple Silicon Retina exception](../../AGENTS.md#display-resolution-priorities)
+uses the native panel as its primary target; its 1080p run is a separate comparison.
 
 ## 2. Inspected infrastructure and constraints
 
@@ -403,7 +405,9 @@ Status is maintained only here; tool instructions describe implemented commands.
 | GOD-10 | Night, sky/weather, field, jet and aircraft profiles | All six all-v1 cases completed with valid data, including rendered night/jet/alternate field; broader fleet profiles remain unqualified |
 | GOD-11 | Comparison and JSON/HTML report | Implemented stream validation and matched-transition comparison; 17 Python checks; whole-flight geometric equivalence and repeated A/B statistics pending |
 | GOD-12 | Cycles, soak, hardware and overhead | Ten rendered load/flight/Home cycles completed; bounded memory/soak commands implemented; 50-cycle/30-minute and overhead qualification remain pending |
-| GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release/Mac lanes remain pending |
+| GOD-12-R1 | Three-aircraft runway/menu performance campaign | Implemented source/debug tour, continuous frame watcher, position-based lap and resumed-flight guards, process/GPU sampling and suite evidence checks; [operating contract](../../tools/godtest/PERFORMANCE_TOUR.md). Actual MacBook/Linux GPU/Windows qualification remains open. |
+| GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release-package lanes remain pending |
+| GOD-13-R1 | Portable tooling and macOS profile adapter | Python tooling workflow covers Linux/Windows/macOS; private Mac launch copy changes only the project name. Hosted tests and headless control-flow evidence do not qualify target hardware. |
 
 Order: contracts/CLI → supervised normal startup → collectors → basic pilot →
 landmarks/pause → aerobatics/landing → variants/comparison → long campaigns/packages.

@@ -401,6 +401,21 @@ attachment adapters must preserve originals and prove any joins. The
 [tool integration evidence](research/release-readiness/PT1h-R15/tools-integration-2026-11-19.md)
 records the eight follow-up investigations and software-only verification.
 
+**GOD-12-R1 / GOD-13-R1, 2026-11-20; source/debug campaign.** The three-aircraft
+runway/menu tour reuses GOD TEST, the continuous frame watcher and the existing
+process sampler. A position-based lap receipt establishes the flown circuit;
+heading rotation alone does not. Passive device-wide GPU observations extend
+capability reporting without claiming per-frame attribution or automatic rendering
+device identification. Completion, raw-data integrity, monitoring availability and
+performance screening remain separate. Resume preserves every planned slot and
+requires the same retained source, engine, observers and host/boot identity.
+macOS uses a verified private launch copy whose sole project change is a unique
+application name, because its user-data path cannot use the Linux profile redirect.
+Startup refuses an explicitly requested benchmark before normal profile access
+when that isolation cannot be established. The [operating contract](../tools/godtest/PERFORMANCE_TOUR.md)
+owns commands and capabilities; the [GOD TEST ledger](plans/god-test.md#13-execution-steps-and-evidence-ledger)
+keeps real-hardware qualification open.
+
 **PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
 one-shot collector and two-snapshot union with a bounded multi-incident client
 watch. It reads every new row through cheap passive `since`/`lean` polls guarded by

@@ -5,6 +5,12 @@ Home return. The [implementation plan](../../docs/plans/god-test.md) owns remain
 work, step status and evidence. The pilot is experimental; a completed command is
 not physical validation or a qualified hardware result.
 
+For the repeatable **Ugly Stik → Avanti jet → Corsair** runway circuit and menu
+campaign on MacBook, Linux GPU and Windows, use the
+[three-aircraft performance tour](PERFORMANCE_TOUR.md). It integrates the existing
+continuous stutter watcher, CPU/RSS sampler, per-device GPU observations and a
+verified suite report. The same guide owns hardware prerequisites and limits.
+
 ## Commands
 
 From the repository root, with the pinned Godot editor and prepared imports:
@@ -24,6 +30,8 @@ python tools/godtest/godtest.py memory --cycles 50
 python tools/godtest/godtest.py soak --minutes 30
 python tools/godtest/godtest.py fleet --dry-run
 python tools/godtest/godtest.py matrix --dry-run
+python tools/godtest/godtest.py performance-tour --dry-run --repeats 3
+python tools/godtest/godtest.py performance-tour --repeats 3 --out tmp/performance-tour/baseline-01
 python tools/godtest/godtest.py report tmp/godtest/<run-id>
 python tools/godtest/godtest.py resume tmp/godtest/<suite-id> --out tmp/godtest/<fresh-retry-id>
 python tools/godtest/godtest.py compare --baseline <run-a> --candidate <run-b> --phase loading
@@ -77,9 +85,11 @@ Preparation checks free space with a reserve before copying. Preparation remains
 outside timing. Hashing/copying warms OS caches: these are new
 process runs with unknown OS-cache state, not OS-cold measurements.
 
-The existing debug launcher owns the process/port and redirects its profile under
-the run. Runtime refuses a user-data directory outside it. It seeds fresh run-only
-windowed/native-resolution preferences, disables update checks and marks the first
+The existing debug launcher owns the process/port. Linux and Windows redirect the
+profile under the run and refuse a user-data directory outside it; macOS verifies
+the unique Application Support profile described in the [tour guide](PERFORMANCE_TOUR.md#target-machines-and-display-contract).
+It seeds fresh run-only display preferences (windowed by default, with native
+3D reconstruction), disables update checks and marks the first
 flight hint seen. Normal intro, Home, Fly, menu pause/continue, weather and lighting
 Apply routes remain in use. Live radio selection is changed through the ordinary
 controller service to keyboard. Crash auto-restart is disabled for visible attempt
@@ -87,8 +97,9 @@ boundaries and recorded evidence; no physical law or state trajectory is rewritt
 
 The launch adds no app user arguments. `OPENRC_GODTEST_CONFIG` activates a debug-only
 observer from Startup; ordinary launches allocate no benchmark observer. The source
-helpers currently require a source/debug application. Exported release and macOS
-profile-isolation adapters are pending and are not represented as qualified modes.
+helpers require a source/debug application. macOS uses a verified private launch
+copy and a unique project-name profile, with its own launch receipt; native Mac
+hardware qualification remains separate. Exported release adapters are pending.
 
 ## Measurements and reports
 
@@ -160,5 +171,7 @@ python tools/godot/run_checked.py --timeout 60 --require-text 'GOD_FRAME_TESTS: 
 ```
 
 Runtime changes also use the affected existing startup/frame/controller checks.
-Rendered campaigns run serially on named real hardware, at verified 1080p first,
-without competing GPU jobs. Follow the owning performance gates and retain failures.
+Rendered campaigns run serially on named real hardware, at verified 1080p first;
+Apple Silicon Retina uses the native-panel exception in the
+[resolution policy](../../AGENTS.md#display-resolution-priorities). Run without
+competing GPU jobs, follow the owning performance gates and retain failures.

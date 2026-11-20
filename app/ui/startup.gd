@@ -74,6 +74,11 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	# A requested benchmark must prove its private profile before anything can
+	# read preferences, show the intro or start the normal app handoff.
+	if not _start_godtest_observer():
+		_refuse_godtest_startup()
+		return
 	# A fixed, package-bound release diagnostic may observe the ordinary Home
 	# route, but only after proving its private user-data directory. Normal
 	# launches do not load the diagnostic or change their startup path.
@@ -82,16 +87,6 @@ func _ready() -> void:
 			printerr("PACKAGE_DEFAULT_PROBE verdict=fail: qualification setup refused")
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
-	# GOD-04: opt-in source/debug observer survives the Startup -> AppRoot handoff.
-	# Environment activation preserves the normal no-user-arguments Home route.
-	if OS.is_debug_build() and not OS.get_environment("OPENRC_GODTEST_CONFIG").is_empty():
-		var godtest_script: Script = load("res://debug/godtest_driver.gd")
-		if godtest_script != null:
-			var observer: Node = godtest_script.new()
-			if observer.prepare_startup():
-				get_tree().root.add_child.call_deferred(observer)
-			else:
-				observer.free()
 	# Keep command-line flight, reports and headless contracts free of intro delays.
 	if not _animate_requested():
 		if _package_flight_window_wait_requested():
@@ -138,6 +133,49 @@ func _ready() -> void:
 		_scene_job.abandon()
 		_scene_job = null
 		_fail()
+
+
+func _godtest_requested() -> bool:
+	return not OS.get_environment("OPENRC_GODTEST_CONFIG").is_empty()
+
+
+func _godtest_debug_build() -> bool:
+	return OS.is_debug_build()
+
+
+func _godtest_script() -> Script:
+	return load("res://debug/godtest_driver.gd")
+
+
+func _refuse_godtest_startup() -> void:
+	printerr("GOD TEST: startup refused; private profile or benchmark observer unavailable")
+	get_tree().quit(ERR_INVALID_PARAMETER)
+
+
+func _start_godtest_observer() -> bool:
+	if not _godtest_requested():
+		return true
+	if not _godtest_debug_build():
+		return false
+	var script := _godtest_script()
+	if script == null or not script.can_instantiate():
+		return false
+	var instance: Object = script.new()
+	if not instance is Node:
+		if is_instance_valid(instance) and not instance is RefCounted:
+			instance.free()
+		return false
+	var observer: Node = instance
+	if not observer.has_method("prepare_startup"):
+		observer.free()
+		return false
+	var prepared: Variant = observer.call("prepare_startup")
+	if typeof(prepared) != TYPE_BOOL or not prepared:
+		observer.free()
+		return false
+	# Keep the observer alive across the ordinary Startup -> AppRoot handoff.
+	get_tree().root.add_child.call_deferred(observer)
+	return true
 
 
 static func _is_package_flight_request(args: PackedStringArray) -> bool:
