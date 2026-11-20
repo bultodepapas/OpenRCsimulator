@@ -13481,3 +13481,36 @@ msgstr "遥控飞艇物理 · 仅 %s 的外观 — 实验性"
 
 msgid "This model could not be shown on the blimp."
 msgstr "无法在飞艇上显示此模型。"
+
+msgid "Phoenix RC model"
+msgstr "Phoenix RC 模型"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "仅导入 Phoenix 外观。请单独定义并验证 OpenRC 飞行配置。"
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Phoenix 模型 %s：翼展 %s 米，%s 千克。这些 Phoenix 数值仅供参考。"
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "方向、米制单位和机翼前缘已根据 Phoenix 模型设置；请在“朝向与尺寸”中检查。"
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" 不是 Phoenix RC 模型定义。"
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "Phoenix 文件 \"%s\" 未定义任何飞机模型。"
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "Phoenix 文件 \"%s\" 定义了多个模型；请选择单个模型的 .mod 文件。"
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "Phoenix 模型 \"%s\" 没有可用的尺寸，因此其真实尺寸未知。"
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "在 Phoenix 模型旁未找到几何文件 \"%s\"。"
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "无法使用纹理 \"%s\"；这些部件保留纯色。"
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "文件 \"%s\" 为空或超过 %s MiB 上限。"

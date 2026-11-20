@@ -59,6 +59,8 @@ The decoded definition matches the readable community `.mod` grammar already stu
 | Encoded `.mod` decode + data evaluation | 220 of 220, no diagnostics |
 | Encoded 6.0 `.sim` scripts | 64 of 64 parse; 11 are straight-line, the others stop at function calls as intended |
 | 3-channel textures | 208 of 220 base-name textures decoded; the remainder use other names declared by GEO materials or 4-channel layouts |
+| `Size / 100` scale rule | GEO visual span × `Size`/100 versus 2 × main-wing `Length` on 116 airplanes/gliders: median ratio 1.046, 95 within ±10 %; outliers are deltas, jets, biplanes and rotor/tiltrotor oddities where the widest mirrored airfoil is not the visual span |
+| GDScript runtime readers (`app/workshop/creator/phoenix/`) | 220/220 definitions and GEO files decoded; 220/220 models converted and admitted by `SourceImporter.inspect_bytes` |
 | Visual spot checks (Blender 5.2 renders of converted GLBs) | Easystar, J-3 Cub and Fokker Dr.I: correct geometry, metric span, colour and decal orientation |
 
 Open findings: one J-3 Cub wing half maps into a white texture region (the GLB data and Blender agree, so the conversion is faithful; whether Phoenix tints or substitutes it at runtime is unresolved). Hinge `root_pivot`/`tip_pivot` semantics are clear for elevators and rudders (GEO points on the hinge line). Easystar's zero-length aileron shows that a declared surface can be inactive. Phoenix inertia factors, tuning percentages and NACA labels remain observations and are not OpenRC physical data.

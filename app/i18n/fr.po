@@ -14453,3 +14453,36 @@ msgstr "Physique du dirigeable RC · apparence de %s seulement — expérimental
 
 msgid "This model could not be shown on the blimp."
 msgstr "Ce modèle n’a pas pu être affiché sur le dirigeable."
+
+msgid "Phoenix RC model"
+msgstr "Modèle Phoenix RC"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Seule l’apparence Phoenix est importée. Définissez et validez séparément sa configuration de vol OpenRC."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Modèle Phoenix %s : %s m d’envergure, %s kg. Ces valeurs Phoenix sont affichées à titre indicatif uniquement."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "L’orientation, les mètres et le bord d’attaque de l’aile proviennent du modèle Phoenix ; vérifiez-les dans Orientation et taille."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" n’est pas une définition de modèle Phoenix RC."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "Le fichier Phoenix \"%s\" ne définit aucun modèle d’aéronef."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "Le fichier Phoenix \"%s\" définit plusieurs modèles ; choisissez le fichier .mod d’un seul modèle."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "Le modèle Phoenix \"%s\" n’a pas de taille utilisable : ses dimensions réelles sont inconnues."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "Le fichier de géométrie \"%s\" est introuvable à côté du modèle Phoenix."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "La texture \"%s\" n’a pas pu être utilisée ; ces pièces gardent leur couleur unie."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "Le fichier \"%s\" est vide ou dépasse la limite de %s Mio."

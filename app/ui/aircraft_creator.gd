@@ -43,6 +43,7 @@ const SourceReportPanel := preload("res://ui/aircraft_creator_source_report.gd")
 const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
 const PACKAGE_PROPOSAL := "Estimated package proposal. Choose a configuration on Import."
 const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
+const PhoenixConverter := preload("res://workshop/creator/phoenix/converter.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
 const BACKUP_DELAY_S := 2.0
@@ -575,6 +576,12 @@ static func _inspect(job: ImportJob) -> void:
 			job.annotations = job.result.diagnostics
 			_inspect_observations(job,job.result.value.source)
 		return
+	if job.phase == "phoenix_convert":
+		job.result = PhoenixConverter.convert(job.path, job.cancellation.is_cancelled)
+		if job.result.ok:
+			job.annotations = job.result.diagnostics
+			_inspect_observations(job,job.result.value.source)
+		return
 	if not job.opening.is_empty():
 		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
 		if job.result.ok:
@@ -626,6 +633,8 @@ func _start_import(path: String) -> void:
 	job.generation = _import_generation
 	if path.get_extension().to_lower() == "zip":
 		job.phase = "clearview_inventory"
+	elif path.get_extension().to_lower() == "mod":
+		job.phase = "phoenix_convert"
 	job.task_id = _start_task(job)
 	_job = job
 	_import_state = "inspecting"
@@ -645,6 +654,10 @@ func _adopt_import(job: ImportJob) -> void:
 		_show_clearview_package(result.value)
 		return
 	if job.phase == "clearview_convert" and result.get("ok", false):
+		result = R.ok(result.value.source, result.diagnostics)
+	var phoenix_placement := {}
+	if job.phase == "phoenix_convert" and result.get("ok", false):
+		phoenix_placement = result.value.placement
 		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
@@ -667,6 +680,13 @@ func _adopt_import(job: ImportJob) -> void:
 		_import_diagnostics = []
 		_doc.set_source(result.value,job.observations)
 		_clearview_notes = job.annotations
+		if not phoenix_placement.is_empty():
+			# The decoded Phoenix model fixes its frame and metres; the datum is its main-wing root leading edge.
+			_doc.set_axis("nose_axis", str(phoenix_placement.nose_axis))
+			_doc.set_axis("up_axis", str(phoenix_placement.up_axis))
+			_doc.set_units(str(phoenix_placement.units))
+			if not (phoenix_placement.datum as Array).is_empty():
+				_doc.set_datum(phoenix_placement.datum)
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])
@@ -746,7 +766,8 @@ func _choose_model() -> void:
 	_file_dialog.title = tr("Choose a model")
 	# Filter captions are plain text to the dialog: translate them each time it opens.
 	var filters := PackedStringArray()
-	for filter: String in PackedStringArray(["*.stl, *.glb, *.zip ; 3D model"]) + Importer.FILE_FILTERS + PackedStringArray(["*.zip ; ClearView aircraft ZIP"]):
+	for filter: String in PackedStringArray(["*.stl, *.glb, *.zip, *.mod ; 3D model"]) + Importer.FILE_FILTERS \
+			+ PackedStringArray(["*.zip ; ClearView aircraft ZIP", "*.mod ; Phoenix RC model"]):
 		var parts := filter.split(";", true, 1)
 		if parts.size() == 2:
 			filters.append("%s ; %s" % [parts[0].strip_edges(), tr(parts[1].strip_edges())])

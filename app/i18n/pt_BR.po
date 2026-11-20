@@ -14320,3 +14320,36 @@ msgstr "Física do dirigível RC · apenas a aparência de %s — experimental"
 
 msgid "This model could not be shown on the blimp."
 msgstr "Não foi possível mostrar este modelo no dirigível."
+
+msgid "Phoenix RC model"
+msgstr "Modelo do Phoenix RC"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Somente a aparência do Phoenix é importada. Defina e valide separadamente a configuração de voo do OpenRC."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Modelo Phoenix %s: %s m de envergadura, %s kg. Esses valores do Phoenix são mostrados apenas como referência."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "A orientação, os metros e o bordo de ataque da asa foram definidos pelo modelo Phoenix; confira em Orientação e tamanho."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" não é uma definição de modelo do Phoenix RC."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "O arquivo do Phoenix \"%s\" não define nenhum modelo de aeronave."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "O arquivo do Phoenix \"%s\" define vários modelos; escolha o arquivo .mod de um único modelo."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "O modelo Phoenix \"%s\" não tem um tamanho utilizável, então suas dimensões reais são desconhecidas."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "O arquivo de geometria \"%s\" não foi encontrado junto ao modelo Phoenix."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "Não foi possível usar a textura \"%s\"; essas peças mantêm a cor lisa."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "O arquivo \"%s\" está vazio ou excede o limite de %s MiB."

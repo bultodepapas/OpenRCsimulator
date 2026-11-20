@@ -14426,3 +14426,36 @@ msgstr "RC-Luftschiff-Physik · nur das Aussehen von %s — experimentell"
 
 msgid "This model could not be shown on the blimp."
 msgstr "Dieses Modell konnte nicht auf dem Luftschiff gezeigt werden."
+
+msgid "Phoenix RC model"
+msgstr "Phoenix-RC-Modell"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Es wird nur das Aussehen aus Phoenix importiert. Definiere und prüfe die OpenRC-Flugkonfiguration separat."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Phoenix-Modell %s: %s m Spannweite, %s kg. Diese Phoenix-Werte dienen nur zur Information."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "Ausrichtung, Meter und Flügelvorderkante wurden aus dem Phoenix-Modell übernommen; prüfe sie unter Ausrichtung und Größe."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" ist keine Phoenix-RC-Modelldefinition."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "Die Phoenix-Datei \"%s\" definiert kein Flugmodell."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "Die Phoenix-Datei \"%s\" definiert mehrere Modelle; wähle die .mod-Datei eines einzelnen Modells."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "Das Phoenix-Modell \"%s\" hat keine verwendbare Größe, daher sind seine realen Abmessungen unbekannt."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "Die Geometriedatei \"%s\" wurde neben dem Phoenix-Modell nicht gefunden."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "Die Textur \"%s\" konnte nicht verwendet werden; diese Teile behalten ihre einfache Farbe."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "Die Datei \"%s\" ist leer oder größer als das Limit von %s MiB."

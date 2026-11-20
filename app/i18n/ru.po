@@ -14282,3 +14282,36 @@ msgstr "Физика RC-дирижабля · только внешний вид
 
 msgid "This model could not be shown on the blimp."
 msgstr "Не удалось показать эту модель на дирижабле."
+
+msgid "Phoenix RC model"
+msgstr "Модель Phoenix RC"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Импортируется только внешний вид Phoenix. Определите и проверьте конфигурацию полёта OpenRC отдельно."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Модель Phoenix %s: размах крыла %s м, %s кг. Эти значения Phoenix показаны только для справки."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "Ориентация, метры и передняя кромка крыла взяты из модели Phoenix; проверьте их в разделе «Ориентация и размер»."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" не является определением модели Phoenix RC."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "Файл Phoenix \"%s\" не определяет ни одной модели летательного аппарата."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "Файл Phoenix \"%s\" определяет несколько моделей; выберите файл .mod одной модели."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "У модели Phoenix \"%s\" нет пригодного размера, поэтому её реальные размеры неизвестны."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "Файл геометрии \"%s\" не найден рядом с моделью Phoenix."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "Не удалось использовать текстуру \"%s\"; эти детали сохраняют однотонный цвет."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "Файл \"%s\" пуст или превышает лимит %s МиБ."

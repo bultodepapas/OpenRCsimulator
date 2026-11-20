@@ -13532,3 +13532,36 @@ msgstr "RC 飛行船の物理 · %s の外観のみ — 実験的"
 
 msgid "This model could not be shown on the blimp."
 msgstr "このモデルを飛行船に表示できませんでした。"
+
+msgid "Phoenix RC model"
+msgstr "Phoenix RC モデル"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Phoenixの外観のみをインポートします。OpenRCの飛行設定は別途定義して検証してください。"
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Phoenix モデル %s：翼幅 %s m、%s kg。これらの Phoenix の値は参考表示のみです。"
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "向き、メートル単位、主翼前縁は Phoenix モデルから設定されました。「向きとサイズ」で確認してください。"
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" は Phoenix RC のモデル定義ではありません。"
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "Phoenix ファイル \"%s\" には機体モデルが定義されていません。"
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "Phoenix ファイル \"%s\" には複数のモデルが定義されています。1 つのモデルの .mod ファイルを選んでください。"
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "Phoenix モデル \"%s\" には使えるサイズがないため、実寸が不明です。"
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "ジオメトリファイル \"%s\" が Phoenix モデルと同じ場所に見つかりません。"
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "テクスチャ \"%s\" を使用できませんでした。該当部品は単色のままです。"
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "ファイル \"%s\" は空か、%s MiB の上限を超えています。"

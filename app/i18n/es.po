@@ -13071,3 +13071,36 @@ msgstr "Física del dirigible RC · solo el aspecto de %s — experimental"
 
 msgid "This model could not be shown on the blimp."
 msgstr "Este modelo no se pudo mostrar en el dirigible."
+
+msgid "Phoenix RC model"
+msgstr "Modelo de Phoenix RC"
+
+msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Solo se importa la apariencia de Phoenix. Define y valida por separado su configuración de vuelo de OpenRC."
+
+msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+msgstr "Modelo Phoenix %s: %s m de envergadura, %s kg. Estos valores de Phoenix se muestran solo como referencia."
+
+msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
+msgstr "La orientación, los metros y el borde de ataque del ala se tomaron del modelo Phoenix; compruébalos en Orientación y tamaño."
+
+msgid "\"%s\" is not a Phoenix RC model definition."
+msgstr "\"%s\" no es una definición de modelo de Phoenix RC."
+
+msgid "The Phoenix file \"%s\" defines no aircraft model."
+msgstr "El archivo de Phoenix \"%s\" no define ningún modelo de aeronave."
+
+msgid "The Phoenix file \"%s\" defines several models; choose a single model's .mod file."
+msgstr "El archivo de Phoenix \"%s\" define varios modelos; elige el archivo .mod de un solo modelo."
+
+msgid "The Phoenix model \"%s\" has no usable size, so its real dimensions are unknown."
+msgstr "El modelo Phoenix \"%s\" no tiene un tamaño utilizable, así que sus dimensiones reales son desconocidas."
+
+msgid "The geometry file \"%s\" was not found next to the Phoenix model."
+msgstr "No se encontró el archivo de geometría \"%s\" junto al modelo Phoenix."
+
+msgid "The texture \"%s\" could not be used; those parts keep their plain colour."
+msgstr "No se pudo usar la textura \"%s\"; esas piezas conservan su color liso."
+
+msgid "The file \"%s\" is empty or larger than the %s MiB limit."
+msgstr "El archivo \"%s\" está vacío o supera el límite de %s MiB."
