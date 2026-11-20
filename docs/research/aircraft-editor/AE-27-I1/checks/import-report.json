@@ -1,6 +1,6 @@
 {
   "format": "openrc-godot-check v1",
-  "capture_id": "2818f2c1-4b87-4ebd-a391-674e3b213d2e",
+  "capture_id": "e7852ee9-77c7-4cc4-9120-46e0781f41a6",
   "command": [
     ".tools/Godot_v4.8-beta2_linux.x86_64",
     "--headless",
@@ -11,10 +11,10 @@
     "--import"
   ],
   "cwd": "/workspace/scratch/adcec33b29c5/OpenRCsimulator",
-  "started_utc": "2026-11-20T01:45:15.654947+00:00",
+  "started_utc": "2026-11-20T02:17:36.682524+00:00",
   "label": "ae27-merged-import",
-  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-merged-import-bvxyz1m4/engine.log",
-  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-merged-import-bvxyz1m4/report.json",
+  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-merged-import-7jkws17d/engine.log",
+  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-merged-import-7jkws17d/report.json",
   "timeout_seconds": 90.0,
   "max_log_bytes": 8388608,
   "warnings_as_errors": false,
@@ -31,7 +31,7 @@
   "detail": "",
   "exit_code": 0,
   "ok": true,
-  "elapsed_seconds": 10.96682,
-  "log_bytes": 2590,
-  "log_sha256": "8bceffcbb085ad8d86e1031c06d414fe21ea45c62f28f945f62ea67936bd0e47"
+  "elapsed_seconds": 13.119069,
+  "log_bytes": 2648,
+  "log_sha256": "e597a9e4d07884398df2a19d46ce926e8fb75ffcfdca3e38e6f0d5e997fe19bd"
 }

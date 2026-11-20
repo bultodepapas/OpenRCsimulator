@@ -1,8 +1,8 @@
 # Transparent product telemetry — implementation plan
 
-Status: **client, receiver, rollup, report and publisher implemented and tested (TELEM-02…11); inactive in every build until the [activation steps](#merge-readiness-versus-activation) (TELEM-12…14)**. No receiving service is deployed and no build offers telemetry yet.
+Status: **client, receiver, rollup, report and publisher implemented and tested (TELEM-02…11); inactive in every build until the [activation steps](#merge-readiness-versus-activation) (TELEM-12…14)**. No receiving service is deployed and no build offers telemetry yet. The [2026-11-19 audit](../research/telemetry/TELEM-AUDIT-2026-11-19/README.md) confirmed v0.2.9 ships the client without configuration, so no data has arrived, and found the reporting would stay empty at pilot volume; the [completion plan](#completion-plan-telem-1626) fixes usefulness before activation.
 Dated 2026-11-18. Telemetry design baseline: [39fa2746](https://github.com/bultodepapas/OpenRCsimulator/commit/39fa2746ae4f4ba8698b87db279adcfe84ef5d17). TELEM-00/01 was merged into main the same day; current-main interface references were re-checked against main [35787fb5](https://github.com/bultodepapas/OpenRCsimulator/commit/35787fb583f3b654b28381c951783be7a85be0e0) ([main integration](../research/telemetry/TELEM-00-R1/verification.md#main-integration)). The merge is not a runtime-qualified build.
-Track: **TELEM-00…15**. Owner: product telemetry lead; UI, PT/VQ, UI-FS, DT and infrastructure maintainers own their existing interfaces.
+Track: **TELEM-00…26**. Owner: product telemetry lead; UI, PT/VQ, UI-FS, DT and infrastructure maintainers own their existing interfaces.
 
 ## Outcome
 
@@ -94,12 +94,60 @@ Players can always turn telemetry off in Settings → Interface; `OPENRC_TELEMET
 
 History: the design preparation merged as TELEM-00/01 after the [final finding dispositions](../research/telemetry/TELEM-00-R1/review.md#final-merge-preparation-review) and a [main-integration re-check](../research/telemetry/TELEM-00-R1/verification.md#main-integration).
 
+## Completion plan (TELEM-16…26)
+
+From the [2026-11-19 audit](../research/telemetry/TELEM-AUDIT-2026-11-19/README.md) (finding IDs U/R). **Order matters:** phase 6 changes the schema and the notice, which reset consent grants and split the data series; doing it before anyone has granted costs nothing. Each step ends with its evidence; "before → after" is the improvement proof.
+
+### Phase 6 — data that answers questions (before activation, about 5–7 days)
+
+| Step | Work | Evidence of improvement / completion |
+| --- | --- | --- |
+| TELEM-16 | **Publishable reports (U1).** Rollup stores every daily cell with its session count in the operator-only aggregate database; suppression moves to the report: per cell, sub-floor families merge into one `other` row that is published only if it reaches the floor. Weekly cells pool daily cells. Private-operations floor configurable down to 10 and labelled; public floor stays 20. Record 503/suspended days as partial coverage (R6) | Fixture of 60 sessions/day in a realistic six-family mix: **before 0 rows published, after ≥3 family rows plus `other`**; one forged odd-family batch no longer suppresses the day; reference equivalence updated |
+| TELEM-17 | **Aggregate what is already sent (U2).** Tables: hardware mix (OS × CPU family × RAM, threads), cadence by GPU family × cap class (VSync on or cap ≤60 versus uncapped) × resolution class, Home/menu cadence, error categories, input class. Drop or implement `gpu_ms` | Report v3 shows each table from the fixture; every context field has a consumer table or is removed from the schema (field inventory in the data contract) |
+| TELEM-18 | **Client context v2 (U3, U4, U5).** Resolution as drawable-pixel band plus aspect (16:9, 16:10, other) and Retina scale; 3D render scale/upscaler bucket; flight backend (`native`/`reference`); graphics preset name; GPU tier split where names allow (RTX x050/x060/x070+, MX/GT/workstation). Schema v2 and `NOTICE_VERSION` bump in all three implementations | Rendered run on ANGEL's native panel reports `16:10`, 2× and the backing-pixel band (settles points versus pixels); a stale-native run reports `reference`; contract, admission and service suites pass on Windows and macOS |
+| TELEM-19 | **Usage survives quitting in flight (R4).** Emit an activity slice every 5 minutes of flight without changing the "quit drops pending data" rule | **Done 2026-11-19:** slice 30 → 5 min; `test_telemetry_service` "quitting a 12-minute flight keeps two 5-minute slices" (before: 0 summaries); contract, app and receiver suites pass |
+| TELEM-20 | **Receiver observability and safe defaults (R1–R3).** ID-free daily counters per status/reason, `status` and `check-release <tag>` CLI commands; public `/healthz` stays minimal because behind Funnel every request is local | **Done 2026-11-19:** counters (`rejected:unapproved_release`, `rate_limited`, `forwarded_for_present`, …) flushed every minute, `status` exits 1 on a retention breach, `check-release` refuses unlisted, suspended or malformed tags; `test_observability` 9 tests, receiver suite 118 OK including the Godot end to end. Proxy trust stays an explicit deployment check |
+
+### Phase 7 — deploy the receiver (owner decisions plus about 1–2 days)
+
+| Step | Work | Evidence |
+| --- | --- | --- |
+| TELEM-21a | **Owner decisions:** operator name, contact, processing location, private operations repository, private floor. Hosting decided 2026-11-19: the owner's always-on Proxmox node, no cost | Recorded in [DECISIONS.md](../DECISIONS.md) and the notice |
+| TELEM-21b | **Deploy** in an unprivileged LXC on the owner's Proxmox node, published with Tailscale Funnel (public HTTPS, no open ports). Deployment, isolation and operation are owned by the owner's HomeLab repository (plan `2026-11-19-openrc-telemetry-primis`). **Done 2026-11-19:** container created, receiver suite 109 OK inside it (Debian Python 3.13.5), loopback service with systemd hardening, raw on a volume excluded from backups, egress firewall tested, daily rollup timer. **Gate before Funnel:** a node identity with no access to the rest of the tailnet (separate tailnet recommended, or a tag with a deny ACL) and key expiry disabled, because the URL is baked into releases | `/healthz` and the canonical example 202 from outside the tailnet; `X-Forwarded-For` behaviour tested from two external addresses and with a forged header, then `TRUST_PROXY` or per-client limits set; tailnet isolation tested |
+| TELEM-21c | **"Is data arriving?"** Free uptime monitor on `/healthz`; a scheduled workflow in the operations repository opens an issue when the last batch is older than 48 hours or rejections exceed 5 % | Monitor alert received after a deliberate stop; stale-data issue opened by a forced test |
+
+### Phase 8 — activate in a preview release (about 2 days plus one beta week)
+
+| Step | Work | Evidence |
+| --- | --- | --- |
+| TELEM-22a | Set the three repository variables; add the tag to the allowlist and run `check-release` before tagging the next preview | Each package contains `telemetry_release.json` (the audit found 0 matches in v0.2.9's `.pck`) |
+| TELEM-12 | Package qualification: Windows at 1920×1080, Linux, macOS on ANGEL's native panel; notice with keyboard, gamepad and radio; Enable, decline, Settings off; frame-time overhead on versus off on the same flight tape | One accepted batch per OS in the deployed receiver; overhead within run-to-run noise; screenshots kept outside Git |
+| TELEM-13 | One-week volunteer cohort and runbook rehearsal (purge, rollup, suspend, withdraw a release) | Batches every day, 429 rate 0, rejections under 1 %, daily rollups `ready`, runbook steps timed |
+
+### Phase 9 — GitHub reports and dashboard (about 3 days)
+
+| Step | Work | Evidence |
+| --- | --- | --- |
+| TELEM-23 | **Weekly report through the operations repository.** A scheduled workflow there fetches the week's report and aggregate JSON (bearer token kept as a repository secret), commits `data/<week>.json` and opens a pull request; merging is the human review, then it files the issue. Keep the digest-bound publisher only if the workflow cannot meet the publication protocol | First real week produces a pull request and an issue with at least one published table |
+| TELEM-24 | **Dashboard.** Static page in the operations repository built by Actions from `data/*.json` (Chart.js or Observable Plot): data health, sessions by OS and release, hardware mix, share of frames over 33.3/50 ms and hitches per minute by GPU family × cap class × resolution, aircraft usage and completion, error categories. Private until TELEM-26: GitHub Pages from a private repository is public unless on Enterprise Cloud, so view it as a workflow artifact or behind Cloudflare Access | Renders from the fixture and from the first real week; no cell below the floor in the built output (checked by the build) |
+
+### Phase 10 — stable release and ongoing value
+
+| Step | Work | Evidence |
+| --- | --- | --- |
+| TELEM-14 | Enable the approved configuration in a stable release | Release checklist completed |
+| TELEM-15 | First release-to-release comparison, deletion drill, quarterly field pruning | A regression or improvement report a maintainer acted on; no raw row older than 48 h; unused fields removed |
+| TELEM-25 | Manual GitHub report route (TELEM-07) for exact hardware and crashes, opt-in per report | Player-submitted issue from the preview with only allowlisted fields |
+| TELEM-26 | Optional public summary in the OpenTTD style (weekly, per release, floor 20, non-representative warning) after four reviewed private weeks | Public page reviewed against the [publication protocol](telemetry/publication-protocol.md) |
+
+**Telemetry is complete** when a stable release sends, four consecutive weekly reports contain published tables, the dashboard updates without manual steps, both alerts have fired in tests, the deletion drill has passed, and every collected field feeds a report table.
+
 ## Decisions that remain before deployment
 
 | Decision | Recommended starting point | Why it remains open |
 | --- | --- | --- |
 | Operator, contact and processing region | Project-maintained notice with named contact | Not present in the task; never invent legal identity |
-| Hosting and operational budget | One small managed service/database; reviewed cost ceiling | Actual vendor logs, region, deletion and billing must be checked |
+| Hosting and operational budget | **Decided 2026-11-19:** owner's Proxmox node with Tailscale Funnel, no cost; Fly.io and Cloudflare Workers compared in the [audit](../research/telemetry/TELEM-AUDIT-2026-11-19/README.md#external-inputs-checked-2026-11-19-prices-change) | Actual vendor logs, region, deletion and billing must be checked |
 | Raw-copy retention feasibility | Isolate raw records from longer-lived aggregate backups; prove all readable copies meet their original deadlines | SQL TTL, pgBackRest retention, a separate database in the same cluster and restore filtering do not establish erasure |
 | GitHub destination | Separate private operations repository initially | Current project repository is public; its audience is broader |
 | Public report release | Manual review of each early report | Small cohorts and linked dimensions can reveal more than intended |

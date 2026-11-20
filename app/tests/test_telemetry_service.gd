@@ -60,6 +60,7 @@ func _initialize() -> void:
 	_activities()
 	_off_switch_and_suspension()
 	_rotation_and_partial_activity()
+	_quit_in_flight_keeps_slices()
 	_remove()
 	print("all telemetry service checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
@@ -287,6 +288,35 @@ func _rotation_and_partial_activity() -> void:
 	_check("four hours rotate the session token for the next event", s._session_id != second
 		and s._pending.size() > 0 and s._pending_session == s._session_id)
 	s.queue_free()
+
+
+## TELEM-19: a 12-minute flight that ends by quitting (no return to Home) still reports 10 minutes of usage in
+## 5-minute slices; before, nothing was reported for flights shorter than the 30-minute slice.
+func _quit_in_flight_keeps_slices() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	_day = "2026-11-18"
+	var s := _service()
+	_run(s, 1.0)
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true,
+		"simulated_seconds": 0.0}, true)
+	_run(s, 12.5 * 60.0) # counts only sealed batches (queued or sent): pending events are lost at quit
+	var slices := {}
+	var bodies: Array = []
+	for item: Dictionary in s.sender.sent:
+		bodies.append(JSON.parse_string(item.body.get_string_from_utf8()))
+	bodies.append_array(_batches(s))
+	for batch: Variant in bodies:
+		for event: Dictionary in batch.events:
+			if event.name == "activity_summary":
+				slices[int(event.seq)] = event
+	var total := 0
+	var all_slices := true
+	for event: Dictionary in slices.values():
+		total += int(event.active_seconds)
+		all_slices = all_slices and event.outcome == "slice" and event.complete_observation == false
+	_check("quitting a 12-minute flight keeps two 5-minute slices", slices.size() == 2 and total >= 590
+		and all_slices, str(slices.values()))
+	s.queue_free() # quitting: the open third slice is dropped, as before
 
 
 func _ints(value: Variant) -> Variant:

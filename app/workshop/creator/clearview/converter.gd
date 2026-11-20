@@ -213,6 +213,9 @@ static func _motion_notes(motion: Variant) -> Array:
 			return []
 	if not motion.frames.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"%s coordinate markers were hidden and retained as source evidence.","source","import",[str(motion.frames.size())],R.SEVERITY_INFO))
+	var unreadable: Variant = motion.get("unreadable_frames",[])
+	if unreadable is Array and not unreadable.is_empty() and unreadable.size() <= Limits.GLB_NODES:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,Motion.UNREADABLE_NOTE,"source","import",[str(unreadable.size())],R.SEVERITY_WARNING))
 	if not motion.prepared.is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview.","source","import",[str(motion.prepared.size())],R.SEVERITY_INFO))
 	if not motion.unresolved.is_empty():
@@ -242,6 +245,8 @@ static func _motion_notes(motion: Variant) -> Array:
 					message = "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
 				"rig_admission":
 					message = "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+				"unreadable_render_frame":
+					message = "Hinge \"%s\": its coordinate marker could not be read. Bind this part manually in Moving parts."
 			if not message.is_empty():
 				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,message,"source","import",[label],R.SEVERITY_WARNING))
 	return notes

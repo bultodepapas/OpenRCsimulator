@@ -68,7 +68,7 @@ Godot physical-memory output may exclude reserved memory. Implement buckets usin
 | --- | --- | --- |
 | session_started | None beyond name/seq | Once after admission; never replay an earlier session |
 | performance_window | mode, vehicle_id, phase, window_complete, interval_count, interval_sum_us, rendered_frames, draw_counter_status, interval_histogram, excluded_gap_count, gpu_status, gpu_ms | About 30 s; close early on context boundaries |
-| activity_summary | vehicle_id, active_seconds, simulated_seconds, outcome, complete_observation, classification, takeoffs, landings, aircraft_crashes | Accepted activity close/reset or 30-minute slice; only new post-consent observations |
+| activity_summary | vehicle_id, active_seconds, simulated_seconds, outcome, complete_observation, classification, takeoffs, landings, aircraft_crashes | Accepted activity close/reset or 5-minute slice (TELEM-19: quitting from a flight loses only its last slice and unsealed events, about 6 minutes at most); only new post-consent observations |
 | error_count | category and count | Coalesced bounded counters; no text or stack |
 
 Approved error categories: renderer_unavailable, asset_load_failed, aircraft_validation_failed, simulation_fault. They identify software outcomes, not diagnoses. Start with capped counters, never one network message per error. The client emits `asset_load_failed` and `renderer_unavailable` ([architecture](architecture.md#implemented-modules)); the other two are reserved.

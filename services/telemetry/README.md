@@ -15,7 +15,8 @@ Python 3.12, Starlette + uvicorn, jsonschema (Draft 2020-12), stdlib `sqlite3` a
 | `openrc_telemetry/rollup.py` | Daily GPU and stock-vehicle tables with the 20-token suppression rule |
 | `openrc_telemetry/report.py` | Deterministic weekly Markdown and digest |
 | `openrc_telemetry/publisher.py` | Reconcile-then-create GitHub issue publisher with a durable intent ledger |
-| `openrc_telemetry/cli.py`, `__main__.py` | `serve`, `purge`, `rollup`, `report`, `publish` |
+| `openrc_telemetry/counters.py` | ID-free daily ingest counters per fixed status category (TELEM-20) |
+| `openrc_telemetry/cli.py`, `__main__.py` | `serve`, `purge`, `rollup`, `report`, `publish`, `status`, `check-release` |
 | `tests/` | `unittest` suite incl. equivalence with `reference.py` and a fake GitHub server |
 
 ## Run locally
@@ -88,6 +89,17 @@ Error bodies are `{"code": "<fixed category>"}` and never echo input. Request bo
 | Daily rollup | every day 01:30 | `python -m openrc_telemetry rollup --day yesterday` |
 | Weekly report | Monday after 23:00 UTC (Sunday + 47 h, when no day of the week can change) | `python -m openrc_telemetry report --week 2026-W47 --release v0.2.7` |
 
+### Is data arriving? (TELEM-20)
+
+`serve` counts every `POST /v1/batches` outcome per UTC day under a fixed category (`accepted`, `duplicate`, `conflict`, `rejected:<validation category>` such as `rejected:unapproved_release`, `rate_limited`, `unsupported_media`, `too_large`, `bad_length`, `suspended_release`, `suspended_all`, `storage_unavailable`) and `forwarded_for_present` when the request carried `X-Forwarded-For` (its value is never read into the counters). Counts are held in memory and written to `ingest_counts` in `aggregates.sqlite` every minute and at shutdown; they expire with the other aggregates after 180 days and contain no identifier or address.
+
+| Command | Use |
+| --- | --- |
+| `python -m openrc_telemetry status` | JSON: allowed and suspended releases, proxy trust, raw batch count, oldest raw age, seconds since the last stored batch, today's and yesterday's counters, yesterday's rollup statuses. Exit 1 when a raw row is past 48 h |
+| `python -m openrc_telemetry check-release vX.Y.Z` | Before tagging a release: exit 0 only if the tag matches the client pattern, is allowlisted, is not suspended and the canonical example carrying it passes full ingest validation; exit 2 with the reason otherwise |
+
+A rising `rejected:unapproved_release` means a published tag is missing from `OPENRC_TELEMETRY_RELEASES`; `rate_limited` behind a proxy usually means `OPENRC_TELEMETRY_TRUST_PROXY` does not match the proxy; `forwarded_for_present` with `TRUST_PROXY=0` shows the proxy does forward client addresses.
+
 Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation; a missed deadline yields a missing day, never extended raw retention. It is an idempotent upsert keyed by (day, release, table). Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens; each token counts at most 120 windows (or activity summaries).
 
 Weekly publication flow:
@@ -134,6 +146,6 @@ Back up only the `telemetry-aggregates` volume (`sqlite3 aggregates.sqlite ".bac
 - Publisher approval is a digest supplied by the operator, not an authenticated review. Issues from other authors with the same title are ignored by design, as in the publication protocol.
 - Weekly output is the private-operations form only; a public release needs the inventory review in `docs/plans/telemetry/publication-protocol.md`.
 - The stock-vehicle table is new relative to the reference reducer: approving a digest is also the explicit disclosure review of that table. It is suppressed whenever any vehicle (including `custom`/`unknown`) has 1–19 session tokens, so at pilot volume it will usually be suppressed.
-- Days on which ingestion answered 503 (storage full) or a release was suspended are still rolled up as `ready`; there is no coverage flag yet. Check service logs for those days before approving a report.
+- Days on which ingestion answered 503 (storage full) or a release was suspended are still rolled up as `ready`; there is no coverage flag in the report yet. Check that day's `storage_unavailable` and `suspended_*` counters (`ingest_counts`) before approving a report.
 - A rollup aborts the whole day if any stored body no longer validates (for example after a stricter schema); rerunning after a fix is idempotent.
 - Vehicle rows are re-validated at publication (floor, bounds, stock id) in addition to the rollup.

@@ -149,8 +149,9 @@ static func facts(guard_state: Dictionary = {}, build: String = "") -> Dictionar
 		build = build,
 		guard_failed_method = str((failed as Dictionary).get("method", "")) if failed is Dictionary else "",
 		guard_failed_build = str((failed as Dictionary).get("build", "")) if failed is Dictionary else "",
-		calibration_reject_high = bool(AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
-			AutoCalibration.HIGH_METHOD).get("reject_high", false)),
+		# Audit 2026-11-19 F05: only a measurement of a comparable output size can veto High here.
+		calibration_reject_high = AutoCalibration.rejects_high(RenderingServer.get_video_adapter_name(),
+			_screen_pixels()),
 	}
 
 

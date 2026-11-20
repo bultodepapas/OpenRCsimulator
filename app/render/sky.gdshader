@@ -221,6 +221,13 @@ void sky() {
 					break;
 				}
 				vec4 layer = appearance_layer_parameters[layer_index];
+				float optical = clamp(layer.w, 0.0, 1.0) * clamp(appearance_cloud_density, 0.0, 1.0);
+				if (optical == 0.0) {
+					// Audit 2026-11-19 F31: an exactly transparent deck has alpha 0, so col = mix(col, c, 0) is unchanged.
+					// Skip its density/relief work; keep the composite's own rounding of the density.
+					density = 1.0 - (1.0 - density);
+					continue;
+				}
 				vec4 layer_motion = appearance_layer_motion[layer_index];
 				uint layer_seed = uint(max(appearance_layer_seeds[layer_index], 0));
 				vec2 deck = (EYEDIR.xz / max(EYEDIR.y, 0.02)) * (layer.x / max(layer.y, 1.0));
@@ -238,7 +245,6 @@ void sky() {
 					float ceiling = smoothstep(0.02, 0.13, EYEDIR.y) * smoothstep(0.52, 0.94, layer.z);
 					body = max(body, 0.90 * ceiling);
 				}
-				float optical = clamp(layer.w, 0.0, 1.0) * clamp(appearance_cloud_density, 0.0, 1.0);
 				float layer_horizon_fade = shape == 3 ? smoothstep(0.005, 0.11, EYEDIR.y) : horizon_fade;
 				float tower_height = shape == 4 ? mix(0.68, 1.0, smoothstep(0.025, 0.52, EYEDIR.y)) : 1.0;
 				float alpha = clamp(body * optical * layer_horizon_fade * tower_height, 0.0, 0.98);

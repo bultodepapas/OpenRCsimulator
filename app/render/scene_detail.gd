@@ -118,7 +118,8 @@ static func calibrated(recommendation: Dictionary, adapter: String) -> Dictionar
 	var offset := int(calibration.get("scene_offset", 0))
 	if offset == 0 or str(calibration.get("adapter", "")) != AutoCalibration.adapter_key(adapter) \
 			or str(calibration.get("method", "")) != RenderingServer.get_current_rendering_method() \
-			or not AutoCalibration.size_matches(calibration, _output_pixels()):
+			or not AutoCalibration.size_matches(calibration, _output_pixels()) \
+			or not AutoCalibration.workload_matches(calibration, AutoCalibration.current_workload()):
 		return recommendation
 	var shifted := recommendation.duplicate()
 	shifted.level = AutoCalibration.apply_verdict(str(recommendation.level), calibration)
@@ -133,9 +134,20 @@ static func _native_render_pixels() -> int:
 			or not GpuCapability.mac_native_target(OS.get_name(), DisplayServer.screen_get_scale()):
 		return 0
 	var screen := DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
-	# The scale Automatic reconstruction really selects here: MetalFX when available, else Native.
+	return GpuCapability.mac_render_pixels(screen, _applied_3d_scale(screen))
+
+
+## Audit 2026-11-19 F06: the 3D scale the root viewport really renders with once its reconstruction is applied
+## (an explicit choice, Automatic, or a provider fallback after a runtime failure). Before that, the scale
+## Automatic reconstruction would select here: MetalFX when available, else Native.
+static func _applied_3d_scale(screen: Vector2i) -> float:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null and tree.root != null and tree.root.has_meta(Reconstruction.POLICY_META):
+		var scale := tree.root.scaling_3d_scale
+		if is_finite(scale) and scale > 0.0:
+			return scale
 	var mode := Reconstruction.auto_mode(Reconstruction.runtime_capabilities(), screen)
-	return GpuCapability.mac_render_pixels(screen, float(Reconstruction.SCALES.get(mode, 1.0)))
+	return float(Reconstruction.SCALES.get(mode, 1.0))
 
 
 static func recommend(adapter_name: String, vendor: String, render_pixels: int = 0) -> Dictionary:

@@ -4,9 +4,11 @@
 **Branch:** `plan/workshop-aircraft-attachments-2026-11-19`.
 **Baseline:** GitHub `main` at `e0a733937e255bacfe95ff09db0fb3838697239f`; planning/research
 head `9f20493631aa3013fbf28341bc9bcc9704fe48fd`.
-**Integrated upstream:** `b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`. Its three ClearView
-importer/guide commits merged without conflicts before the focused execution checks. They do not
-change the stock Stik builder or the presentation v4 contract.
+**Integrated upstream:** `d736ee8a2eab0b59b0fa2c561a1eef07f5fae396`, following the first merge
+of `b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`. Both merged without conflicts. The combined
+updates include ClearView importer/guide work and shared rendering, physics, telemetry and
+ClearView motion changes. They leave the stock Stik builder and presentation v4 contract unchanged.
+The resource import and all five focused suites below were rerun after the final merge.
 
 This is an internal implementation increment of the [attachment plan](../../../plans/workshop-aircraft-attachments.md).
 It advances AE-27-00b and AE-27-01a preparation. It does **not** complete either step or expose a
@@ -87,9 +89,9 @@ the incremental import after merging `main`, completed successfully.
 
 All five final suite reports have zero engine errors and warnings. [Verification metadata](verification.json)
 pins the delivered sources, engine, raw logs and checked-runner reports. The new code was parsed
-before entering `app/`; subsequent edits were checked by the actual test loads. The final wheel
-test followed the hardware-buffer repair. The unchanged presentation/source-proof/flex checks and
-selection check retain their earlier passing runs on the same integrated source dependencies.
+before entering `app/`; subsequent edits were checked by the actual test loads. All five suites
+were rerun after the hardware-buffer repair and the final upstream merge. The receipts below
+therefore describe the same delivered implementation and integrated source revision.
 
 Measured tire-buffer radii were 0.038100000 m for the mains and 0.034925003 m for the nose;
 lowest local vertices were −0.038100000 m and −0.034924999 m respectively. Widths were 0.024000000 m
@@ -140,7 +142,9 @@ test coverage. Those reviews were read-only; they do not substitute for executed
    Original/Draft, paint/lights/decals, thumbnail cache and dependent observers. Separate visual
    preparation for **both thumbnails and bundle import** from strict flight freezing.
 4. Enforce trusted eligibility at Workshop and CLI launch before physical start qualification. Run
-   same-source physical parity and the complete trial/return journey, including refusal paths.
+   physical parity with the same source/package, solver/build revision, engine and execution
+   conditions, plus the complete trial/return journey, including refusal paths. Matching trial IDs
+   alone do not establish equivalence across the upstream solver changes.
 5. Review actual native rendered fit, active materials, shadows, wreck/reset and cleanup. Only then
    decide whether this option can be promoted from preview-only and expose the public selector.
 6. Add one bounded larger wheel set after that first complete flow. Keep an exaggerated size

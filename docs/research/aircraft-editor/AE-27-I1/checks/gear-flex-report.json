@@ -1,6 +1,6 @@
 {
   "format": "openrc-godot-check v1",
-  "capture_id": "34190168-dc9e-49bf-a4a7-7bde85245597",
+  "capture_id": "7a324a9e-875a-4d9a-a95e-483a05566c9b",
   "command": [
     ".tools/Godot_v4.8-beta2_linux.x86_64",
     "--headless",
@@ -12,15 +12,15 @@
     "res://tests/test_gear_flex.gd"
   ],
   "cwd": "/workspace/scratch/adcec33b29c5/OpenRCsimulator",
-  "started_utc": "2026-11-20T01:46:45.518841+00:00",
+  "started_utc": "2026-11-20T02:18:24.853082+00:00",
   "label": "ae27-gear-flex",
-  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-gear-flex-gkw1v8_u/engine.log",
-  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-gear-flex-gkw1v8_u/report.json",
-  "timeout_seconds": 120.0,
+  "log": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-gear-flex-zychtxgn/engine.log",
+  "report": "/workspace/scratch/adcec33b29c5/OpenRCsimulator/tmp/godot-checks/ae27-gear-flex-zychtxgn/report.json",
+  "timeout_seconds": 90.0,
   "max_log_bytes": 8388608,
   "warnings_as_errors": false,
   "required_text": [
-    "checks, 0 failed"
+    "US-V10 gear flex: 27 checks, 0 failed"
   ],
   "process_exit": 0,
   "complete": true,
@@ -34,7 +34,7 @@
   "detail": "",
   "exit_code": 0,
   "ok": true,
-  "elapsed_seconds": 4.420014,
+  "elapsed_seconds": 4.317463,
   "log_bytes": 2318,
   "log_sha256": "4eb978c9141e458a2d6e1395808c3dc54507375d85f4c5e5c913e0b71621258e"
 }

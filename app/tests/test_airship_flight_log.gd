@@ -122,9 +122,69 @@ func _initialize() -> void:
 	var outcome := AirshipLog._replay(probe, field, crash_read.header, no_crash, {identity_match = false, exact = false, ok = false, first_mismatch_tick = -1, error = ""})
 	probe.free()
 	_check("a replay whose terminal outcome differs is refused", not outcome.ok, str(outcome.error))
+	_check_refused_restore(s)
 	_clean()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+# Audit 2026-11-19 F03: a refused checkpoint restore has no externally visible effect; an accepted
+# one still announces the reset and closes the active log completely.
+func _check_refused_restore(s: Node) -> void:
+	var zero_sticks := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	s.resume(zero_sticks)
+	for i in 60:
+		s.tick_once(_sticks(i))
+	var keep_path := DIR + "/restore_refused.orfl"
+	var keeper := AirshipLog.new(s)
+	_check("restore test: recording starts", keeper.start({field_path = FieldLoader.DEFAULT_PATH}, keep_path) == OK)
+	for i in 30:
+		s.tick_once(_sticks(60 + i))
+	var resets := [0]
+	var faults := [0]
+	var on_reset := func() -> void: resets[0] += 1
+	var on_fault := func(_reason: String) -> void: faults[0] += 1
+	s.resetting.connect(on_reset)
+	s.faulted.connect(on_fault)
+	var live_state: PackedByteArray = s.sim.state.to_byte_array()
+	var live_continuous: PackedByteArray = s.sim.continuous.to_byte_array()
+	var live_inputs: PackedByteArray = s.sim.inputs.to_byte_array()
+	var live_tape: PackedByteArray = s.tape.to_byte_array()
+	var live_tick: int = s.sim.tick
+	var live_time: float = s.sim.time()
+	var good_continuous: PackedFloat64Array = s.continuous_snapshot()
+	var nan_body: PackedFloat64Array = s.state_snapshot()
+	nan_body[0] = NAN
+	var zero_quaternion: PackedFloat64Array = s.state_snapshot()
+	for i in 4:
+		zero_quaternion[6 + i] = 0.0
+	var short_body: PackedFloat64Array = s.state_snapshot().slice(0, 12)
+	var nan_continuous: PackedFloat64Array = good_continuous.duplicate()
+	nan_continuous[0] = NAN
+	var refusals: Array[bool] = [s.restore_checkpoint(nan_body, good_continuous),
+		s.restore_checkpoint(zero_quaternion, good_continuous), s.restore_checkpoint(short_body, good_continuous),
+		s.restore_checkpoint(s.state_snapshot(), nan_continuous),
+		s.restore_checkpoint(s.state_snapshot(), good_continuous.slice(0, good_continuous.size() - 1))]
+	_check("malformed checkpoint bodies or continuous data are refused", not refusals.has(true), str(refusals))
+	_check("a refused restore emits no reset and no fault", resets[0] == 0 and faults[0] == 0,
+		"%d resets, %d faults" % [resets[0], faults[0]])
+	_check("a refused restore leaves state, continuous, inputs, tape and clock unchanged",
+		s.sim.state.to_byte_array() == live_state and s.sim.continuous.to_byte_array() == live_continuous
+		and s.sim.inputs.to_byte_array() == live_inputs and s.tape.to_byte_array() == live_tape
+		and s.sim.tick == live_tick and s.sim.time() == live_time)
+	_check("a refused restore does not fault or pause the flight", s.fault_reason.is_empty()
+		and s.sim.fault_reason.is_empty() and not s.paused and not s.sim.paused)
+	_check("a refused restore leaves the recorder open", keeper.recording and keeper.failure.is_empty())
+	_check("the flight and its recording continue after a refused restore", s.tick_once(_sticks(90)) and keeper.recording)
+	var accepted: bool = s.restore_checkpoint(s.state_snapshot(), good_continuous)
+	var kept := AirshipLog.inspect(keep_path)
+	_check("a valid restore is accepted and keeps the flight running", accepted and s.sim.tick == 0
+		and s.sim.inputs == zero_sticks and s.fault_reason.is_empty() and not s.paused and not s.sim.paused)
+	_check("a valid restore announces the reset once and closes a complete log", resets[0] == 1 and faults[0] == 0
+		and not keeper.recording and kept.ok and kept.complete and kept.ticks.size() == 31,
+		"%d resets, %s" % [resets[0], str(kept.get("error", kept.get("ticks", []).size()))])
+	s.resetting.disconnect(on_reset)
+	s.faulted.disconnect(on_fault)
 
 
 func _write(file_path: String, bytes: PackedByteArray) -> void:

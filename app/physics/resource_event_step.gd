@@ -89,6 +89,15 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 			elif crossed_inside:
 				internal_crossing = true
 
+		# A crossing seen only in the stage samples has no endpoint bracket yet, and
+		# its time is unknown. Committing a later endpoint root first would leave it
+		# behind the accepted time, so isolate it before locating any root.
+		if internal_crossing:
+			step *= 0.5
+			if step < TIME_TOL:
+				return _failure("internal event crossing could not be isolated")
+			continue
+
 		if not crossings.is_empty():
 			var located: Array[Dictionary] = []
 			for crossing: Dictionary in crossings:
@@ -99,40 +108,67 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 				if not root.get("ok", false):
 					return _failure(str(root.get("message", "event root failed")))
 				located.append({event = crossing.event, state = root.state, offset_s = float(root.offset_s),
-					residual = float(root.residual), time_error_s = float(root.time_error_s)})
+					residual = float(root.residual), time_error_s = float(root.time_error_s),
+					start_value = float(crossing.start_value)})
+			# A tolerance inside a sort comparator is not transitive, so chained near ties
+			# made the boundary depend on discovery order. Sort by exact time (IDs are
+			# unique, so the order is total) and take the tie set relative to the earliest
+			# root. Within that set the documented priority/ID policy picks the boundary.
 			located.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-				if absf(float(a.offset_s) - float(b.offset_s)) <= TIME_TOL:
-					return _event_before(a.event, b.event)
-				return float(a.offset_s) < float(b.offset_s))
+				if float(a.offset_s) != float(b.offset_s):
+					return float(a.offset_s) < float(b.offset_s)
+				return _event_before(a.event, b.event))
 			var earliest: float = float(located[0].offset_s)
-			var root_state: PackedFloat64Array = located[0].state.duplicate()
 			var tied: Array[Dictionary] = []
 			for candidate: Dictionary in located:
-				if absf(float(candidate.offset_s) - earliest) <= TIME_TOL:
+				if float(candidate.offset_s) - earliest <= TIME_TOL:
 					tied.append(candidate)
 				else:
 					break
 			tied.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 				return _event_before(a.event, b.event))
+			var boundary: float = float(tied[0].offset_s)
+			# The boundary may be committed only if no enabled surface is already past
+			# zero beyond its tolerance there. Such a surface had an earlier root: a near
+			# tie the priority boundary overtook, or a crossing that neither the endpoint
+			# nor the stage samples bracketed. Advancing would drop it silently, so retry
+			# up to the earliest root, whose shorter interval brackets it. Surfaces still
+			# on their original side are deferred to the next segment as before.
+			var missed: Dictionary = _crossed_before(tied[0].state, time_s + elapsed + boundary,
+				events, start_values.values, start_values.enabled, max_surface_evaluations - evaluations)
+			evaluations += int(missed.get("evaluations", 0))
+			if not missed.get("ok", false):
+				return _failure(str(missed.get("message", "event boundary surface failed")))
+			if missed.crossed:
+				# A located root is a strictly shorter, already bracketed interval, even
+				# when it lies inside TIME_TOL; only blind halving needs the floor.
+				if earliest > 0.0 and earliest < step:
+					step = earliest
+				else:
+					step *= 0.5
+					if step < TIME_TOL:
+						return _failure("an earlier event crossing could not be isolated")
+				continue
+			var root_state: PackedFloat64Array = tied[0].state.duplicate()
 			var applied: int = 0
 			for candidate: Dictionary in tied:
 				var event: Dictionary = candidate.event
 				var surface_at_root: Dictionary = _surface_sample(event, root_state,
-					time_s + elapsed + earliest, max_surface_evaluations - evaluations)
+					time_s + elapsed + boundary, max_surface_evaluations - evaluations)
 				evaluations += int(surface_at_root.get("evaluations", 0))
 				if not surface_at_root.get("ok", false):
 					return _failure(str(surface_at_root.get("message", "event tie surface failed")))
 				if not surface_at_root.enabled or absf(float(surface_at_root.value)) > _event_tolerance(event):
 					continue
 				var transitioned: Variant = event.transition.call(root_state.duplicate(),
-					time_s + elapsed + earliest)
+					time_s + elapsed + boundary)
 				if not transitioned is Dictionary or not transitioned.get("ok", false) \
 						or not transitioned.get("state") is PackedFloat64Array \
 						or not _finite(transitioned.state, accepted.size()):
 					return _failure("event transition failed for %s" % str(event.id))
 				root_state = transitioned.state.duplicate()
 				applied += 1
-				var report: Dictionary = {type = str(event.type), time_s = time_s + elapsed + earliest,
+				var report: Dictionary = {type = str(event.type), time_s = time_s + elapsed + boundary,
 					id = str(event.id), surface_residual = float(surface_at_root.value),
 					surface_unit = str(event.surface_unit), time_error_bound_s = float(candidate.time_error_s)}
 				var details: Variant = transitioned.get("event", {})
@@ -144,18 +180,13 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 			if not _finite(root_state, accepted.size()):
 				return _failure("event transition returned a nonfinite state")
 			accepted = root_state
-			elapsed += earliest
+			elapsed += boundary
 			if elapsed >= dt:
 				return {ok = true, state = accepted, events = reported, surface_evaluations = evaluations}
 			step = dt - elapsed
 			initial_rate = PackedFloat64Array()
 			continue
 
-		if internal_crossing:
-			step *= 0.5
-			if step < TIME_TOL:
-				return _failure("internal event crossing could not be isolated")
-			continue
 		accepted = endpoint
 		elapsed += step
 		if elapsed >= dt:
@@ -289,6 +320,7 @@ static func _surface_values(state: PackedFloat64Array, at: float, events: Array,
 	if remaining_evaluations <= 0:
 		return {ok = false, message = "resource event surface evaluation budget exhausted"}
 	var values: Dictionary = {}
+	var enabled: Dictionary = {}
 	var evaluations: int = 0
 	for event: Dictionary in events:
 		var sample: Dictionary = _surface_sample(event, state, at, remaining_evaluations - evaluations)
@@ -296,7 +328,8 @@ static func _surface_values(state: PackedFloat64Array, at: float, events: Array,
 		if not sample.get("ok", false):
 			return {ok = false, message = str(sample.get("message", "event start surface failed")), evaluations = evaluations}
 		values[str(event.id)] = float(sample.value) if sample.enabled else 1.0
-	return {ok = true, values = values, evaluations = evaluations}
+		enabled[str(event.id)] = bool(sample.enabled)
+	return {ok = true, values = values, enabled = enabled, evaluations = evaluations}
 
 
 static func _surface_sample(event: Dictionary, state: PackedFloat64Array, at: float,
@@ -339,6 +372,25 @@ static func _crossed_extrema(start_value: float, minimum: float, maximum: float,
 		"either":
 			return (start_value > 0.0 and minimum <= 0.0) or (start_value < 0.0 and maximum >= 0.0)
 	return false
+
+
+## Only surfaces enabled at the segment start take part: their start value is a real side of zero. A surface
+## that becomes enabled inside the segment keeps the existing endpoint-only treatment.
+static func _crossed_before(anchor: PackedFloat64Array, at: float, events: Array,
+		start_values: Dictionary, enabled_at_start: Dictionary, remaining_evaluations: int) -> Dictionary:
+	var evaluations: int = 0
+	for event: Dictionary in events:
+		if not bool(enabled_at_start.get(str(event.id), false)):
+			continue
+		var sample: Dictionary = _surface_sample(event, anchor, at, remaining_evaluations - evaluations)
+		evaluations += int(sample.get("evaluations", 0))
+		if not sample.get("ok", false):
+			return {ok = false, message = str(sample.get("message", "event anchor surface failed")),
+				evaluations = evaluations}
+		if sample.enabled and absf(float(sample.value)) > _event_tolerance(event) \
+				and _crossed(float(start_values[str(event.id)]), float(sample.value), str(event.sense)):
+			return {ok = true, crossed = true, evaluations = evaluations}
+	return {ok = true, crossed = false, evaluations = evaluations}
 
 
 static func _event_tolerance(event: Dictionary) -> float:

@@ -5,6 +5,8 @@ const AutoCalibration := preload("res://render/auto_calibration.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const RendererPreference := preload("res://app_state/renderer_preference.gd")
 const TimingLease := preload("res://render/render_timing_lease.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
+const UiScale := preload("res://ui/ui_scale.gd")
 
 const PRIVATE_PATH := "user://test graphics calibration.cfg"
 
@@ -24,6 +26,9 @@ func _run() -> void:
 	_test_storage()
 	_test_scene_detail()
 	_test_renderer()
+	_test_workload_identity()
+	await _test_output_identity()
+	_test_view_tracking()
 	await _test_lifecycle()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PRIVATE_PATH))
 	AutoCalibration.calibration_path = AutoCalibration.CALIBRATION_PATH
@@ -270,6 +275,118 @@ func _test_renderer() -> void:
 		and rejected.write and rejected.restart and rejected.state.renderer == "", rejected)
 	state.mode = "high"
 	_check("an explicit High choice is kept despite the measurement", RendererPreference.plan(facts, state).profile == "high")
+
+
+## Audit 2026-11-19 F05/F07: a verdict only speaks for a comparable workload.
+func _test_workload_identity() -> void:
+	var gpu := "NVIDIA GeForce RTX 3090"
+	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "level": "high", "pixels": 3840 * 2160,
+		"render_pixels": 3840 * 2160, "msaa_3d": 0, "complete": true, "reject_high": true, "scene_offset": 0,
+		"gpu_p95_ms": 20.0, "samples": 300})
+	var loaded := AutoCalibration.load_result(gpu, "forward_plus")
+	_check("the workload identity reads back", loaded.render_pixels == 3840 * 2160 and loaded.msaa_3d == 0, loaded)
+	_check("a 4K High rejection vetoes High on a 4K screen", AutoCalibration.rejects_high(gpu, 3840 * 2160))
+	_check("a 4K High rejection does not veto High on a 1080p screen", not AutoCalibration.rejects_high(gpu, 1920 * 1080))
+	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "level": "high", "pixels": 1920 * 1080,
+		"complete": true, "reject_high": true})
+	_check("a High rejection in a 1080p window still vetoes High on a 4K screen",
+		AutoCalibration.rejects_high(gpu, 3840 * 2160) and AutoCalibration.rejects_high(gpu, 1920 * 1080)
+		and AutoCalibration.rejects_high(gpu, 0))
+	_check("but not on a much smaller screen", not AutoCalibration.rejects_high(gpu, 1280 * 720))
+	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "level": "high", "pixels": 3840 * 2160,
+		"complete": true, "reject_high": true})
+	var facts := {os = "Windows", arm64 = false, adapter = gpu, headless = false, template = true, cli_renderer = false,
+		session_method = "gl_compatibility", project_standard = "gl_compatibility", build = "b", guard_failed_method = "",
+		guard_failed_build = "", pixels = 1920 * 1080,
+		calibration_reject_high = AutoCalibration.rejects_high(gpu, 1920 * 1080)}
+	var state := {mode = "auto", renderer = "", standard_method = "", high_blocked_build = ""}
+	_check("Automatic picks High at 1080p after a 4K rejection", RendererPreference.plan(facts, state).profile == "high")
+	AutoCalibration.save_result({"adapter": gpu, "method": "forward_plus", "level": "high", "pixels": 1920 * 1080,
+		"complete": false, "reject_high": true})
+	_check("an incomplete measurement never vetoes High", not AutoCalibration.rejects_high(gpu, 1920 * 1080))
+	var native := {"render_pixels": 3840 * 2160, "msaa_3d": 0}
+	var verdict := {"render_pixels": 3840 * 2160, "msaa_3d": 0}
+	_check("the same 3D scale and MSAA match", AutoCalibration.workload_matches(verdict, native))
+	_check("a half 3D scale (a quarter of the pixels) does not match",
+		not AutoCalibration.workload_matches(verdict, {"render_pixels": 1920 * 1080, "msaa_3d": 0}))
+	_check("another 3D MSAA does not match", not AutoCalibration.workload_matches(verdict, {"render_pixels": 3840 * 2160,
+		"msaa_3d": Viewport.MSAA_4X}))
+	_check("unknown workload values match", AutoCalibration.workload_matches({}, native)
+		and AutoCalibration.workload_matches(verdict, {}))
+	AutoCalibration.save_result({"adapter": gpu, "method": "gl_compatibility", "level": "high", "pixels": 2073600,
+		"render_pixels": 2073600, "msaa_3d": 0, "complete": true, "scene_offset": -1})
+	_check("a measured workload is not measured again",
+		not AutoCalibration.needed(gpu, "gl_compatibility", 2073600, "high", {"render_pixels": 2073600, "msaa_3d": 0}))
+	_check("a changed 3D scale or MSAA measures again",
+		AutoCalibration.needed(gpu, "gl_compatibility", 2073600, "high", {"render_pixels": 1036800, "msaa_3d": 0})
+		and AutoCalibration.needed(gpu, "gl_compatibility", 2073600, "high",
+			{"render_pixels": 2073600, "msaa_3d": Viewport.MSAA_2X}))
+	var stale := ConfigFile.new()
+	stale.set_value("meta", "format", 3)
+	stale.set_value("gpu %s | forward_plus" % AutoCalibration.adapter_key(gpu), "reject_high", true)
+	stale.set_value("gpu %s | forward_plus" % AutoCalibration.adapter_key(gpu), "pixels", 2073600)
+	stale.save(AutoCalibration.calibration_path)
+	_check("a format 3 verdict (logical UI pixels) is discarded and measured again",
+		AutoCalibration.load_result(gpu, "forward_plus").is_empty() and not AutoCalibration.rejects_high(gpu, 2073600)
+		and AutoCalibration.needed(gpu, "forward_plus", 2073600))
+	AutoCalibration.clear()
+
+
+## Audit 2026-11-19 F04/F06: measurement and consumers use the same output pixels at any UI scale.
+func _test_output_identity() -> void:
+	var original := root.size
+	for size: Vector2i in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]:
+		root.size = size
+		UiScale.apply(root)
+		await process_frame
+		var workload := AutoCalibration.current_workload(root)
+		var label := "%dx%d" % [size.x, size.y]
+		_check(label + " measures window pixels, not the logical UI canvas",
+			int(workload.get("pixels", 0)) == root.size.x * root.size.y, [workload, root.get_visible_rect().size])
+		_check(label + " verdict matches the same window", AutoCalibration.size_matches(workload, root.size.x * root.size.y)
+			and AutoCalibration.workload_matches(workload, AutoCalibration.current_workload(root)))
+	var had_policy := root.has_meta(Reconstruction.POLICY_META)
+	var scale := root.scaling_3d_scale
+	root.set_meta(Reconstruction.POLICY_META, {"scale": 0.5})
+	root.scaling_3d_scale = 0.5
+	var halved := AutoCalibration.current_workload(root)
+	_check("the internal 3D size follows the applied 3D scale",
+		int(halved.render_pixels) < int(halved.pixels) and int(halved.render_pixels) * 4 >= int(halved.pixels) - 4 * root.size.x,
+		halved)
+	_check("Retina estimates use the applied 3D scale", is_equal_approx(SceneDetail._applied_3d_scale(Vector2i(2560, 1600)), 0.5))
+	root.remove_meta(Reconstruction.POLICY_META)
+	var fallback := SceneDetail._applied_3d_scale(Vector2i(2560, 1600))
+	_check("before reconstruction is applied the Automatic estimate is used",
+		is_equal_approx(fallback, float(Reconstruction.SCALES.get(Reconstruction.auto_mode(
+			Reconstruction.runtime_capabilities(), Vector2i(2560, 1600)), 1.0))), fallback)
+	root.scaling_3d_scale = scale
+	if had_policy:
+		root.set_meta(Reconstruction.POLICY_META, {"scale": scale})
+	root.size = original
+	UiScale.apply(root)
+	await process_frame
+
+
+## Audit 2026-11-19 F08: SubViewport activity is tracked through the sample without per-frame tree scans.
+func _test_view_tracking() -> void:
+	var calibration := AutoCalibration.new(Node.new(), "NVIDIA GeForce RTX 3090")
+	root.add_child(calibration)
+	calibration._track_views()
+	var quiet := calibration._subviewports_active()
+	var view := SubViewport.new()
+	view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(view)
+	var added := calibration._subviewports_active()
+	view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	var disabled := calibration._subviewports_active()
+	view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	view.free()
+	var freed := calibration._subviewports_active()
+	calibration.free()
+	_check("a SubViewport added during the sample is seen and a disabled or freed one is not",
+		added and not disabled and not freed, [quiet, added, disabled, freed])
+	_check("a freed measurement leaves no node_added listener",
+		not node_added.get_connections().any(func(c: Dictionary) -> bool: return c.callable.get_object() == null))
 
 
 func _test_lifecycle() -> void:

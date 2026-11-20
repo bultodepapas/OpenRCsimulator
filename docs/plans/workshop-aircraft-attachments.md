@@ -4,7 +4,7 @@
 **Owner:** Aircraft Workshop (AE), with AS/model authors for bindings and GP/physics for physical installations.
 **Steps:** AE-27-00a through AE-27-07d. **Baseline:** `main` at `e0a733937e255bacfe95ff09db0fb3838697239f`.
 **Planning branch:** `plan/workshop-aircraft-attachments-2026-11-19`.
-**Implementation integration base:** `main` at `b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`.
+**Implementation integration base:** `main` at `d736ee8a2eab0b59b0fa2c561a1eef07f5fae396`.
 
 This is the authoritative attachment subplan of the [Aircraft Editor plan](aircraft-editor.md).
 The [dated source review](../research/aircraft-editor/AE-27-00/README.md) records the inspected Workshop,
@@ -107,11 +107,13 @@ the [review](../research/aircraft-editor/AE-27-00/README.md#2-workshop-integrati
 
 The implementation preflight compared this branch at `9f20493631aa3013fbf28341bc9bcc9704fe48fd`
 with GitHub `main`, still `e0a733937e255bacfe95ff09db0fb3838697239f`. There was no upstream
-source drift at that check. Before publication, `main` advanced to
-`b69ac2d54871b0d798af7c61ac62d8f17e6abd3d`; its three ClearView importer/guide commits were
-merged into this branch without conflicts. They change the Creator's import/configuration workflow,
-not the attachment registration or stock Stik model. Imported aircraft still receive no inferred
-part compatibility. The focused implementation checks ran on the combined source.
+source drift at that check. The branch then integrated
+`b69ac2d54871b0d798af7c61ac62d8f17e6abd3d` and, during publication,
+`d736ee8a2eab0b59b0fa2c561a1eef07f5fae396`, both without conflicts. These updates include
+the ClearView importer/guide work and changes to shared rendering, physics, telemetry and
+ClearView motion. They leave the stock Stik builder and presentation v4 contract unchanged.
+Imported aircraft still receive no inferred part compatibility. The resource import and all five
+focused implementation/regression suites were rerun on the final combined source.
 Reading the actual consumers tightened the delivery order:
 
 | Observed code boundary | Consequence for the first increments |
@@ -262,12 +264,15 @@ Keep `Trial.freeze` strict for flight by default. Thumbnail rendering and bundle
 explicit caller-owned visual preparation path; purpose/eligibility never comes from imported JSON.
 The flight launcher must still enforce attachment eligibility before physical start qualification.
 
-Cosmetic choices change presentation identity. **Within the same accepted source/descriptor/manifest
-and physical recipe**, they must leave resolved aircraft bytes, physical model/wheel-profile hashes,
-trial identity and deterministic physical results unchanged. The existing trial identity also includes
-the model manifest and descriptor: authoring new sockets may change those pins. Preserve existing
-records; use explicit reviewed rebind/Save a copy or a truthful unavailable state when old pins no
-longer resolve. Do not promise unchanged identity across a generator/source migration.
+Cosmetic choices change presentation identity. **Within the same accepted source/descriptor/manifest,
+physical recipe and solver/build revision**, they must leave resolved aircraft bytes, physical
+model/wheel-profile hashes, trial identity and deterministic physical results unchanged. Pin the
+engine and execution conditions in the comparison evidence. The existing trial identity includes
+the model manifest and descriptor: authoring new sockets may change those pins. It does not pin all
+solver implementation files; matching trial IDs alone do not establish physical equivalence across
+simulator revisions. Preserve existing records; use explicit reviewed rebind/Save a copy or a
+truthful unavailable state when old pins no longer resolve. Do not promise unchanged identity
+across a generator/source migration.
 
 Keep part assets/factories in the presentation proof/export closure when feasible. A necessary
 physical model-manifest change follows its owning generator and migration contract; never omit a
@@ -431,7 +436,7 @@ Do not rerun every native suite for a local selector or documentation edit.
 | Gate | Required evidence |
 | --- | --- |
 | C1 — Contract and compatibility | Defaults; profile/record legacy readers; duplicate/unknown slots/options; stale catalogue/model/proof pins; malformed imports; unsupported aircraft/part combinations; failed migration leaves the record intact. Preview-only selections remain saveable/visible but are refused by every flight entry point. |
-| C2 — Cosmetic physics parity | Within one source/package identity, compare original and every offered cosmetic-flight option with identical physical recipe, accepted start, field/weather and input tape. Exact resolved bytes/model and wheel-profile pins, mass/CG/inertia, propulsion/contact/strike configuration, and deterministic states/events remain equal. Cover relevant airborne, ground and strike paths. A generator migration is separately identified, never disguised as cosmetic parity. |
+| C2 — Cosmetic physics parity | Within one source/package identity and solver/build revision, pin the engine and execution conditions, then compare original and every offered cosmetic-flight option with identical physical recipe, accepted start, field/weather and input tape. Exact resolved bytes/model and wheel-profile pins, mass/CG/inertia, propulsion/contact/strike configuration, and deterministic states/events remain equal. Cover relevant airborne, ground and strike paths. Matching trial IDs alone do not prove equivalence across solver revisions. A generator migration is separately identified, never disguised as cosmetic parity. |
 | C3 — Complete player lifecycle | Select → preview → Undo/Redo/reset → save/reopen/copy → bundle round trip → recovery → Test fly → pause/restart → return to the retained draft. Include stale preparation and missing-part failure, Original view, cancelled/failed thumbnail, source switch, failed save and existing unrelated pending edits. Preserve browsing focus/context; failures do not hide the plane or make a saved build inaccessible. No stock/shared-instance mutation. |
 | C4 — Visual fit | Actual rendered front/side/underside views and relevant motion: steering, compression, pitch/roll, prop stationary/low/high RPM, strike/wreck/reset. Check hub/fastener, pants, shadows, skins, markings, lights and smoke. Record support/disc/envelope mismatch against the declared fit tolerance. Review 1920×1080 first; Apple Silicon Retina uses native-panel acceptance under the repository policy. EN/ES, keyboard/controller navigation, enlarged text and compact layout keep actions reachable. |
 | C5 — Cost, packaging and cleanup | Record before/after preview/flight frame cost, allocations and loaded resource counts for the worst offered set on target hardware. Establish asset-specific geometry/material/texture budgets from the measured baseline. At least twenty swap/reset/close cycles show no accumulating nodes/materials or hidden processing. Original/off mode retains bounded cost; imported assets and procedural factories have exported source proofs and licenses. Optional optimization preserves bindings and shows a useful measured gain. No universal FPS claim from headless checks. |
