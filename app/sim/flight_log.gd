@@ -62,8 +62,11 @@ static func _has_native_callback(model: Object) -> bool:
 	for name: String in ["stage", "loads", "rotor_momentum"]:
 		var callback: Variant = model.get(name)
 		if callback is Callable:
-			var target: Object = callback.get_object()
-			if is_instance_valid(target) and target.is_class("OpenRCNativeKernel"): return true
+			# A helicopter with a lake installs session._native_gated_stage bound around the native stage.
+			for candidate: Variant in [callback] + (callback as Callable).get_bound_arguments():
+				if not candidate is Callable: continue
+				var target: Object = (candidate as Callable).get_object()
+				if is_instance_valid(target) and target.is_class("OpenRCNativeKernel"): return true
 	return false
 
 

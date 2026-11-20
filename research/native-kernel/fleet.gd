@@ -603,7 +603,9 @@ static func _fleet_backend_owner_error(session: Node, requested: String, identit
 			if expected.stage.is_valid() or expected.loads != Callable(native, "body_loads") \
 					or expected.rotor_momentum != Callable(native, "body_rotor"):
 				return "native body-load and rotor callbacks are not installed"
-		elif expected.stage != Callable(native, "stage"):
+		elif expected.stage != Callable(native, "stage") and not (expected.stage.get_bound_arguments().size() == 1 \
+				and expected.stage.get_bound_arguments()[0] == Callable(native, "stage")):
+			# The lake-gated helicopter stage binds the native stage behind the reference water refusal.
 			return "native joint stage is not installed"
 	return ""
 
