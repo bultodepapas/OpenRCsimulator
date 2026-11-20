@@ -14460,8 +14460,8 @@ msgstr "Modèle Phoenix RC"
 msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 msgstr "Seule l’apparence Phoenix est importée. Définissez et validez séparément sa configuration de vol OpenRC."
 
-msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
-msgstr "Modèle Phoenix %s : %s m d’envergure, %s kg. Ces valeurs Phoenix sont affichées à titre indicatif uniquement."
+msgid "Phoenix model %s: %s m wingspan, %s kg."
+msgstr "Modèle Phoenix %s : %s m d’envergure, %s kg."
 
 msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 msgstr "L’orientation, les mètres et le bord d’attaque de l’aile proviennent du modèle Phoenix ; vérifiez-les dans Orientation et taille."
@@ -14493,17 +14493,17 @@ msgstr "%s pièces mobiles ont été préparées à partir des charnières Phoen
 msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
 msgstr "La qualification numérique du vol des modèles Phoenix n’est pas encore établie. Vous pouvez modifier et enregistrer ce brouillon."
 
-msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
-msgstr "Les vols d'essai utilisent cette configuration OpenRC estimée, pas le modèle de vol de Phoenix. Le comportement ne reproduit pas l'original."
+msgid "Test flights use an OpenRC configuration derived from this Phoenix model's weight, balance, airfoils and propeller. Handling is not a reproduction of the original."
+msgstr "Les vols d’essai utilisent une configuration OpenRC dérivée de la masse, du centrage, des profils et de l’hélice de ce modèle Phoenix. Le comportement ne reproduit pas l’original."
 
 msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 msgstr "La publication des modèles Phoenix convertis n'est pas encore disponible. Enregistrez le brouillon pour le conserver ; vous pourrez le rouvrir et le tester en vol."
 
-msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
-msgstr "Configuration OpenRC estimée et indépendante sélectionnée. Les paramètres de vol Phoenix restent des références issues de la source."
+msgid "Configuration derived from the Phoenix flight data selected. Values Phoenix does not record stay labelled OpenRC estimates."
+msgstr "Configuration dérivée des données de vol Phoenix sélectionnée. Les valeurs que Phoenix n’enregistre pas restent des estimations OpenRC signalées."
 
-msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
-msgstr "Utilise le repère du modèle Phoenix, son aile, son empennage et la position de l’hélice, et remplit chaque valeur vide avec des estimations OpenRC signalées. Rien de ce que vous avez saisi n’est remplacé."
+msgid "Uses the Phoenix model frame, weight, balance, wing, airfoils, tail and propeller, and fills every other empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Utilise le repère, la masse, le centrage, l’aile, les profils, l’empennage et l’hélice du modèle Phoenix, et complète les autres valeurs vides avec des estimations OpenRC signalées. Rien de ce que vous avez saisi n’est remplacé."
 
 msgid "Automatic setup is only available for converted Phoenix aeroplanes."
 msgstr "La configuration automatique n’est disponible que pour les avions Phoenix convertis."
@@ -14511,8 +14511,8 @@ msgstr "La configuration automatique n’est disponible que pour les avions Phoe
 msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
 msgstr "Les données de vol Phoenix de ce modèle sont incomplètes. Définissez l’aile et l’empennage dans Géométrie de l’avion."
 
-msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
-msgstr "L’orientation, les mètres et le bord d’attaque de l’aile proviennent du modèle Phoenix. Son aile, son empennage, la position de l’hélice et les débattements deviennent des estimations initiales signalées."
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its weight, balance, airfoils, wing, tail, propeller and control throws set the flight configuration; anything else is a labelled estimate."
+msgstr "L’orientation, les mètres et le bord d’attaque de l’aile proviennent du modèle Phoenix. Sa masse, son centrage, ses profils, son aile, son empennage, son hélice et ses débattements définissent la configuration de vol ; le reste est une estimation signalée."
 
 msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
 msgstr "L’aile Phoenix (effilement %s, allongement %s) sort de la plage de la configuration estimée ; ses cordes sont donc ajustées à la forme prise en charge la plus proche."
@@ -14520,5 +14520,11 @@ msgstr "L’aile Phoenix (effilement %s, allongement %s) sort de la plage de la 
 msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
 msgstr "Certains débattements Phoenix sortent de la plage de la configuration estimée et y sont limités."
 
-msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
-msgstr "Utilisez Configurer pour le vol pour appliquer l’aile, l’empennage, la position de l’hélice et les débattements Phoenix comme estimations signalées."
+msgid "Use Set up for flight to apply the Phoenix weight, balance, airfoils, wing, tail and propeller; anything else becomes a labelled estimate."
+msgstr "Utilisez Configurer pour le vol pour appliquer la masse, le centrage, les profils, l’aile, l’empennage et l’hélice Phoenix ; le reste devient une estimation signalée."
+
+msgid "The Phoenix airfoil library was not found next to this model, so its own lift and drag data cannot be used; the estimated OpenRC values apply."
+msgstr "La bibliothèque de profils Phoenix est introuvable à côté de ce modèle : ses propres données de portance et de traînée ne peuvent pas être utilisées ; les valeurs OpenRC estimées s’appliquent."
+
+msgid "Propeller and motor from the Phoenix model — estimated installation"
+msgstr "Hélice et moteur du modèle Phoenix — installation estimée"

@@ -75,6 +75,8 @@ const ENTER_A_NUMBER := "Enter a number."
 const NO_MODEL := "No model imported yet"
 const STATIC_VISUAL := "Controls simulated · visual is static"
 const ELECTRIC_PACKAGE := "4S · 800 Kv · 12×6 propeller — estimated"
+## Power derived from a Phoenix model's propeller or jet thrust (`phoenix/physics.gd` ids).
+const PHOENIX_POWER := "Propeller and motor from the Phoenix model — estimated installation"
 ## The installed estimated power package, by id (the setup chooses one per size class).
 const POWER_LABELS := {
 	"electric-4s-800kv-apc12x6-estimated-v1": ELECTRIC_PACKAGE,
@@ -2592,7 +2594,10 @@ func _fly_helicopter(source: InspectedSource) -> void:
 
 
 func _power_label() -> String:
-	return str(POWER_LABELS.get(str(_doc.definition().get("power_package", "")), ELECTRIC_PACKAGE))
+	var id := str(_doc.definition().get("power_package", ""))
+	if id.begins_with("phoenix-v1|"):
+		return PHOENIX_POWER
+	return str(POWER_LABELS.get(id, ELECTRIC_PACKAGE))
 
 
 func _fly_donor(source: InspectedSource, donor: Dictionary) -> void:

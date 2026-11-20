@@ -35,6 +35,8 @@ const INSTALLATION_SNAPSHOT_FORMAT := "openrc-creator-document v3"
 const SERVO_SNAPSHOT_FORMAT := "openrc-creator-document v4"
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
+const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
+const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
 const AIRFRAME_PACKAGE := "conventional-trainer-estimated-v1"
 const POWER_PACKAGE := "electric-4s-800kv-apc12x6-estimated-v1"
 ## The same estimated installation as a pusher behind the wing, for models without a propeller (park jets).
@@ -308,6 +310,12 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 			if size_class.has("large_pusher") and float(setup.get("flown_span_m", 0.0)) >= LARGE_JET_SPAN_M:
 				_power_package = size_class.large_pusher
 		_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
+	# A source physics block (decoded Phoenix data) replaces the size class's borrowed values with the
+	# model's own; the derived packages depend on the flown size, so they are made per attempt below.
+	var physics: Variant = setup.get("physics")
+	var source_physics: bool = physics is Dictionary and not (physics as Dictionary).is_empty() and needs_source_installation()
+	var base_airframe := _airframe_package
+	var base_power := _power_package
 	# When this setup chose the size, a model too heavy for its wing (or overpowered) at that size is
 	# tried a little larger, up to the package's maximum span: the result stays a labelled scaled
 	# configuration. Every attempt starts again from the same untouched document state.
@@ -316,26 +324,53 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 	var source_span := float(setup.get("source_span_m", 0.0))
 	var domain: Array = size_class.range if _airframe_package == size_class.airframe else []
 	for attempt: int in SETUP_SIZE_ATTEMPTS:
-		_placement = placed.duplicate(true)
-		_units = units_value
-		# The measured wing (props, rotors and wheels excluded) sets the span, not the model's box.
-		if not _values.has("wing/span") and not _invalid.has("wing/span") and float(setup.get("half_span_m", 0.0)) > 0.0:
-			_set_estimate("wing/span", 2.0 * float(setup.half_span_m) * float(placed.unit_scale))
-		# The measured planform (chords and dihedral, already inside the package domain) replaces the
-		# template's AR 5 rectangle, so wing area, loading and roll stability follow the model.
-		for measured: Array in [["wing/root_chord", "root_chord_m", float(placed.unit_scale)],
-				["wing/tip_chord", "tip_chord_m", float(placed.unit_scale)], ["wing/dihedral_deg", "dihedral_deg", 1.0]]:
-			var number := float(setup.get(measured[1], NAN)) * float(measured[2])
-			if is_finite(number) and number >= 0.0 and not _values.has(measured[0]) and not _invalid.has(measured[0]):
-				_set_estimate(measured[0], number)
-		# Lengths of a source layout are metres at the source size; angles do not scale.
-		var layout := {}
-		var source_layout: Variant = setup.get("layout", {})
-		if source_layout is Dictionary:
-			for path: Variant in source_layout:
-				var number := float(source_layout[path])
-				layout[path] = number if str(path).ends_with("_deg") else number * float(placed.unit_scale)
-		_fill_estimates(layout)
+		# A second pass re-derives the power for the mass the fitted equipment actually reaches when it is
+		# off the scaled source mass (small replicas cannot always be made that light).
+		var flying_mass := NAN
+		for mass_pass: int in 2:
+			_placement = placed.duplicate(true)
+			_units = units_value
+			# The measured wing (props, rotors and wheels excluded) sets the span, not the model's box.
+			if not _values.has("wing/span") and not _invalid.has("wing/span") and float(setup.get("half_span_m", 0.0)) > 0.0:
+				_set_estimate("wing/span", 2.0 * float(setup.half_span_m) * float(placed.unit_scale))
+			# The measured planform (chords and dihedral, already inside the package domain) replaces the
+			# template's AR 5 rectangle, so wing area, loading and roll stability follow the model.
+			for measured: Array in [["wing/root_chord", "root_chord_m", float(placed.unit_scale)],
+					["wing/tip_chord", "tip_chord_m", float(placed.unit_scale)], ["wing/dihedral_deg", "dihedral_deg", 1.0]]:
+				var number := float(setup.get(measured[1], NAN)) * float(measured[2])
+				if is_finite(number) and number >= 0.0 and not _values.has(measured[0]) and not _invalid.has(measured[0]):
+					_set_estimate(measured[0], number)
+			# Lengths of a source layout are metres at the source size; angles do not scale.
+			var layout := {}
+			var source_layout: Variant = setup.get("layout", {})
+			if source_layout is Dictionary:
+				for path: Variant in source_layout:
+					var number := float(source_layout[path])
+					layout[path] = number if str(path).ends_with("_deg") else number * float(placed.unit_scale)
+			if source_physics:
+				var flown_scale := float(placed.unit_scale)
+				var derived: Dictionary = PhoenixPhysics.derive(physics, base_airframe, base_power, flown_scale, flying_mass)
+				# Without derived packages the attempt keeps the base packages and their borrowed mass and balance.
+				_airframe_package = derived.get("airframe", base_airframe)
+				_power_package = derived.get("power", base_power)
+				if not derived.is_empty():
+					# A geometrically similar model at another size: mass ∝ s³, positions ∝ s.
+					if is_finite(float(physics.get("mass_kg", NAN))):
+						layout["mass/total_kg"] = float(physics.mass_kg) * pow(flown_scale, 3)
+					if is_finite(float(physics.get("cg_aft_m", NAN))):
+						layout["balance/cg_aft_m"] = float(physics.cg_aft_m) * flown_scale
+			_fill_estimates(layout)
+			if not source_physics or mass_pass == 1 or not layout.has("mass/total_kg"):
+				break
+			var fitted := float(Compiler.summarize(definition()).get("mass_kg", NAN))
+			if not (is_finite(fitted) and fitted > 0.0) \
+					or absf(fitted / float(layout["mass/total_kg"]) - 1.0) <= FLYING_MASS_TOLERANCE:
+				break
+			flying_mass = fitted
+			_values = before.values.duplicate()
+			_raw = before.raw.duplicate()
+			_origin = before.origin.duplicate()
+			_inventory = before.inventory.duplicate(true)
 		var summary: Dictionary = Compiler.summarize(definition())
 		var excess := _size_excess(summary)
 		if not owns_scale or source_span <= 0.0 or domain.size() != 2:
@@ -361,6 +396,8 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 		_origin = before.origin.duplicate()
 		_inventory = before.inventory.duplicate(true)
 	_touch()
+	if source_physics:
+		_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
 	var chosen := choose_source_installation(_installation_proposal, revision, true)
 	if not chosen.ok:
 		# Nothing of a refused setup stays in the draft.
@@ -381,6 +418,8 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 
 
 const SETUP_SIZE_ATTEMPTS := 5
+## Relative difference between the fitted and the scaled source mass above which the power is re-derived.
+const FLYING_MASS_TOLERANCE := 0.05
 const PUSHER_GAP_M := 0.04
 const PUSHER_TAIL_CLEARANCE_M := 0.08
 
@@ -401,7 +440,7 @@ func _fill_estimates(overrides: Dictionary = {}) -> void:
 	# stays near the balance point. Only estimated mounts move.
 	# A source-derived hub position (a decoded Phoenix pusher) is kept where the source puts it when the
 	# package can carry it there (inside the fuselage section); a pylon-mounted pusher uses the slot.
-	if _power_package in PUSHER_PACKAGES and filled.has("equipment/hub_position/0") and _values.has("wing/root_chord") \
+	if _pusher_power() and filled.has("equipment/hub_position/0") and _values.has("wing/root_chord") \
 			and not (overrides.has("equipment/hub_position/0") and _hub_in_fuselage()):
 		var hub_x := float(_values["wing/root_chord"]) + PUSHER_GAP_M
 		# A deep (or biplane-equivalent) root chord must not push the propeller past the tail.
@@ -416,7 +455,86 @@ func _fill_estimates(overrides: Dictionary = {}) -> void:
 		for item: Variant in Definition.propose_airframe_inventory(definition()):
 			if item is Dictionary and _inventory.size() < Limits.INVENTORY_ITEMS:
 				_inventory.append((item as Dictionary).duplicate(true))
+	_setup_margin = SETUP_STATIC_MARGIN
+	_fit_source_mass_and_balance(overrides)
 	_fit_estimates(filled)
+
+
+## Source-derived mass and balance (a decoded Phoenix model): "mass/total_kg" scales the estimated airframe
+## items so the aircraft weighs what the source says; "balance/cg_aft_m" sets the static margin the fit
+## balances to, from the source's centre of gravity, kept inside the package's static-margin range.
+## Player-entered or measured items are never changed.
+var _setup_margin := SETUP_STATIC_MARGIN
+
+func _fit_source_mass_and_balance(overrides: Dictionary) -> void:
+	var target_mass := float(overrides.get("mass/total_kg", NAN))
+	var target_cg := float(overrides.get("balance/cg_aft_m", NAN))
+	var airframe: Dictionary = Packages.airframe(_airframe_package)
+	# The balance the fit aims at: the source's centre of gravity, as a static margin inside the package range.
+	if is_finite(target_cg) and airframe.ok and airframe.value.domain.has("static_margin"):
+		var summary: Dictionary = Compiler.summarize(definition())
+		if summary.has("static_margin") and summary.has("mean_chord_m") and summary.has("cg_m") and float(summary.mean_chord_m) > 0.0:
+			var margin := float(summary.static_margin) + (float((summary.cg_m as Array)[0]) - target_cg) / float(summary.mean_chord_m)
+			if is_finite(margin):
+				_setup_margin = clampf(margin, float(airframe.value.domain.static_margin.min) + 0.01,
+					float(airframe.value.domain.static_margin.max) - 0.01)
+	if not (is_finite(target_mass) and target_mass > 0.0):
+		return
+	var summary: Dictionary = Compiler.summarize(definition())
+	if not summary.has("mass_kg") or not summary.has("cg_m"):
+		return
+	var mass := float(summary.mass_kg)
+	if target_mass < mass:
+		# Lighter than the estimate: the estimated airframe items shrink in proportion.
+		var estimated := 0.0
+		for item: Dictionary in _inventory:
+			if str(item.get("kind", "")) == "estimated":
+				estimated += float(item.get("mass", 0.0))
+		if estimated > 0.0:
+			var factor := clampf(1.0 - (mass - target_mass) / estimated, SOURCE_MASS_FACTOR_MIN, 1.0)
+			for item: Dictionary in _inventory:
+				if str(item.get("kind", "")) == "estimated":
+					item.mass = float(item.mass) * factor
+		return
+	# Heavier than the estimate: the remainder is one source-mass item placed where the whole aircraft
+	# balances at the target margin, inside the fuselage; the battery fit then refines the balance.
+	var remainder := target_mass - mass
+	if remainder < 0.005 or not summary.has("neutral_point_x_m") or not summary.has("mean_chord_m"):
+		return
+	var wanted_cg := float(summary.neutral_point_x_m) - _setup_margin * float(summary.mean_chord_m)
+	var at := (target_mass * wanted_cg - mass * float((summary.cg_m as Array)[0])) / remainder
+	var nose := float(_values.get("fuselage/nose_x", at)) + 0.03
+	var tail := float(_values.get("fuselage/tail_x", at)) - 0.03
+	at = clampf(at, minf(nose, tail), maxf(nose, tail))
+	var height := float((summary.cg_m as Array)[2])
+	# A repeated setup keeps the items an earlier one added (they count in the mass) and never reuses an id.
+	var index := 0
+	var added := 0
+	while remainder > 0.0005 and added < SOURCE_MASS_ITEMS and _inventory.size() < Limits.INVENTORY_ITEMS:
+		var id := "%s_%d" % [SOURCE_MASS_ID, index]
+		index += 1
+		if _has_item(id):
+			continue
+		var piece := minf(remainder, SOURCE_ITEM_MAX_KG)
+		_inventory.append({id = id, name = SOURCE_MASS_NAME, mass = piece,
+			position = [at, 0.0, height], size = [0.05, 0.05, 0.05], kind = "estimated"})
+		remainder -= piece
+		added += 1
+
+const SOURCE_MASS_ID := "item_source_mass"
+const SOURCE_MASS_NAME := "Source mass (Phoenix weight)"
+const SOURCE_MASS_ITEMS := 4
+const SOURCE_MASS_FACTOR_MIN := 0.3
+## The flight loader accepts at most 5 kg per inventory item.
+const SOURCE_ITEM_MAX_KG := 4.9
+
+
+## A pusher installation, for installed and source-derived power packages alike.
+func _pusher_power() -> bool:
+	if _power_package in PUSHER_PACKAGES:
+		return true
+	var power: Dictionary = Packages.power(_power_package)
+	return power.ok and Packages.is_pusher(power.value)
 
 
 ## True when the current hub lies inside the current fuselage cross-section (the packages' mount rule).
@@ -538,7 +656,7 @@ func _fit_estimates(filled: Dictionary) -> void:
 		var battery := "equipment/battery_position/0"
 		if filled.has(battery) and summary.has("static_margin"):
 			var before := float(summary.static_margin)
-			if not is_finite(before) or absf(before - SETUP_STATIC_MARGIN) <= 0.005:
+			if not is_finite(before) or absf(before - _setup_margin) <= 0.005:
 				continue
 			var at := float(_values[battery])
 			_values[battery] = at + 0.01
@@ -551,7 +669,7 @@ func _fit_estimates(filled: Dictionary) -> void:
 				continue
 			var low := float(_values.get("fuselage/nose_x", at)) + 0.02
 			var high := float(_values.get("fuselage/tail_x", at)) - 0.02
-			var wanted := at + (SETUP_STATIC_MARGIN - before) / slope
+			var wanted := at + (_setup_margin - before) / slope
 			_set_estimate(battery, clampf(wanted, minf(low, high), maxf(low, high)))
 			tail_heavy = tail_heavy or wanted < minf(low, high)
 	if filled.has("equipment/battery_position/0"):
@@ -568,10 +686,10 @@ func _add_balance_weight() -> void:
 	if _has_item(BALANCE_ID) or _inventory.size() >= Limits.INVENTORY_ITEMS:
 		return
 	var summary: Dictionary = Compiler.summarize(definition())
-	if not summary.has("static_margin") or float(summary.static_margin) >= SETUP_STATIC_MARGIN - 0.005 \
+	if not summary.has("static_margin") or float(summary.static_margin) >= _setup_margin - 0.005 \
 			or not summary.has("mean_chord_m") or not summary.has("neutral_point_x_m") or not summary.has("mass_kg"):
 		return
-	var target := float(summary.neutral_point_x_m) - SETUP_STATIC_MARGIN * float(summary.mean_chord_m)
+	var target := float(summary.neutral_point_x_m) - _setup_margin * float(summary.mean_chord_m)
 	var cg := float((summary.cg_m as Array)[0])
 	var at := float(_values.get("fuselage/nose_x", NAN)) + 0.03
 	if not is_finite(at) or at >= target:
@@ -971,10 +1089,15 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 			return R.fail(R.IDENTITY_MISMATCH, "The saved source declarations do not match this model. Re-import the ZIP.","source_observations","import")
 		context = checked.value
 	var power_package: Variant = saved.get("power_package", POWER_PACKAGE)
-	if typeof(power_package) != TYPE_STRING or power_package not in POWER_PACKAGES:
-		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	var airframe_package: Variant = saved.get("airframe_package", AIRFRAME_PACKAGE)
-	if typeof(airframe_package) != TYPE_STRING or airframe_package not in AIRFRAME_PACKAGES:
+	# Phoenix-derived packages are re-derived from this source's own physics block, or refused.
+	var derived := typeof(power_package) == TYPE_STRING and typeof(airframe_package) == TYPE_STRING \
+		and PhoenixPhysics.is_derived(power_package) and PhoenixPhysics.is_derived(airframe_package) \
+		and Installation.provider(admitted) == "phoenix" \
+		and PhoenixPhysics.restore(PhoenixSetup.creator_setup(admitted).get("physics", {}), airframe_package, power_package)
+	if typeof(power_package) != TYPE_STRING or (power_package not in POWER_PACKAGES and not derived):
+		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
+	if typeof(airframe_package) != TYPE_STRING or (airframe_package not in AIRFRAME_PACKAGES and not derived):
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	var installation := {}
 	if saved.format == INSTALLATION_SNAPSHOT_FORMAT or (saved.format == SERVO_SNAPSHOT_FORMAT and saved.has("source_installation")):

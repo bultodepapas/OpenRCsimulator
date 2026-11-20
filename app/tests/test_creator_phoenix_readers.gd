@@ -10,6 +10,8 @@ const SourceImporter := preload("res://workshop/creator/source_importer.gd")
 const Converter := preload("res://workshop/creator/phoenix/converter.gd")
 const VisualBuilderRef := preload("res://workshop/creator/visual_builder.gd")
 const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
+const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
+const Packages := preload("res://workshop/creator/packages.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
 const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
@@ -29,6 +31,9 @@ func _initialize() -> void:
 	_layout()
 	_setup()
 	_biplane()
+	_physics()
+	_physics_propulsion()
+	_physics_untrusted()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -625,3 +630,171 @@ func _biplane() -> void:
 	var area := 1.6 * 0.2 + 1.4 * 0.2
 	check("equivalent wing keeps the widest span and adds the area", is_equal_approx(float(values["wing/span"]), 1.6)
 		and is_equal_approx(float(values["wing/root_chord"]) * 1.6, area) and is_equal_approx(float(values["wing/dihedral_deg"]), 2.0))
+
+
+# ---------------------------------------------------------------------------------------- physics
+
+## A synthetic section polar with known answers: CL = 0.1 + 5.7·α (rad) to 12°,
+## a 1.35 peak to 14°, then stalled; negative peak −1.0; CD 0.01 + 0.0005·α²(deg).
+func _synthetic_polar() -> Array:
+	var out: Array = []
+	for step: int in range(-180, 181):
+		var a := step * 0.5
+		var cl := 0.1 + 5.7 * deg_to_rad(a)
+		if a > 12.0:
+			cl = 1.35 if a <= 14.0 else maxf(0.6, 1.35 - 0.05 * (a - 14.0))
+		if cl < -1.0:
+			cl = -1.0
+		out.append_array([a, cl, 0.01 + 0.0005 * a * a])
+	return out
+
+
+func _physics_model(prop_diameter := 0.25, rpm := 9000.0) -> Dictionary:
+	return {attributes = {Physical = {Weight = 1.5, Size = 1.5, Centre_of_gravity = {x = 0.0, y = 2.0, z = -5.0},
+		Fuselage_drag_area = {frontal = 0.006}}},
+		airfoils = [
+			{isMirrored = 1, attributes = {Airfoil = "Synthetic", Position = {x = 0.0, y = 2.0, z = 3.0}, Length = 0.75,
+				Root_chord = 0.25, Tip_chord = 0.2, Dihedral = 3.0, Incidence = 1.0},
+				controlSurfaces = [{attributes = {Input = "Left Aileron", Length = 0.3, Tip_distance = 0.05,
+					Root_chord = 0.06, Tip_chord = 0.05, Max_travel = 20.0}}]},
+			{isMirrored = 1, attributes = {Airfoil = "Synthetic", Position = {x = 0.0, y = 2.5, z = -40.0}, Length = 0.25,
+				Root_chord = 0.12, Tip_chord = 0.1},
+				controlSurfaces = [{attributes = {Input = "Left Elevator", Length = 0.2, Root_chord = 0.04, Tip_chord = 0.04}}]}],
+		propulsion = [{type = "propeller", attributes = {Diameter = prop_diameter, Pitch = 0.15, Max_RPM = rpm, Blade_count = 2}}]}
+
+
+func _physics() -> void:
+	var polar := PhoenixPhysics.reduce_polar(_synthetic_polar(), 1.0)
+	check("polar slope, zero lift and incidence lift", is_equal_approx(snappedf(polar.slope, 0.01), 5.7)
+		and is_equal_approx(snappedf(polar.cl_zero, 0.001), 0.1) and absf(polar.cl_at_incidence - (0.1 + 5.7 * deg_to_rad(1.0))) < 1e-3)
+	check("polar peaks and minimum drag", is_equal_approx(polar.cl_max, 1.35) and is_equal_approx(polar.cl_min, -1.0)
+		and is_equal_approx(polar.cd_min, 0.01) and polar.stall_width_deg >= 2.0 and polar.stall_width_deg <= 15.0)
+	var theta := acos(2.0 * 0.25 - 1.0)
+	check("plain-flap effectiveness", is_equal_approx(PhoenixPhysics.flap_tau(0.25), 0.85 * (1.0 - (theta - sin(theta)) / PI)))
+	var model := _physics_model()
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	check("physics block from the decoded model", block.get("format") == PhoenixPhysics.FORMAT and is_equal_approx(block.mass_kg, 1.5)
+		and is_equal_approx(block.cg_aft_m, 0.08) and block.has("aileron_roll_power") and block.has("elevator_effectiveness")
+		and is_equal_approx(block.propeller.max_rpm, 9000.0))
+	var ids := PhoenixPhysics.derive(block, "conventional-trainer-estimated-v1", "electric-3s-1250kv-9x6-estimated-v1", 1.0)
+	check("derived packages are registered", not ids.is_empty())
+	if ids.is_empty():
+		return
+	var airframe: Dictionary = Packages.airframe(ids.airframe)
+	var power: Dictionary = Packages.power(ids.power)
+	check("derived packages resolve and pass the package checks", airframe.ok and power.ok)
+	if airframe.ok and power.ok:
+		check("Phoenix section efficiency and drag", is_equal_approx(float(airframe.value.wing.oswald_efficiency.value), 0.85)
+			and float(airframe.value.wing.profile_drag.value) > 0.01 and str(airframe.value.wing.profile_drag.source).contains("Phoenix"))
+		check("Phoenix propeller diameter and RPM", float(power.value.propeller.diameter.value) <= 0.25 + 1e-9
+			and float(power.value.motor.kv_rpm_per_volt.value) > 0.0)
+	check("a saved draft re-derives the same ids", PhoenixPhysics.restore(block, ids.airframe, ids.power))
+	var altered := block.duplicate(true)
+	altered.mass_kg = 2.0
+	check("an altered physics block does not restore", not PhoenixPhysics.restore(altered, ids.airframe, ids.power))
+	check("mixed ids do not restore", not PhoenixPhysics.restore(block, ids.power, ids.airframe))
+	# A huge propeller: the runtime's static thrust is held at the cap by a smaller physical diameter.
+	var big := _physics_model(0.45, 12000.0)
+	var big_block := PhoenixPhysics.physics_block(big, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		big.airfoils[0], big.airfoils[1], null)
+	var big_ids := PhoenixPhysics.derive(big_block, "conventional-trainer-estimated-v1", "electric-4s-800kv-apc12x6-estimated-v1", 1.0)
+	if not big_ids.is_empty():
+		var big_power: Dictionary = Packages.power(big_ids.power)
+		var probe: Dictionary = big_power.value.duplicate(true)
+		probe.id = "probe-big-thrust"
+		var point: Dictionary = Packages.static_thrust(probe, 1.0)
+		check("static thrust held at the cap", point.get("ok", false)
+			and float(point.thrust_n) <= PhoenixPhysics.THRUST_CAP * 1.5 * Packages.GRAVITY * 1.03
+			and float(big_power.value.propeller.diameter.value) < 0.45)
+	else:
+		check("static thrust held at the cap", false)
+
+
+## Static thrust (N) of the derived power package for `model`, with its id prefix.
+func _derived_static_thrust(model: Dictionary, power_base: String) -> Dictionary:
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var ids := PhoenixPhysics.derive(block, "conventional-trainer-estimated-v1", power_base, 1.0)
+	if ids.is_empty():
+		return {}
+	var power: Dictionary = Packages.power(ids.power)
+	if not power.ok:
+		return {}
+	var probe: Dictionary = power.value.duplicate(true)
+	probe.id = "probe-%s" % ids.power.sha256_text().substr(0, 8)
+	var point: Dictionary = Packages.static_thrust(probe, 1.0)
+	return {block = block, power = power.value, thrust = float(point.get("thrust_n", NAN))}
+
+
+func _physics_propulsion() -> void:
+	var base := "electric-3s-1250kv-9x6-estimated-v1"
+	var single := _derived_static_thrust(_physics_model(0.2, 8000.0), base)
+	var twin_model := _physics_model(0.2, 8000.0)
+	twin_model.propulsion.append(twin_model.propulsion[0].duplicate(true))
+	var twin := _derived_static_thrust(twin_model, base)
+	check("a twin records its propeller count", not twin.is_empty() and int(twin.block.propeller.get("count", 1)) == 2)
+	check("a twin's equivalent propeller gives about twice the thrust", not single.is_empty() and not twin.is_empty()
+		and twin.thrust > 1.6 * single.thrust and twin.thrust < 2.4 * single.thrust)
+	# A ducted-fan jet: Phoenix Max_Thrust in newtons sets the equivalent propeller's static thrust.
+	var jet_model := _physics_model()
+	jet_model.propulsion = [{type = "turbine", attributes = {Max_Thrust = 20.0, Max_RPM = 25000}}]
+	var jet := _derived_static_thrust(jet_model, base)
+	check("a jet records its Phoenix thrust", not jet.is_empty() and is_equal_approx(float(jet.block.get("jet_thrust_n", 0.0)), 20.0))
+	check("the jet's equivalent propeller delivers the Phoenix thrust", not jet.is_empty()
+		and absf(jet.thrust - 20.0) <= 20.0 * 0.05 and str(jet.power.propeller.name).contains("jet"))
+	# A glider without propulsion: an estimated launch motor of GLIDER_THRUST_SHARE × weight.
+	var glider_model := _physics_model()
+	glider_model.propulsion = []
+	var glider := _derived_static_thrust(glider_model, base)
+	var weight := 1.5 * Packages.GRAVITY
+	check("a glider gets a labelled estimated launch motor", not glider.is_empty()
+		and absf(glider.thrust - PhoenixPhysics.GLIDER_THRUST_SHARE * weight) <= 0.05 * PhoenixPhysics.GLIDER_THRUST_SHARE * weight
+		and str(glider.power.propeller.diameter.kind) == "estimated")
+
+
+func _physics_untrusted() -> void:
+	var weightless := _physics_model()
+	weightless.attributes.Physical.erase("Weight")
+	check("a model without a weight has no physics block", PhoenixPhysics.physics_block(weightless, 0.01, [0.0, 0.02, 0.03],
+		{"Synthetic": _synthetic_polar()}, weightless.airfoils[0], weightless.airfoils[1], null).is_empty())
+	var model := _physics_model()
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	check("a decoded block is valid", PhoenixPhysics.valid_block(block))
+	var trainer := "conventional-trainer-estimated-v1"
+	var power := "electric-3s-1250kv-9x6-estimated-v1"
+	for broken: Array in [["section", null], ["wing_lift_slope", 40.0], ["mass_kg", -1.0], ["propeller", {diameter_m = 0.2}]]:
+		var altered := block.duplicate(true)
+		if broken[1] == null:
+			altered.erase(broken[0])
+		else:
+			altered[broken[0]] = broken[1]
+		check("an invalid block (%s) derives nothing" % broken[0], not PhoenixPhysics.valid_block(altered)
+			and PhoenixPhysics.derive(altered, trainer, power, 1.0).is_empty())
+	var ids := PhoenixPhysics.derive(block, trainer, power, 1.0)
+	var other := PhoenixPhysics.derive(block, trainer, power, 1.25)
+	check("another flown size derives other ids", not ids.is_empty() and not other.is_empty() and ids.airframe != other.airframe)
+	check("a derived package cannot shadow an installed one",
+		not Packages.register_derived(trainer, Packages.airframe(ids.airframe).value).ok
+		and not Packages.register_derived("plain-id", Packages.airframe(ids.airframe).value).ok)
+	# Setup and a reopened draft both parse the same stored receipt text: the parsed block restores its ids.
+	var receipt := JSON.stringify(block)
+	var applied := PhoenixPhysics.derive(JSON.parse_string(receipt), trainer, power, 1.0)
+	check("a reopened receipt restores the same ids", not applied.is_empty()
+		and PhoenixPhysics.restore(JSON.parse_string(receipt), applied.airframe, applied.power))
+	# A heavier flying mass than the scaled source: the ids carry it, restore reproduces them, and a glider's
+	# launch motor refers to the weight that flies.
+	var glider_model := _physics_model()
+	glider_model.propulsion = []
+	var glider := PhoenixPhysics.physics_block(glider_model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		glider_model.airfoils[0], glider_model.airfoils[1], null)
+	var heavy := PhoenixPhysics.derive(glider, trainer, power, 1.0, 3.0)
+	check("a flying mass is part of the ids", not heavy.is_empty() and str(heavy.power).contains("|3.0|")
+		and PhoenixPhysics.restore(glider, heavy.airframe, heavy.power))
+	if not heavy.is_empty():
+		var probe: Dictionary = Packages.power(heavy.power).value.duplicate(true)
+		probe.id = "probe-heavy-glider"
+		var thrust := float(Packages.static_thrust(probe, 1.0).get("thrust_n", NAN))
+		var wanted := PhoenixPhysics.GLIDER_THRUST_SHARE * 3.0 * Packages.GRAVITY
+		check("the launch motor refers to the flying weight", absf(thrust - wanted) <= 0.05 * wanted)

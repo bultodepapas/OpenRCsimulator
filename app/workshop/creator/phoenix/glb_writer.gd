@@ -4,7 +4,8 @@ extends RefCounted
 ## Port of `export_glb` in `research/aircraft-creator/phoenix/inspect_geo.py`, visual nodes only.
 ## Phoenix GEO space already matches glTF (+X left, +Y up, +Z forward, counter-clockwise), so no
 ## axis change is made. Texture rows are flipped top-down by `texture.gd`, so texture coordinates are
-## written unchanged (no V flip). Physics is never imported: the receipt says so.
+## written unchanged (no V flip). The Phoenix flight model is never imported (`physics_imported = false`);
+## the receipt may carry the reduced physics block that `physics.gd` turns into labelled OpenRC packages.
 ##
 ## The result respects the Creator admission limits. When the visual nodes would exceed the mesh or
 ## primitive ceiling, geometry that shares a material is merged into one mesh per material and a

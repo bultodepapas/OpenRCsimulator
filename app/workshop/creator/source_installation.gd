@@ -26,7 +26,7 @@ const EXPERIMENTAL := "Test flights use this estimated OpenRC configuration, not
 ## aeroplanes and gliders; Phoenix rotorcraft stay appearance-only sources.
 const PHOENIX_NAMESPACE := "openrc_phoenix_aeroplane"
 const PHOENIX_FLIGHT_UNAVAILABLE := "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
-const PHOENIX_ESTIMATED_FLIGHT := "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
+const PHOENIX_ESTIMATED_FLIGHT := "Test flights use an OpenRC configuration derived from this Phoenix model's weight, balance, airfoils and propeller. Handling is not a reproduction of the original."
 const PHOENIX_PUBLISH_UNAVAILABLE := "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 
 ## The recognised converter that produced `source`: "clearview", "phoenix" or "" for an ordinary model.

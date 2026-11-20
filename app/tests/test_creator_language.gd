@@ -101,7 +101,8 @@ func _catalogs() -> void:
 		phoenix_setup.THROWS_FITTED,phoenix_converter.APPEARANCE_ONLY,phoenix_converter.SUMMARY,phoenix_converter.PLACED,
 		phoenix_converter.MOVING_PARTS,phoenix_converter.LAYOUT,phoenix_converter.NOT_PHOENIX,phoenix_converter.NO_MODEL,
 		phoenix_converter.SEVERAL_MODELS,phoenix_converter.NO_SIZE,phoenix_converter.NO_GEOMETRY,
-		phoenix_converter.TEXTURE_SKIPPED,"Phoenix RC model"])
+		phoenix_converter.TEXTURE_SKIPPED,phoenix_converter.NO_PHYSICS,"Phoenix RC model",
+		preload("res://ui/aircraft_creator.gd").PHOENIX_POWER])
 	for step: String in Authoring.STEPS:
 		messages.append(str(Authoring.STEP_TITLES[step]))
 	for entry: Dictionary in Authoring.FIELDS:

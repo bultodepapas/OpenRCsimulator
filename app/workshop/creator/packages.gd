@@ -61,7 +61,26 @@ static func power(id: Variant) -> Dictionary:
 	return _resolve(id, POWERS, POWER_FORMAT, "power_package", "power_mount")
 
 
+## Source-derived packages (Phoenix physics, `phoenix/physics.gd`), registered in-process under
+## content-addressed ids. They pass the same package checks as the installed files.
+static var _derived_packages: Dictionary = {}
+
+
+static func register_derived(id: String, package: Dictionary) -> Dictionary:
+	var format := AIRFRAME_FORMAT if package.get("format") == AIRFRAME_FORMAT else POWER_FORMAT
+	# A derived id is composite ("<source>|…") and never shadows an installed package.
+	if not id.contains("|") or AIRFRAMES.has(id) or POWERS.has(id):
+		return R.fail(R.DEPENDENCY_MISSING, "Package %s cannot be registered as a derived package.", "airframe_package", "aircraft_layout", [id])
+	var problem := _package_problem(package, id, format)
+	if not problem.is_empty():
+		return R.fail(R.DEPENDENCY_MISSING, "Package %s cannot be used: %s", "airframe_package", "aircraft_layout", [id, problem])
+	_derived_packages[id] = package.duplicate(true)
+	return R.ok(id)
+
+
 static func _resolve(id: Variant, table: Dictionary, format: String, field: String, step: String) -> Dictionary:
+	if typeof(id) == TYPE_STRING and _derived_packages.has(id) and (_derived_packages[id] as Dictionary).get("format") == format:
+		return R.ok((_derived_packages[id] as Dictionary).duplicate(true))
 	if typeof(id) != TYPE_STRING or not table.has(id):
 		return R.fail(R.DEPENDENCY_MISSING, "Package %s is not installed.", field, step, [str(id)])
 	var key: String = id

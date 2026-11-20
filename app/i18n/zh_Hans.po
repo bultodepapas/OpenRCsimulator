@@ -13488,8 +13488,8 @@ msgstr "Phoenix RC 模型"
 msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 msgstr "仅导入 Phoenix 外观。请单独定义并验证 OpenRC 飞行配置。"
 
-msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
-msgstr "Phoenix 模型 %s：翼展 %s 米，%s 千克。这些 Phoenix 数值仅供参考。"
+msgid "Phoenix model %s: %s m wingspan, %s kg."
+msgstr "Phoenix 模型 %s：翼展 %s 米，%s 千克。"
 
 msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 msgstr "方向、米制单位和机翼前缘已根据 Phoenix 模型设置；请在“朝向与尺寸”中检查。"
@@ -13521,17 +13521,17 @@ msgstr "已根据 Phoenix 铰链准备了 %s 个活动部件；请在“活动�
 msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
 msgstr "Phoenix 模型的飞行尚未通过数值资格验证。您仍可编辑并保存此草稿。"
 
-msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
-msgstr "试飞使用此估计的 OpenRC 配置，而不是 Phoenix 飞行模型。操控表现并非原机的再现。"
+msgid "Test flights use an OpenRC configuration derived from this Phoenix model's weight, balance, airfoils and propeller. Handling is not a reproduction of the original."
+msgstr "试飞使用根据此 Phoenix 模型的重量、重心、翼型和螺旋桨推导出的 OpenRC 配置。操控并非原版的复现。"
 
 msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 msgstr "暂不支持发布已转换的 Phoenix 模型。请保存草稿以保留它；之后可以重新打开并试飞。"
 
-msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
-msgstr "已选择独立的估算 OpenRC 配置。Phoenix 飞行设置仍作为来源参考信息保留。"
+msgid "Configuration derived from the Phoenix flight data selected. Values Phoenix does not record stay labelled OpenRC estimates."
+msgstr "已选择根据 Phoenix 飞行数据推导的配置。Phoenix 未记录的值仍为带标记的 OpenRC 估算值。"
 
-msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
-msgstr "使用 Phoenix 模型的坐标系、机翼、尾翼和螺旋桨位置，并用带标记的 OpenRC 估算值填写所有空值。不会替换你输入的任何内容。"
+msgid "Uses the Phoenix model frame, weight, balance, wing, airfoils, tail and propeller, and fills every other empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "使用 Phoenix 模型的坐标系、重量、重心、机翼、翼型、尾翼和螺旋桨，并用带标记的 OpenRC 估算值填写其余空值。不会替换你已输入的内容。"
 
 msgid "Automatic setup is only available for converted Phoenix aeroplanes."
 msgstr "自动设置仅适用于已转换的 Phoenix 固定翼飞机。"
@@ -13539,8 +13539,8 @@ msgstr "自动设置仅适用于已转换的 Phoenix 固定翼飞机。"
 msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
 msgstr "此模型的 Phoenix 飞行数据不完整。请在“飞机布局”中设置机翼和尾翼。"
 
-msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
-msgstr "方向、米制单位和机翼前缘来自 Phoenix 模型。其机翼、尾翼、螺旋桨位置和舵面行程将成为带标记的初始估算值。"
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its weight, balance, airfoils, wing, tail, propeller and control throws set the flight configuration; anything else is a labelled estimate."
+msgstr "方向、米制单位和机翼前缘来自 Phoenix 模型。其重量、重心、翼型、机翼、尾翼、螺旋桨和舵量决定飞行配置；其余为带标记的估算值。"
 
 msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
 msgstr "Phoenix 机翼（梢根比 %s，展弦比 %s）超出估算配置的范围，因此其弦长已调整为最接近的支持形状。"
@@ -13548,5 +13548,11 @@ msgstr "Phoenix 机翼（梢根比 %s，展弦比 %s）超出估算配置的范�
 msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
 msgstr "部分 Phoenix 舵面行程超出估算配置的范围，已限制在该范围内。"
 
-msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
-msgstr "使用“设置以便飞行”将 Phoenix 的机翼、尾翼、螺旋桨位置和舵面行程作为带标记的估算值应用。"
+msgid "Use Set up for flight to apply the Phoenix weight, balance, airfoils, wing, tail and propeller; anything else becomes a labelled estimate."
+msgstr "使用“设置以便飞行”应用 Phoenix 的重量、重心、翼型、机翼、尾翼和螺旋桨；其余成为带标记的估算值。"
+
+msgid "The Phoenix airfoil library was not found next to this model, so its own lift and drag data cannot be used; the estimated OpenRC values apply."
+msgstr "未在此模型旁找到 Phoenix 翼型库，因此无法使用其自身的升力和阻力数据；将应用 OpenRC 估算值。"
+
+msgid "Propeller and motor from the Phoenix model — estimated installation"
+msgstr "来自 Phoenix 模型的螺旋桨和电机 — 估算配置"

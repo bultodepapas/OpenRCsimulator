@@ -14,8 +14,8 @@ const CHOOSE := "Create an estimated OpenRC configuration"
 const SETUP := "Set up for flight automatically"
 const SETUP_HINT := "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
 const CHOSEN := "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
-const PHOENIX_SETUP_HINT := "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
-const PHOENIX_CHOSEN := "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
+const PHOENIX_SETUP_HINT := "Uses the Phoenix model frame, weight, balance, wing, airfoils, tail and propeller, and fills every other empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+const PHOENIX_CHOSEN := "Configuration derived from the Phoenix flight data selected. Values Phoenix does not record stay labelled OpenRC estimates."
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const HeliDonor := preload("res://workshop/creator/clearview/heli_donor.gd")
 var _title: Label

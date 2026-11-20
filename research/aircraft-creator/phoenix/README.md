@@ -2,13 +2,13 @@
 
 # Phoenix package and definition research probes
 
-These read-only Python tools accompany the [package investigation](../../../docs/research/aircraft-creator/phoenix-2026-11-17.md), [robustness follow-up](../../../docs/research/aircraft-creator/phoenix-hardening-2026-11-17.md) and proposed [AC-PX plan](../../../docs/plans/phoenix-aircraft-import.md). They demonstrate a narrow container/file-tree profile on seven pinned PKGs and a non-executing data grammar on six readable MODs. They are not a Phoenix runtime importer, complete format specification, geometry decoder, image validator or production qualification.
+These read-only Python tools accompany the [package investigation](../../../docs/research/aircraft-creator/phoenix-2026-11-17.md), [robustness follow-up](../../../docs/research/aircraft-creator/phoenix-hardening-2026-11-17.md) and proposed [AC-PX plan](../../../docs/plans/phoenix-aircraft-import.md). The 2026-11-17 PKG probes demonstrate a narrow container/file-tree profile on seven pinned PKGs and a non-executing data grammar on six readable MODs; they are not a runtime importer, complete format specification, image validator or production qualification. The 2026-11-20 stock decoders below are the reference the runtime GDScript readers in `app/workshop/creator/phoenix/` port.
 
 The code uses Python 3.10+ and its standard library; the recorded checks ran on Python 3.12.14 on Linux. It does not download anything, execute simulator/model code, extract members, follow stored source paths or decode opaque members. No aircraft binaries are committed here. Obtain a permitted local sample using its original creator/community link and the exact ZIP member listed in the [inventory](../../../docs/research/aircraft-creator/phoenix-source-inventory-2026-11-17.json).
 
 ## Stock installation decoders (2026-11-20)
 
-[inspect_geo.py](inspect_geo.py) parses stock `.geo` geometry, converts 3-channel stock textures and writes a research GLB; [inspect_luac.py](inspect_luac.py) decodes the pair-sum script container and abstractly evaluates the Lua 5.0 data chunk of a `.mod` without running Lua. Formats, corpus results and rights boundaries: [stock-format evidence](../../../docs/research/aircraft-creator/phoenix-stock-format-2026-11-20.md).
+[inspect_geo.py](inspect_geo.py) parses stock `.geo` geometry, converts 3- and 4-channel stock textures and writes a research GLB; [inspect_luac.py](inspect_luac.py) decodes the pair-sum script container and abstractly evaluates the Lua 5.0 data chunk of a `.mod` without running Lua. Formats, corpus results and rights boundaries: [stock-format evidence](../../../docs/research/aircraft-creator/phoenix-stock-format-2026-11-20.md).
 
     python3 research/aircraft-creator/phoenix/inspect_geo.py --corpus "<install>/resources/objects"
     python3 research/aircraft-creator/phoenix/inspect_luac.py "<install>/.../easystar/easystar.mod"

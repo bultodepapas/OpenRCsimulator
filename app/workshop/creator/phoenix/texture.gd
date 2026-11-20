@@ -3,7 +3,7 @@ extends RefCounted
 ##
 ## Port of the `texture_profile` / `png_from_texture` rule in `research/aircraft-creator/phoenix/inspect_geo.py`.
 ## The stock file has an 8-byte magic, an overwritten BMP header and BGR(A) rows stored bottom-up.
-## The colour phase was fixed on known liveries: pixel data begins one byte before
+## The colour phase was fixed on known liveries: pixel data begins `_LEAD` bytes (BGR 1, BGRA 2) before
 ## `size - width * height * channels`. Dimensions are not stored: they are inferred from the size
 ## (power-of-two sides) and, between non-square candidates or several squares, by adjacent-row
 ## similarity. 3-channel files are BGR and 4-channel files BGRA; the 4-channel horizontal registration is only

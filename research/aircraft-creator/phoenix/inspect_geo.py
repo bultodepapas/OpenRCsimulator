@@ -176,13 +176,16 @@ def winding_agreement(data, geo):
 # ---------------------------------------------------------------- textures
 
 TEXTURE_MAGIC = bytes([0xFF, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02])
+# Bytes the pixel data starts before (size - width*height*channels): BGR 1, BGRA 2.
+TEXTURE_LEAD = {3: 1, 4: 2}
 
 
 def texture_profile(data):
     """Stock `.bmp`: 8-byte magic, an overwritten BMP header, then BGR(A) rows bottom-up.
 
-    The colour phase was fixed on known liveries (red Fokker DR-1, yellow J-3 Cub): pixel data
-    begins one byte before (size - width*height*channels).
+    The colour phase was fixed on known liveries (red Fokker DR-1, yellow J-3 Cub): 3-channel pixel
+    data begins one byte before (size - width*height*channels); 4-channel (BGRA) data begins two bytes
+    before (glass, rotor disc and thumbnails). `app/workshop/creator/phoenix/texture.gd` ports this rule.
 
     Dimensions are not recoverable from the overwritten header; they are inferred from the size
     (power-of-two sides) and, for non-square candidates, by adjacent-row similarity.
@@ -203,7 +206,7 @@ def texture_profile(data):
                 if px % w == 0:
                     h = px // w
                     if 4 <= h <= 4096 and h & (h - 1) == 0:
-                        cands.append((w, h, ch, len(data) - n - 1))  # BGR(A) starts 1 byte early
+                        cands.append((w, h, ch, len(data) - n - TEXTURE_LEAD[ch]))
                 w *= 2
     if not cands:
         raise GeoError("unrecognized texture layout (%d bytes)" % len(data))

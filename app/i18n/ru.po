@@ -14289,8 +14289,8 @@ msgstr "Модель Phoenix RC"
 msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 msgstr "Импортируется только внешний вид Phoenix. Определите и проверьте конфигурацию полёта OpenRC отдельно."
 
-msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
-msgstr "Модель Phoenix %s: размах крыла %s м, %s кг. Эти значения Phoenix показаны только для справки."
+msgid "Phoenix model %s: %s m wingspan, %s kg."
+msgstr "Модель Phoenix %s: размах крыла %s м, %s кг."
 
 msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 msgstr "Ориентация, метры и передняя кромка крыла взяты из модели Phoenix; проверьте их в разделе «Ориентация и размер»."
@@ -14322,17 +14322,17 @@ msgstr "Подготовлено подвижных частей по шарни
 msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
 msgstr "Пригодность моделей Phoenix к полёту ещё не подтверждена численно. Вы можете изменить и сохранить этот черновик."
 
-msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
-msgstr "Пробные полёты используют эту оценочную конфигурацию OpenRC, а не лётную модель Phoenix. Поведение не воспроизводит оригинал."
+msgid "Test flights use an OpenRC configuration derived from this Phoenix model's weight, balance, airfoils and propeller. Handling is not a reproduction of the original."
+msgstr "Тестовые полёты используют конфигурацию OpenRC, выведенную из массы, центровки, профилей и пропеллера этой модели Phoenix. Поведение не воспроизводит оригинал."
 
 msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 msgstr "Публикация преобразованных моделей Phoenix пока недоступна. Сохраните черновик; его можно снова открыть и выполнить пробный полёт."
 
-msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
-msgstr "Выбрана независимая оценочная конфигурация OpenRC. Настройки полёта Phoenix остаются справочными данными из источника."
+msgid "Configuration derived from the Phoenix flight data selected. Values Phoenix does not record stay labelled OpenRC estimates."
+msgstr "Выбрана конфигурация, выведенная из лётных данных Phoenix. Значения, которых нет в Phoenix, остаются помеченными оценками OpenRC."
 
-msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
-msgstr "Использует систему координат модели Phoenix, её крыло, оперение и положение винта и заполняет каждое пустое значение помеченными оценками OpenRC. Введённые вами значения не заменяются."
+msgid "Uses the Phoenix model frame, weight, balance, wing, airfoils, tail and propeller, and fills every other empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Использует систему координат, массу, центровку, крыло, профили, хвостовое оперение и пропеллер модели Phoenix, а остальные пустые значения заполняет помеченными оценками OpenRC. Введённые вами данные не заменяются."
 
 msgid "Automatic setup is only available for converted Phoenix aeroplanes."
 msgstr "Автоматическая настройка доступна только для преобразованных самолётов Phoenix."
@@ -14340,8 +14340,8 @@ msgstr "Автоматическая настройка доступна тол�
 msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
 msgstr "Лётные данные Phoenix этой модели неполны. Задайте крыло и оперение в разделе «Компоновка самолёта»."
 
-msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
-msgstr "Ориентация, метры и передняя кромка крыла берутся из модели Phoenix. Её крыло, оперение, положение винта и ходы рулей становятся помеченными начальными оценками."
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its weight, balance, airfoils, wing, tail, propeller and control throws set the flight configuration; anything else is a labelled estimate."
+msgstr "Ориентация, метры и передняя кромка крыла берутся из модели Phoenix. Её масса, центровка, профили, крыло, оперение, пропеллер и расходы рулей задают лётную конфигурацию; остальное — помеченная оценка."
 
 msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
 msgstr "Крыло Phoenix (сужение %s, удлинение %s) вне диапазона оценочной конфигурации, поэтому его хорды приведены к ближайшей поддерживаемой форме."
@@ -14349,5 +14349,11 @@ msgstr "Крыло Phoenix (сужение %s, удлинение %s) вне д�
 msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
 msgstr "Некоторые ходы рулей Phoenix выходят за диапазон оценочной конфигурации и ограничены им."
 
-msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
-msgstr "Используйте «Настроить для полёта», чтобы применить крыло, оперение, положение винта и ходы рулей Phoenix как помеченные оценки."
+msgid "Use Set up for flight to apply the Phoenix weight, balance, airfoils, wing, tail and propeller; anything else becomes a labelled estimate."
+msgstr "Используйте «Настроить для полёта», чтобы применить массу, центровку, профили, крыло, оперение и пропеллер из Phoenix; остальное станет помеченной оценкой."
+
+msgid "The Phoenix airfoil library was not found next to this model, so its own lift and drag data cannot be used; the estimated OpenRC values apply."
+msgstr "Библиотека профилей Phoenix не найдена рядом с этой моделью, поэтому её собственные данные подъёмной силы и сопротивления использовать нельзя; применяются оценочные значения OpenRC."
+
+msgid "Propeller and motor from the Phoenix model — estimated installation"
+msgstr "Пропеллер и мотор из модели Phoenix — оценочная установка"

@@ -2,9 +2,10 @@ extends RefCounted
 ## Automatic flight setup for a converted Phoenix aeroplane (AC-PX / IAQ-03).
 ##
 ## The proposal comes from the decoded definition stored in the admitted GLB's `openrc_phoenix` receipt
-## (`creator_setup`): never from Phoenix flight coefficients. It has the shape `Authoring.apply_clearview_setup`
-## consumes, so the declared configuration, size classes, balancing and guards are the ones ClearView
-## models already use. Like ClearView, a model outside the estimated packages' span range flies as an
+## (`creator_setup`). It has the shape `Authoring.apply_clearview_setup` consumes, so the declared
+## configuration, size classes, balancing and guards are the ones ClearView models already use. When the
+## receipt carries a Phoenix physics block (`physics.gd`), the chosen size class's packages are replaced
+## by ones derived from the model's own weight, balance, airfoil polars and propeller. Like ClearView, a model outside the estimated packages' span range flies as an
 ## explicitly labelled scaled version, and a wing planform outside the package's taper/aspect range is
 ## replaced by the nearest supported shape and reported; the source values stay in the receipt.
 
@@ -13,6 +14,7 @@ const Limits := preload("res://workshop/creator/limits.gd")
 const Placement := preload("res://workshop/creator/placement.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
+const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
 
 const RULE := "phoenix-decoded-v1"
 const STEP := "import"
@@ -23,12 +25,13 @@ const TAPER_RANGE := [0.6, 1.0]
 const ASPECT_RANGE := [4.0, 7.0]
 const DIHEDRAL_RANGE := [0.0, 8.0]
 const MAX_LAYOUT_FIELDS := 64
+const PHYSICS_FORMAT := "openrc-phoenix-physics-v1"
 ## Control throws of the estimated packages (degrees, both packages share them).
 const THROW_RANGES := {"controls/aileron_deg": [5.0, 30.0], "controls/elevator_deg": [5.0, 30.0], "controls/rudder_deg": [5.0, 35.0]}
 
 const NOT_PHOENIX := "Automatic setup is only available for converted Phoenix aeroplanes."
 const UNAVAILABLE := "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
-const CONFIRM_FRAME := "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
+const CONFIRM_FRAME := "Orientation, metres and the wing leading edge come from the Phoenix model. Its weight, balance, airfoils, wing, tail, propeller and control throws set the flight configuration; anything else is a labelled estimate."
 const THROWS_FITTED := "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
 const PLANFORM_FITTED := "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
 
@@ -78,7 +81,7 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 		propeller_found = bool(data.propeller_found), pusher = bool(data.pusher), range_index = range_index,
 		span_range = chosen.duplicate(), root_chord_m = fitted.root, tip_chord_m = fitted.tip, dihedral_deg = dihedral,
 		planform_fitted = fitted.changed, source_taper = fitted.taper, source_aspect = fitted.aspect,
-		throws_fitted = throws_fitted, biplane = bool(data.biplane), layout = layout})
+		throws_fitted = throws_fitted, biplane = bool(data.biplane), layout = layout, physics = data.physics})
 
 
 ## Chords (metres, source size) inside the package's taper and aspect-ratio ranges at the same span.
@@ -136,7 +139,31 @@ static func creator_setup(source: InspectedSource) -> Dictionary:
 		tip_chord_m = float(data.tip_chord_m), dihedral_deg = float(data.dihedral_deg),
 		datum = [float(datum[0]), float(datum[1]), float(datum[2])], layout = clean_layout,
 		propeller_found = bool(data.get("propeller_found", false)), pusher = bool(data.get("pusher", false)),
-		biplane = bool(data.get("biplane", false))}
+		biplane = bool(data.get("biplane", false)), physics = _physics(data.get("physics"))}
+
+
+## The receipt's physics block when it has the expected format, only finite numbers and plausible required
+## facts (`PhoenixPhysics.valid_block`); {} otherwise.
+static func _physics(value: Variant) -> Dictionary:
+	if not value is Dictionary or (value as Dictionary).get("format") != PHYSICS_FORMAT or not _finite_tree(value, 0) \
+			or not PhoenixPhysics.valid_block(value):
+		return {}
+	return (value as Dictionary).duplicate(true)
+
+
+static func _finite_tree(value: Variant, depth: int) -> bool:
+	if depth > 4:
+		return false
+	if value is Dictionary:
+		for key: Variant in value:
+			if typeof(key) != TYPE_STRING or not _finite_tree(value[key], depth + 1):
+				return false
+		return true
+	if value is Array:
+		return false
+	if value is String or value is bool:
+		return true
+	return _finite(value)
 
 
 static func _finite(value: Variant) -> bool:

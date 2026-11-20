@@ -13539,8 +13539,8 @@ msgstr "Phoenix RC モデル"
 msgid "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 msgstr "Phoenixの外観のみをインポートします。OpenRCの飛行設定は別途定義して検証してください。"
 
-msgid "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
-msgstr "Phoenix モデル %s：翼幅 %s m、%s kg。これらの Phoenix の値は参考表示のみです。"
+msgid "Phoenix model %s: %s m wingspan, %s kg."
+msgstr "Phoenix モデル %s：翼幅 %s m、%s kg。"
 
 msgid "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 msgstr "向き、メートル単位、主翼前縁は Phoenix モデルから設定されました。「向きとサイズ」で確認してください。"
@@ -13572,17 +13572,17 @@ msgstr "Phoenix のヒンジから %s 個の可動部品を準備しました。
 msgid "Flight for Phoenix models is not numerically qualified yet. You can edit and save this draft."
 msgstr "Phoenixモデルの飛行は、数値的な適格性がまだ確認されていません。この下書きは編集して保存できます。"
 
-msgid "Test flights use this estimated OpenRC configuration, not the Phoenix flight model. Handling is not a reproduction of the original."
-msgstr "試験飛行はこの推定 OpenRC 構成を使い、Phoenix の飛行モデルは使いません。挙動は元の機体の再現ではありません。"
+msgid "Test flights use an OpenRC configuration derived from this Phoenix model's weight, balance, airfoils and propeller. Handling is not a reproduction of the original."
+msgstr "テスト飛行では、この Phoenix モデルの重量、重心、翼型、プロペラから導いた OpenRC 構成を使います。操縦特性は元のものの再現ではありません。"
 
 msgid "Publishing converted Phoenix models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 msgstr "変換した Phoenix モデルの公開はまだできません。下書きとして保存すれば、再度開いて試験飛行できます。"
 
-msgid "Independent estimated OpenRC configuration selected. Phoenix flight settings remain source references."
-msgstr "独立して作成する推定OpenRC構成が選択されました。Phoenixの飛行設定は元データの参照情報として保持されます。"
+msgid "Configuration derived from the Phoenix flight data selected. Values Phoenix does not record stay labelled OpenRC estimates."
+msgstr "Phoenix の飛行データから導いた構成を選択しました。Phoenix に記録のない値はラベル付きの OpenRC 推定値のままです。"
 
-msgid "Uses the Phoenix model frame, wing, tail and propeller position, and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
-msgstr "Phoenix モデルの座標系、主翼、尾翼、プロペラ位置を使い、空欄にはラベル付きの OpenRC 推定値を入力します。入力済みの値は置き換えません。"
+msgid "Uses the Phoenix model frame, weight, balance, wing, airfoils, tail and propeller, and fills every other empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "Phoenix モデルの座標系、重量、重心、主翼、翼型、尾翼、プロペラを使い、その他の空欄はラベル付きの OpenRC 推定値で埋めます。入力済みの値は置き換えません。"
 
 msgid "Automatic setup is only available for converted Phoenix aeroplanes."
 msgstr "自動設定は変換済みの Phoenix 飛行機でのみ利用できます。"
@@ -13590,8 +13590,8 @@ msgstr "自動設定は変換済みの Phoenix 飛行機でのみ利用できま
 msgid "The Phoenix flight data of this model is incomplete. Set the wing and tail in Aircraft layout."
 msgstr "このモデルの Phoenix 飛行データは不完全です。「機体レイアウト」で主翼と尾翼を設定してください。"
 
-msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its wing, tail, propeller position and control throws become labelled starting estimates."
-msgstr "向き、メートル単位、主翼前縁は Phoenix モデルから取得します。主翼、尾翼、プロペラ位置、舵角はラベル付きの初期推定値になります。"
+msgid "Orientation, metres and the wing leading edge come from the Phoenix model. Its weight, balance, airfoils, wing, tail, propeller and control throws set the flight configuration; anything else is a labelled estimate."
+msgstr "向き、メートル単位、主翼前縁は Phoenix モデルから取得します。重量、重心、翼型、主翼、尾翼、プロペラ、舵角が飛行構成を決め、それ以外はラベル付きの推定値です。"
 
 msgid "The Phoenix wing (taper %s, aspect ratio %s) is outside the estimated configuration's range, so its chords are adjusted to the nearest supported shape."
 msgstr "Phoenix の主翼（テーパー比 %s、アスペクト比 %s）は推定構成の範囲外のため、翼弦を最も近い対応形状に調整します。"
@@ -13599,5 +13599,11 @@ msgstr "Phoenix の主翼（テーパー比 %s、アスペクト比 %s）は推�
 msgid "Some Phoenix control throws are outside the estimated configuration's range and are limited to it."
 msgstr "Phoenix の一部の舵角は推定構成の範囲外のため、その範囲に制限されます。"
 
-msgid "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
-msgstr "「飛行用に設定」を使うと、Phoenix の主翼、尾翼、プロペラ位置、舵角をラベル付きの推定値として適用します。"
+msgid "Use Set up for flight to apply the Phoenix weight, balance, airfoils, wing, tail and propeller; anything else becomes a labelled estimate."
+msgstr "「飛行用に設定」で Phoenix の重量、重心、翼型、主翼、尾翼、プロペラを適用します。それ以外はラベル付きの推定値になります。"
+
+msgid "The Phoenix airfoil library was not found next to this model, so its own lift and drag data cannot be used; the estimated OpenRC values apply."
+msgstr "このモデルの隣に Phoenix の翼型ライブラリが見つからないため、モデル固有の揚力・抗力データを使えません。OpenRC の推定値を適用します。"
+
+msgid "Propeller and motor from the Phoenix model — estimated installation"
+msgstr "Phoenix モデルのプロペラとモーター — 推定構成"

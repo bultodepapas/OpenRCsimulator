@@ -4,8 +4,9 @@ extends RefCounted
 ## Input is the model's `.mod` definition; its sibling `.geo` and the in-folder textures named by the
 ## GEO materials are read from the same folder. Nothing is fetched elsewhere and stock content never
 ## leaves the player's machine. The result is an ordinary admitted GLB source (visual only), the
-## placement the decoded definition implies, and a read-only summary of the Phoenix flight data.
-## Phoenix tuning, inertia factors and airfoil labels are observations, never OpenRC physics.
+## placement the decoded definition implies, a read-only summary of the Phoenix flight data and the
+## physics block (`physics.gd`) reduced from the definition and the installation's airfoil polars.
+## Phoenix tuning gains and inertia factors stay observations, never OpenRC physics.
 
 const R := preload("res://workshop/creator/result.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
@@ -16,6 +17,7 @@ const Geo := preload("res://workshop/creator/phoenix/geo.gd")
 const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
 const GlbWriter := preload("res://workshop/creator/phoenix/glb_writer.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
+const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
 
 const FORMAT := "openrc-phoenix-visual-v1"
 const AEROPLANE_TYPES := ["Airplane", "Glider"]
@@ -38,7 +40,7 @@ const NO_SIZE := "The Phoenix model \"%s\" has no usable size, so its real dimen
 const NO_GEOMETRY := "The geometry file \"%s\" was not found next to the Phoenix model."
 const TEXTURE_SKIPPED := "The texture \"%s\" could not be used; those parts keep their plain colour."
 const APPEARANCE_ONLY := "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
-const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg. These Phoenix values are shown for reference only."
+const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg."
 const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
 ## Alpha textures up to this many pixels (stock glass is 32 x 32) are reduced to their average colour.
 const UNIFORM_PIXELS := 64 * 64
@@ -50,9 +52,12 @@ const BINDINGS_FORMAT := "openrc-creator-bindings v1"
 ## Phoenix surface inputs -> Creator control roles (left/right decided by the airfoil side).
 const _INPUT_ROLES := {"aileron": "aileron", "left aileron": "aileron", "right aileron": "aileron",
 	"elevator": "elevator", "left elevator": "elevator", "right elevator": "elevator", "rudder": "rudder"}
-const LAYOUT := "Use Set up for flight to apply the Phoenix wing, tail, propeller position and control throws as labelled estimates."
+const LAYOUT := "Use Set up for flight to apply the Phoenix weight, balance, airfoils, wing, tail and propeller; anything else becomes a labelled estimate."
 ## Fuselage nose just aft of a tractor hub (the package allows the hub 0 to 0.12 m ahead of the nose).
 const HUB_SETBACK_M := 0.03
+const NO_PHYSICS := "The Phoenix airfoil library was not found next to this model, so its own lift and drag data cannot be used; the estimated OpenRC values apply."
+const MAX_AIRFOIL_FILES := 64
+const MAX_AIRFOIL_BYTES := 2 * Limits.MIB
 const PLACED := "Orientation, metres and the wing leading edge were set from the Phoenix model; check them in Orient and size."
 
 
@@ -139,6 +144,16 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 	var setup := creator_setup(summary, placement, values)
 	if not setup.is_empty():
 		setup.biplane = lifting.size() >= 2
+		# The model's own physics: its airfoil polars from the installation's library, mass, balance,
+		# control-surface geometry and propeller (phoenix/physics.gd).
+		var picked := layout_surfaces(model, lifting)
+		var polars := _airfoil_polars(folder, model, cancelled)
+		var physics := PhoenixPhysics.physics_block(model, scale, placement.datum, polars,
+			picked.wing if picked.wing is Dictionary else {}, picked.tail, picked.fin)
+		if not physics.is_empty():
+			setup.physics = physics
+		else:
+			notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, NO_PHYSICS, "source", STEP, [], R.SEVERITY_WARNING))
 	if aeroplane and not setup.is_empty():
 		receipt.creator_setup = setup
 	var articulation := articulation_groups(model)
@@ -277,17 +292,16 @@ static func lifting_wings(summary: Dictionary) -> Array:
 ## Creator layout fields from the decoded airfoils and propeller, in the structural frame
 ## [aft, right, up] metres from `datum` (GLB metres, the main-wing root leading edge). These are source
 ## dimensions to be confirmed, applied as estimates; mass, inertia and aerodynamics stay OpenRC's own.
-static func definition_values(model: Dictionary, scale: float, datum: Array, lifting: Array = []) -> Dictionary:
-	var values := {}
-	if datum.size() != 3:
-		return values
+## The airfoils that play the main wing, the tailplane and the fin, and the active control throws.
+## Roles come from the surfaces' inputs; stacked wings use the widest wing as the reference.
+static func layout_surfaces(model: Dictionary, lifting: Array = []) -> Dictionary:
 	var wing: Variant = null
 	var tail: Variant = null
 	var fin: Variant = null
 	var travel := {}
 	var airfoils: Variant = model.get("airfoils")
 	if not airfoils is Array:
-		return values
+		return {wing = null, tail = null, fin = null, travel = travel}
 	for airfoil: Variant in airfoils:
 		if not airfoil is Dictionary:
 			continue
@@ -318,6 +332,18 @@ static func definition_values(model: Dictionary, scale: float, datum: Array, lif
 				if is_finite(length) and length > widest and airfoil != tail:
 					widest = length
 					wing = airfoil
+	return {wing = wing, tail = tail, fin = fin, travel = travel}
+
+
+static func definition_values(model: Dictionary, scale: float, datum: Array, lifting: Array = []) -> Dictionary:
+	var values := {}
+	if datum.size() != 3 or not model.get("airfoils") is Array:
+		return values
+	var picked := layout_surfaces(model, lifting)
+	var wing: Variant = picked.wing
+	var tail: Variant = picked.tail
+	var fin: Variant = picked.fin
+	var travel: Dictionary = picked.travel
 	var structural := func(point: Variant) -> Array:
 		var p: Variant = _point(point, scale)
 		if p == null:
@@ -475,6 +501,53 @@ static func proposed_bindings(pivots: Array) -> Dictionary:
 	if propeller != null:
 		out.propeller = propeller
 	return out
+
+
+## Polars of the airfoils `model` names, from `resources/airfoils/*.sim` of the installation holding
+## `folder`: name -> flat [alpha deg, CL, CD] coefficients. Bounded; unreadable files are skipped.
+static func _airfoil_polars(folder: String, model: Dictionary, cancelled: Callable = Callable()) -> Dictionary:
+	var wanted := {}
+	for airfoil: Variant in (model.get("airfoils") if model.get("airfoils") is Array else []):
+		if airfoil is Dictionary:
+			var name := str(_dig(airfoil, ["attributes", "Airfoil"]))
+			if not name.is_empty():
+				wanted[name] = true
+	var out := {}
+	var library := _resources_folder(folder).path_join("airfoils")
+	if wanted.is_empty() or not DirAccess.dir_exists_absolute(library):
+		return out
+	var files: PackedStringArray = DirAccess.get_files_at(library)
+	files.sort() # the same polars on every platform, whatever the directory order
+	var read := 0
+	for file: String in files:
+		if out.size() == wanted.size() or read >= MAX_AIRFOIL_FILES or _cancelled(cancelled):
+			break
+		if file.get_extension().to_lower() != "sim":
+			continue
+		read += 1
+		var bytes := _read(library.path_join(file), MAX_AIRFOIL_BYTES)
+		if not bytes.ok:
+			continue
+		var script := ScriptContainer.read(bytes.value)
+		if not script.ok or not script.value.get("assigned") is Dictionary:
+			continue
+		for key: Variant in script.value.assigned:
+			var entry: Variant = script.value.assigned[key]
+			if entry is Dictionary and wanted.has(str(entry.get("name", ""))) and entry.get("coefficients") is Array:
+				out[str(entry.name)] = entry.coefficients
+	return out
+
+
+static func _resources_folder(folder: String) -> String:
+	var current := folder
+	for _level: int in 8:
+		if current.get_file().to_lower() == "resources":
+			return current
+		var parent := current.get_base_dir()
+		if parent == current or parent.is_empty():
+			break
+		current = parent
+	return ""
 
 
 ## `resources/textures/aircraft` and `resources/textures/misc` of the installation holding `folder`.
