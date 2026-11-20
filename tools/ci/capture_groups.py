@@ -181,12 +181,18 @@ def source_identity(repo: Path) -> dict:
 def configuration(check_environment: bool = False, revision: str | None = None) -> dict:
     expected = {"OPENRC_SCENERY": "off", "OPENRC_SCENERY_BIRDS": "off",
                 "OPENRC_ENGINE_SHADOWS": "off", "LP_NUM_THREADS": "1"}
+    # Legacy modes audit (2026-11-20): an explicit Vulkan (lavapipe) shadow renderer; unset keeps Compatibility.
+    renderer = os.environ.get("OPENRC_CAPTURE_RENDERER", "compatibility") or "compatibility"
+    if renderer not in ("compatibility", "mobile", "forward_plus"):
+        fail(f"unsupported OPENRC_CAPTURE_RENDERER: {renderer}")
     if check_environment:
         actual = {key: os.environ.get(key, "1" if key == "LP_NUM_THREADS" else "") for key in expected}
         if actual != expected:
             fail(f"experimental receipts require the fixed capture environment: {actual}")
         prefixes = ("OPENRC_", "GODOT_", "MESA_", "LIBGL_", "GALLIUM_", "LP_", "VK_")
         allowed = set(expected)
+        if "OPENRC_CAPTURE_RENDERER" in os.environ:
+            allowed.add("OPENRC_CAPTURE_RENDERER")
         # Routing metadata does not change the capture's graphics configuration.
         allowed.add("OPENRC_TESTQUEUE_ROOT")
         if os.environ.get("OPENRC_TESTQUEUE_CONTEXT"):
@@ -202,10 +208,13 @@ def configuration(check_environment: bool = False, revision: str | None = None) 
         unexpected = sorted(key for key in os.environ if key.startswith(prefixes) and key not in allowed)
         if unexpected:
             fail(f"unsupported capture environment overrides: {unexpected}")
-    return {"environment": expected, "driver": "opengl3", "audio": "Dummy",
-            "historical_viewport": [1280, 720], "large_xvfb_screen": [1920, 1080],
-            "system": platform.system(), "machine": platform.machine(),
-            "orchestrator_python": platform.python_version()}
+    result = {"environment": expected, "driver": "opengl3", "audio": "Dummy",
+              "historical_viewport": [1280, 720], "large_xvfb_screen": [1920, 1080],
+              "system": platform.system(), "machine": platform.machine(),
+              "orchestrator_python": platform.python_version()}
+    if renderer != "compatibility":
+        result.update(driver="vulkan", rendering_method=renderer)
+    return result
 
 
 def valid_run_id(run_id: str) -> None:

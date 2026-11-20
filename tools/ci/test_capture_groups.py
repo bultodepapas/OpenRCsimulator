@@ -11,6 +11,7 @@ import struct
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import capture_groups as receipts
 
@@ -282,6 +283,33 @@ class InventoryVolatilityTests(unittest.TestCase):
 
 
 @unittest.skipIf(os.name == 'nt', 'requires Linux or WSL shell utilities')
+class CaptureRendererTests(unittest.TestCase):
+    """Legacy modes audit (2026-11-20): OPENRC_CAPTURE_RENDERER selects a Vulkan shadow renderer."""
+
+    def configuration(self, **environment):
+        fixed = {"OPENRC_SCENERY": "off", "OPENRC_SCENERY_BIRDS": "off", "OPENRC_ENGINE_SHADOWS": "off",
+                 "LP_NUM_THREADS": "1"}
+        clean = {key: value for key, value in os.environ.items()
+                 if not key.startswith(("OPENRC_", "GODOT_", "MESA_", "LIBGL_", "GALLIUM_", "LP_", "VK_"))}
+        with mock.patch.dict(os.environ, {**clean, **fixed, **environment}, clear=True):
+            return receipts.configuration(check_environment=True)
+
+    def test_default_receipt_is_unchanged_compatibility(self):
+        config = self.configuration()
+        self.assertEqual(config["driver"], "opengl3")
+        self.assertNotIn("rendering_method", config)
+
+    def test_vulkan_renderers_are_recorded(self):
+        for method in ("mobile", "forward_plus"):
+            config = self.configuration(OPENRC_CAPTURE_RENDERER=method)
+            self.assertEqual((config["driver"], config["rendering_method"]), ("vulkan", method))
+        self.assertNotIn("rendering_method", self.configuration(OPENRC_CAPTURE_RENDERER="compatibility"))
+
+    def test_unknown_renderer_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "unsupported OPENRC_CAPTURE_RENDERER"):
+            self.configuration(OPENRC_CAPTURE_RENDERER="gl_compatibility")
+
+
 class CaptureGroupsTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

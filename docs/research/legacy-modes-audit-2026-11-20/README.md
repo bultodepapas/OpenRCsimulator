@@ -118,7 +118,8 @@ Counts come from `rg` on `CURRENT_RENDERER` in shaders and on `get_current_rende
 
 1. **The weak-GPU default.** Mobile must be measured against Compatibility on one Intel and one AMD integrated GPU at 1080p. Mobile's forced `use_hdr_2d` buffer must be costed, and the Windows driver (D3D12 or Vulkan) chosen per vendor. The owner must also accept Mobile's Windows look. All of this is [VQ-07h A5 → A2](../../plans/automatic-graphics.md#a2-renderer-strategy-efficient--mobile-behind-measurement). Mobile lacks SSAO, PCSS and the High cascades, so for those players it is a Standard look on a faster renderer, not High.
 2. **Recovery.** `RendererGuard` restarts an unconfirmed RenderingDevice launch into Compatibility. Recovery must be generalized per renderer, and must cover hybrid laptops, which may be classified from the wrong adapter.
-3. **CI captures.** They run on software OpenGL. No plan or test exists for a Vulkan software path (Mesa lavapipe) or for GPU runners.
+3. **CI captures.** They run on software OpenGL. A Vulkan software path is now proven feasible (§4) and wired as an
+   opt-in CI job; it still has to run on CI and gain its own image contracts before it can replace the GL captures.
 4. **Hardware with OpenGL only.** GPUs without Vulkan, D3D12 or Metal (Intel HD 4000–4600, Fermi, pre-GCN AMD) can run only OpenGL; Godot falls back to it automatically. Intel and Rosetta Macs are in the same position. Keeping them supported or dropping them is an owner decision.
 
 The Web export is **not** a reason to keep Compatibility. There is no Web preset, and `advanced-graphics.md` rules out a web build. The `project.godot` comment calling Compatibility "the only one Godot can export to the web" is stale. Windows arm64 is not shipped; if it ships, `rendering_method.arm64` selects Mobile there.
@@ -142,19 +143,63 @@ The Web export is **not** a reason to keep Compatibility. There is no Web preset
 
 **Next steps, in order:**
 
-1. **Make physics fallback loud.** Add the physics backend to the telemetry contract (TELEM). In source runs, warn
-   visibly when a native request falls back for a stale or mirrored-source reason. Rebuild DEVIL's WSL Linux install.
+1. **Make physics fallback loud.** Done 2026-11-20 for flights and the debug bridge (§4). Remaining: add the physics
+   backend to the telemetry contract (TELEM, needs a receiver deployment) and rebuild DEVIL's WSL Linux install.
 2. **Native helicopter on lakes.** The default helicopter flight runs on GDScript today. Either add lake terrain to the
    native helicopter, or record the fallback as a known limit. The HELI track owns the water policy
    ([HELI-33](../helicopter/HELI-33/README.md)).
 3. **Close VQ-07h A5 → A2** (gates 1 and 2). If they pass, Automatic selects Mobile for weak GPUs and Compatibility
    becomes fallback only.
-4. **Prototype captures on Vulkan in CI**, using Mesa lavapipe on the existing Ubuntu runner (gate 3). This is the only
-   gate without a plan.
+4. **Run the Vulkan capture shadow on CI** (gate 3; §4). Dispatch `ci.yml` with `vulkan_captures`, then decide per
+   group which image contracts can move to Mobile/Forward+.
 5. **Ship native physics in the macOS package**, completing the existing DT-MAC promotion path.
 6. **Owner decision, optional.** Drop Intel Macs and pre-Vulkan GPUs from the supported list (gate 4). Together with steps 3
    and 4, this would let Compatibility be removed entirely.
 7. **Documentation.** Done 2026-11-20: DECISIONS, STACK, the automatic-graphics plan and the `project.godot` comment.
+
+## 4. Changes made on 2026-11-20
+
+The owner accepted §3 and asked for the three highest-return changes.
+
+1. **The policy is recorded.** It is in [DECISIONS](../../DECISIONS.md#compatibility-is-a-frozen-legacy-renderer), with
+   updates to STACK, the automatic-graphics plan and the stale `project.godot` web comment. No renderer key changed.
+2. **Native fallback is visible.**
+   - [`native_fallback.gd`](../../../app/app_state/native_fallback.gd) classifies `stage_backend_status()` as `native`,
+     `selected`, `domain`, `stale` or `missing`.
+   - A normal flight now raises an engine warning in two cases: a stale build or package on any host except the macOS
+     release, and a missing library on Windows or Linux x86_64. Trace and capture runs keep the existing log line only.
+   - The debug bridge `state` reports `flight.physics_backend`.
+   - [`test_native_fallback.gd`](../../../app/tests/test_native_fallback.gd) has 71 checks. It derives every installation
+     refusal from `native_stage.gd` and `native_package.gd`, so a new or reworded reason cannot silently classify as an
+     expected domain fallback.
+   - The edits stay out of `app/physics`, `app/sim` and `app/failures`. The Windows native install still matches all 138
+     mirrored sources. Re-traced flights stayed native (Stik electric) or quietly reference on the lake (X-Cell).
+3. **CI captures can run on Vulkan.**
+   - `app/capture.sh` accepts `OPENRC_CAPTURE_RENDERER=mobile|forward_plus`. The default stays `--rendering-driver opengl3`.
+   - `tools/ci/capture_groups.py` admits the variable and records `driver: vulkan` and `rendering_method`. The default
+     receipt is unchanged (3 new tests, 23/23 pass).
+   - `ci.yml` gains the manual, non-required job `vulkan-captures` (core group, Mobile and Forward+).
+
+### Vulkan capture feasibility (WSL Ubuntu 24.04, Mesa 25.2.8, pinned Godot 4.8-beta2)
+
+These are the same Ubuntu and Mesa versions as the CI runner. Every run used Xvfb, `LP_NUM_THREADS=1` and no GPU.
+
+| Case | Compatibility, llvmpipe GL | Mobile, lavapipe | Forward+, lavapipe |
+| --- | --- | --- | --- |
+| Minimal probe (sky, PBR, shadows) | 4.5 s | 7.4 s | 8.1 s |
+| Real core shot (`--scripted`), first / second run | 12.6 / 9.9 s | 54.5 / 18.8 s | 51.0 / 14.8 s |
+| Real field shot (production Club field), first / second run | 46.3 / 22.2 s | 247.4 / 64.9 s | 201.9 / 37.4 s |
+| Errors, fallbacks | 0, 0 | 0, 0 | 0, 0 |
+| Same image on both runs | yes | yes | yes |
+
+Each renderer produced byte-identical images on repeated runs. Forward+ was also identical at 1 and 4 lavapipe threads.
+The adapter reported `llvmpipe` on the `vulkan` driver, so no OpenGL fallback occurred.
+
+The first run is dominated by shader compilation. Within one capture run all shots share a profile, so only the first
+shot pays that cost. Warm Forward+ costs about 1.5–1.7× Compatibility, and Mobile about 2–3×.
+
+The renders were reviewed visually. Forward+ matches the GL field closely. On Mobile the HUD panel blends lighter,
+which is an A2 look item (2D under `use_hdr_2d`). The images are not retained in the repository.
 
 ## Method
 
