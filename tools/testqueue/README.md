@@ -689,6 +689,17 @@ remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.
 The cache is one directory per engine, about the size of one import. `pool gc`
 does not touch it. Remove `<root>/import-cache` on an idle host to reclaim it.
 
+Snapshots also freeze the coordinator's git-ignored native installs under
+`app/native/`, which are built per platform. After verifying the source, a remote
+host removes each `app/native/**/*.gdextension` (and its `.uid`) that declares no
+library for its own OS and architecture, using Godot feature-tag matching. The
+removed paths are recorded under `native_adaptation`.
+
+This reproduces a native checkout on that host. Before this, the Windows/Linux
+ground-vehicle descriptor made every Mac import log "No GDExtension library
+found for macos.arm64" and fail. The app itself already selects its GDScript
+reference there. Tracked descriptors outside `app/native/` are never changed.
+
 remote admission checks. A completed infrastructure-failure collection does not
 prove that all remote diagnostics were inventoried. Preserve remote evidence until
 independently verified. For a bounded read-only size inventory, use

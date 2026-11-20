@@ -790,6 +790,57 @@ def verify_source(destination, inventory):
         raise Refused("materialized source is missing archive files")
 
 
+NATIVE_ARCHITECTURES = {"x86_64", "x86_32", "arm64", "arm32", "rv64", "universal", "wasm32"}
+
+
+def _platform_tags():
+    system = {"Darwin": "macos", "Linux": "linux", "Windows": "windows"}.get(platform.system(), platform.system().lower())
+    machine = platform.machine().lower()
+    machine = {"aarch64": "arm64", "amd64": "x86_64"}.get(machine, machine)
+    return system, machine
+
+
+def _extension_applies(key, system, machine):
+    """Godot feature-tag match for one [libraries] key, e.g. ``macos.arm64`` or ``linux.debug``."""
+    tags = key.strip().strip('"').split(".")
+    if not tags or tags[0] != system:
+        return False
+    architectures = [tag for tag in tags[1:] if tag in NATIVE_ARCHITECTURES]
+    return all(tag in {machine, "universal"} for tag in architectures)
+
+
+def adapt_native_extensions(source):
+    """Drop installed GDExtension descriptors that have no library for this host (TQ-05).
+
+    ``app/native/`` holds git-ignored binaries built and installed per platform on
+    the coordinator. A Windows/Linux descriptor shipped to a Mac makes Godot's
+    import scan log errors, so every Mac import failed although the app itself
+    selects its GDScript reference there. A native checkout on this host would
+    not contain the descriptor; removing it reproduces that. Tracked descriptors
+    elsewhere are never touched.
+    """
+    system, machine = _platform_tags()
+    removed = []
+    base = Path(source) / "app/native"
+    for descriptor in sorted(base.rglob("*.gdextension")) if base.is_dir() else []:
+        keys, section = [], None
+        for line in descriptor.read_text(encoding="utf-8", errors="replace").splitlines():
+            stripped = line.strip()
+            if stripped.startswith("["):
+                section = stripped
+            elif section == "[libraries]" and "=" in stripped and not stripped.startswith(";"):
+                keys.append(stripped.split("=", 1)[0])
+        if any(_extension_applies(key, system, machine) for key in keys):
+            continue
+        relative = descriptor.relative_to(source).as_posix()
+        descriptor.unlink()
+        uid = descriptor.with_name(descriptor.name + ".uid")
+        if uid.is_file():
+            uid.unlink()
+        removed.append({"path": relative, "libraries": sorted(key.strip() for key in keys)})
+    return {"platform": f"{system}.{machine}", "removed_extensions": removed}
+
+
 def isolate_project(source, identifier):
     path = source / "app/project.godot"
     original = path.read_bytes()
@@ -1115,6 +1166,7 @@ def supervise(root, identifier):
         verify_source(source, files)
         write_json(directory / "source-inventory.json", {"archive_sha256": request["archive"]["sha256"], "files": files})
         transformation = isolate_project(source, identifier)
+        state["native_adaptation"] = adapt_native_extensions(source)
         if not (source / "tools/godot/run_checked.py").is_file() or not (source / "app" / request["options"]["script"][6:]).is_file():
             raise Refused("snapshot is missing the checked runner or requested script")
         if external_engine_present(request["engine_path"]):

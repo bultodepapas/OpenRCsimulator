@@ -433,6 +433,56 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertEqual(status["import"]["reason"], "result_unreadable")
 
 
+class NativeAdaptationTests(unittest.TestCase):
+    """Installed descriptors with no library for this host are dropped, as on a native checkout."""
+
+    DESCRIPTOR = ('[configuration]\nentry_symbol = "init"\n\n[libraries]\n{}\n')
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.source = Path(tmp.name)
+
+    def write(self, relative, libraries):
+        path = self.source / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(self.DESCRIPTOR.format(libraries), encoding="utf-8")
+        (path.parent / (path.name + ".uid")).write_text("uid://x")
+        return path
+
+    def adapt(self, system, machine):
+        with mock.patch.object(agent.platform, "system", return_value=system), \
+                mock.patch.object(agent.platform, "machine", return_value=machine):
+            return agent.adapt_native_extensions(self.source)
+
+    def test_mac_drops_windows_linux_descriptor_and_keeps_applicable_ones(self):
+        ground = self.write("app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+                            'windows = "res://a.dll"\nlinux = "res://a.so"')
+        universal = self.write("app/native/other/mac.gdextension", 'macos = "res://m.framework"')
+        intel = self.write("app/native/intel/x.gdextension", 'macos.x86_64 = "res://x.dylib"')
+        arm = self.write("app/native/arm/y.gdextension", 'macos.debug.arm64 = "res://y.dylib"')
+        tracked = self.write("app/addons/plugin/plugin.gdextension", 'windows = "res://p.dll"')
+        result = self.adapt("Darwin", "arm64")
+        self.assertEqual(result["platform"], "macos.arm64")
+        self.assertEqual([item["path"] for item in result["removed_extensions"]],
+                         ["app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+                          "app/native/intel/x.gdextension"])
+        self.assertFalse(ground.exists())
+        self.assertFalse((ground.parent / (ground.name + ".uid")).exists())
+        self.assertFalse(intel.exists())
+        for kept in (universal, arm, tracked):
+            self.assertTrue(kept.exists(), kept)
+
+    def test_linux_keeps_its_descriptor_and_missing_native_dir_is_fine(self):
+        self.write("app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+                   'windows = "res://a.dll"\nlinux = "res://a.so"')
+        self.assertEqual(self.adapt("Linux", "x86_64")["removed_extensions"], [])
+        self.assertEqual(self.adapt("Linux", "aarch64")["platform"], "linux.arm64")
+        empty = Path(tempfile.mkdtemp(dir=self.source))
+        with mock.patch.object(agent.platform, "system", return_value="Darwin"):
+            self.assertEqual(agent.adapt_native_extensions(empty)["removed_extensions"], [])
+
+
 IMPORTING_RUNNER = FAKE_RUNNER.replace(
     "    folder = Path(out_dir) / \"run\"\n",
     "    folder = Path(out_dir) / \"run\"\n"
