@@ -1,0 +1,693 @@
+{
+  "schema": 1,
+  "research_date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "application_revision": "a866d880d8edbe84d2c59780624c35c8c7f107fc",
+  "source_count": 43,
+  "sources": [
+    {
+      "id": "S01",
+      "investigations": [
+        1
+      ],
+      "title": "Continuous Collision",
+      "authors": "Erin Catto",
+      "publication_date": "2013",
+      "url": "https://box2d.org/files/ErinCatto_ContinuousCollision_GDC2013.pdf",
+      "supports": "Original developer talk compares speculative contacts, time of impact and conservative advancement, including ghost contacts, lost remainder time and cost tradeoffs.",
+      "scope_and_limits": "Mostly game and 2D examples; not proof of a complete 3D rotating-aircraft sweep, exact geometry, RC strength or runtime cost.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original presentation, relevant algorithm and tradeoff sections."
+    },
+    {
+      "id": "S02",
+      "investigations": [
+        2,
+        3
+      ],
+      "title": "Modeling Compliant Contact",
+      "authors": "Drake developers",
+      "publication_date": "Undated live documentation",
+      "url": "https://drake.mit.edu/doxygen_cxx/group__compliant__contact.html",
+      "supports": "Describes point-witness and finite-patch limitations, hydroelastic contact, distinct effective modulus, and deformation/velocity-dependent Hunt–Crossley dissipation.",
+      "scope_and_limits": "Robotics simulator model and numerical parameters; not measured RC surface-pair behavior, strength or a recommended engine replacement.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Official documentation; point, hydroelastic and dissipation sections."
+    },
+    {
+      "id": "S03",
+      "investigations": [
+        2
+      ],
+      "title": "Hydroelastic Contact User Guide",
+      "authors": "Drake developers",
+      "publication_date": "Undated live documentation",
+      "url": "https://drake.mit.edu/doxygen_cxx/group__hydroelastic__user__guide.html",
+      "supports": "Pressure distributed over a finite contact interface provides resultant force and moment; representation and geometry resolution affect cost.",
+      "scope_and_limits": "Model assumes a compliant contact representation; no direct calibrated patch law for the simulator's sparsely sampled hull.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Official guide, introduction and representation guidance."
+    },
+    {
+      "id": "S04",
+      "investigations": [
+        4
+      ],
+      "title": "Water entry of a body which moves in more than six degrees of freedom",
+      "authors": "Y.-M. Scolan; A. A. Korobkin",
+      "publication_date": "2015",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4985040/",
+      "supports": "Early-entry analysis for a smooth body in initially calm water uses evolving wetted geometry and arbitrary body kinematics; includes a limited oblique-entry experimental comparison.",
+      "scope_and_limits": "Early penetration/Wagner assumptions; not validated for RC propellers, arbitrary wing edges, wave fields, cavities, viscosity or sustained planing.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Article abstract/introduction and scope; original PMC content was retrieved, later reopens encountered a browser check. Author-institution abstract independently retrieved.",
+      "alternate_urls": [
+        "https://research-portal.uea.ac.uk/en/publications/water-entry-of-a-body-which-moves-in-more-than-six-degrees-of-fre/"
+      ],
+      "doi": "10.1098/rspa.2015.0058"
+    },
+    {
+      "id": "S05",
+      "investigations": [
+        4
+      ],
+      "title": "Estimation of Hydrodynamic Impact Loads and Pressure Distributions on Bodies Approximating Elliptical Cylinders with Special Reference to Water Landings of Helicopters",
+      "authors": "Emanuel Schnitzer; Melvin E. Hathaway",
+      "publication_date": "1953-04-01",
+      "url": "https://ntrs.nasa.gov/citations/19930083799",
+      "supports": "NACA-TN-2889 proposes approximate oblique-entry loads for elliptical cylinders and states that comparison data are limited.",
+      "scope_and_limits": "Original report abstract/metadata inspected; limited rigid-cylinder vertical-drop comparison, not an RC transient-water calibration.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "NASA original report record and abstract."
+    },
+    {
+      "id": "S06",
+      "investigations": [
+        5
+      ],
+      "title": "Engineering: Design Process Used to Develop APC Propellers",
+      "authors": "APC Propellers",
+      "publication_date": "Undated live manufacturer page",
+      "url": "https://www.apcprop.com/technical-information/engineering/",
+      "supports": "Manufacturer separates bending, centrifugal and torsional loads, accounts for structural/dynamic properties, and discusses empirical limitations; geometry data are available for its production propellers.",
+      "scope_and_limits": "Manufacturer design process, not a crash-nick failure law or permission to redistribute all data. Geometry/phase/strength of each installed propeller still needs authoring and validation.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Engineering, geometry-data and structural-theory sections."
+    },
+    {
+      "id": "S07",
+      "investigations": [
+        5
+      ],
+      "title": "AC 25.905-1: Minimizing the Hazards from Propeller Blade and Hub Failures",
+      "authors": "Federal Aviation Administration",
+      "publication_date": "2000-09-27",
+      "url": "https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_25_905-1.pdf",
+      "supports": "Section 6 describes a released blade centroid moving tangentially, tumbling, phase-dependent intersections and aerodynamic trajectory effects.",
+      "scope_and_limits": "Transport-aircraft advisory fragment model; numerical spread angles, failure likelihood and certification conclusions are not transferred to RC aircraft.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original advisory, especially scope and section 6."
+    },
+    {
+      "id": "S08",
+      "investigations": [
+        6
+      ],
+      "title": "Blast SDK 5.0.6: Introduction",
+      "authors": "NVIDIA",
+      "publication_date": "Not stated",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/blast-sdk/latest/docs/api/introduction.html",
+      "supports": "Authored support bonds and connectivity-based actor islands after fracture.",
+      "scope_and_limits": "Game destruction support graph; user-defined health is not a validated airframe stress or strength model; versioned docs were current at inspection.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S09",
+      "investigations": [
+        6
+      ],
+      "title": "Blast SDK 5.0.6: Nv::Blast::ExtStressSolver",
+      "authors": "NVIDIA",
+      "publication_date": "Not stated",
+      "url": "https://docs.omniverse.nvidia.com/kit/docs/blast-sdk/latest/_build/docs/blast-sdk/latest/class_nv_1_1_blast_1_1_ext_stress_solver.html",
+      "supports": "The separate stress solver takes node data and applied forces before calculating bond stress.",
+      "scope_and_limits": "API design example, not proof of accurate RC load redistribution or a recommendation to integrate Blast.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S10",
+      "investigations": [
+        7
+      ],
+      "title": "Characterization load-induced cracks in balsa wood",
+      "authors": "A. Bentur; S. Mindess",
+      "publication_date": "1986-02",
+      "url": "https://cris.technion.ac.il/en/publications/characterization-load-induced-cracks-in-balsa-wood/",
+      "supports": "Compact-tension balsa cracks generally followed grain with irregular walls and cell bridging.",
+      "scope_and_limits": "Article abstract on original author-institution record; only compact specimens; not all grain orientations or RC assemblies.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original author/institution/publisher abstract or bibliographic record; full paper is not claimed."
+    },
+    {
+      "id": "S11",
+      "investigations": [
+        7
+      ],
+      "title": "Residual bending behaviour of sandwich composites after impact",
+      "authors": "Ismet Baran; Wouter Weijermars",
+      "publication_date": "2018-02-20 online; 2020 issue",
+      "url": "https://journals.sagepub.com/doi/10.1177/1099636218757164",
+      "supports": "Tested glass/epoxy sandwich coupons with specific balsa, SAN and PET cores showed distinct core deformation and post-impact bending failure mechanisms.",
+      "scope_and_limits": "Specific engineered sandwich coupons and loading sequence, not general bare-foam or built-up RC-aircraft strengths.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S12",
+      "investigations": [
+        8
+      ],
+      "title": "A Numerical and Experimental Study of Damage Growth in a CFRP Composite Honeycomb Sandwich",
+      "authors": "Mark McElroy; James Ratcliffe; Michael Czabaj; John Wang; Fuh-Gwo Yuan",
+      "publication_date": "2014-09-08",
+      "url": "https://ntrs.nasa.gov/api/citations/20200006873/downloads/20200006873.pdf",
+      "supports": "Supported aluminum-honeycomb/cross-ply coupon under quasi-static indentation supports stable crack/delamination growth; compared continuum model did not match delamination growth well.",
+      "scope_and_limits": "Conference presentation and specific specimen, test and model; no RC failure thresholds or proof of universal progressive behavior.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original NASA conference presentation; specimen, observations and conclusions."
+    },
+    {
+      "id": "S13",
+      "investigations": [
+        8
+      ],
+      "title": "Compression After Impact on Honeycomb Core Sandwich Panels With Thin Facesheets: Experiments - Part 1",
+      "authors": "Thomas D. McQuigg; Rakesh K. Kapania; Stephen J. Scotti; Sandra P. Walker",
+      "publication_date": "2012-04-23",
+      "url": "https://ntrs.nasa.gov/api/citations/20120007657/downloads/20120007657.pdf",
+      "supports": "Post-impact compression of thin fiberglass/Nomex panels showed different residual dent growth and crack failure modes in two tested core densities.",
+      "scope_and_limits": "Only two related aerospace sandwich constructions and later compression; cannot set damage progression or physical limits of an RC airframe.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S14",
+      "investigations": [
+        9
+      ],
+      "title": "Rigid Body Collision Response",
+      "authors": "Ladislav Kavan",
+      "publication_date": "2003",
+      "url": "https://www.old.cescg.org/CESCG-2003/LKavan/",
+      "supports": "COM-referenced point velocity, rotated inertia tensor, linear/angular momentum and equal/opposite impulse relations.",
+      "scope_and_limits": "Real-time mechanics exposition, not fracture experiments or RC-specific physical validation; conservation test is an application of these relations.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S15",
+      "investigations": [
+        9
+      ],
+      "title": "RigidBody3D — Godot Engine 4.6 documentation",
+      "authors": "Godot Engine contributors",
+      "publication_date": "Not stated",
+      "url": "https://docs.godotengine.org/en/4.6/classes/class_rigidbody3d.html",
+      "supports": "Custom COM is relative to body origin; frequent transform or velocity writes are cautioned against.",
+      "scope_and_limits": "Version 4.6 API documentation is not an execution of the project engine/backend or proof of its specific velocity semantics.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S16",
+      "investigations": [
+        10
+      ],
+      "title": "P-51 Mustang 1.50 ARF Assembly Manual",
+      "authors": "Hangar 9 / Horizon Hobby",
+      "publication_date": "Not stated",
+      "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/han2400-manual.pdf",
+      "supports": "Model assembly uses multiple CA hinges and a separately connected aileron horn/linkage.",
+      "scope_and_limits": "One product assembly only; no crash load or hinge-breaking probability; not proof of this repository aircraft exact configuration.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S17",
+      "investigations": [
+        10
+      ],
+      "title": "HingeJoint3D — Godot Engine 4.6 documentation",
+      "authors": "Godot Engine contributors",
+      "publication_date": "Not stated",
+      "url": "https://docs.godotengine.org/en/4.6/classes/class_hingejoint3d.html",
+      "supports": "Engine interface provides a relative rotational joint, angular limits and motor settings.",
+      "scope_and_limits": "A joint is not a material failure criterion, and documentation is for 4.6 rather than the pinned project runtime.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S18",
+      "investigations": [
+        10
+      ],
+      "title": "Using Jolt Physics — Godot Engine 4.6 documentation",
+      "authors": "Godot Engine contributors",
+      "publication_date": "Not stated",
+      "url": "https://docs.godotengine.org/en/4.6/tutorials/physics/using_jolt_physics.html",
+      "supports": "Some Godot joint properties, including hinge bias, softness and relaxation, are unsupported by the documented Jolt integration.",
+      "scope_and_limits": "Version/backend-specific; not a claim about the project-selected backend or actual 4.8 behavior.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S19",
+      "investigations": [
+        11
+      ],
+      "title": "Unsteady aerodynamics of fluttering and tumbling plates",
+      "authors": "A. Andersen, U. Pesavento and Z. Jane Wang",
+      "publication_date": "2005-10-11",
+      "url": "https://dragonfly.tam.cornell.edu/publications/2005_JFM_Andersen_Pesavento_Wang_a.pdf",
+      "supports": [
+        "Quasi-two-dimensional plate motion exhibits flutter and tumble, with rotational coupling and dependence on Reynolds number, inertia and thickness ratio."
+      ],
+      "scope_and_limits": "Experiment and numerical analysis of rigid plates near Reynolds number 10^3; does not measure RC fragments, foam, film or engines. The proposed inexpensive visual law is an engineering approximation.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S20",
+      "investigations": [
+        12
+      ],
+      "title": "Collision shapes (3D)",
+      "authors": "Godot Engine documentation contributors",
+      "publication_date": "Godot 4.4 documentation; undated",
+      "url": "https://docs.godotengine.org/en/4.4/tutorials/physics/collision_shapes_3d.html",
+      "supports": [
+        "Primitives are recommended for dynamic-body reliability; convex shapes trade accuracy for complexity and multiple shapes add cost."
+      ],
+      "scope_and_limits": "Godot 4.4 documentation, not a guarantee of the application's pinned Godot 4.8 beta or its installed physics backend.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S21",
+      "investigations": [
+        12
+      ],
+      "title": "RigidBody3D",
+      "authors": "Godot Engine documentation contributors",
+      "publication_date": "Godot 4.7 documentation; undated",
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html",
+      "supports": [
+        "A body can sleep when not moving; continuous collision detection aims to miss fewer fast or small impacts, at additional cost."
+      ],
+      "scope_and_limits": "Godot 4.7 API description. Sleep, wake, CCD, support and contact behavior must be verified on the exact beta binary and platform; the docs do not guarantee no tunneling.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S22",
+      "investigations": [
+        13
+      ],
+      "title": "Dynamics of grain ejection by sphere impact on a granular bed",
+      "authors": "S. Deboeuf, P. Gondret and M. Rabaud",
+      "publication_date": "2009-04-14",
+      "url": "https://www.fast.u-psud.fr/~rabaud/Articles/Deboeuf09.pdf",
+      "supports": [
+        "A granular impact produces an evolving ejection corona and its geometry can be compared with a ballistic ejection model."
+      ],
+      "scope_and_limits": "Vertical 1–4 m/s steel-sphere impacts into a dense packing of glass beads; no calibrated prediction for grass, cohesive soil, glancing scrapes or RC structures.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original author-hosted paper read by research reviewer; lead independently checked publisher abstract and indexed original experiment text after a direct PDF timeout.",
+      "alternate_urls": [
+        "https://doi.org/10.1103/PhysRevE.79.041306"
+      ]
+    },
+    {
+      "id": "S23",
+      "investigations": [
+        13
+      ],
+      "title": "Water entry of spheres with various contact angles",
+      "authors": "Nathan B. Speirs, Mohammad M. Mansoor, Jesse Belden and Tadd T. Truscott",
+      "publication_date": "2019-01-10",
+      "url": "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/abs/water-entry-of-spheres-with-various-contact-angles/B1A03BF2EFD80650A9CD9EDD22353B44",
+      "supports": [
+        "Water-entry cavity morphology and splash-crown appearance vary with experimental conditions and wettability; a splash crown is not inevitable."
+      ],
+      "scope_and_limits": "Original journal abstract for smooth spheres, accessed via publisher; not a hydrodynamic calibration for an RC aircraft or a justification for enabling nonterminal water contacts.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original author/institution/publisher abstract or bibliographic record; full paper is not claimed."
+    },
+    {
+      "id": "S24",
+      "investigations": [
+        14
+      ],
+      "title": "Creating a 3D particle system",
+      "authors": "Godot Engine documentation contributors",
+      "publication_date": "Godot 4.7 documentation; undated",
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/particles/creating_a_3d_particle_system.html",
+      "supports": [
+        "In Godot 4.7 conversion from GPU to CPU particles loses listed features including subemitters, trails, collision, turbulence and amount ratio."
+      ],
+      "scope_and_limits": "4.7 documentation; not proof that every GPU feature is available or unavailable on any specific Compatibility renderer or beta version.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S25",
+      "investigations": [
+        14
+      ],
+      "title": "Standard Material 3D and ORM Material 3D",
+      "authors": "Godot Engine documentation contributors",
+      "publication_date": "Godot 4.7 documentation; undated",
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/standard_material_3d.html",
+      "supports": [
+        "Proximity fade can visually soften particle intersections and alpha blending entails sorting and GPU cost; the 4.7 particle-trail material feature is documented for Forward+ and Mobile rather than Compatibility."
+      ],
+      "scope_and_limits": "Version-specific documentation; beta/renderer capability, image quality and cost require a live probe. Proximity fade is a shading effect and does not model physical contact.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S26",
+      "investigations": [
+        14
+      ],
+      "title": "High-Speed, Off-Screen Particles",
+      "authors": "Iain Cantlay, NVIDIA",
+      "publication_date": "2007; GPU Gems 3",
+      "url": "https://developer.nvidia.com/gpugems/gpugems3/part-iv-image-effects/chapter-23-high-speed-screen-particles",
+      "supports": [
+        "Transparent screen coverage and overlap can dominate particle rendering; depth fade can soften intersections; reduced-resolution particle composites introduce depth and image-quality tradeoffs."
+      ],
+      "scope_and_limits": "Developer's historical GPU rendering approach; no direct claim of cost or feature support on this project's Godot beta and hardware.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S27",
+      "investigations": [
+        14
+      ],
+      "title": "Particle sub-emitters",
+      "authors": "Godot Engine documentation contributors",
+      "publication_date": "Godot 4.7 documentation; undated",
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/particles/subemitters.html",
+      "supports": [
+        "Particle systems can chain subemitters; active child particles are capped by the child's configured amount, and recursive setups do not work."
+      ],
+      "scope_and_limits": "4.7 feature description; subemitter operation on the pinned beta and renderer must be individually tested.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S28",
+      "investigations": [
+        15
+      ],
+      "title": "Curl-Noise for Procedural Fluid Flow",
+      "authors": "Robert Bridson, Jim Hourihan and Marcus Nordenstam",
+      "publication_date": "2007",
+      "url": "https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph2007-curlnoise.pdf",
+      "supports": [
+        "A velocity field constructed as the curl of a potential is divergence-free and can produce controlled fluid-like procedural detail; the paper treats boundary conditions explicitly."
+      ],
+      "scope_and_limits": "A full field/boundary construction. A few bounded modes used for presentation do not by themselves handle obstacles, solve fluid dynamics or validate actual smoke behavior.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S29",
+      "investigations": [
+        15
+      ],
+      "title": "Fire in the Vulcan Demo",
+      "authors": "Hubert Nguyen, NVIDIA",
+      "publication_date": "2004; GPU Gems",
+      "url": "https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-6-fire-vulcan-demo",
+      "supports": [
+        "The developer used procedural smoke, appearance variation and animation with practical texture-memory and smoke-lighting tradeoffs."
+      ],
+      "scope_and_limits": "Historical visual-effects demo; not experimental validation of crash smoke, fire chemistry or modern hardware cost.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S30",
+      "investigations": [
+        16
+      ],
+      "title": "Factors Controlling Burning Time for Non-Premixed Clouds of Fuel Gas",
+      "authors": "H.C. Jaggers, D.P. Franklin, D.R. Ward, F.G. Roper",
+      "publication_date": "1986",
+      "url": "https://www.icheme.org/media/12217/ix-paper-07.pdf",
+      "supports": "Experimental fuel-gas cloud burning time depends on release and buoyancy regime; very small clouds need not be fully turbulent.",
+      "scope_and_limits": "Fuel gas experiments; does not calibrate liquid spray, RC impacts or blast.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S31",
+      "investigations": [
+        16
+      ],
+      "title": "A Simple Model of the World Trade Center Fireball Dynamics",
+      "authors": "Howard R. Baum and Ronald G. Rehm, NIST",
+      "publication_date": "2005 (journal); NIST landing-page metadata says 2017",
+      "url": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=100921",
+      "supports": "Models an expanding fireball with conservation and prescribed heat release using a low-Mach, isobaric approximation.",
+      "scope_and_limits": "Large WTC fireball model, not experimental RC ignition or overpressure calibration.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S32",
+      "investigations": [
+        16
+      ],
+      "title": "OSAC Lexicon: Flash Fire",
+      "authors": "NIST Organization of Scientific Area Committees",
+      "publication_date": "2023 entry, citing NFPA 921:2021",
+      "url": "https://www.nist.gov/glossary/osac-lexicon?page=27",
+      "supports": "Defines flash fire as rapid flame spread through dispersed fuel without damaging pressure.",
+      "scope_and_limits": "Terminology, not a probability or game-physics model.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S33",
+      "investigations": [
+        17
+      ],
+      "title": "Fire Hazard Analysis for Various Lithium Batteries",
+      "authors": "Steven Summer and Thomas Maloney, FAA",
+      "publication_date": "2017-03",
+      "url": "https://www.fire.tc.faa.gov/pdf/TC-16-17.pdf",
+      "supports": "Reports cell and five-cell propagation tests with large variation by cell size, chemistry, construction and orientation.",
+      "scope_and_limits": "Aviation battery cells, not calibrated RC crash-pack outcomes or delay distributions.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above.",
+      "alternate_urls": [
+        "https://rosap.ntl.bts.gov/view/dot/57671"
+      ]
+    },
+    {
+      "id": "S34",
+      "investigations": [
+        17
+      ],
+      "title": "DCA13IA037: Japan Airlines Boeing 787 Battery Fire",
+      "authors": "National Transportation Safety Board",
+      "publication_date": "2013 incident",
+      "url": "https://www.ntsb.gov/investigations/pages/dca13ia037.aspx",
+      "supports": "An internal cell short led to runaway cascading into neighboring cells, releasing smoke and fire.",
+      "scope_and_limits": "APU battery case; does not imply every damaged lithium pack propagates.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S35",
+      "investigations": [
+        18
+      ],
+      "title": "O.S. Web Magazine Vol. 30: Glow Engine and Peripheral Basics",
+      "authors": "O.S. Engines",
+      "publication_date": "2021-01/02",
+      "url": "https://www.os-engines.co.jp/web_content/202101/index1.html",
+      "supports": "Model airplane glow fuel premixes lubricating oil for the engine.",
+      "scope_and_limits": "Japanese manufacturer article; does not give RC exhaust optical or damage rates.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S36",
+      "investigations": [
+        18
+      ],
+      "title": "Operational Instructions for O.S. Type 2D",
+      "authors": "O.S. Engines",
+      "publication_date": "undated",
+      "url": "https://manuals.hobbico.com/osm/22481045-manual.pdf",
+      "supports": "Describes light exhaust smoke during normal high-speed operation of a model boat engine.",
+      "scope_and_limits": "Boat-engine instructions, not direct quantitative airplane exhaust calibration.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S37",
+      "investigations": [
+        18
+      ],
+      "title": "Smoke Production and Properties",
+      "authors": "George W. Mulholland, National Bureau of Standards",
+      "publication_date": "1988",
+      "url": "https://firedoc.nist.gov/article/k3cyXYQBWEcjUZEYH0wr",
+      "supports": "Smoke aerosol appearance varies between light droplets and dark carbonaceous soot.",
+      "scope_and_limits": "General fire smoke; no unique color diagnosis, RC-specific composition or fixed lifetime.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original author/institution/publisher abstract or bibliographic record; full paper is not claimed."
+    },
+    {
+      "id": "S38",
+      "investigations": [
+        18
+      ],
+      "title": "Volcano Watch — Colorful plumes – can we see volcanic gases?",
+      "authors": "USGS Hawaiian Volcano Observatory",
+      "publication_date": "2018-06-17",
+      "url": "https://www.usgs.gov/observatories/hvo/news/volcano-watch-colorful-plumes-can-we-see-volcanic-gases",
+      "supports": "Water vapor is invisible; condensed water droplets make white plumes visible and appearance varies with environment and light.",
+      "scope_and_limits": "Volcanic plume explanation, not evidence of a wet/hot RC crash source.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S39",
+      "investigations": [
+        19
+      ],
+      "title": "Synthesizing Sounds from Rigid-Body Simulations",
+      "authors": "James F. O'Brien, Chen Shen and Christine M. Gatchalian",
+      "publication_date": "2002",
+      "url": "https://graphics.berkeley.edu/papers/Obrien-SSR-2002-07/Obrien-SSR-2002-07.pdf",
+      "supports": "Precomputed deformation modes driven by rigid-body contact generate interactive resonant sounds; wind chimes provided a comparison.",
+      "scope_and_limits": "Direct author-hosted paper; not calibrated for RC wood, foam, composites or crash physics.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Original author-hosted paper read by researcher; lead independently read the identical SCA2002 paper in the original author GDC2004 compilation, PDF page 24 onward, after an author-host timeout.",
+      "alternate_urls": [
+        "https://media.gdcvault.com/gdc04/slides/fast_yet_realistic.pdf"
+      ]
+    },
+    {
+      "id": "S40",
+      "investigations": [
+        19
+      ],
+      "title": "AudioStreamPlayer3D — Godot Engine documentation",
+      "authors": "Godot Engine contributors",
+      "publication_date": "undated live documentation",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html",
+      "supports": "Documents positional playback, attenuation, range, filtering and polyphony behavior.",
+      "scope_and_limits": "Does not establish correct real sound pressure or propagation travel time for this project; verify pinned version.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S41",
+      "investigations": [
+        20
+      ],
+      "title": "Scalability and Best Practices for Niagara",
+      "authors": "Epic Games",
+      "publication_date": "undated live documentation",
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/scalability-and-best-practices-for-niagara",
+      "supports": "Documents instance/particle culling, emitter overhead, pooling allocation savings and activation tradeoffs.",
+      "scope_and_limits": "Unreal Engine guidance used as design analogy only; actual Godot costs require profiling.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S42",
+      "investigations": [
+        20
+      ],
+      "title": "CPUParticles3D — Godot Engine documentation",
+      "authors": "Godot Engine contributors",
+      "publication_date": "undated live documentation",
+      "url": "https://docs.godotengine.org/en/stable/classes/class_cpuparticles3d.html",
+      "supports": "Defines the CPU emitter and one-shot finished behavior.",
+      "scope_and_limits": "Live stable docs may differ from the project's pinned build; GPU semantics must not be assumed for CPU emitters.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above."
+    },
+    {
+      "id": "S43",
+      "investigations": [
+        17
+      ],
+      "title": "Collision Between a Sport Utility Vehicle Operating With Partial Driving Automation and a Crash Attenuator, Mountain View, California",
+      "authors": "National Transportation Safety Board",
+      "publication_date": "2020-02-25",
+      "url": "https://data.ntsb.gov/investigations/AccidentReports/Reports/HAR2001.pdf",
+      "supports": "Records a severe EV crash with an initial battery fire and renewed fire five days later.",
+      "scope_and_limits": "Single full-size EV case with an initial postcrash fire; not an RC-pack delay distribution.",
+      "accessed_date": "2026-11-19",
+      "accessed_timezone": "America/Bogota",
+      "access_scope": "Relevant primary-source text/abstract or official API sections; scope limitations are recorded above.",
+      "alternate_urls": [
+        "https://www.ntsb.gov/investigations/AccidentReports/Reports/HAR2001.pdf"
+      ]
+    }
+  ]
+}

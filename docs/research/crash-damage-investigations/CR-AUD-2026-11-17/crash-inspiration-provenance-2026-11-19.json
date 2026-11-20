@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "research_date": "2026-11-19",
+  "timezone": "America/Bogota",
+  "branch": "audit/collision-damage-2026-11-17",
+  "plan_baseline_revision": "baf6976f7eb0ebe764f6f67e55a7c416f14ebf81",
+  "application_revision": "a866d880d8edbe84d2c59780624c35c8c7f107fc",
+  "previous_nonfatal_revision": "d736ee8a2eab0b59b0fa2c561a1eef07f5fae396",
+  "research_count": 20,
+  "primary_source_reference_count": 43,
+  "evidence_kind": "Primary-source research, targeted source review and documentation integration; no new runtime executions.",
+  "reviewed_source_paths": [
+    {
+      "path": "AGENTS.md",
+      "git_blob": "40c9af2f2f33af3cdc5be5d89f9fe1c08e3b8c5d",
+      "sha256": "405a8b1dd2946f738e3341d63d86f6acd5dbf30981bdf18feeec92832d97c716"
+    },
+    {
+      "path": "app/render/AGENTS.md",
+      "git_blob": "00aed1554db82521448f925c7dbb34c8db8d70d5",
+      "sha256": "167bcf3b079e7a06c50e65185a93ac88a7669d9a598724be369497a9226dfe80"
+    },
+    {
+      "path": "app/main.gd",
+      "git_blob": "228728daa62c25ffc8d85543825f84871aa9875b",
+      "sha256": "b2a12f7e5cd1e5f6d08ea066aa75ff7f2c3781787e7f55047ab238d4fda98dc5"
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob": "88177f8317fd78be8b213027800cef7e0faae461",
+      "sha256": "540b117b1b60511f4ddb75fd770ec0822069bf526a38378c75fad826c4871e7d"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439"
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "git_blob": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "sha256": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67"
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "git_blob": "f3499556283ca772f24b954fce6a0c77b1e51d92",
+      "sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f"
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "git_blob": "455883bcfa2771a4c917dc0ce1d6e2c84e162f19",
+      "sha256": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6"
+    },
+    {
+      "path": "app/physics/gear_damage.gd",
+      "git_blob": "61d53a05bd644ea808dd7c2d04c3e40224a04a62",
+      "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900"
+    },
+    {
+      "path": "app/physics/aircraft_ground_damage.gd",
+      "git_blob": "1f2fa3d93343c993bffef4d44122de36043782d2",
+      "sha256": "912581560817138ef5686108653773a3b3dbb13401021e31d9eec6f886c9be1f"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "git_blob": "afbb31b2a5b9ed94cd8264b49a7bdc109194eec2",
+      "sha256": "3a8e07bf7c3c4c0d55d75a2e4e0480a91bcc1ce7b28d4c8942893bc0eca88497"
+    },
+    {
+      "path": "app/sim/scenery_collision.gd",
+      "git_blob": "b29bb299e4ae6b0b52f5767ab12842ed5ebb03cf",
+      "sha256": "6eba1c73f1b0709fab41b34546013ef38b0492972b129ee0dc676b2596e2dc39"
+    },
+    {
+      "path": "app/sim/lake_collision.gd",
+      "git_blob": "cd0176ffe66d6852f0ebfa945de8b2a39d71d587",
+      "sha256": "c3bb53688d616336a3cb0eeac7679841c4be4bc6242b37917984ee922bc4b916"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "git_blob": "b43ad5308d1253941226821b1a52bb39fc1b4254",
+      "sha256": "83a47286921fb721945160c3191680f65211f672058c9364f794738b8393d5d5"
+    },
+    {
+      "path": "app/render/crash/director.gd",
+      "git_blob": "a3b202c3a90a8b40a5ef81cc1b17040e135c9f3e",
+      "sha256": "c65872ed6c7ad1c5914d4345e2bd7ea416ff48b202096b927e04fbc81bf1eb16"
+    },
+    {
+      "path": "app/render/crash/effects.gd",
+      "git_blob": "11010909a69892a2555c04f5d1389e2bb6766b53",
+      "sha256": "1b9880d2e87a32d5f4a39bca5a3e2ae58745ae052f8ed115e167166c43218e63"
+    },
+    {
+      "path": "app/render/crash/wreck.gd",
+      "git_blob": "91f24022e60b99d32e2d46410495bc1e3d4b219e",
+      "sha256": "62faa807d091b60ff1b52a818e164295365328f08df2da49f89ff9e14a3b7a46"
+    },
+    {
+      "path": "app/render/crash/prop_break.gd",
+      "git_blob": "b663fdf50d1c2f86f0b609ae05cbcd8b0f1d23a7",
+      "sha256": "450ac7929ba611ddd8f6cda5bd60ad88b7de96100e1cd8d646683d50278403da"
+    },
+    {
+      "path": "app/render/crash/crash_audio.gd",
+      "git_blob": "5bf304dacbaa76573bfc7d9af2f178bbfca2c9c6",
+      "sha256": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978"
+    },
+    {
+      "path": "app/render/crash/presentation_context.gd",
+      "git_blob": "b9ebf8a2f94daf6b1cd4a5f6fdcb6df784e16e11",
+      "sha256": "8ed28d652a63cadb14eb90d619e94cf03a44dfbcaf4d23c592eb7a71e32fb3bd"
+    },
+    {
+      "path": "app/render/lake/water_effects.gd",
+      "git_blob": "45bab9e3a0c2b95ef0f4331e3da5950cff3279e7",
+      "sha256": "4d444d93eb8b4991af764db4d91b7d64f35bc52f57546572a245aad534170845"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_fracture.gd",
+      "git_blob": "54e542a28557402bf940a8c09365492ba7ba9285",
+      "sha256": "254536b598b3d64b6b3c394151f4b1cc0bf983f1eef960685e2e26fd53818f35"
+    },
+    {
+      "path": "app/vehicles/ground/ground_damage_view.gd",
+      "git_blob": "d934b259ef19524df2c5265e3995f09188246f3e",
+      "sha256": "9a06c7a99b5eb6840db8256219df3017bfbdac2e768720e2ed93eec2f2c4c9be"
+    },
+    {
+      "path": "app/render/smoke/profile_process.gdshader",
+      "git_blob": "b3754330319be675987b49b5abe70148c8fa8021",
+      "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke.gd",
+      "git_blob": "2eae831e619d8763ed9cfc7f806ddbc4e2e7ae64",
+      "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke_schedule.gd",
+      "git_blob": "0f4d5ef1c3645cb95b79fc8e0df703271770a231",
+      "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+    },
+    {
+      "path": "app/render/smoke/exhaust.gd",
+      "git_blob": "c94b5b488f7ef52134537129449a3ca52538ac72",
+      "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+    },
+    {
+      "path": "docs/STACK.md",
+      "git_blob": "fb4f35a2eb15e3ee4451bdefcc2a95493a7f8175",
+      "sha256": "d267895d1a94d4ab744c29fc3dc595dfe6f911575cd7ba1ee9fd208e1628021f"
+    },
+    {
+      "path": "docs/CRASH-DAMAGE-PLAN.md",
+      "git_blob": "72cf4775b188a4ab18877b1e46c557418d128a59",
+      "sha256": "5ad8ec70d491dd4d095eb4fa8d6747cf3f7754742fed614485bad756f93f6c02"
+    },
+    {
+      "path": "docs/plans/crash-realism.md",
+      "git_blob": "a03ed61e37145b76fdfb26095b464103bc5aeb76",
+      "sha256": "2b55fc9b564d68b4387724cb61379d04a377ca4caa5ba25f6a6d648ef4fe8d4d"
+    },
+    {
+      "path": "docs/plans/advanced-ground-flight-physics.md",
+      "git_blob": "3c1fb9086498505d60381e543586c7dafe2afc9f",
+      "sha256": "54196b0068167e8d46998af373301d21c90b7c1b52befa1b3af549c8f6b64cfd"
+    },
+    {
+      "path": "docs/plans/smoke-system-overhaul.md",
+      "git_blob": "4f02970209ff66476ecad9d930f01d198b92b4f6",
+      "sha256": "ebee8468c6c37c7b02620faf8c0430217f0c49ac4b7f4d0736e2fe584083005c"
+    },
+    {
+      "path": "docs/AUDIO-PLAN.md",
+      "git_blob": "56e3a13ddfd7b82535ee4cefcb991e436b65ca7f",
+      "sha256": "386d14e1f5cf1254c8d9fe1c18709e6fde84aa47034ab765a0d5baa77363ad85"
+    }
+  ],
+  "scope": {
+    "new_runtime_tests": 0,
+    "new_collision_probe_runs": 0,
+    "new_rendered_captures": 0,
+    "new_hardware_benchmarks": 0,
+    "new_physical_validation": 0
+  },
+  "document_checks": {
+    "status": "passed",
+    "unique_investigations": 20,
+    "primary_source_reference_records": 43,
+    "investigation_source_maps": 20,
+    "plan_crosswalk_rows": 20,
+    "future_acceptance_scenarios": 12,
+    "new_local_links_and_anchors_checked": 22,
+    "new_external_links_retained": 45,
+    "source_files_matched_to_application_revision": 33,
+    "changed_document_paths": 7,
+    "git_diff_cached_check": "passed",
+    "link_checker": "Existing tools/ci/check_docs.py links, GitObjects and check_target helpers, restricted to new links in the seven changed paths; not a full CI run.",
+    "historical_to_reviewed_scope_diff": "No changes in app/physics, app/sim, app/render/crash or the three canonical plan bases between d736ee8a and a866d880."
+  },
+  "delivered_content_sha256": {
+    "docs/CRASH-DAMAGE-PLAN.md": "9bab79b5bb4c4f25c5590e8e1c9c710508e83e14d38a60c2d6e44e10608e326b",
+    "docs/plans/advanced-ground-flight-physics.md": "8ab008efb84aedaf07328e3ddfda4bcdec14b6adbf4e3372803beb91c72e1184",
+    "docs/plans/crash-realism.md": "75b20a73fef5ff4de488549ddf710e9a2377a25b3574ec2b197aaaeace890e7d",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/README.md": "04251c0a31dcd194d10ca28aea809aa8439bbf34f80ef50cc2631b9f67544aa3",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/crash-inspiration-20-2026-11-19.md": "8fb5bc9d8cfc92d1433a474969e315fcb37c8e76ed836448845453f041fbcfb4",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/crash-inspiration-sources-2026-11-19.json": "a1dad74c3398edc64021323972984364a2a04b60120813d57c3b0eb026b66827"
+  },
+  "independent_review": {
+    "research_groups": 3,
+    "cross_review": "Resolved topology/strength, experimental attached-state scope, timing/ownership, source/clock, fuel-share and per-instance-budget issues. Final reviewers found no remaining material issues after emitter-origin wording correction.",
+    "runtime_executions": 0
+  }
+}
