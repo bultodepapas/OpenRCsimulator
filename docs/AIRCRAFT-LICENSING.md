@@ -2,6 +2,8 @@
 
 Research checked: **2026-10-15**. Scope: aircraft depictions, source assets, names and distribution in OpenRCsimulator. This is a practical release guide, not a legal opinion or a completed trademark/design clearance. Colombia/Andean law, US law and EU design rules are considered because development and worldwide distribution can involve different territories. A US defense is not worldwide permission. Obtain jurisdiction-specific counsel for a disputed replica or a commercial branded release.
 
+For the **software-MIT versus model/asset-license boundary**, proprietary optional packs, public source archives and a partner-facing game-mesh license request, read the companion [Software, aircraft assets and partner licenses](ASSET-LICENSING-AND-PARTNERSHIPS.md). That guide does not change this document's existing aircraft-specific decisions or retroactively extend past grants.
+
 ## The practical answer
 
 **We can build original aircraft and independently recreate many real aircraft. There is no universal requirement to buy an aircraft license just to simulate flight or reproduce functional dimensions.** However, writing every vertex ourselves does not automatically clear the aircraft's name, distinctive appearance, livery, plans, photographs or supplied assets.
