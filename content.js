@@ -51,14 +51,14 @@ Object.assign(websiteCopy, {
 Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
 
 const translations = {
-  releaseHighlights: 'v0.2.9 ships the native flight kernel in Windows packages and adds guided EdgeTX radio setup, graded FPV quad crashes with turtle mode, a unified Automatic graphics choice and new stock paint schemes. Models remain experimental and need physical measurements and pilot evaluation.',
+  releaseHighlights: 'v0.3.0 adds optional usage statistics, sent only after you choose Enable, and lets imported ClearView airplanes be test-flown and saved with an estimated OpenRC configuration. It also brings fixes from a CPU/GPU audit and lower CPU use. Models remain experimental and need physical measurements and pilot evaluation.',
   skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
   heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
   heroHeading: 'The flying field<br>is open.', heroCopy: 'A free, open-source RC flight simulator.<br>For Windows, Linux and macOS. Early alpha.', heroCta: 'Download',
   platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
   hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
   studio: 'AIRCRAFT SHOWCASE / OPENRC', actualModel: 'PROJECT MODEL RENDERS', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',
-  sourceNote: 'CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot evaluation. The v0.2.9 download is its own snapshot and may differ from current source.',
+  sourceNote: 'CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot evaluation. The v0.3.0 download is its own snapshot and may differ from current source.',
   fieldKicker: '02 / SEE YOU AT THE FIELD', fieldHeading: 'That place<br>you always<br>come back to.', fieldCopy: 'The grass runway. The trees on the horizon.<br>Fly from the pilot’s position or follow your aircraft with the flight cameras.',
   capture: 'IN-SIMULATOR CAPTURE · GODOT', day: 'Day', night: 'Night',
   projectKicker: '03 / UNDER THE COWLING', projectHeading: 'Physics matters.<br>So does evidence.', projectIntro: 'We’re building an RC simulator one step at a time. With code you can read, flights you can repeat, and questions we’re still working through.', source: 'Explore the source', sourceKicker: 'IMPLEMENTED IN CURRENT SOURCE',
@@ -66,9 +66,9 @@ const translations = {
   radioHeading: 'Your controls, in the loop.', radioCopy: 'USB transmitter, gamepad or keyboard. Saved calibration, throttle arming and a disconnection failsafe.',
   replayHeading: 'Fly. Record. Compare.', replayCopy: 'Flight logs, exact replay and CSV export to study aircraft behavior with the same recorded inputs.',
   honesty: 'Software is checked. Realism must be demonstrated. Independent physical validation and pilot evaluation remain open.', roadmap: 'See what’s next',
-  downloadKicker: '02 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Early alpha v0.2.9. The ZIPs have no installer or archive signature; the macOS app is ad-hoc signed but not notarized.<br>Aircraft and ground-vehicle models remain experimental and need independent measurements and pilot evaluation.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
-  gameLanguages: 'The simulator interface in current source is available in nine languages: <bdi dir="ltr">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. The v0.2.9 download includes all nine.',
-  candidateKicker: 'EARLY ALPHA · v0.2.9', candidateTitle: 'v0.2.9 is available', candidateIntro: 'Download v0.2.9 for Windows, Linux or macOS. This early alpha includes experimental aircraft and ground-vehicle models.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.2.9 release notes ↗',
+  downloadKicker: '02 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Early alpha v0.3.0. The ZIPs have no installer or archive signature; the macOS app is ad-hoc signed but not notarized.<br>Aircraft and ground-vehicle models remain experimental and need independent measurements and pilot evaluation.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
+  gameLanguages: 'The simulator interface in current source is available in nine languages: <bdi dir="ltr">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. The v0.3.0 download includes all nine.',
+  candidateKicker: 'EARLY ALPHA · v0.3.0', candidateTitle: 'v0.3.0 is available', candidateIntro: 'Download v0.3.0 for Windows, Linux or macOS. This early alpha includes experimental aircraft and ground-vehicle models.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.3.0 release notes ↗',
   communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
   donateHero: 'Donate', donateKicker: 'NEXT STEP / STEAM', donateHeading: 'Help bring OpenRC to Steam.',
   donateGoal: 'The first goal is to cover Steam’s <a href="https://partner.steamgames.com/doc/gettingstarted/appfee">US$100 app fee</a>. If donations exceed that goal, the rest will fund AI model tokens to keep improving the simulator.',
@@ -106,9 +106,9 @@ Object.assign(translations, {
   faqFreeQuestion: 'Is OpenRC Simulator free?',
   faqFreeAnswer: 'Yes. OpenRC Simulator is free to download, and its source code is available under the MIT license. Aircraft, scenery and other assets retain their own licenses. You can inspect the code, report issues or contribute on <a href="https://github.com/bultodepapas/OpenRCsimulator">GitHub</a>.',
   faqInstallQuestion: 'How do I install it on Windows, Linux or macOS?',
-  faqInstallAnswer: 'Download the ZIP for your operating system, extract it and launch the application. You do not need to install Godot. Compare the archive checksum with SHA256SUMS from the same release, and read the platform instructions and signing limitations in the <a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.9/docs/FIRST-LAUNCH.md">first-launch guide</a>. <a href="#download">Choose your download</a>.',
+  faqInstallAnswer: 'Download the ZIP for your operating system, extract it and launch the application. You do not need to install Godot. Compare the archive checksum with SHA256SUMS from the same release, and read the platform instructions and signing limitations in the <a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.0/docs/FIRST-LAUNCH.md">first-launch guide</a>. <a href="#download">Choose your download</a>.',
   faqControlsQuestion: 'Do I need an RC transmitter to fly?',
-  faqControlsAnswer: 'No. You can use a keyboard or a gamepad. USB transmitters can be used as flight controls when the operating system detects them as a compatible joystick; axis setup and calibration may be required. Support is not guaranteed for every radio or adapter. See the <a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.9/docs/FIRST-LAUNCH.md">controls and calibration guide</a>.',
+  faqControlsAnswer: 'No. You can use a keyboard or a gamepad. USB transmitters can be used as flight controls when the operating system detects them as a compatible joystick; axis setup and calibration may be required. Support is not guaranteed for every radio or adapter. See the <a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.3.0/docs/FIRST-LAUNCH.md">controls and calibration guide</a>.',
   faqBrowserQuestion: 'Can I fly in the browser?',
   faqBrowserAnswer: 'OpenRC is a desktop simulator. This website shows aircraft turntables and an optional 3D model viewer; these are previews, not playable flights. <a href="#download">Download the desktop app</a> to fly.',
   faqRealismQuestion: 'How realistic is the flight simulation?',
@@ -124,6 +124,29 @@ const englishAttributes = {
   'Detalles del jet': 'Jet details', 'Vistas de cámara': 'Camera views',
   'Acercar': 'Zoom in', 'Alejar': 'Zoom out'
 };
+
+// ClearView quick guide: also generates the matching Markdown editions.
+Object.assign(translations, {
+  "clearviewLink": "ClearView import guide",
+  "clearviewKicker": "QUICK GUIDE / MODEL IMPORT",
+  "clearviewHeading": "Import a ClearView model",
+  "clearviewAvailability": "Use v0.3.0 or later and choose <strong>ClearView aircraft ZIP</strong> in the file picker. v0.2.9 imports the preview only, without test flights or saving.",
+  "clearviewStatus": "<strong>Experimental.</strong> The model keeps its ClearView look but flies with an estimated OpenRC trainer configuration, not ClearView’s flight model. Saved aircraft cannot be launched from Home yet.",
+  "clearviewDownloadsTitle": "Where to download",
+  "clearviewOfficial": "<a href=\"https://rcflightsim.com/models.html\">ClearView community models</a>: airplane ZIPs and Ken Northup’s Plane Packs.",
+  "clearviewCommunity": "<a href=\"https://gunnerson.homestead.com/files/clearview_models.htm\">Gary Gunnerson’s models</a>: choose the ClearView downloads.",
+  "clearviewExample": "Tested example: <a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>.",
+  "clearviewStepsTitle": "Three steps",
+  "clearviewStep1": "Download the model’s <code>.zip</code> and keep it zipped.",
+  "clearviewStep2": "Open <strong>Workshop → Create aircraft… → Import → Choose model…</strong>. Select the ZIP; for a pack, choose one aircraft.",
+  "clearviewStep3": "Check the preview and messages. Confirm the review, select <strong>Create an estimated OpenRC configuration</strong>, set orientation and size, then use <strong>Test fly</strong>. Name it and choose <strong>Save aircraft</strong> or <strong>Save draft</strong>.",
+  "clearviewFilesTitle": "Which files work?",
+  "clearviewFiles": "Complete <strong>ClearView v5/v6 airplane ZIPs</strong>, up to <strong>64 MiB</strong>: <code>params.txt</code>, its referenced <code>.ac</code> model and textures in their original folders. Repaints need the complete model.",
+  "clearviewLimitsTitle": "Limits",
+  "clearviewLimits": "ClearView flight physics is not transferred. Helicopters import for preview, moving parts and drafts, but cannot fly yet. Scenery, raw FMS files and <code>.lst</code> lists are outside this workflow. Textures may be PNG, JPEG, GIF or 24-bit BMP. Missing files or unsupported geometry can block preview; read the message and try another complete ZIP.",
+  "clearviewRights": "Keep the author’s credits and respect each model’s license.",
+  "clearviewMarkdown": "Markdown guide"
+});
 
 // A complete, page-specific dictionary is embedded at build time; no locale fetch.
 const localeCopy = typeof document === "undefined" ? null : JSON.parse(document.querySelector("#locale-data").textContent);
