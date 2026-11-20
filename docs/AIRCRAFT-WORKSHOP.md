@@ -6,6 +6,7 @@ The Workbench feature is named **Aircraft Workshop** in the application (**Talle
 | --- | --- |
 | Use the editor; understand supported adjustments, scaling and saved variants | This guide, checked against source on 2026-10-19 |
 | Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
+| Plan swappable wheels, gear, propellers and spinners; introduce physics later | [Attachment phases and aircraft rollout](plans/workshop-aircraft-attachments.md) (AE-27; proposed) |
 | Explore current customization and the remaining Workbench backlog | [Workbench backlog](plans/aircraft-editor.md#5-planned-player-facing-work) |
 | Implement the next slice; find dependencies, contracts and tests | [Ordered work packages](plans/aircraft-editor.md#56-implementation-packages-and-order) and [required test matrix](plans/aircraft-editor.md#57-required-test-matrix) |
 | Design the menus, editing flow and model inspection | [Interface contract and remaining gates](plans/aircraft-editor.md#59-menus-workflow-and-visual-design) |

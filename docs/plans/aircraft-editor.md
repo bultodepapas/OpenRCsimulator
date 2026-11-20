@@ -1,5 +1,12 @@
 # Aircraft experiment editor plan
 
+**Attachment extension — AE-27, planned 2026-11-19:** the [Workshop aircraft attachments plan](workshop-aircraft-attachments.md)
+owns wheels, gear, propellers and spinners, its per-aircraft rollout and acceptance. Phases 1–4 are
+cosmetic; later physical installations and functional floats have separate gates. The
+[pinned source review](../research/aircraft-editor/AE-27-00/README.md) records the current fleet and
+schema baseline. This extension does not mark any runtime attachment support implemented or close
+the existing AE-00…26 gates below.
+
 **Date:** 2026-10-19. **Revision:** 15 — 10–500% virtual aircraft sizes and endpoint evidence. **Status:** appearance/smoke, bounded experiments and local build flows are implemented slices; detached recovery, fixed-station measured mass, named-library save boundaries and live-owned staging cleanup extend them. Full-fleet, mounting/hardware data, native performance, AE-09e/f and physical acceptance remain open. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track.
 
 The plan owns remaining work and acceptance. The [Aircraft Workshop guide](../AIRCRAFT-WORKSHOP.md) owns current player behavior and implementation details. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns physical and generated authoring schemas. [DECISIONS](../DECISIONS.md) owns durable rationale. Use the current repository state and linked evidence when a dated proposal differs.
