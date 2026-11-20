@@ -1,194 +1,165 @@
-# ClearView aircraft import plan
+# ClearView importer completion plan
 
-**Date:** 2026-11-15; updated 2026-11-17. **Status:** implementation in progress; bounded readers, an experimental visual adapter, conservative v6 hinge proposals, source-declaration review and explicit independent configuration choices are integrated. Versioned servo-law transport/replay, [captured publication/editor persistence](../research/aircraft-creator/AC-13-publication-binding-2026-11-16.md) and the [exact published-source resolver](../research/aircraft-creator/AC-18-source-reference-2026-11-16.md) are implemented dependencies. The [local-clock numerical campaigns](../research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md) remain unqualified: arrivals-only passes 60/68, zero-half passes 64/68, and the completed stage-coupled max-piece campaign has 58 accepted, eight failed and two unresolved cells. Guarded coefficient cuts pass two of four diagnostic cells; a separately versioned quarter-step candidate is under investigation. None closes G05. Recognized ClearView sources remain restricted to preview and drafts. Flight, Home, portable-source and exported-platform gates remain open. **Owner:** Aircraft Creator / Workshop. **Steps:** AC-CV-00…14, a subtrack of AC. The [research and source inventory](../research/aircraft-creator/clearview-2026-11-15.md) records the inspected downloads, primary documentation, source identities and limits. The [Creator plan](aircraft-creator.md) continues to own AC-00…25 and its gates.
+**Updated:** 2026-11-19. **Status:** v1 incomplete; preview and drafts are available, flight and release gates are open. **Owner:** Aircraft Creator / Workshop, with the main technical lead accountable for integration and closure. **Step IDs:** AC-CV-00…14. **Working branch:** `docs/clearview-import-guide`.
 
-## 1. Product outcome
+This is the single execution plan for finishing the ClearView importer. Implement the required scope below, attach evidence to each gate, and stop when the final checklist passes. The [Creator plan](aircraft-creator.md) owns shared AC dependencies; [dated research](../research/aircraft-creator/clearview-2026-11-15.md) owns findings and run receipts. Do not create another competing roadmap.
 
-A player selects a locally downloaded ClearView aircraft ZIP, chooses an aircraft if the ZIP contains a pack, reviews its appearance and detected configuration, completes missing physical information, test-flies the exact candidate, saves a version, selects it in Home, and can reopen and fly it after restarting an exported OpenRC build. Import must explain what needs correction and preserve the player's source files.
+## 1. Fixed delivery contract
 
-Build a compatibility adapter into Aircraft Creator. Convert supported legacy visuals into its bounded, self-contained GLB representation; retain ClearView parameters as attributed observations and compile a separate, complete `openrc-aircraft v2` configuration through supported OpenRC laws. A faithful appearance and a numerically admissible aircraft are separate results. Reproducing ClearView trajectories or claiming real-aircraft fidelity is outside automatic conversion.
+**Done means a player completes this entire journey in packaged Windows, Linux and macOS builds:**
 
-### Availability levels
+1. Select a local ClearView ZIP and choose one aircraft when it is a pack.
+2. See the original appearance, a concise conversion report and actionable refusals.
+3. Confirm orientation, real size, datum, moving parts and a complete, explicitly identified OpenRC physical configuration.
+4. Test-fly that exact configuration using qualified Airborne and Hand-launch starts.
+5. Save an immutable aircraft revision, select it in Home, close the application, restart and fly the same revision.
+6. Export the permitted complete bundle, import it into a clean profile without the external ZIP or previous library, and reopen and fly the same revision with its appearance and provenance intact.
 
-| Result | What the player can do | Required evidence |
-| --- | --- | --- |
-| Preview | View the converted aircraft and original paint | Archive, AC3D, image, GLB and resource admission; complete visual dependencies |
-| Draft | Correct placement, physical data and control bindings | Typed records, source provenance and actionable missing-field diagnostics |
-| Experimental flight | Test an explicitly estimated or borrowed configuration | Supported topology and powertrain, complete v2 data, exact-context start checks and the applicable numerical gate |
-| Saved aircraft | Reopen a published revision and launch it from Home | Immutable dependency closure, resolver, restart, recovery, replay and exported-platform gates |
-| Physically qualified configuration | Use a configuration with a bounded realism claim | Independent measurements, calibration and held-out flight evidence for that installation |
+Every mandatory gate must pass. A preview, draft, successful trim, one flight, passing component suite or saved file does not close this contract. Completion is **ClearView importer v1 for the declared supported subset**; it is not universal ClearView compatibility or a physical-realism claim.
 
-Saving does not grant flight admission. A draft with an unsupported topology remains editable and previewable. Structural/decoder failures prevent even preview; a deliberately simplified preview must list every omitted feature. Do not represent an omitted motor, second wing, wheel or mixer as a complete flyable conversion.
+### Required v1 scope
 
-## 2. Baseline and dependencies
-
-The repository was inspected at `c930dcdbfe16d0f94f25d36c64e4384069730714`, with unrelated working-tree changes preserved. Relevant current boundaries:
-
-| Existing component | Reuse | Remaining dependency |
-| --- | --- | --- |
-| `workshop/creator/source_importer.gd`, `glb_preflight.gd`, `png_check.gd` | Captured immutable bytes, strict GLB/PNG admission | ClearView ZIP/AC3D and original image formats are not admitted |
-| `visual_builder.gd`, placement and part bindings | Runtime GLB loading, fresh instances, datum and articulation | Preserve legacy hierarchy and translate confirmed hinges |
-| `definition.gd`, `compiler.gd`, `record_loader.gd` | Complete authoring definition → exact v2 bytes → accepted candidate | Current compiler is conventional, single tractor electric, finite battery and gearless; imported source provenance needs an explicit record extension |
-| `trial.gd`, root/Main trial route | Frozen source/configuration and reference-backend test flight | AC-09/11 start receipt, logging, replay and restart coverage remain open |
-| `store.gd` and process lock | Immutable blobs, drafts, revisions and publication pointer | AC-13 platform/export qualification, AC-18 Home resolver and AC-19 portable closure remain open |
-| Strict aircraft contract and `FlightSession` | Capability, geometry, inventory, inertia, preparation and start validation | Stock support for a law does not mean Creator can author or launch it |
-
-**Blocking flight dependency:** the existing [AC-12 campaign](../research/aircraft-creator/AC-12-numerical-campaign.md) did not pass its registered numerical gate. Preview/parser work can proceed. Any player-facing flight milestone must close that gate for its stated domain, or qualify an independently specified configuration/domain through the owning physics process. Preserve the failed campaign and preregister any revised metric; successful trim is insufficient.
-
-The [2026-11-16 current-source audit](../research/aircraft-creator/AC-12-audit-2026-11-16.md)
-adds retained float64 traces, fixed-rate repeats and full exact-replay baselines for five
-registered diagnostic cells. It preserves the failed gate and introduces no replacement
-floor, tolerance, narrowed domain or flight permission.
-The separate [servo stage-time investigation](../research/aircraft-creator/AC-12-servo-stage-2026-11-16.md)
-tests a private candidate and records the remaining numerical and runtime-contract work.
-
-Creator trials currently pin `gdscript_reference`. Keep that policy; imported aircraft do not inherit stock native-backend qualification. Do not modify the float64 kernel or add ClearView/aircraft-ID branches to it. Keep the pinned `aircraft_data.gd` source unchanged unless a separately scoped physics change is necessary.
-
-## 3. Compatibility scope
-
-The inspected corpus contains 26 model roots from seven ZIPs: 20 `verNumber 5.0` and six `6.0`. All 121 `.ac` files have the `AC3Db` header. This establishes an initial corpus, not compatibility with every download on the site. See the [machine-readable inventory](../research/aircraft-creator/clearview-source-inventory-2026-11-15.json).
-
-| Wave | Supported outcome | Conditions and boundaries |
-| --- | --- | --- |
-| A | Local v5/v6 ZIP detection, model picker, static preview and original paint | AC3Db subset; declared render model; JPEG/BMP/PNG textures; bounded PNG output. Unsupported essential image/geometry features block complete preview |
-| B | One conventional electric aircraft, articulated controls/propeller, Airborne/Hand-launch, saved revision and Home launch | Actual topology and installation fit a qualified Creator domain. Select the fixture from the corpus after inspection; do not assume that a familiar aircraft name fits |
-| C | Fixed tricycle/taildragger gear, Runway starts and supported gasoline/glow installations | Depends on AC-21/23, GP contact laws and NITRO/FUEL authoring. Calmato is a valuable candidate, not a ready-made first electric fixture |
-| D | Elevons, pushers, gliders, flaps and additional installations, individually qualified | Reuse supported shared laws; add Creator compilers, records, bindings and tests where missing. A named commercial airframe does not select a law |
-| E | Biplanes, repeated propulsion, jets, variable geometry, V-tail/canard and retractable gear | Separate capability/law and authoring projects where unsupported. Preserve multiple physical surfaces/installations. AC-25 keeps retractable gear last |
-
-Helicopters, multirotors, landscapes and the V-22 transition model do not become fixed-wing aircraft by import. A V-22 may have a visual preview; operational tiltrotor support requires its own vehicle-model and validation project through the shared kernel. Never collapse a multi-engine model into one equivalent motor without an explicitly authored, differently identified experimental configuration.
-
-## 4. Architecture and trust boundaries
-
-```text
-local ZIP → bounded archive reader → model inventory + selected dependency closure
-          → v5/v6 parameter AST + AC3Db scene/marker IR + attributed observations
-          → visual normalization → self-contained GLB + binding candidates
-          → existing Creator SourceImporter.inspect_bytes → preview
-
-observations + confirmed definition + qualified OpenRC package
-          → existing/extended Creator compiler → RecordLoader → AcceptedCandidate
-          → exact-context trial → immutable Creator revision → AC-18 Home resolver
-```
-
-### 4.1 Archive admission
-
-Capture and hash the selected ZIP once. Enumerate models by a model-root `params.txt` plus its declared dependencies; do not interpret every nested `params.txt` as another aircraft. The V-22 sample contains a duplicate under `wavdata/`. Packs have per-model outcomes and are not one all-or-nothing flight transaction.
-
-Read entries into bounded buffers, not arbitrary filesystem extraction. Reject absolute, drive-qualified, UNC, traversal and symlink paths, encrypted/unsupported compression, overlapping entries, duplicate canonical names, inconsistent local/central metadata, invalid CRCs and truncated/overlong streams. Limit actual expanded output as well as advertised sizes, entry counts, nesting and allocation arithmetic. Inspect names for Unicode and case collisions before resolution.
-
-Resolve exact paths first. Permit a recorded case-insensitive match only when it is unique within that model's dependency root; refuse ambiguity. Never search the host filesystem, fetch a URL from a model, or guess a missing asset from another aircraft. Five sampled model references and one texture reference require this case handling.
-
-The existing Creator inflater handles zlib/PNG, which is not proof of bounded ZIP raw-DEFLATE support. AC-CV-01 must establish a bounded stored/DEFLATE implementation with exact consumption, output count and CRC checks on the pinned engine. Evaluate existing Godot ZIP facilities and the current inflater before adding code; do not call an allocating decoder on an unverified member. If the required guarantees are unavailable, ship only the developer conversion spike until a separately reviewed reader is ready.
-
-Initial policy proposal, to freeze after corpus and resource measurements: 64 MiB compressed archive, 256 MiB aggregate expanded data, 4,096 entries, 64 detected models, one model conversion at a time and 32 MiB selected render-source output. These are policy ceilings, not hardware qualification. Reuse Creator's stricter downstream triangle, node, material, image and store ceilings. Test every boundary and refusal; do not increase limits merely to make a sample pass.
-
-### 4.2 Legacy syntax and scene representation
-
-Use a typed, bounded AC3Db intermediate representation with object hierarchy, local transforms, original qualified names, materials, per-reference UVs, surface flags and separate point/line markers. Handle comments, CRLF variants, scientific numbers and quoted names. Validate complete numeric tokens, finite values, counts, indices, hierarchy depth and byte-counted `data` fields before allocation. Unknown geometry-affecting tokens or newer AC3D versions require a diagnostic, not an optimistic parse.
-
-Parse v5 flat parameters and v6 typed `#begin`/`#end` sections separately, selected by the actual `verNumber`. Preserve ordered repeated directives such as `breakPart`. Identical repeated scalar values can be recorded; conflicting scalar definitions require resolution. Recognize documented trailing annotations without allowing partial numeric parsing. Keep unknown fields in the import report; do not interpret them as supported physics.
-
-Read the configured `modelName`; do not assume `body.ac`. Read `fmodel.ac`, `colbody.ac` and a configured v5 `paramModelName` in distinct roles. Do not render all `.ac` files together: doing so would display collision models, aerodynamic rectangles, markers and smoke geometry as aircraft parts.
-
-### 4.3 Visual conversion and tool choice
-
-Recommended product direction: a small GDScript AC3Db adapter into the existing Creator representation, using the pinned Godot image and mesh facilities. It avoids requiring players to install Blender, AC3D, Python or a native converter. Treat this choice as conditional on AC-CV-02's fidelity, resource and security evidence.
-
-Before implementing a geometry converter, compare a reusable [Assimp AC importer](https://github.com/assimp/assimp/blob/master/code/AssetLib/AC/ACLoader.cpp) and an available Blender import route on synthetic known-answer fixtures and the local corpus. Preserve upstream notices for any reused code; pin the exact version/commit before adoption. Use them as independent comparators where useful. Do not add a three-platform native dependency solely because AC3D is supported in a library. If reuse demonstrably reduces total code and meets the same trust boundary, record that decision in AC-CV-02 and use it.
-
-The converter must preserve transforms, crease/smoothing, normals, double-sided flags, material opacity, texture scale/offset and UV seams. Triangulate concave polygons correctly; refuse self-intersecting/unsupported polygons rather than using an incorrect triangle fan. Point/line reference objects become metadata. Keep deterministic source-object → output-node mappings even when names repeat. Do not flatten articulated nodes or merge across hinges.
-
-Decode JPEG/BMP/PNG only after format-specific structure, dimension, size and aggregate pixel checks, then normalize to embedded PNG. Dimension checks and post-decode output checks do not bound a native decoder's workspace or CPU. AC-CV-02 must specify the admitted JPEG/BMP subset and establish malformed-input, parser-differential, allocation/CPU and cancellation evidence on the pinned exported engine; use strict Creator PNG validation for PNG. If that boundary cannot be established, refuse the affected image subtype or use a separately reviewed resource-limited decode process. Do not widen Creator's direct source-image admission to accommodate the adapter. Verify actual decoder output and re-admit the resulting GLB through `SourceImporter.inspect_bytes`; conversion never bypasses preflight. GIF is not a current Creator source-image format: ignore a confirmed optional legacy smoke effect with a visible report, or block a required texture with conversion guidance. Never silently lose body artwork. WAV files and legacy scripts/settings are not executed or automatically installed; use the existing OpenRC audio path until a separately licensed and validated audio import exists.
-
-### 4.4 Frames, scale and moving parts
-
-Require confirmation of nose/up, the resulting right direction, real span and wing leading-edge datum. The legacy manual itself gives an example where about two AC3D units represent a 730 mm aircraft; a universal one-unit/one-metre assumption is invalid. Store one explicit source-to-structural transform into OpenRC's `[x_aft, y_right, z_up]` LE frame. Apply it consistently to visuals, marker positions, hinge axes and candidate observations. Retain double precision for physical coordinates; rendering converts at its existing boundary. Test rotation, translation, uniform scale, handedness, winding and normal signs with asymmetric fixtures.
-
-Creator placement currently derives a right-handed frame from nose/up, and GLB preflight refuses mirrored/sheared nodes. Normalize any required reflection into the converted vertex/normal/winding data and marker coordinates before GLB admission, leaving supported right-handed rigid transforms and positive scale for placement. An unrepresentable shear, singular transform or unverified reflection must be refused explicitly. Do not serialize an arbitrary transform and assume the existing Placement/GLB contracts admit it.
-
-For v5, recover `XYZGroup`/`OCoord`/`ZCoord` hinge candidates. For v6, follow `XYZObject`, servo controlled-part/axis references and render-group associations. Keep parent transforms and multiple instances. A name match proposes a binding; it does not confirm control direction or aerodynamic authority. The player verifies full-left/right/up/down, neutral and propeller rotation using Creator's parts UI. Physical control signs must use `ControlSurfaces`; copying source servo signs is insufficient. Preserve stable OpenRC `airplane`, `propeller` and hinge conventions through the adapter.
-
-Creator's current `visual_parts.gd` binds mesh-carrying nodes, rotates around the selected node origin on a local x/y/z axis, and allows at most two nodes per role. Extracted arbitrary hinge lines and group nodes do not fit that contract directly. For representable rigid assemblies, the converter must re-pivot geometry, align the local axis and preserve the complete rest transform; bake or combine only geometry sharing that same rigid motion. Test parented/offset/oblique axes and neutral-pose equality independently. Refuse unrepresentable nested/grouped articulation and role counts with a report, or extend/version AC-17 bindings and all trial/store readers before offering those controls. Never discard an additional aileron to satisfy the limit.
-
-## 5. Physical authoring and evidence mapping
-
-Maintain an import report per selected model. Each observation contains source ZIP/member hashes, source dialect, section/key or qualified object, raw value/unit, conversion/assumption, target field if any, disposition and reason. Unknown is distinct from zero. No solver-specific coefficient becomes an OpenRC coefficient by sharing a similar name.
-
-| Legacy information | Proposed disposition |
+| Area | Fixed requirement |
 | --- | --- |
-| Title, authors, readme and original file names | Preserve as provenance; do not substitute author credits for a license |
-| Render dimensions and aerodynamic rectangles | Propose dimension/planform landmarks after confirmed scale and frame; retain them as source geometry observations, never measured aerodynamic truth |
-| `modelMass`, CG coordinates | Prefill only with established units/frame and explicit confirmation; v2 values remain borrowed or estimated source information, not aircraft measurements |
-| `propDiamInch`, `propPitchInch`, RPM and watts fields | Convert explicit units exactly, e.g. inches × 0.0254; retain ambiguous curve axes and installation meaning as unresolved. Drawn propeller size is not physical propeller diameter |
-| Named airfoil | Preserve identity/reference; require actual polar provenance, Reynolds/domain and the OpenRC coefficient convention before use |
-| Servo links, channels, mixing and `XYZObject` | Propose part relationships. Establish real throw, timing, signs and supported mixer independently |
-| Wheel/collision markers | Propose contact/hull locations. Require wheel radius, tire/suspension, support geometry and crash policy from supported authoring contracts |
-| `liftCoef`, wash/damping/CG/stall adjustments, `xRotMass`, `maxThrust` | Retain in source report; no direct coefficient/inertia/thrust-law mapping without a documented derivation and independent known-answer checks |
-| Gravity, camera, global input shaping, smoke and startup settings | Do not import into simulation settings. OpenRC owns environment, devices, starts and optional presentation |
+| Input | Local, bounded v5/v6 airplane ZIPs; one aircraft or packs; declared AC3Db/image subset with exact support and refusal rules |
+| Visuals | Original textures, supported transforms/materials, correct neutral pose, independently checked control directions and propeller motion; visible reporting of omissions |
+| Flight | Conventional wing and aft tail, one tractor electric motor, finite battery, no ground gear, within the qualified Creator package domain |
+| Physical authoring | Explicit independent OpenRC installation; complete evidence-bearing v2 data. Source declarations remain attributed observations unless a separately tested adoption rule exists |
+| Saved use | Exact revision publication, Home selection, restart, recovery, flight lifecycle, logging/checkpoint/replay and portable source/visual/physical closure |
+| Delivery | All three desktop OSs above, every architecture advertised by the release, current application translations and all eleven website/manual translations |
 
-The compiler must produce a complete inventory with total mass, CG and full inertia derived once; no invisible ballast or duplicate motor/battery mass. Provide the supported aerodynamic law, controls, propulsion/energy, hull and gear policy, physical IDs and `{value, unit, kind, source}` quantities. `borrowed` and `derived` already belong to v2's evidence vocabulary, but Creator's current definition/compiler accepts a narrower set: extend and version that authoring path, its store, UI and round-trip tests before importing such evidence. Preserve the original source reference through compilation rather than relabelling a copied value as player-measured or generic manual input.
+**Outside v1:** Runway starts and fixed gear; gasoline/glow; elevons, pushers, gliders and flaps; biplanes, multiple propulsion units, jets, V-tail/canard, variable geometry and retractable gear; helicopters, multirotors, tiltrotors and scenery; importing ClearView sound, scripts or simulator settings; automatic flight-model equivalence; named-skin authoring and unrelated UI redesign. AC-CV-10…13 retain the future aircraft work. None may enter the critical path without a concrete defect in the required v1 contract.
 
-Offer two explicit workflows: **review a detected installation** when sufficient compatible evidence exists, or **author a new estimated OpenRC installation** on the imported airframe. The second has its own configuration identity and visible differences from the source. It is never an automatic electric substitution for an unknown, combustion or multi-motor source. Select a qualified package only within its domain. Otherwise keep the draft and explain the missing law/data.
+The bounded AC-19 portability work is mandatory. It does **not** close all of Creator G08 or M3: those also include skin and broader Creator work. Report only the dependencies actually qualified.
 
-## 6. Persistence, replay and user experience
+## 2. Verified starting point
 
-Extend Creator's existing immutable records with a versioned import receipt referencing the captured original package, selected model/member hashes, importer and limits versions, normalized GLB, placement, bindings, physical definition and dependency/provenance report. The current Store has one source blob constrained to 32 MiB; it cannot store a proposed 64 MiB ZIP plus a normalized GLB in that slot. Add a distinct, versioned, bounded original-package blob/reference and archive-receipt closure, keeping the existing source slot for the admitted GLB. Extend every write/read/hash/quota/export/resolver check and migration test; do not merely raise `MODEL_SOURCE_BYTES` or route the ZIP through a permissive raw-record slot. If that extension is deferred, keep the archive external with its hash and no self-contained-original/portable-source claim. Separate original, visual, physical and full-trial hashes. Painting changes visual identity without rewriting physical bytes. A compiler/conversion update creates a new revision; it never silently alters an existing saved flight configuration.
+Planning baseline: branch commit `4c9da3b052f09f0e12eaf508cdb8ed0b732b5952`, with importer runtime inherited from `b2f81d1771031964446a1cbddd83770d6d1c87ff`. The fetched `main` commit `e0a733937e255bacfe95ff09db0fb3838697239f` changes website v0.2.9 links/highlights, with no importer or Creator-plan change. Recheck upstream at integration; preserve this branch's guides and evidence when reconciling website content.
 
-Reuse the Store's writer lock, CAS and root-pointer publication. Enforce its quota before capturing large archives; capture each original ZIP once and share it between imported pack members. Reference-count/quota policy must account for original bytes and conversion scratch even though Store is append-only. Interrupted conversion leaves the previous publication untouched. Archive/hide a revision through existing semantics; do not invent unsafe deletion or bypass the store to write into `res://`.
-
-Use the AC-18 source resolver for Home and preference restoration; do not add user entries to the static stock catalog or generate runtime scripts. One saved selection must resolve the exact source revision after restart and revalidate flight availability. Missing or corrupted dependencies show an unavailable card with recovery guidance, never a substituted stock aircraft. AC-19 must include the entire permitted source closure for portability. A flight log's visual-source hash is not the visual bytes: test both exact physics replay and visual reconstruction, including a clean machine with the source absent. Do not embed restricted source assets into an export by default.
-
-Player flow: **Workshop → Import ClearView ZIP → choose model → inspect conversion report → confirm orientation/size/datum → review physical configuration → verify moving parts → test flight → save aircraft → select in Home.** Keep advanced source keys in an expandable report. Show practical reasons such as “Two motors detected; this compiler supports one” or “Confirm the real wingspan”; avoid presenting parser internals as the main flow. Include cancel/progress, retry, keyboard/radio-safe navigation and the existing dirty/recovery guards.
-
-## 7. Work packages and acceptance
-
-AC-CV-01 has a bounded reader implementation and synthetic/corpus evidence. AC-CV-02/03 have an experimental conversion and Creator integration slice; their fidelity, resource and exported-target gates remain open. AC-CV-04 has four-point render-frame recognition, exact provenance, conservative v6 visual hinge proposals and manual group bindings. V5 hinge/propeller semantics, independent animation comparison and exported evidence remain open. AC-CV-05 has a versioned read-only source report and a source/report/package-bound explicit estimated-configuration choice; parameter adoption remains open. AC-CV-06 now refuses recognized ClearView flight at both trial creation and verification while G05 remains open; publication is also unavailable, with draft saving preserved. This is an admission safeguard, not a qualified candidate. AC-CV-00 is partial, and AC-CV-06…14 remain open. The [implementation evidence](../research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence) distinguishes implemented behavior from qualification. No whole step is marked complete by these slices.
-
-| ID | Work | Acceptance evidence / dependency |
+| Boundary | Implemented evidence | Work still required |
 | --- | --- | --- |
-| AC-CV-00 | Freeze supported corpus, rights ledger, compatibility matrix and resource policy | Re-download/hash receipts; one outcome per model; fixture permissions; select an actually compatible first-flight specimen |
-| AC-CV-01 | Bounded ZIP inventory, safe dependency resolver and v5/v6 parser | Generated hostile and known-answer cases; CRC/truncation/overrun; unique case handling; pack picker; no filesystem/network escape |
-| AC-CV-02 | AC3Db/texture conversion spike and tool decision | Asymmetric synthetic reference; transform/UV/material/pivot comparisons; defined JPEG/BMP subset, decoder malformed/peak campaign; re-admitted Creator GLB; measured peaks and exported-engine probe; no runtime dependency assumed |
-| AC-CV-03 | Production preview adapter and actionable report | Corpus conversion matrix; no visible fmodel/colbody/markers; paint retained; cancellation and malformed-input isolation at 1080p |
-| AC-CV-04 | Moving-part proposals and confirmed bindings | v5/v6 parented/oblique hinge fixtures; mesh re-pivoting/axis alignment and exact rest pose; role-limit/group refusal or versioned AC-17 extension; neutral/full-deflection/prop tests; independent instances |
-| AC-CV-05 | Versioned source observations and Creator provenance extension | Closed-schema round trip through definition/compiler/store/UI; exact units and source hashes; ambiguous data never auto-admitted |
-| AC-CV-06 | First conventional electric candidate | AC-12 numerical/domain gate; complete v2 inventory, laws and IDs; exact source/config/environment/backend/start identity; no source-installation substitution |
-| AC-CV-07 | Save, Home, restart and portable dependency closure | AC-13/18/19; separate original-ZIP blob/receipt schema and admitted-GLB source; clean-profile import→save→restart→Home→fly; missing/corrupt/conflicting revision tests; quota and interruption matrix |
-| AC-CV-08 | Flight lifecycle, recorder and regression coverage | AC-09/11 exact-context receipt; reset/crash/return/log/checkpoint/replay on exact candidate; original stock behavior unchanged |
-| AC-CV-09 | Exported desktop and resource qualification | Windows/Linux/macOS packaged builds, read-only app install, no editor/tool prerequisite; native renderer/actual 1080p evidence; memory and cancellation checks |
-| AC-CV-10 | Fixed-gear conventional aircraft | AC-21 and GP; tricycle/taildragger, Runway, support geometry, steering, touchdown/reset/replay; test Calmato if its evidence fits |
-| AC-CV-11 | Gasoline/glow and additional energy installations | AC-23 plus NITRO/FUEL/EL/BAT; authoring, depletion/mass/CG, audio identity and lifecycle per supported family |
-| AC-CV-12 | Elevon/pusher/glider/flap imports | Owning AS/AC capabilities; actual distinct compilers and start/control tests; no fake aft tail or powered glider substitution |
-| AC-CV-13 | Expanded layouts and installation research | Explicit separate proposals for biplanes, repeated propulsion, jets, variable geometry, canard/V-tail and retractable gear; no blanket compatibility claim |
-| AC-CV-14 | Player guide, support matrix and permitted release | Published tested archive/model identities, known omissions, licenses/credits and export evidence; no redistribution without the applicable rights |
+| ZIP → preview → draft | Bounded archive/parameter readers, pack picker, AC3Db/image conversion and re-admitted GLB; working Creator path | Independent fidelity, complete declared-subset coverage, malformed/resource/cancellation and exported-target qualification |
+| Controls and source context | Conservative v6 hinge proposals, manual bindings, source reports and explicit independent-configuration confirmation | v5/manual and propeller semantics, sign/pivot/role coverage, source-aware definition and saved-publication closure |
+| Physical flight | Complete estimated-package authoring and trial foundations exist | AC-12/G05 remains unqualified; recognized ClearView sources are deliberately refused by trial, publication and saved-flight paths |
+| Publication and Home | Captured v4 publication, compile-binding receipt, exact SourceRef/resolver and selection prerequisites exist | ClearView-aware capture/readback; Home/preferences/Main integration; exact saved-start and restart admission |
+| Persistence and portability | Immutable GLB blobs, drafts, revisions, lock, quota and recovery foundations | Separate original-ZIP storage, exact bundle closure, platform filesystem qualification and clean-profile transfer |
+| Documentation | Matching short Markdown and website guides in eleven languages | Final supported-subset/release copy, rendered layout and links on the delivered candidate |
 
-### Verification strategy
+The [2026-11-19 check record](../research/aircraft-creator/clearview-guide-checks-2026-11-19.json) contains **1,097 focused checks** and **25 model roots from six ZIPs: 15 visual admissions, 10 refusals**. It is an isolated Linux headless subset, not a full-app or release qualification. Its source-installation/trial attempt emitted engine errors and is explicitly excluded; browser layout was unverified. Keep the older 26-model corpus separate until deduplicated by archive hash and model root. Do not add overlapping sample counts or convert historical evidence into a current-build pass.
 
-The [AC-12 arrival study and generic interval transport](../research/aircraft-creator/AC-12-servo-knots-2026-11-16.md)
-implement numerical prerequisites for AC-CV-06. The selected two-cell split study passes its
-unchanged rule, and the transport is opt-in with no production aircraft caller. Aircraft-law
-selection, replay/native admission and full-domain G05 remain required before ClearView flight.
+## 3. Execution discipline
 
-Reuse focused `test_creator_import`, `test_creator_glb`, `test_creator_visual`, `test_creator_compiler`, `test_creator_trial`, `test_creator_flight`, `test_creator_store` and `test_creator_flow` coverage as affected. Add tests at the new archive, syntax, mapping and publication boundaries; generate synthetic assets with independently calculated expected coordinates, signs, unit conversions and CRCs. Keep third-party downloads out of the repository/required CI unless their fixture rights are established. A network-optional local corpus campaign records refusal reasons as well as successes.
+1. **One owner per active deliverable.** Before work starts, the lead assigns a named person/agent to the role in section 4, records the exact input commit and states the expected evidence. Helpers return bounded findings or patches; the lead owns design, integration and acceptance.
+2. **One gate-sized change at a time.** Every patch identifies its AC-CV/AC step, failing acceptance criterion, changed paths and proof. No speculative refactor, new framework, alternate importer, new aircraft family or cosmetic redesign. Reuse existing Creator, Store, resolver, debug, export and test tools.
+3. **Keep numerical rules fixed.** Do not lower tolerances, change floors, remove failing cases, narrow the domain after a failure, replace exact replay with candidate replay or remove admission guards to show progress. Each changed law/policy/source candidate needs a separately registered identity before rerunning the unchanged full G05 matrix and acceptance protocol. This plan authorizes no weaker replacement rule or reduced matrix. Required physics fixes belong to AC-12 with its owner.
+4. **Keep failed and unavailable results visible.** A skipped platform, missing asset, timeout, engine error, incomplete trace or unreviewed capture is not a pass. Fix the cause or leave the gate blocked with an owner and next action. Repeatedly requesting the same unresolved run is not progress.
+5. **Do not widen compatibility to fit one download.** Classify each case against the frozen support contract. A defect inside that contract must be fixed; a genuinely unsupported case must be refused clearly. Do not silently discard a motor, wing, texture, control or other required dependency.
+6. **Use proportional verification.** Run affected checks during development; run integration and required CI on the release candidate. Reuse unaffected evidence only when input identities and scope still match. No repeated full-suite campaigns for documentation or local parser edits.
+7. **Update the same evidence and plan.** At each handoff report: completed criterion and receipt; exact remaining blocker; next bounded action. Mark a step complete only after lead inspection of the integrated candidate and evidence. Once the checklist passes, close this work; additional features are separate work.
 
-Follow the [tool index](../tools/README.md), [focused verification scope](../tools/shared.md#verification-scope) and test admission policy. Use checked headless jobs for compatible independent tests; rendered/export/platform evidence has separate gates. For physics changes preserve an `.orfl` baseline, verify exact replay, compare the same input tape, and retain `complete`, `solver_changed`, configuration and backend identities through the [flight-log workflow](../FLIGHT-LOGGING.md). Do not re-record stock goldens to absorb importer work.
+## 4. Ordered work and acceptance
 
-Measure import wall time, main-thread stall, cancellation latency, peak process RAM, decoded texture bytes, resulting triangles/draw calls, VRAM and steady/peak 1080p frame time on named target hardware. Freeze measurable thresholds in AC-CV-00/02 after baseline collection, before the production campaign. Keep conversion out of the active flight tick; parse in bounded jobs and create/free GPU resources through the proper rendering path. Apply existing quality settings to presentation without changing physics. Qualify above-1080p afterward; 720p evidence cannot replace 1080p acceptance.
+All release gates below are **open**. Existing code is a starting point, not an instruction to rebuild it. Gate 1 and the AC-12 investigation can progress independently after Gate 0. Home/storage work may use existing admissible Creator fixtures while ClearView flight is blocked; that work cannot qualify the final ClearView journey early.
 
-## 8. Ownership, risk and delivery sizing
+| Gate / steps | Accountable role | Required output and pass rule | Stop condition |
+| --- | --- | --- | --- |
+| **0. Freeze scope — AC-CV-00** | Lead + QA/evidence owner | One support/corpus manifest: exact baseline/build/engine, admitted syntax/image/geometry subsets, legal fixture uses, hashes/model roots, expected per-model outcomes, chosen real first-flight specimen and compatible field/weather/contact context; register resource thresholds as described below | No identified compatible real specimen/context, uncertain required fixture rights, missing threshold/expected outcome or unassigned owner |
+| **1. Finish input, preview and controls — AC-CV-01…04** | Adapter owner + independent visual reviewer | Pass the parser/decoder/geometry/pack/refusal matrix; deterministic GLB readmission; independent transform, UV, pivot, sign and instance checks; complete appearance and truthful report; cancellation leaves the document/library unchanged | Malformed input reaches an unsafe decoder, unsupported content is silently dropped, controls are unverified, or any promised-subset case fails |
+| **2. Qualify configuration and flight — AC-CV-05/06; AC-05/06/09/11/12** | Creator owner + physics owner, with UI/field owners | Complete versioned source-aware definition/inventory; explicit configuration confirmation; full unchanged G05 campaign; exact-context start receipt and runtime domain enforcement, including the actual weather/contact witness through the normal UI; qualified Airborne and Hand-launch | G05 incomplete/failed; ambiguous physical values; unsupported layout/power/context; mismatched check/start identities; any bypass of a flight boundary |
+| **3. Publish, reopen and select — AC-CV-07; AC-13/18** | Creator persistence owner + UI owner | Source-aware captured publication, immutable ZIP/GLB/definition/physical closure, exact resolver, Home/preferences/Main consumption, real process restart; all corruption/stale/interruption/lock/quota cases preserve valid revisions | Wrong revision/source/configuration resolves, silent stock fallback, partial publication, legacy/downgrade bypass or lost draft/revision |
+| **4. Transfer and exercise lifecycle — AC-CV-07/08; AC-09/11/19 + FL** | Creator owner + flight-log owner | Fresh-profile bundle round trip with original paths absent; idempotence/conflict tests; reset/crash/return/recovery; complete exact recorder/checkpoint/replay using the same saved candidate | External source dependency remains, reconstructed visuals differ, failed exact replay, lost return state or altered physical identity |
+| **5. Qualify packaged targets — AC-CV-09; AC-20** | Release/QA owner | The player-facing journey from Gates 1–4 through the normal UI on packaged Windows, Linux and macOS; numerical/hostile/native checks through their proper test paths; platform decoder/lock/recovery evidence, rendered fidelity, measured resources and responsive cancellation; required CI passes on exact candidate | Missing OS/advertised architecture, editor-only success, absent native rendering, missing measurement, engine error or failed required CI |
+| **6. Finish guidance and release review — AC-CV-14 + WEB/UI** | Documentation owner + independent reviewer; lead closes | Truthful compatibility matrix; concise guides and new UI strings in every applicable locale; working actual-release links; rendered desktop/narrow/RTL website checks; clean final review and checklist below | Copy promises unavailable behavior, required translation/link/layout fails, unresolved release-blocking finding or stale evidence |
 
-Proposed owned code: `app/workshop/creator/clearview/`, its schemas under `app/data/creator/`, and `app/tests/test_creator_clearview_*.gd`. Keep offline corpus commands under `research/aircraft-creator/clearview/` if implementation needs them; retain only small textual receipts in `docs/research/aircraft-creator/`. Extend shared Creator files with AC; Home/root/preferences with UI; v2/presentation with AS; sessions/replay with physics/FL; contact with GP/CR; energy with EL/BAT/NITRO/FUEL. No helper owns final architectural or integration acceptance.
+### Gate 0: freeze evidence before implementation campaigns
 
-| Risk | Mitigation / stop condition |
+Use the existing research directory, not a new tracking system. Record one result per **archive SHA-256 + model root**, including expected refusal reason and the exact permission needed for local testing, retained evidence and any intended transfer. Keep third-party ZIPs outside Git and mandatory CI unless redistribution rights are explicit; use synthetic known-answer fixtures in CI. At least one identified, lawfully usable real download must complete the player journey. An attractive Extra 330 preview is not evidence that its installation fits the trainer domain.
+
+Freeze the implemented ceilings: **64 MiB ZIP, 256 MiB summed declared expansion, 32 MiB per selected member, 4,096 entries and 64 model roots**, together with stricter downstream Creator limits. Each decoded member must match its bounded declared length and CRC; the aggregate archive ceiling does not measure cumulative work across repeated reads. Include repeated decoding in the measured work/resource budget. Original-package storage must not weaken the separate **32 MiB GLB source** limit. Measure a baseline on named target hardware, then register numeric limits and rationale for import wall time, worst main-thread stall, cancellation latency, peak process RAM, decoded texture bytes, VRAM and frame time before the release campaign. Freeze flight durations, repeated-import/reopen counts and measurement windows with those limits. Missing numbers keep Gate 0 open; these policy ceilings are not measured performance. Never raise a threshold after seeing a failing qualification result.
+
+### Gate 1: preserve the existing trust boundaries
+
+- Read bounded captured bytes; do not extract arbitrary paths, fetch model URLs, execute source settings or search the host for missing assets. Test traversal/drive/UNC/symlink paths, case collisions, duplicate/overlapping members, CRC/local-central mismatches, encryption, unsupported compression, truncation and expansion limits. Resolve a case-insensitive reference only when unique in the selected root, and report it.
+- Parse v5/v6 separately using the declared version and `modelName`. Preserve raw unknown/repeated declarations with diagnostics. Render only the declared visual dependency closure; keep `fmodel.ac`, `colbody.ac`, point/line markers and smoke helpers out of the visible aircraft unless their role is explicitly supported.
+- Admit only the frozen AC3Db, PNG, BMP and JPEG subsets. Preflight before allocation/decoding, check actual output and aggregate resources, and re-admit every generated GLB through `SourceImporter`. Cover malicious streams and exported-engine behavior. Use correct concave triangulation or refuse it; never substitute a triangle fan for an unsupported polygon. An independent comparator is useful evidence, not a new runtime dependency by default.
+- Independently verify asymmetric known-answer transforms, handedness, winding, normals, texture UVs, opacity and hierarchy. Confirm source-to-OpenRC `[x_aft, y_right, z_up]` frame, real span and leading-edge datum; do not assume one source unit is one metre. Normalize supported reflections into geometry before rigid GLB admission; refuse unverified shear/singular transforms.
+- Verify v5 and v6 fixtures, neutral pose, parented/offset/oblique pivots, left/right/up/down deflections, propeller direction and two independent instances. Manual confirmed bindings are acceptable when a proposal cannot be derived. Unrepresentable groups, extra parts or role limits require explicit refusal of affected flight capability; no lost aileron or fake axis. Preserve stable `airplane`, `propeller` and hinge conventions.
+
+### Gate 2: flight requires a qualified exact candidate
+
+Source parameters and geometry do not automatically establish OpenRC mass, inertia, aerodynamic coefficients, controls or power. Preserve exact source units, hashes and uncertainty; unknown is not zero. The player must confirm the independent OpenRC installation and its differences from the source. Any adopted value needs an explicit tested unit/frame conversion and correctly labelled provenance, never a relabel as measured data. Inventory must derive total mass, CG and full inertia once, without duplicate components or invisible ballast; all required v2 laws, capabilities and physical IDs must validate.
+
+For the current AC-12 path, qualify **all 68 registered C01–C17 × four-tape cells at 240/480/960 Hz**, retaining the seven metrics, formulas, floors, tolerances and **0.75 convergence-ratio limit**. Each cell needs its own complete exact 240 Hz baseline/replay through tick 1,440, with 1,441 replay rows, `complete=true` and `solver_changed=false`. Preserve source, case maps, policy/law and engine identities. An independent collector and physics-owner review must accept the whole campaign. The [registered campaign](../research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md#fixed-campaign) owns details; historical 60/68, 64/68 and partial diagnostic results do not close it. A dated “running” note is not current completion evidence.
+
+Keep `gdscript_reference` pinned for Creator trials. Do not add ClearView/aircraft-ID branches to the float64 kernel or inherit stock native-backend qualification. The check and actual start/reset must share the frozen source, definition, compiled bytes, placement/bindings, package/compiler, solver policy, backend, field, weather, energy, tick and start-mode identities. Enforce the qualified domain in trial creation, verification, publication, saved-source resolution, start, step and restore boundaries.
+
+Resolve the existing interactive-context conflict explicitly. The selected servo-law domain requires **calm Reference atmosphere** and refuses soft hull contact, scenery/lake/RC-track collision contexts and the other exclusions in its registration. Home's Calm choice alone can preserve a different atmosphere, and normal flights enable soft contacts. Reuse an actually compatible field, provide a visible validated flight option for the qualified contact policy, and verify the installed weather/collision world before launch and reset. Carry the exact choice through Creator, Home, Main and any versioned preferences without changing stock defaults. Do not silently remove collision data from a drawn field or use `--soft-contacts=off` as a substitute for the normal UI journey. The [AC-18 context boundary](../research/aircraft-creator/AC-18-source-reference-2026-11-16.md#actual-flight-configuration-boundary) specifies the existing seams; a wider context is outside this frozen qualification until separately owned and validated.
+
+Replace each existing refusal only with its proven admission check: `authoring.gd`, `trial.gd`, `compiled_publication.gd`, the Creator UI publish handler, `source_resolver.gd` and `published_trial.gd`. Removing `FLIGHT_UNAVAILABLE` alone is a release-blocking defect. Until the relevant gates pass, recognized ClearView sources retain preview/edit/draft behavior. Metadata identifies recognized sources and checks consistency; it does not authenticate authorship or prove the origin of an arbitrary untagged GLB.
+
+### Gates 3–4: exact publication, Home and portable closure
+
+Extend the existing captured-publication path; do not introduce another Store. Current capture binds a live document/candidate, but its reader checks and paired hashes are not proof that arbitrary physical bytes were derived from a definition. Version source-aware capture, records and verification together. Test stale confirmation, cross-paired definitions/physical bytes/visuals, spoofed receipts, tampering, absent reports, legacy records and downgrade attempts. A changed source/package/compiler must require a new review/revision; preserve historical records and fail unavailable builds clearly.
+
+For the new ClearView-aware format, enforce derivation again when admitting portable or edited stored records: select a recognized compiler/package profile installed with the application, compile the exact stored definition and compare its canonical physical bytes with the immutable stored bytes before flight. Never execute a compiler supplied by a bundle. Prove this comparison on all target platforms; compiler math is not assumed to be byte-identical across OSs. If the pinned profile is unavailable or the result differs, retain the original revision for recovery and keep flight unavailable, without silently rewriting it. An alternative verifier needs a separately specified and tested proof of the same derivation relationship; paired hashes are insufficient. Include a same-UUID/same-law cross-pair with every public hash/receipt recomputed, a forged compiler identity and a downgrade attempt. This rule applies to the new format; preserve documented historical Creator read/legacy-unbound behavior. Derivation consistency still does not authenticate authorship, source claims or physical realism.
+
+Store the captured original ZIP as a **separate bounded, immutable blob** with a versioned receipt, alongside the admitted GLB and complete definition/physical/dependency closure. Capture each pack ZIP once and account for shared references, scratch and store quota. Retain attribution and the original parameter bytes even when an optional GLB report is too large. Do not put a 64 MiB ZIP in the 32 MiB GLB slot, inflate that slot, or treat an archive hash without bytes as portable original-source proof.
+
+Reuse locks, compare-and-swap and atomic publication. Cover disk/quota exhaustion, cancellation, interrupted conversion/save, two writers, stale revision, corrupt/missing dependencies and explicit recovery. Previous valid revisions must remain readable; missing data must not silently select a stock aircraft, newer revision or different source. Home/preferences use the existing exact SourceRef resolver, including stale asynchronous results and restored selection. Do not insert user models into the static stock catalog.
+
+The `.orcaircraft` round trip must contain the permitted original-source, visual and physical closure. Remove access to the external ZIP/old profile for the test; verify identity before and after transfer, idempotent repeated import and explicit conflict copies. Test actual visual reconstruction as well as physical replay: a flight-log hash cannot reconstruct a missing mesh. Do not distribute restricted source assets by default. Complete reset, crash, return-to-editor, unsaved/recovery, log and checkpoint journeys using the same frozen candidate; preserve stock behavior and existing goldens.
+
+### Gates 5–6: packaged evidence and public claims
+
+For **each Windows, Linux and macOS release target**, use a fresh profile and a read-only application installation, with no Godot editor, Blender, Python or conversion tool required by the player. Capture the normal UI journey, pack selection, supported example, clear unsupported example and recovery. Check keyboard/controller navigation, focus, dirty guards, actionable messages, text scaling and every application locale touched by this feature.
+
+Use actual **1920×1080** first on standard displays. On **Apple Silicon Retina**, use the native physical-panel requirement in the [Apple plan](apple-silicon-performance.md), recording output, drawable and internal 3D pixels separately. A headless pass or another OS cannot replace native decoder, renderer, lock, filesystem or measured-resource evidence. Exercise conversion cancellation and repeat import/reopen cycles against the frozen resource limits; record the target hardware and renderer.
+
+Keep the short [player guide](../../site/clearview-import-en.md), its website section and all eleven translations synchronized with the shipping behavior. Reconcile the newer v0.2.9 website changes and this branch's v0.2.7 warning against the **actual release being delivered**, not an assumed version. Verify links, tested example identity, credits, supported-file limits and visible limitations. Update generated pages through the existing site workflow and verify publication includes the Markdown files. Render desktop, narrow and RTL layouts; prior static tests do not establish visual quality.
+
+## 5. Verification and evidence ownership
+
+Use the [tool index](../tools/README.md), [checked runner/test admission policy](../tools/shared.md#one-godot-script), [flight logging workflow](../FLIGHT-LOGGING.md) and [release sequence](../TOOLS.md#release-sequence). Do not invent replacement harnesses where existing entry points cover the contract.
+
+| Boundary | Existing starting points; extend only for uncovered behavior |
 | --- | --- |
-| ZIP and native image decoder resource abuse | Bounded preflight, actual expansion/pixel counters, synthetic hostile campaign and exported-engine testing before release |
-| Unsupported geometry or ambiguous references | Deterministic refusal or explicitly limited preview; preserve the source and correction report |
-| Attractive visuals conceal false physics | Separate availability levels, complete evidence-bearing authoring, supported domains, numerical and physical gates |
-| Existing Creator qualification and Home work grow the scope | Track AC dependencies explicitly; release preview separately; do not call test flight a finished import feature |
-| Mixed asset provenance and unclear rights | Per-asset ledger; distribute importer code separately; include only assets with the needed documented permissions |
-| Re-import, upgrade or missing visual source changes replay | Immutable revisions and full closure/resolver tests; never regenerate a saved version in place |
+| Archive, conversion and UI | The six `test_creator_clearview_*.gd` suites; `test_creator_import.gd`, `test_creator_glb.gd`, `test_creator_visual.gd` |
+| Definition, identity and flight | `test_creator_source_installation.gd`, `test_creator_compile_binding.gd`, `test_creator_compiler.gd`, `test_creator_trial.gd`, `test_creator_flight.gd`, `test_creator_flow.gd`; registered AC-12 campaign and exact replay |
+| Publication, Home and recovery | `test_creator_store.gd`, `test_creator_publication_ui.gd`, `test_creator_persistence_ui.gd`, `test_creator_source_ref.gd`, `test_creator_published_trial.gd`, `test_creator_selection_state.gd`; affected Home/preferences tests |
+| Localization and website | `test_creator_language.gd`; `python3 site/build_locales.py --check`; `python3 site/test_locales.py`; `node site/test_downloads.cjs`; rendered layout review |
+| Packaged delivery | Existing export/release tools, debug bridge, resource measurements, native filesystem/decoder checks and required repository CI |
 
-Planning ranges, not commitments: **2–3 engineer-weeks** for bounded format/conversion spikes and preview; **3–5 additional engineer-weeks** for source-aware authoring, articulation and one qualified flight configuration; **2–4 additional engineer-weeks** for persistent Home/export/lifecycle integration if the relevant Creator foundations can be completed in that period. Work packages can overlap with clear ownership, but failed numerical qualification, new laws, permission acquisition and target-device access are external to those ranges. Re-estimate after AC-CV-02. Do not promise a date for every aircraft on the website; AC-CV-10…13 are separate capability increments.
+The Godot test scripts above are under `app/tests/`. Run compatible independent headless jobs through the shared test pool when available; inspect completion, assertions, warnings and engine errors. A zero process exit or zero failed-assertion line alone is insufficient. Keep rendered and hardware campaigns separate from competing load.
 
-The first completion milestone is one identified, permitted and supported aircraft completing **ZIP → original appearance → confirmed controls → qualified OpenRC physics → test flight → saved revision → Home → restart → flight**, on each advertised packaged desktop target, with all unavailable cases still handled safely and clearly.
+Every gate receipt records: exact tested commit/tree and relevant generated inputs; engine/export hashes; fixture archive/member/model hashes; GLB, definition, compiled physics and package/compiler/solver identities; command and complete verdict; OS/hardware/renderer/actual pixels where applicable; log/report hashes; failures and limitations; reviewer and date. Store small summaries in the existing Creator research home, with retrievable raw evidence outside Git. Do not commit unnecessary screenshots or third-party archives.
+
+## 6. Step status and closure
+
+| Step IDs | Current status / completion evidence required |
+| --- | --- |
+| AC-CV-00 | **Open:** frozen deduplicated support/corpus/rights/resource manifest and compatible real first-flight fixture |
+| AC-CV-01 | **Implemented, qualification open:** bounded readers; close Gate 1 and applicable packaged-input evidence |
+| AC-CV-02/03 | **Implemented, qualification open:** converter, preview, report and guide baseline; close fidelity/resources/cancellation/exported evidence |
+| AC-CV-04 | **Partial:** conservative v6 proposals/manual bindings; complete declared v5/v6 and propeller/control coverage |
+| AC-CV-05 | **Partial:** source reports and explicit configuration choice; complete source-aware definition/publication round trips |
+| AC-CV-06 | **Blocked:** G05 and exact start/domain admission; preview/draft guards stay in place |
+| AC-CV-07/08 | **Open:** original archive, captured publication, Home/restart, portable closure and full flight lifecycle |
+| AC-CV-09 | **Open:** complete packaged Windows/Linux/macOS and registered resource evidence |
+| AC-CV-10…13 | **Deferred, outside v1:** gear, combustion, additional control/airframe families and expanded-layout research; no completion claim for them |
+| AC-CV-14 | **Partial:** short guides exist in eleven languages; final supported release, rendered guidance, rights and claims still require Gate 6 |
+
+### Final checklist — every box is required
+
+- [ ] Frozen supported subset, compatible real specimen, fixture rights and resource budgets are complete; all promised cases pass and unsupported cases have verified diagnostics.
+- [ ] Source/visual/control correctness and hostile/resource boundaries pass on the declared targets, with independent comparison and reviewed captures.
+- [ ] Complete physical configuration, full unchanged G05 qualification, domain guards and exact start/reset identity pass; the physics owner accepts the evidence.
+- [ ] ClearView-aware captured publication and separate ZIP/GLB/definition/physics closure pass integrity, historical-read, quota, interruption, lock and recovery checks.
+- [ ] The normal UI completes ZIP → confirmed configuration/controls → flight → save → Home → real process restart → the same flight.
+- [ ] Clean-profile portable export/import works without the external source or old library, preserving visual/source/physical identity, replay, credits and permitted use.
+- [ ] Windows, Linux and macOS packages, and every advertised architecture, pass the required rendered journey, lifecycle and measured-resource checks; required CI is green on the exact candidate.
+- [ ] All affected application strings and all eleven website/Markdown versions match delivered behavior and release links; desktop/narrow/RTL review passes.
+- [ ] The lead resolves every concrete release-blocking review finding and signs off the integrated candidate with links to complete evidence. Missing infrastructure or evidence keeps the affected box open.
+
+**First action for the implementation team:** assign Gate 0 and the AC-12 physics owner, freeze the current inputs and corpus outcomes, select the eligible real specimen, and register measurement thresholds. Then complete the ordered gates. Do not start another feature, rewrite the roadmap or declare the importer finished while a required box remains open.
+
+After accepted delivery, consolidate the final support contract and verified commands into the canonical [Workshop guide](../AIRCRAFT-WORKSHOP.md) and existing evidence. Transfer AC-CV-10…13 and their owners/status to the surviving Creator plan without reopening v1. Update all incoming plan links and the documentation registry before retiring this active plan according to repository documentation policy.
