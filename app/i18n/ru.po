@@ -14370,6 +14370,195 @@ msgstr "Лётные данные Phoenix этой модели выведены
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Лётные данные Phoenix этого черновика получены в более ранней версии OpenRC. Снова используйте «Настроить для полёта», чтобы вывести их."
 
+msgid "%s (installed)"
+msgstr "%s (установлен)"
+
+msgid "A complete preview is required."
+msgstr "Требуется полный предварительный просмотр."
+
+msgid "A complete set of six panorama panels was not found, or names are ambiguous."
+msgstr "Полный комплект из шести панорамных панелей не найден, либо названия неоднозначны."
+
+msgid "A panorama panel could not be saved. Check the available disk space."
+msgstr "Не удалось сохранить панель панорамы. Проверьте доступное место на диске."
+
+msgid "A position contains an invalid coordinate."
+msgstr "Позиция содержит недопустимую координату."
+
+msgid "A position label is missing its terminator."
+msgstr "В метке позиции отсутствует терминатор."
+
+msgid "A source folder could not be opened."
+msgstr "Не удалось открыть исходную папку."
+
+msgid "Cancel operation"
+msgstr "Отменить операцию"
+
+msgid "Cancelled."
+msgstr "Отменено."
+
+msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
+msgstr "Выберите файл или папку ландшафтов Phoenix либо откройте установленный предпросмотр."
+
+msgid "Choose a scenery file"
+msgstr "Выбрать файл ландшафта"
+
+msgid "Choose a scenery folder"
+msgstr "Выбрать папку ландшафтов"
+
+msgid "Choose a site to preview its panorama panels."
+msgstr "Выберите лётное поле для просмотра панорамы."
+
+msgid "Choose file"
+msgstr "Выбрать файл"
+
+msgid "Choose folder"
+msgstr "Выбрать папку"
+
+msgid "Import scenery"
+msgstr "Импортировать ландшафт"
+
+msgid "InfinityScape terrain generation is not yet supported."
+msgstr "Генерация рельефа InfinityScape пока не поддерживается."
+
+msgid "Install preview"
+msgstr "Установить предпросмотр"
+
+msgid "Installed locally. Preview only."
+msgstr "Установлен локально. Только предварительный просмотр."
+
+msgid "Installing scenery preview…"
+msgstr "Установка предварительного просмотра пейзажа…"
+
+msgid "Look toward panel %d"
+msgstr "Посмотрите на панель %d."
+
+msgid "No Phoenix scenery descriptors were found."
+msgstr "Описания ландшафтов Phoenix не найдены."
+
+msgid "No Phoenix scenery was found in this source."
+msgstr "В этом источнике ландшафты Phoenix не найдены."
+
+msgid "Opening preview…"
+msgstr "Открытие предпросмотра…"
+
+msgid "Panorama panel %d could not be decoded."
+msgstr "Не удалось декодировать панорамную панель %d."
+
+msgid "Preparing panorama panels…"
+msgstr "Подготовка панорамных панелей…"
+
+msgid "Preview only. Browse the six source panels."
+msgstr "Только предпросмотр. Просмотрите шесть исходных панелей."
+
+msgid "Preview only. Drag to look around or choose a numbered direction."
+msgstr "Только предпросмотр. Перетащите изображение или выберите направление по номеру."
+
+msgid "Preview removed."
+msgstr "Превью удалено."
+
+msgid "Remove preview"
+msgstr "Удалить предпросмотр"
+
+msgid "Remove the installed preview for %s?"
+msgstr "Удалить установленную предварительную версию для %s?"
+
+msgid "Scanning scenery…"
+msgstr "Поиск ландшафтов…"
+
+msgid "Search scenery"
+msgstr "Поиск ландшафта"
+
+msgid "Six panorama panels are required."
+msgstr "Требуется шесть панорамных панелей."
+
+msgid "The InfinityScape descriptor is truncated."
+msgstr "Дескриптор InfinityScape усекается."
+
+msgid "The InfinityScape title is invalid."
+msgstr "Недопустимый заголовок InfinityScape."
+
+msgid "The ZIP is invalid or exceeds the supported archive limits."
+msgstr "ZIP-архив недействителен или превышает поддерживаемые ограничения архива."
+
+msgid "The descriptor could not be read or exceeds its size limit."
+msgstr "Дескриптор не может быть прочитан или превышает свой предел размера."
+
+msgid "The file is not a recognized Phoenix scenery descriptor."
+msgstr "Файл не является распознанным описанием ландшафта Phoenix."
+
+msgid "The panorama contains an invalid panel filename."
+msgstr "Панорама содержит недопустимое имя файла панели."
+
+msgid "The panorama panel dimensions are invalid."
+msgstr "Неверные размеры панели панорамы."
+
+msgid "The panorama panels have different dimensions."
+msgstr "Панорамные панели имеют разные размеры."
+
+msgid "The panorama shift is invalid."
+msgstr "Смещение панорамы недопустимо."
+
+msgid "The panorama transform is invalid."
+msgstr "Преобразование панорамы недопустимо."
+
+msgid "The position records are truncated or exceed the supported limit."
+msgstr "Записи позиций неполные или превышают допустимый предел."
+
+msgid "The preview could not be removed."
+msgstr "Предварительный просмотр не удалось удалить."
+
+msgid "The scan was cancelled."
+msgstr "Сканирование было отменено."
+
+msgid "The scenery changed. Choose the source again."
+msgstr "Декорации изменились. Выберите источник еще раз."
+
+msgid "The scenery descriptor could not be read."
+msgstr "Не удалось прочитать дескриптор пейзажа."
+
+msgid "The scenery library could not be opened for writing."
+msgstr "Библиотеку пейзажей не удалось открыть для записи."
+
+msgid "The scenery metadata could not be saved."
+msgstr "Метаданные пейзажа не удалось сохранить."
+
+msgid "The scenery operation could not start."
+msgstr "Не удалось начать операцию декорации."
+
+msgid "The scenery title is invalid."
+msgstr "Название пейзажа недействительно."
+
+msgid "The selected folder contains a linked directory."
+msgstr "Выбранная папка содержит связанный каталог."
+
+msgid "The selected folder exceeds the entry limit."
+msgstr "В выбранной папке слишком много элементов."
+
+msgid "The selected folder exceeds the maximum directory depth."
+msgstr "Выбранная папка превышает максимальную глубину каталога."
+
+msgid "The selected source could not be opened."
+msgstr "Не удалось открыть выбранный источник."
+
+msgid "The site does not contain a complete panoramic descriptor."
+msgstr "В файле лётного поля неполное описание панорамы."
+
+msgid "This Phoenix scenery profile is not supported."
+msgstr "Этот профиль пейзажа Phoenix не поддерживается."
+
+msgid "This installed scenery is incomplete."
+msgstr "Установленный пейзаж неполный."
+
+msgid "The scenery library could not publish this import."
+msgstr "Не удалось сохранить импорт в библиотеке ландшафтов."
+
+msgid "The selected descriptor is missing or its name is ambiguous."
+msgstr "Выбранное описание отсутствует или его имя неоднозначно."
+
+msgid "Panorama panel %d is missing or exceeds the import limit."
+msgstr "Панель панорамы %d отсутствует или превышает предел импорта."
+
 msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
 msgstr "Шасси Phoenix используется для взлёта с полосы. Убирающееся шасси остаётся выпущенным."
 

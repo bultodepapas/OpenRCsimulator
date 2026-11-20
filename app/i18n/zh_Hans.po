@@ -13569,6 +13569,195 @@ msgstr "此模型的 Phoenix 飞行数据是按另一尺寸推导的。请再次
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "此草稿的 Phoenix 飞行数据来自更早版本的 OpenRC。请再次使用“设置以便飞行”重新推导。"
 
+msgid "%s (installed)"
+msgstr "%s（已安装）"
+
+msgid "A complete preview is required."
+msgstr "需要完整的预览。"
+
+msgid "A complete set of six panorama panels was not found, or names are ambiguous."
+msgstr "未找到完整的六块全景面板，或者名称不明确。"
+
+msgid "A panorama panel could not be saved. Check the available disk space."
+msgstr "无法保存全景面板。检查可用磁盘空间。"
+
+msgid "A position contains an invalid coordinate."
+msgstr "位置包含无效坐标。"
+
+msgid "A position label is missing its terminator."
+msgstr "位置标签缺少终止符。"
+
+msgid "A source folder could not be opened."
+msgstr "无法打开源文件夹。"
+
+msgid "Cancel operation"
+msgstr "取消操作"
+
+msgid "Cancelled."
+msgstr "已取消。"
+
+msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
+msgstr "选择 Phoenix 场景文件或文件夹，或打开已安装的预览。"
+
+msgid "Choose a scenery file"
+msgstr "选择场景文件"
+
+msgid "Choose a scenery folder"
+msgstr "选择场景文件夹"
+
+msgid "Choose a site to preview its panorama panels."
+msgstr "选择飞行场地以预览全景。"
+
+msgid "Choose file"
+msgstr "选择文件"
+
+msgid "Choose folder"
+msgstr "选择文件夹"
+
+msgid "Import scenery"
+msgstr "导入场景"
+
+msgid "InfinityScape terrain generation is not yet supported."
+msgstr "暂不支持生成 InfinityScape 地形。"
+
+msgid "Install preview"
+msgstr "安装预览"
+
+msgid "Installed locally. Preview only."
+msgstr "本地安装。仅预览。"
+
+msgid "Installing scenery preview…"
+msgstr "正在安装风景预览..."
+
+msgid "Look toward panel %d"
+msgstr "看向面板 %d"
+
+msgid "No Phoenix scenery descriptors were found."
+msgstr "未找到 Phoenix 场景描述符。"
+
+msgid "No Phoenix scenery was found in this source."
+msgstr "此来源中未找到 Phoenix 场景。"
+
+msgid "Opening preview…"
+msgstr "正在打开预览…"
+
+msgid "Panorama panel %d could not be decoded."
+msgstr "全景面板 %d 无法解码。"
+
+msgid "Preparing panorama panels…"
+msgstr "正在准备全景面板..."
+
+msgid "Preview only. Browse the six source panels."
+msgstr "仅供预览。浏览六个原始面板。"
+
+msgid "Preview only. Drag to look around or choose a numbered direction."
+msgstr "仅供预览。拖动以环顾四周，或选择编号方向。"
+
+msgid "Preview removed."
+msgstr "预览已删除。"
+
+msgid "Remove preview"
+msgstr "移除预览"
+
+msgid "Remove the installed preview for %s?"
+msgstr "删除已安装的 %s 预览版吗？"
+
+msgid "Scanning scenery…"
+msgstr "正在搜索场景…"
+
+msgid "Search scenery"
+msgstr "搜索场景"
+
+msgid "Six panorama panels are required."
+msgstr "需要六个全景面板。"
+
+msgid "The InfinityScape descriptor is truncated."
+msgstr "InfinityScape 描述符被截断。"
+
+msgid "The InfinityScape title is invalid."
+msgstr "InfinityScape 标题无效。"
+
+msgid "The ZIP is invalid or exceeds the supported archive limits."
+msgstr "ZIP 无效或超出支持的存档限制。"
+
+msgid "The descriptor could not be read or exceeds its size limit."
+msgstr "无法读取描述符或超出其大小限制。"
+
+msgid "The file is not a recognized Phoenix scenery descriptor."
+msgstr "该文件不是受支持的 Phoenix 场景描述符。"
+
+msgid "The panorama contains an invalid panel filename."
+msgstr "全景图包含无效的面板文件名。"
+
+msgid "The panorama panel dimensions are invalid."
+msgstr "全景面板尺寸无效。"
+
+msgid "The panorama panels have different dimensions."
+msgstr "全景面板有不同的尺寸。"
+
+msgid "The panorama shift is invalid."
+msgstr "全景偏移量无效。"
+
+msgid "The panorama transform is invalid."
+msgstr "全景变换无效。"
+
+msgid "The position records are truncated or exceed the supported limit."
+msgstr "位置记录不完整或超出支持的限制。"
+
+msgid "The preview could not be removed."
+msgstr "无法删除预览。"
+
+msgid "The scan was cancelled."
+msgstr "扫描被取消。"
+
+msgid "The scenery changed. Choose the source again."
+msgstr "景色变了。再次选择来源。"
+
+msgid "The scenery descriptor could not be read."
+msgstr "无法读取风景描述符。"
+
+msgid "The scenery library could not be opened for writing."
+msgstr "无法打开风景库进行写入。"
+
+msgid "The scenery metadata could not be saved."
+msgstr "无法保存风景元数据。"
+
+msgid "The scenery operation could not start."
+msgstr "风景操作无法启动。"
+
+msgid "The scenery title is invalid."
+msgstr "风景标题无效。"
+
+msgid "The selected folder contains a linked directory."
+msgstr "所选文件夹包含链接目录。"
+
+msgid "The selected folder exceeds the entry limit."
+msgstr "所选文件夹包含的条目过多。"
+
+msgid "The selected folder exceeds the maximum directory depth."
+msgstr "所选文件夹超出了最大目录深度。"
+
+msgid "The selected source could not be opened."
+msgstr "无法打开所选来源。"
+
+msgid "The site does not contain a complete panoramic descriptor."
+msgstr "飞行场地的全景描述符不完整。"
+
+msgid "This Phoenix scenery profile is not supported."
+msgstr "不支持此Phoenix风景配置文件。"
+
+msgid "This installed scenery is incomplete."
+msgstr "这个安装的风景是不完整的。"
+
+msgid "The scenery library could not publish this import."
+msgstr "场景库无法保存此次导入。"
+
+msgid "The selected descriptor is missing or its name is ambiguous."
+msgstr "所选描述符不存在或名称不明确。"
+
+msgid "Panorama panel %d is missing or exceeds the import limit."
+msgstr "全景面板 %d 不存在或超出导入限制。"
+
 msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
 msgstr "Phoenix 起落架用于跑道起飞。可收放起落架保持放下。"
 

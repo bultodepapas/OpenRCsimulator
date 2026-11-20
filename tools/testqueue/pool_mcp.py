@@ -36,9 +36,13 @@ def _jobs(jobs):
         raise ValueError("jobs must contain 1-64 independent checked tests")
     result = []
     for job in jobs:
-        if not isinstance(job, dict) or set(job) - {"script", "platform", "require", "timeout", "host"}:
+        if not isinstance(job, dict) or set(job) - {"script", "platform", "require", "timeout", "host", "rendering_driver"}:
             raise ValueError("invalid job fields")
-        target = job.get("platform", platform.system().lower())
+        driver = job.get("rendering_driver")
+        if driver is not None and driver not in {"vulkan", "opengl3"}:
+            raise ValueError("rendering_driver must be vulkan or opengl3")
+        # GPU-lane jobs default to Linux, the only OS with a graphics host today.
+        target = job.get("platform", "linux" if job.get("rendering_driver") else platform.system().lower())
         if target not in {"windows", "linux", "darwin", "any"}:
             raise ValueError("invalid platform")
         options = validate("checked", {"script": job.get("script"), "require": job.get("require", []),
@@ -51,6 +55,8 @@ def _jobs(jobs):
             if not isinstance(job["host"], str) or not job["host"]:
                 raise ValueError("host must be a nonempty ID")
             item["host"] = job["host"]
+        if driver is not None:
+            item["rendering_driver"] = driver  # TQ-06 GPU lane; only GPU hosts can take it
         result.append(item)
     return result
 

@@ -272,7 +272,8 @@ def _checked_evidence(status, local, inventory, stage, receipt):
     # runner before a checked report is written. Preserve its raw partial result
     # in pool-status and retain inventoried diagnostics without inventing a test.
     if (not local and isinstance(report, dict) and report.get("ok") is False
-            and report.get("complete") is False and report.get("reason") in {"timeout", "runner_exit"}
+            and report.get("complete") is False
+            and report.get("reason") in {"timeout", "runner_exit", "compositor_unavailable"}
             and not any(key in report for key in ("format", "report", "log"))
             and status.get("outcome") in {"INFRA_FAILED", "CANCELED", "TIMED_OUT", "TEST_FAILED"}):
         return kind, None, True
@@ -291,10 +292,17 @@ def _checked_evidence(status, local, inventory, stage, receipt):
     if not isinstance(engine, str):
         raise ValueError("checked report lacks its bound engine identity")
     source = str(Path(status["output"]) / "source" / "app") if local else str(PurePosixPath(status["output"]) / "source/app")
-    command = ([engine, "--path", source, "--audio-driver", "Dummy", "--headless"]
-               if local and kind == "check" else
-               [engine, "--headless", "--path", source, "--audio-driver", "Dummy"])
-    command += ["--import"] if kind == "import" else ["--script", options.get("script")]
+    if local:
+        command = ([engine, "--path", source, "--audio-driver", "Dummy", "--headless"] if kind == "check" else
+                   [engine, "--headless", "--path", source, "--audio-driver", "Dummy"])
+        command += ["--import"] if kind == "import" else ["--script", options.get("script")]
+    else:
+        # One definition with the remote agent, including the TQ-06 graphics check.
+        from tools.testqueue.remote_agent import checked_command
+        try:
+            command = checked_command(engine, source, {**options, "script": options.get("script")}, kind)
+        except KeyError as error:
+            raise ValueError("checked receipt lacks a graphics option: " + str(error)) from error
     required = [] if kind == "import" else options.get("require", [])
     if report.get("command") != command or report.get("required_text") != required:
         raise ValueError("checked report describes a different command or required markers")
@@ -318,6 +326,15 @@ def _checked_evidence(status, local, inventory, stage, receipt):
         observed = inspect_log(stage / "artifacts" / names["log"], required, max_chars=MAX_BYTES)
         if not _same_json(observed["counts"], report["counts"]) or observed["missing_required_text"]:
             raise ValueError("checked log diagnostics or required markers differ from its passing report")
+        if options.get("workload") == "graphics":
+            # TQ-06: re-derive the GPU device line from the collected, digest-bound
+            # engine log instead of trusting the agent's verdict alone.
+            from tools.testqueue.remote_agent import SOFTWARE_RENDERER, device_line, driver_matches
+            gpu = status.get("gpu") if isinstance(status.get("gpu"), dict) else {}
+            line = device_line((stage / "artifacts" / names["log"]).read_text(encoding="utf-8", errors="replace"))
+            if (local or gpu.get("ok") is not True or line is None or gpu.get("device") != line
+                    or SOFTWARE_RENDERER.search(line) or not driver_matches(line, options.get("rendering_driver"))):
+                raise ValueError("graphics pass lacks a verified GPU device line")
     if outcome == "TEST_FAILED" and kind == "check" and report["ok"]:
         raise ValueError("failed pool outcome conflicts with a successful checked report")
     diagnostic = (outcome not in {"PASSED", "TEST_FAILED"} or kind != "check" or report["complete"] is not True

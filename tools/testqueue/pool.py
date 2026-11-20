@@ -592,7 +592,7 @@ class Pool:
         return host, ({'root': root} if root is not None else {})
 
     def submit(self, snapshot, script, *, platform='any', require=(), timeout=90, host_id=None,
-               request_id=None, settings=None, expected_manifest_sha256=None):
+               request_id=None, settings=None, expected_manifest_sha256=None, rendering_driver=None):
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
             raise ValueError('invalid request id')
@@ -603,7 +603,8 @@ class Pool:
         try:
             return self._submit(snapshot, script, platform=platform, require=require, timeout=timeout,
                                 host_id=host_id, request_id=identifier, settings=settings,
-                                expected_manifest_sha256=expected_manifest_sha256)
+                                expected_manifest_sha256=expected_manifest_sha256,
+                                rendering_driver=rendering_driver)
         finally:
             guard.close()
 
@@ -613,7 +614,8 @@ class Pool:
                   'decision': receipt['decision']}
         return result
 
-    def _preflight(self, snapshot, script, platform, require, timeout, host_id, settings, expected_manifest_sha256):
+    def _preflight(self, snapshot, script, platform, require, timeout, host_id, settings, expected_manifest_sha256,
+                   rendering_driver=None):
         if platform not in {'any', 'windows', 'darwin', 'linux'}:
             raise ValueError('invalid job platform')
         if host_id is not None and host_id not in {host['id'] for host in self.hosts}:
@@ -622,6 +624,14 @@ class Pool:
                            'headless': True, 'workload': 'auto', 'settings': settings or {}})
         if scheduling('checked', options)['workload'] == 'performance':
             raise ValueError('Performance checks require a dedicated same-host campaign through the existing queue')
+        if rendering_driver is not None:
+            # TQ-06 GPU lane: the check renders on a remote host that advertises
+            # the `graphics` capability. The import stays headless.
+            if rendering_driver not in {'vulkan', 'opengl3'}:
+                raise ValueError('rendering_driver must be vulkan or opengl3')
+            if host_id is not None and next(h for h in self.hosts if h['id'] == host_id).get('local'):
+                raise ValueError('graphics checks run only on remote hosts with a GPU lane')
+            options.update(headless=False, workload='graphics', rendering_driver=rendering_driver)
         if expected_manifest_sha256 is not None and digest(snapshot / 'manifest.json') != expected_manifest_sha256:
             raise ValueError('snapshot manifest changed')
         validation = verify(snapshot, include_manifest=True)
@@ -641,14 +651,14 @@ class Pool:
         # A checked attempt also writes Godot's import cache (.godot) inside its
         # workspace; 17 November: 403 MB and growing when a 2.5 GB-free Mac ran
         # out of space mid-import. Reserve it instead of discovering it.
-        job = {'platform': platform, 'workload': 'headless',
+        job = {'platform': platform, 'workload': 'graphics' if rendering_driver else 'headless',
                'source_bytes': sum(item['size'] for item in manifest['files'].values()),
                'cache_id': manifest['source_digest'], 'duration_key': script, 'estimated_seconds': timeout,
                'memory_bytes': 512 * 1024 * 1024, 'disk_bytes': IMPORT_CACHE_BYTES}
         return manifest, options, job
 
     def _submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id, settings,
-                expected_manifest_sha256=None):
+                expected_manifest_sha256=None, rendering_driver=None):
         snapshot = Path(snapshot).resolve()
         identifier = request_id or uuid.uuid4().hex
         if not identifier.isalnum() or len(identifier) > 64:
@@ -657,6 +667,8 @@ class Pool:
                   'require': list(require), 'timeout': timeout, 'host': host_id, 'settings': settings or {}}
         if expected_manifest_sha256 is not None:
             inputs['snapshot_manifest_sha256'] = expected_manifest_sha256
+        if rendering_driver is not None:
+            inputs['rendering_driver'] = rendering_driver  # absent for headless, so older receipts keep their identity
         receipt_path = self.root / 'jobs' / (identifier + '.json')
         resume = None
         if receipt_path.exists():
@@ -670,7 +682,7 @@ class Pool:
             resume = receipt  # proved nondispatched: re-enter the transfer on the bound host below
         try:
             manifest, options, job = self._preflight(snapshot, script, platform, require, timeout,
-                                                    host_id, settings, expected_manifest_sha256)
+                                                    host_id, settings, expected_manifest_sha256, rendering_driver)
             if resume is not None and resume.get('source_digest') != manifest['source_digest']:
                 raise ValueError('snapshot differs from the one whose transfer was deferred')
         except OSError as error:

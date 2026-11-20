@@ -6,6 +6,17 @@ const ADAPTERS: Array = [
 ]
 
 const DEFAULT_ID: String = "club_field"
+const PHOENIX_PREFIX := "phoenix-"
+const PhoenixLibrary := preload("res://landscapes/phoenix_library.gd")
+const PhoenixFlight := preload("res://landscapes/phoenix_flight.gd")
+
+
+static func phoenix_id(revision: String) -> String:
+	return PHOENIX_PREFIX + revision
+
+
+static func is_phoenix(id: String) -> bool:
+	return id.begins_with(PHOENIX_PREFIX)
 
 
 static func ids() -> Array[String]:
@@ -16,10 +27,15 @@ static func ids() -> Array[String]:
 
 
 static func has(id: String) -> bool:
-	return _adapter(id) != null
+	return not entry(id).is_empty() if is_phoenix(id) else _adapter(id) != null
 
 
 static func entry(id: String) -> Dictionary:
+	if is_phoenix(id):
+		var calibrated := PhoenixLibrary.flight_calibration(id.trim_prefix(PHOENIX_PREFIX))
+		if not calibrated.is_empty():
+			calibrated.id = id
+		return calibrated
 	var adapter: Variant = _adapter(id)
 	if adapter == null:
 		return {}
@@ -28,6 +44,12 @@ static func entry(id: String) -> Dictionary:
 
 ## `rc_track` (RC-TRACK) reaches only the club field, the one landscape whose geometry carries the circuit.
 static func build(id: String, field: Dictionary, lighting: Dictionary = {}, rc_track: Dictionary = {}) -> Node3D:
+	if is_phoenix(id):
+		var preview := PhoenixLibrary.load_preview(id.trim_prefix(PHOENIX_PREFIX), func() -> bool: return false)
+		var calibrated: Dictionary = preview.get("calibration", {})
+		if calibrated.is_empty():
+			return null
+		return PhoenixFlight.build(field, calibrated, preview.images)
 	var adapter: Variant = _adapter(id)
 	if adapter == null:
 		return null
@@ -37,6 +59,14 @@ static func build(id: String, field: Dictionary, lighting: Dictionary = {}, rc_t
 ## Builders that support checkpoints yield on the main thread; simple landscapes retain their normal builder.
 static func build_staged(id: String, field: Dictionary, lighting: Dictionary, checkpoint: Callable,
 		rc_track: Dictionary = {}) -> Node3D:
+	if is_phoenix(id):
+		if not bool(await checkpoint.call("Preparing panorama")):
+			return null
+		var begin_photo := Time.get_ticks_usec()
+		var photo := build(id, field, lighting)
+		if photo != null:
+			photo.set_meta("field_build_ms", (Time.get_ticks_usec() - begin_photo) / 1000.0)
+		return photo
 	var adapter: Variant = _adapter(id)
 	if adapter == null:
 		return null
@@ -51,6 +81,8 @@ static func build_staged(id: String, field: Dictionary, lighting: Dictionary, ch
 
 
 static func collision_world(id: String, field: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
+	if is_phoenix(id) and has(id):
+		return {ok = true, world = {}, errors = PackedStringArray()}
 	var adapter: Variant = _adapter(id)
 	if adapter != null:
 		return adapter.collision_world(field, rc_track) if _takes_rc_track(id, rc_track) else adapter.collision_world(field)

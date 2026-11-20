@@ -1,0 +1,91 @@
+{
+  "format": "openrc-field v1",
+  "id": "phoenix_farmland_r1",
+  "runway": "test-lane",
+  "pilot": {
+    "id": "photo-eye",
+    "north": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+    },
+    "east": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+    },
+    "down": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+    },
+    "eye_height": {
+      "value": 1.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "surrounding-ground",
+      "type": "rough",
+      "center_north": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "width_north_south": {
+        "value": 1400,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "length_east_west": {
+        "value": 1400,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      }
+    },
+    {
+      "id": "test-lane",
+      "type": "runway",
+      "center_north": {
+        "value": 9.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "center_east": {
+        "value": 11.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "width_north_south": {
+        "value": 9.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      },
+      "length_east_west": {
+        "value": 52.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Phoenix imported panorama, v1 manual alignment. Choose a clear photographed corridor and estimate a local level runway."
+      }
+    }
+  ],
+  "objects": []
+}

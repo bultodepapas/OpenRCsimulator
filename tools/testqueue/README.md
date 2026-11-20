@@ -10,8 +10,11 @@ source on this branch; deployed hosts may still run the older audited version.
 
 ## Automatic multi-host checked tests
 
-`testctl.py pool` coordinates independent headless GDScript checks across the
-Windows authority and SSH agents on ANGEL, ANGELA_AIR and Linux. Host configuration
+`testctl.py pool` coordinates independent GDScript checks across the Windows
+authority and SSH agents on ANGEL, ANGELA_AIR, Linux and PRIMIS. PRIMIS is a
+Linux container with an Intel iGPU and also takes
+[rendered checks](#rendered-checks-on-a-gpu-host); its
+[host guide](../../docs/tools/primis-testlab.md) has the details. Host configuration
 on DEVIL is `C:\ProgramData\OpenRC\testpool\config.json`. SSH aliases and private
 keys belong to the user's SSH configuration. Override the configuration with
 `--config PATH` after `pool`, or `OPENRC_TESTPOOL_CONFIG`.
@@ -142,8 +145,46 @@ sim_test_recover: {"request_id":"mathcheck20261114a"}
 The MCP default targets the caller's OS. Set `platform` to `windows`, `linux` or
 `darwin` for a specific OS, or explicitly to `any` only for a reviewed portable
 check. A pass on one host does not establish coverage on the other platforms.
-Tests with performance, graphics, interactive or composite-suite requirements
-retain their existing dedicated entry points and acceptance gates.
+Tests with performance, interactive or composite-suite requirements retain their
+existing dedicated entry points and acceptance gates. Functional checks that need
+real Linux GPU rendering use the GPU lane below.
+
+### Rendered checks on a GPU host
+
+To render a check on a real GPU instead of headless, add `rendering_driver`
+(`vulkan` or `opengl3`) to a job in `sim_test_run`, `sim_test_launch` or a batch
+manifest. The job is otherwise unchanged:
+
+```text
+sim_test_run: {"jobs":[{"script":"res://tests/test_x.gd","platform":"linux","rendering_driver":"vulkan","require":["0 failed"]}]}
+```
+
+- **Placement.** The job is `workload: graphics` and goes only to a remote host
+  that advertises the `graphics` capability. A remote agent advertises it only
+  while its `<root>/graphics.json` is valid, the declared render node is
+  readable and writable, and `weston` is installed. The Windows authority never
+  takes graphics work.
+- **Import.** The import stage stays headless.
+- **Check.** The agent starts a private
+  `weston --backend=headless --renderer=gl` at 1920×1080 in the stage's owned
+  process group. It then runs
+  `godot --path … --audio-driver Dummy --display-driver wayland --rendering-driver
+  <driver> --resolution 1920x1080 --script …` without `DISPLAY`. The compositor is
+  stopped before the stage ends, so the existing teardown proof covers it.
+  `remote_agent.checked_command` defines the argv, and collection verifies the
+  same list.
+- **GPU verdict.** The check passes only if the engine's `… Using Device …` line
+  contains the declared adapter. A software renderer (`llvmpipe`, `lavapipe`,
+  `softpipe`), another adapter, a missing line or a compositor that never starts
+  makes the job `INFRA_FAILED`. The status records the verdict as `gpu`, with
+  evidence in `check-gpu.json` and `check-compositor.log`.
+- **Identity.** `rendering_driver` is part of the receipt inputs only when set,
+  so headless receipts keep their identity.
+- **Scope.** These are functional checks. They are not performance or display
+  qualification, which keeps its native workflows.
+
+Hosts with a GPU lane: `primis` (Intel UHD 630, Mesa ANV/iris); see its
+[host guide](../../docs/tools/primis-testlab.md).
 
 ### CLI checked batches
 
@@ -621,6 +662,44 @@ existing process-tree proof requirements. Abandonment is also refused while any
 attempt has a pending in-memory fence/journal retry or an unresolved teardown;
 let that journal recover first.
 
+### Remote import cache
+
+Remote jobs never receive `.godot`, so each one used to import the whole project
+cold. With the current assets that took 4–9 minutes on a Mac, and on a loaded
+host it exceeded the default 90-second budget (`why: import timeout`). Each
+remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
+
+- **Seeding.** Before the import stage, and outside the test budget, the
+  supervisor copies that directory into the job's `app/.godot/imported/`.
+  It uses a copy-on-write clone on APFS (`cp -c`) or Linux (`cp --reflink=auto`)
+  and otherwise a plain copy. It never hard-links, because Godot rewrites
+  imported files in place.
+- **Validation.** Godot still checks every asset against its recorded source
+  md5 and reimports what changed. The class, UID and filesystem caches are not
+  seeded; they are rebuilt from the job's own source.
+- **Publication.** After the check, and only if the import was complete and
+  passed, the job's `imported/` replaces the cache by rename. Leftovers from
+  an interrupted publication are removed first. Jobs hold the host lock, so
+  there is one writer.
+- **Failure.** A seeding or publication fault never fails the job; the job
+  starts cold.
+- **Reporting.** `import_cache` in the job status records the seeding
+  (files, bytes, seconds, source job) and the publication.
+
+The cache is one directory per engine, about the size of one import. `pool gc`
+does not touch it. Remove `<root>/import-cache` on an idle host to reclaim it.
+
+Snapshots also freeze the coordinator's git-ignored native installs under
+`app/native/`, which are built per platform. After verifying the source, a remote
+host removes each `app/native/**/*.gdextension` (and its `.uid`) that declares no
+library for its own OS and architecture, using Godot feature-tag matching. The
+removed paths are recorded under `native_adaptation`.
+
+This reproduces a native checkout on that host. Before this, the Windows/Linux
+ground-vehicle descriptor made every Mac import log "No GDExtension library
+found for macos.arm64" and fail. The app itself already selects its GDScript
+reference there. Tracked descriptors outside `app/native/` are never changed.
+
 ### Storage after a remote checked job
 
 After a remote checked job durably records `FINISHED`, `PASSED`, `COMPLETE` evidence
@@ -662,44 +741,6 @@ records, journals, locks, shared snapshots and caches remain protected, includin
 failed, incomplete and `UNKNOWN` work. Full capture evidence can live inside an
 attempt's source tree. The queue does not yet provide shared-cache garbage collection
 or atomic storage reservations; remote upload can still leave a partial file before
-### Remote import cache
-
-Remote jobs never receive `.godot`, so each one used to import the whole project
-cold. With the current assets that took 4–9 minutes on a Mac, and on a loaded
-host it exceeded the default 90-second budget (`why: import timeout`). Each
-remote host now keeps `<root>/import-cache/<engine sha256>/imported/` (TQ-05-F3.4):
-
-- **Seeding.** Before the import stage, and outside the test budget, the
-  supervisor copies that directory into the job's `app/.godot/imported/`.
-  It uses a copy-on-write clone on APFS (`cp -c`) or Linux (`cp --reflink=auto`)
-  and otherwise a plain copy. It never hard-links, because Godot rewrites
-  imported files in place.
-- **Validation.** Godot still checks every asset against its recorded source
-  md5 and reimports what changed. The class, UID and filesystem caches are not
-  seeded; they are rebuilt from the job's own source.
-- **Publication.** After the check, and only if the import was complete and
-  passed, the job's `imported/` replaces the cache by rename. Leftovers from
-  an interrupted publication are removed first. Jobs hold the host lock, so
-  there is one writer.
-- **Failure.** A seeding or publication fault never fails the job; the job
-  starts cold.
-- **Reporting.** `import_cache` in the job status records the seeding
-  (files, bytes, seconds, source job) and the publication.
-
-The cache is one directory per engine, about the size of one import. `pool gc`
-does not touch it. Remove `<root>/import-cache` on an idle host to reclaim it.
-
-Snapshots also freeze the coordinator's git-ignored native installs under
-`app/native/`, which are built per platform. After verifying the source, a remote
-host removes each `app/native/**/*.gdextension` (and its `.uid`) that declares no
-library for its own OS and architecture, using Godot feature-tag matching. The
-removed paths are recorded under `native_adaptation`.
-
-This reproduces a native checkout on that host. Before this, the Windows/Linux
-ground-vehicle descriptor made every Mac import log "No GDExtension library
-found for macos.arm64" and fail. The app itself already selects its GDScript
-reference there. Tracked descriptors outside `app/native/` are never changed.
-
 remote admission checks. A completed infrastructure-failure collection does not
 prove that all remote diagnostics were inventoried. Preserve remote evidence until
 independently verified. For a bounded read-only size inventory, use

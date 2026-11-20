@@ -14514,6 +14514,195 @@ msgstr "Die Phoenix-Flugdaten dieses Modells wurden für eine andere Größe abg
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Die Phoenix-Flugdaten dieses Entwurfs stammen aus einer früheren OpenRC-Version. Verwende erneut „Für den Flug einrichten“, um sie abzuleiten."
 
+msgid "%s (installed)"
+msgstr "%s (installiert)"
+
+msgid "A complete preview is required."
+msgstr "Eine vollständige Vorschau ist erforderlich."
+
+msgid "A complete set of six panorama panels was not found, or names are ambiguous."
+msgstr "Ein vollständiger Satz von sechs Panoramatafeln wurde nicht gefunden oder die Namen sind nicht eindeutig."
+
+msgid "A panorama panel could not be saved. Check the available disk space."
+msgstr "Ein Panorama-Panel konnte nicht gespeichert werden. Überprüfen Sie den verfügbaren Speicherplatz."
+
+msgid "A position contains an invalid coordinate."
+msgstr "Eine Position enthält eine ungültige Koordinate."
+
+msgid "A position label is missing its terminator."
+msgstr "Einer Positionsbezeichnung fehlt ihr Abschlusszeichen."
+
+msgid "A source folder could not be opened."
+msgstr "Ein Quellordner konnte nicht geöffnet werden."
+
+msgid "Cancel operation"
+msgstr "Vorgang abbrechen"
+
+msgid "Cancelled."
+msgstr "Abgebrochen."
+
+msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
+msgstr "Wähle eine Phoenix-Datei oder einen Ordner oder öffne eine installierte Vorschau."
+
+msgid "Choose a scenery file"
+msgstr "Szeneriedatei auswählen"
+
+msgid "Choose a scenery folder"
+msgstr "Szenerieordner auswählen"
+
+msgid "Choose a site to preview its panorama panels."
+msgstr "Wähle ein Fluggelände für die Panoramavorschau."
+
+msgid "Choose file"
+msgstr "Datei auswählen"
+
+msgid "Choose folder"
+msgstr "Ordner auswählen"
+
+msgid "Import scenery"
+msgstr "Szenerie importieren"
+
+msgid "InfinityScape terrain generation is not yet supported."
+msgstr "Die InfinityScape-Geländegenerierung wird noch nicht unterstützt."
+
+msgid "Install preview"
+msgstr "Vorschau installieren"
+
+msgid "Installed locally. Preview only."
+msgstr "Lokal installiert. Nur Vorschau."
+
+msgid "Installing scenery preview…"
+msgstr "Landschaftsvorschau wird installiert…"
+
+msgid "Look toward panel %d"
+msgstr "Schauen Sie in Richtung Panel %d"
+
+msgid "No Phoenix scenery descriptors were found."
+msgstr "Keine Phoenix-Szeneriebeschreibungen gefunden."
+
+msgid "No Phoenix scenery was found in this source."
+msgstr "In dieser Quelle wurde keine Phoenix-Szenerie gefunden."
+
+msgid "Opening preview…"
+msgstr "Vorschau wird geöffnet…"
+
+msgid "Panorama panel %d could not be decoded."
+msgstr "Panoramapanel %d konnte nicht dekodiert werden."
+
+msgid "Preparing panorama panels…"
+msgstr "Panoramatafeln vorbereiten…"
+
+msgid "Preview only. Browse the six source panels."
+msgstr "Nur Vorschau. Zeige die sechs Quellbilder an."
+
+msgid "Preview only. Drag to look around or choose a numbered direction."
+msgstr "Nur Vorschau. Ziehe zum Umschauen oder wähle eine nummerierte Richtung."
+
+msgid "Preview removed."
+msgstr "Vorschau entfernt."
+
+msgid "Remove preview"
+msgstr "Vorschau entfernen"
+
+msgid "Remove the installed preview for %s?"
+msgstr "Die installierte Vorschau für %s entfernen?"
+
+msgid "Scanning scenery…"
+msgstr "Szenerie wird durchsucht…"
+
+msgid "Search scenery"
+msgstr "Szenerie suchen"
+
+msgid "Six panorama panels are required."
+msgstr "Es werden sechs Panoramatafeln benötigt."
+
+msgid "The InfinityScape descriptor is truncated."
+msgstr "Der InfinityScape-Deskriptor ist gekürzt."
+
+msgid "The InfinityScape title is invalid."
+msgstr "Der InfinityScape-Titel ist ungültig."
+
+msgid "The ZIP is invalid or exceeds the supported archive limits."
+msgstr "Die ZIP-Datei ist ungültig oder überschreitet die unterstützten Archivgrenzen."
+
+msgid "The descriptor could not be read or exceeds its size limit."
+msgstr "Der Deskriptor konnte nicht gelesen werden oder überschreitet seine Größenbeschränkung."
+
+msgid "The file is not a recognized Phoenix scenery descriptor."
+msgstr "Die Datei ist keine erkannte Phoenix-Szeneriebeschreibung."
+
+msgid "The panorama contains an invalid panel filename."
+msgstr "Das Panorama enthält einen ungültigen Panel-Dateinamen."
+
+msgid "The panorama panel dimensions are invalid."
+msgstr "Die Abmessungen des Panoramapanels sind ungültig."
+
+msgid "The panorama panels have different dimensions."
+msgstr "Die Panoramatafeln haben unterschiedliche Abmessungen."
+
+msgid "The panorama shift is invalid."
+msgstr "Die Panoramaverschiebung ist ungültig."
+
+msgid "The panorama transform is invalid."
+msgstr "Die Panoramatransformation ist ungültig."
+
+msgid "The position records are truncated or exceed the supported limit."
+msgstr "Die Positionsdatensätze sind abgeschnitten oder überschreiten das unterstützte Limit."
+
+msgid "The preview could not be removed."
+msgstr "Die Vorschau konnte nicht entfernt werden."
+
+msgid "The scan was cancelled."
+msgstr "Der Scan wurde abgebrochen."
+
+msgid "The scenery changed. Choose the source again."
+msgstr "Die Landschaft veränderte sich. Wählen Sie die Quelle erneut aus."
+
+msgid "The scenery descriptor could not be read."
+msgstr "Der Szenerie-Deskriptor konnte nicht gelesen werden."
+
+msgid "The scenery library could not be opened for writing."
+msgstr "Die Landschaftsbibliothek konnte nicht zum Schreiben geöffnet werden."
+
+msgid "The scenery metadata could not be saved."
+msgstr "Die Szenerie-Metadaten konnten nicht gespeichert werden."
+
+msgid "The scenery operation could not start."
+msgstr "Der Szenerievorgang konnte nicht gestartet werden."
+
+msgid "The scenery title is invalid."
+msgstr "Der Szenentitel ist ungültig."
+
+msgid "The selected folder contains a linked directory."
+msgstr "Der ausgewählte Ordner enthält ein verknüpftes Verzeichnis."
+
+msgid "The selected folder exceeds the entry limit."
+msgstr "Der ausgewählte Ordner enthält zu viele Einträge."
+
+msgid "The selected folder exceeds the maximum directory depth."
+msgstr "Der ausgewählte Ordner überschreitet die maximale Verzeichnistiefe."
+
+msgid "The selected source could not be opened."
+msgstr "Die ausgewählte Quelle konnte nicht geöffnet werden."
+
+msgid "The site does not contain a complete panoramic descriptor."
+msgstr "Das Fluggelände enthält keine vollständige Panoramabeschreibung."
+
+msgid "This Phoenix scenery profile is not supported."
+msgstr "Dieses Phoenix-Landschaftsprofil wird nicht unterstützt."
+
+msgid "This installed scenery is incomplete."
+msgstr "Diese installierte Szenerie ist unvollständig."
+
+msgid "The scenery library could not publish this import."
+msgstr "Die Szeneriebibliothek konnte diesen Import nicht veröffentlichen."
+
+msgid "The selected descriptor is missing or its name is ambiguous."
+msgstr "Die ausgewählte Beschreibungsdatei fehlt oder ihr Name ist nicht eindeutig."
+
+msgid "Panorama panel %d is missing or exceeds the import limit."
+msgstr "Panoramabild %d fehlt oder überschreitet das Importlimit."
+
 msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
 msgstr "Das Phoenix-Fahrwerk wird für Pistenstarts verwendet. Einziehfahrwerk bleibt ausgefahren."
 

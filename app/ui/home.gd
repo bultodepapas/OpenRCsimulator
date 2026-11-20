@@ -24,6 +24,7 @@ const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
+const LandscapeImport := preload("res://ui/landscape_import.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
 const Roster := preload("res://app_state/vehicle_roster.gd")
@@ -37,6 +38,7 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
+signal imported_flight_requested(revision: String)
 ## Actual launch setup changed; repeated setters do not restart idle preparation.
 signal launch_setup_changed
 ## UI-39: Fly with an RC car selected (ground_vehicle_id).
@@ -100,6 +102,8 @@ var runway_available: bool = true
 var rotorcraft_pad_available: bool = true
 var landscape_id: String = Landscapes.DEFAULT_ID
 var landscape_button: Button
+var _landscape_import_button: Button
+var _landscape_import: LandscapeImport
 var weather_config: Dictionary = WeatherSettings.defaults()
 var failure_config: Dictionary = {"probability_percent": 0, "include_catastrophic": false, "notify": true}
 var out_of_trim_config: Dictionary = OutOfTrim.defaults()
@@ -413,6 +417,14 @@ func _init() -> void:
 		var ids: Array[String] = Landscapes.ids()
 		landscape_requested.emit(ids[(ids.find(landscape_id) + 1) % ids.size()]))
 	flight_page.add_child(landscape_button)
+	_landscape_import_button = _button("Import scenery", "HomeChoice")
+	_landscape_import_button.name = "ImportScenery"
+	_landscape_import_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_landscape_import_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_landscape_import_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	Widgets.mark_row(_landscape_import_button, "open")
+	_landscape_import_button.pressed.connect(_open_landscape_import)
+	flight_page.add_child(_landscape_import_button)
 	set_landscape(landscape_id)
 	flight_page.add_child(_conditions_row)
 	weather_button = _button("", "HomeChoice")
@@ -948,8 +960,10 @@ func _ready() -> void:
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	start_button.focus_neighbor_right = start_button.get_path_to(landscape_button)
 	landscape_button.focus_neighbor_left = landscape_button.get_path_to(start_button)
-	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(weather_button)
-	weather_button.focus_neighbor_top = weather_button.get_path_to(landscape_button)
+	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(_landscape_import_button)
+	_landscape_import_button.focus_neighbor_top = _landscape_import_button.get_path_to(landscape_button)
+	_landscape_import_button.focus_neighbor_bottom = _landscape_import_button.get_path_to(weather_button)
+	weather_button.focus_neighbor_top = weather_button.get_path_to(_landscape_import_button)
 	# Practice can scroll at compact heights. Keep its controls in visual order
 	# so keyboard and the selected UI controller reveal every action.
 	var practice_actions: Array[Button] = [statistics_button, natural_random_button, failures_button, trim_practice_button]
@@ -1163,7 +1177,8 @@ func _apply_responsive_layout() -> void:
 	_practice_title.visible = not practice_compact
 	_practice_intro.visible = not practice_compact
 	_pages[2].add_theme_constant_override("separation", 2 if practice_compact else 6)
-	for action: Button in [start_button, landscape_button, weather_button, time_button, _details_button]:
+	for action: Button in [start_button, landscape_button, _landscape_import_button, weather_button, time_button,
+		_details_button]:
 		_set_compact_action_density(action, compact_action_density)
 	for action: Button in [statistics_button, natural_random_button, failures_button, trim_practice_button]:
 		_set_compact_action_density(action, practice_compact)
@@ -1178,6 +1193,7 @@ func _apply_responsive_layout() -> void:
 	_set_responsive_font(aircraft_name_label, 20 if compact else 28)
 	_set_responsive_font(start_button, 20 if compact else UiTheme.SIZE.button)
 	_set_responsive_font(landscape_button, 20 if compact else UiTheme.SIZE.button)
+	_set_responsive_font(_landscape_import_button, 16 if compact else 20)
 	for condition_button in [weather_button, time_button]:
 		_set_responsive_font(condition_button, 18 if compact else UiTheme.SIZE.button)
 		condition_button.custom_minimum_size.y = 38.0 if compact else 48.0
@@ -1535,6 +1551,18 @@ func _show_start_choice(choice: String) -> void:
 	_update_launch_caption()
 	if start_choice != previous:
 		launch_setup_changed.emit()
+
+
+func _open_landscape_import() -> void:
+	if _landscape_import == null:
+		_landscape_import = LandscapeImport.new()
+		_landscape_import.name = "LandscapeImport"
+		add_child(_landscape_import)
+		_landscape_import.flight_requested.connect(imported_flight_requested.emit)
+		_landscape_import.visibility_changed.connect(func() -> void:
+			if not _landscape_import.visible and _landscape_import_button.is_visible_in_tree():
+				_landscape_import_button.grab_focus())
+	_landscape_import.open_browser()
 
 
 func set_landscape(id: String) -> void:

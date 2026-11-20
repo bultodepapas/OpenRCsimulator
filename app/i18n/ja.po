@@ -13620,6 +13620,195 @@ msgstr "このモデルの Phoenix 飛行データは別のサイズ用に導出
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "この下書きの Phoenix 飛行データは以前の OpenRC バージョンのものです。もう一度「飛行用に設定」を使って導出してください。"
 
+msgid "%s (installed)"
+msgstr "%s (インストール済み)"
+
+msgid "A complete preview is required."
+msgstr "完全なプレビューが必要です。"
+
+msgid "A complete set of six panorama panels was not found, or names are ambiguous."
+msgstr "6 つのパノラマ パネルの完全なセットが見つからないか、名前があいまいです。"
+
+msgid "A panorama panel could not be saved. Check the available disk space."
+msgstr "パノラマパネルを保存できませんでした。利用可能なディスク容量を確認してください。"
+
+msgid "A position contains an invalid coordinate."
+msgstr "位置に無効な座標が含まれています。"
+
+msgid "A position label is missing its terminator."
+msgstr "位置ラベルにターミネータがありません。"
+
+msgid "A source folder could not be opened."
+msgstr "ソースフォルダーを開けませんでした。"
+
+msgid "Cancel operation"
+msgstr "操作をキャンセルする"
+
+msgid "Cancelled."
+msgstr "キャンセルしました。"
+
+msgid "Choose a Phoenix scenery file or folder, or reopen an installed preview."
+msgstr "Phoenixの風景ファイルやフォルダーを選択するか、保存済みのプレビューを開きます。"
+
+msgid "Choose a scenery file"
+msgstr "風景ファイルを選択"
+
+msgid "Choose a scenery folder"
+msgstr "風景フォルダーを選択"
+
+msgid "Choose a site to preview its panorama panels."
+msgstr "飛行場を選択してパノラマをプレビューします。"
+
+msgid "Choose file"
+msgstr "ファイルを選択"
+
+msgid "Choose folder"
+msgstr "フォルダーを選択"
+
+msgid "Import scenery"
+msgstr "風景をインポート"
+
+msgid "InfinityScape terrain generation is not yet supported."
+msgstr "InfinityScapeの地形生成にはまだ対応していません。"
+
+msgid "Install preview"
+msgstr "プレビューを保存"
+
+msgid "Installed locally. Preview only."
+msgstr "ローカルにインストールされます。プレビューのみ。"
+
+msgid "Installing scenery preview…"
+msgstr "シーナリープレビューをインストール中…"
+
+msgid "Look toward panel %d"
+msgstr "パネル %d の方を見る"
+
+msgid "No Phoenix scenery descriptors were found."
+msgstr "Phoenixの風景記述子が見つかりませんでした。"
+
+msgid "No Phoenix scenery was found in this source."
+msgstr "このソースにPhoenixの風景は見つかりませんでした。"
+
+msgid "Opening preview…"
+msgstr "プレビューを開いています…"
+
+msgid "Panorama panel %d could not be decoded."
+msgstr "パノラマ パネル %d をデコードできませんでした。"
+
+msgid "Preparing panorama panels…"
+msgstr "パノラマパネルを準備中…"
+
+msgid "Preview only. Browse the six source panels."
+msgstr "プレビューのみ。元の6枚のパネルを確認できます。"
+
+msgid "Preview only. Drag to look around or choose a numbered direction."
+msgstr "プレビューのみ。ドラッグして見回すか、番号で方向を選択します。"
+
+msgid "Preview removed."
+msgstr "プレビューが削除されました。"
+
+msgid "Remove preview"
+msgstr "プレビューを削除"
+
+msgid "Remove the installed preview for %s?"
+msgstr "%s にインストールされているプレビューを削除しますか?"
+
+msgid "Scanning scenery…"
+msgstr "風景を検索中…"
+
+msgid "Search scenery"
+msgstr "風景を検索"
+
+msgid "Six panorama panels are required."
+msgstr "パノラマ パネルは 6 枚必要です。"
+
+msgid "The InfinityScape descriptor is truncated."
+msgstr "InfinityScape 記述子は切り詰められています。"
+
+msgid "The InfinityScape title is invalid."
+msgstr "InfinityScape タイトルが無効です。"
+
+msgid "The ZIP is invalid or exceeds the supported archive limits."
+msgstr "ZIP が無効であるか、サポートされているアーカイブ制限を超えています。"
+
+msgid "The descriptor could not be read or exceeds its size limit."
+msgstr "記述子を読み取れないか、サイズ制限を超えています。"
+
+msgid "The file is not a recognized Phoenix scenery descriptor."
+msgstr "このファイルは対応するPhoenix風景記述子ではありません。"
+
+msgid "The panorama contains an invalid panel filename."
+msgstr "パノラマに無効なパネル ファイル名が含まれています。"
+
+msgid "The panorama panel dimensions are invalid."
+msgstr "パノラマ パネルの寸法が無効です。"
+
+msgid "The panorama panels have different dimensions."
+msgstr "パノラマ パネルにはさまざまな寸法があります。"
+
+msgid "The panorama shift is invalid."
+msgstr "パノラマのオフセットが無効です。"
+
+msgid "The panorama transform is invalid."
+msgstr "パノラマ変換が無効です。"
+
+msgid "The position records are truncated or exceed the supported limit."
+msgstr "位置データが途中で切れているか、上限を超えています。"
+
+msgid "The preview could not be removed."
+msgstr "プレビューを削除できませんでした。"
+
+msgid "The scan was cancelled."
+msgstr "スキャンがキャンセルされました。"
+
+msgid "The scenery changed. Choose the source again."
+msgstr "景色が変わりました。ソースを再度選択してください。"
+
+msgid "The scenery descriptor could not be read."
+msgstr "シーナリー記述子を読み取れませんでした。"
+
+msgid "The scenery library could not be opened for writing."
+msgstr "シーナリー ライブラリを書き込み用に開くことができませんでした。"
+
+msgid "The scenery metadata could not be saved."
+msgstr "シーナリーメタデータを保存できませんでした。"
+
+msgid "The scenery operation could not start."
+msgstr "シーナリー操作を開始できませんでした。"
+
+msgid "The scenery title is invalid."
+msgstr "風景のタイトルが無効です。"
+
+msgid "The selected folder contains a linked directory."
+msgstr "選択したフォルダーにはリンクされたディレクトリが含まれています。"
+
+msgid "The selected folder exceeds the entry limit."
+msgstr "選択したフォルダー内の項目数が上限を超えています。"
+
+msgid "The selected folder exceeds the maximum directory depth."
+msgstr "選択したフォルダーは最大ディレクトリ深さを超えています。"
+
+msgid "The selected source could not be opened."
+msgstr "選択したソースを開けませんでした。"
+
+msgid "The site does not contain a complete panoramic descriptor."
+msgstr "飛行場のパノラマ記述子が不完全です。"
+
+msgid "This Phoenix scenery profile is not supported."
+msgstr "このPhoenix シーナリー プロファイルはサポートされていません。"
+
+msgid "This installed scenery is incomplete."
+msgstr "このインストールされたシーナリーは未完成です。"
+
+msgid "The scenery library could not publish this import."
+msgstr "風景ライブラリにインポートを保存できませんでした。"
+
+msgid "The selected descriptor is missing or its name is ambiguous."
+msgstr "選択した記述子が見つからないか、名前があいまいです。"
+
+msgid "Panorama panel %d is missing or exceeds the import limit."
+msgstr "パノラマパネル%dが見つからないか、インポートの上限を超えています。"
+
 msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
 msgstr "Phoenix の降着装置を滑走路からの離陸に使います。引き込み脚は出したままです。"
 

@@ -49,6 +49,10 @@ def _host_view(observation: dict, work: dict) -> dict:
                 pool_jobs_active=work.get(observation.get("id"), 0))
     if view["busy"] and not view["busy_code"]:
         view["busy_code"] = "BUSY"
+    capabilities = observation.get("capabilities")
+    if isinstance(capabilities, list) and "graphics" in capabilities:
+        # TQ-06: tell agents which hosts take rendering_driver jobs, and on which GPU.
+        view["gpu"] = next((c[4:] for c in capabilities if isinstance(c, str) and c.startswith("gpu:")), "unknown")
     return {key: value for key, value in view.items() if value is not None}
 
 

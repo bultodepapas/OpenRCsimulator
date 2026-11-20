@@ -27,13 +27,14 @@ outcomes and evidence, since an accepted ticket is not a pass.
 failed or uncertain attempts. If MCP is unavailable, use `testctl.py pool run` from the
 [test pool guide](../../../tools/testqueue/README.md) and set `--platform` to the required
 OS unless portability is established: the CLI's default is `any`.
-Graphics, benchmarks, composite suites and interactive sessions use their existing tools.
+Benchmarks, composite suites and interactive sessions use their existing tools; Linux GPU-rendered checks use the pool (below).
 
 Most-used commands (repository root, Bash):
 
 | Task | Command |
 | --- | --- |
 | Independent headless tests | `sim_test_run` with one job per script (or `sim_test_launch` + `sim_test_status`); `sim_fleet` for hosts |
+| Linux check rendered on a real GPU (Intel UHD 630, 1080p, Wayland) | `sim_test_run` job with `"platform":"linux","rendering_driver":"vulkan"` (or `opengl3`); runs on host `primis`, [guide](../../../docs/tools/primis-testlab.md) |
 | Full local app verification for broad changes or release preparation (40+ min); CI runs it as a required gate | `app/test.sh` (on a stable snapshot when other sessions edit the tree) |
 | Headless flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3 --aircraft=<id>` |
 | Handling change: before/after | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,vmax,roll_rate`, then `compare.py` |

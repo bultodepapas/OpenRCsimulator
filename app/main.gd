@@ -109,6 +109,7 @@ signal scenario_changed(scenario: Dictionary)
 ## Data path is injectable before entering the tree; normal routes use the packaged default.
 var field_path: String = FieldLoader.DEFAULT_PATH
 var landscape_id: String = Landscapes.DEFAULT_ID
+var _phoenix_calibration := {}
 var field: Dictionary = {}
 
 var session: Node
@@ -787,7 +788,8 @@ func _prepare_flight() -> void:
 			return
 		trace_ticks = int(rounded_ticks)
 	landscape_id = str(args.get("landscape", landscape_id))
-	if not Landscapes.has(landscape_id):
+	var selected_landscape := Landscapes.entry(landscape_id)
+	if selected_landscape.is_empty():
 		startup_error = "Unknown landscape: " + landscape_id
 		if not interactive_start:
 			printerr(startup_error)
@@ -795,8 +797,12 @@ func _prepare_flight() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	if field_path == FieldLoader.DEFAULT_PATH:
-		field_path = Landscapes.entry(landscape_id).field_path
+	if Landscapes.is_phoenix(landscape_id):
+		_phoenix_calibration = selected_landscape
+		field_path = str(_phoenix_calibration.field_path)
+		start_choice = FlightSession.START_RUNWAY
+	elif field_path == FieldLoader.DEFAULT_PATH:
+		field_path = str(selected_landscape.field_path)
 	if not await _startup_stage("Checking landscape"):
 		return
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
@@ -809,7 +815,7 @@ func _prepare_flight() -> void:
 		FieldError.report(self, loaded_field.errors)
 		return
 	field = loaded_field.field
-	if not interactive_start and not args.has("start") and field.id != "default":
+	if not interactive_start and not args.has("start") and field.id != "default" and _phoenix_calibration.is_empty():
 		start_choice = FlightSession.START_AIRBORNE
 	var frametime_options: Dictionary = FrameSamples.options(args)
 	if not frametime_options.ok:
@@ -982,7 +988,7 @@ func _prepare_flight() -> void:
 	_rig.set_view(_initial_view)
 	_rig.auto_zoom = _auto_zoom
 	_rig.look = _look
-	_rig.look_height = _look_height
+	_rig.look_height = float(field.pilot.eye_height) if _rig.fixed_pilot_eye else _look_height
 	if not camera_preferences.is_empty():
 		CameraSettings.apply_at_start(_rig, camera_preferences)
 	if args.has("hide_airplane"):
@@ -1073,7 +1079,11 @@ func _prepare_flight() -> void:
 		return
 	if not await _startup_stage("Preparing contacts"):
 		return
-	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
+	var imported_surface := str(_phoenix_calibration.get("surface_path", ""))
+	if imported_surface.is_empty():
+		session.set_field(field)
+	else:
+		session.set_field(field, imported_surface)
 	# The accepted scene definition also owns the float64 contact surface. Never fly a refused lake.
 	var lake_context: Dictionary = _field_node.get_meta("lake_context", {}) if _field_node != null else {}
 	var lake_error: String = str(_field_node.get_meta("lake_error", "")) if _field_node != null else ""
@@ -2939,6 +2949,8 @@ func _field_identity() -> String:
 	var hashing: HashingContext = HashingContext.new()
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(var_to_bytes(field))
+	if not _phoenix_calibration.is_empty():
+		hashing.update(var_to_bytes([landscape_id, _phoenix_calibration.version, _phoenix_calibration.yaw_deg]))
 	if _field_node != null and _field_node.has_meta("lake_identity"):
 		hashing.update(str(_field_node.get_meta("lake_identity")).to_utf8_buffer())
 	return hashing.finish().hex_encode()
@@ -3515,6 +3527,8 @@ func _build_world() -> bool:
 		if built.get("cancelled", false): return false
 	else:
 		built = World.build(self, field, _build_field, {}, snapshot, night_options)
+	if _field_node == null and not _phoenix_calibration.is_empty():
+		return false
 	_field_world_lighting = bool(built.conditions.time_of_day)
 	_env = built.environment
 	_world_environment = built.world_environment
@@ -3553,6 +3567,7 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	_rig.fixed_pilot_eye = not _phoenix_calibration.is_empty()
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"
 	add_child(_magnifier)
@@ -3585,13 +3600,18 @@ func set_night_options(profile: String, campfire: bool, activation: String = "au
 func _build_field() -> void:
 	_field_node = Landscapes.build(landscape_id, field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {},
 		_rc_track)
-	add_child(_field_node)
+	if _field_node != null:
+		add_child(_field_node)
+	elif not _phoenix_calibration.is_empty():
+		startup_error = "The installed scenery could not be verified for flight."
 
 
 func _build_field_staged() -> Dictionary:
 	_field_node = await Landscapes.build_staged(landscape_id, field,
 		_lighting if lighting_config.get("mode", "legacy") != "legacy" else {}, startup_checkpoint, _rc_track)
 	if _field_node == null:
+		if not _phoenix_calibration.is_empty() and not _startup_cancel_requested():
+			startup_error = "The installed scenery could not be verified for flight."
 		return {cancelled = true}
 	var attach_begin := Time.get_ticks_usec()
 	add_child(_field_node)

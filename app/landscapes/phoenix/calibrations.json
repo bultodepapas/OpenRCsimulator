@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "calibrations": {
+    "68a9a01bbfee97e0480c49dd6f34d51ef6b8660f947dab639b776410862354d9": {
+      "field": "airfield-field.json",
+      "yaw_deg": 0,
+      "surface": "paved",
+      "faces": [
+        "558e73cadf0debedce3684f2d32027a2306a3259aae29c4fc53685b684854536",
+        "b87954f966580cacfdc57ba26620bee8b02e1e1328c4a670dcf78217ce04f0e0",
+        "32e50cf29915684695877ec5501b183a610af76d8ab2380441c6ae778b44269b",
+        "3405fef5d50bd727851bd99d49057b454bf69c8c38d26f881237db328b95d6d0",
+        "df702bc86404bfb8f44625db8aa6f1a2ace22f315586747b2048a01927b47364",
+        "4d175808340223519447a0fc5b112095c9eb1ed5ee538681e6baa155419d5aa5"
+      ]
+    },
+    "0d5b5aeec2f8421a092d4059062a82f0392390fccbd789b6990c2a13c36c5a5a": {
+      "field": "carrier-field.json",
+      "yaw_deg": -90,
+      "surface": "paved",
+      "faces": [
+        "8dd76e71716e1a264ee7ead57159bc546ddb4bcfaa99d52e4bc450b3a1b579e5",
+        "53d9500d4e0440e49becfa9bd820ffa6b520c3e25ef8620164b9d4b1c60edc27",
+        "938bf345bae70a15612c4a1f492ec5d5e9a63b5c746bcc48125f6284780f52bb",
+        "faa2af74f834b6e75fa0b81081d7a632e20ba401f28a15e54cc9f85f359741c2",
+        "c11ab176edf2e6eb6bc03b8c0f813008a8232aefdab0e1c8b211efc284153014",
+        "b0fe254fec93bd45979018334f3cff1a2e7e9e9f023398c8b7dd1f2e0630eae5"
+      ]
+    },
+    "66dd992d87eac991161ee92abc8bc93a7494df5720bd5f2b9258a26e2ab27767": {
+      "field": "fronas-field.json",
+      "yaw_deg": -90,
+      "surface": "turf",
+      "faces": [
+        "42927541e9fd08728061a33d717346a4c02ae1a75526f56204b86991eda6591d",
+        "59d11da0351b278ba9f30af9a526b336f8f4c0c583e48680360a0e212029596c",
+        "f8ceaf8201489ad5699df268af6dac24b602f61d6e16ad951a24e95419f3bfc2",
+        "f1261ea03ad5ce88f2b0316e712b47a9a7e6ab1ffa5491126336487689f5f50c",
+        "df7aefa2eaf290648b98a08ab2720a13c57a25ccbcd3fdf10b1cfd481f4b7346",
+        "0574f0d3e13992aa3cf1cb820172fb9e112d7216f518fa83388610822d7a0e8c"
+      ]
+    },
+    "680a207aa91905b76341db39f07167ca3ef2b4a90585695fce74b98ab9fef879": {
+      "field": "farmland-field.json",
+      "yaw_deg": -90,
+      "surface": "turf",
+      "faces": [
+        "83c082d68d51f3917b22b994bcf6a19587640fd08e2989e5c1935889859855ff",
+        "0e6ab1c5d88b2a553a5d8b85040c1b7d0b970a8e247f456a2db7532a3eb10f4d",
+        "01d95f5e947a9806f91f55230d2a0ef1c1de617d95d4cf89becb6876b5a63fa2",
+        "76419cbedfe698b50055f64323cce563572030cac3bc42f053b09b31022d34eb",
+        "9fd7c91e6145c77500dc45441078fb8b5e6546337e0d6720b5d563f6c7a9653e",
+        "fc9b30a25b7ad1d67ce798bd2e5806db654de1b6af9d58ac64d903ee62751b5c"
+      ]
+    },
+    "cd223dd86daee375f5117808da461a3e6b4b25ec5e22d5fdd9e33f1007fe9bb5": {
+      "field": "dolores-field.json",
+      "yaw_deg": 0,
+      "surface": "turf",
+      "faces": [
+        "87fa65d723d350fcfcfcf30a9e58a8eff433b105931303a80c10fda6c4ac9a24",
+        "b1800a65c414c339a07c9577a9f1e3993bd6c3b2cef317cc320611966c5d0520",
+        "d911e51e46d941b893da2105329ace3e6084a1de33d6f9fecca87c5c18480f99",
+        "80f51ba623645fca60a935aa633cc932243c65386daec0968bbd39e33d20a147",
+        "bc81af0a6a202ac4e5bd7da2ba7915bd357dc74c15f89545acaf292e8f1f54a0",
+        "93d89da93a447cad88fc428e2909a9957b4b1e69de59f88f4bbac89b77db3338"
+      ]
+    }
+  }
+}

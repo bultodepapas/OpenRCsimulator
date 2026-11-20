@@ -56,6 +56,7 @@ const WRECK_CHASE_MIN_FOV := 12.0
 
 var camera: Camera3D
 var view := "pilot"
+var fixed_pilot_eye := false
 var auto_zoom := true
 ## Pilot view: multiplies tan(fov/2) on top of the auto-zoom law (1 = the law's own FOV).
 var pilot_zoom := 1.0
@@ -114,7 +115,7 @@ func view_name() -> String:
 
 ## Selects a view. Chase restarts settled behind the airplane; orbit starts from the camera's current position.
 func set_view(id: String) -> bool:
-	if not is_view(id):
+	if not is_view(id) or (fixed_pilot_eye and id != "pilot"):
 		return false
 	if id == view:
 		return true

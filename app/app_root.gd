@@ -852,6 +852,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.set_companion_config(preferences.get("companion_config", CompanionConfig.defaults()))
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
+	home.imported_flight_requested.connect(_start_imported_flight)
 	home.launch_setup_changed.connect(_on_home_launch_setup_changed)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
 	home.airship_requested.connect(start_airship)
@@ -1377,8 +1378,12 @@ func _night_options_from_preferences() -> Dictionary:
 	return checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
 
 
+func _start_imported_flight(revision: String) -> void:
+	start_flight({}, Landscapes.phoenix_id(revision))
+
+
 ## Interactive rendering gets explicit loading checkpoints; direct/headless entry retains same-frame construction.
-func start_flight(request: Dictionary = {}) -> void:
+func start_flight(request: Dictionary = {}, imported_landscape := "") -> void:
 	if _home_preparation_route_pending or _home_preparation_quit_pending or home_build_pending:
 		return
 	if flight != null or _loading_active or _quit_audio_pending:
@@ -1386,6 +1391,18 @@ func start_flight(request: Dictionary = {}) -> void:
 	var launch_preferences: Dictionary = preferences.duplicate(true)
 	var launch_landscape := landscape_id
 	var launch_field_path := field_path
+	if not imported_landscape.is_empty():
+		if not has_home or not screens.is_top("home") or not request.is_empty():
+			return
+		var calibration := Landscapes.entry(imported_landscape)
+		if not Landscapes.is_phoenix(imported_landscape) or calibration.is_empty():
+			home.fail_start("The installed scenery could not be verified for flight.")
+			return
+		if not Catalog.runway_supported(home.aircraft_id) or Catalog.is_rotorcraft(home.aircraft_id):
+			home.fail_start("Choose an airplane that supports runway starts.")
+			return
+		launch_landscape = imported_landscape
+		launch_field_path = str(calibration.field_path)
 	var launch_night := _night_options_from_preferences()
 	var staged := has_home and flight_loading_enabled
 	var is_random: bool = not request.is_empty()
@@ -1408,6 +1425,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	var departing_home: Control = home
 	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
+	if not imported_landscape.is_empty():
+		chosen_start = FlightSession.START_RUNWAY
 	var chosen_battery: String = departing_home.battery_mode if departing_home != null else ""
 	var chosen_fuel: float = departing_home.fuel_start_fill if departing_home != null else 1.0
 	# UI-32: the pilot's preferences (not the per-aircraft effective values) are what a successful Fly saves.
@@ -1424,6 +1443,9 @@ func start_flight(request: Dictionary = {}) -> void:
 		var checked_lighting: Dictionary = TimeOfDay.validate(launch_preferences.get("lighting_config", TimeOfDay.defaults()))
 		if checked_lighting.get("ok", false):
 			chosen_lighting = checked_lighting.config.duplicate(true)
+	if not imported_landscape.is_empty():
+		# Calibrations use local runway axes and were checked in calm air.
+		chosen_weather = WeatherSettings.defaults()
 	if is_random:
 		aircraft = request.aircraft_id
 		chosen_start = request.start_choice
@@ -1478,7 +1500,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		_loading_screen.name = "FlightLoading"
 		_loading_screen.configure("%s · %s · %s" % [tr(Catalog.short_name(route_aircraft_id)),
 			tr(Landscapes.entry(launch_landscape).name),
-			tr("Airborne") if is_random or departing_home == null else departing_home.start_button.text])
+			tr("Start: runway") if not imported_landscape.is_empty() else
+			(tr("Airborne") if is_random or departing_home == null else departing_home.start_button.text)])
 		_loading_screen.cancel_requested.connect(cancel_flight_loading)
 		screens.push("loading", _loading_screen, null, false)
 		last_flight_loading.surface_prepare_usec = Time.get_ticks_usec() - _loading_started_usec
@@ -1563,7 +1586,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
-	if (has_home or is_random) and not helicopter_route:
+	if (has_home or is_random) and not helicopter_route and imported_landscape.is_empty():
 		flight.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: Home's launches fly trimmed for 50 % throttle
 	if "battery_mode" in flight: # BAT-13: Home's battery choice; random and direct routes use the aircraft default or --battery=
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""
@@ -1674,7 +1697,8 @@ func start_flight(request: Dictionary = {}) -> void:
 			preferences.rotorcraft_start_choice = saved_rotor_start
 		preferences.battery_mode = battery_preference
 		preferences.fuel_fill = fuel_preference
-		preferences.weather_config = chosen_weather.duplicate(true)
+		if imported_landscape.is_empty():
+			preferences.weather_config = chosen_weather.duplicate(true)
 		preferences.lighting_config = chosen_lighting.duplicate(true)
 		var selected_night: Dictionary = launch_night
 		preferences.night_field_lighting = selected_night.field_lighting
@@ -2758,7 +2782,10 @@ func _route_controller_event(event: InputEvent) -> void:
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if UiInput.is_selected_radio_action(event):
 		if event.is_action_pressed("ui_cancel") and not _exit_request_active:
-			if screens.top() != null:
+			var popup := _radio_menu_popup()
+			if popup != null and popup.has_meta("landscape_import_popup"):
+				popup.close_requested.emit()
+			elif screens.top() != null:
 				var surface: Control = ScreenStack._surface(screens.top())
 				if surface != null: surface.close_requested.emit()
 			elif flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active():
@@ -2844,8 +2871,10 @@ func _route_controller_event(event: InputEvent) -> void:
 				return
 			if action not in ["back", "pause"]: continue
 			var focused := get_viewport().gui_get_focus_owner()
-			if _radio_menu_popup() != null:
-				_radio_menu_popup().hide()
+			var popup := _radio_menu_popup()
+			if popup != null:
+				if popup.has_meta("landscape_import_popup"): popup.close_requested.emit()
+				else: popup.hide()
 			elif focused is OptionButton and focused.get_popup().visible:
 				focused.get_popup().hide()
 			else:
@@ -4659,6 +4688,8 @@ func _rebuild_home_scene_staged() -> void:
 ## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
 ## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
 func set_landscape(id: String) -> bool:
+	if Landscapes.is_phoenix(id):
+		return false # imported runways are selected from the installed scenery library
 	if id == landscape_id and Landscapes.has(id):
 		return true
 	if not screens.is_top("home") or flight != null or not Landscapes.has(id):

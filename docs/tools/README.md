@@ -9,6 +9,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Connect to the configured Linux test host over SSH | [Linux SSH connection](linux-ssh.md): pinned identity, bounded connection checks and worker qualification boundary. |
 | Coordinate agents/worktrees on a shared Windows desktop | [Host test queue](../../tools/testqueue/README.md): explicit ownership, durable waiting, isolated inputs and fail-closed recovery; experimental local adapter. |
 | Distribute independent headless checked tests from MCP | [Automatic checked batches](../../tools/testqueue/README.md#mcp-checked-batches): durable launch, status and same-request recovery across eligible hosts. |
+| Run a check on Linux with a real GPU (Intel UHD 630, Vulkan or OpenGL, 1080p Wayland), or on a second Linux host | [PRIMIS test host](primis-testlab.md): `sim_test_run` job with `rendering_driver`; GPU verdict, limits and troubleshooting. |
 | Connect to the shared M1, prepare a Mac workspace or run native checks | [M1 access and workflow](macos-m1.md): SSH, paths, installed tools, desktop requirements and retained evidence. |
 | Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
 | Local quick/full/release preflight | [CI tools](../../tools/ci/README.md); Linux/WSL, no branch creation or publication. |

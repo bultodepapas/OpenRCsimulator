@@ -37,6 +37,66 @@ RETENTION_MAX_SECONDS = 30.0
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}\Z")
 SCRIPT = re.compile(r"res://(?:tests|tools)/[A-Za-z0-9_./-]+\.gd\Z")
 TIMING = re.compile(r"(?:^|[/_.-])(?:bench(?:mark)?|perf(?:ormance)?|profile|timing|latency|soak|stress|memory)(?:[/_.-]|$)", re.I)
+# GPU lane (TQ-06): an operator-declared ``<root>/graphics.json`` lets a host run
+# ``workload: graphics`` checks on its real GPU under a per-job headless Wayland
+# compositor. The import stage stays headless.
+GRAPHICS_CONFIG = "graphics.json"
+RENDERING_DRIVERS = ("vulkan", "opengl3")
+GRAPHICS_RESOLUTION = "1920x1080"
+SOFTWARE_RENDERER = re.compile(r"llvmpipe|lavapipe|softpipe|swrast|software rasterizer", re.I)
+DEVICE_LINE = re.compile(r"^(?:Vulkan|OpenGL)\b.* - Using Device\b.*$", re.M)
+POSIX = os.name == "posix"
+
+
+def checked_command(engine, app, options, stage):
+    """The exact engine argv for a checked stage; collection verifies the same list."""
+    if stage == "check" and options.get("workload") == "graphics":
+        command = [engine, "--path", app, "--audio-driver", "Dummy", "--display-driver", "wayland",
+                   "--rendering-driver", options["rendering_driver"], "--resolution", GRAPHICS_RESOLUTION]
+    else:
+        command = [engine, "--headless", "--path", app, "--audio-driver", "Dummy"]
+    return command + (["--import"] if stage == "import" else ["--script", options["script"]])
+
+
+def graphics_config(root):
+    """Return this host's declared GPU lane when it is usable now, else None."""
+    try:
+        value = read_json(Path(root) / GRAPHICS_CONFIG)
+    except (OSError, ValueError):
+        return None
+    if (not isinstance(value, dict) or value.get("compositor") != "weston-headless"
+            or not isinstance(value.get("gpu"), str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", value["gpu"])
+            or not isinstance(value.get("adapter"), str) or not 3 <= len(value["adapter"]) <= 128
+            or not isinstance(value.get("render_node"), str)
+            or not re.fullmatch(r"/dev/dri/renderD[0-9]{3}", value["render_node"])):
+        return None
+    if not POSIX or not os.access(value["render_node"], os.R_OK | os.W_OK) or not shutil.which("weston"):
+        return None
+    return value
+
+
+def device_line(log_text):
+    """The engine's first ``... Using Device ...`` line; it precedes any script output."""
+    lines = DEVICE_LINE.findall(re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", log_text))
+    return lines[0].strip()[:300] if lines else None
+
+
+def driver_matches(line, driver):
+    return line.startswith("Vulkan" if driver == "vulkan" else "OpenGL")
+
+
+def gpu_verdict(log_text, config, driver):
+    """Accept a rendered check only when the engine used the declared GPU and driver."""
+    line = device_line(log_text)
+    if line is None:
+        return {"ok": False, "reason": "no_device_line", "device": None}
+    if SOFTWARE_RENDERER.search(line):
+        return {"ok": False, "reason": "software_renderer", "device": line}
+    if config["adapter"] not in line:
+        return {"ok": False, "reason": "unexpected_adapter", "device": line}
+    if not driver_matches(line, driver):
+        return {"ok": False, "reason": "unexpected_driver", "device": line}
+    return {"ok": True, "device": line, "gpu": config["gpu"], "rendering_driver": driver}
 
 
 class TeardownUnconfirmed(RuntimeError):
@@ -533,14 +593,20 @@ def validate_request(request):
     if expected_engine is not None and (not isinstance(expected_engine, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_engine)):
         raise Refused("expected_engine_sha256 must be a lowercase SHA-256")
     options = request["options"]
-    if not isinstance(options, dict) or set(options) - {"script", "require", "timeout", "headless", "workload", "settings", "argv"}:
+    if not isinstance(options, dict) or set(options) - {"script", "require", "timeout", "headless", "workload", "settings", "argv", "rendering_driver"}:
         raise Refused("unsupported checked options")
     script = options.get("script")
     if (not isinstance(script, str) or not SCRIPT.fullmatch(script) or ".." in PurePosixPath(script[6:]).parts
             or TIMING.search(script)):
         raise Refused("checked script must be a non-performance test/tool res:// path")
-    if options.get("headless", True) is not True or options.get("workload", "auto") not in ("auto", "functional") or options.get("argv", []) != []:
-        raise Refused("only headless functional or unclassified checked jobs are supported")
+    if options.get("argv", []) != []:
+        raise Refused("checked jobs take no extra engine arguments")
+    if options.get("workload") == "graphics":
+        if options.get("headless") is not False or options.get("rendering_driver") not in RENDERING_DRIVERS:
+            raise Refused("graphics checks need headless false and rendering_driver vulkan or opengl3")
+    elif (options.get("headless", True) is not True or options.get("workload", "auto") not in ("auto", "functional")
+            or "rendering_driver" in options):
+        raise Refused("only headless functional, unclassified or graphics checked jobs are supported")
     markers = options.get("require", [])
     if (not isinstance(markers, list) or len(markers) > 128 or any(not isinstance(s, str) or not s
             or len(s) > 4096 or "\n" in s or "\r" in s or "\0" in s for s in markers)):
@@ -652,6 +718,9 @@ def probe(root, request):
     capabilities = [system.lower(), machine.lower()]
     if os.name == "posix":
         capabilities[0:0] = ["checked", "headless"]
+        graphics = graphics_config(root)
+        if graphics:
+            capabilities += ["graphics", "gpu:" + graphics["gpu"]]
     return {"protocol": PROTOCOL,
             "host": {"hostname": platform.node(), "system": system, "release": platform.release(),
                      "machine": machine, "python": platform.python_version()},
@@ -676,6 +745,8 @@ def launch(root, request):
         return status(root, identifier)
     if authority_enrolled():
         raise Refused("host has an enrolled testqueue; submit to that authority", "ENROLLED")
+    if request["options"].get("workload") == "graphics" and graphics_config(root) is None:
+        raise Refused("this host has no usable GPU lane (graphics.json, render node, weston)")
     lock = Lock(root / "pool.lock")
     try:
         if path.is_file():
@@ -1057,25 +1128,91 @@ def invoke(root, identifier, stage):
             except (OSError, subprocess.SubprocessError) as error:
                 return str(error)
         module.stop_process = stop_direct
-    command = [request["engine_path"], "--headless", "--path", str(source / "app"), "--audio-driver", "Dummy"]
     options = request["options"]
     if stage == "import":
-        command.append("--import")
         kwargs = {"required": [], "label": "import"}
     elif stage == "check":
-        command += ["--script", options["script"]]
         kwargs = {"required": options.get("require", []), **options.get("settings", {})}
     else:
         raise Refused("invalid internal stage")
-    # The supervisor owns the stricter total deadline and verified cleanup.
-    result = module.run_checked(command, directory / stage, timeout=options.get("timeout", 600) + 60, **kwargs)
+    command = checked_command(request["engine_path"], str(source / "app"), options, stage)
+    if stage != "check" or options.get("workload") != "graphics":
+        # The supervisor owns the stricter total deadline and verified cleanup.
+        result = module.run_checked(command, directory / stage, timeout=options.get("timeout", 600) + 60, **kwargs)
+        write_json(directory / (stage + "-result.json"), result)
+        return 0
+    config = graphics_config(root)
+    if config is None:
+        raise Refused("this host's GPU lane became unusable before the check")
+    compositor = start_compositor(directory)
+    try:
+        if compositor is None:
+            result = {"ok": False, "complete": False, "reason": "compositor_unavailable"}
+        else:
+            result = module.run_checked(command, directory / stage, timeout=options.get("timeout", 600) + 60, **kwargs)
+    finally:
+        stop_compositor(compositor)
+    # The supervisor derives the GPU verdict from the verified engine log.
     write_json(directory / (stage + "-result.json"), result)
     return 0
 
 
+def start_compositor(directory):
+    """Start a private headless Wayland compositor for one rendered check.
+
+    It stays in the stage's owned process group, so the supervisor's teardown
+    proof covers it. Returns None when it does not come up within 15 s.
+    """
+    import tempfile
+    # A fixed short parent: Unix socket paths are limited to 107 bytes and the
+    # job's TMPDIR can be longer.
+    runtime = Path(tempfile.mkdtemp(prefix="openrc-wl-", dir="/tmp" if os.path.isdir("/tmp") else None))
+    os.chmod(runtime, 0o700)
+    env = {k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")}
+    env["XDG_RUNTIME_DIR"] = str(runtime)
+    log = open(directory / "check-compositor.log", "wb")
+    try:
+        # kiosk-shell starts no helper clients; --no-config ignores any weston.ini.
+        process = subprocess.Popen(["weston", "--no-config", "--backend=headless", "--renderer=gl", "--shell=kiosk",
+                                    "--width=1920", "--height=1080", "--socket=wl-0", "--idle-time=0"],
+                                   stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, env=env)
+    except OSError:
+        log.close()
+        shutil.rmtree(runtime, ignore_errors=True)
+        return None
+    handle = {"process": process, "log": log, "runtime": runtime}
+    deadline = time.monotonic() + 15
+    while time.monotonic() < deadline and process.poll() is None and not (runtime / "wl-0").exists():
+        time.sleep(0.1)
+    if process.poll() is not None or not (runtime / "wl-0").exists():
+        stop_compositor(handle)
+        return None
+    os.environ.pop("DISPLAY", None)
+    os.environ.update(XDG_RUNTIME_DIR=str(runtime), WAYLAND_DISPLAY="wl-0")
+    return handle
+
+
+def stop_compositor(handle):
+    if not handle:
+        return
+    process = handle["process"]
+    try:
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=10)
+    finally:
+        handle["log"].close()
+        shutil.rmtree(handle["runtime"], ignore_errors=True)
+
+
 def artifact_inventory(directory):
     items = {}
-    for name in ("source-inventory.json", "import-result.json", "check-result.json", "import-runner.log", "check-runner.log"):
+    for name in ("source-inventory.json", "import-result.json", "check-result.json", "import-runner.log", "check-runner.log",
+                 "check-gpu.json", "check-compositor.log"):
         path = directory / name
         if path.is_file():
             items[name] = {"sha256": digest(path), "size": path.stat().st_size}
@@ -1110,8 +1247,7 @@ def verify_result(directory, stage, result, request):
         raise Refused("checked report or engine log differs from its verdict")
     options = request["options"]
     markers = [] if stage == "import" else options.get("require", [])
-    expected = [request["engine_path"], "--headless", "--path", str(directory / "source/app"), "--audio-driver", "Dummy"]
-    expected += ["--import"] if stage == "import" else ["--script", options["script"]]
+    expected = checked_command(request["engine_path"], str(directory / "source/app"), options, stage)
     if result.get("command") != expected or result.get("required_text") != markers:
         raise Refused("checked report describes a different command or markers")
     if result["ok"] and (result.get("exit_code") != 0 or result.get("process_exit") != 0):
@@ -1204,6 +1340,23 @@ def supervise(root, identifier):
                 state["import_cache"] = {**(state.get("import_cache") or {}), "published": False,
                                          "publish_error": f"{type(error).__name__}: {error}"[:300]}
         complete = bool(imported.get("complete") is True and result and result.get("complete") is True)
+        if request["options"].get("workload") == "graphics":
+            # A rendered check proves nothing unless it ran on the declared GPU:
+            # a software or unexpected adapter is a host fault, not a test result.
+            # The verdict comes from the engine log verify_result already bound.
+            config = graphics_config(root)
+            if not complete:
+                reason = (result or {}).get("reason") or (imported.get("reason") if imported else None) or "incomplete"
+                state["gpu"] = {"ok": False, "reason": reason, "device": None}
+            elif config is None:
+                state["gpu"] = {"ok": False, "reason": "gpu_lane_unavailable", "device": None}
+            else:
+                state["gpu"] = gpu_verdict(Path(result["log"]).read_text(encoding="utf-8", errors="replace"),
+                                           config, request["options"]["rendering_driver"])
+            write_json(directory / "check-gpu.json", state["gpu"])
+            if state["gpu"].get("ok") is not True:
+                complete = False
+                state["error"] = "GPU lane: " + str(state["gpu"].get("reason"))
         ok = bool(complete and imported.get("ok") is True and result.get("ok") is True)
         state.update(state="FINISHED", outcome="PASSED" if ok else "TEST_FAILED" if complete else "INFRA_FAILED",
                      cleanup="CONFIRMED", evidence="COMPLETE" if complete else "INCOMPLETE",

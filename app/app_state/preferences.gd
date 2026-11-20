@@ -150,7 +150,7 @@ static func _load_locked(path: String) -> Dictionary:
 	if typeof(airship_skin) == TYPE_STRING and AirshipCatalog.contains(airship_skin):
 		prefs.airship_skin = airship_skin
 	var landscape: Variant = cfg.get_value("flight", "landscape", DEFAULTS.landscape)
-	if typeof(landscape) == TYPE_STRING and Landscapes.has(landscape):
+	if typeof(landscape) == TYPE_STRING and landscape in Landscapes.ids():
 		prefs.landscape = landscape
 	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
 	# Missing or invalid choices use the product default; explicit airborne choices remain valid.

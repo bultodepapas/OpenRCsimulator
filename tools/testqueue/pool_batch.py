@@ -63,8 +63,11 @@ def _manifest(path):
         raise ValueError("jobs must be a nonempty list")
     jobs = []
     for item in value["jobs"]:
-        if not isinstance(item, dict) or set(item) - {"script", "platform", "require", "timeout", "host"}:
+        if not isinstance(item, dict) or set(item) - {"script", "platform", "require", "timeout", "host", "rendering_driver"}:
             raise ValueError("job has unknown fields")
+        driver = item.get("rendering_driver")
+        if driver is not None and driver not in {"vulkan", "opengl3"}:
+            raise ValueError("rendering_driver must be vulkan or opengl3")
         platform = item.get("platform", "any")
         if not isinstance(platform, str) or platform not in {"any", "windows", "linux", "darwin"}:
             raise ValueError("invalid job platform")
@@ -77,7 +80,8 @@ def _manifest(path):
         if scheduling("checked", options)["workload"] == "performance":
             raise ValueError("performance checks require a dedicated same-host campaign")
         jobs.append({"script": options["script"], "platform": platform, "require": options["require"],
-                     "timeout": options["timeout"], "host": host})
+                     "timeout": options["timeout"], "host": host,
+                     **({"rendering_driver": driver} if driver else {})})
     return snapshot, jobs
 
 
@@ -260,7 +264,9 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                     submission = pool.submit(snapshot, job["script"], platform=job["platform"],
                                              require=job["require"], timeout=job["timeout"],
                                              host_id=job["host"], request_id=row["request_id"],
-                                             expected_manifest_sha256=state["snapshot_manifest_sha256"])
+                                             expected_manifest_sha256=state["snapshot_manifest_sha256"],
+                                             **({"rendering_driver": job["rendering_driver"]}
+                                                if job.get("rendering_driver") else {}))
                     if submission.get("state") == "WAITING":
                         row.update(phase="WAITING", status=submission)
                         if not _script_specific_refusal(submission):

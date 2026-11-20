@@ -5,6 +5,9 @@ Owner: **TQ shared-host test admission**, steps **TQ-05-F0…F5**. Parents:
 [resilience subplan](mcp-queue-resilience.md) (TQ-04-R1…R9). Operating contract:
 [queue guide](../../tools/testqueue/README.md).
 
+Adding a fifth host, an Intel iGPU Linux container on PRIMIS, is planned separately in
+[TQ-06](primis-intel-test-host.md).
+
 This plan covers what R1–R9 leave open: agent ergonomics, end-to-end speed,
 unattended progress and smarter use of the four machines. Every R-plan invariant
 (its §2) remains binding. In particular, no change may duplicate an accepted
