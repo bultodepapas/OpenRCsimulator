@@ -12864,3 +12864,147 @@ msgstr "ClearViewモデル %s: %s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ClearView機体のZIP"
+
+msgid "This model is inside another model's folder. Nested model folders are not supported; move it to its own folder in the ZIP."
+msgstr "このモデルは別のモデルのフォルダー内にあります。入れ子になったモデルフォルダーには対応していません。ZIP 内の専用フォルダーに移動してください。"
+
+msgid "Part \"%s\": only rotating servo motion is imported. Its sliding or input-driven motion was not converted; the part stays static."
+msgstr "パーツ「%s」：回転するサーボの動きのみをインポートします。スライドや入力による動きは変換されず、パーツは固定されたままです。"
+
+msgid "This ClearView v5 model declares no moving-part mapping that can be imported. Its control surfaces stay static until you bind them in Moving parts."
+msgstr "この ClearView v5 モデルには、インポートできる可動パーツの割り当てがありません。可動パーツで割り当てるまで、操縦翼面は固定されたままです。"
+
+msgid "The wing leading edge could not be found in this ClearView model. Mark it in Orient and size."
+msgstr "この ClearView モデルで主翼の前縁が見つかりませんでした。「向きとサイズ」で指定してください。"
+
+msgid "Orientation and units follow the ClearView model frame (metres, nose forward along -X, up along +Y). The wing leading edge is estimated from the model shape; check it in Orient and size."
+msgstr "向きと単位は ClearView モデルの座標系（メートル、機首は -X 方向、上は +Y 方向）に従います。主翼の前縁はモデル形状から推定されます。「向きとサイズ」で確認してください。"
+
+msgid "Every empty dimension, mass, battery and control value is filled with an OpenRC estimate scaled to this model and marked Estimated. Values you entered are kept."
+msgstr "空の寸法・質量・バッテリー・操縦の値は、このモデルに合わせて拡大縮小した OpenRC の推定値で埋められ、「推定」と表示されます。入力済みの値はそのままです。"
+
+msgid "The model is set up with an estimated OpenRC configuration. Review the estimates, then test fly."
+msgstr "モデルは推定 OpenRC 構成で設定されました。推定値を確認してから試験飛行してください。"
+
+msgid "This model uses elevons (combined aileron and elevator surfaces). The estimated OpenRC configuration supports separate ailerons, elevator and rudder only."
+msgstr "このモデルはエレボン（エルロンとエレベーターを兼ねる舵面）を使っています。推定 OpenRC 構成は独立したエルロン・エレベーター・ラダーのみに対応します。"
+
+msgid "Automatic setup is only available for converted ClearView models."
+msgstr "自動設定は変換済みの ClearView モデルでのみ使えます。"
+
+msgid "The automatic setup is incomplete. Set the orientation, units and datum in Orient and size."
+msgstr "自動設定が不完全です。「向きとサイズ」で向き・単位・基準点を設定してください。"
+
+msgid "The existing orientation conflicts with the ClearView frame. Review Orient and size."
+msgstr "既存の向きが ClearView モデルの座標系と矛盾しています。「向きとサイズ」を確認してください。"
+
+msgid "Set up for flight automatically"
+msgstr "飛行用に自動設定"
+
+msgid "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "ClearView モデルの座標系を使い、主翼の前縁を推定し、空の値をすべて表示付きの OpenRC 推定値で埋めます。入力済みの値は置き換えません。"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. Handling is not a reproduction of the original."
+msgstr "試験飛行はこの推定 OpenRC 構成を使い、ClearView の飛行モデルは使いません。挙動は元の機体の再現ではありません。"
+
+msgid "Publishing converted ClearView models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "変換した ClearView モデルの公開はまだできません。下書きとして保存すれば、再度開いて試験飛行できます。"
+
+msgid "Set up this model for flight?"
+msgstr "このモデルを飛行用に設定しますか？"
+
+msgid "Set up for flight"
+msgstr "飛行用に設定"
+
+msgid "Texture \"%s\" uses an unsupported image format and was omitted; its surfaces keep their colour."
+msgstr "テクスチャ「%s」は未対応の画像形式のため省略されました。その面は元の色のままです。"
+
+msgid "This model is %s m across; the estimated OpenRC configuration supports %s to %s m. It will fly as a %s m version (%s %% of its size): a different configuration, not the original size."
+msgstr "このモデルの翼幅は %s m です。推定 OpenRC 構成は %s～%s m に対応します。%s m 版（元の %s %%）として飛行します。元の大きさではない別の構成です。"
+
+msgid "It flies as a %s m version of the model."
+msgstr "モデルの %s m 版として飛行します。"
+
+msgid "No propeller was found in this model. It is estimated as an electric pusher park jet, with the propeller in a slot behind the wing. Jet and ducted-fan power are not modelled."
+msgstr "このモデルにプロペラが見つかりませんでした。主翼後方のスロットにプッシャープロペラを持つ電動パークジェットとして推定します。ジェットやダクテッドファンは再現されません。"
+
+msgid "%s self-intersecting polygons were omitted."
+msgstr "自己交差するポリゴン %s 個を省略しました。"
+
+msgid "Texture \"%s\" is missing from the ZIP and was omitted; its surfaces keep their colour."
+msgstr "テクスチャ「%s」が ZIP にないため省略しました。その面は元の色のままです。"
+
+msgid "%s subdivided surfaces are shown as their unsmoothed control mesh."
+msgstr "細分化された面 %s 個は、平滑化前の制御メッシュとして表示されます。"
+
+msgid "Part \"%s\": its coordinate marker is ambiguous. The marker was hidden and the part stays static."
+msgstr "パーツ「%s」：座標マーカーがあいまいです。マーカーは非表示になり、パーツは固定されたままです。"
+
+msgid "Only flat ClearView v0 to v5 and sectioned v6 model parameters are supported."
+msgstr "フラットな ClearView v0～v5 とセクション形式の v6 のモデルパラメーターのみ対応しています。"
+
+msgid "This model does not name its render file; the ClearView default body.ac is used."
+msgstr "このモデルは描画ファイルを指定していません。ClearView 既定の body.ac を使用します。"
+
+msgid "This is a ClearView helicopter, so the aeroplane setup does not apply. Use Fly as a helicopter: it flies with the X-Cell .60 reference helicopter physics and this model's appearance only."
+msgstr "これは ClearView のヘリコプターなので、飛行機のセットアップは適用されません。「ヘリコプターとして飛行」を使ってください。X-Cell .60 基準ヘリコプターの物理で、このモデルの外観だけを使って飛行します。"
+
+msgid "Fly as a helicopter (X-Cell .60 donor)"
+msgstr "ヘリコプターとして飛行（X-Cell .60 ドナー）"
+
+msgid "Flies with the X-Cell .60 reference helicopter physics; this model's appearance only."
+msgstr "X-Cell .60 基準ヘリコプターの物理で飛行します。このモデルからは外観だけを使います。"
+
+msgid "Fly with donor helicopter physics?"
+msgstr "ドナーのヘリコプター物理で飛行しますか？"
+
+msgid "This model flies with the X-Cell .60 reference helicopter physics; only its appearance is used. It is not the ClearView flight model, and no ClearView flight setting is read."
+msgstr "このモデルは X-Cell .60 基準ヘリコプターの物理で飛行し、外観だけが使われます。ClearView の飛行モデルではなく、ClearView の飛行設定は読み込みません。"
+
+msgid "Its ClearView origin is placed on the donor's centre of gravity and its lowest point on the donor's skids. A model whose main rotor is more than 1.5 times larger or smaller than the donor's is shown scaled to the donor rotor."
+msgstr "ClearView の原点をドナーの重心に、最も低い点をドナーのスキッドに合わせて配置します。メインローターがドナーより 1.5 倍を超えて大きいまたは小さいモデルは、ドナーのローターに合わせた縮尺で表示します。"
+
+msgid "Fly as a helicopter"
+msgstr "ヘリコプターとして飛行"
+
+msgid "X-Cell .60 reference physics · %s appearance only"
+msgstr "X-Cell .60 基準物理 · %s の外観のみ"
+
+msgid "X-Cell .60 reference physics · %s appearance only, shown at %s %% of its size"
+msgstr "X-Cell .60 基準物理 · %s の外観のみ（元の %s %% の大きさで表示）"
+
+msgid "This helicopter model could not be shown for flight."
+msgstr "このヘリコプターモデルを飛行用に表示できませんでした。"
+
+msgid "Fly this flying wing?"
+msgstr "この全翼機を飛ばしますか？"
+
+msgid "Fly with the X8 physics"
+msgstr "X8 の物理で飛ばす"
+
+msgid "The model is %s m across and is shown at %s %% of its size."
+msgstr "このモデルの翼幅は %s m で、元の %s %% の大きさで表示されます。"
+
+msgid "This flying wing flies with the stock Skywalker X8 (MoonRunner X99) physics, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "この全翼機は標準の Skywalker X8（MoonRunner X99）の物理で飛行し、このモデルの外観をその翼幅 %s m に合わせて表示します。ClearView の飛行モデルではありません。"
+
+msgid "This biplane is estimated as one equivalent wing with the lifting area of both wings."
+msgstr "この複葉機は、両翼の揚力面積を持つ 1 枚の等価翼として推定されます。"
+
+msgid "Under 1.45 m it is estimated as a foam park flyer: light foam structure, 9 g servos and a 3S electric power system."
+msgstr "1.45 m 未満では発泡材のパークフライヤーとして推定されます：軽量な発泡材構造、9 g サーボ、3S 電動動力。"
+
+msgid "4S · 800 Kv · 12×6 pusher propeller — estimated"
+msgstr "4S · 800 Kv · 12×6 プッシャープロペラ — 推定"
+
+msgid "3S · 1250 Kv · 9×6 propeller — estimated"
+msgstr "3S · 1250 Kv · 9×6 プロペラ — 推定"
+
+msgid "3S · 1250 Kv · 9×6 pusher propeller — estimated"
+msgstr "3S · 1250 Kv · 9×6 プッシャープロペラ — 推定"
+
+msgid "4S · 1900 Kv · 6×4.5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "4S · 1900 Kv · 6×4.5 プッシャープロペラ（ダクテッドファンの代わり） — 推定"
+
+msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "6S · 1200 Kv · 7×5 プッシャープロペラ（ダクテッドファンの代わり） — 推定"

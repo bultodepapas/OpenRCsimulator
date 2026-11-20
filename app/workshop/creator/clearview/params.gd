@@ -9,6 +9,8 @@ const MAX_LINE := 4096
 const MAX_RECORDS := 4096
 const MAX_SECTIONS := 256
 const IDENTITY := ["verNumber", "modelType", "modelName"]
+const DEFAULT_MODEL := "body.ac"
+const MODEL_DEFAULTED := "This model does not name its render file; the ClearView default body.ac is used."
 
 static func read(bytes: PackedByteArray) -> Dictionary:
 	if bytes.is_empty() or bytes.size() > MAX_BYTES:
@@ -73,13 +75,19 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 			identities[key] = value
 	if not section.is_empty() or (sectioned and (flat or "params" not in sections)):
 		return _invalid("The model parameter sections are incomplete or mixed with flat fields.")
+	# Old flat dialects (v0-v4, mostly helicopters) may omit modelName: ClearView then renders the
+	# conventional data/body.ac. The default is applied only there and reported as a note.
+	var defaulted := false
+	if not sectioned and identities.has("verNumber") and identities.has("modelType") and not identities.has("modelName") 			and _integer_identity(identities.verNumber) in [0, 1, 2, 3, 4]:
+		identities["modelName"] = DEFAULT_MODEL
+		defaulted = true
 	for key: String in IDENTITY:
 		if not identities.has(key):
 			return _invalid("The model parameters must declare verNumber, modelType and modelName.")
 	var version := _integer_identity(identities.verNumber)
 	var model_type := _integer_identity(identities.modelType)
-	if (version == 5 and sectioned) or (version == 6 and not sectioned) or version not in [5, 6]:
-		return R.fail(R.SOURCE_UNSUPPORTED, "Only flat ClearView v5 and sectioned v6 model parameters are supported.", "source", "import")
+	if (version <= 5 and sectioned) or (version == 6 and not sectioned) or version < 0 or version > 6:
+		return R.fail(R.SOURCE_UNSUPPORTED, "Only flat ClearView v0 to v5 and sectioned v6 model parameters are supported.", "source", "import")
 	if model_type not in [0, 1]:
 		return R.fail(R.SOURCE_UNSUPPORTED, "The ClearView model type is unsupported.", "source", "import")
 	var model_name: String = identities.modelName
@@ -91,7 +99,8 @@ static func read(bytes: PackedByteArray) -> Dictionary:
 		"Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately.",
 		"source", "import", [], R.SEVERITY_WARNING)
 	return R.ok({version = version, model_type = model_type, model_name = model_name, records = records,
-		sections = sections, sha256 = CreatorBytes.sha256(bytes)}, [note])
+		sections = sections, sha256 = CreatorBytes.sha256(bytes)},
+		[note, R.diagnostic(R.SOURCE_UNSUPPORTED, MODEL_DEFAULTED, "source", "import", [], R.SEVERITY_INFO)] if defaulted else [note])
 
 static func _identifier(value: String) -> bool:
 	if value.is_empty() or value.length() > 128:

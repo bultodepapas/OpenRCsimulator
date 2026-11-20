@@ -12813,3 +12813,147 @@ msgstr "ClearView 模型 %s：%s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ClearView 飞机 ZIP 文件"
+
+msgid "This model is inside another model's folder. Nested model folders are not supported; move it to its own folder in the ZIP."
+msgstr "此模型位于另一个模型的文件夹内。不支持嵌套的模型文件夹；请将其移到 ZIP 中自己的文件夹。"
+
+msgid "Part \"%s\": only rotating servo motion is imported. Its sliding or input-driven motion was not converted; the part stays static."
+msgstr "部件“%s”：仅导入旋转舵机运动。其滑动或输入驱动的运动未被转换；该部件保持静止。"
+
+msgid "This ClearView v5 model declares no moving-part mapping that can be imported. Its control surfaces stay static until you bind them in Moving parts."
+msgstr "此 ClearView v5 模型未声明可导入的活动部件映射。在“活动部件”中绑定之前，其操纵面保持静止。"
+
+msgid "The wing leading edge could not be found in this ClearView model. Mark it in Orient and size."
+msgstr "在此 ClearView 模型中找不到机翼前缘。请在“朝向与尺寸”中标记。"
+
+msgid "Orientation and units follow the ClearView model frame (metres, nose forward along -X, up along +Y). The wing leading edge is estimated from the model shape; check it in Orient and size."
+msgstr "方向和单位遵循 ClearView 模型坐标系（米，机头朝 -X，向上为 +Y）。机翼前缘根据模型形状估计；请在“朝向与尺寸”中检查。"
+
+msgid "Every empty dimension, mass, battery and control value is filled with an OpenRC estimate scaled to this model and marked Estimated. Values you entered are kept."
+msgstr "所有空的尺寸、质量、电池和操纵数值都会以按此模型缩放的 OpenRC 估计值填入，并标记为“估算”。你输入的数值保持不变。"
+
+msgid "The model is set up with an estimated OpenRC configuration. Review the estimates, then test fly."
+msgstr "模型已使用估计的 OpenRC 配置完成设置。请检查估计值，然后试飞。"
+
+msgid "This model uses elevons (combined aileron and elevator surfaces). The estimated OpenRC configuration supports separate ailerons, elevator and rudder only."
+msgstr "此模型使用升降副翼（副翼与升降舵合一的舵面）。估计的 OpenRC 配置仅支持独立的副翼、升降舵和方向舵。"
+
+msgid "Automatic setup is only available for converted ClearView models."
+msgstr "自动设置仅适用于已转换的 ClearView 模型。"
+
+msgid "The automatic setup is incomplete. Set the orientation, units and datum in Orient and size."
+msgstr "自动设置不完整。请在“朝向与尺寸”中设置方向、单位和基准点。"
+
+msgid "The existing orientation conflicts with the ClearView frame. Review Orient and size."
+msgstr "现有方向与 ClearView 模型坐标系冲突。请检查“朝向与尺寸”。"
+
+msgid "Set up for flight automatically"
+msgstr "自动设置以便飞行"
+
+msgid "Uses the ClearView model frame, estimates the wing leading edge and fills every empty value with labelled OpenRC estimates. Nothing you entered is replaced."
+msgstr "使用 ClearView 模型坐标系，估计机翼前缘，并用带标记的 OpenRC 估计值填入所有空值。不会替换你输入的任何内容。"
+
+msgid "Test flights use this estimated OpenRC configuration, not the ClearView flight model. Handling is not a reproduction of the original."
+msgstr "试飞使用此估计的 OpenRC 配置，而不是 ClearView 飞行模型。操控表现并非原机的再现。"
+
+msgid "Publishing converted ClearView models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
+msgstr "暂不支持发布已转换的 ClearView 模型。请保存草稿以保留它；之后可以重新打开并试飞。"
+
+msgid "Set up this model for flight?"
+msgstr "要设置此模型以便飞行吗？"
+
+msgid "Set up for flight"
+msgstr "设置以便飞行"
+
+msgid "Texture \"%s\" uses an unsupported image format and was omitted; its surfaces keep their colour."
+msgstr "纹理“%s”使用了不支持的图像格式，已被省略；其表面保留原有颜色。"
+
+msgid "This model is %s m across; the estimated OpenRC configuration supports %s to %s m. It will fly as a %s m version (%s %% of its size): a different configuration, not the original size."
+msgstr "此模型翼展为 %s 米；估计的 OpenRC 配置支持 %s 至 %s 米。它将以 %s 米版本（原尺寸的 %s %%）飞行：这是不同的配置，并非原始尺寸。"
+
+msgid "It flies as a %s m version of the model."
+msgstr "它以该模型的 %s 米版本飞行。"
+
+msgid "No propeller was found in this model. It is estimated as an electric pusher park jet, with the propeller in a slot behind the wing. Jet and ducted-fan power are not modelled."
+msgstr "此模型中未找到螺旋桨。它按电动推进式公园喷气机估算，螺旋桨位于机翼后方的槽中。不模拟喷气或涵道风扇动力。"
+
+msgid "%s self-intersecting polygons were omitted."
+msgstr "已省略 %s 个自相交多边形。"
+
+msgid "Texture \"%s\" is missing from the ZIP and was omitted; its surfaces keep their colour."
+msgstr "纹理“%s”在 ZIP 中缺失，已被省略；其表面保留原有颜色。"
+
+msgid "%s subdivided surfaces are shown as their unsmoothed control mesh."
+msgstr "%s 个细分曲面显示为未平滑的控制网格。"
+
+msgid "Part \"%s\": its coordinate marker is ambiguous. The marker was hidden and the part stays static."
+msgstr "部件“%s”：其坐标标记不明确。标记已隐藏，部件保持静止。"
+
+msgid "Only flat ClearView v0 to v5 and sectioned v6 model parameters are supported."
+msgstr "仅支持平面格式的 ClearView v0 至 v5 和分节格式的 v6 模型参数。"
+
+msgid "This model does not name its render file; the ClearView default body.ac is used."
+msgstr "此模型未指定渲染文件；使用 ClearView 默认的 body.ac。"
+
+msgid "This is a ClearView helicopter, so the aeroplane setup does not apply. Use Fly as a helicopter: it flies with the X-Cell .60 reference helicopter physics and this model's appearance only."
+msgstr "这是 ClearView 直升机，因此固定翼设置不适用。请使用“作为直升机飞行”：它使用 X-Cell .60 参考直升机物理飞行，仅使用此模型的外观。"
+
+msgid "Fly as a helicopter (X-Cell .60 donor)"
+msgstr "作为直升机飞行（X-Cell .60 供体）"
+
+msgid "Flies with the X-Cell .60 reference helicopter physics; this model's appearance only."
+msgstr "使用 X-Cell .60 参考直升机物理飞行；仅使用此模型的外观。"
+
+msgid "Fly with donor helicopter physics?"
+msgstr "使用供体直升机物理飞行？"
+
+msgid "This model flies with the X-Cell .60 reference helicopter physics; only its appearance is used. It is not the ClearView flight model, and no ClearView flight setting is read."
+msgstr "此模型使用 X-Cell .60 参考直升机物理飞行，仅使用其外观。这不是 ClearView 飞行模型，也不会读取任何 ClearView 飞行设置。"
+
+msgid "Its ClearView origin is placed on the donor's centre of gravity and its lowest point on the donor's skids. A model whose main rotor is more than 1.5 times larger or smaller than the donor's is shown scaled to the donor rotor."
+msgstr "其 ClearView 原点放在供体的重心上，最低点放在供体的起落橇上。主旋翼比供体大或小超过 1.5 倍的模型会按供体旋翼缩放显示。"
+
+msgid "Fly as a helicopter"
+msgstr "作为直升机飞行"
+
+msgid "X-Cell .60 reference physics · %s appearance only"
+msgstr "X-Cell .60 参考物理 · 仅 %s 的外观"
+
+msgid "X-Cell .60 reference physics · %s appearance only, shown at %s %% of its size"
+msgstr "X-Cell .60 参考物理 · 仅 %s 的外观，按原尺寸的 %s %% 显示"
+
+msgid "This helicopter model could not be shown for flight."
+msgstr "无法显示此直升机模型用于飞行。"
+
+msgid "Fly this flying wing?"
+msgstr "要让这架飞翼飞行吗？"
+
+msgid "Fly with the X8 physics"
+msgstr "使用 X8 物理飞行"
+
+msgid "The model is %s m across and is shown at %s %% of its size."
+msgstr "此模型翼展为 %s 米，按原尺寸的 %s %% 显示。"
+
+msgid "This flying wing flies with the stock Skywalker X8 (MoonRunner X99) physics, shown with this model's appearance fitted to its %s m span. It is not the ClearView flight model."
+msgstr "这架飞翼使用标准 Skywalker X8（MoonRunner X99）的物理飞行，外观按此模型调整到其 %s 米翼展。这不是 ClearView 飞行模型。"
+
+msgid "This biplane is estimated as one equivalent wing with the lifting area of both wings."
+msgstr "此双翼机按一个等效机翼估算，其升力面积为两副机翼之和。"
+
+msgid "Under 1.45 m it is estimated as a foam park flyer: light foam structure, 9 g servos and a 3S electric power system."
+msgstr "翼展小于 1.45 米时按泡沫公园机估算：轻质泡沫结构、9 克舵机和 3S 电动动力系统。"
+
+msgid "4S · 800 Kv · 12×6 pusher propeller — estimated"
+msgstr "4S · 800 Kv · 12×6 推进式螺旋桨 — 估算"
+
+msgid "3S · 1250 Kv · 9×6 propeller — estimated"
+msgstr "3S · 1250 Kv · 9×6 螺旋桨 — 估算"
+
+msgid "3S · 1250 Kv · 9×6 pusher propeller — estimated"
+msgstr "3S · 1250 Kv · 9×6 推进式螺旋桨 — 估算"
+
+msgid "4S · 1900 Kv · 6×4.5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "4S · 1900 Kv · 6×4.5 推进式螺旋桨，代替涵道风扇 — 估算"
+
+msgid "6S · 1200 Kv · 7×5 pusher propeller, in place of a ducted fan — estimated"
+msgstr "6S · 1200 Kv · 7×5 推进式螺旋桨，代替涵道风扇 — 估算"

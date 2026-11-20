@@ -1,0 +1,291 @@
+{
+  "format": "openrc-creator-power-package v1",
+  "id": "electric-4s-1900kv-6x45-pusher-estimated-v1",
+  "qualification": "experimental",
+  "description": "Estimated fast pusher installation standing in for the ducted fan of 1.45-2.2 m electric park jets: 28 mm class 1900 rpm/V outrunner, ideal ESC, 4S 2.2 Ah LiPo and a 6x4.5 pusher propeller in a slot behind the wing. Tuned with the runtime electric solver to the static thrust of a 4S 70 mm EDF (about 16 N, 1.6 kgf) with zero thrust near 54 m/s and a 221 m/s static tip speed; all values are engineering estimates, not a measured installation. Ducted-fan inlet, duct and exhaust effects are not modelled. Realism audit 2026-11-17: the 12x6 pusher limited jets to 23-33 m/s.",
+  "layout": "pusher",
+  "donor": {
+    "path": "app/data/creator/power-electric-4s-800kv-apc12x6-pusher-estimated-v1.json"
+  },
+  "motor": {
+    "kv_rpm_per_volt": {
+      "value": 1900.0,
+      "unit": "rpm/V",
+      "kind": "estimated",
+      "source": "Engineering estimate for a 28 mm class 1900 rpm/V outrunner (no specific product verified); chosen so the static thrust matches a 4S 70 mm EDF (1.2-1.6 kgf)"
+    },
+    "resistance_ohm": {
+      "value": 0.03,
+      "unit": "ohm",
+      "kind": "estimated",
+      "source": "Engineering estimate for a 28 mm class 1900 rpm/V outrunner (no specific product verified): winding resistance"
+    },
+    "no_load_current_a": {
+      "value": 2.0,
+      "unit": "A",
+      "kind": "estimated",
+      "source": "Engineering estimate for a 28 mm class 1900 rpm/V outrunner (no specific product verified): no-load current"
+    },
+    "no_load_voltage_v": {
+      "value": 14.8,
+      "unit": "V",
+      "kind": "estimated",
+      "source": "Engineering estimate for a 28 mm class 1900 rpm/V outrunner (no specific product verified): no-load test voltage"
+    },
+    "no_load_rpm": {
+      "value": 28120.0,
+      "unit": "rpm",
+      "kind": "derived",
+      "source": "Kv × 14.8 V"
+    },
+    "no_load_temperature_c": {
+      "value": 25.0,
+      "unit": "°C",
+      "kind": "estimated",
+      "source": "Donor propulsion.motor.no_load_context.temperature_c (synthetic)"
+    }
+  },
+  "battery": {
+    "capacity_ah": {
+      "value": 2.2,
+      "unit": "Ah",
+      "kind": "estimated",
+      "source": "Typical 4S 2200 mAh 35C park-jet LiPo (catalogue class)"
+    },
+    "resistance_ohm": {
+      "value": 0.028,
+      "unit": "ohm",
+      "kind": "estimated",
+      "source": "About 7 milliohm per cell for a 2200 mAh 35C pack (catalogue class)"
+    },
+    "auxiliary_current_a": {
+      "value": 0.2,
+      "unit": "A",
+      "kind": "estimated",
+      "source": "Receiver, servos and retract electronics at rest"
+    },
+    "ocv_points": {
+      "value": [
+        [
+          0.0,
+          12.0
+        ],
+        [
+          1.0,
+          16.8
+        ]
+      ],
+      "unit": "1, V",
+      "kind": "estimated",
+      "source": "Donor propulsion.battery.ocv_points: linear 3.0 to 4.2 V per cell over state of charge (EL2a synthetic authored fixture, not a measured LiPo fit)"
+    }
+  },
+  "propeller": {
+    "name": "6x4.5 pusher propeller (UIUC APC Sport 11x6 coefficients)",
+    "diameter": {
+      "value": 0.1524,
+      "unit": "m",
+      "kind": "manual",
+      "source": "6 in nominal"
+    },
+    "rotating_inertia": {
+      "value": 1.8e-05,
+      "unit": "kg·m2",
+      "kind": "estimated",
+      "source": "6 g 6 in propeller as a slender rod m·D²/12 = 1.2e-5 plus a 28 mm motor bell"
+    },
+    "ct_table": {
+      "value": [
+        [
+          0.0,
+          0.113
+        ],
+        [
+          0.373,
+          0.0796
+        ],
+        [
+          0.414,
+          0.0725
+        ],
+        [
+          0.457,
+          0.0633
+        ],
+        [
+          0.504,
+          0.0537
+        ],
+        [
+          0.55,
+          0.0437
+        ],
+        [
+          0.592,
+          0.0351
+        ],
+        [
+          0.634,
+          0.0271
+        ],
+        [
+          0.679,
+          0.018
+        ],
+        [
+          0.724,
+          0.0095
+        ],
+        [
+          0.767,
+          0.001
+        ],
+        [
+          0.788,
+          -0.0034
+        ]
+      ],
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Borrowed: nondimensional UIUC APC Sport 11x6 table (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt) applied to a 6x4.5 pusher (mirrored blades assumed equivalent) by T = Ct·ρ·n²·D⁴ and P = Cp·ρ·n³·D⁵: no UIUC table for this propeller is in the repository; P/D 0.75 against 0.55 and a lower chord Reynolds number make it an estimate"
+    },
+    "cp_table": {
+      "value": [
+        [
+          0.0,
+          0.0471
+        ],
+        [
+          0.373,
+          0.0489
+        ],
+        [
+          0.457,
+          0.0442
+        ],
+        [
+          0.55,
+          0.036
+        ],
+        [
+          0.634,
+          0.0278
+        ],
+        [
+          0.724,
+          0.0176
+        ],
+        [
+          0.788,
+          0.0092
+        ]
+      ],
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Borrowed: nondimensional UIUC APC Sport 11x6 table (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt) applied to a 6x4.5 pusher (mirrored blades assumed equivalent) by T = Ct·ρ·n²·D⁴ and P = Cp·ρ·n³·D⁵: no UIUC table for this propeller is in the repository; P/D 0.75 against 0.55 and a lower chord Reynolds number make it an estimate"
+    }
+  },
+  "installation": {
+    "motor_behind_hub": {
+      "value": 0.03,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Pusher: motor centre ahead of the propeller hub by a 0.01 m adapter plus half of a 0.04 m outrunner (applied forward)"
+    },
+    "firewall_behind_hub": {
+      "value": 0.05,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Pusher: motor front face ahead of the propeller hub by a 0.01 m adapter plus a 0.04 m outrunner (applied forward)"
+    },
+    "spinner_length": {
+      "value": 0.02,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Prop nut behind the hub, for the crash-hull tail point"
+    }
+  },
+  "hardware": [
+    {
+      "id": "item_motor_main",
+      "mount": "motor",
+      "mass": {
+        "value": 0.085,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Engineering estimate for a 28 mm class 1900 rpm/V outrunner (no specific product verified): 28 mm class mass"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.028,
+          0.028
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "28 mm class outrunner envelope"
+      }
+    },
+    {
+      "id": "item_propeller_main",
+      "mount": "hub",
+      "mass": {
+        "value": 0.01,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "6x4.5 propeller about 0.006 kg plus prop adapter"
+      },
+      "size": {
+        "value": [
+          0.006,
+          0.1524,
+          0.016
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "6 in propeller envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "item_esc_main",
+      "mount": "esc",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Typical 60 A brushless speed controller with leads"
+      },
+      "size": {
+        "value": [
+          0.065,
+          0.03,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Typical 60 A speed controller envelope"
+      }
+    },
+    {
+      "id": "item_battery_main",
+      "mount": "battery",
+      "energy_source": "lipo",
+      "mass": {
+        "value": 0.24,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Typical 4S 2200 mAh 35C LiPo (catalogue range 0.22-0.26 kg)"
+      },
+      "size": {
+        "value": [
+          0.11,
+          0.034,
+          0.032
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Typical 4S 2200 mAh pack envelope, long axis fore-aft"
+      }
+    }
+  ]
+}

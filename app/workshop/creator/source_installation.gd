@@ -13,9 +13,18 @@ const REQUIRED := "Choose an estimated OpenRC configuration for this model and r
 const STALE := "The model or configuration changed. Review the configuration choice again."
 const INVALID := "The saved configuration choice is invalid."
 const FLIGHT_UNAVAILABLE := "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+## Shown with every chosen configuration: what a ClearView test flight is, and what it is not.
+const ESTIMATED_FLIGHT := "Test flights use this estimated OpenRC configuration, not the ClearView flight model. Handling is not a reproduction of the original."
+const PUBLISH_UNAVAILABLE := "Publishing converted ClearView models is not available yet. Save the draft to keep it; you can reopen it and test fly it."
 
 static func required(source: Source) -> bool:
 	return source != null and source.is_admitted() and source.has_asset_metadata(NAMESPACE)
+
+## Flight policy for a ClearView visual (import closeout packet 2): it flies only as the explicitly
+## declared independent estimate (checked by check_pair) under the historical control law. The
+## servo-interval law is not qualified for these models. "" means the start may be assessed.
+static func flight_refusal(source: Source, servo_selected: bool) -> String:
+	return FLIGHT_UNAVAILABLE if required(source) and servo_selected else ""
 
 static func make(source: Source,context: Dictionary,airframe: String,power: String) -> Dictionary:
 	if not required(source):

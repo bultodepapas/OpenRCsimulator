@@ -30,6 +30,9 @@ const CHECK_FORMAT := "openrc-creator-start-check v1"
 const TRIAL_KEYS := ["ok", "errors", "vehicle", "data", "scale", "raw_bytes", "identity", "creator", "display_context"]
 const VEHICLE := "creator"
 const START_CHOICES: PackedStringArray = [Session.START_AIRBORNE, Session.START_HAND_LAUNCH]
+## The one evaluator every Creator trial uses, for both the start check and the live flight (AC-11).
+## The servo law requires this explicit selection before setup(); a reference default is not enough.
+const FLIGHT_BACKEND := "gdscript_reference"
 ## Hands-off flight after a hand launch that must stay clear of the ground for the start to be offered.
 const CLIMB_OUT_SECONDS := 3.0
 const CLIMB_OUT_MIN_HEIGHT_M := 0.5
@@ -64,8 +67,10 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var association := Installation.check_pair((candidate as AcceptedCandidate).summary(),source as InspectedSource)
 	if not association.ok:
 		return _refused(str(association.diagnostics[0].message))
-	if Installation.required(source as InspectedSource):
-		return _refused(Installation.FLIGHT_UNAVAILABLE)
+	var policy := Installation.flight_refusal(source as InspectedSource,
+		(candidate as AcceptedCandidate).summary().has("servo_integration"))
+	if not policy.is_empty():
+		return _refused(policy)
 	var placement: Variant = payload.get("creator_placement")
 	if typeof(placement) != TYPE_DICTIONARY:
 		return _refused("The model placement is missing.")
@@ -95,6 +100,10 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		"bindings": look.bindings, "appearance": look.appearance,
 		"qualification": accepted.qualification(),
 	}
+	# A ClearView visual flies only as its declared independent estimate: pin that declaration so
+	# verify() can refuse a trial re-pointed at a ClearView source without one.
+	if Installation.required(source as InspectedSource):
+		pinned["source_installation"] = (accepted.summary().get("source_installation", {}) as Dictionary).duplicate(true)
 	var trial_id: String = _trial_id(pinned)
 	if trial_id.is_empty():
 		return _refused("The trial identity could not be written.")
@@ -153,7 +162,15 @@ static func verify(trial: Dictionary) -> Dictionary:
 	if not (source is Object) or (source as Object).get_script() != InspectedSource \
 			or (source as InspectedSource).sha256() != str(identity.get("source_sha256", "")):
 		return _refused("The frozen model source does not match the trial identity.")
-	if Installation.required(source as InspectedSource):
+	var controls: Variant = (data.model as Dictionary).get("controls")
+	var policy := Installation.flight_refusal(source as InspectedSource,
+		controls is Dictionary and (controls as Dictionary).has("servo_integration"))
+	if not policy.is_empty():
+		return _refused(policy)
+	var declared: Variant = identity.get("source_installation")
+	if Installation.required(source as InspectedSource) != (declared != null) or (declared != null and (not declared is Dictionary
+			or str((declared as Dictionary).get("source_sha256", "")) != (source as InspectedSource).sha256()
+			or str((declared as Dictionary).get("mode", "")) != Installation.MODE)):
 		return _refused(Installation.FLIGHT_UNAVAILABLE)
 	var reloaded: Dictionary = RecordLoader.load_bytes(bytes, aircraft_id)
 	if not reloaded.get("ok", false) or reloaded.model != data.model:
@@ -221,6 +238,11 @@ static func check_start(trial: Dictionary, normalized_field: Dictionary, weather
 	session.crash_auto_restart = false
 	session.start_choice = start_choice
 	session.trim_throttle = Session.CRUISE_TRIM_THROTTLE
+	# Select the backend the live flight uses before setup(), exactly as Main does.
+	if not session.setup_stage_backend(FLIGHT_BACKEND):
+		var backend_reason: String = str(session.stage_backend_error)
+		session.free()
+		return _failure("The reference evaluator could not be selected: " + backend_reason, start_choice, field_id, started_usec)
 	session.setup("workshop://" + str(trial.identity.trial_id), aircraft_id, (trial.data as Dictionary).duplicate(true))
 	if not session.aircraft.get("ok", false):
 		var load_reason: String = str(session.aircraft.get("errors", ["The frozen aircraft could not be prepared."])[0])

@@ -7,6 +7,7 @@ const Params := preload("params.gd")
 const FORMAT := "openrc-clearview-frames-v1"
 const ORTHOGONAL_TOLERANCE := 0.001
 const LENGTH_SEPARATION := 1.1
+const MAX_HELPER_VERTICES := 8
 const IDENTITY := [1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0]
 
 static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable()) -> Dictionary:
@@ -14,6 +15,7 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 	var marked := {}
 	var world: Array = []
 	var render_world: Array = []
+	var ambiguous: Array = []
 	for index: int in scene.nodes.size():
 		if cancel.is_valid() and bool(cancel.call()):
 			return R.fail(R.SOURCE_INVALID,"The import was cancelled.","source","import")
@@ -27,7 +29,12 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 		if group.is_empty() or group.begins_with(".") or group.ends_with(".") or ".." in group:
 			frame = {}
 		if frame.is_empty():
-			return R.fail(R.SOURCE_UNSUPPORTED,"Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing.","source","import",[str(node.name)])
+			# An ambiguous helper frame cannot prepare a hinge, but it is not model geometry either:
+			# hide a helper-sized marker, keep the model, and name the part that stays static.
+			ambiguous.append(str(node.name))
+			if node.vertices.size() <= MAX_HELPER_VERTICES:
+				marked[index] = true
+			continue
 		frame.node = index
 		frame.name = node.name
 		frame.group = str(node.name).trim_suffix(".XYZObject")
@@ -39,12 +46,14 @@ static func inspect(scene: Dictionary, params: Dictionary, cancel := Callable())
 			surfaces = node.surfaces,texture = node.texture,texrep = node.texrep,texoff = node.texoff}
 		frames.append(frame)
 		marked[index] = true
-	return R.ok({frames = frames,marked = marked,world = world,render_world = render_world,requests = _requests(params)})
+	return R.ok({frames = frames,marked = marked,world = world,render_world = render_world,requests = _requests(params),ambiguous = ambiguous})
 
 ## Called only on the converter's trusted parsed IR. Never reads a saved GLB receipt as authority.
 static func prepare(gltf: Dictionary, scene: Dictionary, inspected: Dictionary, cancel := Callable()) -> Dictionary:
 	var plans: Array = []
 	var unresolved: Array = []
+	for marker: String in inspected.get("ambiguous",[]):
+		unresolved.append({group = marker.trim_suffix(".XYZObject") if not marker.trim_suffix(".XYZObject").is_empty() else marker,reason = "ambiguous_coordinate_marker",servos = []})
 	var attempted := 0
 	for group: String in inspected.requests:
 		if cancel.is_valid() and bool(cancel.call()):
@@ -260,17 +269,21 @@ static func _requests(params: Dictionary) -> Dictionary:
 		if not section.begins_with("servo."):
 			continue
 		var servo: Dictionary = sections[section]
+		var declared: Array = movements.get(section,[])
 		# Input-only throttle and explicitly absent targets are not missing visual hinges.
-		if "rotate" not in movements.get(section,[]):
+		# Every servo with a real target is either prepared or named as unresolved below.
+		if servo.get("controlledPartType","") == "none" and servo.get("controlledPartName","") == "none" and declared.size() <= 1:
 			continue
-		if servo.get("controlledPartType","") == "none" and servo.get("controlledPartName","") == "none" and movements[section].size() == 1:
+		if declared.is_empty() and not servo.has("controlledPartType") and not servo.has("controlledPartName"):
 			continue
 		var target := str(servo.get("controlledPartType","")) + "." + str(servo.get("controlledPartName",""))
 		var group := str(sections.get(target,{}).get("renderGroupName",""))
 		var axis := str(servo.get("controlledAxisName",""))
 		var reason := "" if not group.is_empty() and axis in ["x","y","z"] else "missing_or_conflicting_servo_mapping"
 		if servo.get("controlledPartMovement","") != "rotate":
-			reason = "unsupported_or_conflicting_servo_movement"
+			# A single declared non-rotation (move/input) keeps its part static and is named.
+			reason = "unsupported_servo_movement" if declared.size() == 1 and declared[0] != "rotate" \
+				else "unsupported_or_conflicting_servo_movement"
 		if servo.get("controlledPartType","") != "liftsurface":
 			reason = "unsupported_servo_target_type"
 		if not roster_ok or section.trim_prefix("servo.") not in active:

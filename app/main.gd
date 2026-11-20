@@ -34,6 +34,7 @@ const Commands := preload("res://input/commands.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const ServoIntervalFlight := preload("res://sim/servo_interval_flight.gd")
 const FailureConfig := preload("res://failures/config.gd")
 const OutOfTrim := preload("res://sim/out_of_trim.gd")
 ## D6-TRIM-01: one rudder trim press in maximum-throw units, like the aileron's 0.5 %.
@@ -117,6 +118,10 @@ var _flight_log_label: Label
 var aircraft_id := ""
 ## Detached Workshop compilation; aircraft_id remains the catalog visual identity.
 var workshop_trial: Dictionary = {}
+## Donor flight (import closeout packet 6): a stock catalog aircraft flies with its exact physics
+## record and an imported model's appearance {source, placement, bindings?, appearance?}. Display only:
+## physics, controls and logs belong to `aircraft_id`. Empty for every ordinary flight.
+var donor_visual: Dictionary = {}
 ## AC-11: -1 not checked yet, 0 refused, 1 verified against its exact bytes. See `_creator_trial`.
 var _creator_trial_state := -1
 ## NR: accepted resolved selection, outside the sealed physics/weather/checkpoint contracts.
@@ -1196,7 +1201,7 @@ func _prepare_flight() -> void:
 	var selected_smoke_profile: Dictionary = workshop_trial.get("presentation_profile", {})
 	# Stock effects use authored show mounts, never inferred engine exhaust. A saved
 	# Workshop appearance (including an empty smoke selection) owns its own choices.
-	if workshop_trial.is_empty() and str(args.get("smoke-backend", "profile")) != "legacy" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+	if workshop_trial.is_empty() and donor_visual.is_empty() and str(args.get("smoke-backend", "profile")) != "legacy" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
 		selected_smoke_profile = StockSmoke.for_aircraft(_airplane.get("customization_bindings", {}), session.aircraft.model.propulsion)
 		_stock_smoke_profile = not selected_smoke_profile.is_empty()
 	var profile_smoke_entries: Array = selected_smoke_profile.get("smoke", [])
@@ -1212,7 +1217,7 @@ func _prepare_flight() -> void:
 				return
 			_profile_smoke.play()
 			session.sim.stepped.connect(_sample_profile_smoke)
-	elif workshop_trial.is_empty() and str(args.get("smoke-backend", "profile")) == "legacy" and str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+	elif workshop_trial.is_empty() and donor_visual.is_empty() and str(args.get("smoke-backend", "profile")) == "legacy" and str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
 		var mouths: Array = _airplane.get("exhausts", [])
 		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
 				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:
@@ -1244,8 +1249,10 @@ func _prepare_flight() -> void:
 		return
 	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
 	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
+	# The servo-interval law admits only hard hull contacts; its start check runs that way, so its
+	# flight keeps the same policy instead of failing at the first contact-enabled step (import closeout §3.2).
 	session.soft_hull_contacts = not _scripted and not args.has("capture") and not args.has("trace") \
-			and str(args.get("soft-contacts", "on")) != "off"
+			and str(args.get("soft-contacts", "on")) != "off" and not _servo_law_aircraft()
 	if not _scripted:
 		# Include the requested and active backend plus any fallback reason, including for headless traces.
 		print("physics backend: ", JSON.stringify(session.stage_backend_status()))
@@ -1607,6 +1614,8 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 func _update_cg_model() -> void:
 	if session.aircraft.ok:
 		var datum := AirplaneBuilder.datum(aircraft_id) # the data file's le frame in this aircraft's model
+		if not donor_visual.is_empty():
+			datum = Vector2.ZERO # a donor appearance is built with its leading-edge datum at the model origin
 		var scale_factor: float = float(workshop_trial.get("scale", 1.0))
 		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x * scale_factor, datum.y * scale_factor)
 
@@ -2491,7 +2500,7 @@ func bind_scenario(raw: Variant) -> Dictionary:
 	var sources: Dictionary = ScenarioConfig.validate_sources(selected, field_path)
 	if not sources.ok:
 		return sources
-	if not interactive_start or session == null or not session.is_flyable() or not workshop_trial.is_empty() \
+	if not interactive_start or session == null or not session.is_flyable() or not workshop_trial.is_empty() or not donor_visual.is_empty() \
 			or not _experimental_aircraft_path.is_empty() or not _electric_demo.is_empty() \
 			or aircraft_id != selected.aircraft_id or start_choice != selected.start_choice \
 			or session.weather_configuration() != selected.weather_config or lighting_config != selected.lighting_config \
@@ -3081,6 +3090,23 @@ func _exit_tree() -> void:
 	if is_instance_valid(session) and session.get_parent() == null:
 		session.free()
 		session = null
+	if not _tentative_detach:
+		close_recorders()
+
+
+## Set by the host only around a detach that may be rolled back (AppRoot workshop trials). While
+## set, leaving the tree keeps every recording stream open; the host calls close_recorders() once
+## the replacement flight commits. A failed replacement therefore keeps the same live log.
+var _tentative_detach := false
+
+
+func set_tentative_detach(on: bool) -> void:
+	_tentative_detach = on
+
+
+## Finalize the recordings owned by this flight: companion capture, frame diagnostics, accident
+## record and the F10 ORFL log. Idempotent: each owner ignores a second stop.
+func close_recorders() -> void:
 	if companions != null and is_instance_valid(companions):
 		companions.stop_recording("flight closed")
 	if _frame_diagnostics != null:
@@ -3144,7 +3170,7 @@ func _companion_options(raw: Dictionary) -> Dictionary:
 	if not checked.ok or not checked.config.enabled:
 		return checked
 	var args := _user_args()
-	if _scripted or args.has("capture") or args.has("trace") or not workshop_trial.is_empty() \
+	if _scripted or args.has("capture") or args.has("trace") or not workshop_trial.is_empty() or not donor_visual.is_empty() \
 			or not flight_scenario.is_empty() or not _experimental_aircraft_path.is_empty() or not _electric_demo.is_empty():
 		return {ok = false, errors = ["Companions require a normal fixed-wing flight at Club field."]}
 	return CompanionManager.validate_context(session, field, landscape_id, checked.config)
@@ -3388,16 +3414,22 @@ static func _experimental_native_macos_option(args: Dictionary) -> Dictionary:
 	return {ok = false, enabled = false, error = "--experimental-native-macos must be true or false"}
 
 
+## True when the installed aircraft uses the servo-interval law, which admits only hard hull contacts.
+func _servo_law_aircraft() -> bool:
+	return session != null and session.aircraft is Dictionary and session.aircraft.get("ok", false) \
+		and ServoIntervalFlight.selected(session.aircraft.get("model"))
+
+
 ## The app requests native physics by default. A Creator trial pins the reference evaluator instead:
 ## catalog native qualification does not cover an imported aircraft, so it neither requests native
 ## nor inherits a command-line backend (AC-11).
 func _requested_stage_backend(args: Dictionary) -> String:
-	return "gdscript_reference" if _creator_trial() else str(args.get("physics-backend", "native"))
+	return CreatorTrial.FLIGHT_BACKEND if _creator_trial() else str(args.get("physics-backend", "native"))
 
 
 func _shadow_proxy_context() -> Dictionary:
 	var args := _user_args()
-	if not workshop_trial.is_empty() or _scripted or args.has("capture") or args.has("trace"):
+	if not workshop_trial.is_empty() or not donor_visual.is_empty() or _scripted or args.has("capture") or args.has("trace"):
 		return {}
 	return {stock_session = true, model_manifest_sha256 = str(_airplane.get("model_manifest_sha256", ""))}
 
@@ -3410,6 +3442,9 @@ func _build_world() -> bool:
 		var creator: Dictionary = workshop_trial.get("creator", {})
 		_airplane = CreatorVisual.build_flight(creator.get("source"), creator.get("placement", {}),
 			creator.get("bindings", {}), creator.get("appearance", {}))
+	elif not donor_visual.is_empty() and workshop_trial.is_empty():
+		_airplane = CreatorVisual.build_flight(donor_visual.get("source"), donor_visual.get("placement", {}),
+			donor_visual.get("bindings", {}), donor_visual.get("appearance", {}))
 	else:
 		_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
 	if _airplane.is_empty():

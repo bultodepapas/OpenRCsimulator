@@ -46,6 +46,16 @@ func _images() -> void:
 	var rgba := Image.create_from_data(1,1,false,Image.FORMAT_RGBA8,PackedByteArray([255,0,0,128])).save_png_to_buffer()
 	var png := Images.normalize(rgba)
 	check("RGBA alpha retained", png.ok and png.value.has_alpha)
+	var png_polls := [0]
+	var cancelled_png := Images.normalize(rgba,func() -> bool:
+		png_polls[0] += 1
+		return true)
+	check("PNG normalization honours cancellation", not cancelled_png.ok and png_polls[0] >= 1)
+	for threshold: int in [2, 3]:
+		var later := [0]
+		check("PNG cancellation around decode %d" % threshold, not Images.normalize(rgba,func() -> bool:
+			later[0] += 1
+			return later[0] >= threshold).ok)
 	var indexed := _indexed_png()
 	check("indexed tRNS alpha retained", Images.normalize(indexed).ok and Images.normalize(indexed).value.has_alpha)
 	check("unqualified image refused", not Images.normalize(PackedByteArray([255,216,255,217])).ok)
@@ -95,7 +105,11 @@ func _conversion() -> void:
 	var refused := _convert(body.replace("kids 1","kids 2") + many)
 	check("repeated marker references are bounded", not refused.ok and refused.diagnostics[0].code == "SOURCE_LIMIT")
 	var bow := body.replace("numvert 3\n0 0 0\n1 0 0\n0 1 1", "numvert 4\n0 0 0\n1 1 1\n0 1 1\n1 0 0").replace("refs 3\n0 0 0\n1 1 0\n2 0 1", "refs 4\n0 0 0\n1 1 1\n2 0 1\n3 1 0")
-	check("cancelling bow-tie is refused", not _convert(bow).ok)
+	check("a model made only of a cancelling bow-tie has nothing to admit", not _convert(bow).ok)
+	var with_bow := body.replace("kids 1","kids 2") + bow.substr(bow.find("OBJECT poly")).replace("name \"wing\"", "name \"bow\"")
+	var kept_bow := _convert(with_bow)
+	check("a self-intersecting polygon beside valid geometry is omitted with a note", kept_bow.ok and kept_bow.diagnostics.any(
+		func(d: Dictionary) -> bool: return d.message in [Converter.POLYGONS_OMITTED, "%s zero-area surfaces were omitted."]))
 	var large := body.replace("0 0 0\n1 0 0\n0 1 1", "100000000 0 0\n100000001 0 1\n100000000 1 1")
 	check("render quantization cannot silently erase detail", not _convert(large).ok)
 	var collapse := body.replace("0 0 0\n1 0 0\n0 1 1", "100000000 0 0\n100000001 0 0\n100000096 100000000 100000000")
@@ -106,6 +120,27 @@ func _conversion() -> void:
 		if result.ok:
 			document = _document(result.value.source.source_bytes())
 			check("PNG transparency renders with blending", document.materials[0].alphaMode == "BLEND")
+	# An undecodable format (a GIF smoke sprite) is an optional omission; a corrupt PNG still fails.
+	var gif := "GIF89a".to_ascii_buffer()
+	gif.append_array(PackedByteArray([1, 0, 1, 0, 0, 0, 0, 59]))
+	var omitted := _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"paint.png\""), gif)
+	check("unsupported texture format is omitted with a note", omitted.ok
+		and not _document(omitted.value.source.source_bytes()).has("images")
+		and omitted.diagnostics.any(func(d: Dictionary) -> bool: return d.message == Converter.TEXTURE_OMITTED and d.arguments == ["paint.png"]))
+	check("the omission is explained again on reopening", omitted.ok and Converter.source_notes(omitted.value.source).any(
+		func(d: Dictionary) -> bool: return d.message == Converter.TEXTURE_OMITTED))
+	var absent := _convert(body.replace("name \"wing\"", "name \"wing\"
+texture \"absent.png\""))
+	check("a texture missing from the ZIP is omitted with a note", absent.ok and absent.diagnostics.any(
+		func(d: Dictionary) -> bool: return d.message == Converter.TEXTURE_MISSING and d.arguments == ["absent.png"]))
+	var smooth := _convert(body.replace("name \"wing\"", "name \"wing\"
+subdiv 2"))
+	check("a subdivided surface imports as its control mesh with a note", smooth.ok and smooth.diagnostics.any(
+		func(d: Dictionary) -> bool: return d.message == Converter.SUBDIVISION_IGNORED)
+		and Converter.source_notes(smooth.value.source).any(func(d: Dictionary) -> bool: return d.message == Converter.SUBDIVISION_IGNORED))
+	var broken_png := Image.create_from_data(1,1,false,Image.FORMAT_RGBA8,PackedByteArray([255,0,0,128])).save_png_to_buffer()
+	broken_png[29] ^= 1
+	check("a corrupt PNG still refuses the model", not _convert(body.replace("name \"wing\"", "name \"wing\"\ntexture \"paint.png\""), broken_png).ok)
 	var v5 := "verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()
 	var packed := Package.inspect_bytes(Fixture._zip_bytes([["params.txt","unrelated 1\n".to_ascii_buffer()],["Plane/params.txt",v5],["Plane/data/body.ac",body.to_ascii_buffer()]]))
 	check("invalid parent does not hide a valid child", packed.ok and packed.value.models().size() == 2 and packed.value.models()[1].ok)

@@ -14,9 +14,15 @@ const AIRFRAME_FORMAT := "openrc-creator-airframe-package v1"
 const POWER_FORMAT := "openrc-creator-power-package v1"
 const AIRFRAMES := {
 	"conventional-trainer-estimated-v1": "res://data/creator/airframe-conventional-trainer-estimated-v1.json",
+	"conventional-parkflyer-estimated-v1": "res://data/creator/airframe-conventional-parkflyer-estimated-v1.json",
 }
 const POWERS := {
 	"electric-4s-800kv-apc12x6-estimated-v1": "res://data/creator/power-electric-4s-800kv-apc12x6-estimated-v1.json",
+	"electric-4s-800kv-apc12x6-pusher-estimated-v1": "res://data/creator/power-electric-4s-800kv-apc12x6-pusher-estimated-v1.json",
+	"electric-3s-1250kv-9x6-estimated-v1": "res://data/creator/power-electric-3s-1250kv-9x6-estimated-v1.json",
+	"electric-3s-1250kv-9x6-pusher-estimated-v1": "res://data/creator/power-electric-3s-1250kv-9x6-pusher-estimated-v1.json",
+	"electric-4s-1900kv-6x45-pusher-estimated-v1": "res://data/creator/power-electric-4s-1900kv-6x45-pusher-estimated-v1.json",
+	"electric-6s-1200kv-7x5-pusher-estimated-v1": "res://data/creator/power-electric-6s-1200kv-7x5-pusher-estimated-v1.json",
 }
 const QUALIFICATION := "experimental"
 const QUANTITY_KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
@@ -33,6 +39,16 @@ const AIRFRAME_ITEM_IDS := ["item_wing_airframe", "item_fuselage_airframe", "ite
 
 static var _cache: Dictionary = {}
 static var _thrust_cache: Dictionary = {}
+
+
+## True for a pusher power package: its motor and firewall sit ahead of the hub.
+static func is_pusher(package: Dictionary) -> bool:
+	return str(package.get("layout", "tractor")) == "pusher"
+
+
+## +1 when installation lengths behind the hub point aft (tractor), -1 when they point forward (pusher).
+static func aft_sign(package: Dictionary) -> float:
+	return -1.0 if is_pusher(package) else 1.0
 
 
 ## Result envelope; value = a private deep copy of the airframe package data.
@@ -67,6 +83,8 @@ static func _package_problem(data: Variant, id: String, format: String) -> Strin
 	var package: Dictionary = data
 	if package.get("format") != format or package.get("id") != id or package.get("qualification") != QUALIFICATION:
 		return "format, id or qualification do not match"
+	if package.has("layout") and package.get("layout") not in ["tractor", "pusher"]:
+		return "the layout is not tractor or pusher"
 	if format == POWER_FORMAT:
 		if typeof(package.get("hardware")) != TYPE_ARRAY:
 			return "the hardware list is missing"
@@ -473,7 +491,7 @@ static func hardware_items(package: Dictionary, mounts: Dictionary) -> Array:
 	var hub: PackedFloat64Array = mounts.hub
 	var places := {
 		hub = hub,
-		motor = PackedFloat64Array([hub[0] + number(package, "installation", "motor_behind_hub"), hub[1], hub[2]]),
+		motor = PackedFloat64Array([hub[0] + aft_sign(package) * number(package, "installation", "motor_behind_hub"), hub[1], hub[2]]),
 		esc = mounts.esc,
 		battery = mounts.battery,
 	}

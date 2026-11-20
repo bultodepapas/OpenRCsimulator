@@ -304,7 +304,7 @@ static func _domain(study: Dictionary, definition: Dictionary) -> Array:
 		var width := Packages.positive(fuselage.get("width"))
 		var height := Packages.positive(fuselage.get("height"))
 		var center := Packages.finite(fuselage.get("center_z"))
-		if not is_nan(nose):
+		if not is_nan(nose) and not (study.has("power") and Packages.is_pusher(study.power)):
 			values["hub_ahead_of_nose_m"] = nose - hub[0]
 		if not is_nan(width) and not is_nan(height) and not is_nan(center) \
 				and (absf(hub[1]) > 0.5 * width or absf(hub[2] - center) > 0.5 * height):
@@ -376,7 +376,8 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		if entry.has("energy_source"):
 			item["energy_source"] = entry.energy_source
 		inventory.append(item)
-	var hull := _hull(definition, shape, hub, Packages.number(power, "installation", "spinner_length"))
+	# A signed length: ahead of a tractor hub, behind a pusher hub.
+	var hull := _hull(definition, shape, hub, Packages.aft_sign(power) * Packages.number(power, "installation", "spinner_length"))
 	var hull_points := []
 	var hull_components := []
 	var hull_ids := []
@@ -396,7 +397,8 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		},
 		convention_id = "openrc-le-frd-v1",
 		capabilities = {
-			controls = "conventional", gear = "locked_up", propulsion_layout = "single_tractor",
+			controls = "conventional", gear = "locked_up",
+			propulsion_layout = "single_pusher" if Packages.is_pusher(power) else "single_tractor",
 			energy = "ocv_resistance", damage = "terminal_hull", flaps = "not_simulated",
 		},
 		physical_identity_version = 1,
@@ -406,7 +408,7 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		balance = {
 			plan_cg = {value = Array(cg), unit = "m", kind = Packages.DERIVED,
 				source = "centre of mass of the inventory below: Σ m·r / Σ m"},
-			firewall = {value = [hub[0] + Packages.number(power, "installation", "firewall_behind_hub"), hub[1], hub[2]],
+			firewall = {value = [hub[0] + Packages.aft_sign(power) * Packages.number(power, "installation", "firewall_behind_hub"), hub[1], hub[2]],
 				unit = "m", kind = Packages.DERIVED, source = "equipment/hub_position plus the power package's motor length behind the hub"},
 			configuration = BALANCE_CONFIGURATION,
 			cg_tolerance = {value = CG_TOLERANCE_M, unit = "m", kind = Packages.DERIVED,

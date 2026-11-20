@@ -70,14 +70,18 @@ func _frames() -> void:
 			"children": marker.children = [2]
 			"data": marker.has_data = true
 			"flags": marker.surfaces[0].flags = 0x20
-		check("reserved ambiguous marker refused: " + change,not Motion.inspect(broken,params.value).ok)
+		var kept := Motion.inspect(broken,params.value)
+		check("ambiguous marker is hidden and named, not fatal: " + change,kept.ok and kept.value.frames.is_empty()
+			and kept.value.ambiguous == [str(marker.name)] and kept.value.marked.has(frame.node))
 	var almost: Dictionary = scene.value.duplicate(true)
 	almost.nodes[frame.node].vertices[3][1] += 0.0008
 	check("rounded near-orthogonal frame tolerated", Motion.inspect(almost,params.value).ok)
 	for name: String in [".XYZObject",".Control.XYZObject","Control..XYZObject","Control..Part.XYZObject"]:
 		var unnamed: Dictionary = scene.value.duplicate(true)
 		unnamed.nodes[frame.node].name = name
-		check("coordinate marker needs a qualified nonempty group",not Motion.inspect(unnamed,params.value).ok)
+		var unqualified := Motion.inspect(unnamed,params.value)
+		check("an unqualified marker group cannot prepare a hinge",unqualified.ok and unqualified.value.frames.is_empty()
+			and unqualified.value.ambiguous == [name])
 	var exact: Variant = Motion.exact(frame.original)
 	var roundtrip: Dictionary = JSON.parse_string(JSON.stringify(exact))
 	var decoded := PackedByteArray()
@@ -202,11 +206,20 @@ func _conversion() -> void:
 	for movement: String in ["rotate","input"]:
 		var throttle := _convert(_body(),throttle_params.replace("#begin servo.throttle\ncontrolledAxisName z\ncontrolledPartMovement rotate","#begin servo.throttle\ncontrolledAxisName z\ncontrolledPartMovement "+movement))
 		check("ordinary throttle needs no visual hinge warning",throttle.ok and throttle.value.receipt.coordinate_frames.prepared.size() == 1 and throttle.value.receipt.coordinate_frames.unresolved.is_empty())
+	# Targeted non-rotation motion stays static but is named (audit 2026-11-17, finding 6).
+	for movement: String in ["move","input"]:
+		var targeted := _convert(_body(),_params().replace("controlledPartMovement rotate","controlledPartMovement "+movement))
+		check("targeted %s servo is reported, not dropped" % movement,targeted.ok and targeted.value.receipt.coordinate_frames.prepared.is_empty()
+			and targeted.value.receipt.coordinate_frames.unresolved.size() == 1
+			and targeted.value.receipt.coordinate_frames.unresolved[0].reason == "unsupported_servo_movement"
+			and targeted.diagnostics.any(func(d: Dictionary) -> bool: return d.severity == "warning" and str(d.message).begins_with("Part \"%s\": only rotating")))
 	var foreign := _convert(_body().replace("Control.link","Other.link"),_params())
 	# Direct siblings with another prefix stay outside the selected group, hence still safe.
 	check("other prefix is not swept into the hinge", foreign.ok and foreign.value.receipt.coordinate_frames.prepared[0].children == [3])
 	var v5 := _convert(_body(),"verNumber 5\nmodelType 1\nmodelName body.ac\n")
 	check("v5 retains exact frames without assumed servo axis",v5.ok and v5.value.receipt.coordinate_frames.frames.size() == 1 and v5.value.receipt.coordinate_frames.prepared.is_empty())
+	check("v5 states that its motion is unmapped",v5.ok and v5.diagnostics.any(func(d: Dictionary) -> bool: return str(d.message).begins_with("This ClearView v5 model declares no moving-part")))
+	check("reopened v5 receipt states it again",v5.ok and Converter.source_notes(v5.value.source).any(func(d: Dictionary) -> bool: return str(d.message).begins_with("This ClearView v5 model declares no moving-part")))
 	var far_body := _body().replace("loc 0.1 0.2 0.3","loc 100000000 0 0").replace("rot 0.9961946980917455 0 0.08715574274765817 0 1 0 -0.08715574274765817 0 0.9961946980917455","rot 1 0 0 0 1 0 0 0 1").replace("0.4 1.5 0.6\n0.4 0.5 0.6\n0.4 0.5 3.6\n2.4 0.5 0.6","0 1 0\n0 0 0\n0 0 3\n2 0 0")
 	var far := _convert(far_body,_params())
 	if not far.ok or not far.value.receipt.coordinate_frames.prepared.is_empty() or far.value.receipt.coordinate_frames.unresolved[0].reason != "render_precision":

@@ -10,12 +10,19 @@ static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pi
 	if bytes.is_empty() or bytes.size() > Limits.PNG_BYTES:
 		return R.fail(R.SOURCE_LIMIT, "A model texture is empty or larger than 16 MiB.", "source", "import")
 	if bytes.size() >= 8 and bytes.slice(0, 8) == PackedByteArray(PngCheck.SIGNATURE):
+		if _cancelled(cancel):
+			return _cancellation()
 		var header := PngCheck.header(bytes)
 		if not header.ok:
 			return header
 		if header.value.pixels > remaining_pixels:
 			return R.fail(R.SOURCE_LIMIT, "The model exceeds its total texture pixel limit.", "source", "import")
+		# PngCheck is a shared bounded validator without a callback; poll at both edges of it.
+		if _cancelled(cancel):
+			return _cancellation()
 		var checked := PngCheck.decode(bytes)
+		if _cancelled(cancel):
+			return _cancellation()
 		if not checked.ok:
 			return checked
 		return R.ok({png = bytes, width = checked.value.info.width, height = checked.value.info.height,
@@ -34,6 +41,12 @@ static func normalize(bytes: PackedByteArray, cancel := Callable(), remaining_pi
 		return R.ok({png = image.save_png_to_buffer(), width = checked.value.width, height = checked.value.height,
 			pixels = checked.value.pixels, has_alpha = false}, checked.diagnostics)
 	return R.fail(R.SOURCE_UNSUPPORTED, "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference.", "source", "import")
+
+static func _cancelled(cancel: Callable) -> bool:
+	return cancel.is_valid() and bool(cancel.call())
+
+static func _cancellation() -> Dictionary:
+	return R.fail(R.SOURCE_INVALID, "The import was cancelled.", "source", "import")
 
 static func _bmp(bytes: PackedByteArray, cancel: Callable, remaining_pixels: int) -> Dictionary:
 	if bytes.size() < 54 or bytes.decode_u32(14) != 40 or bytes.decode_u16(26) != 1 or bytes.decode_u16(28) != 24 or bytes.decode_u32(30) != 0:

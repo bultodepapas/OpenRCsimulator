@@ -107,7 +107,9 @@ func _run() -> void:
 		printerr(candidate.get("diagnostics",[]),plain_candidate.get("diagnostics",[]))
 		quit(1)
 		return
-	check("numerical qualification remains an actionable issue",doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
+	check("a declared estimate under the historical law has no qualification block",not doc.issues().any(func(d: Dictionary) -> bool: return d.message == Installation.FLIGHT_UNAVAILABLE))
+	check("the servo-interval law stays unqualified for ClearView models",Installation.flight_refusal(source,true) == Installation.FLIGHT_UNAVAILABLE
+		and Installation.flight_refusal(source,false).is_empty() and Installation.flight_refusal(ordinary.value,true).is_empty())
 	var reopened := Authoring.new()
 	var saved: Dictionary = Bytes.decode(Bytes.encode(doc.snapshot()).value.bytes).value.data
 	check("v3 survives exact persisted roundtrip",reopened.restore(saved,source,Observations.inspect(source).value).ok and reopened.snapshot() == doc.snapshot() and reopened.source_installation() == doc.source_installation())
@@ -152,8 +154,18 @@ func _run() -> void:
 
 func _pairing(candidate: RefCounted,plain: RefCounted,source: RefCounted,ordinary: RefCounted) -> void:
 	var request := {creator_candidate = candidate,creator_source = source,creator_placement = {nose_axis = "+x",up_axis = "+z",unit_scale = 1.0,datum = [0.0,0.0,0.0]}}
-	var refused := Trial.freeze(request)
-	check("selection cannot grant unqualified flight",not refused.ok and refused.errors[0] == Installation.FLIGHT_UNAVAILABLE)
+	var declared := Trial.freeze(request)
+	check("a declared estimate flies as a labelled experimental trial",declared.ok and Trial.verify(declared).ok
+		and declared.identity.experimental and declared.identity.source_installation.mode == Installation.MODE)
+	if declared.ok:
+		var stripped: Dictionary = declared.duplicate(true)
+		stripped.identity.erase("source_installation")
+		var repinned: Dictionary = stripped.identity.duplicate(true)
+		repinned.erase("trial_id")
+		repinned.erase("experimental")
+		stripped.identity.trial_id = Trial._trial_id(repinned)
+		var bare := Trial.verify(stripped)
+		check("a ClearView trial without its pinned declaration is refused",not bare.ok and bare.errors[0] == Installation.FLIGHT_UNAVAILABLE)
 	request.creator_candidate = plain
 	check("ordinary candidate cannot bypass a recognized source",not Trial.freeze(request).ok)
 	request.creator_candidate = candidate

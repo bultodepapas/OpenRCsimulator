@@ -32,6 +32,7 @@ const HelicopterAudio = preload("res://audio/helicopter_audio.gd")
 const SmokeSystem = preload("res://render/smoke/smoke_system.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
 const LensSettings = preload("res://render/lens/lens_settings.gd")
+const HeliDonor = preload("res://workshop/creator/clearview/heli_donor.gd")
 signal pause_requested
 ## UI-31 (UI-30 PS-7): R uses the shell's restart transaction, like the airplane route.
 signal restart_requested
@@ -52,6 +53,12 @@ var camera_preferences: Dictionary={}
 var overlays_enabled: bool=false
 var overlay_settings: Dictionary={}
 var startup_error: String=""
+## Import closeout: {source: admitted ClearView helicopter InspectedSource, name}. When set, that model's
+## appearance flies on this route's X-Cell .60 donor physics instead of the HX-700 visual. Empty keeps the route.
+var creator_visual: Dictionary={}
+## The Workshop trial identity Pause shows ({display_context}); empty outside a Workshop trial.
+var workshop_trial: Dictionary={}
+var _creator_label: String=""
 var _note: String=""
 var session: Node
 var recorder: RefCounted
@@ -130,9 +137,12 @@ func _ready() -> void:
  var lake_error: String=str(_field_node.get_meta("lake_error",""))
  if not lake_error.is_empty(): _refuse("Lake configuration refused: "+lake_error); return
  livery=str(args.get("livery",livery))
- _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
- if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
- add_child(_airplane.root)
+ if not creator_visual.is_empty() and (aircraft_id!=HeliDonor.DONOR_ID or not HeliDonor.is_helicopter(creator_visual.get("source"))):
+  _refuse(HeliDonor.UNAVAILABLE); return
+ if creator_visual.is_empty():
+  _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
+  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
+  add_child(_airplane.root)
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
@@ -169,19 +179,23 @@ func _ready() -> void:
  session.sim.stepped.connect(_on_sim_stepped)
  if not session.reset(): _refuse(session.start_error); return
  print("physics backend: ",JSON.stringify(session.stage_backend_status()))
- Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
- Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
+ if creator_visual.is_empty():
+  Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
+  Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
+ elif not _build_creator_visual(): return
  _crash_presentation=CrashPresentation.new()
  _crash_presentation.name="HelicopterCrashPresentation"
  add_child(_crash_presentation)
  if not _crash_presentation.configure(_airplane,session.aircraft.context):
   _refuse("Helicopter crash presentation could not prepare the source model."); return
  _crash_presentation.set_collision_world(obstacles.world)
- _rotors=RotorVisual.attach(_airplane,self)
- Magnifier.tag(_rotors) # CAM-18: rotor discs belong in the magnifier too
- _night_kit=NightLights.attach(_airplane)
- _night_kit.set_mode(str(args.get("heli-lights","auto")))
- _crash_presentation.set_night_kit(_night_kit)
+ # The HX-700 rotor adapter and night kit are authored on that mesh; a donor-flown model keeps its own parts.
+ if creator_visual.is_empty():
+  _rotors=RotorVisual.attach(_airplane,self)
+  Magnifier.tag(_rotors) # CAM-18: rotor discs belong in the magnifier too
+  _night_kit=NightLights.attach(_airplane)
+  _night_kit.set_mode(str(args.get("heli-lights","auto")))
+  _crash_presentation.set_night_kit(_night_kit)
  _build_hud()
  _lens_args=args
  _start_lens()
@@ -212,6 +226,21 @@ func _ready() -> void:
   var error: Error=get_viewport().get_texture().get_image().save_png(path)
   print("HELICOPTER CAPTURE ",path," error=",error)
   get_tree().quit(error)
+
+
+## Builds the imported model on the donor's rotor size and skids (HeliDonor). Refuses like any startup failure.
+func _build_creator_visual() -> bool:
+ var skid_depth: float=0.0
+ var points: PackedFloat64Array=session.aircraft.skids.points_body_frd_m
+ for index: int in range(2,points.size(),3): skid_depth=maxf(skid_depth,points[index])
+ var built: Dictionary=HeliDonor.build(creator_visual.get("source"),float(session.aircraft.context.main_model.rotor_radius_m),skid_depth)
+ if not built.ok: _refuse(str(built.diagnostics[0].message)); return false
+ _airplane=built.value
+ add_child(_airplane.root)
+ var shown: String=str(creator_visual.get("name",""))
+ var shown_scale: float=float(_airplane.creator_scale)
+ _creator_label=tr(HeliDonor.LABEL)%shown if shown_scale==1.0 else tr(HeliDonor.LABEL_SCALED)%[shown,String.num(100.0*shown_scale,0)]
+ return true
 
 
 func _build_landscape_field(snapshot: Dictionary) -> Node3D:
@@ -314,19 +343,20 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var phase: PackedFloat64Array=_rotor_phase_at_fraction(fraction)
  var rotor_display: Dictionary=_rotor_state_at_fraction(fraction)
  if _rotors!=null: _rotors.update(rotor_display,phase[0],phase[1])
+ elif _airplane.has("rotor_parts"): HeliDonor.show_rotors(_airplane.rotor_parts,float(rotor_display.get("omega_rad_s",0.0)),float(rotor_display.get("tail_omega_rad_s",0.0)))
  var wind: PackedFloat64Array=session.wind_at(session.sim.time())
  var wreck_active: bool=not session.crash.is_empty() and _crash_presentation!=null
  var presentation_paused: bool=_aftermath_paused or not session.holds.is_empty()
  if wreck_active:
   if not _crash_presentation.active:
-   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false,World.aircraft_local_seconds(lighting_config,session.sim.time()))
+   if _night_kit!=null: _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false,World.aircraft_local_seconds(lighting_config,session.sim.time()))
    var impact_body: PackedFloat64Array=session.crash.get("body",s)
    var impact_pose: Transform3D=Frames.root_transform(Frames.quat_to_render(impact_body.slice(6,10)),Frames.ned_to_render(impact_body.slice(0,3)),_airplane.cg_model_m)
    _crash_presentation.start(session.crash,impact_pose,_airplane.cg_model_m,Frames.ned_to_render(wind))
   _crash_presentation.update(dt,presentation_paused)
   _airplane.root.visible=false
-  _rotors.visible=false
-  _night_kit.visible=false
+  if _rotors!=null: _rotors.visible=false
+  if _night_kit!=null: _night_kit.visible=false
   pos=_crash_presentation.focus_position()
  # CAM-24: the chase settles its look-ahead from the state velocity (body FRD → render); a wreck focus has none.
  var velocity: Vector3=Vector3.INF if wreck_active else body*Frames.ned_to_render(s.slice(3,6))
@@ -339,7 +369,7 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  if _night_kit!=null and not wreck_active:
   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed,World.aircraft_local_seconds(lighting_config,session.sim.time()))
  var speed: float=sqrt(s[3]*s[3]+s[4]*s[4]+s[5]*s[5])
- _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
+ _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+(tr("X-Cell reference physics · HX-700 visual") if _creator_label.is_empty() else _creator_label)+"\n"
  _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
  _hud.text+=_collective_hud_line()+"\n"
  if session.radio.connected:

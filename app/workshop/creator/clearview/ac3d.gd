@@ -12,6 +12,7 @@ var _error := ""
 var _nodes: Array = []
 var _materials: Array = []
 var _vertices := 0
+var _subdivided := 0
 var _surfaces := 0
 var _refs := 0
 var _degenerate := 0
@@ -50,7 +51,7 @@ func _read() -> Dictionary:
 	var notes: Array = []
 	if _degenerate > 0:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, "%s legacy polygons have fewer than three references; their coordinates are retained as markers.", "source", "import", [str(_degenerate)], R.SEVERITY_INFO))
-	return R.ok({nodes = _nodes, roots = roots, materials = _materials, degenerate_polygons = _degenerate}, notes)
+	return R.ok({nodes = _nodes, roots = roots, materials = _materials, degenerate_polygons = _degenerate, subdivided = _subdivided}, notes)
 
 func _line() -> String:
 	var start := _at
@@ -163,8 +164,9 @@ func _object(header: Array[String], parent: int, depth: int) -> int:
 				else:
 					_at += count
 			"subdiv":
+				# The control mesh is valid geometry; smoothing it is optional presentation.
 				if _count(t, 8) != 0:
-					_fail("Apply AC3D subdivision before importing this model.")
+					_subdivided += 1
 			"numvert":
 				var count := _count(t, MAX_VERTICES - _vertices)
 				_vertices += count

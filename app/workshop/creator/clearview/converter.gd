@@ -22,11 +22,22 @@ var _marker_points := 0
 var _marker_faces := 0
 var _marker_refs := 0
 var _texture_notes: Array = []
+var _omitted_textures := {}
+const OMITTED_TEXTURE := -2
+const TEXTURE_OMITTED := "Texture \"%s\" uses an unsupported image format and was omitted; its surfaces keep their colour."
 var _dependencies: Array = []
 var _pixels := 0
 var _triangles := 0
 var _polygon_work := 0
 var _dropped := 0
+var _omitted_polygons := 0
+## Relative float32 rounding of a part accepted for display (0.1 % of the part size).
+const RENDER_TOLERANCE := 0.001
+const MAX_RENDER_DROPPED := 4096
+const TEXTURE_MISSING := "Texture \"%s\" is missing from the ZIP and was omitted; its surfaces keep their colour."
+const SUBDIVISION_IGNORED := "%s subdivided surfaces are shown as their unsmoothed control mesh."
+const MAX_OMITTED_POLYGONS := 32
+const POLYGONS_OMITTED := "%s self-intersecting polygons were omitted."
 var _error := {}
 var _cancel := Callable()
 var _package: Package
@@ -86,16 +97,31 @@ static func source_notes(source: InspectedSource) -> Array:
 		"source","import",[],R.SEVERITY_WARNING), R.diagnostic(R.SOURCE_UNSUPPORTED,
 		"Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.",
 		"source","import",[],R.SEVERITY_INFO)]
+	var subdivided: Variant = receipt.get("subdivided_surfaces",0)
+	if typeof(subdivided) in [TYPE_FLOAT,TYPE_INT] and float(subdivided) == floor(float(subdivided)) and subdivided > 0 and subdivided <= Ac3d.MAX_SURFACES:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,SUBDIVISION_IGNORED,"source","import",[str(int(subdivided))],R.SEVERITY_INFO))
+	var omitted: Variant = receipt.get("omitted_invalid_polygons",0)
+	if typeof(omitted) in [TYPE_FLOAT,TYPE_INT] and float(omitted) == floor(float(omitted)) and omitted > 0 and omitted <= MAX_OMITTED_POLYGONS:
+		notes.append(R.diagnostic(R.SOURCE_INVALID,POLYGONS_OMITTED,"source","import",[str(int(omitted))],R.SEVERITY_WARNING))
 	var dropped: Variant = receipt.get("dropped_degenerate_surfaces",0)
 	if typeof(dropped) in [TYPE_FLOAT,TYPE_INT] and float(dropped) == floor(float(dropped)) and dropped > 0 and dropped <= Ac3d.MAX_SURFACES:
 		notes.append(R.diagnostic(R.SOURCE_INVALID,"%s zero-area surfaces were omitted.","source","import",[str(int(dropped))],R.SEVERITY_INFO))
 	var image_notes: Variant = receipt.get("image_notes",[])
 	notes.append_array(_motion_notes(receipt.get("coordinate_frames")))
+	if typeof(receipt.get("params_version")) in [TYPE_INT,TYPE_FLOAT] and float(receipt.params_version) != 6.0:
+		notes.append(_v5_motion_note())
 	if image_notes is Array:
+		var jpeg_noted := false
 		for entry: Variant in image_notes.slice(0,Limits.GLB_IMAGES):
-			if entry is Dictionary and typeof(entry.get("message")) == TYPE_STRING and entry.message == "JPEG comments were ignored.":
+			if not entry is Dictionary or typeof(entry.get("message")) != TYPE_STRING:
+				continue
+			if entry.message == "JPEG comments were ignored." and not jpeg_noted:
 				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"JPEG comments were ignored.","source","import",[],R.SEVERITY_INFO))
-				break
+				jpeg_noted = true
+			elif entry.message in [TEXTURE_OMITTED, TEXTURE_MISSING] and entry.get("arguments") is Array and entry.arguments.size() == 1 \
+					and typeof(entry.arguments[0]) == TYPE_STRING and Package.Archive.safe_name(entry.arguments[0], false) \
+					and "/" not in entry.arguments[0]:
+				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,entry.message,"source","import",entry.arguments,R.SEVERITY_INFO))
 	var archive_notes: Variant = receipt.get("archive_notes",[])
 	if archive_notes is Array:
 		for entry: Variant in archive_notes.slice(0,33):
@@ -138,7 +164,7 @@ func _convert() -> Dictionary:
 		return motion
 	var receipt := {format = VERSION, archive_sha256 = _package.archive().sha256(), archive_label = _package.archive().label(),
 		model_root = _model.root, params_version = _model.params.version, model_type = _model.params.model_type,
-		members = _dependencies, physics_imported = false, dropped_degenerate_surfaces = _dropped,
+		members = _dependencies, physics_imported = false, dropped_degenerate_surfaces = _dropped, omitted_invalid_polygons = _omitted_polygons, subdivided_surfaces = int(_scene.get("subdivided", 0)),
 		material_conversion = "AC3D Phong to metallic-roughness approximation; ambient/specular originals retained below",
 		original_materials = _scene.materials, observations = _model.params.records, markers = _markers,
 		image_notes = _texture_notes, archive_notes = _package.archive().diagnostics(),coordinate_frames = motion.value}
@@ -175,19 +201,40 @@ func _convert() -> Dictionary:
 	var notes: Array = _model.diagnostics.duplicate(true)
 	notes.append_array(_package.archive().diagnostics())
 	notes.append_array(_texture_notes)
+	if int(_scene.get("subdivided", 0)) > 0:
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, SUBDIVISION_IGNORED, "source", "import", [str(int(_scene.subdivided))], R.SEVERITY_INFO))
 	notes.append_array(_motion_notes(motion.value))
+	if int(_model.params.version) != 6:
+		notes.append(_v5_motion_note())
 	notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.", "source", "import", [], R.SEVERITY_INFO))
 	if _dropped > 0:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, "%s zero-area surfaces were omitted.", "source", "import", [str(_dropped)], R.SEVERITY_INFO))
+	if _omitted_polygons > 0:
+		notes.append(R.diagnostic(R.SOURCE_INVALID, POLYGONS_OMITTED, "source", "import", [str(_omitted_polygons)], R.SEVERITY_WARNING))
 	return R.ok({source = inspected.value, receipt = receipt}, notes)
 
 func _admit(label: String) -> Dictionary:
+	if _cancelled():
+		return _error
 	var encoded := _glb()
 	if not _error.is_empty():
 		return _error
 	if encoded.size() > Limits.MODEL_SOURCE_BYTES:
 		return R.fail(R.SOURCE_LIMIT, "The converted model exceeds the 32 MiB Creator limit.", "source", "import")
-	return Importer.inspect_bytes(encoded,label)
+	# The shared GLB admission has no callback: poll before and after it so a cancelled
+	# conversion never returns an admitted source.
+	if _cancelled():
+		return _error
+	var admitted := Importer.inspect_bytes(encoded,label)
+	if _cancelled():
+		return _error
+	return admitted
+
+## ClearView v5 declares no visual hinge mapping this converter can read; say so explicitly.
+static func _v5_motion_note() -> Dictionary:
+	return R.diagnostic(R.SOURCE_UNSUPPORTED,
+		"This ClearView v5 model declares no moving-part mapping that can be imported. Its control surfaces stay static until you bind them in Moving parts.",
+		"source","import",[],R.SEVERITY_WARNING)
 
 ## Read only bounded counts from untrusted extras; never reconstruct or execute a rig from them.
 static func _motion_notes(motion: Variant) -> Array:
@@ -222,12 +269,16 @@ static func _motion_notes(motion: Variant) -> Array:
 					message = "Hinge \"%s\": provide one named render frame and a separate visible part group."
 				"missing_or_conflicting_servo_mapping", "unsupported_or_conflicting_servo_movement", "unsupported_servo_target_type", "missing_or_conflicting_model_servos", "unlisted_servo_section", "missing_listed_servo", "multiple_servos_for_render_group":
 					message = "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+				"unsupported_servo_movement":
+					message = "Part \"%s\": only rotating servo motion is imported. Its sliding or input-driven motion was not converted; the part stays static."
 				"multiple_render_parents", "foreign_render_descendant", "nested_coordinate_group", "overlapping_render_groups", "non_rigid_coordinate_frame":
 					message = "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
 				"hinge_limit", "node_limit", "depth_limit", "neutral_transform_mismatch", "render_precision":
 					message = "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
 				"rig_admission":
 					message = "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+				"ambiguous_coordinate_marker":
+					message = "Part \"%s\": its coordinate marker is ambiguous. The marker was hidden and the part stays static."
 			if not message.is_empty():
 				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,message,"source","import",[label],R.SEVERITY_WARNING))
 	return notes
@@ -264,6 +315,8 @@ func _mesh(node: Dictionary) -> Array:
 		var order := _triangulate(node, face, normal, face_index)
 		if not _error.is_empty():
 			break
+		if order.is_empty():
+			continue
 		var material := _material(face.material, node.texture, bool(int(face.flags) & 32))
 		if material < 0:
 			break
@@ -280,8 +333,12 @@ func _mesh(node: Dictionary) -> Array:
 			var render_cross := _triangle_cross([a.x,a.y,a.z],[b.x,b.y,b.z],[c.x,c.y,c.z])
 			var preserved: float = source_cross[0]*render_cross[0] + source_cross[1]*render_cross[1] + source_cross[2]*render_cross[2]
 			if preserved <= 0.0 or not is_finite(preserved):
-				_error = R.fail(R.SOURCE_UNSUPPORTED, "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing.", "source", "import")
-				return []
+				# A sliver that collapses in float32 is invisible: omit it like a zero-area surface.
+				_dropped += 1
+				if _dropped > MAX_RENDER_DROPPED:
+					_error = R.fail(R.SOURCE_UNSUPPORTED, "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing.", "source", "import")
+					return []
+				continue
 			if source_cross[0]*normal.x + source_cross[1]*normal.y + source_cross[2]*normal.z < 0.0:
 				var swap := triangle[1]
 				triangle[1] = triangle[2]
@@ -346,12 +403,19 @@ func _triangulate(node: Dictionary, face: Dictionary, normal: Vector3, face_inde
 				_error = R.fail(R.SOURCE_LIMIT, "The model exceeds the polygon conversion work limit.", "source", "import")
 				return PackedInt32Array()
 			if _intersects(original[a], original[next], original[b], original[(b + 1) % points.size()]):
-				_error = R.fail(R.SOURCE_INVALID, "Polygon %s in part \"%s\" has intersecting edges.", "source", "import", [str(face_index),str(node.name)])
-				return PackedInt32Array()
+				return _omit_polygon(face_index, node)
 	var result := Geometry2D.triangulate_polygon(points)
 	if result.size() != (points.size() - 2) * 3:
-		_error = R.fail(R.SOURCE_UNSUPPORTED, "An AC3D polygon cannot be triangulated without changing its shape.", "source", "import")
+		return _omit_polygon(face_index, node)
 	return result
+
+## A self-intersecting or untriangulable polygon is an isolated authoring defect: omit it with a
+## counted note instead of losing the whole model. Many such polygons still refuse the model.
+func _omit_polygon(face_index: int, node: Dictionary) -> PackedInt32Array:
+	_omitted_polygons += 1
+	if _omitted_polygons > MAX_OMITTED_POLYGONS:
+		_error = R.fail(R.SOURCE_INVALID, "Polygon %s in part \"%s\" has intersecting edges.", "source", "import", [str(face_index),str(node.name)])
+	return PackedInt32Array()
 
 func _material(index: int, texture: String, double_sided: bool) -> int:
 	var key := "%d:%s:%s" % [index, texture, double_sided]
@@ -363,16 +427,16 @@ func _material(index: int, texture: String, double_sided: bool) -> int:
 	var source: Dictionary = _scene.materials[index]
 	var pbr := {baseColorFactor = [source.rgb[0],source.rgb[1],source.rgb[2],source.opacity], metallicFactor = 0.0,
 		roughnessFactor = clampf(sqrt(2.0 / (float(source.shininess) + 2.0)), 0.04, 1.0)}
-	if not texture.is_empty():
-		var image := _texture(texture)
-		if image < 0:
-			return -1
+	var image := _texture(texture) if not texture.is_empty() else OMITTED_TEXTURE
+	if image == -1:
+		return -1
+	if image >= 0:
 		pbr.baseColorTexture = {index = image}
 	var output := {name = source.name, pbrMetallicRoughness = pbr, doubleSided = double_sided, emissiveFactor = source.emission}
 	if source.opacity < 1.0:
 		output.alphaMode = "BLEND"
 	var result: int = _gltf.materials.size()
-	if not texture.is_empty() and bool(_texture_alpha.get(str(pbr.baseColorTexture.index), false)):
+	if image >= 0 and bool(_texture_alpha.get(str(pbr.baseColorTexture.index), false)):
 		output.alphaMode = "BLEND"
 	_gltf.materials.append(output)
 	_materials[key] = result
@@ -380,12 +444,22 @@ func _material(index: int, texture: String, double_sided: bool) -> int:
 
 func _texture(name: String) -> int:
 	var resolved := _package.archive().resolve(_model.root, "data/" + name)
+	if not resolved.ok and resolved.diagnostics[0].code == R.DEPENDENCY_MISSING and Package.Archive.safe_name(name, false) and "/" not in name:
+		if not _omitted_textures.has("missing:" + name):
+			if _omitted_textures.size() >= Limits.GLB_IMAGES:
+				_error = R.fail(R.SOURCE_LIMIT, "The model uses too many texture images.", "source", "import")
+				return -1
+			_omitted_textures["missing:" + name] = true
+			_texture_notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, TEXTURE_MISSING, "source", "import", [name], R.SEVERITY_INFO))
+		return OMITTED_TEXTURE
 	if not resolved.ok:
 		_error = resolved
 		return -1
 	var member: String = resolved.value.name
 	if _textures.has(member):
 		return _textures[member]
+	if _omitted_textures.has(member):
+		return OMITTED_TEXTURE
 	if _textures.size() >= Limits.GLB_IMAGES:
 		_error = R.fail(R.SOURCE_LIMIT, "The model uses too many texture images.", "source", "import")
 		return -1
@@ -394,6 +468,17 @@ func _texture(name: String) -> int:
 		_error = bytes
 		return -1
 	var image := Images.normalize(bytes.value, _cancel, Limits.PNG_AGGREGATE_PIXELS - _pixels)
+	if not image.ok and image.diagnostics[0].code == R.SOURCE_UNSUPPORTED and not _cancelled():
+		# A format Creator cannot decode (for example GIF smoke sprites) is an optional visual
+		# omission: its surfaces keep their material colour. Invalid or oversized images still fail.
+		# Omissions share the image limit, so a hostile package cannot flood the receipt with notes.
+		if _omitted_textures.size() >= Limits.GLB_IMAGES:
+			_error = R.fail(R.SOURCE_LIMIT, "The model uses too many texture images.", "source", "import")
+			return -1
+		_omitted_textures[member] = true
+		_texture_notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, TEXTURE_OMITTED, "source", "import",
+			[member.get_file()], R.SEVERITY_INFO))
+		return OMITTED_TEXTURE
 	if not image.ok:
 		_error = image
 		return -1
@@ -524,8 +609,7 @@ func _normal(node: Dictionary, face: Dictionary) -> Vector3:
 		sum[1] += (a[2]-b[2])*(a[0]+b[0])
 		sum[2] += (a[0]-b[0])*(a[1]+b[1])
 	if sum == [0.0,0.0,0.0]:
-		_error = R.fail(R.SOURCE_INVALID, "An AC3D polygon has cancelling or self-intersecting edges.", "source", "import")
-		return Vector3.ZERO
+		return Vector3.ZERO # Cancelling (bow-tie) outline: no net area, omitted like a zero-area surface.
 	var length := sqrt(float(sum[0]*sum[0]+sum[1]*sum[1]+sum[2]*sum[2]))
 	return Vector3(sum[0]/length,sum[1]/length,sum[2]/length)
 
@@ -579,7 +663,7 @@ func _precision_ok(node: Dictionary) -> bool:
 	for point: Array in node.vertices:
 		for axis: int in 3:
 			scratch.encode_float(0, point[axis])
-			if absf(scratch.decode_float(0)-float(point[axis])) > extent * 0.00001:
+			if absf(scratch.decode_float(0)-float(point[axis])) > extent * RENDER_TOLERANCE:
 				_error = R.fail(R.SOURCE_UNSUPPORTED, "Recenter or rescale this model to preserve its detail at render precision.", "source", "import")
 				return false
 	return true
