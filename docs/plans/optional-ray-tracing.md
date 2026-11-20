@@ -1,6 +1,7 @@
 # Optional ray tracing: implementation and qualification plan
 
 **Status:** proposed implementation contract; no production RT feature is implemented or qualified by this document.  
+**Audit status:** corrective revision required before treating this as a fully specified implementation handoff. The [adversarial audit of revision `381d4215`](../research/ray-tracing/2026-11-19-adversarial-plan-audit.md) records 16 open findings (5 High, 10 Medium, 1 Low), their affected phases and closure tests. This notice does not resolve those findings or qualify runtime behavior.  
 **Research date:** 19 November 2026, America/Bogota.  
 **Research revision:** strengthened by [twenty follow-up investigations](../research/ray-tracing/2026-11-19-twenty-investigations.md), completed as ten broad investigations followed by ten targeted investigations selected from their findings. Source findings and proposed tests are distinguished throughout; no GPU result is inferred from this revision.  
 **Application baseline:** `bultodepapas/OpenRCsimulator`, `main` at `e0a733937e255bacfe95ff09db0fb3838697239f`, application version `0.2.9`.  
