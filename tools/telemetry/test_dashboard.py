@@ -25,7 +25,7 @@ from tests.support import (RELEASE, SCHEMA_DIR, TempDir, activity_event, batch, 
                            perf_event, unix)
 
 import dashboard  # noqa: E402
-import downloads  # noqa: E402
+import github_archive as downloads  # noqa: E402
 import snapshot  # noqa: E402
 
 MONDAY = date(2027, 1, 11)
@@ -113,7 +113,7 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(dashboard.last_seen(data, rows)[1:], ("today", "daily counters (UTC day)"))
 
         page = dashboard.render(data)
-        self.assertIn("<title>OpenRC Telemetry Dashboard</title>", page)
+        self.assertIn("<title>OpenRC Stats Dashboard</title>", page)
         self.assertIn("Operator-only", page)
         self.assertIn("nvidia_rtx", page)
         self.assertNotIn(">software<", page)
@@ -133,7 +133,7 @@ class DashboardCase(unittest.TestCase):
         _, _, day_state = dashboard.coverage_model(data, rows)
         self.assertEqual([t for _, t, _ in dashboard.alerts(data, rows, day_state)], ["Waiting for first batch"])
         page = dashboard.render(data)
-        self.assertIn("No rolled-up insight days", page)
+        self.assertIn("No player data yet", page)
         self.assertIn("never", page)
 
     def test_silence_after_raw_purge_is_not_first_batch(self):
@@ -192,7 +192,58 @@ class DashboardCase(unittest.TestCase):
         gh.save_assets(connection, assets(later, "2027-01-19T00:10:00Z"), "2027-01-19T00:10:00Z", "2027-01-19T00:10:05Z")
         connection.execute("INSERT INTO attempts(kind, started_utc, finished_utc, success) VALUES "
                            "('release assets', '2027-01-19T00:10:00Z', '2027-01-19T00:10:05Z', 1)")
+        days = [{"day": f"2027-01-{d:02d}", "views": 10 * d, "uniques": d, "status": "observed_after_day"}
+                for d in range(10, 20)]
+        gh.save_traffic(connection, days, "2027-01-19T00:10:00Z", "2027-01-19T00:10:01Z")
+        gh.save_clones(connection, [{**d, "views": d["views"] * 3} for d in days], "2027-01-19T00:10:00Z",
+                       "2027-01-19T00:10:01Z")
+        gh.save_community(connection, {
+            "counters": {"stars": 12, "forks": 3, "watchers": 2, "open_issues": 5},
+            "referrers": [{"referrer": "reddit.com", "count": 30, "uniques": 20},
+                          {"referrer": "<b>evil</b>", "count": 2, "uniques": 1}],
+            "paths": [{"path": "/o/r/releases", "title": "Releases · o/r", "count": 9, "uniques": 6}],
+            "releases": [{"tag": "v0.3.9", "published": "2027-01-12T15:00:00Z", "prerelease": False},
+                         {"tag": "v0.3.10", "published": "2027-01-18T09:00:00Z", "prerelease": False}],
+            "star_days": {"2026-12-01": 10, "2027-01-15": 2}},
+            "2027-01-19T00:10:02Z", "2027-01-19T00:10:03Z")
         connection.close()
+
+    def test_github_and_overview_tabs(self):
+        archive = self.dir / "analytics"
+        self.make_archive(archive)
+        model = downloads.load(archive)
+        self.assertEqual(model["counters"][-1]["stars"], 12)
+        self.assertEqual(downloads.stars_cumulative(model, ["2027-01-14", "2027-01-15", "2027-01-16"]), [10, 12, 12])
+        self.assertEqual(downloads.window_sum(model["traffic"], ["2027-01-18", "2027-01-19"]), 370)
+        data = snapshot.collect(self.config, NOW, days=14, weeks=1, floor=20)
+        data["github"] = model
+        page = dashboard.render(data)
+        for tab in ("overview", "players", "downloads", "github", "website", "receiver"):
+            self.assertIn(f'id="panel-{tab}"', page)
+        self.assertIn("Repository views, 14 days", page)
+        self.assertIn("&lt;b&gt;evil&lt;/b&gt;", page)  # referrer text is escaped
+        self.assertNotIn("<b>evil</b>", page)
+        self.assertIn("Release v0.3.10", page)  # release marker in a tooltip
+        self.assertIn("G-4Z11DSB2BV", page)
+
+    def test_version_one_archive_loads_without_extras(self):
+        import sqlite3
+        archive = self.dir / "v1"
+        self.make_archive(archive)
+        connection = sqlite3.connect(archive / downloads.github_history.DATABASE_NAME)
+        connection.execute("PRAGMA user_version = 1")
+        connection.commit()
+        connection.close()
+        model = downloads.load(archive)
+        self.assertEqual((model["clones"], model["counters"], model["star_days"]), ([], [], {}))
+        self.assertTrue(model["traffic"])
+        self.assertEqual(downloads.stars_cumulative(model, ["2027-01-01", "2027-01-02"]), [None, None])
+
+    def test_path_labels_strip_the_repository_prefix(self):
+        repo = "o/r"
+        self.assertEqual(dashboard.path_label("/o/r", repo), "(repository home)")
+        self.assertEqual(dashboard.path_label("/o/r/issues/12", repo), "issues/12")
+        self.assertEqual(dashboard.path_label("/other/x", repo), "other/x")
 
     def test_downloads_section_and_alerts(self):
         archive = self.dir / "analytics"
@@ -206,9 +257,9 @@ class DashboardCase(unittest.TestCase):
         self.assertEqual(downloads.recent_increase(model, NOW), 16)
 
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
-        data["downloads"] = model
+        data["github"] = model
         page = dashboard.render(data)
-        self.assertIn("<h2>Release downloads</h2>", page)
+        self.assertIn('id="panel-downloads"', page)
         self.assertIn("Latest release v0.3.10", page)
         rows = dashboard.ingest_rows(data)
         titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]
@@ -216,13 +267,13 @@ class DashboardCase(unittest.TestCase):
         data["generated_unix"] = NOW + 3 * 86400
         titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]
         self.assertIn("Download counters stale", titles)
-        data["downloads"]["collect_note"] = "gh: not logged in"
+        data["github"]["collect_note"] = "gh: not logged in"
         self.assertIn("Download refresh failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
 
     def test_no_archive_renders_hint(self):
         self.assertIsNone(downloads.load(self.dir / "nothing"))
         data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
-        data["downloads"] = None
+        data["github"] = None
         self.assertIn("No GitHub history archive found", dashboard.render(data))
 
     def test_release_order_matches_between_modules(self):

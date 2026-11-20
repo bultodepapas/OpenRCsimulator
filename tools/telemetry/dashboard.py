@@ -1,4 +1,4 @@
-"""Operator telemetry dashboard: fetch a receiver snapshot over SSH and render a local HTML page.
+"""Operator statistics dashboard: players (telemetry), downloads, GitHub and receiver health in one local page.
 
     python tools/telemetry/dashboard.py fetch  --ssh root@<receiver-host> [--key <identity>] [--ct 404]
     python tools/telemetry/dashboard.py render --snapshot <dashboard.snapshot.json>
@@ -23,7 +23,7 @@ import sys
 import time
 import webbrowser
 
-import downloads
+import github_archive as downloads
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -276,13 +276,15 @@ def alerts(snapshot, rows, day_state):
         out.append(("info", "Waiting for first batch", f"no accepted batch in the last {len(rows)} days"))
     elif seen[0] > 86400:
         out.append(("warning", "No batch in 24 h", f"last accepted batch {seen[1]}"))
-    model = snapshot.get("downloads")
+    model = snapshot.get("github")
     if model is not None:
         note, attempt = model.get("collect_note"), model.get("last_attempt")
         if note:
             out.append(("warning", "Download refresh failed", f"{note}; showing the archived counters"))
-        elif attempt and not attempt["success"]:
-            out.append(("warning", "Last download collection failed", f"at {attempt['finished']}"))
+        else:
+            for kind, info in (model.get("attempts") or ({"release assets": attempt} if attempt else {})).items():
+                if info and not info["success"]:
+                    out.append(("warning", f"GitHub {kind} collection failed", f"last attempt {info['finished']}"))
         age = downloads.age_s(model, now)
         if age is not None and age > DOWNLOADS_STALE_S:
             out.append(("warning", "Download counters stale", f"last collected {fmt_age(age)}: check the "
@@ -657,7 +659,7 @@ def column_chart(points, aria):
 
 
 def downloads_section(model, now, days):
-    head = "<h2>Release downloads</h2>"
+    head = ""
     if model is None:
         return (head + '<div class="panel"><p class="empty">No GitHub history archive found. Run '
                 "<code>python tools/analytics/github_history.py collect --output-dir &lt;dir&gt;</code> or install "
@@ -686,6 +688,7 @@ def downloads_section(model, now, days):
         day = (today - timedelta(days=offset)).isoformat()
         value, partial = by_day.get(day, (0, False))
         tip = [day, f"Downloads {fmt_int(value)}" if day in by_day else "no collection ended this day"]
+        tip += [f"Release {tag}" for tag in release_days(model).get(day, [])]
         if partial:
             tip.append("partial: assets added, removed or reset")
         points.append((day, value, tip))
@@ -702,6 +705,260 @@ def downloads_section(model, now, days):
             f'dated by the later collection (UTC)</p>{column_chart(points, "Downloads per collection day")}</div>'
             f'<div class="panel"><h4>Downloads per release</h4>{keys}{chart}'
             f"<details><summary>Table</summary>{table}</details></div></div>")
+
+
+# ---------------------------------------------------------------------------------------------- statistics views
+
+
+def window_days(now, count):
+    """The `count` UTC days ending today (ISO strings, oldest first)."""
+    today = datetime.fromtimestamp(now, tz=timezone.utc).date()
+    return [(today - timedelta(days=offset)).isoformat() for offset in range(count - 1, -1, -1)]
+
+
+def release_days(model):
+    """{ISO day: [tags published that UTC day]} for final releases (pre-releases would crowd the charts)."""
+    out = {}
+    for release in (model or {}).get("releases") or []:
+        if release["prerelease"]:
+            continue
+        out.setdefault(release["published"][:10], []).append(release["tag"])
+    return out
+
+
+def line_chart(days, series, aria, markers=None, height=240, notes=None):
+    """Lines on one shared axis. series: [(label, values aligned with days (None = unknown), slot)].
+    notes: {day: text} appended to that day's tooltip."""
+    markers, notes = markers or {}, notes or {}
+    width, left, right, top, bottom = 900, 52, 64, 14, 34
+    plot_w, plot_h = width - left - right, height - top - bottom
+    known = [v for _, values, _ in series for v in values if v is not None]
+    ticks = nice_ticks(max(known, default=0))
+    scale = plot_h / ticks[-1]
+    n = len(days)
+    x_of = (lambda i: left + plot_w / 2) if n < 2 else (lambda i: left + i * plot_w / (n - 1))  # noqa: E731
+    y_of = lambda v: top + plot_h - v * scale  # noqa: E731
+    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" class="chart">']
+    for tick in ticks:
+        y = y_of(tick)
+        parts.append(f'<line class="{"axis" if tick == 0 else "grid"}" x1="{left}" x2="{width - right}" '
+                     f'y1="{y:.1f}" y2="{y:.1f}"/>')
+        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{fmt_compact(tick)}</text>')
+    for index, day in enumerate(days):
+        if day in markers:
+            x = x_of(index)
+            parts.append(f'<line class="mark" x1="{x:.1f}" x2="{x:.1f}" y1="{top}" y2="{top + plot_h}"/>')
+            parts.append(f'<path class="markhead" d="M{x - 4:.1f},{top + plot_h + 1}l4,6l4,-6z"/>')
+    end_labels = []
+    for label, values, slot in series:
+        path, pen = [], False
+        for index, value in enumerate(values):
+            if value is None:
+                pen = False
+                continue
+            path.append(f'{"L" if pen else "M"}{x_of(index):.1f},{y_of(value):.1f}')
+            pen = True
+        if path:
+            parts.append(f'<path class="line line-{slot}" d="{"".join(path)}"/>')
+        for index, value in enumerate(values):  # a point with no known neighbour would draw nothing
+            if value is not None and (index == 0 or values[index - 1] is None) and (
+                    index == n - 1 or values[index + 1] is None) and index != n - 1:
+                parts.append(f'<circle class="pt fill-{slot}" cx="{x_of(index):.1f}" cy="{y_of(value):.1f}" r="2.5"/>')
+        last = next((i for i in range(n - 1, -1, -1) if values[i] is not None), None)
+        if last is not None:
+            parts.append(f'<circle class="dot fill-{slot}" cx="{x_of(last):.1f}" cy="{y_of(values[last]):.1f}" r="4"/>')
+            end_labels.append((y_of(values[last]), x_of(last), values[last]))
+    placed = []
+    for y, x, value in end_labels:  # direct end labels only where they do not collide
+        if all(abs(y - other) >= 13 for other in placed):
+            placed.append(y)
+            parts.append(f'<text class="value" x="{x + 8:.1f}" y="{y + 4:.1f}">{fmt_compact(value)}</text>')
+    label_every = max(1, round(n / 10))
+    step = plot_w / max(n - 1, 1)
+    for index, day in enumerate(days):
+        tip = [day] + [f"{label}: {'unknown' if values[index] is None else fmt_int(values[index])}"
+                       for label, values, _ in series]
+        tip += [f"Release {tag}" for tag in markers.get(day, [])]
+        if day in notes:
+            tip.append(notes[day])
+        x = x_of(index)
+        attrs = tip_attrs(tip) if n <= 60 else f'data-tip="{e(chr(10).join(tip), quote=True)}"'
+        parts.append(f'<rect class="hit" x="{x - step / 2:.1f}" y="{top}" width="{step:.1f}" height="{plot_h}" '
+                     f'{attrs}/>')
+        if (index % label_every == 0 and n - 1 - index >= label_every / 2) or index == n - 1:
+            parts.append(f'<text class="tick" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{e(day[5:])}</text>')
+    parts.append("</svg>")
+    return scroll("".join(parts), 640)
+
+
+def stat_tiles(items):
+    """items: [(label, value_html, sub_text)]"""
+    return '<div class="tiles">' + "".join(
+        f'<div class="tile"><div class="tl">{e(a)}</div><div class="tv">{b}</div><div class="ts">{e(c)}</div></div>'
+        for a, b, c in items) + "</div>"
+
+
+def panel(title, sub, body):
+    return f'<div class="panel"><h4>{e(title)}</h4>' + (f'<p class="sub">{e(sub)}</p>' if sub else "") + body + "</div>"
+
+
+def daily_values(rows, days, key):
+    lookup = {r["day"]: r[key] for r in rows}
+    return [lookup.get(day) for day in days]
+
+
+def partial_notes(rows):
+    return {r["day"]: "partial day: sampled before it ended" for r in rows if r.get("status") == "partial"}
+
+
+def path_label(path, repo):
+    prefix = "/" + (repo or "").strip("/")
+    rest = path[len(prefix):] if repo and path.startswith(prefix) else path
+    return rest.strip("/") or "(repository home)"
+
+
+def latest_week_players(snapshot):
+    """Session-days in the newest insight week (sum of one mix table: every session appears once per day there)."""
+    for report in snapshot.get("insights") or []:
+        entry = (report.get("tables") or {}).get("mix_os")
+        if entry:
+            rows = table_rows(entry)
+            return report["week"], report["release_id"], sum(r["sessions"] for r in rows)
+    return None
+
+
+def overview_section(snapshot, rows, alert_items):
+    now, model = snapshot["generated_unix"], snapshot.get("github")
+    days = window_days(now, 30)
+    last14, last7 = days[-14:], days[-7:]
+    markers = release_days(model)
+    players = latest_week_players(snapshot)
+    accepted7 = sum(r["counts"]["accepted"] for r in rows[-7:])
+    items = [("Player session-days", fmt_int(players[2]) if players else "-",
+              f"session-days {players[0]} · {players[1]}" if players else f"{fmt_int(accepted7)} batches in 7 days")]
+    charts = []
+    if model:
+        releases = downloads.per_release(model)
+        total = sum(t for _, _, t in releases)
+        latest = next((r for r in sorted(model.get("releases") or [], key=lambda r: r["published"], reverse=True)), None)
+        latest_total = next((t for tag, _, t in releases if latest and tag == latest["tag"]), 0)
+        views14 = downloads.window_sum(model.get("traffic") or [], last14)
+        clones14 = downloads.window_sum(model.get("clones") or [], last14)
+        counters = (model.get("counters") or [None])[-1]
+        stars7 = sum(n for d, n in (model.get("star_days") or {}).items() if d in set(last7))
+        items += [
+            ("Package downloads", fmt_int(total), f"+{fmt_int(downloads.recent_increase(model, now, 7))} in 7 days"),
+            ("Latest release", e(latest["tag"]) if latest else "-",
+             f"{latest['published'][:10]} · {fmt_int(latest_total)} downloads" if latest else ""),
+            ("Repository views, 14 days", fmt_int(views14), "GitHub page views"),
+            ("Git clones, 14 days", fmt_int(clones14), "includes automated clones"),
+            ("Stars", fmt_int(counters["stars"]) if counters else "-", f"+{stars7} in 7 days"),
+            ("Forks · watchers · issues", " · ".join(fmt_int(counters[k]) for k in ("forks", "watchers", "open_issues"))
+             if counters else "-", "current GitHub counters"),
+        ]
+        by_day = downloads.per_day(model)
+        charts.append(panel("Downloads per day", "package counter increases; triangles mark releases", line_chart(
+            days, [("Downloads", [by_day[d][0] if d in by_day else None for d in days], "s1")],
+            "Downloads per day", markers, 200)))
+        traffic = model.get("traffic") or []
+        charts.append(panel("Repository visits per day", None, legend([("v", "Page views", "s1"), ("u", "Unique visitors", "s2")])
+                            + line_chart(days, [("Page views", daily_values(traffic, days, "count"), "s1"),
+                                                ("Unique visitors", daily_values(traffic, days, "uniques"), "s2")],
+                                         "Repository visits per day", markers, 200, partial_notes(traffic))))
+        charts.append(panel("Stars", "cumulative current stargazers", line_chart(
+            days, [("Stars", downloads.stars_cumulative(model, days), "s1")], "Stars", markers, 200)))
+    else:
+        items.append(("GitHub", "-", "no history archive"))
+    charts.append(panel("Telemetry batches accepted per day", "consenting players' sessions reaching the receiver",
+                        line_chart(days, [("Accepted", daily_values(
+                            [{"day": r["day"], "count": r["counts"]["accepted"]} for r in rows], days, "count"), "s1")],
+                            "Telemetry batches per day", markers, 200)))
+    return (alerts_panel(alert_items) + stat_tiles(items)
+            + f'<h2>Last 30 days</h2><div class="pair">{"".join(charts)}</div>')
+
+
+def github_section(model, now):
+    if not model:
+        return '<div class="panel"><p class="empty">No GitHub history archive found (tools/analytics).</p></div>'
+    traffic, clones = model.get("traffic") or [], model.get("clones") or []
+    first = min([r["day"] for r in traffic + clones] + list((model.get("star_days") or {}).keys()) or
+                [window_days(now, 1)[0]])
+    span = (datetime.fromtimestamp(now, tz=timezone.utc).date() - date.fromisoformat(first)).days + 1
+    star_window = window_days(now, max(14, span))  # stars: the whole history
+    days = window_days(now, min(90, max(14, span)))  # views and clones: at most 90 days
+    markers = release_days(model)
+    counters = (model.get("counters") or [None])[-1]
+    last14 = days[-14:]
+    items = [
+        ("Stars", fmt_int(counters["stars"]) if counters else "-", "current"),
+        ("Forks", fmt_int(counters["forks"]) if counters else "-", "current"),
+        ("Watchers", fmt_int(counters["watchers"]) if counters else "-", "subscribed to notifications"),
+        ("Open issues and PRs", fmt_int(counters["open_issues"]) if counters else "-", "GitHub's combined count"),
+        ("Page views, 14 days", fmt_int(downloads.window_sum(traffic, last14)),
+         f"{fmt_int(downloads.window_sum(traffic, days))} since {days[0]}"),
+        ("Git clones, 14 days", fmt_int(downloads.window_sum(clones, last14)), "mostly automated (CI, mirrors)"),
+    ]
+    if not counters:
+        items = items[4:] + [("Community counters", "-", "collected from the next run")]
+    referrers = [(r["name"], r["count"], [f"Views {fmt_int(r['count'])}", f"Unique visitors {fmt_int(r['uniques'])}"],
+                  False) for r in model.get("referrers") or []]
+    paths = [(path_label(r["name"], model.get("repo")), r["count"],
+              [r["title"][:80], f"Views {fmt_int(r['count'])}", f"Unique visitors {fmt_int(r['uniques'])}"], False)
+             for r in model.get("paths") or []]
+    totals = {tag: t for tag, _, t in downloads.per_release(model)}
+    release_rows = "".join(
+        f"<tr><td>{e(r['tag'])}</td><td>{e(r['published'][:10])}</td><td>{'pre-release' if r['prerelease'] else 'release'}"
+        f"</td><td>{fmt_int(totals.get(r['tag'], 0))}</td></tr>"
+        for r in sorted(model.get("releases") or [], key=lambda r: r["published"], reverse=True))
+    window = f"GitHub's 14-day window, collected {model['community_utc'][:16].replace('T', ' ')} UTC" \
+        if model.get("community_utc") else "not collected yet"
+    pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
+    return (stat_tiles(items)
+            + pair(panel("Repository page views", "per UTC day; triangles mark releases",
+                         legend([("v", "Page views", "s1"), ("u", "Unique visitors", "s2")]) + line_chart(
+                             days, [("Page views", daily_values(traffic, days, "count"), "s1"),
+                                    ("Unique visitors", daily_values(traffic, days, "uniques"), "s2")],
+                             "Repository page views per day", markers, notes=partial_notes(traffic))),
+                   panel("Git clones", "per UTC day; archived from the first collection",
+                         legend([("c", "Clones", "s1"), ("u", "Unique cloners", "s2")]) + line_chart(
+                             days, [("Clones", daily_values(clones, days, "count"), "s1"),
+                                    ("Unique cloners", daily_values(clones, days, "uniques"), "s2")],
+                             "Git clones per day", markers, notes=partial_notes(clones))))
+            + pair(panel("Stars over time", "current stargazers by the day they starred", line_chart(
+                star_window, [("Stars", downloads.stars_cumulative(model, star_window), "s1")], "Stars over time",
+                markers)),
+                   panel("Releases", f"{len(model.get('releases') or [])} published", scroll(
+                       "<table><thead><tr><th>Release</th><th>Published (UTC)</th><th>Type</th><th>Downloads</th></tr>"
+                       f"</thead><tbody>{release_rows}</tbody></table>") if release_rows else
+                       '<p class="empty">Collected from the next run.</p>'))
+            + pair(panel("Top referrers", window, hbar_chart(referrers, fmt_int, "Top referrers by views")),
+                   panel("Popular pages", window, hbar_chart(paths, fmt_int, "Popular repository pages by views"))))
+
+
+def website_section():
+    return ('<div class="panel"><h4>Website analytics (Google Analytics 4)</h4><p class="sub">Not connected yet</p>'
+            '<p>The public site sends page views, <code>download_request</code> events and sampled Web Vitals to GA4 '
+            'destination <code>G-4Z11DSB2BV</code> through Tag Manager (site/README.md, WEB-12). This dashboard can '
+            'chart visitors, countries, traffic sources, download requests by platform and Web Vitals once it can '
+            'read the GA4 Data API: it needs the numeric GA4 property ID and a read-only credential '
+            '(<code>analytics.readonly</code>).</p><p>Until then, open '
+            '<a href="https://analytics.google.com/analytics/web/" rel="noopener">Google Analytics</a>.</p></div>')
+
+
+def players_section(snapshot, insight_html):
+    players = latest_week_players(snapshot)
+    if not snapshot.get("insights"):
+        intro = ('<div class="panel"><p class="empty">No player data yet. Players of v0.3.0 and later who accept '
+                 'telemetry send anonymous sessions; they appear here after the daily rollup (01:30 UTC) of the day '
+                 'they played. Hardware, performance, aircraft usage and errors are shown per ISO week with at least '
+                 f'{snapshot["floor"]} session-days per cell.</p></div>')
+        return intro
+    tiles_html = stat_tiles([
+        ("Session-days, newest week", fmt_int(players[2]) if players else "-",
+         f"{players[0]} · {players[1]}" if players else ""),
+        ("Weeks with data", fmt_int(len({r['week'] for r in snapshot['insights'] if 'error' not in r})), "selected range"),
+    ])
+    return tiles_html + insight_html
 
 
 CSS = """
@@ -750,6 +1007,18 @@ vertical-align:-1px}.note{color:var(--ink2);font-size:12.5px;margin:6px 0 0}
 .split{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:16px}
 @media (max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:12px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--grid);margin:16px 0 4px;overflow-x:auto}
+.tab{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--ink2);
+padding:10px 14px;cursor:pointer;white-space:nowrap}.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--s1);font-weight:600}
+.tab:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.count{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--warning);color:#0b0b0b;
+font-size:11px;font-weight:700;text-align:center}
+.tabpanel[hidden]{display:none}
+path.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.line-s1{stroke:var(--s1)}.line-s2{stroke:var(--s2)}.line-s3{stroke:var(--s3)}.line-s4{stroke:var(--s4)}
+circle.dot{stroke:var(--surface);stroke-width:2}circle.pt{stroke:none}line.mark{stroke:var(--axis);stroke-width:1}
+path.markhead{fill:var(--muted)}
 .pair{display:grid;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:12px;margin-top:12px}
 .scroll{overflow-x:auto;max-width:100%}
 table{border-collapse:collapse;width:100%;margin-top:8px;font-size:12.5px;font-variant-numeric:tabular-nums}
@@ -792,6 +1061,18 @@ document.addEventListener('focusin',ev=>{const t=ev.target.closest('[data-tip]')
 document.addEventListener('focusout',hide);
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')hide()});
 document.addEventListener('scroll',hide,{passive:true});
+const tabs=[...document.querySelectorAll('[data-tab]')];
+function openTab(key,focus){const t=tabs.find(b=>b.dataset.tab===key)||tabs[0];
+ tabs.forEach(b=>{const on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;
+  document.getElementById('panel-'+b.dataset.tab).hidden=!on});
+ if(focus)t.focus();try{localStorage.setItem('openrc-stats-tab',t.dataset.tab)}catch(_){}
+ try{if(location.hash!=='#'+t.dataset.tab)history.replaceState(null,'','#'+t.dataset.tab)}catch(_){}}
+tabs.forEach((b,i)=>{b.addEventListener('click',()=>openTab(b.dataset.tab));
+ b.addEventListener('keydown',ev=>{const d=ev.key==='ArrowRight'?1:ev.key==='ArrowLeft'?-1:0;
+  const j=ev.key==='Home'?0:ev.key==='End'?tabs.length-1:d?(i+d+tabs.length)%tabs.length:-1;
+  if(j>=0){ev.preventDefault();openTab(tabs[j].dataset.tab,true)}})});
+let first=location.hash.slice(1);try{first=first||localStorage.getItem('openrc-stats-tab')}catch(_){}
+openTab(first||'overview');
 const sel=document.getElementById('report');
 if(sel){const pick=()=>{document.querySelectorAll('[data-report]').forEach(s=>s.hidden=s.dataset.report!==sel.value);
  try{localStorage.setItem('openrc-telem-report',sel.selectedOptions[0].text)}catch(_){}};
@@ -808,14 +1089,21 @@ const STALE=Number(document.body.dataset.stale);tick();setInterval(tick,30000);
 """
 
 
+TABS = [("overview", "Overview"), ("players", "Players"), ("downloads", "Downloads"), ("github", "GitHub"),
+        ("website", "Website"), ("receiver", "Receiver")]
+
+
 def render(snapshot):
     version = snapshot.get("snapshot_version")
     if version not in SNAPSHOT_VERSIONS:
         raise ValueError(f"unsupported snapshot_version {version!r} (supported: {sorted(SNAPSHOT_VERSIONS)})")
+    if "github" not in snapshot:  # snapshots saved before the GitHub tab kept the archive under "downloads"
+        snapshot = {**snapshot, "github": snapshot.get("downloads")}
     rows = ingest_rows(snapshot)
     releases, cells, day_state = coverage_model(snapshot, rows)
     alert_items = alerts(snapshot, rows, day_state)
-    generated = datetime.fromtimestamp(snapshot["generated_unix"], tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = snapshot["generated_unix"]
+    generated = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     reports = snapshot["insights"]
     if reports:
         options = "".join(f'<option value="{i}">{e(r["week"])} · {e(r["release_id"])}</option>'
@@ -824,32 +1112,45 @@ def render(snapshot):
                         f'<select id="report">{options}</select></div>'
                         + "".join(report_section(i, r, i > 0) for i, r in enumerate(reports)))
     else:
-        insight_html = '<p class="empty">No rolled-up insight days in the selected weeks yet.</p>'
-    stale_hidden = "" if time.time() - snapshot["generated_unix"] >= STALE_AFTER_S else " hidden"
+        insight_html = ""
+    receiver = (f"{tiles(snapshot, rows, alert_items)}"
+                f'<h2>Ingest outcomes per day</h2><p class="sub">Every POST /v1/batches by fixed outcome category, '
+                f'UTC days; hover, tap or tab to a day for detail</p>'
+                f'<div class="split"><div class="panel">{legend(INGEST_SERIES)}{ingest_chart(rows)}{ingest_table(rows)}'
+                f'</div><div class="panel"><h4>Refusals in the period</h4>{refusal_table(rows)}</div></div>'
+                f'<h2>Daily rollup coverage</h2><p class="sub">Insight cells per release and UTC day; a day becomes '
+                f'eligible at 01:00 UTC the next day and expires 47 h after it starts</p>'
+                f'<div class="panel">{coverage_grid(rows, releases, cells, day_state)}</div>')
+    panels = {
+        "overview": overview_section(snapshot, rows, alert_items),
+        "players": players_section(snapshot, insight_html),
+        "downloads": downloads_section(snapshot["github"], now, len(rows) or 30),
+        "github": github_section(snapshot["github"], now),
+        "website": website_section(),
+        "receiver": receiver,
+    }
+    count = len(alert_items)
+    tabs = "".join(
+        f'<button class="tab" role="tab" id="tab-{key}" aria-controls="panel-{key}" aria-selected="false" '
+        f'data-tab="{key}" type="button">{e(label)}'
+        + (f' <span class="count">{count}</span>' if key == "overview" and count else "") + "</button>"
+        for key, label in TABS)
+    sections = "".join(f'<section class="tabpanel" role="tabpanel" id="panel-{key}" aria-labelledby="tab-{key}" '
+                       f'>{panels[key]}</section>' for key, _ in TABS)
+    stale_hidden = "" if time.time() - now >= STALE_AFTER_S else " hidden"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OpenRC Telemetry Dashboard</title><script>{HEAD_JS}</script><style>{CSS}</style></head>
-<body data-generated="{snapshot['generated_unix']}" data-stale="{STALE_AFTER_S}"><main>
-<header><h1>OpenRC telemetry</h1><div class="controls"><span class="sub">Snapshot {e(generated)}
-(<span id="age">just taken</span>) · last {len(rows)} UTC days</span>
+<title>OpenRC Stats Dashboard</title><script>{HEAD_JS}</script><style>{CSS}</style></head>
+<body data-generated="{now}" data-stale="{STALE_AFTER_S}"><main>
+<header><h1>OpenRC statistics</h1><div class="controls"><span class="sub">Snapshot {e(generated)}
+(<span id="age">just taken</span>)</span>
 <button id="theme" type="button">Light / dark</button></div></header>
 <div id="stale" class="banner stale"{stale_hidden}><b>Old snapshot.</b> Figures and alerts are as of {e(generated)};
 run <code>dashboard.py fetch</code> for current data.</div>
-<div class="banner"><b>Operator-only.</b> Do not publish or share this page. Counts are session-day observations from
-consenting sessions, not players or machines; insight cells below {snapshot['floor']} session-days are combined or
-hidden.</div>
-{alerts_panel(alert_items)}
-{tiles(snapshot, rows, alert_items)}
-{downloads_section(snapshot.get("downloads"), snapshot["generated_unix"], len(rows) or 30)}
-<h2>Ingest outcomes per day</h2><p class="sub">Every POST /v1/batches by fixed outcome category, UTC days; hover,
-tap or tab to a day for detail</p>
-<div class="split"><div class="panel">{legend(INGEST_SERIES)}{ingest_chart(rows)}{ingest_table(rows)}</div>
-<div class="panel"><h4>Refusals in the period</h4>{refusal_table(rows)}</div></div>
-<h2>Daily rollup coverage</h2><p class="sub">Insight cells per release and UTC day; a day becomes eligible at
-01:00 UTC the next day and expires 47 h after it starts</p>
-<div class="panel">{coverage_grid(rows, releases, cells, day_state)}</div>
-<h2>Weekly insights</h2><p class="sub">Pooled over the rolled-up days of each ISO week, per-cell disclosure floor</p>
-{insight_html}
+<div class="banner"><b>Operator-only.</b> Do not publish or share this page: player cells come from consenting
+sessions with a floor of {snapshot['floor']} session-days, and GitHub traffic is owner-only data.</div>
+<nav class="tabs" role="tablist" aria-label="Dashboard sections">{tabs}</nav>
+{sections}
 </main><div id="tip" role="tooltip"></div><script>{JS}</script></body></html>
 """
 
@@ -908,12 +1209,12 @@ def main(argv=None):
         if not args.no_download_collect and args.downloads_dir.is_dir():
             ok, message = downloads.collect(args.downloads_dir)
             note = None if ok else message
-        snapshot["downloads"] = load_downloads(args.downloads_dir, note)
+        snapshot["github"] = load_downloads(args.downloads_dir, note)
         snapshot_path(out).write_text(json.dumps(snapshot, indent=1, sort_keys=True), encoding="utf-8")
     else:
         snapshot = json.loads(Path(args.snapshot).read_text(encoding="utf-8"))
-        if "downloads" not in snapshot:
-            snapshot["downloads"] = load_downloads(args.downloads_dir, None)
+        if "github" not in snapshot and "downloads" not in snapshot:
+            snapshot["github"] = load_downloads(args.downloads_dir, None)
     try:
         page = render(snapshot)
     except (ValueError, KeyError) as error:

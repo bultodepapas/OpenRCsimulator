@@ -1,8 +1,9 @@
-"""Release download counters for the operator dashboard, read from the local GitHub history archive.
+"""GitHub statistics for the operator dashboard, read from the local GitHub history archive.
 
 The archive is written by `tools/analytics/github_history.py collect` (its daily Windows task or a manual run):
-cumulative GitHub counters per release asset, observed per collection. This module opens it read-only and reuses
-that tool's interval comparison and platform naming, so both reports agree. Standard library only.
+cumulative release-asset counters per collection, daily page views and clones, repository counters, the 14-day
+top referrers and paths, published releases and stars per day. This module opens it read-only and reuses that
+tool's interval comparison and platform naming, so both reports agree. Standard library only.
 """
 from __future__ import annotations
 
@@ -59,17 +60,24 @@ def _parse(stamp):
 
 
 def load(directory):
-    """Download model from the archive, or None when there is no archive."""
+    """GitHub model from the archive, or None when there is no archive. Version 1 archives (before the
+    community tables) load with empty traffic extras until their next collection upgrades them."""
     path = Path(directory) / github_history.DATABASE_NAME
     if not path.is_file():
         return None
     connection = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True, timeout=2)
     try:
-        if connection.execute("PRAGMA user_version").fetchone()[0] != github_history.SCHEMA_VERSION:
+        version = connection.execute("PRAGMA user_version").fetchone()[0]
+        if version not in github_history.READABLE_VERSIONS:
             raise ValueError("unsupported GitHub history archive version")
         repo, pattern = connection.execute("SELECT repo, asset_glob FROM settings").fetchone()
-        attempt = connection.execute("SELECT started_utc, finished_utc, success FROM attempts WHERE kind = "
-                                     "'release assets' ORDER BY id DESC LIMIT 1").fetchone()
+        attempts = {}
+        for kind in ("traffic", "release assets", "clones", "community"):
+            row = connection.execute("SELECT started_utc, finished_utc, success FROM attempts WHERE kind = ? "
+                                     "ORDER BY id DESC LIMIT 1", (kind,)).fetchone()
+            if row:
+                attempts[kind] = {"started": row[0], "finished": row[1], "success": bool(row[2])}
+        attempt = attempts.get("release assets")
         observations = connection.execute("SELECT id, started_utc, finished_utc FROM observations "
                                           "WHERE kind = 'assets' ORDER BY started_utc, id").fetchall()
         intervals, previous, assets = [], None, []
@@ -84,15 +92,67 @@ def load(directory):
             previous = (finished, counts)
             assets = [{"tag": tag, "name": name, "platform": github_history.asset_platform(name), "count": count}
                       for _, tag, name, count in rows]
+        extras = _extras(connection, version)
     finally:
         connection.close()
     return {
         "repo": repo, "pattern": pattern,
         "collected_utc": observations[-1][2] if observations else None,
-        "last_attempt": None if attempt is None else {"started": attempt[0], "finished": attempt[1],
-                                                      "success": bool(attempt[2])},
-        "assets": assets, "intervals": intervals,
+        "last_attempt": attempt, "attempts": attempts,
+        "assets": assets, "intervals": intervals, **extras,
     }
+
+
+def _days(connection, table):
+    return [{"day": d, "count": v, "uniques": u, "status": s}
+            for d, v, u, s in connection.execute(f"SELECT day_utc, views, uniques, status FROM {table} ORDER BY day_utc")]
+
+
+def _extras(connection, version):
+    extras = {"traffic": _days(connection, "traffic_days"), "clones": [], "counters": [], "referrers": [],
+              "paths": [], "community_utc": None, "releases": [], "star_days": {}}
+    if version < 2:
+        return extras
+    extras["clones"] = _days(connection, "clone_days")
+    extras["counters"] = [
+        {"observed": finished, "stars": stars, "forks": forks, "watchers": watchers, "open_issues": issues}
+        for finished, stars, forks, watchers, issues in connection.execute(
+            "SELECT o.finished_utc, c.stars, c.forks, c.watchers, c.open_issues FROM repo_counters c "
+            "JOIN observations o ON o.id = c.observation_id ORDER BY o.finished_utc")]
+    latest = connection.execute("SELECT id, finished_utc FROM observations WHERE kind = 'community' "
+                                "ORDER BY finished_utc DESC, id DESC LIMIT 1").fetchone()
+    if latest:
+        extras["community_utc"] = latest[1]
+        extras["referrers"] = [{"name": r, "count": c, "uniques": u} for r, c, u in connection.execute(
+            "SELECT referrer, count, uniques FROM popular_referrers WHERE observation_id = ? ORDER BY count DESC",
+            (latest[0],))]
+        extras["paths"] = [{"name": p, "title": t, "count": c, "uniques": u} for p, t, c, u in connection.execute(
+            "SELECT path, title, count, uniques FROM popular_paths WHERE observation_id = ? ORDER BY count DESC",
+            (latest[0],))]
+    extras["releases"] = [{"tag": t, "published": p, "prerelease": bool(pre)} for t, p, pre in connection.execute(
+        "SELECT tag, published_utc, prerelease FROM releases ORDER BY published_utc")]
+    extras["star_days"] = dict(connection.execute("SELECT day_utc, stars FROM star_days ORDER BY day_utc"))
+    return extras
+
+
+def stars_cumulative(model, days):
+    """Cumulative stars at the end of each ISO day in `days` (stars given before the window count at its start).
+    Stars later withdrawn are not in GitHub's list, so history reflects current stargazers."""
+    star_days = model.get("star_days") or {}
+    if not star_days and not model.get("counters"):
+        return [None] * len(days)  # never collected: unknown, not zero
+    total = sum(n for d, n in star_days.items() if d < days[0]) if days else 0
+    out = []
+    for day in days:
+        total += star_days.get(day, 0)
+        out.append(total)
+    return out
+
+
+def window_sum(rows, days, key="count"):
+    """Sum of a daily series over the ISO days given."""
+    wanted = set(days)
+    return sum(r[key] for r in rows if r["day"] in wanted)
 
 
 def per_release(model):

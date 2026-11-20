@@ -18,7 +18,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Aircraft data or generated assets | [Source pipelines](physics.md#aircraft-data-and-generators); edit the owner, regenerate, then `--check`. |
 | Flight feel, exact replay or candidate replay | [Flight logs](../FLIGHT-LOGGING.md); preserve a baseline and the same input tape. |
 | RC blimp flight log replay or CSV | [Blimp logs](../FLIGHT-LOGGING.md#rc-blimp-logs): `res://tools/airship_flight_log_cli.gd`. |
-| Watch live player telemetry (receiver health, ingest, weekly insights) | [Telemetry operator dashboard](../../tools/telemetry/README.md): `dashboard.py fetch` over SSH; local operator-only HTML. |
+| See project statistics: players (telemetry), downloads, GitHub visits, clones, stars, receiver health | [Statistics dashboard](../../tools/telemetry/README.md): `dashboard.py fetch`; local operator-only HTML. |
 | Recover an interrupted manual T recording | [Telemetry chunk recovery](../../tools/trace/README.md); only verified published prefixes, always marked incomplete. |
 | Native flight backend development | [NK-3 C++ tools](../../research/native-kernel/README.md#c-development-tools-nk-3): sanitizers, symbols, exactness and timing. |
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
