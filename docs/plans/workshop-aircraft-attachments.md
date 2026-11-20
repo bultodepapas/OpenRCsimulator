@@ -10,6 +10,10 @@ The [dated source review](../research/aircraft-editor/AE-27-00/README.md) record
 fleet, asset pipelines and limits. The [Workshop guide](../AIRCRAFT-WORKSHOP.md) remains the home for
 implemented player behavior.
 
+The [twenty internet investigations](../research/aircraft-editor/AE-27-R1/README.md) reinforce this
+plan with simulator workflows, RC assemblies, open-source tools and community questions. Their
+recommendations are incorporated below; they do not qualify an asset or physical installation.
+
 ## 1. Product goal and delivery rule
 
 Let players give compatible airplanes a different character: smaller or oversized wheels, another
@@ -46,6 +50,35 @@ of adding all selection logic to the large Workshop host or creating another edi
   deltas before a physical installation exists. Camera actions do not make the build dirty.
 - A kit that excludes another selection, such as floats replacing wheels, offers a single reviewed
   change showing all affected slots. Cancel preserves the complete draft; Undo restores the set.
+- Show the option's silhouette, changed parts, eligibility and any relevant compatibility reason
+  beside the choice. Keep Save build and saved/unsaved status visible. A cosmetic label never promises
+  more power, lighter flight, improved grass handling or water operation.
+- Preserve category, scroll position, keyboard/controller focus and useful preview orientation while
+  browsing. Use comparable camera orientation and shared framing for Original/Draft and option images;
+  recompute bounds and refit both compared views when necessary so larger parts are not clipped.
+- Clearly mark the selected option in the UI and keep the complete aircraft visible. Defer 3-D part
+  highlighting unless existing infrastructure already supplies it. An optional future isolate view
+  must be explicit and restore visibility on cancel/reset/failure. Camera actions remain outside
+  document history. A failed thumbnail retains the saved build with a placeholder/retry.
+
+### Optional appearance combinations after individual parts work
+
+The following are design directions for Phase 4, not extra requirements for the first wheel PR.
+Use only already-authored, approved selections; a named look resolves to the same stable option IDs,
+compatibility checks and one history operation. It creates no second preset store or physical recipe.
+The whole combination inherits its most restrictive availability. Reset Parts still affects only
+the four attachment categories, not unrelated paint or setup edits.
+
+| Proposed look | Visual character / candidate | Availability rule |
+| --- | --- | --- |
+| Classic | Original four part selections on any supported airplane. | Existing original configuration; reject unresolved explicit IDs before offering a repair. |
+| Bush look | Bounded balloon-style wheels and, where authored, an exposed nut on the Stik. | Cosmetic flight only after the complete combination's fit review; no rough-field performance claim. |
+| Sport look | Slim/treaded or approved pant-aware wheels, pointed spinner and optional three-blade appearance on the Extra. | Only already-qualified combinations; retain each installation's shaft/prop constraints. |
+| XL / Fun | Deliberately exaggerated Stik tires with a distinct silhouette. | Preview only whenever ground/envelope fit fails; physical support is a later package. |
+| Float study | Paired Stik floats, struts and coherent mounts replacing the wheel artwork. | Preview only; even after Phase 7, conversion requires an explicit new qualified physical build. |
+
+The [research](../research/aircraft-editor/AE-27-R1/README.md#decisions-carried-into-the-plan) supplies
+the inspiration and its limits. These are OpenRC appearance names, not branded replica commitments.
 
 ## 2. What the existing Workshop supplies
 
@@ -90,6 +123,8 @@ family allows asset reuse; it does not qualify every engine installation or save
 The X-Cell helicopter, FPV quad, blimp and ground vehicles retain their separate contracts. Creator
 imports and arbitrary user meshes do not gain attachment compatibility from a name or matching mesh.
 An unregistered airplane continues to use its original configuration.
+That default applies when no attachment selection was supplied; an explicit unsupported, unknown or
+stale selection is refused without silently rewriting the saved record.
 
 ## 4. Design boundaries
 
@@ -105,7 +140,7 @@ The authored contract records:
 | Record | Required content |
 | --- | --- |
 | Slot | Stable ID, one of the four part categories, original assembly, explicit attachment frame, affected mesh targets and renderer-owned grouping. |
-| Option | Stable option/revision ID, trusted asset or procedural factory, source/provenance, affected assembly, bounds and original fallback. |
+| Option | Stable option/revision ID, trusted asset or procedural factory, source/provenance, affected assembly, bounds and explicit original restore target. |
 | Fit | Exact supported configurations/binding revision, slot/kit compatibility, wheel-pant dependencies, handedness, prop/hub dimensions, pose/clearance evidence and approved scale domain. |
 | Availability | `cosmetic_flight` or `preview_only` in trusted registration, with a reason. Later physical packages use a separate admission result. A saved profile cannot promote its own availability. |
 | Lifecycle | Wheel/steering/compression/prop handles, material ownership, crash-section mapping, cleanup and restore behavior. |
@@ -114,6 +149,26 @@ Saved selections contain only stable slot/option IDs under a versioned presentat
 do not contain resource paths, scripts, transforms, mass, drag values, radii for the physics solver,
 arbitrary blade counts or a player-controlled bypass flag. The binding/catalogue digest pins the exact
 option definitions. Missing selection means the explicit original assembly for that profile version.
+Apply that default only under a recognized schema/legacy read path. Unknown or stale explicit IDs
+never fall back silently. A kit resolves all affected slots and observer references before one atomic
+publish; conflicts are explained without changing unrelated selections or the saved draft.
+
+Fit evidence describes the complete assembly, not just a nominal size or generic slot type:
+
+| Assembly | Authoring dimensions and relationships to record |
+| --- | --- |
+| Wheel set | Tire diameter and width, axle/bore, offset, hub/retainer envelope, linked wheel roles, pant/no-pant partner, steering/flex poses and tread/sidewall style. |
+| Spinner / exposed hub | Cone diameter/length, backplate, shaft frame/interface, retained washer/nut artwork and blade-root opening width/depth for each approved propeller. |
+| Propeller | Visible blade count, diameter/pitch reference, hub dimensions, shaft orientation, handedness, spinner pairing, blur and damaged-state ownership. Pusher location does not imply reverse rotation. |
+| Gear / floats | Complete members and suppressed stock parts, explicit fuselage mounts, front/rear orientation, clearance envelope and any visible steering linkage. Physical stations/volume/forces belong to later installation evidence. |
+
+Evaluate the actual selection's aircraft configuration, binding revision, accepted installation/prop
+dimensions, gear kit, wheel/pant set, propeller, spinner and scale domain. Recognized Original
+components retain their accepted baseline; author and measure the interactions affected by the new
+option. Do not require a Cartesian matrix of unoffered combinations or re-author unrelated stock
+parts before shipping the wheel pilot. Manufacturer dimensions are reference evidence; shared axle
+dimensions or catalog compatibility with another real airplane do not certify an OpenRC fit. See
+[R06–R11](../research/aircraft-editor/AE-27-R1/README.md#rc-catalogs-and-actual-assemblies).
 
 Begin with linked wheel sets, one spinner assembly and one propeller assembly. Keep free scaling,
 independent left/right tires and free-positioned accessories outside this first contract. Scale the
@@ -152,6 +207,8 @@ Resolve parts before paint/lighting/decal target binding and before propeller bl
 damage/wreck presentation and shadows cache their targets. Rebuild only the observers affected by a
 swap. Recompute visible bounds for preview fit and thumbnail identity. Original view always uses
 original parts; two instances must not share mutable materials or visibility state.
+Stable logical part handles must be rebound when an assembly is rebuilt; no observer may retain a
+freed stock target. Cancel, reset and a refused swap restore the whole kit, including visibility.
 
 `workshop_thumbnail.gd` currently uses `Trial.freeze()`. Split reusable frozen visual resolution from
 flight admission, or supply an internal explicit purpose, so a valid preview-only build can still
@@ -178,6 +235,36 @@ dependency to manufacture parity. Old checkpoints retain their existing identity
 `.orfl` replay does not reproduce arbitrary presentation choices or GPU history; visual replay is not
 part of this feature.
 
+### 4.5 Source pipeline, reusable assets and optional tools
+
+The first Stik wheel assembly uses the existing native mesh/equipment source pipeline described in
+its [geometry guide](../../assets/aircraft/ugly-stik-60/README.md) and the source audit. Preserve its
+named pivots and generated binding identity. A separate engine GLB is not a reason to introduce or
+optimize imports in the wheel pilot.
+
+For each actual asset, retain source URL/creator or original generator, revision/hash, license,
+modifications and reproducible output. Screen suitable reusable assets before authoring equivalents;
+the [CC0 candidates in R16](../research/aircraft-editor/AE-27-R1/README.md#r16--poly-haven-and-kenney-are-reusable-wheel-assets-actually-suitable)
+are potential references, not approved RC parts. Product pages supply ideas and dimensions, not
+permission to redistribute their photographs, CAD or performance datasets.
+
+Only if a selected attachment uses imported glTF, evaluate the
+[R12–R14 tools](../research/aircraft-editor/AE-27-R1/README.md#open-source-tools-github-and-asset-libraries):
+
+- Use the existing inspection/export tools first. Where useful, export namespaced custom properties
+  and compile them into strict source-pinned bindings. glTF display names are not guaranteed unique;
+  extras are not assumed to become runtime Godot metadata automatically.
+- Pin the actual exporter and any adopted Khronos Validator version. Record settings, hashes and its
+  report; resolve format errors and review warnings/unsupported extensions. Separately check OpenRC
+  mount identity, hierarchy, transforms and dependency closure. Format validity is not a fit result.
+- Evaluate glTF Transform or gltfpack offline only for a measured asset problem. Preserve the original
+  export and verify named targets, pivots, materials and extras before/after selected transforms.
+  Avoid blanket join/flatten and unverified compression extensions. Keep an optimization only with
+  useful measured cost improvement and unchanged semantic bindings/fit on the pinned engine.
+
+No new library, exporter or engine upgrade is required by this planning branch or the native wheel
+MVP. Tool-code licenses and downloadable asset licenses are separate; preserve the applicable notices.
+
 ## 5. Incremental delivery
 
 Every row below is a separate reviewable subphase, with a working original/default route. Dependencies
@@ -202,6 +289,9 @@ All implementation rows are **planned**. Only the source/planning portion of AE-
 **First release:** one airplane and one alternate wheel set with complete persistence. Ship flight use
 only if its visual fit passes; the preview/save slice remains useful independently. Do not bundle a
 spinner, new propeller or water model into this first change.
+Include the pilot's authored dimensional fit record and comparable option view. Save status,
+focus/camera retention and complete restoration are part of this existing journey, not separate
+features or reasons to add another UI framework.
 
 ### Phase 2 — Spinners and the second airplane
 
@@ -209,6 +299,10 @@ spinner, new propeller or water model into this first change.
 | --- | --- | --- |
 | AE-27-02a | Introduce Original / Pointed / Nut / No spinner on Extra 300S using its explicit spinner/backplate and thrust frame. Author the equivalent Stik hub socket separately. | Shaft and fastening remain visible when appropriate; no duplicate stock cone/nut, broken tilt/rotation or prop intersection. Spinner extent passes the visual envelope gate; other choices stay preview-only. |
 | AE-27-02b | Port the wheel selector to Extra through bindings only. Introduce a reviewed no-pants assembly where larger tires need it; retain the tailwheel/steering rig. | The UI/compiler has no Extra-specific transformation branch. Main/tail wheel choices and pant dependencies are explicit. Both aircraft pass save/Undo/trial/return and finite-glow admission remains unchanged. |
+
+No spinner means a coherent exposed retention assembly, not an empty shaft. Nut is a separately
+authored silhouette. Review backplate/washer/fastener dependencies and blade-root cutouts together;
+changing one complete assembly must not leave duplicate stock hardware.
 
 ### Phase 3 — Cosmetic propeller choices
 
@@ -225,6 +319,10 @@ spinner, new propeller or water model into this first change.
 | AE-27-04b | Qualify the electric Stik and hidden glow configurations individually. Assess Turbo Lumber after separating its imported wheel/hub/prop assemblies. | One data/binding addition per approved configuration; hidden variants remain hidden. Unsplit/incompatible assets stay original. Retractable aircraft and pusher work remain deferred. |
 | AE-27-04c | Close the cosmetic release matrix across offered aircraft, parts and interactions. | All gates C1–C5 below pass for the advertised scope, including export/source proof and actual rendered review. All cosmetics retain their original physical behavior. No physical phase is enabled by this release. |
 
+Optional named looks may follow once their individual parts qualify. Their absence does not block
+the cosmetic release. They reuse the same compatibility resolver and retained document, and cannot
+promote a preview-only part to flight eligibility.
+
 ### Phase 5 — First physical wheel package
 
 | ID | Work | Proof / exit condition |
@@ -237,6 +335,10 @@ The physical MVP is a modest, understandable change in weight, balance, rolling 
 Use the existing shared laws within their domain. Do not introduce a detailed tire or aircraft-wide
 aerodynamic redesign merely to make a larger wheel feel different. AE-27-05a/b are internal additive
 steps; player launch is enabled only when the complete installed package passes AE-27-05c.
+Classify each physical input as measured, manufacturer-specified, manufacturer-computed or estimated,
+with units, component quantity, source revision and limits. A per-wheel catalog mass is not a whole-kit
+delta, and the visible mesh's scale is not a density or drag model. Community reports supply test
+questions, never coefficients or approval of a rough-field operating domain.
 
 ### Phase 6 — Physical propulsion and other fixed-gear packages
 
@@ -248,6 +350,12 @@ steps; player launch is enabled only when the complete installed package passes 
 This phase is conditional on source data. It does not block the independently designed float work
 once Phase 5's physical-package/identity boundary is available. Retractable conversions remain a
 separate follow-up with gear-door and full-motion qualification.
+
+[R11](../research/aircraft-editor/AE-27-R1/README.md#r11--propeller-data-what-can-support-a-later-physical-three-blade-package)
+identifies APC's computed tables and UIUC's wind-tunnel data as candidate evidence sources. Preserve
+the distinction between computation and measurement, identify the exact propeller and RPM/advance-ratio
+domain, and review data rights before redistribution. No exact measured Stik/Extra three-blade match
+was established. Do not substitute a different diameter/pitch curve or a blade-count multiplier.
 
 ### Phase 7 — Functional Ugly Stick floats
 
@@ -262,6 +370,13 @@ Initial water scope is one fixed float kit, one aircraft and the existing bounde
 Amphibious retracting wheels, arbitrary waves, full CFD, detailed spray forces and automatic support
 for other airplanes are outside this first water implementation.
 
+The [float research](../research/aircraft-editor/AE-27-R1/README.md#r19--float-experiences-which-scenarios-deserve-later-acceptance-tests)
+adds concrete scenarios to W1: equilibrium/heel, low-throttle steering, acceleration through the
+admitted takeoff envelope, prop/water clearance, water touchdown and restart. Wind, shore and
+unsupported-speed cases need declared outcomes within the chosen domain. Community placement or
+pitch advice does not set parameters; independent geometry, force-law evidence and validation remain
+AE-27-07a work. The JSBSim gas-cell schema reviewed in R15 does not supply a floatplane water law.
+
 ## 6. Acceptance gates and proportionate verification
 
 These are future implementation gates, not tests performed for this planning branch. Use the
@@ -273,9 +388,9 @@ Do not rerun every native suite for a local selector or documentation edit.
 | --- | --- |
 | C1 — Contract and compatibility | Defaults; profile/record legacy readers; duplicate/unknown slots/options; stale catalogue/model/proof pins; malformed imports; unsupported aircraft/part combinations; failed migration leaves the record intact. Preview-only selections remain saveable/visible but are refused by every flight entry point. |
 | C2 — Cosmetic physics parity | Within one source/package identity, compare original and every offered cosmetic-flight option with identical physical recipe, accepted start, field/weather and input tape. Exact resolved bytes/model and wheel-profile pins, mass/CG/inertia, propulsion/contact/strike configuration, and deterministic states/events remain equal. Cover relevant airborne, ground and strike paths. A generator migration is separately identified, never disguised as cosmetic parity. |
-| C3 — Complete player lifecycle | Select → preview → Undo/Redo/reset → save/reopen/copy → bundle round trip → recovery → Test fly → pause/restart → return to the retained draft. Include stale preparation and missing-part failure, Original view, cancelled thumbnail, source switch, failed save and existing unrelated pending edits. No stock/shared-instance mutation. |
+| C3 — Complete player lifecycle | Select → preview → Undo/Redo/reset → save/reopen/copy → bundle round trip → recovery → Test fly → pause/restart → return to the retained draft. Include stale preparation and missing-part failure, Original view, cancelled/failed thumbnail, source switch, failed save and existing unrelated pending edits. Preserve browsing focus/context; failures do not hide the plane or make a saved build inaccessible. No stock/shared-instance mutation. |
 | C4 — Visual fit | Actual rendered front/side/underside views and relevant motion: steering, compression, pitch/roll, prop stationary/low/high RPM, strike/wreck/reset. Check hub/fastener, pants, shadows, skins, markings, lights and smoke. Record support/disc/envelope mismatch against the declared fit tolerance. Review 1920×1080 first; Apple Silicon Retina uses native-panel acceptance under the repository policy. EN/ES, keyboard/controller navigation, enlarged text and compact layout keep actions reachable. |
-| C5 — Cost, packaging and cleanup | Record before/after preview/flight frame cost, allocations and loaded resource counts for the worst offered set on target hardware. At least twenty swap/reset/close cycles show no accumulating nodes/materials or hidden processing. Original/off mode retains bounded cost; imported assets and procedural factories have exported source proofs and licenses. No universal FPS claim from headless checks. |
+| C5 — Cost, packaging and cleanup | Record before/after preview/flight frame cost, allocations and loaded resource counts for the worst offered set on target hardware. Establish asset-specific geometry/material/texture budgets from the measured baseline. At least twenty swap/reset/close cycles show no accumulating nodes/materials or hidden processing. Original/off mode retains bounded cost; imported assets and procedural factories have exported source proofs and licenses. Optional optimization preserves bindings and shows a useful measured gain. No universal FPS claim from headless checks. |
 | P1 — Physical installations | Independent mass/CG/six inertia terms; one-time replacement bookkeeping; validated contacts/profiles; honest estimated drag and compatible propulsion data. Real trim/start, contact reserve/timestep and baseline/candidate flight evidence; reset/reload/checkpoint/event/replay identity and applicable native/reference checks. Reviewed damage/economy companions and contact-to-component mappings, or explicit unsupported assessment. No renderer transforms used as solver state. |
 | W1 — Water operation | Static buoyancy oracle, energy/passivity, bounded equilibrium and refinement; qualified water spawn/taxi/transition; correct terminal-versus-support arbitration, prop strike and shore behavior; stock non-float water regression. Complete rejected-step/reset/checkpoint lifecycle and declared physical/pilot evidence limits. |
 
