@@ -17,10 +17,13 @@ import json
 import os
 from pathlib import Path
 import shlex
+import sqlite3
 import subprocess
 import sys
 import time
 import webbrowser
+
+import downloads
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -35,6 +38,8 @@ HIST_LEN = 8
 ELIGIBLE_AFTER_H, EXPIRES_AFTER_H, OVERDUE_AFTER_H = 25, 47, 27
 RAW_TTL_H = 48
 STALE_AFTER_S = 3600
+DOWNLOADS_STALE_S = 36 * 3600
+PLATFORM_SLOTS = (("Windows", "s1"), ("macOS", "s2"), ("Linux", "s3"), ("Other", "s4"))
 
 # Ingest outcome series (fixed order = fixed categorical slot).
 INGEST_SERIES = [
@@ -271,6 +276,17 @@ def alerts(snapshot, rows, day_state):
         out.append(("info", "Waiting for first batch", f"no accepted batch in the last {len(rows)} days"))
     elif seen[0] > 86400:
         out.append(("warning", "No batch in 24 h", f"last accepted batch {seen[1]}"))
+    model = snapshot.get("downloads")
+    if model is not None:
+        note, attempt = model.get("collect_note"), model.get("last_attempt")
+        if note:
+            out.append(("warning", "Download refresh failed", f"{note}; showing the archived counters"))
+        elif attempt and not attempt["success"]:
+            out.append(("warning", "Last download collection failed", f"at {attempt['finished']}"))
+        age = downloads.age_s(model, now)
+        if age is not None and age > DOWNLOADS_STALE_S:
+            out.append(("warning", "Download counters stale", f"last collected {fmt_age(age)}: check the "
+                        "'OpenRC GitHub Analytics' task"))
     return sorted(out, key=lambda item: LEVELS[item[0]][0])
 
 
@@ -578,6 +594,116 @@ def refusal_table(rows):
     return f'<table class="narrow"><thead><tr><th>Category</th><th>Count</th></tr></thead><tbody>{body}</tbody></table>'
 
 
+# ---------------------------------------------------------------------------------------------- downloads
+
+
+def release_chart(releases):
+    """Horizontal stacked bars: downloads per release split by platform (fixed slot per platform)."""
+    width, label_w, value_w, row_h, bar_h = 640, 110, 56, 24, 14
+    plot_w = width - label_w - value_w
+    maximum = max((total for _, _, total in releases), default=0) or 1
+    height = row_h * len(releases) + 4
+    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="Downloads per release by platform" class="chart">',
+             f'<line class="axis" x1="{label_w}" x2="{label_w}" y1="0" y2="{height}"/>']
+    for index, (tag, counts, total) in enumerate(releases):
+        y = index * row_h + (row_h - bar_h) / 2 + 2
+        x = float(label_w)
+        drawn = [(platform, counts[platform], cls) for platform, cls in PLATFORM_SLOTS if counts[platform]]
+        for position, (platform, count, cls) in enumerate(drawn):
+            w = count / maximum * plot_w
+            last = position == len(drawn) - 1
+            seg = max(w - (0 if last else 2), 1)
+            if last:
+                parts.append(f'<path class="fill-{cls}" d="{rounded_right(x, y, seg, bar_h)}"/>')
+            else:
+                parts.append(f'<rect class="fill-{cls}" x="{x:.1f}" y="{y:.1f}" width="{seg:.1f}" height="{bar_h}"/>')
+            x += w
+        parts.append(f'<text class="rowlabel" x="{label_w - 8}" y="{y + bar_h - 3:.1f}" text-anchor="end">{e(tag)}</text>')
+        parts.append(f'<text class="value" x="{x + 6:.1f}" y="{y + bar_h - 3:.1f}">{fmt_int(total)}</text>')
+        tip = [tag, f"Total {fmt_int(total)}"] + [f"{p}: {fmt_int(counts[p])}" for p, _ in PLATFORM_SLOTS if counts[p]]
+        parts.append(f'<rect class="hit" x="0" y="{index * row_h + 2}" width="{width}" height="{row_h}" '
+                     f'{tip_attrs(tip)}/>')
+    parts.append("</svg>")
+    return scroll("".join(parts), 480)
+
+
+def column_chart(points, aria):
+    """Single-series columns: points [(iso_day, value, tip_lines)]."""
+    width, height, left, right, top, bottom = 900, 220, 52, 8, 12, 34
+    plot_w, plot_h = width - left - right, height - top - bottom
+    ticks = nice_ticks(max((v for _, v, _ in points), default=0))
+    scale = plot_h / ticks[-1]
+    slot = plot_w / max(len(points), 1)
+    bar = min(24.0, slot * 0.64)
+    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" class="chart">']
+    for tick in ticks:
+        y = top + plot_h - tick * scale
+        parts.append(f'<line class="{"axis" if tick == 0 else "grid"}" x1="{left}" x2="{width - right}" '
+                     f'y1="{y:.1f}" y2="{y:.1f}"/>')
+        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{fmt_compact(tick)}</text>')
+    label_every = max(1, round(len(points) / 10))
+    for index, (label, value, tip) in enumerate(points):
+        x = left + index * slot + (slot - bar) / 2
+        if value:
+            h = value * scale
+            parts.append(f'<path class="fill-s1" d="{rounded_top(x, top + plot_h - h, bar, h)}"/>')
+        parts.append(f'<rect class="hit" x="{left + index * slot:.1f}" y="{top}" width="{slot:.1f}" '
+                     f'height="{plot_h}" {tip_attrs(tip)}/>')
+        if index % label_every == 0 or index == len(points) - 1:
+            parts.append(f'<text class="tick" x="{left + index * slot + slot / 2:.1f}" y="{height - 12}" '
+                         f'text-anchor="middle">{e(label[5:])}</text>')
+    parts.append("</svg>")
+    return scroll("".join(parts), 640)
+
+
+def downloads_section(model, now, days):
+    head = "<h2>Release downloads</h2>"
+    if model is None:
+        return (head + '<div class="panel"><p class="empty">No GitHub history archive found. Run '
+                "<code>python tools/analytics/github_history.py collect --output-dir &lt;dir&gt;</code> or install "
+                "its daily task (tools/analytics/README.md), or pass --downloads-dir.</p></div>")
+    releases = downloads.per_release(model)
+    total = sum(t for _, _, t in releases)
+    platforms = {p: sum(c[p] for _, c, _ in releases) for p, _ in PLATFORM_SLOTS}
+    latest = releases[0] if releases else None
+    share = " · ".join(f"{p} {platforms[p] * 100 / total:.0f}%" for p, _ in PLATFORM_SLOTS if platforms[p]) if total else ""
+    latest_split = " · ".join(f"{p} {latest[1][p]}" for p, _ in PLATFORM_SLOTS if latest[1][p]) if latest else ""
+    items = [
+        ("Package downloads, all releases", fmt_int(total), share),
+        (f"Latest release {latest[0]}" if latest else "Latest release", fmt_int(latest[2]) if latest else "-",
+         latest_split),
+        ("Downloads, last 7 days", fmt_int(downloads.recent_increase(model, now, 7)),
+         "matched counter increases between collections"),
+        ("Counters collected", fmt_age(downloads.age_s(model, now)), model["collected_utc"] or "never"),
+    ]
+    tiles_html = '<div class="tiles">' + "".join(
+        f'<div class="tile"><div class="tl">{e(a)}</div><div class="tv">{e(b)}</div><div class="ts">{e(c)}</div></div>'
+        for a, b, c in items) + "</div>"
+    by_day = downloads.per_day(model)
+    today = datetime.fromtimestamp(now, tz=timezone.utc).date()
+    points = []
+    for offset in range(days - 1, -1, -1):
+        day = (today - timedelta(days=offset)).isoformat()
+        value, partial = by_day.get(day, (0, False))
+        tip = [day, f"Downloads {fmt_int(value)}" if day in by_day else "no collection ended this day"]
+        if partial:
+            tip.append("partial: assets added, removed or reset")
+        points.append((day, value, tip))
+    heads = "".join(f"<th>{p}</th>" for p, _ in PLATFORM_SLOTS)
+    body = "".join(f"<tr><td>{e(tag)}</td>" + "".join(f"<td>{fmt_int(c[p])}</td>" for p, _ in PLATFORM_SLOTS)
+                   + f"<td>{fmt_int(t)}</td></tr>" for tag, c, t in releases)
+    table = scroll(f"<table><thead><tr><th>Release</th>{heads}<th>Total</th></tr></thead><tbody>{body}</tbody></table>")
+    chart = release_chart(releases) if releases else '<p class="empty">No packages yet.</p>'
+    keys = legend([(p, p, c) for p, c in PLATFORM_SLOTS if platforms[p]])
+    return (f'{head}<p class="sub">GitHub release package counters ({e(model["pattern"])}) from the local history '
+            "archive: cumulative and including repeat or automated downloads, not people or installs</p>"
+            f'{tiles_html}<div class="pair"><div class="panel">'
+            "<h4>Downloads per collection day</h4><p class=\"sub\">Counter increase between consecutive collections, "
+            f'dated by the later collection (UTC)</p>{column_chart(points, "Downloads per collection day")}</div>'
+            f'<div class="panel"><h4>Downloads per release</h4>{keys}{chart}'
+            f"<details><summary>Table</summary>{table}</details></div></div>")
+
+
 CSS = """
 :root{color-scheme:light;--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#6b6964;
 --grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;
@@ -624,6 +750,7 @@ vertical-align:-1px}.note{color:var(--ink2);font-size:12.5px;margin:6px 0 0}
 .split{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:16px}
 @media (max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:12px}
+.pair{display:grid;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:12px;margin-top:12px}
 .scroll{overflow-x:auto;max-width:100%}
 table{border-collapse:collapse;width:100%;margin-top:8px;font-size:12.5px;font-variant-numeric:tabular-nums}
 th,td{text-align:right;padding:4px 6px;border-bottom:1px solid var(--grid);white-space:nowrap}
@@ -713,6 +840,7 @@ consenting sessions, not players or machines; insight cells below {snapshot['flo
 hidden.</div>
 {alerts_panel(alert_items)}
 {tiles(snapshot, rows, alert_items)}
+{downloads_section(snapshot.get("downloads"), snapshot["generated_unix"], len(rows) or 30)}
 <h2>Ingest outcomes per day</h2><p class="sub">Every POST /v1/batches by fixed outcome category, UTC days; hover,
 tap or tab to a day for detail</p>
 <div class="split"><div class="panel">{legend(INGEST_SERIES)}{ingest_chart(rows)}{ingest_table(rows)}</div>
@@ -724,6 +852,17 @@ tap or tab to a day for detail</p>
 {insight_html}
 </main><div id="tip" role="tooltip"></div><script>{JS}</script></body></html>
 """
+
+
+def load_downloads(directory, note):
+    try:
+        model = downloads.load(directory)
+    except (OSError, ValueError, TypeError, sqlite3.Error) as error:
+        print(f"download archive unreadable: {error}", file=sys.stderr)
+        return None
+    if model is not None and note:
+        model["collect_note"] = note
+    return model
 
 
 def default_out():
@@ -747,11 +886,15 @@ def main(argv=None):
     f.add_argument("--weeks", type=int, default=4)
     f.add_argument("--floor", type=int, default=20)
     f.add_argument("--timeout", type=int, default=15)
+    f.add_argument("--no-download-collect", action="store_true",
+                   help="use the archived download counters without collecting from GitHub first")
     r = sub.add_parser("render", help="render a saved snapshot")
     r.add_argument("--snapshot", required=True)
     for p in (f, r):
         p.add_argument("--out", default=default_out(), help="HTML output path (local, outside the repository)")
         p.add_argument("--no-open", action="store_true", help="do not open the page in a browser")
+        p.add_argument("--downloads-dir", type=Path, default=downloads.default_dir(),
+                       help="GitHub history archive directory (tools/analytics); env OPENRC_ANALYTICS_DIR")
     args = parser.parse_args(argv)
     out = Path(args.out).resolve()
     if out.is_relative_to(REPO):
@@ -761,8 +904,16 @@ def main(argv=None):
         if not args.ssh:
             parser.error("--ssh (or OPENRC_TELEMETRY_SSH) is required")
         snapshot = fetch(args, out)
+        note = None
+        if not args.no_download_collect and args.downloads_dir.is_dir():
+            ok, message = downloads.collect(args.downloads_dir)
+            note = None if ok else message
+        snapshot["downloads"] = load_downloads(args.downloads_dir, note)
+        snapshot_path(out).write_text(json.dumps(snapshot, indent=1, sort_keys=True), encoding="utf-8")
     else:
         snapshot = json.loads(Path(args.snapshot).read_text(encoding="utf-8"))
+        if "downloads" not in snapshot:
+            snapshot["downloads"] = load_downloads(args.downloads_dir, None)
     try:
         page = render(snapshot)
     except (ValueError, KeyError) as error:

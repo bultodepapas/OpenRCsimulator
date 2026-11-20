@@ -8,12 +8,14 @@ on:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
       - 'tools/telemetry/**'
+      - 'tools/analytics/github_history.py'
       - '.github/workflows/telemetry-contracts.yml'
   pull_request:
     paths:
       - 'research/telemetry/**'
       - 'services/telemetry/**'
       - 'tools/telemetry/**'
+      - 'tools/analytics/github_history.py'
       - '.github/workflows/telemetry-contracts.yml'
   workflow_dispatch:
 
@@ -40,6 +42,7 @@ jobs:
             research/telemetry
             services/telemetry
             tools/telemetry
+            tools/analytics
       - name: Install exact test dependencies in isolation
         run: |
           python3.12 --version

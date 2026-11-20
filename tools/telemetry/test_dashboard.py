@@ -25,6 +25,7 @@ from tests.support import (RELEASE, SCHEMA_DIR, TempDir, activity_event, batch, 
                            perf_event, unix)
 
 import dashboard  # noqa: E402
+import downloads  # noqa: E402
 import snapshot  # noqa: E402
 
 MONDAY = date(2027, 1, 11)
@@ -171,6 +172,62 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("runuser -u telemetry", command)
         self.assertIn("OPENRC_TELEMETRY_", command)
         self.assertTrue(dashboard.remote_command("", "/opt/r", "/etc/e", 1, 1, 20).startswith("bash -c "))
+
+    def make_archive(self, directory):
+        """A GitHub history archive written through tools/analytics/github_history.py's own storage functions."""
+        import sqlite3
+        directory.mkdir(parents=True, exist_ok=True)
+        gh = downloads.github_history
+        connection = sqlite3.connect(directory / gh.DATABASE_NAME, isolation_level=None)
+        gh.initialize(connection, gh.DEFAULT_REPO, gh.DEFAULT_ASSET_GLOB)
+
+        def assets(counts, stamp):
+            return [{"asset_id": i, "release_id": i // 10, "tag": tag, "name": f"openrc-simulator-{tag}-{os_}.zip",
+                     "count": n, "started": stamp, "finished": stamp}
+                    for i, (tag, os_, n) in enumerate(counts, start=10)]
+        base = [("v0.3.9", "windows-x86_64", 40), ("v0.3.9", "linux-x86_64", 5),
+                ("v0.3.10", "windows-x86_64", 3), ("v0.3.10", "macos-universal", 2)]
+        gh.save_assets(connection, assets(base, "2027-01-18T00:10:00Z"), "2027-01-18T00:10:00Z", "2027-01-18T00:10:05Z")
+        later = [(t, o, n + 4) for t, o, n in base]
+        gh.save_assets(connection, assets(later, "2027-01-19T00:10:00Z"), "2027-01-19T00:10:00Z", "2027-01-19T00:10:05Z")
+        connection.execute("INSERT INTO attempts(kind, started_utc, finished_utc, success) VALUES "
+                           "('release assets', '2027-01-19T00:10:00Z', '2027-01-19T00:10:05Z', 1)")
+        connection.close()
+
+    def test_downloads_section_and_alerts(self):
+        archive = self.dir / "analytics"
+        self.make_archive(archive)
+        model = downloads.load(archive)
+        releases = downloads.per_release(model)
+        self.assertEqual([tag for tag, _, _ in releases], ["v0.3.10", "v0.3.9"])  # semantic, newest first
+        self.assertEqual(releases[1][1]["Windows"], 44)
+        self.assertEqual(releases[0][2], 13)
+        self.assertEqual(downloads.per_day(model), {"2027-01-19": (16, False)})
+        self.assertEqual(downloads.recent_increase(model, NOW), 16)
+
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        data["downloads"] = model
+        page = dashboard.render(data)
+        self.assertIn("<h2>Release downloads</h2>", page)
+        self.assertIn("Latest release v0.3.10", page)
+        rows = dashboard.ingest_rows(data)
+        titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]
+        self.assertNotIn("Download counters stale", titles)
+        data["generated_unix"] = NOW + 3 * 86400
+        titles = [t for _, t, _ in dashboard.alerts(data, rows, dashboard.coverage_model(data, rows)[2])]
+        self.assertIn("Download counters stale", titles)
+        data["downloads"]["collect_note"] = "gh: not logged in"
+        self.assertIn("Download refresh failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
+
+    def test_no_archive_renders_hint(self):
+        self.assertIsNone(downloads.load(self.dir / "nothing"))
+        data = snapshot.collect(self.config, NOW, days=7, weeks=1, floor=20)
+        data["downloads"] = None
+        self.assertIn("No GitHub history archive found", dashboard.render(data))
+
+    def test_release_order_matches_between_modules(self):
+        tags = ["v0.3.9", "v0.3.10", "v0.3.10-rc.1", "v0.1.0-rc8", "v0.1.0", "odd"]
+        self.assertEqual(sorted(tags, key=snapshot.release_key), sorted(tags, key=downloads.release_key))
 
     def test_nice_ticks(self):
         self.assertEqual(dashboard.nice_ticks(0), [0, 1])

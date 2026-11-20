@@ -1,6 +1,6 @@
 # Telemetry operator dashboard
 
-A local, read-only HTML view of the live [telemetry receiver](../../services/telemetry/README.md): alerts, receiver health, ingest outcomes per UTC day, daily rollup coverage and the weekly operator insights (frame cadence, vehicle usage, errors, hardware and settings mix).
+A local, read-only HTML view of the live [telemetry receiver](../../services/telemetry/README.md) and of the GitHub release download counters: alerts, receiver health, release downloads, ingest outcomes per UTC day, daily rollup coverage and the weekly operator insights (frame cadence, vehicle usage, errors, hardware and settings mix).
 
 **Operator-only.** Insight cells share sessions and use a session-day floor, so the page must not be published, uploaded or committed. It is written to a local directory (`U:\OpenRC\telemetry-dashboard\` when `U:` exists, otherwise `%LOCALAPPDATA%\OpenRCsimulator\telemetry-dashboard\`); `--out` inside the repository is refused. The page makes no network requests.
 
@@ -23,6 +23,7 @@ The snapshot uses only the service's public read paths (`status_report`, `ingest
 | Section | Source and meaning |
 | --- | --- |
 | Alerts | Critical: suspend-all, raw row past 48 h, `storage_unavailable`, a day with traffic never rolled up. Warning: rollup overdue (with the command and hours left), raw age near 48 h, suspended releases, `rejected:unapproved_release`, `rate_limited`, no batch in 24 h |
+| Release downloads | GitHub package counters from the [GitHub history archive](../analytics/README.md) (`%LOCALAPPDATA%\OpenRCsimulator\analytics`, or `--downloads-dir` / `OPENRC_ANALYTICS_DIR`), opened read-only: total and platform share, latest release, the last 7 days, increases per collection day, and every release split by Windows / macOS / Linux. `fetch` first runs that tool's `collect` (read-only GitHub API through the existing `gh` login; skip with `--no-download-collect`); a failed collection keeps the archived counters and raises an alert, as do counters older than 36 h |
 | Health tiles | Worst alert; newest accepted batch (exact from raw rows, else the UTC day from the counters, which outlive the 48 h raw purge); accepted today and yesterday; last 7 days against the 7 before; refusals; raw age; releases |
 | Ingest outcomes | `ingest_counts` per day, grouped as accepted, duplicate, rejected (`rejected:*`) and other refusals; hover, tap or tab to a day, or open the table |
 | Rollup coverage | `daily_status` per release and day. Days without a row are pending (before 03:00 UTC next day), overdue (still inside the 47 h window), missed (traffic but never rolled up) or no traffic |
