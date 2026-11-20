@@ -96,7 +96,7 @@ func _run() -> void:
 	check("late duplicate failure cannot clear ready B", not state.finish_resolution(ticket_b, {ok = false}) and state.source_owner() == owners.b)
 	check("start-only choice retains exact source owner", state.select_start("hand_launch") and state.source_owner() == owners.b
 		and state.source_ticket().generation == ticket_b.generation and state.selection().start_choice == "hand_launch")
-	check("unsupported start preserves selected choice", not state.select_start("runway") and state.selection().start_choice == "hand_launch")
+	check("unsupported start preserves selected choice", not state.select_start("catapult") and state.selection().start_choice == "hand_launch")
 	var b_hand: Dictionary = state.selection()
 	var intent: Dictionary = state.change_intent().value
 	check("explicit transition pins prior acknowledged A and requested B", intent.before == a and intent.after == b_hand)

@@ -124,7 +124,7 @@ Existing seams used, all unchanged: `AircraftData.validate_and_derive` and `Whee
 | AC-18 | Home "My aircraft", source-aware defaults and Fly gate, preferences branch, thumbnail/preview/audio/crash consumers | [Exact SourceRef, published-payload consistency and selection-state prerequisites](../research/aircraft-creator/AC-18-source-reference-2026-11-16.md) implemented and checked on Windows/macOS. Home/preferences/flight consumers and G06/G07 remain open. |
 | AC-19 | Portable `.orcaircraft` bundle: exact closure export/import, idempotent import, conflict copy | Open. Gate G08 |
 | AC-20 | Release evidence: exported targets, resources and stalls at 1080p first, accessibility, offline guide generated from the support manifest | Open. Gate G09; gates M3 |
-| AC-21 | Fixed tricycle/taildragger contacts, wheel-profile provider, Runway start with a stopped shaft | Open |
+| AC-21 | Fixed tricycle/taildragger contacts, wheel-profile provider, Runway start with a stopped shaft | First slice 2026-11-20 ([decision](../DECISIONS.md#creator-fixed-landing-gear)): optional `landing_gear` definition member (three or four wheel bottoms, steered-wheel travel), compiled spring-damper gear, hull kept above the gear's ground lines, Runway start card and start check; filled automatically from Phoenix wheels. No player editing UI, no wheel-profile provider, no brakes yet |
 | AC-22 | Guided residual-mass balance; more qualified electric and pusher packages | Open |
 | AC-23 | Gasoline and glow packages; symmetric flaps; the constrained elevon family — each separately | Open |
 | AC-24 | Canard and V-tail laws and mixers; optional OBJ/glTF-sidecar/FBX adapters | Open |

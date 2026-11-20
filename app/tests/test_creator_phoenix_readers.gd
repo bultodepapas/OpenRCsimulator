@@ -3,6 +3,11 @@ extends SceneTree
 ## Every fixture is built here from the documented layout: no third-party bytes.
 const R := preload("res://workshop/creator/result.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
+const Definition := preload("res://workshop/creator/definition.gd")
+const Session := preload("res://sim/flight_session.gd")
+const Weather := preload("res://physics/wind_config.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const ScriptContainer := preload("res://workshop/creator/phoenix/script_container.gd")
 const Geo := preload("res://workshop/creator/phoenix/geo.gd")
 const PhoenixTexture := preload("res://workshop/creator/phoenix/texture.gd")
@@ -37,6 +42,7 @@ func _initialize() -> void:
 	_physics_untrusted()
 	_import_hardening()
 	_physics_tuning()
+	_landing_gear()
 	print("Phoenix readers: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -968,3 +974,99 @@ func _physics_tuning() -> void:
 		and float(values.get("equipment/thrust_angles_deg/1", 0.0)) == -0.5)
 	check("thrust angles are limited to the installation range",
 		PhoenixSetup.THROW_RANGES.has("equipment/thrust_angles_deg/0") and PhoenixSetup.THROW_RANGES["equipment/thrust_angles_deg/0"] == [-5.0, 5.0])
+
+
+# ------------------------------------------------------------------------------- landing gear (AC-21)
+
+## A decoded gear: mirrored mains and a steerable wheel, GEO units (radius 1.5, Size 1.5 -> 0.015 m/unit).
+func _gear_model(steered_z: float) -> Dictionary:
+	return {gear = [
+		{mirrored = 1, isGuide = 0, isRetractable = 1, attributes = {Guide_travel = 20},
+			wheels = [{pivot = {x = 10.0, y = 1.5, z = 0.0 if steered_z > 0.0 else 10.0}, radius = 1.5}]},
+		{mirrored = 0, isGuide = 1, attributes = {Guide_travel = 30},
+			wheels = [{pivot = {x = 0.0, y = 1.5, z = steered_z}, radius = 1.5}]}]}
+
+
+func _landing_gear() -> void:
+	var datum := [0.0, 0.3, 0.2]
+	var tricycle := Converter.gear_layout(_gear_model(20.0), 0.015, datum)
+	check("a nose-steered gear is a tricycle", tricycle.get("layout") == "tricycle" and (tricycle.contacts as Array).size() == 3
+		and bool(tricycle.retractable))
+	if tricycle.get("layout") == "tricycle":
+		var by_id := {}
+		for contact: Dictionary in tricycle.contacts:
+			by_id[contact.id] = contact
+		check("wheel bottoms in the leading-edge frame", by_id.has("nose") and by_id.has("main_left") and by_id.has("main_right")
+			and is_equal_approx(float(by_id.nose.position[2]), -0.3) and is_equal_approx(float(by_id.main_right.position[1]), 0.15)
+			and is_equal_approx(float(by_id.main_left.position[1]), -0.15) and float(by_id.nose.position[0]) < 0.0)
+		check("the nose wheel steers with its travel", is_equal_approx(float(by_id.nose.steering_deg), 30.0)
+			and float(by_id.main_left.steering_deg) == 0.0)
+	var taildragger := Converter.gear_layout(_gear_model(-40.0), 0.015, datum)
+	check("a tail-steered gear is a taildragger with negative steering", taildragger.get("layout") == "taildragger"
+		and (taildragger.contacts as Array).any(func(c: Dictionary) -> bool: return c.id == "tail" and float(c.steering_deg) == -30.0))
+	check("floats or skids without wheels give no gear", Converter.gear_layout({gear = [{mirrored = 1}]}, 0.015, datum).is_empty())
+	# The definition accepts a closed gear member and refuses malformed ones.
+	var good := {"landing_gear": {"layout": "tricycle", "contacts": [
+		{"id": "nose", "position": [-0.2, 0.0, -0.2], "steering_deg": 20.0},
+		{"id": "main_left", "position": [0.2, -0.15, -0.2], "steering_deg": 0.0},
+		{"id": "main_right", "position": [0.2, 0.15, -0.2], "steering_deg": 0.0}]}}
+	var problems: Array = []
+	Definition._landing_gear(problems, good)
+	check("a valid gear passes the definition rules", problems.is_empty())
+	for broken: Dictionary in [{"landing_gear": {"layout": "quad", "contacts": good.landing_gear.contacts}},
+			{"landing_gear": {"layout": "tricycle", "contacts": (good.landing_gear.contacts as Array).slice(0, 2)}},
+			{"landing_gear": {"layout": "tricycle", "contacts": good.landing_gear.contacts, "extra": 1}}]:
+		var found: Array = []
+		Definition._landing_gear(found, broken)
+		check("a malformed gear is refused", not found.is_empty())
+	# Set-up carries the decoded gear into the definition; the record gets fixed gear and a runway start.
+	var geo: Dictionary = Geo.parse(_geo_bytes([{name = "wing", material = 0, triangles = 2}])).value
+	var model := _physics_model()
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var data := {datum = [0.0, 0.02, 0.03], half_span_m = 0.75, root_chord_m = 0.25, tip_chord_m = 0.2,
+		dihedral_deg = 3.0, propeller_found = true, pusher = false, biplane = false, physics = block,
+		layout = {"horizontal_tail/span": 0.5, "horizontal_tail/position/0": 0.45},
+		gear = {layout = "tricycle", retractable = false, contacts = [
+			{id = "nose", position = [-0.15, 0.0, -0.16], steering_deg = 25.0},
+			{id = "main_left", position = [0.12, -0.12, -0.16], steering_deg = 0.0},
+			{id = "main_right", position = [0.12, 0.12, -0.16], steering_deg = 0.0}]}}
+	var marked := GlbWriter.build(geo, {}, 1.0, {creator_setup = data}, [], [Installation.PHOENIX_NAMESPACE])
+	var source: Variant = SourceImporter.inspect_bytes(marked.value.bytes, "geared.glb").value
+	var proposed: Dictionary = PhoenixSetup.propose(source, Authoring.span_domain())
+	var doc := Authoring.new()
+	doc.set_source(source)
+	doc.set_axis("nose_axis", "+z")
+	doc.set_axis("up_axis", "+y")
+	doc.set_units("m")
+	doc.set_datum([0.0, 0.02, 0.03])
+	var applied: Dictionary = doc.apply_clearview_setup(proposed.value, doc.revision) if proposed.ok else proposed
+	check("set-up brings the decoded gear as an estimate", applied.ok and doc.landing_gear().get("layout") == "tricycle"
+		and (doc.definition().get("evidence", {}) as Dictionary).get("landing_gear") == "estimated")
+	var built: Dictionary = doc.compile()
+	check("a geared definition compiles", built.ok)
+	if not built.ok:
+		print("  compile: ", built.diagnostics.slice(0, 2))
+		return
+	var record: Variant = JSON.parse_string((built.value.raw_bytes() as PackedByteArray).get_string_from_utf8())
+	check("the record carries fixed tricycle gear", record is Dictionary and record.capabilities.gear == "fixed_tricycle"
+		and (record.landing_gear.contacts as Array).size() == 3 and record.landing_gear.has("breakaway_factor"))
+	if record is Dictionary:
+		var lowest_wheel := INF
+		for contact: Dictionary in record.landing_gear.contacts:
+			lowest_wheel = minf(lowest_wheel, float(contact.position.value[2]))
+		var lowest_hull := INF
+		for point: Array in record.crash_hull.value:
+			lowest_hull = minf(lowest_hull, float(point[2]))
+		check("the hull stays above the wheels", lowest_hull > lowest_wheel)
+	var snapshot: Dictionary = doc.snapshot()
+	var reopened := Authoring.new()
+	check("a saved draft keeps its gear", reopened.restore(snapshot, source).ok and reopened.landing_gear() == doc.landing_gear())
+	var payload := {creator_candidate = built.value, creator_source = source, creator_placement = doc.placement(),
+		creator_name = "geared", start_choice = "runway", creator_bindings = doc.bindings(), creator_appearance = doc.appearance()}
+	var trial: Dictionary = CreatorTrial.freeze(payload)
+	var field: Dictionary = FieldLoader.load_from().field
+	var runway: Dictionary = CreatorTrial.check_start(trial, field, Weather.defaults(), Session.START_RUNWAY) if trial.get("ok", false) else {}
+	check("a geared Creator aircraft starts on the runway", runway.get("ok", false) and runway.get("available", false))
+	var hand: Dictionary = CreatorTrial.check_start(trial, field, Weather.defaults(), Session.START_HAND_LAUNCH) if trial.get("ok", false) else {}
+	check("a geared Creator aircraft is not hand launched", hand.get("ok", false) and not hand.get("available", true))

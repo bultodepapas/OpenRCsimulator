@@ -13568,3 +13568,9 @@ msgstr "此模型的 Phoenix 飞行数据是按另一尺寸推导的。请再次
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "此草稿的 Phoenix 飞行数据来自更早版本的 OpenRC。请再次使用“设置以便飞行”重新推导。"
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Phoenix 起落架用于跑道起飞。可收放起落架保持放下。"
+
+msgid "Needs no landing gear"
+msgstr "仅限无起落架"

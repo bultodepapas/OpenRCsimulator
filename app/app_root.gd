@@ -3552,10 +3552,11 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_start_workshop_airship_trial(editor, {}, "airborne", {source = request.source, name = str(request.name)})
 		return
 	var chosen_start: Variant = payload.get("start_choice", "airborne")
-	# AC-11: an Aircraft Creator request carries an accepted candidate instead of a catalog base. It has no
-	# landing gear, so its ground start is the hand launch; every other step below is the Workshop trial path.
+	# AC-11: an Aircraft Creator request carries an accepted candidate instead of a catalog base. Without landing
+	# gear its ground start is the hand launch, with gear (AC-21) the runway; the start check decides which is
+	# available. Every other step below is the Workshop trial path.
 	var creator_request: bool = CreatorTrial.is_request(payload)
-	if typeof(chosen_start) != TYPE_STRING or chosen_start not in (["airborne", "hand_launch"] if creator_request else ["airborne", "runway"]):
+	if typeof(chosen_start) != TYPE_STRING or chosen_start not in (["airborne", "hand_launch", "runway"] if creator_request else ["airborne", "runway"]):
 		editor.set_note(tr("Choose an airborne or hand-launch trial start.") if creator_request else tr("Choose an airborne or runway trial start."))
 		_menu_feedback(&"reject")
 		return

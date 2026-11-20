@@ -14407,3 +14407,9 @@ msgstr "Os dados de voo do Phoenix deste modelo foram derivados para outro taman
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Os dados de voo do Phoenix deste rascunho vieram de uma versão anterior do OpenRC. Use Configurar para voo novamente para derivá-los."
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "O trem de pouso do Phoenix é usado para decolar da pista. O trem retrátil fica abaixado."
+
+msgid "Needs no landing gear"
+msgstr "Somente sem trem de pouso"

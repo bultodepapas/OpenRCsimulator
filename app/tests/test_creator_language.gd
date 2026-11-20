@@ -104,7 +104,7 @@ func _catalogs() -> void:
 		phoenix_converter.TEXTURE_SKIPPED,phoenix_converter.NO_PHYSICS,"Phoenix RC model",
 		preload("res://ui/aircraft_creator.gd").PHOENIX_POWER,
 		phoenix_converter.ROTORCRAFT,phoenix_converter.TEXTURES_LIMITED,Authoring.PHOENIX_RESIZED,
-		Authoring.PHOENIX_DERIVATION_RESET])
+		Authoring.PHOENIX_DERIVATION_RESET,phoenix_converter.GEAR_EXTENDED,"Needs no landing gear"])
 	for step: String in Authoring.STEPS:
 		messages.append(str(Authoring.STEP_TITLES[step]))
 	for entry: Dictionary in Authoring.FIELDS:

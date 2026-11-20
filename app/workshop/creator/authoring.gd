@@ -126,6 +126,10 @@ var _review_observations := {}
 var _source_installation := {}
 var _installation_proposal := {}
 var _servo_integration := ""
+## Optional fixed landing gear (AC-21): {layout, contacts: [{id, position, steering_deg}]} in the leading-edge
+## frame, or {} for an aircraft without gear. A source-derived gear is an estimate (evidence "landing_gear").
+var _landing_gear := {}
+var _landing_gear_estimated := false
 var _inventory: Array = []
 ## The estimated power package; only the ClearView setup chooses the pusher variant.
 var _power_package := POWER_PACKAGE
@@ -320,7 +324,8 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 	# tried a little larger, up to the package's maximum span: the result stays a labelled scaled
 	# configuration. Every attempt starts again from the same untouched document state.
 	var before := {placement = _placement.duplicate(true), units = _units, values = _values.duplicate(),
-		raw = _raw.duplicate(), origin = _origin.duplicate(), inventory = _inventory.duplicate(true)}
+		raw = _raw.duplicate(), origin = _origin.duplicate(), inventory = _inventory.duplicate(true),
+		gear = _landing_gear.duplicate(true), gear_estimated = _landing_gear_estimated}
 	var source_span := float(setup.get("source_span_m", 0.0))
 	var domain: Array = size_class.range if _airframe_package == size_class.airframe else []
 	for attempt: int in SETUP_SIZE_ATTEMPTS:
@@ -360,6 +365,7 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 					if is_finite(float(physics.get("cg_aft_m", NAN))):
 						layout["balance/cg_aft_m"] = float(physics.cg_aft_m) * flown_scale
 			_fill_estimates(layout)
+			_set_source_gear(setup.get("gear", {}), float(placed.unit_scale))
 			if not source_physics or mass_pass == 1 or not layout.has("mass/total_kg"):
 				break
 			var fitted := float(Compiler.summarize(definition()).get("mass_kg", NAN))
@@ -407,6 +413,8 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 		_raw = before.raw
 		_origin = before.origin
 		_inventory = before.inventory
+		_landing_gear = before.gear
+		_landing_gear_estimated = before.gear_estimated
 		_power_package = kept_package
 		_airframe_package = kept_airframe
 		_installation_proposal = kept_proposal
@@ -1058,6 +1066,9 @@ func snapshot(step := "") -> Dictionary:
 	# Optional member, written only for the park-flyer class: every other snapshot is unchanged.
 	if _airframe_package != AIRFRAME_PACKAGE:
 		saved.airframe_package = _airframe_package
+	# Optional member (AC-21), written only for an aircraft with landing gear: other snapshots are unchanged.
+	if not _landing_gear.is_empty():
+		saved.landing_gear = {"gear": _landing_gear.duplicate(true), "estimated": _landing_gear_estimated}
 	# Optional member, written only when inventory text was rejected: other snapshots are unchanged.
 	if not _item_invalid.is_empty():
 		var rejected: Array = []
@@ -1118,6 +1129,17 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 		if not Installation.required(admitted) or checked.value.source_sha256 != admitted.sha256():
 			return R.fail(R.IDENTITY_MISMATCH,Installation.STALE,"source_installation","import")
 		installation = checked.value
+	var gear := {}
+	var gear_estimated := false
+	if saved.has("landing_gear"):
+		var stored_gear: Variant = saved.get("landing_gear")
+		var checked_gear: Array = []
+		if stored_gear is Dictionary and stored_gear.get("gear") is Dictionary:
+			Definition._landing_gear(checked_gear, {"landing_gear": stored_gear.gear})
+		if not (stored_gear is Dictionary and stored_gear.get("gear") is Dictionary) or not checked_gear.is_empty():
+			return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
+		gear = Definition._normalized(stored_gear.gear)
+		gear_estimated = bool(stored_gear.get("estimated", false))
 	var wanted := str(saved.get("source_sha256", ""))
 	if (admitted == null) != wanted.is_empty() or (admitted != null and admitted.sha256() != wanted):
 		return R.fail(R.IDENTITY_MISMATCH, "The saved model does not match this draft.")
@@ -1188,6 +1210,8 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	_review_observations = observations.context() if observations != null and observations.matches(admitted) else context.duplicate(true)
 	_power_package = power_package
 	_airframe_package = airframe_package
+	_landing_gear = gear
+	_landing_gear_estimated = gear_estimated
 	_installation_proposal = Installation.make(_source,_review_observations,_airframe_package,_power_package)
 	restore_notes = [R.diagnostic(R.SOURCE_UNSUPPORTED, PHOENIX_DERIVATION_RESET, "source_installation", "import", [],
 		R.SEVERITY_WARNING)] if reset_derivation else []
@@ -1390,8 +1414,13 @@ func definition() -> Dictionary:
 		var group := "/".join(segments.slice(0, segments.size() - 1))
 		# A vector is estimated while any of its components still is.
 		evidence[group if _VECTORS.has(group) else path] = "estimated"
+	if not _landing_gear.is_empty() and _landing_gear_estimated:
+		evidence["landing_gear"] = "estimated"
 	if not evidence.is_empty():
 		record["evidence"] = evidence
+	# Optional member (AC-21): a definition without landing gear is unchanged.
+	if not _landing_gear.is_empty():
+		record["landing_gear"] = _landing_gear.duplicate(true)
 	if not _source_observations.is_empty():
 		record.format = Definition.SOURCE_FORMAT
 		record.source_observations = _source_observations.duplicate(true)
@@ -1472,6 +1501,31 @@ func issues() -> Array:
 
 
 ## Compiles the current definition. The result is cached for the current document revision.
+## The decoded gear of a source (lengths in metres at the source size), scaled to the flown model. A gear
+## the player set or confirmed is kept; a source without gear leaves an earlier estimate in place.
+func _set_source_gear(source_gear: Variant, scale: float) -> void:
+	if not source_gear is Dictionary or (source_gear as Dictionary).is_empty() \
+			or (not _landing_gear.is_empty() and not _landing_gear_estimated):
+		return
+	var contacts: Array = []
+	for contact: Variant in source_gear.get("contacts", []):
+		if contact is Dictionary and contact.get("position") is Array and (contact.position as Array).size() == 3:
+			contacts.append({"id": str(contact.get("id", "")), "position": [float(contact.position[0]) * scale,
+				float(contact.position[1]) * scale, float(contact.position[2]) * scale],
+				"steering_deg": float(contact.get("steering_deg", 0.0))})
+	var gear := {"layout": str(source_gear.get("layout", "")), "contacts": contacts}
+	var checked: Array = []
+	Definition._landing_gear(checked, {"landing_gear": gear})
+	if checked.is_empty():
+		_landing_gear = Definition._normalized(gear)
+		_landing_gear_estimated = true
+
+
+## The landing gear of the definition, {} without gear.
+func landing_gear() -> Dictionary:
+	return _landing_gear.duplicate(true)
+
+
 ## Notes from the last `restore` (a Phoenix flight setup that must be run again), for the wizard to show.
 var restore_notes: Array = []
 

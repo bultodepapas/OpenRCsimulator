@@ -14540,3 +14540,9 @@ msgstr "Les données de vol Phoenix de ce modèle ont été dérivées pour une 
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Les données de vol Phoenix de ce brouillon proviennent d’une version antérieure d’OpenRC. Utilisez à nouveau Configurer pour le vol pour les dériver."
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Le train d’atterrissage Phoenix sert aux départs sur piste. Un train rentrant reste sorti."
+
+msgid "Needs no landing gear"
+msgstr "Seulement sans train d’atterrissage"

@@ -29,7 +29,9 @@ const CHECK_FORMAT := "openrc-creator-start-check v1"
 ## presentation profile and identity); a Creator trial has none of them, so `verify` refuses extras.
 const TRIAL_KEYS := ["ok", "errors", "vehicle", "data", "scale", "raw_bytes", "identity", "creator", "display_context"]
 const VEHICLE := "creator"
-const START_CHOICES: PackedStringArray = [Session.START_AIRBORNE, Session.START_HAND_LAUNCH]
+## A Creator aircraft with landing gear (AC-21) also starts on the runway; the session itself refuses a
+## runway start without gear and a hand launch with it.
+const START_CHOICES: PackedStringArray = [Session.START_AIRBORNE, Session.START_HAND_LAUNCH, Session.START_RUNWAY]
 ## The one evaluator every Creator trial uses, for both the start check and the live flight (AC-11).
 ## The servo law requires this explicit selection before setup(); a reference default is not enough.
 const FLIGHT_BACKEND := "gdscript_reference"
@@ -255,6 +257,9 @@ static func check_start(trial: Dictionary, normalized_field: Dictionary, weather
 	if available and start_choice == Session.START_HAND_LAUNCH:
 		available = str(trace.get("launch_choice", "")) == Session.START_HAND_LAUNCH \
 			and str(trace.get("launch_kind", "")) == "hand_launch_release" and str(trace.get("launch_field_id", "")) == field_id
+	elif available and start_choice == Session.START_RUNWAY:
+		available = str(trace.get("launch_choice", "")) == Session.START_RUNWAY \
+			and str(trace.get("launch_kind", "")) == "runway_threshold" and str(trace.get("launch_field_id", "")) == field_id
 	elif available:
 		available = str(trace.get("launch_choice", "")) == "airborne" and str(trace.get("launch_kind", "")) == "trimmed_airborne"
 	if not available and reason.is_empty():

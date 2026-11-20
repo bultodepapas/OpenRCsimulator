@@ -1386,7 +1386,7 @@ func _build_review_page(page: VBoxContainer) -> void:
 	var group := ButtonGroup.new()
 	_add_card(grid, "StartAirborne", "Airborne", "", group, true).set_meta("choice", "airborne")
 	_add_card(grid, "StartHandLaunch", "Hand launch", "", group, false).set_meta("choice", "hand_launch")
-	_add_card(grid, "StartRunway", "Runway", "", group, false, "Needs landing gear")
+	_add_card(grid, "StartRunway", "Runway", "", group, false).set_meta("choice", "runway")
 	group.pressed.connect(func(card: BaseButton) -> void: _start_choice = str(card.get_meta("choice", "airborne")))
 	page.add_child(Widgets.label("Summary", "SectionLabel", true))
 	var sections := VBoxContainer.new()
@@ -2683,7 +2683,31 @@ static func _readout_text(summary: Dictionary, spec: Array) -> String:
 	return ("%s %s" % [", ".join(parts), str(spec[2])]).strip_edges()
 
 
+## AC-21: an aircraft with landing gear rolls from the runway and is never thrown; one without gear is
+## hand launched and cannot take off. A selection that becomes unavailable falls back to Airborne.
+func _refresh_start_cards() -> void:
+	var geared := not _doc.landing_gear().is_empty()
+	var airborne := _pages.get("review_test", null).find_child("StartAirborne", true, false) as Button if _pages.has("review_test") else null
+	for pair: Array in [["StartHandLaunch", "hand_launch", not geared, "Needs no landing gear"], ["StartRunway", "runway", geared, "Needs landing gear"]]:
+		var card := _pages["review_test"].find_child(str(pair[0]), true, false) as Button if _pages.has("review_test") else null
+		if card == null:
+			continue
+		var usable: bool = pair[2]
+		card.disabled = not usable
+		card.tooltip_text = "" if usable else tr(str(pair[3]))
+		card.set_meta("reason", "" if usable else str(pair[3]))
+		if usable and card.button_group == null and airborne != null:
+			card.button_group = airborne.button_group
+			card.toggled.connect(func(_pressed: bool) -> void: _update_card_text(card))
+		if not usable and _start_choice == str(pair[1]):
+			_start_choice = "airborne"
+			if airborne != null:
+				airborne.button_pressed = true
+		_update_card_text(card)
+
+
 func _refresh_review() -> void:
+	_refresh_start_cards()
 	for step: String in _review_sections:
 		(_review_sections[step] as Label).text = "%s — %s\n%s" % [tr(str(Authoring.STEP_TITLES[step])),
 			tr(str(_statuses.get(step, ""))), _section_detail(step)]

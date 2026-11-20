@@ -54,7 +54,7 @@ const EVIDENCE_PATHS := ["wing/span", "wing/root_chord", "wing/tip_chord", "wing
 	"fuselage/nose_x", "fuselage/tail_x", "fuselage/width", "fuselage/height", "fuselage/center_z",
 	"equipment/hub_position", "equipment/battery_position", "equipment/esc_position", "equipment/thrust_angles_deg",
 	"controls/aileron_deg", "controls/elevator_deg", "controls/rudder_deg", "controls/servo_time_s",
-	"battery/initial_soc"]
+	"battery/initial_soc", "landing_gear"]
 ## Input sanity ranges, taken from the flight loader's own quantity bounds where one exists.
 ## They only refuse values no record could carry; the package domain is narrower.
 const POSITION_LIMIT := 2.0
@@ -72,6 +72,13 @@ const RANGES := {
 const ITEM_MASS_RANGE := [0.001, 5.0]
 const ITEM_SIZE_RANGE := [0.0, 4.0]
 const THRUST_ANGLE_LIMIT := 10.0
+## Optional fixed landing gear (AC-21): wheel-bottom positions in the leading-edge frame and the steered
+## wheel's travel. Absent, the aircraft has no gear (hand launch); present, it rolls on the runway.
+const GEAR_LAYOUTS := ["tricycle", "taildragger"]
+const GEAR_KEYS := ["layout", "contacts"]
+const GEAR_CONTACT_KEYS := ["id", "position", "steering_deg"]
+const GEAR_CONTACT_RANGE := [3, 4]
+const GEAR_STEERING_LIMIT := 45.0
 
 
 ## A complete definition of a 1.5 m span, 2 kg electric trainer that compiles and flies: the "Use
@@ -110,7 +117,9 @@ static func validate_complete(definition: Dictionary) -> Dictionary:
 	stated.erase("source_observations")
 	stated.erase("source_installation")
 	stated.erase("servo_integration")
+	stated.erase("landing_gear")
 	_closed(out, stated, "", KEYS, STEP_REVIEW)
+	_landing_gear(out, definition)
 	_evidence(out, definition)
 	var format_value: Variant = definition.get("format")
 	var format_text: String = format_value if typeof(format_value) == TYPE_STRING else ""
@@ -292,6 +301,43 @@ static func _reserved_prefix(id: String) -> bool:
 
 
 ## The optional evidence object: known field paths and known kinds only.
+## The optional `landing_gear` member: a layout and three or four wheels with unique IDs, wheel-bottom
+## positions inside the position limit and the steered wheel's travel (0 for a fixed wheel).
+static func _landing_gear(out: Array, definition: Dictionary) -> void:
+	if not definition.has("landing_gear"):
+		return
+	var gear: Variant = definition.get("landing_gear")
+	if typeof(gear) != TYPE_DICTIONARY:
+		out.append(R.diagnostic(R.FIELD_INVALID, "This value must be an object.", "landing_gear", STEP_CONTROLS))
+		return
+	_closed(out, gear, "landing_gear", GEAR_KEYS, STEP_CONTROLS)
+	if typeof(gear.get("layout")) != TYPE_STRING or str(gear.get("layout")) not in GEAR_LAYOUTS:
+		out.append(R.diagnostic(R.FIELD_INVALID, "Choose a tricycle or taildragger landing gear.", "landing_gear/layout", STEP_CONTROLS))
+	var contacts: Variant = gear.get("contacts")
+	if typeof(contacts) != TYPE_ARRAY or (contacts as Array).size() < GEAR_CONTACT_RANGE[0] \
+			or (contacts as Array).size() > GEAR_CONTACT_RANGE[1]:
+		out.append(R.diagnostic(R.FIELD_INVALID, "The landing gear needs three or four wheels.", "landing_gear/contacts", STEP_CONTROLS))
+		return
+	var seen := {}
+	for index: int in (contacts as Array).size():
+		var path := "landing_gear/contacts/%d" % index
+		var contact: Variant = contacts[index]
+		if typeof(contact) != TYPE_DICTIONARY:
+			out.append(R.diagnostic(R.FIELD_INVALID, "This value must be an object.", path, STEP_CONTROLS))
+			continue
+		_closed(out, contact, path, GEAR_CONTACT_KEYS, STEP_CONTROLS)
+		var id: Variant = contact.get("id")
+		if not _matches(id, ID_PATTERN) or str(id).length() > MAX_ID_LENGTH or seen.has(str(id)):
+			out.append(R.diagnostic(R.FIELD_INVALID, "Each wheel needs its own lowercase ID.", path + "/id", STEP_CONTROLS))
+		seen[str(id)] = true
+		_vector(out, contact, path + "/position", "position", 3, -POSITION_LIMIT, POSITION_LIMIT, STEP_CONTROLS)
+		var steering: Variant = contact.get("steering_deg")
+		if not (typeof(steering) in [TYPE_INT, TYPE_FLOAT]) or not is_finite(float(steering)) \
+				or absf(float(steering)) > GEAR_STEERING_LIMIT:
+			out.append(R.diagnostic(R.FIELD_INVALID, "The wheel steering must be between -%s and %s degrees.", path + "/steering_deg",
+				STEP_CONTROLS, [GEAR_STEERING_LIMIT, GEAR_STEERING_LIMIT]))
+
+
 static func _evidence(out: Array, definition: Dictionary) -> void:
 	if not definition.has("evidence"):
 		return

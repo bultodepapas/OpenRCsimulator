@@ -32,7 +32,7 @@ static func _skipped(ft) -> Dictionary:
 ## elevator flying the path (the landing law, so the speed floats around 1.4 Vs), the flare one second of glide sink
 ## above the wheels, no brakes. Where it touches down against the aim, how fast and how hard.
 static func dead_stick_landing(ft) -> Dictionary:
-	if not ft.FlightSession.runway_aircraft_supported(ft.aircraft_id):
+	if not ft.runway_supported():
 		return _skipped(ft)
 	var v_glide: float = 1.4 * ft.vs
 	var glide: Dictionary = ft._fly("dead_stick_landing_glide", { speed = v_glide, altitude = ft.HIGH }, 20.0, func(_t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
@@ -107,7 +107,7 @@ static func dead_stick_landing(ft) -> Dictionary:
 ## torque and propeller effects, and the elevator holding 1.3 Vs so the airplane climbs as its thrust allows. Whether it
 ## touches, how far it sinks, how much it yaws and rolls, and how long it takes to climb to 15 m.
 static func go_around(ft) -> Dictionary:
-	if not ft.FlightSession.runway_aircraft_supported(ft.aircraft_id):
+	if not ft.runway_supported():
 		return _skipped(ft)
 	var rows := []
 	var notes := []

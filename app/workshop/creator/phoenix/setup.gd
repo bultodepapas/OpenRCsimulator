@@ -82,7 +82,8 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 		propeller_found = bool(data.propeller_found), pusher = bool(data.pusher), range_index = range_index,
 		span_range = chosen.duplicate(), root_chord_m = fitted.root, tip_chord_m = fitted.tip, dihedral_deg = dihedral,
 		planform_fitted = fitted.changed, source_taper = fitted.taper, source_aspect = fitted.aspect,
-		throws_fitted = throws_fitted, biplane = bool(data.biplane), layout = layout, physics = data.physics})
+		throws_fitted = throws_fitted, biplane = bool(data.biplane), layout = layout, physics = data.physics,
+		gear = data.gear})
 
 
 ## Chords (metres, source size) inside the package's taper and aspect-ratio ranges at the same span.
@@ -145,7 +146,23 @@ static func creator_setup(source: InspectedSource) -> Dictionary:
 		tip_chord_m = float(data.tip_chord_m), dihedral_deg = float(data.dihedral_deg),
 		datum = [float(datum[0]), float(datum[1]), float(datum[2])], layout = clean_layout,
 		propeller_found = bool(data.get("propeller_found", false)), pusher = bool(data.get("pusher", false)),
-		biplane = bool(data.get("biplane", false)), physics = _physics(data.get("physics"))}
+		biplane = bool(data.get("biplane", false)), physics = _physics(data.get("physics")), gear = _gear(data.get("gear"))}
+
+
+## The receipt's landing gear: a tricycle or taildragger with three or four finite wheel positions
+## (metres at the source size); {} otherwise. The Creator definition rules check it again when applied.
+static func _gear(value: Variant) -> Dictionary:
+	if not value is Dictionary or str(value.get("layout", "")) not in ["tricycle", "taildragger"] \
+			or not value.get("contacts") is Array or (value.contacts as Array).size() < 3 or (value.contacts as Array).size() > 4:
+		return {}
+	var contacts: Array = []
+	for contact: Variant in value.contacts:
+		if not contact is Dictionary or not contact.get("position") is Array or (contact.position as Array).size() != 3 \
+				or not (contact.position as Array).all(_finite) or not _finite(contact.get("steering_deg")):
+			return {}
+		contacts.append({id = str(contact.get("id", "")).substr(0, 40), position = [float(contact.position[0]),
+			float(contact.position[1]), float(contact.position[2])], steering_deg = float(contact.steering_deg)})
+	return {layout = str(value.layout), contacts = contacts, retractable = bool(value.get("retractable", false))}
 
 
 ## The receipt's physics block when it has the expected format, only finite numbers and plausible required

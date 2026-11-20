@@ -14513,3 +14513,9 @@ msgstr "Die Phoenix-Flugdaten dieses Modells wurden für eine andere Größe abg
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Die Phoenix-Flugdaten dieses Entwurfs stammen aus einer früheren OpenRC-Version. Verwende erneut „Für den Flug einrichten“, um sie abzuleiten."
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Das Phoenix-Fahrwerk wird für Pistenstarts verwendet. Einziehfahrwerk bleibt ausgefahren."
+
+msgid "Needs no landing gear"
+msgstr "Nur ohne Fahrwerk"

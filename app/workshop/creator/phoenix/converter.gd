@@ -44,6 +44,7 @@ const NO_GEOMETRY := "The geometry file \"%s\" was not found next to the Phoenix
 const TEXTURE_SKIPPED := "The texture \"%s\" could not be used; those parts keep their plain colour."
 const APPEARANCE_ONLY := "Only the Phoenix appearance is imported. Define and validate its OpenRC flight configuration separately."
 const ROTORCRAFT := "Phoenix helicopters and multirotors are imported for their appearance only: OpenRC cannot fly them from their Phoenix data yet."
+const GEAR_EXTENDED := "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
 const TEXTURES_LIMITED := "This model uses more than %s textures; %s of them were not imported, so those parts keep their plain colour."
 const SUMMARY := "Phoenix model %s: %s m wingspan, %s kg."
 const MOVING_PARTS := "%s moving parts were prepared from the Phoenix hinges; check them in Moving parts."
@@ -169,6 +170,11 @@ static func convert(mod_path: String, cancelled: Callable = Callable()) -> Dicti
 		var polars := _airfoil_polars(folder, model, cancelled)
 		var physics := PhoenixPhysics.physics_block(model, scale, placement.datum, polars,
 			picked.wing if picked.wing is Dictionary else {}, picked.tail, picked.fin)
+		var wheels := gear_layout(model, scale, placement.datum)
+		if not wheels.is_empty():
+			setup.gear = wheels
+			if bool(wheels.retractable):
+				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, GEAR_EXTENDED, "source", STEP, [], R.SEVERITY_INFO))
 		if not physics.is_empty():
 			setup.physics = physics
 		else:
@@ -229,6 +235,8 @@ static func source_notes(source: InspectedSource) -> Array:
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, SUMMARY, "source", STEP,
 			[str(receipt.get("name", "")).substr(0, Limits.NAME_CHARACTERS), String.num(float(span), 2), String.num(float(mass), 2)],
 			R.SEVERITY_INFO))
+	if not markers.is_empty() and bool(PhoenixSetup.creator_setup(source).get("gear", {}).get("retractable", false)):
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, GEAR_EXTENDED, "source", STEP, [], R.SEVERITY_INFO))
 	if not markers.is_empty() and PhoenixSetup.creator_setup(source).get("physics", {}).is_empty():
 		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, NO_PHYSICS, "source", STEP, [], R.SEVERITY_WARNING))
 	return notes
@@ -379,6 +387,64 @@ static func layout_surfaces(model: Dictionary, lifting: Array = []) -> Dictionar
 					widest = length
 					wing = airfoil
 	return {wing = wing, tail = tail, fin = fin, travel = travel}
+
+
+## The decoded landing gear as Creator wheels (AC-21): wheel bottoms (centre minus radius) in the
+## leading-edge frame in metres at the source size, mirrored sides expanded, the steered (`isGuide`) wheel
+## with its `Guide_travel`. A steered wheel ahead of the others makes a tricycle, behind them a taildragger.
+## Retractable gear flies extended. {} without three or four wheels (floats, skids, missing data).
+static func gear_layout(model: Dictionary, scale: float, datum: Array) -> Dictionary:
+	if datum.size() != 3 or not model.get("gear") is Array:
+		return {}
+	var wheels: Array = []
+	var retractable := false
+	for gear: Variant in model.gear:
+		if not gear is Dictionary:
+			continue
+		retractable = retractable or _number(gear.get("isRetractable")) == 1.0
+		var guide := _number(gear.get("isGuide")) == 1.0
+		var travel := _number(_dig(gear, ["attributes", "Guide_travel"]))
+		for wheel: Variant in (gear.get("wheels") if gear.get("wheels") is Array else []):
+			if not wheel is Dictionary:
+				continue
+			var radius := _number(wheel.get("radius"))
+			var centre: Variant = wheel.get("pivot")
+			if not (is_finite(radius) and radius > 0.0) or not centre is Dictionary:
+				continue
+			var sides: Array = [1.0, -1.0] if _number(gear.get("mirrored")) == 1.0 and absf(_number(centre.get("x"))) > 1e-6 else [1.0]
+			for side: float in sides:
+				var bottom := {x = side * _number(centre.get("x")), y = _number(centre.get("y")) - radius, z = _number(centre.get("z"))}
+				var p: Variant = _point(bottom, scale)
+				if p == null:
+					continue
+				wheels.append({position = [-(float(p[2]) - float(datum[2])), -float(p[0]), float(p[1]) - float(datum[1])],
+					guide = guide, travel = travel if is_finite(travel) else 0.0})
+	if wheels.size() < 3 or wheels.size() > 4:
+		return {}
+	var steered: Array = wheels.filter(func(w: Dictionary) -> bool: return w.guide)
+	var centre_line: Array = wheels.filter(func(w: Dictionary) -> bool: return absf(float(w.position[1])) < 1e-3)
+	var lead: Array = steered if steered.size() == 1 else centre_line
+	if lead.size() != 1:
+		return {}
+	var others: Array = wheels.filter(func(w: Dictionary) -> bool: return w != lead[0])
+	var others_x := 0.0
+	for w: Dictionary in others:
+		others_x += float(w.position[0]) / others.size()
+	var tricycle := float(lead[0].position[0]) < others_x
+	var contacts: Array = []
+	var extra := 0
+	for w: Dictionary in wheels:
+		var id := ""
+		if w == lead[0]:
+			id = "nose" if tricycle else "tail"
+		elif others.size() == 2:
+			id = "main_right" if float(w.position[1]) > 0.0 else "main_left"
+		else:
+			extra += 1
+			id = "wheel_%d" % extra
+		var steering := clampf(float(w.travel), 0.0, 45.0) * (1.0 if tricycle else -1.0) if w.guide else 0.0
+		contacts.append({id = id, position = w.position, steering_deg = steering})
+	return {layout = "tricycle" if tricycle else "taildragger", contacts = contacts, retractable = retractable}
 
 
 static func definition_values(model: Dictionary, scale: float, datum: Array, lifting: Array = []) -> Dictionary:

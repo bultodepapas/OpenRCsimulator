@@ -66,18 +66,19 @@ func _initialize() -> void:
 		row.family = _family(path, aircraft)
 		rows.append(row)
 		print("%-28s %s" % [label, _line(row)])
-	var totals := {models = rows.size(), compiled = 0, airborne = 0, hand_launch = 0, derived = 0}
+	var totals := {models = rows.size(), compiled = 0, airborne = 0, hand_launch = 0, runway = 0, derived = 0}
 	for row: Dictionary in rows:
 		totals.compiled += 1 if row.get("compiled", false) else 0
 		totals.airborne += 1 if row.get("airborne", false) else 0
 		totals.hand_launch += 1 if row.get("hand_launch", false) else 0
+		totals.runway += 1 if row.get("runway", false) else 0
 		totals.derived += 1 if row.get("derived_physics", false) else 0
 	var report := {format = FORMAT, engine = Engine.get_version_info().string, totals = totals, models = rows}
 	var file := FileAccess.open(out.path_join("corpus.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  ", false) + "\n")
 	file.close()
-	print("TOTAL models %d compiled %d airborne %d hand %d derived %d" % [totals.models, totals.compiled, totals.airborne,
-		totals.hand_launch, totals.derived])
+	print("TOTAL models %d compiled %d airborne %d hand %d runway %d derived %d" % [totals.models, totals.compiled, totals.airborne,
+		totals.hand_launch, totals.runway, totals.derived])
 	quit(0)
 
 
@@ -133,7 +134,8 @@ func _assess(path: String, field: Dictionary, trial_path: String) -> Dictionary:
 		row.stage = "freeze"
 		row.reason = str(trial.get("errors", ["trial refused"])[0])
 		return row
-	for start: Array in [["airborne", Session.START_AIRBORNE], ["hand_launch", Session.START_HAND_LAUNCH]]:
+	row.gear = str(doc.landing_gear().get("layout", ""))
+	for start: Array in [["airborne", Session.START_AIRBORNE], ["hand_launch", Session.START_HAND_LAUNCH], ["runway", Session.START_RUNWAY]]:
 		var checked: Dictionary = CreatorTrial.check_start(trial, field, Weather.defaults(), start[1])
 		row[start[0]] = checked.get("ok", false) and checked.get("available", false)
 		if not row[start[0]]:
@@ -165,8 +167,9 @@ func _message(result: Dictionary) -> String:
 func _line(row: Dictionary) -> String:
 	if row.get("stage") != "flyable":
 		return "%s: %s" % [row.get("stage"), str(row.get("reason", "")).substr(0, 100)]
-	return "mass %s kg  Vs %s  Vlevel %s  T/W %s  air %s hand %s" % [row.get("mass_kg", "?"), row.get("stall_speed_mps", "?"),
-		row.get("level_speed_mps", "?"), row.get("thrust_to_weight", "?"), row.get("airborne"), row.get("hand_launch")]
+	return "mass %s kg  Vs %s  Vlevel %s  T/W %s  air %s hand %s gear %s runway %s %s" % [row.get("mass_kg", "?"),
+		row.get("stall_speed_mps", "?"), row.get("level_speed_mps", "?"), row.get("thrust_to_weight", "?"), row.get("airborne"),
+		row.get("hand_launch"), row.get("gear", ""), row.get("runway"), str(row.get("runway_reason", "")).substr(0, 120)]
 
 
 func _walk(dir: String, out: Array) -> void:

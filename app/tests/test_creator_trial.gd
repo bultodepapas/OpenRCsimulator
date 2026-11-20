@@ -430,7 +430,10 @@ func _trial(document: RefCounted) -> void:
 			check("hand launch climbed clear of the ground", hand.diagnostics.climb_out.clear
 				and float(hand.diagnostics.climb_out.min_height_m) > CreatorTrial.CLIMB_OUT_MIN_HEIGHT_M)
 	var runway: Dictionary = CreatorTrial.check_start(trial, field, weather, Session.START_RUNWAY)
-	check("runway is refused, never substituted", not runway.ok and not runway.available and str(runway.start_choice) == Session.START_RUNWAY)
+	# AC-21: a runway start is a Creator choice; without landing gear it is unavailable, never substituted.
+	check("a gearless runway start is unavailable, never substituted", not runway.get("available", true)
+		and str(runway.get("start_choice", "")) == Session.START_RUNWAY)
+	check("an unknown start is refused", not CreatorTrial.check_start(trial, field, weather, "catapult").ok)
 	check("a tampered trial cannot be checked", not CreatorTrial.check_start(tampered, field, weather, Session.START_AIRBORNE).ok)
 	check("an invalid field is refused", not CreatorTrial.check_start(trial, {}, weather, Session.START_AIRBORNE).ok)
 	var bad_weather: Dictionary = weather.duplicate(true)

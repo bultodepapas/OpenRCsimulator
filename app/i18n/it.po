@@ -14395,3 +14395,9 @@ msgstr "I dati di volo Phoenix di questo modello sono stati ricavati per un'altr
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "I dati di volo Phoenix di questa bozza provengono da una versione precedente di OpenRC. Usa di nuovo Imposta per il volo per ricavarli."
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Il carrello Phoenix è usato per i decolli dalla pista. Il carrello retrattile resta estratto."
+
+msgid "Needs no landing gear"
+msgstr "Solo senza carrello"

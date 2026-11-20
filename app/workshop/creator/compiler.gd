@@ -337,6 +337,21 @@ static func _domain(study: Dictionary, definition: Dictionary) -> Array:
 	return out
 
 
+## Landing-gear constants (AC-21): see `_landing_gear`.
+const GEAR_OMEGA_RAD_S := 23.0
+const GEAR_DAMPING_RATIO := 0.4
+const GEAR_TRAVEL_PER_SAG := 6.5
+const GEAR_TRAVEL_RANGE := [0.05, 0.25]
+## No wheel group carries less than this share of the weight (a CG almost over one axle).
+const GEAR_MIN_SHARE := 0.05
+## Nose-up rotation a tricycle's tail must clear about its main wheels, and the hull's clearance above the
+## gear's ground lines.
+const GEAR_ROTATION_DEG := 12.0
+## Extra nose-up pitch a taildragger's aft hull points must clear beyond the three-point line.
+const GEAR_PITCH_MARGIN_DEG := 5.0
+const HULL_GEAR_CLEARANCE_M := 0.01
+
+
 ## The closed openrc-aircraft v2 record. Every quantity carries its honest kind and source: player
 ## geometry `manual`, inventory items their own kind, computed values `derived` with the formula named,
 ## package constants as the package labels them. Inventory `name` is the stable ID: display text is not
@@ -378,6 +393,9 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		inventory.append(item)
 	# A signed length: ahead of a tractor hub, behind a pusher hub.
 	var hull := _hull(definition, shape, hub, Packages.aft_sign(power) * Packages.number(power, "installation", "spinner_length"))
+	var hull_note := ""
+	if definition.has("landing_gear"):
+		hull_note = _clear_hull_for_gear(hull, definition["landing_gear"])
 	var hull_points := []
 	var hull_components := []
 	var hull_ids := []
@@ -387,7 +405,8 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		hull_points.append(point[2])
 	var mass_bounds: Dictionary = airframe.domain.mass_kg
 	var angles := Packages.vector(definition["equipment"]["thrust_angles_deg"], 2)
-	return {
+	var gear: Dictionary = _landing_gear(definition, study) if definition.has("landing_gear") else {}
+	var record := {
 		format = AircraftData.FORMAT,
 		id = aircraft,
 		description = "Compiled by the Aircraft Creator from an openrc-creator-definition v1. Airframe package %s, power package %s: estimated and experimental, not calibrated against a real aircraft." % [airframe.id, power.id],
@@ -397,7 +416,7 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		},
 		convention_id = "openrc-le-frd-v1",
 		capabilities = {
-			controls = "conventional", gear = "locked_up",
+			controls = "conventional", gear = "fixed_" + str(definition["landing_gear"]["layout"]) if not gear.is_empty() else "locked_up",
 			propulsion_layout = "single_pusher" if Packages.is_pusher(power) else "single_tractor",
 			energy = "ocv_resistance", damage = "terminal_hull", flaps = "not_simulated",
 		},
@@ -416,7 +435,7 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		},
 		inventory = inventory,
 		crash_hull = {value = hull_points, unit = "m", kind = Packages.DERIVED,
-			source = "Aircraft Creator: extreme points of the player's stated geometry (wing outline with its tips raised by the stated dihedral, flat tail outlines, box fuselage, spinner); an estimate of where the airframe meets the ground, not read from the 3D model"},
+			source = "Aircraft Creator: extreme points of the player's stated geometry (wing outline with its tips raised by the stated dihedral, flat tail outlines, box fuselage, spinner); an estimate of where the airframe meets the ground, not read from the 3D model" + hull_note},
 		crash_hull_components = hull_components,
 		crash_hull_ids = hull_ids,
 		plausibility = {
@@ -436,6 +455,75 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 		aero = _stated_dihedral(Packages.aero_block(airframe, aero), definition),
 		propulsion = _stated_propulsion(Packages.propulsion_block(power, PROPULSION_ID, float(study.initial_soc),
 			PackedFloat64Array([hub[0] - cg[0], hub[1] - cg[1], hub[2] - cg[2]]), angles), definition),
+	}
+	# Optional member (AC-21): a definition without landing gear compiles to exactly the record it always did.
+	if not gear.is_empty():
+		record["landing_gear"] = gear
+	return record
+
+
+## Fixed landing gear from the definition's wheel bottoms (AC-21). The spring and damper are not the
+## model's: total stiffness m·ω² with ω = GEAR_OMEGA_RAD_S (the Stik's E1 rule ω·dt < 0.1 at 240 Hz),
+## split by each wheel's static load so the aircraft rests level, damping ratio GEAR_DAMPING_RATIO, and the
+## Stik's tyre coefficients.
+static func _landing_gear(definition: Dictionary, study: Dictionary) -> Dictionary:
+	var gear: Dictionary = definition["landing_gear"]
+	var mass := float(study.mass)
+	var cg: PackedFloat64Array = study.cg
+	var contacts: Array = gear["contacts"]
+	# Static load shares: the wheels ahead of the CG against those behind it (lever rule along x).
+	var ahead: Array = []
+	var behind: Array = []
+	for contact: Dictionary in contacts:
+		(ahead if float(contact["position"][0]) < cg[0] else behind).append(contact)
+	var shares := {}
+	if ahead.is_empty() or behind.is_empty():
+		for contact: Dictionary in contacts:
+			shares[contact["id"]] = 1.0 / contacts.size()
+	else:
+		var x_ahead := 0.0
+		var x_behind := 0.0
+		for contact: Dictionary in ahead:
+			x_ahead += float(contact["position"][0]) / ahead.size()
+		for contact: Dictionary in behind:
+			x_behind += float(contact["position"][0]) / behind.size()
+		var front := clampf((x_behind - cg[0]) / maxf(x_behind - x_ahead, 1e-6), GEAR_MIN_SHARE, 1.0 - GEAR_MIN_SHARE)
+		for contact: Dictionary in ahead:
+			shares[contact["id"]] = front / ahead.size()
+		for contact: Dictionary in behind:
+			shares[contact["id"]] = (1.0 - front) / behind.size()
+	var total_k := mass * GEAR_OMEGA_RAD_S * GEAR_OMEGA_RAD_S
+	var sag := Packages.GRAVITY / (GEAR_OMEGA_RAD_S * GEAR_OMEGA_RAD_S)
+	var travel := clampf(GEAR_TRAVEL_PER_SAG * sag, GEAR_TRAVEL_RANGE[0], GEAR_TRAVEL_RANGE[1])
+	var out_contacts: Array = []
+	for contact: Dictionary in contacts:
+		var share: float = shares[contact["id"]]
+		var k := total_k * share
+		out_contacts.append({
+			name = str(contact["id"]),
+			position = _stated(Array(contact["position"]), "m", definition, "landing_gear"),
+			stiffness = {value = k, unit = "N/m", kind = "estimated",
+				source = "Aircraft Creator: m·ω² with ω %s rad/s (the Stik's ω·dt < 0.1 rule at 240 Hz), times this wheel's static load share %s (lever rule about the CG), so the aircraft rests level; not measured" % [
+					String.num(GEAR_OMEGA_RAD_S, 1), String.num(share, 3)]},
+			damping = {value = 2.0 * GEAR_DAMPING_RATIO * sqrt(k * mass * share), unit = "N·s/m", kind = "estimated",
+				source = "damping ratio %s of this wheel's load share: c = 2ζ·sqrt(k·m·share); not measured" % String.num(GEAR_DAMPING_RATIO, 2)},
+			max_compression = {value = travel, unit = "m", kind = "estimated",
+				source = "%s × the static sag g/ω² (%s m), inside %s–%s m; not measured" % [String.num(GEAR_TRAVEL_PER_SAG, 1),
+					String.num(sag, 4), String.num(GEAR_TRAVEL_RANGE[0], 2), String.num(GEAR_TRAVEL_RANGE[1], 2)]},
+			max_steering = _stated(float(contact["steering_deg"]), "deg", definition, "landing_gear"),
+			id = "contact_" + str(contact["id"]),
+		})
+	return {
+		description = "Aircraft Creator fixed landing gear (AC-21): spring-damper wheels at the stated wheel bottoms, tyre forces from the Stik's dry-pavement coefficients; brakes none. Estimated, not measured.",
+		contacts = out_contacts,
+		rolling_resistance = {value = 0.04, unit = "1", kind = "borrowed",
+			source = "Jensen Ugly Stik 60 record: rolling resistance of a small RC wheel on dry pavement"},
+		side_friction = {value = 0.8, unit = "1", kind = "borrowed",
+			source = "Jensen Ugly Stik 60 record: peak tyre friction on dry pavement (JSBSim c172x)"},
+		peak_slip_angle = {value = 6.0, unit = "deg", kind = "borrowed",
+			source = "Jensen Ugly Stik 60 record: slip angle of the peak side force (JSBSim FGLGear)"},
+		breakaway_factor = {value = 1.25, unit = "1", kind = "borrowed",
+			source = "Jensen Ugly Stik 60 record: static over rolling resistance of a wheel at rest"},
 	}
 
 
@@ -463,6 +551,57 @@ static func _stated_propulsion(propulsion: Dictionary, definition: Dictionary) -
 		(target[0] as Dictionary)["kind"] = Definition.evidence_kind(definition, str(target[1]))
 		(target[0] as Dictionary)["source"] = Definition.evidence_source(definition, str(target[1]))
 	return propulsion
+
+
+## With landing gear the box-fuselage estimate must not reach below the gear's ground lines, or the aircraft
+## would "crash" standing still: the resting line through the main wheels and the nose or tail wheel, the
+## tail-up rolling line of a taildragger (level at the main wheels) and a tricycle's rotation line
+## (GEAR_ROTATION_DEG nose-up about the main wheels); a taildragger's aft points also clear the three-point
+## line pitched GEAR_PITCH_MARGIN_DEG further. Hull points below them are raised to
+## the clearance above: HULL_GEAR_CLEARANCE_M plus twice the static sag of the wheels. Returns the note for the hull's source text ("" when nothing moved).
+static func _clear_hull_for_gear(hull: Array, gear: Dictionary) -> String:
+	var contacts: Array = gear["contacts"]
+	var tricycle := str(gear["layout"]) == "tricycle"
+	var lead: Dictionary = contacts[0]
+	for contact: Dictionary in contacts:
+		var better: bool = float(contact["position"][0]) < float(lead["position"][0]) if tricycle \
+			else float(contact["position"][0]) > float(lead["position"][0])
+		if better:
+			lead = contact
+	var x_main := 0.0
+	var z_main := 0.0
+	var mains := 0
+	for contact: Dictionary in contacts:
+		if contact != lead:
+			x_main += float(contact["position"][0])
+			z_main += float(contact["position"][2])
+			mains += 1
+	x_main /= mains
+	z_main /= mains
+	var x_lead := float(lead["position"][0])
+	var z_lead := float(lead["position"][2])
+	var slope := (z_lead - z_main) / (x_lead - x_main) if absf(x_lead - x_main) > 1e-6 else 0.0
+	var rotation := tan(deg_to_rad(GEAR_ROTATION_DEG))
+	var clearance := HULL_GEAR_CLEARANCE_M + 2.0 * Packages.GRAVITY / (GEAR_OMEGA_RAD_S * GEAR_OMEGA_RAD_S)
+	var raised := 0
+	for point: Array in hull:
+		var at: Array = point[2]
+		var x := float(at[0])
+		var ground := z_main + slope * (x - x_main)
+		if not tricycle:
+			ground = maxf(ground, z_main)
+			if x > x_main:
+				# The tail may sit a little lower than the geometric three-point line (tyre and leg sag).
+				ground = maxf(ground, z_main + tan(atan(slope) + deg_to_rad(GEAR_PITCH_MARGIN_DEG)) * (x - x_main))
+		elif x > x_main:
+			ground = maxf(ground, z_main + rotation * (x - x_main))
+		if float(at[2]) < ground + clearance:
+			at[2] = ground + clearance
+			raised += 1
+	if raised == 0:
+		return ""
+	return "; %d points raised to %s m above the landing gear's resting, rolling and rotation lines so the box estimate never touches the ground on its wheels" % [
+		raised, String.num(clearance, 3)]
 
 
 ## Crash-hull points [id, component, [x, y, z]] from the stated geometry. IDs are fixed semantic names.

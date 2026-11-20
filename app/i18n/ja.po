@@ -13619,3 +13619,9 @@ msgstr "このモデルの Phoenix 飛行データは別のサイズ用に導出
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "この下書きの Phoenix 飛行データは以前の OpenRC バージョンのものです。もう一度「飛行用に設定」を使って導出してください。"
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Phoenix の降着装置を滑走路からの離陸に使います。引き込み脚は出したままです。"
+
+msgid "Needs no landing gear"
+msgstr "降着装置なしの場合のみ"

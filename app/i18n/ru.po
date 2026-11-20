@@ -14369,3 +14369,9 @@ msgstr "Лётные данные Phoenix этой модели выведены
 
 msgid "This draft's Phoenix flight data came from an earlier version of OpenRC. Use Set up for flight again to derive it."
 msgstr "Лётные данные Phoenix этого черновика получены в более ранней версии OpenRC. Снова используйте «Настроить для полёта», чтобы вывести их."
+
+msgid "The Phoenix landing gear is used for runway starts. Retractable gear stays extended."
+msgstr "Шасси Phoenix используется для взлёта с полосы. Убирающееся шасси остаётся выпущенным."
+
+msgid "Needs no landing gear"
+msgstr "Только без шасси"

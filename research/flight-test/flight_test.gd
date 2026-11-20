@@ -11,7 +11,7 @@
 #       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=trim_sweep,stall_power_off,vmax,roll_rate] [--full-traces]
 # Writes <out>/<aircraft>/profile.json, profile.md and one 20 Hz CSV per flown test (--full-traces: every tick).
 # --record=<json> flies a non-catalog record ({aircraft_id, record}: e.g. a compiled Creator record; IAQ-00) and
-# uses --aircraft only as the output label.
+# uses --aircraft only as the output label; its runway tests run when the record has landing gear.
 # --list prints the fixed-wing catalog IDs the card can fly and exits. Table rows carry a stable `case` ID so two
 # profiles compare case by case (research/flight-test/compare.py).
 extends SceneTree
@@ -124,6 +124,13 @@ func _initialize() -> void:
 		quit(2)
 		return
 	_start_session()
+
+
+## Runway tests: a catalog aircraft by its catalog support, a `--record` aircraft by its own landing gear.
+func runway_supported() -> bool:
+	if not record_path.is_empty():
+		return FlightSession._runway_model_supported(session.aircraft.get("model", {}))
+	return FlightSession.runway_aircraft_supported(aircraft_id)
 
 
 func _start_session() -> void:
@@ -1095,7 +1102,7 @@ static func _earth_yaw_rate(s: PackedFloat64Array) -> float:
 ## 1.25 Vs to min(8°, stall start − 3°) with a PI pitch loop, heading held with the rudder, wings level. Also a
 ## rudder-free sample: the swing in 3 s.
 func _takeoff() -> Dictionary:
-	if not FlightSession.runway_aircraft_supported(aircraft_id):
+	if not runway_supported():
 		return _result(false, {}, ["no qualified runway start for this aircraft"], { skipped = true })
 	var rotate := minf(deg_to_rad(8.0), a1 - deg_to_rad(3.0))
 	var heading := NAN
@@ -1299,7 +1306,7 @@ func _hands_off() -> Dictionary:
 ## height down (0.3 m/s + 0.6/s × height); after touchdown the attitude is held
 ## until 0.7 Vs, then the stick comes back. No brakes.
 func _landing() -> Dictionary:
-	if not FlightSession.runway_aircraft_supported(aircraft_id):
+	if not runway_supported():
 		return _result(false, {}, ["no qualified runway start for this aircraft"], { skipped = true })
 	var v_app := 1.3 * vs
 	var gamma := deg_to_rad(4.0)

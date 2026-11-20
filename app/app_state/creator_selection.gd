@@ -9,7 +9,7 @@ const SECTION := "creator_selection"
 const KEY := "selection"
 const KEYS := ["format", "source_ref", "start_choice"]
 const CHANGE_KEYS := ["format", "before", "after"]
-const START_CHOICES := ["airborne", "hand_launch"]
+const START_CHOICES := ["airborne", "hand_launch", "runway"]
 
 
 static func validate(value: Variant) -> Dictionary:
