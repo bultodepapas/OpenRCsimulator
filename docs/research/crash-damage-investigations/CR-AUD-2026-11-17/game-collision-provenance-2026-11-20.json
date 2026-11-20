@@ -1,0 +1,323 @@
+{
+  "schema": "openrc-game-collision-provenance-v1",
+  "date": "2026-11-20",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/collision-damage-2026-11-17",
+  "scope": "Twenty additional game-source/documentation investigations in sequential adaptive rounds of ten; documentation-only integration into existing plans.",
+  "documentation_base": {
+    "commit": "7a43cd1a0e2a17a96dc06a0512c900f08b808351",
+    "tree": "6c443c07c5f38a83447d6215e7fdc875b108eee0"
+  },
+  "application_reviewed": {
+    "commit": "48580b75a796fc6048fb77cdd69875c94ebb69e0",
+    "tree": "4054ca6629bf1777e19b427fba1b55b051219083"
+  },
+  "application_comparison": {
+    "repository": "bultodepapas/OpenRCsimulator",
+    "previous_application_pin": "a866d880d8edbe84d2c59780624c35c8c7f107fc",
+    "current_main": "48580b75a796fc6048fb77cdd69875c94ebb69e0",
+    "audit_branch_head": "7a43cd1a0e2a17a96dc06a0512c900f08b808351",
+    "audit_merge_base": "a7de9b35676d891bc2034cc344b910d9e1ef9c61",
+    "same_tree_objects_old_and_main": {
+      "app/sim": "8ba1200405661f5e413a023f5c0c202338fd3d34",
+      "app/physics": "fd7a4d89b9e78416fa865786490e3c96cdaf4b49",
+      "app/render/crash": "269aa47deece0fd2bc97f5f8eddfdf41006d833a",
+      "app/render/smoke": "49f6add2f1ac82077a8849c36bab26e7bebbc6de",
+      "app/render/lake": "3fdfcf5ed84fb73af1dd8834cb388973c3611604"
+    },
+    "same_blob_objects_old_and_main": {
+      "docs/CRASH-DAMAGE-PLAN.md": "72cf4775b188a4ab18877b1e46c557418d128a59",
+      "docs/plans/advanced-ground-flight-physics.md": "3c1fb9086498505d60381e543586c7dafe2afc9f",
+      "docs/plans/crash-realism.md": "a03ed61e37145b76fdfb26095b464103bc5aeb76",
+      "docs/AUDIO-PLAN.md": "56e3a13ddfd7b82535ee4cefcb991e436b65ca7f",
+      "docs/plans/audio-realism.md": "f4750520d7824bc4933f6ef0b688a53553388aec",
+      "docs/plans/smoke-system-overhaul.md": "4f02970209ff66476ecad9d930f01d198b92b4f6"
+    },
+    "changed_adjacent_paths": [
+      {
+        "path": "app/render/ground_gear.gd",
+        "old_blob": "658118dcb280bc715f5442a25d8f7af6575b83c2",
+        "main_blob": "eb775b8125d775e270f2eec985d0d04e81a5af27",
+        "effect": "Presentation-only far-ground wheel-compression query shortcut; normal near-ground path retained."
+      },
+      {
+        "path": "app/audio/glow_voice.gd",
+        "old_blob": "892cec1a24f369c9861f68d3d7cd39289f39f1c7",
+        "main_blob": "44944e1ef7831dae29bcdfd5a47696cc9df48979",
+        "effect": "Glow synthesis loop hoists block constants and inlines helpers; no new collision-audio owner; runtime parity not re-tested."
+      },
+      {
+        "path": "app/workshop/creator/clearview/converter.gd",
+        "old_blob": "c1ce56883ead9ac205b8a83c08edf7bfe20fd9ec",
+        "main_blob": "9647d6c3c73ba171336a4082621e90d0f00c2d2e",
+        "effect": "Tags ClearView modelType 0 helicopter as visual-only, physics_imported false."
+      },
+      {
+        "path": "app/workshop/creator/source_installation.gd",
+        "old_blob": "ab7ed89ce552286ba521f69b26d206c2a7367cfa",
+        "main_blob": "57eaa7dffaaae3413c26d6a43386a24c09504558",
+        "effect": "Refuses source configuration for tagged helicopter; visual preview and draft workflow described as available."
+      },
+      {
+        "path": "app/workshop/creator/authoring.gd",
+        "old_blob": "ed4011fe2ce4b4d266310747c6b8481db4b8de33",
+        "main_blob": "1be7783272ba69a7a5311dbc19c221853dfca10b",
+        "effect": "Refuses choose_source_installation for tagged rotorcraft."
+      }
+    ],
+    "existing_foundation": [
+      "float64 RK4",
+      "E3d1 interactive compliant soft hull continuation with bounded terminal rules",
+      "E3d2 powered prop strike stops engine and flight continues",
+      "GP-11/12 implemented subsets",
+      "GP-16/17 experimental failed-attached fixed-layout response",
+      "GP-19 dry accepted-endpoint instantaneous friction power and bounded live-hull scrape grains",
+      "24 wreck bodies, CCD/sleep, inventory COM and carriers",
+      "700 CPU particles plus 160 splinters per crash-effects instance",
+      "768 profile-smoke slots per profile and existing SM-19/20/21 slices",
+      "separate earliest-anchored scenery/lake tie handling"
+    ],
+    "candidate_owners": {
+      "grazing": "E3d3, GP-08/10/14, CR-01",
+      "contact_and_damage": "GP-10/11/12/14/16/17/19, optional GP-21, CR-07 and CR-11–15",
+      "wet_and_rotor": "E3d2/3, GP-10/14/16/17/18, CR-20, lake and propulsion/rotor owners",
+      "wreck": "CR-06/07/09/19, CR-AUD-05–11; GP-18 for authoritative detachment",
+      "live_and_wreck_audio": "GP-14/19, CR-02c/03c, AUD-11/15/16",
+      "smoke_fire_particles_budgets": "CR-22b/c/d/e, SM-19–21 and AUD/PT"
+    },
+    "existing_section_10_status": "Research integrated; proposed increments not implemented. Investigation 18 owns the one proposed aftermath source/timeline; investigation 20 owns the one proposed combined presentation budget.",
+    "audit_source_boundary": "Audit branch is divergent from reviewed/current application. Do not merge its older runtime files; the requested integration is documentation-only.",
+    "verification": "Read-only Git tree/blob identities, name diffs and relevant source inspection; no physics/Godot/audio/performance execution."
+  },
+  "selection_sequence": {
+    "schema": "openrc-game-research-transition-v1",
+    "round_one_complete_at_utc": "2026-11-20T12:37:46.204195+00:00",
+    "first_ten": [
+      {
+        "id": "G01",
+        "title": "PicaSim",
+        "commit": "5b2c5871b82aecae4ae6293b862f31600a6a949c"
+      },
+      {
+        "id": "G02",
+        "title": "Rigs of Rods",
+        "commit": "ebf31a2187bbc31a38331a86b233dfa7e60c52fb"
+      },
+      {
+        "id": "G03",
+        "title": "BeamNG.drive",
+        "commit": null
+      },
+      {
+        "id": "G04",
+        "title": "VDrift",
+        "commit": "f4767dd0eb98f55a61d64c8c1462e254e0a23fa6"
+      },
+      {
+        "id": "G05",
+        "title": "SuperTuxKart",
+        "commit": "b2a9f223326422aa2dd4eea28319b0c5115fde03"
+      },
+      {
+        "id": "G06",
+        "title": "Pioneer",
+        "commit": "f03f979f58cb3acad6c4e3187f44074732fec8bc"
+      },
+      {
+        "id": "G07",
+        "title": "OpenClonk",
+        "commit": "36de799544af0459014ea088867fe263779a8bdd"
+      },
+      {
+        "id": "G08",
+        "title": "OpenRA: Red Alert",
+        "commit": "4cc9a9f6299c807c373bb233d9729518c0160c77"
+      },
+      {
+        "id": "G09",
+        "title": "Teardown",
+        "commit": null
+      },
+      {
+        "id": "G10",
+        "title": "Space Station 14",
+        "commit": "748af5f9acfc73eeab81e34a49d7ae42dc4b0e84"
+      }
+    ],
+    "round_one_evidence_receipts": [
+      {
+        "draft": "round1-lead.json",
+        "sha256": "51c87e2b551dadd41976cc069c6d978ec7f23dd52e4837c18a321dfcc6ec239a"
+      },
+      {
+        "draft": "round1-vehicle.json",
+        "sha256": "b86a417fe9142ca1a044e632bc753d767fec2a26df5bc91c8dc5e2e4804d5184"
+      },
+      {
+        "draft": "round1-effects.json",
+        "sha256": "106c2ed9399e2e4fd987d6fa4b05d2cd06dcb19efd4f548a1e304d18ce2d99e1"
+      }
+    ],
+    "gaps": [
+      "No validated high-speed swept prop/rotor or transient wet-contact example; distinguish supported mechanism from game shortcut.",
+      "Human/character body contacts and local articulated impact handling absent.",
+      "First-round fracture mechanisms do not prove conserved fragment birth, realistic resting support or inexpensive 3D debris.",
+      "Queue budgets in SS14 alter gameplay timing; need complementary presentation lifecycle and cost mechanisms.",
+      "Finite fuel/material state, extinguishing and causal secondary events need concrete game-code examples."
+    ],
+    "second_round_selection": [
+      {
+        "id": "G11",
+        "title": "FlightGear",
+        "question": "Inspect water, moving ground and rotor-contact capability; do not assume continuous blades."
+      },
+      {
+        "id": "G12",
+        "title": "DOOM 3",
+        "question": "Inspect rigid-body contact, step remainder, friction/rest and debris sound lifetime."
+      },
+      {
+        "id": "G13",
+        "title": "Overgrowth",
+        "question": "Inspect articulated character collision and localized feedback, without importing gore/combat rules."
+      },
+      {
+        "id": "G14",
+        "title": "Beyond All Reason",
+        "question": "Inspect authored component destruction flags, persistent wreck classes and effect attribution in actual game scripts."
+      },
+      {
+        "id": "G15",
+        "title": "Veloren",
+        "question": "Inspect particle/debris representation, emitter accumulation and cleanup at scale."
+      },
+      {
+        "id": "G16",
+        "title": "Endless Sky",
+        "question": "Inspect fragment birth velocity and continued effect lifecycle in a moving vehicle game."
+      },
+      {
+        "id": "G17",
+        "title": "Warzone 2100",
+        "question": "Inspect bounce/settle/expiry state for debris, smoke and fire effects."
+      },
+      {
+        "id": "G18",
+        "title": "Mindustry",
+        "question": "Inspect how stored resource types gate fire, flammability and secondary explosion presentation."
+      },
+      {
+        "id": "G19",
+        "title": "The Powder Toy",
+        "question": "Inspect explicit material-state transitions and finite fire/smoke behavior; retain 2D cellular limits."
+      },
+      {
+        "id": "G20",
+        "title": "VoxeLibre",
+        "question": "Inspect material/water shielding, damage attribution and chain-event ordering in an actual voxel game."
+      }
+    ],
+    "selection_note": "Round two chosen after the complete first-ten evidence was inspected. Each question may yield a useful negative result; selection is not a claim the desired capability exists."
+  },
+  "counting": {
+    "distinct_games_or_simulators": 20,
+    "round_one": 10,
+    "round_two": 10,
+    "pinned_public_game_source_entries": 18,
+    "proprietary_first_party_documentation_only_entries": [
+      "G03",
+      "G09"
+    ],
+    "source_available_noncommercial_entry": "G01",
+    "source_anchor_records": 109,
+    "anchors_with_verified_git_blob": 100,
+    "note": "A source anchor can be another range in the same file. These are not 109 independent games, papers or runtime tests. Supporting Recoil/RobustToolbox/Luanti references do not add games."
+  },
+  "evidence_method": [
+    "Primary public documentation and pinned Git source reads; exact source path/blob recorded where available.",
+    "Caller/configuration/build guards and downstream consumers traced for material claims; dormant or unpaired behavior labeled.",
+    "Lead inspected material original-source claims and deliberately adapted helper proposals; no code or assets imported.",
+    "OpenRC comparison uses exact Git trees/blobs plus relevant source reads; no full-runtime or physical revalidation."
+  ],
+  "review": {
+    "method": "Independent critical review of both research rounds and the complete integrated candidate, followed by lead original-source inspection and deliberate resolution.",
+    "helpers_requested": "GPT-6.1 Terra, max reasoning, per repository helper policy; request is not proof of effective runtime.",
+    "dispositions": [
+      "G04: changed conserved-current-handoff claim to an open parent/pending/active diagnostic; account for caps, damping, external inputs and scatter.",
+      "G03: mirror fixture rejects spurious trigger/follower damage, not legitimate transmitted loads.",
+      "G01: sensor overlap is not a witness; missing local geometry/shaft data remains unavailable; no low-RPM safety guarantee.",
+      "G05/G08/G10/G13/G17: deduplicate request/birth/transition identities while preserving patches, cue layers, paced grains and recontacts.",
+      "Shared aftermath source/clock and scene budget remain proposed; existing local pools and adapters do not establish them.",
+      "Existing wreck/effects/smoke RNG isolation and audio seed override retained; cross-effect recorded seed is only an optional extension.",
+      "G02: distinguish project README GPLv3-or-later statement from inspected GPLv3 source headers.",
+      "G11: correct rotor/wet owners; retain current fast-disc interval query and slow phase-proxy limits; YASim rim penetration modifies balance and is not blade CCD.",
+      "G11: moving-support equivalence matches relative vectors, geometry, compression, wind and other input frames; unsupported paths use labeled law fixtures.",
+      "G12/G13: wreck audio mapped to CR-02c/03c and AUD; person attribution mapped to CR-AUD-30, not geometry/time audit IDs.",
+      "G14: contact labels and visual breakup estimates do not prove structural component failure; exact BOS/COB/Recoil pairing unverified.",
+      "G15/G16: retain existing smoke fractional timing/rebase behavior; bound catch-up and overflow, preserve event-fraction provenance and allow quality-dependent particle counts.",
+      "G17: terminal-water route clears wreck pool; water trajectories are synthetic/future-adapter cases; important body support/wake/anchors survive representation changes.",
+      "G18/G20: preserve observed inventory versus estimated release, known source ID versus inferred narrative/attacker, and explicit unknown/refused evidence.",
+      "GP-19 instantaneous power is not integrated accepted work; passive diagnostic on/off is distinct from disabling a physical damage law.",
+      "Final G17 correction: qualified wreck support/part anchoring/recontact-wake remain proposed requirements; existing live profile-smoke moving emission is not an already-delivered part-following terminal aftermath adapter."
+    ],
+    "final_verdict": "No unresolved substantive finding within the reviewed source/documentation scope after G17 correction."
+  },
+  "runtime_work": {
+    "application_changed": false,
+    "games_executed": false,
+    "godot_tests_executed": false,
+    "captures_or_audio_recorded": false,
+    "performance_measured": false,
+    "physical_calibration_claimed": false
+  },
+  "publication_boundary": "This branch has divergent older runtime. Publish only the seven documentation paths; future application integration must take the documentation delta, not merge stale source.",
+  "owned_changed_paths": [
+    "docs/CRASH-DAMAGE-PLAN.md",
+    "docs/plans/advanced-ground-flight-physics.md",
+    "docs/plans/crash-realism.md",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/README.md",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/game-collision-studies-20-2026-11-20.md",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/game-collision-sources-2026-11-20.json",
+    "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/game-collision-provenance-2026-11-20.json"
+  ],
+  "verification": {
+    "status": "passed",
+    "base_commit": "7a43cd1a0e2a17a96dc06a0512c900f08b808351",
+    "game_count": 20,
+    "round_counts": [
+      10,
+      10
+    ],
+    "pinned_code_games": 18,
+    "source_anchor_records": 109,
+    "source_anchors_with_verified_blob": 100,
+    "report_sections": 20,
+    "canonical_plan_rows": 20,
+    "proposed_experiments": 20,
+    "new_local_link_destinations_checked": 18,
+    "new_local_link_occurrences_checked": 22,
+    "new_local_link_errors": [],
+    "json_files_parsed": 2,
+    "whitespace_check": "passed",
+    "runtime_tests": "not applicable to documentation-only change; not executed",
+    "content_sha256": {
+      "docs/CRASH-DAMAGE-PLAN.md": "44742735c529d7c642244766fbdcc2cdf4edab51f0d79c1d0dfecb2c03f7e1f1",
+      "docs/plans/advanced-ground-flight-physics.md": "9f2766e7d8ddf545153b0ad5b606301ea381e036add89d58286df4ae91a66b5f",
+      "docs/plans/crash-realism.md": "91f24e3737e166589626105c4db5cf14dfcd923d49166c48d15ca9d205d130cb",
+      "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/README.md": "58b41b4a0c24b9e8f6e8465e32f8ca28fdbba582ddc053b925f64077d46c6d77",
+      "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/game-collision-studies-20-2026-11-20.md": "02d94bc2fb22afd241c5a4271b2b16ffb2845e00b891ee5094b61f02b9c1bf94",
+      "docs/research/crash-damage-investigations/CR-AUD-2026-11-17/game-collision-sources-2026-11-20.json": "d2a1875ef9441b49e250a51e98f025c157d2e105e11ba05ebf3f1c060518cc63"
+    },
+    "source_anchor_verification": {
+      "status": "passed",
+      "git_source_anchors_checked": 100,
+      "line_ranges_checked": 80,
+      "unique_source_blobs_read": 70
+    },
+    "first_round_freeze_hashes_verified": 3,
+    "independent_review": "No unresolved substantive finding; G17 wording corrected and rechecked.",
+    "method": "Staged Git objects; existing tools/ci/check_docs.py link/anchor routines scoped to newly added destinations, JSON/count/mapping checks, exact external Git source/blob/line-range checks, and git diff --cached --check.",
+    "scope_limit": "Local documentation checks only. No runtime, game execution, native graphics/audio/performance test, physical validation or remote CI success is claimed.",
+    "verified_at_utc": "2026-11-20T13:07:09.965763+00:00"
+  }
+}
