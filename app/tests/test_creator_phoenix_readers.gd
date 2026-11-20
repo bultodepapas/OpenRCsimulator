@@ -708,6 +708,7 @@ func _physics() -> void:
 			and is_equal_approx(float(start_wing.cruise_lift.value),
 				clampf(PhoenixPhysics.START_LIFT_SHARE * float(airframe.value.envelope.CL_max.value), 0.3, 1.0)))
 	_start_lift()
+	_flaps()
 	check("a saved draft re-derives the same ids", PhoenixPhysics.restore(block, ids.airframe, ids.power))
 	var altered := block.duplicate(true)
 	altered.mass_kg = 2.0
@@ -728,6 +729,43 @@ func _physics() -> void:
 			and float(big_power.value.propeller.diameter.value) < 0.45)
 	else:
 		check("static thrust held at the cap", false)
+
+
+## IAQ T7: a Phoenix trailing-edge flap becomes the airframe's flap member and the record's hinged-flap law.
+func _flaps() -> void:
+	var model := _physics_model()
+	model.airfoils[0]["flaps"] = [{is_leading_edge = 0, attributes = {Length = 0.3, Root_Chord = 0.06, Tip_Chord = 0.06,
+		Tip_distance = 0.1, Travel = 30, Lift_increase = 50, Drag_increase = 100}}]
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var flap: Dictionary = block.get("flap", {})
+	var outer := (0.75 - 0.1) / 0.75
+	var inner := outer - 0.3 / 0.75
+	var local := 0.25 + (0.2 - 0.25) * 0.5 * (inner + outer)
+	check("a Phoenix flap is read as span and chord fractions", not flap.is_empty()
+		and is_equal_approx(float(flap.outer), outer) and is_equal_approx(float(flap.inner), inner)
+		and is_equal_approx(float(flap.chord_fraction), 0.06 / local) and is_equal_approx(float(flap.travel_deg), 30.0))
+	check("a leading-edge or zero-travel flap is not a trailing-edge flap", PhoenixPhysics._flap({flaps = [
+		{is_leading_edge = 1, attributes = {Length = 0.3, Root_Chord = 0.06, Tip_Chord = 0.06, Tip_distance = 0.1, Travel = 30}},
+		{is_leading_edge = 0, attributes = {Length = 0.3, Root_Chord = 0.06, Tip_Chord = 0.06, Tip_distance = 0.1, Travel = 0}}]},
+		0.75, 0.25, 0.2).is_empty())
+	var bad := block.duplicate(true)
+	bad.flap.inner = 0.95
+	check("a flap whose inboard end is not inboard is refused", not PhoenixPhysics.valid_block(bad))
+	var ids := PhoenixPhysics.derive(block, "conventional-trainer-estimated-v1", "electric-4s-800kv-apc12x6-estimated-v1", 1.0)
+	var airframe: Dictionary = Packages.airframe(ids.get("airframe", ""))
+	check("the derived airframe carries the flap law", airframe.get("ok", false) and airframe.value.get("flaps") is Dictionary
+		and is_equal_approx(float(airframe.value.flaps.hinge_fraction.value), 1.0 - 0.06 / local)
+		and is_equal_approx(float(airframe.value.flaps.takeoff_angle_deg.value), 15.0)
+		and is_equal_approx(float(airframe.value.flaps.profile_drag_coefficient.value),
+			0.9 * pow(0.06 / local, 1.38) * pow(sin(deg_to_rad(30.0)), 2) * 2.0))
+	if airframe.get("ok", false) and airframe.value.get("flaps") is Dictionary:
+		var record_flaps: Dictionary = Compiler._flaps_block(airframe.value.flaps, 1.5, 8.0)
+		check("the record's flap spans are metres of the half span and the limit speed a stall multiple",
+			is_equal_approx(float(record_flaps.inner_span_m.value), inner * 0.75)
+			and is_equal_approx(float(record_flaps.outer_span_m.value), outer * 0.75)
+			and is_equal_approx(float(record_flaps.max_speed_mps.value), PhoenixPhysics.FLAP_MAX_SPEED_STALL_RATIO * 8.0)
+			and not record_flaps.has("inner_span_fraction") and not record_flaps.has("max_speed_stall_ratio"))
 
 
 ## IAQ T3: the compiler's start lift is the linear level trim about the CG at the airframe's start_alpha.

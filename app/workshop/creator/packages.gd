@@ -435,7 +435,7 @@ static func aero_block(package: Dictionary, aero: Dictionary) -> Dictionary:
 		coefficients[name] = _quantity(aero.quantities[name], str(AircraftData.COEFFICIENTS[name][0]))
 	var tail: Dictionary = package.tail
 	var envelope: Dictionary = package.envelope
-	return {
+	var block := {
 		source = "Aircraft Creator package %s: closed forms on the player's geometry plus coefficients borrowed from %s (OpenFlightSim UltraStick25e set); estimated, not calibrated against a real aircraft" % [package.id, package.donor.path],
 		conventions = {
 			alpha_beta = "rad",
@@ -489,6 +489,13 @@ static func aero_block(package: Dictionary, aero: Dictionary) -> Dictionary:
 			},
 		},
 	}
+	# Optional member (IAQ T6): only a package declaring ground_effect emits it; other records are unchanged.
+	if package.get("ground_effect") is Dictionary:
+		var ground := {}
+		for key: String in ["induced_coefficient", "induced_exponent", "downwash_coefficient", "downwash_exponent"]:
+			ground[key] = _copy_quantity(package.ground_effect[key])
+		block["ground_effect"] = ground
+	return block
 
 
 ## The record's `propulsion` node. `offset` is hub minus inventory CG, `angles` [down, right] degrees.

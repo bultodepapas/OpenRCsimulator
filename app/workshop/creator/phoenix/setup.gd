@@ -68,7 +68,9 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 	var placement := {nose_axis = NOSE_AXIS, up_axis = UP_AXIS, unit_scale = scale, datum = (data.datum as Array).duplicate()}
 	if not Placement.resolve(placement).ok:
 		return R.fail(R.DATUM_UNRESOLVED, UNAVAILABLE, "placement/datum", Placement.STEP)
-	var fitted := fit_planform(span, float(data.root_chord_m), float(data.tip_chord_m))
+	var derived := not (data.physics as Dictionary).is_empty()
+	var fitted := fit_planform(span, float(data.root_chord_m), float(data.tip_chord_m),
+		PhoenixPhysics.DERIVED_TAPER_RANGE if derived else TAPER_RANGE, PhoenixPhysics.DERIVED_ASPECT_RANGE if derived else ASPECT_RANGE)
 	var dihedral := clampf(float(data.dihedral_deg), float(DIHEDRAL_RANGE[0]), float(DIHEDRAL_RANGE[1]))
 	var layout: Dictionary = (data.layout as Dictionary).duplicate()
 	var throws_fitted := false
@@ -88,12 +90,13 @@ static func propose(source: InspectedSource, span_range: Array = []) -> Dictiona
 
 ## Chords (metres, source size) inside the package's taper and aspect-ratio ranges at the same span.
 ## `changed` reports whether the decoded planform had to move.
-static func fit_planform(span: float, root: float, tip: float) -> Dictionary:
+static func fit_planform(span: float, root: float, tip: float, taper_range: Array = TAPER_RANGE,
+		aspect_range: Array = ASPECT_RANGE) -> Dictionary:
 	var taper := tip / root if root > 0.0 else 1.0
 	var mean := 0.5 * (root + tip)
-	var aspect := span / mean if mean > 0.0 else float(ASPECT_RANGE[0])
-	var fitted_taper := clampf(taper, float(TAPER_RANGE[0]) * 1.005, float(TAPER_RANGE[1]))
-	var fitted_aspect := clampf(aspect, float(ASPECT_RANGE[0]) * 1.01, float(ASPECT_RANGE[1]) * 0.99)
+	var aspect := span / mean if mean > 0.0 else float(aspect_range[0])
+	var fitted_taper := clampf(taper, float(taper_range[0]) * 1.005, float(taper_range[1]))
+	var fitted_aspect := clampf(aspect, float(aspect_range[0]) * 1.01, float(aspect_range[1]) * 0.99)
 	var fitted_mean := span / fitted_aspect
 	var fitted_root := 2.0 * fitted_mean / (1.0 + fitted_taper)
 	var fitted_tip := fitted_taper * fitted_root

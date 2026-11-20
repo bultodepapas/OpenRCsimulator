@@ -265,6 +265,25 @@ static func _start_lift(airframe: Dictionary, study: Dictionary, definition: Dic
 	return clampf(lift, MIN_START_LIFT, cruise) if is_finite(lift) else cruise
 
 
+## The record's `flaps` from an airframe package's flap member: span fractions become metres of the player's half
+## span and the limit-speed advisory a multiple of the derived stall speed.
+static func _flaps_block(flaps: Dictionary, span: float, stall: float) -> Dictionary:
+	var out := {}
+	for key: String in ["max_angle_deg", "takeoff_angle_deg", "hinge_fraction", "extension_time", "retraction_time",
+			"elevator_mix_per_flap_fraction", "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
+			"stall_shift_fraction"]:
+		if flaps.get(key) is Dictionary:
+			out[key] = (flaps[key] as Dictionary).duplicate(true)
+	for pair: Array in [["inner_span_m", "inner_span_fraction"], ["outer_span_m", "outer_span_fraction"]]:
+		var fraction: Dictionary = flaps[pair[1]]
+		out[pair[0]] = {value = float(fraction.value) * 0.5 * span, unit = "m", kind = Packages.DERIVED,
+			source = str(fraction.source) + ", × the half span"}
+	var ratio := float(flaps.max_speed_stall_ratio.value)
+	out["max_speed_mps"] = {value = clampf(ratio * stall, 5.0, 100.0) if is_finite(stall) else 20.0, unit = "m/s",
+		kind = Packages.DERIVED, source = "%s × the derived stall speed (advisory)" % String.num(ratio, 2)}
+	return out
+
+
 ## Hub, battery and ESC positions, or {} while one is missing.
 static func _mounts(definition: Dictionary) -> Dictionary:
 	var equipment: Variant = definition.get("equipment")
@@ -496,6 +515,10 @@ static func _record(definition: Dictionary, study: Dictionary, aircraft: String)
 	# Optional member (AC-21): a definition without landing gear compiles to exactly the record it always did.
 	if not gear.is_empty():
 		record["landing_gear"] = gear
+	# Optional trailing-edge flaps a source-derived airframe package carries (IAQ T7: Phoenix flaps); absent otherwise.
+	if airframe.get("flaps") is Dictionary:
+		record["flaps"] = _flaps_block(airframe.flaps, float(shape.span), float(summary.get("stall_speed_mps", NAN)))
+		record.capabilities.flaps = "simulated"
 	# Optional stick shaping a source-derived airframe package carries (IAQ T5: Phoenix expo); absent otherwise.
 	if airframe.get("rates") is Dictionary:
 		record.controls["rates"] = (airframe.rates as Dictionary).duplicate(true)

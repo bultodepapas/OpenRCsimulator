@@ -44,6 +44,10 @@ const MIN_DIAMETER_SHARE := 0.4
 const DERIVED_MASS_RANGE := [0.2, 15.0]
 const DERIVED_LOADING_RANGE := [1.0, 25.0]
 const DERIVED_THRUST_RANGE := [0.3, 3.2]
+## IAQ T8: with a Phoenix physics block the packages are derived from the model's own wing (lift slope, induced
+## drag, aileron power), so its planform is kept across this wider range (gliders reach aspect ratio 27).
+const DERIVED_TAPER_RANGE := [0.3, 1.0]
+const DERIVED_ASPECT_RANGE := [3.0, 30.0]
 ## Jets and ducted fans (Phoenix `turbine`, `Max_Thrust` in newtons) fly on an equivalent propeller: pitch
 ## equal to its diameter and this pitch speed at the source size, so its thrust falls off far less with
 ## airspeed than a model propeller's. Froude-scaled with the flown size.
@@ -57,7 +61,13 @@ const EQUIVALENT_ITERATIONS := 6
 const EQUIVALENT_TOLERANCE := 0.02
 ## Bumped whenever `derive` maps the same physics block to different packages, so an earlier draft's ids
 ## no longer restore silently onto changed values.
-const DERIVATION_VERSION := 16
+const DERIVATION_VERSION := 19
+## IAQ T7 flap estimates: servo travel time, plain-flap effective angle and viscous gain (the F4U's fitted 0.84), and
+## the limit-speed advisory as a stall multiple.
+const FLAP_TRAVEL_TIME_S := 1.5
+const FLAP_EFFECTIVE_LIMIT_DEG := 15.0
+const FLAP_VISCOUS_GAIN := 0.85
+const FLAP_MAX_SPEED_STALL_RATIO := 1.8
 const KV_CALIBRATION_ITERATIONS := 4
 ## A static figure of merit at the top of measured small propellers (UIUC data reach about 0.75).
 const MAX_FIGURE_OF_MERIT := 0.8
@@ -226,6 +236,10 @@ static func physics_block(model: Dictionary, scale: float, datum: Array, polars:
 		block.aileron_roll_power = aileron
 	elif _has_inactive_ailerons(wing):
 		block.aileron_roll_power = 0.0  # declared but zero-length: the model steers with its rudder
+	# Trailing-edge flaps (IAQ T7): the main wing's first flap, as fractions of its half span and local chord.
+	var flap := _flap(wing, half, root, tip)
+	if not flap.is_empty():
+		block.flap = flap
 	# Pilot stick expo per channel (Phoenix Controls.*.Expo, percent): input shaping, not aerodynamics.
 	var controls := _dict(_dict(model.get("attributes")).get("Controls"))
 	for axis: String in ["Aileron", "Elevator", "Rudder"]:
@@ -404,6 +418,14 @@ static func valid_block(block: Variant) -> bool:
 		if str(key) != str(key).to_lower() or str(key).capitalize() not in TUNING_KEYS \
 				or not _in(tuning[key], float(TUNING_RANGE[0]), float(TUNING_RANGE[1])):
 			return false
+	var flap: Variant = block.get("flap", {})
+	if not flap is Dictionary:
+		return false
+	if not (flap as Dictionary).is_empty() and not (_in(flap.get("travel_deg"), 1.0, 60.0) and _in(flap.get("inner"), 0.0, 1.0)
+			and _in(flap.get("outer"), 0.0, 1.0) and float(flap.inner) + 0.01 < float(flap.outer)
+			and _in(flap.get("chord_fraction"), 0.05, 0.5) and _in(flap.get("lift_increase"), 0.0, 200.0)
+			and _in(flap.get("drag_increase"), 0.0, 200.0)):
+		return false
 	var prop: Variant = block.get("propeller", {})
 	if not prop is Dictionary:
 		return false
@@ -501,6 +523,20 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 		reason = "Phoenix-derived mass, lift and drag; item masses stay below the loader's 5 kg"}
 	package.domain.wing_loading_kg_m2 = {min = DERIVED_LOADING_RANGE[0], max = DERIVED_LOADING_RANGE[1],
 		reason = "Phoenix-derived mass and wing; light foam to heavy scale models"}
+	# IAQ T8: lift slope, induced drag, roll damping and aileron power follow the model's own wing, so its planform
+	# needs no AR 5 donor (the setup keeps it inside the same range).
+	package.domain.aspect_ratio = {min = DERIVED_ASPECT_RANGE[0], max = DERIVED_ASPECT_RANGE[1],
+		reason = "Phoenix-derived wing: lift slope, span efficiency and aileron power from the model's own planform"}
+	package.domain.taper_ratio = {min = DERIVED_TAPER_RANGE[0], max = DERIVED_TAPER_RANGE[1],
+		reason = "Phoenix-derived wing: aileron power from the model's own strips"}
+	# IAQ T6: ground effect on the strips and the tail downwash, with the stock aircraft's law: Raymer/McCormick's
+	# induced factor and the Stik image-VLM tail-downwash fit (fitted law constants, not this model's measurement).
+	package.ground_effect = {
+		induced_coefficient = _quantity(33.0, "1", "borrowed", "Raymer, Aircraft Design, ground-effect factor 33(h/b)^1.5 / (1 + 33(h/b)^1.5) (after McCormick)"),
+		induced_exponent = _quantity(1.5, "1", "borrowed", "Raymer, Aircraft Design, ground-effect factor 33(h/b)^1.5 / (1 + 33(h/b)^1.5) (after McCormick)"),
+		downwash_coefficient = _quantity(25.0, "1", "borrowed", "The Ugly Stik's fit of image-VLM tail downwash ratios per unit wing lift (jensen_ugly_stik_60.json)"),
+		downwash_exponent = _quantity(2.0, "1", "borrowed", "The Ugly Stik's fit of image-VLM tail downwash ratios per unit wing lift (jensen_ugly_stik_60.json)"),
+	}
 	package.domain.thrust_to_weight = {min = DERIVED_THRUST_RANGE[0], max = DERIVED_THRUST_RANGE[1],
 		reason = "Phoenix-derived propeller; heavy scale models fly from an airborne start below 0.5, extreme 3D electrics reach about 3"}
 	# Phoenix stick expo as OpenRC dual-rate shaping (controls.rates): full travel, expo e of (1 − e)·x + e·x³ fitted
@@ -513,6 +549,39 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 			normal[axis + "_expo"] = _quantity(expo_fit(expo), "1", "derived",
 				SOURCE % "controls" + ": Expo %s %% fitted to OpenRC's (1 − e)·x + e·x³" % String.num(expo, 0))
 		package.rates = {normal = normal}
+	# IAQ T7: Phoenix flaps as OpenRC's hinged trailing-edge law. Phoenix gives the travel, the span, the chord and
+	# percent lift and drag increases at full travel; the law's other inputs are labelled estimates.
+	if block.get("flap") is Dictionary and not (block.flap as Dictionary).is_empty():
+		var flap: Dictionary = block.flap
+		var travel := clampf(float(flap.travel_deg), 5.0, 60.0)
+		var cf := float(flap.chord_fraction)
+		var source := SOURCE % "flaps"
+		# The runtime turns the deflection into a camber shift τ·δ (Glauert plain-flap τ × the viscous gain, at most the
+		# effective-angle limit) and moves the flapped strips' stall by κ of it, so their peak lift rises by
+		# slope·(1 − κ)·shift. Phoenix's Lift_increase is that rise at full travel, in percent of the section peak.
+		var theta := acos(2.0 * cf - 1.0)
+		var shift := deg_to_rad(minf((1.0 - (theta - sin(theta)) / PI) * FLAP_VISCOUS_GAIN * travel, FLAP_EFFECTIVE_LIMIT_DEG))
+		var rise := float(flap.lift_increase) / 100.0 * float(package.envelope.CL_max.value)
+		var kappa := clampf(1.0 - rise / (wing_slope * shift), 0.0, 1.0) if shift > 0.0 else 1.0
+		package.flaps = {
+			max_angle_deg = _quantity(travel, "deg", "borrowed", source + ": Travel"),
+			takeoff_angle_deg = _quantity(0.5 * travel, "deg", "estimated", "Phoenix's three-position flap switch: half travel"),
+			inner_span_fraction = _quantity(float(flap.inner), "1", "borrowed", source + ": inboard end (wing Length less Tip_distance and flap Length)"),
+			outer_span_fraction = _quantity(float(flap.outer), "1", "borrowed", source + ": outboard end (wing Length less Tip_distance)"),
+			hinge_fraction = _quantity(clampf(1.0 - cf, 0.5, 0.95), "1", "borrowed", source + ": 1 − flap chord / local wing chord"),
+			extension_time = _quantity(FLAP_TRAVEL_TIME_S, "s", "estimated", "A slow flap servo's full travel (Phoenix states none)"),
+			retraction_time = _quantity(FLAP_TRAVEL_TIME_S, "s", "estimated", "A slow flap servo's full travel (Phoenix states none)"),
+			elevator_mix_per_flap_fraction = _quantity(0.0, "1", "estimated", "Phoenix mixes no elevator with its flaps"),
+			effective_angle_limit_deg = _quantity(FLAP_EFFECTIVE_LIMIT_DEG, "deg", "estimated",
+				"Plain-flap effective angle before the flap's own flow separates (about 15° for a simple hinge)"),
+			profile_drag_coefficient = _quantity(clampf(0.9 * pow(cf, 1.38) * pow(sin(deg_to_rad(travel)), 2) * float(flap.drag_increase) / 50.0, 0.0, 1.0),
+				"1", "derived", "Raymer's plain-flap profile drag 0.9·cf^1.38·sin²δ at full travel × Phoenix Drag_increase/50 (50 % its default)"),
+			aerodynamic_gain = _quantity(FLAP_VISCOUS_GAIN, "1", "estimated",
+				"Viscous plain-flap effectiveness (the F4U's fitted 0.84 on a similar hinge)"),
+			stall_shift_fraction = _quantity(kappa, "1", "derived",
+				source + ": Lift_increase %s %% of the section peak at full travel → κ = 1 − ΔCLmax/(slope·τ·δ)" % String.num(float(flap.lift_increase), 0)),
+			max_speed_stall_ratio = _quantity(FLAP_MAX_SPEED_STALL_RATIO, "1", "estimated", "Flap limit speed advisory, a multiple of the stall speed"),
+		}
 	# Control power: the surface geometry, times Phoenix's elevator/rudder/aileron tuning.
 	for pair: Array in [["elevator_effectiveness", "elevator"], ["rudder_effectiveness", "rudder"]]:
 		var key: String = pair[0]
@@ -541,6 +610,30 @@ static func _airframe(base: Dictionary, block: Dictionary, id: String) -> Dictio
 				entry.kind = "derived"
 				entry.source = SOURCE % "aileron geometry" + ": " + reason
 	return package
+
+
+## The main wing's first trailing-edge flap: {travel_deg, inner, outer (fractions of the half span from the root),
+## chord_fraction (of the local wing chord at its middle), lift_increase, drag_increase (Phoenix percent)}; {} when none.
+static func _flap(wing: Dictionary, half: float, root: float, tip: float) -> Dictionary:
+	for item: Variant in (wing.get("flaps") if wing.get("flaps") is Array else []):
+		if not item is Dictionary or _num(item.get("is_leading_edge"), 0.0) == 1.0:
+			continue
+		var at := _dict(item.get("attributes"))
+		var travel := _num(at.get("Travel"), 0.0)
+		var length := _num(at.get("Length"), 0.0)
+		var tip_distance := _num(at.get("Tip_distance"), 0.0)
+		var chord := 0.5 * (_num(at.get("Root_Chord"), 0.0) + _num(at.get("Tip_Chord"), 0.0))
+		if not (travel > 0.0 and length > 0.0 and chord > 0.0 and tip_distance >= 0.0 and half > 0.0):
+			continue
+		var outer := clampf((half - tip_distance) / half, 0.0, 1.0)
+		var inner := clampf(outer - length / half, 0.0, 1.0)
+		if outer - inner < 0.02:
+			continue
+		var local := root + (tip - root) * 0.5 * (inner + outer)
+		return {travel_deg = minf(travel, 60.0), inner = inner, outer = outer, chord_fraction = clampf(chord / local, 0.05, 0.5),
+			lift_increase = clampf(_num(at.get("Lift_increase"), 50.0), 0.0, 200.0),
+			drag_increase = clampf(_num(at.get("Drag_increase"), 50.0), 0.0, 200.0)}
+	return {}
 
 
 ## OpenRC's expo e (shape (1 − e)·x + e·x³) closest in least squares on [0, 1] to Phoenix's stick curve

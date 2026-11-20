@@ -50,6 +50,7 @@ var out_dir := ""
 var only: PackedStringArray = []
 var full_traces := false
 var diagnostics := false
+var flap_fraction := 0.0 # --flaps=F: flaps commanded and set to F (0..1 of full travel) from the start of every test
 var v_start := 0.0
 var vs_estimate := 0.0
 var vs := 0.0 # measured power-off stall speed, else the CL_max estimate
@@ -81,6 +82,8 @@ func _initialize() -> void:
 			full_traces = true
 		elif arg == "--diagnostics":
 			diagnostics = true
+		elif arg.begins_with("--flaps="):
+			flap_fraction = clampf(float(arg.substr(8)), 0.0, 1.0)
 	if aircraft_id.is_empty() or out_dir.is_empty():
 		push_error("usage: -- --aircraft=<catalog id> --out=<dir>")
 		quit(2)
@@ -282,6 +285,12 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 		aux[session.gear_aux_index()] = 1.0
 		aux[session.gear_aux_index() + 1] = 1.0
 		session.sim.aux = aux
+	if flap_fraction > 0.0 and session.flaps_available():
+		# IAQ T7: flaps commanded and already at that position from the start (the start trim itself is clean).
+		session._flap_requested = flap_fraction
+		var flap_aux: PackedFloat64Array = session.sim.aux
+		flap_aux[session.flap_aux_index()] = flap_fraction
+		session.sim.aux = flap_aux
 	var sim: Node = session.sim
 	var rec := Recorder.new(sim, session.electrical_state, Callable(session, "mass_properties"))
 	var metadata: Dictionary = { flight_test = VERSION, test = name, aircraft = aircraft_id }
