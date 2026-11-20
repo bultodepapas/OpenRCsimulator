@@ -1,0 +1,251 @@
+{
+  "scope": "headless source/debug functional evidence; no target-GPU qualification",
+  "date": "2026-11-20",
+  "implementation_commit": "89754dd0273330d438cc152c7a7e2eca30088166",
+  "base_git_label_at_freeze": "c2f185294f6b8cad8ef71cb060b129a27c2277f9",
+  "source_digest": "b93082315199e47b90166fe6e4474077a1707f3c35c265687e92f41f734cbc1c",
+  "imported_digest": "7436bf2e48b599950a1c7a437978e2c3a7fae76e973b2299822768a833cd8a87",
+  "documentation_differences_after_freeze": [
+    "tools/godtest/PERFORMANCE_TOUR.md",
+    "tools/godtest/README.md"
+  ],
+  "engine_version": {
+    "build": "official",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "hex": 264192,
+    "major": 4,
+    "minor": 8,
+    "patch": 0,
+    "status": "beta2",
+    "string": "4.8-beta2 (official)",
+    "timestamp": 0
+  },
+  "engine_sha256": [
+    "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  ],
+  "suite_data": "valid",
+  "suite_coverage": "complete",
+  "performance": "not_qualified",
+  "hardware_qualified": false,
+  "python_tests": {
+    "godtest_python": 104,
+    "frame_watch_python": 31,
+    "queue_adapter_python": 5,
+    "queue_contract_python": 21
+  },
+  "python_tests_total": 161,
+  "checked_godot_fixtures": [
+    "GOD_RUNWAY_CIRCUIT_TESTS: 0 failed",
+    "GOD_MENU_SAFETY_TESTS: 0 failed",
+    "GOD_STARTUP_GUARD_TESTS: 0 failed"
+  ],
+  "expected_startup_refusal": {
+    "engine_exit_code": 31,
+    "engine_errors": 0,
+    "engine_warnings": 0,
+    "settings_files_written": false
+  },
+  "cases": [
+    {
+      "case": "001-performance-tour-jensen-das-ugly-stik-60",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "data": "valid",
+      "coverage": "complete",
+      "flight": "completed",
+      "wall_seconds": 136.145937,
+      "backend": "gdscript_reference",
+      "runway_circuit": {
+        "accepted_samples": 4031,
+        "acquired": true,
+        "acquisition_resets": 0,
+        "agl_limits_m": [
+          20.0,
+          140.0
+        ],
+        "center_east_m": 0.0,
+        "center_north_m": 15.0,
+        "clockwise_sweep_rad": 6.283685249365413,
+        "complete": true,
+        "evidence": "accepted NED positions; continuous annulus and signed winding about the runtime runway",
+        "failed": false,
+        "format": "openrc-godtest-runway-circuit-v1",
+        "inner_radius_m": 78.0,
+        "lap_sim_seconds": 42.58333333333333,
+        "maximum_agl_m": 60.416816969586925,
+        "maximum_radius_m": 197.94077791024293,
+        "minimum_agl_m": 51.44184436157487,
+        "minimum_radius_m": 131.94496163594485,
+        "outer_radius_m": 198.0,
+        "quadrants_mask": 15,
+        "reason": "",
+        "runway_enclosing_radius_m": 50.35871324805669,
+        "target_radius_m": 120.0
+      },
+      "menu_phases": [
+        "pause",
+        "menu_settings",
+        "menu_controls",
+        "settings"
+      ],
+      "pause_state_invariants": true,
+      "resume_tick_progress": true,
+      "frame_watch": "complete",
+      "cpu_status": "ok",
+      "gpu_status": "unavailable",
+      "performance": "not_qualified",
+      "engine_exit_code": 0,
+      "forced_shutdown": false,
+      "engine_errors": 0,
+      "leaked_objects": 0,
+      "frozen_source_changed": false,
+      "engine_changed": [],
+      "artifact_sha256": {
+        "runtime.json": "3b30802597a9d8222f33a06f857368f17df40aea34a4ae565395fe59c248d99f",
+        "execution.json": "92f7a65234ef45439ba08a57a093e70ac2735ab69ea6851fa53c6c8fdf77f2e2",
+        "frametimes.json": "16b5dfc34d5998705293496c235c228ab017efa5dabb77c76df8ac194301d462",
+        "report.json": "6684defd595db44b37e108691d70201098cc8d9246557eea287dbdab07c554ba",
+        "resources.json": "2e694ac5cea540473a79bad99fe54ef151810393833eca07867fd4a090e48349",
+        "gpu.json": "ba46fb102f0db001217aacdb6f9380ee3896f5ee04d75fd797e4f28ae51025ef",
+        "frame-watch/watch.json": "c5bc1be4c66a3cc44931ae32778eb396f08b5d0c7af7a0395fc09ffcf04d3b6b"
+      },
+      "frame_stream_sha256": "5e0ffc3a37a5afa3e85942f9108ea50c609d01068d86530b3d9452455c0d9c43"
+    },
+    {
+      "case": "002-performance-tour-sebart-avanti-s-a200-p100rx",
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "data": "valid",
+      "coverage": "complete",
+      "flight": "completed",
+      "wall_seconds": 221.675469,
+      "backend": "gdscript_reference",
+      "runway_circuit": {
+        "accepted_samples": 9362,
+        "acquired": true,
+        "acquisition_resets": 1,
+        "agl_limits_m": [
+          20.0,
+          140.0
+        ],
+        "center_east_m": 0.0,
+        "center_north_m": 15.0,
+        "clockwise_sweep_rad": 6.283803453960875,
+        "complete": true,
+        "evidence": "accepted NED positions; continuous annulus and signed winding about the runtime runway",
+        "failed": false,
+        "format": "openrc-godtest-runway-circuit-v1",
+        "inner_radius_m": 570.7914903478434,
+        "lap_sim_seconds": 114.63333333333333,
+        "maximum_agl_m": 66.65668597588225,
+        "maximum_radius_m": 1448.6009932925867,
+        "minimum_agl_m": 52.524794003099494,
+        "minimum_radius_m": 959.8517931903914,
+        "outer_radius_m": 1448.9322447291406,
+        "quadrants_mask": 15,
+        "reason": "",
+        "runway_enclosing_radius_m": 50.35871324805669,
+        "target_radius_m": 878.1407543812974
+      },
+      "menu_phases": [
+        "pause",
+        "menu_settings",
+        "menu_controls",
+        "settings"
+      ],
+      "pause_state_invariants": true,
+      "resume_tick_progress": true,
+      "frame_watch": "complete",
+      "cpu_status": "ok",
+      "gpu_status": "unavailable",
+      "performance": "not_qualified",
+      "engine_exit_code": 0,
+      "forced_shutdown": false,
+      "engine_errors": 0,
+      "leaked_objects": 0,
+      "frozen_source_changed": false,
+      "engine_changed": [],
+      "artifact_sha256": {
+        "runtime.json": "5b833b19c1259e76569f3a7db3fcd0a106818ca0c63bfe3c81a0486e701f5a94",
+        "execution.json": "bb034dead77ac649badc537a74add7e3d9fef7e519798dc53d29d06e36d9106b",
+        "frametimes.json": "f2b7cae0d07fe4ff9d3eed018c44bed0a97065ad11b766067000342dd1a7fc0c",
+        "report.json": "9f6180f85a53b3ce67ea590a322a0583aeff083841615c55851eaaaa7a4fd786",
+        "resources.json": "19fd30af0680f5620f63641aad684aeeae3375c3c3d897a6b41d0859034b68b8",
+        "gpu.json": "898b14f929df55a620bd4c198f148dd42672cd26ca0f744812c9fc72e4268555",
+        "frame-watch/watch.json": "aa5708b85386d1cd31d3f08d4ae8e40c037e1867e2cb33205d37be5fd082b615"
+      },
+      "frame_stream_sha256": "79b31c9ab6b927e3600bab72ea605f916424a964a00b008a414571680c29cff3"
+    },
+    {
+      "case": "003-performance-tour-f4u-corsair-250",
+      "aircraft": "f4u-corsair-250",
+      "data": "valid",
+      "coverage": "complete",
+      "flight": "completed",
+      "wall_seconds": 207.731747,
+      "backend": "gdscript_reference",
+      "runway_circuit": {
+        "accepted_samples": 8185,
+        "acquired": true,
+        "acquisition_resets": 1,
+        "agl_limits_m": [
+          20.0,
+          140.0
+        ],
+        "center_east_m": 0.0,
+        "center_north_m": 15.0,
+        "clockwise_sweep_rad": 6.283607668808463,
+        "complete": true,
+        "evidence": "accepted NED positions; continuous annulus and signed winding about the runtime runway",
+        "failed": false,
+        "format": "openrc-godtest-runway-circuit-v1",
+        "inner_radius_m": 443.3710391976782,
+        "lap_sim_seconds": 97.75,
+        "maximum_agl_m": 48.2549059454268,
+        "maximum_radius_m": 1004.0703469211417,
+        "minimum_agl_m": 20.032646765937162,
+        "minimum_radius_m": 735.0510441821348,
+        "outer_radius_m": 1125.4803302710293,
+        "quadrants_mask": 15,
+        "reason": "",
+        "runway_enclosing_radius_m": 50.35871324805669,
+        "target_radius_m": 682.1092910733511
+      },
+      "menu_phases": [
+        "pause",
+        "menu_settings",
+        "menu_controls",
+        "settings"
+      ],
+      "pause_state_invariants": true,
+      "resume_tick_progress": true,
+      "frame_watch": "complete",
+      "cpu_status": "ok",
+      "gpu_status": "unavailable",
+      "performance": "not_qualified",
+      "engine_exit_code": 0,
+      "forced_shutdown": false,
+      "engine_errors": 0,
+      "leaked_objects": 0,
+      "frozen_source_changed": false,
+      "engine_changed": [],
+      "artifact_sha256": {
+        "runtime.json": "826c3bce7608979bc888e567281bc88a168d8d9f964bba50c73334e929e24a5b",
+        "execution.json": "6e6ef18d30944ca128f6abe2f4de4d8632cf8f2923414053ed520ac89f91d775",
+        "frametimes.json": "cee7882512d4c9b9df81bd8eb5e2ef1add74a2105bb4814b67c928f601a1b938",
+        "report.json": "d2e8e75cf6dc59a48ad1278a87e176a7d3465ffa32d962e13c64878ac77ea117",
+        "resources.json": "82269738cf2f6a6ad884176e3b430ed5b09d1bf39cfcfae4bc2c24554501ee5f",
+        "gpu.json": "13d45e2656bf9d0f01722dd2c603ab005ae03bd812e945b7215abf17805f4674",
+        "frame-watch/watch.json": "28026bf3aab2f2a61859a229f9b021486917172f57cf0e2405c1a24dcd4f2dbf"
+      },
+      "frame_stream_sha256": "82e329a2fa2e66b91bac6cbe13e0c855456d22c2578db62bf982208c57a6db9f"
+    }
+  ],
+  "suite_observations": [
+    "case 1 0-0-startup: loading-time screen target missed; investigate the recorded transition separately",
+    "case 1 0-4-loading: loading-time screen target missed; investigate the recorded transition separately",
+    "case 2 0-0-startup: loading-time screen target missed; investigate the recorded transition separately",
+    "case 2 0-4-loading: loading-time screen target missed; investigate the recorded transition separately",
+    "case 3 0-0-startup: loading-time screen target missed; investigate the recorded transition separately",
+    "case 3 0-4-loading: loading-time screen target missed; investigate the recorded transition separately"
+  ],
+  "retained_output": "tmp/three-aircraft-functional-final/"
+}
