@@ -220,9 +220,6 @@ func _prepare_stage_backend(time_now: float) -> void:
  _detach_stage_backend()
  stage_backend_error=""
  if _stage_backend_requested!=NativeStage.BACKEND_NATIVE or not _ready_to_fly: return
- if not environment.lake.is_empty():
-  stage_backend_error="native helicopter terrain does not support lakes; using gdscript_reference"
-  return
  var previous: Callable=sim.model.pre_tick
  _native_previous_pre_tick=previous
  sim.model.pre_tick=Callable(self,"_kernel_pre_step")
@@ -246,7 +243,7 @@ func _prepare_stage_backend(time_now: float) -> void:
 ## Tick controls and lifecycle are sampled once; native RK stages query only
 ## their prepared weather and the immutable state handed over at this boundary.
 func _kernel_pre_step(aux: PackedFloat64Array,inputs: PackedFloat64Array,dt: float) -> PackedFloat64Array:
- if _native_stage==null or not environment.lake.is_empty() or not _native_stage.configuration_matches(self):
+ if _native_stage==null or not _native_stage.configuration_matches(self):
   stage_backend_error="native prepared configuration changed; reset required"
   return PackedFloat64Array()
  var next: Variant=_native_previous_pre_tick.call(aux,inputs,dt) if _native_previous_pre_tick.is_valid() else aux
@@ -467,10 +464,12 @@ func lake_context() -> Dictionary:
 ## Contact with water is unsupported. Bound each hull part and rotor by a swept
 ## sphere and compare with the actual shoreline, including the maximum wave.
 ## Bounding spheres may refuse nearby dry points; they never produce flotation.
-func _water_contact_possible(previous: PackedFloat64Array,current: PackedFloat64Array) -> bool:
+## lake_validated: the native gated stage skips the per-call definition scan; its lake was validated at
+## preparation and the native configuration guard fails closed if it changes (same outcome as a fresh check).
+func _water_contact_possible(previous: PackedFloat64Array,current: PackedFloat64Array,lake_validated: bool=false) -> bool:
  if environment.lake.is_empty(): return false
  if previous.size()<13 or current.size()<13 or not _impact_geometry.get("ok",false) \
- or not LakeSurface.is_valid_definition(environment.lake): return true
+ or (not lake_validated and not LakeSurface.is_valid_definition(environment.lake)): return true
  var lake: Dictionary=environment.lake
  var overall_reach: float=float(_impact_geometry.max_reach_m)+0.5*maxf(0.0, \
   maxf(float(aircraft.context.main_model.get("blade_chord_m",0.0)),float(aircraft.context.tail_model.get("blade_chord_m",0.0))))
@@ -770,6 +769,15 @@ func _reset_impl() -> bool:
   sim.set_paused(true)
   pause_reason="Restart ready. Release controls and review collective before continuing."
  return _ready_to_fly
+
+## Native RK stage behind the reference stage's water-contact refusal (see _stage), installed by NativeStage only
+## when a lake is published. The refusal, its message and its order before the skids match the reference.
+func _native_gated_stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float,native_stage: Callable) -> Dictionary:
+ if _water_contact_possible(body,body,true):
+  _stage_failure="Helicopter water contact is unsupported; the candidate stage was refused."
+  return {}
+ var out: Dictionary=native_stage.call(body,continuous,t)
+ return out
 
 func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) -> Dictionary:
  var state: PackedFloat64Array=body.duplicate()

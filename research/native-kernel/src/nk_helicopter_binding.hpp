@@ -17,6 +17,7 @@
 
 #include "nk_helicopter_stage.hpp"
 #include "nk_weather_binding.hpp" // prepare-time dictionary/array validation utilities
+#include "nk_lake_decode.hpp"
 
 namespace nk {
 
@@ -322,16 +323,20 @@ public:
 		last_failure_.clear();
 		WeatherSnapshotDecoder dec;
 		godot::String format;
-		godot::Dictionary context, skids;
-		if (!dec.keys(snapshot, "helicopter snapshot", {"format", "context", "skids", "surfaces"}) || snapshot.size() != 4 ||
-			!dec.string(snapshot, "format", format) || format != godot::String("openrc-nk3-helicopter-snapshot-v1") ||
-			!dec.dictionary(snapshot, "context", context) || !dec.dictionary(snapshot, "skids", skids)) return failure(dec.error.empty() ? "invalid helicopter snapshot" : dec.error);
+		godot::Dictionary context, skids, lake;
+		// v2 (native helicopter lakes): the prepared lake travels with the snapshot; {} is the lake-free path.
+		if (!dec.keys(snapshot, "helicopter snapshot", {"format", "context", "skids", "surfaces", "lake"}) || snapshot.size() != 5 ||
+			!dec.string(snapshot, "format", format) || format != godot::String("openrc-nk3-helicopter-snapshot-v2") ||
+			!dec.dictionary(snapshot, "context", context) || !dec.dictionary(snapshot, "skids", skids) ||
+			!dec.dictionary(snapshot, "lake", lake)) return failure(dec.error.empty() ? "invalid helicopter snapshot" : dec.error);
 		if (!snapshot.has("surfaces") || snapshot["surfaces"].get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return failure("missing helicopter surface table");
 		const godot::PackedFloat64Array surfaces = snapshot["surfaces"];
 		HeliStageModel candidate;
 		if (!surfaces.is_empty()) candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = surface_table_is_valid(candidate.surfaces.values);
-		if (!candidate.surfaces.valid || !heli_decode_context(dec, context, candidate) || !heli_decode_skids(dec, skids, candidate.skids)) {
+		KernelLakeDecoder<WeatherSnapshotDecoder> lake_decoder{dec};
+		if (!candidate.surfaces.valid || !heli_decode_context(dec, context, candidate) || !heli_decode_skids(dec, skids, candidate.skids) ||
+			!decode_lake_prepared(lake_decoder, lake, candidate.lake)) {
 			return failure(dec.error.empty() ? "invalid helicopter surface table" : dec.error);
 		}
 		model_ = std::move(candidate);

@@ -204,35 +204,31 @@ def check_helicopter_routes(engine: Path, project: Path | None, missing_engine: 
 
 
 def check_helicopter_default_lake(engine: Path, project: Path | None, output: Path, common: list[str]) -> None:
-    # Club is the default field and publishes its lake by default. Keep the native request:
-    # it must refuse unsupported lake terrain, then match an explicit reference flight.
+    # Club is the default field and publishes its lake by default. The native helicopter now carries the lake
+    # (snapshot v2, lake-gated stage): the default request runs native and must match an explicit reference flight.
     lake_results = {}
     with default_lake_environment():
-        for name, extra in (("fallback", []), ("reference", ["--physics-backend=gdscript_reference"])):
+        for name, extra in (("native", []), ("reference", ["--physics-backend=gdscript_reference"])):
             trace = output / f"helicopter-default-lake-{name}.csv"
             _, log = run_case(engine, project, output, f"helicopter-default-lake-{name}",
                               common + ["--aircraft=xcell-60-research", "--start=airborne",
                                         f"--trace={trace}"] + extra)
             actual = status(log)
-            expected_status = {
-                "requested": "native" if name == "fallback" else "gdscript_reference",
-                "identity": {"backend": "gdscript_reference"},
-                "reason": "native helicopter terrain does not support lakes; using gdscript_reference"
-                if name == "fallback" else "",
-            }
-            if actual != expected_status:
+            expected_backend = "native" if name == "native" else "gdscript_reference"
+            if actual.get("requested") != ("native" if name == "native" else "gdscript_reference") \
+                    or actual.get("identity", {}).get("backend") != expected_backend or actual.get("reason") != "":
                 raise AssertionError(f"helicopter default-lake {name} selected the wrong backend: {actual}")
             metadata, rows = trace_parts(trace)
             lake = json.loads(metadata.get("lake_identity", "null"))
             pad = json.loads(metadata.get("pad", "null"))
             if not isinstance(lake, str) or len(lake) != 64 or any(c not in "0123456789abcdef" for c in lake) \
                     or not isinstance(pad, dict) or pad.get("id") != "default-helicopter-pad" \
-                    or "stage_backend" in metadata:
+                    or ("stage_backend" in metadata) != (expected_backend == "native"):
                 raise AssertionError(f"helicopter default-lake {name} trace has wrong terrain or backend metadata")
             lake_results[name] = (lake, rows)
-    if lake_results["fallback"] != lake_results["reference"]:
-        raise AssertionError("default-lake helicopter fallback and reference traces differ")
-    print("PASS helicopter default-lake fallback matches explicit reference", flush=True)
+    if lake_results["native"] != lake_results["reference"]:
+        raise AssertionError("default-lake helicopter native and reference traces differ")
+    print("PASS helicopter default-lake native matches explicit reference", flush=True)
 
 
 def check(engine: Path, project: Path | None, output: Path) -> None:

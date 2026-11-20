@@ -22,7 +22,7 @@ struct HeliSkidResult {
 };
 
 inline HeliSkidResult heli_skids(const R *state, const HeliSkidModel &cfg, const SurfaceTable &surfaces,
-		const std::array<R, 8> *bristles) {
+		const LakeTerrain &lake, const std::array<R, 8> *bristles) {
 	HeliSkidResult out;
 	if (bristles != nullptr) {
 		for (const R value : *bristles) {
@@ -43,12 +43,15 @@ inline HeliSkidResult heli_skids(const R *state, const HeliSkidModel &cfg, const
 	const R norm_q = sqrt_(state[6] * state[6] + state[7] * state[7] + state[8] * state[8] + state[9] * state[9]);
 	const R q[4] = {state[6] / norm_q, state[7] / norm_q, state[8] / norm_q, state[9] / norm_q};
 	const R inverse[4] = {q[0], -q[1], -q[2], -q[3]};
-	static const LakeTerrain no_lake;
 	for (int point_index = 0; point_index < 4; ++point_index) {
 		const int i = point_index * 3;
 		const Vec3 arm = {cfg.points_body_frd_m[i], cfg.points_body_frd_m[i + 1], cfg.points_body_frd_m[i + 2]};
 		const Vec3 offset = q_rotate3(q, arm.data());
-		const Vec3 terrain = terrain_sample_validated(state[0] + offset[0], state[1] + offset[1], surfaces, no_lake);
+		const Vec3 terrain = terrain_sample_validated(state[0] + offset[0], state[1] + offset[1], surfaces, lake);
+		// skid_contact.gd: a nonfinite terrain sample refuses the evaluation (reachable through a composed lake).
+		if (!is_finite(terrain[0]) || !is_finite(terrain[1]) || !is_finite(terrain[2])) {
+			return {};
+		}
 		const R norm = sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2]);
 		const Vec3 up = {-terrain[1] / norm, -terrain[2] / norm, -1.0 / norm};
 		const Vec3 normal = q_rotate3(inverse, up.data());
@@ -77,6 +80,7 @@ inline HeliSkidResult heli_skids(const R *state, const HeliSkidModel &cfg, const
 			surface_index = wheel_surface_at(surfaces.values, world_north, world_east);
 			flat_rotorpad = surface_index + 5 < surfaces.values.size()
 				&& surfaces.values[surface_index + 5] == kRollingRotorpad
+				&& (!lake.present || absf(terrain[0]) <= 1.0e-12) // skid_contact.gd _is_flat_rotorpad
 				&& absf(terrain[1]) <= 1.0e-12 && absf(terrain[2]) <= 1.0e-12;
 		}
 		Vec3 tangent_force_body = {0.0, 0.0, 0.0};
