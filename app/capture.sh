@@ -73,8 +73,10 @@ trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE
 start_phase setup
 GODOT="$("$HERE/get-godot.sh")"
 case "${OPENRC_CAPTURE_RENDERER:-compatibility}" in
-  compatibility) RENDER_ARGS=(--rendering-driver opengl3) ;;
-  mobile|forward_plus) RENDER_ARGS=(--rendering-method "$OPENRC_CAPTURE_RENDERER" --rendering-driver vulkan) ;;
+  compatibility) RENDER_ARGS=(--rendering-driver opengl3); EXTRA_TIMEOUT=0 ;;
+  # lavapipe compiles every Vulkan pipeline on the CPU at first use: a cold first shot took 51-55 s on a fast host.
+  mobile|forward_plus) RENDER_ARGS=(--rendering-method "$OPENRC_CAPTURE_RENDERER" --rendering-driver vulkan)
+    EXTRA_TIMEOUT=540 ;;
   *) echo "OPENRC_CAPTURE_RENDERER must be compatibility, mobile or forward_plus" >&2; exit 2 ;;
 esac
 if [[ -n "$RUN_ID" ]]; then
@@ -118,7 +120,8 @@ shot() { # shot <file suffix> <user args...>
     counters="$CAPTURES/field/landscape-counters.txt"
     entry=()
   fi
-  "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" -- \
+  "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" \
+    --timeout "$((60 + EXTRA_TIMEOUT))" -- \
     xvfb-run -a -s "-screen 0 1280x720x24" \
     "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
   sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "${out%.png}.log" >> "$counters"
@@ -160,7 +163,7 @@ shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
 SUN_ALIGNMENT="$CAPTURES/sun-alignment"
 mkdir -p "$SUN_ALIGNMENT"
 rm -f "$SUN_ALIGNMENT/sun_alignment.png" "$SUN_ALIGNMENT/report.json"
-if ! timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" \
+if ! timeout "$((120 + EXTRA_TIMEOUT))" xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" \
   "${RENDER_ARGS[@]}" --audio-driver Dummy --script res://tests/capture_landscape_upgrade.gd \
   -- --out="$SUN_ALIGNMENT" --cases=sun_alignment > "$SUN_ALIGNMENT/run.log" 2>&1 \
   || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$SUN_ALIGNMENT/run.log"; then
@@ -191,6 +194,7 @@ for lang in en es; do
     # The old 60 s bound expired on CI; a Linux/Xvfb pause run took 76.65 s.
     ui_timeout=60
     if [[ "$screen" == pause || "$screen" == hint ]]; then ui_timeout=120; fi
+    ui_timeout=$((ui_timeout + EXTRA_TIMEOUT))
     "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" --timeout "$ui_timeout" -- \
       xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" "${RENDER_ARGS[@]}" --audio-driver Dummy \
       --script res://tests/capture_ui.gd -- --out="$out" --lang="$lang" --screen="$screen"
@@ -239,7 +243,7 @@ record_check quality:tests
 record_check quality:cases
 # FW-62-R1: the night kit must add light, retain its underside cue, and stay bounded under camera zoom.
 mkdir -p "$CAPTURES/aircraft-lights"
-if ! timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$HERE" \
+if ! timeout "$((120 + EXTRA_TIMEOUT))" xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$HERE" \
   "${RENDER_ARGS[@]}" --audio-driver Dummy --script res://tests/capture_aircraft_lights.gd \
   -- --out="$CAPTURES/aircraft-lights" > "$CAPTURES/aircraft-lights/run.log" 2>&1 \
   || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$CAPTURES/aircraft-lights/run.log"; then
