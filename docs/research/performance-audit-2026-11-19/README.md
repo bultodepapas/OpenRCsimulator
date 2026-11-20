@@ -19,6 +19,28 @@ This report contains **35 findings and review items**: **4 reproduced defects**,
 
 P1 means correctness/decision repair first, **not** a measured frequency or catastrophic-risk rating. P2 means the next targeted investigation; P3 means a conditional/lower-priority candidate or a policy decision. Audit-local F01–F35 identifiers do not create a new project step namespace.
 
+## Resolution status (2026-11-19)
+
+Repairs landed in [`d736ee8a2`](https://github.com/bultodepapas/OpenRCsimulator/commit/d736ee8a2eab0b59b0fa2c561a1eef07f5fae396). Each was reproduced before the change and has a regression test that fails on the pre-fix source (mutation check). Every check below is headless, on Godot 4.8-beta2 Windows x86_64, except F31. None of them measures a speedup.
+
+| ID | Status | Change and evidence |
+| --- | --- | --- |
+| F01 | Fixed | `resource_event_step.gd`: an internal crossing seen only in the stage samples halves the step before any endpoint root is located. Before the boundary is committed, any surface that was enabled at the start of the segment and is already past zero beyond its tolerance causes a retry up to the earliest root, so a crossing between samples is not dropped. Several roots of one surface between samples remain undetectable by design. `test_resource_event_step`: 90 checks, 0 failed; 12 fail on the old solver. All 30 `test_glow_*` suites pass. |
+| F02 | Fixed (+ lake) | The solver sorts by exact time, takes the tie set relative to the earliest root, and keeps the existing priority-first boundary inside it. Coincident rotor stop and fuel exhaustion still fire in priority order (`test_glow_counter_edges`). Scenery and lake collision (the same pattern) select through an anchored window. The six probe permutations all give A, B, C. `test_collision_tie_order`: 17 checks. The 339-check landscape collision oracle and 16 collision suites pass. |
+| F03 | Fixed | `AirshipSession.restore_checkpoint` validates with the kernel's side-effect-free `prepare_reset()` before `resetting`, live arrays, fault or pause change. In `test_airship_flight_log`, a refused restore leaves the recorder, state, clock, tape and pause untouched, and 5 checks fail on the old code. |
+| F04 | Fixed | Verdicts store output (window) pixels. Format 4 discards format 3 logical-canvas records once. The 1080p, 1440p and 4K UI-scale cases are in `test_auto_calibration`. |
+| F05 | Fixed | `AutoCalibration.rejects_high()` is one-sided. A High miss measured at more than 1.5× the screen's pixels is ignored, while a miss in a 1080p window still holds on a 4K screen. |
+| F06 | Fixed in source | The Retina estimate uses the root viewport's applied 3D scale; `auto_mode` is used only before reconstruction is applied. This still needs native Mac Retina evidence. |
+| F07 | Fixed (scale, MSAA) | Verdicts record internal 3D pixels and 3D MSAA. A change in either measures again. Other settings are not part of the identity, by design. |
+| F08 | Fixed | SubViewport activity is checked every sampled frame. One tree scan at the start plus `node_added` keeps a cached list, so no frame pays a full scan. |
+| F09 | Unchanged (policy) | No retry budget was added. |
+| F10 | Documented | The quantile convention is documented at `AutoCalibration._p95`; the behaviour is unchanged. |
+| F28 | Fixed | `apply_sky` retargets every slot before any admission or eviction. For [A,B,C,D] to [E,A,B,C], bakes and evictions drop from 4 and 4 to 1 and 1. `test_cloud_shadow_reorder`: 16 checks; 13 fail on the old cache. |
+| F31 | Fixed | A layer with exactly zero opacity skips its density and relief work while keeping the composite's density rounding. Rendered 640×360 sky hashes were identical before and after on Compatibility and Forward+ (Windows, RTX 3090), for mixed, all-zero, zero-density and opaque decks. The GPU saving is not measured. |
+| F11–F27, F29, F30, F32–F35 | Open | These are measurement-gated candidates, a measurement gap and a renderer constraint, as classified above. F25 and F26 change native-mirrored sources (`aero.gd`, wind), which requires native requalification. The rest need complete-workload profiling or hardware, audio or visual acceptance under their owning tracks. |
+
+Solver identity: the edits to `app/physics` and `app/sim` renew the AI-companion qualification pin (AFC-02-R3 re-bind). None of the edited files is a native-kernel mirrored source, so native admission is unchanged. `test_scenery_destruction_runtime` (5 of 8 failing) fails identically on the pre-fix sources and is unrelated. The [reproduction runner](../../../research/performance/audit-2026-11-19/README.md) stays pinned to the audited baseline, and it refuses the repaired sources by design.
+
 ## Scope, source identity and limits
 
 The baseline is main at `894357de8376` (2026-11-19), obtained from the public GitHub repository and checked out into an isolated source-only branch. The inventory has **52,035 tracked files**, **2,016 app GDScript files** (1,195 under `app/tests/`), **95 app shader/include files**, and **54 C++/header files** under the native-kernel core. These counts describe scope, not exhaustive review.
