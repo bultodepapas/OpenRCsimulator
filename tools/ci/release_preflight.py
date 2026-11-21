@@ -44,7 +44,7 @@ def godot_uid_sidecars(root):
                git(root, "ls-files", "-z", "--", "app/").stdout.split(b"\0") if name}
     invalid = []
     for name in sorted(tracked):
-        if not name.endswith((".gd", ".gdshader")):
+        if not name.endswith((".gd", ".gdshader", ".gdshaderinc")):
             continue
         sidecar = name + ".uid"
         path = root / sidecar
