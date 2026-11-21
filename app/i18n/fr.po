@@ -14735,3 +14735,21 @@ msgstr "Le train d’atterrissage Phoenix sert aux départs sur piste. Un train 
 
 msgid "Needs no landing gear"
 msgstr "Seulement sans train d’atterrissage"
+
+msgid "Fly calibrated runway"
+msgstr "Décoller de la piste calibrée"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Vol expérimental par vent calme. La piste, le point de départ et le terrain sont estimés."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Vol expérimental prêt. La piste, le point de départ et le terrain sont estimés."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Le paysage installé n’a pas pu être vérifié pour le vol."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Choisissez un avion qui peut décoller d’une piste."
+
+msgid "Preparing panorama"
+msgstr "Préparation du panorama"

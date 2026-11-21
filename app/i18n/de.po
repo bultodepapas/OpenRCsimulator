@@ -14708,3 +14708,21 @@ msgstr "Das Phoenix-Fahrwerk wird für Pistenstarts verwendet. Einziehfahrwerk b
 
 msgid "Needs no landing gear"
 msgstr "Nur ohne Fahrwerk"
+
+msgid "Fly calibrated runway"
+msgstr "Von kalibrierter Piste starten"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Experimenteller Flug bei Windstille mit geschätzter Piste, Startposition und Geländeform."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Experimenteller Flug bereit. Piste, Startposition und Gelände sind geschätzt."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Die installierte Szenerie konnte für den Flug nicht überprüft werden."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Wähle ein Flugzeug, das von einer Piste starten kann."
+
+msgid "Preparing panorama"
+msgstr "Panorama wird vorbereitet"
