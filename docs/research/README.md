@@ -11,6 +11,15 @@
 
 Some tools use local-only material from `references/`; their reports say when a fresh clone cannot reproduce the original measurement. Commit the resulting evidence and source identity, not private reference files.
 
+## Electric ducted fan investigation
+
+[EDF-00, 2026-11-21](edf-propulsion/README.md) investigates an EDF sibling of the
+existing Vantage Jet / SebArt Avanti S A200, with 128 mm, 152 mm and oversized
+195 mm fan cases. It records primary sources, force/torque/energy contracts,
+eleven source and integration findings, reproducible sizing arithmetic and a
+validation matrix. The [EDF plan](../plans/edf-propulsion.md) owns implementation
+steps and pending gates; no EDF runtime or physical qualification is delivered.
+
 ## Sources, data and conversions
 
 | Need | Authoritative collection |
