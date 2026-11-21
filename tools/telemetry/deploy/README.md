@@ -47,9 +47,9 @@ cat /var/lib/openrc-stats/www/health.json   # status ok | degraded | stale | err
 journalctl -u openrc-stats-build -n 50
 ```
 
-`health.json` includes the last build time, receiver snapshot age and critical receiver alerts, plus timestamps and status per GitHub and GA4 source. A missing, failed or stale source degrades the report. A malformed receiver snapshot or failed build reports an error and keeps the previous HTML. The CT build units use one lock across collection and publication.
+`health.json` includes the last build time, receiver snapshot age and critical receiver alerts, plus timestamps and status per GitHub and GA4 source. A missing, failed or stale source degrades the report. Invalid inputs and failed renders keep the previous HTML. A failed health write rolls back the page and is also detectable by the external clock check. For production builds use the two systemd units, which share one lock across collection and publication.
 
-Set `OPENRC_STATS_HEALTH_URL` in `/etc/openrc-stats-health.env` on a host that can reach the private URL. Enable `openrc-stats-health.timer`. The check fails when HTTPS is unavailable, the served build is older than two hours, or a source is unhealthy. A monitor that only matches a keyword cannot detect a stopped generator. Use a second physical host to detect loss of Proxmox itself.
+Set `OPENRC_STATS_HEALTH_URL` in `/etc/openrc-stats-health.env` on a host that can reach the private URL. With no tailnet DNS on that host, also set `OPENRC_STATS_HEALTH_OPTIONS="--resolve-address <dashboard-tailnet-IP>"` (requires curl and retains TLS hostname verification). Enable `openrc-stats-health.timer`. The unit fails when HTTPS is unavailable, the served build is older than two hours, or a source is unhealthy. A monitor that only matches a keyword cannot detect a stopped generator. Use a second physical host to detect loss of Proxmox itself and route the failed unit to the operator's monitoring channel.
 
 Run the daily SQLite backup before pulling it to a second host. A missing or invalid archive fails the task and leaves existing backups in place. For example, run the pull script on the operator workstation with an existing trusted key and an operator-only destination outside the repository:
 

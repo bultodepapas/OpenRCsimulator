@@ -373,6 +373,30 @@ class DashboardCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "required source"):
             check_dashboard_health.check(report, now, 7200)
 
+    def test_freshness_uses_build_clock_after_receiver_capture(self):
+        stamp = dashboard.utc_stamp(NOW + 15 * 60)
+        data = {"generated_unix": NOW, "github": {"collected_utc": stamp}}
+        with unittest.mock.patch.object(dashboard.time, "time", return_value=NOW + 16 * 60):
+            self.assertIn("<b>GitHub downloads</b> collected with this snapshot", dashboard.freshness_strip(data))
+
+    def test_failed_health_publication_rolls_back_page(self):
+        www = self.dir / "www"
+        www.mkdir()
+        index = www / "index.html"
+        index.write_text("previous")
+        write = dashboard.write_atomic
+
+        def fail_health(path, value):
+            if path.name == "health.json":
+                raise OSError("cannot replace the report")
+            write(path, value)
+
+        with unittest.mock.patch.object(dashboard, "write_atomic", side_effect=fail_health):
+            with self.assertRaisesRegex(OSError, "cannot replace"):
+                dashboard.publish_page(www, "candidate", {"status": "ok"})
+        self.assertEqual(index.read_text(), "previous")
+        self.assertEqual(list(www.iterdir()), [index])
+
     def test_backup_requires_and_restores_archive(self):
         archive, copies = self.dir / "archive", self.dir / "copies"
         with unittest.mock.patch("sys.stdout"), unittest.mock.patch("sys.stderr"):

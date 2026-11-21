@@ -882,7 +882,7 @@ def collected_text(age):
 
 def freshness_strip(snapshot):
     """One chip per data source: is each number on this page current?"""
-    now = snapshot["generated_unix"]
+    now = max(time.time(), snapshot["generated_unix"])
     chips = [("good", "Receiver", "snapshot of this page")]
     model, website = snapshot.get("github"), snapshot.get("website")
     sources = github_health(model, now)
@@ -1513,6 +1513,8 @@ def render(snapshot):
                 f'<h2>Daily rollup coverage</h2><p class="sub">Insight cells per release and UTC day; a day becomes '
                 f'eligible at 01:00 UTC the next day and expires 47 h after it starts</p>'
                 f'<div class="panel">{coverage_grid(rows, releases, cells, day_state)}</div>')
+    if "legacy" in (snapshot.get("rollup_days") or {}).values():
+        receiver += '<p class="note">Legacy rows predate whole-day rollup verification.</p>'
     panels = {
         "overview": overview_section(snapshot, rows, alert_items),
         "players": players_section(snapshot, insight_html),
@@ -1577,6 +1579,24 @@ def write_atomic(path, text, mode=0o644):
         os.replace(tmp, path)
     finally:
         tmp.unlink(missing_ok=True)
+
+
+def publish_page(www, page, report):
+    """Keep the previous HTML if publishing the new health report fails."""
+    index = www / "index.html"
+    with tempfile.TemporaryDirectory(prefix=".publish-", dir=www) as directory:
+        previous = Path(directory) / "index.html"
+        if index.exists():
+            os.link(index, previous)
+        write_atomic(index, page)
+        try:
+            write_atomic(www / "health.json", json.dumps(report, indent=1))
+        except OSError:
+            if previous.exists():
+                os.replace(previous, index)
+            else:
+                index.unlink(missing_ok=True)
+            raise
 
 
 def utc_stamp(now):
@@ -1707,15 +1727,16 @@ def build(args):
             page = render(snapshot)
             report = health(snapshot, time.time(), args.receiver_max_age, note, problems, no_ga4=args.no_ga4)
             write_atomic(combined_path, json.dumps(snapshot, indent=1, sort_keys=True), mode=0o600)
-            write_atomic(www / "index.html", page)
+            publish_page(www, page, report)
+            print(json.dumps(report))
+            return 0
         except (OSError, ValueError, KeyError, TypeError, AttributeError, OverflowError) as error:
             print(f"dashboard build failed: {error!r}", file=sys.stderr)
             problems.append(f"dashboard build failed: {type(error).__name__}")
-    if snapshot is None or problems:
-        report = health(None, time.time(), args.receiver_max_age, note, problems, no_ga4=args.no_ga4)
+    report = health(None, time.time(), args.receiver_max_age, note, problems, no_ga4=args.no_ga4)
     write_atomic(www / "health.json", json.dumps(report, indent=1))
     print(json.dumps(report))
-    return 0 if report["status"] in ("ok", "degraded", "stale") else 1
+    return 1
 
 
 def default_out():
