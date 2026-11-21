@@ -1,0 +1,520 @@
+{
+  "format": "openrc-a36-r5-evidence v1",
+  "reviewed_commit": "136b32e585dc84293b81fc036a81530a04da5397",
+  "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "base_manifest_sha256": "9b9257242b8873d0045df0abf41aa13ca62dccc6b0a5a925683869152367b9be",
+  "base_dependency_count": 432,
+  "total_dependency_count": 439,
+  "extra_dependencies": [
+    {
+      "path": "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+      "bytes": 24511,
+      "git_blob_sha1": "346cfba5f7fa618e206bae30fa3886e7bc181a5f",
+      "fixture_sha256": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json",
+      "bytes": 3230,
+      "git_blob_sha1": "e5aa835ce0b95d4d022584b24f533546250b7c12",
+      "fixture_sha256": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/gate_crossing.gd",
+      "bytes": 4271,
+      "git_blob_sha1": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "fixture_sha256": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/race_director.gd",
+      "bytes": 18391,
+      "git_blob_sha1": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "fixture_sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/track.gd",
+      "bytes": 28205,
+      "git_blob_sha1": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "fixture_sha256": "4f6b8d822708b638159b47e5b95a43f15f151b2dd17f324352394e87837fb3e6",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_race_gate_crossing.gd",
+      "bytes": 9168,
+      "git_blob_sha1": "88707d6bb12bd5174c91b677572fdc19a8715330",
+      "fixture_sha256": "4a5a025b76c3fd97474ef179a9baecc8ee963eec9d8977d9879fe7aa240334f2",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_race_director.gd",
+      "bytes": 20573,
+      "git_blob_sha1": "82668e59eda009ed88577566bfcf5ce63fa0da85",
+      "fixture_sha256": "b657895ffeab917234565e66c553e8f946fba9b1eb64b18c2661c478713c2e52",
+      "checkout_bytes": "exact"
+    }
+  ],
+  "project_godot": "config_version=5\n[application]\nconfig/name=\"A36 R5 isolated research\"\n[physics]\ncommon/physics_ticks_per_second=240\ncommon/max_physics_steps_per_frame=12\ncommon/physics_jitter_fix=0.0\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n",
+  "generated_data_mutations": [
+    {
+      "path": "data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+      "before_sha256": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+      "after_sha256": "346f4eea071313eb54960eaa3bc4ea10a4c55689ea9cf4fe0729519d4364b8a7"
+    },
+    {
+      "path": "data/batteries/packs/lipo-4s1p-3200-30c-class.json",
+      "before_sha256": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+      "after_sha256": "d509bf240d6a932023f29031b639524318bb455583c3d235fd9c5e5d1461f08f"
+    },
+    {
+      "path": "data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+      "before_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+      "after_sha256": "31f9d7c1e5558ff9b3b3d7205a4b19c92eeeff451bfa15584da1a75eeb377ee2"
+    }
+  ],
+  "mutation_scope": "A36 R5 synthetic domain/stiffness witness, not a physical pack calibration; warm temperature rows, auxiliary 0/0.3 A, same-location inert ballast",
+  "production_stubs": [],
+  "probe_sha256": {
+    "fifth_pass_ground_effect_oracle.py": "1886429d7313b3326e8b557fd3e3b3494be957e9f2e693e69fa28fe75471e658",
+    "fifth_pass_numerical_oracle.py": "a678c445f1054ff8b54f24363786de5e4d84004365653e9a642157167819e355",
+    "fifth_pass_servo_oracle.py": "284aaecc9596d97caaea5bdc8518f09a5c18d4d4d4282121edf11141988cb83f",
+    "reproduce_fifth_pass.py": "5e6365876868248d48a70572b5e353f5b3ed980aa12b4c28ecce1851762fbecd",
+    "fifth_pass_ground_effect.gd": "7a0165989d26f96b30058a10cfe9eb515e231095d6d5a5bb8f09c0d7637e49a9",
+    "fifth_pass_helicopter_trim.gd": "f8afee704c3418efc1d8af17405f391519d30a81cf58234aa8dc05f41fcd2292",
+    "fifth_pass_race_curve.gd": "3ea168eb8765ada169dcdeda48043fcb96b08fb0199cda638ea086edb46e6d3f",
+    "fifth_pass_thermal_stiffness.gd": "34d0ad02c10ac1bf01b322634668af9c8d003b3a16b1a4d22230acc2e4c95b4e"
+  },
+  "checked_runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+  "checks": [
+    {
+      "label": "import",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6aa528bb-3f89-4f8d-b7fa-503b2be495c1",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:37:50.839706+00:00",
+        "label": "a36-r5-reproduce-import",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-import-9joudyxi/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-import-9joudyxi/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.838099,
+        "log_bytes": 28082,
+        "log_sha256": "1d9272d385d17f933127d5213e51c42057203ccbebf20b6266846687ca841d89"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (304 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SkyConfig\u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftContract\u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftModules\u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ControlSurfaces\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CruiseTrim\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindConfig\u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindField\u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialConfig\u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialField\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindThermalField\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindTurbulence\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ImportedVegetation\u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started Scanning actions... (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_arm_1k.jpg\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_diff_1k.jpg\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_nor_gl_1k.jpg\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_1k.gltf\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rocks_Diffuse.png\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_1.gltf\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_2.gltf\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_3.gltf\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_arm_1k.jpg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_diff_1k.jpg\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_nor_gl_1k.png\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_arm_1k.jpg\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_diff_1k.jpg\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_nor_gl_1k.png\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood049_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_arm_2k.jpg\u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_diff_2k.jpg\u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_nor_gl_2k.png\u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | transmission-tower-3tier-ipoly3d.glb\u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Fabric001_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing pre-reimport operations...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Fabric001_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_nor_gl_2k.png\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_diff_2k.jpg\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_arm_2k.jpg\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood049_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_nor_gl_1k.png\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_diff_1k.jpg\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_arm_1k.jpg\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_nor_gl_1k.png\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_diff_1k.jpg\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_arm_1k.jpg\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rocks_Diffuse.png\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_nor_gl_1k.jpg\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_diff_1k.jpg\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_arm_1k.jpg\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_3.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  84% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_2.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  87% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_1.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  90% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_1k.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  93% ] \u001b[90m\u001b[1mreimport\u001b[22m | transmission-tower-3tier-ipoly3d.glb\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  96% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n"
+    },
+    {
+      "label": "helicopter",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0f0b7b86-2e73-4489-8c7c-210e9b0e3d02",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://fifth_pass_helicopter_trim.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:37:58.678900+00:00",
+        "label": "a36-r5-reproduce-helicopter",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-helicopter-ymljp4yv/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-helicopter-ymljp4yv/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "SESSION_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.246325,
+        "log_bytes": 851,
+        "log_sha256": "3b1e1dc6dc838ab561a4604901d70a5472f3de6899ff08f8f8f6ee5970731a9e"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nSESSION {\"accepted\":true,\"aircraft_sha\":\"29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04\",\"angles\":[0.22,-0.000390410174688138,0.00180194001566469],\"fault\":\"\",\"flap_rate_actual\":[0.0,-0.0000000000000000218248822252755],\"flap_rate_zero_bias\":[-0.0138767782595329,-0.064048335969554],\"ground_height\":0.0,\"mode\":\"normal\",\"rotorcraft_speed_rad_s\":167.749173686879,\"servo\":[1.0,1.0,1.0],\"servo_limited\":false,\"servo_linkage_angles\":[0.22,0.0,0.0],\"start\":[12.0,4.0,-3.0],\"tick_after\":1,\"tick_before\":0,\"trainer\":true,\"trim\":{\"cyclic_forward_bias_rad\":-0.000390410174688138,\"cyclic_right_bias_rad\":0.00180194001566469,\"pitch_reference_rad\":-0.00168217894384255,\"roll_reference_rad\":0.079224095345868,\"tail_collective_bias_rad\":0.120923548081165}}\nSESSION_PROBE_COMPLETE\n"
+    },
+    {
+      "label": "race",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "45635f45-ff12-4b56-b503-c4e4f3934c2f",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://fifth_pass_race_curve.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:38:01.926411+00:00",
+        "label": "a36-r5-reproduce-race",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-m_hildvb/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-m_hildvb/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R5 race witness: 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.242251,
+        "log_bytes": 1392,
+        "log_sha256": "4a99b6cea238918e473eafcd72cdb13c5a854c4ce35f03a37a728292e8a2f27b"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS complete synthetic track loads and prepares through production API\nPASS constant acceleration lies below the declared envelope\nPASS normal velocity exceeds grazing threshold for the entire interval\nPASS the actual curve stays within the same-time chord error bound\nPASS production chord test reports inside\nPASS analytic curved crossing is outside the strict aperture\nPASS production director awards one gate for the constructed piece\nPASS awarded race state passes production suffix validation\nPASS negative control: no tangential speed preserves aperture coordinate\nPASS projected residual bound marks the witness unresolved\nR5_RACE_RESULT {\"acceleration_mps2\":40.0,\"analytic_time_s\":0.00212671728943464,\"analytic_u_m\":1.50073535824405,\"chord_time_s\":0.00208333333333333,\"chord_u_m\":1.499,\"epsilon_m\":0.000542534722222222,\"event_types\":[\"race_gate\"],\"gate_count\":1,\"gate_half_width_m\":1.5,\"hz\":240,\"intersection_error_m\":0.00173535824405224,\"normal_chord_speed_mps\":2.0,\"normal_speed_min_mps\":1.91666666666667,\"projected_uncertainty_m\":0.0108642493459748,\"source_scope\":\"unchanged production track, crossing, director, suffix validator; synthetic constant-acceleration piece; no FPV plant or collision world\",\"tangent_speed_mps\":40.0,\"true_curve_chord_residual_m\":0.0000868055555555555}\nR5 race witness: 0 failures\n"
+    },
+    {
+      "label": "thermal",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "65046ec0-ce14-4626-8386-d0831a573a2b",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://fifth_pass_thermal_stiffness.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:38:02.169704+00:00",
+        "label": "a36-r5-reproduce-thermal",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-thermal-1qbz9m12/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-thermal-1qbz9m12/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R5 thermal witness: 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.992798,
+        "log_bytes": 2467,
+        "log_sha256": "3a53e9027a106e2319d4bd63220d46160a0c324c872bcd410a014ad7b02a935f"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS complete custom aircraft passes production loader\nPASS custom aircraft passes production flight setup\nPASS warm state is admitted by checkpoint restore\nPASS production session accepts the tick\nPASS cooling increases the temperature excess\nPASS result matches RK4 unstable scalar cooling multiplier\nPASS motor and pack current remain zero\nR5_THERMAL_RESULT {\"after_k\":288.751623585391,\"ambient_k\":288.15,\"before_k\":288.25,\"body_temperature_default\":288.15,\"dt_s\":0.00416666666666667,\"exact_after_k\":288.15155038536,\"exact_multiplier\":0.0155038535990093,\"fault\":\"\",\"final_tick\":1,\"initial_tick\":0,\"old_pack_step_ratio\":0.0419669055033873,\"pack_current_a\":0.0,\"rk4_multiplier\":6.01623585390947,\"scope\":\"complete custom battery+aircraft loader, launch, warm checkpoint restore and one accepted reference FlightSession tick; constructed custom pack; not shipped pack accuracy\",\"temperature_index\":6,\"thermal_tau_s\":0.001}\nPASS positive auxiliary-current variant passes complete setup\nPASS positive-heat case starts exactly at ambient without injected temperature\nPASS fresh positive-heat session accepts the tick\nPASS positive pack heat nevertheless lowers temperature below ambient\nR5_THERMAL_STARTUP_RESULT {\"accepted_tick\":1,\"after_k\":288.149993286087,\"ambient_k\":288.15,\"before_k\":288.15,\"fault\":\"\",\"final_current_a\":0.3,\"final_heat_w\":0.00133843650503919,\"initial_current_a\":0.3,\"initial_heat_w\":0.00133843649645044,\"scope\":\"fresh production setup at ambient, no injected temperature or checkpoint; custom pack, 0.3 A auxiliaries and source disabled\"}\nPASS isolated thermal refinement accepts 240 Hz steps\nPASS isolated thermal refinement accepts 480 Hz steps\nPASS isolated thermal refinement accepts 960 Hz steps\nPASS isolated thermal refinement accepts 1920 Hz steps\nR5_THERMAL_REFINEMENT_RESULT [{\"exact_excess_k\":0.00155038535990093,\"fault\":\"\",\"hz\":240,\"temperature_excess_k\":0.601623585390996,\"ticks\":1,\"time_s\":0.00416666666666667},{\"exact_excess_k\":0.00155038535990093,\"fault\":\"\",\"hz\":480,\"temperature_excess_k\":0.0132992810392807,\"ticks\":2,\"time_s\":0.00416666666666667},{\"exact_excess_k\":0.00155038535990093,\"fault\":\"\",\"hz\":960,\"temperature_excess_k\":0.0017086405542841,\"ticks\":4,\"time_s\":0.00416666666666667},{\"exact_excess_k\":0.00155038535990093,\"fault\":\"\",\"hz\":1920,\"temperature_excess_k\":0.00155652616132329,\"ticks\":8,\"time_s\":0.00416666666666667}]\nR5 thermal witness: 0 failures\n"
+    },
+    {
+      "label": "ground-effect",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "3aae13e3-fd38-4199-8f21-37f530f562a9",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://fifth_pass_ground_effect.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:38:06.164307+00:00",
+        "label": "a36-r5-reproduce-ground-effect",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-ground-effect-5l5klwhg/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-ground-effect-5l5klwhg/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.906304,
+        "log_bytes": 2802,
+        "log_sha256": "e3d4f16fff2d3e6b327a44ce0ce051d43c329867c2e719ea69fea74183e3502f"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nADMISSION true errors []\nDATA span=1.524 area=0.464515 effect=0.21511460134103 input={ &\"format\": \"openrc-aircraft v2\", &\"sha256\": \"5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66\" }\nSTATION [-0.635, -0.381, -0.127, 0.127, 0.381, 0.635] rows [0.58502474685999, 0.7253972912334, 0.7711348381176, 0.7711348381176, 0.7253972912334, 0.58502474685999] slope 6.08175464809119\nMAP [0.39520453731867, 0.10210010388399, 0.04412694014802, 0.02308995264953, 0.0132296385356, 0.00727357432418, 0.10210010388399, 0.42144797672865, 0.11325670255044, 0.04966721074387, 0.02569565879085, 0.0132296385356, 0.04412694014802, 0.11325670255044, 0.42593214465614, 0.11506188736959, 0.04966721074387, 0.02308995264953, 0.02308995264953, 0.04966721074387, 0.11506188736959, 0.42593214465614, 0.11325670255044, 0.04412694014802, 0.0132296385356, 0.02569565879085, 0.04966721074387, 0.11325670255044, 0.42144797672865, 0.10210010388399, 0.00727357432418, 0.0132296385356, 0.02308995264953, 0.04412694014802, 0.10210010388399, 0.39520453731867]\nARM [0.02499243735198, 0.0, -0.06979162403535] throws { \"aileron\": 20.0, \"elevator\": 20.0, \"rudder\": 25.0 }\nCASE alpha=0.0 factors=[0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.72270324247016]\n  d=-2.0 blend=0.0,0.0 GF=0.56054504117601 GG=0.56054504117601 LF=0.56054504117601 LG=0.63844911174621 PF=0.56054504117601 PG=0.56054504117601\n  d=0.0 blend=0.0,0.0 GF=0.0 GG=0.0 LF=-0.0 LG=0.0 PF=0.0 PG=0.0\n  d=2.0 blend=0.0,0.0 GF=-0.56054504117601 GG=-0.56054504117601 LF=-0.56054504117601 LG=-0.63844911174621 PF=-0.56054504117601 PG=-0.56054504117601\nCASE alpha=3.0 factors=[0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.72270324247016]\n  d=-2.0 blend=0.0,0.0 GF=0.56054504117601 GG=0.56054504117601 LF=0.56011455856092 LG=0.63801035600999 PF=0.56054504117601 PG=0.56054504117601\n  d=0.0 blend=0.0,0.0 GF=0.0 GG=0.0 LF=-0.0 LG=0.0 PF=0.0 PG=0.0\n  d=2.0 blend=0.0,0.0 GF=-0.56054504117601 GG=-0.56054504117601 LF=-0.56011455856093 LG=-0.63801035600999 PF=-0.56054504117601 PG=-0.56054504117601\nCASE alpha=6.0 factors=[0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.85919757186595, 0.72270324247016]\n  d=-2.0 blend=0.0,0.0 GF=0.56054504117601 GG=0.56054504117601 LF=0.56013236085734 LG=0.63790982185385 PF=0.56054504117601 PG=0.56054504117601\n  d=0.0 blend=0.0,0.0 GF=0.0 GG=0.0 LF=-0.0 LG=-0.0 PF=0.0 PG=0.0\n  d=2.0 blend=0.0,0.0 GF=-0.56054504117601 GG=-0.56054504117601 LF=-0.56013236085734 LG=-0.63790982185385 PF=-0.56054504117601 PG=-0.56054504117601\nPROBE_COMPLETE\n"
+    },
+    {
+      "label": "race-gate-existing",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "76578ede-46ca-4d34-9ee1-6cf14ae9f66d",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_race_gate_crossing.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:38:07.071751+00:00",
+        "label": "a36-r5-reproduce-race-gate-existing",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-gate-existing-_gxqf1kw/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-gate-existing-_gxqf1kw/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "19 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.265402,
+        "log_bytes": 1948,
+        "log_sha256": "519f4481f0e77bc70d2ed9705f4aa8ff8d5fe3fd40540d0e06567cbd8e063891"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   RACE-04 the 40 m/s fixture crosses in the allowed direction, inside the aperture inside 40.000000008 m/s\nok   RACE-04 crossing 1.25 ms after the tick start at lambda 0.3 t 0.001250000000 s lambda 0.299999999940\nok   RACE-04 tick start underestimates by 1.25 ms, tick end overestimates by 2.9167 ms \nok   RACE-04 crossing point (0, 0.25, 0.4) [0.0, 0.25, 0.4]\nok   RACE-04 a point exactly on the aperture edge (u = 0.75) is outside under the strict edge rule \nok   RACE-04 the strict edge holds on the vertical axis too \nok   a point 0.1 um inside the edge with no declared uncertainty is inside \nok   RACE-04 a common rigid rotation and translation of gate and piece preserves outcome, time and point (1e-9) worst 8.438279294827328e-14\n    (an exact-edge case may flip by rounding under rotation; it is compared by values only, not by status)\nok   RACE-05 wrong-way travel crosses the plane but is never a directed crossing \nok   RACE-05 a coplanar piece never crosses \nok   RACE-05 a piece starting on the plane (d0 = 0) does not count \nok   RACE-05 an endpoint exactly on the plane counts once across two consecutive pieces, at the shared time \nok   RACE-05 a zero-length piece never crosses, off or on the plane \nok   RACE-06 cross and return within two pieces counts one forward crossing only \nok   a zero-duration or reversed-time piece is refused as no crossing \nok   RACE-06 eps band: w - 2eps inside, w - eps/2 and w + eps/2 unresolved, w + 2eps outside (both axes) 0.7480:inside/inside 0.7495:unresolved/unresolved 0.7505:unresolved/unresolved 0.7520:outside/outside \nok   RACE-06 the band is applied to both axes at once (a corner inside on u but in the band on v is unresolved) \nok   chord bound A·h²/8 at A = 100 m/s², h = 1/240 s is 0.217 mm 0.000217014 m\nok   the declared 250 m/s² envelope gives about 0.54 mm at 240 Hz 0.000542535 m\n19 checks, 0 failed\n"
+    },
+    {
+      "label": "race-director-existing",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "294784ea-81ab-4c45-901a-d215e98257b3",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_race_director.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:38:07.339466+00:00",
+        "label": "a36-r5-reproduce-race-director-existing",
+        "log": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-director-existing-4ewalz_4/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-director-existing-4ewalz_4/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "33 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.262623,
+        "log_bytes": 2886,
+        "log_sha256": "63ad6c0ea6da7acf6ae7eaf5b0c647aeddeecc6138dbea2a06494df6d2a73972"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   the synthetic square course loads and prepares []\nok   RACE-07 twelve ordered crossings score twelve gates at the exact chord times, laps numbered 1..3 \nok   RACE-07 lap durations: first from GO, then from the previous finish crossing 1.585416667 1.666666667 1.666666667\nok   finish after exactly three laps and not before \nok   a finished attempt ignores further crossings \nok   RACE-07 two successive gates crossed in one piece advance twice, in time order race_gate,race_gate\nok   race event ids are unique within the tick and carry the attempt and tick \nok   RACE-12 an out-of-order crossing has no progress effect \nok   RACE-12 a wrong-way crossing of the required gate does not score \nok   an outside crossing neither scores nor counts as unresolved \nok   an exact-edge crossing never scores: inside the declared chord band it is unresolved \nok   RACE-12 a missed gate, then the correct return, continues the lap \nok   the crash fixture state is valid \nok   RACE-08 a crash earlier than the crossing by more than 1 us suppresses it; the attempt aborts, slots retained crash,race_abort\nok   RACE-08/13 A10 a crash on the tick's endpoint voids an earlier-stamped crossing of the same tick crash,race_abort\nok   RACE-08/13 without the A10 policy (historical rules) the earlier crossing still completed lap 2 race_gate,race_lap,crash,race_abort\nok   A10 a clean tick still scores the finish-gate crossing race_gate,race_lap\nok   RACE-08 a crash within 1 us of the crossing wins on either side and suppresses it \nok   the abort event carries the physical time, reason and current lap \nok   RACE-13 pack depletion during the race aborts with its reason \nok   a terminal event during the countdown aborts the attempt \nok   RACE-06/10 a crossing on an unqualified chord is unresolved: no progress, the counter increments \nok   RACE-06 a crossing below 1 m/s normal speed is unresolved \nok   RACE-06 a crossing within the declared chord band of an edge is unresolved; 2 eps inside scores eps 0.000543 m\nok   an unresolved crossing does not abort the attempt \nok   DR-19g a gate clipped while flying through scores; a bounce back before the plane is unresolved \nok   RACE-13 a new start request clears every slot and increments the attempt generation \nok   the endpoint commits the staged start: countdown 1, staging cleared, one race_countdown event \nok   a start off the pad is refused with its reason and leaves the terminal phase \nok   GO at countdown 720 with armed motors, low throttle and a ready source: RACING from the start of the interval \nok   refused GO: throttle, source and arm reasons; back to IDLE with the arm authorization dropped [[0, 3, true], [0, 4, true], [0, 5, true]]\nok   no GO decision before countdown tick 720 \nok   determinism: the same inputs give the same bytes \n33 checks, 0 failed\n"
+    }
+  ],
+  "oracles": [
+    {
+      "label": "servo",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/33140ed92393/openrc-audit/docs/research/project-audit-2026-11-21/probes/fifth_pass_servo_oracle.py",
+        "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-helicopter-ymljp4yv/engine.log",
+        "/workspace/scratch/33140ed92393/r5-final-reproduction/project/data/aircraft/xcell_60_research.json"
+      ],
+      "exit_code": 0,
+      "stdout": "control axes 1.0 -0.0065068362448023 0.0300323335944115\nimplied servo travel 0.993493163755 1.029262181950 0.977244654295\nexcess over upper limit 0.029262181950\nflap rate delta actual minus zero cyclic bias 0.013876778260 0.064048335970\nORACLE_COMPLETE\n",
+      "stderr": ""
+    },
+    {
+      "label": "ground-effect",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/33140ed92393/openrc-audit/docs/research/project-audit-2026-11-21/probes/fifth_pass_ground_effect_oracle.py",
+        "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-ground-effect-5l5klwhg/engine.log"
+      ],
+      "exit_code": 0,
+      "stdout": "independent strip ΔMx -0.07790407057020 N m; component ΔMx -0.07790407057020 N m; residual 2.71e-15 N m\nlocal-relative change 13.897914502%; public change 0 N m\nneutral=0; reversed ailerons reverse each Mx; both public paths select the attached oracle\nGE_ROLL_CHECK_OK\n",
+      "stderr": ""
+    },
+    {
+      "label": "numerical",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/33140ed92393/openrc-audit/docs/research/project-audit-2026-11-21/probes/fifth_pass_numerical_oracle.py",
+        "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-race-m_hildvb/engine.log",
+        "/workspace/scratch/33140ed92393/r5-final-reproduction/checks/a36-r5-reproduce-thermal-1qbz9m12/engine.log"
+      ],
+      "exit_code": 0,
+      "stdout": "plane-intersection error 0.00173535824405 m; pointwise chord allowance 0.000542534722222 m\nthermal RK4 factor 6.01623585391 vs exact 0.015503853599; same-time refinement errors [0.6000732000310951, 0.011748895679379768, 0.00015825519438316836, 6.140801422358346e-06] K\nNUMERICAL_ORACLE_COMPLETE\n",
+      "stderr": ""
+    }
+  ],
+  "ok": true,
+  "runtime_generated_data": {
+    "path": "thermal_positive_heat_aircraft.json",
+    "sha256": "9a4969caea08cc053fc606578fe0daa9a29d38ba75f9103d67e51bb393420611"
+  },
+  "post_run_identity": {
+    "dependency_files_checked": 439,
+    "unexpected_byte_changes": [],
+    "declared_mutated_data_files": [
+      "data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+      "data/batteries/packs/lipo-4s1p-3200-30c-class.json",
+      "data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"
+    ],
+    "all_published_probe_and_oracle_hashes_match": true
+  },
+  "superseded_attempts": [
+    {
+      "topic": "initial mass-only thermal fixture",
+      "status": "correctly rejected by full aircraft CG admission",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "62c3e38f-fb06-490c-ac0f-52269049c121",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r5-root-evidence/battery-project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://probe_thermal_stiffness.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T14:26:34.792257+00:00",
+        "label": "a36-r5-thermal-stiffness",
+        "log": "/workspace/scratch/33140ed92393/r5-root-evidence/checks/a36-r5-thermal-stiffness-22yevklj/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r5-root-evidence/checks/a36-r5-thermal-stiffness-22yevklj/report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "R5 thermal witness: 0 failures"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [
+          "R5 thermal witness: 0 failures"
+        ],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.281263,
+        "log_bytes": 384,
+        "log_sha256": "62f22426c6d2d804142f954fbc31acd5b4168bfb2adee57aa81c89336917413a"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nFAIL complete custom aircraft passes production loader\nREFUSAL [\"balance: inventory CG axis 0 disagrees with flight CG by 0.0192 m (tolerance 0.0010 m); reconcile the build before flying\", \"balance: inventory CG axis 2 disagrees with flight CG by 0.0048 m (tolerance 0.0010 m); reconcile the build before flying\"]\n",
+      "resolution": "add 0.32 kg inert ballast at original battery position/dimensions; preserve total inventory; no source/validator changes"
+    },
+    {
+      "topic": "earlier helicopter helper fixture",
+      "status": "unused scenery stubs; superseded by the final real-dependency reconstruction",
+      "excluded_scope": "no scenery/full-app/native/physical qualification"
+    },
+    {
+      "topic": "early fixed-wing helper fixture",
+      "status": "source-identical 174-file subset; superseded by final shared fixture"
+    }
+  ],
+  "qualification_limits": [
+    "No production fix in R5",
+    "No native binary execution or full application import",
+    "No FPV plant/collision trajectory for the race witness",
+    "Custom thermal data are manufactured, not plausible pack calibration or stock instability",
+    "Higher rates are diagnostic only; product contract remains 240 Hz",
+    "Helicopter flap derivatives are separate initial component evaluations; not measured accepted-tick derivatives",
+    "Ground-effect difference is internal model consistency, not physical measurement",
+    "No target-hardware performance or rendered/piloted flight"
+  ]
+}

@@ -58,7 +58,7 @@ def run(repo_root: Path | None = None) -> None:
     physics_tick_hz = 240
     print(f"typical conventional spatial-stage wind queries: {queries_per_stage}/stage")
     print(f"4 evaluations at 240 Hz: {queries_per_stage*typical_stage_calls*physics_tick_hz}/s")
-    print("This is a static call-count ceiling for the stated setup, not an FPS/memory benchmark.")
+    print("This is an illustrative count for the stated configuration, not a measured call count, upper bound or FPS/memory benchmark; see A6 O5.")
     if repo_root is not None:
         loader = (repo_root/"app/physics/aircraft_data.gd").read_text()
         aero = (repo_root/"app/physics/aero.gd").read_text()
