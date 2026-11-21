@@ -57,8 +57,8 @@ V4_PAIRS_SHA256 = '097a50dd2111e6ce24fc7f171fa01b59c0b84c87e6126399c08c273a304c2
 
 # The next rebind preserves the complete current pack. It admits only a changed
 # Session source after both retained platform captures reproduce exactly.
-SOURCE_REBIND_PRIOR = '4b11b8e68e82bc264b268cad67be67e75d81d5431a7655ca08dd5acf8c9420f6'
-SOURCE_REBIND_BASE = 'a1663d6b776fbe419129d34bd818f502547aec26'
+SOURCE_REBIND_PRIOR = '80653cb72f391f45dd2e11e99da454329119585001547a934f27d45ad9019eb6'
+SOURCE_REBIND_BASE = 'd5f042912407620f4358e793144ae5ed6cc1724a'
 SOURCE_REBIND_SESSION = 'sim/flight_session.gd'
 SOURCE_REBIND_ENGINES = {
     'Windows': '1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b',
