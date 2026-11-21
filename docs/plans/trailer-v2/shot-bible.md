@@ -2,6 +2,8 @@
 
 All figures here are *composition proposals*, not flying instructions or results from actual filming. Every proposed shot is pending capture/approval.
 
+**Script chronology notice (Revision 2):** the Txx references below belong to the first-pass story. The current, superseding 90-second screenplay uses R2-01 through R2-31 in [cinematic-script-r2.md](cinematic-script-r2.md). Use its timecodes for story review; this file remains the thematic camera/feature shot bible.
+
 ## A. F4U Corsair over reflected lake — signature sequence (T01, T12–T14)
 **Goal:** an unforgettable image of the Corsair, its paint scheme and its real-time mirrored shape passing over the Club field lake. Show airframe and lake in the same shot, shoreline/trees as scale reference and a discernible moving mirrored silhouette.
 
