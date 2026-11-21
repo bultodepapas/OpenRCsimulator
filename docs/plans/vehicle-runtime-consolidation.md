@@ -32,7 +32,7 @@ A pure restructure **must not** change accepted state bytes, solver inputs, per-
 
 ## 3. Target architecture: composition before inheritance
 
-`
+```
 Product shell (AppRoot, screen stack, Home, Pause)
   -> Activity entry adapters (fixed wing | helicopter | quad | airship | ground)
       -> ActivitySessionPort: stable request/status surface, NOT a physics base class
@@ -40,7 +40,7 @@ Product shell (AppRoot, screen stack, Home, Pause)
               -> Existing VehicleModel callbacks -> existing Simulation
           -> Existing input service / activity-specific command conditioning
           -> Read-only view snapshots -> per-vehicle HUD / render adapter
-`
+```
 
 **Port proposal, not an implemented API:**
 - `describe_capabilities()`: immutable activity/vehicle features and supported operations, not guesses based on a vehicle name.
