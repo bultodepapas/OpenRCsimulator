@@ -78,6 +78,13 @@ func _run() -> void:
 	var tripled_errors := "\n".join(Contract.validate(tripled))
 	check("a repeated horizontal half is refused", tripled_errors.contains("horizontal tail")
 		and tripled_errors.contains("overlaps wake piece 1"), tripled_errors)
+	# A wake with zero wash and swirl loads nothing, so repeated pieces (native capacity stress fixtures) stay admitted.
+	var inert := _raw(F4U)
+	inert.propulsion.propeller.slipstream.wash_factor.value = [0.0, 0.0]
+	inert.propulsion.propeller.slipstream.swirl_factor.value = 0.0
+	for i in 40:
+		_pieces(inert).append(_pieces(inert)[0].duplicate(true))
+	check("a zero-wash, zero-swirl wake may repeat pieces", Contract.validate(inert).is_empty(), Contract.validate(inert))
 	# A tailless airframe declares no horizontal tail: a horizontal wake piece has no physical surface.
 	var tailless := _raw(X8)
 	var stik := _raw(STIK)

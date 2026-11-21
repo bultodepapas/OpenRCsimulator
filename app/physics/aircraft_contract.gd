@@ -334,6 +334,15 @@ static func _validate_slipstream_coverage(root: Dictionary, propulsion: Dictiona
 	if not surfaces is Dictionary:
 		return
 	var path := "/propulsion/propeller/slipstream/pieces"
+	# A wake with zero wash and zero swirl puts no load on any patch, so repeated pieces cannot double-count a force
+	# (native admission stress fixtures use thousands of them); the area and overlap rules apply to a loading wake.
+	var loads := _quantity_number(propeller.slipstream.get("swirl_factor")) != 0.0
+	var wash: Variant = propeller.slipstream.get("wash_factor")
+	if wash is Dictionary and wash.get("value") is Array:
+		for value: Variant in wash.value:
+			loads = loads or (_is_number(value) and float(value) != 0.0)
+	else:
+		loads = true
 	var totals := {}
 	var segments: Array[Dictionary] = []
 	for index in pieces.size():
@@ -345,6 +354,8 @@ static func _validate_slipstream_coverage(root: Dictionary, propulsion: Dictiona
 			continue
 		if not surfaces.get(surface, null) is Dictionary:
 			_issue(issues, "%s/%d/surface" % [path, index], "targets the %s tail, which this airframe does not declare" % surface)
+			continue
+		if not loads:
 			continue
 		var area := _quantity_number(piece.get("area"))
 		if is_finite(area):
