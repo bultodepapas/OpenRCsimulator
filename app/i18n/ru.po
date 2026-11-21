@@ -14564,3 +14564,21 @@ msgstr "Шасси Phoenix используется для взлёта с по�
 
 msgid "Needs no landing gear"
 msgstr "Только без шасси"
+
+msgid "Fly calibrated runway"
+msgstr "Взлёт с откалиброванной полосы"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "Экспериментальный полёт в безветрие. Полоса, точка старта и рельеф заданы приблизительно."
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "Экспериментальный полёт готов. Полоса, точка старта и рельеф заданы приблизительно."
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "Не удалось проверить установленный ландшафт для полёта."
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "Выберите самолёт, который может взлетать с полосы."
+
+msgid "Preparing panorama"
+msgstr "Подготовка панорамы"

@@ -13763,3 +13763,21 @@ msgstr "Phoenix 起落架用于跑道起飞。可收放起落架保持放下。"
 
 msgid "Needs no landing gear"
 msgstr "仅限无起落架"
+
+msgid "Fly calibrated runway"
+msgstr "从已校准的跑道起飞"
+
+msgid "Experimental flight in calm air with an estimated runway, start and ground."
+msgstr "在无风条件下进行试飞。跑道、起飞位置和地面采用估计值。"
+
+msgid "Experimental flight ready. Runway, start and ground are estimated."
+msgstr "可以开始试飞。跑道、起飞位置和地面采用估计值。"
+
+msgid "The installed scenery could not be verified for flight."
+msgstr "无法确认已安装的场景可用于飞行。"
+
+msgid "Choose an airplane that supports runway starts."
+msgstr "请选择支持跑道起飞的飞机。"
+
+msgid "Preparing panorama"
+msgstr "正在准备全景"
