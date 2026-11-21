@@ -1,8 +1,11 @@
 """Read the served health report from an independent host and fail on stale or unhealthy builds."""
 import argparse
 from datetime import datetime, timezone
+import ipaddress
 import json
+import subprocess
 import sys
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 SOURCE_MAX_AGE = dict.fromkeys(("github_downloads", "github_views", "github_clones",
@@ -46,13 +49,28 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url", help="private dashboard health.json URL")
     parser.add_argument("--max-age", type=int, default=2 * 3600)
+    parser.add_argument("--resolve-address", type=ipaddress.ip_address,
+                        help="dashboard IP on hosts without tailnet DNS; HTTPS still verifies the URL hostname")
     args = parser.parse_args(argv)
     try:
-        req = Request(args.url, headers={"Cache-Control": "no-cache"})
-        with urlopen(req, timeout=10) as response:
-            report = json.loads(response.read(32_769))
+        if args.resolve_address:
+            url = urlsplit(args.url)
+            if url.scheme != "https" or not url.hostname:
+                raise ValueError("a pinned address requires an HTTPS URL")
+            address = f"[{args.resolve_address}]" if args.resolve_address.version == 6 else str(args.resolve_address)
+            document = subprocess.check_output(["/usr/bin/curl", "--fail", "--silent", "--show-error",
+                                                "--max-time", "10", "--max-filesize", "32768",
+                                                "--header", "Cache-Control: no-cache", "--resolve",
+                                                f"{url.hostname}:{url.port or 443}:{address}", args.url], timeout=12)
+        else:
+            req = Request(args.url, headers={"Cache-Control": "no-cache"})
+            with urlopen(req, timeout=10) as response:
+                document = response.read(32_769)
+        if len(document) > 32_768:
+            raise ValueError("unexpectedly large health report")
+        report = json.loads(document)
         failure = check(report, datetime.now(timezone.utc), args.max_age)
-    except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, subprocess.SubprocessError) as error:
         failure = f"dashboard health check failed: {error}"
     if failure:
         print(failure, file=sys.stderr)
