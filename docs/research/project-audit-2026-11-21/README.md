@@ -58,6 +58,18 @@ The [portable reconstruction](probes/reproduce_seventh_pass.py) uses **459 real 
 
 R7 also [qualifies R2-F01's reachability](seventh-pass-drones-2026-11-21.md#r2-f01-reachability-correction): the current drone session constructs reference-density weather, so the earlier changing-density arithmetic is a controlled atmosphere counterfactual, not an observed player altitude effect. The [reviewed-head CI snapshot](seventh-pass-ci-snapshot.json) records completed CI failure and successful MetalFX source controls; complete CI, native and physical qualification remain separate.
 
+## Eighth-pass helicopter contact, controls and rotor consistency (A36 R8)
+
+The [helicopter report](eighth-pass-helicopters-2026-11-21.md) reviews `c1eb426900e594c20d095120c149386305afdd4d`, preserving the distinction between the historical playable X-Cell reference and the current HX-700 laboratory/inspector target.
+
+| Item | Evidence and scope |
+| --- | --- |
+| **R8-F01** — new conditional contact-admission defect | The loader's mass-only skid stability guard omits geometry/inertia. Synthetic wider skids pass full loading and normal pad setup; a decaying coupled contact mode grows by 7.691392 in an accepted reference tick, with a separate 3 m/s wind/normal-start witness and matched stock/fine-step controls. No stock instability or current custom-selection UI is claimed. |
+| **R8-G01** — arming contract | Stock scripted tapes pass a premix +0.9° guard while clipped trainer/swash output reaches +1.340338° at rearm after a 25 ms gap. HELI-20 explicitly retains premix for arming; the promised quantity needs a decision. This is not a proven physical hazardous start or a duplicate of R5-F01. |
+| **HELI-05/06 evidence upgrades** | Constructed main-rotor tilt changes body work by 168.579 W at unchanged shaft draw; the complete geared kinetic ledger closes. An unsaturated near-zero-thrust tail state reconstructs −2.5 m/s wake and changes fin force by 19%; a separate high-sideslip constructed reset has a matched session stage and accepted tick. These quantify existing approximations, not new duplicate defect counts or energy-creation claims. |
+
+The [portable reproducer](probes/reproduce_eighth_pass.py) reconstructs 438 real dependencies with no stubs. [Retained evidence](eighth-pass-evidence.json) records nine clean checked jobs, 140 observation checks, 276 unchanged helicopter checks and three independent Python oracles; all source bytes remain unchanged. The [CI snapshot](eighth-pass-ci-snapshot.json) returns no PR-triggered runs for this reviewed head; prior required CI remains recorded as failed. No R8 production fix, native/physical qualification or measured optimization gain is claimed. Proposed repairs preserve 240 Hz sampling and the helicopter's existing tick-policy ownership.
+
 ## Original evidence
 
 | Artifact | Purpose |

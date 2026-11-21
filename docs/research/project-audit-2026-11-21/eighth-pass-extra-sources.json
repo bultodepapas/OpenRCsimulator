@@ -1,0 +1,53 @@
+{
+  "format": "openrc-a36-r8-extra-sources v1",
+  "reviewed_commit": "c1eb426900e594c20d095120c149386305afdd4d",
+  "base_manifest": "integration-manifest.json",
+  "base_manifest_sha256": "9b9257242b8873d0045df0abf41aa13ca62dccc6b0a5a925683869152367b9be",
+  "base_count": 432,
+  "extra_files": [
+    {
+      "path": "app/tests/test_heli_swash.gd",
+      "git_blob_sha1": "86a0bc20fc49a97da5896c5029eaa04e40cc7265",
+      "fixture_sha256": "9346974c3aa26bd5e870d7925513e4459b8b6cd7671a3019ecbf98bb07261ba6",
+      "bytes": 10874,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_heli_coupling.gd",
+      "git_blob_sha1": "9b68a036fdb94b58aa6762596707e5dac98af428",
+      "fixture_sha256": "b0681196901b3dd6e88704f80d95ccfc2d67a9cd5de0a1972c86a88a608ee6f1",
+      "bytes": 6395,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_heli_skid_bristles.gd",
+      "git_blob_sha1": "9dde99f0fab6d79da785a28d0cfb095a48e375d7",
+      "fixture_sha256": "a7e40805466fb152ac46a266867dcd0918ab8bd8285e68008fec7dd67825d575",
+      "bytes": 11703,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_heli_tail_rotor.gd",
+      "git_blob_sha1": "921219068608e4a7992bdf20c820c513e7efb2c9",
+      "fixture_sha256": "c8a7937de755057c33ee77e5c39f2adf5496b458f8accd858bdcff4a9813da69",
+      "bytes": 14215,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_heli_main_rotor_stage.gd",
+      "git_blob_sha1": "7c799510eb4c613172de3e3544454f87f9aa2e18",
+      "fixture_sha256": "8d7e9ecc6d6056f338f6c5c56e080e0bf70c62c3b4206164cc7bd041215e3d44",
+      "bytes": 4518,
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_heli_main_rotor.gd",
+      "git_blob_sha1": "2eb99604cf1e2eadcf54409b0a2d77fc921c1b21",
+      "fixture_sha256": "289a22b27273514bf542553a1e78b8f091958b0f911a58cab70afc357685a8af",
+      "bytes": 11210,
+      "checkout_bytes": "exact"
+    }
+  ],
+  "source_total": 438,
+  "scope": "Unchanged helicopter baseline test scripts and main-rotor parameter preload; optional --oracle inputs are not used."
+}
