@@ -1,6 +1,6 @@
 # Trailer 2.0 — retained Windows / RTX 3090 capture study
 
-**R3 priority:** [review the screenplay](cinematic-script-r3.md) before choosing tools. The routes below are prior production options, not an approved R3 implementation or a command to start filming. The current [verification gates](verification-gates.md) supersede any older shot-priority assumptions in this study.
+**R4 priority:** [review the screenplay](cinematic-script-r4.md) before choosing tools. The routes below are prior production options, not an approved R4 implementation or a command to start filming. The current [verification gates](verification-gates.md) supersede any older shot-priority assumptions in this study.
 
 **This file documents a future capture setup. No new RTX3090 captures, graphics changes, scripts or benchmarks were made for V2 in this documentation branch.**
 
@@ -38,7 +38,7 @@ Planned PowerShell preflight setup (illustrative, not executed here):
     # Log effective renderer, lighting, skin and reflection states.
     Remove-Item Env:OPENRC_LAKE_REFLECTIONS
 
-For R3, the essential mirror test uses the final orbit skin held through the lake shot: compare flag off/on and the actual moving Corsair. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check water reflection has coherent geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If current Corsair doesn't qualify, use the documented Vantage reflection as a separated fallback and keep true Corsair footage unmirrored.
+For R4, the essential mirror test uses the final orbit skin held through the lake shot: compare flag off/on and the actual moving Corsair. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check water reflection has coherent geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If current Corsair doesn't qualify, use the documented Vantage reflection as a separated fallback and keep true Corsair footage unmirrored.
 
 ## Lens options and precisely what generates them
 

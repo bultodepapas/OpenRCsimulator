@@ -1,129 +1,63 @@
-# Trailer feature opportunities from the code
+# Trailer 2.0 — integrated feature opportunities, Revision 4
 
 **Reviewed:** 21 November 2026. **Track / owner:** V2 / trailer director-editor.
-**Source baseline:** `57abea025f62b20233ca281d58d2acbee4ab8b8e`.
-**Status:** source-backed shot proposals. [R3](cinematic-script-r3.md) and its [storyboard](storyboard-90s.md) remain the current 90-second cut; this document owns the additional candidates and their timing tradeoffs.
+**Source baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e.
+**Current authority:** [R4 screenplay](cinematic-script-r4.md), [150-second storyboard](storyboard-150s.md), [90-second Field Notes](feature-companion-films.md) and [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
 
-The strongest opportunities are **live transmitter inputs**, **the Bisonte entering shallow water**, and **MoonRunner's actual hand-launch release**. Wind, birds and moonlight can improve existing compositions. Turtle recovery provides a particularly clear miniature story, but needs a longer beat.
+The earlier candidate list is now integrated. Every opportunity has a specific master shot or a fully timed companion sequence. This ledger owns the mapping and source boundaries; the screenplays own timing and direction. All visual acceptance is still pending actual footage.
 
-This review followed player controls into their runtime consumers. It establishes implemented paths, not the appearance, handling quality or readability of an unrecorded take. The source baseline may contain features beyond the eventual promoted release. Recheck selected features against that build before filming.
+## Complete integration map
 
-## Recommended changes to consider first
+| Opportunity | Timed home | Integration and source boundary |
+| --- | --- | --- |
+| Live transmitter and control response | R4-22…23, 59–65 s; FN-01…03, 0–8 s | A clean Mustang leads into five seconds of live stick-to-bank response. Detailed Player/Cockpit preset coverage is retained in Field Notes. Transmitter artwork does not identify physical hardware. [Live snapshot/refresh](../../../app/render/overlays/overlay_manager.gd), [display](../../../app/render/overlays/transmitter.gd), [presets](../../../app/render/overlays/overlay_settings.gd), [controller setup](../../../app/ui/controller_setup.gd). |
+| Bisonte water/mud | R4-44, 140–145 s | Normal Drive → Free drive → Lake · Shallow shore. Real wheel contact, modest droplets/rings, possible splash sound and wet/grime effects replace its second jump. The opening nitro truck retains a complete landing. [Garage](../../../app/vehicles/ground/ground_dashboard.gd), [scene](../../../app/vehicles/ground/ground_scene.gd), [wet effects](../../../app/vehicles/ground/ground_wet_effects.gd), [wet sheen](../../../app/vehicles/ground/ground_effects.gd). |
+| MoonRunner hand launch | R4-04, 11–14 s | Actual low powered release into the first climb; no visible throwing-person animation is established. [Home](../../../app/ui/home.gd), [release/reset](../../../app/sim/flight_session.gd). |
+| Wind-responsive sock/foliage | Wider R4-14 composition, 39–42 s; FN-15, 64–67 s | Nonzero-wind ground session; supported grass/tree assets and visible framing. Ground controls remain dominant in the master. [Live field updates](../../../app/main.gd), [sock](../../../app/render/windsock_motion.gd), [grass](../../../app/scenery/imported_grass.gdshader), [tree wind](../../../app/scenery/imported_tree_wind.gdshaderinc). |
+| Moon, stars and field lights | R4-31, 89–93 s; FN-20a…b, 81–86 s | Enrich the real Lumber night pass; required companion views separately cover moon/field lighting and a readable star field. No complete sunset squeezed into seconds. Evening/Moonrise flow over minutes; enlarged moon is explicitly cinematic. [Time presets](../../../app/render/world/conditions.gd), [world lighting](../../../app/render/world/world.gd), [controls](../../../app/ui/time_of_day_controls.gd). |
+| Birds | R4-05, 14–18 s; FN-16, 67–70 s | Real flock/background depth behind the blimp when readable; dedicated companion composition otherwise. Density, time and conditions affect appearance. [Bird layer](../../../app/scenery/birds.gd), [director](../../../app/scenery/birds/bird_director.gd). |
+| Club people/head tracking | Wider R4-14 composition; FN-17, 70–73 s | Background flight-line presence and a separate readable gaze detail. Balanced/high scenery is needed; low quality remains static. No full-body animation claim. [Gaze](../../../app/scenery/people_gaze.gd), [field quality/setup](../../../app/render/field.gd). |
+| Campfire | Optional R4-31 foreground; FN-18, 73–76 s | Enabled Club fire, flames/embers/local light. The companion supplies the clear detail if the aircraft/night composition is crowded. No fire smoke is promised. [Campfire](../../../app/render/world/campfire.gd). |
+| Electrical storm | R4-29, 81–85 s | An actual flash supports a visible airplane; a bolt only if recorded. Seeded slots may be skipped. It is distant presentation, not traversable-cloud or rain-aerodynamics proof. [Events](../../../app/environment/storm_events.gd), [bank](../../../app/render/weather/storm_bank.gd), [lightning](../../../app/render/weather/lightning.gd). |
+| Rain on an airplane lens | FN-19, 76–81 s | Supported enabled chase/orbit view, genuine rain response and readable aircraft. Pilot view lacks glass beads by default; capture paths need their correct enablement. [Rain mapping](../../../app/render/lens/rain_model.gd), [lens](../../../app/render/lens/lens_stack.gd). |
+| FPV turtle recovery | R4-11…13, 31–39 s | Select graded crash mode and restart on pad. Actual survivable tip-over, disarmed turtle selection, fresh low-throttle arm transition, flip, normal rearm and lift-off. Terminal crashes/depleted packs reset; turtle does not repair props. [Crash setting](../../../app/vehicles/multirotor/multirotor_scene.gd), [instructions](../../../app/vehicles/multirotor/multirotor_hud.gd), [input](../../../app/input/multirotor_input.gd), [controller](../../../app/physics/multirotor/flight_controller.gd), [damage](../../../app/physics/multirotor/controlled_plant.gd). |
+| Angle/Acro progression | R4-09…10, 26–31 s | Actual attitude-assistance response versus rate-mode maneuver, with real OSD. No third Horizon mode. [Mode input](../../../app/input/multirotor_input.gd), [controller](../../../app/physics/multirotor/flight_controller.gd). |
+| Engine-out practice | R4-24…26, 65–73 s | Only an eligible engine/motor power-loss type selected, 100%/Early, new ordinary Home flight. Onset waits for eligible airborne time; restart repeats the existing selection. Real glide/landing excerpts, not a claimed natural failure rate. [Menu](../../../app/ui/failures_menu.gd), [catalog](../../../app/failures/catalog.gd), [session](../../../app/sim/flight_session.gd). |
+| Ground Physics Lab | R4-32…34, 93–100 s | Baseline bump, actual paused setting/application, separate changed-setting run. Supports gravity, grip, springs, damping and ballast; use one readable suspension change. Apply resets/prepares the session. [Dashboard](../../../app/vehicles/ground/ground_dashboard.gd), [model changes](../../../app/physics/ground_vehicle/vehicle_data.gd), [session gate](../../../app/sim/ground_vehicle/session.gd). |
+| Airplane touch-and-go and statistics | FN-04…05, 8–20 s | Real controlled support and departure, then recorded detailed statistic. Default detection needs 0.5 s support plus 2 s airborne. No dedicated landing-challenge mode is implied. [Rules](../../../app/statistics/rules.gd), [detector](../../../app/statistics/detector.gd), [statistics](../../../app/ui/statistics_screen.gd). |
+| AI flight companions | R4-27, 73–77 s | One to three actual autonomous Ugly Stiks in circuits; use calm Club conditions and a qualified profile. No multiplayer, close formation, aerobatics, runway operations or aircraft-to-aircraft contact. Circuit distance may defeat a composition. [Dialog](../../../app/ui/companions_dialog.gd), [launch admission](../../../app/ai/companions/manager.gd), [agents](../../../app/ai/companions/agent.gd), [circuits](../../../app/ai/companions/circuit_controller.gd). |
+| Imported scenery | R4-28, 77–81 s; FN-14, 60–64 s | Exact installed/calibrated Phoenix panorama and eligible runway airplane, fixed pilot eye, calm physical weather, estimated contact. Other revisions remain previews. [Importer](../../../app/ui/landscape_import.gd), [verification](../../../app/landscapes/phoenix_library.gd), [runtime route](../../../app/app_root.gd), [panorama](../../../app/landscapes/phoenix_flight.gd). |
+| Green paradise | FN-13, 56–60 s | Real playable open grass. Its simpler visual contrast earns a dedicated companion comparison rather than another master landscape change. [Catalog](../../../app/landscapes/catalog.gd), [landscape](../../../app/landscapes/green_paradise/landscape.gd). |
+| Natural Random | FN-06…07, 20–32 s | Readable seeded briefing then its actual selected stock airplane/weather/daylight flight; Club field, airborne start, bounded pool. [Screen](../../../app/ui/natural_random_screen.gd), [generator](../../../app/scenarios/natural_random.gd), [scope](../../../app/scenarios/scenario_config.gd). |
+| Finite fuel/battery | Real supported fuel value in R4-23; FN-08…09, 32–44 s | Selected supported configurations and actual elapsed energy state. Finite battery stays labelled experimental. No fabricated depletion or causal link to the injected failure. [Flight details](../../../app/ui/home.gd), [fuel instrument](../../../app/render/overlays/fuel_instrument.gd), [fuel behavior](../../../app/physics/glow/flight.gd). |
+| Wreck inspection/damage report | FN-10…12, 44–56 s | Separate fixed-wing incident, cosmetic wreck and its actual estimated/partial report. The master keeps one quad impact/recovery; no new repair economy. [Crash presentation](../../../app/render/crash/director.gd), [report](../../../app/ui/accident_report.gd). |
+| Phoenix/ClearView aircraft expansion | R4-41…43, 125–140 s | New 15-second chapter: 18 provisional real previews in 10 seconds, then one same-model eligible trial. [Import showcase](import-showcase.md) owns formats, casting, 300+ evidence gate and the 10-second alternate. |
 
-| Priority | Candidate | Proposed placement | Runtime and coverage consequence |
-| --- | --- | --- | --- |
-| High | Live stick input and aircraft response | Rework R3-18…20, 00:38.5–00:43.5 | Keep five seconds: one clean second, then four seconds with a stable transmitter display and a few genuine flight values. Move the separate Cockpit-preset demonstration to a follow-up. This is an explicit change from R3's two-preset coverage. |
-| High | Bisonte shallow-shore pass | Alternate for R3-30, 01:18.5–01:23 | Use the existing 4.5 seconds. MONSTER CAR 2 retains the opening jump; Bisonte demonstrates another activity. Its own jump/landing leaves this alternate master. |
-| High | MoonRunner hand-launch release | Enrich R3-04, 00:08.5–00:11 | Same 2.5 seconds, beginning at the real release and following the initial climb. No visible throwing person is established. |
-| High | Wind and moonlit field | Compose within existing ground/flight shots and R3-22 | No added cuts. Keep the featured vehicle and its movement dominant. |
-| Conditional | Storm flash behind a flying wing | Alternate composition for R3-04 | Same 2.5 seconds if a real flash and readable aircraft occur together. Choose this or the launch emphasis; avoid asking the shot to prove both. |
-| Companion / longer cut | FPV turtle recovery | A separate recovery sequence | Allow roughly 6–8 seconds on paper for tip-over, righting and return to flight. R3-09 has only 1.5 seconds; its two-second shared reserve cannot fund this alone. |
+## Additional implementation detail that affects the picture
 
-These are proposed substitutions and framing choices. Preserve the Corsair orbit, all its requested stock skins, the six-second lake hold, the mechanical chapter and the five-second invitation. If a candidate is adopted, update the screenplay, storyboard and coverage ledger together. The two substitutions above keep the master length and source-class totals unchanged because both replace session footage with session footage.
+The Bisonte shore choice depends on the matching Club field/default lake and staging checks. The source tests a dry starting point and one shallow entry sample, not an entire route. Mud changes local friction/rolling resistance; the vehicle receives estimated buoyancy, water drag and wheel-spin drag. Rendered waves do not drive the physics. See [shore/surface sampling](../../../app/physics/ground_vehicle/airfield_course.gd), [environment loads](../../../app/physics/ground_vehicle/vehicle_environment.gd) and [solver integration](../../../app/physics/ground_vehicle/vehicle_dynamics.gd).
 
-## 1. Make the player's input visible
+Companion AI uses stricter launch weather limits than its lower-level circuit controller. Use calm reference-atmosphere Club conditions and qualify actual launch rather than inferring support from one isolated wind constant. Nonzero-wind foliage footage is a separate session.
 
-**Implemented path.** During an ordinary airplane flight, Pause → Session options → Flight overlays exposes the transmitter display. It follows live roll, pitch, yaw, throttle and trims, with Mode 1/Mode 2 layouts. The artwork can be selected independently as JETI DS-24 II or Radiolink T16D. Controls also provides radio, gamepad and joystick profiles; a radio needs an appropriate saved/calibrated profile.
+Imported-aircraft previews, setup eligibility, test-flight evidence and normal Home selection remain different states. The large source collections are useful casting pools; the number printed in an advertisement needs its own accepted count. The [import sheet](import-showcase.md#the-requested-300-title-prepared-not-yet-substantiated) preserves that requested idea without inventing current compatibility.
 
-**Shot.** Keep a Mustang large in an external view. The displayed roll input moves; the aircraft enters a clear bank in the same take. Hold that relationship for four seconds. A stable layout with a few useful values is more legible than asking the viewer to inspect several changing dashboards.
+## Integration decisions
 
-**Why it earns time.** It connects the grounded mechanisms to what a player actually does. For RC pilots, the control relationship is a more concrete invitation than an additional instrument close-up.
+- **Master length:** 150 seconds, replacing the 90-second R3 authority after the user's timing authorization.
+- **Bisonte:** shore interaction and a suspension comparison replace its repeated jump role. MONSTER CAR 2 retains the opening complete landing.
+- **Instruments:** master emphasizes one stable live input/response view; full preset demonstrations have a timed Field Notes sequence.
+- **Recovery:** eight seconds replace the prior 1.5-second impact punctuation.
+- **Corsair:** twelve seconds for ground checks, four for the separately labelled collective, ten for the continuous 13-skin orbit, six for the lake.
+- **Imports:** eighteen preview slots and a three-second eligible trial are integrated; 300+ remains a prepared headline requiring count evidence.
+- **Environmental details:** master compositions use them when they fit, while Field Notes provides independent readable shots. They are not silently discarded.
 
-**Limits.** The default Player preset does not include the transmitter; enable it explicitly. Selecting a radio picture does not identify the connected physical device. A claim or caption about flying with a compatible RC transmitter needs a take driven by that actual calibrated device. The overlay also displays inputs from other supported control routes. Preserve the real response and do not animate a replacement stick over unrelated flight.
-
-**Source:** [pause entry](../../../app/ui/pause_menu.gd), [overlay controls](../../../app/ui/overlays_dialog.gd), [live input snapshot and refresh](../../../app/render/overlays/overlay_manager.gd), [gimbal drawing](../../../app/render/overlays/transmitter.gd), [preset contents](../../../app/render/overlays/overlay_settings.gd), [controller setup](../../../app/ui/controller_setup.gd).
-
-## 2. Give Bisonte a different relationship with the lake
-
-**Implemented path.** Home → Bisonte MT8 → Drive opens its garage. Free drive → Start location → **Lake · Shallow shore** uses the normal driving session. The shore choice appears only when the matching Club field, default scenery/lake and staging checks are available. Selecting a new location after driving requires the offered restart.
-
-Moving tires at the waterline can produce modest droplets, per-wheel ripple rings and splash audio. Mud contact can produce clods; separate visual effects add wet sheen and grime. The ground scene drives these effects from vehicle telemetry. The underlying model also includes estimated buoyancy, water drag and wheel-spin drag, and changes surface friction/rolling resistance in mud.
-
-**Shot.** Begin with Bisonte already rolling. A close, low three-quarter view follows its front tires off the muddy bank into shallow water, then keeps the wheel contact readable. Let the actual electric motor, tires and splash supply the sound. A different supported truck skin adds the requested paint variety.
-
-**Editorial recommendation.** This is the strongest alternative to Bisonte's second jump. Using its existing 4.5-second slot keeps both trucks and gives each a distinct action. The earlier Corsair pass makes the lake a flight setting; the Bisonte shows that the shore is also a place to drive.
-
-**Limits.** The spawn checks a dry staging sample and one entry sample below 0.2 m; it does not certify an entire crossing. Choose and prove a short shallow route. The source describes an estimated open-truck displacement model. Rendered waves do not drive the water physics. Large splashes, deep-water traversability and lens spray are not guaranteed. The rings and droplets may require a closer composition than the current jump shot.
-
-**Source:** [garage choices](../../../app/vehicles/ground/ground_dashboard.gd), [normal scene and effects](../../../app/vehicles/ground/ground_scene.gd), [shore checks and muddy surface](../../../app/physics/ground_vehicle/airfield_course.gd), [wet visuals and sound](../../../app/vehicles/ground/ground_wet_effects.gd), [wet sheen/grime](../../../app/vehicles/ground/ground_effects.gd), [estimated water loads](../../../app/physics/ground_vehicle/vehicle_environment.gd), [loads applied to dynamics](../../../app/physics/ground_vehicle/vehicle_dynamics.gd).
-
-## 3. Start MoonRunner from its actual release
-
-**Implemented path.** Home offers **Start: hand launch** for supported airplanes without landing gear. The flight session installs a low, powered release state and then advances actual flight. The authored release is 1.9 m above the sampled terrain, at 6.5 m/s with a slight climb angle and full throttle.
-
-**Shot.** A close low external view catches the flying wing immediately after release and follows its first climbing bank. It gives the existing 2.5-second silhouette shot a recognizable starting action.
-
-**Limits.** The implementation initializes the aircraft at release; it does not establish a visible hand, person or throwing animation. The particular aircraft, starting camera and climb still need a readable real take. Keep the native flight speed.
-
-**Source:** [Home start choice](../../../app/ui/home.gd), [release construction and accepted reset](../../../app/sim/flight_session.gd).
-
-## 4. Make the existing field feel alive
-
-| Detail | Existing feature and route | Useful composition | Qualification |
-| --- | --- | --- | --- |
-| Windsock and foliage | Conditions → Wind & Gusts; the session's sampled wind advances the sock, Club grass and eligible trees. | Put the sock in the foreground of an existing runway/pass shot while keeping the aircraft clear. | Use nonzero wind. Supported tree assets and graphics choices matter; subtle motion must read in the actual framing. |
-| Moon, stars and runway lights | Home time choices include Evening, Moonrise and night; world lighting and the sky follow the selected time. | Enrich the existing Turbo Lumber night/blue-hour pass with a moon or lit runway. | Preserve the aircraft's real light pattern. Cloud, exposure and framing determine visibility. |
-| Birds | Settings → Graphics → Birds selects density; the Club scenery builds animated bird circuits. | Let a real flock add depth to the blimp's three-second pass. | Species/activity depend on time and conditions. Do not add a cut just to show an unreadable distant bird. |
-| Club people | The field populates pilots and spectators; supported quality levels advance head tracking toward aircraft. | Include the flight line in the background of a ground or low-pass shot. | Balanced/high scenery is needed for gaze; low quality remains static. This is head motion, not full-body character animation. |
-| Campfire | Time-of-day controls can enable a Club-field fire with flames, embers and local light. | Optional warm foreground in the existing night composition. | It must be enabled and must not obscure the vehicle. Current fire has no smoke. |
-
-Evening and Moonrise flow at 20×; the source describes minutes of flight for the transition. A full sunset in a few trailer seconds would be an editorial time-lapse. The enlarged moon option is explicitly labelled cinematic; keep any depiction consistent with the chosen setting. Use only the details that fit the composition.
-
-**Source:** [live field wind and people updates](../../../app/main.gd), [windsock response](../../../app/render/windsock_motion.gd), [Club grass wind](../../../app/scenery/imported_grass.gdshader), [eligible tree wind](../../../app/scenery/imported_tree_wind.gdshaderinc), [time choices and flow](../../../app/render/world/conditions.gd), [world/field lighting](../../../app/render/world/world.gd), [night options](../../../app/ui/time_of_day_controls.gd), [birds](../../../app/scenery/birds.gd), [gaze](../../../app/scenery/people_gaze.gd), [fire](../../../app/render/world/campfire.gd).
-
-## 5. Capture an actual storm event
-
-**Implemented path.** Conditions → Sky & clouds includes Electrical Storm. The airplane runtime presents a distant storm bank, rain curtains and seeded cloud flashes; some events can draw a cloud-to-ground bolt when Full flashes are selected.
-
-**Shot.** An aircraft remains large and recognizable against a cloud bank that genuinely flashes. The MoonRunner's current 2.5-second bank is a candidate alternate to its launch emphasis. Keep R3's rule that atmosphere supports a vehicle.
-
-**Limits.** A flash is not guaranteed within any given 2.5 seconds: the schedule can skip slots, and only some events produce a visible bolt. Select the actual recorded event. This is a distant presentation system, not evidence of traversable clouds or rain aerodynamics. The traced integration is ordinary airplane flight; it does not establish the same storm route for helicopters or Natural Random.
-
-An airplane chase/orbit shot can also use the optional rain-on-lens system. This is a lower-priority alternative, since drops can hide the aircraft. Pilot view does not show glass beads by default; scripted/capture paths have additional enablement rules, and storm audio may be disabled there. Those are later capture requirements, not new tool selections.
-
-**Source:** [sky choices](../../../app/ui/sky_controls.gd), [runtime](../../../app/main.gd), [storm bank](../../../app/render/weather/storm_bank.gd), [seeded event schedule](../../../app/environment/storm_events.gd), [flash/bolt consumer](../../../app/render/weather/lightning.gd), [visual rain mapping](../../../app/render/lens/rain_model.gd), [lens rendering](../../../app/render/lens/lens_stack.gd).
-
-## 6. Turn an FPV mistake into a recovery story
-
-**Implemented path.** The playable quad offers graded impacts and a stricter crash setting. Select graded mode and restart on the pad before recording this take. After a survivable tip-over, the player can disarm, request **Turtle mode**, arm with a fresh OFF-to-ON transition at low throttle and push the stick toward the desired flip. Selected motors run in reverse. The player then disarms and rearms for normal flight.
-
-**Shot.** One clearly separate attempt: a small tip-over, a grounded exterior view of the quad righting itself, then a clean lift-off. A brief real mode indicator helps identify the action. Sound moves from the impact pause to the short recovery motor burst and normal flight.
-
-**Why it earns attention.** It has a beginning, setback and payoff. It also communicates something useful to FPV pilots without another menu tour.
-
-**Limits and time.** Terminal crashes and depleted packs require a reset; this does not repair damaged props. Keep a real survivable case. Allow roughly 6–8 seconds as an initial edit target, with control-state changes omitted honestly between shots where needed. This does not fit R3-09's 1.5 seconds, even with its entire shared two-second reserve. Recommend a short companion film or an explicitly retimed longer cut.
-
-**Source:** [crash setting and restart](../../../app/vehicles/multirotor/multirotor_scene.gd), [player instructions](../../../app/vehicles/multirotor/multirotor_hud.gd), [mode input](../../../app/input/multirotor_input.gd), [arming and reverse-motor commands](../../../app/physics/multirotor/flight_controller.gd), [graded contact/damage](../../../app/physics/multirotor/controlled_plant.gd).
-
-## 7. Show learning and experimentation in follow-ups
-
-These features have genuine player value but need enough time for a cause and its consequence.
-
-| Feature | Implemented behavior | Proposed sequence | Scope / source |
-| --- | --- | --- | --- |
-| Angle and Acro FPV | Player-selectable attitude assistance in Angle and rate commands in Acro; the live OSD identifies the mode. | A readable bank/release in Angle, then a real Acro roll, approximately 4–5 seconds on paper. | Replacing the existing gate passage would lose racing clarity. Preserve mode labels in actual footage and use the comparison in an FPV follow-up. [Input](../../../app/input/multirotor_input.gd), [controller](../../../app/physics/multirotor/flight_controller.gd), [OSD](../../../app/vehicles/multirotor/multirotor_hud.gd). |
-| Engine-out failure practice | Home → Practice → Failure practice can inject one eligible failure in an ordinary airplane flight. | Engine sound stops; an identified failure leads to a genuine glide and landing. Allow a longer sequence, initially 6–10 seconds of selected excerpts. | For filming, leave only an eligible engine-stop or motor-power-loss type checked, set 100% probability and Early onset, then start a new flight from Home. The event still waits for eligible airborne time. Training injection, not a claim about real failure rates. [Menu](../../../app/ui/failures_menu.gd), [catalog](../../../app/failures/catalog.gd), [session](../../../app/sim/flight_session.gd). |
-| Ground Physics Lab | The garage can change gravity, grip, springs, damping, ballast mass and ballast height, then apply an experiment. | Same bumps, same angle, two actual suspension settings; allow roughly 6–8 seconds for a comparison. | Applying the settings prepares/restarts a paused session; it is not an in-air live slider. Parameters are estimated. [Dashboard](../../../app/vehicles/ground/ground_dashboard.gd), [model changes](../../../app/physics/ground_vehicle/vehicle_data.gd), [session admission](../../../app/sim/ground_vehicle/session.gd). |
-| Airplane touch-and-go | The statistics detector distinguishes a qualified touch-and-go from a bounce and records it. | Low side view of touchdown followed by climb; inspect the actual recorded result before calling it a success. | Default classification needs 0.5 s of qualified support followed by 2 s airborne. No dedicated landing-challenge mode is implied. [Rules](../../../app/statistics/rules.gd), [detector](../../../app/statistics/detector.gd), [statistics screen](../../../app/ui/statistics_screen.gd). |
-
-## 8. Other useful discoveries to retain
-
-**AI companions.** The Flight companions dialog can enable one to three autonomous Ugly Stiks flying circuits. Their sessions receive pilot commands, render controls and play engine sound. A 3–5-second player pass with distant circuit traffic could make Club field feel populated. Current restrictions include ordinary fixed-wing flight, Club field, a qualified engine/profile and calm or tightly bounded mild weather; use calm for a future proof take. They do not provide multiplayer, close formation, aerobatics, runway operations or aircraft-to-aircraft contact. Their circuit distance may make them too small in a hero shot. [Dialog](../../../app/ui/companions_dialog.gd), [launch admission](../../../app/ai/companions/manager.gd), [active agents](../../../app/ai/companions/agent.gd), [circuits](../../../app/ai/companions/circuit_controller.gd).
-
-**Imported scenery.** This is separate from R3's imported-aircraft trial. Home → Import scenery can install a Phoenix panorama preview. An exact matching calibration exposes **Fly calibrated runway** for an eligible airplane. A labelled 2–3-second pilot-eye pass could demonstrate it in a longer feature piece. The route uses six photographs around a fixed eye, calm physical weather and estimated ground/contact; it is not a freely explored 3D recreation. Other imported revisions remain previews. Select a source with suitable rights and promoted-build support before filming. The built-in Green paradise is also playable, but its open flat grass offers less visual contrast. [Importer](../../../app/ui/landscape_import.gd), [revision/calibration verification](../../../app/landscapes/phoenix_library.gd), [flight route](../../../app/app_root.gd), [panorama rendering](../../../app/landscapes/phoenix_flight.gd), [landscape catalog](../../../app/landscapes/catalog.gd).
-
-**Natural Random.** The player can review a seeded aircraft/weather/daylight briefing, draw another flight and fly the selected setup. It is limited to its Club-field stock-airplane/daylight pool and airborne starts. Useful for a practice explainer, but the briefing needs reading time. [Screen](../../../app/ui/natural_random_screen.gd), [generator](../../../app/scenarios/natural_random.gd), [scope](../../../app/scenarios/scenario_config.gd).
-
-**Finite energy and aftermath.** Supported aircraft expose fuel fill or finite battery behavior; the latter is marked experimental. Fixed-wing accidents can also lead to cosmetic wreck inspection and an estimated damage report. These offer training depth, but fuel depletion needs real elapsed flight and wreck inspection would require a separate fixed-wing incident, competing with R3's existing single-impact beat. Reserve them for focused demonstrations. [Flight details](../../../app/ui/home.gd), [fuel behavior](../../../app/physics/glow/flight.gd), [fuel instrument](../../../app/render/overlays/fuel_instrument.gd), [accident report](../../../app/ui/accident_report.gd).
-
-## Acceptance and next action
+## Status
 
 | Step | Work | Proof / status |
 | --- | --- | --- |
-| V2-FEATURE-01 | Inspect player-facing source paths for omissions in R3 | Complete as source review at the baseline above; source links accompany each candidate. |
-| V2-FEATURE-02 | Choose substitutions and synchronize the current screenplay | Pending creative selection and readable proof material. Preferred candidates: transmitter, Bisonte shore and MoonRunner release. |
-| V2-FEATURE-03 | Qualify selected shots on the promoted build | Pending real footage; use the existing [verification gates](verification-gates.md). |
+| V2-FEATURE-01 | Trace omitted player-facing features | Source review completed at the stated baseline; links above. |
+| V2-FEATURE-02 | Integrate all opportunities into timed scripts | Completed on paper in R4, Field Notes, Preflight Ballet and the import chapter. |
+| V2-FEATURE-03 | Qualify selected shots on the promoted build | Pending actual footage under the [verification gates](verification-gates.md). |
+| V2-IMPORT-COUNT | Substantiate any numerical imported-aircraft claim | Pending deduplicated current-build evidence; no 300+ public claim accepted. |
 
-For each chosen take, retain the actual vehicle, skin, field, settings and player route. Require one understandable action, readable framing at the intended output size, and sound from the demonstrated behavior. Review any disclosure in the same frame as the feature it qualifies. Preserve the [skin and continuity ledger](shot-bible.md#skin-and-continuity-ledger).
-
-This pass changed planning documentation only. It did not launch the game, capture footage, measure hardware or validate handling. The source review therefore supplies candidates for the screenplay, with visual acceptance still open.
+No new runtime, gameplay capture, hardware measurement or flight validation was performed. The original source observations remain evidence for their documented versions; the next production phase must qualify the selected images.

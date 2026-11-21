@@ -1,64 +1,65 @@
-# Trailer 2.0 — creative treatment, Revision 3
+# Trailer 2.0 — creative treatment, Revision 4
 
-**Story authority:** [R3 — MAKE IT MOVE](cinematic-script-r3.md). **Audience:** RC enthusiasts, curious new players and model creators. **Objective:** make the next step—trying the game—feel attractive and clear.
-**Working positioning:** YOUR RC WORLD. YOUR WAY. **Tone:** energetic, tactile, playful and spacious when the image deserves it. This is an authored direction, not a claim of audience testing.
+**Story authority:** [R4 — EXPAND YOUR HANGAR](cinematic-script-r4.md). The [150-second storyboard](storyboard-150s.md) owns the exact cuts and disclosures.
+**Audience:** RC enthusiasts, curious new players and model creators. **Objective:** make trying the simulator feel inviting.
+**Tone:** energetic, tactile and playful, with room for the images that deserve it. This is creative direction, not an audience-test result.
 
 ## The dramatic progression
 
-**Desire and challenge, 0–23.5 s.** Two strong actions establish flight and driving. Contrasting electric Stick, flying wing and blimp passages widen the world. A real FPV gate provides an objective the viewer can understand: approach, enter, clear. A separate brief FPV contact provides contrast before the control chapter; it never implies that a newly imported model crashed.
+**Play and recover, 00:00–00:39.** Open on a real jet pass and a complete nitro-truck landing. The electric Stick, flying wing and blimp widen the field of possibilities before a local FPV gate provides a clear objective. Angle and Acro demonstrate different responses; a separate survivable tip-over becomes a small recovery story with a real lift-off. The quad's contact effect is present only if that take actually produces it.
 
-**Control, 23.5–43.5 s.** The Corsair's grounded mechanisms reveal that the models respond. A clearly identified collective inspection makes a complicated movement visible, then a hard cut returns to playable helicopter flight. Real instruments show another way to experience the same hobby.
+**Understand the machine, 00:39–01:13.** Grounded Corsair controls turn inputs into visible motion. A clearly identified HX-700 collective inspection isolates the blade-pitch mechanism, then a hard cut returns to playable X-Cell flight. A real transmitter display and Mustang bank connect the model to the player's input. A separately identified engine-out practice flight ends with a controlled landing.
 
-**Personal expression, 43.5–78.5 s.** Smoke and night light lead into scale. The original Corsair orbit changes actual liveries, then gives way to a held lake image. Creator shows one model, one setup adjustment and one eligible trial. The viewer should feel ownership without reading a catalogue.
+**Discover the field, 01:13–01:33.** Actual AI circuit traffic, an eligible calibrated photo panorama and a real storm flash suggest different places and conditions without suggesting multiplayer, a free-roaming panorama or a storm-caused failure. Extra smoke and a readable night-lit Turbo Lumber change the mood while keeping aircraft visible.
 
-**Invitation, 78.5–90 s.** The Creator trial ends successfully. The Bisonte lands successfully, flight lifts the energy, and the film gives its download invitation five settled seconds.
+**Make it yours, 01:33–02:05.** Two real Bisonte suspension runs make a setup change visible; actual Ugly Stick scale trials lead into the explicitly cinematic three-size comparison. The Corsair earns the emotional pause: one coherent ten-second 360-degree orbit cycles through all 13 stock schemes, then the final livery holds for six uninterrupted seconds over the lake.
+
+**Open the hangar, 02:05–02:30.** A genuine Creator introduction leads to ten seconds of rapid, distinct Phoenix RC and ClearView model previews. One eligible model then makes a genuine experimental test flight. The electric Bisonte returns at the shallow shore before a five-second invitation. Previewing a model and flying an eligible model are separate results; a larger compatible-model count remains unsubstantiated.
 
 ## Direction that changes the picture
 
-- Every shot has one primary question. Can I see this model? Can I understand that movement? Can I tell what the gate requires? A new angle must help answer it.
-- The nine-second Corsair montage is intentionally fast. Fixed references make each moving part legible. The rest of the cut protects complete actions and longer hero moments.
-- All 13 visible configurations have a narrative job in the [coverage table](storyboard-90s.md#complete-fleet-coverage--distributed-not-repeated). A separate 13 × 1-second reel would repeat the strongest models and consume recognition time.
-- Keep the continuous skin-changing Corsair orbit. Follow it with a six-second lake pass using one final livery. The stillness of the edit makes the lake feel earned.
-- Skins on the Mustang, Extra, Electric Stick, blimp and other compatible subjects should be deliberate choices from actual supported assets. Reuse those existing shots; do not add a new catalogue montage.
-- A complete takeoff/landing arc matters more than another truck angle. MONSTER CAR 2 and Bisonte have distinct bodies, propulsion and sound.
-- Night has to show an aircraft, not a cluster of lights. The fixed-wing instrument preset is a HUD, not an interior camera. An inspector shot remains visibly an inspector shot.
-- Edit time between mechanical checks; do not misrepresent authored travel speeds. A full wing-fold/spread cycle needs its actual time.
-- The master uses one non-blood impact. Person-strike blood, a second crack sequence, the five-plane smoke exhibition and a detailed named/custom-skin catalogue remain separate ideas, not mandatory extra shots.
-
-## What the new skills changed
-
-The [audit](script-audit-r3-2026-11-21.md#application-of-all-nine-skills) records all nine applications. Their main practical contribution is discipline: a purpose for each shot, an intelligible action, clear continuity, truthful source categories, exact timing and a simple fallback when a hard image cannot be captured. AI can help develop and review those decisions now. No generative image is necessary to make this screenplay concrete.
+- Give the audience one primary action at a time. Show complete gate passage, truck landing and turtle recovery; let fixed references make each brief control movement understandable.
+- All 13 reviewed Home configurations have a purpose in the [fleet coverage table](storyboard-150s.md#fleet-coverage). They are distributed through the story, rather than repeated in a roster parade. The 18 imported previews are a separate, explicitly identified Creator montage.
+- Keep the Corsair's full orbit and all 13 stock skins. Livery transitions are editorial presentation, not an in-flight paint control. Match the final skin and aircraft state into the six-second lake pass; a matching reflection is conditional on a real qualified take.
+- Use actual supported non-Corsair skins as accents on the Electric Stick, MoonRunner, blimp, Mustang, Extra, Turbo Lumber and trucks. Record actual asset IDs and rights; do not invent designs.
+- Use the supported Inspector, gameplay, UI and cinematic-comparison identities. A fixed-wing Cockpit preset is a widget layout, the HX-700 inspection is not the playable X-Cell, and the three-size trio is not multiplayer.
+- Preserve native timing within mechanical and flight excerpts. Edit omitted time openly; do not compress the full eight-second wing-spreading cycle, imply the suspension setting changes in the air, or suggest the selected imports appear instantaneously in real time.
+- Keep MONSTER CAR 2 and Bisonte distinct in body, propulsion and sound: the former completes a nitro jump; the latter demonstrates suspension settings and electric shore driving.
+- A night shot needs a visible aircraft body as well as lights. The Field Notes film gives environmental details their own frames when adding them to a master shot would obscure the subject.
 
 ## Colour arc
 
-**Concept:** honest daylight reveals the machines; warm accents make them personal; blue surroundings give lights and the lake room to glow. These are taste directions, not promises of exact footage colours. Reference swatches guide a future board; they must not recolour actual skins or create effects absent from the game.
+Honest daylight reveals the machines; warmer accents suggest personalization; blue surroundings give the night aircraft and lake room to breathe. These swatches are creative references, not measured game colours. Do not recolour real skins or add effects absent from the source.
 
-| Beat | Emotion | Dominant / accent | Contrast / saturation | Reference swatches | Grade direction |
-| --- | --- | --- | --- | --- | --- |
-| Hook and variety | Excitement, clarity | Sky/field neutrals; real vehicle paint | Medium-high / moderate | #78AED0, #687C45, #D8CBB5 | Preserve sky detail and body separation; avoid crushed tyre/wing shadows. |
-| Ground mechanisms | Precision | Warm neutral airframe/ground; actual skin accents | Medium / restrained | #C9BCA6, #56616A, #E0D8C9 | Let hinge edges and fixed references read. Match all Corsair ground inserts. |
-| HX-700 inspection | Curiosity | Existing dark studio; metal/inspection colour | Local separation / restrained | #17222C, #9DAAB5, #82C4FF | Retain the studio context. Do not grade it into a fabricated outdoor scene. |
-| Smoke and night | Discovery | Warm sky to deep blue; real smoke/RGB | Medium / selective accents | #D99B62, #243D65, #88C6E4 | Keep aircraft body visible; protect actual light colours and avoid black silhouettes. |
-| Scale | Surprise | Neutral runway/daylight; actual Stick paint | Medium / moderate | #AEB5B6, #688754, #D7C6A1 | Match exposure and camera reference across giant and mini. |
-| Corsair orbit / lake | Attachment, release | Chosen real livery; warm reflection and blue water | Softer highlights / moderate | #5F879F, #D7B17D, #E5E0D4 | Match final orbit skin and lake light; no tint that disguises reflection mismatch. |
-| Finale / invitation | Confidence | Return to clear action; restrained dark brand field | Clear / controlled | #17252A, #90B758, #F3F3EC | Let successful action lift; then simplify the card for reading. |
+| Beat | Emotion | Reference swatches | Grade direction |
+| --- | --- | --- | --- |
+| Hook, fleet and FPV | Excitement, clarity | #78AED0, #687C45, #D8CBB5 | Preserve sky detail, gate visibility and separation around aircraft and trucks. |
+| Corsair mechanisms | Precision | #C9BCA6, #56616A, #E0D8C9 | Match the ground inserts; let hinge edges and fixed references read. |
+| HX-700 inspection | Curiosity | #17222C, #9DAAB5, #82C4FF | Retain the studio context; distinguish links and blade roots without inventing an outdoor setting. |
+| Practice, field and weather | Discovery | #AEB5B6, #688754, #6D7985 | Keep the aircraft legible against scenery or a real storm flash; do not grade separate weather states into apparent continuity. |
+| Smoke and night | Variety, atmosphere | #D99B62, #243D65, #88C6E4 | Keep the night aircraft body and its real lights visible; retain actual smoke colour. |
+| Setup and scale | Experiment, surprise | #AEB5B6, #688754, #D7C6A1 | Match camera and exposure across real comparisons; make the smallest aircraft findable. |
+| Corsair orbit and lake | Attachment, release | #5F879F, #D7B17D, #E5E0D4 | Match the final livery, aircraft state and direction; no grade that conceals a reflection mismatch. |
+| Imported previews and invitation | Possibility, confidence | #263139, #90B758, #F3F3EC | Use the real Creator backdrop and stable framing; simplify the final card for reading. |
 
-**Motif:** warm highlights recur in the Corsair payoff. The actual selected livery determines its accent colour, not the other way around.
+The selected Corsair livery determines its accent colour. The palette never determines the skin.
 
 ## Sound arc
 
-Use distinct source voices: jet turbine, MONSTER CAR 2 nitro, electric Stick, quieter blimp, quad motors, grounded mechanisms where actually audible, helicopter rotor, Mustang gasoline prop, Extra/baseline Stick glow reference, Corsair radial, and Bisonte electric/tyres. A vehicle's identity should survive under the score.
+Use distinct source voices where available: turbine, MONSTER CAR 2 nitro, electric Stick, quieter blimp, quad motors, helicopter rotor, Mustang propeller, Extra smoke-flight engine, Corsair radial and Bisonte electric motor, tyres and water. A vehicle's identity should survive under the score.
 
-Music drops to a pulse at the mechanisms, opens up at the lake, takes a brief interruption at the genuine contact, and resolves after successful play. A stationary inspector rotor does not receive full-speed flight sound. Mechanical sound that the source does not provide must not be invented as evidence of a simulated system.
+Make a brief controlled drop at the actual quad contact, then let the recovery motors lead back into the score. Reduce the score to a pulse for the ground checks. The inspector's stationary rotor does not receive full-speed helicopter audio; that sound begins after the separate X-Cell cut. The practice aircraft's real power loss earns its own space. Open the score at the Corsair lake cut and resolve it after the Bisonte shore pass.
 
-The [music research](research-music-and-trailers.md) remains an un-auditioned shortlist. Measure the actual track before assigning beats or gains. Historical audio fixes are not presets for new stems.
+The preview montage uses editorial rhythm, not fabricated engine demonstrations; a real propulsion sound can enter with the eligible trial. The [music research](research-music-and-trailers.md) remains an un-auditioned shortlist. Measure an actual licensed track before specifying beats or gains. Historical mix fixes are not presets for new stems.
 
 ## Text and variants
 
-Six headline events are planned; actual HUD, names, scale labels and source disclosures share their reading budget. The [storyboard](storyboard-90s.md#title-and-disclosure-placement) owns exact placement. End on the logo, PLAY FREE, verified URL and actual product status.
+The [storyboard](storyboard-150s.md#title-and-disclosure-placement) owns the actual title and qualification timings. Names, real HUD indicators and source disclosures share the viewer's reading budget. The import blocks hold one source label each instead of 18 flashing names. **EXPAND YOUR HANGAR** is the current headline; a 300+ claim is conditional on the evidence described in the [import showcase](import-showcase.md#the-requested-300-title-prepared-not-yet-substantiated).
 
-The English main cut leads. Spanish copy, 30-second discovery and six-second derivatives follow picture review. The separate [32-second preflight idea](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet) can show mechanisms at their proper pace. No additional version has been rendered.
+The English master leads; Spanish copy and short derivatives follow picture review. The timed [90-second Field Notes](feature-companion-films.md#field-notes--90-seconds) gives instruments, practice and field details room, and the [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet) shows complete mechanical travel. These are scripts, not rendered versions.
 
 ## What remains open
 
-The direction is a working screenplay, not picture lock. Test phone-size readability, the one-second tail inserts, night body visibility, collective framing, the uninterrupted orbit, matching water reflection and end-card reading on actual future media. The [verification gates](verification-gates.md) own these decisions; tool selection follows the script review.
+The cut totals 150 seconds on paper; there is no unallocated timing reserve. If a proof shot needs longer, explicitly transfer a complete eligible feature to Field Notes and update the master and storyboard once. Protect the full orbit, lake, import chapter, recovery outcome, core fleet and five-second invitation.
+
+Future review must test phone-size and silent readability, especially half-second import silhouettes, tail controls, the smallest Stick, night body, actual control response, collective framing and lake reflection. The [verification gates](verification-gates.md) own acceptance. No footage, music, target-hardware result or export has been accepted.

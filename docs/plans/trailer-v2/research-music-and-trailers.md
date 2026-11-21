@@ -1,8 +1,8 @@
 # Trailer 2.0 — music and internet research
 
-**Research checked 2026-11-21. Status: candidates and license documentation only.** No audio has been downloaded, auditioned end-to-end, mixed, synchronized, or uploaded. A composer-page description is not proof that the track will fit 90 seconds, that its beat falls at a proposed cut, or that it is claim-free.
+**Research checked 2026-11-21. Status: candidates and license documentation only.** No audio has been downloaded, auditioned end-to-end, mixed, synchronized, or uploaded. A composer-page description is not proof that the track will fit the current 150-second master, that its beat falls at a proposed cut, or that it is claim-free.
 
-**R3 use:** this is retained source/candidate research. The [current screenplay](cinematic-script-r3.md) owns timing and sound placement; no track or software is selected by this audit.
+**R4 use:** this is retained source/candidate research. The [current screenplay](cinematic-script-r4.md) owns timing and sound placement; no track or software is selected by this audit.
 
 ## Musical brief
 We want a game trailer with a punch in the first five seconds, recognizable actions across the whole fleet, an energetic rhythm for nitro trucks and FPV, a brief early contact accent, a precise quieter mechanism chapter, an airy Corsair orbit/lake payoff, and a memorable successful-play finish. Hybrid orchestral plus synth and percussion suits this, but don't let a nonstop climax drown out turbine, radial, electric motor and nitro engine voices.
@@ -28,7 +28,7 @@ Scott Buckley's [licensing page](https://www.scottbuckley.com.au/licensing/) exp
 - Do not download major-label songs from YouTube/Spotify or assume streaming availability equals synchronization rights. Don't add any external audio to Git during this phase.
 
 ## Actual listening test and cue-sheet requirements
-For each music file when future production begins: record original duration and audio hash; identify start transient, intro, changes every 4/8 bars, tempo by measurement, half-time/break, impact-friendly silence, strong climax and resolved ending; build two 90 s test edits without forced tempo changes. Compare candidate cuts with and without effects. Score 1–5 after actual listening on opening hook, driving middle, lake breathing room, crisp sonic gap at crash, finale chord, natural 90 s segmentation and rights ease. **Current priority order is conceptual, not the result of an audio audition.**
+For each music file when future production begins: record original duration and audio hash; identify start transient, intro, changes every 4/8 bars, tempo by measurement, half-time/break, impact-friendly silence, strong climax and resolved ending; build two 150 s candidate test edits without forced tempo changes. Compare candidate cuts with and without effects. Score 1–5 after actual listening on opening hook, driving middle, lake breathing room, crisp sonic gap at crash, finale chord, natural 150 s segmentation and rights ease. **Current priority order is conceptual, not the result of an audio audition.**
 
 For the selected music preserve composer, official link, downloadable file SHA-256, exact credit/license, date, final in/out timestamps, transforms, destination platforms, Content ID state and final acknowledgement. Make an audio-only listening session and a phone-speaker listening test; the old v9.13 required rotor -12.4dB correction because the rotor masked score.
 

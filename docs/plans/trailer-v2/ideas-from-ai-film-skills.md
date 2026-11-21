@@ -1,16 +1,18 @@
 # Trailer 2.0 — creative opportunities discovered during the AI-skills research
 
 **Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.
-**Current screenplay:** [Revision 3](cinematic-script-r3.md), developed in the user-requested audit after this idea round. The concepts below are the retained idea bank; R3 owns their selected form and timing.
+**Current screenplay:** [Revision 4](cinematic-script-r4.md). This is the retained idea bank; R4 and its timed companions own selected forms, source qualifications and timing.
 **Sources:** [AI filmmaking skill and Reddit research](research-ai-video-skills-2026-11-21.md).
 
-## Disposition after the R3 review
+## Disposition after the R4 integration
 
-- **Adopted:** full Corsair skin orbit into a held final-skin lake pass; supported skins distributed across other vehicles; actual FPV outside/inside views; real trial scale proof plus disclosed trio; genuine widgets; distinct engine sounds.
-- **Added from the new request:** nine seconds of Corsair ground mechanisms, a labelled three-second collective study and a separate [32-second mechanical vignette](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
-- **Simplified:** one meaningful Creator adjustment before a successful eligible trial, one caption, five-second invitation, fleet coverage distributed across the film.
-- **Deferred from the master:** five-plane smoke formation, full import-format gallery, additional weather/impact scenes and person-strike blood. One non-blood FPV contact is planned, pending qualification.
-- **Not started:** generated previs, animatic, actual tools selection, captures, music auditions and final editing.
+- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, then six uninterrupted seconds over the lake; actual skins across the other vehicles; complete FPV gate coverage; real scaled trials plus disclosed trio; distinct propulsion sounds.
+- **Mechanics:** twelve seconds of Corsair ground checks, four seconds of labelled collective inspection, separate playable helicopter flight and the retained [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
+- **New master actions:** hand launch, Angle/Acro, turtle recovery, live transmitter input, engine-out practice, AI circuits, calibrated imported scenery, actual storm flash, suspension tuning and Bisonte at the shallow shore.
+- **Import expansion:** [15-second Phoenix/ClearView chapter](import-showcase.md), with 18 provisional real previews in ten seconds and a same-model eligible test flight. The 300+ numerical variant is inactive pending compatible-model count evidence.
+- **Concrete companion coverage:** [90-second Field Notes](feature-companion-films.md) gives presets, touch-and-go statistics, Natural Random, finite energy, wreck inspection, Green paradise and environmental details timed scenes.
+- **Outside the current package:** five-plane smoke formation and person-strike blood. The master has one survivable quad impact/recovery; a separate fixed-wing incident belongs to Field Notes.
+- **Not started:** generated previs, actual animatic, production-tool selection, new imports/captures, music auditions and finished edits.
 
 ## Top five — strongest creative return
 

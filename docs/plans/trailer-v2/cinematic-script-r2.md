@@ -1,12 +1,12 @@
 # OPEN RC SIMULATOR — TRAILER 2.0
 ## Director's screenplay — Revision 2: "EVERY VIEW. EVERY MACHINE."
 
-**Historical working revision — superseded by [Revision 3](cinematic-script-r3.md).**
+**Historical working revision — followed by [R3](cinematic-script-r3.md); [R4](cinematic-script-r4.md) now owns current direction.**
 
 **21 November 2026 · SCRIPT ONLY · Not a capture plan, implementation or approved edit**  
 **Target runtime:** 90 seconds; no voice-over required. The picture and original game sound must tell the story even on mute.  
 **Working positioning:** "Your RC world. Your way."  
-**Historical authority:** Revision 2 superseded the first-pass timing when written. The current storyboard and shot bible now follow R3. Retain this text as the reviewed input; its timing, mandatory shots, wording and source assumptions are not current direction.
+**Historical authority:** Revision 2 superseded the first-pass timing when written. The current storyboard and shot bible now follow R4. Retain this text as the reviewed input; its timing, mandatory shots, wording and source assumptions are not current direction.
 
 ### Narrative principle
 The first cut says **there is more than one kind of RC**. The second says **you're at the controls**. The last says **you can make this world your own**. We do not spend 90 seconds reading features; we watch them *happen*. Every change of camera, vehicle, weather, color or model scale should answer an emotional question: "What else can I do here?"

@@ -1,56 +1,63 @@
 # OPEN RC SIMULATOR — Trailer 2.0 preproduction
 
-**Updated:** 21 November 2026. **Status:** screenplay and supporting documentation only.
+**Updated:** 21 November 2026. **Status:** integrated screenplay package; production tools and footage come later.
 **Branch:** docs/trailer-v2-preproduction-2026-11-21. **Track / owner:** V2 / trailer director-editor.
-**Game-source baseline reviewed:** 57abea025f62b20233ca281d58d2acbee4ab8b8e. The exact promoted build remains a later production decision.
-**Previously requested filming host:** Windows PC with NVIDIA RTX 3090. Choose the concrete capture and editing tools after the screenplay review.
+**Game-source baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e. The exact promoted build remains a production decision.
+**Previously requested filming host:** Windows PC with NVIDIA RTX 3090; 1080p60 first. The script specifies desired images without selecting new capture/editing tools.
 
 ## Current screenplay and reading order
 
-1. **[Director's screenplay — Revision 3: MAKE IT MOVE](cinematic-script-r3.md)** is the current story authority: exactly 90 seconds on paper, distributed 13-vehicle coverage, real ground mechanisms, a labelled collective study, and the preserved Corsair orbit followed by the lake.
-2. **[R3 audit](script-audit-r3-2026-11-21.md)** explains findings, application of all nine filmmaking skills, accepted tradeoffs, source checks and remaining evidence.
-3. **[90-second storyboard](storyboard-90s.md)** gives exact planned cut positions, source classes, fleet coverage, text and runtime arithmetic.
-4. **[Mechanical sequences](mechanical-sequences.md)** develops the nine-second Corsair montage, three-second collective insert and separate 32-second preflight companion-film idea.
-5. **[Feature opportunities from the code](feature-opportunities.md)** records additional playable features, visual details and exact timing tradeoffs: live transmitter inputs, Bisonte at the shallow shore, MoonRunner release, turtle recovery and more. These are source-backed candidates; R3 remains the current cut.
-6. [Creative treatment](creative-treatment.md) gives the dramatic arc, sound and palette intent.
-7. [Shot bible](shot-bible.md) gives hero framing, skin/continuity records, alternatives and scene grouping.
-8. [Verification gates](verification-gates.md) distinguish current paper/source review from later visual proof and release acceptance.
+1. **[Director's screenplay R4 — EXPAND YOUR HANGAR](cinematic-script-r4.md)** is the current story authority: exactly **150 seconds**, with recovery, mechanisms, practice, customization, the full Corsair signature and a 15-second import chapter.
+2. **[150-second storyboard](storyboard-150s.md)** gives 62 planned cuts, source classes, fleet coverage, reading windows and exact timing.
+3. **[Phoenix RC / ClearView import showcase](import-showcase.md)** specifies 18 provisional imported previews in ten seconds, one same-model eligible flight, the 10-second alternate and the evidence required for a 300+ headline.
+4. **[Integrated feature opportunities](feature-opportunities.md)** assigns every discovered function/detail to the master or a fully timed companion, with source links and boundaries.
+5. **[Field Notes companion](feature-companion-films.md)** is a 90-second paper screenplay for readable presets, touch-and-go statistics, Natural Random, finite energy, wreck inspection and field details.
+6. **[Mechanical sequences](mechanical-sequences.md)** owns the twelve-second Corsair ground montage, four-second collective study and separate 32-second Preflight Ballet.
+7. **[R4 audit](script-audit-r4-2026-11-21.md)** records what changed, why the master grew, source/count findings and the scope of verification.
+8. [Creative treatment](creative-treatment.md) and [shot bible](shot-bible.md) define dramatic rhythm, sound, composition, skins and continuity.
+9. [Verification gates](verification-gates.md) separate paper/source evidence from later actual footage and release acceptance.
 
-## Creative decisions in R3
+## Decisions integrated in R4
 
-- Keep the 90-second, 16:9 master; 1080p60 is the first future qualification target. Voice-over is optional; the picture must work on mute.
-- Show all 13 current visible configurations across meaningful scenes. Replace the separate one-second roster parade with a coverage ledger.
-- Give grounded Corsair wing spreading, ailerons, elevator, rudder, flaps and canopy nine seconds. Show helicopter collective in the separate articulated inspector for three seconds, visibly identified; then cut to actual playable X-Cell flight.
-- Preserve the original continuous Corsair orbit and its full stock-skin cycle, with real livery changes made in presentation/editing. Follow it with a six-second lake pass holding the final skin. Its actual planar reflection is a target that still needs proof.
-- Distribute actual supported skins across other existing vehicle shots. Select and record their real IDs later; do not invent paint options.
-- Keep real FPV gate racing, genuine widgets, coloured smoke, readable night lighting, supported Stick scaling, an eligible Creator trial, both trucks and one non-blood contact effect.
-- Hold the final invitation for five seconds. Prioritize complete actions and readable mechanisms over another fast flourish.
-- Count source categories honestly: 65.5 seconds planned session footage, 5.5 seconds genuine UI, 14 seconds cinematic/inspection material and 5 seconds end card. This supersedes the earlier 80–85% gameplay target.
+- The user authorized choosing the timings for the expanded material. The working master grows from 90 to **150 seconds**, preserving complete actions and the existing core-fleet coverage.
+- The import chapter lasts **15 seconds**: two seconds of genuine Creator introduction, ten seconds of **18 actual preview targets**, then three seconds of the **same last model's eligible experimental trial**.
+- The current headline is **EXPAND YOUR HANGAR**. The requested **300+ MODELS TO IMPORT** variant is prepared but inactive until a deduplicated, build-specific compatibility count supports it. Source catalog sizes are not import/flight-success totals.
+- The Corsair has twelve seconds of grounded mechanisms, a continuous **ten-second orbit across all 13 stock skins**, and a **six-second final-skin lake hold**. Its actual planar reflection remains a proof target.
+- The separate HX-700 collective study lasts four seconds and stays visibly identified; playable X-Cell flight follows for four seconds.
+- FPV now includes actual gates, Angle/Acro and an eight-second survivable turtle-recovery story. Mustang shows live input/response. Engine-out practice, AI traffic, calibrated scenery, real storm atmosphere and Physics Lab each have timed master beats.
+- Bisonte shows a suspension comparison and shallow-water driving; MONSTER CAR 2 retains the opening jump/landing. Actual supported skins remain distributed across the fleet.
+- Every remaining opportunity has a timed Field Notes destination. The fuller tailhook/taxi/airborne retracts remain in Preflight Ballet.
+- The end card keeps five settled seconds. R4 has no inherited two-second reserve.
+- Planned source budget: **112 s session footage + 15 s genuine UI + 18 s presentation/inspection + 5 s end card = 150 s / 9,000 frames** at the intended 60 fps.
 
-## Working documents and retained research
+## Historical revisions and retained research
 
-- [Revision 2](cinematic-script-r2.md): retained prior screenplay; its timecodes and creative mandates are superseded by R3.
-- [AI video skills research](research-ai-video-skills-2026-11-21.md) and [vendor manifest](vendor-skills-manifest.json): dated import/provenance record for five MIT upstream and four original OpenRC skills.
-- [Ideas from the AI filmmaking research](ideas-from-ai-film-skills.md): retained idea bank, with R3 disposition notes.
-- [Music and external research](research-music-and-trailers.md): retained candidate research; no audition or music choice has been completed.
-- [Windows RTX3090 capture study](windows-rtx3090-capture.md): prior implementation options and constraints, to revisit after script review. It does not select tools for R3 or prove a take.
+- [R3 screenplay](cinematic-script-r3.md), [90-second storyboard](storyboard-90s.md) and [R3 audit](script-audit-r3-2026-11-21.md) are retained historical work; their timing is superseded by R4.
+- [R2 screenplay](cinematic-script-r2.md) is earlier historical input.
+- [AI video skills research](research-ai-video-skills-2026-11-21.md) and [vendor manifest](vendor-skills-manifest.json) preserve provenance for five MIT upstream and four original OpenRC skills.
+- [AI filmmaking idea bank](ideas-from-ai-film-skills.md) includes current disposition notes.
+- [Music research](research-music-and-trailers.md) remains an un-auditioned candidate list; R4 owns the new sound positions.
+- [Windows RTX3090 capture study](windows-rtx3090-capture.md) preserves prior implementation options for the later tools phase.
 
-Some imported project skills still mention R2 by filename. Read this index first: their R2 reference is historical input, not authority to restore superseded timing. The nine skill files and their licensed source text are unchanged by this screenplay revision.
+Some project skills still mention R2 by filename. Read this index first: those references are historical input, not authority to restore older timings. This revision changes no skill files or licensed upstream text.
 
-## Scope and next steps
-
-Owned work for this revision is the documentation in this directory. No game code, capture tool, skill implementation, media, audio or asset is changed. No new footage, renderer/hardware test, AI generation or video-package installation has occurred. Main is unchanged.
+## Work status
 
 | Step | Work | Proof / status |
 | --- | --- | --- |
-| V2-SCRIPT-01 | Audit R2 and read all nine selected skills | Findings and application matrix in R3 audit. |
-| V2-SCRIPT-02 | Revise story, timing, mechanics and supporting documents | R3 and synchronized storyboard; paper/source checks only. |
-| V2-SCRIPT-03 | Review actual storyboard/animatic readability | Pending future visual material; user creative feedback can refine this working script. |
-| V2-TOOLS-01 | Select capture/editing routes from accepted shot needs | Deferred until screenplay review; preserve existing tool research as input. |
-| V2-PROOF-01 | Qualify hard shots on selected build/host | Pending: collective framing, mechanisms, orbit, lake, gates, scale, Creator and night. |
+| V2-SCRIPT-01 | Audit R2 with the nine filmmaking skills | Completed in the retained R3 audit. |
+| V2-SCRIPT-02 | R3 story/mechanics revision | Historical 90-second paper cut retained. |
+| V2-FEATURE-01 | Source investigation for additional opportunities | Completed; integrated ledger retains implementation references. |
+| V2-SCRIPT-04 | R4 integration, timing and import expansion | Current 150-second screenplay, synchronized support docs, 90-second and 32-second companions; paper/source review. |
+| V2-SCRIPT-03 | Actual storyboard/animatic readability | Pending future visual material. |
+| V2-IMPORT-COUNT | Qualify a numerical import claim | Pending; 300+ is not substantiated by the reviewed evidence. |
+| V2-TOOLS-01 | Select concrete capture/editing routes | After the screenplay review. |
+| V2-PROOF-01 | Qualify takes on selected build/host | Pending actual mechanics, recovery, orbit/lake, imports, light, water and other selected footage. |
+
+Owned changes are planning documents in this directory. No game code, source-model binaries, skill implementation, capture tool, footage or music is changed. No new import batch, game launch, renderer/hardware test, generation or installation occurred. The main branch is unchanged.
 
 ## Existing foundation
 
 [Previous film plan](../cinematic-trailer.md), [v9.13 review](../../research/cinematic-trailer/revision-9-2026-10-29.md), [capture-tool documentation](../../../tools/trailer/README.md), [v9.13 delivery identity](../../research/cinematic-trailer/delivery-v9-2026-10-29.json).
 
-The October v9.13 English/Spanish film was recorded as a local export. This review read its documents; it did not inspect or play the final MP4. Historical measured results remain evidence for their original source and host only.
+The October v9.13 English/Spanish film was recorded as a local export. Its documents inform this plan; the final MP4 was not newly inspected. Historical results retain their original source/build/host scope.

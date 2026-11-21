@@ -1,13 +1,13 @@
 # Trailer 2.0 — mechanisms that tell a story
 
 **21 November 2026 · V2 · Screenplay support, not capture instructions**
-**Current master:** [R3](cinematic-script-r3.md), 00:23.5–00:38.5. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e, unchanged by the trailer branch at audit head 046839601c76f6416ca7315eeeb635706a884dee. No mechanism was newly rendered or filmed during this review.
+**Current master:** [R4](cinematic-script-r4.md), 00:39–00:59. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e; the trailer revision changes planning documents only. No mechanism was newly rendered or filmed during this review.
 
 ## Director's idea: let the mechanism explain itself
 
 The viewer should see a fixed part, a moving part and the relationship between them. A blade root changing angle is more informative than a spinning rotor blur. Opposed ailerons need both wings in frame. Elevator and rudder need distinct angles. The canopy should slide against a visible cockpit rim. A partly moving wing must finish in a clear gull-wing silhouette.
 
-Use one movement per insert, usually with a locked camera. The fast cut comes from changing the subject, not from speeding up the simulation. Record full movements later, then choose honest native-speed excerpts for the master. Avoid suggesting that a nine-second montage is a complete real-time preflight procedure.
+Use one movement per insert, usually with a locked camera. The fast cut comes from changing the subject, not from speeding up the simulation. Record full movements later, then choose honest native-speed excerpts for the master. Avoid suggesting that a twelve-second montage is a complete real-time preflight procedure.
 
 ## What the current source actually supports
 
@@ -20,7 +20,7 @@ Use one movement per insert, usually with a locked camera. The fast cut comes fr
 | Corsair ailerons | Actual flight-session controls | Show opposite movement against fixed wings. Keep wing panels spread/locked. | [Model bindings](../../../app/data/aircraft_models/f4u-corsair-250.json), [surface mapping](../../../app/physics/control_surfaces.gd), [render pose](../../../app/main.gd). |
 | Corsair elevator / rudder | Actual flight-session controls | Film separately so vertical pitch-control movement and lateral yaw-control movement are distinguishable. These are surface movements, not proof of cockpit stick/pedal animation. | Model bindings; [imported model control application](../../../app/aircraft/imported_model.gd). |
 | Corsair flaps | Actual flight-session flap state | Three panels per side; the 30-degree maximum is sourced from the CARF manual. The approximately 2.5-second actuator travel is an authored estimate. Show a settled end pose; neither establishes a measured servo-response validation. | [Aircraft configuration](../../../app/data/aircraft/f4u_corsair_250.json), main render pose. |
-| Corsair wing fold/spread | Playable presentation mechanism | Available while stopped on wheels; throttle held at idle until spread/locked. Authored full travel about eight seconds, first 12% releases locks, maximum fold 112 degrees. A 2.5-second master insert is an excerpt. | [Ground interlock and mechanism update](../../../app/main.gd), [geometry](../../../assets/aircraft/f4u-corsair-250/model-geometry.json). |
+| Corsair wing fold/spread | Playable presentation mechanism | Available while stopped on wheels; throttle held at idle until spread/locked. Authored full travel about eight seconds, first 12% releases locks, maximum fold 112 degrees. The three-second master insert is an excerpt. | [Ground interlock and mechanism update](../../../app/main.gd), [geometry](../../../assets/aircraft/f4u-corsair-250/model-geometry.json). |
 | Corsair sliding canopy | Playable presentation mechanism | Real canopy travel, about 2.5 seconds and 0.1556 m in the authored geometry. Side view needs fixed cockpit rim. Interior appearance remains a visual-inspection question. | Main mechanism update; geometry canopy entry. |
 | Corsair tailhook | Playable presentation mechanism | About 1.5-second authored travel; ground contact limits the lowered pose. Do not promise a full 45-degree travel through the runway or carrier arresting gameplay. | Main mechanism update and ground_limited_fraction; geometry tailhook entry. |
 | Corsair retracts / doors | Actual session-driven rig, **airborne for retraction** | Gear fold/twist and doors can be shown after takeoff. The simulator blocks retraction under weight on wheels. Do not stage the aircraft on the runway with retracting support wheels. | [Gear samples](../../../assets/aircraft/f4u-corsair-250/gear-samples.json), [gear renderer](../../../app/render/ground_gear.gd), [session gear interlock](../../../app/sim/flight_session.gd). |
@@ -30,31 +30,31 @@ Use one movement per insert, usually with a locked camera. The fast cut comes fr
 
 The old [v9.13 revision record](../../research/cinematic-trailer/revision-9-2026-10-29.md) contains a separate **cyclic** inspector shot and a Corsair deck test. Those records help direct the new material; they do not validate the requested collective shot or current-build footage.
 
-## Main-trailer insert — nine seconds of Corsair, three of collective
+## Main-trailer insert — twelve seconds of Corsair, four of collective
 
 | Master ID | Seconds | Frame and movement | End condition |
 | --- | ---: | --- | --- |
-| R3-10 | 2.50 | Low front three-quarter, ~35–50 mm equivalent feeling; last part of wing spreading. Both outer panels and runway remain visible. | Spread/locked silhouette holds briefly. |
-| R3-11 | 1.25 | Rear three-quarter, moderate lens; both ailerons and fixed wing. One roll input. | Opposed deflection is visible; no hidden far aileron. |
-| R3-12 | 1.00 | Side close-up, ~65–85 mm feeling; elevator plus fixed tailplane. | Movement direction is readable on mute. |
-| R3-13 | 1.00 | Rear-oblique close-up; rudder plus fixed fin. | Lateral movement is distinct from previous insert. |
-| R3-14 | 1.50 | Low wing detail; final portion of flap deployment. | Panels reach a settled angle. |
-| R3-15 | 1.75 | Side canopy close-up; fixed cockpit rim remains in view. | Sliding canopy settles; no promised cockpit controls. |
-| R3-16 | 3.00 | Clearly labelled HX-700 studio inspection, tight head view; stopped rotor and visible blade roots. ~0.5 s neutral, ~1.5 s movement, ~1 s hold are creative targets. | Both blade-pitch changes and swash/link relationship can be understood. |
-| R3-17 | 3.00 | Hard cut to playable X-Cell, full side silhouette, forward movement past a field landmark. | Viewers recognize a new context and actual flight. |
+| R4-14 | 3.00 | Low front three-quarter, ~35–50 mm equivalent feeling; last part of wing spreading. Both outer panels and runway remain visible. | Spread/locked silhouette holds briefly. |
+| R4-15 | 2.00 | Rear three-quarter, moderate lens; both ailerons and fixed wing. One roll input. | Opposed deflection is visible; no hidden far aileron. |
+| R4-16 | 1.50 | Side close-up, ~65–85 mm feeling; elevator plus fixed tailplane. | Movement direction is readable on mute. |
+| R4-17 | 1.50 | Rear-oblique close-up; rudder plus fixed fin. | Lateral movement is distinct from previous insert. |
+| R4-18 | 2.00 | Low wing detail; final portion of flap deployment. | Panels reach a settled angle. |
+| R4-19 | 2.00 | Side canopy close-up; fixed cockpit rim remains in view. | Sliding canopy settles; no promised cockpit controls. |
+| R4-20 | 4.00 | Clearly labelled HX-700 studio inspection, tight head view; stopped rotor and visible blade roots. ~1 s neutral, ~2 s movement, ~1 s hold are creative targets. | Both blade-pitch changes and swash/link relationship can be understood. |
+| R4-21 | 4.00 | Hard cut to playable X-Cell, full side silhouette, forward movement past a field landmark. | Viewers recognize a new context and actual flight. |
 
-Lens numbers are composition references, not chosen software-camera settings. The one-second tail shots are the main readability risk: capture their full travel and extend the edit if the action cannot be read. R3 has one shared two-second final-flourish reserve, allocated only once; reconcile competing timing needs before retiming. Never turn the rotor studio into a fake field scene or remove the inspection identification to conceal its origin.
+Lens numbers are composition references, not chosen software-camera settings. The 1.5-second tail details still need a real readability check: capture their full travel and retime if the action cannot be read. R4 has no spare reserve; transfer an explicitly identified lower-priority chapter to Field Notes before extending these inserts. Never turn the rotor studio into a fake field scene or remove the inspection identification to conceal its origin.
 
 ### Collective-specific acceptance
 
 - The frame includes both blade roots, the swashplate and enough fixed mast to judge motion. Main blades are visible; a blade does not wipe across the lens.
 - Collective changes while cyclic remains neutral and phase stays fixed. Rotor RPM is not the visual explanation.
-- The full three-second insert carries **HX-700 · MECHANICAL INSPECTION**. The following field clip identifies the playable X-Cell; do not match-cut between the rigs as if they were one aircraft in one session.
+- The full four-second insert carries **HX-700 · MECHANICAL INSPECTION**. The following field clip identifies the playable X-Cell; do not match-cut between the rigs as if they were one aircraft in one session.
 - The requested neutral/move/hold timing is checked in real output later. Source support and the old cyclic clip do not count as a passed visual test.
 
 ## Separate 32-second idea — THE PREFLIGHT BALLET
 
-**Purpose:** a future companion film for viewers who want to see the mechanisms properly. This is an additional screenplay idea, not another deliverable being rendered now and not an extension silently appended to the 90-second master.
+**Purpose:** a future companion film for viewers who want to see the mechanisms properly. This is an additional screenplay idea, not another deliverable being rendered now and not an extension silently appended to the 150-second master.
 
 | Proposed interval | Duration | Shot |
 | --- | ---: | --- |
