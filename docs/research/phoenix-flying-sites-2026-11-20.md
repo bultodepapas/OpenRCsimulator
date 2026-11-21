@@ -208,6 +208,24 @@ For X98, the source faces show the deck in directions 1–3 and 6. The descripto
 
 Private captures and telemetry are retained at `U:/openrc-tmp/phoenix-flight-qa-20261120/`. The initial four-site run is `phoenix-final-flight-p_wbodrf`, with 16 captures and zero failed checks. The corrected Airfield run is `airfield-aligned-7u38po_5`. The X98 run is `carrier-final-8_2181qx`. Both repeats retained five captures and sampled contact telemetry with zero failed checks. Field settings and viewpoints are experimental calibration data. The tests cover taxi, rotation and initial climb. L-PX-03 still requires source-matched ground, obstacle contacts, photo occlusion, landing and a normal Home flight entry.
 
+### Calibrated runway in the production importer
+
+The normal Home importer now offers a runway start for five exact revisions: the map-pack Airfield, Aircraft Carrier X98, Frönäs, Farmland and Aero Club Dolores. Each profile binds the descriptor and source faces through the import revision hash and verifies the six installed PNG hashes before launch. It supplies the yaw, fixed pilot viewpoint, runway start and an estimated ground surface. Files without a recipe can still open in the 360° preview. The dry paved profiles use a 2.25 rolling-resistance multiplier calibrated to achieve stable Ugly Stick ground starts at idle. The contact parameters and dimensions are estimates. Dolores uses a grass lane without a painted centreline. The X98 test covers the deck lane. The estimated field continues as a flat ground plane beyond the visible deck, with water, the hull and photo occlusion unmodelled. [Calibration recipes](../../app/landscapes/phoenix/calibrations.json) · [Ground-start regression](../../app/tests/test_phoenix_flight_calibrations.gd)
+
+The final ground-start regression settled the Ugly Stick on each of the five profiles and checked fixed-eye camera limits and refusal of damaged assets. A macOS headless run reopened installed Airfield through the production Home controls, started flight and reset to the same position and heading (90.017° in the local frame). The flight accumulated no solver faults or crashes before reset. The engine log showed no errors, and the session exited with zero leaked objects. The browser regression passed 24 checks. The earlier staged flight captures above document visual alignment and actual takeoff in all five panoramas. They used estimated test fields before this production integration and the revised pavement coefficients.
+
+#### Windows 1080p sample
+
+One managed Windows session used an RTX 3090, OpenGL Compatibility, the High preset, 120 Hz VSync, a 1920 × 1080 drawable, and 100% internal 3D resolution. Both comparisons used the same Ugly Stick, pilot camera, calm air and native physics. The aircraft sat on the runway with the simulation active. The follow-up sample used the real imported Farmland revision from Home and recorded the last 720 frames of the takeoff and climb run. The frame times are engine process intervals. Each row is a single short run.
+
+| Scenario and phase | Mean FPS | 1% low FPS | p95 frame time | p99 frame time | Frames over 17.17 ms |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Club Field, on runway | 96.0 | 45.2 | 16.20 ms | 20.78 ms | 31 |
+| Farmland, on runway | 110.1 | 49.9 | 13.20 ms | 15.47 ms | 5 |
+| Farmland, takeoff and climb | 119.7 | 76.1 | 9.02 ms | 9.65 ms | 1 |
+
+On Farmland the aircraft moved 9.1 m along the grass lane by the rolling sample at 12.37 m/s. After elevator input, it climbed through 6.57 m above the field datum at 24.53 m/s. The capture shows the airplane separated from the grass in the climb. The follow-up frame window had no stalls of 50 ms or longer, and the final flight sample at 61.58 m reported no crash or solver fault. The test ended airborne. Windows artifacts for managed ticket `T-7e1efbb97b1f4d13827cce4c87613216` are retained under `U:/openrc-tmp/phoenix-flight-product-20261120/windows/`. The Windows snapshot preceded the Airfield asphalt adjustment and the deferred Home launch signal. Farmland's runway and renderer were identical to the final candidate. Source-matched terrain, landing and performance across the other imported fields remain open.
+
 ## Controlled Builder experiment
 
 Builder 1.0.p saves a **SITX** project through **File → New → Site → Save As**. The baseline began with a length-prefixed `CAvSiteProject_header`, and measured 1,574,498 bytes before a box was added. The community PXQ files above begin with `PHOENIXCREATOR PROJECT`. Builder's installed guide describes **File → Import** for older 3.0/4.0 PXF sites, **Test** for a local site export and **Publish** for building a PKG. Only Save and Test were exercised here.
