@@ -2,7 +2,7 @@ name: GOD TEST portable tooling
 
 on:
   push:
-    branches: ['perf/three-aircraft-performance-cycle-*']
+    branches: [main, 'perf/three-aircraft-performance-cycle-*']
     paths:
       - 'tools/godtest/**/*.py'
       - 'tools/debug/frame_watch.py'

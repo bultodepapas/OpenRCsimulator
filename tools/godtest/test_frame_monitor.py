@@ -118,7 +118,8 @@ class MonitorTests(unittest.TestCase):
 class RunnerTests(unittest.TestCase):
     def test_runner_finishes_monitor_before_owned_bridge(self):
         with tempfile.TemporaryDirectory() as root:
-            root_path = Path(root)
+            # The runner pins the resolved engine (macOS /private/var, Windows 8.3 names).
+            root_path = Path(root).resolve()
             engine = root_path / "godot"
             engine.write_bytes(b"test engine")
             events = []

@@ -4,6 +4,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import os
 from pathlib import Path
 import plistlib
 import subprocess
@@ -20,6 +21,12 @@ def csv_output(rows):
     stream = io.StringIO(newline="")
     csv.writer(stream, lineterminator="\n").writerows(rows)
     return stream.getvalue().encode()
+
+
+# Linux sysfs fixtures name directories after PCI addresses such as 0000:01:00.0.
+# Windows paths cannot contain ':'; Linux and macOS CI still run these fixtures.
+linux_sysfs_fixture = unittest.skipIf(
+    os.name == "nt", "Linux sysfs fixture needs ':' in directory names; covered on Linux/macOS")
 
 
 def nvidia_row(uuid, pci, name, *, util="65", memory_util="12", clock="1800", mem_clock="7000",
@@ -275,6 +282,7 @@ class GpuSamplerTests(unittest.TestCase):
         self.assertEqual(len(runner.calls), 22)
         self.assertEqual(result["status"], "unavailable")
 
+    @linux_sysfs_fixture
     def test_linux_amdgpu_read_only_sysfs_and_separate_devices(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -328,6 +336,7 @@ class GpuSamplerTests(unittest.TestCase):
             self.assertIn("nvidia:uuid:GPU-nv", mixed["summary_by_device"])
             self.assertEqual(len(mixed["summary_by_device"]), 3)
 
+    @linux_sysfs_fixture
     def test_linux_absence_requires_consistent_inventory_and_keeps_failures_partial(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -372,6 +381,7 @@ class GpuSamplerTests(unittest.TestCase):
             self.assertEqual(timed_out["status"], "partial")
             self.assertIn("timeout", timed_out["errors"][0]["reason"])
 
+    @linux_sysfs_fixture
     def test_non_pci_drm_device_makes_absence_unknown(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -387,6 +397,7 @@ class GpuSamplerTests(unittest.TestCase):
             self.assertEqual(result["samples"][0]["linux_inventory"]["status"], "unknown")
             self.assertIn("drm_identity", result["samples"][0]["linux_inventory"]["reason"])
 
+    @linux_sysfs_fixture
     def test_linux_gpu_disappearing_cannot_become_not_applicable_without_degrading(self):
         with tempfile.TemporaryDirectory() as temporary:
             drm, pci = self.amd_host(Path(temporary))
@@ -399,6 +410,7 @@ class GpuSamplerTests(unittest.TestCase):
                     self.assertEqual(result["backends"]["nvidia_smi"]["device_set_changes"], 1)
                     self.assertIn("device_set_changed", result["status_reasons"])
 
+    @linux_sysfs_fixture
     def test_amd_device_model_change_does_not_merge_two_identities(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -420,6 +432,7 @@ class GpuSamplerTests(unittest.TestCase):
             self.assertEqual(len(result["summary_by_device"]), 2)
             self.assertIn("not a serial", result["coverage_limitations"])
 
+    @linux_sysfs_fixture
     def test_linux_nvidia_only_amd_not_applicable_but_hidden_amd_keeps_partial(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -530,6 +543,7 @@ class GpuSamplerTests(unittest.TestCase):
         self.assertEqual(result["status"], "partial")
         self.assertIn("worker_error", result["status_reasons"])
 
+    @linux_sysfs_fixture
     def test_permissions_on_optional_sysfs_metric_are_reported(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

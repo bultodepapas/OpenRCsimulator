@@ -252,9 +252,15 @@ class ArtifactTests(unittest.TestCase):
 
 
 class SupervisionTests(unittest.TestCase):
+    def setUp(self):
+        # Standalone supervision contracts must not depend on this host's queue enrollment.
+        enrollment = mock.patch("tools.testqueue.common.enabled", return_value=False)
+        enrollment.start()
+        self.addCleanup(enrollment.stop)
+
     def test_declared_authoring_input_remains_required_when_sparse_checkout_omits_it(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             manifest = root / "app/data/aircraft_models/fixture.json"
             manifest.parent.mkdir(parents=True)
             manifest.write_text(json.dumps({"authoring": {"path": "assets/aircraft/missing.json"}}))
@@ -271,9 +277,32 @@ class SupervisionTests(unittest.TestCase):
                     runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
                 bridge.assert_not_called()
 
+    def test_source_identity_refuses_links_inside_checkout_but_not_above_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            real = Path(temporary).resolve() / "real"
+            (real / "outside").mkdir(parents=True)
+            linked = Path(temporary).resolve() / "linked"
+            try:
+                linked.symlink_to(real, target_is_directory=True)
+                # A checkout below an OS link, as macOS temp paths sit below /var.
+                root = linked / "deep" / "checkout"
+                (root / "research/performance").mkdir(parents=True)
+                (root / "research/performance/sustained_input.gd").write_bytes(b"input")
+                (root / "app/data").mkdir(parents=True)
+                (root / "app/data/real.gd").write_bytes(b"inside")
+                (root / "app/linked").symlink_to(real / "outside", target_is_directory=True)
+            except (OSError, NotImplementedError) as error:
+                self.skipTest(f"directory symlinks unavailable: {error}")
+            (real / "outside/escaped.gd").write_bytes(b"external")
+            responses = [b"fixture-commit\n", b"", b"app/data/real.gd\0app/linked/escaped.gd\0"]
+            with mock.patch.object(runner, "ROOT", root), mock.patch.object(runner.subprocess, "check_output", side_effect=responses):
+                identity = runner.source_identity()
+            self.assertEqual(sorted(identity["files"]), ["app/data/real.gd", "research/performance/sustained_input.gd"])
+            self.assertEqual(identity["excluded_or_missing"], ["app/linked/escaped.gd"])
+
     def test_snapshot_rejects_source_changed_after_identity_collection(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             source = root / "app/project.godot"
             source.parent.mkdir()
             source.write_bytes(b"changed after source identity")
@@ -288,14 +317,14 @@ class SupervisionTests(unittest.TestCase):
 
     def test_reuse_receipt_rejects_escaping_paths(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             receipt = dict(format="openrc-godtest-source-v1", root=str(root), files={"app/project.godot": "0"*64, "../outside": "0"*64}, imports={})
             with self.assertRaisesRegex(ValueError, "invalid snapshot"):
                 runner.check_frozen(receipt)
 
     def test_frozen_inputs_survive_live_edits_and_detect_snapshot_edits(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             files = {"app/project.godot": b"project", "research/performance/sustained_input.gd": b"input", "app/.godot/imported/fixture.ctex": b"import"}
             for relative, raw in files.items():
                 path = root / relative
@@ -313,7 +342,7 @@ class SupervisionTests(unittest.TestCase):
 
     def test_early_process_exit_stops_only_the_owned_session(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             engine = root / "engine.bin"
             engine.write_bytes(b"engine")
             stopped = []
@@ -339,7 +368,7 @@ class SupervisionTests(unittest.TestCase):
     def test_launched_command_and_final_engine_bytes_must_match_the_pinned_engine(self):
         for damage in ("command", "bytes"):
             with self.subTest(damage=damage), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
+                root = Path(temporary).resolve()
                 engine = root / "engine.bin"
                 engine.write_bytes(b"original engine")
                 stopped = []
@@ -377,7 +406,7 @@ class SupervisionTests(unittest.TestCase):
 
     def test_busy_progress_read_does_not_cancel_a_completed_run(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             engine = root / "engine.bin"
             engine.write_bytes(b"engine")
             output = root / "run"

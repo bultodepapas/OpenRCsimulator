@@ -83,7 +83,9 @@ def source_identity() -> dict:
             missing.append(name)
             continue
         # Refuse links/junctions to mutable external resources; do not traverse them.
-        if any(parent.is_symlink() or (hasattr(parent, "is_junction") and parent.is_junction()) for parent in [path, *path.parents] if parent != ROOT.parent):
+        # Only links inside the checkout matter; OS links above it (macOS /var) do not.
+        inside = [parent for parent in [path, *path.parents] if parent != ROOT and parent.is_relative_to(ROOT)]
+        if any(parent.is_symlink() or (hasattr(parent, "is_junction") and parent.is_junction()) for parent in inside):
             missing.append(name)
             continue
         hashes[name] = file_hash(path)
