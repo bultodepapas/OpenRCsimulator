@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-15**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their historical reproductions, derivations, measurements and limits; the A34 text has only a status banner and repaired artifact/source links. Private external links in the updated ledger are omitted; its local report references remain.
+Updated **2026-11-21**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their historical reproductions, derivations, measurements and limits; the A34 text has only a status banner and repaired artifact/source links. Private external links in the updated ledger are omitted; its local report references remain.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -16,6 +16,10 @@ observations at `45d86d2` are not current reruns. A34's bounded corrections rema
 in the [implemented ledger](COMPLETED-AUDIT-WORK.md); its local-wing closure
 question remains research, not a newly calibrated flight model. A35 F06–F08
 repairs and their fresh verification are recorded in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
+
+## A36 - current mathematical and aerodynamic hardening
+
+The [21 November audit][A36] retains five primary reproduced defects, one measured retention opportunity and three CI/runtime gaps at `57abea0`. Its [research home](../docs/research/project-audit-2026-11-21/README.md#follow-up-status) owns the current implementation and qualification status for every finding. Preserve the original PDF, evidence ZIP and baseline observations there; the UID blocker is a recurrence, and the recorder notification remains source-level evidence. Implementation work stays with the existing IAQ/AC-PX, BL, FL and CI owners.
 
 ## Contents
 
@@ -427,6 +431,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A33 | [Mathematical CPU performance review — 2026-11-09][A33] |
 | A34 | [Reverse flow, graphics/scenario separation, statistics recovery, optional resources and layered clouds][A34] |
 | A35 | [Round two — swept lake normal and tolerance, repeat statistics quarantine][A35] |
+| A36 | [Phoenix equivalence, blimp energy boundaries and runtime gaps at 57abea0][A36] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -465,3 +470,5 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 [A33]: cpu-mathematical-optimization-2026-11-09.md
 [A34]: five-findings-audit-45d86d2.md
 [A35]: ../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf
+
+[A36]: physics-math-aero-audit-57abea0.md
