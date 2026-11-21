@@ -157,6 +157,38 @@ var _frame_box_half := PackedFloat64Array([0.0, 0.0, 0.0])
 
 ## {ok, errors, plant}. `data` is a prepared multirotor document (physics/multirotor_data.gd), `rates_profile` an
 ## openrc-rates profile, `throttle_policy` FC.THROTTLE_ABSOLUTE or FC.THROTTLE_RATE.
+## A36 R7-F02: admitted bound on one motor's decay rate times the fixed controller/kernel step.
+const MOTOR_MAX_STEP_RATIO := 0.5
+
+
+## Largest h*lambda over the rotors, lambda = (1/(R Kv^2) + 2 k_Q Omega_max) / J_rotor, h = 1/SAMPLE_HZ: the
+## differential electrical-plus-aerodynamic shaft mode of an equal-duty same-spin pair (A36 R7 oracle). Common-mode
+## bus coupling, friction and contact are additional; this bound is a necessary resolution check, not a qualification.
+static func electric_motor_step_ratio(data: Dictionary) -> float:
+	var pt: Dictionary = data.get("powertrain", {})
+	var law: Dictionary = data.get("rotor_law", {})
+	var kv: float = float(pt.get("kv_rad_s_per_v", NAN))
+	var conductance: float = 1.0 / (float(pt.get("resistance_ohm", NAN)) * kv * kv)
+	var aero: float = 2.0 * float(law.get("torque_coefficient_n_m_s2", NAN)) * float(law.get("max_speed_rad_s", NAN))
+	var worst := 0.0
+	for rotor: Dictionary in data.get("rotors", []):
+		worst = maxf(worst, (conductance + aero) / float(rotor.get("inertia_kg_m2", NAN)) / float(FC.SAMPLE_HZ))
+	return worst if is_finite(conductance) and is_finite(aero) else NAN
+
+
+## A36 R7-F02: flight admission of an electric document's motor resolution. A 0.001 ohm motor (h*lambda = 11.85)
+## passed the strict loader but failed its first arming tick; stock is 0.197. Empty when resolved or not electric.
+## Component oracles may still create a plant from deliberately degenerate rotors; a flight may not.
+static func motor_step_error(data: Dictionary) -> String:
+	if str(data.get("powertrain", {}).get("law", "")) != ActuatorMap.LAW_ELECTRIC:
+		return ""
+	var ratio: float = electric_motor_step_ratio(data)
+	if is_finite(ratio) and ratio <= MOTOR_MAX_STEP_RATIO:
+		return ""
+	return "motor response is too fast for the %d Hz step (h*lambda = %s > %s); qualify a slower motor model" \
+		% [FC.SAMPLE_HZ, str(snappedf(ratio, 0.001)), str(MOTOR_MAX_STEP_RATIO)]
+
+
 static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy: int, research_sample_hz: int = 0,
 		throttle_limit: float = 1.0) -> Dictionary:
 	var errors := PackedStringArray()

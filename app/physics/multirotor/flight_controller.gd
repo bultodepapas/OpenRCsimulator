@@ -450,6 +450,8 @@ static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64A
 ## nose) cannot enter the error. The error is the body-frame axis-angle rotation carrying the measured down vector to
 ## the target, continuous everywhere except exactly opposite the target, where the declared recovery is a rotation
 ## about the body roll axis. To first order it equals the previous full-attitude error.
+## A36 R7-G01 contract: angle_max_tilt bounds each stick axis's Euler angle independently (not the resultant cone), so a
+## full diagonal stick asks for a 70.79 deg resultant tilt at the stock 55 deg (cos g = cos roll * cos pitch).
 static func _angle_rate_target(config: Dictionary, body: PackedFloat64Array, roll_stick: float, pitch_stick: float) -> PackedFloat64Array:
 	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
 	var down: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), M.v3(0.0, 0.0, 1.0))
