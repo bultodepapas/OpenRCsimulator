@@ -1,129 +1,139 @@
-# Vehicle runtime consolidation — architecture and incremental refactoring plan
+# Vehicle runtime consolidation — controls and incremental architecture plan
 
-**Date:** 2026-11-21. **Status:** proposal only; no runtime implementation. **Planning branch:** `plan/vehicle-runtime-consolidation-2026-11-21`. **Inspected source:** `main` at `57abea025f62b20233ca281d58d2acbee4ab8b8e`. **Planning steps:** VRC-00…VRC-11. **Primary scope:** the fixed-wing aircraft fleet; helicopter, airship and multirotor activity integration after the common contracts are proven. Experimental ground vehicles are an explicitly gated, secondary consumer.
+**Updated:** 2026-11-21 after [independent adversarial review](../research/vehicle-runtime-consolidation-2026-11-21/EXTERNAL-AUDIT.md). **Status:** hardened proposal; no runtime implementation or new runtime qualification. **Reviewed proposal:** `542d92b304fc3b82678c4a90b848a88d82df0b22`. **Runtime baseline:** `57abea025f62b20233ca281d58d2acbee4ab8b8e`. **Review branch:** `audit/controls-plan-adversarial-2026-11-21`. **Steps:** VRC-00…VRC-11, all open.
+
+**Priority:** preserve and improve the player's control of the vehicle before expanding shared abstractions. Fixed-wing is the first migration; helicopter, airship and multirotor follow one at a time. Ground vehicles are a separately qualified, optional consumer. Publishing this plan does not repair the five known controls defects or close device, pilot, package or CI gates.
 
 ## 1. Engineering decision
 
-**Unify invariant behavior, not different physical systems.** OpenRC already has a shared float64, 240 Hz `Simulation` kernel and a `VehicleModel` callback contract. Aircraft v2 uses one strict contract and `AircraftModules` registry. Retain these authorities rather than create a competing engine, “universal aircraft base class,” generic solver, second capability registry or new game framework.
+Retain the existing float64, 240 Hz `Simulation`, `VehicleModel`, aircraft v2 contract and `AircraftModules` registry. The opportunity is narrower coordination between the shell, activity and input owners. A second simulation engine, universal vehicle base class, capability registry or checkpoint format would increase risk.
 
-The practical debt is **coordination across large sessions and activity entry points**. At this inspected revision `app/sim/flight_session.gd` has 6,698 lines and 339 top-level function declarations; `app/main.gd` has 4,304 lines and `app/app_root.gd` has 5,338. These are scope indicators from a source scan, **not** measured performance defects or proof of duplicated algorithms. The helicopter, quad, airship and ground sessions independently provide lifecycle operations; their preconditions differ. Extract behavior only when tests demonstrate equivalence.
+The first implementation should characterize current behavior and migrate **one fixed-wing status/pause/resume consumer** through a small intent bridge. It calls the existing shell/activity entry point and session chain that owns the full admission sequence: fixed-wing Continue includes AppRoot and screen-stack checks; airship and quad have activity checks. A session's `resume()` alone is not the full gate. A detached UI snapshot is information, never permission to fly.
 
-Goals:
-1. One authority for aircraft capability/law admission and normalized model data.
-2. One predictable shell-facing lifecycle vocabulary (status, pause/resume request, reset, restore, teardown), implemented by thin vehicle adapters where necessary.
-3. Smaller, comprehensible fixed-wing and shell coordinators with bounded side effects, explicit ownership and deterministic tick boundaries.
-4. Reusable input, field, observer and presentation **contracts**; do not accidentally share vehicle-specific throttle, arming, damage, race or recorder policies.
-5. Optimization based on measured workloads, retaining exact replay and target-platform evidence.
+At the pinned baseline `flight_session.gd` has 6,697 lines, `app_root.gd` 5,337 and `main.gd` 4,303. The [reproducible inventory](../research/vehicle-runtime-consolidation-2026-11-21/SOURCE-INVENTORY.md) treats these as inspection scope, not measured duplication, complexity or performance defects. Extract only a demonstrated seam; leaving a correct responsibility in place is an acceptable outcome.
 
-Success is fewer competing decisions and independent tests, not lines deleted or a guessed frame-rate gain.
+Success requires:
 
-## 2. Existing owners and non-negotiable invariants
+1. Every configurable binding has a truthful path from assignment and Save/activation through live dispatch, accepted commands and visible feedback. Fixed controls retain their documented direct route.
+2. Device loss, focus changes, failed saves and interrupted operations preserve the family's policy and give the player a reachable recovery path.
+3. One authority decides each input role, profile, readiness and transition. Helpers do not create competing caches or safety state machines.
+4. Structural changes preserve accepted commands, state, event order, replay identity rules and resource lifetime. Intentional behavior repairs are separate changes.
+5. Response quality is measured at input and live-player boundaries. Post-conditioning replay and callback counts cannot certify those boundaries.
 
-| Existing authority | Decision |
+## 2. Existing owners and protected contracts
+
+| Authority | Required treatment |
 | --- | --- |
-| [Simulation / VehicleModel](../../app/sim/simulation.gd), [contract](../../app/sim/vehicle_model.gd), [STACK](../STACK.md#boundaries-and-data-flow) | **Keep.** One installed model, 240 Hz, float64, atomic tick and reset, event order, accepted endpoint and rollback. No per-vehicle branch in the kernel. |
-| [Aircraft v2 contract](../AIRCRAFT_CONTRACT.md), [AircraftModules](../../app/physics/aircraft_modules.gd), [AS plan](aircraft-standardization.md) | **Keep.** Reuse one registry/schema/physical derivation. AS owns format, capability additions, Blender bindings and generated manifests; VRC does not redefine AS-00…18. |
-| [Native backend policy](../STACK.md#native-backend-policy), [flight logging](../FLIGHT-LOGGING.md) | **Keep.** Reference path, qualified C++ evaluator, selected backend/law identity, checkpoint and replay guards. Do not port orchestration to native by default. |
-| [Controller ownership](controller-support.md), [controls audit](https://github.com/bultodepapas/OpenRCsimulator/blob/895dd4352c5191f1539a8b8f4df1996cd33eb86f/docs/research/game-controls-audit-2026-11-21/AUDIT.md) | **Keep.** Menu focus and flight input remain different, with connection generation, verified profile/calibration, edge policy and family-specific readiness. Prior GCA-01…05 repairs remain separately owned and **not** completed by this plan. |
-| [Existing optimization priorities](optimization-priorities.md) | **Keep.** VRC may propose bounded measurements; PT/VQ/GOD/NK owners decide performance acceptance and native qualification. |
-| [Repository guidance](../../AGENTS.md), [track registry](../README.md#tracks-plans-and-step-ids) | Check live source and ownership before each PR. Preserve concurrent changes. No sweeping rename, formatting-only churn or golden rewrite mixed with behavior. |
+| [Simulation](../../app/sim/simulation.gd), [VehicleModel](../../app/sim/vehicle_model.gd), [STACK](../STACK.md#boundaries-and-data-flow) | Keep the installed-model boundary, float64, 240 Hz, atomic tick, accepted frame, events, checkpoint and rollback. No vehicle switch in the kernel. |
+| [Aircraft contract](../AIRCRAFT_CONTRACT.md), [AS plan](aircraft-standardization.md), [AircraftModules](../../app/physics/aircraft_modules.gd) | Keep schema, capability admission, derivation and generated sources with AS and aircraft owners. Specialized vehicle schemas stay distinct. |
+| [Controller plan](controller-support.md), [Controls UX](controls-setup-ux.md), [player guide](../FIRST-LAUNCH.md#controller-settings-current-source) | D6/F1/F3/F4/F6 and UI own input, role selection, persistence, actions, setup and qualification. Preserve accepted gamepad/radio differences. D6-UX-02 keyboard remapping remains separately pending. |
+| Activity and family owners | The current activity **and** session together own readiness, admission, reset, crash, race, recorder and recovery. Trace the actual call chain before extraction. |
+| [Native policy](../STACK.md#native-backend-policy), [flight logging](../FLIGHT-LOGGING.md) | Preserve actual backend/source identities, reference selection, numerical/fault/package gates and family replay contracts. Native orchestration is not an automatic migration goal. |
+| [Optimization priorities](optimization-priorities.md), [verification scope](../tools/shared.md#verification-scope) | PT/VQ/NK retain measurement gates. Required CI and target-platform checks remain separate from focused local results. |
+| [Track registry](../README.md#tracks-plans-and-step-ids) | VRC coordinates this plan; it does not acquire another track's implementation authority or duplicate its status. |
 
-A pure restructure **must not** change accepted state bytes, solver inputs, per-step event order, random state, clock, UI control meaning, profile storage, source identity rules, or resource ownership. Any unavoidable output change requires a separately identified behavioral PR with recorded reasons, baselines and replay comparisons.
+A pure restructure must not change accepted state bytes, inputs, event order, random state, clock, profile meaning/storage, UI control meaning or resource ownership. Preserve exactness where the existing contract guarantees it, with matching engine/backend configurations. Source moves can legitimately change solver fingerprints: retain identity rejection and use the documented candidate workflow, rather than falsifying identity to obtain exact replay.
 
-## 3. Target architecture: composition before inheritance
+## 3. Minimal target boundary
 
+```mermaid
+flowchart TD
+    UI["Shell and pause UI"] --> Intent["Status and intent bridge"]
+    Intent --> Activity["Existing activity admission"]
+    Input["Current input authorities"] --> Activity
+    Activity --> Session["Family session"]
+    Session --> Model["VehicleModel and Simulation"]
+    Activity --> View["Detached status projection"]
+    View --> UI
 ```
-Product shell (AppRoot, screen stack, Home, Pause)
-  -> Activity entry adapters (fixed wing | helicopter | quad | airship | ground)
-      -> ActivitySessionPort: stable request/status surface, NOT a physics base class
-          -> Existing per-family session (owns safety, start/restore, timers, recorder)
-              -> Existing VehicleModel callbacks -> existing Simulation
-          -> Existing input service / activity-specific command conditioning
-          -> Read-only view snapshots -> per-vehicle HUD / render adapter
-```
 
-**Port proposal, not an implemented API:**
-- `describe_capabilities()`: immutable activity/vehicle features and supported operations, not guesses based on a vehicle name.
-- `read_status()`: detached, typed/versioned view of lifecycle, pause reason, input readiness, active backend and identity. No live `Simulation` reference exposed to UI.
-- `request_pause(reason)` / `request_resume(evidence)`: structured admission or refusal with an actionable reason. Each adapter delegates its own throttle/collective/armed/neutral/focus contract.
-- `request_reset(start_request)` / `request_restore(typed_envelope)`: preserve each family’s existing candidate/commit protocol and recorder transitions. A common result describes acceptance; **do not standardize checkpoint payloads**.
-- `close()`: idempotent, explicit event/subscription/worker release, after the owner’s existing recording/fault rules.
-- Tick ownership stays exactly where it is; `tick_once` is **not** made universally callable from UI.
+This is a dependency proposal, not an implemented common API. Phase one contains a detached status projection and pause/resume intents for one existing consumer. Keep the bridge in the smallest existing shell/activity seam. Choose a shared type/location only after the first implementation demonstrates a need; do not prebuild adapters for every family.
 
-Prefer a small `RefCounted` interface description plus a per-activity adapter over a deep inheritance hierarchy or a central `match vehicle_type`. Do not silently translate “accepted by input setup” into “supported by activity”: admission and dispatch must agree. Do not let presentation call mutating physics setters.
+### Status and request rules
 
-### Responsibility split
+- **Status is advisory:** derive it from current owners, detach mutable values and bind it to the activity identity. Show operation support separately from readiness, active holds and recovery actions. Unavailable backend/identity/status fields are explicitly unknown or unsupported. Recompute operational availability when relevant profile/model state changes.
+- **Intent carries no authority:** captured context is diagnostic or an expected-identity guard. The current activity/input owners revalidate role, connection generation, relevant profile/mapping identity, focus/capture and family readiness when processing the request. Cached zero sticks or a prior `ready=true` cannot authorize resume.
+- **Preserve ordering:** an owner that yields, awaits or defers revalidates after that boundary. Reject late work for a retired activity. No tick is granted before the existing gate completes, including shell hold release and held-key masking.
+- **Honest results:** distinguish unsupported, refused, accepted, and accepted-with-postcommit-fault where the owning transaction supplies that distinction. Do not relabel a committed observer fault as rollback. Pending is valid only for a real asynchronous operation with defined completion/cancellation.
+- **No universal readiness:** verified gamepads retain first-valid-poll readiness; radios retain applicable event/LOW and action-OFF rules, with the verified same-radio menu route adding its center/OFF gate. Helicopter collective, airship low throttle plus centered yaw, quad arming/rate recovery and ground neutral/armed rules stay separate.
+- **Preserve explicit player intent:** Continue remains explicit for the applicable recovery route. Existing guarded Fly and restart actions may already provide the explicit intent; do not add an unnecessary second Continue or accidentally auto-resume after loss.
+- **No new tick caller:** UI/bridge never call a generic `tick_once`, mutate simulation state, resample inside solver stages or infer authority from a rendered view.
 
-| Module/owner | Owns | Must not own |
+The [control contract](../research/vehicle-runtime-consolidation-2026-11-21/CONTROL-CONTRACT.md) owns the proposed detailed invariants. The [acceptance matrix](../research/vehicle-runtime-consolidation-2026-11-21/CONTROL-ACCEPTANCE.md) defines expected outcomes and existing test starting points; all new case executions remain pending.
+
+### Deferred operations
+
+Reset, restore, prepare/reload, exit, recorder finalization and disposal stay on current family routes in phase one. Common names do not imply common transactions. Migrate one only after its complete prepare/refuse/commit/fault/cancel behavior is characterized; preserve family envelopes. Fixed-wing refusal can retain its old recording, but airship/quad reset can notify recorders before a later refusal. Cross-family equivalence requires evidence or a separate behavioral repair.
+
+An idempotent disposal helper releases already-retired resources; it must not bypass unsaved recording/result decisions, abandon worker ownership, close a temporarily detached flight's recording, clear another activity's listeners or report a failed save as success. Preserve cancellation and retry. `close()` is not an unconditional public escape hatch.
+
+## 4. Controls baseline and defect dependencies
+
+The [prior controls audit](https://github.com/bultodepapas/OpenRCsimulator/blob/895dd4352c5191f1539a8b8f4df1996cd33eb86f/docs/research/game-controls-audit-2026-11-21/AUDIT.md) identifies five unfixed baseline defects. Its checked synthetic witnesses demonstrate the adverse behavior, not a repaired pass. Its existing regression batch was **22 passes out of 27, with five failed/incomplete**; it was not full CI, native display or physical controller certification.
+
+| Finding | Existing repair owners | Blocks the affected migration until repair and proof |
 | --- | --- | --- |
-| `app/app_root.gd` + existing `ui/`/`app_state/` | Navigation, screen transition, launches, cancellation, focus, preferences | Solver state, airframe law selection, per-frame controller shaping |
-| Proposed activity adapter under appropriate `app/sim/<family>/` or `app/ui/` owner | Shell-to-session requests; result translation; listener lifetime | New simulation or input rules; hidden mutable checkpoint cache |
-| `app/sim/flight_session.gd` and family sessions | Session-specific preparation, safety, recovery, model installation, accepted-tick observers | Repeated UI drawing/OS-device discovery/duplicated aircraft metadata |
-| `app/physics/` + authoritative data | Pure laws, validation, normalized physics model | Scene-tree mutation, UI and user settings |
-| `app/input/` | Device identity, profile/rates, calibration, normalized actions | Family-specific arming/collective/race rules |
-| `app/render/` and `app/vehicles/` | Detached visual state, HUD/camera effects, model-specific art | Integrator state, control authorization, authoritative collisions |
-| `app/sim/simulation.gd` | Atomic physical transaction, state/history, checkpoint/replay core | Vehicle catalog switches, UI, per-aircraft branching |
+| GCA-01: admitted quad Pause binding not dispatched | DR-14/16, UI-15-GP-01, action owners | VRC-05 quad action routing, or VRC-03 changing that shared dispatch seam |
+| GCA-02: airship native menu map retains stale UI ownership | BL-10/12, UI-12-GP-01, F3-GP-02 | VRC-05 airship menu/role bridge and shared role-map changes |
+| GCA-03: airship Continue does not retry temporarily refused uncached profile | BL-10, F3-GP-02, D6-GP-02 | VRC-05 airship resume/profile path and shared resolution/recovery changes |
+| GCA-04: concurrent legacy calibration updates can be lost | D6-GP-02, fixed-wing/HELI calibration and AUX owners | VRC-03 or VRC-02 moving the affected legacy writer, caller or storage transaction |
+| GCA-05: tiny admitted external ranges give incorrect endpoints | D6-GP-02/03 | VRC-03 moving profile validation, normalization or readiness |
 
-## 4. Consolidation policy by family
+VRC-00 records all five with pinned witnesses and disposition. An unrelated status/lifecycle slice can proceed if it demonstrably leaves the affected seam untouched and its own checks pass. A vague “repair decision” cannot waive an invariant in the path being migrated. Fixes remain separate owning-track changes with repaired regression witnesses; expected baseline failures must not become the permanent contract.
 
-**Fixed-wing (first):** All supported airplanes continue through one `FlightSession` and `AircraftData`/`AircraftModules` path. Keep their *differences* in validated capability modules, input data, source generators, derived models and explicit adapters (flaps, elevons, retractables, glow, battery, turbine, contact, visuals). No per-model “fix” in the main kernel. Extract cohesive responsibilities from `FlightSession` only after characterization. The new aircraft onboarding gate must exercise at least a conventional electric, glow, turbine, flap-equipped, retractable and elevon/flying-wing configuration where current fixtures allow.
+Other open baseline gaps are first-post-gap tick safety, per-activity launch/menu support, quad held fallback policy and physical/platform/package qualification. GCA-G1 is an investigation, not a confirmed sleep defect: distinguish a processing gap from stationary sticks/sparse HID events, observe the real first post-gap tick and then decide the family's policy. Scheduling/recovery changes require this evidence; an unrelated status bridge need not redesign watchdogs. No RF-loss detector is assumed.
 
-**Helicopter:** Can use the same shell status/transition protocol, not identical throttle/arm/reset semantics. Retain rotor physics, skid/contact, collective and native guard, and its own checkpoint format.
+## 5. Family scope and player-facing policy
 
-**Airship:** Can use lifecycle result/status contract and field/collision data adapters. Preserve reversible stern motor, yaw-centering and throttle-on-resume, blimp weather limits, tapes and recorder.
+| Family | Preserve and qualify |
+| --- | --- |
+| Fixed wing, first | Capability-driven airplane differences; calibration, holds, start, crash, native and AUX gates. Select actual catalog fixtures covering the changed conventional electric/glow/turbine/flap/retractable/elevon capabilities; one model may cover several. Shared input changes also exercise affected consumers outside the first UI migration. |
+| Helicopter | Activity/session ownership, collective, arm/hold/cut precedence, trainer/curve, native guard, rotor state and own recorder/checkpoint. |
+| Airship | Activity live armed check before resume, **low throttle and centered yaw**, reversible stern motor, unresolved-profile retry, native menu role clearing, tapes/recorder. Radio Pause does not establish verified radio-menu support. |
+| Multirotor | Activity source/generation/readiness gate, once-per-tick FC sample, arm/disarm, ordinary same-source frozen rate throttle versus recovery reset, race outbox/tape limits. Existing automatic fallback may select another connected controller while held; preserve invalidated arm continuity. Identifying that source before Continue remains an owner-qualified GCA-G3 acceptance item. A paused stored frame can stay armed until the first resumed tick disarms; changing this is separate behavior work. |
+| Ground, optional later | Neutral/armed recovery, pause holds, damage/course identity, backend mismatch, interrupted export and unsaved recording decisions. No aircraft assumptions. |
 
-**Multirotor:** Can use shell status/transition protocol and read-only telemetry boundary. Retain controller-memory-in-checkpoint, frame sampling, arming/disarming, gate race, result outbox and tape limit. No fixed-wing RC command assumption.
+Home, direct launch and Workshop trial are separate matrix entries where implemented. Record offered bindings, menu support, recovery route and first accepted tick. Preserve direct/standalone paths that do not use `ControllerService`, including their legacy profile resolution. Unsupported features must be explained before a misleading assignment or launch. Keyboard/mouse recovery stays available where provided; all keyboard flight keys are not yet remappable.
 
-**Ground vehicle (later):** Explicit opt-in; preserve neutral+armed recovery, recording-export blocker, dry/wet course and contact-damage contracts. Do not treat this as an aircraft.
+## 6. Step plan and independent changes
 
-## 5. Step plan and proposed independent pull requests
+All implementation steps remain **open**. This table owns status; the evidence package defines gates, not a second progress tracker.
 
-All steps below are **open proposals**. Status must be updated only in this plan with evidence links when implementation actually lands.
-
-| Step / PR | Deliverable (one reviewable slice) | Main owners / dependency | Acceptance gate |
+| Step | One reviewable deliverable | Dependencies and owners | Required proof |
 | --- | --- | --- | --- |
-| **VRC-00 / PR-00** | Freeze precise source and catalog inventory; map controls/physics/scene dependencies and risk; baseline checks plus complete `.orfl` stock flights. | SF/AS/physics/UI; prerequisite | Evidence, hashes, test map, current native/backend selection; separate existing failures from new ones. |
-| **VRC-01 / PR-01** | Add tests for an existing **shared session-status snapshot contract**, with family-specific adapters in test fixtures before runtime routing changes. | Session/flight/UI; after 00 | Read-only snapshots are immutable; no tick or event writes; family refusal reasons preserved. |
-| **VRC-02 / PR-02** | Narrow fixed-wing session lifecycle helpers: group start/reload/reset candidate admission and result mapping, preserving all existing transactions. No algorithm rewrite. | Physics/FL/GP/EL, after 00/01 | Old-flight refusal, accepted start, observer faults, recording close, statistics and exact replay match. |
-| **VRC-03 / PR-03** | Extract a small **fixed-wing input orchestration** unit for existing polling/readiness/release behavior, with command acceptance remaining in current owners. | D6/physics/UI; after GCA repair decision and 01 | Keyboard/radio/gamepad routes, rates, throttle/hold, disconnect/reconnect, focus and capture parity. |
-| **VRC-04 / PR-04** | Introduce a thin activity-session adapter at **one** shell boundary (fixed wing first) and migrate just one pause/resume consumer. | UI/physics; after 01/02 | Identical pause menu, focus and startup failure states; no active-session leak/double signal. |
-| **VRC-05 / PR-05** | Extend explicit adapter contract to helicopter (separate collective/rotor readiness), then airship, then quad in **separate** commits/PRs, not a mass switch. | HELI/BL/DR with UI, after 04 and relevant GCA decisions | Activity-specific safety, reset, controller roles, optional race, recorder and crash recovery checked. |
-| **VRC-06 / PR-06** | Centralize only **pure, identical** field/obstacle/environment preparation inputs; leave family-specific validation and material/collision rules with each owner. | LU/SC/GP/physics; after characterization | Same terrain/weather/obstacle identity, collider order, first start/reload, lake contacts and native choice. |
-| **VRC-07 / PR-07** | Factor common *observer registration and teardown* patterns; maintain independent recorder schemas and tick-boundary publication. | FL/UI-FS/AUD/physics; after 02/05 | Recorder open/close, repeated reset, observer fault, deterministic event ordering, no duplicate callbacks. |
-| **VRC-08 / PR-08** | Simplify `main.gd` and helicopter/other view coordinators with detached presentation snapshots and well-owned camera/HUD components. | HUD/render/UI/vehicle owners; after 04/05 | Frozen render state, 1080p and accessible controller prompts; no visual resource aliasing. |
-| **VRC-09 / PR-09** | Profile one actual hot path in a complete workload; remove a proven repeat or allocation with exact-state guard. | PT/VQ/NK and owning code; independent after 00 | Before/after p50/p95, memory/allocations, complete workload, actual backend and negative controls; no predicted gain masquerading as measured. |
-| **VRC-10 / PR-10** | Normalize names/module seams, document public APIs, add ownership lint or dependency checks if warranted. Touch only migrated files, no global formatting. | Owners of touched paths; after 02…09 | Existing imports/UIDs, scene and generated-asset dependencies; no new cycles or broken packages. |
-| **VRC-11 / PR-11** | Consolidation and release qualification: full affected matrix and CI, platform/device, native and package gates; decide next batch from evidence. | QA/DT/PT/physics/UI; after required migrations | No unresolved new regression, verified complete replay, stock vehicle selection and documented limitations. |
+| **VRC-00** | Freeze source, materialized assets/imports, catalog, test roster, input routes and all five GCA dispositions; establish comparable baseline. | SF/AS/UI/D6/families; first | [Q0](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q0-baseline-and-test-admission). Classify prior unqualified suites and obtain decisive evidence for affected routes. Missing resources cannot become a pass. |
+| **VRC-01** | Characterize the **different existing** activity status/admission surfaces; specify minimal detached projection and intent bridge for one fixed-wing consumer. | After 00; UI/session/input | [Q1](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q1-controls-and-transition-contract): advisory snapshot, unknown/unsupported, holds, live gate, stale intent and no writes. Do not presume an existing universal status contract. |
+| **VRC-02** | Isolate one useful fixed-wing preparation/validation/lifecycle helper; retain candidate/commit/observer owners. | After 00/01; physics/FL/GP/EL; relevant GCA-04 dependency | [Q2](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q2-state-replay-and-lifetime): refusal, accepted start, postcommit fault, recording/stats and exactness. If unsafe to separate, retain the owner and extract a smaller pure validator. |
+| **VRC-03** | Extract one input coordination seam after affected baseline defects are repaired. | After 01/relevant GCA closure; D6/F3/UI/all affected consumers | Q1/Q2: event→poll→first accepted tick, radio/gamepad differences, finite ranges, shaping, capture, AUX, storage and recovery. No optimization mixed with extraction. |
+| **VRC-04** | Connect one fixed-wing pause/resume/status UI consumer through the intent bridge. | After 01; 02 only if this seam uses its helper; UI/session | Q1/Q2 plus [Q3](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q3-player-flow-and-device-qualification): actual UI dispatch, guarded player intent, holds/reasons, no duplicate signal/stale callback. |
+| **VRC-05** | Migrate helicopter, airship, then quad in separate PRs only if beneficial. Ground requires later explicit scope. | After 04/affected GCA repair; HELI/BL/DR/UI/D6 | Family admission, recovery and recording. One family's pass cannot qualify another. Reset/restore/exit stay unchanged unless separately included/proven. |
+| **VRC-06** | Share a pure field/environment builder after proving equivalence for two actual consumers. | After 00/specific characterization; LU/SC/GP | Q2: weather/terrain/obstacle identity, ordering, lake/contact rules and native selection. Optional; does not block a complete controls repair. |
+| **VRC-07** | Isolate observer subscription/retirement discipline; keep recorder schemas and exit policy. | After the specific owner is characterized; FL/UI-FS/AUD/session | Q2: refusal vs committed fault, reentry, reset/relaunch, pending save, abandon and complete retirement. |
+| **VRC-08** | Simplify one view coordinator with detached data and an owned HUD/camera component. | After corresponding seam, not all family moves; HUD/render/UI | Q1/Q3: immutable projection, truthful EN/ES prompts, focus/capture, actual display target and resource isolation. |
+| **VRC-09** | Profile one complete workload and attempt one attributed optimization. | After 00/correctness of touched path; PT/VQ/NK/owner | [Q4](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q4-response-and-performance): paired runs, input age/order, accepted commands, tail latency, memory and hardware scope. Fewer callbacks is insufficient. |
+| **VRC-10** | Document/normalize only migrated seams; add a narrow dependency check if a demonstrated risk warrants it. | After specific moves; their owners | Imports, UIDs, scene/export dependencies and references. No mass rename, second registry or generic framework. |
+| **VRC-11** | Qualify the selected migration cohort and publish supported/limited/unqualified scope. | Relevant required steps, not every optional extraction; QA/DT/UI/D6/PT | [Q5](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md#q5-promotion-and-rollback): affected checks, required CI, source/package/device/pilot evidence and exact claims. No silent safety waiver. |
 
-**Stop/rollback rules:** Each PR must remain independently revertible. Do not combine a data/law change with a structural move. If characterization fails, first isolate the existing bug in its owner, do not encode buggy output as a permanent reference. If a helper changes canonical checkpoint, state bytes, exported schema or accepted event timing, revert extraction or open a separate versioned behavior change.
+Order: **baseline → minimal contract → one fixed-wing consumer**, with separately owned defect repairs before their affected migration. Expand after that seam proves useful and qualified. VRC-06…09 are conditional improvements; controls quality must not wait for a broad rewrite.
 
-## 6. Migration order and risk
+## 7. Acceptance, stop and rollback
 
-1. **Prepare first:** VRC-00 and VRC-01; align with GCA-01…03 so unsafe action/ownership behaviors are not carried into new generic dispatch.
-2. **Largest benefit, smallest semantic surface:** VRC-02 fixed-wing transaction/coordinator slicing, then VRC-04 one shell adapter.
-3. **Broaden carefully:** VRC-03 input after repairs; VRC-05 family adapters one at a time, with explicit refusals.
-4. **Optional reusable systems:** VRC-06 field data, VRC-07 observation lifetime, VRC-08 presentation (only after isolated contracts pass).
-5. **Measure, do not speculate:** VRC-09 independently. VRC-10 after moves are stable; VRC-11 releases nothing unless qualification closes.
+Each implementation PR identifies touched seams, required case IDs, owners, fixtures/routes and expected results **before execution**. The [case ledger](../research/vehicle-runtime-consolidation-2026-11-21/control-cases.json) starts unrun. Existing test names are starting points, not proof that all scenarios are already covered. Extend the smallest meaningful real-consumer test where needed. Use the [checked runner](../tools/shared.md#one-godot-script), declared terminal summaries and complete diagnostic receipts.
 
-Treat each refactoring PR as small (one narrow responsibility and its tests, ideally one reviewable file cluster). Prefer composition, pure functions, explicit typed results and limited dependency injection over inheritance, `get_node` walks or mutable global singletons. A new helper is justified by *multiple real callers* or by demonstrated isolation/testability—not by abstract foresight.
+When trajectory, tick input, physics or recording identity may be affected, or its owning gate requires it, first exact-replay the fixed-wing baseline on its matching recorded source/backend. If a refactor changes the fingerprint, retain exact-mode refusal and use the compatible candidate same-tape comparison with truthful `solver_changed`/backend reporting. Current candidate mode selects reference; native qualification needs separate actual native parity/selection evidence. Family tapes retain their own contracts; a pure status projection does not automatically require a flight campaign.
 
-## 7. Acceptance criteria for “cleaner, unified, optimized”
+Stop an affected migration for stale authority, silent assignment/no dispatch, unintended thrust/action, lost acknowledged save, ambiguous commit state, unexplained input latency, missing required evidence or numerical drift. Resolve the issue in its owner. Independent status work may continue without declaring the blocked path safe.
 
-- Each aircraft capability has **one authoritative selector**, documented in AS, used by flight, Workshop and offline tools; no new per-ID conditional paths in `Simulation`.
-- Each migrated activity has a documented adapter, lifecycle matrix and a test following request -> admission -> live dispatch -> pause/recovery. Existing family-specific policy must remain visible.
-- UI receives detached state; a view cannot mutate solver arrays or decide arming.
-- Rejection of a reset/restore leaves old accepted state, listeners and recording intact; accepted transitions publish once and retain source/backend identity.
-- Before/after source, engine, OS, backend, model config, tape, events and completeness are recorded. For pure refactors, require unchanged exact-state/fingerprint where applicable; intended exceptions have a separate owner-approved change.
-- No performance “win” without repeated paired target-path measurements; distinguish GDScript vs native, headless vs rendered 1080p, production workload vs microbench.
-- Check full relevant vehicle/configuration matrix, affected consumer tests, and required CI before merging. Physical controller, pilot and platform tests remain separate claims.
+Keep a baseline executable/package and profile copy for compatibility checks. Structural PRs leave profile formats unchanged. A version-changing repair defines old/new load and rollback before applying it: reverting source is insufficient if player data becomes unreadable. Revert one isolated migration, or temporarily retain an old route with a removal condition; do not maintain competing authorities indefinitely.
 
-See [source inventory](../research/vehicle-runtime-consolidation-2026-11-21/SOURCE-INVENTORY.md), [migration decision matrix](../research/vehicle-runtime-consolidation-2026-11-21/MIGRATION-MATRIX.md), [quality gates](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md) and [dated research home](../research/vehicle-runtime-consolidation-2026-11-21/README.md).
+Quality means correctness, recovery, truthful setup, response, accessibility and pilot usability. Use the [controller qualification matrix](controller-support.md#hardware-matrix) and [Controls UX plan](controls-setup-ux.md). Source review alone cannot establish robust gameplay, physical compatibility or measured speedup.
 
-## 8. Open design decisions for first implementation PR
+## 8. Remaining implementation decisions
 
-- Whether the shell port belongs alongside current `ui/` activity routes or in one new narrowly owned `sim/session_port.gd` interface/adapter; select only after VRC-01 fixtures prove the minimum public shape.
-- Whether fixed-wing start-result mapping can be isolated without changing the existing observer transaction. If not, keep it within `FlightSession` and prefer smaller pure validators.
-- Which actual cross-family field helper is byte-equivalent under all supported lakes/terrain/weather; do not assume matching import lists imply matching semantics.
-- Which complete-session/target platform shows remaining hot-path cost after the already delivered NK-2a and PT optimizations.
+- Which fixed-wing consumer reduces duplicated decisions without moving safety ownership?
+- Which existing identity/version/fingerprint suffices at each stale-work boundary? Reuse authority before inventing tokens or schemas.
+- What does the real first post-gap tick do for each affected activity, and what policy follows from that evidence?
+- Can a lifecycle extraction preserve actual transaction/recording behavior? If not, keep it in the owner.
+- Which physical routes and pilot evidence qualify the first release cohort? Missing hardware limits claims; it does not imply a pass.
 
-No behavior, architecture or speedup proposed here is implemented or performance-qualified by publication of this document.
+[Inventory](../research/vehicle-runtime-consolidation-2026-11-21/SOURCE-INVENTORY.md) · [Migration decisions](../research/vehicle-runtime-consolidation-2026-11-21/MIGRATION-MATRIX.md) · [Quality gates](../research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md) · [Adversarial findings](../research/vehicle-runtime-consolidation-2026-11-21/EXTERNAL-AUDIT.md)

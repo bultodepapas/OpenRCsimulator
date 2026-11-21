@@ -1,17 +1,22 @@
-# Vehicle runtime consolidation — source review (21 November 2026)
+# Vehicle runtime consolidation — source review and adversarial controls audit
 
-**Branch:** `plan/vehicle-runtime-consolidation-2026-11-21`. **Inspected:** `bultodepapas/OpenRCsimulator` at `main` commit `57abea025f62b20233ca281d58d2acbee4ab8b8e`. **Method:** read-only GitHub source/contract inspection and a static top-level function scan. **Engine specified by repository:** official Godot 4.8-beta2. No Godot run, physical-device test, benchmark, native build, full CI or replay was performed for this *planning* pass.
+**2026-11-21.** Runtime baseline `57abea025f62b20233ca281d58d2acbee4ab8b8e`; original published plan `542d92b304fc3b82678c4a90b848a88d82df0b22`. Three independent source-review contexts challenged architecture, controls and evidence and then reviewed the lead's revised proposal. This is an automated external-style plan audit, not third-party certification or runtime qualification.
 
-The [implementation plan](../../plans/vehicle-runtime-consolidation.md) is the authoritative step/status home (VRC-00…11, all proposed). This folder records why that plan is targeted rather than a rewrite:
-- [SOURCE-INVENTORY.md](SOURCE-INVENTORY.md): named owners and actual current source sizes/function signatures;
-- [inventory.json](inventory.json): machine-readable pinned file identity and counts;
-- [MIGRATION-MATRIX.md](MIGRATION-MATRIX.md): what can safely share code, what must not, and candidate seams;
-- [QUALITY-GATES.md](QUALITY-GATES.md): per-PR regression and performance verification, plus non-claims.
+**Result:** ten plan findings addressed; forty explicit acceptance cases proposed and **UNRUN**. The existing five GCA defects remain unfixed by this branch. The [master plan](../../plans/vehicle-runtime-consolidation.md) owns VRC-00…VRC-11 status; all implementation remains open.
 
-**Key source observations.** The existing kernel already separates model callbacks from integration; several vehicle sessions have similarly named lifecycle methods but different safety and checkpoint contracts. Fixed-wing `FlightSession` and the main shell/activity coordinators are large, yet a large file alone is not a confirmed defect. Aircraft v2 already has a single capability registry and shared loader. Existing session, controller and physics audit queues must be reconciled before a refactor is classified as corrective.
+| Read | Purpose |
+| --- | --- |
+| [EXTERNAL-AUDIT.md](EXTERNAL-AUDIT.md) | Findings, pinned evidence, adversarial decisions and scope |
+| [CONTROL-CONTRACT.md](CONTROL-CONTRACT.md) | Authority, temporal input, family policy, persistence, lifetime and response obligations |
+| [CONTROL-ACCEPTANCE.md](CONTROL-ACCEPTANCE.md) | Generated human-readable forty-case acceptance matrix |
+| [control-cases.json](control-cases.json) | Canonical case IDs, owners, triggers, oracles, test starting points and UNRUN statuses |
+| [QUALITY-GATES.md](QUALITY-GATES.md) | Baseline/runner, replay identity, native, real UI/device, response, promotion and rollback gates |
+| [MIGRATION-MATRIX.md](MIGRATION-MATRIX.md) | What to retain/share/defer and the smallest useful first bridge |
+| [SOURCE-INVENTORY.md](SOURCE-INVENTORY.md) and [inventory.json](inventory.json) | Corrected ten-file scan with pinned identities and reproducible counting method |
+| [audit-findings.json](audit-findings.json) | Machine-readable findings and case/source traceability |
+| [verification.json](verification.json) | Dated static verification result and artifact hashes |
+| [Checker and rerun guide](../../../research/vehicle-runtime-consolidation/README.md) | Reproduce static checks and regenerate the matrix; no engine launch |
 
-**Prior controls baseline:** [GCA audit at commit 895dd435](https://github.com/bultodepapas/OpenRCsimulator/blob/895dd4352c5191f1539a8b8f4df1996cd33eb86f/docs/research/game-controls-audit-2026-11-21/AUDIT.md) identified five bounded control findings; those remain external to this planning-only branch. The 22/27 checked existing-run results belong to that audit and were **not rerun** here. VRC does not claim to repair them.
+The [prior controls audit](https://github.com/bultodepapas/OpenRCsimulator/blob/895dd4352c5191f1539a8b8f4df1996cd33eb86f/docs/research/game-controls-audit-2026-11-21/AUDIT.md) supplies five baseline defect witnesses and the historical 22-of-27 regression result, with five failed/incomplete programs. Its scripts/evidence remain at that commit; they were not rerun here. A passing adverse witness is not a repaired control path.
 
-**Owners read:** [AGENTS](../../../AGENTS.md), [STACK](../../STACK.md), [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md), [AS plan](../../plans/aircraft-standardization.md), [FLIGHT-LOGGING](../../FLIGHT-LOGGING.md), [optimization priorities](../../plans/optimization-priorities.md), [consolidated audits](../../../external%20Audits/CONSOLIDATED-AUDITS.md), and existing [research/AS evidence](../aircraft-standardization/README.md). Shared code owners remain SF/physics, AS, D6/UI, BL, DR, HELI, GP/RCV, FL, PT/VQ/NK and rendering; VRC coordinates proposals but does not silently take ownership.
-
-**Source limits:** Functions are counted only when the line begins with `func` or `static func`. Whitespace, class bodies, nested lambdas and semantic duplicate behavior are not measured. The matrices are code-review hypotheses requiring characterization, not refactored code or certified savings.
+The first proposed migration is one fixed-wing status/pause/resume consumer through its full existing shell/activity gate. Other operations and families remain with their current owners until individually justified and proven. Optional consolidation does not block an independently completed controls repair.

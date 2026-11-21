@@ -1,37 +1,51 @@
-# Share / keep / reject decision matrix
+# Share, retain and defer decisions
 
-**Scope:** `main@57abea02`, source-only architectural inspection. Proposed moves are subject to characterization; no extract has landed.
+**Scope:** runtime baseline `57abea025f62b20233ca281d58d2acbee4ab8b8e`; proposal reviewed at `542d92b304fc3b82678c4a90b848a88d82df0b22`. This is a design decision matrix; no extraction is implemented. The [VRC plan](../../plans/vehicle-runtime-consolidation.md) owns steps/status and the [control contract](CONTROL-CONTRACT.md) owns detailed acceptance.
 
-| Concern | Share / retain decision | Existing authority | Family-specific exception | First VRC step |
-| --- | --- | --- | --- | --- |
-| Rigid-body tick, event/rollback | **Retain existing shared code**, no replacement | `Simulation`/`VehicleModel` | Closed-loop quad's framed sampled protocol and joint intervals remain explicit opt-ins | 00, 11 |
-| Aircraft v2 validation and law classification | **Retain shared**; remove only proven duplicate consumers | AS `AircraftModules`/`AircraftData` | Helicopter, airship, ground, multirotor have distinct schemas; do not mis-admit them as v2 airplanes | 00, AS owner |
-| Fixed-wing airframes, gear, flaps, elevon and engines | **Share capability-driven laws** and validated data/manifest | AS + existing physics modules | Model-derived geometry, authored coefficients, artwork and physical qualification stay with the aircraft track | 02 |
-| Pilot input device/profile/calibration | **Share service + profile admission**, not flight authority | D6 input, UI setup, GCA remediation | Collective, neutral/armed, reversible propulsion, race command, radio throttle require family policy | 03 |
-| Pause/resume/hold UI semantics | **Share detached request/result/status contract**, leave admission in sessions | UI shell + each session | Ground neutral+armed; heli collective; blimp yaw/throttle; quad results/tape; fixed-wing holds | 01, 04, 05 |
-| Start/reset/restore | **Share transaction vocabulary and observer discipline**, not envelope format | SF kernel / each session | Native guard, crash policy, field identity and recorder closes differ | 02, 05 |
-| Terrain, weather and collisions | **Share pure checked input builders only after proving same law/domain** | LU/SC/GP/physics | Airship steady-wind limit; heli pad, quad gate obstacles, car road profile | 06 |
-| Recorder / stats / trace | **Share registration/teardown discipline**, leave data schemas/versioning separate | FL/UI-FS, activity recorders | FPV race outbox and airship tape; ground export policy; fixed-wing `.orfl` | 07 |
-| Camera, HUD, scene objects | **Share snapshot interface / optional components**, preserve visual families | Render/HUD/vehicle owners | Rotor blur, OSD, airship envelope, car dashboard, special aircraft rigs | 08 |
-| Backend selection and performance | **Keep existing** native reference-selection contract; profile remaining overhead | NK/PT/physics | Qualification varies by vehicle, OS, source identity and configuration | 09 |
-| Generic universal-aircraft inheritance | **Reject** | N/A | Would merge incompatible physical/session semantics and create fragile large base | Never |
-| Generic “one replay file for all” | **Reject** | Current versioned formats | Exact replay safety and time/context interpretation differ | Never |
-| One enormous migration / rename | **Reject** | Existing owners and CI | Impossible to attribute numerical or control regressions | Never |
-
-## Proposed small interface contract (design, not source code)
-
-An activity adapter should expose *requested intent*, *admission/refusal receipt*, and a *detached status snapshot*. Use explicit feature flags or typed capability entries; an absent operation is an explicit unsupported result, not a no-op. Keep active source/connection generation and shell focus identity in the request context, but do not cache or duplicate its authority in the adapter. A transition may be accepted but encounter a committed observer fault; the receipt must distinguish that from rollback.
-
-Avoid pushing a generic `Dictionary` of unconstrained fields across every layer. Freeze a minimal versioned shape, reject unknown/invalid fields, and prefer tiny typed data records where Godot permits. Test one concrete consumer before widening it; do not publish an API based solely on aesthetic preference.
-
-### Example activity acceptance matrix
-
-| Activity | Resume admission | Tick path | Checkpoint/restore |
+| Concern | Decision | Authority and exception | First applicable VRC step |
 | --- | --- | --- | --- |
-| Fixed wing | calibration/hold/crash/controller/valid-start/native guards | existing session control to 240 Hz kernel | full fixed-wing envelope, selected laws and observer transactions |
-| Helicopter | rotorcraft readiness, collective, focus and power/heading rules | own `_physics_process` to same kernel | rotorcraft envelope with native guard and rotor state |
-| Airship | throttle and yaw centered + valid session | explicit `tick_once(sticks)` | existing specialized state/continuous reset |
-| FPV quad | prepared, crash/fault/tape capacity, arming/race policy | `tick_once(pilot, race_action)` with frame sampling | kernel envelope + race/result/outbox identity |
-| Ground car | prepared, neutral+armed and no pause holds or backend mismatch | `tick_once(sample)` | own damage/control/event tape and recording policy |
+| Rigid-body tick, events and rollback | Retain existing shared kernel | Simulation/VehicleModel; quad framed sampling and optional joint protocols remain explicit | 00, 11 |
+| Aircraft v2 admission and law classification | Retain one registry/schema | AS/AircraftData/AircraftModules; other families retain distinct schemas | 00, AS coordination |
+| Airframe, gear, flap, elevon and propulsion differences | Retain capability-driven laws and authored sources | Aircraft/AS/physics own generators and physical evidence; no per-ID kernel condition | 02 |
+| Device/profile/calibration | Reuse existing services **where the route uses them** | D6/UI; direct/standalone readers and external drivers remain supported without a new mandatory singleton | 03 |
+| Shell status/pause/resume | One minimal intent bridge for one fixed-wing consumer first | Actual shell/activity entry point plus session chain; all safety authority stays there | 01, 04 |
+| Status and capabilities | Detached projection with unknown/support/readiness distinctions | Current owners; model-static features differ from profile-dependent live availability | 01, 08 |
+| Start/reset/restore | Defer common API; characterize one owner transaction before any move | No universal checkpoint or recorder-rollback promise; fixed-wing and airship/quad ordering differs | 02 or later explicitly scoped 05 |
+| Exit/disposal and observer lifetime | Preserve owners; extract only proven retirement mechanics | Tentative detach is not final close; writer/export failure and pending results retain their own policy | 07 |
+| Terrain/weather/collision input builders | Optional sharing after equivalent-domain proof for real callers | LU/SC/GP; weather limits, material/contact and ordered obstacles remain family-specific | 06 |
+| Recorder/statistics/trace | Keep formats, commit semantics and credit policy distinct | FL/UI-FS/activity owners; fixed-wing restore remains noncredit, quad outbox remains owned | 07 |
+| HUD/camera/visuals | Use detached views and one useful component at a time | Render/HUD/UI; no state feedback or mutable resource sharing | 08 |
+| Input/workload optimization | Measure and preserve temporal behavior before adoption | D6/F6/PT/VQ/NK; no new queue, stale sample or inferred USB/physical-latency result | 09 |
+| Universal vehicle base, central family switch or new capability registry | Reject | Existing kernel/data authorities already cover the shared domain | Never |
+| One replay/checkpoint format or unconditional close API | Reject | Would erase supported identity, recording and family safety semantics | Never |
+| Mass migration, rename or golden regeneration | Reject | Obscures the cause of control/numerical regressions | Never |
 
-**Migration proof:** for each accepted/refused request: check return/receipt, kernel tick, source identity, pause reason, installed callback, observer count, saved checkpoint, and UI action. Compare under focus loss, disconnect, immediate relaunch, and fault/restore. For physics-affecting changes use [FLIGHT-LOGGING](../../FLIGHT-LOGGING.md), not only a code diff.
+## First bridge: smallest justified surface
+
+Characterize one actual fixed-wing consumer, then define only the status fields and pause/resume intent it needs. There is no demonstrated universal status API to rename. AppRoot's Continue checks radio-menu center, screen identity and other holds, releases the menu hold and masks keys before calling session resume. Airship and quad perform their own activity checks. A common direct `session.resume()` call would bypass those differences.
+
+Requests contain intent and optional expected-identity context; owners read live authority. Results reflect the existing operation, including unsupported/refused/accepted and committed-fault distinctions where provided. A view cannot grant readiness. Dynamic feature support, profile/action eligibility and actual backend are projected from the owner, not duplicated in a new registry.
+
+Do not move prepare/reset/restore/close merely to fill out an aesthetically complete interface. Add a method only after a concrete second need or demonstrated isolation benefit and its refusal/commit/cancel witness. Keep payloads typed and bounded where feasible, with unsupported/unknown fields explicit; do not circulate a mutable dictionary containing live session or simulation resources.
+
+## Family acceptance differences
+
+| Activity | Full resume/admission chain to preserve | Checkpoint, recording and recovery boundary |
+| --- | --- | --- |
+| Fixed wing | AppRoot/screen stack/held keys and radio-menu center where applicable; session calibration, holds, crash/start/controller/native gates | Fixed-wing envelope; staged transactions; accepted observer fault differs from rollback; restore remains noncredit |
+| Helicopter | Existing shell/activity plus rotorcraft/collective/mode/ready and native guards | Own rotorcraft envelope; direct legacy save failure can leave calibrated in-memory controls active but not saved |
+| Airship | Activity samples armed input, then session requires low throttle and centered yaw | Specialized state/continuous restore and tape; reset notification may precede later reset refusal; no universal old-writer guarantee |
+| Quad | Activity role/generation/profile retry/readiness, throttle policy and recovery, then session crash/fault/tape guard | Checkpointed FC memory, race/outbox/tape; pre-expo pilot input; automatic fallback held, first resumed tick semantics retained |
+| Ground | Existing neutral/armed, hold and backend/data rules | Own damage/control tape and recording/export/discard protocol; optional later migration |
+
+The bridge must retain existing guarded Fly/restart intent. It must not impose a second Continue on already-ready launch, radio-style low-throttle dwell on a verified pad, or fixed-wing shaping on quad. Radio menus, radio Pause, keyboard bindings and direct-launch profile resolution are separate support rows.
+
+## What makes a move admissible
+
+1. Name the precise owner/caller and current behavior, including failure and interrupted paths.
+2. Pick applicable [case IDs](CONTROL-ACCEPTANCE.md) and fix affected baseline defects under their existing owners before moving the seam.
+3. Prove the bridge preserves the actual input/event/poll/admission order and first accepted command, with a real consumer witness.
+4. Apply [Q2](QUALITY-GATES.md#q2-state-replay-and-lifetime) when state, recording or identity is affected; do not require impossible exact replay across changed fingerprints or invent cross-family atomicity.
+5. Keep the change independently revertible with accepted player data and the old route's semantics. If a smaller forwarding function is sufficient, use it.
+
+Optional field/observer/view consolidation does not block a completed controls repair. Conversely, a clean architecture diagram does not waive a required control or device gate.

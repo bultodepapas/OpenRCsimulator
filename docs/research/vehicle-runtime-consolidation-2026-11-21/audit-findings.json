@@ -1,0 +1,669 @@
+{
+  "schema": "openrc-vrc-adversarial-findings-v1",
+  "date": "2026-11-21",
+  "base_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "reviewed_plan_commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+  "prior_controls_audit_commit": "895dd4352c5191f1539a8b8f4df1996cd33eb86f",
+  "scope": "Independent automated adversarial review of a proposed plan against pinned source. These are plan findings, not ten newly reproduced gameplay bugs. No runtime implementation or qualification was performed.",
+  "priority_meaning": {
+    "P1": "Resolve before the affected controls or transaction migration; the plan can otherwise permit a safety/authority regression or carry a known defect through its touched path.",
+    "P2": "Resolve contract, evidence or qualification ambiguity before its affected implementation or claim.",
+    "P3": "Correct source documentation accuracy; no demonstrated runtime impact."
+  },
+  "findings": [
+    {
+      "id": "A01",
+      "priority": "P1",
+      "title": "A direct session bridge can bypass live admission",
+      "kind": "proposed architecture hazard",
+      "owners": [
+        "UI",
+        "D6/F3",
+        "family activity/session"
+      ],
+      "problem": "request_resume(evidence) and session delegation do not identify the complete shell/activity gate or dispatch-time current authority. A stale snapshot or default zero sample is not authorization.",
+      "consequence": "An implementation could bypass selected source, generation, relevant profile, focus, radio-menu center, held-key or family readiness checks before a resumed tick.",
+      "resolution": "Minimal advisory status plus intent through the existing shell/activity and session chain; owner revalidation after any yield/defer; stale work cannot authorize another activity. Preserve guarded Fly/restart and family-specific readiness.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C10",
+        "C11",
+        "C12",
+        "C17",
+        "C24",
+        "C30",
+        "C34"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            45,
+            53
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/app_root.gd",
+          "lines": [
+            4730,
+            4759
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "lines": [
+            598,
+            611
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/airship/session.gd",
+          "lines": [
+            248,
+            260
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/vehicles/multirotor/multirotor_scene.gd",
+          "lines": [
+            849,
+            878
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "priority": "P2",
+      "title": "The assumed shared status API and broad port are not established",
+      "kind": "unsupported design premise",
+      "owners": [
+        "UI",
+        "session owners"
+      ],
+      "problem": "VRC-01 calls a shared status contract existing, while actual consumers read different live fields and backend/status surfaces. The proposed full port precommits reset/restore/close and immutable capabilities before a real shared need.",
+      "consequence": "A generic facade could invent defaults, duplicate mutable safety authority, freeze dynamic availability or expand the migration before its first benefit is proven.",
+      "resolution": "Characterize existing per-family surfaces, then one fixed-wing status/pause/resume consumer. Unknown/support/readiness are distinct; dynamic availability is projected from owners. Defer broader methods and keep optional extractions independent.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C30"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            45,
+            53
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            85,
+            96
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/ui/pause_menu.gd",
+          "lines": [
+            492,
+            555
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/flight_session.gd",
+          "lines": [
+            4232,
+            4256
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "priority": "P1",
+      "title": "Input parity lacks temporal and real-consumer oracles",
+      "kind": "acceptance gap",
+      "owners": [
+        "D6",
+        "F3",
+        "UI",
+        "family input"
+      ],
+      "problem": "Broad keyboard/radio/gamepad, hold and capture parity does not specify event versus poll evidence, first accepted command, held key isolation, action release, AUX no-command or shaping ownership.",
+      "consequence": "Layer tests could pass while a bridge manufactures radio evidence, changes gamepad readiness, turns menu keys into flight input, reapplies curves or retracts a retained AUX target.",
+      "resolution": "Trace the actual route order, not an invented universal pipeline. Add explicit temporal and shaping cases with real affected consumers, retaining verified-gamepad first poll, trusted radio verification seed, keyboard capture, center versus command-OFF and per-family policies.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C25",
+        "C34",
+        "C36",
+        "C40"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            88,
+            90
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/input/rc_input.gd",
+          "lines": [
+            244,
+            384
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/ui/held_keys.gd",
+          "lines": [
+            1,
+            28
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/ui/radio_menu_input.gd",
+          "lines": [
+            99,
+            140
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/flight_session.gd",
+          "lines": [
+            3091,
+            3145
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A04",
+      "priority": "P1",
+      "title": "Five known controls defects are not carried into affected gates",
+      "kind": "dependency and baseline gap",
+      "owners": [
+        "D6-GP-02/03",
+        "UI",
+        "BL",
+        "DR",
+        "fixed-wing/HELI"
+      ],
+      "problem": "The plan acknowledges GCA-01 through GCA-05 but detailed characterization and migration order mention only the first three; a repair decision is not a repaired invariant in the touched path.",
+      "consequence": "Input/calibration extraction could retain known legacy lost updates or tiny-range wrong endpoints while being described as qualified consolidation.",
+      "resolution": "Carry all five pinned adverse witnesses into baseline disposition, then block only migrations touching the unresolved invariant until separate owning-track repair and repaired regression proof. Do not block unrelated status work or relabel adverse reproducer success as repair.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C10",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C20",
+        "C21",
+        "C22"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            88,
+            104
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            5,
+            11
+          ]
+        },
+        {
+          "commit": "895dd4352c5191f1539a8b8f4df1996cd33eb86f",
+          "path": "docs/research/game-controls-audit-2026-11-21/REMEDIATION.md",
+          "lines": [
+            93,
+            139
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A05",
+      "priority": "P1",
+      "title": "Transaction and teardown guarantees are not universal",
+      "kind": "cross-family semantic mismatch",
+      "owners": [
+        "SF",
+        "FL",
+        "UI-FS",
+        "UI",
+        "BL",
+        "DR",
+        "RCV"
+      ],
+      "problem": "The broad reset/restore/close sketch and refusal-preserves-recording statement exceed the demonstrated common contract. Airship/quad reset notification can stop recorders before later refusal; tentative fixed-wing detach intentionally leaves recorders open.",
+      "consequence": "A common helper could close the surviving flight, misreport committed faults as rollback, discard pending data or claim preservation that a family never guaranteed.",
+      "resolution": "Defer these public operations; preserve owner-specific precommit/commit/notification/credit and exit policy. Add fault/reentry/tentative-detach/finalization/worker cases only when those seams move. Stronger guarantees require separate repairs.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C03",
+        "C27",
+        "C28",
+        "C29",
+        "C37"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            49,
+            51
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            112,
+            118
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/airship/session.gd",
+          "lines": [
+            192,
+            236
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/airship/flight_log.gd",
+          "lines": [
+            155,
+            156
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/multirotor/session.gd",
+          "lines": [
+            487,
+            497
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/multirotor/flight_log.gd",
+          "lines": [
+            178,
+            179
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/app_root.gd",
+          "lines": [
+            3841,
+            3855
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "docs/FLIGHT-LOGGING.md",
+          "lines": [
+            81,
+            94
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A06",
+      "priority": "P2",
+      "title": "Source-moving replay gates need an identity-aware workflow",
+      "kind": "ambiguous or infeasible verification gate",
+      "owners": [
+        "FL",
+        "SF",
+        "NK",
+        "physics"
+      ],
+      "problem": "The plan asks for exact-state/replay preservation without explaining how a source-moving PR changes the solver fingerprint. Interpreting this as old-log exact replay on changed source would be refused; candidate mode has domain and backend limits.",
+      "consequence": "Implementers could bypass identity guards, require impossible evidence, call a candidate experiment exact or mistake reference candidate replay for native qualification.",
+      "resolution": "Exact baseline on matching original identity; exact comparison only when identity genuinely matches, otherwise supported explicit candidate or owner differential/blocked. Report completeness/mode/solver_changed/backend and separately qualify native. Preserve already acknowledged post-conditioning limitations.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C31",
+        "C32"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            6,
+            10
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            35,
+            40
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/flight_log.gd",
+          "lines": [
+            435,
+            449
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/tools/flight_log_cli.gd",
+          "lines": [
+            544,
+            566
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/tools/flight_log_cli.gd",
+          "lines": [
+            618,
+            665
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A07",
+      "priority": "P2",
+      "title": "Test names and process success do not prove the promised route",
+      "kind": "fixture and evidence gap",
+      "owners": [
+        "QA",
+        "D6",
+        "UI",
+        "test/CI owners"
+      ],
+      "problem": "The proposed examples include a golden helper as if executable, no completion marker in the sample runner command, and fixture names without declaring real/fake boundaries, retained tapes or current execution status.",
+      "consequence": "A partial run, fake-only route, short synthetic tape or historical adverse witness could be mistaken for complete control qualification, particularly given five unqualified prior suites.",
+      "resolution": "Forty proposed case rows bind owners, triggers, oracles, test starting points and evidence; all UNRUN. Require real affected consumers, exact terminal roster/diagnostics, fresh isolated data/imports and current receipts. Preserve 22/27 historical limits and required CI.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C10",
+        "C24",
+        "C31",
+        "C32",
+        "C33",
+        "C38",
+        "C40"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            15,
+            33
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/tests/golden_flights.gd",
+          "lines": [
+            1,
+            15
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/tests/test_controller_routing_audit.gd",
+          "lines": [
+            1,
+            54
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/tests/test_flight_log_inputs.gd",
+          "lines": [
+            31,
+            38
+          ]
+        },
+        {
+          "commit": "895dd4352c5191f1539a8b8f4df1996cd33eb86f",
+          "path": "docs/research/game-controls-audit-2026-11-21/verification.json",
+          "lines": [
+            64,
+            82
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A08",
+      "priority": "P2",
+      "title": "Direct, managed and family control policies need explicit scope",
+      "kind": "route and persistence contract gap",
+      "owners": [
+        "D6",
+        "UI",
+        "family input/persistence"
+      ],
+      "problem": "Shared service/admission wording is too broad for supported service-free direct routes, managed V2 versus legacy save/read behavior, per-family throttle/curve policy and static versus configurable controls. Airship wording also says centered throttle instead of low throttle.",
+      "consequence": "An extraction could introduce a mandatory service, alter active-but-unsaved calibration behavior, invent unreadable-legacy-reader guarantees, change quad fallback/rate policy or promise unimplemented remapping/menu support.",
+      "resolution": "Inventory supported routes and preserve the real policy for each; managed rollback differs from direct activate-before-save. Explicitly retain verified gamepad readiness, radio challenge rules, fixed controls, low-throttle/centered-yaw airship and held quad fallback. Future behavior improvements remain separately owned.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C02",
+        "C05",
+        "C08",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C19",
+        "C21",
+        "C22",
+        "C23",
+        "C24",
+        "C29",
+        "C34",
+        "C39"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/MIGRATION-MATRIX.md",
+          "lines": [
+            8,
+            13
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            18,
+            22
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/flight_session.gd",
+          "lines": [
+            1812,
+            1835
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/flight_session.gd",
+          "lines": [
+            1913,
+            1922
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/sim/helicopter_flight_session.gd",
+          "lines": [
+            1021,
+            1028
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/input/rc_calibration.gd",
+          "lines": [
+            327,
+            374
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "app/vehicles/multirotor/multirotor_scene.gd",
+          "lines": [
+            476,
+            506
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A09",
+      "priority": "P2",
+      "title": "Control response and support claims need their own measured gates",
+      "kind": "qualification specificity gap",
+      "owners": [
+        "F1/F4/F6",
+        "PT",
+        "VQ",
+        "DT",
+        "UI/pilot"
+      ],
+      "problem": "Workload timing and generic platform/device language do not directly catch a new input queue, stale sample or lost setup/recovery usability, and do not identify applicable transport, physical, export and soak rows.",
+      "consequence": "A faster microbenchmark or clean synthetic path could be presented as better control feel or wider compatibility without matching evidence.",
+      "resolution": "Use existing F6 and controller/DT owners: event/sample/first-command/visible-response traces, paired recorded source/workload comparisons, actual hardware/transport/package rows, scoped soak, accessible EN/ES recovery and pilot evidence. No new speedup or arbitrary latency budget is claimed.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [
+        "C15",
+        "C20",
+        "C23",
+        "C25",
+        "C26",
+        "C32",
+        "C33",
+        "C34",
+        "C35",
+        "C36",
+        "C37",
+        "C38",
+        "C39"
+      ],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/QUALITY-GATES.md",
+          "lines": [
+            42,
+            47
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "docs/plans/controller-support.md",
+          "lines": [
+            85,
+            127
+          ]
+        },
+        {
+          "commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+          "path": "docs/plans/controls-setup-ux.md",
+          "lines": [
+            1,
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A10",
+      "priority": "P3",
+      "title": "All ten source line counts include a phantom final line",
+      "kind": "documentation accuracy",
+      "owners": [
+        "VRC documentation"
+      ],
+      "problem": "Every inventory line count is one greater than the pinned source's actual line count; blob IDs and function counts are correct.",
+      "consequence": "Inspection metrics are not reproducible as stated, though there is no demonstrated runtime impact or complexity/performance conclusion.",
+      "resolution": "Regenerate using UTF-8 splitlines without a phantom final empty line; correct plan/table/JSON, retain original revision and add reproducible static checks.",
+      "disposition": "addressed_in_plan_runtime_unqualified",
+      "cases": [],
+      "evidence": [
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/research/vehicle-runtime-consolidation-2026-11-21/inventory.json",
+          "lines": [
+            1,
+            70
+          ]
+        },
+        {
+          "commit": "542d92b304fc3b82678c4a90b848a88d82df0b22",
+          "path": "docs/plans/vehicle-runtime-consolidation.md",
+          "lines": [
+            7,
+            11
+          ]
+        }
+      ]
+    }
+  ]
+}
