@@ -2,6 +2,8 @@
 
 **Date:** 2026-11-21. **Pinned inspected source:** e28b3fdb78504e3409a6290947a3688d3d6de3db, on the ongoing [A36 audit branch](https://github.com/bultodepapas/OpenRCsimulator/tree/audit/physics-math-aero-2026-11-21). This investigation changes no production law, main branch, original PDF/ZIP, or earlier A36/R2/R3 reports.
 
+**Later R6 evidence:** [R4-F01 now has complete custom-aircraft admission and actual Godot component/setup failure evidence](sixth-pass-physics-2026-11-21.md#r4-f01-upgrade--admitted-tailless-wake-fails-during-setup) at source `f2d9bf7c`. Its no-wake control accepts a reference tick; the wake-enabled configuration fails during trim and has no accepted tick. This upgrades the existing finding, not its count. The R4 historical method and limitations below remain accurate for that earlier round; R4-F02 complete-admission/native evidence remains open.
+
 **Method:** trace the entire aircraft-data route (v2 schema -> structural contract -> derivation -> aerodynamic loads -> powered wake -> reference/native implementations -> simulation acceptance) and check conservation of physical area. Additionally check wind-point kinematics, impulse-energy constraints, water-drag work and runtime sampling cost. The [independent Python arithmetic witness](probes/fourth_pass_wake_partition.py) checks synthetic coefficients and can inspect selected source fingerprints with --repo-root. **Neither a complete admitted GDScript aircraft nor a Godot 240 Hz flight was executed in R4.**
 
 ## New findings

@@ -1,0 +1,877 @@
+{
+  "format": "openrc-a36-r6-evidence v1",
+  "reviewed_commit": "f2d9bf7c0e1fad77158bbadcb99c0c487ddb94ac",
+  "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "base_manifest_sha256": "9b9257242b8873d0045df0abf41aa13ca62dccc6b0a5a925683869152367b9be",
+  "base_dependency_count": 432,
+  "total_dependency_count": 442,
+  "extra_dependencies": [
+    {
+      "path": "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+      "bytes": 24511,
+      "git_blob_sha1": "346cfba5f7fa618e206bae30fa3886e7bc181a5f",
+      "fixture_sha256": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json",
+      "bytes": 3230,
+      "git_blob_sha1": "e5aa835ce0b95d4d022584b24f533546250b7c12",
+      "fixture_sha256": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json",
+      "bytes": 3455,
+      "git_blob_sha1": "bea4babb989d5bea71c4dd2f90cc352ba7fb77e8",
+      "fixture_sha256": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/gate_crossing.gd",
+      "bytes": 4271,
+      "git_blob_sha1": "d5658aa13256ab68bb0b26a5f8de0bc8a665843f",
+      "fixture_sha256": "5575efae31f12f3d67b45add7e3b280f717b50b4ac83c4867dcba522a44dffd7",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/race_director.gd",
+      "bytes": 18391,
+      "git_blob_sha1": "b6cb66f2f61cbfd0ffe90268dae79aa7fd0018cf",
+      "fixture_sha256": "a437ee1c1bb5fde8301582bef64dd3bba925772cfc7c7320064bf6d20078ae44",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/sim/race/track.gd",
+      "bytes": 28205,
+      "git_blob_sha1": "23d3104c73c6d6c09ca9a7675c5902d4d81f83d8",
+      "fixture_sha256": "4f6b8d822708b638159b47e5b95a43f15f151b2dd17f324352394e87837fb3e6",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_spatial_wind_contract.gd",
+      "bytes": 13261,
+      "git_blob_sha1": "cf88ae29d0dfcbdb15f7a1329ed3672da2e0d061",
+      "fixture_sha256": "b090fac654dcd61db223121c1b84b0d3ed5c046410b184c3d60a7e70ee1a6b87",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_spatial_wind_field.gd",
+      "bytes": 35633,
+      "git_blob_sha1": "4231971590004f0faa5bd29e541e16000a611f41",
+      "fixture_sha256": "ed53588da4ddde077882adcd03b8e3e96977e0c0640affd0ab1ef25d7dc83de7",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/fixtures/spatial_wind_mode_grid_before.json",
+      "bytes": 11651,
+      "git_blob_sha1": "340733350726e58934c71fc14cebdb131bba79c6",
+      "fixture_sha256": "3dc02072b925abb821d8deb1a7ceee07c873b1c4cbf4638b77c1b3fa15e6ea4d",
+      "checkout_bytes": "exact"
+    },
+    {
+      "path": "app/tests/test_tailless_spatial_wind.gd",
+      "bytes": 20539,
+      "git_blob_sha1": "c9a1e9fdd30989ac9bb3d64012978107a04ce0e1",
+      "fixture_sha256": "f8c9ba62e105d1e74f2b4554bdcf1f8bca98d472f3e19b3ac22d2710b86dae61",
+      "checkout_bytes": "exact"
+    }
+  ],
+  "project_godot": "config_version=5\n[application]\nconfig/name=\"A36 R6 isolated research\"\n[physics]\ncommon/physics_ticks_per_second=240\ncommon/max_physics_steps_per_frame=12\ncommon/physics_jitter_fix=0.0\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n",
+  "production_stubs": [],
+  "generated_synthetic_inputs": [
+    {
+      "path": "r6_custom_power.json",
+      "sha256": "6433dc19f0d5e2a61e27c1e21c4dc48e6b398f5efd113718897d21bb0048d264",
+      "bytes": 48578
+    },
+    {
+      "path": "r6_custom_trim.json",
+      "sha256": "3b8f3b5ae481938fd9ae9cb6f7ac38c33f3b7df1d3878787ccce5ef457b6a060",
+      "bytes": 48665
+    },
+    {
+      "path": "r4_candidate.json",
+      "sha256": "fbc94c60251285233ac94adff8308b811cb761b6affc5a985f871e0af3ae5b86",
+      "bytes": 55513
+    },
+    {
+      "path": "r4_no_wake.json",
+      "sha256": "81dec4705da5552e7f4908ca5cae15aeb305cd383ad0585423a18e01281b7d86",
+      "bytes": 53027
+    },
+    {
+      "path": "r4_electric_wake.json",
+      "sha256": "90a55f020678a3272b8719ee4c99dc0a6998291869a1e559f463a7f7b5ac0a9a",
+      "bytes": 58242
+    }
+  ],
+  "stock_inputs_unchanged": true,
+  "probe_sha256": {
+    "sixth_pass_propeller_power.gd": "422cf808095125f995b4bda839cab9adf2d72dbe7a1e0ab37a7588f20e54f16a",
+    "sixth_pass_propeller_trim.gd": "623c00c49eea8e8b193a57dfaf4d081949b814c1a043fb4b9c49ac5b8fd667a0",
+    "sixth_pass_flap_wake.gd": "97bd2cef30fe43fb885b6f403962f0bb1bacdbc46a022df1202074afc3eb385a",
+    "r4_admission.gd": "d2ef614cbe29135721bda85e18a20f6041516cae304fa7b07c79fd49fc7699ef",
+    "r4_component_controls.gd": "94c6442770e8ef6ef763d4a73cddf6ec5b7d716cebf446235a2bef89747be7dc",
+    "r4_session_control.gd": "ddb6eac8359ea77c99a8e9b8198b786d9d8a028f54cfa35987d26fed233b7564",
+    "r4_component_trigger.gd": "02b3eaac6c0b115154731a245b2a672834287387e536081b62c4d62929c359d0",
+    "r4_session_trigger.gd": "cf223bffa7a6516e3ae4a4a0f579cb3449684cef38292050db04256189d3a8db",
+    "reproduce_sixth_pass.py": "16b5ecc1e5f4d26d410248cd97e60dbfa2390d9d8ae5e45f965e4c467fb58256",
+    "sixth_pass_fixtures.py": "d7ed0fa6d404c1e309cf7d28cb09e3b0c9cacad577bb849c51f90338fc29d14e",
+    "sixth_pass_oracles.py": "546a28da00000692f7434246e1015475c548d0538cc1378759c320769f1c9185"
+  },
+  "checked_runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+  "checks": [
+    {
+      "label": "import",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "62de4e3c-eddc-4a44-b741-7c7618c949aa",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:27:42.928958+00:00",
+        "label": "a36-r6-import",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-import-4np2j6o7/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-import-4np2j6o7/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.815946,
+        "log_bytes": 28372,
+        "log_sha256": "5ee75d484e74dc7aa3a2526e7daa5f185b225f6ef72bb319b45c34bd141c49de"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (309 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SkyConfig\u001b[39m\u001b[0m\n[   2% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   5% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   7% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  11% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  13% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  17% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftContract\u001b[39m\u001b[0m\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AircraftModules\u001b[39m\u001b[0m\n[  23% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  24% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ControlSurfaces\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CruiseTrim\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  26% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  27% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  36% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  39% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindConfig\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindField\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialConfig\u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindSpatialField\u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindThermalField\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WindTurbulence\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  44% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  47% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  49% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  52% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  55% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ImportedVegetation\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  63% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  69% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  72% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  73% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  76% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  82% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  86% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  88% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  89% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  92% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  94% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  95% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  96% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  97% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  98% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started Scanning actions... (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_arm_1k.jpg\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_diff_1k.jpg\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_nor_gl_1k.jpg\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | flower_empodium_1k.gltf\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rocks_Diffuse.png\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_1.gltf\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_2.gltf\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Rock_Medium_3.gltf\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_arm_1k.jpg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_diff_1k.jpg\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | clay_roof_tiles_nor_gl_1k.png\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_arm_1k.jpg\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_diff_1k.jpg\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | roof_slates_03_nor_gl_1k.png\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal026_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Metal038_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood049_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Wood060_2K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_arm_2k.jpg\u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_diff_2k.jpg\u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | corrugated_iron_02_nor_gl_2k.png\u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | transmission-tower-3tier-ipoly3d.glb\u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Fabric001_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  84% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  87% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  90% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  93% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing pre-reimport operations...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Fabric001_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[   3% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_nor_gl_2k.png\u001b[39m\u001b[0m\n[   6% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_diff_2k.jpg\u001b[39m\u001b[0m\n[   9% ] \u001b[90m\u001b[1mreimport\u001b[22m | corrugated_iron_02_arm_2k.jpg\u001b[39m\u001b[0m\n[  12% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  15% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  18% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood060_2K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  21% ] \u001b[90m\u001b[1mreimport\u001b[22m | Wood049_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  31% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  34% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal038_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  37% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Roughness.jpg\u001b[39m\u001b[0m\n[  40% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_NormalGL.jpg\u001b[39m\u001b[0m\n[  43% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Metalness.jpg\u001b[39m\u001b[0m\n[  46% ] \u001b[90m\u001b[1mreimport\u001b[22m | Metal026_1K-JPG_Color.jpg\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_nor_gl_1k.png\u001b[39m\u001b[0m\n[  53% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_diff_1k.jpg\u001b[39m\u001b[0m\n[  56% ] \u001b[90m\u001b[1mreimport\u001b[22m | roof_slates_03_arm_1k.jpg\u001b[39m\u001b[0m\n[  59% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_nor_gl_1k.png\u001b[39m\u001b[0m\n[  62% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_diff_1k.jpg\u001b[39m\u001b[0m\n[  65% ] \u001b[90m\u001b[1mreimport\u001b[22m | clay_roof_tiles_arm_1k.jpg\u001b[39m\u001b[0m\n[  68% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rocks_Diffuse.png\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_nor_gl_1k.jpg\u001b[39m\u001b[0m\n[  75% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_diff_1k.jpg\u001b[39m\u001b[0m\n[  78% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_arm_1k.jpg\u001b[39m\u001b[0m\n[  81% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_3.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  84% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_2.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  87% ] \u001b[90m\u001b[1mreimport\u001b[22m | Rock_Medium_1.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  90% ] \u001b[90m\u001b[1mreimport\u001b[22m | flower_empodium_1k.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  93% ] \u001b[90m\u001b[1mreimport\u001b[22m | transmission-tower-3tier-ipoly3d.glb\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  96% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (31 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+      "expected_failure": false
+    },
+    {
+      "label": "propeller-power",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "41b9d291-9a04-4f7e-9255-eb91216d8846",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://sixth_pass_propeller_power.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:27:50.747500+00:00",
+        "label": "a36-r6-propeller-power",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-power-55uh2u44/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-power-55uh2u44/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R6 propeller power witness: 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.956727,
+        "log_bytes": 1796,
+        "log_sha256": "6747f9d26d08525626700cad64a7e30de743a57e65cade2a3867edf186fb15ff"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS complete custom aircraft loads through production v2 loader\nPASS complete stock aircraft loads\nPASS custom propeller returns positive thrust and positive shaft load\nPASS custom propeller work exceeds shaft supply\nPASS unaltered stock table has shaft supply above ideal disk bound\nR6_COMPONENT {\"body_force_work_w\":54.2375301237458,\"diameter\":0.2794,\"ideal_disk_w\":57.2638001280639,\"j\":0.655,\"rho\":1.225,\"rpm\":6000.0,\"shaft_power_w\":41.7155614619155,\"speed_mps\":18.3007,\"stock_shaft_power_w\":79.2595667776392,\"thrust_n\":2.96368609527208,\"torque_nm\":0.0663923781051762}\nPASS reference backend explicitly selected\nPASS custom aircraft passes full reference session setup\nPASS reference backend is active\nR6_TRIM {\"j\":0.638964276525228,\"rpm\":4396.91519497632,\"thrust\":1.72392632207852,\"torque\":0.0691180500862002,\"velocity\":[13.0605632205733,0.106043814484518,0.986231478840458]}\nPASS production coupled stage evaluates constructed no-rate witness\nPASS stage inflow preserves exact advance ratio and deficit\nPASS restore backend explicitly selected\nPASS constructed witness accepted by session checkpoint restore\nPASS constructed state advances one accepted reference tick\nR6_SESSION {\"backend\":{\"backend\":\"gdscript_reference\"},\"body_force_work_w\":54.2375301237458,\"checkpoint_accepted\":true,\"custom_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"6433dc19f0d5e2a61e27c1e21c4dc48e6b398f5efd113718897d21bb0048d264\"},\"fault\":\"\",\"final_tick\":1,\"initial_tick\":0,\"j\":0.655,\"rho\":1.225,\"shaft_power_w\":41.7155614619155,\"stage_ok\":true,\"stock_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c\"},\"thrust_n\":2.96368609527208}\nR6 propeller power witness: 0 failures\n",
+      "expected_failure": false
+    },
+    {
+      "label": "propeller-trim",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f8c79087-e614-4657-9c02-d10f9cd9e4d9",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://sixth_pass_propeller_trim.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:27:54.706857+00:00",
+        "label": "a36-r6-propeller-trim",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-trim-d4j1xy07/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-trim-d4j1xy07/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R6 natural trim power witness: 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.224,
+        "log_bytes": 1210,
+        "log_sha256": "4ce282ad3374b59bf46d4154e1eb5be95ec4c3210575699f0121b49cdd5d3cd5"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPASS custom aircraft passes file and v2 admission\nPASS unaltered stock aircraft passes v2 admission\nPASS reference backend explicitly selected\nPASS custom aircraft obtains normal reference trim and setup\nPASS reference backend is active\nPASS normal starting stage evaluates\nPASS normal starting stage creates excessive propeller work\nPASS normal reference session advances an accepted tick\nR6_NATURAL_TRIM {\"air_mps\":[13.0604300903027,0.123077553708318,0.986015837157675],\"backend\":{\"backend\":\"gdscript_reference\"},\"custom_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"3b8f3b5ae481938fd9ae9cb6f7ac38c33f3b7df1d3878787ccce5ef457b6a060\"},\"diameter\":0.2794,\"fault\":\"\",\"final_tick\":1,\"ideal_disk_w\":24.0245848874753,\"initial_tick\":0,\"j\":0.638735958914731,\"rate_radps\":[0.0,0.0,0.0],\"rho\":1.225,\"rpm\":4398.63938891797,\"shaft_power_w\":18.0758889148563,\"speed_mps\":13.0832269991896,\"stock_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c\"},\"thrust_n\":1.72716458694607,\"thrust_work_w\":22.5968863559769,\"torque_nm\":0.0392421403604135}\nR6 natural trim power witness: 0 failures\n",
+      "expected_failure": false
+    },
+    {
+      "label": "flap-wake",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c2916a87-b3f1-4b58-b844-1ade12971ab7",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://sixth_pass_flap_wake.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:27:58.933588+00:00",
+        "label": "a36-r6-flap-wake",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-flap-wake-vyrgkrwk/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-flap-wake-vyrgkrwk/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R6 flap wake witness: 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.51732,
+        "log_bytes": 24555,
+        "log_sha256": "7828ae1368f08b8873fafabdec9e98f57deedc0aeb882bc1c3f16576b2adb690"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR6_FLAP_JSON {\"admissions\":[{\"aircraft\":\"f4u_corsair_250\",\"errors\":[],\"input_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10\"},\"ok\":true},{\"aircraft\":\"p51d_mustang_120\",\"errors\":[],\"input_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c\"},\"ok\":true},{\"aircraft\":\"sebart_avanti_s_a200\",\"errors\":[],\"input_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9\"},\"ok\":true}],\"cases\":[{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":1.99949005689511,\"dynamics_held_minus_static\":[0.0102422396059407,0.0,0.0,0.0,-0.00162484393209328,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":3.59739315742298,\"ground_effect_requested\":false,\"held_loads\":[-3.20102317944291,0.0,-30.7789023534709,-0.00000000000000133226762955019,0.766092747682843,0.0000000000000000555111512312578],\"held_minus_static\":[0.0102422396059407,0.0,0.0,0.0,-0.00162484393209328,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":10.0,\"static_loads\":[-3.21126541904885,0.0,-30.7789023534709,-0.00000000000000133226762955019,0.767717591614937,0.0000000000000000555111512312578]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":3.99898011379022,\"dynamics_held_minus_static\":[0.0409689584237629,0.0,0.0,0.0,-0.00649937572837311,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":7.19478631484597,\"ground_effect_requested\":false,\"held_loads\":[-12.8040927177716,0.0,-123.115609413884,-0.00000000000000532907051820075,3.06437099073137,0.000000000000000222044604925031],\"held_minus_static\":[0.0409689584237629,0.0,0.0,0.0,-0.00649937572837311,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[-12.8450616761954,0.0,-123.115609413884,-0.00000000000000532907051820075,3.07087036645975,0.000000000000000222044604925031]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":5.99847017068534,\"dynamics_held_minus_static\":[0.0921801564534661,0.0,0.0,0.0,-0.0146235953888407,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":10.792179472269,\"ground_effect_requested\":false,\"held_loads\":[-28.8092086149862,0.0,-277.010121181238,0.0,6.89483472914558,-0.000000000000000888178419700125],\"held_minus_static\":[0.0921801564534661,0.0,0.0,0.0,-0.0146235953888407,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":30.0,\"static_loads\":[-28.9013887714397,0.0,-277.010121181238,0.0,6.90945832453442,-0.000000000000000888178419700125]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":3.99898011379022,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":0.0,\"flapped_wake_mps\":3.99898011379022,\"ground_effect_requested\":false,\"held_loads\":[-10.4009998517817,0.0,-70.606684814435,0.0,3.51304421888819,0.0],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[-10.4009998517817,0.0,-70.606684814435,0.0,3.51304421888819,0.0]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":3.99898011379022,\"dynamics_held_minus_static\":[-0.0000000082138758017436,0.0,0.0,0.0,0.00000000130306254675361,0.0],\"flap_deg\":0.0001,\"flapped_wake_mps\":3.99901271526845,\"ground_effect_requested\":false,\"held_loads\":[-10.4010098622411,0.0,-70.6072204565725,0.0,3.51304021436951,-0.000000000000000222044604925031],\"held_minus_static\":[-0.0000000082138758017436,0.0,0.0,0.0,0.00000000130306254675361,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[-10.4010098540272,0.0,-70.6072204565725,0.0,3.51304021306645,-0.000000000000000222044604925031]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":30.0,\"clean_blend_held\":1.0,\"clean_blend_nan\":1.0,\"clean_wake_mps\":10.4400194182766,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":13.8405557387296,\"ground_effect_requested\":false,\"held_loads\":[8.04306679131921,0.0,-312.442355518355,-0.000000000000007105427357601,-39.7161756290099,0.0000000000000000138777878078145],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[8.04306679131921,0.0,-312.442355518355,-0.000000000000007105427357601,-39.7161756290099,0.0000000000000000138777878078145]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":4.70938580130149,\"dynamics_held_minus_static\":[-0.0181106834770794,0.0,0.0,0.0,0.00287310542283414,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":8.45002137145484,\"ground_effect_requested\":true,\"held_loads\":[-12.1943312167419,0.0,-149.445178485041,-0.00000000000000575424633101015,-4.04267890410766,-0.000000000000000444089209850063],\"held_minus_static\":[-0.0181106834770794,0.0,0.0,0.0,0.00287310542283414,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[-12.1762205332648,0.0,-149.445178485041,-0.00000000000000575424633101015,-4.04555200953049,-0.000000000000000444089209850063]},{\"aircraft\":\"f4u_corsair_250\",\"alpha_deg\":6.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":11.69019406653,\"dynamics_held_minus_static\":[-0.260275787086086,0.0,-0.0273560875598378,0.0,-0.0430832350727375,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":14.8670801178505,\"ground_effect_requested\":false,\"held_loads\":[5.02171519365101,0.0,-273.705419143635,-0.000000000000007105427357601,-6.04434365074849,-0.000000000000000222044604925031],\"held_minus_static\":[-0.260275787086086,0.0,-0.0273560875598378,0.0,-0.0430832350727375,0.0],\"oracle_inputs\":{\"cg_le\":[0.154125380741192,0.0,-0.062475468527141],\"rho\":1.225,\"tail_area\":0.256458,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.108294179592903,\"tail_free_incidence\":0.0218165403545624,\"tail_free_slope\":3.57879208982705,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.552646,0.0,0.096166]},\"speed_mps\":20.0,\"static_loads\":[5.2819909807371,0.0,-273.678063056075,-0.000000000000007105427357601,-6.00126041567576,-0.000000000000000222044604925031]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":1.07511194260661,\"dynamics_held_minus_static\":[0.0384802125723285,0.0,0.0,0.0,-0.00609049437166503,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":3.03292737410925,\"ground_effect_requested\":false,\"held_loads\":[-2.9794812742038,0.0,-23.5210447076437,0.000000000000000222044604925031,0.124342766543878,0.0000000000000000555111512312578],\"held_minus_static\":[0.0384802125723285,0.0,0.0,0.0,-0.00609049437166503,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":10.0,\"static_loads\":[-3.01796148677613,0.0,-23.5210447076437,0.000000000000000222044604925031,0.130433260915543,0.0000000000000000555111512312578]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":2.15022388521321,\"dynamics_held_minus_static\":[0.153920850289314,0.0,0.0,0.0,-0.0243619774866601,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":6.0658547482185,\"ground_effect_requested\":false,\"held_loads\":[-11.9179250968152,0.0,-94.0841788305748,0.000000000000000888178419700125,0.497371066175512,0.000000000000000222044604925031],\"held_minus_static\":[0.153920850289314,0.0,0.0,0.0,-0.0243619774866601,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[-12.0718459471045,0.0,-94.0841788305748,0.000000000000000888178419700125,0.521733043662172,0.000000000000000222044604925031]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":3.22533582781982,\"dynamics_held_minus_static\":[0.346321913150955,0.0,0.0,0.0,-0.0548144493449794,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":9.09878212232774,\"ground_effect_requested\":false,\"held_loads\":[-26.8153314678342,0.0,-211.689402368793,-0.00000000000000177635683940025,1.1190848988949,0.000000000000000444089209850063],\"held_minus_static\":[0.346321913150955,0.0,0.0,0.0,-0.0548144493449794,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":30.0,\"static_loads\":[-27.1616533809851,0.0,-211.689402368793,-0.00000000000000177635683940025,1.17389934823988,0.000000000000000444089209850063]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":2.15022388521321,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":0.0,\"flapped_wake_mps\":2.15022388521321,\"ground_effect_requested\":false,\"held_loads\":[-9.67779218872005,0.0,-32.64993722991,0.0,0.532778233801498,0.0],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[-9.67779218872005,0.0,-32.64993722991,0.0,0.532778233801498,0.0]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":2.15022388521321,\"dynamics_held_minus_static\":[0.0000009939719856078,0.0,0.0,0.0,-0.00000015732191838147,0.0],\"flap_deg\":0.0001,\"flapped_wake_mps\":2.15026502848384,\"ground_effect_requested\":false,\"held_loads\":[-9.67779778399389,0.0,-32.6505827278712,-0.000000000000000888178419700125,0.532779693766201,0.000000000000000222044604925031],\"held_minus_static\":[0.0000009939719856078,0.0,0.0,0.0,-0.00000015732191838147,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[-9.67779877796588,0.0,-32.6505827278712,-0.000000000000000888178419700125,0.532779851088119,0.000000000000000222044604925031]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":30.0,\"clean_blend_held\":1.0,\"clean_blend_nan\":1.0,\"clean_wake_mps\":10.5154749912377,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":14.6879462067975,\"ground_effect_requested\":false,\"held_loads\":[13.3178843098085,0.0,-310.420481517816,0.000000000000007105427357601,-37.6923432547155,0.0],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[13.3178843098085,0.0,-310.420481517816,0.000000000000007105427357601,-37.6923432547155,0.0]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":2.49017813981488,\"dynamics_held_minus_static\":[0.0433936440404157,0.0,0.0,0.0,-0.00686817268219109,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":7.11968809333374,\"ground_effect_requested\":true,\"held_loads\":[-11.4339681723288,0.0,-115.430523269323,0.000000000000000990988552568121,-5.27781274619075,0.000000000000000444089209850063],\"held_minus_static\":[0.0433936440404157,0.0,0.0,0.0,-0.00686817268219109,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[-11.4773618163693,0.0,-115.430523269323,0.000000000000000990988552568121,-5.27094457350856,0.000000000000000444089209850063]},{\"aircraft\":\"p51d_mustang_120\",\"alpha_deg\":6.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":10.5202622139125,\"dynamics_held_minus_static\":[-0.168865759857719,0.0,-0.0177485065523797,0.0,-0.0808548369531961,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":14.413354423121,\"ground_effect_requested\":false,\"held_loads\":[3.96055621042425,0.0,-247.435692710641,-0.000000000000014210854715202,-4.39174831692986,-0.000000000000000444089209850063],\"held_minus_static\":[-0.168865759857719,0.0,-0.0177485065523797,0.0,-0.0808548369531961,0.0],\"oracle_inputs\":{\"cg_le\":[0.172084897436693,0.0,-0.0707760064076282],\"rho\":1.225,\"tail_area\":0.254166,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.109873415694807,\"tail_free_incidence\":-0.0053004978811533,\"tail_free_slope\":3.28616585428471,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[1.3913,0.0,0.0875]},\"speed_mps\":20.0,\"static_loads\":[4.12942197028197,0.0,-247.417944204089,-0.000000000000014210854715202,-4.31089347997667,-0.000000000000000444089209850063]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0000000000000000277555756156289,\"dynamics_held_minus_static\":[0.00994580118884048,0.0,0.0,0.0,-0.000594460068346347,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":1.79261864693398,\"ground_effect_requested\":false,\"held_loads\":[-1.70227301907938,0.0,-6.97136045388429,-0.000000000000000111022302462516,0.325128546234201,0.0000000000000000277555756156289],\"held_minus_static\":[0.00994580118884048,0.0,0.0,0.0,-0.000594460068346347,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":10.0,\"static_loads\":[-1.71221882026822,0.0,-6.97136045388429,-0.000000000000000111022302462516,0.325723006302547,0.0000000000000000277555756156289]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0000000000000000555111512312578,\"dynamics_held_minus_static\":[0.0397832047553619,0.0,0.0,0.0,-0.00237784027338539,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":3.58523729386796,\"ground_effect_requested\":false,\"held_loads\":[-6.80909207631751,0.0,-27.8854418155371,-0.000000000000000444089209850063,1.3005141849368,0.000000000000000111022302462516],\"held_minus_static\":[0.0397832047553619,0.0,0.0,0.0,-0.00237784027338539,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[-6.84887528107287,0.0,-27.8854418155371,-0.000000000000000444089209850063,1.30289202521019,0.000000000000000111022302462516]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0,\"dynamics_held_minus_static\":[0.0895122106995654,0.0,0.0,0.0,-0.00535014061511818,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":5.37785594080194,\"ground_effect_requested\":false,\"held_loads\":[-15.3204571717144,0.0,-62.7422440849586,-0.00000000000000266453525910038,2.92615691610781,0.000000000000000222044604925031],\"held_minus_static\":[0.0895122106995654,0.0,0.0,0.0,-0.00535014061511818,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":30.0,\"static_loads\":[-15.409969382414,0.0,-62.7422440849586,-0.00000000000000266453525910038,2.93150705672293,0.000000000000000222044604925031]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0000000000000000555111512312578,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":0.0,\"flapped_wake_mps\":0.0000000000000000555111512312578,\"ground_effect_requested\":false,\"held_loads\":[-6.047988788625,0.0,0.0,0.0,-0.0316312663849752,0.0],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[-6.047988788625,0.0,0.0,0.0,-0.0316312663849752,0.0]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0000000000000000555111512312578,\"dynamics_held_minus_static\":[0.00000000000439825953435502,0.0,0.0,0.0,-0.000000000000262900812231237,0.0],\"flap_deg\":0.0001,\"flapped_wake_mps\":0.0000376916665324467,\"ground_effect_requested\":false,\"held_loads\":[-6.04798818495857,0.0,-0.000293155365528652,0.000000000000000444089209850063,-0.0316171786112827,0.000000000000000111022302462516],\"held_minus_static\":[0.00000000000439825953435502,0.0,0.0,0.0,-0.000000000000262900812231237,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[-6.04798818496297,0.0,-0.000293155365528652,0.000000000000000444089209850063,-0.0316171786110198,0.000000000000000111022302462516]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":30.0,\"clean_blend_held\":1.0,\"clean_blend_nan\":1.0,\"clean_wake_mps\":12.9079780340014,\"dynamics_held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":15.6965527268763,\"ground_effect_requested\":false,\"held_loads\":[-19.7861200181907,0.0,-188.314523894226,0.0,-12.7000427650231,0.0],\"held_minus_static\":[0.0,0.0,0.0,0.0,0.0,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[-19.7861200181907,0.0,-188.314523894226,0.0,-12.7000427650231,0.0]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":0.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":0.0000000000000000555111512312578,\"dynamics_held_minus_static\":[0.0397832047553619,0.0,0.0,0.0,-0.00237784027338539,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":3.58523729386796,\"ground_effect_requested\":true,\"held_loads\":[-6.80909207631751,0.0,-27.8854418155371,-0.000000000000000444089209850063,1.3005141849368,0.000000000000000111022302462516],\"held_minus_static\":[0.0397832047553619,0.0,0.0,0.0,-0.00237784027338539,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[-6.84887528107287,0.0,-27.8854418155371,-0.000000000000000444089209850063,1.30289202521019,0.000000000000000111022302462516]},{\"aircraft\":\"sebart_avanti_s_a200\",\"alpha_deg\":6.0,\"clean_blend_held\":0.0,\"clean_blend_nan\":0.0,\"clean_wake_mps\":8.87245054079339,\"dynamics_held_minus_static\":[-0.147942199489255,0.0,-0.0155493517408445,0.0,-0.0102652034102428,0.0],\"flap_deg\":10.0,\"flapped_wake_mps\":12.417534026078,\"ground_effect_requested\":false,\"held_loads\":[0.0621477539661413,0.0,-111.585846219978,0.0,-2.09308279155245,-0.000000000000000594142790522056],\"held_minus_static\":[-0.147942199489255,0.0,-0.0155493517408445,0.0,-0.0102652034102428,0.0],\"oracle_inputs\":{\"cg_le\":[0.230367326952704,0.0,0.00523004712648723],\"rho\":1.225,\"tail_area\":0.16476,\"tail_cd0\":0.012,\"tail_cd90\":1.2,\"tail_downwash_gain\":0.120105052015006,\"tail_free_incidence\":0.00000000000000000009115271082481,\"tail_free_slope\":3.40393443824422,\"tail_k\":0.08,\"tail_linear_limit_rad\":0.20943951023932,\"tail_position_le\":[0.967908,0.0,0.065]},\"speed_mps\":20.0,\"static_loads\":[0.210089953455396,0.0,-111.570296868237,0.0,-2.08281758814221,-0.000000000000000594142790522056]}],\"checks\":225,\"failures\":0,\"scope\":\"stock-data component and shared Dynamics loads; no session flight or physical calibration\"}\nR6 flap wake witness: 0 failures\n",
+      "expected_failure": false
+    },
+    {
+      "label": "wind-contract",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "28a4f994-5608-4a43-8264-152e261bdd8d",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_wind_contract.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:00.453726+00:00",
+        "label": "a36-r6-wind-contract",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-wind-contract-w9cnpvab/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-wind-contract-w9cnpvab/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "spatial wind contract: 176 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.031164,
+        "log_bytes": 114,
+        "log_sha256": "81b109658545810a0d1a67a0859aa468a3972456261f569b12fc622f80e935b8"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nspatial wind contract: 176 checks, 0 failed\n",
+      "expected_failure": false
+    },
+    {
+      "label": "wind-field",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0fcad135-aaa2-426d-8d75-0b5f8aa8f29f",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_wind_field.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:01.486925+00:00",
+        "label": "a36-r6-wind-field",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-wind-field-x8wa3_ci/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-wind-field-x8wa3_ci/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "spatial wind field: 155 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.243117,
+        "log_bytes": 111,
+        "log_sha256": "ff3161935ac17848b99da5cdc2cca67e42064c8785d4bf61604c3696b5a23f9e"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nspatial wind field: 155 checks, 0 failed\n",
+      "expected_failure": false
+    },
+    {
+      "label": "tailless-spatial",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "caf78cae-7adb-4e8e-bad6-f893be658c47",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_tailless_spatial_wind.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:01.731433+00:00",
+        "label": "a36-r6-tailless-spatial",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-spatial-gcejqj95/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-spatial-gcejqj95/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "tailless spatial wind: 121 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.309411,
+        "log_bytes": 114,
+        "log_sha256": "4c6bf5f5e369ed2341203186a7ae3cff434eb4761af842346dafba12804ba208"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\ntailless spatial wind: 121 checks, 0 failed\n",
+      "expected_failure": false
+    },
+    {
+      "label": "airship-dynamics",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a24f7cd8-8e77-454f-8c57-3e25be6adafd",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_dynamics.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:03.042895+00:00",
+        "label": "a36-r6-airship-dynamics",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-airship-dynamics-sf7dtot6/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-airship-dynamics-sf7dtot6/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "50 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.781594,
+        "log_bytes": 2946,
+        "log_sha256": "e00e5bc0ccbf66a69844f6521a60974bf4a3cff4c756c8cced97e33aa4616c10"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   Lamb k1/k2/k' at L/D 4 0.0816 0.8598 0.6079\nok   Lamb k1/k2/k' at L/D 5 0.0591 0.8943 0.6999\nok   Lamb k1/k2/k' at L/D 6 0.0452 0.9171 0.7623\nok   near-sphere limit k1 = k2 = 1/2 0.49994 0.50003\nok   fixture is admitted \nok   wrong unit is refused \nok   missing source is refused \nok   non-unit fin normal is refused \nok   missing rotor is refused \nok   nonfinite mass is refused \nok   atmosphere outside the domain is refused \nok   sphere surge a = F/(m + m_A) a=0.519814 expected=0.519814\nok   sphere added mass is rho V / 2 (oracle) a=0.519814 lamb=0.519794\nok   no spurious heave or rotation \nok   weigh-off achieves the requested heaviness 0.1\nok   heave a = (W - B)/(m + m_A33) 0.158813 vs 0.158813\nok   neutral, level, still: no acceleration \nok   zero added mass, CG at O: equals RigidBody.derivative max diff 0.0\nok   datum shift preserves kinetic energy 3.544784429476 vs 3.544784429476\nok   datum shift: same angular acceleration 0.0\nok   datum shift: v_dot' = v_dot + omega_dot x d 0.0\nok   drifts with the wind [-0.0, 2.0, -0.0]\nok   crosswind accelerates the hull toward, not past, the wind [0.02101264937663, 1.84892589899434, 0.00025502870434]\nok   coast-down dissipates kinetic energy 16.3952 -> 1.8466 J\nok   pitch disturbance decays (CB above CG) pitch 2.85 deg after 40 s\nok   long integration stays finite \nok   full back stick vectors the side props to full travel \nok   forward stick keeps side thrust horizontal \nok   right yaw drives the stern thruster toward port -1.0\nok   stern thruster on right yaw makes a nose-right moment 3.15\nok   right roll stick adds port thrust (nose right) \nok   rudder deflection on right yaw adds nose-right moment 0.6299 vs 0.0000\nok   back stick fins add nose-up moment 1.2597 vs 0.0000\nok   rotating in steady wind = rotating in calm air (Galilean) 0.0\nok   Munk moment: nose-up for w > 0 with Lamb magnitude 0.57195555205225 vs 0.57195555205225\nok   fins weathervane in yaw (nose toward sideslip) 0.47375877203797\nok   fins stabilize in pitch (nose down for w > 0) -0.96026363326039\nok   propeller torque reaction sign and size 0.02\nok   propeller thrust lapse with inflow 1.0\nok   battery terminal voltage of the shared bus 12.1043087443726 vs 12.1043087443726\nok   gear static support = k * depth 4.0\nok   contact never pulls \nok   tilted sliding wheel: vertical force equals the normal load 1.82110643130855 vs 1.82110643130855\nok   sliding wheel friction opposes motion \nok   first touch starts without a damping jump 0.53999999999994\nok   afterbody separation station is the steepest area decrease -2.375\nok   afterbody normal force equals -u w rho k2 S(x0) -0.209717 vs -0.209717 N\nok   afterbody moment restores (nose down) and acts aft of x0 dMy -0.51119, lever -2.438 m\nok   reverse flow: no afterbody correction \nok   afterbody load scales with the hull added-mass scale -0.104859\n50 checks, 0 failed\n",
+      "expected_failure": false
+    },
+    {
+      "label": "tailless-admission",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "00907097-e0a0-4cfd-96f4-1aa51b1efe7f",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://r4_admission.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:07.827462+00:00",
+        "label": "a36-r6-tailless-admission",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-admission-dfcj2nbh/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-admission-dfcj2nbh/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R4_ADMISSION_COMPLETE PASS"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.927432,
+        "log_bytes": 1318,
+        "log_sha256": "90898f048a50acaa0d91d54379303277dbe60253d7790d0d2897150dfe30d5ff"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR4_ADMISSION {\"classification_errors\":[],\"classified\":true,\"errors\":[],\"expected\":true,\"file\":\"r4_no_wake.json\",\"ok\":true,\"surface_keys\":[\"attached_limit\",\"tail_local_limit\",\"tail_stall_end\",\"tail_CD0\",\"tail_k\",\"tail_CD90\",\"station_incidence\",\"wing_body_cl_beta\",\"body_cy_beta\",\"body_crossflow_area\",\"vertical\",\"wing_aileron_effectiveness\",\"tailless\",\"wing_cm_ac\"],\"wake_pieces\":[],\"warnings\":[]}\nR4_ADMISSION {\"classification_errors\":[],\"classified\":true,\"errors\":[],\"expected\":true,\"file\":\"r4_candidate.json\",\"ok\":true,\"surface_keys\":[\"attached_limit\",\"tail_local_limit\",\"tail_stall_end\",\"tail_CD0\",\"tail_k\",\"tail_CD90\",\"station_incidence\",\"wing_body_cl_beta\",\"body_cy_beta\",\"body_crossflow_area\",\"vertical\",\"wing_aileron_effectiveness\",\"tailless\",\"wing_cm_ac\"],\"wake_pieces\":[{\"area\":0.02,\"chords\":[0.2,0.2],\"root\":[0.4851627273,0.0,0.0],\"span\":0.1,\"span_dir\":[0.0,0.0,1.0],\"surface\":\"vertical\"}],\"warnings\":[]}\nR4_ADMISSION {\"classification_errors\":[\"propulsion.propeller.slipstream: is not registered for this module section\"],\"classified\":false,\"errors\":[\"/propulsion/propeller/slipstream: unknown field\"],\"expected\":false,\"file\":\"r4_electric_wake.json\",\"ok\":false,\"surface_keys\":[],\"wake_pieces\":[],\"warnings\":[]}\nR4_ADMISSION_COMPLETE PASS\n",
+      "expected_failure": false
+    },
+    {
+      "label": "tailless-controls",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ec38ff41-a147-4884-8123-da999de32de9",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://r4_component_controls.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:08.756724+00:00",
+        "label": "a36-r6-tailless-controls",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-controls-m585s6qg/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-controls-m585s6qg/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R4_CONTROLS_COMPLETE PASS"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.906564,
+        "log_bytes": 658,
+        "log_sha256": "89082c23f877295f1d14fe26b095b53c71571c11444b477f6020b5678417c5b9"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR4_COMPONENT_CONTROLS {\"air\":[12.0,0.5,0.0],\"immersed_area_m2\":0.02,\"rpm\":5000.0,\"shim_abs_sum\":0.0489697547447517,\"shim_scope\":\"local in-memory empty-horizontal dictionary; no loader/session/native validity\",\"shimmed_5000_rpm\":[-0.0129048749050534,-0.025420890979408,0.0,-0.0011628650853809,0.000590326612487768,0.00889079716242153],\"stopped\":[0.0,0.0,0.0,0.0,0.0,0.0],\"tq\":[4.41612089945227,0.15258196588231,0.47244094488189],\"wake\":{\"core\":0.04572,\"dv\":3.22421865031805,\"rs\":0.143373347721969,\"swirl\":0.0,\"u\":12.0,\"vs\":15.5824651670201,\"w\":1.79123258351003}}\nR4_CONTROLS_COMPLETE PASS\n",
+      "expected_failure": false
+    },
+    {
+      "label": "tailless-session-control",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "9c62f3a7-3a02-4e3d-99f4-cdc796ae6e5e",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://r4_session_control.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:09.664705+00:00",
+        "label": "a36-r6-tailless-session-control",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-session-control-0fn63thj/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-session-control-0fn63thj/report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R4_NO_WAKE_SESSION_COMPLETE PASS"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.884519,
+        "log_bytes": 1187,
+        "log_sha256": "19964f1ba8b52d95b1fd29ae8e5d263d5e6e4f22ad2cfd11310acea5fa5f515e"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR4_NO_WAKE_PREFLIGHT {\"backend_selected\":true,\"input_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"81dec4705da5552e7f4908ca5cae15aeb305cd383ad0585423a18e01281b7d86\"},\"loader_ok\":true,\"message\":\"\",\"preflight_ok\":true,\"stage_backend_identity\":{\"backend\":\"gdscript_reference\"}}\nR4_NO_WAKE_SESSION {\"accepted\":true,\"fault\":\"\",\"final_tick\":1,\"flyable\":true,\"initial_tick\":0,\"stage_backend_identity\":{\"backend\":\"gdscript_reference\"},\"start\":{\"V\":12.76697465436,\"aileron\":-0.0121257144032415,\"alpha\":0.0581416036823059,\"bank\":0.00222539519636657,\"beta\":0.00285250996657278,\"elevator\":-0.00160682191673235,\"gamma\":0.0,\"iterations\":4,\"message\":\"trimmed\",\"mode\":\"level\",\"ok\":true,\"pitch_command\":0.00472851126131921,\"residual\":0.00000000000000746635605668251,\"roll_command\":0.0298689707174003,\"rpm\":4914.45281189718,\"rudder\":0.0,\"state\":[60.0,-40.0,-30.0,12.7453498444274,0.0364178730569259,0.741871219785684,0.706830380985097,-0.0197689786398535,0.0213419053242487,0.706784636984372,0.0,0.0,0.0],\"throttle\":0.253258211989122,\"thrust\":3.70852127318207,\"yaw_command\":0.0},\"start_error\":\"\"}\nR4_NO_WAKE_SESSION_COMPLETE PASS\n",
+      "expected_failure": false
+    },
+    {
+      "label": "tailless-component-trigger",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5bace640-634a-4639-952d-a56699649156",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://r4_component_trigger.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:13.550778+00:00",
+        "label": "a36-r6-tailless-component-trigger",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-component-trigger-eaq2d2o4/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-component-trigger-eaq2d2o4/report.json",
+        "timeout_seconds": 20,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R4_TRIGGER_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 4,
+            "message": "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: stage_loads (res://physics/slipstream.gd:117)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] stage_loads (res://physics/slipstream.gd:117)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.905988,
+        "log_bytes": 508,
+        "log_sha256": "a5ccb0da3323bb5cab9fbf30b310389319a4b3f61f21a2c9a6fbfd3b446d699d"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR4_TRIGGER_ADMITTED horizontal=false vertical=true rpm=5000\nSCRIPT ERROR: Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.\n          at: stage_loads (res://physics/slipstream.gd:117)\n          GDScript backtrace (most recent call first):\n              [0] stage_loads (res://physics/slipstream.gd:117)\n              [1] _run (res://r4_component_trigger.gd:20)\nR4_TRIGGER_RETURN []\nR4_TRIGGER_COMPLETE\n",
+      "expected_failure": true,
+      "expected_diagnostics": [
+        "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'."
+      ],
+      "expected_failure_matched": true
+    },
+    {
+      "label": "tailless-session-trigger",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8275fcb5-3505-4d8a-9599-78a06074252f",
+        "command": [
+          "/workspace/scratch/33140ed92393/openrc-audit/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/r6-final-reproduction/project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://r4_session_trigger.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T17:28:14.458524+00:00",
+        "label": "a36-r6-tailless-session-trigger",
+        "log": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-session-trigger-v6dbjfl0/engine.log",
+        "report": "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-tailless-session-trigger-v6dbjfl0/report.json",
+        "timeout_seconds": 20,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "R4_WAKE_SESSION_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 10,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 5,
+            "message": "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: stage_loads (res://physics/slipstream.gd:117)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] stage_loads (res://physics/slipstream.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 22,
+            "message": "Out of bounds get index '0' (on base: 'PackedFloat64Array')",
+            "context": [
+              "          at: _components_from_air (res://physics/dynamics.gd:135)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] _components_from_air (res://physics/dynamics.gd:135)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 38,
+            "message": "Invalid access to property or key 'loads' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: evaluate (res://physics/dynamics.gd:49)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] evaluate (res://physics/dynamics.gd:49)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 52,
+            "message": "Invalid access to property or key 'derivative' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: _residual (res://physics/trim.gd:92)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] _residual (res://physics/trim.gd:92)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 64,
+            "message": "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: stage_loads (res://physics/slipstream.gd:117)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] stage_loads (res://physics/slipstream.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 81,
+            "message": "Out of bounds get index '0' (on base: 'PackedFloat64Array')",
+            "context": [
+              "          at: _components_from_air (res://physics/dynamics.gd:135)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] _components_from_air (res://physics/dynamics.gd:135)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 97,
+            "message": "Invalid access to property or key 'loads' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: evaluate (res://physics/dynamics.gd:49)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] evaluate (res://physics/dynamics.gd:49)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 111,
+            "message": "Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: _result (res://physics/trim.gd:358)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] _result (res://physics/trim.gd:358)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 123,
+            "message": "Invalid access to property or key 'ok' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: solve (res://physics/trim.gd:137)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] solve (res://physics/trim.gd:137)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 133,
+            "message": "Invalid access to property or key 'alpha' on a base object of type 'Dictionary'.",
+            "context": [
+              "          at: trimmed_level_across_view (res://sim/scenarios.gd:31)",
+              "          GDScript backtrace (most recent call first):",
+              "              [0] trimmed_level_across_view (res://sim/scenarios.gd:31)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 3.702691,
+        "log_bytes": 9646,
+        "log_sha256": "ea70ae655306473d6daf40304f227bc8c891dd9a9373c8b5fb832c422706ce20"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nR4_WAKE_PREFLIGHT {\"backend_selected\":true,\"input_identity\":{\"format\":\"openrc-aircraft v2\",\"sha256\":\"fbc94c60251285233ac94adff8308b811cb761b6affc5a985f871e0af3ae5b86\"},\"loader_ok\":true,\"message\":\"\",\"preflight_ok\":true,\"stage_backend_identity\":{\"backend\":\"gdscript_reference\"}}\nR4_WAKE_SETUP_BEGIN\nSCRIPT ERROR: Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.\n          at: stage_loads (res://physics/slipstream.gd:117)\n          GDScript backtrace (most recent call first):\n              [0] stage_loads (res://physics/slipstream.gd:117)\n              [1] _components_from_air (res://physics/dynamics.gd:133)\n              [2] _load_components (res://physics/dynamics.gd:69)\n              [3] evaluate (res://physics/dynamics.gd:47)\n              [4] _evaluate (res://physics/trim.gd:57)\n              [5] _residual (res://physics/trim.gd:91)\n              [6] _solve_from (res://physics/trim.gd:146)\n              [7] solve (res://physics/trim.gd:136)\n              [8] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [9] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [10] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [11] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [12] setup (res://sim/flight_session.gd:1536)\n              [13] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')\n          at: _components_from_air (res://physics/dynamics.gd:135)\n          GDScript backtrace (most recent call first):\n              [0] _components_from_air (res://physics/dynamics.gd:135)\n              [1] _load_components (res://physics/dynamics.gd:69)\n              [2] evaluate (res://physics/dynamics.gd:47)\n              [3] _evaluate (res://physics/trim.gd:57)\n              [4] _residual (res://physics/trim.gd:91)\n              [5] _solve_from (res://physics/trim.gd:146)\n              [6] solve (res://physics/trim.gd:136)\n              [7] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [8] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [9] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [10] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [11] setup (res://sim/flight_session.gd:1536)\n              [12] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'loads' on a base object of type 'Dictionary'.\n          at: evaluate (res://physics/dynamics.gd:49)\n          GDScript backtrace (most recent call first):\n              [0] evaluate (res://physics/dynamics.gd:49)\n              [1] _evaluate (res://physics/trim.gd:57)\n              [2] _residual (res://physics/trim.gd:91)\n              [3] _solve_from (res://physics/trim.gd:146)\n              [4] solve (res://physics/trim.gd:136)\n              [5] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [6] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [7] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [8] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [9] setup (res://sim/flight_session.gd:1536)\n              [10] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'derivative' on a base object of type 'Dictionary'.\n          at: _residual (res://physics/trim.gd:92)\n          GDScript backtrace (most recent call first):\n              [0] _residual (res://physics/trim.gd:92)\n              [1] _solve_from (res://physics/trim.gd:146)\n              [2] solve (res://physics/trim.gd:136)\n              [3] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [4] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [5] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [6] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [7] setup (res://sim/flight_session.gd:1536)\n              [8] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.\n          at: stage_loads (res://physics/slipstream.gd:117)\n          GDScript backtrace (most recent call first):\n              [0] stage_loads (res://physics/slipstream.gd:117)\n              [1] _components_from_air (res://physics/dynamics.gd:133)\n              [2] _load_components (res://physics/dynamics.gd:69)\n              [3] evaluate (res://physics/dynamics.gd:47)\n              [4] _evaluate (res://physics/trim.gd:57)\n              [5] _result (res://physics/trim.gd:357)\n              [6] _solve_from (res://physics/trim.gd:224)\n              [7] solve (res://physics/trim.gd:136)\n              [8] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [9] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [10] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [11] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [12] setup (res://sim/flight_session.gd:1536)\n              [13] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')\n          at: _components_from_air (res://physics/dynamics.gd:135)\n          GDScript backtrace (most recent call first):\n              [0] _components_from_air (res://physics/dynamics.gd:135)\n              [1] _load_components (res://physics/dynamics.gd:69)\n              [2] evaluate (res://physics/dynamics.gd:47)\n              [3] _evaluate (res://physics/trim.gd:57)\n              [4] _result (res://physics/trim.gd:357)\n              [5] _solve_from (res://physics/trim.gd:224)\n              [6] solve (res://physics/trim.gd:136)\n              [7] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [8] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [9] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [10] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [11] setup (res://sim/flight_session.gd:1536)\n              [12] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'loads' on a base object of type 'Dictionary'.\n          at: evaluate (res://physics/dynamics.gd:49)\n          GDScript backtrace (most recent call first):\n              [0] evaluate (res://physics/dynamics.gd:49)\n              [1] _evaluate (res://physics/trim.gd:57)\n              [2] _result (res://physics/trim.gd:357)\n              [3] _solve_from (res://physics/trim.gd:224)\n              [4] solve (res://physics/trim.gd:136)\n              [5] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [6] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [7] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [8] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [9] setup (res://sim/flight_session.gd:1536)\n              [10] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'state' on a base object of type 'Dictionary'.\n          at: _result (res://physics/trim.gd:358)\n          GDScript backtrace (most recent call first):\n              [0] _result (res://physics/trim.gd:358)\n              [1] _solve_from (res://physics/trim.gd:224)\n              [2] solve (res://physics/trim.gd:136)\n              [3] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [4] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [5] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [6] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [7] setup (res://sim/flight_session.gd:1536)\n              [8] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.\n          at: solve (res://physics/trim.gd:137)\n          GDScript backtrace (most recent call first):\n              [0] solve (res://physics/trim.gd:137)\n              [1] trimmed_level_across_view (res://sim/scenarios.gd:29)\n              [2] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [3] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [4] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [5] setup (res://sim/flight_session.gd:1536)\n              [6] _run (res://r4_session_trigger.gd:22)\nSCRIPT ERROR: Invalid access to property or key 'alpha' on a base object of type 'Dictionary'.\n          at: trimmed_level_across_view (res://sim/scenarios.gd:31)\n          GDScript backtrace (most recent call first):\n              [0] trimmed_level_across_view (res://sim/scenarios.gd:31)\n              [1] _selected_airborne_trim_request (res://sim/flight_session.gd:1027)\n              [2] _selected_airborne_trim (res://sim/flight_session.gd:1007)\n              [3] _prepare_aircraft (res://sim/flight_session.gd:2331)\n              [4] setup (res://sim/flight_session.gd:1536)\n              [5] _run (res://r4_session_trigger.gd:22)\ntrim: trim failed\nR4_WAKE_SETUP_RETURN {\"fault\":\"trimmed starting condition is invalid: no valid trim\",\"flyable\":false,\"stage_backend_identity\":{\"backend\":\"gdscript_reference\"},\"start\":{},\"start_error\":\"trimmed starting condition is invalid: no valid trim\",\"tick\":0}\nR4_WAKE_SESSION_COMPLETE\n",
+      "expected_failure": true,
+      "expected_diagnostics": [
+        "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.",
+        "Out of bounds get index '0' (on base: 'PackedFloat64Array')",
+        "Invalid access to property or key 'loads' on a base object of type 'Dictionary'.",
+        "Invalid access to property or key 'derivative' on a base object of type 'Dictionary'.",
+        "Invalid access to property or key 'horizontal' on a base object of type 'Dictionary'.",
+        "Out of bounds get index '0' (on base: 'PackedFloat64Array')",
+        "Invalid access to property or key 'loads' on a base object of type 'Dictionary'.",
+        "Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+        "Invalid access to property or key 'ok' on a base object of type 'Dictionary'.",
+        "Invalid access to property or key 'alpha' on a base object of type 'Dictionary'."
+      ],
+      "expected_failure_matched": true
+    }
+  ],
+  "oracles": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/33140ed92393/openrc-audit/docs/research/project-audit-2026-11-21/probes/sixth_pass_oracles.py",
+        "--flap-log",
+        "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-flap-wake-vyrgkrwk/engine.log",
+        "--power-log",
+        "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-power-55uh2u44/engine.log",
+        "--trim-log",
+        "/workspace/scratch/33140ed92393/r6-final-reproduction/checks/a36-r6-propeller-trim-d4j1xy07/engine.log",
+        "--project",
+        "/workspace/scratch/33140ed92393/r6-final-reproduction/project"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"flap\": {\n    \"scope\": \"conditional tail-drag algebra and lever-arm identity; wake is an input\",\n    \"checked_cases\": 24,\n    \"godot_assertions\": 225,\n    \"oracle_cases\": [\n      {\n        \"aircraft\": \"f4u_corsair_250\",\n        \"speed_mps\": 10.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": 0.00016661003869242186,\n        \"tail_angle_flapped_rad\": -0.017121442946666125,\n        \"expected_delta\": [\n          0.010242239605940263,\n          0.0,\n          0.0,\n          0.0,\n          -0.0016248439320932094,\n          0.0\n        ],\n        \"max_error\": 4.371503159461554e-16\n      },\n      {\n        \"aircraft\": \"f4u_corsair_250\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": 0.00016661003869242186,\n        \"tail_angle_flapped_rad\": -0.01712144294666618,\n        \"expected_delta\": [\n          0.04096895842376127,\n          0.0,\n          0.0,\n          0.0,\n          -0.0064993757283728715,\n          0.0\n        ],\n        \"max_error\": 1.6306400674181987e-15\n      },\n      {\n        \"aircraft\": \"f4u_corsair_250\",\n        \"speed_mps\": 30.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": 0.00016661003869238716,\n        \"tail_angle_flapped_rad\": -0.01712144294666634,\n        \"expected_delta\": [\n          0.09218015645346457,\n          0.0,\n          0.0,\n          0.0,\n          -0.014623595388839233,\n          0.0\n        ],\n        \"max_error\": 1.5265566588595902e-15\n      },\n      {\n        \"aircraft\": \"f4u_corsair_250\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0,\n        \"tail_angle_clean_rad\": 0.00016661003869242186,\n        \"tail_angle_flapped_rad\": 0.00016661003869242186,\n        \"expected_delta\": [\n          0.0,\n          0.0,\n          0.0,\n          0.0,\n          -0.0,\n          0.0\n        ],\n        \"max_error\": 0.0\n      },\n      {\n        \"aircraft\": \"f4u_corsair_250\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0001,\n        \"tail_angle_clean_rad\": 0.00016661003869242186,\n        \"tail_angle_flapped_rad\": 0.00016643359390513743,\n        \"expected_delta\": [\n          -8.21387669680332e-09,\n          0.0,\n          0.0,\n          0.0,\n          1.3030614614817408e-09,\n          0.0\n        ],\n        \"max_error\": 1.0852718692187682e-15\n      },\n      {\n        \"aircraft\": \"p51d_mustang_120\",\n        \"speed_mps\": 10.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": -0.017112570629275292,\n        \"tail_angle_flapped_rad\": -0.038611980008647726,\n        \"expected_delta\": [\n          0.03848021257232855,\n          0.0,\n          0.0,\n          0.0,\n          -0.0060904943716647685,\n          0.0\n        ],\n        \"max_error\": 2.6107588313450947e-16\n      },\n      {\n        \"aircraft\": \"p51d_mustang_120\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": -0.017112570629275237,\n        \"tail_angle_flapped_rad\": -0.038611980008647726,\n        \"expected_delta\": [\n          0.1539208502893144,\n          0.0,\n          0.0,\n          0.0,\n          -0.024361977486659105,\n          0.0\n        ],\n        \"max_error\": 9.957312752106873e-16\n      },\n      {\n        \"aircraft\": \"p51d_mustang_120\",\n        \"speed_mps\": 30.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": -0.017112570629275257,\n        \"tail_angle_flapped_rad\": -0.03861198000864769,\n        \"expected_delta\": [\n          0.3463219131509566,\n          0.0,\n          0.0,\n          0.0,\n          -0.054814449344982856,\n          0.0\n        ],\n        \"max_error\": 3.4555691641457997e-15\n      },\n      {\n        \"aircraft\": \"p51d_mustang_120\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0,\n        \"tail_angle_clean_rad\": -0.017112570629275237,\n        \"tail_angle_flapped_rad\": -0.017112570629275237,\n        \"expected_delta\": [\n          0.0,\n          0.0,\n          0.0,\n          0.0,\n          -0.0,\n          0.0\n        ],\n        \"max_error\": 0.0\n      },\n      {\n        \"aircraft\": \"p51d_mustang_120\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0001,\n        \"tail_angle_clean_rad\": -0.017112570629275237,\n        \"tail_angle_flapped_rad\": -0.017112796625323435,\n        \"expected_delta\": [\n          9.939719862486117e-07,\n          0.0,\n          0.0,\n          0.0,\n          -1.5732191646448817e-07,\n          0.0\n        ],\n        \"max_error\": 1.9169818316385606e-15\n      },\n      {\n        \"aircraft\": \"sebart_avanti_s_a200\",\n        \"speed_mps\": 10.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": -2.4220577447734416e-19,\n        \"tail_angle_flapped_rad\": -0.021526929711286738,\n        \"expected_delta\": [\n          0.009945801188840591,\n          0.0,\n          0.0,\n          0.0,\n          -0.0005944600683463295,\n          0.0\n        ],\n        \"max_error\": 1.1102230246251565e-16\n      },\n      {\n        \"aircraft\": \"sebart_avanti_s_a200\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": -2.4220577447734416e-19,\n        \"tail_angle_flapped_rad\": -0.021526929711286738,\n        \"expected_delta\": [\n          0.039783204755362366,\n          0.0,\n          0.0,\n          0.0,\n          -0.002377840273385318,\n          0.0\n        ],\n        \"max_error\": 4.649058915617843e-16\n      },\n      {\n        \"aircraft\": \"sebart_avanti_s_a200\",\n        \"speed_mps\": 30.0,\n        \"flap_deg\": 10.0,\n        \"tail_angle_clean_rad\": 9.115271082481e-20,\n        \"tail_angle_flapped_rad\": -0.021526929711286738,\n        \"expected_delta\": [\n          0.08951221069956532,\n          0.0,\n          0.0,\n          0.0,\n          -0.005350140615116965,\n          0.0\n        ],\n        \"max_error\": 1.2151737949217534e-15\n      },\n      {\n        \"aircraft\": \"sebart_avanti_s_a200\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0,\n        \"tail_angle_clean_rad\": -2.4220577447734416e-19,\n        \"tail_angle_flapped_rad\": -2.4220577447734416e-19,\n        \"expected_delta\": [\n          0.0,\n          0.0,\n          0.0,\n          0.0,\n          -0.0,\n          0.0\n        ],\n        \"max_error\": 0.0\n      },\n      {\n        \"aircraft\": \"sebart_avanti_s_a200\",\n        \"speed_mps\": 20.0,\n        \"flap_deg\": 0.0001,\n        \"tail_angle_clean_rad\": -2.4220577447734416e-19,\n        \"tail_angle_flapped_rad\": -2.2634797847049357e-07,\n        \"expected_delta\": [\n          4.3987098432424205e-12,\n          0.0,\n          0.0,\n          0.0,\n          -2.629106800348562e-13,\n          0.0\n        ],\n        \"max_error\": 4.503088874003943e-16\n      }\n    ]\n  },\n  \"propeller_minimal\": {\n    \"fixture\": \"r6_custom_power.json\",\n    \"advance_ratio\": 0.655,\n    \"ct\": 0.0397,\n    \"cp\": 0.02,\n    \"thrust_n\": 2.9636860952720827,\n    \"shaft_power_w\": 41.71556146191536,\n    \"thrust_work_w\": 54.2375301237458,\n    \"efficiency\": 1.300175,\n    \"power_deficit_w\": 12.521968661830442,\n    \"ideal_axial_disk_w\": 57.26380012806389,\n    \"scope\": \"axis-aligned component, accepted constructed checkpoint and tick; not integrated work\"\n  },\n  \"propeller_normal_trim\": {\n    \"fixture\": \"r6_custom_trim.json\",\n    \"advance_ratio\": 0.638735958914732,\n    \"ct\": 0.043048479046966945,\n    \"cp\": 0.021995317760703816,\n    \"thrust_n\": 1.7271645869460561,\n    \"shaft_power_w\": 18.075888914856233,\n    \"thrust_work_w\": 22.596886355976796,\n    \"efficiency\": 1.2501120394364031,\n    \"power_deficit_w\": 4.520997441120564,\n    \"ideal_axial_disk_w\": 24.024584887475257,\n    \"scope\": \"normal setup, initial component point and accepted tick; oblique flow, not integrated work\"\n  },\n  \"interpolation\": {\n    \"scope\": \"independent validator-design example, no complete-aircraft admission claim\",\n    \"ct\": [\n      [\n        0.2,\n        0.005\n      ],\n      [\n        0.8,\n        0.0035\n      ]\n    ],\n    \"cp\": [\n      [\n        0.2,\n        0.00108\n      ],\n      [\n        0.8,\n        0.00282\n      ]\n    ],\n    \"endpoint_ideal_disk_margins\": [\n      5.911616956110269e-06,\n      1.0285464095563697e-05\n    ],\n    \"interior_J\": 0.5,\n    \"interior_power_margin\": -0.00017500000000000024,\n    \"implication\": \"even ideal-disk-admissible knots do not certify linear interpolants\"\n  },\n  \"ok\": true\n}\n",
+      "stderr": ""
+    }
+  ],
+  "ok": true,
+  "tailless_scope": {
+    "complete_loader_admission": true,
+    "no_wake_control_accepted_tick": true,
+    "wake_setup_fails": true,
+    "wake_enabled_accepted_tick": false,
+    "native_or_swirl_execution": false
+  }
+}

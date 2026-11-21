@@ -29,6 +29,20 @@ The [fifth-pass mathematical and physical investigation](fifth-pass-physics-2026
 
 The [portable reproducer](probes/reproduce_fifth_pass.py) reconstructs **439 real dependencies with no stubs** from pinned Git objects. Its clean import, four new probes and unchanged 19/33 race tests passed with zero engine errors/warnings; three independent Python oracles assert the claimed discrepancies. The [R5 evidence record](fifth-pass-evidence.json) retains full small logs, checked reports, source/data hashes and oracle output. Each finding includes alternative repairs, negative controls and promotion gates. R5 also corrects the R3 zero-command interpretation and deduplicates R4-O01 into A6 O5. No R5 production physics fix, native execution, complete-app qualification or measured performance gain is claimed.
 
+## Sixth-pass propulsion, flap/wake consistency and tailless admission (A36 R6)
+
+The [sixth-pass report](sixth-pass-physics-2026-11-21.md) reviews source `f2d9bf7c0e1fad77158bbadcb99c0c487ddb94ac` and adds two bounded consistency gaps, plus stronger evidence for an existing finding:
+
+| ID | Reproduced result | Boundary |
+| --- | --- | --- |
+| **R4-F01, evidence upgrade** | A synthetic tailless tractor with a vertical-only wake passes complete admission, then component/setup evaluation reads the absent horizontal tail and emits engine errors | The matched no-wake control trims and accepts a reference tick; no stock X8, accepted wake-enabled tick or native/swirl execution claim |
+| **R6-G01** | A one-knot custom Cp change gives **54.237530 W** of thrust work from **41.715561 W** of aerodynamic shaft input; a second custom map exposes the same class at normal trim | Custom-data hardening opportunity extending NITRO-01/02; the matched stock point passes; stage values and tick acceptance are distinct from an integrated energy result |
+| **R6-G02** | Static and explicitly settled flap wake give different drag/pitch in all three stock flap-equipped models; the P-51 case differs by **0.153921 N** and **−0.024362 N·m** | 24 component/shared-Dynamics cases, 225 assertions and 15 conditional algebra checks; no physical calibration or ordinary clean-start failure claim |
+
+The [single reproducer](probes/reproduce_sixth_pass.py) rebuilds **442 real dependencies without stubs**, retains unchanged stock inputs and verifies five labeled synthetic files. The [evidence](sixth-pass-evidence.json) contains **11 clean checked invocations**, **two exact expected checked failures**, input/backend identities and independent scalar-oracle output. The expected failures remain failures in their reports; child exit 0 is not treated as successful physics. Four unchanged wind/airship tests contribute **502 checks**. The report records rejected candidates, existing modeling limits, repair options and promotion gates; R4-F02 overlap and all earlier unresolved work retain their separate scope.
+
+The [separate prior-head CI snapshot](sixth-pass-ci-snapshot.json) updates the formerly pending R5 CI: required CI completed with failure and MetalFX source controls passed. Inspected failures include stale rate-derivative provenance, math-wrapper violations and companion-source identity refusal. This focused research run does not close full CI or native/rendered/physical qualification. R6 changes no production law.
+
 ## Original evidence
 
 | Artifact | Purpose |
