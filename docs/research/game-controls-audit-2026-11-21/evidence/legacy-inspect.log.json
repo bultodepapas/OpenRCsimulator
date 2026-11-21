@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "legacy-inspect.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "88e4ae21225959a55d2e5e89cd0295805ddee01efe738b5df38486bb29f1d689",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nLEGACY_READ {\"seed\":true,\"writer-A\":false,\"writer-B\":true}\n"
+}

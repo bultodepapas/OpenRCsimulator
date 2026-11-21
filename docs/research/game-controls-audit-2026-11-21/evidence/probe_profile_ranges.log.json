@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "probe_profile_ranges.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "e2d05813ac5b739ae1e24f8c4a86a7ef88f641c151189895df4a543592f7c9e9",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok tiny absolute profile passes public validation\nok witness: declared full endpoint produces half throttle\nok witness: inverted declared idle also produces half throttle\nok schema-admitted tiny span survives actual V2 persistence\nok witness: actual ready gamepad reader returns half throttle at declared idle\nok witness: actual radio reader cannot arm at declared idle\nok control: ordinary trigger endpoints remain zero and one\nok scope: wizard minimum sweep exceeds the injected span\nAUDIT_OBSERVATIONS {\"declared_span\":0.0000005,\"full_output\":0.5,\"id\":\"GCA-05\",\"inverted_idle_output\":0.5,\"radio_armed\":false,\"runtime_ready\":true,\"runtime_throttle\":0.5,\"validated\":true,\"wizard_min_sweep\":0.5}\nPROFILE_RANGES_AUDIT_COMPLETE 8 checks, 0 failed\n"
+}

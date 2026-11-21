@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e618488b-6fa5-4191-9e19-8011bd072d85",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rc_input.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:13:30.950507+00:00",
+  "label": "test_rc_input.gd",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_rc_input.gd/checked/test_rc_input.gd-rhfbv546/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_rc_input.gd/checked/test_rc_input.gd-rhfbv546/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "44 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.727839,
+  "log_bytes": 90,
+  "log_sha256": "c27aa53f38d95e2fba03fc999bca7deee4fbc004b80d67b7fbc5935ef6efee2e"
+}

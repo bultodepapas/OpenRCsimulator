@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "probe_quad_pause.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "c34dc306d5f252157ce032f882018a17881016d96fead38f2fdd0e074029d8ba",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   precondition: radio Pause button is valid and applicable to quad \nok   precondition: learned radio Pause axis is also admitted \nok   precondition: the actual radio quad session is running \nok   witness: saved radio Pause OFF-ON edge is ignored \nok   positive control: Escape pauses the same activity \nAUDIT_OBSERVATIONS {\"button_profile_valid\":true,\"escape_pauses\":true,\"evidence\":\"Production quad activity/session; synthetic radio and direct event callbacks\",\"id\":\"GCA-01\",\"radio_pause_ignored\":true}\nQUAD_PAUSE_AUDIT_COMPLETE 5 checks, 0 failed\n"
+}

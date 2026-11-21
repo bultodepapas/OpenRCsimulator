@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "probe_poll_budget.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "ee36c5cd90a4cb080bf60d9d1d7e7765d9b1f39dc9b347bea04d44e8ae1f8a27",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nAUDIT_OBSERVATIONS {\"axis_callback_calls\":2400,\"button_callback_calls\":30720,\"evidence\":\"Deterministic callback counts; not measured OS polling, CPU cost, FPS, or latency\",\"id\":\"GCA-O1\",\"reader_ready\":true,\"ticks\":240}\nPOLL_BUDGET_AUDIT_COMPLETE passed\n"
+}

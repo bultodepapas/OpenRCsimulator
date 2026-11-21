@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "31edf4bb-36a0-4b9e-84a3-a76a1aa5630e",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-legacy-race/driver.gd",
+    "--",
+    "write",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-legacy-race/instrumented_calibration.gd",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-legacy-race/legacy.cfg",
+    "writer-B"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T11:58:32.458160+00:00",
+  "label": "writer-B",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-legacy-race/writer-B/writer-B-4kki5p9a/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-legacy-race/writer-B/writer-B-4kki5p9a/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "LEGACY_WRITE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.066029,
+  "log_bytes": 116,
+  "log_sha256": "2b6be1d7540e97289d427406e925dee5f168197376a9901a1d8e183245d5ce44"
+}

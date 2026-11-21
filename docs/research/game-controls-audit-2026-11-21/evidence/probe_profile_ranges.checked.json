@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "38fe6141-b599-4aa0-9579-a89838a4278f",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/research/game-controls-audit-2026-11-21/probe_profile_ranges.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T11:57:48.796792+00:00",
+  "label": "audit-profile-ranges",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-probes/audit-profile-ranges-0kod2a6v/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-probes/audit-profile-ranges-0kod2a6v/report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PROFILE_RANGES_AUDIT_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.028897,
+  "log_bytes": 815,
+  "log_sha256": "e2d05813ac5b739ae1e24f8c4a86a7ef88f641c151189895df4a543592f7c9e9"
+}

@@ -6,6 +6,10 @@ Updated **2026-11-15**. This is the active queue, organized by area. Delivered c
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
+**Controls addendum, 2026-11-21:** the bounded current-source controls review at
+`57abea02` is indexed below. This addition does not re-date or requalify the
+other areas of the 15 November queue.
+
 On **2026-11-15**, the original PDFs and evidence ZIPs for the [five-finding
 audit][A34] and its [three-finding second round][A35] were recovered. The
 [research home](../docs/research/project-audit-2026-11-09/README.md) retains the
@@ -31,6 +35,27 @@ repairs and their fresh verification are recorded in the [implemented ledger](CO
 ## UI, settings and player flows
 
 Prioritize preservation of player work, exit decisions and control continuity. Source IDs scope finding numbers; A6 F1 and A11 F01 are different issues. Priorities retain report recommendations. Detailed old-state witnesses are in each linked original.
+
+### Game controls re-audit, 2026-11-21
+
+Source: [game controls audit](../docs/research/game-controls-audit-2026-11-21/AUDIT.md).
+Local `GCA-*` IDs retain existing D6/F3/UI, DR and BL ownership. This is pending
+repair work; the branch supplies documentation and diagnostic evidence, with no
+production changes. Earlier CTRL-01–15 corrections retain their original scope.
+
+| Pending item | Action and acceptance boundary | Original report |
+| --- | --- | --- |
+| **GCA-01 — P2, quad Pause dispatch** | Make an admitted radio/button/axis/key Pause assignment reach the active quad, or explicitly reject unsupported forms; preserve device and OFF-before-ON gates. | [GCA-01](../docs/research/game-controls-audit-2026-11-21/AUDIT.md#gca-01--quad-accepts-pause-assignments-that-flight-does-not-dispatch) |
+| **GCA-02 — P2, airship native menu mapping** | Clear/rebuild native GUI bindings when UI ownership is lost or changed; qualify actual rendered interaction separately. | [GCA-02](../docs/research/game-controls-audit-2026-11-21/AUDIT.md#gca-02--airship-keeps-native-menu-mappings-after-ui-ownership-changes) |
+| **GCA-03 — P2, airship profile retry** | Retry uncached, temporarily refused profile resolution on an explicit recovery boundary without bypassing validation or throttle readiness. | [GCA-03](../docs/research/game-controls-audit-2026-11-21/AUDIT.md#gca-03--airship-does-not-retry-a-temporarily-refused-profile-on-continue) |
+| **GCA-04 — P2, legacy lost update** | Serialize all writers of the legacy file and define atomic publication/failure behavior; verify acknowledged calibration and smoke settings survive. | [GCA-04](../docs/research/game-controls-audit-2026-11-21/AUDIT.md#gca-04--legacy-calibration-writers-can-acknowledge-a-lost-update) |
+| **GCA-05 — P3, tiny accepted ranges** | Align validation with normalization for external profile ranges; ordinary wizard sweep excludes this case. | [GCA-05](../docs/research/game-controls-audit-2026-11-21/AUDIT.md#gca-05--accepted-tiny-ranges-do-not-reach-their-declared-endpoints) |
+
+The [repair plan](../docs/research/game-controls-audit-2026-11-21/REMEDIATION.md)
+and [qualification matrix](../docs/research/game-controls-audit-2026-11-21/QUALIFICATION.md)
+separate these defects from support-policy gaps and unmeasured optimization
+proposals. Checked synthetic/component evidence does not qualify physical
+controllers, native platforms, full flights or required CI.
 
 ### Settings, help and accessibility
 

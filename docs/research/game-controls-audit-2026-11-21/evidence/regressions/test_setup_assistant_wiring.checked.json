@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a6fbee10-9021-42c3-9a40-e8be931dab8a",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_setup_assistant_wiring.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:14:17.829146+00:00",
+  "label": "test_setup_assistant_wiring.gd",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_setup_assistant_wiring.gd/checked/test_setup_assistant_wiring.gd-7i6iruk8/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_setup_assistant_wiring.gd/checked/test_setup_assistant_wiring.gd-7i6iruk8/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "setup assistant wiring:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.341689,
+  "log_bytes": 2076,
+  "log_sha256": "6c0f4f319c0818c415b51bf4210f63b45df15f14a909737e4881f4acde909aee"
+}

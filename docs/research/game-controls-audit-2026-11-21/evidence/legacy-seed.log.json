@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "legacy-seed.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "c95673c85c98b7b200a4c4c6262dd0c1193cce5413674ad557ff8a815602646f",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nLEGACY_WRITE {\"device\":\"seed\",\"result\":0}\n"
+}

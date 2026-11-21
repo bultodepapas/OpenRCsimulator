@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0b535924-3cca-4a02-b10a-b6cee5d79952",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_car.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:19:29.249389+00:00",
+  "label": "test_controller_car.gd",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_controller_car.gd/checked/test_controller_car.gd-i3k7kk9v/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_controller_car.gd/checked/test_controller_car.gd-i3k7kk9v/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Car controller audit:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Resource file not found: res://assets/vehicles/mt8-bisonte/MT8_Bisonte.glb (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://vehicles/ground/mt8_model.gd:12)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Car controller audit:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.04978,
+  "log_bytes": 531,
+  "log_sha256": "1ab77c7da7b80d7c23c6138f5e06ea1a6b869b5be8a3229e05aa26f4500b3ee6"
+}

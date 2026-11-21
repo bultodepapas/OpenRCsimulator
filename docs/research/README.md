@@ -82,6 +82,12 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Controller support
 
+[Game controls audit, 2026-11-21](game-controls-audit-2026-11-21/README.md) reviews
+the current shared input and activity boundaries at `57abea02`, with five bounded
+defects, a repair plan, qualification gaps and retained diagnostic tooling.
+Its evidence distinguishes Linux headless/synthetic checks from physical and
+native-platform qualification; no production controls or physics were changed.
+
 [Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
 
 [D6-JETI-00, 2026-10-19](radio-input/D6-JETI-00/README.md) preserves JETI's email, four-page PDF, USB descriptors and simulator profile, with a dated source audit. [D6-JETI-01 implementation](radio-input/D6-JETI-01/README.md) records conservative family recognition, clean defaults, maintained-switch input/setup, native regressions and EN/ES captures. The [JETI support plan](../plans/jeti-support.md) owns remaining physical mapping and qualification; the reported DC-16II basic flight does not close full model/platform qualification.

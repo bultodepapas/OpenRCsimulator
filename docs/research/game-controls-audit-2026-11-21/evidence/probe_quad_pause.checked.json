@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fdfb5885-1b41-4329-bb4e-886db7212e58",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/research/game-controls-audit-2026-11-21/probe_quad_pause.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:13:21.061580+00:00",
+  "label": "probe_quad_pause.gd",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-activity-accepted/probe_quad_pause.gd/checked/probe_quad_pause.gd-zxgouiww/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-activity-accepted/probe_quad_pause.gd/checked/probe_quad_pause.gd-zxgouiww/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "QUAD_PAUSE_AUDIT_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.804517,
+  "log_bytes": 622,
+  "log_sha256": "c34dc306d5f252157ce032f882018a17881016d96fead38f2fdd0e074029d8ba"
+}

@@ -2,6 +2,13 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+The [21 November game controls audit](../game-controls-audit-2026-11-21/README.md)
+rechecks current source at `57abea02` and records five bounded findings using
+local `GCA-*` IDs. It preserves the historical correction status below and keeps
+new activity integration/legacy persistence work separate from open physical,
+native-platform and package qualification. That branch changes audit artifacts
+only; see its verification record for actual executed evidence.
+
 ## Radio menus and diagnostics 2026-11-09
 
 UI-12-GP-02 and F1-GP-02 complete the remaining F06/F11 source work from the supplied controller audit, on local HEAD `5f9d7a7aba8e30eb5df68cb1a3d4d38dec027967`. The earlier audit corrections below remain the baseline. The document supplied findings and proposals; source inspection and discriminating checks determined the implementation.

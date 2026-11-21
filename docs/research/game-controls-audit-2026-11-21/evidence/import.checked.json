@@ -1,0 +1,167 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6d6825f5-3797-49c6-9a6c-c31a3b6aa5b0",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:11:57.727636+00:00",
+  "label": "controls-audit-runtime-import",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-runtime-import/controls-audit-runtime-import-6sz91o_5/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-runtime-import/controls-audit-runtime-import-6sz91o_5/report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 14
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 12,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_faces.gdshaderinc\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_flight.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 16,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_flight.gdshader\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 18,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_images.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 20,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_library.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 22,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_objects.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 24,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_source.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 26,
+      "message": "Missing .uid file for path \"res://landscapes/phoenix_zip64.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 28,
+      "message": "Missing .uid file for path \"res://tests/test_landscape_import.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 30,
+      "message": "Missing .uid file for path \"res://tests/test_landscape_import_images.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 32,
+      "message": "Missing .uid file for path \"res://tests/test_landscape_import_zip64.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 34,
+      "message": "Missing .uid file for path \"res://tests/test_phoenix_flight_calibrations.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 36,
+      "message": "Missing .uid file for path \"res://ui/landscape_import.gd\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 38,
+      "message": "Missing .uid file for path \"res://ui/phoenix_panorama.gdshader\". The file was re-created from cache.",
+      "context": [
+        "     at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)",
+        "[   0% ] _update_scan_actions | Started Scanning actions... (66 steps)",
+        "[   0% ] _update_scan_actions | polystyrene_nor_gl_1k.jpg"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.810121,
+  "log_bytes": 18812,
+  "log_sha256": "e9a16d010c0543db9905c560605015f6968fbf84c4b0743aa0667f8d41fd8658"
+}

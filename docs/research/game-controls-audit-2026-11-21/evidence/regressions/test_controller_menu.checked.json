@@ -1,0 +1,263 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "63779bd9-545b-44e6-b22f-c62047d3aed3",
+  "command": [
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/85de456a5c3f/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_menu.gd"
+  ],
+  "cwd": "/workspace/scratch/85de456a5c3f/OpenRCsimulator",
+  "started_utc": "2026-11-21T12:17:48.067886+00:00",
+  "label": "test_controller_menu.gd",
+  "log": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_controller_menu.gd/checked/test_controller_menu.gd-8ezmv0kt/engine.log",
+  "report": "/workspace/scratch/85de456a5c3f/OpenRCsimulator/tmp/controls-audit-accepted/test_controller_menu.gd/checked/test_controller_menu.gd-8ezmv0kt/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Controller menu:"
+  ],
+  "process_exit": -9,
+  "complete": false,
+  "counts": {
+    "error": 133,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Resource file not found: res://assets/sky/moon/moon_albedo_2k.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:790)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 16,
+      "message": "Resource file not found: res://assets/sky/moon/moon_normal_1k.png (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:791)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 29,
+      "message": "Resource file not found: res://assets/landscape/trees/atlas.png (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] card_mesh (res://render/tree_assets.gd:93)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 45,
+      "message": "Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/treeline.gd:115)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 60,
+      "message": "L6b tree atlas/catalog/material mask missing or invalid",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/treeline.gd:117)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 75,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 94,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 113,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 132,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 151,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 170,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 189,
+      "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 208,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 227,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Clover_1.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 246,
+      "message": "Resource file not found: res://assets/landscape/rc-ground/dirt-albedo.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _soil (res://render/flightline_barrier_planting.gd:157)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 263,
+      "message": "Resource file not found: res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _setup_build (res://scenery/scenery.gd:478)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 279,
+      "message": "Resource file not found: res://assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _setup_build (res://scenery/scenery.gd:481)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 295,
+      "message": "Resource file not found: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _atlas (res://scenery/imported_hedge.gd:344)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 314,
+      "message": "Cannot open file 'res://assets/scenery/farm_tractor/tractor.res'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1143)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] create (res://scenery/farm_tractor.gd:26)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 332,
+      "message": "Failed loading resource: res://assets/scenery/farm_tractor/tractor.res.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] create (res://scenery/farm_tractor.gd:26)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Controller menu:"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 90.083282,
+  "log_bytes": 134957,
+  "log_sha256": "522d3ccf19d37c1be501b3d20848a23790217cfa91d6cb51f32ce69f311c32fb"
+}

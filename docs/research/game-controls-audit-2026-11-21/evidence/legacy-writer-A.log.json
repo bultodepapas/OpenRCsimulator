@@ -1,0 +1,7 @@
+{
+  "schema": "openrc-exact-text-evidence-v1",
+  "source_name": "legacy-writer-A.log",
+  "encoding": "UTF-8",
+  "decoded_sha256": "de9950dc395602e719a8bc0a994dca505c7c5a0503c0ef39fb03f8a6da2d26d2",
+  "text": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nLEGACY_WRITE {\"device\":\"writer-A\",\"result\":0}\n"
+}

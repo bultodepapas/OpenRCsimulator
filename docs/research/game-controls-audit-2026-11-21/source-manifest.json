@@ -1,0 +1,649 @@
+{
+  "schema": "openrc-game-controls-source-manifest-v1",
+  "date": "2026-11-21",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator.git",
+  "baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "app_tree": "afec0bb4b0eb17ae0b4baa3aa6fbbbbcfcb23059",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "scope": "Selected inspected source, regression fixtures, tooling and governing evidence. Not a full transitive resource or all-repository manifest. Sparse-checkout limits are in verification.json.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "git_blob": "97ffa6743976dd590932557d4a7cbb172bbf6022",
+      "baseline_sha256": "b6000b8b3fb05db3821207127a1afb1d5c41fd487a9fb3d937f29ddc5e4cb515",
+      "working_sha256": "b6000b8b3fb05db3821207127a1afb1d5c41fd487a9fb3d937f29ddc5e4cb515",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/app_root.gd",
+      "git_blob": "c46a57a7ad213427fae6be86d8910b136db67742",
+      "baseline_sha256": "33ec47281f812d31b815c87a7d56a264b4617f8c1a1e5009f711a306038664b0",
+      "working_sha256": "33ec47281f812d31b815c87a7d56a264b4617f8c1a1e5009f711a306038664b0",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "baseline_sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "working_sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/action_axis_capture.gd",
+      "git_blob": "8c6250966fbdde5fe1fa4e9c388230564c7f86b4",
+      "baseline_sha256": "805c80de95c95dd78eb17d24e33f0c75ae1748678d9f62ddb0176af026ff9d3a",
+      "working_sha256": "805c80de95c95dd78eb17d24e33f0c75ae1748678d9f62ddb0176af026ff9d3a",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/airship_input.gd",
+      "git_blob": "9202fea3084fb8c8031204557fed0adfe1e30756",
+      "baseline_sha256": "10ce8254fb7f05b0a9c022a7b1d329b1cfa1590cf6216eacf10b50c0f7199e04",
+      "working_sha256": "10ce8254fb7f05b0a9c022a7b1d329b1cfa1590cf6216eacf10b50c0f7199e04",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/commands.gd",
+      "git_blob": "31b53519748cfb0a0c7f365225906f60b5232347",
+      "baseline_sha256": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+      "working_sha256": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_actions.gd",
+      "git_blob": "abbb36c6b386cbca983d276b431eef4eae1029ca",
+      "baseline_sha256": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "working_sha256": "613eed9d65e0118427da4c5429f447caad1396b52bda5941341a5fc0f929ac6c",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_diagnostics.gd",
+      "git_blob": "d23d57da9b1fac071d2cea3a4f93d2396ca8a992",
+      "baseline_sha256": "942066c7ea949b7355db5667e44b62b0e6a2e8714736ed715127fd8cde59b9d7",
+      "working_sha256": "942066c7ea949b7355db5667e44b62b0e6a2e8714736ed715127fd8cde59b9d7",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_profile.gd",
+      "git_blob": "7dc5196647df6fbb4060697ffe85756a075d0c91",
+      "baseline_sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+      "working_sha256": "eaaf6d1d6c77a76fd3abd8bf6935b10503da19186114a602f0038b3108bcc631",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_profile_store.gd",
+      "git_blob": "346b06b56a80bf70a00a9d8d6c4f7f7b12fbab53",
+      "baseline_sha256": "a781050af58e1e512c5f684e2e024f6714fb9260467b3b6532df1c93403aaab0",
+      "working_sha256": "a781050af58e1e512c5f684e2e024f6714fb9260467b3b6532df1c93403aaab0",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_registry.gd",
+      "git_blob": "08b2776922a05e8eb8cb31bd58c0539281a84c33",
+      "baseline_sha256": "2e5ff50676de07e9ce31b30c8acebb64f387359b60042ecd797ec508d585811b",
+      "working_sha256": "2e5ff50676de07e9ce31b30c8acebb64f387359b60042ecd797ec508d585811b",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/controller_service.gd",
+      "git_blob": "7ca9af1f603dc7b266a395ae9580464643e1eb6c",
+      "baseline_sha256": "cbd5fca3a719e1734a104b708c6ec4763b7dde345c30ca7d39e63687303bca88",
+      "working_sha256": "cbd5fca3a719e1734a104b708c6ec4763b7dde345c30ca7d39e63687303bca88",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/edgetx_radio.gd",
+      "git_blob": "c1235e67ba39170676d55af149c0040e4b62dc0c",
+      "baseline_sha256": "26291a2a3ec1b93bfaf9f513cb82946d41439b36ef9f3df9627becd70ab71349",
+      "working_sha256": "26291a2a3ec1b93bfaf9f513cb82946d41439b36ef9f3df9627becd70ab71349",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/ground_vehicle_input.gd",
+      "git_blob": "1b552865ddeb504397365cbf9ea3edf95b01c302",
+      "baseline_sha256": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428",
+      "working_sha256": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/input_report.gd",
+      "git_blob": "ea396b1cf0f47842e41803e9affa6ef619ef06b2",
+      "baseline_sha256": "530dfa96772de8229173a09db7416e011289bf0b18884cfb530860d8ab9b0097",
+      "working_sha256": "530dfa96772de8229173a09db7416e011289bf0b18884cfb530860d8ab9b0097",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/input_report_data.gd",
+      "git_blob": "8ba2e02323c892dc4ae54bd1e7bd7e17e5fc0c86",
+      "baseline_sha256": "c534d825f6cef42c3197a3947ce43d37fa33676d6f073c0428b022c280615db1",
+      "working_sha256": "c534d825f6cef42c3197a3947ce43d37fa33676d6f073c0428b022c280615db1",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/jeti_radio.gd",
+      "git_blob": "b1b549ed2d85caeafe07405da7f1190db24bd51b",
+      "baseline_sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef",
+      "working_sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/keyboard.gd",
+      "git_blob": "6d3681b43cd6e302172d28107c1c6340aed4d248",
+      "baseline_sha256": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+      "working_sha256": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/latency_patch.gd",
+      "git_blob": "92e25090436e6190942bc59b0cf7dbca3901f612",
+      "baseline_sha256": "2988eadabab93191ee8843d19562d8e4559a024fccb7a483c1a731634215a5c2",
+      "working_sha256": "2988eadabab93191ee8843d19562d8e4559a024fccb7a483c1a731634215a5c2",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/multirotor_input.gd",
+      "git_blob": "4fee704620e3613a9057d23f2b2cd99dacbbe807",
+      "baseline_sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+      "working_sha256": "3a2b50feede35908f2f5a69f42ec66a008b2cf2277b6a409526bac5c129e5d6f",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/radio_menu.gd",
+      "git_blob": "6ad7d41005c5338177ea951363dead17c5c50d47",
+      "baseline_sha256": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41",
+      "working_sha256": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/rc_calibration.gd",
+      "git_blob": "cff43fff3bf968442c74e7da69c1b6a01068be1e",
+      "baseline_sha256": "7b424b39e986c2105e6085afacf1c087fe6d2809702fa5be48dada847b9e49d4",
+      "working_sha256": "7b424b39e986c2105e6085afacf1c087fe6d2809702fa5be48dada847b9e49d4",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "git_blob": "bc35edb209238bc0ba313b42ea799b811151b459",
+      "baseline_sha256": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+      "working_sha256": "261d5df5259b4b142538e61325a42a774d134a405355144ebaec91e60bbc8e46",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/input/smoke_aux.gd",
+      "git_blob": "f5ba47f5014975f04a33476567266b95a27e6328",
+      "baseline_sha256": "f0a0e54b59ce541fe380531d4432e916004c61a0e69503aec0a8c4d6387208f7",
+      "working_sha256": "f0a0e54b59ce541fe380531d4432e916004c61a0e69503aec0a8c4d6387208f7",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob": "e6f116152cf17702ed6e3ba0b63fd40678048c58",
+      "baseline_sha256": "86c02debfed94e8dc2cb3fc5d00be1f1e15c571838088a9beee0d07fc9161d7c",
+      "working_sha256": "86c02debfed94e8dc2cb3fc5d00be1f1e15c571838088a9beee0d07fc9161d7c",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "git_blob": "481b67b5766d2c93a8e47d24d68147f86ae08eb7",
+      "baseline_sha256": "77db7fa05e24ca7e3749885000ed32986fc87cf8ee8017b2480d75ef068a014b",
+      "working_sha256": "77db7fa05e24ca7e3749885000ed32986fc87cf8ee8017b2480d75ef068a014b",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/sim/helicopter_flight_session.gd",
+      "git_blob": "de5b3084ba00b6009a3a7145ba7299e09771a19b",
+      "baseline_sha256": "93bf44b972a66de3e04169f6245dd9496ef69f109d5253ce6575c5f8dd959cb7",
+      "working_sha256": "93bf44b972a66de3e04169f6245dd9496ef69f109d5253ce6575c5f8dd959cb7",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_calibration_view.gd",
+      "git_blob": "c3a5eb2667a6bdb3bc6f88e992c5d04a41782d71",
+      "baseline_sha256": "c8c931d413919bccda70219b02bc2570b8baba790aa503079cfc8f1a31a1793c",
+      "working_sha256": "c8c931d413919bccda70219b02bc2570b8baba790aa503079cfc8f1a31a1793c",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_actions.gd",
+      "git_blob": "85953a963afca146ecd85bcf1e1ff7d76c7260cd",
+      "baseline_sha256": "199bcc128dd0c3faa8336cbb4726083d56757356a42ca5f8a452e4e5e693e259",
+      "working_sha256": "199bcc128dd0c3faa8336cbb4726083d56757356a42ca5f8a452e4e5e693e259",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_audit_concurrency.gd",
+      "git_blob": "924e57cd9c7ab5d193586c7162616b77fca262e9",
+      "baseline_sha256": "708c402a5f422b248d35f810c6f99d1ebe7d1649b8581a969c61ab4209e8d390",
+      "working_sha256": "708c402a5f422b248d35f810c6f99d1ebe7d1649b8581a969c61ab4209e8d390",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_audit_shell.gd",
+      "git_blob": "f27b833dd66833c819a35a524506a592c744558b",
+      "baseline_sha256": "e4a07c96305d887d9e6794182bc81cfc436b15729494e6a134cc3cda323c783c",
+      "working_sha256": "e4a07c96305d887d9e6794182bc81cfc436b15729494e6a134cc3cda323c783c",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_audit_vehicle_airship.gd",
+      "git_blob": "122b63e55ec9cd7584ce44747204e9d834bad452",
+      "baseline_sha256": "d38025426dba950a7b86ef4626b6c3e76bf49231a0333efdfff5c12237cb55ac",
+      "working_sha256": "d38025426dba950a7b86ef4626b6c3e76bf49231a0333efdfff5c12237cb55ac",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_audit_vehicle_quad.gd",
+      "git_blob": "c79a64719d213ddf9313f39c345d14aed4da4e5c",
+      "baseline_sha256": "fcf358aa4e21dd44a100553a038a65ae13d8ec1202f4d6d97b66a0156ac828d1",
+      "working_sha256": "fcf358aa4e21dd44a100553a038a65ae13d8ec1202f4d6d97b66a0156ac828d1",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_auto_defaults.gd",
+      "git_blob": "c098f08de48fe42aa7111f2528f744505229dc8f",
+      "baseline_sha256": "93441ade1ab22c424f4600baa2185e45460d1749343d85dd6b3e4a32cf8c246a",
+      "working_sha256": "93441ade1ab22c424f4600baa2185e45460d1749343d85dd6b3e4a32cf8c246a",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_calibration_session.gd",
+      "git_blob": "25cdc5785a18845532df158cc2476bd498cbf9ab",
+      "baseline_sha256": "e12459444a25618632d19044b0f476fc425ad35a724982150ea176309dfe8e4e",
+      "working_sha256": "e12459444a25618632d19044b0f476fc425ad35a724982150ea176309dfe8e4e",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_car.gd",
+      "git_blob": "d9acf43f0434c4f341b65cfa57085186e60899d3",
+      "baseline_sha256": "e82c9f4ef2f2610304fafb600100699274a1fc26c693118c517b835b2fcfa604",
+      "working_sha256": "e82c9f4ef2f2610304fafb600100699274a1fc26c693118c517b835b2fcfa604",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_conditioning.gd",
+      "git_blob": "c4a6a3733d0f6f4fede61c53be08acf8133d5942",
+      "baseline_sha256": "62d694d1eef04dd1fa90fdebe79f296300c00dcbdb139fc9373fb1efafc1d003",
+      "working_sha256": "62d694d1eef04dd1fa90fdebe79f296300c00dcbdb139fc9373fb1efafc1d003",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_external_audit.gd",
+      "git_blob": "b8f1562a165808c1a9ac27d6f08f6444f6ceb62c",
+      "baseline_sha256": "197dbb38f1099cae18629a3f1288cf5c3d75c479172606e7fd57d5ddd6ba7e54",
+      "working_sha256": "197dbb38f1099cae18629a3f1288cf5c3d75c479172606e7fd57d5ddd6ba7e54",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_ground.gd",
+      "git_blob": "a9fba38d723a6bd00ffe25a9f511ecbdc8c980ce",
+      "baseline_sha256": "54a8fe1ed42d3638f5cbfa5329bf12454f67f2d3ed8cefffedcf03c4c7111164",
+      "working_sha256": "54a8fe1ed42d3638f5cbfa5329bf12454f67f2d3ed8cefffedcf03c4c7111164",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_menu.gd",
+      "git_blob": "ced8f9f2947c06646673432b6b1505f3c277f6e1",
+      "baseline_sha256": "d2d22b69714baa9b3035b99e7287c12bca64c47540f5544ddb4055b1bff59733",
+      "working_sha256": "d2d22b69714baa9b3035b99e7287c12bca64c47540f5544ddb4055b1bff59733",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_pause_recovery.gd",
+      "git_blob": "eb7fd4b8c2b630b7fbea464b245cb3d882b2806b",
+      "baseline_sha256": "0fe437da717cfc0183c3cf4b2c6c307947089182684bffd306f6f4c489e3f6d7",
+      "working_sha256": "0fe437da717cfc0183c3cf4b2c6c307947089182684bffd306f6f4c489e3f6d7",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_profile.gd",
+      "git_blob": "45a84370ec9d7818397f096b1d21354e4cb07e07",
+      "baseline_sha256": "189b267a4ba67147207bd54dea6200e877b74dd5660c5145786d7a68ecaf7ac6",
+      "working_sha256": "189b267a4ba67147207bd54dea6200e877b74dd5660c5145786d7a68ecaf7ac6",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_profile_hardening.gd",
+      "git_blob": "62fff7cfea4cb23851d0c7ad449142f6b24127b1",
+      "baseline_sha256": "f8d5b3f63c198583dd07e0cd9e38085106b88c5824adf700ce2568c2164d6561",
+      "working_sha256": "f8d5b3f63c198583dd07e0cd9e38085106b88c5824adf700ce2568c2164d6561",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_recovery_focus.gd",
+      "git_blob": "fc33008c7c9e2695f7126364de9f9cf0c2885988",
+      "baseline_sha256": "0a846b12c1f5a1739b1a773f34c19b5fb021d111656f00ae0d368d5000b47fe6",
+      "working_sha256": "0a846b12c1f5a1739b1a773f34c19b5fb021d111656f00ae0d368d5000b47fe6",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_registry.gd",
+      "git_blob": "bad4baea3796f93a4408e7b6f65132681065a6a8",
+      "baseline_sha256": "f484c1a3261a88c71bd3f358ab81ed6f2d403628f70b55ee4f24ca834c8d5d45",
+      "working_sha256": "f484c1a3261a88c71bd3f358ab81ed6f2d403628f70b55ee4f24ca834c8d5d45",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_routing_audit.gd",
+      "git_blob": "cccb8844fdec6ffefb4ef61aef565e58d3a5dec7",
+      "baseline_sha256": "b9fa1cc43fc9169324fe519ae4d08955ea645b344c9a9f4579421e67d1d3021d",
+      "working_sha256": "b9fa1cc43fc9169324fe519ae4d08955ea645b344c9a9f4579421e67d1d3021d",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controller_store.gd",
+      "git_blob": "e4eaaa5753d5093dcb3cacbe26065316107e3a73",
+      "baseline_sha256": "258891ce162ea492f0511496788786d98e74476d2349d242816ade01f200be6a",
+      "working_sha256": "258891ce162ea492f0511496788786d98e74476d2349d242816ade01f200be6a",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controls_assign.gd",
+      "git_blob": "6dc271d79310386143e2cbc69c9334b27024270d",
+      "baseline_sha256": "94a9421a5074363fe9749a17ca2fcf80f6d52bfe4f78d79dbcd8aceb7c1b50b4",
+      "working_sha256": "94a9421a5074363fe9749a17ca2fcf80f6d52bfe4f78d79dbcd8aceb7c1b50b4",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controls_setup_p0.gd",
+      "git_blob": "703c2c81a85502467b7f6e970a2e959e46eab175",
+      "baseline_sha256": "e1535e72ed7c10847220fea6fb5b5fb508ad2f6c912f487c3cb7224d61de0cf9",
+      "working_sha256": "e1535e72ed7c10847220fea6fb5b5fb508ad2f6c912f487c3cb7224d61de0cf9",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_controls_workspace.gd",
+      "git_blob": "81cdf19fe80b970dbfdb01a7b0eb6e54b53b0d61",
+      "baseline_sha256": "bd63f03f583aeedd15b38908713911ffa450c91c722a5ed00a7fd5161254a3bc",
+      "working_sha256": "bd63f03f583aeedd15b38908713911ffa450c91c722a5ed00a7fd5161254a3bc",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_mr_activity.gd",
+      "git_blob": "5a18748f98ad6b3c8476fef3183e2b3946405127",
+      "baseline_sha256": "b6a6eeea21d73ad776aa28b42ae262fa3ba6b819195eee0fec5d23aeb679d664",
+      "working_sha256": "b6a6eeea21d73ad776aa28b42ae262fa3ba6b819195eee0fec5d23aeb679d664",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_mr_controller_authority.gd",
+      "git_blob": "f863eefb941dbd538198518104ff9a80fba2a5a7",
+      "baseline_sha256": "ceddaac7c8615b195c6482e52b95d317312d80a04d63c61de6dcad91a19ac8cc",
+      "working_sha256": "ceddaac7c8615b195c6482e52b95d317312d80a04d63c61de6dcad91a19ac8cc",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_rc_calibration.gd",
+      "git_blob": "b08b70450783cf63f3c6f2042ec05bd5cda811cf",
+      "baseline_sha256": "a967bae635044194cca107ba431a6129423cf776aac09d0a50e30c575c4c4e24",
+      "working_sha256": "a967bae635044194cca107ba431a6129423cf776aac09d0a50e30c575c4c4e24",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_rc_input.gd",
+      "git_blob": "04979f1fbd7cf9693ae3f1b6ee047b9e498c4875",
+      "baseline_sha256": "7c66fce4cbe703ea31dbd305811b9f1491dc38ef14baa06239009e90367d3ec6",
+      "working_sha256": "7c66fce4cbe703ea31dbd305811b9f1491dc38ef14baa06239009e90367d3ec6",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/tests/test_setup_assistant_wiring.gd",
+      "git_blob": "012f862c9465559eab5eaf63e0f40479f8babeb8",
+      "baseline_sha256": "4f2a9b40fe1c4a250f464058630a699439c6cbbfef7e1faabea200c2eed11e04",
+      "working_sha256": "4f2a9b40fe1c4a250f464058630a699439c6cbbfef7e1faabea200c2eed11e04",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controller_setup.gd",
+      "git_blob": "cda91b232e507b8fdf7c79dc7a95d9cf183059b2",
+      "baseline_sha256": "019dbd765ce780bb56e69ab5ce541fb1ec1fefe5a57de3385dab35cff010a746",
+      "working_sha256": "019dbd765ce780bb56e69ab5ce541fb1ec1fefe5a57de3385dab35cff010a746",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/binding_chip.gd",
+      "git_blob": "9178d59ee82bb79ca6b6b81b82b77bf3324c6044",
+      "baseline_sha256": "7f731f7ab5fa0b61e99e00eaa082ea4b3ddccbdb4c468878dfe48a7f16389387",
+      "working_sha256": "7f731f7ab5fa0b61e99e00eaa082ea4b3ddccbdb4c468878dfe48a7f16389387",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/calibration_view.gd",
+      "git_blob": "b556ba887a29e37aa472668a025f8eb32c01c91e",
+      "baseline_sha256": "9751d9c1075310c20244862c88f2bcfe8c0a0a8d18cf63a6c161d29381b3ee16",
+      "working_sha256": "9751d9c1075310c20244862c88f2bcfe8c0a0a8d18cf63a6c161d29381b3ee16",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/capture_overlay.gd",
+      "git_blob": "bdb22b8c4a69a01bcb273c54dc273be5289b0ee5",
+      "baseline_sha256": "b8bdd83ea1f05e6c4986fd7884284014594f9b3eea1423efe40bbf5792c70fb0",
+      "working_sha256": "b8bdd83ea1f05e6c4986fd7884284014594f9b3eea1423efe40bbf5792c70fb0",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/channel_bar.gd",
+      "git_blob": "1748b6dfb1bfe79a9de9777a7489d3b3750e4bb2",
+      "baseline_sha256": "7a4a0cfc0b49f76d8456fa57291130d708828d65835b7b7677c344270ef3d69d",
+      "working_sha256": "7a4a0cfc0b49f76d8456fa57291130d708828d65835b7b7677c344270ef3d69d",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/controls_workspace.gd",
+      "git_blob": "7900e771e5c94b9ec34c9a23385dad82550f0512",
+      "baseline_sha256": "541ce3b556f138d47627b5f46ab0ac6e1f7ce1d1760cbddce44ac1fba9c1e5cc",
+      "working_sha256": "541ce3b556f138d47627b5f46ab0ac6e1f7ce1d1760cbddce44ac1fba9c1e5cc",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/device_card.gd",
+      "git_blob": "643064ff6583c14163773c8e5879ae1cd8548a10",
+      "baseline_sha256": "5ef8ea805d4786dee80cffa8ed1d10a6a89721e85b80f60bc5289bd1b940a367",
+      "working_sha256": "5ef8ea805d4786dee80cffa8ed1d10a6a89721e85b80f60bc5289bd1b940a367",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/device_picture.gd",
+      "git_blob": "806734157357d4e879e7b25b5eedd02ebcdcdd39",
+      "baseline_sha256": "a069d9ccc06f86e6d10cd19c09caadd7f1939aea8215ae3814133e601e0149a5",
+      "working_sha256": "a069d9ccc06f86e6d10cd19c09caadd7f1939aea8215ae3814133e601e0149a5",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/response_curve.gd",
+      "git_blob": "f0ed418271bd5da3700dd8d54a0d376f1f809c15",
+      "baseline_sha256": "42a13eaf06cf8fcaaa15a80a411816485a9deb2b9404a48d84b2a27832bf44d6",
+      "working_sha256": "42a13eaf06cf8fcaaa15a80a411816485a9deb2b9404a48d84b2a27832bf44d6",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/setup_assistant.gd",
+      "git_blob": "c4fdd679526488a7307574a555d8c8ad7e99e1a9",
+      "baseline_sha256": "3fddeedfaf6c39f4e476116a24bfd47056995a0e9609a5048ab059006455132a",
+      "working_sha256": "3fddeedfaf6c39f4e476116a24bfd47056995a0e9609a5048ab059006455132a",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/setup_assistant_bridge.gd",
+      "git_blob": "930fbfe3280014d6e700cc8eb2e750889dc97920",
+      "baseline_sha256": "ea82d6cf042d0b6256211d3221edea09cfa11325bfaf52c4bb865d88014d0a17",
+      "working_sha256": "ea82d6cf042d0b6256211d3221edea09cfa11325bfaf52c4bb865d88014d0a17",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/setup_assistant_host.gd",
+      "git_blob": "f840f6d52db70a244282245e26db5ae4edabd62c",
+      "baseline_sha256": "68f8390eacf468f765a1eed2ba1d0a84604a3184a38d24118a89f84eac4d263f",
+      "working_sha256": "68f8390eacf468f765a1eed2ba1d0a84604a3184a38d24118a89f84eac4d263f",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/controls/stick_gimbal_view.gd",
+      "git_blob": "d95632269b2513373e39e4634c72400a4de820db",
+      "baseline_sha256": "644800f30a78205484e7ec29ce946242997169a1db48448d55b76d30400e6de4",
+      "working_sha256": "644800f30a78205484e7ec29ce946242997169a1db48448d55b76d30400e6de4",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/ui/ui_input.gd",
+      "git_blob": "93af4988c46d06194f2f0e79aba95349734ca6d8",
+      "baseline_sha256": "8204f534723a196d8d9109e092f284c65a510cc97d1cf1d3dffd476b041ab6d9",
+      "working_sha256": "8204f534723a196d8d9109e092f284c65a510cc97d1cf1d3dffd476b041ab6d9",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/vehicles/airship/airship_hud.gd",
+      "git_blob": "0e55144458a8bb02596f6aa304e36bbb737fc8a1",
+      "baseline_sha256": "8990765861651982b1f3f7d21ec9e89dffbeb875dde55bcca11bddca6a321d3e",
+      "working_sha256": "8990765861651982b1f3f7d21ec9e89dffbeb875dde55bcca11bddca6a321d3e",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/vehicles/airship/airship_scene.gd",
+      "git_blob": "e7b947e71c8d759efab9363807ace3e65c0e892d",
+      "baseline_sha256": "e6c171d5f454d102a56f34fa7154395a8faa81aa5efc857b52c6c7e916194745",
+      "working_sha256": "e6c171d5f454d102a56f34fa7154395a8faa81aa5efc857b52c6c7e916194745",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "git_blob": "34fbbfff8defb68e29e449a1996148bd1914bc67",
+      "baseline_sha256": "2d85b2e660412e038efe032996cf4020c3af642e966046612f3963472ec581c2",
+      "working_sha256": "2d85b2e660412e038efe032996cf4020c3af642e966046612f3963472ec581c2",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_hud.gd",
+      "git_blob": "02a0aecaeae75f609e987fe56283816954e18694",
+      "baseline_sha256": "272dc81d908fd5fdfc950d7e618d6f2e767b635b8c88230effded5b4cb33ead5",
+      "working_sha256": "272dc81d908fd5fdfc950d7e618d6f2e767b635b8c88230effded5b4cb33ead5",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_scene.gd",
+      "git_blob": "87f6e8fbb84a94f4b7398bdd022cfcdb3768eb6e",
+      "baseline_sha256": "98da398e2615befe33d5acd39c39c0e9dd3b3e2ad3e53c917ca655b33050efe8",
+      "working_sha256": "98da398e2615befe33d5acd39c39c0e9dd3b3e2ad3e53c917ca655b33050efe8",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/FLIGHT-LOGGING.md",
+      "git_blob": "fd7360e9a05031fcb6601e0309482744705acb0e",
+      "baseline_sha256": "96cbed625da14bba3943255f3c4b9d09bc34fd786914c0010ddbe7d279cd83fb",
+      "working_sha256": "96cbed625da14bba3943255f3c4b9d09bc34fd786914c0010ddbe7d279cd83fb",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/SUBAGENTS.md",
+      "git_blob": "d3bc507a8238d55aae60194f047669b3b3997873",
+      "baseline_sha256": "6959348bfb75d11783c6eabde1aed29569eff68b1569755eb9be276d1e6d3765",
+      "working_sha256": "6959348bfb75d11783c6eabde1aed29569eff68b1569755eb9be276d1e6d3765",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/plans/controller-support.md",
+      "git_blob": "bcabd988dcd1d6064b6acd7828a2f2b08c334810",
+      "baseline_sha256": "bef228e86ae37fb4446dd5cbcbb8513c0d89cd412596f88e4783a84055f4ad94",
+      "working_sha256": "bef228e86ae37fb4446dd5cbcbb8513c0d89cd412596f88e4783a84055f4ad94",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/plans/controls-setup-ux.md",
+      "git_blob": "1177acafa9d279026fccc91eb5188f2343692cff",
+      "baseline_sha256": "fe1d970827d6cad7314e605b95a2e82b945f5bc4cf165bda7d6770c1db1ba017",
+      "working_sha256": "fe1d970827d6cad7314e605b95a2e82b945f5bc4cf165bda7d6770c1db1ba017",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/plans/drone-racing.md",
+      "git_blob": "8bcf5ec31edaa0c7c00a360a8d19eee081445d38",
+      "baseline_sha256": "a34818dd206fd53186b32a8c63a54251169aeda6d2628ebb2581a5c2d325bc21",
+      "working_sha256": "a34818dd206fd53186b32a8c63a54251169aeda6d2628ebb2581a5c2d325bc21",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/plans/rc-airship.md",
+      "git_blob": "e4ffa410b9003dfda2f632c997ae7d5e7d6114ab",
+      "baseline_sha256": "a169f428731f5f4a9577dab50d1f8e7316afd9c3f9c2122ee9fa6e3fa6ee5103",
+      "working_sha256": "a169f428731f5f4a9577dab50d1f8e7316afd9c3f9c2122ee9fa6e3fa6ee5103",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/plans/rc-monster-truck.md",
+      "git_blob": "b9077be802f414271533ff374f6b85a50e7c5a15",
+      "baseline_sha256": "4e576d098b0462d9b5e1fab1b67548f3aba2d01937c835837937deef5910ee77",
+      "working_sha256": "4e576d098b0462d9b5e1fab1b67548f3aba2d01937c835837937deef5910ee77",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "docs/tools/shared.md",
+      "git_blob": "623fe02fabbb5fcd996d0d06eb38490cd5af4012",
+      "baseline_sha256": "25310d4139ce818070ec8f166ce8479baae5234aac56fb8c0cd4a1b9fbafd4af",
+      "working_sha256": "25310d4139ce818070ec8f166ce8479baae5234aac56fb8c0cd4a1b9fbafd4af",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "external Audits/controller/OpenRC_Controls_Input_Audit_2026-11-14.md",
+      "git_blob": "edc80e60d6647f102a70a0e9f7a61362baea7dde",
+      "baseline_sha256": "e7916940baf91aeeeb66d1c4ce786dc374d4f0798aae5b2c751b62d747cf0829",
+      "working_sha256": "e7916940baf91aeeeb66d1c4ce786dc374d4f0798aae5b2c751b62d747cf0829",
+      "matches_baseline_bytes": true
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "git_blob": "f91f43de29a1a114e05364028dcc99ebe1e0d51f",
+      "baseline_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+      "working_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+      "matches_baseline_bytes": true
+    }
+  ],
+  "audit_tools": [
+    {
+      "path": "research/game-controls-audit-2026-11-21/README.md",
+      "sha256": "fc4c449bca99dcdf795f7b27c89d8b45ae4f74a9ef2d77890974d517e3973615"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/probe_airship.gd",
+      "sha256": "58efe9e22fd611a21d93c0f524ded96aa55e3dea1d6c5ffab100cc8b333d640a"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/probe_poll_budget.gd",
+      "sha256": "b43763167e6e77159e085a65a13e36401fc161143983ea573ac26608211619f9"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/probe_profile_ranges.gd",
+      "sha256": "77d32d3d4a8458b63caa30e9945c3b254ff1c82893c9e4b633ff5c4af9dead24"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/probe_quad_pause.gd",
+      "sha256": "0520fcc231af287d8076d8fe654b70380908d42fd4dda014342398abf2cc2b87"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/run_checks.py",
+      "sha256": "86873caa2f7f7675d1d2140413b7d06039e7e0ee73472b764cc20ffbef8661a7"
+    },
+    {
+      "path": "research/game-controls-audit-2026-11-21/run_legacy_race.py",
+      "sha256": "caf2852a960993f0aada103c41b812ccf90a66951e947956f24ddcc24f26c9ee"
+    }
+  ],
+  "runtime_generated_uids": {
+    "app/landscapes/phoenix_faces.gdshaderinc.uid": "f6213945ce70dc34501de67d72d9bccf5478075cbd3b9bff3dceb1a49bfb51a1",
+    "app/landscapes/phoenix_flight.gd.uid": "472a92ad2ef0de7cfff7de38780f1fef8842c5bde98bcef6477619a077609dd5",
+    "app/landscapes/phoenix_flight.gdshader.uid": "f892037cd9ca60e1c88c0a3a0e05e8285651a41521b53e9df6fcd3c163313eda",
+    "app/landscapes/phoenix_images.gd.uid": "b40343bc33921060f77a12e1ea60b5a9305593eadbed14b10006f3b1db9b2297",
+    "app/landscapes/phoenix_library.gd.uid": "00bbea2a3b3282ebaef5f1d8727a0e5ffbb319c75ced1c7df1df97e827884ca9",
+    "app/landscapes/phoenix_objects.gd.uid": "3f727bb95ceb841cfe1c5ce2922d23dc53213a2abde7a65047e6a92a58fdb1d6",
+    "app/landscapes/phoenix_source.gd.uid": "6f293653c5ef8a862ac8cba337dd53b3155f30648aec5729f6d5417781ec3cfb",
+    "app/landscapes/phoenix_zip64.gd.uid": "3b2061517139292f6aea4ddbb6a43bc148e76e1866789b7dd265bbd9c27b4e07",
+    "app/tests/test_landscape_import.gd.uid": "1597f54c6260b70c651992d2ab025852063aacf4e1e8768f2ae7ed5d813685a0",
+    "app/tests/test_landscape_import_images.gd.uid": "3fea090684c0121f1e07fb4c31c887f1ff51f2c844685b8b17cae94a741a3531",
+    "app/tests/test_landscape_import_zip64.gd.uid": "fc91eb5b5498d02cf0478aab97254bad8acbbdb404ff44259dc06e06688827ec",
+    "app/tests/test_phoenix_flight_calibrations.gd.uid": "0dba7255f6da980419aaa38c8870e807ff68937c11351ce36c28e48435379c05",
+    "app/ui/landscape_import.gd.uid": "a10659ae1b63bbc388ca6192a24d59041cecfeabcc4c7ad313a1cb98b3731444",
+    "app/ui/phoenix_panorama.gdshader.uid": "d708ce536989eacad775f648053e36037858df4c820be9f3b14e2c579b67d512"
+  },
+  "runtime_generated_uids_stable_then_removed": true,
+  "app_matches_baseline_after_cleanup": true,
+  "production_files_changed_by_branch": []
+}

@@ -1,0 +1,472 @@
+{
+  "schema": "openrc-game-controls-findings-v1",
+  "date": "2026-11-21",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "branch": "audit/game-controls-2026-11-21",
+  "scope": "Audit artifacts only; no production fixes. GCA IDs are local findings mapped to existing track owners.",
+  "counts": {
+    "defects": 5,
+    "P0": 0,
+    "P1": 0,
+    "P2": 4,
+    "P3": 1,
+    "gaps": 4,
+    "opportunities": 3
+  },
+  "findings": [
+    {
+      "id": "GCA-01",
+      "category": "defect",
+      "priority": "P2",
+      "status": "confirmed_unfixed",
+      "title": "Quad accepts radio Pause assignments that flight does not dispatch",
+      "owners": [
+        "DR-14",
+        "DR-16",
+        "UI-15-GP-01"
+      ],
+      "evidence_level": "production_activity_with_synthetic_input",
+      "evidence": "evidence/probe_quad_pause.log.json",
+      "source": [
+        {
+          "path": "app/input/controller_actions.gd",
+          "lines": [
+            44,
+            52
+          ]
+        },
+        {
+          "path": "app/input/controller_actions.gd",
+          "lines": [
+            424,
+            436
+          ]
+        },
+        {
+          "path": "app/input/multirotor_input.gd",
+          "lines": [
+            229,
+            251
+          ]
+        },
+        {
+          "path": "app/vehicles/multirotor/multirotor_scene.gd",
+          "lines": [
+            736,
+            778
+          ]
+        },
+        {
+          "path": "app/app_root.gd",
+          "lines": [
+            2768,
+            2782
+          ]
+        }
+      ],
+      "preconditions": "Experimental multirotor; configured radio; admitted Pause button; real LOW evidence and explicit resume.",
+      "observed": "The real quad remains running after OFF/ON on saved button 20. Escape pauses the same activity.",
+      "limits": "Learned-axis admission was validated, but its runtime edges and custom-key dispatch were not separately executed. Physical SDL, rendered UI and hardware were not exercised.",
+      "action": "Dispatch supported admitted forms through the activity's selected-source edge contract, or refuse unsupported forms in Controls.",
+      "acceptance": "Radio button/axis/custom key as applicable; foreign device/generation rejection; held switch and AUX conflicts; keyboard fallback; explicit Continue.",
+      "historical_scope": "Separate from corrected CTRL-01 readiness.",
+      "report_anchor": "gca-01--quad-accepts-pause-assignments-that-flight-does-not-dispatch"
+    },
+    {
+      "id": "GCA-02",
+      "category": "defect",
+      "priority": "P2",
+      "status": "confirmed_unfixed",
+      "title": "Airship retains obsolete native menu mappings after UI role loss or change",
+      "owners": [
+        "BL-10",
+        "BL-12",
+        "UI-12-GP-01",
+        "F3-GP-02"
+      ],
+      "evidence_level": "production_callback_chain_and_inputmap_matching",
+      "evidence": "evidence/probe_airship.log.json",
+      "source": [
+        {
+          "path": "app/input/controller_registry.gd",
+          "lines": [
+            93,
+            111
+          ]
+        },
+        {
+          "path": "app/input/controller_service.gd",
+          "lines": [
+            421,
+            439
+          ]
+        },
+        {
+          "path": "app/app_root.gd",
+          "lines": [
+            2412,
+            2440
+          ]
+        },
+        {
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "lines": [
+            922,
+            923
+          ]
+        },
+        {
+          "path": "app/ui/ui_input.gd",
+          "lines": [
+            11,
+            62
+          ]
+        }
+      ],
+      "preconditions": "Native menu map installed for selected pad 7; managed airship callback active.",
+      "observed": "Registry clears UI role to -1 while native map stays on 7 and Accept still matches; replacement handle 7 matches without role; selecting 8 leaves native map on 7.",
+      "limits": "No physical replacement device or rendered HUD click. Flight-axis ownership is not shown to transfer.",
+      "action": "Clear and rebuild native GUI mappings from the current authorized menu role on every activity UI refresh.",
+      "acceptance": "Loss, same-handle replacement, second-pad selection, changed bindings, keyboard recovery, rendered HUD and return Home.",
+      "historical_scope": "Separate from earlier managed airship profile/input corrections.",
+      "report_anchor": "gca-02--airship-keeps-native-menu-mappings-after-ui-ownership-changes"
+    },
+    {
+      "id": "GCA-03",
+      "category": "defect",
+      "priority": "P2",
+      "status": "confirmed_unfixed",
+      "title": "Airship Continue does not retry a temporarily refused uncached profile",
+      "owners": [
+        "BL-10",
+        "F3-GP-02",
+        "D6-GP-02"
+      ],
+      "evidence_level": "real_store_lease_and_activity_methods_with_synthetic_input",
+      "evidence": "evidence/probe_airship.log.json",
+      "source": [
+        {
+          "path": "app/input/controller_service.gd",
+          "lines": [
+            309,
+            330
+          ]
+        },
+        {
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "lines": [
+            384,
+            447
+          ]
+        },
+        {
+          "path": "app/vehicles/airship/airship_scene.gd",
+          "lines": [
+            598,
+            611
+          ]
+        },
+        {
+          "path": "app/vehicles/multirotor/multirotor_scene.gd",
+          "lines": [
+            621,
+            628
+          ]
+        }
+      ],
+      "preconditions": "Fresh selected connection without a cached profile; another Store instance holds the V2 lease during first resolution.",
+      "observed": "Resolver returns a valid profile after release, but same-generation sync/Continue stays paused and unarmed; direct reapply of the recovered profile allows resume.",
+      "limits": "Cached successful profiles may bypass the failed lookup. Direct reapply is a method control, not an in-airship Controls UI. Home, Controls and relaunch are the player recovery route.",
+      "action": "Retry unresolved profile state at explicit recovery with current identity/role validation, preserve refusal and show the actual storage/profile cause.",
+      "acceptance": "Busy-release-Continue, repeated refusal, corrupt/ambiguous profile, changed generation, cached path, radio LOW and verified gamepad semantics.",
+      "report_anchor": "gca-03--airship-does-not-retry-a-temporarily-refused-profile-on-continue"
+    },
+    {
+      "id": "GCA-04",
+      "category": "defect",
+      "priority": "P2",
+      "status": "confirmed_unfixed",
+      "title": "Legacy calibration writers can acknowledge a lost update",
+      "owners": [
+        "D6-GP-02",
+        "direct fixed-wing/helicopter calibration and AUX persistence"
+      ],
+      "evidence_level": "instrumented_component_interleaving_two_processes",
+      "evidence": "evidence/legacy-race.json",
+      "source": [
+        {
+          "path": "app/input/rc_calibration.gd",
+          "lines": [
+            327,
+            374
+          ]
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "lines": [
+            1901,
+            1922
+          ]
+        },
+        {
+          "path": "app/sim/helicopter_flight_session.gd",
+          "lines": [
+            1013,
+            1028
+          ]
+        }
+      ],
+      "preconditions": "Two direct legacy writers load one seed file before either publishes a different device section.",
+      "observed": "Both actual saves return OK; the unmodified loader finds seed and writer B, but writer A's acknowledged section is absent.",
+      "limits": "A deterministic scheduling barrier is injected into a disposable source copy; no random-frequency, power-loss or V2-to-V2 failure claim. Smoke writer has the same source shape but its pair was not executed.",
+      "action": "One file-specific authority for load/merge/publication across calibration and smoke writers; validated staged publication and explicit failure/rollback.",
+      "acceptance": "Different/same-device writes, calibration-versus-smoke, readers during publication, unreadable data, contention and interrupted publication.",
+      "historical_scope": "Separate from corrected V2 concurrency CTRL-14.",
+      "report_anchor": "gca-04--legacy-calibration-writers-can-acknowledge-a-lost-update"
+    },
+    {
+      "id": "GCA-05",
+      "category": "defect",
+      "priority": "P3",
+      "status": "confirmed_unfixed",
+      "title": "Accepted tiny ranges fail their declared normalization endpoints",
+      "owners": [
+        "D6-GP-02",
+        "D6-GP-03"
+      ],
+      "evidence_level": "validator_store_and_reader_with_synthetic_input",
+      "evidence": "evidence/probe_profile_ranges.log.json",
+      "source": [
+        {
+          "path": "app/input/controller_profile.gd",
+          "lines": [
+            523,
+            545
+          ]
+        },
+        {
+          "path": "app/input/controller_profile.gd",
+          "lines": [
+            626,
+            691
+          ]
+        },
+        {
+          "path": "app/input/rc_calibration.gd",
+          "lines": [
+            220,
+            229
+          ]
+        }
+      ],
+      "preconditions": "External/imported/manual profile span 0.0000005, below normalization denominator floor 0.000001. Ordinary wizard minimum sweep is 0.5.",
+      "observed": "Validation and V2 persistence accept the profile; full endpoint returns 0.5. Inverted declared idle returns 0.5 in a ready gamepad reader; equivalent raw radio cannot arm.",
+      "limits": "No ordinary wizard-generated profile or physical-device incident; signed-side issue is a source-derived extension, not a separately executed witness.",
+      "action": "Align minimum admissible spans with normalization and activation, with actionable repairable profile errors.",
+      "acceptance": "Below/at/above chosen bound, absolute and off-center signed channels, inversion, store/reload, legacy import and live readiness.",
+      "report_anchor": "gca-05--accepted-tiny-ranges-do-not-reach-their-declared-endpoints"
+    },
+    {
+      "id": "GCA-G1",
+      "category": "gap",
+      "priority": null,
+      "status": "source_gap_unqualified",
+      "title": "Long-gap continuity needs per-activity qualification",
+      "owners": [
+        "F3-GP-02",
+        "DR",
+        "BL",
+        "RCV"
+      ],
+      "evidence_level": "source_review_only",
+      "source": [
+        {
+          "path": "app/input/controller_service.gd",
+          "lines": [
+            50,
+            59
+          ]
+        },
+        {
+          "path": "app/app_root.gd",
+          "lines": [
+            1728,
+            1729
+          ]
+        }
+      ],
+      "observed": "The service watchdog uses an attached aircraft session; separate activities do not show an equivalent no-event long-gap guard.",
+      "limits": "Focus/disconnect handlers exist. Native sleep or first post-gap tick behavior was not exercised, including aircraft watchdog ordering.",
+      "action": "Inject a clock gap without other events at real tick boundaries, then qualify OS suspend/resume.",
+      "report_anchor": "gca-g1--long-gap-continuity-is-not-shared-by-every-activity"
+    },
+    {
+      "id": "GCA-G2",
+      "category": "gap",
+      "priority": null,
+      "status": "support_contract_gap",
+      "title": "Direct launch and verified radio menus need explicit activity support rows",
+      "owners": [
+        "UI-12-GP-02",
+        "UI-15-GP-01",
+        "DR",
+        "BL",
+        "RCV"
+      ],
+      "evidence_level": "source_and_existing_plan_review",
+      "source": [
+        {
+          "path": "app/app_root.gd",
+          "lines": [
+            349,
+            375
+          ]
+        },
+        {
+          "path": "app/input/airship_input.gd",
+          "lines": [
+            26,
+            42
+          ]
+        },
+        {
+          "path": "app/app_root.gd",
+          "lines": [
+            2465,
+            2479
+          ]
+        }
+      ],
+      "observed": "Direct airship uses a distinct legacy route; the shell semantic radio menu router excludes activity nodes.",
+      "limits": "Technical launch differences are deliberate support boundaries, not automatically defects. Keyboard remapping is already planned under D6-UX-02.",
+      "action": "Publish and qualify per-activity launch/profile/Pause/menu support and explicit unsupported cases.",
+      "report_anchor": "gca-g2--direct-routes-and-verified-radio-menus-need-an-explicit-activity-matrix"
+    },
+    {
+      "id": "GCA-G3",
+      "category": "gap",
+      "priority": null,
+      "status": "documentation_policy_conflict",
+      "title": "General no-takeover wording conflicts with accepted quad fallback",
+      "owners": [
+        "DR-14",
+        "DR-16",
+        "shared controller documentation"
+      ],
+      "evidence_level": "source_plan_and_existing_test_review",
+      "source": [
+        {
+          "path": "docs/plans/drone-racing.md",
+          "lines": [
+            639,
+            639
+          ]
+        },
+        {
+          "path": "app/tests/test_mr_activity.gd",
+          "lines": [
+            532,
+            547
+          ]
+        }
+      ],
+      "observed": "The quad deliberately chooses another connected controller after source loss, holds the session and invalidates arm continuity.",
+      "limits": "Not an automatic flight resumption or a new fallback bug. An armed stored paused frame can retain its mode until first resumed tick disarms it.",
+      "action": "Reconcile general wording and identify the selected source before explicit Continue.",
+      "report_anchor": "gca-g3--general-no-takeover-wording-conflicts-with-the-accepted-quad-fallback"
+    },
+    {
+      "id": "GCA-G4",
+      "category": "gap",
+      "priority": null,
+      "status": "qualification_unrun",
+      "title": "Physical, accessibility, platform and package qualification remains open",
+      "owners": [
+        "F1-GP",
+        "F4-GP",
+        "F6-GP",
+        "UI",
+        "DT",
+        "PT"
+      ],
+      "evidence_level": "explicit_absence_of_target_qualification",
+      "observed": "This audit's execution is Linux headless, synthetic input and Dummy audio.",
+      "limits": "No physical Xbox/DualSense/JETI/EdgeTX, USB/Bluetooth/RF, native sleep, Steam/handheld, accessibility, rendered UI, exported package or pilot acceptance evidence.",
+      "action": "Execute the exact model/firmware/OS/transport/activity rows in QUALIFICATION.md.",
+      "report_anchor": "gca-g4--hardware-accessibility-and-package-qualification-remain-open"
+    },
+    {
+      "id": "GCA-O1",
+      "category": "opportunity",
+      "priority": "after_correctness",
+      "status": "callback_count_measured_performance_unmeasured",
+      "title": "Measure reuse of a coherent per-device input snapshot",
+      "owners": [
+        "D6-GP-02",
+        "F3-GP-02",
+        "activity owners"
+      ],
+      "evidence_level": "deterministic_callback_counts",
+      "evidence": "evidence/probe_poll_budget.log.json",
+      "source": [
+        {
+          "path": "app/input/rc_input.gd",
+          "lines": [
+            297,
+            377
+          ]
+        }
+      ],
+      "observed": {
+        "valid_polls": 240,
+        "axis_callback_calls": 2400,
+        "button_callback_calls": 30720
+      },
+      "limits": "Configured valid default-gamepad path reaching the loops, without extra AUX reads. Counts are not physical USB polls, CPU, FPS, allocations or latency.",
+      "action": "Profile first; compare a bounded coherent snapshot against identical tapes, freshness, all held-button gates and native input latency.",
+      "report_anchor": "gca-o1--measure-and-consolidate-repeated-input-sampling"
+    },
+    {
+      "id": "GCA-O2",
+      "category": "opportunity",
+      "priority": "after_correctness",
+      "status": "maintainability_proposal",
+      "title": "Give setup draft and capture state smaller owners",
+      "owners": [
+        "UI-15-UX",
+        "D6-UX",
+        "D6-GP"
+      ],
+      "evidence_level": "source_structure_and_existing_plan",
+      "observed": {
+        "controller_setup_lines": 6074,
+        "ui_controls_files": 12,
+        "ui_controls_lines": 6204,
+        "app_root_lines": 5337
+      },
+      "limits": "File size alone is not a defect or measured development cost.",
+      "action": "Extract one planned draft/capture/lease responsibility behind the current facade with preserved Save/Cancel and activity contracts.",
+      "report_anchor": "gca-o2--give-setup-draft-and-capture-state-smaller-owners"
+    },
+    {
+      "id": "GCA-O3",
+      "category": "opportunity",
+      "priority": "after_correctness",
+      "status": "test_contract_proposal",
+      "title": "Run admitted-action contracts across relevant consumers",
+      "owners": [
+        "shared controller-action owners",
+        "DR",
+        "BL",
+        "HELI",
+        "RCV"
+      ],
+      "evidence_level": "coverage_gap_demonstrated_by_GCA-01",
+      "observed": "Generic action validation and narrower quad dispatch pass separate tests while their integration permits a nonfunctional assignment.",
+      "limits": "Do not force every activity to implement identical actions or mark unsupported rows as passing.",
+      "action": "Parameterize validate/activate/OFF/press/release/respond/hold/recover cases using existing fixtures.",
+      "report_anchor": "gca-o3--test-one-admitted-action-across-every-relevant-consumer"
+    }
+  ]
+}

@@ -1,0 +1,1806 @@
+{
+  "schema": "openrc-game-controls-verification-v1",
+  "date": "2026-11-21",
+  "baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "branch": "audit/game-controls-2026-11-21",
+  "scope": "Linux x86-64 headless, Dummy audio, synthetic input. Audit only; no physical/native-display/full-CI qualification.",
+  "identity": {
+    "schema": "openrc-controls-audit-run-v1",
+    "baseline": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+    "head": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+    "app_tree": "afec0bb4b0eb17ae0b4baa3aa6fbbbbcfcb23059",
+    "engine": "4.8.beta2.official.cafc17a19",
+    "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "started_utc": "2026-11-21T12:13:30.914540+00:00",
+    "scope": "Linux headless, Dummy audio, synthetic input, unchanged production scripts",
+    "generated_untracked_uids": {
+      "app/landscapes/phoenix_faces.gdshaderinc.uid": "f6213945ce70dc34501de67d72d9bccf5478075cbd3b9bff3dceb1a49bfb51a1",
+      "app/landscapes/phoenix_flight.gd.uid": "472a92ad2ef0de7cfff7de38780f1fef8842c5bde98bcef6477619a077609dd5",
+      "app/landscapes/phoenix_flight.gdshader.uid": "f892037cd9ca60e1c88c0a3a0e05e8285651a41521b53e9df6fcd3c163313eda",
+      "app/landscapes/phoenix_images.gd.uid": "b40343bc33921060f77a12e1ea60b5a9305593eadbed14b10006f3b1db9b2297",
+      "app/landscapes/phoenix_library.gd.uid": "00bbea2a3b3282ebaef5f1d8727a0e5ffbb319c75ced1c7df1df97e827884ca9",
+      "app/landscapes/phoenix_objects.gd.uid": "3f727bb95ceb841cfe1c5ce2922d23dc53213a2abde7a65047e6a92a58fdb1d6",
+      "app/landscapes/phoenix_source.gd.uid": "6f293653c5ef8a862ac8cba337dd53b3155f30648aec5729f6d5417781ec3cfb",
+      "app/landscapes/phoenix_zip64.gd.uid": "3b2061517139292f6aea4ddbb6a43bc148e76e1866789b7dd265bbd9c27b4e07",
+      "app/tests/test_landscape_import.gd.uid": "1597f54c6260b70c651992d2ab025852063aacf4e1e8768f2ae7ed5d813685a0",
+      "app/tests/test_landscape_import_images.gd.uid": "3fea090684c0121f1e07fb4c31c887f1ff51f2c844685b8b17cae94a741a3531",
+      "app/tests/test_landscape_import_zip64.gd.uid": "fc91eb5b5498d02cf0478aab97254bad8acbbdb404ff44259dc06e06688827ec",
+      "app/tests/test_phoenix_flight_calibrations.gd.uid": "0dba7255f6da980419aaa38c8870e807ff68937c11351ce36c28e48435379c05",
+      "app/ui/landscape_import.gd.uid": "a10659ae1b63bbc388ca6192a24d59041cecfeabcc4c7ad313a1cb98b3731444",
+      "app/ui/phoenix_panorama.gdshader.uid": "d708ce536989eacad775f648053e36037858df4c820be9f3b14e2c579b67d512"
+    },
+    "scheduling": "serial suites in one stable checkout",
+    "suite_sha256": {
+      "test_rc_input.gd": "7c66fce4cbe703ea31dbd305811b9f1491dc38ef14baa06239009e90367d3ec6",
+      "test_rc_calibration.gd": "a967bae635044194cca107ba431a6129423cf776aac09d0a50e30c575c4c4e24",
+      "test_controller_profile.gd": "189b267a4ba67147207bd54dea6200e877b74dd5660c5145786d7a68ecaf7ac6",
+      "test_controller_profile_hardening.gd": "f8d5b3f63c198583dd07e0cd9e38085106b88c5824adf700ce2568c2164d6561",
+      "test_controller_store.gd": "258891ce162ea492f0511496788786d98e74476d2349d242816ade01f200be6a",
+      "test_controller_audit_concurrency.gd": "708c402a5f422b248d35f810c6f99d1ebe7d1649b8581a969c61ab4209e8d390",
+      "test_controller_registry.gd": "f484c1a3261a88c71bd3f358ab81ed6f2d403628f70b55ee4f24ca834c8d5d45",
+      "test_controller_auto_defaults.gd": "93441ade1ab22c424f4600baa2185e45460d1749343d85dd6b3e4a32cf8c246a",
+      "test_controller_external_audit.gd": "197dbb38f1099cae18629a3f1288cf5c3d75c479172606e7fd57d5ddd6ba7e54",
+      "test_controller_audit_shell.gd": "e4a07c96305d887d9e6794182bc81cfc436b15729494e6a134cc3cda323c783c",
+      "test_controller_audit_vehicle_quad.gd": "fcf358aa4e21dd44a100553a038a65ae13d8ec1202f4d6d97b66a0156ac828d1",
+      "test_controller_audit_vehicle_airship.gd": "d38025426dba950a7b86ef4626b6c3e76bf49231a0333efdfff5c12237cb55ac",
+      "test_controls_setup_p0.gd": "e1535e72ed7c10847220fea6fb5b5fb508ad2f6c912f487c3cb7224d61de0cf9",
+      "test_controls_assign.gd": "94a9421a5074363fe9749a17ca2fcf80f6d52bfe4f78d79dbcd8aceb7c1b50b4",
+      "test_controls_workspace.gd": "bd63f03f583aeedd15b38908713911ffa450c91c722a5ed00a7fd5161254a3bc",
+      "test_setup_assistant_wiring.gd": "4f2a9b40fe1c4a250f464058630a699439c6cbbfef7e1faabea200c2eed11e04",
+      "test_calibration_view.gd": "c8c931d413919bccda70219b02bc2570b8baba790aa503079cfc8f1a31a1793c",
+      "test_controller_pause_recovery.gd": "0fe437da717cfc0183c3cf4b2c6c307947089182684bffd306f6f4c489e3f6d7",
+      "test_controller_recovery_focus.gd": "0a846b12c1f5a1739b1a773f34c19b5fb021d111656f00ae0d368d5000b47fe6",
+      "test_controller_routing_audit.gd": "b9fa1cc43fc9169324fe519ae4d08955ea645b344c9a9f4579421e67d1d3021d",
+      "test_mr_controller_authority.gd": "ceddaac7c8615b195c6482e52b95d317312d80a04d63c61de6dcad91a19ac8cc",
+      "test_controller_menu.gd": "d2d22b69714baa9b3035b99e7287c12bca64c47540f5544ddb4055b1bff59733",
+      "test_controller_conditioning.gd": "62d694d1eef04dd1fa90fdebe79f296300c00dcbdb139fc9373fb1efafc1d003",
+      "test_controller_calibration_session.gd": "e12459444a25618632d19044b0f476fc425ad35a724982150ea176309dfe8e4e",
+      "test_controller_actions.gd": "199bcc128dd0c3faa8336cbb4726083d56757356a42ca5f8a452e4e5e693e259",
+      "test_controller_ground.gd": "54a8fe1ed42d3638f5cbfa5329bf12454f67f2d3ed8cefffedcf03c4c7111164",
+      "test_controller_car.gd": "e82c9f4ef2f2610304fafb600100699274a1fc26c693118c517b835b2fcfa604"
+    }
+  },
+  "existing_regressions": {
+    "overall_pass": false,
+    "summary": {
+      "passed": 22,
+      "failed": 5,
+      "production_unchanged": true,
+      "generated_uids_stable": true,
+      "results": "results.json"
+    },
+    "programs": [
+      {
+        "script": "test_rc_input.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.727839,
+        "completion": [
+          "44 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_rc_input.checked.json",
+        "report_sha256": "4d5e44bb061cf264c550a0bcd303eecf9ac6363946975786085690813217dd55",
+        "log_sha256": "c27aa53f38d95e2fba03fc999bca7deee4fbc004b80d67b7fbc5935ef6efee2e",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_rc_input.gd/checked/test_rc_input.gd-rhfbv546/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_rc_calibration.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.543839,
+        "completion": [
+          "49 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_rc_calibration.checked.json",
+        "report_sha256": "4d18bfd1ef1aaf627bdccfe44738c7cf2eddfe40860157ce3ca0dd0f465028d4",
+        "log_sha256": "2e59d71c946efce6d24392ad9c54aa9762b563fd5411d188e5591824ebdde17f",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_rc_calibration.gd/checked/test_rc_calibration.gd-l2k4qzb9/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_profile.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.644719,
+        "completion": [
+          "Controller profile: 91 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_profile.checked.json",
+        "report_sha256": "70b79b8512294f8a1a7b5d1e9887af2d7969dd292b1773eeffefec61f681150b",
+        "log_sha256": "fe86e9666e4ce9f0007d27a22125b4ddfd23a3b7ec84f4ce5c6279c0137c0218",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_profile.gd/checked/test_controller_profile.gd-zzbxv3ce/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_profile_hardening.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.93075,
+        "completion": [
+          "Controller profile hardening: 94 checks, 0 failures"
+        ],
+        "report": "evidence/regressions/test_controller_profile_hardening.checked.json",
+        "report_sha256": "912326f5ebd3b30f35c1c9004d71f9d24e8edbc80c6b41cdad46841720e99d85",
+        "log_sha256": "b0dc1bad4f396a308e0ed3a0c005342e2e1815c4b66a6ca4ba4875d25f3e1be1",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_profile_hardening.gd/checked/test_controller_profile_hardening.gd-1uryhoq1/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_store.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.647998,
+        "completion": [
+          "Controller profile store: 47 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_store.checked.json",
+        "report_sha256": "2742aa67484692a8cc7c8d511abc72e95b99ee57a291eb41f16ac0c159453623",
+        "log_sha256": "cad270856f7f8536aeef8c87ea5ffb57339011007b44ca065e66d1e041fef4ee",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_store.gd/checked/test_controller_store.gd-a23paw1z/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_audit_concurrency.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 6.776751,
+        "completion": [
+          "Controller audit concurrency: 25 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_audit_concurrency.checked.json",
+        "report_sha256": "477b16c948490009f0f89bbb3230e06ea275b83277e30cf0d90a912d97961acf",
+        "log_sha256": "f6434ce6fcdc006a445b4490c6ab85ba244a07edd0104ba65dc0c8cfad842f09",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_audit_concurrency.gd/checked/test_controller_audit_concurrency.gd-m0ukx9x_/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_registry.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.507468,
+        "completion": [
+          "Controller registry: 27 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_registry.checked.json",
+        "report_sha256": "244823da72abbaa6a2686ddbfe8d9b5aafa1420c91d2df0c0236b7f7ab07f5b8",
+        "log_sha256": "8b1919a9c9d2dd40c68494f737e062f1528cb140b7c50508a2fa6414e20a8e48",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_registry.gd/checked/test_controller_registry.gd-3i03gzml/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_auto_defaults.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.74523,
+        "completion": [
+          "Controller automatic defaults: 61/61 checks passed"
+        ],
+        "report": "evidence/regressions/test_controller_auto_defaults.checked.json",
+        "report_sha256": "12fb63b04c7bba14190e6013d3a24331ec8e27d36793b4be70377178b9a8e8c5",
+        "log_sha256": "054925e49f92b644454a2e5344215d2ad7573dc8e99691c12792098857312c2d",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_auto_defaults.gd/checked/test_controller_auto_defaults.gd-e0kfo4bv/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_external_audit.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 2
+        },
+        "elapsed_seconds": 3.434381,
+        "completion": [
+          "External controller audit: 42 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_external_audit.checked.json",
+        "report_sha256": "5d803ac39946c21a71182405c8c8efb15a9eb1e8e73ad65cfa5def530de8e91b",
+        "log_sha256": "a75e84a7875b2ec9808670bf30852dd3ce25a5c5290035df581b80874131e516",
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 3,
+            "message": "This control can't grab focus. Use set_focus_mode() and set_focus_behavior_recursive() to allow a control to get focus.",
+            "context": [
+              "     at: grab_focus (scene/gui/control.cpp:3111)",
+              "     GDScript backtrace (most recent call first):",
+              "         [0] select_section (res://ui/controller_setup.gd:1850)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 9,
+            "message": "This control can't grab focus. Use set_focus_mode() and set_focus_behavior_recursive() to allow a control to get focus.",
+            "context": [
+              "     at: grab_focus (scene/gui/control.cpp:3111)",
+              "     GDScript backtrace (most recent call first):",
+              "         [0] close_button_focus (res://ui/controller_setup.gd:2103)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_external_audit.gd/checked/test_controller_external_audit.gd-j33odl92/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_audit_shell.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 10.381079,
+        "completion": [
+          "controller audit shell: 21 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_audit_shell.checked.json",
+        "report_sha256": "0174571016a8c28a3f1898d6e228fccc3c44a9ff38f841ccb4ff4cdddbdfee2a",
+        "log_sha256": "051a99a993c2869df6bce3751a1f249d0713c03a917873a27778f367444e4ffc",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_audit_shell.gd/checked/test_controller_audit_shell.gd-gb5rebjq/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_audit_vehicle_quad.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.898355,
+        "completion": [
+          "vehicle quad audit: 56 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_audit_vehicle_quad.checked.json",
+        "report_sha256": "5b68a4e66b339ba1f6376444de809dfb773e83a0b0791b52035443d274e9b4d1",
+        "log_sha256": "ba24d4801690335aca41498ed879439f17606958d542f7320424a15280beed9d",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_audit_vehicle_quad.gd/checked/test_controller_audit_vehicle_quad.gd-q8qh6onn/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_audit_vehicle_airship.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.41263,
+        "completion": [
+          "vehicle airship audit: 42 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_audit_vehicle_airship.checked.json",
+        "report_sha256": "489ef5e2a8051468b8b4093b7f7477dfaacc9735e418838d2d7a646f8be75773",
+        "log_sha256": "ccf49ea1f8edea8fae78d52b9dc1b04cba96d6a2d925fbb3adb0e9d5921b78cf",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_audit_vehicle_airship.gd/checked/test_controller_audit_vehicle_airship.gd-krdw2692/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controls_setup_p0.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 3.930393,
+        "completion": [
+          "all controls setup P0 checks passed"
+        ],
+        "report": "evidence/regressions/test_controls_setup_p0.checked.json",
+        "report_sha256": "50b2898ec240c1cfc5b3c054dbf81b4ca4e528968e5f1ecda3bb79f089ff3418",
+        "log_sha256": "23c972dd9e980a051ea64ab8f08907e88b6ebd7a86e41326173ccc475c3681c7",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controls_setup_p0.gd/checked/test_controls_setup_p0.gd-cjjzjcio/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controls_assign.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 3.758098,
+        "completion": [
+          "Controls assign: 98/98 checks passed"
+        ],
+        "report": "evidence/regressions/test_controls_assign.checked.json",
+        "report_sha256": "8bd5fc8f9eaf7b19e71bc544a17d657ee8869695a5e8a058bee40ec426cb66c6",
+        "log_sha256": "a70954f156933f8e4512965debcc27b1a6f0044648b61f86b83fa8f1fb8b3e14",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controls_assign.gd/checked/test_controls_assign.gd-kh5p_vrx/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controls_workspace.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 3.814261,
+        "completion": [
+          "Controls workspace: 106/106 checks passed"
+        ],
+        "report": "evidence/regressions/test_controls_workspace.checked.json",
+        "report_sha256": "081ca13b0e19051539408fc8d90047156573125ddac0a41e3bb923594968c2be",
+        "log_sha256": "3ceaef038e57ba50333c2ece979111d980fa5995f1e4a71d6323edb537086f3b",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controls_workspace.gd/checked/test_controls_workspace.gd-2g893dhe/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_setup_assistant_wiring.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 3.341689,
+        "completion": [
+          "setup assistant wiring: 36 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_setup_assistant_wiring.checked.json",
+        "report_sha256": "532ce0064f22f282ebf86ee8a94bc5f36d2a2e09eb1c647655ade0e8bee340d6",
+        "log_sha256": "6c0f4f319c0818c415b51bf4210f63b45df15f14a909737e4881f4acde909aee",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_setup_assistant_wiring.gd/checked/test_setup_assistant_wiring.gd-7i6iruk8/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_calibration_view.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 1.75256,
+        "completion": [
+          "calibration view: 75 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_calibration_view.checked.json",
+        "report_sha256": "ce4b161e56a106ac5a74481e1f0513ef77081f5b1e42ed0cb4f82c61d1c6a979",
+        "log_sha256": "d7a7f9206116b1a00c3b371064a0d515813d1dea975e9cfd0490525f22d0f159",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_calibration_view.gd/checked/test_calibration_view.gd-l2xm_dl0/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_pause_recovery.gd",
+        "ok": false,
+        "reason": "timeout",
+        "returncode": 124,
+        "complete": false,
+        "counts": {
+          "error": 133,
+          "warning": 1
+        },
+        "elapsed_seconds": 90.070607,
+        "completion": [],
+        "report": "evidence/regressions/test_controller_pause_recovery.checked.json",
+        "report_sha256": "7d7e705a797c03dbfc28d611017154d994381d4865c54fedc2965544387af41d",
+        "log_sha256": "29f82ca72616a9a4524edf38854e172ec2de92a7862aa25431e3579b9cba06e1",
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Resource file not found: res://assets/sky/moon/moon_albedo_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:790)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 16,
+            "message": "Resource file not found: res://assets/sky/moon/moon_normal_1k.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:791)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 29,
+            "message": "Resource file not found: res://assets/landscape/trees/atlas.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] card_mesh (res://render/tree_assets.gd:93)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 45,
+            "message": "Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:115)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 60,
+            "message": "L6b tree atlas/catalog/material mask missing or invalid",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 75,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 94,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 113,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 132,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 151,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 170,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 189,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 208,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 227,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Clover_1.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 246,
+            "message": "Resource file not found: res://assets/landscape/rc-ground/dirt-albedo.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _soil (res://render/flightline_barrier_planting.gd:157)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 263,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:478)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 279,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:481)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 295,
+            "message": "Resource file not found: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _atlas (res://scenery/imported_hedge.gd:344)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 314,
+            "message": "Cannot open file 'res://assets/scenery/farm_tractor/tractor.res'.",
+            "context": [
+              "   at: load (core/io/resource_format_binary.cpp:1143)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 332,
+            "message": "Failed loading resource: res://assets/scenery/farm_tractor/tractor.res.",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:317)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_pause_recovery.gd/checked/test_controller_pause_recovery.gd-lkhj3bve/engine.log",
+        "disposition": "failed/incomplete; missing scene assets reported; not a controls finding"
+      },
+      {
+        "script": "test_controller_recovery_focus.gd",
+        "ok": false,
+        "reason": "timeout",
+        "returncode": 124,
+        "complete": false,
+        "counts": {
+          "error": 133,
+          "warning": 1
+        },
+        "elapsed_seconds": 90.087741,
+        "completion": [],
+        "report": "evidence/regressions/test_controller_recovery_focus.checked.json",
+        "report_sha256": "fe6f17b4baa66c653bbbb63cdb236196dd301e94cafcc5bc7ee72599b7b2d3b5",
+        "log_sha256": "a109afed9a38ca9560675b7eba761a4198704c4b6fb198cd439976250e19413c",
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Resource file not found: res://assets/sky/moon/moon_albedo_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:790)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 18,
+            "message": "Resource file not found: res://assets/sky/moon/moon_normal_1k.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:791)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 33,
+            "message": "Resource file not found: res://assets/landscape/trees/atlas.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] card_mesh (res://render/tree_assets.gd:93)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 51,
+            "message": "Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:115)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 68,
+            "message": "L6b tree atlas/catalog/material mask missing or invalid",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 85,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 106,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 127,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 148,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 169,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 190,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 211,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 232,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 253,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Clover_1.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 274,
+            "message": "Resource file not found: res://assets/landscape/rc-ground/dirt-albedo.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _soil (res://render/flightline_barrier_planting.gd:157)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 293,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:478)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 311,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:481)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 329,
+            "message": "Resource file not found: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _atlas (res://scenery/imported_hedge.gd:344)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 350,
+            "message": "Cannot open file 'res://assets/scenery/farm_tractor/tractor.res'.",
+            "context": [
+              "   at: load (core/io/resource_format_binary.cpp:1143)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 370,
+            "message": "Failed loading resource: res://assets/scenery/farm_tractor/tractor.res.",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:317)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_recovery_focus.gd/checked/test_controller_recovery_focus.gd-mann8grn/engine.log",
+        "disposition": "failed/incomplete; missing scene assets reported; not a controls finding"
+      },
+      {
+        "script": "test_controller_routing_audit.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 8.930544,
+        "completion": [
+          "controller routing audit: 31 checks, 0 failures"
+        ],
+        "report": "evidence/regressions/test_controller_routing_audit.checked.json",
+        "report_sha256": "e39e82c5df86813f6a6303efa16c9af8f60397e93d07e2cc28feb245dbee0381",
+        "log_sha256": "77bcc017ae146e8fb868845abafdf028fb733f2340812604159fe81bfa8af6ec",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_routing_audit.gd/checked/test_controller_routing_audit.gd-1yoj48__/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_mr_controller_authority.gd",
+        "ok": false,
+        "reason": "engine_error",
+        "returncode": 1,
+        "complete": true,
+        "counts": {
+          "error": 153,
+          "warning": 2
+        },
+        "elapsed_seconds": 15.689872,
+        "completion": [
+          "controller authority: 46 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_mr_controller_authority.checked.json",
+        "report_sha256": "a96f69057a7d0b0f735ef5b0748f844b8a6bc26746374998d16e0a7824da1ad6",
+        "log_sha256": "12779d8549e5abedd22acdf6f4acdd07e9f60d0169d961f078a0922d8943f482",
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 67,
+            "message": "Resource file not found: res://assets/landscape/trees/atlas.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] card_mesh (res://render/tree_assets.gd:93)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 83,
+            "message": "Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:115)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 98,
+            "message": "L6b tree atlas/catalog/material mask missing or invalid",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 113,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 131,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 149,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 167,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 185,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 203,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 221,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 239,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 257,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 275,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 294,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 313,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 332,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 351,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 370,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 389,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 408,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_mr_controller_authority.gd/checked/test_mr_controller_authority.gd-ec4s8ui6/engine.log",
+        "disposition": "failed/incomplete; missing scene assets reported; not a controls finding"
+      },
+      {
+        "script": "test_controller_menu.gd",
+        "ok": false,
+        "reason": "timeout",
+        "returncode": 124,
+        "complete": false,
+        "counts": {
+          "error": 133,
+          "warning": 1
+        },
+        "elapsed_seconds": 90.083282,
+        "completion": [],
+        "report": "evidence/regressions/test_controller_menu.checked.json",
+        "report_sha256": "b149d8a4ebee97f3d40e444ac2a8e22255fb09f919a086789c9a30db008aeabc",
+        "log_sha256": "522d3ccf19d37c1be501b3d20848a23790217cfa91d6cb51f32ce69f311c32fb",
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Resource file not found: res://assets/sky/moon/moon_albedo_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:790)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 16,
+            "message": "Resource file not found: res://assets/sky/moon/moon_normal_1k.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] apply_state_to_sky (res://render/atmosphere.gd:791)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 29,
+            "message": "Resource file not found: res://assets/landscape/trees/atlas.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] card_mesh (res://render/tree_assets.gd:93)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 45,
+            "message": "Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:115)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 60,
+            "message": "L6b tree atlas/catalog/material mask missing or invalid",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/treeline.gd:117)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 75,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 94,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 113,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 132,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 151,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 170,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 189,
+            "message": "Resource file not found: res://assets/landscape/vegetation/models/Clover_1.gltf (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 208,
+            "message": "Error loading resource: 'res://assets/landscape/vegetation/models/Clover_1.gltf'.",
+            "context": [
+              "   at: load (core/core_bind.cpp:82)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:631)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 227,
+            "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Clover_1.gltf",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _load_parts (res://scenery/imported_vegetation.gd:633)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 246,
+            "message": "Resource file not found: res://assets/landscape/rc-ground/dirt-albedo.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _soil (res://render/flightline_barrier_planting.gd:157)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 263,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:478)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 279,
+            "message": "Resource file not found: res://assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _setup_build (res://scenery/scenery.gd:481)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 295,
+            "message": "Resource file not found: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _atlas (res://scenery/imported_hedge.gd:344)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 314,
+            "message": "Cannot open file 'res://assets/scenery/farm_tractor/tractor.res'.",
+            "context": [
+              "   at: load (core/io/resource_format_binary.cpp:1143)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 332,
+            "message": "Failed loading resource: res://assets/scenery/farm_tractor/tractor.res.",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:317)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] create (res://scenery/farm_tractor.gd:26)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_menu.gd/checked/test_controller_menu.gd-8ezmv0kt/engine.log",
+        "disposition": "failed/incomplete; missing scene assets reported; not a controls finding"
+      },
+      {
+        "script": "test_controller_conditioning.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.987306,
+        "completion": [
+          "Controller conditioning: 57 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_conditioning.checked.json",
+        "report_sha256": "7174ea38440e36d19897233482addee476e183e48e1994d7f9947737fbbe3571",
+        "log_sha256": "e0a3e14dfd18c829422732577f90310b0f30b5365186518ebc64c7ec59d3414a",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_conditioning.gd/checked/test_controller_conditioning.gd-8fx3s3_u/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_calibration_session.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.387646,
+        "completion": [
+          "Controller calibration session: 20 checks, 0 failed"
+        ],
+        "report": "evidence/regressions/test_controller_calibration_session.checked.json",
+        "report_sha256": "7ce1ff2a0ac925b4b5331b2099081f4209b8d241385655a2a56e3162adc1077a",
+        "log_sha256": "786aad1ece3bc8a39b7b4548e69e454ae24f2c2de2b9aa477d46c2cfa915618c",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_calibration_session.gd/checked/test_controller_calibration_session.gd-0bczeq5q/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_actions.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.565291,
+        "completion": [
+          "all controller action checks passed"
+        ],
+        "report": "evidence/regressions/test_controller_actions.checked.json",
+        "report_sha256": "28cf44e9e184b13e824b2efacc50436c7f3d1619b3d58361e70112e60d473122",
+        "log_sha256": "afdf8e0d7f0588ff40823c391bd0e149609a83a102d3645df3971b22e2bc8fde",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_actions.gd/checked/test_controller_actions.gd-2lz06tyk/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_ground.gd",
+        "ok": true,
+        "reason": "passed",
+        "returncode": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.697997,
+        "completion": [
+          "Ground controller integration: 24/24 checks passed"
+        ],
+        "report": "evidence/regressions/test_controller_ground.checked.json",
+        "report_sha256": "7db5b95d4fd04114b0abcba1ce34756a2e667f118f6c5d9c3669a9eae7c35f1b",
+        "log_sha256": "4485fdafb7f5498998f9afcd9a3aab697d06bdf907c57d562f58ab3f2208578e",
+        "diagnostics": [],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_ground.gd/checked/test_controller_ground.gd-rrzrge7f/engine.log",
+        "disposition": "accepted software evidence"
+      },
+      {
+        "script": "test_controller_car.gd",
+        "ok": false,
+        "reason": "process_exit",
+        "returncode": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "elapsed_seconds": 4.04978,
+        "completion": [],
+        "report": "evidence/regressions/test_controller_car.checked.json",
+        "report_sha256": "31be931e5206927ca5129729cc3aab6615dffb75594a81fc2e8af19a65145f32",
+        "log_sha256": "1ab77c7da7b80d7c23c6138f5e06ea1a6b869b5be8a3229e05aa26f4500b3ee6",
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Resource file not found: res://assets/vehicles/mt8-bisonte/MT8_Bisonte.glb (expected type: unknown)",
+            "context": [
+              "   at: _load (core/io/resource_loader.cpp:325)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://vehicles/ground/mt8_model.gd:12)"
+            ]
+          }
+        ],
+        "local_full_log": "tmp/controls-audit-accepted/test_controller_car.gd/checked/test_controller_car.gd-i3k7kk9v/engine.log",
+        "disposition": "failed/incomplete; missing scene assets reported; not a controls finding"
+      }
+    ]
+  },
+  "diagnostics": [
+    {
+      "name": "probe_airship",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "completion": [
+        "AIRSHIP_AUDIT_COMPLETE 11 checks, 0 failed"
+      ],
+      "observations": [
+        [
+          {
+            "after_loss": {
+              "accept_matches": true,
+              "mapping_count": 10,
+              "native_ui": 7,
+              "registry_ui": -1
+            },
+            "after_switch": {
+              "native_ui": 7,
+              "registry_ui": 8
+            },
+            "evidence": "Real registry/service/AppRoot/airship callbacks and InputMap event matching; no rendered HUD or SDL hardware",
+            "id": "GCA-02"
+          },
+          {
+            "continue_blocked": true,
+            "displayed_message": "Controls not armed: lower the throttle and check the controller.",
+            "evidence": "Real profile-store lease and resolver, production airship methods/session, synthetic input",
+            "explicit_reapply_recovers": true,
+            "id": "GCA-03",
+            "resolver_recovered": true
+          }
+        ]
+      ],
+      "source": "research/game-controls-audit-2026-11-21/probe_airship.gd",
+      "source_sha256": "58efe9e22fd611a21d93c0f524ded96aa55e3dea1d6c5ffab100cc8b333d640a",
+      "report": "evidence/probe_airship.checked.json",
+      "report_sha256": "5e1aaa28f9da451d6ac5f090d1826c056add370a5e2ed229512cdfc0f0f02b98",
+      "log": "evidence/probe_airship.log.json",
+      "log_sha256": "5ba344cfdb4a86edf2d1c924bc98e6c8a9911f729f8ac351e539fab80119c7a1",
+      "raw_log_sha256": "47ac3d28e2ce476eff5aeda2babda91c9b104d027fdffff9e52e9d571d0b68b4",
+      "log_encoding": "exact UTF-8 text in JSON text field"
+    },
+    {
+      "name": "probe_quad_pause",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "completion": [
+        "QUAD_PAUSE_AUDIT_COMPLETE 5 checks, 0 failed"
+      ],
+      "observations": [
+        {
+          "button_profile_valid": true,
+          "escape_pauses": true,
+          "evidence": "Production quad activity/session; synthetic radio and direct event callbacks",
+          "id": "GCA-01",
+          "radio_pause_ignored": true
+        }
+      ],
+      "source": "research/game-controls-audit-2026-11-21/probe_quad_pause.gd",
+      "source_sha256": "0520fcc231af287d8076d8fe654b70380908d42fd4dda014342398abf2cc2b87",
+      "report": "evidence/probe_quad_pause.checked.json",
+      "report_sha256": "6b2eea96b82fbb887f0bc7410297b8946869d8e7a7d9b0e4d173f6cd4b8ee5d8",
+      "log": "evidence/probe_quad_pause.log.json",
+      "log_sha256": "abd227f386baf46c177b223682dbfa4a1ec80ddbb703970d2c97c325c727a4fb",
+      "raw_log_sha256": "c34dc306d5f252157ce032f882018a17881016d96fead38f2fdd0e074029d8ba",
+      "log_encoding": "exact UTF-8 text in JSON text field"
+    },
+    {
+      "name": "probe_profile_ranges",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "completion": [
+        "PROFILE_RANGES_AUDIT_COMPLETE 8 checks, 0 failed"
+      ],
+      "observations": [
+        {
+          "declared_span": 5e-07,
+          "full_output": 0.5,
+          "id": "GCA-05",
+          "inverted_idle_output": 0.5,
+          "radio_armed": false,
+          "runtime_ready": true,
+          "runtime_throttle": 0.5,
+          "validated": true,
+          "wizard_min_sweep": 0.5
+        }
+      ],
+      "source": "research/game-controls-audit-2026-11-21/probe_profile_ranges.gd",
+      "source_sha256": "77d32d3d4a8458b63caa30e9945c3b254ff1c82893c9e4b633ff5c4af9dead24",
+      "report": "evidence/probe_profile_ranges.checked.json",
+      "report_sha256": "b6b3ead7ce9834486fbae3e5547ab3f7ca474ad075152b65d4ce954a31d60deb",
+      "log": "evidence/probe_profile_ranges.log.json",
+      "log_sha256": "c7073d100cc0ea98d7ae6a031e3988149ea07fe3f1fbdec63e2309472c93d2f4",
+      "raw_log_sha256": "e2d05813ac5b739ae1e24f8c4a86a7ef88f641c151189895df4a543592f7c9e9",
+      "log_encoding": "exact UTF-8 text in JSON text field"
+    },
+    {
+      "name": "probe_poll_budget",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "completion": [
+        "POLL_BUDGET_AUDIT_COMPLETE passed"
+      ],
+      "observations": [
+        {
+          "axis_callback_calls": 2400,
+          "button_callback_calls": 30720,
+          "evidence": "Deterministic callback counts; not measured OS polling, CPU cost, FPS, or latency",
+          "id": "GCA-O1",
+          "reader_ready": true,
+          "ticks": 240
+        }
+      ],
+      "source": "research/game-controls-audit-2026-11-21/probe_poll_budget.gd",
+      "source_sha256": "b43763167e6e77159e085a65a13e36401fc161143983ea573ac26608211619f9",
+      "report": "evidence/probe_poll_budget.checked.json",
+      "report_sha256": "a676950aaa96feddb7f0d5b1e003419d218d120cfda310bd0e2b09ef216026ef",
+      "log": "evidence/probe_poll_budget.log.json",
+      "log_sha256": "2137270239b7364d8c3668d670b93b79bd1850e4353b0a63a43074c5bbfc02d8",
+      "raw_log_sha256": "ee36c5cd90a4cb080bf60d9d1d7e7765d9b1f39dc9b347bea04d44e8ae1f8a27",
+      "log_encoding": "exact UTF-8 text in JSON text field"
+    }
+  ],
+  "legacy_interleaving": {
+    "witness_reproduced": true,
+    "receipt": "evidence/legacy-race.json",
+    "receipt_sha256": "be72d3e01922362562c1c0159907a974efe0ce2777e0a453cb2c66811d29d2ec",
+    "stages": 4,
+    "instrumentation": "evidence/legacy-instrumentation.patch.json",
+    "logs": [
+      {
+        "path": "evidence/legacy-inspect.log.json",
+        "sha256": "603d6b1925b1941eb7cba92e7df58f6b2eb996001caa95dff05b31f5d5a732b1",
+        "decoded_sha256": "88e4ae21225959a55d2e5e89cd0295805ddee01efe738b5df38486bb29f1d689"
+      },
+      {
+        "path": "evidence/legacy-writer-A.log.json",
+        "sha256": "41b88d33d8ef01f21ff6c523e8d17de2303f18778a81ba881a278b871d157618",
+        "decoded_sha256": "de9950dc395602e719a8bc0a994dca505c7c5a0503c0ef39fb03f8a6da2d26d2"
+      },
+      {
+        "path": "evidence/legacy-writer-B.log.json",
+        "sha256": "926a9b6d511f87a725cf203466c3c8fff8ec5e729cf34215fb9c29fe758b4892",
+        "decoded_sha256": "2b6be1d7540e97289d427406e925dee5f168197376a9901a1d8e183245d5ce44"
+      },
+      {
+        "path": "evidence/legacy-seed.log.json",
+        "sha256": "667eac5f392672dbf6c49ec1746339a052874b3bbcfe15eb31f8acf3da28a7e4",
+        "decoded_sha256": "c95673c85c98b7b200a4c4c6262dd0c1193cce5413674ad557ff8a815602646f"
+      }
+    ],
+    "instrumentation_sha256": "ef1fbefe840d3b8823c1981adec9da0c4a622f30712099fa51ccd2cec555c5d2",
+    "instrumentation_raw_sha256": "b2416dcb80f144581bd2095febdb0edd34fb11d8ad4a6df333a073cd1ef6e04e"
+  },
+  "last_import": {
+    "ok": true,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 14
+    },
+    "report": "evidence/import.checked.json",
+    "report_sha256": "a79ecf198a334f287be8ce45f6dd0a17528d9c7488b93f46206d7b33aed4dfe4",
+    "log_sha256": "e9a16d010c0543db9905c560605015f6968fbf84c4b0743aa0667f8d41fd8658",
+    "warning_disposition": "14 missing UID files re-created from cache after owned cleanup; listed and hash-stable during serial execution"
+  },
+  "preparation_history": {
+    "notes": [
+      "Missing translations, fonts, static preloads and a GLTF texture rejected early attempts.",
+      "Generated import metadata was inspected and restored; a later checked import rebuilt the committed compressed cache targets.",
+      "Restoring metadata without those cache targets caused another rejected batch.",
+      "Earlier parallel batches in one checkout are excluded; retained final suites run serially.",
+      "Five final integration attempts remain failed/incomplete with missing dynamic assets, associated script errors, and three timeouts. No assertion-only or process-zero result overrides the checked verdict."
+    ],
+    "selected_prior_receipts": [
+      {
+        "local_directory": "tmp/controls-audit-qualified",
+        "summary": {
+          "passed": 16,
+          "failed": 11,
+          "production_unchanged": false,
+          "results": "results.json"
+        },
+        "summary_sha256": "e3267bea8abf7654a0186abbf5efd039a8a4cb666760a75be227976438fbaffd",
+        "disposition": "excluded preparation: missing resources/cache mismatch; early parallel batches are not accepted serial gates"
+      },
+      {
+        "local_directory": "tmp/controls-audit-final",
+        "summary": {
+          "passed": 16,
+          "failed": 11,
+          "production_unchanged": true,
+          "results": "results.json"
+        },
+        "summary_sha256": "69db8d618411d3dbf2dee2ae2b596c3ff12c1951f976a03f8d751d7893ed5ced",
+        "disposition": "excluded preparation: missing resources/cache mismatch; early parallel batches are not accepted serial gates"
+      },
+      {
+        "local_report": "tmp/controls-audit-activity-probes/probe_airship.gd/checked/probe_airship.gd-4r9z44lm/report.json",
+        "ok": false,
+        "reason": "process_exit",
+        "counts": {
+          "error": 3,
+          "warning": 0
+        },
+        "report_sha256": "a5dbb98b560731556e3061d41b9900bc7fb168c38adc0cfcf3e2625cd471cbc3",
+        "disposition": "draft audit probe parse failure; explicit bool annotations corrected in research scripts only"
+      },
+      {
+        "local_report": "tmp/controls-audit-activity-probes/probe_quad_pause.gd/checked/probe_quad_pause.gd-ihqoa01y/report.json",
+        "ok": false,
+        "reason": "process_exit",
+        "counts": {
+          "error": 3,
+          "warning": 0
+        },
+        "report_sha256": "e8ef4bb17730d2f2c9964457ea4b4a9020d4665aeca1935cb677382f42effab5",
+        "disposition": "draft audit probe parse failure; explicit bool annotations corrected in research scripts only"
+      }
+    ]
+  },
+  "final_source_check": {
+    "tracked_app_matches_baseline": true,
+    "app_tree": "afec0bb4b0eb17ae0b4baa3aa6fbbbbcfcb23059",
+    "app_status_clean": true,
+    "owned_generated_uids_removed": 14
+  },
+  "limits": [
+    "No complete application test suite or required CI.",
+    "No physical controllers, native rendered HUD interaction, platform qualification, exported package, RF failure, or pilot acceptance.",
+    "Synthetic diagnostic success observes adverse baseline behavior; it does not indicate a fix.",
+    "Legacy race is a deterministic interleaving in a disposable instrumented copy.",
+    "No CPU/FPS/USB-polling/latency improvement was measured."
+  ],
+  "retained_text_format": "Raw witness logs and the exact legacy patch are stored losslessly in UTF-8 JSON text fields, with both container and decoded-byte hashes."
+}
