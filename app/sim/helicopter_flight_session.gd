@@ -1099,6 +1099,16 @@ func collective_pitch(mode: String="") -> float:
  var curve: Dictionary=Swash.sample_mode_curve(model.curves_by_mode,flight_mode if mode.is_empty() else mode,"pitch",2.0*commands.throttle-1.0)
  return float(curve.value)*model.linkage.collective_rad_per_unit if curve.ok else NAN
 
+## A36 R8-G01: the collective the electronics would send to the rotor at this accepted state (postmix: trainer feedback,
+## trim and clipped swash servos included); NAN when it cannot be evaluated. collective_pitch() stays the stick pickup.
+func commanded_collective_pitch() -> float:
+ if sim==null or not aircraft.get("ok",false): return NAN
+ var state: PackedFloat64Array=sim.state.duplicate()
+ state.append_array(sim.continuous.slice(0,6))
+ var sticks:=PackedFloat64Array([-commands.pitch,commands.roll,commands.yaw,2.0*commands.throttle-1.0])
+ var output: Dictionary=Electronics.fast_evaluate(aircraft.context.electronics_model,state,sticks,flight_mode,trainer_enabled,_trim)
+ return float(output.get("collective_75_rad",NAN)) if output.get("ok",false) else NAN
+
 func toggle_motor_arm() -> bool:
  if _transition_reentry(): return false
  if power.armed:
@@ -1110,7 +1120,10 @@ func toggle_motor_arm() -> bool:
  or (radio.connected and not radio.armed):
   pause_reason="Resume with controls released before arming."
   return false
+ # A36 R8-G01: both the stick pickup (premix) and the pitch actually commanded to the rotor (postmix) must be within
+ # one degree of zero; trainer feedback with clipped servos can move the second away from the first. NAN refuses.
  if not zero_drive_hold or absf(collective_pitch())>Lifecycle.PICKUP_TOLERANCE_RAD \
+ or not (absf(commanded_collective_pitch())<=Lifecycle.PICKUP_TOLERANCE_RAD) \
  or absf(commands.roll)>.05 or absf(commands.pitch)>.05 or absf(commands.yaw)>.05:
   pause_reason="Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
   return false
