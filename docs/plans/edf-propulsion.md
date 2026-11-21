@@ -1,6 +1,6 @@
 # Electric ducted fan propulsion and the Vantage Jet EDF experiment
 
-**Owner:** propulsion/energy lead, with AS, BAT, AV, NK, FL, GP, AUD and UI owners.
+**Owner:** propulsion/energy lead, with AS, BAT, AV, M5, NK, FL, GP, AUD and UI owners.
 **Step prefix:** `EDF-00…15`. **Research date:** 2026-11-21.
 **Audited baseline:** `main` at `57abea025f62b20233ca281d58d2acbee4ab8b8e`.
 **Delivery branch:** `research/edf-propulsion-2026-11-21`.
@@ -13,6 +13,10 @@ owns actual verification results; [physics and sources](../research/edf-propulsi
 [repository audit](../research/edf-propulsion/repository-audit.md) and
 [validation matrix](../research/edf-propulsion/validation-matrix.md) supply the
 engineering handoff.
+**External audit revision:** EDF-00-R1 challenges the original candidate
+`719c3cc6b8e3ac32d2f62e08b6df9b646925361f`; its
+[finding/disposition record](../research/edf-propulsion/external-audit-2026-11-21.md)
+explains the corrected contracts and remaining evidence gates.
 
 ## 1. Goal and first playable slice
 
@@ -96,9 +100,9 @@ that external torque. The EDF stage must return both:
 | Output | Consumer / meaning |
 | --- | --- |
 | `fan_shaft_load_nm` | Rotor equation; load opposing the selected positive spin convention, with separately defined windmill signs. |
-| `installation_wrench_body` | Six body-frame force/moment values about the current reference, including the chosen inlet/nozzle/stator boundary exactly once. |
+| `installation_wrench_body` | Six body-frame force/moment values about authored datum O, including the chosen inlet/nozzle/stator boundary exactly once; the adapter transfers the combined moment to the live CG once. |
 | Electrical quantities | Motor and pack current, terminal voltage, DC power, shaft power and explicit losses, with units and conventions. |
-| Domain/quality state | Measured/interpolated/estimated continuation, source/map identity and out-of-support flags. |
+| Domain/quality state | Output-specific evidence and joint support, estimated physical continuation, numerical locator-probe class, source/map identity and declared observer coverage. |
 
 The existing `RotorCoupling` solver supplies relative-spin reaction and the
 rigid-body derivative supplies gyro terms. Do not add them again. Keep thrust
@@ -144,6 +148,14 @@ independent. Recompute mass, CG, inertia, trim and ground-support consequences.
 State of charge does not deplete battery mass. Preserve stock turbine data,
 goldens and recordings on their matching law/backend identities.
 
+Use the existing catalog's **dual-path contract** for the first entry: a declared
+ideal-bus laboratory configuration in `data`, a separately identified finite-pack
+configuration in `battery_data`, and the existing pack default for a fresh
+preference. Preserve an existing supported ideal/pack preference. Both paths
+must be generated and tested. Never place a finite-only file into `data` and let
+the catalog label it ideal. A later finite-only entry needs an explicit catalog
+capability change, not two misleading aliases for the same pack file.
+
 ## 3. Ownership and proposed file boundaries
 
 Existing files below are integration points, not permission to rewrite all their
@@ -152,6 +164,7 @@ consumers at once. Proposed paths are deliberately shown as code until created.
 | Owner | Existing boundary | Proposed focused additions |
 | --- | --- | --- |
 | EDF/physics | `app/physics/propulsion.gd`, `dynamics.gd`, `rotor_coupling.gd` | `app/physics/edf/fan_map.gd`, `installation.gd`, `operating_point.gd`; pure kernels, explicit units and moments. |
+| M5/EDF | `app/physics/wind_aircraft_flow.gd`, `propulsion.gd`, stage-air receipts | Register the EDF intake station; reuse already-local inflow once, retain spatial-weather identity and supported native/fallback scope. |
 | EL/BAT | `electric_motor.gd`, `electric_supply.gd`, `battery/pack_ecm.gd`, `battery/esc_supervisor.gd` | Reusable bounded motoring controller behavior only where needed; measured controller config under owning data sources. |
 | AS/data | `aircraft_modules.gd`, `aircraft_data.gd`, `app/data/schema/`, `research/aircraft-standardization/build_schema.py` and schema tools under `research/aircraft-data/schema/` | Explicit EDF branch, conditional modules, quantity/unit/domain and failure-path coverage. |
 | Session/FL | `flight_session.gd`, `aircraft_propulsion_runtime.gd`, `trace.gd`, electric battery step and recorder identity | A narrow EDF adapter/helper where warranted; no second transaction or uncheckpointed state. |
@@ -159,6 +172,7 @@ consumers at once. Proposed paths are deliberately shown as code until created.
 | AV/data | `research/avanti-s/av06/`, `assets/aircraft/avanti-s-a200/` | `research/edf-propulsion/avanti128/` input/derivation pipeline and separate generated aircraft output. |
 | Catalog/model/UI | `app/app_state/aircraft_catalog.gd`, `app/aircraft/model_registry.gd`, aircraft adapter, Home and HUD | Separate experimental variant and installation presentation; preserve stable control/hinge names. |
 | GP/CR/AUD | Hull/prop contact, crash metadata, `app/audio/` | Internal-fan contact semantics, correct LiPo source, explicit EDF observers and safe audio fallback. |
+| SM/AUD/UI | `app/render/smoke/stock_profile.gd`, `app/render/aircraft_customization.gd`, `app/main.gd`, catalog/Home | EDF-safe stock presentation, legacy-audio handling and honest ideal/pack selection; visual-family reuse does not establish source compatibility. |
 | AE/scenarios | Workshop descriptors, failures, Natural Random, Creator imports | Support with owning tests or explicitly exclude; no silent migration. |
 
 The [source audit](../research/edf-propulsion/repository-audit.md) includes exact
@@ -177,8 +191,10 @@ EDF-01/02 must define a closed versioned schema, with quantities following
 | Geometry | Actual rotor tip/hub/casing dimensions, FSA convention, blade/stator count, clearance, fan/intake/nozzle reference positions, thrust/spin axes and duct identity. |
 | Motor/ESC | Kv and resistance convention, loss context, inertia, valid voltage/RPM/current limits, command mapping, ramp/current supervisor and cutoff policy. |
 | Pack | Existing generated pack/template identity, series/parallel wiring, mass-matched inventory mount, initial charge/temperature and LVC. |
-| Map | Input/output units, interpolation and endpoint policy, shaft versus DC-power basis, net/gross force boundary, moment datum, uncertainty and supported domain. |
-| Continuation | Finite stopped, windmill, high-advance-ratio and reverse-inflow behavior; explicit unsupported reverse-spin/brake/regeneration modes. |
+| Map | Joint sampled support/cells and holes per output, interpolation/endpoint policy, power and force boundary, uncertainty type, acquisition/run IDs and installed geometry identity. A static sweep is not an N-dimensional support box. |
+| Continuation | Bounded accepted physical domain, which may be entirely estimated; separately identified locator-only moving-side continuation through zero RPM/charge; unsupported accepted reverse-spin/brake/regeneration modes. |
+| Numerical budget | Per-observable absolute/relative scales, norms, time horizons, independent oracles and event-time/work limits frozen before results; 240 Hz must pass these in addition to refinement. |
+| Initialization | Instantaneous or conditioned quasi-steady launch, source-off stopped/freewheel branch, resource/controller state, sample phase and expected first-tick drift. |
 | Presentation/contact | Internal fan rather than exposed propeller, installed component metadata, observer/audio capabilities and source-loss behavior. |
 
 Admission must reject mismatched energy kinds, missing maps, invalid axes,
@@ -197,7 +213,7 @@ specific proof exists; producing source or a document is not a passed flight gat
 | --- | --- | --- |
 | EDF-00 | Research, repository audit, candidates and plan | Delivered in this branch; actual check record in research index. |
 | EDF-01 | Freeze model/data/interface and experiment specification | Pending; reviewed force/torque/energy ownership and compatibility decisions. |
-| EDF-02 | Acquire, identify and prepare map/installation data | Pending; reproducible source-to-map receipt and uncertainty/domain. |
+| EDF-02 | Prepare synthetic data now; acquire/identify physical data in parallel | Pending; EDF-02a synthetic provenance/domain, EDF-02b source-to-map receipt and independent observations. |
 | EDF-03 | Implement pure fan and installation reference law | Pending; analytic, limits, units and signed-load checks. |
 | EDF-04 | Electrical limits, thermal admission and coupled operating point | Pending; energy/current closure, startup limits and stable integration. |
 | EDF-05 | Integrate session state, events and replay | Pending; atomic lifecycle, refinement and exact replay. |
@@ -205,12 +221,26 @@ specific proof exists; producing source or a document is not a passed flight gat
 | EDF-07 | Generate A200 EDF sibling and mass/geometry | Pending; generator freshness, identity, balance and turbine preservation. |
 | EDF-08 | Catalog, controls, HUD, sound and contact behavior | Pending; actual product flow and internal-fan contact checks. |
 | EDF-09 | Reproduce stand data and calibrate within domain | Pending; matched held-out physical data, separate from numerical checks. |
-| EDF-10 | Qualify experimental aircraft flight and power-off handling | Pending; controlled flight cards, replay, pilot and uncertainty evidence. |
+| EDF-10 | Qualify experimental flight, then compare actual aircraft separately | Pending; EDF-10a controlled software cards/replay; EDF-10b independent aircraft/pilot evidence. |
 | EDF-11 | Run 152 mm and 195 mm scale experiments | Pending; each installation independently specified and admitted. |
 | EDF-12 | Cross-platform/package/performance gates | Pending; target OS/backend identities and production workload evidence. |
 | EDF-13 | Optional Workshop/failure/scenario integration | Pending; explicit consumer gates, no silent import/seed migrations. |
 | EDF-14 | Physical promotion and documentation closeout | Pending; physical claims match evidence, reproducible delivered sources. |
 | EDF-15 | Bounded inherited turbine repair | Pending; AV-owned low-speed defect reproduced and separately reviewed. |
+
+### Dependencies and evidence tracks
+
+Step numbering is an ownership register, not a requirement to wait for hardware
+measurements before developing a synthetic model.
+
+| Outcome | Prerequisites / exit |
+| --- | --- |
+| Runnable synthetic stand | EDF-01 contract and numeric budget + EDF-02a assumed fixture → EDF-03/04 analytic and circuit checks. No measured fan data are required for this software claim. |
+| Experimental playable A200 | Qualified stand → EDF-05 state/events + EDF-06 declared backend scope → EDF-07/08 generated sibling/product → EDF-10a software flight. All unmeasured outputs remain labeled estimated. |
+| Measured installation claim | EDF-02b acquisition with independent runs → EDF-09 held-out physical cards → EDF-10b aircraft/pilot evidence → EDF-14 scoped promotion. Missing data leave this track inconclusive. |
+| Larger fan studies | EDF-11 may begin on the qualified stand; each flight installation repeats the applicable software and physical gates independently. |
+| Distribution | EDF-12 applies to the actual package/backend being distributed; it does not turn synthetic data into physical evidence. |
+| Other work | EDF-13 is explicit optional scope. EDF-15's inherited turbine repair is not a dependency of a synthetic EDF law. |
 
 ### EDF-01 — Freeze the experiment and contracts
 
@@ -218,10 +248,14 @@ specific proof exists; producing source or a document is not a passed flight gat
    preservation surface. Confirm the new sibling's catalog/display IDs.
 2. Specify reference planes, thrust/spin axes, map power basis, external wrench
    and shaft-load ownership. Review the ideal-stator and windmill counterexamples.
+   Transform a measured moment to authored O once, then let the adapter apply
+   `M_CG = M_O - r_CG_from_O cross F` once before the body/rotor solve.
 3. Select one pack, controller mode and rotation sense for the first slice;
    distinguish provisional estimates from measured values.
 4. Freeze schema/module versions, state blocks, observer fields and unsupported
    consumer choices. Give native and reference the same inputs and error contract.
+   Include current `WindFlow` station/receipt semantics, catalog ideal/pack paths,
+   smoke/legacy-audio behavior and initialization branches.
 5. Prototype domain-diagnostic transport before promising all-stage coverage.
    Current `VehicleModel` stage context reaches the k1 substep selector, not a
    general accepted-stage reducer. Qualify a generic accepted-path receipt
@@ -229,14 +263,33 @@ specific proof exists; producing source or a document is not a passed flight gat
    accepted stages/substeps, preserving event bisection and rollback. Keep EDF
    dispatch outside Simulation. An endpoint-only first version is permissible
    only with an explicit limitation: it cannot certify intermediate-stage support.
-6. Have the Good Enemy review physical consistency and the smallest viable
+6. Define physical-domain versus event-locator trial continuation and its bound
+   over admitted dt/states. If the existing stop/exhaustion locator cannot use
+   the law, prototype a compatible guarded owner policy before session coding.
+7. Freeze the per-observable numerical software accuracy budget.
+   Specify units, norm, absolute floor, relative scale, duration, event timing,
+   energy residual and oracle. No post-result choice of a passing tolerance.
+   Freeze each applicable physical-card protocol after identifying its hardware
+   and instruments, before acquiring or inspecting final held-out observations.
+   Exploratory/fit data may inform that protocol but cannot also validate it.
+   Unavailable physical acquisitions do not block the synthetic software track.
+8. Have the Good Enemy review physical consistency and the smallest viable
    architecture. Resolve concrete findings before runtime coding.
 
-**Proof:** signed-off specification and T01/T02/T04/T06 test designs with independent
+**Proof:** signed-off specification and T01–T07/T10/T11/T15 test designs with independent
 expected results. EDF-A11 identifies a concrete transport limitation; prove the
 smallest compatible design before extending a kernel protocol.
 
 ### EDF-02 — Build an auditable data package
+
+**EDF-02a — synthetic software fixture, first critical path:** define a compact,
+finite map and electrical/installation parameters with units, named assumptions,
+output-specific evidence flags, joint support and reproducible generator/hash.
+No acquired static curve is required. Verify the analytic energy, signed-load,
+event and interpolation cases before fitting hardware parameters. Keep estimated
+parameter ranges as sensitivity bounds, not measured confidence intervals.
+
+**EDF-02b — physical identification, parallel and conditional on acquisition:**
 
 1. Record manufacturer part/revision, rotor/stator and controller setup; resolve
    DS-215 motor-name and old/new cell-range disagreements.
@@ -247,11 +300,21 @@ smallest compatible design before extending a kernel protocol.
    thrust alone or call DC input a measured mechanical load.
 4. Survey inlet/outlet open areas, duct bends, mounting and battery envelopes.
    Start with a labeled virtual installation if physical measurements are absent.
-5. Split fit and validation cases by operating point, voltage/SOC, incidence,
-   temperature and step history. Store each map's domain and finite continuation.
+5. Split by independently acquired run/condition and hardware identity, not by
+   arbitrarily withholding positions on the same plotted curve. Record each
+   dataset's origin, calibration/validation role, units, timing/filtering/tare,
+   source URL/date/hash and acquisition/redistribution rights.
+6. Preserve the joint sampled locus/cells rather than the Cartesian product of
+   scalar extrema. Identify what each output actually measures; estimated torque
+   and moments cannot inherit a measured-thrust label. Use independent wind-on
+   and transient observations to discriminate otherwise indistinguishable fits.
+7. If acquisition is unavailable, continue EDF-02a software work and mark EDF-09
+   physical cards inconclusive. Do not fabricate missing measurements or a full
+   measured support envelope from nominal manufacturer ranges.
 
-**Proof:** reproducible map generator and held-out dataset manifest; each absent
-quantity has an explicit estimate/bound or blocks the corresponding physical claim.
+**Proof:** EDF-02a supplies the reproducible synthetic fixture needed by the stand.
+EDF-02b additionally supplies acquisition and independent-run manifests before
+physical calibration; absent quantities block only their corresponding claims.
 
 ### EDF-03 — Implement pure fan/duct mechanics
 
@@ -260,23 +323,33 @@ quantity has an explicit estimate/bound or blocks the corresponding physical cla
 2. Add finite stopped/freewheel and windmill behavior without dividing by zero RPM;
    retain physical negative net thrust and distinguish reverse inflow.
 3. Compute local stage inflow at declared stations and transform force/moment to
-   the current datum. Do not add measured ram/duct effects twice.
+   the required datum. Register the EDF station in existing WindFlow and consume
+   its already-local velocity once. Test uniform/gradient wind with nonzero body
+   rate and moved datum. Bound the finite-disc/body-rate approximation near stop.
+   Do not add measured ram/duct effects twice.
 4. Feed shaft load and complete external wrench separately to the existing
    body/rotor balance. Validate carrier inertia and rotation convention.
 5. Establish limits, characterize continuity and derivative discontinuities at
    map knots, and prove finite outputs, passivity/energy behavior by regime and
-   diagnostic domain flags before session integration.
+   diagnostic domain flags before session integration. Use the exact coupled
+   rotational-energy identity, including its cross term, and the scoped complete
+   installation aerodynamic passivity inequality from the physics study.
 
 **Proof:** T02–T06, including nonzero shaft power and nonzero opposing rotor/stator
-fluid moments with zero net external axial torque of the whole installation,
-opposite-sense symmetry and signed-flow limit cases.
+fluid moments with zero net axial angular-momentum flux at both flow boundaries,
+zero net external axial torque, correct spin-axis conventions, mirrored-fixture
+reflection symmetry, and signed-flow/passivity counterexamples.
 
 ### EDF-04 — Integrate electrical behavior and numerical admission
 
 1. Reuse the single-bus pack/motor solve, respecting duty-dependent motor versus
-   battery current. Check terminal, DC, shaft, loss and rotor-energy ledgers.
+   battery current. Check terminal/DC power, losses, coupled body/rotor energy
+   and fixed-parameter RC storage separately. Do not equate terminal-energy
+   telemetry with chemical depletion or omit variable-parameter storage residuals.
 2. Add the selected current/ramp behavior with explicit state/sample convention;
    current limiting must affect torque/effective duty and voltage consistently.
+   Freeze the averaging/sensor bandwidth; phase switching peaks and cycle-level
+   protection remain unmodeled by an algebraic 240 Hz motor/ESC approximation.
 3. Repair the battery thermal admission omission under BAT ownership. Bound
    mechanical, fan-load, RC, electrical/thermal feedback and controller rates.
 4. Keep the ideal prescribed-bus mode a separately identified lab mode. Qualify
@@ -284,17 +357,30 @@ opposite-sense symmetry and signed-flow limit cases.
 5. Add motor/ESC thermal states only with an explicit estimated or measured model;
    otherwise report their temperatures/derating as unmodeled and restrict claims.
 
-**Proof:** T07–T10. No hidden power/current clipping, no post-step temperature
+**Proof:** T04/T07–T10, including the frozen 240 Hz accuracy limits as well as
+refinement. No hidden power/current clipping, no post-step temperature
 clamp used to conceal stiffness, and no presumed manufacturer current capability.
 
 ### EDF-05 — Own state, events and replay transactionally
 
 1. Add explicit continuous/sampled blocks to the fixed-wing adapter; pin state
    layout and law identity. Store every new dynamic state in checkpointed data.
-2. Extend steady/airborne initialization and runway spin-up. A trim point must
-   solve the admitted fan/electrical system, or return a precise refusal.
+2. Extend airborne initialization and runway spin-up. Solve source-off freewheel
+   equilibrium when it exists; the current glide helper's hard-coded zero RPM
+   is not a windmilling equilibrium. Distinguish static hold, stable rotating root,
+   no admissible root and a deliberately transient stopped launch.
+   An instantaneous trim freezes specified SOC/T and actual RC/filter/controller
+   state while solving body/shaft/bus residuals; a conditioned trim additionally
+   solves declared feasible RC/filter/controller steady conditions at fixed SOC/T.
+   Neither is equilibrium of a discharging full pack: retain real charge, energy,
+   thermal and transient controller derivatives. Pin held output/sample phase and
+   verify expected first-tick drift without silently replacing rested pack state.
 3. Compose stop/exhaustion/source-loss/current/LVC events with existing contact
    subdivisions. Sample discrete supervisors at their declared boundary only.
+   Preserve the locator's finite moving-side negative trial RPM/charge extension,
+   including nonzero zero-speed fan load and complete wrench. It is numerical
+   continuation, never an accepted reverse-spin/negative-SOC mode. Prove its probe
+   bounds, or qualify the guarded composition selected in EDF-01.
    A one-sided rotor must refuse unsupported reverse breakaway atomically rather
    than invent a holding reaction. Qualify forward breakaway and static hold.
 4. Verify reset, pause, rejected reload, fault, rollback and restore preserve the
@@ -304,11 +390,13 @@ clamp used to conceal stiffness, and no presumed manufacturer current capability
    Implement the diagnostic scope frozen in EDF-01. An all-stage claim needs the
    qualified accepted-path transport; rejected trials publish nothing. Test a
    k2-only excursion, rejected subdivisions and rollback. An endpoint-only mode
-   must disclose its narrower scope. Every stage still refuses evaluations beyond
-   the separately bounded continuation envelope.
+   must disclose its narrower scope. Physical evaluations enforce the admitted
+   envelope; locator-only continuations follow their separate contract. Neither
+   can turn arbitrary malformed input into a recoverable boundary crossing.
 
-**Proof:** T11–T15 and 240/480/960 Hz convergence cases with events, including two
-near-coincident boundaries and deliberately invalid native/reference inputs.
+**Proof:** T11–T15 plus the 240 Hz accuracy budget and 240/480/960 Hz refinement.
+Include an analytic within-tick stop, momentum-preserving projection, simultaneous
+exhaustion/cutoff, near-coincident contact, wrong-map refusal and source-off trim.
 
 ### EDF-06 — Native evaluation from the same specification
 
@@ -319,6 +407,9 @@ near-coincident boundaries and deliberately invalid native/reference inputs.
    floating-point behavior and do not enable fast-math to gain parity tolerance.
 3. Extend source/configuration/live-context guards and backend identity. Verify
    supported native selection, prepare refusal/fallback and live tick refusal.
+   Reference fallback is permitted only for native-specific incompatibility with
+   otherwise valid reference inputs. Map bytes that disagree with their declared
+   integrity/source identity fail shared admission under both backends.
 4. Run the existing native policy: at least 10,000 states, required byte parity
    on matching engine/toolchain, exact kernel trajectories, invalid-input,
    fault/restore and actual native-call coverage.
@@ -333,6 +424,8 @@ Reference-only experimental development remains selectable and explicitly labele
 
 1. Create a dedicated EDF source/generator path that reuses airframe inputs,
    preserves existing node names and cannot overwrite turbine outputs by default.
+   Generate distinct ideal-lab and finite-pack sources for the selected catalog
+   mapping; preserve source/state-layout identities when switching modes.
 2. Remove the documented turbine/fuel-only components, resolve bundled avionics,
    add fan, motor, controller, packs, ducts, wiring and mounts, and regenerate
    mass/CG/inertia. Do not inherit automatic fuel-specific ballast or balance.
@@ -349,16 +442,30 @@ Reference-only experimental development remains selectable and explicitly labele
 ### EDF-08 — Make the experimental variant usable
 
 1. Add a distinct catalog/model entry, Home description and direct-flight route;
-   use the same logical radio commands, gear and flap controls.
+   use the same logical radio commands, gear and flap controls. Verify the actual
+   loaded law against the `data`/`battery_data` ideal/pack label in Home, direct
+   launch, saved preferences and restart; finite pack is the fresh-preference
+   default, without overriding a previously saved supported ideal selection.
 2. Show pack charge, volts, battery amps, power and fan RPM from accepted state;
    distinguish ideal-bus mode, estimated maps and unmodeled thermal quantities.
 3. Add explicit EDF audio selection. Rotor blade-pass frequency can inform sound
    design, but sound must never feed back into physics; preserve licensing and
    use a safe labeled fallback until a matched recording is available.
+   Explicitly support or disable the legacy soundscape route, whose current
+   dispatch excludes only `electric_prop` and reads combustion-style `max_rpm`.
 4. Exclude the internal rotor from exposed-prop strike inference and update
    crash energy metadata. Retain hull collisions and honest failure scope.
+   Select an EDF-safe stock smoke profile (initially no show smoke): shared Avanti
+   visuals currently select a turbine-bound `show_tailpipe` profile by family.
+   Check both default and explicitly requested show/legacy presentation without
+   invalid source bindings; preserve the turbine sibling's effects.
 5. Verify actual Home → select → runway/airborne → pause/reset → Home → restart
    flows, controller arming and source-off behavior. Preserve saved selection.
+6. Exercise an in-flight out-of-domain fault. Publish one visible paused/fault
+   state with reason and retained accepted frame, prevent endless retries/false
+   elapsed flight, preserve recorder completeness semantics, and allow reset/Home
+   without a silent propulsion-law/backend switch. Verify ordinary starts and
+   the declared maneuver envelope do not immediately trigger this path.
 
 **Proof:** T20–T23, real rendered 1080p review under the shared display policy,
 audio listening when available, and explicit evidence gaps otherwise.
@@ -369,14 +476,25 @@ audio listening when available, and explicit evidence gaps otherwise.
    cooling and atmosphere to the source dataset.
 2. Fit only the calibration subset. Report thrust, DC power/current, RPM, residual
    moment, transient timing and temperature with uncertainty and domain limits.
+   Withheld samples from a single digitized curve remain interpolation checks;
+   physical validation requires independently acquired runs/conditions and declared
+   bandwidth, uncertainty coverage/correlation and campaign decision rules.
 3. Test independent voltage/SOC, wind-on and incidence points, not just static
    full throttle. Keep rotor shaft torque measurements separate from balance torque.
-4. Reject unsupported physical claims when error plus uncertainty exceeds the
-   predefined limit; report inconclusive results explicitly.
+4. Apply the matrix's predeclared pass/fail/inconclusive rule. Promote only when
+   error plus uncertainty meets the limit; distinguish demonstrated failure from
+   an inconclusive interval instead of treating every non-pass as failure.
 
-**Proof:** V01–V05. A plot fit and native parity do not close physical validation.
+**Proof:** V01–V05 for available matched data; missing observations remain
+inconclusive and do not prevent EDF-10a synthetic flight. A plot fit and native
+parity do not close physical validation.
 
 ### EDF-10 — Fly controlled experiment cards
+
+**EDF-10a** is software flight acceptance for the declared estimated/identified
+law; it requires the applicable EDF-03…08 gates, not completion of physical
+EDF-09. **EDF-10b** adds independently measured aircraft outcomes and pilot
+assessment for the corresponding physical claim.
 
 1. Preserve baseline recordings separately for turbine and EDF; exact replay is
    checked within each matching model/law/backend.
@@ -389,12 +507,15 @@ audio listening when available, and explicit evidence gaps otherwise.
    model pilot adaptation; do not force an incompatible turbine replay into EDF.
 5. Obtain pilot acceptance separately from software and physical parameter gates.
 
-**Proof:** T24/V06, complete recordings, identities and outcome-specific limits.
+**Proof:** T24 with complete recordings, identities and numerical limits for
+EDF-10a; V06 and applicable EDF-09 evidence for EDF-10b. Report their status separately.
 
 ### EDF-11 — Expand to 152 mm and the oversized 195 mm experiment
 
-1. Run each exact manufacturer's static setup in the stand with its own map and
-   power budget. Do not scale the 128 mm coefficients by diameter alone.
+1. Define and run each size's separately identified synthetic stand configuration
+   with its own map and power budget, labeling assumptions. Compare an exact
+   matched manufacturer setup only where sufficient acquired data exist. Do not
+   scale the 128 mm coefficients by diameter alone.
 2. Build a separate virtual installation manifest: casing/mount envelope, inlet,
    nozzle, cooling, actual or bounded pack mass, CG and full inertia.
 3. Apply the same schema, energy, event and numeric gates. Sweeps may vary pack

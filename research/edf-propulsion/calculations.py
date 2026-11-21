@@ -18,6 +18,110 @@ REPORT = ROOT / "docs/research/edf-propulsion/calculations.json"
 BASE = "57abea025f62b20233ca281d58d2acbee4ab8b8e"
 
 
+def audit_oracles() -> dict:
+    """Independent analytic fixtures; deliberately not an EDF implementation."""
+    locked, rotor, body_w, spin, moment, shaft_net = 2.0, 0.5, 3.0, 4.0, 2.0, 3.0
+    body_accel = (moment - shaft_net) / (locked - rotor)
+    spin_accel = shaft_net / rotor - body_accel
+    body_energy = 0.5 * locked * body_w**2
+    cross_energy = rotor * spin * body_w
+    relative_energy = 0.5 * rotor * spin**2
+    body_power = locked * body_w * body_accel
+    cross_power = rotor * (spin_accel * body_w + spin * body_accel)
+    relative_power = rotor * spin * spin_accel
+    work_rate = moment * body_w + shaft_net * spin
+
+    current, r0, r1, tau, rc_v = 1.0, 0.1, 1.0, 1.0, 0.5
+    capacitance = tau / r1
+    rc_rate = (r1 * current - rc_v) / tau
+    drop_power = current * (r0 * current + rc_v)
+    dissipation = current**2 * r0 + rc_v**2 / r1
+    storage_rate = capacitance * rc_v * rc_rate
+
+    def rk4_amplification(z: float) -> float:
+        return 1.0 + z + z*z/2.0 + z**3/6.0 + z**4/24.0
+
+    exact = math.exp(-2.0)
+    refinement = []
+    for substeps in (1, 2, 4, 8):
+        value = rk4_amplification(-2.0 / substeps)**substeps
+        refinement.append({"comparison_hz": 240 * substeps,
+                           "steps_over_one_240hz_tick": substeps,
+                           "value": value, "absolute_error": abs(value - exact),
+                           "relative_error": abs(value - exact) / exact})
+
+    stop_locked, stop_rotor, initial_spin, stop_torque = 0.06, 0.01, 0.04, -0.2
+    stop_body_accel = -stop_torque / (stop_locked - stop_rotor)
+    stop_spin_accel = stop_torque / stop_rotor - stop_body_accel
+    stop_time = -initial_spin / stop_spin_accel
+    stop_body_rate = stop_body_accel * stop_time
+    initial_energy = 0.5 * stop_rotor * initial_spin**2
+    final_energy = 0.5 * stop_locked * stop_body_rate**2
+
+    return {
+        "scope": "Synthetic analytic oracles and deliberately invalid examples; no Godot execution or measured hardware parameters.",
+        "locked_inertia_energy": {
+            "locked_inertia_kg_m2": locked, "rotor_inertia_kg_m2": rotor,
+            "body_rate_rad_s": body_w, "relative_spin_rad_s": spin,
+            "external_moment_nm": moment, "net_shaft_torque_nm": shaft_net,
+            "body_acceleration_rad_s2": body_accel,
+            "relative_spin_acceleration_rad_s2": spin_accel,
+            "body_energy_j": body_energy, "coupling_energy_j": cross_energy,
+            "relative_rotor_energy_j": relative_energy,
+            "total_energy_j": body_energy + cross_energy + relative_energy,
+            "energy_rate_w": body_power + cross_power + relative_power,
+            "independent_work_rate_w": work_rate,
+            "power_residual_omitting_cross_term_w": body_power + relative_power - work_rate,
+        },
+        "windmill_passivity_counterexample": {
+            "uniform_air_relative_speed_mps": 20.0, "relative_spin_rad_s": 100.0,
+            "signed_fan_load_nm": -1.0, "invalid_axial_force_n": -1.0,
+            "invalid_aerodynamic_power_w": -1.0 * 20.0 - (-1.0 * 100.0),
+            "comparison_axial_force_n": -6.0,
+            "comparison_aerodynamic_power_w": -6.0 * 20.0 - (-1.0 * 100.0),
+            "scope": "Zero body rate, complete quasi-steady isolated installation, uniform ambient air, no fluid storage, external heat, mass injection or omitted energy flux; positive result violates passivity. A nonpositive result alone does not prove realism.",
+        },
+        "fixed_parameter_rc_storage": {
+            "current_a": current, "r0_ohm": r0, "r1_ohm": r1,
+            "tau_s": tau, "rc_voltage_v": rc_v, "capacitance_f": capacitance,
+            "ocv_minus_terminal_power_w": drop_power,
+            "dissipation_w": dissipation, "polarization_energy_rate_w": storage_rate,
+            "balance_residual_w": drop_power - dissipation - storage_rate,
+            "scope": "Fixed parameters only; variable tau/R requires parameter-work terms for an exact storage interpretation.",
+        },
+        "stable_but_inaccurate_rk4": {
+            "decay_rate_per_s": 480.0, "horizon_s": 1.0 / 240.0,
+            "initial_value": 1.0, "exact_value": exact, "refinement": refinement,
+            "scope": "A stable 240 Hz step and improving refinement do not establish a predeclared production-step error budget.",
+        },
+        "within_tick_rotor_stop": {
+            "locked_inertia_kg_m2": stop_locked, "rotor_inertia_kg_m2": stop_rotor,
+            "initial_body_rate_rad_s": 0.0, "initial_relative_spin_rad_s": initial_spin,
+            "net_internal_torque_before_stop_nm": stop_torque, "external_moment_nm": 0.0,
+            "relative_spin_acceleration_rad_s2": stop_spin_accel,
+            "exact_stop_time_s": stop_time,
+            "unlocalized_full_tick_trial_spin_rad_s": initial_spin + stop_spin_accel / 240.0,
+            "accepted_relative_spin_after_stop_rad_s": 0.0,
+            "body_rate_after_stop_rad_s": stop_body_rate,
+            "initial_angular_momentum_kg_m2_s": stop_rotor * initial_spin,
+            "final_angular_momentum_kg_m2_s": stop_locked * stop_body_rate,
+            "initial_energy_j": initial_energy, "final_energy_j": final_energy,
+            "internal_work_to_stop_j": stop_torque * 0.5 * initial_spin * stop_time,
+            "scope": "Constant moving-side torque until stop, then a feasible static hold. Negative trial speed is a locator probe, never an accepted reverse-spin state.",
+        },
+        "spatial_station_flow": {
+            "datum_air_velocity_body_mps": [20.0, 1.0, 0.0],
+            "body_rate_rad_s": [0.4, 0.3, 2.0], "station_arm_body_m": [1.0, -0.2, 0.1],
+            "station_minus_datum_wind_body_mps": [1.0, 0.5, -0.2],
+            "omega_cross_arm_mps": [0.3 * 0.1 - 2.0 * (-0.2),
+                                     2.0 * 1.0 - 0.4 * 0.1,
+                                     0.4 * (-0.2) - 0.3 * 1.0],
+            "expected_local_air_velocity_body_mps": [19.43, 2.46, -0.18],
+            "scope": "Point kinematics only; not finite-disc aerodynamic validation.",
+        },
+    }
+
+
 def calculate() -> dict:
     nominal_cell_v, series, usable_fraction = 3.7, 14, 0.8
     bus_v = nominal_cell_v * series
@@ -74,8 +178,9 @@ def calculate() -> dict:
     ambient_k, excess_k = 298.15, 0.1
 
     return {
-        "format": "openrc-edf-research-calculations-v1",
+        "format": "openrc-edf-research-calculations-v2",
         "baseline_commit": BASE,
+        "externally_audited_research_commit": "719c3cc6b8e3ac32d2f62e08b6df9b646925361f",
         "scope": "Planning arithmetic and analytic counterexamples only; no runtime, flight, fit, or hardware qualification.",
         "energy_assumptions": {"cell_nominal_v": nominal_cell_v, "series": series,
                                "nominal_energy_fraction": usable_fraction,
@@ -110,6 +215,7 @@ def calculate() -> dict:
             "exact_temperature_after_one_step_k": ambient_k + excess_k * math.exp(z),
             "scope": "Scalar bounds and missing guard term verified in source; no admitted complete flight fixture was executed.",
         },
+        "external_audit_oracles": audit_oracles(),
     }
 
 

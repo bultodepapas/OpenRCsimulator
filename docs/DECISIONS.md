@@ -120,6 +120,16 @@ or that prototype demonstrates a smaller correct design. The [plan](plans/edf-pr
 owns pending work; [physics and source review](research/edf-propulsion/README.md)
 owns evidence and limitations.
 
+**EDF-00-R1 clarification, 2026-11-21.** Reuse the existing spatial-wind stage
+receipt exactly once. Separate admitted physical map continuation from the signed
+numerical probes needed to locate shaft stops and battery exhaustion; accepted
+states retain physical bounds. Keep synthetic software qualification independent
+of unavailable measured-data acquisition. Physical promotion requires joint,
+output-specific evidence and separately acquired validation. Freeze production
+240 Hz accuracy budgets as well as refinement tests. The
+[independent audit](research/edf-propulsion/external-audit-2026-11-21.md) records
+the counterexamples and remaining implementation gates.
+
 ### Keep finite resources and mass properties physically coherent
 
 **FUEL-00-R1 / FUEL-12 / BAT-13.** The fixed solver datum is the authored reference-inventory CG, not `plan_cg` or the current fill-dependent CG. Fuel changes mass, CG, inertia, contact response and source state through the accepted transaction. Eligible catalog aircraft with `battery_data` use finite packs by default, superseding the earlier ideal-default recommendation; declared ideal/fixed-voltage routes remain explicit exceptions. Pickup geometry and chemistry are not inferred from a generic fuel label. The [fuel standard](FUEL-SYSTEM.md) and [battery specification](research/battery/BAT-04/specification.md) own exact semantics; [Workshop](AIRCRAFT-WORKSHOP.md) owns its source exceptions.

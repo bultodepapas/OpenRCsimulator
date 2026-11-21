@@ -6,6 +6,10 @@ is delivered by this research branch. Line references below apply to that pinned
 revision; the linked symbols remain the useful lookup points after code moves.
 The [plan](../../plans/edf-propulsion.md) owns work order and the
 [validation matrix](validation-matrix.md) owns proposed proof.
+EDF-00-R1 independently rechecked the original research candidate and added
+EDF-A12…14 plus concrete catalog/presentation paths. The
+[external audit](external-audit-2026-11-21.md) owns the proposal corrections and
+the inherited CI blocker; source line references still target the baseline above.
 
 The lead read root `AGENTS.md`, `docs/SUBAGENTS.md`, relevant scoped rules,
 architecture, track ownership, aircraft/propulsion/battery guides and CI tooling.
@@ -24,6 +28,8 @@ is not independently observable. No helper staged, committed or pushed files.
 | Source and shaft | [electric_motor.gd](../../../app/physics/electric_motor.gd), [propulsion.gd](../../../app/physics/propulsion.gd), [rotor_coupling.gd](../../../app/physics/rotor_coupling.gd) | Reuse electrical conventions and simultaneous rotor/body balance; separate fan shaft load from installation wrench. |
 | Supply | [electric_supply.gd](../../../app/physics/electric_supply.gd), [pack_ecm.gd](../../../app/physics/battery/pack_ecm.gd) | Reuse stage bus solve and pack state; add identified ESC current/ramp behavior and new numerical bounds. |
 | Events | [electric_battery_step.gd](../../../app/physics/electric_battery_step.gd), FlightSession battery endpoints | Preserve one transactional owner for contact subdivisions, source loss, exhaustion, stop and LVC sampling. |
+| Spatial air | [wind_aircraft_flow.gd](../../../app/physics/wind_aircraft_flow.gd), [dynamics.gd](../../../app/physics/dynamics.gd) | Register an EDF intake station; consume the stage's local inflow once, preserving gradient, datum and receipt identity. |
+| Initialization | [trim.gd](../../../app/physics/trim.gd), FlightSession launch preparation | Add stopped/freewheel source-off branches and explicit finite-pack snapshot semantics. |
 | Turbine sibling | [turbine.gd](../../../app/physics/turbine.gd), [liquid_fuel_flight.gd](../../../app/sim/liquid_fuel_flight.gd) | Retain turbine law and finite fuel; EDF must not inherit fuel burn, turbine spool or ECU claims. |
 | Aircraft admission | [aircraft_modules.gd](../../../app/physics/aircraft_modules.gd), [aircraft_data.gd](../../../app/physics/aircraft_data.gd), [v2 contract](../../../app/data/schema/aircraft-contract-v2.json) | New family, conditional fields, units, quantities, capability/energy combinations and invalid-data refusal. |
 | Data sources | [AV-06 generator](../../../research/avanti-s/av06/derive_physics.py), [AV-06 inputs](../../../research/avanti-s/av06/inputs.json), [battery generator](../../../research/battery/bat-05/build_batteries.py) | Separate reproducible EDF inputs/output and pack identity; generated JSON is not an editing surface. |
@@ -55,6 +61,9 @@ conditional regression trap are different findings.
 | EDF-A09 | P2 before product integration | Consumer gap | Unknown propulsion families can fall into propeller/combustion audio and telemetry paths. |
 | EDF-A10 | P2, explicit exclusion allowed | Compatibility constraint | Workshop, failure modes, seeded scenarios and imported jets need separate admission decisions. |
 | EDF-A11 | P1 before all-stage quality claims | Existing protocol limitation | Current stage context does not provide accepted-path receipts from every RK stage; prototype transport or disclose endpoint-only diagnostics. |
+| EDF-A12 | P1 | Missed existing integration contract | Spatial weather already samples local propulsion flow and rejects unregistered families; extend its station definition and consume its receipt once. |
+| EDF-A13 | P1 | Plan/event-contract conflict | Existing stop/exhaustion locators need beyond-boundary numerical trial continuation; blanket negative-RPM/charge refusal prevents localization. |
+| EDF-A14 | P1 before source-off starts | Initialization gap | Glide trim hard-codes zero RPM; a windmilling fan may need a nonzero equilibrium, while a finite discharging pack cannot be fully steady. |
 
 ### EDF-A01: Battery thermal stiffness is absent from the admission bound
 
@@ -194,12 +203,14 @@ battery templates are estimates, not measurements of the proposed high-power EDF
 | Consumer | Source evidence / risk | First-slice decision |
 | --- | --- | --- |
 | Audio | `flight_audio.gd:246–251` uses propeller torque for non-turbines; `soundscape.gd:130–147` and `powertrain_audio.gd:27–44` have family defaults | Explicit EDF route, safe observer-only fallback, accepted RPM and load inputs; no raw propeller map access. |
+| Legacy audio | `main.gd:1202–1205` excludes only `electric_prop` before reading `propulsion.max_rpm` for the old engine sound | Explicit EDF-safe handling or a declared unsupported option; compare default and legacy starts for both siblings. |
+| Catalog energy mode | `aircraft_catalog.gd:263–265,316–328` maps `data` to ideal and `battery_data` to pack; `home.gd:1585–1591` follows that capability | Generate explicit ideal-lab and finite-pack paths, default to pack, and verify loaded law/labels in Home, direct launch and restart. Finite-only data needs an explicit capability change. |
 | Workshop | Generated descriptors bind base bytes/modules/visual family; `mass_edit.gd:397–413` rebases known offsets | Initially exclude EDF editing unless generator, schema, mass rebase and trial lifecycle are qualified. |
 | Failures | `failures/catalog.gd:271–282,291–311,348–362` checks specific kinds | Explicitly include a tested source-loss mode or show EDF as unsupported. Never fabricate turbine flameout. |
 | Natural Random | `scenario_config.gd:16,83–85,495–506`; `natural_random.gd:28–30` indexes an ordered aircraft list | Preserve v1's existing list and seed mapping; a new EDF-enabled policy needs a new version. |
 | Creator imports | `creator/packages.gd:44–46,553–558`; `creator/phoenix/physics.gd:76` adapt imported EDF/jet information into existing turbine behavior | Leave legacy imports labeled as approximations; no automatic migration in this Avanti task. |
 | Replay / recorder | Source, model, law, state and backend identities are pinned | A new EDF flight gets a new identity; old turbine recordings remain on their matching solver. |
-| Crash and smoke | Energy source is explicit inventory metadata; turbine presentation is not an EDF energy law | Author LiPo source metadata; no inherited kerosene consumption or automatic hot-exhaust effect. |
+| Crash and smoke | Energy source is explicit inventory metadata. `stock_profile.gd:13–15,51–67,75–77` selects the Avanti show-tailpipe profile by visual family; `aircraft_customization.json` binds that slot to a turbine, and `resolve_smoke_bindings` (`app/render/aircraft_customization.gd:318–348`) checks the source | Author LiPo source metadata and an EDF-safe stock profile/exclusion. Exercise requested show smoke and default startup without binding errors; preserve the turbine's show effect. This is a presentation compatibility trap, not proof an EDF emits hot exhaust. |
 
 ### EDF-A11: All-stage domain reporting needs an explicit transport design
 
@@ -215,9 +226,73 @@ or a compatible owner-controlled policy, with no EDF branch in Simulation. Only
 the final accepted stages/substeps may contribute quality flags; rejected event
 bisections, subdivisions and rolled-back ticks must publish nothing. An
 endpoint-only first version is a valid smaller choice if its limitation is
-explicit. Every evaluated stage still enforces the law's finite continuation
-envelope and refusal rules. T06 discriminates these cases. This is a proposed
+explicit. Every evaluated stage follows its declared physical or locator-only
+envelope and refusal rules; EDF-A13 defines the numerical-probe distinction.
+T06 discriminates these cases. This is a proposed
 feature's integration prerequisite, not an existing runtime defect.
+
+### EDF-A12: Spatial propulsion inflow already has an owner
+
+`WindFlow.StagePointSampler` (`wind_aircraft_flow.gd:17–38`) samples the station's
+ambient wind at the same stage time and transforms its difference from datum
+wind. `stage_air` (`:53–89`) returns already-local `propulsion_air_body`;
+`geometry` (`:116,217–245`) currently recognizes turbine, glow/electric prop and none,
+so an EDF kind fails station admission. The sample contract (`:263–265`) already
+includes `omega cross r` and the wind delta. `Dynamics.loads_from_air`
+(`dynamics.gd:72–83,90–127`) requires matching ephemeral stage receipts.
+
+The original plan incorrectly called spatial wind a future feature. Register the
+EDF intake offset, use the existing local velocity once, and keep model/time/
+density/native identity. Qualify uniform and spatial modes or explicitly reject
+an unsupported mode at admission. Extend `test_spatial_powered_stage.gd` and
+`test_spatial_propulsion_flow.gd` with gradient, body rate and datum-shift cases.
+
+### EDF-A13: Event probes are not accepted negative physical states
+
+`EventStep` (`event_step.gd:1–10,39–73,84–103,116–142`) intentionally evaluates
+negative trial values while bracketing a stop. A derivative refusal aborts before
+the locator can refine. `electric_battery_step.gd:24–33,55–58,166–192,229–236`
+composes this policy with charge exhaustion. `FlightSession._coupled_response`
+(`:5015–5020,5061–5086`) distinguishes negative-RPM moving-side probes from an
+exactly stopped rotor's static hold and forward/reverse breakaway.
+
+An EDF adapter must preserve a qualified finite trial extension, including its
+possibly nonzero zero-speed aerodynamic load and whole-installation wrench.
+Never copy the open propeller's zero-load assumption into that extension. Prove
+coverage of all admitted probes or use a qualified guarded composition that can
+refine crossings without treating malformed maps as crossings. A narrow negative
+bound with unconditional failure still fails a coarse otherwise legal probe.
+The rotorcraft guarded locator is a precedent, not a drop-in replacement for
+the fixed-wing battery/contact/LVC composition. Accepted RPM/charge remain
+nonnegative. T11 uses an analytic within-tick stop and simultaneous boundaries.
+
+### EDF-A14: Source-off trim and finite-pack snapshots need explicit semantics
+
+`Trim._rpm` / `_rpm_at` (`trim.gd:70–86`) return zero outside level-flight trim;
+the later electric equilibrium path (`:304–321`) also handles level mode only.
+FlightSession exposes a glide start (`:2964,3973`). A source-off freewheeling EDF
+can have nonzero equilibrium speed and drag, so solve that branch or explicitly
+label/refuse a stopped transient start. Distinguish static hold, stable rotating
+root, unsupported root and no solution; verify the initialized first-tick residual.
+
+`PackEcm.initial_block` (`:55–70`) starts rested RC states. Its rates (`:180–195`)
+include charge, terminal energy, loss, polarization, temperature and sensing, so
+nonzero current precludes equilibrium of the whole joint state. Freeze a declared
+pack/controller snapshot for instantaneous trim, or additionally condition named
+RC/filter/controller states for quasi-steady trim at fixed SOC/T. Retain actual
+resource derivatives and sample phase; do not silently substitute a loaded pack
+equilibrium for a requested rested start.
+
+### Reuse boundaries confirmed by the external audit
+
+`multirotor/electric_bus.gd:1–8,25–34` is a useful active-set reference but has
+exactly four loads and omits finite-pack polarization/thermal and ESC limits.
+It is not the first EDF's single-load pack solver. `test_electrical_bank.gd`
+tests atmospheric electrical effects, not propulsion power distribution.
+`aircraft_ground_electric.gd:21–30,34–46,63–68` is a fixed-gear foundation with
+`launch_available=false`, not a qualified retractable finite-pack A200 session.
+Use the current single-shaft session as the first integration boundary, keeping
+wheel/contact/retract and source-event composition explicitly owned and tested.
 
 ## 3. Investigation limits and verification ownership
 

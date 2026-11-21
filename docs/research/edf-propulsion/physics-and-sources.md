@@ -7,6 +7,8 @@ The [implementation plan](../../plans/edf-propulsion.md) owns sequencing; the
 public material inspected during this investigation. Numerical examples are
 reproduced by [calculations.py](../../../research/edf-propulsion/calculations.py)
 and retained in [calculations.json](calculations.json).
+The [independent external audit](external-audit-2026-11-21.md) records corrections
+to the original research candidate and the limits retained after review.
 
 ## 1. The experiment and its aircraft identity
 
@@ -46,8 +48,8 @@ No candidate's casing, intake, outlet, pack or mounting fit is established here.
 The 128 mm installation is selected for a useful comparison with the existing
 100 N turbine reference, not because its installed performance or fit is known.
 
-The DS-98/DSM6036 and DS-215 charts identify their ESC, a VDI 2041 test intake and
-ISA correction [S04, S08]. Digitization must retain that setup and estimate chart
+The DS-98/DSM6036, DS-130 and DS-215 charts identify their ESC, a VDI 2041 test
+intake and ISA correction [S04, S25, S08]. Digitization must retain that setup and estimate chart
 reading uncertainty. Do not infer a measured torque map from plotted electrical
 power. The DS-215 chart's filename says `295`, while its internal motor label and
 product specification say `290`; resolve the exact hardware identity before
@@ -146,15 +148,29 @@ new, explicit installation correction or installed measurements; record the
 correction as estimated until qualified. Assign airframe drag terms carefully
 when replacing the turbine inlet/exhaust treatment.
 
-Local aircraft-relative-to-air velocity at an intake or fan station is
-`v_air_at_datum + omega_body cross r_station`, with body-frame `r_station` from
-the datum and the same stage wind sample at both locations. Axial speed is
-positive along the forward thrust axis. A future spatial-wind query must also
-subtract the station-minus-datum wind difference in the same frame. Intake and
+Local aircraft-relative-to-air velocity at a station is
+`v_air_at_O + omega_body cross r_station - (wind_station - wind_O)_body`,
+where `r_station` is from the authored fixed datum O and every term uses the same
+stage, frame, time and environment. Axial speed is positive along the forward
+thrust axis. The wind difference vanishes in uniform wind. Spatial wind is
+**already implemented**: [WindFlow](../../../app/physics/wind_aircraft_flow.gd)
+prepares `air.propulsion_air_body` with both corrections. Register the EDF intake
+station and consume that receipt once; do not add rotation or the gradient again.
+Keep the existing receipt identity and native support/fallback rules. Intake and
 nozzle force locations can differ,
 so a net axial thrust alone does not identify the pitching moment. For crossflow,
 use a measured wrench or a labeled bounded approximation; do not quietly borrow
 the turbine's full-vector momentum continuation.
+
+Station-center flow is not a blade-element flow field. A fixed-housing fan map
+usually neglects body-rate and ambient-vorticity gradients across the finite
+disc. At zero relative shaft speed, a fan center on the roll axis can have zero
+station velocity while its blades still move through air with the rolling body.
+Declare this quasi-steady approximation and its body-rate/low-speed domain; bound
+its omitted loads for a physical claim or add identified rate-dependent inputs.
+Avoid a singular `|body_rate|/Omega` rejection rule at ordinary starts: use a
+declared dimensional or regularized error bound. Motor back EMF uses speed
+relative to its stator; adding body spin indiscriminately changes that convention.
 
 ## 4. Fan maps and their validity envelope
 
@@ -168,7 +184,8 @@ $$
 
 `D` is not automatically the catalog casing diameter. Store rotor diameter,
 casing diameter, hub diameter, tip clearance and fan swept area separately.
-Here `P_fan=Q_fan*Omega` is aerodynamic rotor-load power. Motor shaft power
+Here `P_fan=Q_fan*Omega` is relative-shaft aerodynamic load power. At nonzero body
+rate it is not, alone, the rotor-fluid torque's full inertial-frame work. Motor shaft power
 `Q_motor*Omega` can differ during rotor acceleration and due to mechanical
 losses/body coupling. `C_P,electrical` from DC power is **not** either mechanical
 power coefficient. If shaft torque is
@@ -180,6 +197,25 @@ The preferred map includes axial flow, incidence/crossflow, speed and relevant
 density/temperature effects. Fix its interpolation, axes, row order, endpoint
 policy and valid domain. At a given operating point solve the electrical source
 and fan load together; a throttle-to-thrust lookup bypasses this coupling.
+
+**Support is joint and output-specific.** A static voltage sweep is a correlated
+locus of observed voltage, current, RPM and thrust, not a measured box containing
+every combination of their extrema. It does not identify wind-on loads, shaft
+torque, rotor inertia or installed moments. Record acquired points and admissible
+interpolation cells/hulls, holes and uncertainty for each output. Separate
+published/digitized thrust, inferred shaft load and assumed residual moments;
+one measured channel cannot label the entire wrench/load model measured.
+
+For EDF-02a, a fully synthetic map with an explicit finite operating domain is a
+valid software fixture. Mark all its outputs and domain estimated; selected
+parameter ranges are sensitivity assumptions, not statistical confidence bounds.
+EDF-02b/09 physical calibration needs matched independent observations. Withheld
+positions on the same published smoothed curve test interpolation, not an
+independent experiment. A useful identifiability check fits two plausible
+parameter sets to the static observations and compares their independent
+transient/wind-on predictions. Unresolved divergence limits the physical claim.
+NASA's tested wind-off power model needed wind-on data for that regime [S01,
+section VI.G]; its coefficients do not identify this installation.
 
 At similar `J_a`, geometry and flow regime, dimensional scaling suggests
 `T ~ rho n²D⁴` and `P_shaft ~ rho n³D⁵`. At constant tip speed, both scale with
@@ -210,19 +246,36 @@ motoring-only ESC sends no energy to the battery. Track that aerodynamic work,
 rotor energy and dissipation. Negative net thrust can be drag and must not be
 globally clamped to zero.
 
-The first admitted flight law needs measured-map support and a **separately
-bounded**, versioned estimated continuation envelope through throttle-off, high
-advance ratio and ordinary aircraft incidence. Use outside measured support but
-inside that envelope carries a quality flag. All-stage reporting requires pure
-stage diagnostics and a qualified accepted-path reducer that cannot leak rejected
-trials. This transport does not currently exist as a general `VehicleModel`
+An admitted experimental flight law needs a **bounded physical operating
+envelope**, which may be entirely estimated. Where measured support exists,
+distinguish it from estimated continuation through throttle-off, high advance
+ratio and ordinary aircraft incidence. All-stage reporting requires pure stage
+diagnostics and qualified accepted-path transport that cannot leak rejected
+trials. That transport does not currently exist as a general `VehicleModel`
 facility: EDF-01 must prototype it or explicitly report endpoint-only quality,
-which cannot certify intermediate-stage map support (EDF-A11). Inputs beyond the
-continuation envelope or any
-nonfinite evaluation refuse the transaction atomically. A stand-only prototype
-may instead refuse all out-of-map states. Reverse rotor rotation,
-active braking and regeneration remain separately unsupported unless their
-laws, energy paths and events are implemented. If torque at rest exceeds the
+which cannot certify intermediate-stage support (EDF-A11).
+
+Keep a third domain separate: **event-locator trial continuation**. The current
+[event step](../../../app/physics/event_step.gd) intentionally probes negative
+trial RPM to bracket a stop, and the
+[electric battery policy](../../../app/physics/electric_battery_step.gd) similarly
+uses negative trial charge near exhaustion. These are not accepted reverse spin
+or negative SOC. Reusing that policy requires a finite moving-side extension
+through zero that retains the EDF's zero-speed fan load and installation wrench.
+Prove that the extension covers every admitted probe, or qualify an owner-controlled
+guarded locator with the same battery/contact/LVC composition. Merely refusing a
+coarse beyond-boundary probe prevents localization; an arbitrary narrow negative
+range without a safe refinement route does not fix it. Trial diagnostics must
+remain distinguishable from physical-domain quality and rejected trials publish
+nothing. Nonfinite values and unrelated invalid maps still refuse atomically.
+
+Outside the admitted physical envelope, a non-locator evaluation refuses the
+tick. The session must enter a visible paused/fault outcome with the last accepted
+frame, boundary/reason, recorder status and reset/Home recovery; no repeated
+automatic retry, clock advancement or hidden law/backend substitution. A stand
+prototype may refuse all unsupported physical states. Accepted reverse rotor
+rotation, active braking and regeneration remain separately unsupported unless
+their laws, energy paths and events are implemented. If torque at rest exceeds the
 declared static-hold capacity toward an unsupported reverse-spin direction,
 refuse that trial/tick rather than clamp the rotor with an invented reaction.
 Test forward breakaway, static hold and reverse-breakaway refusal with native
@@ -238,9 +291,13 @@ outputs even when an early surrogate assigns them simple values.
 
 Use a unit **spin axis** `a_s` and nonnegative relative speed `Omega`. It may be
 aligned or opposed to the thrust axis; declaring both avoids changing thrust
-direction when changing rotation sense. With locked aircraft inertia `I_L`, rotor
-axial inertia `J_r`, body rate `w`, relative momentum `h=J_r Omega a_s`, and
-signed installation moment already expressed in body axes:
+direction when changing rotation sense. Let `I_L` be locked aircraft inertia
+about the live CG, `J_r` the rotor axial inertia, `w` body rate, and
+`h=J_r Omega a_s` relative rotor momentum. `M_ext` is the **total external moment
+about that same CG**, expressed in body axes, including other vehicle loads when
+balancing the complete aircraft. The installation map returns its wrench about
+the authored datum O; transfer its moment once with
+`M_CG = M_O - r_CG/O cross F` before adding the other external moments:
 
 $$
 I_L\dot{\mathbf w}=\mathbf M_{ext}-
@@ -259,12 +316,57 @@ measured total moment directly. Do not combine both representations. Do not add
 motor reaction, stator recovery, spin-acceleration reaction or gyro a second time
 after the corresponding channel has included it.
 
-Acceptance requires a steady idealized zero-residual-swirl case with nonzero
-shaft power and zero external axial torque; a spool transient still exchanges
-body/rotor momentum. Add opposite rotation-sense, nonzero body-rate and tilted
-axis cases. Carrier inertia remains positive definite after reserving rotor
-inertia. A symmetric ideal stator fixture is an analytic check, not a claim that
-every real EDF has zero residual torque.
+Acceptance requires an ideal steady fixture with zero net axial angular-momentum
+flux at both upstream and downstream boundaries and no other external axial
+fluid moments. Nonzero opposing rotor/stator torques then give zero total
+external axial torque; a spool transient still exchanges body/rotor momentum.
+Test both spin-axis conventions. Reflection symmetry applies only to a fully
+mirrored rotor/stator/installation fixture: for reflection matrix P, polar
+vectors transform with P and axial vectors with `det(P) P`; inertia transforms
+with `P I P^T`. Reversing the motor of unchanged pitched hardware is not that
+symmetry and remains outside the first slice. Carrier inertia must remain
+physical after rotor reservation. None of these fixtures asserts zero residual
+torque for every real EDF.
+
+### Independent mechanical-energy and passivity oracles
+
+For constant `I_L`, `J_r` and fixed axis, the rotational kinetic energy and its
+rate derived from the two equations above are
+
+$$
+K=\tfrac12\mathbf w^T I_L\mathbf w+
+J_r\Omega(\mathbf a_s\cdot\mathbf w)+\tfrac12J_r\Omega^2,
+\qquad
+\dot K=\mathbf w\cdot\mathbf M_{ext}+\Omega(Q_{motor}-Q_{fan}).
+$$
+
+The cross term is required even though the locked inertia already includes the
+rotor. For the one-axis synthetic fixture `I_L=2`, `J_r=0.5`, `w=3`, `Omega=4`,
+`M_ext=2` and `Q_motor-Q_fan=3` in SI, `K=19 J` and `Kdot=18 W`. Add translation,
+gravity and other external work separately for a full-aircraft ledger, with
+force/moment and velocities expressed at consistent datums.
+
+For a quasi-steady complete installation in uniform ambient air, with no omitted
+interacting surfaces, fluid-energy storage, externally supplied heat, mass
+injection or other unaccounted energy flux, a necessary aerodynamic passivity
+check is
+
+$$
+\mathbf F\cdot\mathbf v_{air,O}+\mathbf M_{ext,O}\cdot\mathbf w
+-Q_{fan}\Omega\leq 0.
+$$
+
+`M_ext,O` here contains the whole installation's external aerodynamic moment,
+not other vehicle loads. Test the paired wrench/load map at interpolation
+interiors as well as nodes. At `V=20 m/s`, `F_x=-1 N`, `Omega=100 rad/s` and
+`Q_fan=-1 N m`, the expression is **+80 W** despite plausible windmill signs:
+the fit creates mechanical energy. Do not apply this instantaneous inequality
+unmodified to spatial/unsteady inflow, thermal energy delivered into the stream
+or an incomplete boundary; those require their declared flow-energy/storage
+terms. In uniform flow, transferring both wrench and velocity consistently
+preserves `F dot v_air,O + M_O dot w = F dot v_air,CG + M_CG dot w`, with
+`v_air,CG = v_air,O + w cross r_CG/O`. The calculator reproduces these
+synthetic counterexamples, not a measured EDF efficiency bound.
 
 ## 6. Electrical source, ESC and heat
 
@@ -282,12 +384,25 @@ combine a line-to-line datasheet resistance with a differently defined winding
 equivalent without conversion evidence. Motor constants need matched temperature
 and electrical conventions.
 
+The DC-equivalent constant-loss model is a bounded approximation. Drela's
+primary derivation distinguishes resistance, speed-dependent no-load losses and
+matched parameter measurements [S26]; catalog Kv alone cannot identify them.
+
 For the ideal averaged ESC, `I_b=d I_m+I_aux`. Existing finite-pack code solves
 this with `V_b=E_pol-R_pack I_b` at each stage. With a fixed duty, the active
 branch has denominator `R_m+d²R_pack`; evaluating each side on an unsagged bus
 does not solve the same system. Keep motor current, battery current, phase-current
 ratings, DC power and mechanical power distinct. Future multiple EDFs require
 one shared-bus solve, not a cloned pack for every fan.
+
+The algebraic motor and averaged ESC do not resolve winding inductance, PWM
+ripple or commutation. Specify the equivalent-current, controller sampling and
+measurement-filter bandwidth; compare like-for-like filtered bus-current peaks.
+Do not claim instantaneous phase peaks or cycle-level protection from a 240 Hz
+averaged model [S27]. A synthetic stalled circuit with `L=100 microH`, `R=0.1 ohm`
+and `V=25 V` approaches 250 A with a 1 ms time constant, while the algebraic
+model jumps immediately to 250 A. Adding a controller limit does not supply the
+missing electrical waveform.
 
 The current ideal ESC has no installed current limit, command ramp, motor/ESC
 thermal state, switching loss, brake or regeneration model. Before a large-EDF
@@ -307,6 +422,17 @@ Existing `pack_ecm` provides pack temperature and cell polarization; it does not
 measure motor or ESC temperature. Thermal models need heat capacities, loss maps
 and cooling evidence [S17]. The [thermal admission finding](repository-audit.md#edf-a01-battery-thermal-stiffness-is-absent-from-the-admission-bound)
 must be resolved before relying on arbitrary new pack cooling parameters.
+
+For a fixed-parameter RC branch, `C= tau/R` and
+`I V_RC = V_RC²/R + d(0.5 C V_RC²)/dt`. Consequently OCV power minus terminal
+power is not just heat during a pulse/rest transient. With `I=1 A`, `R0=0.1 ohm`,
+`R1=1 ohm`, `tau1=1 s`, `V1=0.5 V`, the drop power is 0.60 W, dissipation
+0.35 W and RC storage rate 0.25 W. Preserve this distinction in T07.
+The existing SOC/temperature-dependent R and tau make C variable; interpreting
+`0.5 C V²` as storage then introduces `0.5 Cdot V²`. Restrict the exact capacitor
+oracle to fixed parameters, or explicitly derive/account for that parameter
+work. Do not silently extend the empirical ECM into a proven full-chemistry
+energy model. Its terminal-energy accumulator is not chemical depletion.
 
 ## 7. Inlets, nozzle area and unusually large installations
 
@@ -383,6 +509,12 @@ matched installed measurements are explicit EDF-02 work.
 | S22 | [NASA tandem-fan inlet tests, 1981](https://ntrs.nasa.gov/citations/19810017539) | Pitch/yaw and inlet-geometry effects; configuration-specific. |
 | S23 | [NASA pneumatic inlet/diffuser investigation, 2003 report](https://ntrs.nasa.gov/citations/20040001424) | Shroud and static/forward-flight tradeoffs; blowing is outside this EDF scope. |
 | S24 | [DS-215 historical technical flyer](https://www.schuebeler-tech.com/wp-content/uploads/2021/02/DS-215-DIA-HST-1.pdf) | Historical 10–14S statement versus current 12–14S; retain both identities. |
+| S25 | [DS-130 / DSM7857-470 performance chart](https://www.schubeler.com/wp-content/uploads/2021/02/DS-130-DIA_HST_DSM7857-470_MGM40063-3.pdf) | 2019 static voltage sweep; MGM TMM40063-3, VDI 2041 intake, ISA correction; not installed/wind-on validation. |
+| S26 | [Drela, MIT, DC motor model, March 2006](https://web.mit.edu/drela/Public/web/qprop/motor2_theory.pdf) | DC-equivalent conventions, loss variation and parameter identification; not measurements of these BLDC assemblies. |
+| S27 | [Texas Instruments, BLDC winding-current and protection note, 2016](https://www.ti.com/document-viewer/lit/html/SSZTBP2/GUID-E16F6FD4-B74F-4AB0-990E-C89D493A2398) | Inductance, commutation and PWM bus/winding-current distinctions; no matched EDF controller calibration. |
+| S28 | [NIST TN 1297, combined standard uncertainty](https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-5-combined-standard-uncertainty) | Components, covariance and correction of systematic effects. |
+| S29 | [NIST TN 1297, expanded uncertainty](https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-6-expanded-uncertainty) | Coverage factors and conditions on coverage interpretation; not a mandated OpenRC tolerance. |
+| S30 | [NIST TN 1297, reporting uncertainty](https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-7-reporting-uncertainty) | Report method, components, factor and basis of probability claims; supports the physical-card protocol. |
 
 Public static curves constrain the first experiment, but do not identify all
 required laws. Missing quantities include rotor inertia, equivalent motor losses,

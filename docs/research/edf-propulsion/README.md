@@ -13,9 +13,10 @@ generated aircraft, certify a physical installation or claim flight validation.
 
 | Document | Purpose |
 | --- | --- |
+| [Independent audit, EDF-00-R1](external-audit-2026-11-21.md) | Fifteen findings against the original proposal, corrections, additional sources and the verified inherited CI blocker. |
 | [Implementation plan](../../plans/edf-propulsion.md) | Authoritative EDF-00…15 steps, substeps, owners, interfaces and completion gates. |
-| [Physics and primary sources](physics-and-sources.md) | Twenty-four primary references, fan candidates, force/torque/energy equations, sizing and unresolved identification. |
-| [Repository audit](repository-audit.md) | Eleven classified findings with current source paths and bounded repair/integration proposals. |
+| [Physics and primary sources](physics-and-sources.md) | Thirty primary references, fan candidates, force/torque/energy equations, sizing and unresolved identification. |
+| [Repository audit](repository-audit.md) | Fourteen classified findings with current source paths and bounded repair/integration proposals. |
 | [Validation matrix](validation-matrix.md) | Twenty-nine software/numerical cases, six physical cards, flight maneuvers and qualification policy. All future gates are pending. |
 | [Reproducible calculations](calculations.json) | Generated energy, mass, area and analytic counterexample values with embedded limitations. |
 | [Calculation tool](../../../research/edf-propulsion/README.md) | Standard-library regeneration and freshness check. |
@@ -59,8 +60,8 @@ The review produced concrete changes:
   ideal-stator cancellation and existing coupled-body reactions.
 - Distinguish aerodynamic fan-load power, motor shaft power and DC input,
   especially during spool transients; retain signed windmill work.
-- Define bounded estimated continuation and unsupported reverse-breakaway
-  refusal. The domain-quality transport must be prototyped before all-stage
+- Define bounded estimated physical continuation, locator-only numerical probes
+  and unsupported physical reverse-breakaway refusal. The domain-quality transport must be prototyped before all-stage
   claims; endpoint-only reporting must disclose its narrower scope.
 - Reuse the geometric centerline-jet layout where appropriate, explicitly author
   internal-fan contact, and prevent implicit propeller/audio/fuel fallbacks.
@@ -74,9 +75,20 @@ low-RPM mass-flow extrapolation/singularity (EDF-A02). The calculator demonstrat
 the algebra; it does not establish a failing shipped flight. Other findings are
 contract gaps, disclosed approximations or conditional EDF integration risks.
 
+**EDF-00-R1** independently challenged the published research candidate
+`719c3cc6b8e3ac32d2f62e08b6df9b646925361f` with three fresh read-only reviewers.
+Its [fifteen proposal findings](external-audit-2026-11-21.md#findings-and-dispositions)
+correct the event-probe domain, existing spatial-wind integration, windmilling
+and finite-pack trim, catalog/smoke/audio routes, exact coupled energy and
+scoped passivity, fixed-RC storage, production-step accuracy and physical-evidence
+policy. The revised plan has separate synthetic-software and measured-physical
+dependencies; unavailable hardware measurements cannot silently block the
+declared experimental software slice or be replaced by interpolation evidence.
+
 ## Verification and delivery
 
-Local verification on **2026-11-21** passed for the final research candidate:
+The original EDF-00 delivery (`719c3cc6`) passed these local research checks on
+**2026-11-21**. This is the original verification record, not the revised count:
 
 | Check | Result / scope |
 | --- | --- |
@@ -87,17 +99,33 @@ Local verification on **2026-11-21** passed for the final research candidate:
 | `git diff --cached --check` | Passed for the staged delivery. |
 | Specialist / Good Enemy review | No remaining blocking research-plan findings after the recorded corrections; implementation gates remain open. |
 
-The check scope is the new research/plan/tool documents and newly introduced
-links in the shared documentation indexes and decision record. It uses the
-repository's `tools/ci/check_docs.py` link/anchor routines against the Git tree,
-so sparse materialization cannot conceal a missing tracked target.
+**EDF-00-R1 revised-candidate verification, 2026-11-21:**
+
+| Check | Result / scope |
+| --- | --- |
+| Existing documentation link/anchor routines | Passed: all links in seven EDF Markdown files plus new links in three shared indexes/decision files; 125 link occurrences, 90 local targets/anchors, zero errors. Of these, 33 occurrences (23 local) are new against the original research commit. |
+| Source/test inventory | S01–S30 are present. All 29 named existing test entry points resolve in the baseline Git tree; four named EDF tests remain proposals. |
+| Independent analytic recomputation | Passed: 28 numeric assertions across the six new oracle groups, including a separate carrier-plus-absolute-rotor derivation of energy/work; no runtime implementation was invoked. |
+| `calculations.py --check` and Python AST | Passed for the revised script/report in the worktree. The freshness comparison verifies reproducibility, not independent model accuracy. |
+| `git diff --cached --check` and scope | Passed; twelve research/documentation files changed, no runtime, aircraft data or CI policy paths changed. |
+| Fresh specialist / Good Enemy closing reviews | Physics, integration and evidence/acceptance corrections incorporated; no remaining blocking issue within the source-only review scope. Future gates remain pending. |
+
+Both link-check records use the repository's `tools/ci/check_docs.py` routines
+against Git objects, so sparse materialization cannot conceal a missing tracked
+target. R1 checks every link in the EDF documents and newly introduced links in
+the shared indexes/decision record, without reclassifying unrelated legacy links.
 
 The calculation freshness check reproduces the committed JSON. These are research-artifact checks, not
 Godot, native, aircraft, physical or performance qualification. No local runtime
 suite is claimed for this documentation-only investigation.
 
-The branch is intended for a draft PR against `main`. The PR's checks own the
-current remote CI status; this snapshot does not claim a completed CI run.
+The research is published in [draft PR #18](https://github.com/bultodepapas/OpenRCsimulator/pull/18).
+During EDF-00-R1, the original candidate's CI was observed to **fail release
+preflight because 13 required Godot UID sidecars were missing in the underlying
+baseline**. Application/native/export/visual jobs were skipped. The
+[audit record](external-audit-2026-11-21.md#ci-blocker-verified-during-the-audit)
+contains the run, exact paths, inheritance proof and owning-source action.
+The latest PR checks own subsequent remote status; skipped jobs are not passes.
 Existing required CI and shadow policy remain unchanged. EDF-01…15 and all T/V
 implementation/physical gates remain pending regardless of documentation CI.
 
