@@ -186,7 +186,7 @@ static func _deepest_rim_point(s: PackedFloat64Array, disc: Dictionary, lake: Di
 	for k in PROP_RIM_SAMPLES:
 		var phase := TAU * float(k) / float(PROP_RIM_SAMPLES)
 		var body_point: PackedFloat64Array = M.add(disc.hub,
-			M.add(M.scale(u, radius * cos(phase)), M.scale(v, radius * sin(phase))))
+			M.add(M.scale(u, radius * M.cos_(phase)), M.scale(v, radius * M.sin_(phase))))
 		var point_ned: PackedFloat64Array = _point_ned(s, body_point)
 		var depth := _disc_point_depth(point_ned, lake, time_s)
 		if depth > float(best.depth):

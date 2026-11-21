@@ -822,7 +822,7 @@ static func _jet_power(base: Dictionary, block: Dictionary, id: String, scale: f
 			String.num(float(block.jet_thrust_n), 1), String.num(share, 2)]),
 		idle_thrust = _quantity(thrust * idle_share, "N", "borrowed", source + ": Idle_Thrust in the same proportion"),
 		efflux_speed = _quantity(JET_EFFLUX_MPS, "m/s", "derived",
-			"Phoenix's turbine law loses 1 % of thrust per m/s: the momentum law T − ṁ·u with a %s m/s efflux" % String.num(JET_EFFLUX_MPS, 0)),
+			"Phoenix's turbine law loses 1 %% of thrust per m/s: the momentum law T − ṁ·u with a %s m/s efflux" % String.num(JET_EFFLUX_MPS, 0)),
 		idle_rpm = _quantity(idle, "rpm", "borrowed", source + ": Idle_RPM (at least 1000 rpm, the runtime's floor)"),
 		max_rpm = _quantity(top, "rpm", "borrowed", source + ": Max_RPM"),
 		spool_time = _quantity(maxf(maxf(JET_MIN_SPOOL_S, (top - idle) / Packages.JET_MAX_SPOOL_RATE),
