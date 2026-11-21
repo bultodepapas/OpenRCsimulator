@@ -100,6 +100,36 @@ audio-enabled shutdown remains open and was not silently accepted as clean.
 
 **G2 / NITRO / AV.** Electrical, turbine, two-stroke and true four-stroke sources retain their own power and lifecycle laws; supported coupled routes solve shaft/body reactions at the same integration stages. Installed profiles bind source data and calibration instead of borrowing a rating as installed performance. This permits shared mechanics without pretending all legacy routes use the newest shaft model. [Propulsion contract](PROPULSION-CORE-PLAN.md), [glow guide](GLOW-ENGINES.md), [turbine coupling](research/turbine-realism/AV-20/README.md).
 
+### Proposed EDF family separates shaft load from the installed wrench
+
+**EDF-00, proposed 2026-11-21; not implemented.** Model the Vantage Jet's EDF
+experiment as a distinct propulsion family using the existing electric source,
+coupled rotor/body solver and session transaction. Preserve the turbine sibling.
+A fan's aerodynamic shaft load differs from the external moment of its complete
+rotor/stator/duct installation; carry both explicitly to avoid a false roll torque
+or double-counted reaction. Use a declared installed map or a component flow law,
+with one owner for inlet, nozzle and duct forces. Keep geometry, power basis,
+measured support and estimated continuation in the versioned data contract.
+
+Begin with the 128 mm reference and independently specify 152/195 mm experiments.
+Retain the geometric `single_centerline_jet` layout if its explicit admission can
+be extended cleanly. All-stage map-quality reporting needs a qualified transport
+prototype; the present protocol does not supply general accepted-stage receipts.
+Revisit these choices when measured installation data, a concrete schema conflict
+or that prototype demonstrates a smaller correct design. The [plan](plans/edf-propulsion.md)
+owns pending work; [physics and source review](research/edf-propulsion/README.md)
+owns evidence and limitations.
+
+**EDF-00-R1 clarification, 2026-11-21.** Reuse the existing spatial-wind stage
+receipt exactly once. Separate admitted physical map continuation from the signed
+numerical probes needed to locate shaft stops and battery exhaustion; accepted
+states retain physical bounds. Keep synthetic software qualification independent
+of unavailable measured-data acquisition. Physical promotion requires joint,
+output-specific evidence and separately acquired validation. Freeze production
+240 Hz accuracy budgets as well as refinement tests. The
+[independent audit](research/edf-propulsion/external-audit-2026-11-21.md) records
+the counterexamples and remaining implementation gates.
+
 ### Keep finite resources and mass properties physically coherent
 
 **FUEL-00-R1 / FUEL-12 / BAT-13.** The fixed solver datum is the authored reference-inventory CG, not `plan_cg` or the current fill-dependent CG. Fuel changes mass, CG, inertia, contact response and source state through the accepted transaction. Eligible catalog aircraft with `battery_data` use finite packs by default, superseding the earlier ideal-default recommendation; declared ideal/fixed-voltage routes remain explicit exceptions. Pickup geometry and chemistry are not inferred from a generic fuel label. The [fuel standard](FUEL-SYSTEM.md) and [battery specification](research/battery/BAT-04/specification.md) own exact semantics; [Workshop](AIRCRAFT-WORKSHOP.md) owns its source exceptions.
