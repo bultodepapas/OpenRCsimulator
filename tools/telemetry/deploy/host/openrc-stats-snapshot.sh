@@ -1,6 +1,6 @@
 #!/bin/bash
 # TELEM-24c, Proxmox host side: take a receiver snapshot from CT 404 and drop it, atomically, into the
-# directory that is bind-mounted read-only into the dashboard container (CT 405). Same command as
+# directory that is bind-mounted read-only into the dashboard container (CT 406). Same command as
 # `dashboard.py fetch` runs over SSH; only OPENRC_TELEMETRY_* settings are exported (no tokens).
 set -euo pipefail
 CT="${OPENRC_STATS_RECEIVER_CT:-404}"

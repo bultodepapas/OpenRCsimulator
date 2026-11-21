@@ -120,7 +120,7 @@ A rising `rejected:unapproved_release` means a published tag is missing from `OP
 
 The [operator dashboard](../../tools/telemetry/README.md) renders `status`, the daily counters, rollup coverage and recent weekly insights from the live receiver as one local HTML page.
 
-Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation; a missed deadline yields a missing day, never extended raw retention. It is an idempotent upsert keyed by (day, release, table). Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens; each token counts at most 120 windows (or activity summaries).
+Rollup works only for a closed day: from day end + 1 h until day start + 47 h. Outside that window it refuses with an explanation. A missed deadline yields a missing day and raw retention remains capped at 48 h. Each run replaces the whole day in one SQLite transaction with a completion marker, including days with no accepted batches. The dashboard snapshot distinguishes legacy rollups with all expected tables from those with missing tables. Tables are suppressed as a whole when any cell has fewer than 20 distinct session tokens. Each token counts at most 120 windows or activity summaries.
 
 Weekly publication flow:
 

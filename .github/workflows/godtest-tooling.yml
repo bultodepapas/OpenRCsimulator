@@ -1,0 +1,66 @@
+name: GOD TEST portable tooling
+
+on:
+  push:
+    branches: [main, 'perf/three-aircraft-performance-cycle-*']
+    paths:
+      - 'tools/godtest/**/*.py'
+      - 'tools/debug/frame_watch.py'
+      - 'tools/debug/test_frame_watch.py'
+      - 'tools/graphics/launch.py'
+      - 'tools/graphics/prepare_research.py'
+      - 'tools/godot/resource_samples.py'
+      - 'tools/testqueue/processes.py'
+      - 'app/debug/godtest_driver.gd'
+      - 'app/ui/startup.gd'
+      - 'research/performance/godtest/**'
+      - '.github/workflows/godtest-tooling.yml'
+  pull_request:
+    paths:
+      - 'tools/godtest/**'
+      - 'tools/debug/frame_watch.py'
+      - 'tools/debug/test_frame_watch.py'
+      - 'tools/graphics/launch.py'
+      - 'tools/graphics/prepare_research.py'
+      - 'tools/godot/resource_samples.py'
+      - 'tools/testqueue/processes.py'
+      - 'app/debug/godtest_driver.gd'
+      - 'app/ui/startup.gd'
+      - 'research/performance/godtest/**'
+      - '.github/workflows/godtest-tooling.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Tooling on ${{ matrix.os }} (no GPU qualification)
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # repository pin, v4.4.0
+        with:
+          sparse-checkout: |
+            tools
+            research/performance
+            app/debug
+            app/render
+            app/app_state
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # repository pin, v5.6.0
+        with:
+          python-version: '3.12.10'
+      - name: Scenario, evidence, isolation and telemetry fixtures
+        run: python -m unittest discover -s tools/godtest -p "test_*.py"
+      - name: Continuous frame-watch ownership and shutdown
+        run: python -m unittest discover -s tools/debug -p "test_frame_watch.py"
+      - name: Publish a reproducible campaign plan
+        run: python tools/godtest/godtest.py performance-tour --repeats 3 --dry-run
+
+# Real MacBook/Linux GPU/Windows runs use the admitted, visible local desktop and
+# pinned native engine/backend described in tools/godtest/PERFORMANCE_TOUR.md.
+# Hosted Python fixtures never stand in for rendered FPS or hardware evidence.

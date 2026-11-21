@@ -12,15 +12,18 @@ published: insight cells are operator-only (see services/telemetry/README.md). S
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 import html
 import json
+import math
 import os
 from pathlib import Path
 import shlex
 import sqlite3
 import subprocess
 import sys
+import tempfile
 import time
 import webbrowser
 
@@ -40,7 +43,8 @@ HIST_LEN = 8
 ELIGIBLE_AFTER_H, EXPIRES_AFTER_H, OVERDUE_AFTER_H = 25, 47, 27
 RAW_TTL_H = 48
 STALE_AFTER_S = 3600
-DOWNLOADS_STALE_S = 36 * 3600
+DOWNLOADS_STALE_S = 12 * 3600
+GA4_MAX_AGE_S = 2 * 3600
 PLATFORM_SLOTS = (("Windows", "s1"), ("macOS", "s2"), ("Linux", "s3"), ("Other", "s4"))
 
 # Ingest outcome series (fixed order = fixed categorical slot).
@@ -63,6 +67,7 @@ STATES = {
     "no_data": ("muted", "\u2013", "no data"),
     "suppressed": ("warning", "!", "suppressed"),
     "pending": ("neutral", "\u2026", "pending (not yet eligible)"),
+    "partial": ("warning", "!", "incomplete rollup"),
     "overdue": ("warning", "!", "overdue (still fixable)"),
     "missed": ("critical", "\u2716", "missed (traffic, never rolled up)"),
     "none": ("neutral", "\u00b7", "no traffic"),
@@ -205,13 +210,18 @@ def day_start(iso):
 
 
 def coverage_model(snapshot, rows):
-    """{(release, day): state}, release list and day-level states for days no release rolled up."""
+    """Coverage by release and day, including interrupted rollups in older snapshots."""
     now = snapshot["generated_unix"]
     accepted = {row["day"]: row["counts"]["accepted"] for row in rows}
-    stored, rolled_days = {}, set()
+    stored = {}
     for c in snapshot["coverage"]:
         stored.setdefault((c["release_id"], c["day"]), {})[c["table"]] = c["status"]
-        rolled_days.add(c["day"])
+    complete_tables = {"gpu", "vehicle", "cells"}
+    stored_days = {day for _, day in stored}
+    partial_days = {day for (_, day), tables in stored.items() if not complete_tables <= tables.keys()}
+    marks = snapshot.get("rollup_days") or {}
+    partial_days.update(day for day, state in marks.items() if state == "partial")
+    rolled_days = (stored_days | {day for day, state in marks.items() if state in ("complete", "legacy")}) - partial_days
     releases = list(snapshot.get("releases_with_cells") or [])
     for release in sorted({c["release_id"] for c in snapshot["coverage"]}, reverse=True):
         if release not in releases:
@@ -219,6 +229,8 @@ def coverage_model(snapshot, rows):
 
     def derived(day):
         age_h = (now - day_start(day)) / 3600
+        if day in partial_days:
+            return "partial" if age_h < EXPIRES_AFTER_H else "missed"
         if age_h < OVERDUE_AFTER_H:
             return "pending"
         if not accepted.get(day):
@@ -231,7 +243,8 @@ def coverage_model(snapshot, rows):
         for row in rows:
             tables = stored.get((release, row["day"]))
             if tables:
-                cells[(release, row["day"])] = (tables.get("cells", "none"), tables)
+                state = tables["cells"] if complete_tables <= tables.keys() else day_state.get(row["day"], "partial")
+                cells[(release, row["day"])] = (state, tables)
             elif row["day"] in rolled_days:
                 cells[(release, row["day"])] = ("none", {})
             else:
@@ -256,7 +269,10 @@ def alerts(snapshot, rows, day_state):
     missed = sorted(day for day, state in day_state.items() if state == "missed")
     if missed:
         out.append(("critical", f"{len(missed)} day(s) never rolled up",
-                    "traffic arrived but no rollup ran inside the 47 h window: " + ", ".join(missed[-5:])))
+                    "rollup missing or incomplete after the 47 h window: " + ", ".join(missed[-5:])))
+    partial = sorted(day for day, state in day_state.items() if state == "partial")
+    if partial:
+        out.append(("critical", "Incomplete rollup", "retry within the 47 h window: " + ", ".join(partial[-5:])))
     overdue = sorted(day for day, state in day_state.items() if state == "overdue")
     for day in overdue:
         left = EXPIRES_AFTER_H - (now - day_start(day)) / 3600
@@ -290,10 +306,14 @@ def alerts(snapshot, rows, day_state):
         age = downloads.age_s(model, now)
         if age is not None and age > DOWNLOADS_STALE_S:
             out.append(("warning", "Download counters stale", f"last collected {fmt_age(age)}: check the "
-                        "'OpenRC GitHub Analytics' task"))
+                         "the GitHub archive collector"))
     website = snapshot.get("website")
     if website and website.get("error"):
         out.append(("warning", "Website analytics failed", f"GA4: {website['error']}"))
+    elif website and website.get("refresh_error"):
+        out.append(("warning", "Website refresh failed", "showing the previous GA4 collection"))
+    elif website and website.get("errors"):
+        out.append(("warning", "Website reports failed", ", ".join(sorted(website["errors"]))))
     return sorted(out, key=lambda item: LEVELS[item[0]][0])
 
 
@@ -397,7 +417,7 @@ def hbar_chart(rows, unit_fmt, aria):
              f'<line class="axis" x1="{label_w}" x2="{label_w}" y1="0" y2="{height}"/>']
     for index, (name, value, tip, combined) in enumerate(rows):
         y = index * row_h + (row_h - bar_h) / 2 + 2
-        w = max(value / maximum * plot_w, 1.5)
+        w = max(value / maximum * plot_w, 1.5) if value else 0
         cls = "fill-other" if combined else "fill-s1"
         short = name if len(name) <= 30 else name[:29] + "\u2026"
         parts.append(f'<text class="rowlabel{" muted" if combined else ""}" x="{label_w - 8}" y="{y + bar_h - 3:.1f}" '
@@ -423,6 +443,7 @@ def cadence(metrics):
     seconds = metrics["interval_sum_us"] / 1_000_000
     return {"minutes": seconds / 60, "fps": metrics["rendered_frames"] / seconds if seconds else 0.0,
             "p33": 100 * over(ABOVE_33_MS) / total, "p50": 100 * over(ABOVE_50_MS) / total,
+            "excluded_gaps": metrics.get("excluded_gap_count"),
             "hitch_per_min": over(ABOVE_100_MS) * 60 / seconds if seconds else 0.0}
 
 
@@ -432,20 +453,24 @@ def cadence_block(title, entry):
     for row in rows:
         name = " / ".join(row["dims"])
         c = cadence(row["metrics"])
-        tip = [f"Session-days {row['sessions']}", f"FPS estimate {c['fps']:.1f}", f"Observed {c['minutes']:.0f} min",
+        excluded = fmt_int(c["excluded_gaps"]) if c["excluded_gaps"] is not None else "Unknown"
+        tip = [f"Session-days {row['sessions']}", f"FPS estimate {c['fps']:.1f}", f"Observed {c['minutes']:.1f} min",
                f"Intervals > 33.3 ms {c['p33']:.1f}%", f"Intervals > 50 ms {c['p50']:.1f}%",
-               f"> 100 ms per minute {c['hitch_per_min']:.2f}"]
-        bars.append((name, c["fps"], tip, row.get("_combined", False)))
-        body.append(f"<tr><td>{e(name)}</td><td>{row['sessions']}</td><td>{c['minutes']:.0f}</td>"
-                    f"<td>{c['fps']:.1f}</td><td>{c['p33']:.1f}%</td><td>{c['p50']:.1f}%</td>"
-                    f"<td>{c['hitch_per_min']:.2f}</td></tr>")
-    chart = hbar_chart(bars, lambda v: f"{v:.1f} fps", f"FPS estimate by {title}")
-    table = ""
-    if body:
-        table = scroll('<table><thead><tr><th>' + e(title) + '</th><th>Session-days</th><th>Minutes</th><th>FPS</th>'
-                       '<th>&gt; 33.3 ms</th><th>&gt; 50 ms</th><th>&gt; 100 ms / min</th></tr></thead><tbody>'
-                       + "".join(body) + "</tbody></table>")
-    return f'<div class="card"><h4>{e(title)}</h4><p class="sub">FPS estimate (render cadence)</p>{chart}{table}</div>'
+               f"> 100 ms per minute {c['hitch_per_min']:.2f}", f"Excluded gaps {excluded}"]
+        bars.append((name, c["hitch_per_min"], tip, row.get("_combined", False)))
+        body.append(f"<tr><th scope=\"row\">{e(name)}</th><td>{c['hitch_per_min']:.2f}</td>"
+                    f"<td>{c['p33']:.1f}%</td><td>{c['p50']:.1f}%</td><td>{c['minutes']:.1f}</td>"
+                    f"<td>{row['sessions']}</td><td>{excluded}</td><td>{c['fps']:.1f}</td></tr>")
+    if not rows:
+        return (f'<div class="card"><h4>{e(title)}</h4><p class="empty">'
+                "No cadence group reached the disclosure floor, or there were no measured intervals.</p></div>")
+    chart = hbar_chart(bars, lambda v: f"{v:.2f}", f"Intervals above 100 ms per observed minute by {title}")
+    table = ('<details><summary>Cadence data table</summary>' + scroll(
+        '<table><thead><tr><th>' + e(title) + '</th><th>&gt; 100 ms / min</th><th>&gt; 33.3 ms</th>'
+        '<th>&gt; 50 ms</th><th>Observed min</th><th>Session-days</th><th>Excluded gaps</th>'
+        '<th>FPS estimate</th></tr></thead><tbody>' + "".join(body) + "</tbody></table>") + "</details>")
+    return (f'<div class="card"><h4>{e(title)}</h4>'
+            f'<p class="sub">Intervals above 100 ms per observed minute</p>{chart}{table}</div>')
 
 
 def simple_block(title, entry, value_of, value_fmt, sub, extra_cols):
@@ -468,7 +493,30 @@ def simple_block(title, entry, value_of, value_fmt, sub, extra_cols):
     return f'<div class="card"><h4>{e(title)}</h4><p class="sub">{e(sub)}</p>{chart}{table}</div>'
 
 
-def report_section(index, report, hidden):
+def error_spans(reports):
+    spans = {}
+    for report in reports:
+        rows = ((report.get("tables") or {}).get("errors") or {}).get("published", [])
+        for row in rows:
+            key = report["release_id"], tuple(row["dims"])
+            spans.setdefault(key, []).append(report["week"])
+    return {key: (min(weeks), max(weeks)) for key, weeks in spans.items()}
+
+
+def error_rows(entry, release, spans):
+    rows = []
+    for row in sorted(table_rows(entry), key=lambda row: (-row["metrics"]["count"], row["dims"])):
+        first, last = spans.get((release, tuple(row["dims"])), ("—", "—"))
+        rows.append(f'<tr><th scope="row">{e(" / ".join(row["dims"]))}</th>'
+                    f'<td>{fmt_int(row["metrics"]["count"])}</td><td>{fmt_int(row["sessions"])}</td>'
+                    f'<td>{e(first)}</td><td>{e(last)}</td></tr>')
+    if not rows:
+        return '<p class="empty">No error category is available at the disclosure floor.</p>'
+    return scroll('<table><thead><tr><th>Category</th><th>Occurrences</th><th>Session-days</th>'
+                  '<th>First shown</th><th>Last shown</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table>")
+
+
+def report_section(index, report, hidden, spans):
     attrs = f' data-report="{index}"' + (" hidden" if hidden else "")
     if "error" in report:
         return f'<section class="report"{attrs}><p class="empty">Refused: {e(report["error"])}</p></section>'
@@ -495,9 +543,9 @@ def report_section(index, report, hidden):
          ("Takeoffs / landings / crashes", lambda r: (
              f"{r['metrics']['takeoffs']} / {r['metrics']['landings']} / {r['metrics']['aircraft_crashes']}"
              if r["metrics"]["classified_summaries"] else "-"))])
-    errors = simple_block(
-        "Error category", tables.get("errors"), lambda r: r["metrics"]["count"], fmt_int, "Occurrences",
-        [("Occurrences", lambda r: fmt_int(r["metrics"]["count"]))])
+    errors = ('<div class="card"><h4>Error category</h4><p class="sub">Occurrences in the selected week. '
+              'First and last are disclosed weeks for this release in the snapshot.</p>'
+              + error_rows(tables.get("errors"), report["release_id"], spans) + "</div>")
     mix = "".join(simple_block(title, tables.get(key), lambda r: r["sessions"], fmt_int, "Session-days", [])
                   for key, title in MIX_TABLES)
     return (f'<section class="report"{attrs}>{head}'
@@ -634,33 +682,24 @@ def release_chart(releases):
     return scroll("".join(parts), 480)
 
 
-def column_chart(points, aria):
-    """Single-series columns: points [(iso_day, value, tip_lines)]."""
-    width, height, left, right, top, bottom = 900, 220, 52, 8, 12, 34
-    plot_w, plot_h = width - left - right, height - top - bottom
-    ticks = nice_ticks(max((v for _, v, _ in points), default=0))
-    scale = plot_h / ticks[-1]
-    slot = plot_w / max(len(points), 1)
-    bar = min(24.0, slot * 0.64)
-    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" class="chart">']
-    for tick in ticks:
-        y = top + plot_h - tick * scale
-        parts.append(f'<line class="{"axis" if tick == 0 else "grid"}" x1="{left}" x2="{width - right}" '
-                     f'y1="{y:.1f}" y2="{y:.1f}"/>')
-        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{fmt_compact(tick)}</text>')
-    label_every = max(1, round(len(points) / 10))
-    for index, (label, value, tip) in enumerate(points):
-        x = left + index * slot + (slot - bar) / 2
-        if value:
-            h = value * scale
-            parts.append(f'<path class="fill-s1" d="{rounded_top(x, top + plot_h - h, bar, h)}"/>')
-        parts.append(f'<rect class="hit" x="{left + index * slot:.1f}" y="{top}" width="{slot:.1f}" '
-                     f'height="{plot_h}" {tip_attrs(tip)}/>')
-        if index % label_every == 0 or index == len(points) - 1:
-            parts.append(f'<text class="tick" x="{left + index * slot + slot / 2:.1f}" y="{height - 12}" '
-                         f'text-anchor="middle">{e(label[5:])}</text>')
-    parts.append("</svg>")
-    return scroll("".join(parts), 640)
+def download_daily(model):
+    values, uncertain = {}, {}
+    if not model:
+        return values, uncertain
+    for interval in model.get("intervals", []):
+        start = datetime.fromisoformat(interval["from_end"])
+        end = datetime.fromisoformat(interval["to_end"])
+        day = end.astimezone(timezone.utc).date().isoformat()
+        if end - start > timedelta(hours=27):
+            uncertain[day] = "Long collection interval"
+        elif interval["increase"] is None or interval["status"] != "matched_ids":
+            uncertain.setdefault(day, "Package set changed or the interval is unavailable")
+    for day, (value, partial) in downloads.per_day(model).items():
+        if partial:
+            uncertain.setdefault(day, "Partial package counters")
+        if day not in uncertain:
+            values[day] = value
+    return values, uncertain
 
 
 def downloads_section(model, now, days):
@@ -673,30 +712,37 @@ def downloads_section(model, now, days):
     total = sum(t for _, _, t in releases)
     platforms = {p: sum(c[p] for _, c, _ in releases) for p, _ in PLATFORM_SLOTS}
     latest = releases[0] if releases else None
+    cutoff = now - 7 * 86400
+    recent = [row["increase"] for row in model.get("intervals", [])
+              if row["increase"] is not None and cutoff <= datetime.fromisoformat(row["to_end"]).timestamp() <= now]
     share = " · ".join(f"{p} {platforms[p] * 100 / total:.0f}%" for p, _ in PLATFORM_SLOTS if platforms[p]) if total else ""
     latest_split = " · ".join(f"{p} {latest[1][p]}" for p, _ in PLATFORM_SLOTS if latest[1][p]) if latest else ""
     items = [
-        ("Package downloads, all releases", fmt_int(total), share),
+        ("Package downloads, all releases", fmt_int(total) if model.get("collected_utc") else "-", share),
         (f"Latest release {latest[0]}" if latest else "Latest release", fmt_int(latest[2]) if latest else "-",
          latest_split),
-        ("Downloads, last 7 days", fmt_int(downloads.recent_increase(model, now, 7)),
-         "matched counter increases between collections"),
+        ("Observed download increases", fmt_int(sum(recent)) if recent else "-",
+         "intervals that ended in the last seven days"),
         ("Counters collected", fmt_age(downloads.age_s(model, now)), model["collected_utc"] or "never"),
     ]
     tiles_html = '<div class="tiles">' + "".join(
         f'<div class="tile"><div class="tl">{e(a)}</div><div class="tv">{e(b)}</div><div class="ts">{e(c)}</div></div>'
         for a, b, c in items) + "</div>"
-    by_day = downloads.per_day(model)
-    today = datetime.fromtimestamp(now, tz=timezone.utc).date()
-    points = []
-    for offset in range(days - 1, -1, -1):
-        day = (today - timedelta(days=offset)).isoformat()
-        value, partial = by_day.get(day, (0, False))
-        tip = [day, f"Downloads {fmt_int(value)}" if day in by_day else "no collection ended this day"]
-        tip += [f"Release {tag}" for tag in release_days(model).get(day, [])]
-        if partial:
-            tip.append("partial: assets added, removed or reset")
-        points.append((day, value, tip))
+    axis = window_days(now, days)
+    by_day, uncertain = download_daily(model)
+    series = [("Matched counter increases", [by_day.get(day) for day in axis], "s1")]
+    daily_chart = line_chart(axis, series, "Downloads per collection day", release_days(model), 220, uncertain)
+    intervals = []
+    for row in reversed(model.get("intervals", [])):
+        if row["to_end"][:10] < axis[0]:
+            continue
+        value = "Unavailable" if row["increase"] is None else fmt_int(row["increase"])
+        intervals.append(f'<tr><td>{e(row["from_end"])}</td><td>{e(row["to_end"])}</td><td>{value}</td>'
+                         f'<td>{e(row["status"].replace("_", " "))}</td></tr>')
+    interval_table = ('<table><thead><tr><th>Start</th><th>End</th><th>Known increase</th><th>Status</th></tr>'
+                      f'</thead><tbody>{"".join(intervals)}</tbody></table>')
+    interval_detail = ('<details><summary>Collection intervals</summary>' + scroll(interval_table) + "</details>"
+                       if intervals else "")
     heads = "".join(f"<th>{p}</th>" for p, _ in PLATFORM_SLOTS)
     body = "".join(f"<tr><td>{e(tag)}</td>" + "".join(f"<td>{fmt_int(c[p])}</td>" for p, _ in PLATFORM_SLOTS)
                    + f"<td>{fmt_int(t)}</td></tr>" for tag, c, t in releases)
@@ -706,8 +752,8 @@ def downloads_section(model, now, days):
     return (f'{head}<p class="sub">GitHub release package counters ({e(model["pattern"])}) from the local history '
             "archive: cumulative and including repeat or automated downloads, not people or installs</p>"
             f'{tiles_html}<div class="pair"><div class="panel">'
-            "<h4>Downloads per collection day</h4><p class=\"sub\">Counter increase between consecutive collections, "
-            f'dated by the later collection (UTC)</p>{column_chart(points, "Downloads per collection day")}</div>'
+            "<h4>Downloads per collection day</h4><p class=\"sub\">Matched counter increases by collection end day "
+            f'(UTC). Long or partial intervals stay in the interval table.</p>{daily_chart}{interval_detail}</div>'
             f'<div class="panel"><h4>Downloads per release</h4>{keys}{chart}'
             f"<details><summary>Table</summary>{table}</details></div></div>")
 
@@ -731,10 +777,11 @@ def release_days(model):
     return out
 
 
-def line_chart(days, series, aria, markers=None, height=240, notes=None):
+def line_chart(days, series, aria, markers=None, height=240, notes=None, *, provisional=None):
     """Lines on one shared axis. series: [(label, values aligned with days (None = unknown), slot)].
     notes: {day: text} appended to that day's tooltip."""
     markers, notes = markers or {}, notes or {}
+    provisional = provisional or {}
     width, left, right, top, bottom = 900, 52, 64, 14, 34
     plot_w, plot_h = width - left - right, height - top - bottom
     known = [v for _, values, _ in series for v in values if v is not None]
@@ -758,18 +805,25 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None):
     for label, values, slot in series:
         path, pen = [], False
         for index, value in enumerate(values):
-            if value is None:
+            if value is None or days[index] in provisional.get(label, ()):
                 pen = False
                 continue
             path.append(f'{"L" if pen else "M"}{x_of(index):.1f},{y_of(value):.1f}')
             pen = True
         if path:
             parts.append(f'<path class="line line-{slot}" d="{"".join(path)}"/>')
+        for index, value in enumerate(values):
+            if value is not None and days[index] in provisional.get(label, ()):
+                parts.append(f'<circle class="provisional line-{slot}" cx="{x_of(index):.1f}" '
+                             f'cy="{y_of(value):.1f}" r="4"/>')
         for index, value in enumerate(values):  # a point with no known neighbour would draw nothing
-            if value is not None and (index == 0 or values[index - 1] is None) and (
-                    index == n - 1 or values[index + 1] is None) and index != n - 1:
+            provisional_days = provisional.get(label, ())
+            if value is not None and days[index] not in provisional_days and (
+                    index == 0 or values[index - 1] is None or days[index - 1] in provisional_days) and (
+                    index == n - 1 or values[index + 1] is None or days[index + 1] in provisional_days):
                 parts.append(f'<circle class="pt fill-{slot}" cx="{x_of(index):.1f}" cy="{y_of(value):.1f}" r="2.5"/>')
-        last = next((i for i in range(n - 1, -1, -1) if values[i] is not None), None)
+        last = next((i for i in range(n - 1, -1, -1) if values[i] is not None
+                     and days[i] not in provisional.get(label, ())), None)
         if last is not None:
             parts.append(f'<circle class="dot fill-{slot}" cx="{x_of(last):.1f}" cy="{y_of(values[last]):.1f}" r="4"/>')
             end_labels.append((y_of(values[last]), x_of(last), values[last]))
@@ -780,12 +834,23 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None):
             parts.append(f'<text class="value" x="{x + 8:.1f}" y="{y + 4:.1f}">{fmt_compact(value)}</text>')
     label_every = max(1, round(n / 10))
     step = plot_w / max(n - 1, 1)
+    table_rows_html = []
     for index, day in enumerate(days):
-        tip = [day] + [f"{label}: {'unknown' if values[index] is None else fmt_int(values[index])}"
-                       for label, values, _ in series]
+        values_today = []
+        for label, values, _ in series:
+            value = "Unavailable" if values[index] is None else fmt_int(values[index])
+            if day in provisional.get(label, ()):
+                value += " (provisional)"
+            elif values[index] == 0:
+                value += " (observed)"
+            values_today.append((label, value))
+        tip = [day] + [f"{label}: {value}" for label, value in values_today]
         tip += [f"Release {tag}" for tag in markers.get(day, [])]
         if day in notes:
             tip.append(notes[day])
+        columns = "".join(f"<td>{e(value)}</td>" for _, value in values_today)
+        comment = " · ".join([*(f"Release {tag}" for tag in markers.get(day, [])), notes.get(day, "")]).rstrip(" ·")
+        table_rows_html.append(f'<tr><th scope="row">{e(day)}</th>{columns}<td>{e(comment)}</td></tr>')
         x = x_of(index)
         attrs = tip_attrs(tip) if n <= 60 else f'data-tip="{e(chr(10).join(tip), quote=True)}"'
         parts.append(f'<rect class="hit" x="{x - step / 2:.1f}" y="{top}" width="{step:.1f}" height="{plot_h}" '
@@ -793,7 +858,10 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None):
         if (index % label_every == 0 and n - 1 - index >= label_every / 2) or index == n - 1:
             parts.append(f'<text class="tick" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{e(day[5:])}</text>')
     parts.append("</svg>")
-    return scroll("".join(parts), 640)
+    heads = "".join(f'<th scope="col">{e(label)}</th>' for label, _, _ in series)
+    table = (f'<table><caption>{e(aria)}</caption><thead><tr><th scope="col">Day</th>{heads}'
+             f'<th scope="col">Notes</th></tr></thead><tbody>{"".join(table_rows_html)}</tbody></table>')
+    return scroll("".join(parts), 640) + '<details><summary>Data table</summary>' + scroll(table) + "</details>"
 
 
 def stat_tiles(items):
@@ -850,11 +918,83 @@ def delta_html(current, previous):
     return f'<span class="delta" aria-label="{e(label, quote=True)}">{e(label)}</span>'
 
 
+@dataclass(frozen=True)
+class WeekMetric:
+    title: str
+    target: str
+    source: str
+    zone: str
+    days: list[str]
+    observed_utc: str | None
+    value: int | None
+    previous: int | None
+    coverage: int
+    condition: str
+    detail: str
+
+
+def week_metric(title, target, source, zone, days, previous, values, observed_utc, detail="", uncertain=(),
+                unavailable=False):
+    known = [values[d] for d in days if values.get(d) is not None]
+    comparable = len(known) == len(days) and not unavailable and not set(days).intersection(uncertain)
+    prior = [values[d] for d in previous if values.get(d) is not None]
+    prior_value = sum(prior) if comparable and previous and len(prior) == len(previous) and (
+        not set(previous).intersection(uncertain)) else None
+    state = ("Unavailable" if unavailable or not known else "Partial coverage" if not comparable
+             else "Observed zero" if not any(known) else "Observed")
+    return WeekMetric(title, target, source, zone, days, observed_utc,
+                      None if unavailable or not known else sum(known), prior_value, len(known), state, detail)
+
+
 def kpi_tiles(items):
-    """items: [(label, value text, delta html, sub text)]"""
-    return '<div class="tiles">' + "".join(
-        f'<div class="tile"><div class="tl">{e(a)}</div><div class="tv">{e(b)}</div>{c}'
-        f'<div class="ts">{e(d)}</div></div>' for a, b, c, d in items) + "</div>"
+    tiles = []
+    for metric in items:
+        value = "—" if metric.value is None else fmt_int(metric.value)
+        delta = delta_html(metric.value, metric.previous) if metric.previous is not None else ""
+        observation = metric.observed_utc or "unknown"
+        label = f"{metric.condition} · {metric.coverage}/{len(metric.days)} days observed"
+        period = f"{metric.days[0]} to {metric.days[-1]} · {metric.zone}"
+        tiles.append(f'<div class="tile"><div class="tl">{e(metric.title)}</div><div class="tv">{e(value)}</div>{delta}'
+                     f'<div class="ts">{e(label)}</div><div class="ts">{e(period)}</div>'
+                     f'<div class="ts">{e(metric.source)} · last observation {e(observation)}</div>'
+                     + (f'<div class="ts">{e(metric.detail)}</div>' if metric.detail else "") + "</div>")
+    return '<div class="tiles">' + "".join(tiles) + "</div>"
+
+
+def review_items(snapshot, alert_items, metrics):
+    """At most three actions. A weekly change qualifies only with two comparable periods."""
+    items = []
+    for level, title, evidence in alert_items:
+        if level not in ("critical", "warning"):
+            continue
+        target = ("downloads" if title.startswith("Download") else "github" if title.startswith("GitHub")
+                  else "website" if title.startswith("Website") else "receiver")
+        if not any(item[2] == target for item in items):
+            items.append((title, evidence, target))
+    for metric in metrics:
+        if metric.previous is None or metric.value is None:
+            continue
+        change = metric.value - metric.previous
+        if abs(change) >= max(5, metric.previous * 0.2):
+            items.append((f"{metric.title} {'increased' if change > 0 else 'decreased'}",
+                          f"{fmt_int(metric.value)} versus {fmt_int(metric.previous)} · {metric.source} · "
+                          f"{metric.zone}", metric.target))
+    model = snapshot.get("github") or {}
+    github_sources = github_health(model, max(time.time(), snapshot["generated_unix"]))
+    if not any(item[2] == "github" for item in items) and any(
+        github_sources[key]["status"] != "ok" for key in ("github_views", "github_referrals")
+    ):
+        items.append(("Check private GitHub coverage", "Views or referrers are missing or need a fresh collection.",
+                      "github"))
+    if (snapshot.get("website") or {}).get("missing") and not any(item[2] == "website" for item in items):
+        items.append(("Complete website breakdowns", "GA4 custom dimensions are pending.", "website"))
+    if not items:
+        return ""
+    label = dict(TABS)
+    return ('<section class="review"><h2>What to review</h2><ul>' + "".join(
+        f'<li><div><b>{e(title)}</b><span>{e(evidence)}</span></div>'
+        f'<a href="#{target}">Open {e(label[target])}</a></li>'
+        for title, evidence, target in items[:3]) + "</ul></section>")
 
 
 def collected_text(age):
@@ -863,23 +1003,30 @@ def collected_text(age):
 
 def freshness_strip(snapshot):
     """One chip per data source: is each number on this page current?"""
-    now = snapshot["generated_unix"]
+    now = max(time.time(), snapshot["generated_unix"])
     chips = [("good", "Receiver", "snapshot of this page")]
     model, website = snapshot.get("github"), snapshot.get("website")
-    if model is None:
-        chips.append(("warning", "GitHub", "no history archive"))
-    else:
-        age = downloads.age_s(model, now)
-        chips.append(("good" if age is not None and age <= DOWNLOADS_STALE_S else "warning", "GitHub",
-                      collected_text(age) if age is not None else "never collected"))
+    sources = github_health(model, now)
+    for key, label in (("github_downloads", "GitHub downloads"), ("github_views", "GitHub views"),
+                       ("github_clones", "GitHub clones"), ("github_community", "GitHub community"),
+                       ("github_stars", "GitHub star history"),
+                       ("github_referrals", "GitHub referrers")):
+        status, age = sources[key]["status"], sources[key]["age_s"]
+        detail = collected_text(max(0, age)) if age is not None else "never collected"
+        if status == "error":
+            detail = "refresh failed · " + detail
+        chips.append(("good" if status == "ok" else "warning", label, detail))
     if website is None:
         chips.append(("warning", "Website (GA4)", "not connected"))
     elif website.get("error"):
         chips.append(("critical", "Website (GA4)", "collection failed"))
     else:
-        stamp = datetime.fromisoformat(website["collected_utc"].replace("Z", "+00:00")).timestamp()
-        chips.append(("good" if now - stamp <= 2 * 3600 else "warning", "Website (GA4)",
-                      collected_text(max(0, now - stamp))))
+        age = timestamp_age(website.get("collected_utc"), now)
+        detail = collected_text(max(0, age)) if age is not None else "collection date unknown"
+        issues = (website.get("refresh_error") or website.get("errors") or website.get("missing")
+                  or website.get("report_quality"))
+        chips.append(("good" if age is not None and age <= GA4_MAX_AGE_S and not issues else "warning",
+                      "Website (GA4)", ("partial · " if issues else "") + detail))
     glyph = {"good": "✓", "warning": "!", "critical": "✖"}
     return '<div class="chips" aria-label="Data freshness">' + "".join(
         f'<span class="chip"><i class="badge st-{level}" aria-hidden="true">{glyph[level]}</i>'
@@ -893,22 +1040,116 @@ def release_panel(model, now):
     if not recent:
         return panel("Recent releases", None, '<p class="empty">No releases collected yet.</p>')
     rows = []
+    age = timestamp_age(model.get("collected_utc"), now)
+    collected_at = now - age if age is not None else None
     for release in recent:
         published = datetime.fromisoformat(release["published"].replace("Z", "+00:00")).timestamp()
         days_live = max((now - published) / 86400, 0)
-        total = totals.get(release["tag"], (None, 0))[1]
-        pace = total / max(days_live, 1)
+        total = totals.get(release["tag"], (None, None))[1]
+        observed_days = (collected_at - published) / 86400 if collected_at is not None else 0
+        pace = f"{total / observed_days:.1f}" if total is not None and observed_days >= 1 else "—"
         kind = " (pre-release)" if release["prerelease"] else ""
         rows.append(f"<tr><td>{e(release['tag'])}{e(kind)}</td><td>{e(release['published'][:10])}</td>"
-                    f"<td>{days_live:.1f}</td><td>{fmt_int(total)}</td><td>{pace:.1f}</td></tr>")
+                    f"<td>{days_live:.1f}</td><td>{fmt_int(total) if total is not None else '—'}</td><td>{pace}</td></tr>")
     latest = recent[0]
     counts = totals.get(latest["tag"], ({p: 0 for p, _ in PLATFORM_SLOTS}, 0))[0]
     split = " · ".join(f"{p} {fmt_int(counts[p])}" for p, _ in PLATFORM_SLOTS if counts.get(p))
     table = scroll("<table><thead><tr><th>Release</th><th>Published (UTC)</th><th>Days live</th><th>Downloads</th>"
                    f"<th>Per day</th></tr></thead><tbody>{''.join(rows)}</tbody></table>")
     sub = f"latest {latest['tag']}: {split}" if split else f"latest {latest['tag']}"
-    return panel("Recent releases", sub + "; a newer release takes over downloads, so older totals stop growing",
-                 table)
+    return panel("Recent releases", sub + " · pace at collection after at least one day",
+                 table + '<p class="note"><a href="#releases">Open release comparison</a></p>')
+
+
+def release_age_reports(snapshot, release):
+    """Reports keyed by their starting release-age day, measured in whole UTC days."""
+    published = datetime.fromisoformat(release["published"]).astimezone(timezone.utc).date()
+    observed = {}
+    commits = snapshot.get("rollup_days") or {}
+    for report in snapshot.get("insights", []):
+        days = report.get("days", [])
+        if (report["release_id"] != release["tag"] or not report.get("week_closed") or len(days) != 7
+                or any(day["status"] not in ("ready", "no_data") or commits.get(day["day"]) != "complete"
+                       for day in days)):
+            continue
+        age = (date.fromisoformat(days[0]["day"]) - published).days
+        if age > 0:
+            observed[age] = report
+    return observed
+
+
+def release_cadence(snapshot, current, previous):
+    left = release_age_reports(snapshot, current)
+    right = release_age_reports(snapshot, previous)
+    ages = sorted(((a, b) for a in left for b in right if abs(a - b) <= 2),
+                  key=lambda item: (abs(item[0] - item[1]), max(item)))
+    for age_a, age_b in ages:
+        pair = left[age_a], right[age_b]
+        for key, name in (("flight_pacing", "Frame pacing"), ("flight_gpu", "GPU family")):
+            cohort_a, cohort_b = ({tuple(row["dims"]): row for row in
+                                   (report["tables"].get(key) or {}).get("published", [])} for report in pair)
+            shared = sorted(cohort_a.keys() & cohort_b.keys())
+            if not shared:
+                continue
+            rows = []
+            for dims in shared:
+                cells = []
+                for row in (cohort_a[dims], cohort_b[dims]):
+                    result = cadence(row["metrics"])
+                    cells.append(f'<td>{result["hitch_per_min"]:.2f}</td><td>{result["p50"]:.1f}%</td>'
+                                 f'<td>{result["minutes"]:.1f} min · {fmt_int(row["sessions"])} session-days</td>')
+                rows.append(f'<tr><th scope="row">{e(" / ".join(dims))}</th>{"".join(cells)}</tr>')
+            columns = '<th scope="col">&gt; 100 ms/min</th><th scope="col">&gt; 50 ms</th><th scope="col">Coverage</th>'
+            table = (f'<table><thead><tr><th rowspan="2">{e(name)}</th>'
+                     f'<th colspan="3" scope="colgroup">{e(current["tag"])} · {e(pair[0]["week"])}</th>'
+                     f'<th colspan="3" scope="colgroup">{e(previous["tag"])} · {e(pair[1]["week"])}</th>'
+                     f'</tr><tr>{columns * 2}</tr></thead><tbody>{"".join(rows)}</tbody></table>')
+            if age_a == age_b:
+                caption = f"Release-age days {age_a}–{age_a + 6} (UTC)."
+            else:
+                caption = (f"Nearby windows in UTC. {current['tag']} days {age_a}–{age_a + 6}, "
+                           f"{previous['tag']} days {age_b}–{age_b + 6}.")
+            title = "Comparable flight cadence" if age_a == age_b else "Flight cadence at nearby release ages"
+            return panel(title, f"{caption} Field observations help choose a controlled replay.", scroll(table))
+    return panel("Comparable flight cadence", None,
+                 '<p class="empty">Comparable data is unavailable. Both releases need closed, covered ISO weeks '
+                 'starting within two release-age days, verified daily rollups and a shared segment above the '
+                 'disclosure floor.</p>')
+
+
+def releases_section(snapshot):
+    model = snapshot.get("github") or {}
+    stable = sorted((r for r in model.get("releases", []) if not r["prerelease"]),
+                    key=lambda r: r["published"], reverse=True)[:8]
+    if not stable:
+        return '<p class="empty">Stable release history is unavailable.</p>'
+    totals = {tag: total for tag, _, total in downloads.per_release(model)}
+    rows = []
+    for release in stable:
+        tag = release["tag"]
+        cells = []
+        for observed in downloads.release_milestones(model, tag):
+            if observed is None:
+                cells.append("<td>Unavailable</td>")
+            else:
+                cells.append(f'<td>{fmt_int(observed["downloads"])}<br><small>{observed["age_s"] / 3600:.1f} h · '
+                             f'{fmt_int(observed["packages"])} packages<br>{e(observed["observed_utc"])}</small></td>')
+        total = totals.get(tag)
+        rows.append(f'<tr><th scope="row">{e(tag)}</th><td>{e(release["published"][:10])}</td>'
+                    f'{"".join(cells)}<td>{fmt_int(total) if total is not None else "Unavailable"}</td></tr>')
+    milestones = "".join(f'<th scope="col">Near {e(label)}</th>' for label, _, _ in downloads.RELEASE_MILESTONES)
+    table = (f'<table><thead><tr><th>Release</th><th>Published (UTC)</th>{milestones}<th>Latest counter</th></tr>'
+             f'</thead><tbody>{"".join(rows)}</tbody></table>')
+    distribution = panel("Downloads by release age", "Cumulative package counters from the closest observation "
+                         "within each milestone window.", scroll(table))
+    if len(stable) < 2:
+        return distribution
+    current, previous = stable[:2]
+    related = [r for r in snapshot.get("insights", []) if r["release_id"] == current["tag"] and "error" not in r]
+    entry = (related[0]["tables"].get("errors") if related else None)
+    errors = panel(f'{current["tag"]} errors', f'{related[0]["week"]} · disclosed occurrences' if related else None,
+                   error_rows(entry, current["tag"], error_spans(related)))
+    return distribution + '<div class="pair">' + release_cadence(snapshot, current, previous) + errors + "</div>"
 
 
 def platform_panel(model):
@@ -929,7 +1170,7 @@ def sources_panel(website, model):
     if funnel:
         body = "".join(f"<tr><td>{e(r['name'] or '(not set)')}</td><td>{fmt_int(r['users'])}</td>"
                        f"<td>{pct(r['requesting'], r['users'])}</td></tr>" for r in funnel[:6])
-        blocks.append("<h3>Website, 30 days</h3>" + scroll(
+        blocks.append(f"<h3>Website, {len(website['days'])} days</h3>" + scroll(
             "<table><thead><tr><th>Source</th><th>Users</th><th>Requested a download</th></tr></thead>"
             f"<tbody>{body}</tbody></table>"))
     referrers = (model or {}).get("referrers") or []
@@ -946,7 +1187,7 @@ def countries_panel(website):
     rows = ((website or {}).get("tables") or {}).get("countries") if website and not website.get("error") else None
     if not rows:
         return panel("Top countries", None, '<p class="empty">Website analytics not connected.</p>')
-    return panel("Top countries", "website users, 30 days",
+    return panel("Top countries", f"website users, {len(website['days'])} days",
                  hbar_chart(ga_rows(rows[:8], "activeUsers", [("activeUsers", "Users"), ("sessions", "Sessions")]),
                             fmt_int, "Top countries by website users"))
 
@@ -959,80 +1200,107 @@ def overview_section(snapshot, rows, alert_items):
     days, base = window_days(now, 30), window_days(now, 15)
     current, previous = base[7:14], base[:7]  # the last 7 full UTC days and the 7 before (today is partial)
     markers = release_days(model)
-    tiles = []
+    metrics = []
+    sources = github_health(model, now)
+    dl, daily, traffic = {}, {}, []
+    download_values, download_partial = download_daily(model)
     if model:
-        by_day = downloads.per_day(model)
-        week = lambda span: sum(by_day[d][0] for d in span if d in by_day)  # noqa: E731
-        releases = downloads.per_release(model)
-        tiles.append(("Package downloads", fmt_int(week(current)), delta_html(week(current), week(previous)),
-                      f"{fmt_int(sum(t for _, _, t in releases))} all time"))
         traffic = model.get("traffic") or []
-        known = {r["day"] for r in traffic}
-        has_prev = any(d in known for d in previous)
-        tiles.append(("Repository views", fmt_int(downloads.window_sum(traffic, current)),
-                      delta_html(downloads.window_sum(traffic, current),
-                                 downloads.window_sum(traffic, previous) if has_prev else None),
-                      f"{fmt_int(downloads.window_sum(traffic, current, 'uniques'))} visitor-days"))
-        star_days = model.get("star_days") or {}
-        counters = (model.get("counters") or [None])[-1]
-        tiles.append(("New stars", fmt_int(sum(star_days.get(d, 0) for d in current)),
-                      delta_html(sum(star_days.get(d, 0) for d in current),
-                                 sum(star_days.get(d, 0) for d in previous)),
-                      f"{fmt_int(counters['stars'])} total" if counters else "current total unknown"))
+    metrics.append(week_metric("Package downloads by collection day", "downloads", "GitHub release assets", "UTC",
+                               current, [],
+                               download_values, sources["github_downloads"]["observed_utc"],
+                               "Increases assigned to their collection end dates", download_partial))
+    views = {r["day"]: r["count"] for r in traffic if r.get("status") != "partial"}
+    visitor_days = sum(r["uniques"] for r in traffic if r["day"] in current and r["day"] in views)
+    metrics.append(week_metric("Repository views", "github", "GitHub traffic", "UTC", current, previous, views,
+                               sources["github_views"]["observed_utc"],
+                               f"{fmt_int(visitor_days)} visitor-days" if any(d in views for d in current) else ""))
+    star_days = (model or {}).get("star_days") or {}
+    counters = ((model or {}).get("counters") or [None])[-1]
+    star_stamp = sources["github_stars"]["observed_utc"]
+    observed = (star_stamp or "")[:10]
+    star_values = {d: star_days.get(d, 0) for d in base if d < observed}
+    metrics.append(week_metric("New stars", "github", "GitHub star history", "UTC", current, previous, star_values,
+                               star_stamp, f"{fmt_int(counters['stars'])} current stars" if counters else ""))
+    ga_period, ga_provisional = "", set()
+    ga_current, ga_previous, zone = current, previous, "property timezone unavailable"
     if website:
-        daily = {r["day"]: r for r in website.get("daily") or []}
-        ga_week = lambda span, key: sum((daily.get(d) or {}).get(key, 0) for d in span)  # noqa: E731
-        ga_prev_known = any(d in daily for d in previous)
-        tiles.insert(1, ("Website sessions", fmt_int(ga_week(current, "sessions")),
-                         delta_html(ga_week(current, "sessions"),
-                                    ga_week(previous, "sessions") if ga_prev_known else None),
-                         f"{fmt_int((website.get('totals') or {}).get('users', 0))} users in 30 days"))
+        today, zone_ok = ga4.property_today(website.get("time_zone"), now)
+        if website.get("zone_fallback"):
+            today, zone_ok = ga4.property_today(None, now)
+        zone = website.get("time_zone") if zone_ok else "UTC fallback"
+        cutoff = website.get("comparison_through", (today - timedelta(days=1)).isoformat())
+        ga_provisional = set(website.get("provisional_days", [])) | {today.isoformat()}
+        synchronous_cutoff = (today - timedelta(days=1)).isoformat()
+        end = date.fromisoformat(min(cutoff, synchronous_cutoff) if cutoff else synchronous_cutoff)
+        ga_base = [(end - timedelta(days=offset)).isoformat() for offset in range(13, -1, -1)]
+        ga_current, ga_previous = ga_base[7:], ga_base[:7]
+        ga_period = (f' Website days follow {zone}, {ga_current[0]} to {ga_current[-1]}.')
+        daily = {r["day"]: r["sessions"] for r in website.get("daily") or []}
         dl = {r["day"]: r["count"] for r in website.get("downloads_daily") or []}
+        quality = website.get("report_quality") or {}
+        stamp = website.get("collected_utc")
+        metrics.insert(1, week_metric("Website sessions", "website", "GA4", zone, ga_current, ga_previous, daily,
+                                      stamp, uncertain=ga_base if quality.get("daily") else ga_provisional,
+                                      unavailable=cutoff is None))
         if "downloads" in (website.get("errors") or {}):
-            tiles.insert(2, ("Website download requests", "-", "", "download requests: report failed"))
+            metrics.insert(2, week_metric("Website download requests", "website", "GA4", zone, ga_current,
+                                          ga_previous, {}, stamp, "download requests: report failed"))
         else:
-            tiles.insert(2, ("Website download requests", fmt_int(sum(dl.get(d, 0) for d in current)),
-                             delta_html(sum(dl.get(d, 0) for d in current),
-                                        sum(dl.get(d, 0) for d in previous) if ga_prev_known else None),
-                             f"{pct(website.get('downloads_users'), (website.get('totals') or {}).get('users'))} "
-                             "of 30-day users request a download"))
+            days_in_report = len(website.get("days", []))
+            users = website.get("conversion_users", (website.get("totals") or {}).get("users"))
+            conversion = pct(website.get("downloads_users"), users)
+            conversion_note = f"{conversion} of {days_in_report}-day users request a download"
+            if conversion != "-" and ga_provisional.intersection(website.get("days", [])):
+                conversion_note += " · period includes provisional days"
+            metrics.insert(2, week_metric("Website download requests", "website", "GA4", zone, ga_current,
+                                          ga_previous, dl, stamp, conversion_note if conversion != "-" else "",
+                                          ga_base if quality.get("downloads") else ga_provisional,
+                                          unavailable=cutoff is None))
+    else:
+        for index, title in enumerate(("Website sessions", "Website download requests"), 1):
+            metrics.insert(index, week_metric(title, "website", "GA4", zone, ga_current, ga_previous, {}, None))
     accepted = {r["day"]: r["counts"]["accepted"] for r in rows}
     players = latest_week_players(snapshot)
-    tiles.append(("Telemetry batches", fmt_int(sum(accepted.get(d, 0) for d in current)),
-                  delta_html(sum(accepted.get(d, 0) for d in current),
-                             sum(accepted.get(d, 0) for d in previous) if rows else None),
-                  f"{fmt_int(players[2])} player session-days, {players[0]}" if players else
-                  "consenting players' sessions; none yet"))
+    metrics.append(week_metric("Telemetry batches", "receiver", "Receiver", "UTC", current, previous, accepted,
+                               utc_stamp(now), f"{fmt_int(players[2])} session-days · {players[0]} · {players[1]}"
+                               if players else "Player rollup unavailable or below the disclosure floor"))
 
     charts = []
-    if model:
-        by_day = downloads.per_day(model)
-        series = [("Package downloads", [by_day[d][0] if d in by_day else None for d in days], "s1")]
+    if model or website:
+        series = [("Package downloads (UTC)", [download_values.get(d) for d in days], "s1")] if model else []
+        request_label = f"Website download requests ({zone})"
+        session_label = f"Website sessions ({zone})"
         if website and "downloads" not in (website.get("errors") or {}):
-            dl = {r["day"]: r["count"] for r in website.get("downloads_daily") or []}
-            series.append(("Website download requests", [dl.get(d) for d in days], "s2"))
-        charts.append(panel("Downloads per day", "GitHub package counter increases and website requests; "
-                            "triangles mark releases", legend([(s[0], s[0], s[2]) for s in series]) + line_chart(
-                                days, series, "Downloads per day", markers, 220)))
-        interest = [("Repository views", daily_values(model.get("traffic") or [], days, "count"), "s1")]
+            series.append((request_label, [dl.get(d) for d in days], "s2"))
+        if series:
+            charts.append(panel("Downloads per day", "GitHub counter increases by collection date. Each series uses "
+                                "its own day boundaries. Hollow points are provisional.",
+                                legend([(s[0], s[0], s[2]) for s in series]) + line_chart(
+                                    days, series, "Downloads per day", markers, 220,
+                                    download_partial,
+                                    provisional={request_label: ga_provisional})))
+        interest = [("Repository views (UTC)", daily_values(traffic, days, "count"), "s1")] if model else []
         if website:
-            interest.append(("Website sessions", daily_values(website.get("daily") or [], days, "sessions"), "s2"))
-        charts.append(panel("Interest per day", "GitHub repository page views and website sessions",
+            interest.append((session_label, [daily.get(d) for d in days], "s2"))
+        charts.append(panel("Interest per day", "Each series uses the reporting time zone in its label.",
                             legend([(s[0], s[0], s[2]) for s in interest]) + line_chart(
                                 days, interest, "Interest per day", markers, 220,
-                                partial_notes(model.get("traffic") or []))))
-    if any(accepted.values()):
+                                 partial_notes(traffic), provisional={session_label: ga_provisional,
+                                                                      "Repository views (UTC)": partial_notes(traffic)})))
+    if accepted:
         charts.append(panel("Telemetry batches accepted per day", "consenting players' sessions reaching the "
                             "receiver", line_chart(days, [("Accepted", [accepted.get(d) for d in days], "s1")],
-                                                   "Telemetry batches per day", markers, 220)))
+                                                    "Telemetry batches per day", markers, 220,
+                                                    provisional={"Accepted": {days[-1]}})))
     pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
     context = ""
     if model:
         context += pair(release_panel(model, now), platform_panel(model))
     context += pair(sources_panel(website, model), countries_panel(website))
-    return (alerts_panel(alert_items) + freshness_strip(snapshot)
-            + f'<h2>Last 7 full days</h2><p class="sub">{e(current[0])} to {e(current[-1])} (UTC), compared with '
-            f'the 7 days before; today is partial and not included</p>' + kpi_tiles(tiles)
+    return (review_items(snapshot, alert_items, metrics) + alerts_panel(alert_items) + freshness_strip(snapshot)
+            + f'<h2>Last 7 full days</h2><p class="sub">{e(current[0])} to {e(current[-1])} (UTC). Deltas require '
+            f'two complete periods.{e(ga_period)}</p>' + kpi_tiles(metrics)
             + context
             + f'<h2>Last 30 days</h2><div class="pair">{"".join(charts)}</div>')
 
@@ -1123,7 +1391,16 @@ def ga_panel(model, key, title, sub, metric, tip_metrics):
         body = '<p class="empty">No data in this period.</p>'
     else:
         body = hbar_chart(ga_rows(model["tables"][key], metric, tip_metrics), fmt_int, title)
+    body += ga_quality_note(model, key)
     return panel(title, sub, body)
+
+
+def ga_quality_note(model, key):
+    flags = (model.get("report_quality") or {}).get(key) or []
+    if not flags:
+        return ""
+    text = ", ".join(flag.replace("_", " ") for flag in flags)
+    return f'<p class="note">GA4 coverage limit · {e(text)}</p>'
 
 
 def vitals_panel(model):
@@ -1137,20 +1414,31 @@ def vitals_panel(model):
             counts.setdefault(row["dims"][0], {}).setdefault(row["dims"][1], 0)
             counts[row["dims"][0]][row["dims"][1]] += row["values"].get("eventCount", 0)
     body = []
+    quality = ga_quality_note(model, "vitals")
     for name in sorted(counts, key=lambda n: ({"LCP": 0, "INP": 1, "CLS": 2}.get(n, 9), n)):
-        total = sum(counts[name].values()) or 1
-        cells = "".join(f"<td>{fmt_int(counts[name].get(k, 0))} ({counts[name].get(k, 0) * 100 / total:.0f}%)</td>"
-                        for k, _ in VITAL_RATINGS)
-        body.append(f"<tr><td>{e(name)}</td>{cells}<td>{fmt_int(sum(counts[name].values()))}</td></tr>")
+        total = sum(counts[name].values())
+        values = []
+        for key, _ in VITAL_RATINGS:
+            count = counts[name].get(key)
+            if quality:
+                values.append(observed_count(count))
+            else:
+                values.append(f"{fmt_int(count or 0)} ({(count or 0) * 100 / max(total, 1):.0f}%)")
+        cells = "".join(f"<td>{value}</td>" for value in values)
+        body.append(f"<tr><td>{e(name)}</td>{cells}<td>{fmt_int(total)}</td></tr>")
     heads = "".join(f"<th>{label}</th>" for _, label in VITAL_RATINGS)
-    table = (f"<table><thead><tr><th>Metric</th>{heads}<th>Samples</th></tr></thead>"
+    table = (f"<table><thead><tr><th>Metric</th>{heads}<th>Visible samples</th></tr></thead>"
              f"<tbody>{''.join(body)}</tbody></table>")
-    return panel(title, sub, scroll(table) + '<p class="note">Ratings use the web-vitals thresholds (LCP 2.5/4 s, '
+    return panel(title, sub, quality + scroll(table) + '<p class="note">Ratings use the web-vitals thresholds (LCP 2.5/4 s, '
                  'INP 200/500 ms, CLS 0.1/0.25). Sampled field data, not a lab measurement.</p>')
 
 
 def pct(part, whole):
-    return f"{part * 100 / whole:.0f}%" if part is not None and whole else "-"
+    return f"{part * 100 / whole:.0f}%" if part is not None and whole and 0 <= part <= whole else "-"
+
+
+def observed_count(value):
+    return fmt_int(value) if value is not None else "-"
 
 
 def funnel_panel(model):
@@ -1163,14 +1451,14 @@ def funnel_panel(model):
         rows = (model.get("funnels") or {}).get(key) or []
         if not rows:
             continue
-        body = "".join(f"<tr><td>{e(r['name'] or '(not set)')}</td><td>{fmt_int(r['users'])}</td>"
-                       f"<td>{fmt_int(r['requesting'])}</td><td>{pct(r['requesting'], r['users'])}</td></tr>"
+        body = "".join(f"<tr><td>{e(r['name'] or '(not set)')}</td><td>{observed_count(r['users'])}</td>"
+                       f"<td>{observed_count(r['requesting'])}</td><td>{pct(r['requesting'], r['users'])}</td></tr>"
                        for r in rows[:10])
         blocks.append(scroll(f"<table><thead><tr><th>{e(title)}</th><th>Users</th><th>Requested a download</th>"
                              f"<th>Conversion</th></tr></thead><tbody>{body}</tbody></table>"))
     body = "".join(blocks) or '<p class="empty">No data in this period.</p>'
-    return panel("Download conversion", "users who sent download_request ÷ active users; phones cannot run the "
-                 "simulator", body)
+    base = "tracked users" if "conversion_users" in model else "active users (legacy report)"
+    return panel("Download conversion", f"Users who sent a request ÷ {base} in the same period.", body)
 
 
 def setup_panel(model):
@@ -1211,20 +1499,29 @@ def website_section(model, github_model, now):
         return (head + f'<div class="panel"><h4>Google Analytics 4</h4><p class="sub">Collection failed '
                 f'{e((model.get("collected_utc") or "")[:16].replace("T", " "))} UTC</p>'
                 f'<p><b>{e(model["error"])}</b></p>{GA_SETUP}</div>')
+    if model.get("refresh_error"):
+        head += (f'<p class="banner stale">GA4 refresh failed. Data last collected '
+                 f'{e(model.get("collected_utc") or "at an unknown time")}.</p>')
     totals, days = model.get("totals") or {}, model.get("days") or []
-    sessions = totals.get("sessions", 0)
-    engaged = f"{totals.get('engaged', 0) * 100 / sessions:.0f}% engaged" if sessions else "no sessions"
+    sessions = totals.get("sessions")
+    engaged_rate = pct(totals.get("engaged"), sessions)
+    engaged = f"{engaged_rate} engaged" if engaged_rate != "-" else ""
     span = f"{len(days)} days"
-    dl_failed = "downloads" in (model.get("errors") or {})
+    errors = model.get("errors") or {}
+    dl_total_failed = "download_totals" in errors or ("report_quality" not in model and "downloads" in errors)
+    recent_requests = ga4.window(model, 7)
+    conversion_users = model.get("conversion_users", totals.get("users"))
+    conversion = pct(model.get("downloads_users"), conversion_users)
     items = [
-        (f"Active users, {span}", fmt_int(totals.get("users", 0)), f"{fmt_int(totals.get('new_users', 0))} new"),
-        (f"Sessions, {span}", fmt_int(sessions), engaged),
-        (f"Page views, {span}", fmt_int(totals.get("views", 0)), "all locales"),
-        (f"Download requests, {span}", "-" if dl_failed else fmt_int(model.get("downloads_total") or 0),
-         "report failed" if dl_failed else f"{fmt_int(ga4.window(model, 7))} in the last 7 days"),
-        ("Download conversion", pct(model.get("downloads_users"), totals.get("users")),
-         f"{fmt_int(model['downloads_users'])} of {fmt_int(totals.get('users', 0))} users sent a download request"
-         if model.get("downloads_users") is not None else "report unavailable"),
+        (f"Active users, {span}", observed_count(totals.get("users")), f"{observed_count(totals.get('new_users'))} new"),
+        (f"Sessions, {span}", observed_count(sessions), engaged),
+        (f"Page views, {span}", observed_count(totals.get("views")), "all locales"),
+        (f"Download requests, {span}", observed_count(model.get("downloads_total")),
+         "report failed" if dl_total_failed else f"{fmt_int(recent_requests)} in the latest 7 days"
+         if recent_requests is not None else "latest 7 days incomplete"),
+        ("Download conversion", conversion,
+         f"{fmt_int(model['downloads_users'])} of {fmt_int(conversion_users)} tracked users sent a request"
+         if conversion != "-" else "report unavailable"),
         ("Phone hand-offs", "-" if model.get("handoffs") is None else fmt_int(model["handoffs"]),
          "download links opened on phones or tablets (WEB-20)"),
         ("Active users now", "-" if model.get("realtime_users") is None else fmt_int(model["realtime_users"]),
@@ -1232,6 +1529,13 @@ def website_section(model, github_model, now):
     ]
     markers = release_days(github_model)
     daily = model.get("daily") or []
+    provisional_days = set(model.get("provisional_days", []))
+    if days:
+        head += (f'<p class="note">Website report period {e(days[0])} to {e(days[-1])} · '
+                 f'{e(model.get("time_zone") or "time zone unavailable")}.')
+        if provisional_days.intersection(days):
+            head += " Totals and breakdowns include provisional days. Hollow points show provisional daily values."
+        head += "</p>"
     zone = (f"per UTC day: time zone {model.get('time_zone') or 'unknown'} could not be loaded (pip install "
             "tzdata), so the newest day can be partial or empty; triangles mark releases"
             if model.get("zone_fallback") else
@@ -1240,19 +1544,31 @@ def website_section(model, github_model, now):
                                                        ("v", "Page views", "s3")]) + line_chart(
         days, [("Active users", daily_values(daily, days, "users"), "s1"),
                ("Sessions", daily_values(daily, days, "sessions"), "s2"),
-               ("Page views", daily_values(daily, days, "views"), "s3")], "Website visitors per day", markers))
+               ("Page views", daily_values(daily, days, "views"), "s3")], "Website visitors per day", markers,
+        provisional=dict.fromkeys(("Active users", "Sessions", "Page views"), provisional_days)))
     if "downloads" in model.get("errors", {}):
         dl_body = f'<p class="empty">Report failed: {e(model["errors"]["downloads"])}</p>'
     else:
         dl_body = line_chart(days, [("Download requests", daily_values(model.get("downloads_daily") or [], days,
                                                                         "count"), "s1")],
-                             "Website download requests per day", markers)
+                             "Website download requests per day", markers,
+                             provisional={"Download requests": provisional_days})
     requests = panel("Download requests per day", "download_request events (automatic and manual)", dl_body)
     pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
     users_sessions = [("activeUsers", "Users"), ("sessions", "Sessions")]
-    errors = {k: v for k, v in (model.get("errors") or {}).items()
-              if k in ("metadata", "realtime")}
-    error_note = "".join(f'<p class="note">{e(k.capitalize())} report failed: {e(v)}</p>' for k, v in errors.items())
+    extra_errors = {k: v for k, v in errors.items() if k in ("metadata", "realtime", "totals", "download_totals")}
+    error_note = "".join(f'<p class="note">{e(k.capitalize())} report failed: {e(v)}</p>'
+                         for k, v in extra_errors.items())
+    quality = model.get("report_quality") or {}
+    if quality:
+        notes = " · ".join(f'{key.replace("_", " ")} ({", ".join(flag.replace("_", " ") for flag in flags)})'
+                           for key, flags in sorted(quality.items()))
+        error_note += f'<p class="note">GA4 coverage limits · {e(notes)}</p>'
+    event_panels = "".join(ga_panel(model, key, title, label, "eventCount", [("eventCount", "Events")])
+                           for key, title, label in (
+                               ("download_methods", "Download requests by method", "Automatic and manual"),
+                               ("handoff_actions", "Phone hand-off actions", "Shown, copied or shared"))
+                           if any(key in (model.get(section) or {}) for section in ("tables", "missing", "errors")))
     return (head + stat_tiles(items) + error_note + pair(visitors, requests)
             + pair(ga_panel(model, "countries", "Countries", "active users", "activeUsers", users_sessions),
                    ga_panel(model, "download_countries", "Download requests by country", "download_request events",
@@ -1271,6 +1587,7 @@ def website_section(model, github_model, now):
             + pair(funnel_panel(model),
                    ga_panel(model, "download_releases", "Download requests by release", "release_version",
                             "eventCount", [("eventCount", "Requests")]))
+            + (pair(event_panels, "") if event_panels else "")
             + pair(setup_panel(model), ""))
 
 
@@ -1351,6 +1668,11 @@ font-size:11px;font-weight:700;text-align:center}
 .tabpanel[hidden]{display:none}
 path.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
 .line-s1{stroke:var(--s1)}.line-s2{stroke:var(--s2)}.line-s3{stroke:var(--s3)}.line-s4{stroke:var(--s4)}
+circle.provisional{fill:var(--surface);stroke-width:2}
+.review{margin:14px 0}.review ul{padding:0;margin:0;list-style:none;display:grid;gap:8px}
+.review li{background:var(--surface);border:1px solid var(--ring);border-radius:8px;padding:10px 12px;
+ display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between}
+.review span{display:block;color:var(--ink2);overflow-wrap:anywhere}.review a{white-space:nowrap}
 circle.dot{stroke:var(--surface);stroke-width:2}circle.pt{stroke:none}line.mark{stroke:var(--axis);stroke-width:1}
 path.markhead{fill:var(--muted)}
 .pair{display:grid;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:12px;margin-top:12px}
@@ -1358,7 +1680,7 @@ path.markhead{fill:var(--muted)}
 table{border-collapse:collapse;width:100%;margin-top:8px;font-size:12.5px;font-variant-numeric:tabular-nums}
 th,td{text-align:right;padding:4px 6px;border-bottom:1px solid var(--grid);white-space:nowrap}
 th:first-child,td:first-child{text-align:left}th{color:var(--ink2);font-weight:600}table.narrow{max-width:420px}
-table.coverage{width:auto}table.coverage th.d,table.coverage th.m{text-align:center;padding:2px;font-weight:500}
+table.coverage{position:relative;width:auto}table.coverage th.d,table.coverage th.m{text-align:center;padding:2px;font-weight:500}
 table.coverage th.m{text-align:left;color:var(--muted);border-bottom:0}
 td.cov{text-align:center;padding:0;width:22px;height:22px;border:2px solid var(--surface);border-radius:5px;
 font-size:12px;cursor:default}td.cov:focus-visible{outline:2px solid var(--focus)}
@@ -1400,22 +1722,33 @@ function openTab(key,focus){const t=tabs.find(b=>b.dataset.tab===key)||tabs[0];
  tabs.forEach(b=>{const on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;
   document.getElementById('panel-'+b.dataset.tab).hidden=!on});
  if(focus)t.focus();try{localStorage.setItem('openrc-stats-tab',t.dataset.tab)}catch(_){}
- try{if(location.hash!=='#'+t.dataset.tab)history.replaceState(null,'','#'+t.dataset.tab)}catch(_){}}
-tabs.forEach((b,i)=>{b.addEventListener('click',()=>openTab(b.dataset.tab));
+  return t.dataset.tab}
+ function navigateTab(key,focus){const hash='#'+openTab(key,focus);
+  if(location.hash!==hash)try{history.pushState(null,'',hash)}catch(_){location.hash=hash}}
+ tabs.forEach((b,i)=>{b.addEventListener('click',()=>navigateTab(b.dataset.tab));
  b.addEventListener('keydown',ev=>{const d=ev.key==='ArrowRight'?1:ev.key==='ArrowLeft'?-1:0;
   const j=ev.key==='Home'?0:ev.key==='End'?tabs.length-1:d?(i+d+tabs.length)%tabs.length:-1;
-  if(j>=0){ev.preventDefault();openTab(tabs[j].dataset.tab,true)}})});
+   if(j>=0){ev.preventDefault();navigateTab(tabs[j].dataset.tab,true)}})});
+ function syncTab(){const focused=document.activeElement;
+   openTab(location.hash.slice(1),tabs.includes(focused)||focused?.closest('[role=tabpanel]'))}
+ addEventListener('hashchange',syncTab);
+ addEventListener('popstate',syncTab);
 let first=location.hash.slice(1);try{first=first||localStorage.getItem('openrc-stats-tab')}catch(_){}
-openTab(first||'overview');
+ const initial='#'+openTab(first||'overview');
+ if(location.hash!==initial)try{history.replaceState(null,'',initial)}catch(_){}
 const sel=document.getElementById('report');
 if(sel){const pick=()=>{document.querySelectorAll('[data-report]').forEach(s=>s.hidden=s.dataset.report!==sel.value);
  try{localStorage.setItem('openrc-telem-report',sel.selectedOptions[0].text)}catch(_){}};
  try{const saved=localStorage.getItem('openrc-telem-report');
   for(const o of sel.options)if(o.text===saved)sel.value=o.value}catch(_){}
  sel.addEventListener('change',pick);pick()}
-document.getElementById('theme').addEventListener('click',()=>{const r=document.documentElement;
- const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
- r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('openrc-telem-theme',r.dataset.theme)}catch(_){}});
+ const theme=document.getElementById('theme'), root=document.documentElement;
+ const systemTheme=matchMedia('(prefers-color-scheme: dark)');
+ const isDark=()=>root.dataset.theme?root.dataset.theme==='dark':systemTheme.matches;
+ const indicateTheme=()=>theme.setAttribute('aria-pressed',isDark());
+ theme.addEventListener('click',()=>{root.dataset.theme=isDark()?'light':'dark';indicateTheme();
+  try{localStorage.setItem('openrc-telem-theme',root.dataset.theme)}catch(_){}});
+ systemTheme.addEventListener('change',indicateTheme);indicateTheme();
 const gen=Number(document.body.dataset.generated)*1000,stale=document.getElementById('stale'),age=document.getElementById('age');
 function tick(){const s=Math.max(0,(Date.now()-gen)/1000);age.textContent=s<5400?Math.round(s/60)+' min old'
  :s<172800?(s/3600).toFixed(1)+' h old':(s/86400).toFixed(1)+' days old';stale.hidden=s<STALE}
@@ -1423,7 +1756,7 @@ const STALE=Number(document.body.dataset.stale);tick();setInterval(tick,30000);
 """
 
 
-TABS = [("overview", "Overview"), ("players", "Players"), ("downloads", "Downloads"), ("github", "GitHub"),
+TABS = [("overview", "Overview"), ("players", "Players"), ("releases", "Releases"), ("downloads", "Downloads"), ("github", "GitHub"),
         ("website", "Website"), ("receiver", "Receiver")]
 
 
@@ -1440,11 +1773,12 @@ def render(snapshot):
     generated = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     reports = snapshot["insights"]
     if reports:
+        spans = error_spans(reports)
         options = "".join(f'<option value="{i}">{e(r["week"])} · {e(r["release_id"])}</option>'
                           for i, r in enumerate(reports))
         insight_html = (f'<div class="controls"><label for="report">Week and release</label>'
                         f'<select id="report">{options}</select></div>'
-                        + "".join(report_section(i, r, i > 0) for i, r in enumerate(reports)))
+                        + "".join(report_section(i, r, i > 0, spans) for i, r in enumerate(reports)))
     else:
         insight_html = ""
     receiver = (f"{tiles(snapshot, rows, alert_items)}"
@@ -1455,9 +1789,12 @@ def render(snapshot):
                 f'<h2>Daily rollup coverage</h2><p class="sub">Insight cells per release and UTC day; a day becomes '
                 f'eligible at 01:00 UTC the next day and expires 47 h after it starts</p>'
                 f'<div class="panel">{coverage_grid(rows, releases, cells, day_state)}</div>')
+    if "legacy" in (snapshot.get("rollup_days") or {}).values():
+        receiver += '<p class="note">Legacy rows predate whole-day rollup verification.</p>'
     panels = {
         "overview": overview_section(snapshot, rows, alert_items),
         "players": players_section(snapshot, insight_html),
+        "releases": releases_section(snapshot),
         "downloads": downloads_section(snapshot["github"], now, len(rows) or 30),
         "github": github_section(snapshot["github"], now),
         "website": website_section(snapshot.get("website"), snapshot["github"], now),
@@ -1465,20 +1802,24 @@ def render(snapshot):
     }
     count = len(alert_items)
     tabs = "".join(
-        f'<button class="tab" role="tab" id="tab-{key}" aria-controls="panel-{key}" aria-selected="false" '
+        f'<button class="tab" role="tab" id="tab-{key}" aria-controls="panel-{key}" '
+        f'aria-selected="{str(key == "overview").lower()}" tabindex="{0 if key == "overview" else -1}" '
         f'data-tab="{key}" type="button">{e(label)}'
         + (f' <span class="count">{count}</span>' if key == "overview" and count else "") + "</button>"
         for key, label in TABS)
     sections = "".join(f'<section class="tabpanel" role="tabpanel" id="panel-{key}" aria-labelledby="tab-{key}" '
-                       f'>{panels[key]}</section>' for key, _ in TABS)
+                       f'tabindex="0"{"" if key == "overview" else " hidden"}>{panels[key]}</section>'
+                       for key, _ in TABS)
     stale_hidden = "" if time.time() - now >= STALE_AFTER_S else " hidden"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OpenRC Stats Dashboard</title><script>{HEAD_JS}</script><style>{CSS}</style></head>
+<title>OpenRC Stats Dashboard</title><link rel="icon" href="data:,">
+<script>{HEAD_JS}</script><style>{CSS}</style>
+<noscript><style>.tabpanel[hidden]{{display:block}}.tabs,#theme{{display:none}}</style></noscript></head>
 <body data-generated="{now}" data-stale="{STALE_AFTER_S}"><main>
 <header><h1>OpenRC statistics</h1><div class="controls"><span class="sub">Snapshot {e(generated)}
 (<span id="age">just taken</span>)</span>
-<button id="theme" type="button">Light / dark</button></div></header>
+<button id="theme" type="button" aria-label="Dark theme" aria-pressed="false">Light / dark</button></div></header>
 <div id="stale" class="banner stale"{stale_hidden}><b>Old snapshot.</b> Figures and alerts are as of {e(generated)};
 run <code>dashboard.py fetch</code> for current data.</div>
 <div class="banner"><b>Operator-only.</b> Do not publish or share this page: player cells come from consenting
@@ -1500,29 +1841,143 @@ def load_downloads(directory, note):
     return model
 
 
-def write_atomic(path, text):
-    """Replace `path` in one step so a web server never serves a half-written page."""
+def write_atomic(path, text, mode=0o644):
+    """Replace a file with a complete, uniquely staged file on the same filesystem."""
     path = Path(path)
-    tmp = path.with_name(f".{path.name}.tmp")
-    tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    handle = tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=f".{path.name}.", delete=False)
+    tmp = Path(handle.name)
+    try:
+        with handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        tmp.chmod(mode)
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
-def health(snapshot, now, receiver_max_age_s, github_note, problems):
-    """Machine-readable freshness for monitors (Uptime Kuma keyword `"status": "ok"`)."""
-    receiver_age = None if snapshot is None else round(now - snapshot["generated_unix"])
-    website = (snapshot or {}).get("website")
-    status = "ok"
-    if snapshot is None or problems:
+def publish_page(www, page, report):
+    """Keep the previous HTML if publishing the new health report fails."""
+    index = www / "index.html"
+    with tempfile.TemporaryDirectory(prefix=".publish-", dir=www) as directory:
+        previous = Path(directory) / "index.html"
+        if index.exists():
+            os.link(index, previous)
+        write_atomic(index, page)
+        try:
+            write_atomic(www / "health.json", json.dumps(report, indent=1))
+        except OSError:
+            if previous.exists():
+                os.replace(previous, index)
+            else:
+                index.unlink(missing_ok=True)
+            raise
+
+
+def utc_stamp(now):
+    return datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def timestamp_age(stamp, now):
+    if not isinstance(stamp, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(stamp)
+        if parsed.tzinfo is not None:
+            return round(now - parsed.timestamp())
+    except (ValueError, OverflowError, OSError):
+        pass
+    return None
+
+
+def source_health(stamp, now, max_age, *, error=False):
+    age = timestamp_age(stamp, now)
+    if error:
+        status = "error"
+    elif age is None:
+        status = "missing"
+    elif age < -300:
+        status = "error"
+    else:
+        status = "stale" if age > max_age else "ok"
+    return {"status": status, "observed_utc": stamp, "age_s": age}
+
+
+def github_health(model, now):
+    model = model or {}
+    attempts = model.get("source_attempts") or model.get("attempts") or {}
+    observed = model.get("source_utc") or {}
+    result = {}
+    for name, kind, legacy_stamp in (
+        ("github_downloads", "release assets", model.get("collected_utc")),
+        ("github_views", "traffic", None),
+        ("github_clones", "clones", None),
+        ("github_community", "community", model.get("community_utc")),
+        ("github_stars", "star history", model.get("community_utc") if model.get("star_days") else None),
+        ("github_referrals", "referrals", model.get("community_utc")),
+    ):
+        attempt = attempts.get(kind) or {}
+        stamp = observed.get(kind) or legacy_stamp or (attempt.get("finished") if attempt.get("success") else None)
+        result[name] = source_health(stamp, now, DOWNLOADS_STALE_S,
+                                     error=attempt.get("success") is False)
+    return result
+
+
+def health(snapshot, now, receiver_max_age_s, github_note, problems, *, no_ga4=False):
+    """Machine-readable build and source status. The reader must also measure build age."""
+    snapshot = snapshot or {}
+    receiver_age = round(now - snapshot["generated_unix"]) if "generated_unix" in snapshot else None
+    website = snapshot.get("website") or {}
+    sources = github_health(snapshot.get("github"), now)
+    sources["website"] = source_health(website.get("collected_utc"), now, GA4_MAX_AGE_S,
+                                       error=bool(website.get("error") or website.get("refresh_error")))
+    if no_ga4:
+        sources["website"] = {"status": "disabled", "observed_utc": None, "age_s": None}
+    elif sources["website"]["status"] == "ok" and (website.get("errors") or website.get("missing")
+                                                    or website.get("report_quality")):
+        sources["website"]["status"] = "partial"
+    issues = []
+    if snapshot and not problems:
+        rows = ingest_rows(snapshot)
+        _, _, day_state = coverage_model(snapshot, rows)
+        issues = [title for level, title, _ in alerts(snapshot, rows, day_state) if level == "critical"]
+    if receiver_age is None or receiver_age < -300 or problems:
         status = "error"
     elif receiver_age > receiver_max_age_s:
         status = "stale"
-    elif github_note or (website and website.get("error")):
+    elif issues or github_note or any(s["status"] not in ("ok", "disabled") for s in sources.values()):
         status = "degraded"
-    return {"status": status, "built_utc": datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "receiver_age_s": receiver_age, "github_error": github_note,
-            "website_error": (website or {}).get("error"), "website_connected": website is not None,
-            "problems": problems}
+    else:
+        status = "ok"
+    return {"status": status, "built_utc": utc_stamp(now), "receiver_age_s": receiver_age,
+            "receiver_issues": issues, "sources": sources, "github_error": bool(github_note),
+            "website_error": bool(website.get("error") or website.get("refresh_error")),
+            "website_connected": bool(website), "problems": problems}
+
+
+def read_snapshot(path):
+    snapshot = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(snapshot, dict) or snapshot.get("snapshot_version") not in SNAPSHOT_VERSIONS:
+        raise ValueError("unsupported snapshot format or version")
+    stamp = snapshot.get("generated_unix")
+    if type(stamp) not in (int, float) or not math.isfinite(stamp) or stamp <= 0:
+        raise ValueError("missing or invalid generated_unix")
+    datetime.fromtimestamp(stamp, tz=timezone.utc)
+    return snapshot
+
+
+def refresh_github(directory):
+    authenticated = bool(os.environ.get("GH_TOKEN"))
+    ok, note = downloads.collect(directory, public_only=not authenticated)
+    if ok:
+        return None
+    if authenticated:
+        public_ok, public_note = downloads.collect(directory, public_only=True)
+        return (f"{note}; public counters refreshed" if public_ok else
+                f"{note}; public fallback also failed: {public_note}")
+    return note
 
 
 def build(args):
@@ -1534,35 +1989,47 @@ def build(args):
         if directory.is_relative_to(REPO):
             raise SystemExit("--www and --state-dir must be outside the repository (operator-only data)")
         directory.mkdir(parents=True, exist_ok=True)
-    now, problems, snapshot, note = time.time(), [], None, None
+    problems, snapshot, note = [], None, None
+    combined_path = state / "dashboard.snapshot.json"
     try:
-        snapshot = json.loads(Path(args.receiver_snapshot).read_text(encoding="utf-8"))
-        if snapshot.get("snapshot_version") not in SNAPSHOT_VERSIONS:
-            raise ValueError(f"unsupported snapshot_version {snapshot.get('snapshot_version')!r}")
-    except (OSError, ValueError) as error:
+        snapshot = read_snapshot(args.receiver_snapshot)
+    except (OSError, ValueError, OverflowError) as error:
         problems.append(f"receiver snapshot unreadable: {error.__class__.__name__}: {error}"[:300])
-        snapshot = None
     if snapshot is not None:
-        if args.github_collect and args.downloads_dir.is_dir():
-            ok, message = downloads.collect(args.downloads_dir)
-            note = None if ok else message
-        snapshot["github"] = load_downloads(args.downloads_dir, note)
-        snapshot["website"] = None if args.no_ga4 else ga4.fetch(args.days, args.ga4_property, args.ga4_credentials)
         try:
+            if snapshot["generated_unix"] > time.time() + 300:
+                raise ValueError("receiver snapshot timestamp is in the future")
+            try:
+                previous = read_snapshot(combined_path)
+            except (OSError, ValueError, OverflowError):
+                previous = {}
+            note = previous.get("github_refresh_error")
+            if args.github_collect:
+                note = refresh_github(args.downloads_dir)
+            snapshot["github_refresh_error"] = note
+            snapshot["github"] = load_downloads(args.downloads_dir, note)
+            website = None if args.no_ga4 else ga4.fetch(args.days, args.ga4_property, args.ga4_credentials)
+            old_website = previous.get("website") or {}
+            if website and website.get("error") and old_website.get("daily") and not old_website.get("error"):
+                website = {**old_website, "refresh_error": website["error"]}
+            snapshot["website"] = website
             page = render(snapshot)
-        except (ValueError, KeyError, TypeError) as error:
-            problems.append(f"render failed: {error!r}"[:300])
-        else:
-            write_atomic(www / "index.html", page)
-            write_atomic(state / "dashboard.snapshot.json", json.dumps(snapshot, indent=1, sort_keys=True))
-    report = health(snapshot, now, args.receiver_max_age, note, problems)
+            report = health(snapshot, time.time(), args.receiver_max_age, note, problems, no_ga4=args.no_ga4)
+            write_atomic(combined_path, json.dumps(snapshot, indent=1, sort_keys=True), mode=0o600)
+            publish_page(www, page, report)
+            print(json.dumps(report))
+            return 0
+        except (OSError, ValueError, KeyError, TypeError, AttributeError, OverflowError) as error:
+            print(f"dashboard build failed: {error!r}", file=sys.stderr)
+            problems.append(f"dashboard build failed: {type(error).__name__}")
+    report = health(None, time.time(), args.receiver_max_age, note, problems, no_ga4=args.no_ga4)
     write_atomic(www / "health.json", json.dumps(report, indent=1))
     print(json.dumps(report))
-    return 0 if report["status"] in ("ok", "degraded", "stale") else 1
+    return 1
 
 
 def default_out():
-    base = Path("U:/OpenRC/telemetry-dashboard") if Path("U:/").exists() else (
+    base = Path("U:/OpenRC/telemetry-dashboard") if os.name == "nt" and Path("U:/").exists() else (
         Path(os.environ.get("LOCALAPPDATA", Path.home())) / "OpenRCsimulator" / "telemetry-dashboard")
     return str(base / "dashboard.html")
 

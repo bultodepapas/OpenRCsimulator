@@ -1,0 +1,24 @@
+[Unit]
+Description=Make and verify the off-host OpenRC Stats SQLite backup (TELEM-24c)
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+DynamicUser=yes
+StateDirectory=openrc-stats-backup
+StateDirectoryMode=0700
+UMask=0077
+EnvironmentFile=/etc/openrc-stats-backup.env
+LoadCredential=ssh-key:/etc/openrc-stats-backup/id_ed25519
+LoadCredential=known-hosts:/etc/openrc-stats-backup/known_hosts
+ExecStart=/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py pull --host ${OPENRC_STATS_BACKUP_HOST}
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+TimeoutStartSec=90s
+LimitFSIZE=128M
+Restart=on-failure
+RestartSec=15min
+Nice=10
