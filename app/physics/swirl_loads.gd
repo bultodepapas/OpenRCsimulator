@@ -36,7 +36,8 @@ static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary
 		return result
 	var surfaces: Dictionary = model.surfaces
 	var wing_cl: float = 0.0
-	if surfaces.horizontal.has("free_slope"):
+	# A36 R4-F01: a tailless airframe has no horizontal key at all; only a present free tail law reads wing downwash.
+	if surfaces.get("horizontal", {}).has("free_slope"):
 		wing_cl = Aero.wing_wake_velocity(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var v: PackedFloat64Array = air.v_air
 	var source: PackedFloat64Array = v if source_velocity.is_empty() else source_velocity
