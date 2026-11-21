@@ -11,9 +11,10 @@
 2. **[R3 audit](script-audit-r3-2026-11-21.md)** explains findings, application of all nine filmmaking skills, accepted tradeoffs, source checks and remaining evidence.
 3. **[90-second storyboard](storyboard-90s.md)** gives exact planned cut positions, source classes, fleet coverage, text and runtime arithmetic.
 4. **[Mechanical sequences](mechanical-sequences.md)** develops the nine-second Corsair montage, three-second collective insert and separate 32-second preflight companion-film idea.
-5. [Creative treatment](creative-treatment.md) gives the dramatic arc, sound and palette intent.
-6. [Shot bible](shot-bible.md) gives hero framing, skin/continuity records, alternatives and scene grouping.
-7. [Verification gates](verification-gates.md) distinguish current paper/source review from later visual proof and release acceptance.
+5. **[Feature opportunities from the code](feature-opportunities.md)** records additional playable features, visual details and exact timing tradeoffs: live transmitter inputs, Bisonte at the shallow shore, MoonRunner release, turtle recovery and more. These are source-backed candidates; R3 remains the current cut.
+6. [Creative treatment](creative-treatment.md) gives the dramatic arc, sound and palette intent.
+7. [Shot bible](shot-bible.md) gives hero framing, skin/continuity records, alternatives and scene grouping.
+8. [Verification gates](verification-gates.md) distinguish current paper/source review from later visual proof and release acceptance.
 
 ## Creative decisions in R3
 
