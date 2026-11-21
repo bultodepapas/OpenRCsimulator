@@ -1,0 +1,442 @@
+{
+  "format": "openrc-a36-qualification v1",
+  "baseline_commit": "57abea025f62b20233ca281d58d2acbee4ab8b8e",
+  "candidate_runtime_commit": "d2bf10025b74764b424f1d0e72193b3e14281a0e",
+  "candidate_runtime_tree": "c8944511b3c865e6796af95cebf8ec6e59b29f9a",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "os_arch": "Linux x86_64",
+    "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "physics_ticks_per_second": 240,
+  "checked_runner_sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888",
+  "fixture_manifest": "integration-manifest.json",
+  "checks": [
+    {
+      "name": "phoenix_readers",
+      "entrypoint": "res://tests/test_creator_phoenix_readers.gd",
+      "checks": 277,
+      "entrypoint_sha256": "13fc59c81618cc9b5290735eddbfbdeed08794cd72495f1716f74d4b5469b9fb",
+      "scope": "unchanged complete repository test entrypoint in isolated source/dependency fixture; no scenery stubs",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a8505d53-8e82-499e-aeab-7bd2a8d7a1a2",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/integration-a36-evidence/phoenix-full",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_creator_phoenix_readers.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T12:20:33.549197+00:00",
+        "label": "a36-phoenix-full-readers-240hz",
+        "log": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-phoenix-full-readers-240hz-0p6wbbjw/engine.log",
+        "report": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-phoenix-full-readers-240hz-0p6wbbjw/report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Phoenix readers:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.786346,
+        "log_bytes": 110,
+        "log_sha256": "4452efb34f847d48b107f22096fd879d3e9ec11f372b6c55ea221ebc2ba8f267"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nPhoenix readers: 277 checks, 0 failures\n"
+    },
+    {
+      "name": "airship_energy",
+      "entrypoint": "res://tests/test_airship_energy_bounds.gd",
+      "checks": 18,
+      "entrypoint_sha256": "fc63ab46408954c9e678e2484a10a6eae66255e92506016919cce0b0a8415d73",
+      "scope": "unchanged complete repository test entrypoint in isolated source/dependency fixture; no scenery stubs",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "726c2148-28c6-4037-aa29-1ed5c0653a19",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/integration-a36-evidence/phoenix-full",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_energy_bounds.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T12:22:30.797750+00:00",
+        "label": "a36-airship-energy-complete",
+        "log": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-energy-complete-e3ns0tvk/engine.log",
+        "report": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-energy-complete-e3ns0tvk/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.733042,
+        "log_bytes": 2158,
+        "log_sha256": "bbbacf96537c80b86bdd9d6e60abbce66f07a9084f9d6767f0339b1926c79003"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   each fixed fin is passive across signed flow, held deflections and body rates 2160 fin cases, maximum -0.021571144267 W\nok   forward small-angle fin normal slope and sign are retained 3-degree relative change -0.00131168; 30-degree change -0.09433017\nok   fin force is continuous at pure crossflow and vanishes at zero speed crossflow difference 0.000000001992 N\nok   neutral and deflected fins are continuous across the reverse-axis seam difference 0.000000007186 N\nok   depletion time and exactly-once transition agree with the constant-current oracle at 240/480/960 Hz events 3, final time error 0.000000000001 s\nok   depletion roots near both tick edges remain bounded and are emitted once \nok   actual bus/body/actuator crossing and post-event state converge under refinement time differences 1.1998037147131768e-09/6.964565035794124e-11 s; state differences 2.169948276620204e-09/1.2552847650226795e-10\nFlight log REC: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/airship-depletion-4614615.orfl\nok   nonfinite start heading is refused before the running flight and recorder change \nFlight log saved: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/airship-depletion-4614615.orfl (240 ticks)\nok   flight log records the depletion once with sub-tick time and verifies replay \nok   replay rejects a missing depletion event \nok   old-law log identity is refused \nok   actual accepted tick locates depletion once, holds SOC at zero and removes battery draw event offset 141, SOC 0.000000000000, current 0.000000000000 A\nok   an unpowered rotor coasts down from its accepted speed speed 0.390019134027 -> 0.021105404654\nok   checkpoint continuation replays the crossing and state exactly event time difference 0.000000000000 s\nok   a zero-SOC connected checkpoint is refused without changing the flight \nok   restoring an already depleted pack does not repeat the event \nok   new commands cannot move unpowered vector and fin actuators \nok   a refused depletion transition rolls back the full tick and emits no event \n18 checks, 0 failed\n"
+    },
+    {
+      "name": "airship_dynamics",
+      "entrypoint": "res://tests/test_airship_dynamics.gd",
+      "checks": 50,
+      "entrypoint_sha256": "69489a1cdf79281e6a4b5aa082c56260fdd77456ea1a7fa981b5a1cda8380653",
+      "scope": "unchanged complete repository test entrypoint in isolated source/dependency fixture; no scenery stubs",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "23f84d1c-abb4-4c71-a4ec-90bfeb20f5c4",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/integration-a36-evidence/phoenix-full",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_dynamics.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T12:22:30.766544+00:00",
+        "label": "a36-airship-dynamics-complete",
+        "log": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-dynamics-complete-qmwxjld3/engine.log",
+        "report": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-dynamics-complete-qmwxjld3/report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.128924,
+        "log_bytes": 2946,
+        "log_sha256": "e00e5bc0ccbf66a69844f6521a60974bf4a3cff4c756c8cced97e33aa4616c10"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   Lamb k1/k2/k' at L/D 4 0.0816 0.8598 0.6079\nok   Lamb k1/k2/k' at L/D 5 0.0591 0.8943 0.6999\nok   Lamb k1/k2/k' at L/D 6 0.0452 0.9171 0.7623\nok   near-sphere limit k1 = k2 = 1/2 0.49994 0.50003\nok   fixture is admitted \nok   wrong unit is refused \nok   missing source is refused \nok   non-unit fin normal is refused \nok   missing rotor is refused \nok   nonfinite mass is refused \nok   atmosphere outside the domain is refused \nok   sphere surge a = F/(m + m_A) a=0.519814 expected=0.519814\nok   sphere added mass is rho V / 2 (oracle) a=0.519814 lamb=0.519794\nok   no spurious heave or rotation \nok   weigh-off achieves the requested heaviness 0.1\nok   heave a = (W - B)/(m + m_A33) 0.158813 vs 0.158813\nok   neutral, level, still: no acceleration \nok   zero added mass, CG at O: equals RigidBody.derivative max diff 0.0\nok   datum shift preserves kinetic energy 3.544784429476 vs 3.544784429476\nok   datum shift: same angular acceleration 0.0\nok   datum shift: v_dot' = v_dot + omega_dot x d 0.0\nok   drifts with the wind [-0.0, 2.0, -0.0]\nok   crosswind accelerates the hull toward, not past, the wind [0.02101264937663, 1.84892589899434, 0.00025502870434]\nok   coast-down dissipates kinetic energy 16.3952 -> 1.8466 J\nok   pitch disturbance decays (CB above CG) pitch 2.85 deg after 40 s\nok   long integration stays finite \nok   full back stick vectors the side props to full travel \nok   forward stick keeps side thrust horizontal \nok   right yaw drives the stern thruster toward port -1.0\nok   stern thruster on right yaw makes a nose-right moment 3.15\nok   right roll stick adds port thrust (nose right) \nok   rudder deflection on right yaw adds nose-right moment 0.6299 vs 0.0000\nok   back stick fins add nose-up moment 1.2597 vs 0.0000\nok   rotating in steady wind = rotating in calm air (Galilean) 0.0\nok   Munk moment: nose-up for w > 0 with Lamb magnitude 0.57195555205225 vs 0.57195555205225\nok   fins weathervane in yaw (nose toward sideslip) 0.47375877203797\nok   fins stabilize in pitch (nose down for w > 0) -0.96026363326039\nok   propeller torque reaction sign and size 0.02\nok   propeller thrust lapse with inflow 1.0\nok   battery terminal voltage of the shared bus 12.1043087443726 vs 12.1043087443726\nok   gear static support = k * depth 4.0\nok   contact never pulls \nok   tilted sliding wheel: vertical force equals the normal load 1.82110643130855 vs 1.82110643130855\nok   sliding wheel friction opposes motion \nok   first touch starts without a damping jump 0.53999999999994\nok   afterbody separation station is the steepest area decrease -2.375\nok   afterbody normal force equals -u w rho k2 S(x0) -0.209717 vs -0.209717 N\nok   afterbody moment restores (nose down) and acts aft of x0 dMy -0.51119, lever -2.438 m\nok   reverse flow: no afterbody correction \nok   afterbody load scales with the hull added-mass scale -0.104859\n50 checks, 0 failed\n"
+    },
+    {
+      "name": "airship_session",
+      "entrypoint": "res://tests/test_airship_session.gd",
+      "checks": 43,
+      "entrypoint_sha256": "68f8ca76d82e2229cee96b8487e78bbe533f24dcbdc6e55f8b24664250aa549d",
+      "scope": "unchanged complete repository test entrypoint in isolated source/dependency fixture; no scenery stubs",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b5007ba8-aa7e-45e4-b775-67945fb712fe",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/integration-a36-evidence/phoenix-full",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_session.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T12:26:59.171361+00:00",
+        "label": "a36-airship-session-scene-complete",
+        "log": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-session-scene-complete-mzev4t0p/engine.log",
+        "report": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-session-scene-complete-mzev4t0p/report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 30.369563,
+        "log_bytes": 2635,
+        "log_sha256": "ce5a57797d839f3ef80075683996b1b30722c6e6d4f55cc0e3a771bd02c7df32"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   generated data is admitted \nok   prepare {  } \nok   default weigh-off is 80 g heavy 0.08\nok   ballast is physical (0 < ballast < max) 0.433846221\nmass 3.145 kg, ballast 0.434 kg, helium 0.423 kg, envelope 1.031 kg, volume 2.502 m3\nCG [0.28127304009786, -0.00134209076645, 0.22320555219556]  CB [0.281273, 0.0, 0.0]\nok   CG below CB (pendulum stability) [0.28127304009786, -0.00134209076645, 0.22320555219556] vs [0.281273, 0.0, 0.0]\nok   resume refuses raised throttle \nok   resume refuses a deflected yaw stick (stern lateral motor) \nok   80 g heavy, motors off: gentle sink -0.579 m/s\nok   full throttle cruise 3-10 m/s 6.39 m/s\nok   cruise draws plausible current 7.09 A\nok   cruise attitude stays moderate pitch 16.8 roll -0.5\ncruise: 6.39 m/s, 86.7 W, AGL 22.56 m, per tick 804.9 us\nok   tick cost bounded (reference GDScript; real time needs < 4167 us) 805 us\nok   untrimmed full-throttle climb stays gentle (hull dynamic lift) 1.64 m/s\nok   full back stick brakes 6.39 -> 0.94 m/s\nok   vectored climb 1.09 m/s at 13.0 m\nok   right yaw turns the nose right at zero speed 157.4 deg\nok   tape flight accepted \nok   session tape equals the flown sticks \nok   exact replay \nok   prepare { &\"start\": \"ground\" } \nok   heavy ground start rests on the gear AGL 0.680 -> 0.679, gear 0.77 N\nok   vectored lift-off from the wheels AGL 5.49 m\nok   prepare { &\"altitude_m\": 1.2 } \nok   fast envelope strike ends the flight Hard envelope impact (1.9 m/s)\nok   default field obstacle inventory builds []\nok   obstacle inventory installs \nok   open start clear of obstacles \nok   thin fixture through the envelope is an obstacle strike Obstacle strike: fixture (hard_terminal)\nok   12 mm wire through the envelope away from the centre \nok   off-axis quadrant intrusion \nok   box clear of the envelope is not a strike R max 0.489\nok   hovering 35 mm under a beam is clear \nok   climbing into the beam within one tick is a strike (swept inflation) \nok   prepare {  } \nok   focus loss pauses the flight \nok   explicit resume clears the kernel pause \nok   prepare { &\"altitude_m\": 30.0 } \nok   a gentle pilot holds heading and height at full-throttle cruise heading 0.2 deg, climb 0.27 m/s, 6.72 m/s\nok   prepare {  } \nok   contact terrain skips are exact against an unskipped reference 0 mismatches, 410 of 600 states touching\nok   gusty/strong wind outside the admitted domain is refused \nok   prepare { &\"wind_speed_mps\": 2.0, &\"wind_from_deg\": 270.0, &\"heaviness_kg\": 0.0 } \nok   released in a steady breeze, drifts with the air ground 2.00 air 0.00\n43 checks, 0 failed\n"
+    },
+    {
+      "name": "airship_log",
+      "entrypoint": "res://tests/test_airship_flight_log.gd",
+      "checks": 25,
+      "entrypoint_sha256": "373f049a23e403ea48722b96b7b16ba072bf57b2c839a32a7116cfc14690be38",
+      "scope": "unchanged complete repository test entrypoint in isolated source/dependency fixture; no scenery stubs",
+      "checked_report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c2b9e2e0-928b-4cce-8a8c-f876057a8bde",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "/workspace/scratch/33140ed92393/integration-a36-evidence/phoenix-full",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_airship_flight_log.gd"
+        ],
+        "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+        "started_utc": "2026-11-21T12:26:59.164440+00:00",
+        "label": "a36-airship-log-scene-complete",
+        "log": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-log-scene-complete-22cjniu0/engine.log",
+        "report": "/workspace/scratch/33140ed92393/integration-a36-evidence/checks/a36-airship-log-scene-complete-22cjniu0/report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 11.128288,
+        "log_bytes": 3418,
+        "log_sha256": "6456b2c099bfd123c4a163875555092d88d75754238bf820cabbadba28f7ea4a"
+      },
+      "engine_log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   session prepares on the real field \nFlight log REC: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/flight.orfl\nok   recording starts mid-flight \nFlight log saved: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/flight.orfl (1920 ticks)\nok   recording stops cleanly 1920 rows\nok   complete file with checksummed blocks and chain \nok   pause, marker, resume and stop events are kept [\"pause\", \"marker\", \"resume\", \"stop\"]\nok   last recorded row is the live final state \nok   exact replay from the mid-flight checkpoint {\"complete\":true,\"error\":\"\",\"exact\":true,\"first_mismatch_tick\":-1,\"format\":\"openrc-airship-flight-log-report v1\",\"identity_match\":true,\"log\":\"user://test_airship_flight_log/flight.orfl\",\"ok\":true,\"recorded_crash\":\"\",\"replayed_crash\":\"\",\"rows\":1920,\"solver_changed\":false}\nok   a different session identity is refused Session identity (law, mixer, data, layout, weather or field) differs from the recording.\nok   a changed stick row is found at its tick Replay diverged from the recorded state. at 1181\nok   a flipped byte is refused \nok   a truncated file is refused as incomplete Invalid or truncated packet length.\nok   fixed-wing tools refuse the airship format \nFlight log REC: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/reset.orfl\nFlight log saved: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/reset.orfl (120 ticks)\nok   a reset closes a complete log \nFlight log already exists: user://test_airship_flight_log/flight.orfl\nok   refuses to overwrite an existing log \nFlight log REC: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/crash.orfl\nFlight log saved: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/crash.orfl (48 ticks)\nok   a strike ends the recorded flight and replays as the same strike {\"complete\":true,\"error\":\"\",\"exact\":true,\"first_mismatch_tick\":-1,\"format\":\"openrc-airship-flight-log-report v1\",\"identity_match\":true,\"log\":\"user://test_airship_flight_log/crash.orfl\",\"ok\":true,\"recorded_crash\":\"Hard envelope impact (1.9 m/s)\",\"replayed_crash\":\"Hard envelope impact (1.9 m/s)\",\"rows\":48,\"solver_changed\":false}\nok   a replay whose terminal outcome differs is refused Replay terminal outcome differs from the recording.\nFlight log REC: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/restore_refused.orfl\nok   restore test: recording starts \nok   malformed checkpoint bodies or continuous data are refused [false, false, false, false, false]\nok   a refused restore emits no reset and no fault 0 resets, 0 faults\nok   a refused restore leaves state, continuous, inputs, tape and clock unchanged \nok   a refused restore does not fault or pause the flight \nok   a refused restore leaves the recorder open \nok   the flight and its recording continue after a refused restore \nFlight log saved: /home/agent/.local/share/godot/app_userdata/A36 full Phoenix readers/test_airship_flight_log/restore_refused.orfl (31 ticks)\nok   a valid restore is accepted and keeps the flight running \nok   a valid restore announces the reset once and closes a complete log 1 resets, 31\n25 checks, 0 failed\n"
+    }
+  ],
+  "phoenix_power_comparison": {
+    "fixture": "Synthetic section; 10 kg mass; six blades; physical D=0.2 m, pitch=0.15 m, maximum RPM=8000; conventional-trainer-estimated-v1 and electric-3s-1250kv-9x6-estimated-v1 base packages; counts 1, 2, 4; scale 1; actual electric loader",
+    "scope": "Static derived package values, not physical calibration; aggregate identity is tested at common RPM separately",
+    "probe_sha256": "591d98c741b1f8a98f58f114e98821f69e33bb693bba70d375080cf00c5caefa",
+    "probe_source": "extends SceneTree\nconst Phoenix := preload(\"res://workshop/creator/phoenix/physics.gd\")\nconst Packages := preload(\"res://workshop/creator/packages.gd\")\nconst Propulsion := preload(\"res://physics/propulsion.gd\")\nconst AircraftData := preload(\"res://physics/aircraft_data.gd\")\nfunc _initialize() -> void:\n\tvar block := {format = Phoenix.FORMAT, airfoil = \"Synthetic\", section = {\n\t\tslope = 6.0, cl_zero = 0.0, cl_at_incidence = 0.0, cl_max = 1.3, cl_min = -1.3,\n\t\tcd_min = 0.02, cl_min_drag = 0.0, stall_width_deg = 4.0},\n\t\twing_lift_slope = Phoenix.helmbold(5.0), aspect_ratio = 5.0, body_drag_ratio = 0.03,\n\t\tmass_kg = 10.0, propeller = {diameter_m = 0.20, pitch_m = 0.15, max_rpm = 8000.0, blades = 6}}\n\tfor count: int in [1, 2, 4]:\n\t\tblock.propeller.count = count\n\t\tvar ids := Phoenix.derive(block, \"conventional-trainer-estimated-v1\", \"electric-3s-1250kv-9x6-estimated-v1\", 1.0)\n\t\tif ids.is_empty():\n\t\t\tprinterr(\"derive refused count=\",count)\n\t\t\tquit(1); return\n\t\tvar power: Dictionary = Packages.power(ids.power).value\n\t\tvar thrust: Dictionary = Packages.static_thrust(power, 1.0)\n\t\tvar record: Dictionary = Packages.propulsion_block(power, \"prop\", 1.0, PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0]))\n\t\trecord.erase(\"id\")\n\t\tvar errors: PackedStringArray = []\n\t\tvar loaded: Dictionary = AircraftData._electric_propulsion(errors, record)\n\t\tvar ct: float = power.propeller.ct_table.value[0][1]\n\t\tvar cp: float = power.propeller.cp_table.value[0][1]\n\t\tvar d: float = power.propeller.diameter.value\n\t\tvar n := 8000.0 / 60.0\n\t\tvar rho := 1.225\n\t\tvar force := rho*n*n*pow(d,4)*ct\n\t\tvar watts := rho*n*n*n*pow(d,5)*cp\n\t\tvar disk := PI*d*d/4.0\n\t\tvar physical_fm := pow(force,1.5)/sqrt(2.0*rho*disk)/watts\n\t\tvar values := {count=count,diameter=d,ct=ct,cp=cp,static_thrust=thrust.get(\"thrust_n\", NAN),\n\t\t\trpm=thrust.get(\"rpm\", NAN),physical_fm=physical_fm,motor_kv=power.motor.kv_rpm_per_volt.value,\n\t\t\tinertia=power.propeller.rotating_inertia.value,load_ok=not loaded.is_empty() and errors.is_empty(),errors=Array(errors)}\n\t\tprint(\"BASELINE \",JSON.stringify(values))\n\tprint(\"PHOENIX_COMPARISON_COMPLETE\")\n\tquit()\n",
+    "data": {
+      "before": {
+        "checked_report": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "faa8dca1-b063-4f97-8142-8b1873b47cd4",
+          "command": [
+            ".tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "/workspace/scratch/33140ed92393/runtime-audit-evidence/bundle-reproduction-verified/fixtures/creator/project",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/prop_before_after.gd"
+          ],
+          "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+          "started_utc": "2026-11-21T12:08:24.428178+00:00",
+          "label": "phoenix-before",
+          "log": "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/checks/phoenix-before-2f_6_qlm/engine.log",
+          "report": "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/checks/phoenix-before-2f_6_qlm/report.json",
+          "timeout_seconds": 120.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "PHOENIX_COMPARISON_COMPLETE"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 1.413554,
+          "log_bytes": 892,
+          "log_sha256": "c733202e4eaa71050badfaf9b61df956cdf149f251aafe43d856a18bf4ebb112"
+        },
+        "values": [
+          {
+            "count": 1,
+            "cp": 0.223416616761992,
+            "ct": 0.272958745142925,
+            "diameter": 0.2,
+            "errors": [],
+            "inertia": 0.000787209268223948,
+            "load_ok": true,
+            "motor_kv": 691.643175800991,
+            "physical_fm": 0.509295817894065,
+            "rpm": 8071.26984618889,
+            "static_thrust": 9.68131426771832
+          },
+          {
+            "count": 2,
+            "cp": 0.196187957925771,
+            "ct": 0.250304272924135,
+            "diameter": 0.237841423000544,
+            "errors": [],
+            "inertia": 0.00165110981935086,
+            "load_ok": true,
+            "motor_kv": 690.178459267456,
+            "physical_fm": 0.509295817894065,
+            "rpm": 8071.77071445944,
+            "static_thrust": 17.7578123957583
+          },
+          {
+            "count": 4,
+            "cp": 0.172277762473181,
+            "ct": 0.229530030302837,
+            "diameter": 0.282842712474619,
+            "errors": [],
+            "inertia": 0.00345541779455612,
+            "load_ok": true,
+            "motor_kv": 689.479381323194,
+            "physical_fm": 0.509295817894065,
+            "rpm": 8072.00863888837,
+            "static_thrust": 32.5698915135013
+          }
+        ]
+      },
+      "after": {
+        "checked_report": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "9a551a4e-6f2c-4521-959c-206bbc827ba4",
+          "command": [
+            ".tools/Godot_v4.8-beta2_linux.x86_64",
+            "--headless",
+            "--path",
+            "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/candidate",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/prop_before_after.gd"
+          ],
+          "cwd": "/workspace/scratch/33140ed92393/openrc-audit",
+          "started_utc": "2026-11-21T12:15:29.901237+00:00",
+          "label": "phoenix-after",
+          "log": "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/checks/phoenix-after-_036zbqb/engine.log",
+          "report": "/workspace/scratch/33140ed92393/runtime-audit-evidence/implementation/checks/phoenix-after-_036zbqb/report.json",
+          "timeout_seconds": 180.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [
+            "PHOENIX_COMPARISON_COMPLETE"
+          ],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 1.054338,
+          "log_bytes": 879,
+          "log_sha256": "baa6bdf9f15e47ff47e78fb8172f493243c8901558b652b2115bbf9c544ec552"
+        },
+        "values": [
+          {
+            "count": 1,
+            "cp": 0.156437971082466,
+            "ct": 0.272958745142925,
+            "diameter": 0.2,
+            "errors": [],
+            "inertia": 0.000549289418112383,
+            "load_ok": true,
+            "motor_kv": 692.851132553606,
+            "physical_fm": 0.727349937982398,
+            "rpm": 8070.85437012511,
+            "static_thrust": 9.68031758419922
+          },
+          {
+            "count": 2,
+            "cp": 0.0553091750937383,
+            "ct": 0.136479372571462,
+            "diameter": 0.282842712474619,
+            "errors": [],
+            "inertia": 0.00110498802700687,
+            "load_ok": true,
+            "motor_kv": 690.838860529367,
+            "physical_fm": 0.727349937982398,
+            "rpm": 8071.54528281167,
+            "static_thrust": 19.3639500791621
+          },
+          {
+            "count": 4,
+            "cp": 0.0195547463853082,
+            "ct": 0.0682396862857311,
+            "diameter": 0.4,
+            "errors": [],
+            "inertia": 0.00221639875657088,
+            "load_ok": true,
+            "motor_kv": 689.837174437768,
+            "physical_fm": 0.727349937982398,
+            "rpm": 8071.88695845257,
+            "static_thrust": 38.73117900016
+          }
+        ]
+      }
+    }
+  },
+  "superseded_attempts": [
+    "Earlier 60 Hz Phoenix fixtures had missing resources; gear stiction messages do not establish a production defect.",
+    "Earlier airship empty-field adaptations were scoped checks. Final unmodified session/log tests use real terrain and obstacle metadata.",
+    "The first complete airship session attempt lacked parked-aircraft metadata, raised a script error and timed out; it is a failed fixture attempt, not a passing test. The first complete log attempt likewise did not qualify the missing obstacle inventory."
+  ],
+  "limits": [
+    "No complete app import or full CI qualification is asserted by these fixtures.",
+    "No actual-native flight, rendered flight, target-hardware performance, pilot or physical calibration qualification.",
+    "Identical-propeller steady aggregation only; mixed propulsion remains approximate.",
+    "General late-reset atomicity and recorder failure notifications remain open.",
+    "Blimp rotor coast and unpowered actuator hold are approximations; complete powered mechanical/electrical energy closure remains unqualified."
+  ]
+}

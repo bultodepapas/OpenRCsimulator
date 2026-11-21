@@ -96,6 +96,10 @@ audio-enabled shutdown remains open and was not silently accepted as clean.
 
 **D11i / v0.2.2 (2026-11-10).** The owner authorized a 30% elevator-moment consistency band for the electric Stik, guarded by equality with the donor's raw aerodynamic and reference data in both electrical modes. This accepts a known discrepancy between internal models while retaining explicit lineage rejection and the other aircraft's existing bands. It does not qualify physical elevator response. [Scope and limits](UGLY-STIK-PLAN.md#limits-and-acceptance).
 
+### Preserve physical invariants in estimated imported models
+
+**IAQ / AC-PX / BL, A36 (2026-11-21).** An equivalent set of identical propellers preserves total disk area and summed thrust, torque and physical rotor inertia at common RPM/inflow; dimensional body drag is independent of the chosen wing reference. Passive fins do non-positive work at held deflection. Battery depletion belongs to the kernel's located-event transaction, with a checkpointed connection state; an estimated coast and unpowered actuator hold are explicit approximations. Version changed laws and derivations so existing identities cannot silently acquire new physics. These invariants constrain an estimate without certifying calibration, mixed propulsion, total energy closure or flight acceptance. [Derivations, compatibility and evidence](research/project-audit-2026-11-21/README.md#implemented-invariants-and-compatibility).
+
 ### Share mechanics while keeping propulsion sources distinct
 
 **G2 / NITRO / AV.** Electrical, turbine, two-stroke and true four-stroke sources retain their own power and lifecycle laws; supported coupled routes solve shaft/body reactions at the same integration stages. Installed profiles bind source data and calibration instead of borrowing a rating as installed performance. This permits shared mechanics without pretending all legacy routes use the newest shaft model. [Propulsion contract](PROPULSION-CORE-PLAN.md), [glow guide](GLOW-ENGINES.md), [turbine coupling](research/turbine-realism/AV-20/README.md).
