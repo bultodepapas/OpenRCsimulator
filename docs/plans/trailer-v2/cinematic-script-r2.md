@@ -4,7 +4,7 @@
 **21 November 2026 · SCRIPT ONLY · Not a capture plan, implementation or approved edit**  
 **Target runtime:** 90 seconds; no voice-over required. The picture and original game sound must tell the story even on mute.  
 **Working positioning:** "Your RC world. Your way."  
-**Script authority:** this Revision 2 supersedes the first-pass timing in storyboard-90s.md. The shot bible remains source guidance, not a claim that the takes have been filmed.
+**Script authority:** this Revision 2 supersedes the original first-pass timing. storyboard-90s.md now contains the synchronized Revision 2 summary. The shot bible remains source guidance, not a claim that the takes have been filmed.
 
 ### Narrative principle
 The first cut says **there is more than one kind of RC**. The second says **you're at the controls**. The last says **you can make this world your own**. We do not spend 90 seconds reading features; we watch them *happen*. Every change of camera, vehicle, weather, color or model scale should answer an emotional question: "What else can I do here?"
