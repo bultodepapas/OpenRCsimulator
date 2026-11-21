@@ -9,6 +9,7 @@ const Dynamics := preload("res://physics/airship/airship_dynamics.gd")
 const EventStep := preload("res://physics/event_step.gd")
 const Session := preload("res://sim/airship/session.gd")
 const AirshipLog := preload("res://sim/airship/flight_log.gd")
+const Sim := preload("res://sim/simulation.gd")
 
 var _count := 0
 var _failed := 0
@@ -282,6 +283,30 @@ func _session_depletion() -> void:
 		and session.continuous_snapshot().to_byte_array() == before_cont.to_byte_array() \
 		and session.tape.to_byte_array() == saved_tape and var_to_bytes(session.options) == saved_options \
 		and session.fault_reason.is_empty() and not session.paused)
+	# A36 G2: prepare validates the exact release reset() installs on a detached kernel. A kernel refusal there is
+	# reported before commit; the installed flight, tape, recorder and signals stay untouched.
+	var kernel_probe: Node = Sim.new()
+	var nan_body := PackedFloat64Array()
+	nan_body.resize(RB.SIZE)
+	nan_body.fill(NAN)
+	var late: String = Session._probe_reset(kernel_probe, session.sim.model, session.model, session.environment,
+		{body = nan_body, continuous = before_cont.duplicate()})
+	kernel_probe.free()
+	_check("a detached kernel refusal is reported without touching the installed flight", not late.is_empty()
+		and reset_count[0] == 0 and recorder.recording and session.sim.tick == first_tick
+		and session.state_snapshot().to_byte_array() == before_body.to_byte_array()
+		and session.continuous_snapshot().to_byte_array() == before_cont.to_byte_array()
+		and session.tape.to_byte_array() == saved_tape and session.fault_reason.is_empty(), late)
+	var release: Dictionary = Session._release_state(session.options, session.model, session.environment, {})
+	var accept_probe: Node = Sim.new()
+	var accepted: String = Session._probe_reset(accept_probe, session.sim.model, session.model, session.environment, release)
+	accept_probe.free()
+	_check("prepare's release is exactly the installed start and the detached kernel accepts it", release.ok
+		and accepted.is_empty() and release.body.to_byte_array() == session.start_state.to_byte_array()
+		and release.continuous.to_byte_array() == session.start_continuous.to_byte_array(), accepted)
+	var refused_out: bool = not session.prepare({}, {data_path = "res://data/airships/a36-missing.json", altitude_m = 100.0})
+	_check("a missing data file is refused before the running flight changes", refused_out and reset_count[0] == 0
+		and session.sim.tick == first_tick and session.tape.to_byte_array() == saved_tape and recorder.recording)
 	session.resetting.disconnect(on_reset)
 	var event_count := 0
 	var event_offset := -1

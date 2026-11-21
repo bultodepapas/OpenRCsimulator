@@ -90,9 +90,8 @@ static func default_options() -> Dictionary:
 		start = "air", altitude_m = 6.0, north_offset_m = 22.0, east_offset_m = 0.0, heading_deg = 90.0}
 
 
-## Reject malformed start options and derive the candidate configuration before
-## replacing the flight. General reset-failure atomicity still needs a detached
-## candidate reset; a late reset refusal can fault the installed session.
+## Reject malformed start options, derive the candidate configuration and validate its release on a detached
+## kernel before replacing the flight (A36 G2). A refusal changes no installed state, tape, signal or recorder.
 func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var opts := default_options()
 	opts.merge(requested, true)
@@ -180,17 +179,32 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var captured_env := candidate_env
 	var wind := candidate_env.wind(0.0)
 	var ground := func(n: float, e: float) -> PackedFloat64Array: return captured_env.ground(n, e)
+	# The stage reads the inputs of whichever kernel evaluates it: the detached probe below, then the installed one.
+	var input_owner := {kernel = null}
 	vehicle.stage = func(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> Dictionary:
-		return Dynamics.stage(captured_model, body, continuous, sim.inputs, wind, ground)
+		return Dynamics.stage(captured_model, body, continuous, input_owner.kernel.inputs, wind, ground)
 	if not VehicleModel.validate(vehicle).ok:
 		load_error = "airship vehicle model is malformed"
 		return false
+	var candidate_options := opts.duplicate(true)
+	candidate_options.heaviness_kg = heaviness
+	var release := _release_state(candidate_options, captured_model, candidate_env, field)
+	if not release.ok:
+		load_error = release.message
+		return false
+	var probe: Node = Sim.new()
+	input_owner.kernel = probe
+	var refusal := _probe_reset(probe, vehicle, captured_model, candidate_env, release)
+	probe.free()
+	if not refusal.is_empty():
+		load_error = "airship reset refused: " + refusal
+		return false
 	# Commit.
+	input_owner.kernel = sim
 	data = loaded.data
 	model = captured_model
 	source_sha256 = loaded.source_sha256
-	options = opts
-	options.heaviness_kg = heaviness
+	options = candidate_options
 	environment = candidate_env
 	_wind_ned = wind
 	_ground = ground
@@ -203,6 +217,68 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	prepared = true
 	load_error = ""
 	return reset()
+
+
+## Validate a candidate release on a detached kernel with the same model, mass properties and zero inputs that
+## reset() installs; returns an empty message when the kernel would accept it. The installed kernel is not touched.
+static func _probe_reset(probe: Node, vehicle: VehicleModel, candidate_model: Dictionary, env: SimEnvironment,
+		release: Dictionary) -> String:
+	if not probe.set_model(vehicle):
+		return "vehicle model refused"
+	probe.mass = candidate_model.mass
+	probe.inertia = candidate_model.inertia.duplicate()
+	probe.gravity = env.gravity
+	probe.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	probe.aux = PackedFloat64Array()
+	probe.modes = PackedInt64Array()
+	probe.continuous = release.continuous
+	var checked: Dictionary = probe.prepare_reset(release.body)
+	return "" if checked.ok else str(checked.get("message", "refused"))
+
+
+## Release state: airborne at the chosen height, or resting on the gear (datum lowered until the lowest gear or hull
+## witness touches). Pure in its arguments, so prepare() validates exactly what reset() installs.
+static func _release_state(opts: Dictionary, candidate_model: Dictionary, env: SimEnvironment,
+		field: Dictionary) -> Dictionary:
+	var heading := deg_to_rad(float(opts.heading_deg))
+	var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
+	var north := float(pilot.north) + float(opts.north_offset_m)
+	var east := float(pilot.east) + float(opts.east_offset_m)
+	var under := env.ground(north, east)
+	if under.size() != 3 or not is_finite(under[0]):
+		return {ok = false, message = "start position is outside the field"}
+	var height := under[0]
+	var down := -height - float(opts.altitude_m)
+	var pitch := 0.0
+	if opts.start == "ground":
+		# Stand on both wheels: pitch so the front and rear contact points are level, then lower the datum until the
+		# lowest gear or hull witness touches the terrain.
+		var gear: Array = candidate_model.contacts.gear
+		if gear.size() >= 2:
+			var front: PackedFloat64Array = gear[0].point
+			var rear: PackedFloat64Array = gear[1].point
+			pitch = M.atan2_(front[2] - rear[2], front[0] - rear[0])
+	var q := M.q_from_euler(heading, pitch, 0.0)
+	if opts.start == "ground":
+		var lowest := -INF
+		for gear_item: Dictionary in candidate_model.contacts.gear:
+			lowest = maxf(lowest, M.q_rotate(q, gear_item.point)[2])
+		var hull: PackedFloat64Array = candidate_model.contacts.hull_points
+		for i in hull.size() / 3:
+			lowest = maxf(lowest, M.q_rotate(q, hull.slice(3 * i, 3 * i + 3))[2])
+		down = -height - lowest
+	var body := PackedFloat64Array([north, east, down, 0.0, 0.0, 0.0, q[0], q[1], q[2], q[3], 0.0, 0.0, 0.0])
+	# Calm release moves with the air: the hull starts at rest relative to the wind (zero air-relative velocity).
+	var wind_body := M.q_rotate(M.q_conj(q), env.wind(0.0))
+	if opts.start == "air":
+		body[3] = wind_body[0]
+		body[4] = wind_body[1]
+		body[5] = wind_body[2]
+	var continuous := PackedFloat64Array()
+	continuous.resize(Data.CONTINUOUS_SIZE)
+	continuous[Data.SOC] = candidate_model.battery.initial_soc
+	continuous[Data.BATTERY_CONNECTED] = 1.0
+	return {ok = true, body = body, continuous = continuous, message = ""}
 
 
 ## Trial stages may have negative SOC while still connected; only accepted frames
@@ -227,42 +303,13 @@ static func _battery_depleted(combined: PackedFloat64Array, index: int) -> Packe
 func reset() -> bool:
 	if not prepared:
 		return false
+	var release := _release_state(options, model, environment, _field)
+	if not release.ok:
+		load_error = "airship reset refused: " + str(release.message)
+		return false
 	resetting.emit()
-	var heading := deg_to_rad(float(options.heading_deg))
-	var pilot: Dictionary = _field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
-	var north := float(pilot.north) + float(options.north_offset_m)
-	var east := float(pilot.east) + float(options.east_offset_m)
-	var height := environment.ground(north, east)[0]
-	var down := -height - float(options.altitude_m)
-	var pitch := 0.0
-	if options.start == "ground":
-		# Stand on both wheels: pitch so the front and rear contact points are level, then lower the datum until the
-		# lowest gear or hull witness touches the terrain.
-		var gear: Array = model.contacts.gear
-		if gear.size() >= 2:
-			var front: PackedFloat64Array = gear[0].point
-			var rear: PackedFloat64Array = gear[1].point
-			pitch = M.atan2_(front[2] - rear[2], front[0] - rear[0])
-	var q := M.q_from_euler(heading, pitch, 0.0)
-	if options.start == "ground":
-		var lowest := -INF
-		for gear_item: Dictionary in model.contacts.gear:
-			lowest = maxf(lowest, M.q_rotate(q, gear_item.point)[2])
-		var hull: PackedFloat64Array = model.contacts.hull_points
-		for i in hull.size() / 3:
-			lowest = maxf(lowest, M.q_rotate(q, hull.slice(3 * i, 3 * i + 3))[2])
-		down = -height - lowest
-	var body := PackedFloat64Array([north, east, down, 0.0, 0.0, 0.0, q[0], q[1], q[2], q[3], 0.0, 0.0, 0.0])
-	# Calm release moves with the air: the hull starts at rest relative to the wind (zero air-relative velocity).
-	var wind_body := M.q_rotate(M.q_conj(q), _wind_ned)
-	if options.start == "air":
-		body[3] = wind_body[0]
-		body[4] = wind_body[1]
-		body[5] = wind_body[2]
-	var continuous := PackedFloat64Array()
-	continuous.resize(Data.CONTINUOUS_SIZE)
-	continuous[Data.SOC] = model.battery.initial_soc
-	continuous[Data.BATTERY_CONNECTED] = 1.0
+	var body: PackedFloat64Array = release.body
+	var continuous: PackedFloat64Array = release.continuous
 	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	sim.aux = PackedFloat64Array()
 	sim.modes = PackedInt64Array()
