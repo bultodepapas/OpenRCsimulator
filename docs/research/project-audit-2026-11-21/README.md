@@ -8,6 +8,10 @@ The owner requested one GitHub branch containing every finding and continued phy
 
 The [21 November second-pass physics and mathematical review](second-pass-physics-2026-11-21.md) adds two **source-confirmed** FPV defects: rotor aerodynamic coefficients failing to respond to the stage's own changing density (R2-F01), and a 90-degree Angle-heading reference seam near vertical pitch (R2-F02). The [portable independent equation probes](probes/physical_crosschecks.py) quantify both without claiming an application or Godot test. It also records a constructed blimp bus-power candidate (R2-I01) and separately quantifies already-known blimp buoyancy, FPV rotor inflow/ground effect, wing spanwise drag and turbine fuel limitations. No new runtime fix or physical calibration is claimed in R2. The original A36 findings and completed software gates below retain their distinct status.
 
+## Third-pass energy, mass and numerical audit (A36 R3)
+
+The [third-pass source and physical investigation](third-pass-physics-2026-11-21.md) adds **R3-F01**, a source-confirmed blimp control/power inconsistency: a zero-throttle rotor coast still draws pack current calculated from speed alone (shipped-data half-speed witness **1.009759 A**, full-speed witness **8.294661 A**). It also records **R3-G01**, the Nitro truck's 100 g fuel state changing without recalculating body mass, CG or inertia (a **0.980665 N** full-to-empty weight delta), and **R3-O01**, shallow model and deep input-control copies in the 240 Hz Nitro hot path. The [independent Python arithmetic](probes/third_pass_power_and_mass.py) is checked separately from actual Godot stages; no new accepted-session, native or target-hardware performance qualification is claimed. R3 contains negative controls for Euler rigid-body equations, generalized inertia, rotorcraft atmosphere admission and divergence-free thermal streamfunctions; it does not invent defects in those areas. The R2 findings remain open and the original A36 evidence remains immutable.
+
 ## Original evidence
 
 | Artifact | Purpose |
