@@ -1,58 +1,95 @@
-# OPEN RC SIMULATOR — Trailer 2.0, storyboard Revision 2
+# OPEN RC SIMULATOR — 90-second storyboard, Revision 3
 
-**Current story timeline** as of 2026-11-21. The complete director's story, shot descriptions, sound bridges, camera truth and disclosure rules are in **[cinematic-script-r2.md](cinematic-script-r2.md)**. The earlier first-pass T01–T25 timing is superseded. Music timing is *not* locked; no footage has been filmed for this cut.
+**Current source:** [Director's screenplay R3](cinematic-script-r3.md). **Date:** 21 November 2026.
+**Status:** paper edit. These are proposed timeline positions in seconds, not source-media timecodes. No clips, score grid or rendered animatic have been accepted. The frame budget assumes 60 fps; all boundaries below fall on whole frames.
 
-## Main 90-second timeline
+**Edit concept:** action earns attention; mechanisms make control tangible; variety becomes personal expression; a clear invitation ends the film.
 
-| Time | IDs | Picture and story beat | Main camera(s) | On-screen copy |
-|---|---|---|---|---|
-| 00:00–00:06 | R2-01…03 | **Instant hook:** Corsair crossing lake/reflection → genuinely inverted Vantage Jet → MONSTER CAR 2 jump/landing | low shoreline; external ground fly-by; tire-level | none |
-| 00:06–00:19 | R2-04 | **13 selectable configurations** in 13 moving, identifiable microshots | alternate ground pilot, chase, orbit, fly-by, FPV and ground vehicle cameras | CHOOSE YOUR MACHINE. |
-| 00:19–00:29 | R2-05…08 | **FPV drone race:** LED start lights → two gate passes from rigid onboard FPV → chase gate crossing → real timer/result only if achieved | true onboard FPV → quad chase → FPV | RACE THE GATES. |
-| 00:29–00:35 | R2-09…10 | **Helicopter** rotor/hover → forward pass; **blimp** quiet drifting beat | controlled external helicopter, optional inspector macro; blimp side | none |
-| 00:35–00:42 | R2-11…13 | **Different camera views** of one airplane; **telemetry widgets**; **classic instruments** | fixed-wing ground pilot → fly-by → chase/orbit; real Player and Cockpit widget presets | EVERY ANGLE. / LIVE FLIGHT DATA. |
-| 00:42–00:50 | R2-14…16 | **Colored smoke** against day sky → golden hour → RGB lights at blue hour/night | chase/ground pilot, close tracking at night | DAY. DUSK. NIGHT. |
-| 00:50–00:59 | R2-17…19 | **Tiny/giant scale:** real Workshop control; genuine giant and mini trial clips; *same-frame three-size cinematic choreography* 500/100/10% | stable runway landmark, near-frontal three-aircraft comparison | SAME PLANE. ANY SIZE. |
-| 00:59–01:11 | R2-20…22 | **Corsair lake hero:** warm low flyover and **matching skin/reflection** cuts, camera holds on moving mirror | low lakeshore three-quarter, tracking side | MAKE IT YOURS. |
-| 01:11–01:18 | R2-23…25 | **Creator:** import compatible preview → adjust setup → *eligible Creator trial flight* | genuine Creator UI + supported trial camera | IMPORT. CONFIGURE. TEST-FLY. |
-| 01:18–01:22 | R2-26…27 | **Real camera impacts:** material grime and cracked lens; optional correctly triggered person/pilot blood effect, separate family-safe alternative | authentic near close-up/FPV lens | none |
-| 01:22–01:27 | R2-28…30 | **Finish in motion:** Bisonte electric jump/landing → MONSTER CAR 2 nitro/neon/dirt → optional colored smoke cinematic crescendo | ground low / side landing / sweeping sky | none |
-| 01:27–01:30 | R2-31 | **OPEN RC SIMULATOR logo + verified download invitation** | branded end card | YOUR RC WORLD. YOUR WAY. / FREE · OPEN SOURCE · EARLY ALPHA |
+## Exact cut table
 
-## The 13-vehicle lightning reel (R2-04) — 13 seconds
+Classes: **G** = actual game session, including real flight HUD, ground controls and eligible Creator trial; **U** = genuine non-flight UI; **P** = cinematic presentation/inspection; **E** = editorial end card. These classify the planned source, not completed captures. The entire livery orbit is conservatively classified P.
 
-| Order | Model | Recognizable movement | Camera |
-|---|---|---|---|
-| 01 | Ugly Stick gas | runway lift | pilot |
-| 02 | Ugly Stick Electric 6S | close electric pass | tracking |
-| 03 | Extra 300S | airborne roll | chase |
-| 04 | P-51D Mustang | bank against distant sky | fly-by |
-| 05 | Turbo Lumber Evolution | low high-wing pass | ground |
-| 06 | MoonRunner X99 | wing silhouette climb | low external |
-| 07 | X-Cell .60/HX-700-visual helicopter | hover | side tracking |
-| 08 | ION R5 quad | one gate approach | true FPV |
-| 09 | 5 m blimp | sideways hover / quiet turn | orbit |
-| 10 | Bisonte MT8 | dirt ramp entry | wheel-level |
-| 11 | MONSTER CAR 2 | nitro smoke/exhaust/tires | close rear |
-| 12 | F4U Corsair | folding wing/gear on ground | close-up |
-| 13 | Vantage Jet | turbine crossing pass | ground fly-by |
+| ID | In (s) | Out (s) | Duration (s) | Class | Picture / transition |
+| --- | ---: | ---: | ---: | --- | --- |
+| R3-01 | 0 | 3 | 3 | G | Vantage Jet, genuine inverted external pass; turbine opens the film. |
+| R3-02 | 3 | 6 | 3 | G | MONSTER CAR 2 nitro jump through landing; hard sound cut. |
+| R3-03 | 6 | 8.5 | 2.5 | G | Electric 6S Stick lateral pass; readable identity label. |
+| R3-04 | 8.5 | 11 | 2.5 | G | MoonRunner shallow climbing bank, whole flying-wing outline. |
+| R3-05 | 11 | 14 | 3 | G | Blimp with envelope and gondola against trees; quieter breath. |
+| R3-06 | 14 | 15.5 | 1.5 | G | ION R5 exterior course geography and end of actual countdown. |
+| R3-07 | 15.5 | 20 | 4.5 | G | Rigid FPV approach, entry and gate clearance; second valid gate if legible. |
+| R3-08 | 20 | 22 | 2 | G | Valid exterior gate pass; separate take unless continuity is actually recorded. |
+| R3-09 | 22 | 23.5 | 1.5 | G | Separate ION R5 FPV attempt: one genuine non-blood contact/lens effect, if clear and qualified. |
+| R3-10 | 23.5 | 26 | 2.5 | G | Corsair: final part of wing spreading; stop/lock pose. |
+| R3-11 | 26 | 27.25 | 1.25 | G | Corsair: opposing ailerons, fixed-wing reference. |
+| R3-12 | 27.25 | 28.25 | 1 | G | Corsair: elevator detail. |
+| R3-13 | 28.25 | 29.25 | 1 | G | Corsair: rudder detail from distinct angle. |
+| R3-14 | 29.25 | 30.75 | 1.5 | G | Corsair: flap deployment excerpt ending in a settled pose. |
+| R3-15 | 30.75 | 32.5 | 1.75 | G | Corsair: sliding canopy excerpt and hold. |
+| R3-16 | 32.5 | 35.5 | 3 | P | Labelled HX-700 studio inspection: stopped-rotor collective pitch. |
+| R3-17 | 35.5 | 38.5 | 3 | G | Playable X-Cell .60, hover into forward movement; explicit context change. |
+| R3-18 | 38.5 | 39.5 | 1 | G | P-51 clean external view establishes aircraft and direction. |
+| R3-19 | 39.5 | 41.5 | 2 | G | P-51 with genuine Player widgets; no synthetic values. |
+| R3-20 | 41.5 | 43.5 | 2 | G | P-51 with Cockpit instrument widgets; external view, not interior camera. |
+| R3-21 | 43.5 | 46.5 | 3 | G | Extra 300S warm-light bank/climb and qualified show smoke. |
+| R3-22 | 46.5 | 49.5 | 3 | G | Turbo Lumber readable night/blue-hour lighting pass; qualified profile required. |
+| R3-23 | 49.5 | 51 | 1.5 | U | Baseline Ugly Stick Workshop scale control. |
+| R3-24 | 51 | 52.75 | 1.75 | G | Actual 500% Stick trial pass by fixed landmark. |
+| R3-25 | 52.75 | 54.5 | 1.75 | G | Actual 10% Stick trial pass at comparable depth/angle. |
+| R3-26 | 54.5 | 58.5 | 4 | P | Same-depth 500/100/10% trio; span labels and cinematic-comparison identification. |
+| R3-27 | 58.5 | 65.5 | 7 | P | Preserve continuous Corsair orbit and full 13-stock-scheme editorial cycle; final skin holds. |
+| R3-28 | 65.5 | 71.5 | 6 | G | Matching-direction Corsair lake pass; final skin held, corresponding actual reflection if qualified. |
+| R3-29a | 71.5 | 73.5 | 2 | U | Creator: one accepted, rights-cleared imported preview. |
+| R3-29b | 73.5 | 75.5 | 2 | U | Same model: one readable setup adjustment and result. |
+| R3-29c | 75.5 | 78.5 | 3 | G | Same eligible model in Creator trial flight; experimental qualification. |
+| R3-30 | 78.5 | 83 | 4.5 | G | Bisonte MT8 electric jump, landing and suspension settle. |
+| R3-31 | 83 | 85 | 2 | G | Successful single-aircraft flourish; first available timing donor. |
+| R3-32 | 85 | 90 | 5 | E | Stable logo, PLAY FREE, official URL, open-source/early-alpha status. |
 
-The jet's **inverted pass** is deliberately a longer opening *hero*, distinct from this routine jet fly-by. The main FPV sequence later shows an actual multi-gate attempt.
+**Runtime math:** 65.5 G + 5.5 U + 14 P + 5 E = **90.0 seconds**, planned **5,400 frames**. Direct session footage is about 72.8%; game sessions plus UI about 78.9%. This is a paper calculation, not measured media duration or gameplay performance.
 
-## Explicit camera truth
+## Complete fleet coverage — distributed, not repeated
 
-- **Fixed-wing playable:** pilot, chase (horizon or 3D follow), fly-by, orbit, close-up. A native jet cockpit/onboard mode is **not** confirmed in the current fixed-wing camera cycle. "Cockpit" is an instrument-**widget preset**, not a camera.
-- **Quad:** real rigid onboard FPV with roll and uptilt, chase, field pilot; race OSD and visible gate effects are real when the race is actually running.
-- **Trucks:** chase, operator/pilot, orbit and course overview, chosen according to actual camera path.
-- **Helicopter:** film actual playable flight; the articulated HX-700 inspection macro may be a separate presentation insert, correctly disclosed.
-- **Scale trio:** three Ugly Sticks 500/100/10% in the same shot is available in the earlier presentation capture system, **not simultaneous gameplay physics or multiplayer**.
-- **Smoke:** a qualified Workshop colored-smoke profile is a player feature; the optional multiairframe smoke formation is a *presentation-only choreography*.
-- **Jet inverted:** an ambitious storyboard target, pending a native, no-fake sustained/inverted rehearsal.
-- **Corsair water:** optional planar High feature needs to really mirror the specific Corsair/skin on Windows RTX3090; no post-created reflection.
-- **Impacts:** crack needs valid camera/contact; red curtain needs person/pilot strike; a terrain crash does not imply blood.
+| Visible selection | Main identification | Why it belongs |
+| --- | --- | --- |
+| Ugly Stick, baseline .61 glow reference | R3-23…26 | Supported size change and real scaled trial results. |
+| Ugly Stick Electric 6S | R3-03 | Electric variant explicitly identified; distinct from baseline glow. |
+| Extra 300S | R3-21 | Aerobatic character and qualified coloured smoke. |
+| P-51D Mustang | R3-18…20 | Aircraft presence retained across view/widget examples. |
+| F4U-1D Corsair | R3-10…15, R3-27…28 | Mechanical character, original skin orbit and lake payoff. |
+| Vantage Jet | R3-01 | Turbine speed and genuine inverted-or-banked action. |
+| Turbo Lumber Evolution | R3-22 | High-wing silhouette and a qualified dusk/night look. |
+| MoonRunner X99 | R3-04 | Flying-wing silhouette in a clear bank. |
+| X-Cell .60 research helicopter | R3-17 | Actual playable hover/forward movement. The inspector is not another fleet selection. |
+| ION R5 | R3-06…08 | Actual local gate objective and rigid FPV. |
+| RC blimp, 5 m | R3-05 | Quiet flight contrast, full silhouette. |
+| Bisonte MT8 | R3-30 | Electric truck, complete jump/landing and suspension. |
+| MONSTER CAR 2 | R3-02 | Nitro truck, separately identifiable sound and body. |
 
-## Shot pacing review
+## Title and disclosure placement
 
-Every change of view should clarify action; the 90-second reel stays mostly gameplay and uses no long menus. Give **drone gates 10 seconds**, **cameras/widgets 7**, **three-size aircraft 9**, **Corsair skin/reflection 12**, **night/smoke 8**, and **heli/blimp 6**. If the cockpit-style gauges or FPV OSD cannot be read, trade microshot seconds for legibility, rather than add tiny text. Keep engines present in audio but avoid overpowering music, based on the former v9.13 rotor correction.
+| Interval | Planned copy | Readability rule |
+| --- | --- | --- |
+| 6–8.5 | UGLY STICK · ELECTRIC 6S | One necessary variant label; avoid a second slogan. |
+| 14–17 | RACE THE GATES. | Clear of actual gate, countdown and OSD. |
+| 23.5–27.5 | TAKE CONTROL. | Same position across first ground inserts; never label every part at speed. |
+| 32.5–35.5 | HX-700 · MECHANICAL INSPECTION | Persistent and readable; distinct studio context. |
+| 35.5–38.5 | X-CELL .60 · RESEARCH HELICOPTER | Identify the transition to the actual playable aircraft. |
+| 49.5–54.5 | UGLY STICK · .61 GLOW · 10%–500% | Specific to supported baseline model; actual control/result. |
+| 54.5–58.5 | CINEMATIC SIZE COMPARISON + 7.62 m / 1.52 m / 15 cm | Place labels at corresponding aircraft; phone test required. |
+| 58.5–62.5 | MAKE IT YOURS. | Leave space for model; remove before lake. |
+| 58.5–65.5 | LIVERY SHOWCASE | Small but readable identification, plus eventual description disclosure. |
+| 71.5–78.5 | IMPORT · EXPERIMENTAL TEST FLIGHT | One persistent line across preview, setup and eligible trial; clear of actual controls. |
+| 85–90 | Logo, PLAY FREE, verified URL, OPEN SOURCE · EARLY ALPHA | No extra feature list or competing tagline. |
 
-**Not locked:** song, beat grid, proof of inverted jet, film camera angles, audio rights, final title copy, operational acceptance. Film implementation comes later.
+Other vehicle names are optional only when they improve identification. Every name and disclosure counts toward reading load. The labels above are working copy, not a claim that a typography test has passed.
+
+## Where the edit breathes and where it is vulnerable
+
+The blimp, complete FPV passage, seven-second orbit and six-second lake hold contrast with the mechanical montage. Principal timing risks are the one-second tail inserts, two-second widget views, 1.5-second contact effect and mini-aircraft readability. Do not solve these by smaller text or faster playback.
+
+R3-31 provides one shared two-second reserve. Allocate it only once, whether to mechanism readability, a full unhurried orbit or a complete opening landing. If more than one fix needs it, make another explicit trim or prepare a longer alternate; do not borrow the same seconds twice. Any alternate changes intermediate positions and must be reflected here and in the screenplay before it becomes current. Preserve the full orbit, the six-second lake hold and five-second end card; the orbit duration may increase when the shared reserve is allocated to it. Removing a feature, rather than adjusting timing, requires an explicit recorded coverage change.
+
+## Review status
+
+Script arithmetic and source/claim auditing are possible now. Full-motion, mute, phone, audio, reflection, image-quality and delivery reviews require future media. The [audit](script-audit-r3-2026-11-21.md) records actual checks; the [shot bible](shot-bible.md) and [mechanics sheet](mechanical-sequences.md) define framing. No EDL or source in/out points are fabricated.

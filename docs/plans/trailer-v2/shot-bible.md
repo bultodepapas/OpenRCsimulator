@@ -1,60 +1,87 @@
-# Trailer 2.0 — shot bible and vehicle research
+# Trailer 2.0 — shot bible, Revision 3
 
-All figures here are *composition proposals*, not flying instructions or results from actual filming. Every proposed shot is pending capture/approval.
+**Authority:** [screenplay R3](cinematic-script-r3.md); exact timing and all 13 selections live in the [storyboard](storyboard-90s.md).
+**Status:** composition proposals, source conditions and future acceptance; no shots newly captured. Camera descriptions specify the image we want, not a selected software package or a guaranteed player camera.
 
-**Script chronology notice (Revision 2):** the Txx references below belong to the first-pass story. The current, superseding 90-second screenplay uses R2-01 through R2-31 in [cinematic-script-r2.md](cinematic-script-r2.md). Use its timecodes for story review; this file remains the thematic camera/feature shot bible.
+## Hero shot cards
 
-## A. F4U Corsair over reflected lake — signature sequence (T01, T12–T14)
-**Goal:** an unforgettable image of the Corsair, its paint scheme and its real-time mirrored shape passing over the Club field lake. Show airframe and lake in the same shot, shoreline/trees as scale reference and a discernible moving mirrored silhouette.
+Lens values are approximate full-frame-equivalent visual references. They are not measured game FOVs. G, U and P source classes follow the storyboard.
 
-- Camera: shore-level ~0.4–1.5 m above the lake mean plane as a first artistic test, three-quarter front/side tracking, moderately long lens and a second low-wide safety angle. Place water in lower 30–55% of frame; keep horizon, wings and reflection inside frame.
-- Lighting: calm wind, bright fair/broken cloud, low-to-medium sun angle. Golden hour version only if silhouettes and actual water mirror remain recognizable; don't choose a black backlit paint scheme as the first demonstration.
-- Flight: plan a low smooth approach with useful banking/roll only if physics and terrain permit; the nominal 2–5 m height idea is a *visual target subject to safety/actual crash margin*, not an authorized flight profile.
-- Mirror technology: the current [planar lake adapter](../../../app/render/lake/lake_planar_reflection.gd) requires High/Forward+ and OPENRC_LAKE_REFLECTIONS=planar. Its [2026-10-22 Windows RTX3090 proof](../../research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md) used a Vantage Jet, **not** the Corsair. It was optional/default-off, not a guaranteed shipped High effect.
-- Skin sequence: select a curated handful of high-contrast Corsair liveries, then capture identical camera/flight views or a qualified presentation-only live material switch. Edit on beats; each livery's **reflected color must match**. A skin changes **between takes or in presentation/edit**, not player-controlled mid-flight.
-- Capture variants: clean wide / close crossing / livery changes / independent water control shot / final wide; compare with planar OFF. Reject if mirrored shape clips, disappears, mismatches skin, or only appears as a static cubemap tint.
-- Fallback: documented jet moving reflection, but keep the Corsair over lake as a genuine non-reflection shot instead of inventing a mirror.
+| Shot | Purpose / source | Start and end frame; action | Camera intent / stable anchor | Failure and fallback |
+| --- | --- | --- | --- | --- |
+| R3-01 jet | Immediate flight excitement / G | Enter already large; hold genuine inverted attitude through crossing. | External fixed/short pan, ~35–50 mm feel; level horizon and ground establish orientation. | No fake world rotation. If rehearsal fails, use a real upright banked pass at same length. |
+| R3-02 / 30 trucks | Complete action and two personalities / G | Ramp lip, apex, touchdown and first rebound; distinct nitro/electric vehicles. | Tire-height side wide/medium-wide, ~28–40 mm feel; fixed ramp and dirt surface. | Cropped landing or too-small body fails. Choose a lower/shorter actual jump or borrow flourish time. |
+| R3-06…08 quad | Spectator understands the course, then becomes pilot / G | Exterior gate/start geography → rigid FPV approach/entry/clearance → actual external valid pass. | Exterior stays outside gate line; onboard view is genuinely body-fixed. Gate number, opening and guidance are anchors. | No fabricated score or synced-replay promise. One clear valid pass can replace two confused ones. |
+| R3-10…15 Corsair | Controls become tangible / G | Wings finish spreading; separate aileron, elevator, rudder, flap and canopy checks. | Predominantly static details with fixed surfaces visible. [Mechanics sheet](mechanical-sequences.md) owns angles, travel and constraints. | No speed-up to fake full travel. Tail details can borrow up to two seconds from the flourish. |
+| R3-16 collective | Explain collective pitch visually / P | Neutral stopped rotor → collective motion → held blade-root angles. | Studio head macro, fixed phase and neutral cyclic; both roots, links, swash and fixed mast visible. | Persistent inspection identification. If hidden/unclear, keep pending; do not substitute RPM and call it pitch. |
+| R3-17 helicopter | Return clearly to playable flight / G | Whole X-Cell holds, then advances past a field landmark. | Side tracking, ~35–50 mm feel; recognizable ground and full body. | No unlabelled morph from inspector. Use a larger, simpler hover/advance if a tracking shot hides motion. |
+| R3-18…20 widgets | Real flight data without losing aircraft / G | Clean P-51 view → actual Player widgets → Cockpit instrument widgets. | Supported external views, matching direction; plane stays above/clear of gauges. | If two-second reading fails, simplify to one preset and record reduced coverage. No interior-camera claim. |
+| R3-21…22 light | Change mood while keeping a model visible / G | Warm Extra smoke/bank → close Lumber night/blue-hour pass. | One principal arc per take; real horizon/body remain visible. | Smoke and lighting depend on actual profile. Keep Lumber at dusk and move night proof to finale if required. |
+| R3-23…26 scale | Understand size without forced perspective / U/G/P | Real control → giant/mini trials by same landmark → true-depth cinematic trio. | Fixed comparable distance for proof; trio establishes all sizes then approaches original/mini. | Tiny unreadable dot or wrong depth fails. Do not replace actual scale with camera-distance tricks. |
+| R3-27 orbit | Preserve the user's favourite shot / P | One coherent orbital move around the Corsair; full current 13-stock-scheme editorial cycle; last scheme holds. | ~40–65 mm feel; stable centre/scale, eased movement, same pose and exposure at livery changes. | No arbitrary jump of axis, geometry or gear. Keep the full requested cycle first; allow more orbit time if it rushes. No per-skin names over the rapid changes. |
+| R3-28 lake | Emotional payoff / G | Final orbit livery crosses above lake for six uninterrupted seconds. | Low shore three-quarter/side, ~50–85 mm feel; keep plane, shoreline and moving reflection in frame. | Specific Corsair reflection needs actual proof. Keep real unmirrored lake pass if it fails; no synthetic mirror. |
+| R3-29 Creator | One idea becomes an eligible trial / U/G | Same accepted model in preview, one setup adjustment, then trial flight. | Authentic UI framed for reading; trial uses a supported camera and identifiable matching model. | Unsupported trial means preview-only alternate and revised copy. No universal conversion or saved-Home promise. |
+| R3-09 contact | Brief FPV consequence before precision / G | A separate ION R5 attempt makes readable contact and causes one actual non-blood material/crack effect. | Actual quad FPV lens/contact path; enough pre-contact context. | If unclear/unqualified, use clean recovery and record omitted effect. No person-strike requirement. |
 
-## B. Full current fleet — specific visual cue for each (T04)
-| Selection | Filming character | Proposed camera | Sound and identity |
-|---|---|---|---|
-| Ugly Stick | dependable baseline takeoff | ground pilot then chasing low | gasoline prop |
-| Ugly Stick Electric 6S | electric contrast | close side high-wing pass | motor/electric tone |
-| Extra 300S | fast aerobatics | tracking/close three-quarter roll | prop and air |
-| P-51D Mustang | elegant warbird power | sunlit crossing at distance | radial/warbird character; use actual game audio |
-| F4U Corsair | folding wings, retracts, 13 available stock liveries | macro mechanism plus water hero | engine character and gear |
-| Vantage Jet | speed / turbine | low crossing to camera | turbine spool/doppler |
-| Turbo Lumber Evolution | gentle STOL/high wing | low runway-side camera | electric airflow |
-| MoonRunner X99 | flying-wing silhouette | silhouette against sky, elevon turn | electric pusher |
-| X-Cell helicopter | rotor mechanics and control | close side hover → short forward pass | rotor sound; inspection rig distinct from playable |
-| ION R5 FPV | gate action | actual quad FPV view | fast motor, race-gate feedback |
-| RC blimp (5 m) | playful variety | slow orbit/side float | softer electric propulsion |
-| Bisonte MT8 | dirt, wheel motion, jump, chassis | tire-high tracking plus side landing | electric motor/tires |
-| MONSTER CAR 2 | nitro powertrain, dirt/dust, headlights/neon | low nose/tire + ramp | actual game nitro engine, clutch/exhaust |
+The lake is a second subject, not empty background. The initial low-shore height idea (~0.4–1.5 m above the water plane) is a composition exploration, not a flight instruction. Choose altitude and camera only after real clearance and framing checks.
 
-**Car detail — Bisonte:** film actual electric 4WD approach, ramp takeoff, full airborne trajectory, tire landing, shocks settling and lateral dirt slide. Pair low wheel perspective with a side shot where airtime is obvious. No inventing a car race/time-trial.
+## Corsair continuity: ground, orbit, lake
 
-**Car detail — MONSTER CAR 2:** film nitro exhaust, realistic audio state from its procedural two-stroke, dust/grime and complete jump/landing. Stage one dusk take with headlights and running lamps (L), auxiliary LEDs (K), and green underbody neon (N); actual brake lamps respond separately. Source [MONSTER CAR 2 guide](../../../research/rc-monster-truck/monster-car-2/README.md) states **no reverse gear**; do not imply reverse from a steering shot. Capture nitro service/garage only if a supporting micro-cut genuinely needs it.
+Ground inserts share model, skin, sun direction, runway and grounded state. Wings must be spread/locked before the conventional surface checks. The cut omits time; it does not compress an eight-second full fold into the 2.5-second insert. Canopy travel is real; cockpit-interior control animation is not part of the promise.
 
-## C. Daylight to night and active VFX (T05–T08)
-Film separate, physically rendered afternoon, golden hour, blue hour and night takes with matched aircraft direction and horizon. RGB patterns from supported Workshop profiles and a short close night pass are the visual payoff. Show sufficient body, not only floating lights. If night smoke is active, verify the aircraft's supported smoke emitter and palette; not all Extra profiles have stock smoke. Storm lightning must illuminate an identifiable aircraft or landscape. Rain droplets are on-lens visual presentation, not aerodynamic rain physics.
+The orbit has a fixed model/geometry and deliberately chosen livery changes. Record body position, attitude, camera phase, exposure, wing-fold, flap, canopy, hook and gear states. Match the final livery and screen direction into the lake. A new location is allowed; a false impression that incompatible states belong to one continuous flight is not.
 
-## D. Tiny/giant contrast (T09–T11)
-Ugly Stick Workshop supports 10%, 100%, 500% **scale** on that model's implementation. Approximate wingspans: 0.1524 m, 1.524 m, 7.62 m. Show real Workshop controls then separate qualified trial flights with fixed landmark/camera position to make scale credible. A three-model formation may be a *cinematic comparator* but must be labeled presentation-only, not an actual multi-pilot feature. Do not apply these values to Corsair, jet or blimp.
+Only the lake take needs a reflected aircraft in this revision. Keep one skin for all six seconds. The optional High planar path and its historical jet result are described in the [capture study](windows-rtx3090-capture.md#lake-specific-high-experiment); they do not qualify this Corsair shot. A separately identified jet-reflection alternate never stands in as the same reflected Corsair.
 
-## E. Creator + imports (T15–T17)
-Use a compatible sample and genuine current Creator UI: import → orient/size → weight and balance → powered configuration/controls → paint → review → eligible test flight. Supported route lists include STL, self-contained GLB, compatible ClearView ZIP and **development-only newer Phoenix .mod**. Imported physics are explicitly estimated or based on disclosed donor, not converted faithfully from any source. Saved Creator planes cannot yet be selected and flown from normal Home. [Creator implementation](../../../app/ui/aircraft_creator.gd), [v0.3.0 release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.0).
+## Skin and continuity ledger
 
-## F. Camera crash, cracked glass, red curtain (T18–T20)
-Three different captures, not one interchangeable effect:
-1. **Ground/material crash**: actual dirt/grass/mud/water contact drives grime, water spray or dust on a near camera.
-2. **Lens crack**: actual near high-speed surface contact, eligible camera in **closeup or fpv**, grime enabled; source [lens stack](../../../app/render/lens/lens_stack.gd) uses ~12 m/s threshold. Visual cracked camera glass is NOT broken aircraft canopy physics.
-3. **Red splatter/curtain**: requires a **person/pilot contact** that the session recognizes, with impact effects enabled. A normal crash to terrain never counts as a blood hit. No simulated real human injury is implied.
-4. Record an age-rating-friendly replacement of #3 using only dust, spray, splatter or crack (not red people-impact).
-5. Lens quality includes **Ultra**, impacts Off/Curtain/Splatter; scripted/director sessions may default OFF unless explicit capture arguments are passed. [Lens settings](../../../app/render/lens/lens_settings.gd); [lens project plan](../lens-screen-effects.md).
+These are casting slots for real supported paint choices, not invented skin names. Inspect the actual catalogue and record the IDs/assets before filming. The [livery picker](../../../app/ui/livery_picker.gd), [custom skin support](../../../app/aircraft/custom_skin.gd) and [skin-kit model list](../../../app/assets/skin-kit/models.json) are source starting points; compatibility and final rendering need individual confirmation.
 
-## Cinematographer's rejection tests
-No airplane smaller than the visual concept requires; no black night plane; no water reflection with wrong livery; no frozen ticks/rotors; no front-heavy car jump with landing cropped; no titles over a wing, reflection or UI text; no camera angle used 5 times in one minute; no claim of normal multiplayer/AI close formation, in-flight player skin swaps, cinematic player replay, universal import or high-performance FPS from offline rendered Movie Maker.
+| Subject / shots | Selection intent | State that must stay fixed | Current evidence status |
+| --- | --- | --- | --- |
+| Electric Stick / R3-03 | Actual scheme clearly distinct from baseline Stick; retain Electric 6S label. | Model/installation identity; real electric sound. | Exact skin ID unselected; visual test pending. |
+| MoonRunner / R3-04 | Real scheme that preserves flying-wing outline. | No invented geometry or stock option. | Exact skin ID unselected; pending. |
+| Blimp / R3-05 | One actual supported envelope skin; whole silhouette. | Same gondola/rotors and chosen configuration. | Exact skin ID unselected; pending. |
+| Corsair ground / R3-10…15 | One real scheme with hinge/surface contrast. | Same scheme and light across checks. | Exact skin ID unselected; pending. |
+| Mustang / R3-18…20 | Actual alternate scheme; stays constant through camera/HUD changes. | Skin, aircraft identity and screen direction. | Exact skin ID unselected; pending. |
+| Extra / R3-21, optional31 | Actual scheme and supported smoke setup that remain distinct. | No recolouring skin to match an effect; smoke capability confirmed separately. | Skin/profile unselected; pending. |
+| Turbo Lumber / R3-22 | Actual skin visible with qualified dusk/night lights. | Body must remain legible; supported light profile. | Skin/profile unselected; pending. |
+| Corsair orbit / R3-27 | Full set of 13 stock schemes; sequence/order and final lake scheme chosen after actual-frame review. | Geometry, pose, camera path, exposure, mechanisms. | Stock IDs known below; sequence and final hero choice pending. |
+| Corsair lake / R3-28 | The final orbit skin, held throughout. | Skin/reflection match, gear/canopy/hook/flaps, lighting continuity. | Specific reflection unverified. |
+| MONSTER CAR 2 / R3-02 and Bisonte / R3-30 | Actual compatible paint choices with distinguishable bodies. | Nitro versus electric identity and sound. | Exact paint IDs unselected; pending. |
 
-## Capture-side documentation template
-Future shot manifest: Txx, exact commit and build/engine SHA, Windows GPU/driver, effective renderer, resolution/fps, vehicle/skin, landscape, date/time/time-of-day, sky/wind, scene detail/lighting/shadows, optional planar flag, lens-impact settings, camera type/FOV/position, director/controls, launch command, tick and crash evidence, frame/audio identities, source rights and director approval. Do not store filmed media or music on this docs branch.
+The [Corsair manifest](../../../app/data/aircraft_models/f4u-corsair-250.json) lists 13 stock IDs: midnight, three_tone, scarlet, splash, spectrum, blueangels, thunderbirds, chrome, p40, japan, luftwaffe, italy and carbon. Their presence was checked in source; their appearance, swap continuity and reflected result have not been inspected in new footage. Keep every qualified scheme in the orbital cycle; use the shared timing reserve or an explicitly retimed alternate before silently reducing this requested coverage.
+
+This fulfils the user's request to distribute other skins through the film without adding another skin catalogue. A supported custom skin needs its actual source and rights recorded; availability of a template does not mean any unmade design already exists.
+
+## Future per-shot identity record
+
+Use one record for each accepted source take: R3 ID; source path/hash; build/commit and engine; vehicle catalog ID; skin/asset ID and rights; Workshop scale/configuration; field/course and gate state; camera mode or separate cinematic director; weather/sky/time; actual light/smoke profile; renderer; relevant lens/contact state; input source; G/U/P class; audio source; review result. Until there is media, frame comparison and audio review remain **not examined**.
+
+In particular, protect same-skin reflections, separate X-Cell/inspector identities, real gate progression, same-depth scale and genuine widget values. A valid numerical flight recording does not supply an in-game cinematic replay editor.
+
+## Scene grouping for later planning
+
+This groups existing screenplay needs; it does not choose tools or start a shoot.
+
+| Scene group | Shots | Light / complexity | What could break it; simpler route |
+| --- | --- | --- | --- |
+| Club ground controls | R3-10…15 | Consistent soft daylight / medium | Occluded hinge or slow travel; choose static angle/full take and an honest excerpt. |
+| HX-700 studio | R3-16 | Existing inspection scene / medium | Hidden blades or blur; show roots and hold rotor still. |
+| Day flight / fleet / widgets | R3-01,03…05,17…20 | Readable daylight / medium | Tiny subjects and repeated axes; larger framed single actions. |
+| Local quad course | R3-06…08 | Clear gate contrast / medium | Wrong order or unclear passage; fewer valid, complete gates. |
+| Warm smoke / night | R3-21…22,31 | Warm-to-blue / high | Unsupported profile or body lost in dark; qualified simpler lighting. |
+| Stick scale | R3-23…26 | Matched neutral daylight / high | Mini unreadable or misleading depth; retain real trial proof and clearer comparator framing. |
+| Corsair orbit / lake | R3-27…28 | Matched warm light / high | Orbit discontinuity or failed mirror; preserve orbit and genuine lake without invented reflection. |
+| Creator UI / trial | R3-29a…c | Legible UI and bright flight / high | Import/trial eligibility; same accepted model, or honest preview-only alternate. |
+| Contact / trucks | R3-02,09,30 | Clear surface and landing / medium | Wrong effect trigger or cropped landing; complete simpler action. |
+
+## Priority and trim order
+
+**Three must-get story assets:** readable control/collective sequence, preserved Corsair orbit into a held lake image, and understandable action with a clear download invitation. The lake reflection remains conditional; the underlying Corsair sequence does not disappear if it fails.
+
+R3-31 is one shared two-second reserve; allocate it only once. First trim: that flourish. Next shorten/remove duplicate widget coverage with an explicit coverage change. Simplifying optional name text reduces reading load but does not itself free screen time. If the flourish is removed, its fallback night-light coverage must be replaced elsewhere or recorded as omitted. Keep full jump/gate outcomes, model/skin identity and the five-second card. The [mechanics companion](mechanical-sequences.md) owns fuller tailhook/taxi/retract coverage. A staged five-plane formation, detailed named/custom-livery catalogue, extra storms and blood effects remain outside the current master.
+
+## Rejection conditions
+
+Reject a falsely accelerated mechanism, wrong reflected skin, unresolved tiny aircraft, unreadable night body, mismatched aircraft/engine sound, imaginary race result, unlabelled inspection or staging, unsupported cockpit animation, ground gear retraction, or a clipped jump landing. Source inspection proves an implementation path; only future actual moving footage can pass these visual conditions.

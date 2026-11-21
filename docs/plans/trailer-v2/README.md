@@ -1,34 +1,55 @@
 # OPEN RC SIMULATOR — Trailer 2.0 preproduction
 
-**Date:** 2026-11-21. **Status:** documentation, ideas and research ONLY.  
-**Branch:** docs/trailer-v2-preproduction-2026-11-21.  
-**Baseline:** main @ 57abea025f62b20233ca281d58d2acbee4ab8b8e.  
-**Requested filming host:** Windows PC with NVIDIA RTX 3090, highest supported graphics and native game content.
+**Updated:** 21 November 2026. **Status:** screenplay and supporting documentation only.
+**Branch:** docs/trailer-v2-preproduction-2026-11-21. **Track / owner:** V2 / trailer director-editor.
+**Game-source baseline reviewed:** 57abea025f62b20233ca281d58d2acbee4ab8b8e. The exact promoted build remains a later production decision.
+**Previously requested filming host:** Windows PC with NVIDIA RTX 3090. Choose the concrete capture and editing tools after the screenplay review.
 
-## Creative mission
-Make a new, faster, more playable successor to Every Input Matters. Show all 13 selectable vehicles, both monster trucks, flights through day/sunset/night, RGB lighting, actual lake reflections, F4U Corsair liveries in motion, 10–500% supported scaling, model imports, and real crash-camera effects (blood/splatter, mud, water, cracked lens). Sell the feeling of trying the game, not a technical manual.
+## Current screenplay and reading order
 
-## Documentation navigation
-- **[AI video skills research](research-ai-video-skills-2026-11-21.md)**: GitHub and Reddit research; five MIT upstream skills and four original OpenRC-specific skills brought into both agent catalogs.
-- **[Creative ideas from AI filmmaking research](ideas-from-ai-film-skills.md)**: new shot concepts for Corsair orbit-to-lake, other skins, FPV gate viewpoints, scale trio, telemetry, engine-sound montage and future screenplay revision.
-- **[Director's screenplay — Revision 2](cinematic-script-r2.md)**: current narrative script, including FPV racing gates, onboard/chase views, flight widgets, the inverted jet, colored smoke, helicopter action, three-size formation and Corsair lake skin sequence. **This is the current screenplay.**
-- [Creative treatment](creative-treatment.md): the filmmaking concept, tone, audience, differences from v9.13 and visual rules.
-- [90-second storyboard](storyboard-90s.md): shot IDs, timecodes, names, actions and transitions.
-- [Shot bible](shot-bible.md): Corsair lake sequence, full fleet, both cars, day/night, scale, Creator, impacts and camera direction.
-- [Music and external research](research-music-and-trailers.md): candidate songs, confirmed source licenses, trailer lessons.
-- [Windows RTX 3090 capture](windows-rtx3090-capture.md): approved quality targets, actual High/Forward+ behavior, planar-reflection setting, lens effects, capture workflow.
-- [Verification and production gates](verification-gates.md): claims, source limitations, shot acceptance and work queue.
+1. **[Director's screenplay — Revision 3: MAKE IT MOVE](cinematic-script-r3.md)** is the current story authority: exactly 90 seconds on paper, distributed 13-vehicle coverage, real ground mechanisms, a labelled collective study, and the preserved Corsair orbit followed by the lake.
+2. **[R3 audit](script-audit-r3-2026-11-21.md)** explains findings, application of all nine filmmaking skills, accepted tradeoffs, source checks and remaining evidence.
+3. **[90-second storyboard](storyboard-90s.md)** gives exact planned cut positions, source classes, fleet coverage, text and runtime arithmetic.
+4. **[Mechanical sequences](mechanical-sequences.md)** develops the nine-second Corsair montage, three-second collective insert and separate 32-second preflight companion-film idea.
+5. [Creative treatment](creative-treatment.md) gives the dramatic arc, sound and palette intent.
+6. [Shot bible](shot-bible.md) gives hero framing, skin/continuity records, alternatives and scene grouping.
+7. [Verification gates](verification-gates.md) distinguish current paper/source review from later visual proof and release acceptance.
 
-## Decisions
-- Main cut target: 90 seconds, 16:9, 1080p60 approved first; optional native higher-resolution master only after test. Derivatives: 30 s and 6 s, plus Spanish titles.
-- Open on real gameplay before any logo. Target 80–85% of runtime as gameplay, short menu clips only to establish the result.
-- Corsair flying over the Club field lake is a featured signature shot. Different skins change by editorial cuts synchronized with consistent flight pose and a **matching actual reflection**; do not claim players can switch skins in flight.
-- Show exactly 13 visible configurations (including two Ugly Stick power configurations, one helicopter, one quad, one blimp and two ground trucks); model imports are experimental.
-- Max graphics means **highest stable and actually supported** settings on Windows RTX3090; High alone does not enable every effect.
-- Actual blood is an effect of qualified person/pilot collision, **not** normal ground crashes. Provide a non-bloody variant.
-- No MP4, audio, media, game code, tests or assets belong in this documentation-only branch. No changes to main. No film or native RTX3090 verification has yet been performed for 2.0.
+## Creative decisions in R3
+
+- Keep the 90-second, 16:9 master; 1080p60 is the first future qualification target. Voice-over is optional; the picture must work on mute.
+- Show all 13 current visible configurations across meaningful scenes. Replace the separate one-second roster parade with a coverage ledger.
+- Give grounded Corsair wing spreading, ailerons, elevator, rudder, flaps and canopy nine seconds. Show helicopter collective in the separate articulated inspector for three seconds, visibly identified; then cut to actual playable X-Cell flight.
+- Preserve the original continuous Corsair orbit and its full stock-skin cycle, with real livery changes made in presentation/editing. Follow it with a six-second lake pass holding the final skin. Its actual planar reflection is a target that still needs proof.
+- Distribute actual supported skins across other existing vehicle shots. Select and record their real IDs later; do not invent paint options.
+- Keep real FPV gate racing, genuine widgets, coloured smoke, readable night lighting, supported Stick scaling, an eligible Creator trial, both trucks and one non-blood contact effect.
+- Hold the final invitation for five seconds. Prioritize complete actions and readable mechanisms over another fast flourish.
+- Count source categories honestly: 65.5 seconds planned session footage, 5.5 seconds genuine UI, 14 seconds cinematic/inspection material and 5 seconds end card. This supersedes the earlier 80–85% gameplay target.
+
+## Working documents and retained research
+
+- [Revision 2](cinematic-script-r2.md): retained prior screenplay; its timecodes and creative mandates are superseded by R3.
+- [AI video skills research](research-ai-video-skills-2026-11-21.md) and [vendor manifest](vendor-skills-manifest.json): dated import/provenance record for five MIT upstream and four original OpenRC skills.
+- [Ideas from the AI filmmaking research](ideas-from-ai-film-skills.md): retained idea bank, with R3 disposition notes.
+- [Music and external research](research-music-and-trailers.md): retained candidate research; no audition or music choice has been completed.
+- [Windows RTX3090 capture study](windows-rtx3090-capture.md): prior implementation options and constraints, to revisit after script review. It does not select tools for R3 or prove a take.
+
+Some imported project skills still mention R2 by filename. Read this index first: their R2 reference is historical input, not authority to restore superseded timing. The nine skill files and their licensed source text are unchanged by this screenplay revision.
+
+## Scope and next steps
+
+Owned work for this revision is the documentation in this directory. No game code, capture tool, skill implementation, media, audio or asset is changed. No new footage, renderer/hardware test, AI generation or video-package installation has occurred. Main is unchanged.
+
+| Step | Work | Proof / status |
+| --- | --- | --- |
+| V2-SCRIPT-01 | Audit R2 and read all nine selected skills | Findings and application matrix in R3 audit. |
+| V2-SCRIPT-02 | Revise story, timing, mechanics and supporting documents | R3 and synchronized storyboard; paper/source checks only. |
+| V2-SCRIPT-03 | Review actual storyboard/animatic readability | Pending future visual material; user creative feedback can refine this working script. |
+| V2-TOOLS-01 | Select capture/editing routes from accepted shot needs | Deferred until screenplay review; preserve existing tool research as input. |
+| V2-PROOF-01 | Qualify hard shots on selected build/host | Pending: collective framing, mechanisms, orbit, lake, gates, scale, Creator and night. |
 
 ## Existing foundation
-[Previous film plan](../cinematic-trailer.md), [v9.13 audit](../../research/cinematic-trailer/revision-9-2026-10-29.md), [capture tools](../../../tools/trailer/README.md), [v9.13 delivery identity](../../research/cinematic-trailer/delivery-v9-2026-10-29.json).
 
-The 2026-10-30 v9.13 was a 90-second local English/Spanish cut. Its production files and film were recorded as local exports, not published into this GitHub repository; this review inspected its **documents**, not its rendered final MP4.
+[Previous film plan](../cinematic-trailer.md), [v9.13 review](../../research/cinematic-trailer/revision-9-2026-10-29.md), [capture-tool documentation](../../../tools/trailer/README.md), [v9.13 delivery identity](../../research/cinematic-trailer/delivery-v9-2026-10-29.json).
+
+The October v9.13 English/Spanish film was recorded as a local export. This review read its documents; it did not inspect or play the final MP4. Historical measured results remain evidence for their original source and host only.

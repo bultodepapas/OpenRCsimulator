@@ -2,8 +2,10 @@
 
 **Research checked 2026-11-21. Status: candidates and license documentation only.** No audio has been downloaded, auditioned end-to-end, mixed, synchronized, or uploaded. A composer-page description is not proof that the track will fit 90 seconds, that its beat falls at a proposed cut, or that it is claim-free.
 
+**R3 use:** this is retained source/candidate research. The [current screenplay](cinematic-script-r3.md) owns timing and sound placement; no track or software is selected by this audit.
+
 ## Musical brief
-We want a game trailer with a punch in the first five seconds, rapid recognizability for all vehicles, an energetic rhythm for nitro trucks and FPV, an airy or emotional middle for the Corsair lake and light/skin changes, a tiny sonic drop at the crash effects, and a memorable uplifting finish. Hybrid orchestral plus synth and percussion suits this, but don't let a nonstop climax drown out turbine, radial, electric motor and nitro engine voices.
+We want a game trailer with a punch in the first five seconds, recognizable actions across the whole fleet, an energetic rhythm for nitro trucks and FPV, a brief early contact accent, a precise quieter mechanism chapter, an airy Corsair orbit/lake payoff, and a memorable successful-play finish. Hybrid orchestral plus synth and percussion suits this, but don't let a nonstop climax drown out turbine, radial, electric motor and nitro engine voices.
 
 The prior Every Input Matters v9.13 used one 90-second interval of Scott Buckley's **Uprising**. Preserve it as a musical reference and audio-level benchmark, not the default music for V2.
 
@@ -51,6 +53,6 @@ See [v9.13 revision log](../../research/cinematic-trailer/revision-9-2026-10-29.
 - source footage on old Godot version requiring recapture.
 
 ## Sound design by vehicle
-Use **actual in-game** audio where possible: Corsair/Mustang prop and radial character; Extra/Stik gasoline prop; Stick 6S and Bisonte electric motors; Vantage turbine; helicopter rotor; FPV quad motors; blimp; MONSTER CAR 2 nitro two-stroke, clutch and exhaust; tire slide/gravel; dirt/water impacts, thunder and short warning sound. Preserve unprocessed sound stems, avoid generic full-size V8 effects and do not claim all model sounds are physical measurements.
+Use **actual in-game** audio where possible: Corsair radial, Mustang 120 cc gasoline prop; Extra .61 glow and baseline Stick .61 glow reference; Stick 6S and Bisonte electric motors; Vantage turbine; helicopter rotor; FPV quad motors; blimp; MONSTER CAR 2 nitro two-stroke, clutch and exhaust; tire slide/gravel; dirt/water impacts, thunder and short warning sound. Preserve unprocessed sound stems, avoid generic full-size V8 effects and do not claim all model sounds are physical measurements.
 
 **Provisional first audition:** Simulacra versus Escape Velocity, with Vanguard as a less frantic control. This is a production recommendation, not evidence that either track was heard.

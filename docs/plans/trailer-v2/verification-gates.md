@@ -1,63 +1,64 @@
-# Trailer 2.0 — feature claims, release gates and work queue
+# Trailer 2.0 — R3 claims, review gates and work queue
 
-**Status:** documentation review only. Implemented-in-source does not mean filmed, tested on Windows RTX3090, or available in public v0.3.0.
+**Current screenplay:** [R3](cinematic-script-r3.md). **Status:** script/source review, not filmed acceptance.
+**Baseline:** game source 57abea025f62b20233ca281d58d2acbee4ab8b8e; the promoted release/build is not yet selected. Source support, historical footage, current capture and public-release availability are separate evidence.
 
-## Strict source-to-trailer claim matrix
+## Source-to-screen claim matrix
 
-| Hero claim | Verified code/project basis | Truth boundary and film gate |
-|---|---|---|
-| All 13 selectable vehicles | [Vehicle roster](../../../app/app_state/vehicle_roster.gd), [catalog](../../../app/app_state/aircraft_catalog.gd) | Current menu: 8 airplane configurations + helicopter + quad + blimp + 2 trucks. Hidden research configs do not count. Verify exact filming version. |
-| Bisonte and MONSTER CAR 2 | [Nitro truck integration](../../../research/rc-monster-truck/monster-car-2/README.md) | Two cars, different propulsion; nitro has no reverse. No verified normal car race/time trial. |
-| Corsair skins and lake mirror | [Lake planar renderer](../../../app/render/lake/lake_planar_reflection.gd), [RTX3090 jet lake experiment](../../research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md), [v9.13 Corsair livery](../../research/cinematic-trailer/revision-9-2026-10-29.md) | A **Corsair** mirror has not yet been confirmed. Planar default off. Skin montage from matching flight/presentation states, not an in-game player skin-swap feature. |
-| Small and giant | [Workshop compiler](../../../app/workshop/compiler.gd) | 10–500% for supported Ugly Stick, not every plane. 0.1524m / 1.524m / 7.62m approximate spans need true perspective. |
-| Night lights and smoke | [Old cinema capture guide](../../../tools/trailer/README.md) | Only aircraft profiles that support it; night must be actually visible, not postproduced fantasy. |
-| Import models | [Creator UI](../../../app/ui/aircraft_creator.gd), [public v0.3.0 release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.3.0) | ClearView/STL/GLB, newer Phoenix .mod on main. Preview vs trial are distinct; saved Creator aircraft not flyable from Home. |
-| Broken/cracked camera glass | [Lens stack](../../../app/render/lens/lens_stack.gd) | Lens crack after valid near fast closeup/FPV impact. This isn't structural canopy glass. |
-| Blood on camera | [Lens settings](../../../app/render/lens/lens_settings.gd), [contact logic](../../../app/render/lens/lens_stack.gd) | Requires person/pilot strike and enabled impact effect. A crash onto grass should NOT show blood. Non-bloody alternate required. |
-| Highest graphics on RTX3090 | [Graphics guide](../../../tools/graphics/README.md) | High Forward+; Extreme scene / Ultra lens where supported; separate optional planar environment. Stock official engine != special DLSS NVIDIA fork. |
-| FPV gate racing | [Drone racing plan](../drone-racing.md) | Local races only, no multiplayer/online ranking claim. |
-| AI planes and formations | [v9.13 audit](../../research/cinematic-trailer/revision-9-2026-10-29.md) | Actual AI pilots fly circuits; cinematic same-frame multi-plane formations must be disclosed as choreography. |
-| Cinematic replay | [Old cinema capture guide](../../../tools/trailer/README.md) | This is production tooling, not a built-in editor available to player. |
+| R3 claim | Basis | Boundary and required future proof |
+| --- | --- | --- |
+| All 13 visible configurations | [Roster](../../../app/app_state/vehicle_roster.gd), [aircraft catalog](../../../app/app_state/aircraft_catalog.gd), [storyboard ledger](storyboard-90s.md#complete-fleet-coverage--distributed-not-repeated) | Count identifiable appearances across the whole film, not a compulsory contiguous reel. Distinguish baseline glow and Electric 6S on mute; do not count inspector as a second playable helicopter. |
+| Corsair surfaces, fold and canopy | [Bindings](../../../app/data/aircraft_models/f4u-corsair-250.json), [main mechanisms](../../../app/main.gd), [geometry](../../../assets/aircraft/f4u-corsair-250/model-geometry.json) | Grounded, stopped, genuine input/state. Full wing travel is about 8 s, canopy about 2.5 s; master uses excerpts. No animated cockpit stick/pedals or cowl flaps are promised. |
+| Collective pitch mechanism | [Articulated mechanism](../../../app/render/rotor/hx700_mechanism.gd), [inspector](../../../app/render/rotor/hx700_mechanics_view.gd) | Separate labelled studio inspection, blades visible, fixed phase, neutral cyclic. Both roots must visibly feather. Old cyclic footage and increased RPM do not qualify it. |
+| Playable helicopter | [Rotor adapter](../../../app/render/rotor/heli_rotor_visual.gd), [helicopter guide](../../HELICOPTER.md) | X-Cell .60 with legacy HX-700 visual; collective is telemetry only in that visual. Show actual flight separately from the articulated inspector. |
+| Corsair cockpit/gear/hook detail | [Mechanical evidence sheet](mechanical-sequences.md#what-the-current-source-actually-supports), [gear interlock](../../../app/sim/flight_session.gd) | Canopy movement is supported; cockpit-control animation is not. Tailhook is ground-limited. Retraction belongs in an airborne companion take; current authored retraction is 4 s, blocked on loaded wheels. |
+| Original livery orbit and lake | [Historical orbit](../../research/cinematic-trailer/revision-9-2026-10-29.md), [planar adapter](../../../app/render/lake/lake_planar_reflection.gd) | Preserve continuous orbit and editorial skin changes; no in-flight paint-control claim. One final lake skin must match its actual moving reflection. Corsair reflection remains unverified; no synthetic mirror. |
+| Skins beyond Corsair | [Livery picker](../../../app/ui/livery_picker.gd), [skin support](../../../app/aircraft/custom_skin.gd), [casting ledger](shot-bible.md#skin-and-continuity-ledger) | Use real supported schemes in existing shots. Actual IDs/assets and rights remain to be selected; templates do not prove a finished skin exists. |
+| 10/100/500% Stick | [Workshop compiler](../../../app/workshop/compiler.gd), [size choreography](../../../tools/trailer/capture_formation.gd) | Supported baseline Stick only, not all models or Electric 6S. Real separate trial passes precede the labelled same-depth cinematic trio. Approximate spans 0.1524 / 1.524 / 7.62 m. |
+| FPV racing | [Quad camera](../../../app/vehicles/multirotor/multirotor_camera.gd), [gates](../../../app/vehicles/multirotor/race_course_visual.gd) | Real local course, real gate order and guidance. Separate camera takes do not establish synchronized replay. No online score or invented result. |
+| Brief FPV contact/lens effect | [Quad scene lens/contact integration](../../../app/vehicles/multirotor/multirotor_scene.gd), [lens stack](../../../app/render/lens/lens_stack.gd) | Separate genuine ION R5 attempt after successful gate coverage; actual trigger/view/settings must qualify. A ground crash does not imply blood. R3 retains one non-blood effect only. |
+| Instruments and camera views | [Camera rig](../../../app/render/camera/camera_rig.gd), [widget presets](../../../app/render/overlays/overlay_settings.gd) | Genuine session values and supported external views. Cockpit instruments do not imply a fixed-wing cockpit-interior camera. |
+| Smoke and night | [Workshop guide](../../AIRCRAFT-WORKSHOP.md), [Lumber lighting](../../../app/aircraft/timber_visual_lighting.gd) | Extra show smoke requires its actual eligible profile/trial route. Lumber has aircraft-specific light anchors; do not assume every generic strip group. Body, smoke and lights need visual proof. |
+| Creator preview to trial | [Creator](../../../app/ui/aircraft_creator.gd) | Same rights-cleared model, same compatible promoted build, eligible trial and honest estimated/donor handling. Phoenix support is post-v0.3.0; no normal saved-Home flight promise. |
+| Both trucks | [Vehicle roster](../../../app/app_state/vehicle_roster.gd), [nitro truck guide](../../../research/rc-monster-truck/monster-car-2/README.md) | Bisonte electric, MONSTER CAR 2 nitro; complete landings and distinguishable bodies/sounds. No reverse for MONSTER CAR 2; no normal car-race feature claim. |
+| Capture quality / final release | [Retained capture study](windows-rtx3090-capture.md) | 1080p60 first, highest supported stable settings on selected host; offline 60 fps output is not real-time performance evidence. Final build, URL, product status and rights require rechecking. |
 
-## Hard creative and production acceptance gates
+## Stage A — screenplay review now
 
-**G0 — Docs/feature approval:** confirm title, ship-target build, full 13 roster, exact footage priorities and current gameplay claims. All authoring is docs only.
+**A1 — Narrative and coverage.** Current screenplay is R3, with all 13 configurations mapped to meaningful actions. The required Corsair orbit survives, lake gets its hold, grounded mechanisms and collective are present, and the Creator trial ends successfully.
 
-**G1 — RTX3090 filming readiness:** approved beta2 Godot executable/build, driver, High Forward+, Extreme where stable, lens Ultra where relevant, native movie dimensions and full 60fps output verification; no silent renderer fallback. Commit/build hashes retained.
+**A2 — Timing and text.** Current paper cut is exactly 90 s / 5,400 intended frames at 60 fps. Budget: 65.5 G, 5.5 U, 14 P, 5 E. One shared two-second reserve exists in R3-31; spend it once and recalculate all affected times/classes. Names, disclosures and HUD share the reading budget. No measured media duration is claimed.
 
-**G2 — Corsair lake signature:** two different Corsair skins demonstrably show a moving, correctly colored reflection in water on a real Windows take. Retain full clip, timing and flag receipt. If it fails, invoke documented honest jet fallback, never artificially mirror the aircraft.
+**A3 — Source truth and document agreement.** Use code/configuration as implementation evidence; use the old film report only for its historical scope. README, script, storyboard, mechanics sheet, treatment, bible and these gates agree on R3. The [audit](script-audit-r3-2026-11-21.md) records completed checks and remaining limits.
 
-**G3 — 13-choice roster:** exactly 13 independent identifiable moving clips, each containing matching UI/name/visual variant and at least one meaningful action; player recognizes each at phone size.
+**A4 — Visual story review.** A later actual storyboard/animatic must test whether an unfamiliar viewer can recognize the opening action, understand a gate passage, distinguish the two Stick configurations, read the mechanisms and follow the final invitation. This is pending; a source audit is not a mute/phone playback test.
 
-**G4 — Hero feature coverage:** day/sunset/blue hour/night lights, real Workshop control then flight results, Creator format/preview/test-flight distinction, two different car jumps and lighting, FPV course, true dirt/water/crack effects, optional actual person-strike effect.
+## Stage B — tools after the screenplay
 
-**G5 — Music and assets:** actual auditions and measurable cue sheet, synchronization/license proof, complete model and livery origin rights, attribution, platform/content compatibility. No unpublished track copied into repo.
+Select the exact promoted build, approved source assets and actual shot priorities first. Then compare the existing capture/editing routes against those needs. The [Windows study](windows-rtx3090-capture.md) and [music research](research-music-and-trailers.md) are retained input, not current tool or soundtrack selections.
 
-**G6 — Editorial picture:** main ≈90s, gameplay-first ≥80%, first 5s compelling, few readable feature labels, action-driven transitions, no fabricated interface/replay/multiplayer, no silent accidental slow or frozen frames.
+No new video package, model API, paid generation, renderer change or game modification is implied by reading the nine skills or by this document. User authorization already covers preparing this working script and supporting branch documents; it does not require another approval request to complete them.
 
-**G7 — Film QA:** 1080p60 source and final frame count, full decode, 48kHz source/stereo delivery, source and final sound balance, no dark disappearing plane or muddy grade, reflection frame spot-check, no artifact license gaps; review on phone muted and with headphones.
+## Stage C — proof takes and production later
 
-**G8 — Marketing release:** correct download URL, clear free/open-source + early alpha status, English and Spanish copies, 30 s / 6 s versions, no-blood option, actual final poster frame. Publication is OUTSIDE this docs branch.
+| Gate | Future work | Pass evidence and honest fallback |
+| --- | --- | --- |
+| C1 | Ground mechanism readability | Actual full takes and chosen native-speed excerpts; fixed references visible, correct ground interlocks. Extend tail details if needed. |
+| C2 | Collective close-up | New stopped-rotor collective take with both blade roots/swashes visible and inspection identification; separate playable X-Cell take. Old cyclic footage is insufficient. |
+| C3 | Orbit / lake signature | Smooth orbit across all 13 current stock schemes, subject to individual qualification and explicit recording of any reduced coverage, final skin held in lake shot with actual matching moving reflection. If mirror fails, retain orbit and honest unmirrored Corsair lake; no fake reflection. |
+| C4 | Action / fleet | All 13 recognizable across finished cut, real inverted-or-banked jet, valid gate clearance and both complete truck landings. |
+| C5 | Scale and light | Supported baseline trial configurations, same-depth labelled trio, actual smoke profile and readable night body. |
+| C6 | Creator / contact | Same eligible imported model goes preview to trial; separate actual FPV contact produces its claimed non-blood lens effect. |
+| C7 | Score and source sound | Actual audition, measured cue map and licences; engines recognizable, no clipped mix or stationary-inspector flight-rotor mismatch. |
+| C8 | Finished edit and delivery | Full-motion mute/phone/headphone review, native frame/dimension/colour/audio checks, complete decode, exact final duration, readable copy and rights. All currently pending. |
+| C9 | Public invitation | Verified destination and exact promoted build/status; English/Spanish copy and any derivatives. Publication is a separate later action. |
 
-## Future execution queue — not started
+## Shot priority and deferred coverage
 
-| Priority | Ticket | Work | Evidence required |
-|---|---|---|---|
-| P0 | V2-01 | Approve creative/claim list | story cut and source status |
-| P0 | V2-02 | Audition Simulacra, Escape Velocity, Pursuit, Vanguard | licensed listening notes + 90s beat map |
-| P0 | V2-03 | Requalify capture tools for beta2 Windows High | native frame/tick/audio receipts |
-| P0 | V2-04 | Corsair over lake: planar flag on/off + two skins | moving original frames, compare reflections |
-| P0 | V2-05 | True glass crack and red person/pilot effect triggers | contact event and 60fps original frames |
-| P1 | V2-06 | Confirm Creator imports and eligible source models | exact format/preview/trial matrix |
-| P1 | V2-07 | Bisonte and MONSTER CAR 2 jump, daytime + lights | jump-to-landing, engine audio, LEDs |
-| P1 | V2-08 | All 13 fleet microshots | accepted independent roster clips |
-| P1 | V2-09 | 10/100/500% Stick, same landmark and camera | true size evidence |
-| P1 | V2-10 | Four times of day, RGB, storm/wet lens | legible original day/night samples |
-| P2 | V2-11 | Silent animatic then two score drafts | complete timeline and cue sheet |
-| P2 | V2-12 | Picture lock, edit, grade, audio, credits and variants | final film deliverables/rights |
+First resolve the new mechanics/collective, the preserved orbit/lake and the actual sequence readability. Then qualify gates, scale, Creator, lights, trucks and contact at the selected build. Do not make person-strike blood or a five-plane formation a prerequisite for this master: they are absent from R3.
 
-## Provenance and status update rule
-Every future test must record date, source SHA, exact engine executable, CLI/profile, shots, screenshots/original footage hashes, assertions tested, pass/fail and remaining limitations. Use distinctions: **verified in source**, **observed in older build**, **observed in current Windows film run**, and **available in public release**. Do not mark this docs branch as an actual gameplay/camera qualification.
+The separate 32-second mechanical idea preserves fuller tailhook, taxi, propeller and airborne gear coverage. A detailed named/custom-livery catalogue, additional weather, settings, import formats and detailed training functions can have their own follow-up pieces rather than unreadable inserts in this acquisition trailer.
 
-### Public research used
-[Steamworks trailer guidance](https://partner.steamgames.com/doc/store/trailer) · [Derek Lieu pacing](https://www.derek-lieu.com/blog/2020/11/16/how-to-think-about-pacing-in-a-trailer) · [Godot Movie Maker](https://docs.godotengine.org/en/stable/tutorials/animation/creating_movies.html) · [Godot renderer overview](https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html) · [Scott Buckley library](https://www.scottbuckley.com.au/library/) · [Pixabay license](https://pixabay.com/service/license-summary/).
+## Evidence receipt
+
+Future takes record build/engine/host, actual settings, vehicle/skin, camera, source class, real contact/race state, media/audio identities and visual result. Use the [shot identity record](shot-bible.md#future-per-shot-identity-record). Mark unsupported, not examined and failed explicitly; a planned fallback is not a successful take.

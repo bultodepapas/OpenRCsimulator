@@ -1,39 +1,47 @@
 # Trailer 2.0 — creative opportunities discovered during the AI-skills research
 
-**Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.  
-**Current screenplay:** [cinematic-script-r2.md](cinematic-script-r2.md). Do not silently replace it; selected ideas become Revision 3 only by explicit creative review.  
+**Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.
+**Current screenplay:** [Revision 3](cinematic-script-r3.md), developed in the user-requested audit after this idea round. The concepts below are the retained idea bank; R3 owns their selected form and timing.
 **Sources:** [AI filmmaking skill and Reddit research](research-ai-video-skills-2026-11-21.md).
+
+## Disposition after the R3 review
+
+- **Adopted:** full Corsair skin orbit into a held final-skin lake pass; supported skins distributed across other vehicles; actual FPV outside/inside views; real trial scale proof plus disclosed trio; genuine widgets; distinct engine sounds.
+- **Added from the new request:** nine seconds of Corsair ground mechanisms, a labelled three-second collective study and a separate [32-second mechanical vignette](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
+- **Simplified:** one meaningful Creator adjustment before a successful eligible trial, one caption, five-second invitation, fleet coverage distributed across the film.
+- **Deferred from the master:** five-plane smoke formation, full import-format gallery, additional weather/impact scenes and person-strike blood. One non-blood FPV contact is planned, pending qualification.
+- **Not started:** generated previs, animatic, actual tools selection, captures, music auditions and final editing.
 
 ## Top five — strongest creative return
 
 ### 1. The Corsair "Orbit → Mirror" signature
 **Keep the loved v9.13 shot intact**: one smooth camera orbit around the F4U as skins change **editorially** on selected beats. Let the camera reach a three-quarter nose angle, then **match its screen direction** to a low side-on fly-by above Club lake. The final skin stays longer while the *actual in-game reflection* moves across the water with it. This combines character/customization with a cinematic environment and pays off the original concept instead of discarding it.
 
-**AI assist:** shot-director camera start/end vocabulary, keyframe comparison board, color continuity/skin ledger, beat-map alternatives.  
+**AI assist:** shot-director camera start/end vocabulary, keyframe comparison board, color continuity/skin ledger, beat-map alternatives.
 **Gate:** current High planar must reflect this model and selected skin; no fake water mirror, no implied in-flight paint UI.
 
 ### 2. FPV gate "from spectator to pilot"
 Open wide on the quad and real LED gate, switch to rigid onboard FPV while it *enters and clears* two sequential gates, then cut back to chase to see the same action externally. Let real speed/timer/next-gate OSD live near the edges. Finish on white gate flash after a valid pass; no imaginary leaderboard.
 
-**AI assist:** camera plan, gate order diagram, matching frames, cut rhythm test.  
+**AI assist:** camera plan, gate order diagram, matching frames, cut rhythm test.
 **Gate:** physical gate crossing, proper course and camera view, gameplay timing.
 
 ### 3. Three sizes, one impossible-looking frame
 A giant and a mini Ugly Stick each make a **real Workshop trial** pass across a landmark. Then the camera reveals all **three 500/100/10% aircraft together** at consistent depth, which the previous cinematic script successfully achieved. Small labeled aircraft tracks act as a scale ruler, so viewers read giant/normal/mini immediately.
 
-**AI assist:** continuity keyframes and perspective check; compositional alternatives.  
+**AI assist:** continuity keyframes and perspective check; compositional alternatives.
 **Gate:** label the simultaneous trio as cinematic presentation, not multiple players.
 
 ### 4. Instruments that "wake up"
 A clean pilot view of a Mustang/Extra changes editorially into the **Player widget preset** with real speed/altitude/power/weather. A matching cut reveals the **Cockpit instruments preset** with altitude/airspeed/attitude gauges. Animate only genuine titles around the widgets; don't synthesize telemetry or confuse the panel with an interior camera.
 
-**AI assist:** motion title concept, phone-safe overlay layout, before/after storyboard, legibility test.  
+**AI assist:** motion title concept, phone-safe overlay layout, before/after storyboard, legibility test.
 **Gate:** real widgets, readable aircraft and source values.
 
 ### 5. The engine-sound orchestra
 Make three or four short musical beats from native sound textures: Corsair radial prop → jet turbine → quad motor → MONSTER CAR 2 nitro → Bisonte electric tires. A rotor-to-wheel visual match cut makes this feel purposeful. At the lake beauty section, music briefly recedes to hear the radial engine and shoreline ambience.
 
-**AI assist:** cue sheet and sound map; optional audition comparison, no voice synthesis necessary.  
+**AI assist:** cue sheet and sound map; optional audition comparison, no voice synthesis necessary.
 **Gate:** preserve sources and audio rights; no fake performance/engine identity.
 
 ## Strong secondary ideas to weave across the trailer
