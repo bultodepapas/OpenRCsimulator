@@ -21,6 +21,8 @@ repairs and their fresh verification are recorded in the [implemented ledger](CO
 
 The [21 November audit][A36] retains five primary reproduced defects, one measured retention opportunity and three CI/runtime gaps at `57abea0`. Its [research home](../docs/research/project-audit-2026-11-21/README.md#follow-up-status) owns the current implementation and qualification status for every finding. Preserve the original PDF, evidence ZIP and baseline observations there; the UID blocker is a recurrence, and the recorder notification remains source-level evidence. Implementation work stays with the existing IAQ/AC-PX, BL, FL and CI owners.
 
+**A36 R2 source review (21 November 2026):** the [continued mathematical and physical investigation](../docs/research/project-audit-2026-11-21/second-pass-physics-2026-11-21.md) independently identifies two new FPV source-level issues: missing stage-air-density dependence in rotor thrust/torque/drag (**R2-F01**), and the Angle controller's discontinuous near-vertical heading switch (**R2-F02**). Both have independent arithmetic witnesses, **not** accepted Godot flight regressions. The constructed high-resistance blimp power-ceiling case (**R2-I01**) needs an admitted-stage/trajectory reproduction. Fixed blimp atmosphere and other already-declared aerodynamic omissions are research gaps, **not additional defect counts**. The R2 original evidence and acceptance matrix remain in the linked research page; no R2 production correction has shipped.
+
 ## Contents
 
 1. [UI, settings and player flows](#ui-settings-and-player-flows)
