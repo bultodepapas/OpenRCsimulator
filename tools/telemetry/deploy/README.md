@@ -59,6 +59,20 @@ python pull_github_backup.py --host root@<proxmox-host> --key <ssh-key> --destin
 
 The transfer only reads the dated GitHub archive. It checks the downloaded SQLite database before retaining it. Keep raw receiver data out of this backup.
 
+### Private GitHub refresh from the operator workstation
+
+If the container has no repository-scoped GitHub credential, an operator workstation can collect private traffic and star history with its existing authenticated `gh` session. Keep `sync_private_github.py` beside a copy of `tools/analytics/github_history.py` on that workstation. Install the same version of the sync script at `/usr/local/lib/openrc-stats/sync_private_github.py` in the dashboard container.
+
+```text
+python sync_private_github.py push --host root@<proxmox-host> --key <existing-ssh-key>
+```
+
+Use the established Proxmox SSH identity and verified host key. The sync sends aggregated observations and release metadata across SSH, merges them under the build lock, and starts a dashboard build. It retains the original collection times and preserves newer release and public observations.
+
+Run the sync at sign-in and at least every six hours while the workstation is signed in. A failed or partial collection returns a nonzero task result and retains the affected sources' last observations. Their freshness budget is twelve hours. A disabled task, an unavailable workstation or an expired GitHub login can leave the sources stale. Disable the workstation task when the container can collect the private sources directly.
+
+### Independent archive backup
+
 For an unattended pull, install `host/openrc_stats_backup.py` in `/usr/local/lib/openrc-stats/` on both hosts. The exporter timer stages today’s validated CT 406 backup at 02:55 UTC. Create its staging directory with `install -d -m 2750 -o root -g openrc-stats-export /var/lib/openrc-stats-backup-export` so new files inherit the reader group. The exporter runs as root:root for Proxmox IPC. The separate SSH account has a locked password, no administrative groups and a root-owned authorized-keys file. Restrict its one key to the exact pull-host address with `from=…`, `restrict` and the forced command `/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py serve`. This command accepts no client arguments and reads only the staged archive.
 
 Install the pull units on the second host. Set `OPENRC_STATS_BACKUP_HOST` in `/etc/openrc-stats-backup.env`. Place a newly generated private key and the source server’s verified Ed25519 host key in `/etc/openrc-stats-backup/{id_ed25519,known_hosts}` with root-only permissions. Verify the host key over an established administrative connection. The dynamic service user receives the credentials through systemd, pulls at 03:15 UTC and keeps 14 validated copies. Enable either timer only after manually exercising the export and pull, comparing the archives and restoring a disposable database.
