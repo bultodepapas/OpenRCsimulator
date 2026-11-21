@@ -17,12 +17,15 @@ const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const Data := preload("res://physics/airship/airship_data.gd")
 
-const LAW := "airship-kirchhoff-6dof-v2"
+## v3 (A36 R3-F01): pack draw follows the ESC command (motoring, freewheeling coast, reversing).
+const LAW := "airship-kirchhoff-6dof-v3"
 const MIXER_LAW := "airship-mixer-v1"
 const FRICTION_SPEED := 0.05
 const THRUST_LIMIT := 1.5
 ## Penetration over which contact damping ramps in, so the normal force starts at zero on first touch.
 const CONTACT_DAMPING_DEPTH := 0.005
+## A36 R3-F01: normalized-speed band over which a non-braking ESC fades between motoring and freewheeling.
+const FREEWHEEL_BAND := 0.02
 
 
 ## Actuator targets from the four pilot sticks [roll, pitch, yaw, throttle] (pitch > 0 = stick back = nose up,
@@ -60,6 +63,17 @@ static func mixer_targets(model: Dictionary, inputs: PackedFloat64Array) -> Pack
 		var te_displacement := -deg_to_rad(float(fin.travel)) * demand
 		out[7 + i] = te_displacement * float(fin.te_sign)
 	return out
+
+
+## A36 R3-F01: share of a rotor's aerodynamic shaft power that its non-braking ESC draws from the pack. The ESC
+## motors while its command is at or above the rotor's speed in the same direction (1), freewheels while a lower
+## command lets the rotor coast down on its own stored energy (0), and drives a reversal against the rotation
+## (a reversible motor) in proportion to the reverse command. Both edges ramp over FREEWHEEL_BAND, so the pack
+## current stays continuous. Rotor speed dynamics are unchanged; regeneration and active braking are not modeled.
+static func drive_fraction(command: float, speed: float) -> float:
+	if command * speed < 0.0:
+		return clampf(absf(command) / FREEWHEEL_BAND, 0.0, 1.0)
+	return clampf((absf(command) - absf(speed)) / FREEWHEEL_BAND + 1.0, 0.0, 1.0)
 
 
 ## One joint stage for Simulation: {loads, derivative, rotor_momentum, body_derivative}.
@@ -202,12 +216,18 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 	var connected := continuous[Data.BATTERY_CONNECTED] == 1.0
 	var ocv := cells * _ocv(battery.ocv, soc)
 	var rotors: Array = model.rotors
+	var targets := mixer_targets(model, inputs)
+	# The ESC's commanded speed is target x supply. The open-circuit supply bounds the loaded one from above, so a
+	# rotor settled at its loaded command keeps full motoring share without a circular dependence on the bus voltage.
+	var command_scale := ocv / float(battery.reference_voltage) \
+		* clampf((ocv - cells * float(battery.cutoff_cell)) / float(battery.cutoff_band), 0.0, 1.0)
 	var electrical := 0.0
 	if connected:
 		for i in 4:
 			var n_i: float = continuous[Data.MOTOR + i]
 			var rotor: Dictionary = rotors[i]
-			electrical += float(rotor.shaft_power) * absf(n_i * n_i * n_i) / float(rotor.motor_efficiency)
+			electrical += float(rotor.shaft_power) * absf(n_i * n_i * n_i) / float(rotor.motor_efficiency) \
+				* drive_fraction(targets[i] * command_scale, n_i)
 	var resistance: float = battery.resistance
 	var disc := ocv * ocv - 4.0 * electrical * resistance
 	# Beyond the pack's maximum transferable power (disc <= 0) the bus sits at OCV/2 and delivers only OCV^2/(4R).
@@ -215,8 +235,7 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 	var current := (electrical / volts if disc > 0.0 and volts > 0.0 else (ocv - volts) / resistance if resistance > 0.0 else 0.0) if connected else 0.0
 	var cutoff := clampf((volts - cells * float(battery.cutoff_cell)) / float(battery.cutoff_band), 0.0, 1.0)
 	var supply := volts / float(battery.reference_voltage) * cutoff
-	# --- actuators: targets, servo and motor responses ---
-	var targets := mixer_targets(model, inputs)
+	# --- actuators: servo and motor responses ---
 	var derivative := PackedFloat64Array()
 	derivative.resize(Data.CONTINUOUS_SIZE)
 	for i in 4:
@@ -327,8 +346,11 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		info.thrust_n = thrusts
 		info.thrust_dirs = thrust_dirs
 		info.targets = targets
-		info.battery = {volts = volts, current_a = current, power_w = electrical, ocv = ocv, cutoff = cutoff, soc = soc,
-			connected = connected}
+		# A36 R2-I01: power_w is what the pack terminals deliver. Beyond the pack's transferable maximum OCV^2/(4R)
+		# the request is not met; report the request, the ceiling and the limit separately.
+		info.battery = {volts = volts, current_a = current, power_w = volts * current, requested_power_w = electrical,
+			max_power_w = ocv * ocv / (4.0 * resistance) if resistance > 0.0 else INF, power_limited = connected and disc <= 0.0,
+			ocv = ocv, cutoff = cutoff, soc = soc, connected = connected}
 		info.contact = contact
 		info.acceleration = nu_dot
 		result.info = info

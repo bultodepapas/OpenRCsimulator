@@ -34,10 +34,97 @@ func _initialize() -> void:
 		_finish()
 		return
 	_fin_properties(derived.model)
+	_esc_drive_policy(derived.model)
+	_bus_power_ceiling(loaded.data)
+	_release_rundown()
 	_event_refinement()
 	_actual_event_refinement(derived.model)
 	_session_depletion()
 	_finish()
+
+
+## Stage at rest in calm air, 50 m up, every rotor at normalized speed `speed`, given sticks.
+func _bus_point(model: Dictionary, speed: float, sticks: PackedFloat64Array) -> Dictionary:
+	var body := PackedFloat64Array([0.0, 0.0, -50.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var c := PackedFloat64Array()
+	c.resize(Data.CONTINUOUS_SIZE)
+	c[Data.SOC] = 1.0
+	c[Data.BATTERY_CONNECTED] = 1.0
+	for i in 4:
+		c[Data.MOTOR + i] = speed
+	var ground := func(_n: float, _e: float) -> PackedFloat64Array: return PackedFloat64Array([0.0, 0.0, 0.0])
+	return Dynamics.evaluate(model, body, c, sticks, PackedFloat64Array([0.0, 0.0, 0.0]), ground, true)
+
+
+## A36 R3-F01: the pack draws for a rotor only while its ESC motors it. At equal rotor speed a zero command lets the
+## rotors coast on their own stored energy (no pack current), while full throttle draws; rotor rundown is unchanged.
+func _esc_drive_policy(model: Dictionary) -> void:
+	var idle := _bus_point(model, 0.5, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var full := _bus_point(model, 0.5, PackedFloat64Array([0.0, 0.0, 0.0, 1.0]))
+	_check("zero command at half rotor speed draws no pack current (was 1.009759 A)",
+		idle.info.battery.current_a == 0.0 and idle.info.battery.power_w == 0.0, str(idle.info.battery.current_a))
+	_check("full throttle at the same rotor speed draws motoring current", full.info.battery.current_a > 0.5,
+		str(full.info.battery.current_a))
+	_check("rotor rundown still follows the unchanged response lag", idle.derivative[Data.MOTOR] < 0.0
+		and absf(idle.derivative[Data.MOTOR] + 0.5 / float(model.rotors[0].response_time)) < 1.0e-12)
+	var steady := Dynamics.drive_fraction(0.5, 0.5)
+	var edge := Dynamics.drive_fraction(0.5 - Dynamics.FREEWHEEL_BAND, 0.5)
+	var near := Dynamics.drive_fraction(0.5 - 0.5 * Dynamics.FREEWHEEL_BAND, 0.5)
+	_check("ESC share: motoring at or above speed, freewheel below, continuous ramp between",
+		steady == 1.0 and Dynamics.drive_fraction(0.8, 0.5) == 1.0 and edge == 0.0 and absf(near - 0.5) < 1.0e-12)
+	var reverse_small := Dynamics.drive_fraction(-1.0e-9, 0.5)
+	_check("a reversal drives in proportion to the reverse command and is continuous through zero command",
+		reverse_small < 1.0e-6 and Dynamics.drive_fraction(0.0, 0.5) == 0.0 and Dynamics.drive_fraction(-0.5, 0.5) == 1.0
+		and Dynamics.drive_fraction(0.3, 0.0) == 1.0)
+
+
+## A36 R2-I01: with a custom 0.6 ohm pack the 72 W full-throttle side-motor request exceeds the OCV^2/(4R) = 66.15 W ceiling.
+## Telemetry reports the delivered terminal power, the request, the ceiling and the limit flag separately.
+func _bus_power_ceiling(raw: Dictionary) -> void:
+	var data: Dictionary = raw.duplicate(true)
+	data.battery.resistance = 0.6
+	var derived: Dictionary = Data.derive(data, 1.225, 9.80665, 0.0)
+	if not derived.ok:
+		_check("custom 0.6 ohm pack derives", false, str(derived.errors))
+		return
+	var point := _bus_point(derived.model, 1.0, PackedFloat64Array([0.0, 0.0, 0.0, 1.0]))
+	var battery: Dictionary = point.info.battery
+	var ceiling := float(battery.ocv) * float(battery.ocv) / (4.0 * 0.6)
+	_check("an over-ceiling request is flagged and power_w is the delivered terminal power",
+		battery.power_limited and absf(float(battery.power_w) - ceiling) < 1.0e-9
+		and absf(float(battery.max_power_w) - ceiling) < 1.0e-9 and float(battery.requested_power_w) > ceiling
+		and absf(float(battery.power_w) - float(battery.volts) * float(battery.current_a)) < 1.0e-12,
+		"delivered %.6f W, requested %.6f W, ceiling %.6f W" % [battery.power_w, battery.requested_power_w, ceiling])
+	var stock := _bus_point(Data.derive(raw, 1.225, 9.80665, 0.0).model, 1.0, PackedFloat64Array([0.0, 0.0, 0.0, 1.0]))
+	_check("the stock pack meets the same request without limiting", not stock.info.battery.power_limited
+		and absf(float(stock.info.battery.power_w) - float(stock.info.battery.requested_power_w)) < 1.0e-9)
+
+
+## Accepted session: full throttle, then release. Pack current stops within a few ticks while the rotors coast down,
+## and the charge is no longer drained by the rundown (only the tiny ramp-band draw near zero rotor speed remains).
+func _release_rundown() -> void:
+	var session: Node = Session.new()
+	root.add_child(session)
+	if not session.prepare({}, {altitude_m = 100.0}) or not session.resume():
+		_check("release fixture prepares", false, str(session.load_error))
+		session.queue_free()
+		return
+	var ok := true
+	for i in 480:
+		ok = ok and session.tick_once(PackedFloat64Array([0.0, 0.0, 0.0, 1.0]))
+	var spun: float = session.sim.continuous[Data.MOTOR]
+	for i in 12:
+		ok = ok and session.tick_once(PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var soc_after_cut: float = session.sim.continuous[Data.SOC]
+	var current_after_cut := float(session.telemetry().battery.current_a)
+	for i in 120:
+		ok = ok and session.tick_once(PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var coasting: float = session.sim.continuous[Data.MOTOR]
+	_check("after release the pack current stops while the rotors coast down", ok and spun > 0.5
+		and current_after_cut == 0.0 and coasting > 0.0 and coasting < spun
+		and absf(session.sim.continuous[Data.SOC] - soc_after_cut) < 1.0e-9,
+		"ok %s rotor %.4f -> %.4f, current %.6f A, soc %.12f -> %.12f" % [ok, spun, coasting, current_after_cut, soc_after_cut, session.sim.continuous[Data.SOC]])
+	session.queue_free()
 
 
 func _finish() -> void:
@@ -344,7 +431,7 @@ func _session_depletion() -> void:
 	probe.free()
 	_check("replay rejects a missing depletion event", not missing.ok and str(missing.error).contains("depletion"))
 	var old: Dictionary = read.duplicate(true)
-	old.header.session.law = "airship-kirchhoff-6dof-v1"
+	old.header.session.law = "airship-kirchhoff-6dof-v2"
 	probe = Session.new()
 	var old_result: Dictionary = AirshipLog._replay(probe, {}, old.header, old,
 		{identity_match = false, exact = false, ok = false, first_mismatch_tick = -1, error = ""})

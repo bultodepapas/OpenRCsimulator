@@ -391,9 +391,11 @@ func _discriminating() -> void:
 	var lapse := _model(fixture(5.0, 1.0, {drag = true}), 0.0)
 	var lr := Dynamics.evaluate(lapse, _body(M.v3(6.0, 0.0, 0.0)), _cont(PackedFloat64Array([1.0, 0.0, 0.0, 0.0])), _zero_inputs(), _calm(), Callable(), true)
 	_check("propeller thrust lapse with inflow", absf(float(lr.info.thrust_n[0]) - 1.0) < 1e-12, str(lr.info.thrust_n[0]))
-	# Battery bus: one terminal voltage for all motors.
-	var all_on := Dynamics.evaluate(lapse, _body(), _cont(PackedFloat64Array([1.0, 1.0, 1.0, 1.0])), _zero_inputs(), _calm(), Callable(), true)
-	var power := 4.0 * 25.0 / 0.75
+	# Battery bus: one terminal voltage for all motors. A36 R3-F01: the pack only feeds motors that their ESC drives,
+	# so every motor is commanded at or above half speed (reverse command on the reversible lateral one).
+	var all_on := Dynamics.evaluate(lapse, _body(), _cont(PackedFloat64Array([0.5, 0.5, 0.5, 0.5])),
+		PackedFloat64Array([0.0, 0.0, -1.0 * float(lapse.lateral_sign), 1.0]), _calm(), Callable(), true)
+	var power := 4.0 * 25.0 * 0.125 / 0.75
 	var ocv := 3.0 * 4.2
 	var volts := 0.5 * (ocv + sqrt(ocv * ocv - 4.0 * power * 0.045))
 	_check("battery terminal voltage of the shared bus", absf(float(all_on.info.battery.volts) - volts) < 1e-12, "%s vs %s" % [all_on.info.battery.volts, volts])
