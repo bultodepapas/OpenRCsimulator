@@ -9,7 +9,9 @@ implemented commands; this document owns remaining work and acceptance evidence.
 
 The [independent plan audit](../research/god-test/2026-11-20-plan-audit.md) inspected
 revision `66f2e75d545c4c79907e604082a7d4a2a6e4f1b8`. Its strengthened requirements
-below are **planned gates**, not implemented guards. V2 is not ready for acceptance
+below define acceptance gates; the [2026-11-21 measurement hardening](../research/god-test/2026-11-21-measurement-hardening.md)
+implements the first rendering, monitoring, pace-reporting and automatic-budget
+corrections. The scenic/crash requirements remain planned. V2 is not ready for acceptance
 runs: numeric profiles, independent coverage receipts, monitoring joins, reporting
 and target-host proof remain open. Calibration and diagnostic runs may collect
 partial evidence, but cannot claim a qualified tour.
@@ -79,9 +81,10 @@ than introduce a competing remote-control protocol. One rendered run at a time.
 
 Admission must cover the **entire expanded roster**, preparation/imports, bounded
 launch/flush/cleanup for each case, final reduction and a declared reserve. Reject
-an insufficient outer job deadline before the first launch. The current automatic
-queue adapter defaults to 3,600 s while a nine-case V1 tour declares 8,820 s before
-all preparation costs; a per-case deadline does not extend that outer lease.
+an insufficient outer job deadline before the first launch. The 2026-11-21
+implementation now computes and propagates the automatic CLI lease for the entire
+expanded roster. Direct preset submissions still need the matching source's
+explicit budget; a per-case deadline does not extend an inadequate outer lease.
 Queue waiting, pre-creation worker preparation and execution have separate scopes.
 Queued requests currently have no automatic expiry, and the execution timeout does
 not bound earlier preparation; V2 must declare and enforce those additional bounds.
@@ -550,13 +553,23 @@ Report active simulation/wall pace in the primary suite JSON **and HTML**, with
 target miss/inconclusive status. Also use predeclared active-flight windows to expose
 local lag/catch-up and worst accumulated lag; a whole-phase ratio of one can hide
 five slow seconds followed by catch-up. Exclude declared pauses/crash holds and
-reject unexpected holds; insufficient windows are unavailable. V1 currently retains
-phase-total pace in child JSON, without equivalent prominence in suite/HTML summaries.
+reject unexpected holds; insufficient windows are unavailable. **Implemented in the
+2026-11-21 follow-up:** phase-total pace, supported one-second extrema, observed
+accumulated lag and missed/inconclusive targets now appear in child and suite
+JSON/HTML. The reducer uses verified tick differences at 240 Hz, conservative
+boundary/hold exclusion and bounded window support. An unscored partial tail
+prevents a positive local target. This is an exploratory screen, not completed
+statistical qualification; the [operating contract](../../tools/godtest/PERFORMANCE_TOUR.md#metrics-evidence-and-verdicts)
+owns the exact support policy.
 
 Monitoring requires a declared start/end and maximum inter-sample/tail gap for each
-channel and each claimed window. V1 CPU `required_coverage=complete` checks fields,
-identity/counters and collection state, **not** those timing gaps; GPU has a separate
-bounded-gap check. V2 must validate both from raw samples, bind the sampled GPU to
+channel and each claimed window. **Implemented in the 2026-11-21 follow-up:** CPU
+field/count/stop checks are separate from raw first/inter-sample/tail coverage;
+CPU/GPU sampling configuration and windows bind to independent runner timestamps,
+and their cross-observer lifecycle order is checked. GPU query/device gaps are
+recomputed conservatively. Historical missing owner clocks remain unavailable.
+These windows begin after bridge readiness/setup and do not prove prompt observer
+startup or phase attribution. V2 must additionally bind the sampled GPU to
 the actual rendering device, and retain unavailable values/reasons. Process CPU is
 direct-PID occupancy (100% = one logical CPU); device GPU utilization includes other
 processes. Neither establishes per-frame cost or the cause of a hitch.
@@ -797,10 +810,12 @@ Status is maintained only here; tool instructions describe implemented commands.
 | GOD-12 | Cycles, soak, hardware and overhead | Ten rendered load/flight/Home cycles completed; bounded memory/soak commands implemented; 50-cycle/30-minute and overhead qualification remain pending |
 | GOD-12-R1 | Three-aircraft runway/menu performance campaign | Implemented source/debug tour, continuous frame watcher, position-based lap and resumed-flight guards, process/GPU sampling and suite evidence checks; [operating contract](../../tools/godtest/PERFORMANCE_TOUR.md). Final three-aircraft headless cycle completed with valid/complete evidence and no GPU qualification; [2026-11-20 verification](../research/god-test/2026-11-20-performance-tour.md). Actual MacBook/Linux GPU/Windows qualification remains open. |
 | GOD-12-R2 | Low scenic takeoff, same-flight circuits, browse-only menus, roll and intentional crash | Planned; [owner's revised sequence and acceptance substeps](#4a-planned-scenic-and-crash-tour). Ground-start/roll admission for jet and Corsair, scenery visibility, menu readbacks and expected-impact reporting are not implemented by V1. No V2 execution or hardware result is claimed. |
+| GOD-12-R2f | Monitoring clock and coverage foundations | Partially implemented: raw required CPU fields/counts, owner-bound CPU/GPU timing/configuration, conservative query gaps and cross-observer lifecycle checks; [2026-11-21 evidence](../research/god-test/2026-11-21-measurement-hardening.md). Host/engine phase joins, full-startup scope, GPU-to-renderer binding and physical-host evidence remain open. |
+| GOD-12-R2g | Fail-closed rendering and local pace reports | Partially implemented: original requested mode, per-phase raw drawing, renderer receipts, canonical phase IDs, local tick-derived pace/lag, suite/HTML target visibility and helper source identities. Metric sufficiency beyond the declared exploratory screen, all-attempt ledger and paired statistical decisions remain open; [evidence](../research/god-test/2026-11-21-measurement-hardening.md). |
 | GOD-12-R3 | Independent adversarial audit of plan, tooling claims and acceptance | Documentation hardened after [source review and offline counterexamples](../research/god-test/2026-11-20-plan-audit.md). Runtime corrections and qualification remain open under GOD-12-R2a–g / GOD-13-R2; this audit is not a benchmark pass. |
 | GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release-package lanes remain pending |
 | GOD-13-R1 | Portable tooling and macOS profile adapter | Python tooling workflow is configured for Linux/Windows/macOS; private Mac launch copy changes only the project name. Local verification: 161 Python checks, three checked Godot fixtures and expected Startup profile refusal; [evidence](../research/god-test/2026-11-20-performance-tour.md). Hosted tests and headless control-flow evidence do not qualify target hardware. |
-| GOD-13-R2 | Admitted full-campaign execution and evidence lifecycle | Planned: total outer deadline/storage admission, worker-compatible commands, source-bound recovery and integrity-checked attempt retention/relocation; explicit physical device/host/display and same-run conditions proof. Automatic enrolled-host resume remains unsupported. |
+| GOD-13-R2 | Admitted full-campaign execution and evidence lifecycle | Partially implemented: automatic CLI full-roster lease propagation, queue-ceiling refusal and worker-owned-input preflight; [2026-11-21 evidence](../research/god-test/2026-11-21-measurement-hardening.md). Direct preset minimum enforcement, bounded preparation/storage, platform adapters, source-bound recovery and integrity-checked attempt retention/relocation remain open. Automatic enrolled-host resume remains unsupported; no same-run physical device/display/thermal proof is claimed. |
 
 Order: contracts/CLI → supervised normal startup → collectors → basic pilot →
 landmarks/pause → aerobatics/landing → variants/comparison → long campaigns/packages.

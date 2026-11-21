@@ -16,14 +16,29 @@ class MonitoringTests(unittest.TestCase):
     def _resources(self, path):
         value = {"format": "openrc-resource-samples v1", "identity_status": "verified", "pid": 1234,
                  "measurement_status": "ok", "required_coverage": "complete", "sample_count": 2,
-                 "samples": [{"elapsed_seconds": 0, "cpu_user_seconds": 1, "cpu_system_seconds": 1, "rss_bytes": 1024},
-                             {"elapsed_seconds": 2, "cpu_user_seconds": 3, "cpu_system_seconds": 2, "rss_bytes": 2048}],
+                 "interval_seconds": 1, "max_samples": 4000,
+                 "clock": {"source": "python_perf_counter", "origin_usec": 1_000_000,
+                           "start": {"monotonic_usec": 1_000_000, "unix_usec": 1_700_000_000_000_000, "uncertainty_usec": 20_000},
+                           "end": {"monotonic_usec": 3_100_000, "unix_usec": 1_700_000_002_100_000, "uncertainty_usec": 20_000}},
+                 "samples": [{"elapsed_seconds": .01, "poll_overhead_usec": 1000, "cpu_user_seconds": 1, "cpu_system_seconds": 1, "rss_bytes": 1024},
+                             {"elapsed_seconds": 2.01, "poll_overhead_usec": 1000, "cpu_user_seconds": 3, "cpu_system_seconds": 2, "rss_bytes": 2048}],
                  "summary": {"peaks": {"cpu_percent": 150}}, "errors": []}
+        required = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")
+        value.update(capped=False, stop_reason="caller_finished", required_field_counts={key: 2 for key in required})
+        for row in value["samples"]:
+            row.update(virtual_memory_available_bytes=1_000_000, field_status={key: "ok" for key in required})
         write_json(path / "resources.json", value)
         return value
 
     def _receipt(self, path):
         return {"launch": {"pid": 1234}, "resource_sampling": True, "gpu_sampling": True,
+                "resource_observation": {"clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                                         "start_requested_usec": 1_000_000, "start_returned_usec": 1_015_000,
+                                         "stop_requested_usec": 3_050_000,
+                                         "finish_returned_usec": 3_150_000},
+                "gpu_observation": {"clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                                    "start_requested_usec": 1_020_000, "start_returned_usec": 1_030_000,
+                                    "stop_requested_usec": 3_160_000, "finish_returned_usec": 3_180_000},
                 "resource_sampler_source_sha256": "b" * 64, "resource_sampler_source_changed": False,
                 "orchestrator_sources": {"hardware.py": "c" * 64},
                 **{key + "_sha256": hashlib.sha256((path / (key + ".json")).read_bytes()).hexdigest()
@@ -32,7 +47,7 @@ class MonitoringTests(unittest.TestCase):
     def _gpu(self, path):
         identity = {"key": "fixture:device", "name": "Test GPU"}
         samples = []
-        for start, utilization in ((0, 25), (1_000_000, 75)):
+        for start, utilization in ((1_100_000, 25), (2_100_000, 75)):
             device = {"identity": identity, "metrics": {"gpu_utilization_pct": utilization},
                       "metric_status": {"gpu_utilization_pct": "available"}}
             backend = {"backend": "fixture", "status": "available", "devices": [device],
@@ -41,7 +56,9 @@ class MonitoringTests(unittest.TestCase):
         value = {"format": "openrc-godtest-gpu-v1", "status": "available", "source_sha256": "c" * 64,
                  "source_end_sha256": "c" * 64, "source_changed": False, "thread_alive": False,
                  "sample_cap_reached": False, "worker_exit_reason": "owner_stopped", "interval_seconds": 1,
-                 "start_monotonic_usec": 0, "stop_requested_monotonic_usec": 2_000_000,
+                 "clock_domain": "python_time_perf_counter", "max_samples": 4000,
+                 "start_monotonic_usec": 1_025_000, "stop_requested_monotonic_usec": 3_160_000,
+                 "stop_monotonic_usec": 3_170_000,
                  "timing_coverage": {"status": "complete"}, "sample_count": 2, "samples": samples,
                  "summary_by_device": {identity["key"]: {"identity": identity, "backend": "fixture", "samples": 2,
                      "metrics": {"gpu_utilization_pct": {"count": 2, "min": 25, "max": 75, "mean": 50}}}}}
@@ -92,13 +109,115 @@ class MonitoringTests(unittest.TestCase):
                 self.assertFalse(monitoring["complete"])
                 self.assertEqual(resources["status"], "unavailable")
 
+    def test_complete_label_cannot_hide_required_fields_cap_or_unbound_clock(self):
+        for fault in ("field_status", "counts", "memory", "capped", "owner_missing", "shifted_clock", "interval"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary)
+                value = self._resources(path)
+                self._gpu(path)
+                if fault == "field_status": value["samples"][0]["field_status"]["rss_bytes"] = "unavailable"
+                elif fault == "counts": value["required_field_counts"]["rss_bytes"] = 1
+                elif fault == "memory": value["samples"][0].pop("virtual_memory_available_bytes")
+                elif fault == "capped": value.update(capped=True, stop_reason="sample_limit")
+                elif fault == "interval": value["interval_seconds"] = 60
+                elif fault == "shifted_clock":
+                    value["clock"]["origin_usec"] += 100_000_000
+                    for anchor in ("start", "end"):
+                        value["clock"][anchor]["monotonic_usec"] += 100_000_000
+                write_json(path / "resources.json", value)
+                receipt = self._receipt(path)
+                if fault == "owner_missing": receipt.pop("resource_observation")
+                resources, _, monitoring = hardware_report(path, receipt, True)
+                self.assertFalse(monitoring["complete"], resources)
+
+    def test_extreme_resource_numbers_become_unavailable_without_crashing_reduction(self):
+        for fault in ("large_integer", "derived_overflow"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary)
+                value = self._resources(path)
+                self._gpu(path)
+                if fault == "large_integer": value["samples"][-1]["elapsed_seconds"] = 10**1000
+                else: value["samples"][-1].update(cpu_user_seconds=1e308, cpu_system_seconds=1e308)
+                write_json(path / "resources.json", value)
+                resources, _, monitoring = hardware_report(path, self._receipt(path), True)
+                self.assertFalse(monitoring["complete"])
+                self.assertEqual(resources["status"], "unavailable")
+                json.dumps(resources, allow_nan=False)
+
+    def test_individually_valid_cpu_gpu_windows_must_share_the_runner_lifecycle(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary)
+            value = self._resources(path)
+            self._gpu(path)
+            value["clock"]["origin_usec"] += 100_000_000
+            for anchor in ("start", "end"):
+                value["clock"][anchor]["monotonic_usec"] += 100_000_000
+            write_json(path / "resources.json", value)
+            receipt = self._receipt(path)
+            for name in ("start_requested_usec", "start_returned_usec", "stop_requested_usec", "finish_returned_usec"):
+                receipt["resource_observation"][name] += 100_000_000
+            resources, gpu, monitoring = hardware_report(path, receipt, True)
+            self.assertEqual(resources["owner_clock"]["status"], "complete")
+            self.assertEqual(gpu["timing_coverage"]["status"], "complete")
+            self.assertFalse(monitoring["complete"])
+            self.assertEqual(monitoring["lifecycle"]["status"], "incomplete")
+
+    def test_gpu_owner_clock_and_cadence_are_required_even_with_available_samples(self):
+        for fault in ("owner_missing", "cadence", "shifted_clock"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary)
+                self._resources(path)
+                value = self._gpu(path)
+                if fault == "cadence": value["interval_seconds"] = 60
+                elif fault == "shifted_clock":
+                    for key in ("start_monotonic_usec", "stop_requested_monotonic_usec", "stop_monotonic_usec"):
+                        value[key] += 100_000_000
+                    for sample in value["samples"]:
+                        for key in ("start_monotonic_usec", "end_monotonic_usec"):
+                            sample[key] += 100_000_000
+                            for backend in sample["backends"]:
+                                backend[key] += 100_000_000
+                write_json(path / "gpu.json", value)
+                receipt = self._receipt(path)
+                if fault == "owner_missing": receipt.pop("gpu_observation")
+                _, gpu, monitoring = hardware_report(path, receipt, True)
+                self.assertEqual(gpu["status"], "available")
+                self.assertNotEqual(gpu["timing_coverage"]["status"], "complete")
+                self.assertFalse(monitoring["complete"])
+
+    def test_field_coverage_cannot_hide_cpu_observation_gaps_or_missing_clock(self):
+        for fault, expected in (("clock", "unavailable"), ("start", "incomplete"),
+                                ("middle", "incomplete"), ("end", "incomplete")):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary)
+                value = self._resources(path)
+                self._gpu(path)
+                if fault == "clock":
+                    value.pop("clock")
+                elif fault == "start":
+                    for row in value["samples"]:
+                        row["elapsed_seconds"] += 4
+                    value["clock"]["end"]["monotonic_usec"] += 4_000_000
+                elif fault == "middle":
+                    value["samples"][-1]["elapsed_seconds"] += 4
+                    value["clock"]["end"]["monotonic_usec"] += 4_000_000
+                else:
+                    value["clock"]["end"]["monotonic_usec"] += 60_000_000
+                write_json(path / "resources.json", value)
+                resources, gpu, monitoring = hardware_report(path, self._receipt(path), True)
+                self.assertEqual(resources["coverage"], "complete")
+                self.assertEqual(resources["timing_coverage"]["status"], expected)
+                self.assertEqual(gpu["status"], "available")
+                self.assertFalse(monitoring["complete"])
+                self.assertIn("process resource timing coverage", " ".join(monitoring["issues"]))
+
     def test_unavailable_gpu_preserves_process_evidence_without_complete_monitoring(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary)
             self._resources(path)
             write_json(path / "gpu.json", {"format": "openrc-godtest-gpu-v1", "status": "unavailable", "summary_by_device": {}})
             resources, gpu, monitoring = hardware_report(path, self._receipt(path), True)
-            self.assertEqual(resources["cpu_percent_mean"], 150)
+            self.assertAlmostEqual(resources["cpu_percent_mean"], 150)
             self.assertEqual(resources["rss_delta_bytes"], 1024)
             self.assertEqual(gpu["status"], "unavailable")
             self.assertFalse(monitoring["complete"])
@@ -127,6 +246,7 @@ class MonitoringTests(unittest.TestCase):
             manifest = json.loads((path / "manifest.resolved.json").read_text())
             manifest["monitor_hardware"] = True
             write_json(path / "manifest.resolved.json", manifest)
+            write_json(path / "manifest.requested.json", {k: v for k, v in manifest.items() if k != "output_dir"})
             result = report(path)
             self.assertEqual(result["data"], "valid")
             self.assertEqual(result["coverage"], "complete")

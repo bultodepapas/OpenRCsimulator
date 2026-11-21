@@ -9,10 +9,19 @@ from pathlib import Path
 import statistics
 from collections import defaultdict
 import heapq
+import catalog
 
 from runner import read_json, write_json
+from resource_coverage import (validate_resource_timing, validate_resource_required_fields,
+                               validate_resource_owner_clock)
+from pace_windows import PaceWindowAccumulator
+from render_evidence import RenderAccumulator, validate_rendering
+from gpu_coverage import validate_gpu_timing
 
-REDUCER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+REDUCER_SOURCES = {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                   for name in ("analysis.py", "catalog.py", "runner.py", "resource_coverage.py",
+                                "gpu_coverage.py", "pace_windows.py", "render_evidence.py")}
+REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).encode()).hexdigest()
 
 
 def validate_stream(directory: Path, frames: dict) -> dict:
@@ -33,6 +42,9 @@ def validate_stream(directory: Path, frames: dict) -> dict:
     phase_final_counters = {}
     previous_phase = None
     slowest = []
+    simulation_pace = PaceWindowAccumulator()
+    simulation_pace_error = None
+    rendering = RenderAccumulator()
     with path.open("rb") as source:
         for line in source:
             if len(line) > 8 * 1024 * 1024:
@@ -83,6 +95,18 @@ def validate_stream(directory: Path, frames: dict) -> dict:
                         stats["consecutive"] = 0
                         stats["consecutive_ms"] = 0.0
                 previous_phase = phase_index
+                rendering.add(phase_index, ends[offset], wall,
+                              *(metrics[key][offset] if key in metrics else None for key in
+                                ("render_frames_drawn", "render_interval_draws", "render_window_drawable")))
+                if simulation_pace_error is None:
+                    try:
+                        simulation_pace.add(phase_index, wall, ends[offset],
+                                            *(metrics[key][offset] if key in metrics else None
+                                              for key in ("sim_tick", "sim_time_s", "paused", "crashed")))
+                    except ValueError as error:
+                        # Preserve frame-time evidence even when its phase order
+                        # cannot support the stricter simulation-clock analysis.
+                        simulation_pace_error = str(error)
                 phase_samples[str(int(phase_index))].append(wall)
                 phase_final_counters[str(int(phase_index))] = {key: metrics[key][offset] for key in ("memory_static_bytes", "resource_count", "orphan_node_count", "render_texture_memory_bytes") if key in metrics}
                 for limit, stats in phase_hitches[str(int(phase_index))].items():
@@ -135,6 +159,9 @@ def validate_stream(directory: Path, frames: dict) -> dict:
     return {"valid": True, "frames": count, "chunks": chunks, "phase_stats": phase_stats,
             "phase_hitches": dict(phase_hitches), "phase_pacing": phase_pacing,
             "phase_final_counters": phase_final_counters,
+            "phase_simulation_pace": simulation_pace.finish() if simulation_pace_error is None else {},
+            "simulation_pace_error": simulation_pace_error,
+            "phase_rendering": rendering.finish(),
             "slowest_frames": [dict(wall_ms=w/1000, frame=i, phase_index=p, end_usec=end) for w,i,p,end in sorted(slowest, reverse=True)]}
 
 
@@ -241,8 +268,8 @@ def _verify_gpu_samples(value: dict, execution: dict) -> None:
             raise ValueError("GPU sample clock brackets are invalid or out of order")
         if before - (previous_start if previous_start is not None else start) > gap_limit:
             raise ValueError("GPU sample clock contains an excessive gap")
-        if before > stop:
-            raise ValueError("GPU sample starts after the owner requested stop")
+        # The independent owner-clock validator handles bounded stop races and
+        # excludes post-stop reads from timing support.
         previous_start, previous_end = before, after
         backends = sample.get("backends")
         if not isinstance(backends, list) or not backends:
@@ -282,6 +309,34 @@ def _verify_gpu_samples(value: dict, execution: dict) -> None:
             raise ValueError("GPU summary or per-device coverage differs from raw utilization")
 
 
+def monitor_lifecycle(execution: dict) -> dict:
+    """Bind both observer windows to the start/stop order actually used by runner."""
+    ordered = (("resource_observation", "start_requested_usec"),
+               ("resource_observation", "start_returned_usec"),
+               ("gpu_observation", "start_requested_usec"),
+               ("gpu_observation", "start_returned_usec"),
+               ("resource_observation", "stop_requested_usec"),
+               ("resource_observation", "finish_returned_usec"),
+               ("gpu_observation", "stop_requested_usec"),
+               ("gpu_observation", "finish_returned_usec"))
+    bounds = {}
+    for owner, key in ordered:
+        value = execution.get(owner, {})
+        if not isinstance(value, dict) or key not in value:
+            return {"status": "unavailable", "reason": "observer lifecycle receipt is missing", "bounds": bounds}
+        stamp = value[key]
+        if type(stamp) is not int or not 0 <= stamp <= 2**63 - 1:
+            return {"status": "incomplete", "reason": "observer lifecycle timestamp is invalid", "bounds": bounds}
+        bounds[owner + "." + key] = stamp
+    stamps = list(bounds.values())
+    # CPU rounds perf_counter seconds; GPU truncates perf_counter_ns. Permit
+    # only their microsecond representation difference, not scheduling gaps.
+    complete = all(later + 2 >= earlier for earlier, later in zip(stamps, stamps[1:]))
+    return {"status": "complete" if complete else "incomplete",
+            "reason": None if complete else "CPU/GPU observer windows contradict the runner lifecycle",
+            "bounds": bounds, "rounding_tolerance_usec": 2}
+
+
 def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[dict, dict, dict]:
     """Keep capability and sample coverage separate from frame-data integrity."""
     resources = {"status": "not_requested", "rss_peak_bytes": None, "cpu_percent_mean": None}
@@ -303,12 +358,17 @@ def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[d
                 if value.get("format") != "openrc-godtest-gpu-v1":
                     raise ValueError("unsupported GPU sample format")
                 gpu = {k: v for k, v in value.items() if k != "samples"}
+                gpu["reported_timing_coverage"] = gpu.get("timing_coverage")
+                gpu["timing_coverage"] = validate_gpu_timing(value, execution)
                 gpu["path"] = filename
                 gpu["correlation"] = "whole-device observations; renderer-device binding and frame causation are not established"
                 if value.get("status") != "available" or value.get("thread_alive"):
                     issues.append("GPU utilization sampling is " + str(value.get("status", "unavailable")))
                 else:
                     _verify_gpu_samples(value, execution)
+                if gpu["timing_coverage"]["status"] != "complete":
+                    issues.append("GPU timing coverage is " + gpu["timing_coverage"]["status"] + ": " +
+                                  ", ".join(gpu["timing_coverage"]["reasons"]))
                 continue
             if value.get("format") != "openrc-resource-samples v1":
                 raise ValueError("unsupported process sample format")
@@ -319,6 +379,10 @@ def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[d
                 raise ValueError("process resources need at least two verified samples")
             if value.get("identity_status") != "verified" or value.get("pid") != execution.get("launch", {}).get("pid"):
                 raise ValueError("process resources do not identify the launched simulator")
+            timing = validate_resource_timing(value)
+            field_coverage = validate_resource_required_fields(value)
+            owner_clock = validate_resource_owner_clock(value, execution)
+            resources.update(timing_coverage=timing, field_coverage=field_coverage, owner_clock=owner_clock)
             fields = ("elapsed_seconds", "cpu_user_seconds", "cpu_system_seconds", "rss_bytes")
             if any(not isinstance(row, dict) or any(type(row.get(k)) not in (float, int) or not math.isfinite(row[k]) or row[k] < 0 for k in fields) for row in samples):
                 raise ValueError("process resource counters are missing or invalid")
@@ -327,12 +391,16 @@ def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[d
                     raise ValueError("process resource clock/counters decreased")
             elapsed = samples[-1]["elapsed_seconds"] - samples[0]["elapsed_seconds"]
             cpu_seconds = sum(samples[-1][k] - samples[0][k] for k in ("cpu_user_seconds", "cpu_system_seconds"))
+            cpu_percent = 100 * cpu_seconds / elapsed
+            if not all(math.isfinite(item) for item in (elapsed, cpu_seconds, cpu_percent)):
+                raise ValueError("derived process resource metrics are not finite")
             peak = value.get("summary", {}).get("peaks", {})
             resources = {"status": value.get("measurement_status", "unknown"), "path": filename,
                 "identity": value.get("identity_status"), "pid": value.get("pid"),
-                "coverage": value.get("required_coverage"), "samples": len(samples),
+                "coverage": value.get("required_coverage"), "timing_coverage": timing,
+                "field_coverage": field_coverage, "owner_clock": owner_clock, "samples": len(samples),
                 "sampled_wall_seconds": elapsed, "cpu_seconds": cpu_seconds,
-                "cpu_percent_mean": 100 * cpu_seconds / elapsed,
+                "cpu_percent_mean": cpu_percent,
                 "cpu_percent_peak": peak.get("cpu_percent"),
                 "rss_peak_bytes": max(row["rss_bytes"] for row in samples),
                 "rss_delta_bytes": samples[-1]["rss_bytes"] - samples[0]["rss_bytes"],
@@ -343,15 +411,36 @@ def hardware_report(directory: Path, execution: dict, required: bool) -> tuple[d
                 "phase_correlation": "host monotonic samples are separate from engine phase clock; no same-frame causal claim"}
             if value.get("required_coverage") != "complete":
                 issues.append("process resource sample coverage is incomplete")
-        except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+            if timing["status"] != "complete":
+                issues.append("process resource timing coverage is " + timing["status"] + ": " + ", ".join(timing["reasons"]))
+            for label, assessment in (("required fields", field_coverage), ("owner clock", owner_clock)):
+                if assessment["status"] != "complete":
+                    issues.append("process resource " + label + " is " + assessment["status"] + ": " + ", ".join(assessment["reasons"]))
+        except (OSError, ValueError, TypeError, KeyError, AttributeError, OverflowError) as error:
             issues.append(str(error))
             if key == "gpu":
                 gpu = {"status": "unavailable", "error": str(error), "summary_by_device": {}}
             else:
                 resources.update(status="unavailable", error=str(error))
-    complete = (resources.get("coverage") == "complete" and gpu.get("status") == "available" and not issues)
-    return resources, gpu, {"required": required, "complete": complete, "issues": issues,
-                            "scope": "after bridge readiness; early startup and physical presentation are not sampled"}
+    lifecycle = {"status": "not_requested"}
+    if required or resources.get("status") != "not_requested" or gpu.get("status") != "not_requested":
+        lifecycle = monitor_lifecycle(execution)
+        if lifecycle["status"] != "complete":
+            issues.append(lifecycle["reason"])
+    complete = (resources.get("coverage") == "complete" and resources.get("timing_coverage", {}).get("status") == "complete"
+                and resources.get("field_coverage", {}).get("status") == "complete"
+                and resources.get("owner_clock", {}).get("status") == "complete"
+                and gpu.get("status") == "available" and not issues)
+    return resources, gpu, {"required": required, "complete": complete, "issues": issues, "lifecycle": lifecycle,
+                            "scope": "independently bracketed CPU/GPU observer windows after bridge readiness; startup and setup before each observer starts and physical presentation are not sampled"}
+
+
+def screen_target_status(target: dict) -> str:
+    checks = [target.get(key) for key in ("p95_within_18ms", "p99_within_25ms",
+              "simulation_pace_target_met", "local_simulation_pace_target_met")]
+    if any(value is False for value in checks):
+        return "missed"
+    return "met_observed_screen" if all(value is True for value in checks) else "inconclusive"
 
 
 def report(directory: Path, *, write: bool = True) -> dict:
@@ -361,6 +450,18 @@ def report(directory: Path, *, write: bool = True) -> dict:
     runtime = read_json(directory / "runtime.json") if (directory / "runtime.json").exists() else {}
     frames = read_json(directory / "frametimes.json") if (directory / "frametimes.json").exists() else {}
     problems = []
+    requested_manifest = None
+    try:
+        requested_manifest = read_json(directory / "manifest.requested.json", 65536)
+    except (OSError, ValueError, TypeError) as error:
+        problems.append("original requested manifest is unavailable: " + str(error))
+    manifest_valid = True
+    for label, value, resolved in (("requested", requested_manifest, False), ("resolved", manifest, True)):
+        try:
+            catalog.validate(value, resolved=resolved)
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError) as error:
+            manifest_valid = False
+            problems.append(f"{label} manifest is invalid: {error}")
     integrity = {}
     try:
         if frames.get("format") != "openrc-godtest-frames-v1" or frames.get("completion_kind") != "scenario_event":
@@ -393,6 +494,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
         if not isinstance(phase, dict) or phase.get("status") not in ("complete", "failed", "unsupported"):
             problems.append("invalid phase result")
             break
+        if type(phase.get("requested")) is not bool:
+            problems.append("phase requested flags must be explicit booleans")
         observed = integrity.get("phase_stats", {}).get(str(phase.get("index")))
         phase["frame_ms"] = observed or {"p50": None, "p95": None, "p99": None, "max": None}
         phase["frame_statistics_status"] = "available" if observed else "unavailable_no_verified_samples"
@@ -401,6 +504,8 @@ def report(directory: Path, *, write: bool = True) -> dict:
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
         phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
         phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
+        phase["simulation_pace"] = integrity.get("phase_simulation_pace", {}).get(str(phase.get("index")),
+            {"status": "unavailable_stream_evidence", "issues": [integrity.get("simulation_pace_error") or "no_verified_samples"]})
         for key in ("wall_seconds", "sim_seconds"):
             if type(phase.get(key)) not in (float, int) or not math.isfinite(phase[key]) or phase[key] < 0:
                 problems.append(f"invalid phase {key}")
@@ -410,12 +515,16 @@ def report(directory: Path, *, write: bool = True) -> dict:
                 continue
             if type(value) not in (float, int) or not math.isfinite(value) or value < 0:
                 problems.append("invalid phase frame distribution")
-    rendered = runtime.get("metrics", {}).get("rendered") is True and manifest.get("headless") is False
+    rendering = validate_rendering(requested_manifest, manifest, runtime, phase_records,
+                                   integrity.get("phase_rendering", {}), execution)
+    problems.extend(rendering["issues"])
+    requested_rendered = rendering["requested_headless"] is False
+    rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True
-    if rendered and not display_ok:
+    if requested_rendered and not display_ok:
         problems.append("actual window dimensions differ from requested workload")
     diagnostic = runtime.get("identity", {}).get("diagnostics", {})
-    if rendered:
+    if requested_rendered:
         for key, expected in execution.get("rendering_requested", {}).items():
             if diagnostic.get(key) != expected:
                 problems.append(f"actual {key} differs from requested workload")
@@ -429,7 +538,9 @@ def report(directory: Path, *, write: bool = True) -> dict:
                 isolation.get("project_name") != manifest.get("isolated_project_name")):
             problems.append("macOS runtime profile does not match its isolated launch receipt")
     coverage = runtime.get("coverage", "none")
-    missing_phases = [name for name in manifest.get("phases", []) if name != "shutdown" and not any(p.get("name") == name and p.get("requested") for p in phase_records)]
+    if rendering["status"] == "incomplete" or not manifest_valid:
+        coverage = "partial"
+    missing_phases = [name for name in manifest.get("phases", []) if name != "shutdown" and not any(p.get("name") == name and p.get("requested") is True for p in phase_records)]
     if missing_phases:
         problems.append("requested phases are absent: " + ", ".join(missing_phases))
         coverage = "partial"
@@ -444,7 +555,7 @@ def report(directory: Path, *, write: bool = True) -> dict:
                 problems.append("completed menu phase lacks pause/return/resume evidence")
                 coverage = "partial"
     watched = watch_report(directory, execution, runtime, problems) if manifest.get("watch_frames") else {"status": "not_requested"}
-    if manifest.get("require_native") and rendered and runtime.get("identity", {}).get("backend", {}).get("backend") != "native":
+    if manifest.get("require_native") and requested_rendered and runtime.get("identity", {}).get("backend", {}).get("backend") != "native":
         problems.append("rendered performance workload requires actual native physics; reference fallback was observed")
     if runtime.get("metrics", {}).get("focus_losses", 0):
         problems.append("native focus loss observed; session equivalence requires diagnosis")
@@ -454,10 +565,29 @@ def report(directory: Path, *, write: bool = True) -> dict:
         duration = phase.get("wall_seconds", 0)
         ratio = phase.get("sim_seconds", 0) / duration if duration else None
         available = phase["frame_statistics_status"] == "available"
-        targets.append({"phase_id": phase.get("id"), "pacing_target": ("screen_only" if duration < 60 else "observed") if available else "unavailable",
+        local = phase["simulation_pace"]
+        worst = (local.get("worst_window") or {}).get("simulation_wall_ratio")
+        fastest = (local.get("fastest_window") or {}).get("simulation_wall_ratio")
+        observed_local_miss = ((worst is not None and worst < .99) or
+                               (fastest is not None and fastest > 1.01))
+        # A supported bad window is an observation even if the remaining phase
+        # is incomplete. A positive screen requires complete window support.
+        local_complete = local.get("status") == "available" and local.get("partial_windows") == 0
+        local_target = False if observed_local_miss else (True if local_complete else None)
+        targets.append({"phase_id": phase.get("id"), "phase_index": phase.get("index"), "pacing_target": ("screen_only" if duration < 60 else "observed") if available else "unavailable",
                         "p95_within_18ms": phase["frame_ms"]["p95"] <= 18 if available else None,
                         "p99_within_25ms": phase["frame_ms"]["p99"] <= 25 if available else None,
-                        "simulation_wall_ratio": ratio, "simulation_pace_target_met": ratio is not None and 0.99 <= ratio <= 1.01})
+                        "simulation_wall_ratio": ratio, "simulation_pace_target_met": ratio is not None and 0.99 <= ratio <= 1.01,
+                        "local_simulation_pace_status": local.get("status", "unavailable"),
+                        "local_simulation_pace_target_met": local_target,
+                        "worst_local_simulation_wall_ratio": worst,
+                        "fastest_local_simulation_wall_ratio": fastest,
+                        "maximum_observed_simulation_lag_seconds": local.get("maximum_lag_seconds"),
+                        "local_simulation_pace_target_reason": ("observed_window_miss" if observed_local_miss else
+                            "partial_tail_unscored" if local.get("partial_windows", 0) > 0 else
+                            "complete_full_windows" if local_complete else "insufficient_or_invalid_local_evidence"),
+                        "simulation_pace_target_scope": "exploratory 0.99–1.01 phase total and supported 1 s windows; an unscored partial tail prevents a positive local screen; no hardware or statistical qualification"})
+        targets[-1]["screen_target_status"] = screen_target_status(targets[-1])
     loading = []
     for phase in phase_records:
         if phase.get("name") in ("startup", "loading"):
@@ -478,10 +608,11 @@ def report(directory: Path, *, write: bool = True) -> dict:
                                        maximum_contact_sink_mps=pilot.get("maximum_contact_sink_mps"),
                                        minimum_wheel_runway_margin_m=margin,
                                        wheel_outside_runway_observed=type(margin) in (int, float) and margin < 0))
-    result = dict(format="openrc-godtest-report-v1", reducer_sha256=REDUCER_SHA256,
+    result = dict(format="openrc-godtest-report-v1", reducer_sha256=REDUCER_SHA256, reducer_sources=REDUCER_SOURCES,
                   run_dir=str(directory), scenario=manifest["id"], aircraft=manifest["aircraft"],
                   execution=runtime.get("execution", execution.get("state", "unknown")), data="valid" if not problems else "ineligible",
                   coverage=coverage, flight=runtime.get("flight", "not_run"), rendered=rendered,
+                  requested_headless=rendering["requested_headless"], rendering=rendering,
                   performance="single_run_screen" if rendered and not problems and coverage == "complete" and (not monitoring["required"] or monitoring["complete"]) else "not_qualified",
                   hardware_qualified=False, repeat_campaign="not_collected", issues=problems,
                   phases=phase_records, metrics=runtime.get("metrics", {}), integrity=integrity,
@@ -497,6 +628,21 @@ def report(directory: Path, *, write: bool = True) -> dict:
         flight_notes = "".join(f"<li>{html.escape(str(item['phase_id']))}: wheel contact outside the runway rectangle was observed (minimum margin {item['minimum_wheel_runway_margin_m']:.2f} m). Collection and stopping coverage do not establish a successful runway landing.</li>" for item in flight_observations if item["wheel_outside_runway_observed"])
         if flight_notes:
             document = document.replace("<table>", "<ul>" + flight_notes + "</ul><table>", 1)
+        target_rows = "".join("<tr>" + "".join("<td>" + html.escape(str(value)) + "</td>" for value in (
+            target["phase_id"], target["screen_target_status"], number(target["simulation_wall_ratio"]),
+            number(target["worst_local_simulation_wall_ratio"]), number(target["fastest_local_simulation_wall_ratio"]),
+            number(target["maximum_observed_simulation_lag_seconds"]), target["local_simulation_pace_status"])) + "</tr>"
+            for target in targets)
+        if target_rows:
+            target_section = ("<h2>Simulation pace and screen targets</h2><table><thead><tr><th>Phase</th><th>Screen targets</th>"
+                "<th>Total sim / wall</th><th>Worst 1 s sim / wall</th><th>Fastest 1 s sim / wall</th><th>Max observed lag s</th>"
+                "<th>Local pace evidence</th></tr></thead><tbody>" + target_rows + "</tbody></table>"
+                "<p>Screen targets combine p95 ≤18 ms, p99 ≤25 ms and simulation / wall ratios of 0.99–1.01. "
+                "A missed supported window remains visible even when phase-wide averages recover. Missing channels, holds, "
+                "unsupported windows, an unscored partial tail or excessive exclusions cannot produce a positive local screen. Ratios are callback "
+                "observations; short maneuvers are exploratory, and no statistical or hardware qualification is implied. "
+                "Raw window support, partial tails and clock issues are retained in report.json.</p>")
+            document = document.replace("</html>", target_section + "</html>")
         if manifest.get("watch_frames"):
             summary = watched.get("overall", {})
             watch_section = f"<h2>Stutters and FPS drops</h2><p>Watcher: {html.escape(watched['status'])}. Relative stutter frames: {summary.get('relative_stutter_frames', 'unavailable')}; stalls: {summary.get('stall_frames', 'unavailable')}; incidents: {len(watched.get('incidents', []))}; freezes: {len(watched.get('hangs', []))}.</p><p>1% low: {number(summary.get('fps_1pct_low'))} FPS; 0.1% low: {number(summary.get('fps_01pct_low'))} FPS. <a href='frame-watch/report.html'>Open the original stutter report and incident evidence</a>.</p><p>Watching begins after the Home arming barrier; earlier startup is covered only by GOD TEST. Bridge route statistics combine flight and its menu overlays. Incident triggers in report.json are associated with the GOD TEST phase at interval end. Short-tail and detector warmup limits remain in the original report.</p>"

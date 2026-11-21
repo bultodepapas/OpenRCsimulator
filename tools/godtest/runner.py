@@ -282,7 +282,7 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         launcher += ["--" + key.replace("_", "-"), value]
     if manifest["headless"]:
         launcher.append("--headless")
-    capture = {"state": "starting", "launch_to_bridge_s": None, "failure": "", "shutdown": {}, "host": dict(platform=platform.platform(), machine=platform.machine()), "resource_scope": "after bridge readiness; does not cover whole startup"}
+    capture = {"state": "starting", "launch_to_bridge_s": None, "failure": "", "shutdown": {}, "host": dict(platform=platform.platform(), machine=platform.machine()), "resource_scope": "owner-bracketed process observation after bridge readiness; startup and setup before observer construction are excluded"}
     capture["resource_sampling"] = resources
     capture["gpu_sampling"] = resources
     if host_identity is not None:
@@ -334,10 +334,18 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
             from tools.godot.resource_samples import ResourceSampler
             from tools.godtest.hardware import GpuSampler
             capture["monitoring_started_perf_counter_s"] = time.perf_counter()
+            capture["resource_observation"] = {
+                "clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                "start_requested_usec": round(capture["monitoring_started_perf_counter_s"] * 1_000_000)}
             sampler = ResourceSampler(int(launch["pid"]), interval=1, max_samples=4000, include_threads=True)
             sampler.poll(force=True)
+            capture["resource_observation"]["start_returned_usec"] = round(time.perf_counter() * 1_000_000)
+            capture["gpu_observation"] = {
+                "clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                "start_requested_usec": time.perf_counter_ns() // 1000}
             gpu_sampler = GpuSampler(interval=1, max_samples=4000)
             gpu_sampler.start()
+            capture["gpu_observation"]["start_returned_usec"] = time.perf_counter_ns() // 1000
         deadline = launch_began + float(manifest["timeout_s"]) + 10
         last_phase = None
         while not (path / "runtime.json").exists():
@@ -376,7 +384,10 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
     finally:
         if sampler:
             try:
-                write_json(path / "resources.json", sampler.finish())
+                capture["resource_observation"]["stop_requested_usec"] = round(time.perf_counter() * 1_000_000)
+                resource_result = sampler.finish()
+                capture["resource_observation"]["finish_returned_usec"] = round(time.perf_counter() * 1_000_000)
+                write_json(path / "resources.json", resource_result)
                 capture["resources_sha256"] = file_hash(path / "resources.json")
             except Exception as error:
                 capture["resource_error"] = f"{type(error).__name__}: {error}"
@@ -387,7 +398,10 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
                 capture["resource_sampler_source_changed"] = None
         if gpu_sampler:
             try:
-                write_json(path / "gpu.json", gpu_sampler.stop())
+                capture["gpu_observation"]["stop_requested_usec"] = time.perf_counter_ns() // 1000
+                gpu_result = gpu_sampler.stop()
+                capture["gpu_observation"]["finish_returned_usec"] = time.perf_counter_ns() // 1000
+                write_json(path / "gpu.json", gpu_result)
                 capture["gpu_sha256"] = file_hash(path / "gpu.json")
             except Exception as error:
                 capture["gpu_error"] = f"{type(error).__name__}: {error}"

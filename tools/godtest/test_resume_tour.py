@@ -72,7 +72,9 @@ class ResumeTourTests(unittest.TestCase):
                 "execution": "completed" if valid else "failed", "data": "valid" if valid else "ineligible",
                 "coverage": "complete" if valid else "partial", "flight": "completed" if valid else "partial",
                 "performance": "not_qualified", "issues": [] if valid else ["fixture failure"],
-                "rendered": False, "monitoring": {"required": True, "complete": False}}
+                "rendered": False, "requested_headless": manifest["headless"],
+                "rendering": {"status": "not_requested" if manifest["headless"] else "incomplete"},
+                "monitoring": {"required": True, "complete": False}}
 
     def _run(self, manifest, output, *, godot, resources, snapshot):
         self.assertEqual(godot, str(self.engine))
@@ -293,7 +295,9 @@ class ResumeTourTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_rendered_incomplete_monitoring_cannot_report_success(self):
-        good = {"data": "valid", "coverage": "complete", "performance": "screen_only", "cases": [{"rendered": True, "monitoring": {"complete": False}}]}
+        good = {"data": "valid", "coverage": "complete", "performance": "screen_only", "cases": [
+            {"data": "valid", "coverage": "complete", "requested_headless": False, "rendered": True,
+             "rendering": {"status": "complete"}, "monitoring": {"required": True, "complete": False}}]}
         self.assertFalse(godtest._tour_success(good))
         good["cases"][0]["monitoring"]["complete"] = True
         self.assertTrue(godtest._tour_success(good))

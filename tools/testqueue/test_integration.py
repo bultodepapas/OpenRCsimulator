@@ -12,6 +12,55 @@ from tools.testqueue import common, integration, presets
 
 
 class CheckedAdmissionTests(unittest.TestCase):
+    def test_run_forwards_explicit_execution_lease_and_observation_budget(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        with patch.object(integration, "submit", return_value=accepted) as submit, \
+                patch.object(integration, "wait", return_value={"state": "FINISHED", "outcome": "PASSED"}) as wait, \
+                contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(integration.run("godtest", ["performance-tour"], Path.cwd(), timeout=14924), 0)
+        submit.assert_called_once_with("godtest", {"argv": ["performance-tour"], "timeout": 14924}, Path.cwd())
+        wait.assert_called_once_with("owned", timeout=15524)
+        self.assertEqual(json.loads(output.getvalue().splitlines()[0]), accepted)
+
+    def test_run_defaults_are_unchanged_and_explicit_timeout_overrides_them(self):
+        for preset, argv, passed, waited in (
+                ("godtest", ["run", "smoke"], {"argv": ["run", "smoke"]}, 4200),
+                ("suite", [], {"argv": [], "timeout": 21600}, 22200),
+                ("ci", [], {"argv": [], "timeout": 21600}, 22200),
+                ("capture", [], {"argv": [], "timeout": 21600}, 22200)):
+            with self.subTest(preset=preset), patch.object(integration, "submit", return_value={"job": "owned"}) as submit, \
+                    patch.object(integration, "wait", return_value={"outcome": "PASSED"}) as wait, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(integration.run(preset, argv, Path.cwd()), 0)
+                submit.assert_called_once_with(preset, passed, Path.cwd())
+                wait.assert_called_once_with("owned", timeout=waited)
+        with patch.object(integration, "submit", return_value={"job": "owned"}) as submit, \
+                patch.object(integration, "wait", return_value={"outcome": "PASSED"}) as wait, \
+                contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(integration.run("suite", [], Path.cwd(), timeout=1234), 0)
+            submit.assert_called_once_with("suite", {"argv": [], "timeout": 1234}, Path.cwd())
+            wait.assert_called_once_with("owned", timeout=1834)
+
+    def test_run_rejects_invalid_explicit_lease_before_submission(self):
+        for timeout in (True, -1, 0, float("inf"), float("nan"), 21601, 10**1000, "900"):
+            with self.subTest(timeout=str(timeout)[:80]), patch.object(integration, "submit") as submit, \
+                    patch.object(integration, "wait") as wait:
+                with self.assertRaises(ValueError):
+                    integration.run("godtest", ["performance-tour"], Path.cwd(), timeout=timeout)
+                submit.assert_not_called()
+                wait.assert_not_called()
+
+    def test_run_exposes_real_accepted_handle_when_observation_remains_pending(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        pending = {"state": "QUEUED", "wait_observation": {"state": "STALE", "reason": "DEADLINE_EXPIRED"}}
+        with patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", return_value=pending) as wait, \
+                contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(integration.run("godtest", ["performance-tour"], Path.cwd(), timeout=14924), 1)
+        self.assertEqual(json.loads(output.getvalue().splitlines()[0]), accepted)
+        self.assertIn('"state": "QUEUED"', output.getvalue())
+        wait.assert_called_once_with("owned", timeout=15524)
+
     def test_suite_submission_forwards_only_the_bounded_import_setting(self):
         # Exercise the request actually sent to the authority without launching a job.
         for preset in ("suite", "ci", "debug-session"):

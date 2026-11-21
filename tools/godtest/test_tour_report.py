@@ -86,7 +86,10 @@ def fixture(root: Path, repeats=1, *, headless=False):
         records = [{"type": "header", "format": "openrc-frame-stream v1"},
                    {"type": "chunk", "sequence": 0, "start_frame": 0, "frames": len(walls),
                     "wall_usec": walls, "end_usec": ends, "engine_delta_s": [x/1e6 for x in walls],
-                    "metrics": {"phase_index": indexes}},
+                    "metrics": {"phase_index": indexes,
+                                "render_frames_drawn": list(range(1, len(walls) + 1)) if not headless else [0] * len(walls),
+                                "render_interval_draws": [int(not headless)] * len(walls),
+                                "render_window_drawable": [int(not headless)] * len(walls)}},
                    {"type": "trailer", "complete": True, "frames": len(walls), "chunks": 1}]
         raw = b"".join((json.dumps(row) + "\n").encode() for row in records)
         (path / "frames.jsonl").write_bytes(raw)
@@ -94,7 +97,8 @@ def fixture(root: Path, repeats=1, *, headless=False):
             "complete": True, "frames": len(walls), "stream": {"file": "frames.jsonl", "complete": True,
             "frames": len(walls), "chunks": 1, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}})
         diag = {key: "fixture" for key in tour_report.HARDWARE}
-        diag.update(max_fps=0, vsync_mode=0, reconstruction_at_start={"mode": "native"})
+        diag.update(max_fps=0, vsync_mode=0, reconstruction_at_start={"mode": "native"},
+                    rendering_method="forward_plus", rendering_driver="vulkan")
         identity = {"engine": {"version": "fixture"}, "backend": {"backend": "native", "binary_sha256": "b"*64},
                     "instrumentation": "frames_diagnostics_pilot_v1", "actual_resolution": [1920, 1080],
                     "viewport_size": [1920, 1080], "selection": {"aircraft": manifest["aircraft"]},
@@ -122,6 +126,8 @@ def fixture(root: Path, repeats=1, *, headless=False):
         write_json(watchdir / "watch.json", watch)
         (watchdir / "report.html").write_text("watch", encoding="utf-8")
         execution = {"state": "runtime_finished", "failure": "", "source_changed": False, "changed_frozen_files": [],
+                     "host": {"platform": "Linux-fixture"},
+                     "rendering_requested": {"rendering_method": "forward_plus", "rendering_driver": "vulkan"},
                      "engine_command_verified": True, "engine_files_changed": [],
                      "host_identity": {"format": "openrc-godtest-host-v1", "host_sha256": "1"*64, "boot_sha256": "2"*64},
                      "log": {"counts": {"error": 0}, "missing_required_text": []},
@@ -147,14 +153,22 @@ def fixture(root: Path, repeats=1, *, headless=False):
 
 
 def add_monitors(suite: Path, index: dict):
-    """Add signed offline CPU/GPU artifacts and refresh the recorded case receipts."""
+    """Add hashed offline CPU/GPU artifacts and refresh the recorded case receipts."""
     for entry in index["cases"]:
         path = Path(entry["run_dir"])
         cpu = {"format": "openrc-resource-samples v1", "pid": 42, "identity_status": "verified",
                "required_coverage": "complete", "measurement_status": "ok", "sample_count": 2,
-               "samples": [{"elapsed_seconds": 0, "cpu_user_seconds": 1, "cpu_system_seconds": 1, "rss_bytes": 100},
-                           {"elapsed_seconds": 2, "cpu_user_seconds": 1.5, "cpu_system_seconds": 1.2, "rss_bytes": 150}],
+               "interval_seconds": 1, "max_samples": 4000,
+               "clock": {"source": "python_perf_counter", "origin_usec": 1_000_000,
+                         "start": {"monotonic_usec": 1_000_000, "unix_usec": 1_700_000_000_000_000, "uncertainty_usec": 20_000},
+                         "end": {"monotonic_usec": 3_100_000, "unix_usec": 1_700_000_002_100_000, "uncertainty_usec": 20_000}},
+               "samples": [{"elapsed_seconds": .01, "poll_overhead_usec": 1000, "cpu_user_seconds": 1, "cpu_system_seconds": 1, "rss_bytes": 100},
+                           {"elapsed_seconds": 2.01, "poll_overhead_usec": 1000, "cpu_user_seconds": 1.5, "cpu_system_seconds": 1.2, "rss_bytes": 150}],
                "summary": {"peaks": {"cpu_percent": 48, "num_threads": 4}}, "errors": []}
+        required = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")
+        cpu.update(capped=False, stop_reason="caller_finished", required_field_counts={key: 2 for key in required})
+        for row in cpu["samples"]:
+            row.update(virtual_memory_available_bytes=1_000_000, field_status={key: "ok" for key in required})
         gpu_id = {"key": "nvidia:uuid:GPU-test", "status": "available", "uuid": "GPU-test", "name": "Fixture GPU"}
         gpu_samples = []
         for when, utilization in ((1_100_000, 30), (2_100_000, 40)):
@@ -168,9 +182,9 @@ def add_monitors(suite: Path, index: dict):
         gpu = {"format": "openrc-godtest-gpu-v1", "status": "available", "thread_alive": False,
                "source_sha256": "c"*64, "source_end_sha256": "c"*64, "source_changed": False,
                "worker_exit_reason": "owner_stopped", "timing_coverage": {"status": "complete"},
-               "interval_seconds": 1, "scope": "whole_device_not_process",
-               "clock_domain": "python_time_perf_counter", "start_monotonic_usec": 1_000_000,
-               "stop_requested_monotonic_usec": 2_200_000, "stop_monotonic_usec": 2_200_000,
+               "interval_seconds": 1, "max_samples": 4000, "scope": "whole_device_not_process",
+               "clock_domain": "python_time_perf_counter", "start_monotonic_usec": 1_025_000,
+               "stop_requested_monotonic_usec": 3_160_000, "stop_monotonic_usec": 3_170_000,
                "sample_count": 2, "sample_cap_reached": False,
                "summary_by_device": {gpu_id["key"]: {"identity": gpu_id, "backend": "nvidia_smi", "samples": 2,
                     "metrics": {"gpu_utilization_pct": {"min": 30, "max": 40, "mean": 35, "count": 2,
@@ -180,6 +194,13 @@ def add_monitors(suite: Path, index: dict):
         execution = read(path / "execution.json")
         execution["orchestrator_sources"]["hardware.py"] = "c"*64
         execution.update(launch={"pid": 42}, resource_sampling=True, gpu_sampling=True,
+                         resource_observation={"clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                                               "start_requested_usec": 1_000_000, "start_returned_usec": 1_015_000,
+                                               "stop_requested_usec": 3_050_000,
+                                               "finish_returned_usec": 3_150_000},
+                         gpu_observation={"clock_domain": "python_perf_counter", "interval_seconds": 1, "max_samples": 4000,
+                                          "start_requested_usec": 1_020_000, "start_returned_usec": 1_030_000,
+                                          "stop_requested_usec": 3_160_000, "finish_returned_usec": 3_180_000},
                          resource_sampler_source_sha256="b"*64, resource_sampler_source_changed=False,
                          resources_sha256=hashlib.sha256((path / "resources.json").read_bytes()).hexdigest(),
                          gpu_sha256=hashlib.sha256((path / "gpu.json").read_bytes()).hexdigest())
@@ -197,7 +218,9 @@ class TourReportTests(unittest.TestCase):
             self.assertEqual((value["data"], value["coverage"], value["performance"]), ("valid", "complete", "not_qualified"))
             self.assertFalse(value["hardware_qualified"])
             self.assertEqual(len(value["cases"]), 3)
-            self.assertEqual(value["reducer_sha256"], hashlib.sha256(Path(tour_report.__file__).read_bytes()).hexdigest())
+            self.assertEqual(value["reducer_sha256"], hashlib.sha256(json.dumps(value["reducer_sources"], sort_keys=True).encode()).hexdigest())
+            for name in ("tour_report.py", "analysis.py", "render_evidence.py", "resource_coverage.py", "gpu_coverage.py", "pace_windows.py"):
+                self.assertEqual(value["reducer_sources"][name], hashlib.sha256(Path(tour_report.__file__).with_name(name).read_bytes()).hexdigest())
             self.assertEqual(len(value["cases"][0]["reducer_sha256"]), 64)
             row = value["cases"][0]["phases"][0]
             self.assertAlmostEqual(row["fps_mean"], 3_000_000 / 46_000)

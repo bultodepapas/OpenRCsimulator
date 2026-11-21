@@ -12,12 +12,13 @@ import statistics
 from urllib.parse import quote
 
 import catalog
-from analysis import report
+from analysis import report, REDUCER_SOURCES as CASE_REDUCER_SOURCES
 from runner import check_frozen, read_json, write_json
 
 FORMAT = "openrc-godtest-performance-tour-report-v1"
 TOUR = "performance-tour-v1"
-REDUCER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+REDUCER_SOURCES = {**CASE_REDUCER_SOURCES, "tour_report.py": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).encode()).hexdigest()
 # These are the options accepted by the tour CLI. Everything else is the
 # reviewed scenario default, including the phase list and instrumentation.
 OVERRIDES = ("time", "weather", "sky", "scene_detail", "camera", "seed", "cycles",
@@ -176,8 +177,9 @@ def _display_matches(value, manifest: dict) -> bool:
             and value.get("viewport_size") == manifest["resolution"])
 
 
-def _phase_rows(phases: list[dict]) -> list[dict]:
+def _phase_rows(phases: list[dict], targets: list[dict] | None = None) -> list[dict]:
     rows, occurrence = [], defaultdict(int)
+    by_index = {target["phase_index"]: target for target in targets or []}
     for phase in phases:
         if not isinstance(phase, dict) or not phase.get("requested"):
             continue
@@ -185,6 +187,7 @@ def _phase_rows(phases: list[dict]) -> list[dict]:
         occurrence[(cycle, name)] += 1
         pacing, frame, hitches = phase.get("pacing", {}), phase.get("frame_ms", {}), phase.get("hitches", {})
         slow = hitches.get("16.667", {})
+        target = by_index.get(phase.get("index"), {})
         rows.append({"phase_id": phase.get("id"), "phase": name, "cycle": cycle,
                      "occurrence": occurrence[(cycle, name)], "status": phase.get("status"),
                      "frames": pacing.get("frames"), "wall_seconds": phase.get("wall_seconds"),
@@ -197,7 +200,16 @@ def _phase_rows(phases: list[dict]) -> list[dict]:
                      "slow_wall_percent": slow.get("slow_time_percent"),
                      "over_50ms_frames": hitches.get("50", {}).get("frames"),
                      "over_100ms_frames": hitches.get("100", {}).get("frames"),
-                     "stutter_frames": None, "stall_frames": None})
+                     "stutter_frames": None, "stall_frames": None,
+                     "simulation_wall_ratio": target.get("simulation_wall_ratio"),
+                     "simulation_pace_target_met": target.get("simulation_pace_target_met"),
+                     "local_simulation_pace_target_met": target.get("local_simulation_pace_target_met"),
+                     "local_simulation_pace_status": target.get("local_simulation_pace_status", "not_applicable"),
+                     "local_simulation_pace_target_reason": target.get("local_simulation_pace_target_reason", "not_applicable"),
+                     "worst_local_simulation_wall_ratio": target.get("worst_local_simulation_wall_ratio"),
+                     "fastest_local_simulation_wall_ratio": target.get("fastest_local_simulation_wall_ratio"),
+                     "maximum_observed_simulation_lag_seconds": target.get("maximum_observed_simulation_lag_seconds"),
+                     "screen_target_status": target.get("screen_target_status", "not_applicable")})
     return rows
 
 
@@ -270,7 +282,21 @@ def _html(result: dict, suite: Path) -> str:
                 _number(row["p95_ms"]), _number(row["p99_ms"]), _number(row["worst_ms"]),
                 _number(row["slow_frame_percent"]), _number(row["slow_wall_percent"]),
                 _count(row["over_50ms_frames"]), _count(row["over_100ms_frames"]))) + "</tr>")
-        body.append("</tbody></table></div></section>")
+        body.append("</tbody></table></div>")
+        active_rows = [row for row in case.get("phases", []) if row["screen_target_status"] != "not_applicable"]
+        if active_rows:
+            body.append("<h3>Simulation pace and screen targets</h3><div class='scroll'><table><thead><tr><th>Phase</th>"
+                        "<th>Screen targets</th><th>Total sim / wall</th><th>Worst 1 s sim / wall</th>"
+                        "<th>Fastest 1 s sim / wall</th><th>Max observed lag s</th><th>Local pace evidence</th></tr></thead><tbody>")
+            for row in active_rows:
+                body.append("<tr>" + "".join(f"<td>{e(value)}</td>" for value in (
+                    row["phase"], row["screen_target_status"], _number(row["simulation_wall_ratio"]),
+                    _number(row["worst_local_simulation_wall_ratio"]), _number(row["fastest_local_simulation_wall_ratio"]),
+                    _number(row["maximum_observed_simulation_lag_seconds"]), row["local_simulation_pace_status"])) + "</tr>")
+            body.append("</tbody></table></div><p>Screen targets: p95 ≤18 ms, p99 ≤25 ms and sim / wall 0.99–1.01. "
+                        "One-second windows keep slowdowns visible when the phase average recovers. Unsupported local "
+                        "coverage or an unscored partial tail cannot pass; short maneuvers remain exploratory. This table is not hardware qualification.</p>")
+        body.append("</section>")
     if result["repeat_summaries"]:
         body.append("<h2>Repeat summaries</h2><p>Each value is the median [minimum, maximum] across independent runs of the same aircraft, cycle and phase. Percentiles are not pooled.</p><div class='scroll'><table><thead><tr><th>Aircraft</th><th>Cycle / phase</th><th>N</th><th>Mean FPS</th><th>1% low FPS</th><th>0.1% low FPS</th><th>p95 ms</th><th>p99 ms</th><th>Worst ms</th></tr></thead><tbody>")
         def aggregate(item):
@@ -330,12 +356,12 @@ def report_tour(directory: Path, *, write: bool = True) -> dict:
                     target.append(f"{prefix}: recorded {key} is missing or stale compared with child evidence")
                     if key == "performance":
                         case["summary_performance_stale"] = True
-            case.update({key: reduced.get(key) for key in ("execution", "data", "coverage", "performance", "rendered", "issues", "resources", "gpu", "monitoring")})
+            case.update({key: reduced.get(key) for key in ("execution", "data", "coverage", "performance", "rendered", "requested_headless", "rendering", "issues", "resources", "gpu", "monitoring")})
             case["reducer_sha256"] = reduced.get("reducer_sha256")
             case["resources"] = case["resources"] or {"status": "unavailable"}
             case["gpu"] = case["gpu"] or {"status": "unavailable"}
             case["monitoring"] = case["monitoring"] or {"required": True, "complete": False, "issues": ["monitoring status unavailable"]}
-            case["phases"] = _phase_rows(reduced.get("phases", []))
+            case["phases"] = _phase_rows(reduced.get("phases", []), reduced.get("targets", []))
             if reduced.get("data") != "valid":
                 problems.append(f"{prefix}: child data is ineligible: " + "; ".join(str(x) for x in reduced.get("issues", [])))
             if reduced.get("coverage") != "complete":
@@ -438,6 +464,8 @@ def report_tour(directory: Path, *, write: bool = True) -> dict:
             for target in reduced.get("targets", []):
                 if target.get("p95_within_18ms") is False or target.get("p99_within_25ms") is False:
                     observations.append(f"{prefix} {target.get('phase_id')}: pacing screen target missed; inspect the retained CPU/GPU and stutter evidence as hypotheses, not a diagnosed cause")
+                if target.get("simulation_pace_target_met") is False or target.get("local_simulation_pace_target_met") is False:
+                    observations.append(f"{prefix} {target.get('phase_id')}: simulation pace screen target missed; phase averages can hide slowdown followed by catch-up; inspect local windows and observed lag")
             for loading in reduced.get("loading", []):
                 if loading.get("screen_target_met") is False:
                     observations.append(f"{prefix} {loading.get('phase_id')}: loading-time screen target missed; investigate the recorded transition separately")
@@ -484,7 +512,7 @@ def report_tour(directory: Path, *, write: bool = True) -> dict:
                                   "runs": repeats, "metrics": values,
                                   "low_1pct_statuses": [c["phases"][position]["low_1pct_status"] for c in selected],
                                   "low_01pct_statuses": [c["phases"][position]["low_01pct_status"] for c in selected]})
-    result = {"format": FORMAT, "reducer_sha256": REDUCER_SHA256, "run_dir": str(directory), "suite": TOUR, "data": data,
+    result = {"format": FORMAT, "reducer_sha256": REDUCER_SHA256, "reducer_sources": REDUCER_SOURCES, "run_dir": str(directory), "suite": TOUR, "data": data,
               "coverage": coverage, "performance": performance, "hardware_qualified": False,
               "repeats": repeats, "cases": cases, "repeat_summaries": summaries,
               "issues": problems + coverage_problems + observations,

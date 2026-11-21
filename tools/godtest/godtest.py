@@ -18,11 +18,11 @@ import runner
 
 
 def parser():
-    result = argparse.ArgumentParser(description=__doc__)
+    result = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     sub = result.add_subparsers(dest="command", required=True)
-    sub.add_parser("list")
+    sub.add_parser("list", allow_abbrev=False)
     for name in ("run", "all", "memory", "soak", "fleet", "matrix", "performance-tour"):
-        command = sub.add_parser(name)
+        command = sub.add_parser(name, allow_abbrev=False)
         if name == "run": command.add_argument("scenario", choices=sorted(catalog.SCENARIOS))
         command.add_argument("--manifest", type=Path)
         command.add_argument("--dry-run", action="store_true")
@@ -54,21 +54,22 @@ def parser():
         command.add_argument("--godot", help="native editor/debug executable")
         command.add_argument("--snapshot", type=Path, help="reuse a verified prior snapshot.json instead of copying another project")
         command.add_argument("--out", type=Path, help="fresh run directory; suite creates numbered children")
-    command = sub.add_parser("report")
+    command = sub.add_parser("report", allow_abbrev=False)
     command.add_argument("directory", type=Path)
-    command = sub.add_parser("compare")
+    command = sub.add_parser("compare", allow_abbrev=False)
     command.add_argument("--baseline", type=Path, required=True)
     command.add_argument("--candidate", type=Path, required=True)
     command.add_argument("--phase", choices=sorted(catalog.PHASES))
     command.add_argument("--out", type=Path)
-    command = sub.add_parser("resume", help="retry failed cases of a retained suite, keeping earlier attempts")
+    command = sub.add_parser("resume", help="retry failed cases of a retained suite, keeping earlier attempts", allow_abbrev=False)
     command.add_argument("suite", type=Path)
     command.add_argument("--out", type=Path, required=True)
     return result
 
 
 ORCHESTRATOR_INPUTS = ("godtest.py", "catalog.py", "analysis.py", "tour_report.py", "runner.py",
-                       "frame_monitor.py", "hardware.py", "isolation.py")
+                       "frame_monitor.py", "hardware.py", "isolation.py", "admission.py",
+                       "resource_coverage.py", "pace_windows.py", "render_evidence.py", "gpu_coverage.py")
 OBSERVER_PATHS = tuple("tools/godtest/" + name for name in ORCHESTRATOR_INPUTS) + (
     "tools/godot/resource_samples.py", "tools/debug/frame_watch.py",
     "tools/debug/frame_capture.py", "tools/debug/debugctl.py", "tools/testqueue/processes.py")
@@ -81,14 +82,19 @@ def _observer_sources() -> dict:
 def _tour_success(result: dict) -> bool:
     cases = result.get("cases", [])
     return (bool(cases) and result.get("data") == "valid" and result.get("coverage") == "complete" and
-            all(not case.get("rendered") or case.get("monitoring", {}).get("complete") is True for case in cases) and
-            (not any(case.get("rendered") for case in cases) or result.get("performance") == "screen_only"))
+            all(_case_success(case) for case in cases) and
+            all(case.get("requested_headless") is True or case.get("monitoring", {}).get("complete") is True for case in cases) and
+            (all(case.get("requested_headless") is True for case in cases) or result.get("performance") == "screen_only"))
 
 
 def _case_success(result: dict) -> bool:
     monitoring = result.get("monitoring", {})
     return (result.get("data") == "valid" and result.get("coverage") == "complete" and
-            (not result.get("rendered") or not monitoring.get("required") or monitoring.get("complete") is True))
+            ((result.get("requested_headless") is True and result.get("rendered") is False and
+              result.get("rendering", {}).get("status") == "not_requested") or
+             (result.get("requested_headless") is False and result.get("rendered") is True and
+              result.get("rendering", {}).get("status") == "complete" and
+              (not monitoring.get("required") or monitoring.get("complete") is True))))
 
 
 def _pending_case(directory: Path, index: int, manifest: dict, *, state: str = "pending", attempts=None) -> dict:
@@ -372,7 +378,7 @@ def main(argv=None) -> int:
                 if suite.get("suite") != "performance-tour-v1":
                     results = [report(Path(entry["run_dir"])) for entry in suite.get("cases", [])]
                     print(json.dumps({"suite": suite.get("suite"), "complete": suite.get("complete"), "cases": results}, indent=2))
-                    return 0 if results and suite.get("complete") is True and all(item["data"] == "valid" and item["coverage"] == "complete" for item in results) else 1
+                    return 0 if results and suite.get("complete") is True and all(_case_success(item) for item in results) else 1
                 from tour_report import report_tour
                 result = report_tour(args.directory)
                 print(json.dumps({key: result[key] for key in ("run_dir", "suite", "data", "coverage", "performance", "issues")}, indent=2))
@@ -393,15 +399,29 @@ def main(argv=None) -> int:
             if enabled() and not inherited("rendered"):
                 raise ValueError("resume is unsupported as a standalone command on an enrolled host; a source-bound resume adapter is not available")
             return resume_suite(args)
-        cases = plan(args)
-        if args.dry_run:
-            print(json.dumps({"suite": "performance-tour-v1" if args.command == "performance-tour" else "all-v1" if args.command == "all" else args.command, "cases": cases, "max_wall_seconds": sum(item["timeout_s"]+80 for item in cases), "case_count": len(cases), "note": "bounds, not measured duration; fleet profiles and hardware gates remain explicit"}, indent=2))
-            return 0
         sys.path.insert(0, str(ROOT))
         from tools.testqueue.common import enabled, inherited
-        if enabled() and not inherited("rendered"):
+        managed = not args.dry_run and enabled() and not inherited("rendered")
+        if managed:
+            if any(getattr(args, key) is not None for key in ("godot", "out", "snapshot")):
+                raise ValueError("GOD TEST output, snapshot and engine belong to the worker; omit --godot, --out and --snapshot on an enrolled host")
+            if args.manifest is not None:
+                raise ValueError("external GOD TEST manifests must first be bound into a reviewed preset")
+        cases = plan(args)
+        from tools.godtest.admission import execution_budget
+        if args.dry_run:
+            try:
+                budget = {"status": "fits_queue_limit", "execution_budget_seconds": execution_budget(cases)}
+            except ValueError as error:
+                budget = {"status": "rejected", "execution_budget_seconds": None, "reason": str(error)}
+            print(json.dumps({"suite": "performance-tour-v1" if args.command == "performance-tour" else "all-v1" if args.command == "all" else args.command, "cases": cases,
+                              "case_timeout_sum_seconds": sum(item["timeout_s"] for item in cases), "managed_admission": budget,
+                              "case_count": len(cases), "note": "execution lease planning only, not measured duration or a completion guarantee; queue waiting and pre-adapter preparation are outside the lease; filesystem and reduction work have a heuristic allowance; fleet profiles and hardware gates remain explicit"}, indent=2))
+            return 0
+        if managed:
             from tools.testqueue.integration import run as admitted_run
-            return admitted_run("godtest", list(argv if argv is not None else sys.argv[1:]), ROOT)
+            budget_seconds = execution_budget(cases)
+            return admitted_run("godtest", list(argv if argv is not None else sys.argv[1:]), ROOT, timeout=budget_seconds)
         suite_dir = None
         if len(cases) > 1:
             suite_dir = (args.out or ROOT / "tmp/godtest" / f"suite-{args.command}-{time.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:8]}").resolve()

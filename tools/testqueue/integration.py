@@ -181,9 +181,18 @@ def request(command: str, args: dict | None, timeout: float, port: int | None):
                timeout=min(timeout + 5, 605), **{"bridge_timeout": timeout})
 
 
-def run(preset: str, argv: list[str], source: Path) -> int:
+def run(preset: str, argv: list[str], source: Path, *, timeout: float | None = None) -> int:
     options = {"argv": argv}
-    if preset in {"suite", "ci", "capture"}:
+    if timeout is not None:
+        options["timeout"] = timeout
+        # Refuse invalid explicit leases before submit can copy or contact the
+        # authority. submit validates again at its own boundary.
+        from .presets import validate
+        try:
+            validate(preset, options)
+        except OverflowError as error:
+            raise ValueError("execution timeout must be between 1 and 21600 seconds") from error
+    elif preset in {"suite", "ci", "capture"}:
         options["timeout"] = 21600
     accepted = submit(preset, options, source)
     print(json.dumps(accepted), flush=True)

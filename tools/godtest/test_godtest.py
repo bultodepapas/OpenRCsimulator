@@ -18,10 +18,13 @@ import runner
 def artifacts(directory: Path, *, rendered=True, complete=True):
     directory.mkdir(parents=True)
     manifest = catalog.scenario("startup", {"headless": not rendered})
+    write_json(directory / "manifest.requested.json", manifest)
     manifest["output_dir"] = str(directory)
     write_json(directory / "manifest.resolved.json", manifest)
     rows = [dict(type="header", format="openrc-frame-stream v1"),
-            dict(type="chunk", sequence=0, start_frame=0, frames=2, wall_usec=[16000, 17000], end_usec=[1016000, 1033000], engine_delta_s=[.016, .017], metrics={"phase_index": [0, 0]}),
+            dict(type="chunk", sequence=0, start_frame=0, frames=2, wall_usec=[16000, 17000], end_usec=[1016000, 1033000], engine_delta_s=[.016, .017],
+                 metrics={"phase_index": [0, 0], "render_frames_drawn": [1, 2] if rendered else [0, 0],
+                          "render_interval_draws": [1, 1] if rendered else [0, 0], "render_window_drawable": [int(rendered)] * 2}),
             dict(type="trailer", complete=complete, frames=2, chunks=1)]
     raw = b"".join((json.dumps(item) + "\n").encode() for item in rows)
     (directory / "frametimes.json.frames.jsonl").write_bytes(raw)
@@ -32,7 +35,7 @@ def artifacts(directory: Path, *, rendered=True, complete=True):
     phase = dict(name="startup", id="0-0-startup", index=0, cycle=0, requested=True, status="complete", reason="", start_usec=1000000, end_usec=1033000, start_tick=-1, end_tick=-1, wall_seconds=.033, sim_seconds=0, frames=2, rendered=rendered, frame_ms=dict(p50=16, p95=17, p99=17, max=17))
     runtime = dict(format="openrc-godtest-runtime-v1", complete=complete, execution="completed", data="complete" if complete else "partial", coverage="complete", flight="not_run", phases=[phase], metrics=dict(rendered=rendered, requested_resolution_match=True), identity=dict(actual_resolution=[1920, 1080], viewport_size=[1920, 1080], selection={}, backend={}, scenery_sha256="same", field={}, diagnostics=diagnostic))
     write_json(directory / "runtime.json", runtime)
-    write_json(directory / "execution.json", dict(state="runtime_finished", failure="", source_changed=False, log=dict(counts=dict(error=0, warning=0), missing_required_text=[]), shutdown=dict(stopped=True, forced=False, launcher_exit_code=0), engine_files={"godot": "same"}))
+    write_json(directory / "execution.json", dict(state="runtime_finished", failure="", source_changed=False, log=dict(counts=dict(error=0, warning=0), missing_required_text=[]), shutdown=dict(stopped=True, forced=False, launcher_exit_code=0), engine_files={"godot": "same"}, rendering_requested={}))
     return frames
 
 
@@ -45,7 +48,9 @@ def replace_stream(directory, frames, walls, phases, split=512):
     rows = [dict(type="header", format="openrc-frame-stream v1")]
     for start in range(0, len(walls), split):
         stop = min(start + split, len(walls))
-        metrics = {} if phases is None else {"phase_index": phases[start:stop]}
+        metrics = {} if phases is None else {"phase_index": phases[start:stop],
+                    "render_frames_drawn": list(range(start + 1, stop + 1)),
+                    "render_interval_draws": [1] * (stop - start), "render_window_drawable": [1] * (stop - start)}
         rows.append(dict(type="chunk", sequence=len(rows)-1, start_frame=start, frames=stop-start,
                          wall_usec=walls[start:stop], end_usec=ends[start:stop],
                          engine_delta_s=[w/1_000_000 for w in walls[start:stop]], metrics=metrics))
@@ -181,7 +186,7 @@ class ArtifactTests(unittest.TestCase):
             directory = Path(root) / "run"
             artifacts(directory)
             runtime = json.loads((directory / "runtime.json").read_text())
-            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", requested=False,
+            stop = dict(runtime["phases"][0], name="stop", id="0-1-stop", index=1, requested=False,
                         pilot=dict(touchdown={"roll_deg": 2}, minimum_wheel_runway_margin_m=-4.5))
             runtime["phases"].append(stop)
             write_json(directory / "runtime.json", runtime)

@@ -4,7 +4,8 @@ The `performance-tour` command runs the existing GOD TEST application driver wit
 the existing continuous frame watcher and process resource sampler. It adds a
 runway-position completion check, real Settings/Controls transitions, passive GPU
 utilization sampling, and an independently rebuilt suite report. This is the
-operating guide for **GOD-12-R1 / GOD-13-R1**; the [GOD TEST plan](../../docs/plans/god-test.md)
+operating guide for **GOD-12-R1 / GOD-13-R1**, including the 2026-11-21
+**GOD-12-R2f/g / GOD-13-R2** measurement hardening; the [GOD TEST plan](../../docs/plans/god-test.md)
 owns qualification status. The [general tool guide](README.md) owns source freezing,
 other scenarios, and event-stream semantics.
 
@@ -20,6 +21,9 @@ V1 execution/monitoring limits as well as V2 design gaps. Read
 [managed-host admission](#managed-host-admission) and
 [current verification limits](#current-verification-limits) before interpreting a
 successful command as a complete rendered screen.
+The [implementation follow-up](../../docs/research/god-test/2026-11-21-measurement-hardening.md)
+records the corrected guards and their offline verification; it does not implement
+the revised scenic/crash sequence.
 
 ## Run the complete workload
 
@@ -99,10 +103,18 @@ queue. The queue owns the engine, output and source snapshot; it rejects caller
 `--godot`, `--out` and `--snapshot`, and does not accept `resume` as an execution
 preset. Offline `list`, `--dry-run`, `report` and `compare` are not launches.
 
-Inspect `performance-tour --repeats 3 --dry-run` before requesting resources. Its
-nine default cases declare **8,820 seconds**; the automatic `godtest` adapter
-defaults to **3,600 seconds** at the outer execution boundary. Simply removing
-the rejected flags does not fix that mismatch. The existing explicit
+Inspect `performance-tour --repeats 3 --dry-run` before requesting resources.
+Automatic `godtest.py` submission now calculates and passes a lease for every
+expanded case, including repeats and documented preparation/cleanup reserves.
+The nine-case plan with `--repeats 3` and otherwise default settings has 8,100 s
+of scenario timeouts and a **14,924 s**
+execution lease; one three-aircraft pass receives **5,630 s**. The dry-run output
+exposes `case_timeout_sum_seconds` and `managed_admission`, not a claimed total
+wall-time bound. A calculated lease over **21,600 s** is rejected before submission
+without removing cases. Worker-owned paths and external manifests are rejected
+before plan IO; option abbreviations are disabled at the worker parser as well.
+
+The existing explicit
 `testctl.py snapshot` / `submit --preset godtest` route accepts validated `--options`
 with a timeout up to 21,600 s. Follow the [queue guide](../testqueue/README.md) for
 a fresh snapshot outside the source checkout, matching source, owner/platform,
@@ -119,14 +131,18 @@ execution budget above the expanded cases plus adapter preparation/imports, redu
 and cleanup reserve. The `--options` shape is
 `{"argv":["performance-tour","--repeats","3"],"timeout":N}`, with `N` replaced by
 the preflight's validated execution budget in seconds (at most 21,600).
-The 8,820 s value is an estimate, not an end-to-end bound:
-queue waiting and worker preparation before process creation have separate scope.
+**Direct preset submission does not calculate or enforce the full-roster minimum**;
+its generic default remains 3,600 s and an explicit shorter lease can still be
+accepted. Use the matching source's dry-run calculation when taking that route.
+The execution lease is not a completion guarantee: filesystem/reduction work has
+a disclosed planning allowance, and queue waiting and worker preparation before
+adapter process creation have separate scope.
 Retain the private submission receipt and returned owner handle; a wait timeout does
 not cancel the job. Inspect `status`/`result` for **FINISHED**, **cleanup CONFIRMED**,
 **evidence COMPLETE**, then the actual `<attempt-output>/godtest` artifacts.
 These states alone do not qualify performance.
 
-Automatic full-roster budget propagation, bounded preparation, graphical platform
+Bounded preparation/storage, direct-preset budget enforcement, graphical platform
 admission and source-bound enrolled-host resume remain
 [GOD-13-R2 work](../../docs/plans/god-test.md#13-execution-steps-and-evidence-ledger).
 If the budget or recovery route cannot be admitted, retain the refusal and start no
@@ -240,11 +256,21 @@ with a reason. Missing utilization, tool errors, changing devices, exhausted
 sample caps or a worker that fails to stop make monitoring incomplete; they never
 become zero-load readings. Optional unsupported temperature/power counters do not
 invalidate otherwise complete utilization coverage.
-For **GPU** coverage, at least two utilization observations per device are required. Startup delay,
-poll-start spacing and the final observation gap must stay within three requested
-sampling intervals plus 250 ms (3.25 seconds at the standard 1 Hz interval).
+Both samplers now need raw timing proof tied to the runner's independently recorded
+owner windows. Their fixed contract is **1 Hz, at most 4,000 samples**; a raw artifact
+cannot enlarge its own gap allowance. First, inter-observation and tail gaps must
+stay within **3.25 s**, using conservative poll/query brackets. CPU required-field
+statuses/counts, identity, counters and clean uncapped completion are checked
+separately. GPU timing is recomputed for each observed device. At least two usable
+observations are required; optional sensors remain optional. CPU must start before
+GPU, and GPU must stop after CPU has finished, matching the recorded runner lifecycle.
 Changed or unreadable observer code, an unexplained worker exit, or absent raw
 samples prevent complete monitoring even when a summary says `available`.
+Post-stop GPU readings are retained but do not establish pre-stop coverage. Starts
+within the declared 50 ms stop race are excluded; later backend starts make coverage
+incomplete. This conservative policy can reject a sequential multi-backend poll
+that started before shutdown. Historical artifacts without owner receipts retain
+their observations but cannot receive a complete monitoring verdict.
 On Linux, an absent vendor backend is marked not applicable only when a readable,
 consistent PCI/DRM inventory supports that conclusion; an absent executable by
 itself is insufficient. This inventory does not identify the GPU rendering Godot.
@@ -263,11 +289,29 @@ tour requires valid complete recordings and complete monitoring for successful
 screen execution. Even then `performance=screen_only` is **not** a hardware
 qualification or regression pass. Headless runs remain `not_qualified`.
 
+Requested graphics cannot silently become a successful headless result. Reports
+bind the original and resolved manifests, renderer receipt and diagnostics, strict
+phase labels and raw draw counters. Each requested phase needs drawability and
+positive draw progress inside that phase; a boundary-crossing frame alone is
+insufficient. A missing or contradictory receipt makes coverage partial and data
+ineligible. Explicit headless functional runs remain available without graphics
+qualification. `reducer_sources` and the aggregate `reducer_sha256` include the
+helper modules that now affect acceptance.
+
 The established flight targets are p95 ≤18 ms, p99 ≤25 ms, and simulation/wall
 pace near one. Startup and loading retain their own scope-specific targets.
-Pacing and loading misses appear in suite observations; inspect simulation-pace
-target rows in each child `report.json`. These are observations, not diagnoses or
-an automatic target-pass verdict. Inspect the exact affected phase, especially menu/loading
+Frame, simulation-pace and loading misses appear in suite observations. Child and
+suite JSON/HTML now show phase-total pace, worst/fastest supported one-second pace,
+maximum observed accumulated lag and missed/inconclusive screen targets.
+The local reducer uses verified tick differences at 240 Hz. It excludes pauses,
+crash holds and cross-phase intervals, rejects inadequate clock precision and
+requires at least 0.9 s and two intervals per supported full window. Unsupported
+windows, less than 90% supported active wall time or a boundary exclusion over
+100 ms make local pace coverage unavailable; an unscored partial tail also prevents
+a positive local target. Supported bad windows remain visible even when the phase
+average recovers. First/boundary exclusions and all partial-window support remain
+in the case JSON. These are exploratory observations, not diagnoses or a statistical
+target pass. Inspect the exact affected phase, especially menu/loading
 stalls that should not be averaged into steady flight. Per-phase 1%/0.1% lows use
 the reciprocal of the mean of the slowest `max(1, floor(N*fraction))` intervals.
 Watcher stutter/stall totals are overall; incident snippets cannot establish
@@ -283,20 +327,20 @@ are not yet qualified for an automatic whole-flight regression verdict.
 
 ### Current verification limits
 
-These limits were verified against the code in the
-[2026-11-20 audit](../../docs/research/god-test/2026-11-20-plan-audit.md); the
-[plan](../../docs/plans/god-test.md) defines the required corrections. A documentation
-change does not implement them.
+The [2026-11-20 audit](../../docs/research/god-test/2026-11-20-plan-audit.md) is the
+historical source review. The [2026-11-21 follow-up](../../docs/research/god-test/2026-11-21-measurement-hardening.md)
+records implemented corrections and verification. The [plan](../../docs/plans/god-test.md)
+keeps the remaining acceptance work explicit.
 
 | Current V1 observation | Required interpretation |
 | --- | --- |
-| `_tour_success` can accept an otherwise valid/complete suite when every case reports `rendered=false` | Check the requested mode and every required phase's drawing evidence; this is not a successful rendered screen. The current exit code does not enforce that distinction. |
-| CPU `required_coverage=complete` verifies required fields, identity/counters and collection state | It does not bound start, polling or final gaps. Inspect raw temporal coverage before making a resource-window claim. |
+| Requested render mode, raw drawing and required-phase receipts are now enforced in reports and CLI success | This proves engine observations only; physical presentation, drawable pixels and actual rendering-GPU association remain open. |
+| CPU/GPU owner windows, raw gaps, sampling configuration and cross-observer order are now checked | Complete means bounded discrete observations during the recorded owner windows; no continuous or per-frame resource-cost claim follows. |
 | GPU samples identify observed devices, separately from Godot's renderer | Retain a positive renderer-to-device association and physical-host identity; a sampled idle NVIDIA device does not prove utilization of an Intel renderer. |
 | Samplers and engine phases use different monotonic clock domains | No automatic per-panel, impact or same-frame CPU/GPU attribution exists. A 1 Hz poll can miss a short event even after alignment. |
-| Watcher coverage begins after initial Home; OS sampling begins after bridge readiness | Earlier startup is unobserved by those tools. The first in-app collector interval is a bootstrap span, not guaranteed callback pacing. |
+| Watcher coverage begins after initial Home; OS owner windows start after bridge readiness/setup | Earlier startup and observer setup are unobserved by those tools. No prompt-start claim is made from the bridge boundary. The first in-app collector interval is a bootstrap span, not guaranteed callback pacing. |
 | Low-FPS tail `available` can still mean one slow tail observation; target booleans exist for short phases | Show count/duration/tail support and keep short-event tails exploratory. Exit 0 / `screen_only` does not mean performance targets passed. |
-| Simulation/wall pace is retained in child `report.json` target rows | Suite/HTML views do not prominently expose it; inspect the child values. Whole-phase pace can mask temporary lag and catch-up. |
+| Phase-total and local simulation pace, lag and targets now appear in child/suite JSON and HTML | Partial tails and unsupported coverage remain inconclusive; local windows are exploratory and can miss peaks between callbacks. |
 | Retry summaries are retained in `suite.json`; selected cases are revalidated | Earlier failed attempts are not all revalidated/displayed. Preserve and inspect them and their ancestor source paths explicitly. |
 | The transition comparator checks only part of the documented identity/coverage contract | `eligible=true` is exploratory, not proof of the same physical host, actual GPU, observer bytes or complete monitoring. |
 

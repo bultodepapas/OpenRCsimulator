@@ -19,9 +19,10 @@ It is not yet implemented; the current CLI and its evidence remain V1.
 The [independent audit](../../docs/research/god-test/2026-11-20-plan-audit.md) also
 records existing execution and reporting gaps. Read the tour guide's
 [managed-host route](PERFORMANCE_TOUR.md#managed-host-admission) and
-[verification limits](PERFORMANCE_TOUR.md#current-verification-limits): exit zero
-does not prove requested rendering or performance-target compliance, and the
-current comparator remains exploratory.
+[verification limits](PERFORMANCE_TOUR.md#current-verification-limits). The
+[measurement follow-up](../../docs/research/god-test/2026-11-21-measurement-hardening.md)
+now enforces requested rendering evidence, but exit zero still does not mean
+performance targets or target hardware passed; the comparator remains exploratory.
 
 ## Commands
 
@@ -141,6 +142,10 @@ ineligibility. The reducer verifies stream sequence, clock continuity, metric sh
 counts, hashes and trailer. Headless data cannot qualify graphics. Requested versus
 actual window/viewport dimensions, display/GPU/backend and focus/draw observations
 remain separate from physical monitor presentation, which is not measured.
+The original requested manifest is required: a resolved manifest cannot turn a
+graphics request into headless execution. Every requested phase needs consistent
+raw draw/drawability observations and runtime receipts. Phase IDs bind cycle,
+index and name. Reducer identities now include the acceptance helper source hashes.
 
 Offline phase reports also show mean callback FPS, time occupied by slow intervals,
 and consecutive slow-run counts/durations. They reuse the existing fixed strict
@@ -155,6 +160,14 @@ from the verified stream; supplied summary values cannot replace it. A completed
 requested phase without verified samples is ineligible. Its statistics and pacing
 targets remain unavailable, preventing missing data from appearing as a zero-ms pass.
 The existing `report` command rebuilds these views from retained original artifacts.
+
+Active-flight target rows in child and suite JSON/HTML include phase-total pace,
+worst/fastest supported one-second pace and maximum observed accumulated lag.
+Tick-derived local pace keeps slowdown/catch-up visible when the total ratio is one.
+Missing channels, holds, precision limits and unsupported windows cannot become a
+positive local target; unscored partial tails remain inconclusive. The full support
+rules are in the [tour metrics contract](PERFORMANCE_TOUR.md#metrics-evidence-and-verdicts).
+These are exploratory screens, not target-hardware or statistical qualification.
 
 Debug bridge snapshots have a separate [offline episode report](../debug/README.md#offline-slowdown-analysis-pt1h-r15-s3a)
 with target-plus-tolerance flags and interval-start route samples. Neither that
@@ -171,11 +184,15 @@ reuse the pinned existing sampler:
 ```
 
 See [resource setup and limits](../godot/README.md#process-ram-io-and-storage-pt1h-r4).
-Resource sampling begins after bridge readiness and cannot prove full-startup RSS
-peaks. No screenshots or video readback occur during the timing run.
-The CPU completeness flag does not currently bound polling/tail gaps. Engine-phase
-and host-sampler clocks are not automatically joined; per-phase resource attribution
-and subsecond crash/menu cost need the planned clock/coverage contract first.
+Resource sampling covers independently bracketed observer windows after bridge
+readiness and setup; it cannot prove full-startup RSS peaks or a prompt observer
+start from the bridge boundary. No screenshots or video readback occur during the
+timing run. CPU required fields and collection state are checked separately from
+first/inter-sample/tail gaps and owner-clock binding. GPU timing is recomputed from
+raw query brackets under the fixed sampling policy; both windows must follow the
+runner lifecycle. Old artifacts without owner receipts cannot claim complete
+monitoring. Engine phases and host clocks are still not joined automatically;
+per-phase resources and subsecond crash/menu cost remain unqualified.
 
 The comparator currently admits matched complete transition phases only. Full
 adaptive-flight geometric equivalence, fixed input-tape rendered replay, repeated

@@ -440,6 +440,21 @@ evidence; documentation cannot close unimplemented guards. The
 [source audit](research/god-test/2026-11-20-plan-audit.md) records counterexamples;
 the [GOD TEST plan](plans/god-test.md) owns corrections and remaining acceptance.
 
+**GOD-12-R2f/g / GOD-13-R2, 2026-11-21; implemented measurement foundation.**
+Rebuild acceptance from raw observations and the owning runner's independent
+timestamps, rather than treating summary labels as proof. An original graphics
+request cannot become a successful headless run. Legacy evidence without newly
+required owner receipts remains readable but cannot regain complete monitoring.
+Local simulation pace uses verified ticks and supported fixed windows; omitted
+tails remain inconclusive rather than receiving a positive target. Automatic
+managed submission reserves the full expanded roster, while an execution lease
+is explicitly not an end-to-end completion guarantee. This is intentionally
+conservative: unresolved coverage preserves useful observations and blocks the
+stronger claim. The [implementation evidence](research/god-test/2026-11-21-measurement-hardening.md)
+owns exact checks and limits; target-hardware and scenic/crash acceptance remain
+with the existing plan. Revisit support thresholds only through a versioned,
+predeclared protocol, not after seeing a candidate's results.
+
 **PT1h-R15-S1a/S2a, 2026-11-19; automatic session watch.** Replace the planned
 one-shot collector and two-snapshot union with a bounded multi-incident client
 watch. It reads every new row through cheap passive `since`/`lean` polls guarded by
