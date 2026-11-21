@@ -163,6 +163,45 @@ def check_frozen(receipt: dict) -> list[str]:
     return changed
 
 
+NATIVE_INSTALLS = {"win32": ("windows", "build-receipt-windows.json", "openrc_native_kernel.dll"),
+                   "linux": ("linux", "build-receipt.json", "libopenrc_native_kernel.so")}
+
+
+def native_install_problem(source_root: Path, host_platform: str | None = None, engine: Path | None = None) -> str:
+    """Early hint for a stale native install; not a qualification.
+
+    native_stage.gd refuses the kernel when the engine, binary or any mirrored
+    source's raw bytes differ from its receipt, and the flight then silently uses
+    the GDScript reference. This repeats only those cheap byte checks; the runtime
+    backend receipt stays authoritative. macOS adds a separate world-domain pin,
+    so only the runtime check applies there.
+    """
+    install = NATIVE_INSTALLS.get(host_platform or sys.platform)
+    if install is None:
+        return ""
+    name, receipt_name, binary_name = install
+    kernel = source_root / "app/native/kernel"
+    try:
+        entry = json.loads((kernel / receipt_name).read_text(encoding="utf-8"))["platforms"][name]
+        mirrored, binary_sha256, engine_sha256 = entry["mirrored_sources"], entry["binary_sha256"], entry["engine_sha256"]
+        if not isinstance(mirrored, dict) or not mirrored:
+            raise ValueError("empty mirrored sources")
+    except (OSError, ValueError, KeyError, TypeError):
+        return f"no readable installed native kernel receipt app/native/kernel/{receipt_name}"
+    if not (kernel / binary_name).is_file() or file_hash(kernel / binary_name) != binary_sha256:
+        return f"installed native binary does not match app/native/kernel/{receipt_name}"
+    if engine is not None:
+        # The console wrapper starts the GUI executable that the receipt binds.
+        executable = Path(str(engine).replace("_console.exe", ".exe"))
+        if not executable.is_file() or file_hash(executable) != engine_sha256:
+            return f"native kernel was verified with another Godot executable than {executable.name}"
+    changed = sorted(relative for relative, expected in mirrored.items()
+                     if not (source_root / relative).is_file() or file_hash(source_root / relative) != expected)
+    if changed:
+        return f"{len(changed)} mirrored physics source(s) changed since the native build: " + ", ".join(changed[:6])
+    return ""
+
+
 def _bridge():
     spec = importlib.util.spec_from_file_location("godtest_debugctl", ROOT / "tools/debug/debugctl.py")
     module = importlib.util.module_from_spec(spec)
@@ -243,6 +282,12 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         raise ValueError("GOD TEST on an enrolled host requires the admitted godtest.py CLI or inherited attempt")
     validate(manifest)
     render_options = rendering_options(manifest)
+    if manifest.get("require_native") and not manifest["headless"]:
+        # Fail before creating, freezing or launching, not after a reference-backend flight.
+        stale = native_install_problem(Path(snapshot["root"]) if snapshot else ROOT,
+                                       engine=Path(godot or _bridge().godot()).resolve())
+        if stale:
+            raise ValueError(f"rendered workload requires actual native physics: {stale}; requalify and install the native kernel first (research/native-kernel/README.md)")
     host_identity = campaign_host_identity() if manifest.get("monitor_hardware") else None
     resources = resources or manifest.get("monitor_hardware", False)
     if resources:

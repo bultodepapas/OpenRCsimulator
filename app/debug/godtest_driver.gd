@@ -131,7 +131,7 @@ func _run() -> void:
 		cache_state = "fresh_process_os_cache_unknown", physics_hz = Engine.physics_ticks_per_second,
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
 		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
-			window_mode = str(config.get("window_mode", "windowed"))}}
+			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
 	for key: String in ["max_fps", "vsync_mode"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
@@ -256,6 +256,8 @@ func _prepare_profile() -> void:
 	if config.has("vsync_mode"): display.set_value("graphics", "vsync_mode", str(config.vsync_mode))
 	display.set_value("camera", "view", str(config.get("camera", "pilot")))
 	display.set_value("camera", "auto_zoom", false)
+	# Silent desk runs: mute the Master bus only; streams and mixing still run.
+	display.set_value("audio", "master_volume", 0.0)
 	if display.save("user://settings.cfg.display") != OK: failure = "cannot prepare isolated display settings"
 	OS.set_environment("OPENRC_SCENE_DETAIL", str(config.get("scene_detail", "medium")))
 

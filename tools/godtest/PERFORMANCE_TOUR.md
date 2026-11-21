@@ -203,7 +203,11 @@ python tools/godtest/godtest.py performance-tour --repeats 3 `
 
 Prepare and verify the [native physics backend](../../research/native-kernel/README.md#normal-flight-backend-selection)
 for the exact source/engine/architecture before rendered runs. Actual native
-selection is mandatory for this workload. Source/debug execution on macOS has
+selection is mandatory for this workload. On Windows and Linux, a rendered
+`require_native` case refuses before creating its output (exit 2) when the installed
+receipt's Godot executable, kernel binary or any mirrored source's raw bytes differ.
+This early hint is not a qualification: the runtime backend receipt stays
+authoritative, and macOS relies on it alone. Source/debug execution on macOS has
 an implemented isolation adapter; release-export execution and native target
 hardware acceptance remain separate work.
 
@@ -236,8 +240,9 @@ the backend supplies them. For Mac thermal/energy detail use the existing
 
 The default is uncapped with VSync disabled, so a cap cannot hide available
 capacity. `--max-fps 60 --vsync-mode enabled` defines a separate player-pacing
-campaign. Do not combine these populations. Every launch has fresh preferences;
-source copying and prior launches may warm OS/driver caches. These are not proven
+campaign. Do not combine these populations. Every launch has fresh preferences
+with the Master bus muted (`master_volume = 0`, recorded in `profile_overrides`);
+audio streams and mixing still run, unlike the Dummy driver. Source copying and prior launches may warm OS/driver caches. These are not proven
 OS-cold or shader-cold measurements, and the runner does not clear global caches.
 
 ## Metrics, evidence and verdicts

@@ -277,6 +277,59 @@ class SupervisionTests(unittest.TestCase):
                     runner.run(catalog.scenario("smoke", {"headless": True}), root / "run")
                 bridge.assert_not_called()
 
+    def native_fixture(self, root: Path) -> None:
+        kernel = root / "app/native/kernel"
+        kernel.mkdir(parents=True)
+        (root / "app/physics").mkdir(parents=True)
+        (root / "app/physics/law.gd").write_bytes(b"law\r\n")
+        binary = kernel / "openrc_native_kernel.dll"
+        binary.write_bytes(b"kernel")
+        (root / "Godot_win64.exe").write_bytes(b"gui engine")
+        (root / "Godot_win64_console.exe").write_bytes(b"console wrapper")
+        write_json(kernel / "build-receipt-windows.json", {"platforms": {"windows": {
+            "binary_sha256": hashlib.sha256(b"kernel").hexdigest(),
+            "engine_sha256": hashlib.sha256(b"gui engine").hexdigest(),
+            "mirrored_sources": {"app/physics/law.gd": hashlib.sha256(b"law\r\n").hexdigest()}}}})
+
+    def test_native_preflight_detects_stale_installs_from_raw_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            self.assertIn("no readable", runner.native_install_problem(root, "win32"))
+            self.native_fixture(root)
+            self.assertEqual(runner.native_install_problem(root, "win32"), "")
+            # The console wrapper launches the GUI executable the receipt binds.
+            console = root / "Godot_win64_console.exe"
+            self.assertEqual(runner.native_install_problem(root, "win32", console), "")
+            (root / "Godot_win64.exe").write_bytes(b"upgraded engine")
+            self.assertIn("another Godot executable", runner.native_install_problem(root, "win32", console))
+            # Only the runtime receipt applies where a separate domain pin exists.
+            self.assertEqual(runner.native_install_problem(root, "darwin"), "")
+            # A line-ending rewrite alone makes native_stage.gd refuse the kernel.
+            (root / "app/physics/law.gd").write_bytes(b"law\n")
+            self.assertIn("app/physics/law.gd", runner.native_install_problem(root, "win32"))
+            (root / "app/physics/law.gd").write_bytes(b"law\r\n")
+            (root / "app/native/kernel/openrc_native_kernel.dll").write_bytes(b"other build")
+            self.assertIn("binary", runner.native_install_problem(root, "win32"))
+
+    def test_rendered_native_workload_refuses_stale_install_before_freezing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            self.native_fixture(root)
+            (root / "app/physics/law.gd").write_bytes(b"edited after the native build\r\n")
+            identity = dict(files={}, digest="same", commit="fixture", excluded_or_missing=[])
+            manifest = catalog.scenario("smoke", {"require_native": True})
+            self.assertFalse(manifest["headless"])
+            with mock.patch.object(runner.sys, "platform", "win32"), mock.patch.object(runner, "ROOT", root), \
+                    mock.patch.object(runner, "source_identity", return_value=identity) as collect, \
+                    mock.patch.object(runner, "freeze_inputs") as freeze, mock.patch.object(runner, "_bridge") as bridge:
+                with self.assertRaisesRegex(ValueError, "requires actual native physics: 1 mirrored"):
+                    runner.run(manifest, root / "run", godot=str(root / "Godot_win64_console.exe"))
+            collect.assert_not_called()
+            freeze.assert_not_called()
+            bridge.assert_not_called()
+            # A refusal leaves no half-created output, so the same --out can be retried.
+            self.assertFalse((root / "run").exists())
+
     def test_source_identity_refuses_links_inside_checkout_but_not_above_it(self):
         with tempfile.TemporaryDirectory() as temporary:
             real = Path(temporary).resolve() / "real"
