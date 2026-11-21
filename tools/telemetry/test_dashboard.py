@@ -357,14 +357,21 @@ class DashboardCase(unittest.TestCase):
         from datetime import datetime, timezone
 
         now = datetime.fromtimestamp(NOW, timezone.utc)
-        report = {"built_utc": dashboard.utc_stamp(NOW), "status": "ok",
-                  "sources": {"github_downloads": {"status": "ok"}}}
+        stamp = dashboard.utc_stamp(NOW)
+        report = {"built_utc": stamp, "status": "ok", "receiver_age_s": 300,
+                  "sources": {key: {"status": "ok", "observed_utc": stamp}
+                              for key in check_dashboard_health.SOURCE_MAX_AGE}}
         self.assertIsNone(check_dashboard_health.check(report, now, 7200))
         for difference in (-7201, 301):
             bad = {**report, "built_utc": dashboard.utc_stamp(NOW + difference)}
             self.assertIn("age", check_dashboard_health.check(bad, now, 7200))
         report["sources"]["github_downloads"]["status"] = "stale"
         self.assertIn("github_downloads=stale", check_dashboard_health.check(report, now, 7200))
+        report["sources"]["website"]["observed_utc"] = dashboard.utc_stamp(NOW - 7201)
+        self.assertIn("website=stale", check_dashboard_health.check(report, now, 7200))
+        report["sources"].pop("website")
+        with self.assertRaisesRegex(ValueError, "required source"):
+            check_dashboard_health.check(report, now, 7200)
 
     def test_backup_requires_and_restores_archive(self):
         archive, copies = self.dir / "archive", self.dir / "copies"
