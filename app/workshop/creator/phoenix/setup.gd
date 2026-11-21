@@ -145,11 +145,22 @@ static func creator_setup(source: InspectedSource) -> Dictionary:
 		if typeof(path) != TYPE_STRING or not _finite(layout[path]):
 			return {}
 		clean_layout[str(path)] = float(layout[path])
+	var physics := _physics(data.get("physics"))
+	if not physics.is_empty() and not physics.has("body_drag_area_m2"):
+		# Legacy converter receipts stored this span and the selected main wing's aspect ratio.
+		# Both came from the same selected wing; the stacked-wing conversion changed chords, not span.
+		# Reconstruct its dimensional drag area before fitting the equivalent wing.
+		var source_span := 2.0 * float(data.half_span_m)
+		var drag_area := float(physics.body_drag_ratio) * source_span * source_span / float(physics.aspect_ratio)
+		if is_finite(drag_area) and drag_area >= 0.0 and drag_area <= 1.0e6:
+			physics.body_drag_area_m2 = drag_area
+		else:
+			physics = {}
 	return {half_span_m = float(data.half_span_m), root_chord_m = float(data.root_chord_m),
 		tip_chord_m = float(data.tip_chord_m), dihedral_deg = float(data.dihedral_deg),
 		datum = [float(datum[0]), float(datum[1]), float(datum[2])], layout = clean_layout,
 		propeller_found = bool(data.get("propeller_found", false)), pusher = bool(data.get("pusher", false)),
-		biplane = bool(data.get("biplane", false)), physics = _physics(data.get("physics")), gear = _gear(data.get("gear"))}
+		biplane = bool(data.get("biplane", false)), physics = physics, gear = _gear(data.get("gear"))}
 
 
 ## The receipt's landing gear: a tricycle or taildragger with three or four finite wheel positions
