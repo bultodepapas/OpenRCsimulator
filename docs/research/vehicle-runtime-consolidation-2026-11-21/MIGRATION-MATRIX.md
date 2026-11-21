@@ -8,8 +8,8 @@
 | Aircraft v2 admission and law classification | Retain one registry/schema | AS/AircraftData/AircraftModules; other families retain distinct schemas | 00, AS coordination |
 | Airframe, gear, flap, elevon and propulsion differences | Retain capability-driven laws and authored sources | Aircraft/AS/physics own generators and physical evidence; no per-ID kernel condition | 02 |
 | Device/profile/calibration | Reuse existing services **where the route uses them** | D6/UI; direct/standalone readers and external drivers remain supported without a new mandatory singleton | 03 |
-| Shell status/pause/resume | One minimal intent bridge for one fixed-wing consumer first | Actual shell/activity entry point plus session chain; all safety authority stays there | 01, 04 |
-| Status and capabilities | Detached projection with unknown/support/readiness distinctions | Current owners; model-static features differ from profile-dependent live availability | 01, 08 |
+| Shell status/pause/resume | Characterize fixed-wing PauseMenu and existing AppRoot intent boundary; add an origin wrapper only if needed | Actual shell/activity entry point plus session chain; proof required even when no new wrapper is useful | 01, 04 |
+| Status and capabilities | Retain current reads unless a small detached projection removes a named decision/dependency | Current owners; model-static features differ from live availability; the conditional flat view is only a subprojection | 01, 04; 08 for a later view |
 | Start/reset/restore | Defer common API; characterize one owner transaction before any move | No universal checkpoint or recorder-rollback promise; fixed-wing and airship/quad ordering differs | 02 or later explicitly scoped 05 |
 | Exit/disposal and observer lifetime | Preserve owners; extract only proven retirement mechanics | Tentative detach is not final close; writer/export failure and pending results retain their own policy | 07 |
 | Terrain/weather/collision input builders | Optional sharing after equivalent-domain proof for real callers | LU/SC/GP; weather limits, material/contact and ordered obstacles remain family-specific | 06 |
@@ -23,6 +23,8 @@
 ## First bridge: smallest justified surface
 
 Characterize one actual fixed-wing consumer, then define only the status fields and pause/resume intent it needs. There is no demonstrated universal status API to rename. AppRoot's Continue checks radio-menu center, screen identity and other holds, releases the menu hold and masks keys before calling session resume. Airship and quad perform their own activity checks. A common direct `session.resume()` call would bypass those differences.
+
+The [implementation blueprint](IMPLEMENTATION-BLUEPRINT.md#3-first-consumer-fixed-wing-pausemenu) selects PauseMenu and defines its exact caller/fallback/Workshop lifetime scope. Keep current reads by default if a tiny projection adds indirection without reducing coupling. Existing AppRoot dispatch can satisfy the intent boundary if characterized and proven; a new wrapper is optional. Continue returns void and can close a crashed flight's menu without resuming ticks, so never manufacture a successful-resume receipt from dispatch alone.
 
 Requests contain intent and optional expected-identity context; owners read live authority. Results reflect the existing operation, including unsupported/refused/accepted and committed-fault distinctions where provided. A view cannot grant readiness. Dynamic feature support, profile/action eligibility and actual backend are projected from the owner, not duplicated in a new registry.
 

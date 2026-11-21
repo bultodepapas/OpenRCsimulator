@@ -19,6 +19,7 @@ PLAN = ROOT / "docs/plans/vehicle-runtime-consolidation.md"
 BASE = "57abea025f62b20233ca281d58d2acbee4ab8b8e"
 REVIEWED_PLAN = "542d92b304fc3b82678c4a90b848a88d82df0b22"
 PRIOR_AUDIT = "895dd4352c5191f1539a8b8f4df1996cd33eb86f"
+REFINEMENT_BASE = "8d61ca900a30686bc00eaf5ce80bee664e592a46"
 VALID_STEPS = {f"VRC-{i:02}" for i in range(12)}
 VALID_EXECUTION = {"UNRUN", "PASS", "FAIL", "INCOMPLETE"}
 
@@ -99,6 +100,98 @@ def headings(text: str) -> set[str]:
         counts[anchor] = number + 1
         found.add(anchor if number == 0 else f"{anchor}-{number}")
     return found
+
+
+def verify_organization(require, checks: dict, case_ids: set[str]) -> list[Path]:
+    """Verify dated design maps against Git objects, never infer executed support."""
+    mapping_path = HOME / "organization-map.json"
+    actions_path = HOME / "action-consumers.json"
+    mapping = json.loads(mapping_path.read_text())
+    actions = json.loads(actions_path.read_text())
+    require(mapping["schema"] == "openrc-vrc-organization-map-v1", "Unknown organization schema")
+    require(actions["schema"] == "openrc-vrc-action-consumer-map-v1", "Unknown action-map schema")
+    require(mapping["source_commit"] == actions["source_commit"] == BASE, "Organization source mismatch")
+    require(mapping["reviewed_plan_commit"] == REFINEMENT_BASE, "Organization review identity mismatch")
+    require(git("rev-parse", f"{REFINEMENT_BASE}:app") == git("rev-parse", f"{BASE}:app"),
+            "Refinement source app tree differs from baseline")
+    for document in (mapping, actions):
+        require(document["execution"]["status"] == "UNRUN" and document["execution"]["receipt"] is None,
+                "Design map must not claim runtime execution")
+    source_ids = [row["id"] for row in mapping["sources"]]
+    require(len(source_ids) == len(set(source_ids)), "Duplicate organization source ID")
+    symbols_checked = 0
+    for source in mapping["sources"]:
+        raw = source_at(BASE, source["path"])
+        lines = raw.decode().splitlines()
+        require(source["sha256"] == hashlib.sha256(raw).hexdigest(), f'Source SHA-256: {source["path"]}')
+        require(source["blob_sha"] == git("rev-parse", f'{BASE}:{source["path"]}').decode().strip(),
+                f'Source Git blob: {source["path"]}')
+        require(source["line_count"] == len(lines), f'Source line count: {source["path"]}')
+        names = [entry["name"] for entry in source["symbols"]]
+        require(len(names) == len(set(names)), f'Duplicate symbol: {source["path"]}')
+        for symbol in source["symbols"]:
+            number = symbol["line"]
+            valid_line = isinstance(number, int) and 1 <= number <= len(lines)
+            require(valid_line, f'Symbol line outside source: {source["path"]}:{symbol["name"]}')
+            if valid_line:
+                require(lines[number - 1] == symbol["declaration"],
+                        f'Symbol declaration mismatch: {source["path"]}:{symbol["name"]}')
+                require(bool(re.match(r"^(?:static )?func\s+" + re.escape(symbol["name"]) + r"\(",
+                                      lines[number - 1])), f'Symbol name mismatch: {symbol["name"]}')
+            require(symbol["url"] == f'https://github.com/bultodepapas/OpenRCsimulator/blob/{BASE}/{source["path"]}#L{number}',
+                    f'Symbol URL mismatch: {symbol["name"]}')
+            symbols_checked += 1
+    for collection in ("routes", "observations", "work_packages", "proposed_paths"):
+        for row in mapping[collection]:
+            require(set(row.get("source_ids", [])) <= set(source_ids), f'Unknown source in {collection}')
+            require(set(row.get("cases", [])) <= case_ids, f'Unknown case in {collection}')
+            require(set(row.get("owner_steps", [])) <= VALID_STEPS, f'Unknown step in {collection}')
+            if "step" in row:
+                require(row["step"] in VALID_STEPS, "Unknown work-package VRC step")
+            require("status" not in row, "Work maps must not become a second implementation-status ledger")
+    for row in mapping["proposed_paths"]:
+        require(bool(row["create_only_if"]), "Proposed module lacks its creation gate")
+        require(not git("cat-file", "-t", f'HEAD:{row["path"]}', allow_error=True),
+                f'Proposed module presented as absent but already tracked: {row["path"]}')
+    for path in mapping["existing_test_starting_points"]:
+        require(bool(re.search(r"^extends SceneTree\s*$", source_at(BASE, path).decode(), re.M)),
+                f'Organization test is not a SceneTree launcher: {path}')
+    catalog_text = source_at(BASE, actions["catalog_path"]).decode()
+    block = catalog_text.split("const ACTIONS: Array[Dictionary] = [", 1)[1].split("\n]", 1)[0]
+    source_actions = [json.loads(raw) for raw in re.findall(r"\{[^\n]+\}", block)]
+    actual_actions = [{key: row[key] for key in ("id", "label", "context", "mode")}
+                      for row in actions["catalog"]]
+    require(actual_actions == source_actions, "Action catalog differs from pinned definitions")
+    for row in actions["catalog"]:
+        require(row["consumer_coverage"] == "uncharacterized across activity/route/form combinations",
+                f'Unproved consumer coverage for {row["id"]}')
+    aux_match = re.search(r"const AUX_CHANNEL_IDS: PackedStringArray = (\[[^\n]+\])", catalog_text)
+    require(aux_match is not None and actions["aux_channels"] == json.loads(aux_match[1]),
+            "AUX catalog differs from pinned definitions")
+    keys = set()
+    for row in actions["examples"]:
+        key = tuple(row[field] for field in actions["matrix_key"])
+        require(key not in keys, "Duplicate action-consumer example")
+        keys.add(key)
+        require(row["action_id"] in {entry["id"] for entry in source_actions}, "Unknown example action")
+        require(set(row["source_ids"]) <= set(source_ids), "Unknown example source")
+        require(set(row["cases"]) <= case_ids, "Unknown example case")
+        require(row["execution"]["status"] == "UNRUN" and row["execution"]["receipt"] is None,
+                "Source action example must not claim a runtime pass")
+    historical_receipt = HOME / "verification.json"
+    require(historical_receipt.read_bytes() == source_at(REFINEMENT_BASE, relative(historical_receipt)),
+            "Original audit receipt was rewritten instead of preserved")
+    checks["organization_refinement"] = {
+        "reviewed_plan_commit": REFINEMENT_BASE, "source_files": len(source_ids),
+        "source_symbols": symbols_checked, "routes": len(mapping["routes"]),
+        "source_observations_not_runtime_findings": len(mapping["observations"]),
+        "existing_test_starting_points": len(mapping["existing_test_starting_points"]),
+        "action_catalog_ids": len(source_actions), "aux_channels": len(actions["aux_channels"]),
+        "source_action_examples_unrun": len(actions["examples"]),
+        "historical_receipt_preserved": historical_receipt.read_bytes() == source_at(REFINEMENT_BASE, relative(historical_receipt)),
+        "semantic_coverage_or_gameplay_execution": False,
+    }
+    return [mapping_path, actions_path, historical_receipt]
 
 
 def main() -> int:
@@ -184,6 +277,11 @@ def main() -> int:
                        "pinned_test_paths_with_scenetree_declaration": sorted(test_paths)}
     checks["findings"] = {"count": len(finding_ids), "identifiers": finding_ids}
     checks["evidence_source_sha256"] = evidence_hashes
+    refinement_files = verify_organization(require, checks, set(ids))
+    refinement = data.get("organization_refinement", {})
+    require(refinement.get("reviewed_plan_commit") == REFINEMENT_BASE, "Case-refinement identity mismatch")
+    require(set(refinement.get("changed_cases", [])) <= set(ids), "Unknown refined case")
+    checks["organization_refinement"]["refined_cases"] = refinement.get("changed_cases", [])
     expected = matrix_text(data)
     if args.write_matrix:
         if errors:
@@ -272,10 +370,10 @@ def main() -> int:
     checks["historical_controls_batch"] = {"commit": PRIOR_AUDIT, "passed": summary["passed"],
                                             "failed_or_incomplete": summary["failed"], "rerun": False}
     manifest = {}
-    for path in [*markdown, HOME / "inventory.json", HOME / "control-cases.json", HOME / "audit-findings.json", Path(__file__)]:
+    for path in [*markdown, HOME / "inventory.json", HOME / "control-cases.json", HOME / "audit-findings.json", *refinement_files, Path(__file__)]:
         manifest[relative(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     report = {"schema": "openrc-vrc-static-verification-v1", "date": "2026-11-21",
-              "base_commit": BASE, "reviewed_plan_commit": REVIEWED_PLAN,
+              "base_commit": BASE, "reviewed_plan_commit": REVIEWED_PLAN, "refinement_base_commit": REFINEMENT_BASE,
               "scope": "Static plan/data/source-reference checks only; no Godot, replay, CI, hardware or gameplay execution",
               "ok": not errors, "errors": errors, "checks": checks, "artifact_sha256": manifest}
     if args.output:

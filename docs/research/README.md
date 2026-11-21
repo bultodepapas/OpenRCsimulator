@@ -55,7 +55,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 - [Documentation audit, 2026-10-06](documentation-audit-2026-10-06.md) preserves the earlier navigation and consistency findings; the [documentation map](../README.md) owns current roles and track boundaries.
 - [Graveacre asset workflow review](graveacre-ai-workflow-2026-10-09.md) records primary links, access limits and practical asset-pipeline findings.
 
-- [Vehicle runtime consolidation, 2026-11-21](vehicle-runtime-consolidation-2026-11-21/README.md) contains the adversarial plan review, corrected source inventory, control contract, 40 proposed acceptance cases and static verification. The [VRC plan](../plans/vehicle-runtime-consolidation.md) owns VRC-00…11, all implementation open. Three source reviewers cross-challenged architecture, controls and evidence; no new runtime, physical-device or CI qualification is claimed.
+- [Vehicle runtime consolidation, 2026-11-21](vehicle-runtime-consolidation-2026-11-21/README.md) contains the adversarial audit and continued organization/save blueprint, primary-source research, pinned symbol/route map, action-consumer checklist, control contract and 40 UNRUN acceptance cases. The [VRC plan](../plans/vehicle-runtime-consolidation.md) is the sole VRC-00…11 status ledger, all implementation open. Opposing reviewers challenged the precise code/candidate; static receipts are separate from pending runtime, physical-device and CI qualification.
 
 ## Contributor flight-mechanics investigation
 

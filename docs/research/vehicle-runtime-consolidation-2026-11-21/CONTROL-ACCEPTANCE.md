@@ -51,26 +51,26 @@ The [control contract](CONTROL-CONTRACT.md) defines semantics; [quality gates](Q
 
 **Stale connection cannot authorize resume.** Owners: F3-GP-02, UI, affected family. Apply when: Selection, status, intent dispatch or resume ownership changes.
 
-- **Fixture and trigger:** With a real affected shell/activity and valid profile, display ready; disconnect, reuse the numeric handle or select a different source before dispatching the old resume intent.
+- **Fixture and trigger:** Capture ready status, then disconnect/reconnect or reuse the selected numeric handle before the next poll and actual Continue dispatch. Distinguish supported role/connection callbacks from artificial field mutation.
 - **Required outcome:** The owner revalidates the current connection/generation and full family gate. Stale evidence grants no accepted tick/action. Existing guarded recovery remains available; no adapter cache supplies authority.
 - **Existing test starting points:** [test_controller_registry.gd](../../../app/tests/test_controller_registry.gd), [test_controller_audit_identity.gd](../../../app/tests/test_controller_audit_identity.gd), [test_controller_pause_recovery.gd](../../../app/tests/test_controller_pause_recovery.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Record old/current source identity, actual dispatch chain, pause/hold state and first accepted command or its absence. Status: **UNRUN**; receipt: none.
+- **Evidence:** Observed live role/generation, input owner, dispatch order and first accepted command/tick; displayed status alone is not fresh admission. Status: **UNRUN**; receipt: none.
 
 ## C02
 
 **Relevant profile change invalidates stale permission.** Owners: D6-GP-02, F3-GP-02, UI. Apply when: Profile activation, readiness projection or queued intents change.
 
-- **Fixture and trigger:** Capture ready status, then successfully change a relevant mapping/action/calibration or role before Continue. Separately inject a failed managed Save that retains the previous profile.
-- **Required outcome:** Dispatch validates the actual accepted profile and applicable readiness. A successful relevant change cannot reuse stale evidence; a failed managed Save does not invent a new active profile. Harmless fields need not invalidate unrelated state.
+- **Fixture and trigger:** Capture status, then successfully activate a relevant mapping/action/calibration or role before Continue and the next poll. Separately inject prepublication failure, activation refusal, complete restoration and failed/unobserved restoration in both managed save paths; identify any direct-mutation-only fixture.
+- **Required outcome:** Dispatch validates the actual accepted source/profile and applicable readiness. A successful relevant change cannot reuse stale evidence. A false Save does not prove unchanged storage/runtime/roles: observe each phase and preserve the existing distinction; an explicit recovery repair holds uncertain authority until re-admitted. Harmless fields need not invalidate unrelated state.
 - **Existing test starting points:** [test_controller_settings_save.gd](../../../app/tests/test_controller_settings_save.gd), [test_radio_menu_service.gd](../../../app/tests/test_radio_menu_service.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Accepted profile/mapping identities and observed gate/refusal; no new universal revision mechanism is presumed. Status: **UNRUN**; receipt: none.
+- **Evidence:** Accepted and stored profile identities, actual restoration results, UI feedback, holds and first command; no blanket rollback or newly invented global revision. Status: **UNRUN**; receipt: none.
 
 ## C03
 
 **Retired activity rejects late work.** Owners: UI, family lifecycle. Apply when: Bridge listeners, async/deferred work or activity replacement changes.
 
-- **Fixture and trigger:** Queue status/resume/profile/load completion for activity A; cancel or replace it with B before completion. Repeat unsubscribe/dispose and deliver a late callback.
-- **Required outcome:** Late work cannot resume, mutate, close recorders or clear listeners belonging to B. The original job retains safe retirement ownership; repeat cleanup is limited to owned resources.
+- **Fixture and trigger:** Queue an origin-bound status/pause/resume/profile/load request for activity A; replace it with B before delivery. Separately change source on the same activity before a scheduled reconciliation, and detach/reattach the same original Workshop pause/session. Include the old deferred refresh callback if its guard is changed.
+- **Required outcome:** Retired A cannot act on B or clear B's listeners/recorders. Current-activity reconciliation may legitimately rebind/hold the latest source without borrowing old authority. Temporary Workshop suspension returns unavailable while detached and can restore the same provider on reattachment; it is not final disposal. A new provider guard alone does not prove the rest of deferred refresh is safe.
 - **Existing test starting points:** [test_flight_session_staged.gd](../../../app/tests/test_flight_session_staged.gd), [test_ui_screen_stack.gd](../../../app/tests/test_ui_screen_stack.gd). The actual case/fixture must be reviewed or implemented before execution.
 - **Evidence:** Activity identity, queued/completed operation order, listener counts and actual state/recording outcomes; extend beyond existing fixtures where absent. Status: **UNRUN**; receipt: none.
 
@@ -237,26 +237,26 @@ The [control contract](CONTROL-CONTRACT.md) defines semantics; [quality gates](Q
 
 **Save and activation report the route's true result.** Owners: D6-GP-02, UI-15-GP-01, fixed-wing, HELI. Apply when: Setup Save/apply, calibration completion or persistence callbacks move.
 
-- **Fixture and trigger:** Inject managed V2 store/preflight/activation failure and compare the prior accepted profile. Separately fail a direct fixed-wing/heli legacy save after calibration has activated in memory.
-- **Required outcome:** Managed transaction retains its documented rollback. Direct legacy may remain active but NOT saved; communicate that truth and preserve existing recovery. Do not claim durable success or universal activation rollback; a stronger guarantee is separate behavior work.
+- **Fixture and trigger:** Inject managed preflight/publication/activation failure, then separately fail disk, role or runtime restoration in full Controls Save and in-flight calibration/smoke where the route attempts that component; otherwise record not attempted/not applicable. Include successful publication with cleanup warning and keyboard/unassociated/no-session saves. Separately fail direct legacy calibration/smoke after in-memory activation; characterize duplicate-device arrival during direct smoke assignment.
+- **Required outcome:** Distinguish unchanged, published, applied, restored and unknown component outcomes. Managed compensation is attempted, not guaranteed; do not infer unchanged state from false. The proposed recovery repair retains draft/recoverable data and keeps uncertain authority held until re-admission, with truthful real-caller copy. Saved is separate from applied, which may be not requested/not applicable. Cleanup warning is not failed publication. Direct legacy can remain active but NOT saved until an explicit behavior repair changes it.
 - **Existing test starting points:** [test_controller_settings_save.gd](../../../app/tests/test_controller_settings_save.gd), [test_controller_calibration_session.gd](../../../app/tests/test_controller_calibration_session.gd), [test_controller_calibration_disclosure.gd](../../../app/tests/test_controller_calibration_disclosure.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Before/after file and active profile, response/HUD message, draft state and subsequent restart result. Status: **UNRUN**; receipt: none.
+- **Evidence:** Before/after primary/rollback files, active profile, roles/holds, returned component states, actual Controls/HUD copy, draft and restart. A mocked false result alone does not exercise compensation. Status: **UNRUN**; receipt: none.
 
 ## C22
 
 **Storage interruption does not invent defaults or success.** Owners: D6-GP-02, profile storage. Apply when: Store admission/publication/locking or migration changes.
 
-- **Fixture and trigger:** Exercise corrupt/unreadable input, denied write, interrupted publication/lock ownership and competing reader with fresh isolated files; distinguish V2 and legacy contracts.
-- **Required outcome:** Managed V2 corrupt/unreadable stores remain errors and legacy writers do not overwrite unreadable input. Characterize direct legacy load_profile, which can return an empty result for absent or unreadable input; stronger reader discrimination is separate behavior work. Acknowledgement/recovery follows its route, with no unbounded tick-path retry or unproved power-loss guarantee.
+- **Fixture and trigger:** Use isolated files and controlled schedules for corrupt/missing/recovered storage, write/restore refusal and interrupted leases. Two editors load profile P, A edits axes and saves, B edits an old name and saves later; repeat via managed calibration/smoke. Include different UUIDs, changed durable menu preference, shared association, concurrent legacy imports and an L1-derived new V2 draft after legacy L2 is saved.
+- **Required outcome:** A valid V2 rollback copy retains recovery provenance; otherwise unreadable storage remains an error. Legacy writers do not overwrite unreadable input; legacy empty-reader ambiguity is separately characterized. Proposed stale-edit repair compares actual stored bases, not UI dirty fingerprints. Full setup reviews a changed durable menu base; narrow writers preserve it without adopting another process's role. Different UUIDs may share association dependencies; legacy origin needs coordination or a supported coexistence restriction. Preserve conflicting drafts and acknowledged data; no silent semantic merge, automatic stale-lock deletion, unbounded tick-path retry or unproved power-loss claim.
 - **Existing test starting points:** [test_controller_store.gd](../../../app/tests/test_controller_store.gd), [test_controller_persistence.gd](../../../app/tests/test_controller_persistence.gd), [test_controller_audit_concurrency.gd](../../../app/tests/test_controller_audit_concurrency.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Fault schedule, file/lock state, error/result, recovered profile and storage-contract limitation. Status: **UNRUN**; receipt: none.
+- **Evidence:** Source/barrier identity and schedule; canonical base/current/candidate profiles including association, menu preference, legacy origin, returned outcomes, runtime role, file/lock state and restart. Distinguish current source-inferred last-writer behavior from proposed conflict-refusal acceptance. Status: **UNRUN**; receipt: none.
 
 ## C23
 
 **Restart and rollback retain usable player profiles.** Owners: D6-GP-02, UI, DT. Apply when: Profile compatibility, default interpretation or release rollback is affected.
 
-- **Fixture and trigger:** Start with copied accepted profiles and menu preference; save supported edits, restart candidate, then reopen under retained baseline build. Cover legacy import and ambiguous/reused device identities.
-- **Required outcome:** Structural PRs preserve schema, acknowledged overrides and documented selection semantics. No persisted numeric handle is treated as stable identity. A version change requires explicit migration/rollback proof rather than assumed source revert.
+- **Fixture and trigger:** Use copies of accepted V2/legacy files and menu preference, including gamepad-only smoke, partial/unreadable legacy import, ambiguous/reused identities and stale legacy-origin drafts. Save supported edits, restart candidate, then reopen retained baseline. Characterize old readers with open handles/missing-path windows and noncooperating old writers, or declare unsupported coexistence.
+- **Required outcome:** Structural changes preserve schema and declared selection semantics. Candidate migration preserves every supported radio/AUX/action and separate gamepad-smoke value or explicitly reports unsupported conversion; surface read/skip errors without changing original legacy bytes. No persisted numeric handle or UUID proves physical identity. Explicit flight selection remains session-local unless separately designed; HUD stick mode is not keyboard remapping. Old/new data and concurrent-version policy need actual proof; source revert alone is insufficient.
 - **Existing test starting points:** [test_controller_persistence.gd](../../../app/tests/test_controller_persistence.gd), [test_controller_profile_creation.gd](../../../app/tests/test_controller_profile_creation.gd), [test_controller_auto_defaults.gd](../../../app/tests/test_controller_auto_defaults.gd). The actual case/fixture must be reviewed or implemented before execution.
 - **Evidence:** Build/profile bytes, launch logs, selected roles and recovered user-visible settings; original player files remain protected. Status: **UNRUN**; receipt: none.
 
@@ -264,10 +264,10 @@ The [control contract](CONTROL-CONTRACT.md) defines semantics; [quality gates](Q
 
 **Managed, direct and trial routes remain explicit.** Owners: UI, D6, family route owners. Apply when: A launch route or common service dependency changes.
 
-- **Fixture and trigger:** Inventory and execute the affected supported Home, direct-launch and Workshop-trial routes with declared keyboard, verified pad or radio profile; include standalone/external-driver no-input mode where supported.
+- **Fixture and trigger:** Inventory and execute affected Home, AppRoot direct, standalone/component and Workshop routes with declared keyboard/verified-pad/radio fixtures. Distinguish direct quad's self-created V2 service from its no-registry legacy fallback; include temporary Workshop menu/session restoration and actual offered action/binding-form rows.
 - **Required outcome:** No mandatory service breaks an intentional service-free route. Home preferences and direct legacy/profile behavior retain their declared scope. Unsupported menu/binding combinations are labeled before use, not inferred from another activity's pass.
 - **Existing test starting points:** [test_controller_integration.gd](../../../app/tests/test_controller_integration.gd), [test_controller_audit_shell.gd](../../../app/tests/test_controller_audit_shell.gd), [test_airship_activity.gd](../../../app/tests/test_airship_activity.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Actual route/catalog/launch flags, services present, profile resolver, offered controls and first accepted command; matrix exclusions explained. Status: **UNRUN**; receipt: none.
+- **Evidence:** Actual launch flags/catalog/route, services and resolver, saved versus current-run preferences, action/form consumer or exclusion, and first accepted command. Use organization-map.json and action-consumers.json as source starting points, not support receipts. Status: **UNRUN**; receipt: none.
 - **Known baseline:** GCA-G2; reproduce separately, then assert the repaired oracle.
 
 ## C25
@@ -321,8 +321,8 @@ The [control contract](CONTROL-CONTRACT.md) defines semantics; [quality gates](Q
 
 **Detached status is truthful and cannot mutate authority.** Owners: UI, session owners, D6. Apply when: Status projection, operation availability or HUD adapter changes.
 
-- **Fixture and trigger:** Mutate nested values returned to a test view; read status for multiple holds, unsupported operations and unknown backend; change relevant model/profile/external-driver state and replace activity.
-- **Required outcome:** No view mutation changes authority or another view. Unknown/unsupported is not ready/false-native; dynamic operation availability follows current owners. Old status cannot authorize new activity actions, and shared profiles retain valid other-family bindings.
+- **Fixture and trigger:** At the chosen PauseMenu seam first record a named duplicated decision/dependency eliminated, or retain existing reads. If projecting, mutate returned values and compare owners/another view; cover known/unknown controller observations, covered menu, temporary Workshop return and stale provider. Preserve existing flyability/Continue and crashed-menu-close semantics; expand other status fields only when touched. If nested holds, backend identity or dynamic operation fields are later projected, add their alias/unknown/current-availability cases; the flat subprojection alone does not exercise them.
+- **Required outcome:** No view mutation changes authority or another view. Unknown/unsupported is not ready or false-native; observed armed flags are not new independent admission. Old status cannot authorize a new activity. A flat controller subprojection does not close the entire status/intent contract or retire every callback. Valid other-family bindings remain stored; dispatch/menu closure is not claimed as resumed flight.
 - **Existing test starting points:** [test_controller_prompts.gd](../../../app/tests/test_controller_prompts.gd), [test_ui_screen_stack.gd](../../../app/tests/test_ui_screen_stack.gd). The actual case/fixture must be reviewed or implemented before execution.
 - **Evidence:** Before/after owner values, detached alias checks, projected reason/support and actual consumer behavior; minimal new fixture is proposed where absent. Status: **UNRUN**; receipt: none.
 
@@ -348,10 +348,10 @@ The [control contract](CONTROL-CONTRACT.md) defines semantics; [quality gates](Q
 
 **Primary gamepad player flow remains usable.** Owners: UI-12-GP-01, UI-15-GP-01, DT. Apply when: The affected UI integration or release claims a gamepad route.
 
-- **Fixture and trigger:** Use the real offered Home/Controls/test/save/launch/Pause/settings/recovery/Home path on a declared activity; exercise EN/ES, popups, scrolling, cancel, dirty drafts and selected-device prompts.
-- **Required outcome:** Supported primary flow works with the selected controller and documented keyboard/text/OS-dialog exceptions, without accidental flight actions or unreachable recovery. Synthetic focus checks do not certify native or physical usability.
+- **Fixture and trigger:** Run actual setup-to-gameplay UI for each offered action in the selected activity/route and each applicable binding form, distinguishing defaults/explicit overrides, AUX conflicts and fixed fallback controls. Include unique explicit quad throttle_cut and Pause assignments; the throttle-cut offer is a source-derived candidate pending execution.
+- **Required outcome:** Each assignment presented as supported for the current activity has a real consumer and intended visible/command outcome, or is disabled/refused with an explanation. Save/reload or activation preserves its meaning; one event produces the appropriate single action or held/release behavior. Foreign/stale sources do not act. Preserve other-family saved bindings when limiting current-family UI. A gamepad Pause or catalog/validator pass does not certify radio/axis/key forms.
 - **Existing test starting points:** [test_controller_menu.gd](../../../app/tests/test_controller_menu.gd), [test_controller_setup.gd](../../../app/tests/test_controller_setup.gd), [test_controller_prompts.gd](../../../app/tests/test_controller_prompts.gd). The actual case/fixture must be reviewed or implemented before execution.
-- **Evidence:** Actual display/renderer/activity/build and UI record; source and exported physical-device results separately labeled. Status: **UNRUN**; receipt: none.
+- **Evidence:** Activity/route/action/form/context matrix, visible offer, committed profile, actual UI event and consumer, accepted state/feedback and recovery. action-consumers.json contains 37 catalog IDs and five UNRUN examples, with other combinations uncharacterized. Status: **UNRUN**; receipt: none.
 
 ## C34
 

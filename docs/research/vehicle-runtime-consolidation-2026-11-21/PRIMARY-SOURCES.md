@@ -1,0 +1,47 @@
+# Primary-source research for controls organization
+
+**Checked:** 2026-11-21, America/Bogota. **Local engine pin:** official Godot `4.8.beta2.official.cafc17a19`, configured by [get-godot.sh](../../../app/get-godot.sh) and described in [STACK](../../STACK.md). This is a planning investigation, not a new engine/device/storage qualification.
+
+The sources below were opened and read. Godot's `stable` pages are moving documentation, while the explicit Input reference is 4.6. They describe API contracts and useful failure boundaries; they are not a tested specification of OpenRC's pinned binary. Attempts to retrieve the exact upstream engine commit's Unix/Windows file implementations were unavailable through the research service. No claim about their current native flush implementation is made. The original POSIX pages were also unavailable; the Linux man-pages and Microsoft primary documentation supply narrower platform guidance.
+
+The [implementation blueprint](IMPLEMENTATION-BLUEPRINT.md) owns the proposed application of these facts. The repository's [earlier practice review](../development-practices-2026-11-19.md#godot-and-game-development) already covered general scene/input practices; this continuation focuses on the concrete pause, identity and storage decisions left open by the VRC plan.
+
+## Organization and detached values
+
+| Source | Bounded external fact | Application to this code / limit |
+| --- | --- | --- |
+| [Godot: Scene organization](https://docs.godotengine.org/en/stable/tutorials/best_practices/scene_organization.html) | Scenes with focused responsibilities and parent-supplied dependencies avoid assumptions about an external tree layout. | Inject the fixed-wing pause projection/callback from AppRoot. This supports a small seam; it does not establish that the current large files are defective or that every family needs an adapter. |
+| [Godot: Autoloads versus regular nodes](https://docs.godotengine.org/en/stable/tutorials/best_practices/autoloads_versus_regular_nodes.html) | Globally accessible mutable managers expand the set of code that can affect shared state. | Retain existing scoped authorities; do not add a ControlsManager autoload to wrap them. A direct-route store adapter need not depend on a shell singleton. |
+| [Godot: Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) | `duplicate(true)` recursively copies arrays/dictionaries but still shares Resources; `make_read_only()` does not freeze nested contents. | Return a small value-only pause view and detached persisted/draft bases. Do not promise immutability merely because an outer Dictionary is copied or read-only. Test the actual chosen representation on the pinned engine. |
+
+These are design constraints, not a recommendation to duplicate every resource. The first view needs primitive controller/status facts; it does not need the entire simulation, aircraft resource or mutable profile graph. Existing resource/lifetime rules remain in [STACK](../../STACK.md#godot-runtime-boundaries).
+
+## Input, event order and identity
+
+| Source | Bounded external fact | Application to this code / limit |
+| --- | --- | --- |
+| [Godot 4.6: Input](https://docs.godotengine.org/en/4.6/classes/class_input.html) | Global Input state is independent of GUI event handling. Accumulation can merge OS events per rendered frame; disabling it trades CPU work for finer event delivery. GUID information can be missing or platform-specific. | Preserve [held_keys.gd](../../../app/ui/held_keys.gd) and the event/poll distinction. Measure input timing before changing accumulation. Do not equate a polled zero, an accepted UI event or a GUID with fresh authority. |
+| [Godot: InputMap](https://docs.godotengine.org/en/stable/classes/class_inputmap.html) | InputMap manages named action events and can reload project settings. | A runtime action map is not the application's complete saved profile transaction. [ui_input.gd](../../../app/ui/ui_input.gd) is the native UI mapping owner; semantic flight actions and calibrated radio axes still use their existing paths. |
+| [Godot: Controllers, gamepads and joysticks](https://docs.godotengine.org/en/stable/tutorials/inputs/controllers_gamepads_joysticks.html) | The desktop controller backend uses SDL3 from Godot 4.5. Specialized devices have different coverage; the guide's vector deadzone example targets paired movement axes. | Do not infer radio compatibility from generic pad support. Do not replace independent RC roll/pitch conditioning with a circular `get_vector()` deadzone without a separately accepted control-feel change. |
+| [SDL3: SDL_GUID](https://wiki.libsdl.org/SDL3/SDL_GUID) | Equivalent physical devices can share a GUID; GUIDs can differ across platforms. | Preserve current ambiguity checks, connection generations and observed identity fields. A profile UUID identifies saved data; it does not identify a physical radio. SDL documentation does not prove Godot forwards every SDL identity or lifetime property. |
+
+Local evidence matters here: [Main](../../../app/main.gd) already disables accumulated input, while [quad activity](../../../app/vehicles/multirotor/multirotor_scene.gd) captures/restores its prior value. Do not recommend “disable accumulation” as a new optimization already achieved globally. The owner/lifetime and route-dependent value require characterization if moved. No source lookup measures USB frequency, physical latency, RF loss, missing hardware axes or pilot feel.
+
+## Publication is not power-loss durability
+
+| Source | Bounded external fact | Application to this code / limit |
+| --- | --- | --- |
+| [Godot: ConfigFile](https://docs.godotengine.org/en/stable/classes/class_configfile.html) | In-memory edits require an explicit save to write a file. | Keep draft, accepted runtime and published storage distinct. ConfigFile alone does not supply the V2 store's lease, validation, rollback or stale-edit policy. |
+| [Godot: FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html) | The API exposes flushing/closing and warns that frequent flushes carry a cost; abnormal process termination differs from normal closure. | Review actual save operations and failure results. This API description is not a cross-platform proof of the complete temp/backup/rename transaction under power loss. |
+| [Godot: DirAccess](https://docs.godotengine.org/en/stable/classes/class_diraccess.html) | Rename reports an error code and can replace an existing destination. | Check commit/restore/cleanup outcomes individually. The Godot API does not make a multi-step application transaction or noncooperating old writers safe. |
+| [Linux man-pages: rename(2)](https://man7.org/linux/man-pages/man2/rename.2.html) | A successful replacement rename on Linux provides atomic name replacement under its documented conditions. | This is one filesystem operation. OpenRC stages the prior primary and then publishes a temporary file; cooperating readers rely on its lease/recovery procedure. Do not describe the entire sequence as a single atomic replacement visible to arbitrary readers. |
+| [Linux man-pages: fsync(2)](https://man7.org/linux/man-pages/man2/fsync.2.html) | Synchronizing a file does not necessarily persist its directory entry; directory synchronization is a separate concern. | Stronger Linux crash/power-loss claims require the complete file-and-directory protocol, supported filesystem scope, and injected-failure evidence. No such test ran here. |
+| [Microsoft: FlushFileBuffers](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers) and [system-buffered I/O](https://learn.microsoft.com/en-us/windows/win32/fileio/flushing-system-buffered-i-o-data-to-disk) | Windows buffering and explicit flush behavior distinguish application completion from persistence of buffered data; flushing can fail and has performance costs. | Investigate the pinned implementation and supported Windows filesystems before making a stronger guarantee. A passing Linux or synthetic file test cannot qualify Windows rename/handle/durability behavior. |
+
+The proposed near-term acceptance target is truthful publication/activation, cooperating-writer serialization, recoverable error handling and tested restart behavior. Claim it only for paths whose required witnesses pass; this revision executes none. The existing V2 lease/publication procedure is a source observation, with the compensation/caller gaps described in the blueprint. Stronger durability is conditional on an explicit requirement and its own evidence; this research does not prescribe SQLite, a native storage rewrite or a flush on every control sample.
+
+## Evidence limits and decisions
+
+External references support the API/platform facts above. The claims about OpenRC call chains, missing base comparison, partial rollback reporting, direct launch and legacy import come from the pinned repository inspection in [organization-map.json](organization-map.json), not from the web. The recommended conflict policy, tiny status projection, result fields and direct adapter are engineering proposals inferred from those two evidence sources.
+
+No external tutorial is used as a golden for RC control feel. Existing 240 Hz input/physics ownership, verified-pad first-poll policy, radio event/LOW evidence, trusted radio-menu verification seed, family readiness and replay identity rules remain with their current owners. Primary-source research narrows the plan; it does not close an unrun acceptance case.
