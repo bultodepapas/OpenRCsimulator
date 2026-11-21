@@ -300,7 +300,7 @@ func build() -> VehicleModel:
 	vehicle.aux_size = FC.AUX_SIZE
 	vehicle.modes_size = FC.MODES_SIZE
 	vehicle.continuous_size = continuous_size()
-	vehicle.identity = {vehicle = "multirotor", law = law(), layout = layout(), controller = FC.LAW,
+	vehicle.identity = {vehicle = "multirotor", law = law(), layout = layout(), rotor_density = Rotor.DENSITY_LAW, controller = FC.LAW,
 		controller_identity = str(config.identity), allocator = Allocator.LAW, rates = str(config.rates.identity),
 		bus = (BUS_DAMPED if _braking else ElectricBus.LAW) if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
 		variant = str(prepared.identity.get("variant", "")), throttle_policy = int(config.throttle_policy),
@@ -373,6 +373,8 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		v_air = M.sub(velocity, M.q_rotate(M.q_conj(attitude), environment.wind_world(position_ned, t)))
 		density = environment.air_density(body[RB.POS + 2])
 	var force: PackedFloat64Array = Airframe.loads(v_air, density, prepared.airframe)
+	# A36 R2-F01: rotor aerodynamics see the same stage density as the airframe (exactly 1 at the reference air).
+	var sigma: float = density / Rotor.REFERENCE_DENSITY
 	var moment: PackedFloat64Array = M.v3(0.0, 0.0, 0.0)
 	var contact: Dictionary = _contact_loads(body, attitude, velocity, rates)
 	force = M.add(force, contact.force)
@@ -388,7 +390,8 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 			var command: float = aux[FC.AUX_COMMAND + i] if armed else 0.0
 			var omega_dot: float = Powertrain.omega_rate(omega, command, _motor)
 			derivative[i] = omega_dot
-			var loads: Dictionary = Rotor.loads(omega, float(rotor.spin), rotor.hub_frd, v_air, rates, omega_dot, _rotor_laws[i])
+			var loads: Dictionary = Rotor.loads(omega, float(rotor.spin), rotor.hub_frd, v_air, rates, omega_dot, _rotor_laws[i],
+				sigma)
 			force = M.add(force, loads.force)
 			moment = M.add(moment, loads.moment)
 			momentum_z += -float(rotor.spin) * float(rotor.inertia_kg_m2) * omega
@@ -435,15 +438,15 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		# Thrust follows the prop's health; its drag never falls below what a broken prop's hub and stubs keep, so a
 		# driven motor with a broken prop cannot run away past the shaft-speed domain.
 		var load: float = maxf(health, BROKEN_PROP_LOAD)
-		var thrust: float = _k_t * motoring * motoring * health
-		var torque: float = _k_q * motoring * motoring * load
+		var thrust: float = _k_t * motoring * motoring * health * sigma
+		var torque: float = _k_q * motoring * motoring * load * sigma
 		if omega < 0.0:
 			# DR-19e: a prop spinning backwards (turtle mode) pushes the other way at a fraction of its efficiency; its
 			# drag torque opposes the reversed rotation.
-			thrust = -_k_t * REVERSE_PROP_EFFICIENCY * omega * omega * health
-			torque = -_k_q * REVERSE_PROP_EFFICIENCY * omega * omega * load
-		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy) * load
-		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz) * load
+			thrust = -_k_t * REVERSE_PROP_EFFICIENCY * omega * omega * health * sigma
+			torque = -_k_q * REVERSE_PROP_EFFICIENCY * omega * omega * load * sigma
+		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy) * load * sigma
+		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz) * load * sigma
 		fx += rotor_fx
 		fy += rotor_fy
 		fz -= thrust

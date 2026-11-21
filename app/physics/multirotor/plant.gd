@@ -58,7 +58,7 @@ func build() -> VehicleModel:
 	vehicle.aux_size = 4
 	vehicle.modes_size = 0
 	vehicle.continuous_size = 4
-	vehicle.identity = { vehicle = "multirotor", law = LAW, rotors = data.rotors.size() }
+	vehicle.identity = { vehicle = "multirotor", law = LAW, rotors = data.rotors.size(), rotor_density = Rotor.DENSITY_LAW }
 	vehicle.stage = stage
 	vehicle.pre_tick = pre_tick
 	vehicle.rotor_momentum = Callable() # the stage supplies it
@@ -110,7 +110,8 @@ func stage(body: PackedFloat64Array, continuous: PackedFloat64Array, t: float) -
 		var omega: float = continuous[i]
 		var omega_dot: float = Powertrain.omega_rate(omega, duties[i], data.motor)
 		derivative[i] = omega_dot
-		var loads: Dictionary = Rotor.loads(omega, float(rotor.spin), rotor.hub_frd, v_air, rates, omega_dot, data.rotor)
+		var loads: Dictionary = Rotor.loads(omega, float(rotor.spin), rotor.hub_frd, v_air, rates, omega_dot, data.rotor,
+			density / Rotor.REFERENCE_DENSITY)
 		force = M.add(force, loads.force)
 		moment = M.add(moment, loads.moment)
 		momentum_z += -float(rotor.spin) * float(data.rotor.inertia_kg_m2) * omega # h = J_r Σ spin·ω along a = [0, 0, −1]
