@@ -1221,11 +1221,13 @@ func _import_hardening() -> void:
 	doc.set_axis("up_axis", "+y")
 	doc.set_units("m")
 	doc.set_datum([0.0, 0.02, 0.03])
+	var registered_before := Packages.derived_ids()
 	var applied: Dictionary = doc.apply_clearview_setup(proposed.value, doc.revision) if proposed.ok else proposed
 	var power := str(doc.definition().get("power_package", ""))
 	check("set-up derives the Phoenix packages", applied.ok and PhoenixPhysics.is_derived(power))
 	if not (applied.ok and PhoenixPhysics.is_derived(power)):
 		return
+	_setup_candidate_retirement(doc, registered_before, block)
 	check("the flown size matches the derived packages", not doc.phoenix_size_changed()
 		and not _has_message(doc.compile(), Authoring.PHOENIX_RESIZED))
 	var snapshot: Dictionary = doc.snapshot()
@@ -1474,3 +1476,31 @@ func _landing_gear() -> void:
 	check("a geared Creator aircraft starts on the runway", runway.get("ok", false) and runway.get("available", false))
 	var hand: Dictionary = CreatorTrial.check_start(trial, field, Weather.defaults(), Session.START_HAND_LAUNCH) if trial.get("ok", false) else {}
 	check("a geared Creator aircraft is not hand launched", hand.get("ok", false) and not hand.get("available", true))
+
+
+## A36 O1: a setup keeps registered only the derived packages its draft uses. Rejected size attempts or mass passes
+## (as derived here at another scale) are retired; the draft's packages and ids that existed before stay resolvable.
+func _setup_candidate_retirement(doc: Authoring, registered_before: PackedStringArray, block: Dictionary) -> void:
+	var kept_airframe := str(doc.definition().get("airframe_package", ""))
+	var kept_power := str(doc.definition().get("power_package", ""))
+	var created := PackedStringArray()
+	for id: String in Packages.derived_ids():
+		if not registered_before.has(id):
+			created.append(id)
+	check("setup keeps only the derived packages its draft uses", created.size() <= 2
+		and Array(created).all(func(id: String) -> bool: return id == kept_airframe or id == kept_power))
+	var airframe_base: Dictionary = PhoenixPhysics.parse_id(kept_airframe)
+	var power_base: Dictionary = PhoenixPhysics.parse_id(kept_power)
+	var snapshot := Packages.derived_ids()
+	var rejected: Dictionary = PhoenixPhysics.derive(block, str(airframe_base.get("base", "")), str(power_base.get("base", "")),
+		float(airframe_base.get("scale", 1.0)) * 1.07)
+	var rejected_airframe := str(rejected.get("airframe", ""))
+	var rejected_power := str(rejected.get("power", ""))
+	check("a rejected size derives new candidate packages", not rejected.is_empty() and not snapshot.has(rejected_airframe)
+		and Packages.airframe(rejected_airframe).ok and Packages.power(rejected_power).ok)
+	doc._retire_setup_candidates(snapshot)
+	var after := Packages.derived_ids()
+	check("the rejected candidates are retired", not after.has(rejected_airframe) and not after.has(rejected_power)
+		and not Packages.airframe(rejected_airframe).ok)
+	check("the draft's packages and every earlier id survive retirement", Packages.airframe(kept_airframe).ok
+		and Packages.power(kept_power).ok and Array(snapshot).all(func(id: String) -> bool: return after.has(id)))

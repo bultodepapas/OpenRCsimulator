@@ -328,6 +328,8 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 		gear = _landing_gear.duplicate(true), gear_estimated = _landing_gear_estimated}
 	var source_span := float(setup.get("source_span_m", 0.0))
 	var domain: Array = size_class.range if _airframe_package == size_class.airframe else []
+	# A36 O1: up to SETUP_SIZE_ATTEMPTS x 2 candidates are derived below; only those the draft keeps stay registered.
+	var registered_before := Packages.derived_ids()
 	for attempt: int in SETUP_SIZE_ATTEMPTS:
 		# A second pass re-derives the power for the mass the fitted equipment actually reaches when it is
 		# off the scaled source mass (small replicas cannot always be made that light).
@@ -419,13 +421,27 @@ func apply_clearview_setup(setup: Dictionary, expected_revision: int) -> Diction
 		_airframe_package = kept_airframe
 		_installation_proposal = kept_proposal
 		_touch()
+		_retire_setup_candidates(registered_before)
 		return chosen
+	_retire_setup_candidates(registered_before)
 	var bounds := placed_bounds()
 	return R.ok({scaled = units_value.is_empty() and owns_scale,
 		flown_span_m = float(bounds.max[1]) - float(bounds.min[1]) if not bounds.is_empty() else 0.0})
 
 
 const SETUP_SIZE_ATTEMPTS := 5
+
+
+## A36 O1: retire the derived packages this setup created but the draft does not reference (rejected sizes and mass
+## passes, or every candidate of a refused setup). Ids registered before the setup are never touched, so open drafts,
+## undo history and earlier documents keep theirs; a saved draft still re-derives its own through PhoenixPhysics.restore.
+func _retire_setup_candidates(registered_before: PackedStringArray) -> void:
+	var kept := var_to_str([definition(), _installation_proposal, _airframe_package, _power_package])
+	var stale: Array = []
+	for id: String in Packages.derived_ids():
+		if not registered_before.has(id) and not kept.contains(id):
+			stale.append(id)
+	Packages.retire_derived(stale)
 ## Relative difference between the fitted and the scaled source mass above which the power is re-derived.
 const FLYING_MASS_TOLERANCE := 0.05
 const PUSHER_GAP_M := 0.04

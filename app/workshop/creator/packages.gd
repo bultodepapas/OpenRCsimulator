@@ -85,6 +85,22 @@ static func register_derived(id: String, package: Dictionary) -> Dictionary:
 	return R.ok(id)
 
 
+## A36 O1: snapshot of the derived ids registered now, so an owner can tell which ids it created itself.
+static func derived_ids() -> PackedStringArray:
+	return PackedStringArray(_derived_packages.keys())
+
+
+## A36 O1: retire derived packages that their creating owner no longer uses. Only the owner that created an id (it was
+## absent from that owner's earlier snapshot) may retire it; ids already present belong to other drafts or history.
+## Returns the number of packages removed.
+static func retire_derived(ids: Array) -> int:
+	var removed := 0
+	for id: Variant in ids:
+		if typeof(id) == TYPE_STRING and _derived_packages.erase(id):
+			removed += 1
+	return removed
+
+
 static func _resolve(id: Variant, table: Dictionary, format: String, field: String, step: String) -> Dictionary:
 	if typeof(id) == TYPE_STRING and _derived_packages.has(id) and (_derived_packages[id] as Dictionary).get("format") == format:
 		return R.ok((_derived_packages[id] as Dictionary).duplicate(true))
