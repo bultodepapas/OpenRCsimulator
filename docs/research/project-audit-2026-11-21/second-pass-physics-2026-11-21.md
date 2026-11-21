@@ -24,6 +24,8 @@
 - [Standalone/legacy plant](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/physics/multirotor/plant.gd#L99-L125) likewise samples density for airframe drag but passes no density to [Rotor.loads](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/physics/multirotor/rotor.gd#L13-L42).
 - [Session](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/sim/multirotor/session.gd#L178-L185) admits an air start through **500 m** and [installs the actual environment on its plant](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/sim/multirotor/session.gd#L273-L291).
 
+**Weather scope:** stage density varies with height only when the user explicitly selects the *standard-column* atmosphere mode ([wind-field atmosphere implementation](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/physics/wind_field.gd#L188-L200)); the default/reference and custom uniform modes hold density constant with height. The discrepancy is still present whenever a custom uniform density differs from the static bench reference, and in standard-column mode as height changes. The altitude table below is specifically a **standard-column atmosphere counterfactual**, not a claim about the default weather or every admitted air start. The [Conditions configuration](https://github.com/bultodepapas/OpenRCsimulator/blob/31db53ca28d3ee8bf39cc1a3108f42a405896127/app/physics/wind_config.gd#L202-L210) exposes a standard-column preset.
+
 The dimensional static coefficient relation at fixed advance ratio and approximately constant Reynolds/Mach effects is
 
 \[
