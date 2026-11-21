@@ -26,7 +26,7 @@ The receiver snapshot uses only the service's public read paths (`status_report`
 
 | Tab | Content and source |
 | --- | --- |
-| Overview | Alerts, then data freshness per source (receiver, GitHub, GA4). Last 7 full UTC days against the 7 before: package downloads, website sessions, website download requests, repository views, new stars and telemetry batches, each with its change. Recent releases (days live, downloads, per day) and downloads by platform. Where people come from (website sources with download conversion; repository referrers) and top countries. 30-day charts of downloads (package and website requests) and interest (repository views and website sessions), with final releases marked |
+| Overview | Receiver alerts and freshness per source. Last seven full days in UTC for GitHub and the receiver and in the GA4 property zone for Website. Each sum shows coverage and compares periods with complete observations. Recent releases, platform downloads, referrals, countries and daily charts |
 | Players | Weekly insights per ISO week and release: frame cadence by GPU, pacing, resolution, OS/driver and vehicle; menu cadence; vehicle usage; errors; hardware and settings mix. Bars sorted by value, the grey combined row last |
 | Downloads | Package counters: total and platform share, latest release, last 7 days, increases per collection day, every release by Windows / macOS / Linux |
 | GitHub | Stars, forks, watchers, open issues; page views and unique visitors, clones and unique cloners per day (archived beyond GitHub's 14 days); stars over time; releases with dates and downloads; top referrers and popular pages (GitHub's 14-day window) |
@@ -35,7 +35,7 @@ The receiver snapshot uses only the service's public read paths (`status_report`
 
 **Alerts.** Critical: suspend-all, raw row past 48 h, `storage_unavailable`, a day with telemetry traffic never rolled up. Warning: rollup overdue (with the command and hours left), raw age near 48 h, suspended releases, `rejected:unapproved_release`, `rate_limited`, no batch in 24 h, a failed GitHub collection, counters older than 36 h.
 
-**Reading the numbers.** Player counts are session-day observations from consenting sessions, not people; FPS is a render-cadence estimate and VSync or an FPS cap limits it by design ([insights notes](../../services/telemetry/README.md#weekly-insights-telem-1617)). Downloads are cumulative GitHub counters including repeats and automation; per-day values are increases between collections. Clones are mostly automated (CI, mirrors). Stars over time count current stargazers by the day they starred; withdrawn stars disappear from GitHub's list. Alerts and "today" are as of the snapshot; the page shows its age and a banner once it is over an hour old.
+**Reading the numbers.** Player counts are consenting session-day observations, shown with their release. FPS is a render-cadence estimate limited by VSync or the FPS cap ([insights notes](../../services/telemetry/README.md#weekly-insights-telem-1617)). Cumulative GitHub downloads include repeats and automation. Daily increases use the UTC date of the later collection. Gaps and changed asset sets can make those increases partial. Clones are mostly automated. Historical stars use the date of starring for accounts that still star the repository. Public collection refreshes the current total and leaves the authenticated series dated separately. The dashboard shows snapshot age and warns after an hour.
 
 ## Website (GA4)
 
