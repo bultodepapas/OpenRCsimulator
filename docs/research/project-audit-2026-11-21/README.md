@@ -4,6 +4,10 @@ The [A36 original audit](../../../external%20Audits/physics-math-aero-audit-57ab
 
 The owner requested one GitHub branch containing every finding and continued physics, mathematical and aerodynamic improvement: `audit/physics-math-aero-2026-11-21`. Original artifacts below remain unchanged; implementation commits and later measurements must retain their own source identity.
 
+## Continued independent physics investigation (A36 R2)
+
+The [21 November second-pass physics and mathematical review](second-pass-physics-2026-11-21.md) adds two **source-confirmed** FPV defects: rotor aerodynamic coefficients failing to respond to the stage's own changing density (R2-F01), and a 90-degree Angle-heading reference seam near vertical pitch (R2-F02). The [portable independent equation probes](probes/physical_crosschecks.py) quantify both without claiming an application or Godot test. It also records a constructed blimp bus-power candidate (R2-I01) and separately quantifies already-known blimp buoyancy, FPV rotor inflow/ground effect, wing spanwise drag and turbine fuel limitations. No new runtime fix or physical calibration is claimed in R2. The original A36 findings and completed software gates below retain their distinct status.
+
 ## Original evidence
 
 | Artifact | Purpose |
