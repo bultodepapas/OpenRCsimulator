@@ -195,7 +195,7 @@ func flash(text: String, seconds := 4.0) -> void:
 	_message_until = Time.get_ticks_msec() / 1000.0 + seconds
 
 
-func update(t: Dictionary, input: Dictionary, camera_name: String) -> void:
+func update(t: Dictionary, input: Dictionary, camera_name: String, log_line := "") -> void:
 	if t.is_empty():
 		return
 	var battery: Dictionary = t.get("battery", {})
@@ -220,6 +220,8 @@ func update(t: Dictionary, input: Dictionary, camera_name: String) -> void:
 		"Vector  side %3.0f° / %3.0f°   stern %3.0f°" % [vectors[0], vectors[1], vectors[2]],
 		"Input %s  %s%s" % [str(input.get("source", "keyboard")), armed, ("  " + str(input.error)) if not str(input.get("error", "")).is_empty() else ""],
 	])
+	if not log_line.is_empty():
+		lines.append(log_line)
 	readout.text = "\n".join(lines)
 	if Time.get_ticks_msec() / 1000.0 > _message_until:
 		message.text = str(t.pause_reason) if t.paused and not menu_visible else ""

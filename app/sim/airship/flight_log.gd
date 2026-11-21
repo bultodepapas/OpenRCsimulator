@@ -19,6 +19,11 @@ const MAX_BYTES := 512 * 1024 * 1024
 const STATE := 13
 const STICKS := 4
 
+## A36 G3: emitted exactly once when a recording ends for any reason — pilot stop, automatic limit, reset, fault or
+## write failure (failed = true; the file then keeps a readable, incomplete prefix that inspect() reports). Owners
+## surface it during flight instead of relying on a later toggle.
+signal ended(reason: String, failed: bool)
+
 var recording := false
 var path := ""
 var note := ""
@@ -119,6 +124,7 @@ func stop(reason := "stopped") -> Error:
 	if failure.is_empty():
 		note = "Flight log saved: %s (%d ticks)" % [ProjectSettings.globalize_path(path), rows_written]
 		print(note)
+		ended.emit(reason, false)
 	return OK if failure.is_empty() else ERR_FILE_CANT_WRITE
 
 
@@ -235,6 +241,7 @@ func _failed(message: String, code: Error) -> Error:
 		_file.close()
 		_file = null
 	printerr(message)
+	ended.emit(message, true)
 	return code
 
 
