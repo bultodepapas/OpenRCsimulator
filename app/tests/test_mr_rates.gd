@@ -178,6 +178,23 @@ func _axis_independence() -> void:
 # --- BETAFLIGHT ----------------------------------------------------------------------------------------------------
 
 func _betaflight_family() -> void:
+	# A36 R7-F01: expo above 100 reverses partial-stick commands (e = 2 gives -75 deg/s at +0.5); it is refused on every
+	# axis instead of clipped, while expo 100 stays monotone in direction.
+	for axis_name: String in R.AXIS_NAMES:
+		for expo: int in [101, 200]:
+			var refused: Dictionary = _uniform("BETAFLIGHT", [100, 0, 0, 1998]).duplicate(true)
+			refused.axes[axis_name].expo = expo
+			var verdict: Dictionary = R.validate(refused)
+			_check("BETAFLIGHT %s expo %d is refused with an axis-specific error" % [axis_name, expo], not verdict.ok
+				and str(verdict.get("errors", [])).contains(axis_name) and str(verdict.get("errors", [])).contains("expo"),
+				str(verdict.get("errors", [])))
+	var hundred: Dictionary = _prepared(_uniform("BETAFLIGHT", [100, 0, 100, 1998]))
+	var keeps_sign := true
+	for step in 21:
+		var x: float = -1.0 + 0.1 * float(step)
+		var value: float = R.setpoint_dps(hundred, 0, x)
+		keeps_sign = keeps_sign and (x == 0.0 or signf(value) == signf(x) or absf(x) < 1.0e-9)
+	_check("BETAFLIGHT expo 100 never reverses the stick direction", keeps_sign)
 	var p: Dictionary = _prepared(_uniform("BETAFLIGHT", [100, 70, 0, 1998]))
 	var r: Array = _close_all(p, 0, [0.25, 0.5, 0.75, 1.0], [60.606061, 153.846154, 315.789474, 666.666667], DOC_TOL)
 	_check("BETAFLIGHT r=1 s=0.7 e=0: FPV/03 §1 vector 60.606061/153.846154/315.789474/666.666667", r[0], r[1])
