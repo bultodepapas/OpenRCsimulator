@@ -212,6 +212,40 @@ class FrameWatchTests(unittest.TestCase):
         self.assertTrue(all(a.get("lean") and a.get("passive") for a in polls))
         self.assertTrue(all("epoch" in a for a in polls[1:]))
 
+    def test_owner_stop_polls_final_rows_and_retains_partial_incident(self):
+        bridge = FakeBridge(steady(0.1) + [(80_000, "flight")] + steady(3))
+        watcher = fw.Watcher(fw.WatchPolicy(duration_s=5, snapshot_rows=0), bridge.fetch,
+                             Path(self.tmp) / "owned", now=bridge.now, sleep=bridge.sleep)
+        arms = []
+        result = watcher.run(should_stop=lambda: bridge.now() >= 1.0, on_armed=arms.append)
+        self.assertEqual(result["outcome"], "owner_stopped")
+        self.assertEqual(result["final_poll"], "complete")
+        self.assertEqual(len(arms), 1)
+        self.assertEqual(arms[0]["identity"]["launch_instance"], bridge.launch)
+        self.assertEqual(result["segments"][0]["overall"]["frames"], bridge.total)
+        self.assertEqual(result["incidents"][0]["outcome"], "partial")
+        self.assertTrue((Path(self.tmp) / "owned" / "watch.json").is_file())
+
+    def test_owner_stop_reports_failed_final_poll(self):
+        bridge = FakeBridge(steady(3))
+        stopping = [False]
+
+        def fetch(cmd, args, timeout):
+            if stopping[0] and cmd == "frames":
+                raise TimeoutError("final poll unavailable")
+            return bridge.fetch(cmd, args, timeout)
+
+        def should_stop():
+            stopping[0] = bridge.now() >= 1.0
+            return stopping[0]
+
+        watcher = fw.Watcher(fw.WatchPolicy(duration_s=5, snapshot_rows=0), fetch,
+                             Path(self.tmp) / "owned", now=bridge.now, sleep=bridge.sleep)
+        result = watcher.run(should_stop=should_stop)
+        self.assertEqual(result["outcome"], "owner_stopped")
+        self.assertEqual(result["final_poll"], "failed")
+        self.assertIn("incomplete", result["error"])
+
     def test_single_stall_opens_one_incident_with_lead_and_recovery(self):
         frames = steady(15) + [(80_000, "flight")] + steady(20)
         summary, _, out = watch(frames, tmp=self.tmp)

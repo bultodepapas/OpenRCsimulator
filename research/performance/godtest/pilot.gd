@@ -6,7 +6,8 @@ const M := preload("res://physics/math3d.gd")
 const Airdata := preload("res://ai/companions/observation_airdata.gd")
 const Takeoff := preload("res://scenery/takeoff_pilot.gd")
 const InputAdapter := preload("../sustained_input.gd")
-const PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
+const RunwayCircuit := preload("runway_circuit.gd")
+const PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
 const STIK := "jensen-das-ugly-stik-60"
 const PROFILE := "experimental-god-stik-v1"
 
@@ -46,6 +47,7 @@ var contact_active := false
 var maximum_contact_sink := 0.0
 var minimum_runway_margin := 1.0e30
 var menu_release_pending := false
+var runway_circuit: RefCounted
 
 
 func release_for_menu() -> void:
@@ -84,7 +86,7 @@ func begin_phase(name_value: String) -> Dictionary:
 	var stock := str(config.get("aircraft", "")) == STIK
 	if name_value in ["takeoff", "roll", "large_loop", "approach", "landing", "stop"] and not stock:
 		return {ok = false, reason = "maneuver profile not calibrated for this aircraft; basic navigation is experimental"}
-	if name_value in ["takeoff", "approach", "landing", "stop"] and runway.is_empty():
+	if name_value in ["takeoff", "runway_circuit", "approach", "landing", "stop"] and runway.is_empty():
 		return {ok = false, reason = "runway unavailable"}
 	if name_value == "farmhouse" and not landmarks.has("farm-farmhouse"):
 		return {ok = false, reason = "farmhouse landmark unavailable"}
@@ -107,6 +109,10 @@ func begin_phase(name_value: String) -> Dictionary:
 	elif name_value == "right_circuit":
 		orbit_north = state[0] - sin(euler[0]) * orbit_radius
 		orbit_east = state[1] + cos(euler[0]) * orbit_radius
+	elif name_value == "runway_circuit":
+		runway_circuit = RunwayCircuit.new()
+		var accepted: Dictionary = runway_circuit.configure(runway, target_speed)
+		if not accepted.get("ok", false): return accepted
 	elif name_value == "approach": approach_stage = 0
 	return {ok = true, profile = PROFILE, experimental = true}
 
@@ -184,6 +190,14 @@ func _update(dt: float) -> void:
 		heading = atan2(de, dn) + PI / 2.0 + atan2(radius - orbit_radius, orbit_radius)
 		packet = _guidance(state, euler, velocity, wind, speed, heading, altitude_target, speed_target, agl)
 		done = heading_rotation >= TAU - 0.15 and elapsed > (float(config.get("sample_s", 1800)) if str(config.get("id", "")) == "soak" else 10.0)
+	elif phase == "runway_circuit":
+		heading = runway_circuit.course(state[0], state[1])
+		packet = _guidance(state, euler, velocity, wind, speed, heading, altitude_target, speed_target, agl)
+		var observed: Dictionary = runway_circuit.observe(state[0], state[1], agl, session.sim.tick, session.sim.time())
+		done = observed.complete
+		if observed.failed:
+			failed = true
+			reason = str(observed.reason)
 	elif phase == "roll":
 		rotation += state[10] * dt
 		packet = _guidance(state, euler, velocity, wind, speed, target_heading, maxf(target_agl, 75.0), target_speed * 1.1, agl)
@@ -277,6 +291,8 @@ func _update(dt: float) -> void:
 		pilot_updates = pilot_updates, saturated_updates = saturated_updates, pilot_usec = pilot_usec,
 		touchdown = touchdown_data.duplicate(), contact_episodes = contact_episodes,
 		maximum_contact_sink_mps = maximum_contact_sink, minimum_wheel_runway_margin_m = minimum_runway_margin if touchdown else null}
+	if phase == "runway_circuit" and runway_circuit != null:
+		telemetry.runway_circuit = runway_circuit.receipt()
 
 
 func _guidance(s: PackedFloat64Array, euler: PackedFloat64Array, velocity: PackedFloat64Array, wind: PackedFloat64Array, speed: float, heading: float, agl_target: float, speed_target: float, agl: float, approach := false) -> Dictionary:

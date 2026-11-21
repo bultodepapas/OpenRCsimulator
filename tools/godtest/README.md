@@ -5,6 +5,25 @@ Home return. The [implementation plan](../../docs/plans/god-test.md) owns remain
 work, step status and evidence. The pilot is experimental; a completed command is
 not physical validation or a qualified hardware result.
 
+For the repeatable **Ugly Stik → Avanti jet → Corsair** runway circuit and menu
+campaign on MacBook, Linux GPU and Windows, use the
+[three-aircraft performance tour](PERFORMANCE_TOUR.md). It integrates the existing
+continuous stutter watcher, CPU/RSS sampler, per-device GPU observations and a
+verified suite report. The same guide owns hardware prerequisites and limits.
+
+The owner's [planned scenic/crash revision, GOD-12-R2](../../docs/plans/god-test.md#4a-planned-scenic-and-crash-tour)
+adds low flight after runway takeoff, one/two same-flight circuits, a horizontal
+roll, intentional impact/aftermath and settings-preserving menu browsing.
+It is not yet implemented; the current CLI and its evidence remain V1.
+
+The [independent audit](../../docs/research/god-test/2026-11-20-plan-audit.md) also
+records existing execution and reporting gaps. Read the tour guide's
+[managed-host route](PERFORMANCE_TOUR.md#managed-host-admission) and
+[verification limits](PERFORMANCE_TOUR.md#current-verification-limits). The
+[measurement follow-up](../../docs/research/god-test/2026-11-21-measurement-hardening.md)
+now enforces requested rendering evidence, but exit zero still does not mean
+performance targets or target hardware passed; the comparator remains exploratory.
+
 ## Commands
 
 From the repository root, with the pinned Godot editor and prepared imports:
@@ -24,6 +43,8 @@ python tools/godtest/godtest.py memory --cycles 50
 python tools/godtest/godtest.py soak --minutes 30
 python tools/godtest/godtest.py fleet --dry-run
 python tools/godtest/godtest.py matrix --dry-run
+python tools/godtest/godtest.py performance-tour --dry-run --repeats 3
+python tools/godtest/godtest.py performance-tour --repeats 3 --out tmp/performance-tour/baseline-01
 python tools/godtest/godtest.py report tmp/godtest/<run-id>
 python tools/godtest/godtest.py resume tmp/godtest/<suite-id> --out tmp/godtest/<fresh-retry-id>
 python tools/godtest/godtest.py compare --baseline <run-a> --candidate <run-b> --phase loading
@@ -73,13 +94,20 @@ project copy. Keep the referenced source directory intact. `resume` keeps valid
 cases from a retained suite index and retries failed cases against their original
 frozen inputs, preserving the prior attempts and instrumentation choice. A retry
 uses the current external supervisor; its identity is recorded separately.
+Tour resume is refused as a standalone command on enrolled hosts. A missing
+execution/shutdown receipt or changed host/boot may require a fresh campaign;
+manual reconciliation is not currently an accepted resume-receipt format. Retain
+all source-suite ancestors and failed attempts at their recorded paths. Selected
+case revalidation does not prove every prior attempt artifact remains present.
 Preparation checks free space with a reserve before copying. Preparation remains
 outside timing. Hashing/copying warms OS caches: these are new
 process runs with unknown OS-cache state, not OS-cold measurements.
 
-The existing debug launcher owns the process/port and redirects its profile under
-the run. Runtime refuses a user-data directory outside it. It seeds fresh run-only
-windowed/native-resolution preferences, disables update checks and marks the first
+The existing debug launcher owns the process/port. Linux and Windows redirect the
+profile under the run and refuse a user-data directory outside it; macOS verifies
+the unique Application Support profile described in the [tour guide](PERFORMANCE_TOUR.md#target-machines-and-display-contract).
+It seeds fresh run-only display preferences (windowed by default, with native
+3D reconstruction), disables update checks and marks the first
 flight hint seen. Normal intro, Home, Fly, menu pause/continue, weather and lighting
 Apply routes remain in use. Live radio selection is changed through the ordinary
 controller service to keyboard. Crash auto-restart is disabled for visible attempt
@@ -87,8 +115,9 @@ boundaries and recorded evidence; no physical law or state trajectory is rewritt
 
 The launch adds no app user arguments. `OPENRC_GODTEST_CONFIG` activates a debug-only
 observer from Startup; ordinary launches allocate no benchmark observer. The source
-helpers currently require a source/debug application. Exported release and macOS
-profile-isolation adapters are pending and are not represented as qualified modes.
+helpers require a source/debug application. macOS uses a verified private launch
+copy and a unique project-name profile, with its own launch receipt; native Mac
+hardware qualification remains separate. Exported release adapters are pending.
 
 ## Measurements and reports
 
@@ -113,6 +142,10 @@ ineligibility. The reducer verifies stream sequence, clock continuity, metric sh
 counts, hashes and trailer. Headless data cannot qualify graphics. Requested versus
 actual window/viewport dimensions, display/GPU/backend and focus/draw observations
 remain separate from physical monitor presentation, which is not measured.
+The original requested manifest is required: a resolved manifest cannot turn a
+graphics request into headless execution. Every requested phase needs consistent
+raw draw/drawability observations and runtime receipts. Phase IDs bind cycle,
+index and name. Reducer identities now include the acceptance helper source hashes.
 
 Offline phase reports also show mean callback FPS, time occupied by slow intervals,
 and consecutive slow-run counts/durations. They reuse the existing fixed strict
@@ -127,6 +160,14 @@ from the verified stream; supplied summary values cannot replace it. A completed
 requested phase without verified samples is ineligible. Its statistics and pacing
 targets remain unavailable, preventing missing data from appearing as a zero-ms pass.
 The existing `report` command rebuilds these views from retained original artifacts.
+
+Active-flight target rows in child and suite JSON/HTML include phase-total pace,
+worst/fastest supported one-second pace and maximum observed accumulated lag.
+Tick-derived local pace keeps slowdown/catch-up visible when the total ratio is one.
+Missing channels, holds, precision limits and unsupported windows cannot become a
+positive local target; unscored partial tails remain inconclusive. The full support
+rules are in the [tour metrics contract](PERFORMANCE_TOUR.md#metrics-evidence-and-verdicts).
+These are exploratory screens, not target-hardware or statistical qualification.
 
 Debug bridge snapshots have a separate [offline episode report](../debug/README.md#offline-slowdown-analysis-pt1h-r15-s3a)
 with target-plus-tolerance flags and interval-start route samples. Neither that
@@ -143,8 +184,15 @@ reuse the pinned existing sampler:
 ```
 
 See [resource setup and limits](../godot/README.md#process-ram-io-and-storage-pt1h-r4).
-Resource sampling begins after bridge readiness and cannot prove full-startup RSS
-peaks. No screenshots or video readback occur during the timing run.
+Resource sampling covers independently bracketed observer windows after bridge
+readiness and setup; it cannot prove full-startup RSS peaks or a prompt observer
+start from the bridge boundary. No screenshots or video readback occur during the
+timing run. CPU required fields and collection state are checked separately from
+first/inter-sample/tail gaps and owner-clock binding. GPU timing is recomputed from
+raw query brackets under the fixed sampling policy; both windows must follow the
+runner lifecycle. Old artifacts without owner receipts cannot claim complete
+monitoring. Engine phases and host clocks are still not joined automatically;
+per-phase resources and subsecond crash/menu cost remain unqualified.
 
 The comparator currently admits matched complete transition phases only. Full
 adaptive-flight geometric equivalence, fixed input-tape rendered replay, repeated
@@ -160,5 +208,7 @@ python tools/godot/run_checked.py --timeout 60 --require-text 'GOD_FRAME_TESTS: 
 ```
 
 Runtime changes also use the affected existing startup/frame/controller checks.
-Rendered campaigns run serially on named real hardware, at verified 1080p first,
-without competing GPU jobs. Follow the owning performance gates and retain failures.
+Rendered campaigns run serially on named real hardware, at verified 1080p first;
+Apple Silicon Retina uses the native-panel exception in the
+[resolution policy](../../AGENTS.md#display-resolution-priorities). Run without
+competing GPU jobs, follow the owning performance gates and retain failures.

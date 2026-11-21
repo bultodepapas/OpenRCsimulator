@@ -1,0 +1,113 @@
+{
+  "format": "openrc-godtest-hardening-verification-v1",
+  "date": "2026-11-21",
+  "owning_steps": [
+    "GOD-12-R2f",
+    "GOD-12-R2g",
+    "GOD-13-R2"
+  ],
+  "base_commit": "a9c3950fbbfcc09607f207e509ba4c992bce98e3",
+  "branch": "perf/three-aircraft-performance-cycle-2026-11-20",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.12.14"
+  },
+  "checks": [
+    {
+      "command": "python3 -B -m unittest discover -s tools/godtest -p 'test_*.py'",
+      "exit_code": 0,
+      "tests": 204,
+      "result": "passed"
+    },
+    {
+      "command": "python3 -B -m unittest tools.testqueue.test_integration tools.testqueue.test_adapter_completeness tools.testqueue.test_contracts tools.testqueue.test_request_limits",
+      "exit_code": 0,
+      "tests": 49,
+      "result": "passed"
+    },
+    {
+      "command": "python3 -B tools/godtest/godtest.py performance-tour --repeats 3 --dry-run",
+      "exit_code": 0,
+      "case_count": 9,
+      "scenario_timeout_sum_seconds": 8100,
+      "managed_admission": {
+        "status": "fits_queue_limit",
+        "execution_budget_seconds": 14924
+      }
+    },
+    {
+      "check": "real ResourceSampler on owned Python process",
+      "sample_count": 3,
+      "checks": {
+        "required_fields": "complete",
+        "timing": "complete",
+        "owner_clock": "complete"
+      },
+      "scope": "real ResourceSampler on this owned Python process; no simulator, GPU or target-hardware performance claim"
+    },
+    {
+      "check": "changed-document links and source verification",
+      "added_relative_links_checked": 28,
+      "recorded_source_hashes_verified": 36,
+      "staged_diff_check": "passed"
+    }
+  ],
+  "source_sha256": {
+    "tools/godot/resource_samples.py": "5dc82ef9c0875d34addc6a446b58cf3a83b619b8dfaa8d778ad008cf61069a03",
+    "tools/godtest/admission.py": "b61efa942e2424b1675a87e293a0f68486e6f2d29ff8d3282068452e73c657c7",
+    "tools/godtest/analysis.py": "06ef1bbd51a66ecac8b3e124fe556b3a6f4af617480671226d694cd5c8b9bce6",
+    "tools/godtest/catalog.py": "9e6a72186329086f94d8188a84ccfe194e8e0016cffa5a5c042af4a048ebe656",
+    "tools/godtest/frame_monitor.py": "128db2bf44109fcbefcc70d466c5c15f809030e7035c3dbbdbf6110190bdeccd",
+    "tools/godtest/godtest.py": "2cd1fafa6b08ec21381410e9f99dc906197988a1b50dca6280ca4d306f89ee5d",
+    "tools/godtest/gpu_coverage.py": "d6ff2baf1760094d892c7fcc92f6e97908aff4866313f2e521afa913067b5879",
+    "tools/godtest/hardware.py": "b1470f0c990c6c273c3915f0ae2e3789a25b12b8619cdc89166f4311d7bad4e6",
+    "tools/godtest/isolation.py": "2ce2368119bf11b77a511d819b71cfedd49838d9bac56522efc05a5803ca63c8",
+    "tools/godtest/pace_windows.py": "cc1eb6269346eb682161f8b8efd56a1cf7cfdf9b77c34e84dba11efc2e60884e",
+    "tools/godtest/render_evidence.py": "20d38d6939cbce38c2db91c45cfbb61e2c51556ff6a327d4798880de6f49560f",
+    "tools/godtest/resource_coverage.py": "22fd747bc63ed491b2faff56bf5a1d67bff6598e7078a8ce99896fbfaf2ecde3",
+    "tools/godtest/runner.py": "61cc8ecc9ffbf2ed89a59580943bdbdc0b954d0b245fdebc889addaba5d7b534",
+    "tools/godtest/test_admission.py": "984db86cc318f985f60bbd922ba4d8acdff2bd37222b485188b53c4a62241459",
+    "tools/godtest/test_frame_monitor.py": "3a91960e4f7d2c58c3e48c119092650a7660eb256e6cdb2e336f2252133e1bb3",
+    "tools/godtest/test_godtest.py": "11b412fe8ea34e69939127c5680fdffefab287ac42a1218b45f694ba9ec9f9a6",
+    "tools/godtest/test_gpu_coverage.py": "6e0d3b80d157ed0f3d76b2d80124827d419b55cbb94bc29ae1fc88f1239bb293",
+    "tools/godtest/test_hardware.py": "676277e7fa540b9473731b3840454783859fa938d0b2128dcc4ecca61e0268fd",
+    "tools/godtest/test_local_pace_report.py": "ddacf5a13a165d1c39263ef7b4bc9a3545368f97e077c1a515bacf85701b3184",
+    "tools/godtest/test_managed_admission.py": "2c17161b17a7a6f0097d22ee23f0d1b84b1f484345cd2eca18f0e85292b48c1b",
+    "tools/godtest/test_monitoring.py": "fed967abe355c92d9a871035a8e5efda15ee34911c802a45fd95372941394c69",
+    "tools/godtest/test_pace_windows.py": "f95ae03e2c32c48a8d9289b259fb364e058c66dfa8b902b2154d6605d3bae3c5",
+    "tools/godtest/test_platform.py": "66905b08d620f417181fd865a6451c207507b60c17348e684e251bfb0672de82",
+    "tools/godtest/test_render_evidence.py": "199bc56bc1598324f61fe6b50703c581f9ede892b8190f9e28e2197f9894f99b",
+    "tools/godtest/test_rendering_evidence.py": "26155a160c9b9fab8c6fb0e4c7e6eb0f77c1a2609bef720e321759e3a26755d7",
+    "tools/godtest/test_resource_coverage.py": "cadec019ebfdeea59f0665033b1a11401e499e6e879240ae810647c0af046716",
+    "tools/godtest/test_resume_tour.py": "4bb4054ad38ae09e43652625365b6c56bdddb7b8296c1cb87cd03b0cbef034db",
+    "tools/godtest/test_tour_report.py": "c85b647b9ebff36fd012959209495ee5fc3f279312b0faf5b507efc2db693771",
+    "tools/godtest/tour_report.py": "c895c14ce4edf6f4b7d1eae4a98081cf87a5f1d2ddb683924836b2c36ea461fe",
+    "tools/testqueue/adapter.py": "0935904a464d537737fd27f354fe53d96fd59b243a6c0439ffab57105cf20b1c",
+    "tools/testqueue/integration.py": "171195b0536fd944c9236a512dec9b7675ab92d40fa586d86e7c6908b92a1dec",
+    "tools/testqueue/presets.py": "030dd9d534428f4eb92fd94961dd5a139379b2c9d6c4ce522df274cee9b3e7e1",
+    "tools/testqueue/test_adapter_completeness.py": "678ecdc47d35af7a68934ac35e12e2ff33cab3315bbc9b732694c97c62933dea",
+    "tools/testqueue/test_contracts.py": "1d6e3872993a7ec455bb350d33112dc10a67ba429e4a8ff714ed4b4fd7bcb686",
+    "tools/testqueue/test_integration.py": "bd7a7b65ed7119261c9a491ce78651050e4528d8de7ee0ee116b0feb63e74d6d",
+    "tools/testqueue/test_request_limits.py": "e0cf886abbfb99de183309b75fc5aa1218cfbb1317bfe2ec514df77b1c571eda"
+  },
+  "scope": {
+    "godot_launches": 0,
+    "gpu_queries": 0,
+    "remote_worker_launches": 0,
+    "hosted_ci_result_claimed": false,
+    "macbook_campaign": "not_run",
+    "linux_gpu_campaign": "not_run",
+    "windows_campaign": "not_run",
+    "v2_scenic_crash_sequence": "not_implemented",
+    "historical_evidence_rewritten": false
+  },
+  "limitations": [
+    "Generic direct preset submissions do not enforce the expanded-plan minimum lease.",
+    "Queue waiting and pre-adapter preparation are outside the calculated execution lease; filesystem/reduction reserves are heuristic.",
+    "CPU/GPU owner windows do not join engine phase clocks or prove prompt observation from bridge readiness.",
+    "GPU renderer-device and physical display/host binding remains unverified.",
+    "Conservative post-stop query policy can reject sequential backend polling.",
+    "Local pace windows and short-event statistics remain exploratory; partial tails cannot receive a positive local target."
+  ]
+}

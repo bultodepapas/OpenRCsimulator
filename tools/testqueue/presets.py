@@ -77,7 +77,7 @@ def validate(preset: str, options: dict) -> dict:
     if preset == "godtest" and any(arg in {"--godot", "--out", "--snapshot"} or arg.startswith(("--godot=", "--out=", "--snapshot=")) for arg in argv):
         raise ValueError("GOD TEST output, snapshot and engine belong to the worker")
     if preset == "godtest":
-        if not argv or argv[0] not in {"run", "all", "memory", "soak", "fleet", "matrix"}:
+        if not argv or argv[0] not in {"run", "all", "memory", "soak", "fleet", "matrix", "performance-tour"}:
             raise ValueError("GOD TEST preset requires an execution command")
         if any(arg == "--manifest" or arg.startswith("--manifest=") for arg in argv):
             raise ValueError("external GOD TEST manifests must first be bound into a reviewed preset")
