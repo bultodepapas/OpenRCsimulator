@@ -949,8 +949,10 @@ func _propeller_invariants() -> void:
 	for negative_cp: bool in [false, true]:
 		var base: Dictionary = selected.value.duplicate(true)
 		if negative_cp:
-			# An interior windmilling minimum: the loader, not the last row, owns the Cp floor.
-			base.propeller.cp_table.value[3][1] = -0.03
+			# An interior windmilling minimum: the loader, not the last row, owns the Cp floor. A36 R6-G01: the branch
+			# is energy-consistent (Cp >= J·Ct with Ct < 0), so admission's propeller power bound accepts it.
+			base.propeller.ct_table.value.append_array([[0.85, -0.08], [0.95, -0.11]])
+			base.propeller.cp_table.value.append_array([[0.85, -0.03], [0.95, -0.02]])
 		block.propeller.count = 1
 		var one: Dictionary = PhoenixPhysics._power_at(base, block, "invariant-one-%s" % negative_cp, 1.0, 1.0)
 		var first := _loaded_power(one)

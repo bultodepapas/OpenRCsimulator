@@ -30,6 +30,7 @@ const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
 const FuelProperties := preload("res://physics/fuel_properties.gd")
 const MassInventory := preload("res://physics/mass_inventory.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const PropellerPowerBound := preload("res://physics/propeller_power_bound.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -1254,12 +1255,19 @@ static func _propulsion(errors: PackedStringArray, node: Variant, domain: Dictio
 		errors.append("propulsion.propeller.cp_table: static Cp must be positive (a propeller that absorbs power)")
 	var out := { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp, rotor_inertia = rotor }
 	# Optional (P51-06/12): each absent key leaves the D5 behaviour bit for bit.
+	var cp_floor := 0.0
 	if e.has("shaft"):
 		out.shaft = _shaft(errors, e.get("shaft"), rotor)
 		var cp_min := 0.0
 		for i in range(1, cp.size(), 2):
 			cp_min = minf(cp_min, cp[i])
 		out.cp_min = cp_min
+		cp_floor = cp_min
+	# A36 R6-G01: the runtime Ct/Cp law must not deliver more thrust work than shaft power at any advance ratio.
+	if ct.size() >= 4 and cp.size() >= 4:
+		var power_error := PropellerPowerBound.error("propulsion.propeller.cp_table", ct, cp, cp_floor)
+		if not power_error.is_empty():
+			errors.append(power_error)
 	if pr.has("thrust_angles"):
 		var angles = _dq(domain, errors, "propulsion.propeller.thrust_angles", pr.get("thrust_angles"), "deg", -10.0, 10.0, 2)
 		if angles != null:
@@ -1385,6 +1393,11 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		cp_min = minf(cp_min, cp[i])
 	if cp_min < 0.0:
 		out.cp_min = cp_min
+	# A36 R6-G01: the runtime Ct/Cp law must not deliver more thrust work than shaft power at any advance ratio.
+	var power_error := PropellerPowerBound.error("propulsion.propeller.cp_table", ct, cp, cp_min)
+	if not power_error.is_empty():
+		errors.append(power_error)
+		return {}
 	return out
 
 
