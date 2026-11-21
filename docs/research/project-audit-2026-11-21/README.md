@@ -112,6 +112,8 @@ The ZIP contains no repository source files. Supply the original checkout and of
 | R7-F01 / FPV rates | BETAFLIGHT expo above 100 reverses partial stick | Implemented: BETAFLIGHT expo domain 0..100, refused per axis (no clipping); stored profiles above 100 are refused on load (`test_mr_rates`) |
 | R7-F02 / FPV motor | Motor admitted beyond the 240 Hz step | Implemented: plant refuses h·λ > 0.5 with λ = (1/(R·Kv²) + 2·kQ·Ωmax)/J; stock 0.197, R7 motor 11.85 (`test_mr_motor_step`). Common-mode/contact stiffness is not covered by this necessary bound |
 | R7-G01 / FPV Angle | Per-axis or cone tilt limit | Decided: per-axis Euler limits, documented in the controller (full diagonal 70.79° at 55°); no behavior change |
+| R8-F01 / HELI skids | Contact rotation outside the RK4 step | Implemented: skid admission also bounds each axis's contact rotation, sqrt(4k·r²/J)/240 ≤ 0.5 and 4c·r²/(J·240) ≤ 1 with the largest lever arm; stock X-Cell and HX-700 admitted, ±0.5/±1 m skids refused (`test_heli_skid_rotation`). Coupled translation/rotation/bristle modes are bounded per axis, not solved exactly |
+| R8-G01 / HELI arming | Premix versus postmix arming collective | Decided: arming requires both the stick pickup and the collective commanded to the rotor within 1°; an unavailable evaluation refuses (`test_heli_arming_collective`) |
 | CI H6 | Bare transcendental calls | Fixed in `hull_contact.gd` and the multirotor session (bit-identical) |
 
 ## Extension sequence and gates
