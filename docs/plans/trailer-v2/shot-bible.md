@@ -1,11 +1,11 @@
-# Trailer 2.0 — shot bible, Revision 4
+# Trailer 2.0 — shot bible, Revision 5
 
-**Authority:** [R4 screenplay](cinematic-script-r4.md); the [150-second storyboard](storyboard-150s.md) owns exact timing, source classes and all 13 Home selections.
-**Status:** composition proposals, source conditions and future acceptance. No R4 shots have been captured or examined. Camera descriptions specify the desired image, not a selected software package or a guaranteed player camera.
+**Authority:** [R5 shooting script](cinematic-script-r5.md); the [150-second storyboard](storyboard-150s.md) owns exact timing, source classes and all 13 Home selections.
+**Status:** composition proposals, source conditions and future acceptance. No R5 proof takes have been captured or examined. The [numeric plan](shot-plan-r5.json) specifies proposed positions and exact source-bound casting. Camera descriptions specify the desired image, not a selected software package or a guaranteed player camera.
 
 ## Hero shot cards
 
-Lens values describe an approximate full-frame-equivalent feeling, not measured game FOV. G, U and P are the storyboard's proposed gameplay, genuine non-flight UI, and cinematic/inspection classes. All durations are timeline targets; setup and source-media in/out remain to be established.
+Lens values describe an approximate full-frame-equivalent feeling, not measured game FOV. G, U and P are the storyboard's proposed gameplay, genuine non-flight UI, and cinematic/inspection classes. All durations are timeline targets. R5 specifies setup and first visible state; actual source-media in/out remain to be established. Numeric camera FOV in R5 is separate from the approximate lens language below.
 
 | Shot / duration | Purpose, source and action | Camera, anchor and sound | Failure and repair |
 | --- | --- | --- | --- |
@@ -25,43 +25,46 @@ Lens values describe an approximate full-frame-equivalent feeling, not measured 
 | R4-29 / 4 s | **Storm / G.** A recognizable airplane crosses a real flashing cloud bank in a separate ordinary flight. | Aircraft stays large against the cloud. Select an actual flash; a bolt is a bonus only if recorded. | No added lightning, traversable-cloud promise or claimed rain aerodynamics. Rain-on-lens has a separate Field Notes shot. |
 | R4-30…31 / 8 s | **Smoke and night / G.** Extra makes a warm, smoke-trailing bank; Turbo Lumber passes in readable night or blue-hour light. | One principal arc per take; preserve actual smoke and light colours. Moon, field lights and enabled campfire may enrich the Lumber shot without hiding it. | Smoke/profile and night lights require real support. If the body or details cannot be seen, revise the take; Field Notes holds separate environmental details. No campfire smoke is promised. |
 | R4-32…34 / 7 s | **Ground Physics Lab / G–U–G.** Real baseline Bisonte bump response, paused setting/application excerpt, then a separate changed-setting run. | Same bump, comparable camera/input and readable **BASELINE / CHANGED SETUP** labels. Use the actual suspension response and electric sound. | Actual session setup/restart time is omitted; no live in-air slider or guaranteed improvement. If the result does not visibly differ, do not claim a comparison has passed. |
-| R4-35…38 / 9 s | **Scale / U–G–P.** Real Workshop control and giant/mini .61 glow Stick trials lead into a same-depth cinematic trio. | Match landmark, camera and distance for real trials; establish all three sizes in the staged comparison. Approximate wingspans are 7.62 m / 1.52 m / 15 cm. | A tiny unreadable aircraft or misleading depth fails. Keep **CINEMATIC SIZE COMPARISON** throughout the trio; do not imply simultaneous interactive flight. |
+| R4-35…38 / 9 s | **Scale / U–G–P.** Real Workshop control and giant/mini .61 glow Stick trials lead into a same-depth cinematic trio. | Keep recognizable field context and size labels; use a closer camera for the tiny trial. Only the disclosed trio holds equal depth. Approximate wingspans are 7.62 m / 1.52 m / 15 cm. | A tiny unreadable aircraft or misleading depth fails. Keep **CINEMATIC SIZE COMPARISON** throughout the trio; do not imply simultaneous interactive flight. |
 | R4-39 / 10 s | **Corsair signature / P.** One continuous eased 360-degree camera move presents the full 13-stock-scheme editorial cycle, ending on the lake livery. | ~40–65 mm feel; stable generous centre/scale, pose, geometry, light and camera path. Hold **LIVERY SHOWCASE**; do not flash individual names. | Reject a broken axis, incompatible geometry/gear state or skipped scheme. If the full move needs longer, explicitly retime another feature; no unallocated reserve exists. |
-| R4-40 / 6 s | **Lake payoff / G.** Final orbit livery crosses above the lake for six uninterrupted seconds. | Low shore three-quarter/side, ~50–85 mm feel; keep plane and shoreline in view, plus its actual reflection if qualified. Radial engine and water-side ambience remain. | Specific Corsair reflection needs real proof. Preserve a genuine unmirrored lake pass if it fails; never synthesize a mirror. |
+| R4-40 / 6 s | **Lake payoff / G.** Coastal Three Tone holds for six uninterrupted seconds of shoreline approach, water crossing and exit; the planned water portion is about 3.23 s at nominal speed. | Low shore three-quarter/side, ~50–85 mm feel; keep plane and shoreline in view, plus its actual reflection if qualified. Radial engine and water-side ambience remain. | Specific Corsair reflection needs real proof. Preserve a genuine unmirrored lake pass if it fails; never synthesize a mirror. |
 | R4-41…43 / 15 s | **Imported aircraft / U–G.** Two seconds genuine Creator introduction; nine Phoenix previews in five seconds; nine ClearView previews in five; last previewed model in a three-second eligible trial. | Use stable, large three-quarter real Creator previews. Each source block has a one-second leader and eight half-second cuts; the persistent source label replaces rapid names. Real flight sound enters on the payoff. | No generated substitute, foreign-simulator footage or repaint-only padding. Match final model/skin into an actual qualified trial; otherwise apply the [import showcase](import-showcase.md) source-reorder or preview-only fallback and revise copy. A preview is not flight eligibility; the 300+ count is unsubstantiated. |
 | R4-44 / 5 s | **Bisonte shore / G.** The electric truck rolls from mud into a proven shallow route, with real wheel contact and modest droplets/rings where triggered. | Low three-quarter view keeps front tyres and waterline visible; retain actual electric, tyre and splash sounds where present. | Initial staging checks do not certify an entire crossing. No guaranteed large splash, deep-water performance or lens spray. |
 | R4-45 / 5 s | **Invitation / E.** Settled logo, PLAY FREE, verified official destination and accurate product status. | Clean background and quiet resolved score; allow the full card to be read. | Do not invent a shortened URL or unverified release-status claim. |
 
-The lake is a second subject, not empty background. The prior low-shore height idea (~0.4–1.5 m above the water plane) is a composition exploration, not a flight instruction. Select actual clearance and framing only after proof.
+The lake is a second subject. R5 proposes eastbound N128, E55→193, D−2.55: nominally 3 m above the mean water plane. The north-bank camera at N145/E125/D−1 produces right-to-left screen travel. The source polygon gives approximately 3.23 seconds over water within the six-second approach/crossing/exit at nominal 23 m/s. Rehearsal must establish actual clearance, framing and speed. See the [blocking map](diagrams/r5-lake-blocking.svg).
 
 ## Corsair continuity: ground, orbit, lake
 
-Ground inserts share one model, supported skin, sun direction, runway and grounded state. Wings must be spread and locked before conventional surface checks. The edit omits time between checks; it does not compress an eight-second full wing cycle into the three-second excerpt. The canopy is real; cockpit stick and pedal animation are not promised. Tailhook, taxi and airborne gear retraction belong to the [Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
+Ground inserts share the Corsair in Coastal Three Tone, sun direction, runway marker N15/E−47, eastward heading and actual supported wheels. The ground marker does not prescribe CG altitude. Wings must be spread and locked before conventional surface checks. The edit omits time between checks; it does not compress an eight-second full wing cycle into the three-second excerpt. The canopy is real; cockpit stick and pedal animation are not promised. Tailhook, taxi and airborne gear retraction belong to the [Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
 
-The orbit has fixed aircraft geometry and intentionally editorial livery changes. Record position, attitude, camera phase, exposure, wing-fold, flap, canopy, hook and gear states. Match final livery and screen direction into the lake. A new location is permitted; the cut does not claim that both settings are one continuous flight.
+The orbit has fixed aircraft geometry and intentionally editorial livery changes. Record position, attitude, camera phase, exposure, wing-fold, flap, canopy, hook and gear states. Finish in Coastal Three Tone and match it into the lake; choose the orbit edit orientation with the lake's right-to-left travel in view. The source orbit is centered on the visual model origin, which differs from CG. A new location is permitted; the cut does not claim that both settings are one continuous flight.
 
-Only the lake take needs a reflected aircraft. Hold one skin for all six seconds. The optional High planar path and historical jet result in the [capture study](windows-rtx3090-capture.md#lake-specific-high-experiment) do not qualify this Corsair shot. A separately identified verified jet-reflection alternate does not stand in as the same Corsair.
+The lake take targets a real matching reflection during the water crossing; the genuine unmirrored pass is the fallback. Hold Three Tone for all six seconds of shoreline approach, crossing and exit. The optional High planar path and historical jet result in the [capture study](windows-rtx3090-capture.md#lake-specific-high-experiment) do not qualify this Corsair shot. A separately identified verified jet-reflection alternate does not stand in as the same Corsair.
 
 ## Skin and continuity ledger
 
-These are casting slots for actual supported paint choices, not invented skin names. Inspect the catalogue and record IDs and asset-use rights before filming. The [livery picker](../../../app/ui/livery_picker.gd), [custom skin support](../../../app/aircraft/custom_skin.gd) and [skin-kit model list](../../../app/assets/skin-kit/models.json) are source starting points; compatibility and final rendering need individual confirmation.
+These are concrete selections from the reviewed source catalogs, not filmed appearance approvals. The [R5 plan](shot-plan-r5.json) records Home IDs, data paths, model families, exact asset/selection values and source hashes. Runtime appearance and asset-use basis remain part of each take record.
 
-| Subject / shots | Selection intent | State that must stay fixed | Current evidence |
-| --- | --- | --- | --- |
-| Electric Stick / R4-03 | Real scheme distinct from the baseline Stick; retain the Electric 6S identity. | Model/installation identity and electric sound. | Exact skin ID unselected; visual test pending. |
-| MoonRunner / R4-04 | Real scheme that preserves the flying-wing outline. | Model geometry and release identity. | Exact skin ID unselected; pending. |
-| Blimp / R4-05 | One actual supported envelope skin and whole silhouette. | Gondola, rotors and chosen configuration. | Exact skin ID unselected; pending. |
-| Corsair ground / R4-14…19 | One real scheme with hinge/surface contrast. | Same skin, light, field and grounded aircraft across checks. | Exact skin ID unselected; pending. |
-| Mustang / R4-22…23 | Actual alternate scheme through clean and transmitter views. | Aircraft, skin, input/response relationship and direction. | Exact skin ID unselected; pending. |
-| Extra / R4-30 | Real scheme and supported smoke profile. | No recolouring to match smoke; confirm smoke separately. | Skin/profile unselected; pending. |
-| Turbo Lumber / R4-31 | Real skin visible with a qualified dusk/night light profile. | Body and actual light colours remain readable. | Skin/profile unselected; pending. |
-| Baseline Stick / R4-35…38 | Real .61 glow reference at 10%, 100% and 500%. | Model and approximate depth through size comparison. | Scale and staged trio need actual visual proof. |
-| Corsair orbit / R4-39 | All 13 stock schemes; choose order and final lake scheme from actual frames. | Geometry, pose, camera path, exposure and mechanism states. | Stock IDs known below; order and final hero selection pending. |
-| Corsair lake / R4-40 | Final orbit skin held throughout. | Skin/reflection match and gear/canopy/hook/flap states. | Specific reflection unverified. |
-| Imported aircraft / R4-42a…r,43 | Eighteen distinct, source-identified admitted previews; final model qualifies for trial. | Exact source, accepted model and skin follow the final preview into the same trial. | Candidate casting and all new previews/eligibility pending; see [import showcase](import-showcase.md). |
-| MONSTER CAR 2 / R4-02; Bisonte / R4-32…34,44 | Actual compatible paint, distinguishable bodies and nitro/electric identities. | Same Bisonte and paint within the suspension comparison; actual source sounds. | Exact paint IDs unselected; pending. |
+| Subject / shots | Selected skin or factory finish | Continuity / remaining proof |
+| --- | --- | --- |
+| Vantage / R4-01 | Sabre Plata — `sabre_plata` | Jet identity, turbine sound and readable canopy-down attitude. |
+| MONSTER CAR 2 / R4-02 | Naranja Lava — `naranja_lava` | Nitro body/engine, tabletop departure, complete landing. |
+| Electric Stick / R4-03 | Neon Ronin — `neon_ronin` | Electric 6S identity and actual electric propulsion sound. |
+| MoonRunner / R4-04 | Bólido — `bolido` | Native release, flying-wing outline and matching geometry. |
+| Blimp / R4-05 | Tiburón Blanco — `tiburon-blanco` | Whole envelope, gondola and supported airship skin path. |
+| ION R5 / R4-06…13 | Shipped factory finish | No invented stock paint selector; preserve the same quad through recovery. |
+| Corsair ground and lake / R4-14…19,40 | Coastal Three Tone — `three_tone` | Same supported paint through ground inserts; orbit finishes in this paint for the lake. |
+| X-Cell / R4-21 | Blanco Ártico — `blanco_artico`, HX-700 visual family | Separate playable identity. Manual pad/livery setup; governed hover precedes edit start. |
+| Mustang / R4-22…23,29 | Shipped factory finish | The clean/input views share one take; storm is a separate session. No second shipped scheme was found. |
+| Extra / R4-30 | Shipped factory finish | Actual eligible smoke profile; smoke palette remains pending. No alternate shipped scheme is promised. |
+| Turbo Lumber / R4-31 | Shipped factory finish | Proposed `night_radian` light profile; body/light readability unqualified. |
+| Baseline glow Stick / R4-24…28,35…38 | Honeybee — `honeybee` | Separate failure/AI/calibrated-scenery/scale sessions. Giant and mini flight shots use deliberately different framing; only the labelled presentation trio is same-depth. Its Honeybee adapter remains pending. |
+| Bisonte / R4-32…34,44 | Amarillo Rayo — `amarillo_rayo` | Same body/paint for damping 1.00 vs 1.50 runs; restore 1.00 before the shallow-shore shot. |
+| Corsair orbit / R4-39 | All 13 stock assets, ordered below | Fixed geometry/mechanisms; editorial swaps. Capture must verify actual presented asset and frame clock. |
+| Imported previews / R4-42a…r,43 | Exact source paint of each admitted candidate | Sources and new previews remain pending. The final accepted preview model/paint must match its actual eligible trial. |
 
-The [Corsair manifest](../../../app/data/aircraft_models/f4u-corsair-250.json) lists 13 stock IDs: midnight, three_tone, scarlet, splash, spectrum, blueangels, thunderbirds, chrome, p40, japan, luftwaffe, italy and carbon. Their source presence was checked previously; appearance, swap continuity and reflection have not been inspected in new footage. Keep the requested full cycle; explicitly retime the master if it needs room.
+The chosen orbit order is **midnight → p40 → japan → luftwaffe → italy → scarlet → thunderbirds → blueangels → chrome → carbon → spectrum → splash → three_tone**. Each of the first twelve holds 45 intended frames; Three Tone holds 60, totaling 600. This editorial order differs from the [manifest](../../../app/data/aircraft_models/f4u-corsair-250.json). The first manifest asset uses an empty Home selection value; the director's explicit cycle still uses its asset ID `midnight`. The new opt-in hold-last prevents a cycle wrap; simulation-time scheduling alone does not prove the intended presented-frame rhythm.
 
 A custom skin needs its actual source and rights recorded. A template does not mean an unmade design already exists. The imported aircraft reel uses real source models, not repaint duplicates counted as distinct aircraft.
 
@@ -69,11 +72,11 @@ A custom skin needs its actual source and rights recorded. A template does not m
 
 Use one record per accepted source take: R4 ID; source path/hash; build/commit and engine; vehicle catalog ID; skin/asset ID and rights; Workshop scale/configuration; field/course and gate state; camera mode or separate cinematic director; weather/sky/time; actual light/smoke profile; renderer; lens/contact state; input source; G/U/P class; audio source; and review result. For each imported preview also retain family, source locator/hash, model root, conversion/admission result and asset-use basis; retain the separate setup/flight eligibility for the payoff.
 
-Until media exists, frame comparison and audio review remain **not examined**. Protect same-skin reflections, separate X-Cell/inspector identities, genuine gate progression, same-depth scale, live input values and the exact preview-to-flight identity. A numerical flight recording does not supply an in-game cinematic replay editor.
+Until media exists, frame comparison and audio review remain **not examined**. Protect same-skin reflections, separate X-Cell/inspector identities, genuine gate progression, disclosed same-depth presentation scale, deliberately readable individual scale framing, live input values and the exact preview-to-flight identity. A numerical flight recording does not supply an in-game cinematic replay editor.
 
 ## Scene grouping for later planning
 
-This groups the current screenplay; it does not select tools or start a shoot.
+This groups the current screenplay. R5 names existing routes, manual setup and missing adapters; it does not establish successful footage.
 
 | Scene group | Shots | Main acceptance concern |
 | --- | --- | --- |
@@ -88,9 +91,9 @@ This groups the current screenplay; it does not select tools or start a shoot.
 
 ## Priority and retiming
 
-Protect the understandable action and recovery, the full 13-skin orbit into the six-second lake hold, the 15-second import chapter, all core-vehicle appearances and the five-second invitation. The reflection is conditional; the genuine Corsair lake shot remains.
+Protect the understandable action and recovery, the full 13-skin orbit into the six-second lake approach/crossing/exit, the 15-second import chapter, all core-vehicle appearances and the five-second invitation. The reflection is conditional; the genuine Corsair lake shot remains.
 
-R4 uses all 150 seconds. If actual proof demands more time, the [screenplay](cinematic-script-r4.md#coverage-rhythm-and-honest-source-classes) identifies complete standalone features that may move to Field Notes. Record the coverage change, retime the storyboard, and allocate the released seconds only once. The old R3 flourish reserve is retired.
+R5 uses all 150 seconds with the R4 cut IDs retained. If actual proof demands more time, the [shooting script](cinematic-script-r5.md) identifies complete standalone features that may move to Field Notes. Record the coverage change, retime the storyboard, and allocate the released seconds only once. The old R3 flourish reserve is retired.
 
 ## Rejection conditions
 

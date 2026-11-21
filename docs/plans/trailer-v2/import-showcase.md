@@ -1,6 +1,6 @@
 # Trailer 2.0 — Phoenix RC and ClearView import showcase
 
-**Authority:** [R4 screenplay](cinematic-script-r4.md), 02:05–02:20 / R4-41…43.
+**Authority:** [R5 shooting script](cinematic-script-r5.md) and [shot plan](shot-plan-r5.json), 02:05–02:20 / R4-41…43. R5 retains the R4-prefixed shot IDs.
 **Owner / track:** trailer director-editor / V2. **Reviewed:** 21 November 2026.
 **Status:** 15-second chapter fully timed on paper; provisional casting from recorded source inventories. No new aircraft download, conversion, preview capture or flight was performed in this revision.
 
@@ -27,10 +27,10 @@ At 60 fps, each fast preview gets **30 frames**, each leader **60 frames**, and 
 - Use hard cuts on an editorial percussion pattern. Exact music beats remain unmeasured. The one-second leaders establish each block before the half-second run.
 - Do not ask the viewer to read 18 changing names. Candidate names below belong to production notes, not rapid title cards.
 - Use actual Creator previews, including a crop of the genuine preview viewport if the label remains readable. No generated airframes, foreign-simulator footage or separately invented rendering is passed off as an OpenRC import.
-- Give the final model the same orientation/skin identity in its flight payoff. Setup can occur between recorded stages; the edit does not claim conversion and flight preparation are instant.
+- Keep the same admitted model, texture and skin identity in the final preview and its flight payoff. Setup can occur between recorded stages; the edit does not claim conversion and flight preparation are instant.
 - The preview reel has music/editorial accents, not a fabricated engine demonstration. Actual propulsion sound enters with the qualified trial.
 
-This rapid reel contrasts with the preceding ten-second Corsair orbit and six-second lake hold. Keep the lake's final frame long enough to resolve before the import chapter begins.
+This rapid reel contrasts with the preceding ten-second Corsair orbit and six-second shoreline approach, crossing and exit. The planned water portion is approximately 3.225 seconds at nominal speed; keep the final frame long enough to resolve before the import chapter begins. Actual clearance, motion and reflection remain unverified.
 
 ## Provisional casting: nine Phoenix and nine ClearView models
 
@@ -108,13 +108,13 @@ Public pages checked on 21 November 2026: [RC-Thoughts Phoenix collection](https
 5. Count at least 300 qualifying distinct models for “300+”; require at least 301 for the literal wording “more than 300.” Preserve the result manifest. Show a representative set of real accepted previews in the reel.
 6. Replace the main headline only when the applicable threshold is met, retaining readable preview/test-flight qualifications and the user's-own-source meaning.
 
-The number gate does not block writing the chapter. The scene, rhythm, provisional candidates and current honest copy are complete now.
+The number gate does not block writing the chapter. The scene, rhythm, provisional candidates and current honest copy are complete on paper. The initial offline shot-plan tools and opt-in livery hold-last change are implemented and narrowly tested; import capture adapters, source admission and footage remain pending.
 
 ## All-source preparation for the later production phase
 
 Review the complete owned Phoenix/ClearView source inventory before casting; the reel then selects the clearest contrasting models. Record family, source path/hash, canonical model ID, conversion result, preview appearance, setup/trial result, skin, asset-use basis and intended slot. Keep refused, appearance-only and eligible-flight outcomes separate. Local installation archives and third-party model binaries stay outside this documentation branch.
 
-This is a future preparation requirement, not a claim that a bulk import job has run. Choose concrete tools after the screenplay review, following the existing project workflow.
+This is a future preparation requirement, not a claim that a bulk import job has run. Qualify the source-admission and capture route through the existing project workflow; the offline shot-plan tool does not import models.
 
 ## Exact 10-second alternate chapter
 
@@ -125,4 +125,4 @@ This is a future preparation requirement, not a claim that a bulk import job has
 | 4.5–7 | 2.5 s | Five ClearView previews at 0.5 s each, ending with the selected flight model. |
 | 7–10 | 3 s | Same model's genuine eligible experimental trial. |
 
-This alternate gives ten previews and keeps the payoff; it is not the current 15-second master chapter. It would release five seconds only after the master/storyboard are explicitly retimed. The 15-second version is preferred for the user's request to see many aircraft and for the one-second block leaders.
+This alternate gives ten previews and keeps the payoff; it is not the current 15-second master chapter. It would release five seconds only after the master, storyboard and shot plan are explicitly retimed. The 15-second version is preferred for the user's request to see many aircraft and for the one-second block leaders.

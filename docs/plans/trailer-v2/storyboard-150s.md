@@ -1,6 +1,6 @@
-# OPEN RC SIMULATOR — 150-second storyboard, Revision 4
+# OPEN RC SIMULATOR — 150-second storyboard, Revision 5
 
-**Current source:** [Director's screenplay R4](cinematic-script-r4.md). **Date:** 21 November 2026.
+**Current source:** [Director's shooting script R5](cinematic-script-r5.md). **Date:** 21 November 2026. R4 cut IDs are retained; the timeline is unchanged. Exact proposed blocking and identities are in the [R5 shot plan](shot-plan-r5.json).
 **Status:** paper edit; all positions are proposed timeline seconds, not source-media timecodes. No footage or measured music grid has been accepted. Target frame rate: 60 fps; every boundary below is a whole frame.
 
 **Edit concept:** action and recovery earn attention; visible controls make the machines tangible; practice and customization lead to the Corsair signature and an expanding imported-model hangar.
@@ -40,17 +40,17 @@
 | R4-27 | 73 | 77 | 4 | G | Calm Club-field flight with actual AI Ugly Stik circuit companions; no close-formation promise. |
 | R4-28 | 77 | 81 | 4 | G | Eligible airplane in an exact calibrated Phoenix panorama; fixed pilot-eye view and experimental-runway label. |
 | R4-29 | 81 | 85 | 4 | G | Separate ordinary airplane flight against an actual storm cloud flash; bolt only if recorded. |
-| R4-30 | 85 | 89 | 4 | G | Extra 300S: warm-light bank/climb with a qualified show-smoke profile and real non-Corsair skin. |
+| R4-30 | 85 | 89 | 4 | G | Extra 300S: warm-light bank/climb in its shipped factory finish with a qualified show-smoke profile. |
 | R4-31 | 89 | 93 | 4 | G | Turbo Lumber: readable body and actual night lights; moon, field lights or campfire only if composition remains clear. |
 | R4-32 | 93 | 95.75 | 2.75 | G | Bisonte Physics Lab comparison: baseline suspension response over a fixed bump. |
 | R4-33 | 95.75 | 97.25 | 1.5 | U | Actual paused lab setting/application excerpt; setup/reset time is omitted between the two runs. |
 | R4-34 | 97.25 | 100 | 2.75 | G | Second real Bisonte run: changed suspension setting, same bump and comparable camera/input. |
 | R4-35 | 100 | 101.5 | 1.5 | U | Baseline .61 glow Ugly Stick: actual Workshop scale control. |
 | R4-36 | 101.5 | 103.25 | 1.75 | G | Actual 500% baseline Stick trial by a fixed landmark. |
-| R4-37 | 103.25 | 105 | 1.75 | G | Actual 10% baseline Stick trial with comparable camera/depth. |
+| R4-37 | 103.25 | 105 | 1.75 | G | Actual 10% baseline Stick trial in a deliberately closer readable view, with explicit size label and field context. |
 | R4-38 | 105 | 109 | 4 | P | Same-depth 500/100/10% cinematic comparator; correct span labels and disclosure. |
 | R4-39 | 109 | 119 | 10 | P | Continuous eased Corsair orbit with all 13 stock liveries; final scheme holds. |
-| R4-40 | 119 | 125 | 6 | G | Six uninterrupted seconds of Corsair over the lake, holding the final skin and actual matching reflection if qualified. |
+| R4-40 | 119 | 125 | 6 | G | Six uninterrupted seconds of Corsair shoreline approach, water crossing and exit, holding Coastal Three Tone and actual matching reflection if qualified. |
 | R4-41 | 125 | 127 | 2 | U | Genuine Creator import/source-selection excerpt; edited introduction to both source families. |
 | R4-42a | 127 | 128 | 1 | U | Phoenix RC imported preview: Easystar; provisional casting, exact source and new visual acceptance required. |
 | R4-42b | 128 | 128.5 | 0.5 | U | Phoenix RC imported preview: J3 Piper Cub; provisional casting, exact source and new visual acceptance required. |
@@ -72,7 +72,7 @@
 | R4-42r | 136.5 | 137 | 0.5 | U | ClearView imported preview: MC 3D Hobby Shops Extra 330 Red; provisional casting, exact source and new visual acceptance required. |
 | R4-43 | 137 | 140 | 3 | G | Same final previewed model in its genuine eligible Creator trial; experimental/estimated or donor qualification. |
 | R4-44 | 140 | 145 | 5 | G | Bisonte at the shallow shore: real tires, mud/water contact, modest droplets/rings and actual sound. |
-| R4-45 | 145 | 150 | 5 | E | Stable OPEN RC SIMULATOR / PLAY FREE / verified official URL / actual open-source early-alpha status. |
+| R4-45 | 145 | 150 | 5 | E | Stable OPEN RC SIMULATOR / PLAY FREE / verified official URL / verified actual product status. |
 
 **Runtime:** 112 G + 15 U + 18 P + 5 E = **150.000 seconds**; **9,000 intended frames** at 60 fps. There are **62 planned cuts**, including **18 preview cuts in 10 seconds**. Actual session footage is about 74.7%; session plus UI about 84.7%. No real-time performance or measured media duration is implied.
 
@@ -129,8 +129,8 @@ Names, real HUD and qualifiers count toward the same reading load. These are lay
 
 The blimp, complete gate pass, recovery payoff, ten-second orbit and six-second lake contrast with short mechanism details and the rapid import reel. The single 0.5-second preview is a silhouette impression, not a model-name lesson. The two one-second source-block leaders establish the visual grammar.
 
-R3's two-second reserve no longer exists. R4 sums to 150 seconds exactly. A feature transferred to [Field Notes](feature-companion-films.md) releases its stated interval once; record the new master positions and coverage before using those seconds. Protect the orbit/lake, recovery outcome, import chapter and end card. No source EDL or media in/out is fabricated.
+R3's two-second reserve no longer exists. R5 retains the R4 cut IDs and sums to 150 seconds exactly. A feature transferred to [Field Notes](feature-companion-films.md) releases its stated interval once; record the new master positions and coverage before using those seconds. Protect the orbit/lake, recovery outcome, import chapter and end card. No source EDL or media in/out is fabricated.
 
 ## Review status
 
-Paper timing, source paths, catalog evidence and document agreement are reviewed in the [R4 audit](script-audit-r4-2026-11-21.md). All actual visual, handling, sound, target-hardware and export judgments remain open under the [verification gates](verification-gates.md).
+Paper timing, source paths, catalog evidence and document agreement are reviewed in the [R5 audit](script-audit-r5-2026-11-21.md). All actual visual, handling, sound, target-hardware and export judgments remain open under the [verification gates](verification-gates.md).

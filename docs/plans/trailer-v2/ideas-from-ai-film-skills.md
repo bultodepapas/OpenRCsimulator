@@ -1,35 +1,35 @@
 # Trailer 2.0 — creative opportunities discovered during the AI-skills research
 
 **Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.
-**Current screenplay:** [Revision 4](cinematic-script-r4.md). This is the retained idea bank; R4 and its timed companions own selected forms, source qualifications and timing.
+**Current screenplay:** [Revision 5](cinematic-script-r5.md) and its [shot plan](shot-plan-r5.json). This is the retained idea bank; R5 and its timed companions own selected forms, source qualifications and timing.
 **Sources:** [AI filmmaking skill and Reddit research](research-ai-video-skills-2026-11-21.md).
 
-## Disposition after the R4 integration
+## Disposition after R5
 
-- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, then six uninterrupted seconds over the lake; actual skins across the other vehicles; complete FPV gate coverage; real scaled trials plus disclosed trio; distinct propulsion sounds.
+- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, followed by six uninterrupted seconds of shoreline approach, water crossing and exit; the planned water portion is about 3.225 seconds at the nominal speed. Coastal Three Tone matches the Corsair ground checks, final orbit skin and lake. Other vehicles use the actual R5 stock choices; Mustang, Extra and Turbo Lumber retain their shipped factory liveries. The tiny scale trial has a closer camera for readability; the disclosed trio is same-depth.
 - **Mechanics:** twelve seconds of Corsair ground checks, four seconds of labelled collective inspection, separate playable helicopter flight and the retained [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
 - **New master actions:** hand launch, Angle/Acro, turtle recovery, live transmitter input, engine-out practice, AI circuits, calibrated imported scenery, actual storm flash, suspension tuning and Bisonte at the shallow shore.
 - **Import expansion:** [15-second Phoenix/ClearView chapter](import-showcase.md), with 18 provisional real previews in ten seconds and a same-model eligible test flight. The 300+ numerical variant is inactive pending compatible-model count evidence.
 - **Concrete companion coverage:** [90-second Field Notes](feature-companion-films.md) gives presets, touch-and-go statistics, Natural Random, finite energy, wreck inspection, Green paradise and environmental details timed scenes.
 - **Outside the current package:** five-plane smoke formation and person-strike blood. The master has one survivable quad impact/recovery; a separate fixed-wing incident belongs to Field Notes.
-- **Not started:** generated previs, actual animatic, production-tool selection, new imports/captures, music auditions and finished edits.
+- **Initial code:** offline shot-plan tools and the opt-in livery hold-last change are implemented and narrowly tested. Additional capture adapters, generated previs, actual animatic, new imports/captures, music auditions and finished edits remain pending.
 
-## Top five — strongest creative return
+## Original top five — retained creative pitches
 
 ### 1. The Corsair "Orbit → Mirror" signature
-**Keep the loved v9.13 shot intact**: one smooth camera orbit around the F4U as skins change **editorially** on selected beats. Let the camera reach a three-quarter nose angle, then **match its screen direction** to a low side-on fly-by above Club lake. The final skin stays longer while the *actual in-game reflection* moves across the water with it. This combines character/customization with a cinematic environment and pays off the original concept instead of discarding it.
+The v9.13 reference suggested one smooth orbit around the F4U as skins change **editorially**. R5 plans a new ten-second orbit ending on `three_tone`, then a separately filmed six-second shoreline approach, lake crossing and exit in the same scheme. Match screen direction and preserve a real reflection only if that specific take qualifies.
 
 **AI assist:** shot-director camera start/end vocabulary, keyframe comparison board, color continuity/skin ledger, beat-map alternatives.
-**Gate:** current High planar must reflect this model and selected skin; no fake water mirror, no implied in-flight paint UI.
+**Gate:** a reflection requires current-build proof for this model and skin; otherwise retain the genuine unmirrored pass. No fake water mirror or implied in-flight paint UI.
 
 ### 2. FPV gate "from spectator to pilot"
-Open wide on the quad and real LED gate, switch to rigid onboard FPV while it *enters and clears* two sequential gates, then cut back to chase to see the same action externally. Let real speed/timer/next-gate OSD live near the edges. Finish on white gate flash after a valid pass; no imaginary leaderboard.
+The original pitch proposed two sequential gates and an exterior match. R5 requires one clear valid gate and separately recorded exterior coverage; no synchronized-replay claim. Let real speed/timer/next-gate OSD live near the edges, and use a gate cue only when the actual take produces it.
 
 **AI assist:** camera plan, gate order diagram, matching frames, cut rhythm test.
 **Gate:** physical gate crossing, proper course and camera view, gameplay timing.
 
 ### 3. Three sizes, one impossible-looking frame
-A giant and a mini Ugly Stick each make a **real Workshop trial** pass across a landmark. Then the camera reveals all **three 500/100/10% aircraft together** at consistent depth, which the previous cinematic script successfully achieved. Small labeled aircraft tracks act as a scale ruler, so viewers read giant/normal/mini immediately.
+A giant and a mini Ugly Stick each make a **real Workshop trial** pass with recognizable field context; the tiny view is deliberately closer. Then a separate cinematic presentation shows all **three 500/100/10% aircraft together** at consistent depth. The previous film's idea is a reference, not current-footage proof.
 
 **AI assist:** continuity keyframes and perspective check; compositional alternatives.
 **Gate:** label the simultaneous trio as cinematic presentation, not multiple players.
@@ -46,11 +46,13 @@ Make three or four short musical beats from native sound textures: Corsair radia
 **AI assist:** cue sheet and sound map; optional audition comparison, no voice synthesis necessary.
 **Gate:** preserve sources and audio rights; no fake performance/engine identity.
 
-## Strong secondary ideas to weave across the trailer
+## Strong secondary ideas — historical proposals
+
+The suggested placements and times in this retained brainstorm are historical; the R5 script and its timed companions define current coverage.
 
 | Idea | Potential place | AI skill contribution | Authenticity condition |
 |---|---|---|---|
-| **Other aircraft skins, not only Corsair** | 13-fleet burst and day-to-night transition | continuity/color-script check for P-51, Extra, Stik/other models with supported paint choices | choose **actual** stock/custom schemes and show compatible aircraft; don't invent jet liveries |
+| **Other aircraft skins, not only Corsair** | Existing fleet appearances | continuity/color-script check for the authored Stik, jet, blimp and truck choices | R5 uses actual stock choices; P-51, Extra and Turbo Lumber have only a shipped factory scheme unless a real custom package is supplied and qualified. |
 | **Inverted jet from below** | first five seconds; optional 2 s later | cinematic director selects real horizon, camera path and safe reveal | must be a true sustained inverted pass, no footage rotation |
 | **Neon drone gates at blue hour** | FPV chapter or end montage | color/lighting taste board | real illuminated gate presentation at that time, legible FPV OSD |
 | **Night smoke/light accent** | transition from gold to night | light/color script and matched wing pose | player-accessible smoke only for a supported airframe/profile |
@@ -75,10 +77,10 @@ Make three or four short musical beats from native sound textures: Corsair radia
 
 **Optional generative AI, not the basis of gameplay advertising:** reference moodboards, alternate camera storyboard images, color look sketches, animated title experiments or fictional concepts. Keep output labeled concept, rights cleared, and away from any claim of gameplay functionality. The game should supply all aircraft, quad racing, trucks, skins, water reflections, physics and real-time widgets in the public trailer.
 
-## Suggested Revision 3 debate
+## Historical Revision 3 debate
 
 1. **Preserve both Corsair moments:** the v9.13 orbit with skin changes, then an over-lake reflection finale. This should be prioritized over adding another unrelated aircraft fly-by.
-2. **Distribute skin changes** across Mustang/Extra/Stik supported configurations during their existing clips. More variety without extending runtime.
+2. **Distribute skin changes** across Mustang/Extra/Stik supported configurations. This original pitch is superseded: R5 uses factory Mustang and Extra schemes and a supported Stik paint.
 3. **Keep drone gate chapter meaningful**: spectators see green start lights, a true POV crossing and chase recognition.
 4. **Use one clear flight-camera/widget demonstration** rather than showing every possible HUD preset.
 5. **Keep the three-size formation** as an unforgettable humorous scale surprise, but label its cinematic status.

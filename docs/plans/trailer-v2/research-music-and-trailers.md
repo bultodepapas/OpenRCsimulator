@@ -2,7 +2,7 @@
 
 **Research checked 2026-11-21. Status: candidates and license documentation only.** No audio has been downloaded, auditioned end-to-end, mixed, synchronized, or uploaded. A composer-page description is not proof that the track will fit the current 150-second master, that its beat falls at a proposed cut, or that it is claim-free.
 
-**R4 use:** this is retained source/candidate research. The [current screenplay](cinematic-script-r4.md) owns timing and sound placement; no track or software is selected by this audit.
+**R5 use:** this is retained source/candidate research. The [current shooting script](cinematic-script-r5.md) owns timing and sound placement; no track is selected or auditioned by this audit. Initial offline shot-plan tools and the opt-in livery hold-last change are implemented and narrowly tested; additional capture adapters and footage remain pending.
 
 ## Musical brief
 We want a game trailer with a punch in the first five seconds, recognizable actions across the whole fleet, an energetic rhythm for nitro trucks and FPV, a brief early contact accent, a precise quieter mechanism chapter, an airy Corsair orbit/lake payoff, and a memorable successful-play finish. Hybrid orchestral plus synth and percussion suits this, but don't let a nonstop climax drown out turbine, radial, electric motor and nitro engine voices.

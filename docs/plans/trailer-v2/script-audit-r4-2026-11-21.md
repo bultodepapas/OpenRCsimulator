@@ -1,5 +1,7 @@
 # Trailer 2.0 — R4 integration audit
 
+**Historical R4 audit.** The [R5 audit](script-audit-r5-2026-11-21.md) records current blocking, casting and first-code verification. This document retains its original evidence scope.
+
 **Date:** 21 November 2026. **Track / owner:** V2 / trailer director-editor.
 **Input:** branch at 5efc327cfb00906abf06a11bdc823b50a2dc4ff4; R3 and the source-backed opportunity list; user's request to integrate the opportunities and add a rapid Phoenix/ClearView montage.
 **Game baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e.

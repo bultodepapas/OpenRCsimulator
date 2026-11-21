@@ -1,6 +1,6 @@
-# Trailer 2.0 — creative treatment, Revision 4
+# Trailer 2.0 — creative treatment, Revision 5
 
-**Story authority:** [R4 — EXPAND YOUR HANGAR](cinematic-script-r4.md). The [150-second storyboard](storyboard-150s.md) owns the exact cuts and disclosures.
+**Story authority:** [R5 — EXPAND YOUR HANGAR](cinematic-script-r5.md). The [150-second storyboard](storyboard-150s.md) owns the exact cuts and disclosures; the [shot plan](shot-plan-r5.json) owns the proposed cast and blocking.
 **Audience:** RC enthusiasts, curious new players and model creators. **Objective:** make trying the simulator feel inviting.
 **Tone:** energetic, tactile and playful, with room for the images that deserve it. This is creative direction, not an audience-test result.
 
@@ -12,7 +12,7 @@
 
 **Discover the field, 01:13–01:33.** Actual AI circuit traffic, an eligible calibrated photo panorama and a real storm flash suggest different places and conditions without suggesting multiplayer, a free-roaming panorama or a storm-caused failure. Extra smoke and a readable night-lit Turbo Lumber change the mood while keeping aircraft visible.
 
-**Make it yours, 01:33–02:05.** Two real Bisonte suspension runs make a setup change visible; actual Ugly Stick scale trials lead into the explicitly cinematic three-size comparison. The Corsair earns the emotional pause: one coherent ten-second 360-degree orbit cycles through all 13 stock schemes, then the final livery holds for six uninterrupted seconds over the lake.
+**Make it yours, 01:33–02:05.** Two real Bisonte suspension runs make a setup change visible; actual Ugly Stick scale trials lead into the explicitly cinematic three-size comparison. The Corsair earns the emotional pause: one coherent ten-second 360-degree orbit cycles through all 13 stock schemes, then Coastal Three Tone holds for a six-second shoreline approach, water crossing and exit. The planned crossing is about 3.225 seconds over water at the nominal 23 m/s; the flight and clearance remain unverified.
 
 **Open the hangar, 02:05–02:30.** A genuine Creator introduction leads to ten seconds of rapid, distinct Phoenix RC and ClearView model previews. One eligible model then makes a genuine experimental test flight. The electric Bisonte returns at the shallow shore before a five-second invitation. Previewing a model and flying an eligible model are separate results; a larger compatible-model count remains unsubstantiated.
 
@@ -20,8 +20,8 @@
 
 - Give the audience one primary action at a time. Show complete gate passage, truck landing and turtle recovery; let fixed references make each brief control movement understandable.
 - All 13 reviewed Home configurations have a purpose in the [fleet coverage table](storyboard-150s.md#fleet-coverage). They are distributed through the story, rather than repeated in a roster parade. The 18 imported previews are a separate, explicitly identified Creator montage.
-- Keep the Corsair's full orbit and all 13 stock skins. Livery transitions are editorial presentation, not an in-flight paint control. Match the final skin and aircraft state into the six-second lake pass; a matching reflection is conditional on a real qualified take.
-- Use actual supported non-Corsair skins as accents on the Electric Stick, MoonRunner, blimp, Mustang, Extra, Turbo Lumber and trucks. Record actual asset IDs and rights; do not invent designs.
+- Keep the Corsair's full orbit and all 13 stock skins. Livery transitions are editorial presentation, not an in-flight paint control. Use `three_tone` for the ground checks, the orbit's final scheme and the lake sequence; a matching reflection is conditional on a real qualified take.
+- Use the R5 stock selections for the Electric Stick, MoonRunner, blimp and trucks. Mustang, Extra and Turbo Lumber each use their one shipped factory livery; a custom-paint kit is not an existing alternate. Record asset IDs and rights.
 - Use the supported Inspector, gameplay, UI and cinematic-comparison identities. A fixed-wing Cockpit preset is a widget layout, the HX-700 inspection is not the playable X-Cell, and the three-size trio is not multiplayer.
 - Preserve native timing within mechanical and flight excerpts. Edit omitted time openly; do not compress the full eight-second wing-spreading cycle, imply the suspension setting changes in the air, or suggest the selected imports appear instantaneously in real time.
 - Keep MONSTER CAR 2 and Bisonte distinct in body, propulsion and sound: the former completes a nitro jump; the latter demonstrates suspension settings and electric shore driving.
@@ -38,11 +38,11 @@ Honest daylight reveals the machines; warmer accents suggest personalization; bl
 | HX-700 inspection | Curiosity | #17222C, #9DAAB5, #82C4FF | Retain the studio context; distinguish links and blade roots without inventing an outdoor setting. |
 | Practice, field and weather | Discovery | #AEB5B6, #688754, #6D7985 | Keep the aircraft legible against scenery or a real storm flash; do not grade separate weather states into apparent continuity. |
 | Smoke and night | Variety, atmosphere | #D99B62, #243D65, #88C6E4 | Keep the night aircraft body and its real lights visible; retain actual smoke colour. |
-| Setup and scale | Experiment, surprise | #AEB5B6, #688754, #D7C6A1 | Match camera and exposure across real comparisons; make the smallest aircraft findable. |
+| Setup and scale | Experiment, surprise | #AEB5B6, #688754, #D7C6A1 | Keep the Bisonte comparison camera and inputs comparable; frame the tiny trial closer for readability, then disclose the same-depth cinematic trio. |
 | Corsair orbit and lake | Attachment, release | #5F879F, #D7B17D, #E5E0D4 | Match the final livery, aircraft state and direction; no grade that conceals a reflection mismatch. |
 | Imported previews and invitation | Possibility, confidence | #263139, #90B758, #F3F3EC | Use the real Creator backdrop and stable framing; simplify the final card for reading. |
 
-The selected Corsair livery determines its accent colour. The palette never determines the skin.
+Coastal Three Tone is the proposed Corsair ground and lake livery; the palette never determines the skin.
 
 ## Sound arc
 
@@ -60,6 +60,6 @@ The English master leads; Spanish copy and short derivatives follow picture revi
 
 ## What remains open
 
-The cut totals 150 seconds on paper; there is no unallocated timing reserve. If a proof shot needs longer, explicitly transfer a complete eligible feature to Field Notes and update the master and storyboard once. Protect the full orbit, lake, import chapter, recovery outcome, core fleet and five-second invitation.
+The cut totals 150 seconds and 62 retained R4 shot IDs on paper; there is no unallocated timing reserve. If a proof shot needs longer, explicitly transfer a complete eligible feature to Field Notes and update the master, storyboard and shot plan once. Protect the full orbit, lake, import chapter, recovery outcome, core fleet and five-second invitation.
 
-Future review must test phone-size and silent readability, especially half-second import silhouettes, tail controls, the smallest Stick, night body, actual control response, collective framing and lake reflection. The [verification gates](verification-gates.md) own acceptance. No footage, music, target-hardware result or export has been accepted.
+The first offline shot-plan tools and the opt-in `--livery-hold-last` director change are implemented and narrowly tested; additional capture adapters and actual footage remain pending. Future review must test phone-size and silent readability, especially half-second import silhouettes, tail controls, the smallest Stick, night body, actual control response, collective framing and lake reflection. The [verification gates](verification-gates.md) own acceptance. No footage, music, target-hardware result or export has been accepted.

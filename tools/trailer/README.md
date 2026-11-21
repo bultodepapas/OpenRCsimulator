@@ -1,13 +1,71 @@
 # Cinematic trailer tools
 
-TRA-02…07 presentation tools for the English film **Every Input Matters** (current cut: 58 seconds; [2026-10-21 runtime refresh](../../docs/research/cinematic-trailer/refresh-2026-10-21.md)).
+TRA-02…07 presentation tools originated with the English film **Every Input Matters** (historical 58-second cut; [2026-10-21 runtime refresh](../../docs/research/cinematic-trailer/refresh-2026-10-21.md)).
 See the [production plan](../../docs/plans/cinematic-trailer.md) and its linked evidence for scope and results.
 No tool here edits the simulation kernel, aircraft data, damage assessment or prices.
 
+## R5 shot plan and livery finish
+
+The [Trailer 2.0 R5 shooting script](../../docs/plans/trailer-v2/cinematic-script-r5.md) and
+[shot plan](../../docs/plans/trailer-v2/shot-plan-r5.json) retain a 150-second, 62-cut master.
+R5 adds offline blocking tools and an opt-in final-livery hold to the existing flight director.
+The older capture recipes below retain their dated qualification; R5 does not requalify their footage.
+
+From a complete repository checkout, Python's standard library is sufficient:
+
+```sh
+python3 tools/trailer/shot_plan.py validate
+python3 tools/trailer/shot_plan.py show R4-40
+python3 tools/trailer/shot_plan.py export --out tmp/trailer/r5-plan-01/shot-plan.json
+python3 tools/trailer/shot_plan.py map R4-40 --out tmp/trailer/r5-plan-01/lake.svg
+python3 tools/trailer/test_shot_plan.py
+```
+
+For a sparse documentation worktree, append `--source-root /absolute/path/to/the/source-checkout`.
+The tool reads those local files only; it never fetches, launches the game, imports models or changes
+simulation state. It checks the storyboard, source hashes/assertions, stock catalog bindings to data,
+visual family and selectable status, skin IDs/default-selection rules, exact R5 livery order and
+45×12+60-frame rhythm, and final-skin continuity. Source membership is not flight eligibility.
+It converts NED positions to render coordinates and calculates nominal lake-polygon intersections;
+NE surface markers are never converted into an aircraft CG. Maps accept Club-field world blocking,
+not unrelated panoramas, UI or studio origins. Truck maps include the pinned tabletop footprint/deck;
+source context is named only when shown in the focused view. `show` and `export` produce JSON; `map` produces SVG.
+Every explicit output is created exclusively; an existing file is refused. Use a fresh run directory.
+
+The supported ten-second orbit's requested driver options are:
+
+```text
+--aircraft=f4u-corsair-250 --shot=corsair-orbit --seconds=10
+--livery-cycle=midnight,p40,japan,luftwaffe,italy,scarlet,thunderbirds,blueangels,chrome,carbon,spectrum,splash,three_tone
+--livery-from=0.75 --livery-every=0.75 --livery-hold-last
+```
+
+Supply these through the existing capture workflow, with its required output/runtime/renderer setup.
+`--livery-hold-last` is a **bare opt-in flag**; without it, the existing modulo cycle repeats.
+It changes presentation mesh selection only. The requested 12 × 0.75 s + 1 s edit would otherwise
+wrap to `midnight` at simulation time 9.75 s. This option keeps `three_tone` after the final change.
+The director uses **simulation time**, while capture frame zero can occur later: inspect each
+frame's `sim_time_s` and `presented_livery` before claiming exact presented 45/60-frame holds.
+The plan's camera/subject marks are not automatically consumed by this capture harness.
+
+Run the focused schedule check with the pinned engine through the existing checked runner:
+
+```sh
+python3 tools/godot/run_checked.py --label trailer-livery-schedule --timeout 60 \
+  --require-text 'TRAILER_LIVERY_SCHEDULE checks=31 failures=0' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script res://../tools/trailer/test_livery_schedule.gd
+```
+
+The check exercises actual selection/mesh swapping across all 13 identities, final boundaries,
+legacy looping and empty/single palettes. It does not render the GLB liveries or accept a flight.
+The [R5 audit](../../docs/plans/trailer-v2/script-audit-r5-2026-11-21.md) records the actual verification scope.
+
 ## Capture
 
-Use the pinned official Godot **4.8-beta1**, Compatibility/OpenGL, and the repository's existing imported assets.
-The dated trailer refresh retains its original engine scope; these instructions do not establish a new paired trailer qualification.
+Use the repository's pinned official Godot, Compatibility/OpenGL, and its existing imported assets.
+The historical capture recipes used **4.8-beta1**; R5's narrow headless schedule check used the current
+**4.8-beta2**. These instructions and that test do not establish a new paired rendered trailer qualification.
 Run `prepare_runtime.ps1` first. It creates `tmp/trailer/runtime/app` with a copied project configuration
 whose startup viewport is 1920×1080. Its directories are junctions to the working repository: this is
 an isolated capture configuration, **not a frozen source checkout**. Do not recursively delete its

@@ -1,6 +1,6 @@
 # OPEN RC SIMULATOR — 90-second storyboard, Revision 3
 
-**Historical storyboard — superseded by the [R4 150-second storyboard](storyboard-150s.md).**
+**Historical storyboard — superseded by the [R5 150-second storyboard](storyboard-150s.md).**
 
 **Historical source:** [Director's screenplay R3](cinematic-script-r3.md). **Date:** 21 November 2026.
 **Status:** paper edit. These are proposed timeline positions in seconds, not source-media timecodes. No clips, score grid or rendered animatic have been accepted. The frame budget assumes 60 fps; all boundaries below fall on whole frames.

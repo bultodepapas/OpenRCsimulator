@@ -2,12 +2,12 @@
 
 ## Director's screenplay — Revision 3: MAKE IT MOVE
 
-**Historical R3 screenplay — superseded by [R4](cinematic-script-r4.md) and the [150-second storyboard](storyboard-150s.md).**
+**Historical R3 screenplay — superseded by [R5](cinematic-script-r5.md) and the [150-second storyboard](storyboard-150s.md).**
 
 **21 November 2026 · Retained 90-second paper revision · Script review only**
 **Owner:** trailer director/editor. **Track:** V2. **Target:** 90.000 s, 16:9, 1080p60 first; English master, Spanish copy after picture lock.
 **Positioning:** Your RC world. Your way. **Voice-over:** none required.
-**Historical authority:** this revision superseded [R2](cinematic-script-r2.md) when written; R4 now owns current direction. The [storyboard](storyboard-90s.md) is its synchronized timing sheet. All times below are proposed timeline positions, not source-media in/out points. No footage or music has been auditioned or accepted for this revision.
+**Historical authority:** this revision superseded [R2](cinematic-script-r2.md) when written; R5 now owns current direction. The [storyboard](storyboard-90s.md) is its synchronized timing sheet. All times below are proposed timeline positions, not source-media in/out points. No footage or music has been auditioned or accepted for this revision.
 
 **Assumptions:** keep the 90-second format, all 13 visible vehicle configurations, the original Corsair skin-changing orbit, the lake, the three-size comparison and one non-blood impact. Choose tools after the screenplay review.
 **Visual idea:** a small movement becomes a whole world of flight, driving and personal expression.

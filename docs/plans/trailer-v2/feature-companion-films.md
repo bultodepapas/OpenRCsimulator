@@ -1,7 +1,7 @@
 # Trailer 2.0 — Field Notes and companion films
 
-**Current master:** [R4, 150 seconds](cinematic-script-r4.md). **Owner / track:** trailer director-editor / V2.
-**Status:** complete timed companion screenplays on paper; no film, assets or tools produced.
+**Current master:** [R5, 150 seconds](cinematic-script-r5.md); [shot plan](shot-plan-r5.json). **Owner / track:** trailer director-editor / V2.
+**Status:** complete timed companion screenplays on paper; no companion film or new captured assets produced.
 **Purpose:** every discovered opportunity has a concrete editorial destination. The master shows the strongest actions; these companions allow settings, statistics and aftermath to make sense.
 
 ## Field Notes — 90 seconds
@@ -60,4 +60,4 @@ The [import showcase](import-showcase.md) gives two exact edits: the master uses
 
 ## Status and later work
 
-These are scripts, not additional finished videos. Their purpose is to integrate the complete opportunity list now without hiding menu/statistics features in half-second master inserts. Source assets, actual takes, visual readability, soundtrack and concrete production tools remain the next phase.
+These are scripts, not additional finished videos. Their purpose is to integrate the complete opportunity list without hiding menu/statistics features in half-second master inserts. The initial offline shot-plan tools and opt-in livery hold-last change are implemented and narrowly tested for the master; additional capture adapters, source assets, actual takes, visual readability and soundtrack remain pending.

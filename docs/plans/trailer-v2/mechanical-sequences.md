@@ -1,7 +1,7 @@
 # Trailer 2.0 — mechanisms that tell a story
 
 **21 November 2026 · V2 · Screenplay support, not capture instructions**
-**Current master:** [R4](cinematic-script-r4.md), 00:39–00:59. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e; the trailer revision changes planning documents only. No mechanism was newly rendered or filmed during this review.
+**Current master:** [R5](cinematic-script-r5.md), 00:39–00:59; the [shot plan](shot-plan-r5.json) retains the R4-prefixed IDs. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e. The first offline plan tools and opt-in livery hold-last change are implemented and narrowly tested; no mechanism was newly rendered or filmed.
 
 ## Director's idea: let the mechanism explain itself
 
@@ -43,7 +43,7 @@ The old [v9.13 revision record](../../research/cinematic-trailer/revision-9-2026
 | R4-20 | 4.00 | Clearly labelled HX-700 studio inspection, tight head view; stopped rotor and visible blade roots. ~1 s neutral, ~2 s movement, ~1 s hold are creative targets. | Both blade-pitch changes and swash/link relationship can be understood. |
 | R4-21 | 4.00 | Hard cut to playable X-Cell, full side silhouette, forward movement past a field landmark. | Viewers recognize a new context and actual flight. |
 
-Lens numbers are composition references, not chosen software-camera settings. The 1.5-second tail details still need a real readability check: capture their full travel and retime if the action cannot be read. R4 has no spare reserve; transfer an explicitly identified lower-priority chapter to Field Notes before extending these inserts. Never turn the rotor studio into a fake field scene or remove the inspection identification to conceal its origin.
+Lens numbers in this table are composition references; R5's shot cards propose camera positions and Godot FOV values. Use the `three_tone` Corsair for the ground checks, matching the final orbit and lake. The 1.5-second tail details still need a real readability check: capture their full travel and retime if the action cannot be read. R5 has no spare reserve; transfer an explicitly identified lower-priority chapter to Field Notes before extending these inserts. Never turn the rotor studio into a fake field scene or remove the inspection identification to conceal its origin.
 
 ### Collective-specific acceptance
 
@@ -80,4 +80,4 @@ Use actual mechanical/engine sound where available. A restrained score pulse can
 
 ## Pending decisions for the later tools phase
 
-Choose camera access, capture route and rig visibility only after this sequence is accepted creatively. Confirm that the actual selected build exposes the supported mechanisms and produces readable frames. The inspector launcher is [inspect_hx700.gd](../../../app/tools/inspect_hx700.gd); this reference establishes a source route, not a successful launch. No setup command, renderer or new video package is selected by this sheet.
+R5 proposes camera access and blocking; confirm the selected build exposes the supported mechanisms and produces readable frames. The inspector launcher is [inspect_hx700.gd](../../../app/tools/inspect_hx700.gd); this reference establishes a source route, not a successful launch. Additional capture adapters, actual rig visibility and footage remain pending; this sheet does not select a renderer or video package.

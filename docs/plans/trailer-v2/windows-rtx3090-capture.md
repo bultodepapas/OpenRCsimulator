@@ -1,8 +1,8 @@
 # Trailer 2.0 — retained Windows / RTX 3090 capture study
 
-**R4 priority:** [review the screenplay](cinematic-script-r4.md) before choosing tools. The routes below are prior production options, not an approved R4 implementation or a command to start filming. The current [verification gates](verification-gates.md) supersede any older shot-priority assumptions in this study.
+**R5 priority:** [review the shooting script](cinematic-script-r5.md) and [shot plan](shot-plan-r5.json) before capture. The routes below retain prior production research; their equipment and render settings are proposals, not proof of R5 footage. The current [verification gates](verification-gates.md) supersede older shot-priority assumptions in this study.
 
-**This file documents a future capture setup. No new RTX3090 captures, graphics changes, scripts or benchmarks were made for V2 in this documentation branch.**
+**This file documents a future capture setup.** Initial offline shot-plan tools and the opt-in livery hold-last change are implemented and narrowly tested. No new RTX 3090 capture, graphics qualification or benchmark is claimed; additional capture adapters and footage remain pending.
 
 ## Reference machine, lock and output
 - Target: owner's Windows PC, NVIDIA GeForce RTX 3090, qualified driver. Before filming log Windows version, driver number, GPU/CPU/RAM, monitor/window dimensions, source commit, clean profile, actual Godot executable hash and output storage.
@@ -38,7 +38,7 @@ Planned PowerShell preflight setup (illustrative, not executed here):
     # Log effective renderer, lighting, skin and reflection states.
     Remove-Item Env:OPENRC_LAKE_REFLECTIONS
 
-For R4, the essential mirror test uses the final orbit skin held through the lake shot: compare flag off/on and the actual moving Corsair. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check water reflection has coherent geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If current Corsair doesn't qualify, use the documented Vantage reflection as a separated fallback and keep true Corsair footage unmirrored.
+For R5, the essential mirror test uses `three_tone`, the final orbit skin, through the six-second shoreline approach, water crossing and exit: compare flag off/on and the actual moving Corsair. The proposed over-water interval is about 3.225 seconds at the nominal 23 m/s, not the whole six seconds. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check reflection geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If the Corsair reflection doesn't qualify, retain a genuine unmirrored Corsair pass; a documented Vantage reflection can be shown only as a separately identified alternate.
 
 ## Lens options and precisely what generates them
 
@@ -58,16 +58,16 @@ Blood/splatter requires actual person/pilot collision; terrain crash causes grim
 | Fast fleet | Club and Green paradise | bright morning and midday | mostly calm | diversity of camera/background |
 | Extra + Stik day-night | Club | afternoon, gold, blue hour, Moonrise/night | calm | body + RGB both visible |
 | RC trucks | RC dirt circuit | sunny with dusk/neon alternative | dry for dust; actual water/mud only if surface supports | nitro exhaust/neon, tires and landing |
-| Scale | same runway and landmarks | neutral midday | calm | 10/100/500% comparison by perspective |
+| Scale | Club field / recognizable landmarks | neutral midday | calm | Real giant and tiny trials use different framing, with a closer tiny view; the disclosed cinematic trio supplies the same-depth comparison. |
 | FPV | eligible gate course | full daytime | course-preserving weather | gate crossing, actual timer |
 | Creator trial | Creator-supported session | bright daytime | calm | preview clearly becomes an eligible test flight |
 | Camera effects | proper collision world | readable soft light | set for actual trigger | dust/crack and optional person-impact curtain |
 
 ## Capture lanes and evidence
 
-**Lane 1 — existing Godot cinema tools:** [tools/trailer/README.md](../../../tools/trailer/README.md) includes flight director, cars, Corsair deck, formation, night lighting and renderer caveats. Re-qualify against pinned current engine; do not assume old 4.8-beta1 scripts produce correctly measured beta2 High footage. Movie Maker with --fixed-fps 60 and --write-movie captures offline deterministic frames and synchronized audio when configured; actual dimension must be ready before film writer initializes. Track output manifest and screen format. Captured 60fps is not proof that the game ran 60fps in real time.
+**Lane 1 — existing Godot cinema tools:** [tools/trailer/README.md](../../../tools/trailer/README.md) includes flight director, cars, Corsair deck, formation, night lighting and renderer caveats. R5 adds an opt-in hold-last schedule; the focused schedule test does not prove source-frame alignment or actual GLB appearance. Re-qualify against the pinned engine; do not assume old 4.8-beta1 scripts produce correctly measured beta2 High footage. Movie Maker with --fixed-fps 60 and --write-movie captures offline deterministic frames and synchronized audio when configured; actual dimensions must be ready before the film writer initializes. Track output manifest and screen format. Captured 60fps is not proof that the game ran 60fps in real time.
 
-**Lane 2 — manual gameplay/UI:** record with verified Windows/OBS capture for FPV racing, variable car behavior and Creator menus, where capture directors cannot supply controls. Record controller input and avoid dropped/duplicate frames.
+**Lane 2 — manual gameplay/UI:** use a verified Windows capture route for FPV racing, variable car behavior and Creator menus where capture directors cannot supply controls; OBS is one option to qualify. Record controller input and avoid dropped/duplicate frames.
 
 **Lane 3 — A/B beauty tests:** identical plane/lighting on High Native with and without planar; one Extreme scene detail variant; optional DLSS/FSR *only if actually functional*. Compare original pixels, not just edited grade; check micro-stutter, exposure, true water reflection, small wing text, night luminance, motion and audio.
 

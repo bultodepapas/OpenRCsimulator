@@ -1,8 +1,8 @@
-# Trailer 2.0 — integrated feature opportunities, Revision 4
+# Trailer 2.0 — integrated feature opportunities, Revision 5
 
 **Reviewed:** 21 November 2026. **Track / owner:** V2 / trailer director-editor.
 **Source baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e.
-**Current authority:** [R4 screenplay](cinematic-script-r4.md), [150-second storyboard](storyboard-150s.md), [90-second Field Notes](feature-companion-films.md) and [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
+**Current authority:** [R5 shooting script](cinematic-script-r5.md), [shot plan](shot-plan-r5.json), [150-second storyboard](storyboard-150s.md), [90-second Field Notes](feature-companion-films.md) and [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet). The R4-prefixed IDs are retained in R5.
 
 The earlier candidate list is now integrated. Every opportunity has a specific master shot or a fully timed companion sequence. This ledger owns the mapping and source boundaries; the screenplays own timing and direction. All visual acceptance is still pending actual footage.
 
@@ -47,7 +47,8 @@ Imported-aircraft previews, setup eligibility, test-flight evidence and normal H
 - **Bisonte:** shore interaction and a suspension comparison replace its repeated jump role. MONSTER CAR 2 retains the opening complete landing.
 - **Instruments:** master emphasizes one stable live input/response view; full preset demonstrations have a timed Field Notes sequence.
 - **Recovery:** eight seconds replace the prior 1.5-second impact punctuation.
-- **Corsair:** twelve seconds for ground checks, four for the separately labelled collective, ten for the continuous 13-skin orbit, six for the lake.
+- **Corsair:** twelve seconds for ground checks, four for the separately labelled collective, ten for the continuous 13-skin orbit, and six for shoreline approach, water crossing and exit. `three_tone` matches the ground checks, final orbit livery and lake. The proposed crossing is about 3.225 seconds over water at 23 m/s, subject to rehearsal.
+- **Scale:** giant and tiny trials use different framing to keep the tiny model readable; only the labelled cinematic trio places all three at one depth.
 - **Imports:** eighteen preview slots and a three-second eligible trial are integrated; 300+ remains a prepared headline requiring count evidence.
 - **Environmental details:** master compositions use them when they fit, while Field Notes provides independent readable shots. They are not silently discarded.
 
@@ -56,8 +57,8 @@ Imported-aircraft previews, setup eligibility, test-flight evidence and normal H
 | Step | Work | Proof / status |
 | --- | --- | --- |
 | V2-FEATURE-01 | Trace omitted player-facing features | Source review completed at the stated baseline; links above. |
-| V2-FEATURE-02 | Integrate all opportunities into timed scripts | Completed on paper in R4, Field Notes, Preflight Ballet and the import chapter. |
+| V2-FEATURE-02 | Integrate all opportunities into timed scripts | Completed on paper in R5, Field Notes, Preflight Ballet and the import chapter; the 62 R4-prefixed master IDs remain stable. |
 | V2-FEATURE-03 | Qualify selected shots on the promoted build | Pending actual footage under the [verification gates](verification-gates.md). |
 | V2-IMPORT-COUNT | Substantiate any numerical imported-aircraft claim | Pending deduplicated current-build evidence; no 300+ public claim accepted. |
 
-No new runtime, gameplay capture, hardware measurement or flight validation was performed. The original source observations remain evidence for their documented versions; the next production phase must qualify the selected images.
+The initial offline shot-plan tools and opt-in livery hold-last change are implemented and narrowly tested. Additional capture adapters, gameplay footage, hardware measurements and flight validation remain pending. The original source observations remain evidence for their documented versions; the next production phase must qualify the selected images.

@@ -2,7 +2,9 @@
 
 ## Director's screenplay — Revision 4: EXPAND YOUR HANGAR
 
-**21 November 2026 · Current working screenplay · Script only**
+**Historical R4 screenplay — current detailed direction is [R5](cinematic-script-r5.md), with the same 150-second timeline and retained cut IDs.**
+
+**21 November 2026 · Retained story expansion · Script only**
 **Track / owner:** V2 / trailer director-editor. **Master:** 150.000 seconds, 16:9, 1080p60 first; English, no voice-over required.
 **Source baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e. The promoted build and actual footage remain unselected.
 **Authority:** supersedes [R3](cinematic-script-r3.md). The [150-second storyboard](storyboard-150s.md) owns the synchronized cut table; [import showcase](import-showcase.md) owns the 18-model casting plan and numerical-claim gate.

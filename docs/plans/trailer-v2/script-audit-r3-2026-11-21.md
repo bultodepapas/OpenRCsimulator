@@ -1,6 +1,6 @@
 # Trailer 2.0 — screenplay audit and R3 decisions
 
-**Historical audit.** The [R4 audit](script-audit-r4-2026-11-21.md) records current integration and timing; this document preserves the R3 findings.
+**Historical audit.** The [R5 audit](script-audit-r5-2026-11-21.md) records current integration and timing; this document preserves the R3 findings.
 
 **Date:** 21 November 2026. **Owner / track:** trailer director-editor / V2.
 **Input:** trailer branch at 046839601c76f6416ca7315eeeb635706a884dee; R2 and all supporting documents; nine selected filmmaking skills; historical v9.13 report; current game source at 57abea025f62b20233ca281d58d2acbee4ab8b8e.

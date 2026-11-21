@@ -18,12 +18,14 @@ var _last_state := PackedFloat64Array() # TRA-09: latest accepted state for the 
 var _run_up_altitude_m := -1.0
 const CORSAIR_TOP_RUDDER := 1.0 # Sign verified against measured nose drop in knife-edge.
 # TRA-10: presentation-only livery cycle on one flight (--livery-cycle=a,b,... --livery-from=s --livery-every=s).
+# --livery-hold-last stops on the last livery; without it the existing cycle repeats.
 # Each livery is another GLB of the same airframe; only MeshInstance3D resources are swapped, never physics.
 const ORBIT_BANK_RAD := -0.17 # Light left bank (about 10 degrees) held through the orbit pass.
 const ORBIT_ALTITUDE_M := 6.0
 var _liveries: Array[Dictionary] = []
 var _livery_from_s := 1.0
 var _livery_every_s := 0.6
+var _livery_hold_last := false
 var _livery_active := ""
 var _livery_matched := 0
 var _orbit_previous_altitude_m := NAN
@@ -45,19 +47,21 @@ func configure(flight_main: Node, shot_name: String, shot_duration_s: float, out
 	if shot != "lighting-pilot":
 		main._rig.set_view("chase")
 		main._rig.auto_zoom = false
-	_load_livery_cycle()
+	_load_livery_cycle(OS.get_cmdline_user_args())
 
 
 ## TRA-10: preload every requested livery scene's meshes, keyed by node name in scene order.
-func _load_livery_cycle() -> void:
+func _load_livery_cycle(arguments: PackedStringArray) -> void:
 	var ids := PackedStringArray()
-	for arg: String in OS.get_cmdline_user_args():
+	for arg: String in arguments:
 		if arg.begins_with("--livery-cycle="):
 			ids = arg.trim_prefix("--livery-cycle=").split(",", false)
 		elif arg.begins_with("--livery-from="):
 			_livery_from_s = arg.trim_prefix("--livery-from=").to_float()
 		elif arg.begins_with("--livery-every="):
 			_livery_every_s = maxf(arg.trim_prefix("--livery-every=").to_float(), 1.0 / 60.0)
+		elif arg == "--livery-hold-last":
+			_livery_hold_last = true
 	if ids.is_empty():
 		return
 	var records: Array = main._airplane.get("model_manifest", {}).get("liveries", [])
@@ -71,7 +75,8 @@ func _load_livery_cycle() -> void:
 		var instance: Node = scene.instantiate()
 		_liveries.append({id = id, meshes = _mesh_table(instance)})
 		instance.free()
-	print("FLIGHT_CAPTURE_LIVERY_CYCLE ", ",".join(ids), " from=", _livery_from_s, " every=", _livery_every_s)
+	print("FLIGHT_CAPTURE_LIVERY_CYCLE ", ",".join(ids), " from=", _livery_from_s, " every=", _livery_every_s,
+		" hold_last=", _livery_hold_last)
 
 
 func _mesh_table(root: Node) -> Dictionary:
@@ -92,7 +97,8 @@ func _apply_livery_cycle(t: float) -> void:
 	if _liveries.is_empty():
 		return
 	var index := 0 if t < _livery_from_s else 1 + int(floor((t - _livery_from_s) / _livery_every_s))
-	var entry: Dictionary = _liveries[index % _liveries.size()]
+	index = mini(index, _liveries.size() - 1) if _livery_hold_last else index % _liveries.size()
+	var entry: Dictionary = _liveries[index]
 	if entry.id == _livery_active:
 		return
 	var seen := {}
