@@ -492,7 +492,18 @@ func _large_prescribed_snapshot(config: Dictionary) -> void:
 	var raw := _prescribed_raw()
 	var rows := []
 	rows.resize(SNAPSHOT_CT_ROWS)
-	for i: int in rows.size(): rows[i] = [float(i) / float(rows.size() - 1), 0.1]
+	# A36 R6-G01: sample the aircraft's own thrust curve on the dense grid (the same piecewise-linear function), so the
+	# table still satisfies the propeller energy bound Cp >= J*Ct with the unchanged power table.
+	var source: Array = raw.propulsion.propeller.ct_table.value
+	var segment := 1
+	for i: int in rows.size():
+		var x := float(i) / float(rows.size() - 1)
+		while segment < source.size() - 1 and float(source[segment][0]) < x: segment += 1
+		var j0 := float(source[segment - 1][0])
+		var j1 := float(source[segment][0])
+		var c0 := float(source[segment - 1][1])
+		var c1 := float(source[segment][1])
+		rows[i] = [x, c0 + (c1 - c0) * (x - j0) / (j1 - j0)]
 	raw.propulsion.propeller.ct_table.value = rows
 	# This is the complete reference v2 validation, not a fabricated normalized
 	# source. J increases from 0 to 1, and each thrust coefficient is valid.

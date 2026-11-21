@@ -69,6 +69,9 @@ func _initialize() -> void:
 	raw.propulsion.engine.shaft.power_curve.value = [[1000.0, 1000.0], [2000.0, 2000.0]]
 	raw.propulsion.engine.shaft.friction_torque.value = [0.0, 0.0]
 	raw.propulsion.propeller.cp_table.value = [[0.0, 0.0001], [0.5, 0.0001]]
+	# A36 R6-G01: a propeller that absorbs almost no shaft power may not deliver more thrust work than that power
+	# (Cp >= J*Ct); a matching small thrust table keeps the same static Cp and the same unbracketed equilibrium.
+	raw.propulsion.propeller.ct_table.value = [[0.0, 0.0001], [0.5, 0.0]]
 	var accepted := AD.validate_and_derive(raw)
 	check("unbracketed reproducer passes full data loader", accepted.ok)
 	var accepted_prop: Dictionary = accepted.model.propulsion

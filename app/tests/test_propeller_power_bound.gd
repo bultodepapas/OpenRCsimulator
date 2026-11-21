@@ -34,6 +34,7 @@ func _table(rows: Array) -> PackedFloat64Array:
 
 func _run() -> void:
 	_unit_cases()
+	_cursor_parity_and_scale()
 	_r6_witnesses()
 	_stock_catalog()
 	print("propeller power bound: %d checks, %d failed" % [checks, failures])
@@ -45,7 +46,8 @@ func _unit_cases() -> void:
 	var ct := _table([[0.0, 0.0050], [0.2, 0.0050], [0.8, 0.0035], [1.2, -0.05]])
 	var cp := _table([[0.0, 0.00108], [0.2, 0.00108], [0.8, 0.00282], [1.2, 0.001]])
 	for j: float in [0.2, 0.8]:
-		check("R6 interior case passes at row J=%.1f" % j, Bound._margin(ct, cp, 0.0, j) >= 0.0)
+		check("R6 interior case passes at row J=%.1f" % j,
+			Propulsion.coefficient(cp, j, 0.0) - j * Propulsion.coefficient(ct, j, Propulsion.CT_FLOOR) >= 0.0)
 	var interior := Bound.check(ct, cp, 0.0)
 	check("R6 interior case is refused between passing rows", not interior.ok and interior.j > 0.2 and interior.j < 0.8, interior)
 	var expected_j := 0.5 # independent: g = -aJ^2 + (c-b)J + d on [0.2, 0.8] is minimised where g' = 0.
@@ -85,6 +87,38 @@ func _unit_cases() -> void:
 	for j: float in [0.65, 0.7, 0.75, 0.8]:
 		var direct := Propulsion.coefficient(cp_floor, j, 0.0) - j * Propulsion.coefficient(ct_floor, j, Propulsion.CT_FLOOR)
 		check("tail certificate never exceeds a sampled runtime margin at J=%.2f" % j, float(floored.margin) <= direct + 1.0e-15)
+
+
+## The bound's forward cursor reproduces Propulsion.coefficient bit for bit, and a 524,289-row table (the native
+## admission snapshot size) is certified in linear passes rather than one table scan per breakpoint.
+func _cursor_parity_and_scale() -> void:
+	var table := _table([[0.0, 0.12], [0.2, 0.11], [0.45, 0.07], [0.7, 0.01], [0.9, -0.04]])
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 6201
+	var samples := PackedFloat64Array()
+	for i in 400:
+		samples.append(rng.randf_range(-0.2, 2.0))
+	samples.sort()
+	var cursor := 1
+	var same := true
+	for j: float in samples:
+		var value: Array = Bound._value(table, j, Propulsion.CT_FLOOR, cursor)
+		cursor = int(value[1])
+		same = same and float(value[0]) == Propulsion.coefficient(table, j, Propulsion.CT_FLOOR)
+	check("forward cursor equals Propulsion.coefficient exactly", same)
+	var rows := 524289
+	var big_ct := PackedFloat64Array()
+	var big_cp := PackedFloat64Array()
+	for i in rows:
+		var j := float(i) / float(rows - 1)
+		big_ct.append(j)
+		big_ct.append(0.1 - 0.12 * j)
+		big_cp.append(j)
+		big_cp.append(0.05 - 0.02 * j)
+	var started := Time.get_ticks_msec()
+	var result := Bound.check(big_ct, big_cp, 0.0)
+	var elapsed := Time.get_ticks_msec() - started
+	check("a 524,289-row table is certified in linear time", result.ok and elapsed < 30000, "%d ms %s" % [elapsed, str(result)])
 
 
 func _lumber(mutate: Callable) -> Dictionary:
