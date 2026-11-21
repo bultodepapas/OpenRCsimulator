@@ -6,9 +6,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=oneshot
 User=root
-Group=openrc-stats-export
-StateDirectory=openrc-stats-backup-export
-StateDirectoryMode=0750
+Group=root
 UMask=0077
 ExecStart=/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py export
 TimeoutStartSec=90s
