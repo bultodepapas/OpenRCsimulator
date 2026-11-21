@@ -936,7 +936,7 @@ static func _disc_proxy_contact(proxy: Dictionary, hub: PackedFloat64Array, axis
 		if k < DISC_DEPTH_SAMPLES:
 			var phase := TAU * float(k) / float(DISC_DEPTH_SAMPLES)
 			for j in 3:
-				sample[j] += radius * (cos(phase) * u[j] + sin(phase) * v[j])
+				sample[j] += radius * (M.cos_(phase) * u[j] + M.sin_(phase) * v[j])
 		var distance := _clearance(proxy, sample[0], sample[1], sample[2])
 		if distance < best_distance:
 			best_distance = distance
