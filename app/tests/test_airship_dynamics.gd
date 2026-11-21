@@ -119,6 +119,7 @@ static func _cont(motors := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])) -> PackedF
 	for i in 4:
 		c[Data.MOTOR + i] = motors[i]
 	c[Data.SOC] = 1.0
+	c[Data.BATTERY_CONNECTED] = 1.0
 	return c
 
 
