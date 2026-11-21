@@ -6,7 +6,7 @@ The owner requested one GitHub branch containing every finding and continued phy
 
 ## Continued independent physics investigation (A36 R2)
 
-The [21 November second-pass physics and mathematical review](second-pass-physics-2026-11-21.md) adds two **source-confirmed** FPV defects: rotor aerodynamic coefficients failing to respond to the stage's own changing density (R2-F01), and a 90-degree Angle-heading reference seam near vertical pitch (R2-F02). The [portable independent equation probes](probes/physical_crosschecks.py) quantify both without claiming an application or Godot test. It also records a constructed blimp bus-power candidate (R2-I01) and separately quantifies already-known blimp buoyancy, FPV rotor inflow/ground effect, wing spanwise drag and turbine fuel limitations. No new runtime fix or physical calibration is claimed in R2. The original A36 findings and completed software gates below retain their distinct status.
+The [21 November second-pass physics and mathematical review](second-pass-physics-2026-11-21.md) adds two **source-confirmed** FPV defects: rotor aerodynamic coefficients failing to respond to a supplied non-reference stage density (R2-F01; R7 establishes that the current player drone session holds reference density), and a 90-degree Angle-heading reference seam near vertical pitch (R2-F02). The [portable independent equation probes](probes/physical_crosschecks.py) quantify both without claiming an application or Godot test. It also records a constructed blimp bus-power candidate (R2-I01) and separately quantifies already-known blimp buoyancy, FPV rotor inflow/ground effect, wing spanwise drag and turbine fuel limitations. No new runtime fix or physical calibration is claimed in R2. The original A36 findings and completed software gates below retain their distinct status.
 
 ## Third-pass energy, mass and numerical audit (A36 R3)
 
@@ -42,6 +42,21 @@ The [sixth-pass report](sixth-pass-physics-2026-11-21.md) reviews source `f2d9bf
 The [single reproducer](probes/reproduce_sixth_pass.py) rebuilds **442 real dependencies without stubs**, retains unchanged stock inputs and verifies five labeled synthetic files. The [evidence](sixth-pass-evidence.json) contains **11 clean checked invocations**, **two exact expected checked failures**, input/backend identities and independent scalar-oracle output. The expected failures remain failures in their reports; child exit 0 is not treated as successful physics. Four unchanged wind/airship tests contribute **502 checks**. The report records rejected candidates, existing modeling limits, repair options and promotion gates; R4-F02 overlap and all earlier unresolved work retain their separate scope.
 
 The [separate prior-head CI snapshot](sixth-pass-ci-snapshot.json) updates the formerly pending R5 CI: required CI completed with failure and MetalFX source controls passed. Inspected failures include stale rate-derivative provenance, math-wrapper violations and companion-source identity refusal. This focused research run does not close full CI or native/rendered/physical qualification. R6 changes no production law.
+
+## Seventh-pass drone controls, numerical admission and rotor work (A36 R7)
+
+The [drone-focused report](seventh-pass-drones-2026-11-21.md) reviews source `5a93c105be0736d23f52ac9b46812b3a5e358233` and adds **two conditional defects** while preserving distinct evidence for model limits and contract questions:
+
+| Item | Result | Evidence boundary |
+| --- | --- | --- |
+| **R7-F01** | An imported BETAFLIGHT expo of 200 maps positive half stick to **−75°/s**; the simulated body responds in that direction | Constructed CLI/profile through the real adapter and stock-data Acro session; valid expo controls pass. No conforming firmware dump or completed player import UI claim |
+| **R7-F02** | A custom **0.001 Ω** motor passes complete file/session admission, then its normal pad arming tick is rejected by the production policy | Correct rollback; the same frame/held command succeeds with diagnostic 4/8/16 plant pieces. Stock motor passes. Custom session API, not an observed player file-selection route |
+| **R7-G01** | A 55° setting applied independently to roll/pitch permits a **70.792520° resultant target**; a stock session reaches 72.422756° transiently | Clarify per-axis versus cone semantics; not a confirmed specified cone violation or actual-attitude safety cap |
+| **Existing rotor limitations, stronger evidence** | Accepted stock climb snapshots show a positive rotor-air power port, including **+89.386116 W** after reducing throttle; a constructed near-stop state exposes the relative/air-relative spin distinction | Full body/rotor/motor ledgers close; no spontaneous whole-vehicle energy growth or new duplicate finding count |
+
+The [portable reconstruction](probes/reproduce_seventh_pass.py) uses **459 real dependencies, no stubs**. Nine clean checked invocations cover **80 observation checks**, **184 unchanged baseline checks**, and **17 independent equation/ledger cases**, with zero engine diagnostics and all source bytes unchanged. The [evidence](seventh-pass-evidence.json) retains full logs, hashes and checked outcomes with host-specific invocation metadata minimized. Repairs, alternatives and acceptance gates are documented; R7 makes no production change or performance claim.
+
+R7 also [qualifies R2-F01's reachability](seventh-pass-drones-2026-11-21.md#r2-f01-reachability-correction): the current drone session constructs reference-density weather, so the earlier changing-density arithmetic is a controlled atmosphere counterfactual, not an observed player altitude effect. The [reviewed-head CI snapshot](seventh-pass-ci-snapshot.json) records completed CI failure and successful MetalFX source controls; complete CI, native and physical qualification remain separate.
 
 ## Original evidence
 

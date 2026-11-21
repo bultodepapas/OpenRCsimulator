@@ -8,7 +8,7 @@
 
 | ID | Type | What is established | Priority / needed verification |
 | --- | --- | --- | --- |
-| **R2-F01** | Source-confirmed physics inconsistency; independent ISA calculation | FPV rotor thrust, aerodynamic torque and in-plane rotor drag are invariant to atmospheric density at fixed rotor state, even though the airframe drag samples changing density | **P1 realism**. Run paired accepted 240 Hz flight states at two admitted heights; validate reference and any native backend, controller response, performance and replay before correcting |
+| **R2-F01** | Source-confirmed component inconsistency; independent ISA counterfactual | FPV rotor thrust, aerodynamic torque and in-plane rotor drag are invariant to a supplied atmospheric density at fixed rotor state, even though the airframe drag samples that density | Original **P1 realism** investigation; **R7 qualifies player reachability**. First establish an admitted non-reference atmosphere route; changing start height alone leaves current drone density fixed. Then validate paired density states, controller/bus response, reference/native eligibility and replay |
 | **R2-F02** | Source-confirmed control discontinuity; independent quaternion witness | FPV Angle heading changes by 90° for a 0.002° pitch perturbation near a hard horizontal-nose threshold | **P1 numerical/control** near the transition, not a demonstrated crash. Add exact mode-level and accepted-session crossing traces before repairing |
 | **R2-I01** | Constructed admitted-parameter bus-power inconsistency; stage **not** executed | In a hypothetical custom high-resistance blimp state, the calculated electrical request exceeds the battery's own maximum deliverable power and the telemetry calls the former battery power | **P2 investigation**; reproduce in a real stage with an admitted model and state, then check reachability/energy before calling it a flown defect |
 | **R2-L01** | Already-declared airship model limitation, now quantified | Blimp uses a fixed launch-density model at all heights; ISA density change across 1000 m changes the ideal buoyant force by ~2.78 N for the shipped envelope volume | **P2 physical expansion**, not a fresh implementation defect; couple atmosphere, helium, geometry and added mass consistently |
@@ -17,6 +17,8 @@
 | **R2-L04** | Already-declared turbine approximation | Turbine can report fuel flow while fixed mass/CG remains prescribed | **Future physical program**, not a fresh defect; coordinate existing AV/fuel owners |
 
 ## R2-F01 — FPV rotor density disconnect
+
+**R7 reachability qualification (21 November 2026):** the current drone session constructs `WindSettings.defaults()` and changes only steady wind speed/direction. No Conditions/custom-density/standard-column installation route was demonstrated. Its legal 500 m air-start option still uses reference density. The calculations below remain a controlled environment counterfactual and source-level coupling gap; they are not an observed player altitude effect. See the [R7 qualification correction](seventh-pass-drones-2026-11-21.md#r2-f01-reachability-correction). R7 also supplies accepted stock-flight power evidence for the existing R2-L02 inflow limitation without adding a duplicate finding count.
 
 **Code ownership and source anchors:**
 
@@ -126,7 +128,7 @@ These are research constraints, not substitute performance measurements of OpenR
 
 **Suggested order for a separate implementation PR or further commits, maintaining this draft branch as appropriate:**
 
-1. **R2-F01**: prepare two accepted FPV frames at different legal heights with identical rotor RPM/body state, assert \(T\) and \(Q\) scaling using the reference-density coefficient, then implement only after confirming source/native identity and motor equilibrium admission.
+1. **R2-F01, updated by R7**: first establish and identify an admitted FPV atmosphere configuration that actually changes stage density. Legal start height alone does not do so in the current reference-atmosphere session. Then prepare paired accepted frames with identical rotor state, assert \(T\) and \(Q\) scaling using an identified reference-density coefficient, and qualify source/native identity, loaded motor equilibrium and replay before implementing.
 2. **R2-F02**: run accepted Angle-mode tick samples immediately on both sides of the threshold with deliberately unsaturated gains, verify that the torque command changes in a way not explained by physical attitude changes; design a checkpointed continuous-heading strategy.
 3. **R2-I01**: validate the extreme resistance and high-spin initial-state admission; compute requested/terminal/stored-rotor powers and determine if any accepted source-driven flight can exhibit inconsistent telemetry.
 4. **R2-L01–L04**: target real measurements and versioned feature branches; introduce no unqualified global laws merely to make the model appear more detailed.
