@@ -1,0 +1,18 @@
+[Unit]
+Description=Stage the verified CT 406 GitHub archive for the off-host OpenRC Stats backup (TELEM-24c)
+After=pve-guests.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+User=root
+Group=openrc-stats-export
+StateDirectory=openrc-stats-backup-export
+StateDirectoryMode=0750
+UMask=0077
+ExecStart=/usr/bin/python3 /usr/local/lib/openrc-stats/openrc_stats_backup.py export
+TimeoutStartSec=90s
+LimitFSIZE=128M
+Restart=on-failure
+RestartSec=15min
+Nice=10

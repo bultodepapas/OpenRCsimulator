@@ -1,0 +1,9 @@
+[Unit]
+Description=Stage a daily OpenRC Stats backup after the CT 406 backup
+
+[Timer]
+OnCalendar=*-*-* 02:55:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

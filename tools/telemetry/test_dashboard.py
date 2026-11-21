@@ -260,7 +260,8 @@ class DashboardCase(unittest.TestCase):
         data["website"] = test_ga4.model(fail={(("date",), "download_request")})
         overview, website = (dashboard.render(data).split('id="panel-website"')[i] for i in (0, 1))
         self.assertIn("download requests: report failed", overview)
-        self.assertIn('<div class="tv">-</div><div class="ts">report failed</div>', website)
+        self.assertIn("latest 7 days incomplete", website)
+        self.assertIn("Report failed:", website)
         data["website"] = {"error": "HTTP 403: <denied>", "collected_utc": "2027-01-20T09:00:00Z", "property": None}
         page = dashboard.render(data)
         self.assertIn("HTTP 403: &lt;denied&gt;", page)
@@ -272,6 +273,81 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("nothing in either week", dashboard.delta_html(0, 0))
         self.assertIn("new (+3)", dashboard.delta_html(3, 0))
         self.assertIn("no comparison yet", dashboard.delta_html(3, None))
+
+    def test_provisional_and_missing_observations_stay_distinct(self):
+        days = ["2027-01-01", "2027-01-02", "2027-01-03", "2027-01-04"]
+        html = dashboard.line_chart(days, [("Sessions", [0, None, 3, 4], "s1")], "Sessions",
+                                    provisional={"Sessions": {days[-1]}})
+        self.assertIn("0 (observed)", html)
+        self.assertIn("Unavailable", html)
+        self.assertIn("4 (provisional)", html)
+        self.assertIn('class="provisional line-s1"', html)
+        path = html.split('class="line line-s1" d="')[1].split('"')[0]
+        self.assertEqual(path.count("M"), 2)
+        self.assertNotIn("L", path)
+        self.assertIn("<summary>Data table</summary>", html)
+        metric = dashboard.week_metric("Sessions", "website", "GA4", "UTC", days[2:], days[:2],
+                                       dict(zip(days, (0, 0, 3, 4))), "2027-01-04T06:00:00Z",
+                                       uncertain={days[-1]})
+        self.assertIsNone(metric.previous)
+        self.assertEqual(metric.condition, "Partial coverage")
+
+    def test_download_counter_gap_preserves_the_original_interval(self):
+        intervals = [{"from_end": "2027-01-16T10:00:00Z", "to_end": "2027-01-19T10:00:00Z",
+                      "increase": 30, "status": "matched_ids"}]
+        with_archive = {"intervals": intervals, "assets": [], "pattern": "*.zip", "collected_utc": intervals[0]["to_end"]}
+        values, notes = dashboard.download_daily(with_archive)
+        self.assertEqual(values, {})
+        self.assertEqual(notes["2027-01-19"], "Long collection interval")
+        html = dashboard.downloads_section(with_archive, NOW, 7)
+        self.assertIn("<summary>Collection intervals</summary>", html)
+        self.assertIn("<td>2027-01-16T10:00:00Z</td><td>2027-01-19T10:00:00Z</td><td>30</td>", html)
+
+    def test_github_public_counters_continue_when_credentials_fail(self):
+        with unittest.mock.patch.dict(os.environ, {"GH_TOKEN": "fixture"}), unittest.mock.patch.object(
+                dashboard.downloads, "collect", side_effect=[(False, "authentication failed"), (True, "collected")]
+        ) as collect:
+            self.assertEqual(dashboard.refresh_github(self.dir), "authentication failed; public counters refreshed")
+        self.assertEqual(collect.call_args_list, [unittest.mock.call(self.dir, public_only=False),
+                                                  unittest.mock.call(self.dir, public_only=True)])
+
+    def test_release_cadence_requires_covered_and_equally_aged_cohorts(self):
+        current = {"tag": "v0.3.2", "published": "2027-01-04T18:00:00Z"}
+        previous = {"tag": "v0.3.1", "published": "2026-12-28T15:00:00Z"}
+        metrics = {f"hist{i}": 0 for i in range(dashboard.HIST_LEN)}
+        metrics.update(hist0=500, hist6=10, interval_sum_us=10_000_000, rendered_frames=510,
+                       excluded_gap_count=2)
+
+        def report(release, start, week):
+            return {"release_id": release["tag"], "week": week, "week_closed": True,
+                    "days": [{"day": (date.fromisoformat(start) + timedelta(days=offset)).isoformat(),
+                              "status": "ready"} for offset in range(7)],
+                    "tables": {"flight_pacing": {"published": [{"dims": ["unlimited"], "metrics": metrics,
+                                                                 "sessions": 20}]}}}
+
+        left = report(current, "2027-01-11", "2027-W02")
+        right = report(previous, "2027-01-04", "2027-W01")
+        data = {"insights": [left, right],
+                "rollup_days": {day["day"]: "complete" for r in (left, right) for day in r["days"]}}
+        self.assertIn("Release-age days 7–13", dashboard.release_cadence(data, current, previous))
+        self.assertIn(">unlimited<", dashboard.release_cadence(data, current, previous))
+        last = right["days"][-1]["day"]
+        data["rollup_days"][last] = "partial"
+        self.assertIn("Comparable data is unavailable", dashboard.release_cadence(data, current, previous))
+        data["rollup_days"][last] = "complete"
+        right["days"][-1]["status"] = "missing"
+        self.assertIn("Comparable data is unavailable", dashboard.release_cadence(data, current, previous))
+
+    def test_review_deduplicates_the_source_and_caps_actions(self):
+        sample = {"generated_unix": NOW, "website": {"missing": {"vitals": []}}}
+        alerts = [("critical", "Incomplete rollup", "retry before expiry"),
+                  ("warning", "No batch in 24 h", "otherwise healthy"),
+                  ("warning", "Download counters stale", "check collector")]
+        html = dashboard.review_items(sample, alerts, [])
+        self.assertEqual(html.count("<li>"), 3)
+        self.assertIn('href="#receiver"', html)
+        self.assertIn('href="#downloads"', html)
+        self.assertNotIn("No batch in 24 h", html)
 
     def test_build_writes_page_and_health_atomically(self):
         import test_ga4
