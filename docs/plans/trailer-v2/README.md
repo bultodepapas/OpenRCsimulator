@@ -9,6 +9,8 @@
 Make a new, faster, more playable successor to Every Input Matters. Show all 13 selectable vehicles, both monster trucks, flights through day/sunset/night, RGB lighting, actual lake reflections, F4U Corsair liveries in motion, 10–500% supported scaling, model imports, and real crash-camera effects (blood/splatter, mud, water, cracked lens). Sell the feeling of trying the game, not a technical manual.
 
 ## Documentation navigation
+- **[AI video skills research](research-ai-video-skills-2026-11-21.md)**: GitHub and Reddit research; five MIT upstream skills and four original OpenRC-specific skills brought into both agent catalogs.
+- **[Creative ideas from AI filmmaking research](ideas-from-ai-film-skills.md)**: new shot concepts for Corsair orbit-to-lake, other skins, FPV gate viewpoints, scale trio, telemetry, engine-sound montage and future screenplay revision.
 - **[Director's screenplay — Revision 2](cinematic-script-r2.md)**: current narrative script, including FPV racing gates, onboard/chase views, flight widgets, the inverted jet, colored smoke, helicopter action, three-size formation and Corsair lake skin sequence. **This is the current screenplay.**
 - [Creative treatment](creative-treatment.md): the filmmaking concept, tone, audience, differences from v9.13 and visual rules.
 - [90-second storyboard](storyboard-90s.md): shot IDs, timecodes, names, actions and transitions.
