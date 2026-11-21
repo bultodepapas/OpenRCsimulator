@@ -22,6 +22,7 @@ import github_history  # noqa: E402
 PLATFORMS = ("Windows", "macOS", "Linux", "Other")
 RELEASE_KEY_RE = re.compile(r"^v(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|rc)\.?(\d+))?$")
 PRE_RANK = {"alpha": 0, "beta": 1, "rc": 2}
+RELEASE_MILESTONES = (("24 h", 24, 6), ("72 h", 72, 12), ("7 days", 168, 24))  # label, target hours, tolerance hours
 
 
 def release_key(release):
@@ -61,6 +62,30 @@ def _parse(stamp):
     return datetime.fromisoformat(stamp.replace("Z", "+00:00")).astimezone(timezone.utc)
 
 
+def _record_release_milestones(milestones, published, rows):
+    """Select near-target sums from one package collection, retaining the actual release capture time."""
+    samples = {}
+    for _, tag, _, count, finished in rows:
+        if tag not in published:
+            continue
+        total, packages, observed = samples.get(tag, (0, 0, finished))
+        samples[tag] = (total + count, packages + 1, max(observed, finished))
+    for tag, (total, packages, observed) in samples.items():
+        age_s = (_parse(observed) - published[tag]).total_seconds()
+        slots = milestones.setdefault(tag, [None] * len(RELEASE_MILESTONES))
+        for index, (_, target_hours, tolerance_hours) in enumerate(RELEASE_MILESTONES):
+            target_s = target_hours * 3600
+            distance_s = abs(age_s - target_s)
+            if distance_s > tolerance_hours * 3600:
+                continue
+            previous = slots[index]
+            if previous is not None:
+                previous_age = previous["age_s"]
+                if (distance_s, age_s) >= (abs(previous_age - target_s), previous_age):
+                    continue
+            slots[index] = {"downloads": total, "packages": packages, "observed_utc": observed, "age_s": age_s}
+
+
 def load(directory):
     """GitHub model from the archive, or None when there is no archive. Version 1 archives (before the
     community tables) load with empty traffic extras until their next collection upgrades them."""
@@ -84,19 +109,24 @@ def load(directory):
         attempt = attempts.get("release assets")
         observations = connection.execute("SELECT id, started_utc, finished_utc FROM observations "
                                           "WHERE kind = 'assets' ORDER BY started_utc, id").fetchall()
+        extras = _extras(connection, version)
+        published = {release["tag"]: _parse(release["published"]) for release in extras["releases"]
+                     if not release["prerelease"]}
+        milestones = {}
         intervals, previous, assets = [], None, []
         for observation_id, started, finished in observations:
-            rows = connection.execute("SELECT asset_id, tag, name, count FROM asset_counts WHERE observation_id = ?",
+            rows = connection.execute("SELECT asset_id, tag, name, count, finished_utc FROM asset_counts "
+                                      "WHERE observation_id = ?",
                                       (observation_id,)).fetchall()
-            counts = {asset_id: count for asset_id, _, _, count in rows}
+            counts = {asset_id: count for asset_id, _, _, count, _ in rows}
             if previous is not None:
                 result = github_history.compare_assets(previous[1], counts)
                 intervals.append({"from_end": previous[0], "to_end": finished, "increase": result["increase"],
                                   "status": result["status"]})
             previous = (finished, counts)
             assets = [{"tag": tag, "name": name, "platform": github_history.asset_platform(name), "count": count}
-                      for _, tag, name, count in rows]
-        extras = _extras(connection, version)
+                      for _, tag, name, count, _ in rows]
+            _record_release_milestones(milestones, published, rows)
         observations_utc = dict(connection.execute(
             "SELECT kind, MAX(finished_utc) FROM observations GROUP BY kind"))
     finally:
@@ -124,7 +154,7 @@ def load(directory):
         "collected_utc": observations[-1][2] if observations else None,
         "last_attempt": attempt, "attempts": attempts,
         "source_utc": source_utc, "source_attempts": source_attempts, "access": access,
-        "assets": assets, "intervals": intervals, **extras,
+        "assets": assets, "intervals": intervals, "release_age": milestones, **extras,
     }
 
 
@@ -191,6 +221,11 @@ def per_release(model):
         counts[asset["platform"] if asset["platform"] in PLATFORMS else "Other"] += asset["count"]
     return [(tag, counts, sum(counts.values()))
             for tag, counts in sorted(releases.items(), key=lambda item: release_key(item[0]), reverse=True)]
+
+
+def release_milestones(model, tag):
+    """An observation or None for each RELEASE_MILESTONES entry, independently of archive age."""
+    return tuple((model.get("release_age") or {}).get(tag, [None] * len(RELEASE_MILESTONES)))
 
 
 def per_day(model):

@@ -26,16 +26,19 @@ The receiver snapshot uses only the service's public read paths (`status_report`
 
 | Tab | Content and source |
 | --- | --- |
-| Overview | Receiver alerts and freshness per source. Last seven full days in UTC for GitHub and the receiver and in the GA4 property zone for Website. Each sum shows coverage and compares periods with complete observations. Recent releases, platform downloads, referrals, countries and daily charts |
-| Players | Weekly insights per ISO week and release: frame cadence by GPU, pacing, resolution, OS/driver and vehicle; menu cadence; vehicle usage; errors; hardware and settings mix. Bars sorted by value, the grey combined row last |
-| Downloads | Package counters: total and platform share, latest release, last 7 days, increases per collection day, every release by Windows / macOS / Linux |
+| Overview | Up to three items to review with links to details. Per-source freshness and seven-day sums with period, time zone, last observation and coverage. Weekly changes require complete, comparable periods. GA4 comparisons end before its provisional processing window |
+| Players | Weekly disclosed insights by release. Cadence charts lead with intervals above 100 ms per observed minute and show observation time, excluded gaps, FPS estimate and slower-interval shares. Error rows show occurrences and the first and last disclosed weeks in the snapshot |
+| Releases | Cumulative package counters near 24 h, 72 h and seven days, including the actual collection age and package count. Flight comparisons prefer covered closed ISO weeks at the same release age with a shared disclosed cohort. The view labels both ages separately for start dates up to two days apart |
+| Downloads | Package counters by release and platform, matched increases by collection end day and the original observation intervals. Long or partial intervals remain in the interval table |
 | GitHub | Stars, forks, watchers, open issues; page views and unique visitors, clones and unique cloners per day (archived beyond GitHub's 14 days); stars over time; releases with dates and downloads; top referrers and popular pages (GitHub's 14-day window) |
-| Website | GA4, published host only: active users, sessions, page views, download requests, download conversion, phone hand-offs and realtime users. Charts of visitors and download requests per day, with releases marked. Countries, download requests by country, traffic sources, top pages and devices. Download requests by platform, source and release, and Web Vitals ratings. Conversion per source, device and OS. A property-setup checklist (retention, key event, custom dimensions) |
+| Website | GA4, published host only. Shows local reporting days and their provisional status, aggregate coverage limitations, tracked-user conversion by source, device and OS, and the automatic/manual and phone hand-off breakdowns when their dimensions are registered. Includes the property setup checklist |
 | Receiver | Health tiles; ingest outcomes per day with refusal detail; rollup coverage per release and day (pending, overdue, missed, no traffic) |
 
 **Alerts.** Critical: suspend-all, raw row past 48 h, `storage_unavailable`, a day with telemetry traffic never rolled up. Warning: rollup overdue (with the command and hours left), raw age near 48 h, suspended releases, `rejected:unapproved_release`, `rate_limited`, no batch in 24 h, a failed GitHub collection, counters older than 36 h.
 
 **Reading the numbers.** Player counts are consenting session-day observations, shown with their release. FPS is a render-cadence estimate limited by VSync or the FPS cap ([insights notes](../../services/telemetry/README.md#weekly-insights-telem-1617)). Cumulative GitHub downloads include repeats and automation. Daily increases use the UTC date of the later collection. Gaps and changed asset sets can make those increases partial. Clones are mostly automated. Historical stars use the date of starring for accounts that still star the repository. Public collection refreshes the current total and leaves the authenticated series dated separately. The dashboard shows snapshot age and warns after an hour.
+
+Line charts leave gaps at unavailable values and use hollow points for provisional observations. Their data tables show an observed zero explicitly. Release activity can guide a controlled flight replay. The release panel reports the actual eligible weeks and coverage before making field data available side by side.
 
 ## Website (GA4)
 
