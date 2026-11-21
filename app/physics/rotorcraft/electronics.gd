@@ -192,15 +192,37 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 		var clamped: float = clampf(servo_positions[index], -1.0, 1.0)
 		servo_travel_limited = servo_travel_limited or clamped != servo_positions[index]
 		servo_positions[index] = clamped
-	var swash: Dictionary = Swash._linkage_output_prepared(servo_positions, model.linkage) if prepared else Swash.linkage_output(servo_positions, model.linkage)
+	# A36 R5-F01: cyclic trim is part of the same swash command. Its normalized equivalent joins the pilot axes before
+	# the mixer and servo travel, so every applied angle triple stays inside the linkage's feasible set. While the
+	# pilot and trimmed triples are both unclamped the original angle-space sum is the same linear result and is kept
+	# bit for bit; otherwise the trimmed triple is clamped per servo (the pilot-stick priority) and every angle,
+	# collective included, is derived from that one bounded result.
+	var forward_bias: float = float(trim.get("cyclic_forward_bias_rad", 0.0))
+	var right_bias: float = float(trim.get("cyclic_right_bias_rad", 0.0))
+	var trimmed_longitudinal: float = cyclic_longitudinal + forward_bias / model.linkage.longitudinal_rad_per_unit
+	var trimmed_lateral: float = cyclic_lateral + right_bias / model.linkage.lateral_rad_per_unit
+	var trim_axis_limited: bool = absf(trimmed_longitudinal) > 1.0 or absf(trimmed_lateral) > 1.0
+	var trimmed: Dictionary = Swash.mix_120(pitch_value, clampf(trimmed_longitudinal, -1.0, 1.0),
+		clampf(trimmed_lateral, -1.0, 1.0))
+	if not trimmed.ok:
+		return {"ok": false, "message": "swash mix refused the trimmed commands"}
+	var trimmed_positions: PackedFloat64Array = trimmed.servo_targets.duplicate()
+	var trim_travel_limited: bool = trim_axis_limited
+	for index: int in range(trimmed_positions.size()):
+		var bounded: float = clampf(trimmed_positions[index], -1.0, 1.0)
+		trim_travel_limited = trim_travel_limited or bounded != trimmed_positions[index]
+		trimmed_positions[index] = bounded
+	var allocated: bool = servo_travel_limited or trim_travel_limited
+	var linkage_positions: PackedFloat64Array = trimmed_positions if allocated else servo_positions
+	var swash: Dictionary = Swash._linkage_output_prepared(linkage_positions, model.linkage) if prepared else Swash.linkage_output(linkage_positions, model.linkage)
 	if not swash.ok:
 		return {"ok": false, "message": "swash linkage refused the mixed commands"}
-	var cyclic_forward: float = clampf(float(swash.longitudinal_rad)
-		+ float(trim.get("cyclic_forward_bias_rad", 0.0)),
-		-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
-	var cyclic_right: float = clampf(float(swash.lateral_rad)
-		+ float(trim.get("cyclic_right_bias_rad", 0.0)),
-		-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
+	var cyclic_forward: float = float(swash.longitudinal_rad) if allocated else clampf(float(swash.longitudinal_rad)
+		+ forward_bias, -model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
+	var cyclic_right: float = float(swash.lateral_rad) if allocated else clampf(float(swash.lateral_rad)
+		+ right_bias, -model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
+	servo_travel_limited = allocated
+	servo_positions = trimmed_positions
 	var yaw_stick: float = sticks[2]
 	var manual_yaw_rate: float
 	var heading_error: float = 0.0
@@ -249,7 +271,7 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 	result["trim"] = trim.duplicate(true)
 	result["servo_travel_limited"] = servo_travel_limited
 	result["swash_servo_targets"] = servo_positions
-	result["swash_servo_commands"] = mixed.servo_targets
+	result["swash_servo_commands"] = trimmed.servo_targets
 	if body_rate_law:
 		result["controller_law"] = BODY_RATE_LAW
 		result["desired_body_rates_rad_s"] = PackedFloat64Array([
