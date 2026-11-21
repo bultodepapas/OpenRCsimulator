@@ -326,3 +326,7 @@
 /docs/research/aircraft-creator/import-closeout-2026-11-17/evidence/**/*.log -whitespace
 /docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/** -text whitespace=cr-at-eol
 /docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/**/*.log -whitespace
+
+# A36 original audit artifacts retain byte-identical PDF/ZIP payloads on every checkout.
+/docs/research/project-audit-2026-11-21/originals/*.pdf binary
+/docs/research/project-audit-2026-11-21/originals/*.zip binary
