@@ -65,7 +65,8 @@ jobs:
         run: |
           "$RUNNER_TEMP/receiver-venv/bin/python" -m unittest -v \
             tools/telemetry/test_dashboard.py tools/telemetry/test_ga4.py tools/telemetry/test_release_metrics.py \
-            tools/telemetry/deploy/host/test_openrc_stats_backup.py tools/analytics/test_github_history.py
+            tools/telemetry/deploy/host/test_openrc_stats_backup.py tools/telemetry/deploy/test_sync_private_github.py \
+            tools/analytics/test_github_history.py
       - name: Build and smoke-test the receiver container
         run: |
           docker build -f services/telemetry/Dockerfile -t openrc-telemetry:ci .
