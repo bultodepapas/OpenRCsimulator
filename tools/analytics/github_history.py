@@ -17,6 +17,9 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime, time, timezone
+from http.client import HTTPException
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 
 DEFAULT_REPO = "bultodepapas/OpenRCsimulator"
@@ -24,6 +27,7 @@ DEFAULT_ASSET_GLOB = "openrc-simulator-*.zip"
 DATABASE_NAME = "github-history.sqlite3"
 SCHEMA_VERSION = 2
 READABLE_VERSIONS = (1, 2)  # version 1 archives gain the community tables on the next collect
+ATTEMPT_KINDS = ("traffic", "release assets", "clones", "community", "public community")
 
 
 class CollectionError(Exception):
@@ -85,6 +89,35 @@ def github_json(endpoint: str, paginated: bool = False, accept: str = "applicati
     return [item for page in response for item in page]
 
 
+def public_github_json(endpoint: str, paginated: bool = False, accept: str = "application/vnd.github+json") -> object:
+    """Collect public data directly, without reading GitHub credentials from the host."""
+    url = f"https://api.github.com/{endpoint}"
+    page_prefix = f"{url}{'&' if '?' in url else '?'}page="
+    items = []
+    for page in range(1, 101):
+        request = Request(f"{page_prefix}{page}" if paginated else url, headers={
+            "Accept": accept, "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "OpenRC-Simulator-Stats",
+        })
+        try:
+            with urlopen(request, timeout=15) as reply:
+                payload = json.load(reply)
+                has_next = bool(re.search(r'(?:^|,)\s*<[^>]+>\s*;\s*rel="next"', reply.headers.get("Link", "")))
+        except HTTPError as exc:
+            raise CollectionError(f"Public GitHub API returned HTTP {exc.code}") from exc
+        except (URLError, OSError, HTTPException) as exc:
+            raise CollectionError("Public GitHub API request failed or timed out") from exc
+        except ValueError as exc:
+            raise CollectionError("Public GitHub API returned invalid JSON") from exc
+        if not paginated:
+            return payload
+        if not isinstance(payload, list):
+            raise CollectionError("Unexpected paginated GitHub response")
+        items.extend(payload)
+        if not has_next:
+            return items
+    raise CollectionError("Public GitHub API pagination limit reached")
+
+
 def fetch_traffic(repo: str, started: str) -> list[dict]:
     return fetch_daily(repo, started, "views")
 
@@ -120,8 +153,11 @@ def fetch_daily(repo: str, started: str, kind: str) -> list[dict]:
     return days
 
 
-def fetch_assets(repo: str, pattern: str) -> list[dict]:
-    releases = github_json(f"repos/{repo}/releases?per_page=100", paginated=True)
+def fetch_assets(repo: str, pattern: str, *, public_only: bool = False) -> list[dict]:
+    api = public_github_json if public_only else github_json
+    release_list_started = timestamp()
+    releases = api(f"repos/{repo}/releases?per_page=100", paginated=True)
+    release_list_finished = timestamp()
     assets = []
     seen_releases = set()
     seen_assets = set()
@@ -137,9 +173,15 @@ def fetch_assets(repo: str, pattern: str) -> list[dict]:
             raise CollectionError("Invalid release tag in GitHub response")
         if release["draft"]:
             continue
-        started = timestamp()
-        release_assets = github_json(f"repos/{repo}/releases/{release_id}/assets?per_page=100", paginated=True)
-        finished = timestamp()
+        embedded = release.get("assets")
+        # Public requests have a shared IP quota. The release list already includes asset counters.
+        if public_only and isinstance(embedded, list) and len(embedded) < 100:
+            started, finished = release_list_started, release_list_finished
+            release_assets = embedded
+        else:
+            started = timestamp()
+            release_assets = api(f"repos/{repo}/releases/{release_id}/assets?per_page=100", paginated=True)
+            finished = timestamp()
         if finished < started:
             raise CollectionError("System clock moved backwards during asset collection")
         for asset in release_assets:
@@ -168,19 +210,21 @@ def text_field(value: object, field: str, limit: int = 400) -> str:
     return value
 
 
-def fetch_community(repo: str) -> dict:
-    """Repository counters, the 14-day top referrers and paths, published releases and stars per UTC day.
+def fetch_community(repo: str, *, public_only: bool = False) -> dict:
+    """Public counters and releases, optionally with private traffic lists and stars per UTC day.
 
     Stargazer accounts are reduced to the day each star was given; no login or profile is kept."""
-    info = github_json(f"repos/{repo}")
+    api = public_github_json if public_only else github_json
+    info = api(f"repos/{repo}")
     if not isinstance(info, dict):
         raise CollectionError("Unexpected repository response")
     counters = {name: nonnegative_int(info.get(key), name) for name, key in (
         ("stars", "stargazers_count"), ("forks", "forks_count"), ("watchers", "subscribers_count"),
         ("open_issues", "open_issues_count"))}
     referrers, paths = [], []
-    for kind, target in (("referrers", referrers), ("paths", paths)):
-        response = github_json(f"repos/{repo}/traffic/popular/{kind}")
+    private_lists = () if public_only else (("referrers", referrers), ("paths", paths))
+    for kind, target in private_lists:
+        response = api(f"repos/{repo}/traffic/popular/{kind}")
         if not isinstance(response, list):
             raise CollectionError(f"Unexpected popular {kind} response")
         for entry in response:
@@ -195,7 +239,7 @@ def fetch_community(repo: str) -> dict:
                 row["title"] = entry.get("title") if isinstance(entry.get("title"), str) else ""
             target.append(row)
     releases = []
-    for release in github_json(f"repos/{repo}/releases?per_page=100", paginated=True):
+    for release in api(f"repos/{repo}/releases?per_page=100", paginated=True):
         if not isinstance(release, dict) or type(release.get("draft")) is not bool:
             raise CollectionError("Invalid release in GitHub response")
         if release["draft"] or release.get("published_at") is None:
@@ -204,16 +248,17 @@ def fetch_community(repo: str) -> dict:
                          "published": parse_timestamp(release.get("published_at")).isoformat().replace("+00:00", "Z"),
                          "prerelease": bool(release.get("prerelease"))})
     star_days: dict[str, int] = {}
-    for star in github_json(f"repos/{repo}/stargazers?per_page=100", paginated=True,
-                            accept="application/vnd.github.star+json"):
-        if not isinstance(star, dict):
-            raise CollectionError("Invalid stargazer entry")
-        day = parse_timestamp(star.get("starred_at")).date().isoformat()
-        star_days[day] = star_days.get(day, 0) + 1
-    if counters["stars"] >= 50 and sum(star_days.values()) < counters["stars"] // 2:
-        raise CollectionError("Stargazer list is much shorter than the star count; keeping the previous history")
+    if not public_only:
+        for star in api(f"repos/{repo}/stargazers?per_page=100", paginated=True,
+                        accept="application/vnd.github.star+json"):
+            if not isinstance(star, dict):
+                raise CollectionError("Invalid stargazer entry")
+            day = parse_timestamp(star.get("starred_at")).date().isoformat()
+            star_days[day] = star_days.get(day, 0) + 1
+        if counters["stars"] >= 50 and sum(star_days.values()) < counters["stars"] // 2:
+            raise CollectionError("Stargazer list is much shorter than the star count; keeping the previous history")
     return {"counters": counters, "referrers": unique(referrers, "referrer"), "paths": unique(paths, "path"),
-            "releases": unique(releases, "tag"), "star_days": star_days}
+            "releases": unique(releases, "tag"), "star_days": None if public_only else star_days}
 
 
 def unique(rows: list[dict], key: str) -> list[dict]:
@@ -294,21 +339,28 @@ def save_days(connection: sqlite3.Connection, kind: str, table: str, days: list[
             (day["day"], day["views"], day["uniques"], day["status"], started, finished))
 
 
-def save_community(connection: sqlite3.Connection, data: dict, started: str, finished: str) -> None:
+def save_community(connection: sqlite3.Connection, data: dict, started: str, finished: str,
+                   *, public_only: bool = False) -> None:
     """One counters/referrers/paths observation; the release list and star days are replaced as a whole."""
-    observation_id = add_observation(connection, "community", started, finished)
+    # Both collection modes replace the current public release view. Keep their clock guard shared.
+    latest = connection.execute("SELECT MAX(finished_utc) FROM observations "
+                                "WHERE kind IN ('community', 'public community')").fetchone()[0]
+    if latest is not None and started <= latest:
+        raise CollectionError("System clock precedes the previous community observation")
+    observation_id = add_observation(connection, "public community" if public_only else "community", started, finished)
     c = data["counters"]
     connection.execute("INSERT INTO repo_counters VALUES (?, ?, ?, ?, ?)",
                        (observation_id, c["stars"], c["forks"], c["watchers"], c["open_issues"]))
-    connection.executemany("INSERT INTO popular_referrers VALUES (?, ?, ?, ?)",
-                           [(observation_id, r["referrer"], r["count"], r["uniques"]) for r in data["referrers"]])
-    connection.executemany("INSERT INTO popular_paths VALUES (?, ?, ?, ?, ?)",
-                           [(observation_id, r["path"], r["title"], r["count"], r["uniques"]) for r in data["paths"]])
+    if not public_only:
+        connection.executemany("INSERT INTO popular_referrers VALUES (?, ?, ?, ?)",
+                               [(observation_id, r["referrer"], r["count"], r["uniques"]) for r in data["referrers"]])
+        connection.executemany("INSERT INTO popular_paths VALUES (?, ?, ?, ?, ?)",
+                               [(observation_id, r["path"], r["title"], r["count"], r["uniques"]) for r in data["paths"]])
+        connection.execute("DELETE FROM star_days")
+        connection.executemany("INSERT INTO star_days VALUES (?, ?)", sorted(data["star_days"].items()))
     connection.execute("DELETE FROM releases")
     connection.executemany("INSERT INTO releases VALUES (?, ?, ?)",
                            [(r["tag"], r["published"], int(r["prerelease"])) for r in data["releases"]])
-    connection.execute("DELETE FROM star_days")
-    connection.executemany("INSERT INTO star_days VALUES (?, ?)", sorted(data["star_days"].items()))
 
 
 def save_assets(connection: sqlite3.Connection, assets: list[dict], started: str, finished: str) -> None:
@@ -379,7 +431,7 @@ def generate_reports(connection: sqlite3.Connection, output_dir: Path) -> None:
         raise CollectionError("Analytics database has not been initialized")
     repo, pattern = settings
     attempts = []
-    for kind in ("traffic", "release assets", "clones", "community"):
+    for kind in ATTEMPT_KINDS:
         row = connection.execute("SELECT started_utc, finished_utc, success FROM attempts WHERE kind = ? ORDER BY id DESC LIMIT 1", (kind,)).fetchone()
         attempts.append((kind, "succeeded" if row and row[2] else "failed" if row else "not attempted",
                          row[0] if row else "—", row[1] if row else "—"))
@@ -437,6 +489,8 @@ def generate_reports(connection: sqlite3.Connection, output_dir: Path) -> None:
 
 def describe(values: object) -> str:
     if isinstance(values, dict):
+        if values["star_days"] is None:
+            return f"{len(values['releases'])} releases, {values['counters']['stars']} total stars"
         return (f"{len(values['referrers'])} referrers, {len(values['paths'])} paths, "
                 f"{len(values['releases'])} releases, {sum(values['star_days'].values())} stars")
     return f"{len(values)} records"
@@ -447,7 +501,7 @@ def validate_repo(repo: str) -> None:
         raise CollectionError("Repository must have the form owner/name")
 
 
-def collect(output_dir: Path, repo: str, pattern: str) -> int:
+def collect(output_dir: Path, repo: str, pattern: str, *, public_only: bool = False) -> int:
     validate_repo(repo)
     if not pattern:
         raise CollectionError("Asset pattern cannot be empty")
@@ -459,12 +513,17 @@ def collect(output_dir: Path, repo: str, pattern: str) -> int:
         # must not interleave samples or render stale reports.
         connection.execute("BEGIN IMMEDIATE")
         initialize(connection, repo, pattern)
-        for kind, fetch, save in (
+        sources = (
+            ("release assets", lambda _started: fetch_assets(repo, pattern, public_only=True), save_assets),
+            ("public community", lambda _started: fetch_community(repo, public_only=True),
+             lambda db, data, started, finished: save_community(db, data, started, finished, public_only=True)),
+        ) if public_only else (
             ("traffic", lambda started: fetch_traffic(repo, started), save_traffic),
             ("release assets", lambda _started: fetch_assets(repo, pattern), save_assets),
             ("clones", lambda started: fetch_clones(repo, started), save_clones),
             ("community", lambda _started: fetch_community(repo), save_community),
-        ):
+        )
+        for kind, fetch, save in sources:
             started = timestamp()
             try:
                 values = fetch(started)
@@ -525,12 +584,14 @@ def main(argv: list[str] | None = None) -> int:
     collect_parser.add_argument("--output-dir", type=Path, required=True)
     collect_parser.add_argument("--repo", default=DEFAULT_REPO)
     collect_parser.add_argument("--asset-glob", default=DEFAULT_ASSET_GLOB)
+    collect_parser.add_argument("--public-only", action="store_true",
+                                help="refresh public release and repository data without a GitHub credential")
     report_parser = subparsers.add_parser("report", help="Refresh reports from the local archive")
     report_parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "collect":
-            return collect(args.output_dir, args.repo, args.asset_glob)
+            return collect(args.output_dir, args.repo, args.asset_glob, public_only=args.public_only)
         return report(args.output_dir)
     except (CollectionError, OSError, sqlite3.Error) as exc:
         print(f"Analytics error: {exc}", file=sys.stderr)

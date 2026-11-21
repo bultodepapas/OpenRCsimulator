@@ -1,0 +1,14 @@
+[Unit]
+Description=Check OpenRC Stats HTTPS, freshness and source health (TELEM-24c)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/openrc-stats-health.env
+ExecStart=/usr/bin/python3 /usr/local/lib/openrc-stats/check_dashboard_health.py ${OPENRC_STATS_HEALTH_URL}
+TimeoutStartSec=20s
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes

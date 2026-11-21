@@ -7,6 +7,7 @@ User=openrc-stats
 Group=openrc-stats
 ExecStart=/usr/bin/python3 /opt/openrc-stats/current/tools/telemetry/deploy/ct/backup_archive.py \
   /var/lib/openrc-stats/github /var/lib/openrc-stats/backups
+TimeoutStartSec=2min
 NoNewPrivileges=yes
 ProtectSystem=strict
 ProtectHome=yes

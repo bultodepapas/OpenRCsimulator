@@ -10,7 +10,7 @@ Proxmox host  openrc-stats-snapshot.timer (:05 hourly)
                                                          │ bind mount, read-only
 Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stats/inbox
               dashboard.py build ──► /var/lib/openrc-stats/www/{index.html,health.json} (atomic)
-              openrc-stats-github.timer (6 h, needs GH_TOKEN), openrc-stats-backup.timer (daily)
+              openrc-stats-github.timer (6 h, public fallback), openrc-stats-backup.timer (daily)
               tailscale serve --bg --https=443 /var/lib/openrc-stats/www   (tagged node, owner-only grant)
 ```
 
@@ -20,9 +20,12 @@ Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stat
 | --- | --- |
 | `host/openrc-stats-snapshot.sh` | Host `/usr/local/sbin/`, mode 0755; plus `../snapshot.py` at `/usr/local/lib/openrc-stats/snapshot.py` |
 | `host/openrc-stats-snapshot.{service,timer}` | Host `/etc/systemd/system/` |
+| `host/check_dashboard_health.py` | Monitoring host `/usr/local/lib/openrc-stats/` |
+| `host/openrc-stats-health.{service,timer}` | Monitoring host `/etc/systemd/system/` |
 | `ct/openrc-stats-{build,github,backup}.{service,timer}` | Container `/etc/systemd/system/` |
 | `ct/nftables.conf` | Container `/etc/nftables.conf` (egress limits; the tailnet policy is the boundary) |
 | `ct/backup_archive.py` | Used in place from the release directory |
+| `pull_github_backup.py` | Operator-owned second host with established Proxmox SSH access |
 
 ## Container contents
 
@@ -31,10 +34,10 @@ Dashboard CT  openrc-stats-build.timer (:12 hourly)     ▼ /var/lib/openrc-stat
 - **Writable directories:** `/var/lib/openrc-stats/{www,state,github,gh,backups}`, owned by that user. `inbox` is the read-only bind mount.
 - **Code:** `/opt/openrc-stats/releases/<commit>` from `git archive <pushed commit> tools/telemetry tools/analytics`, with the symlink `/opt/openrc-stats/current`.
 - **`/etc/openrc-stats/env`** (0640 root:openrc-stats): `OPENRC_GA4_CREDENTIALS=/etc/openrc-stats/ga4.json` and `OPENRC_GA4_PROPERTY=<id>`. The GA4 file is 0640 root:openrc-stats.
-- **`/etc/openrc-stats/github.env`** (optional): `GH_TOKEN=<fine-grained read-only token>`. It needs Metadata and Administration read on the repository; Administration covers traffic. Without it, the GitHub archive is shown as last collected and the 6-hour refresh is skipped.
+- **`/etc/openrc-stats/github.env`** (optional): `GH_TOKEN=<fine-grained read-only token>`, limited to the OpenRC repository. Use Contents read and Administration read for protected traffic and star history. Without it, the six-hour job still refreshes public downloads and repository counters. Private traffic, referrers and star history keep their last values and show their own age.
 - **Tailscale:** `tailscale up --hostname=openrc-stats --advertise-tags=tag:openrc-stats --accept-dns=false`.
   - DNS stays on the site gateway, because the firewall blocks `100.64.0.0/10`.
-  - The tailnet policy needs `tagOwners` for the tag and a grant from the owner to `tag:openrc-stats:443` only.
+  - Limit HTTPS grants for the dashboard tag to the operator and the designated monitor. Check the effective policy for wider matching grants.
 
 ## Operation
 
@@ -44,9 +47,14 @@ cat /var/lib/openrc-stats/www/health.json   # status ok | degraded | stale | err
 journalctl -u openrc-stats-build -n 50
 ```
 
-`health.json` reports:
-- `stale`: the receiver snapshot is older than 2 h.
-- `degraded`: the GA4 or GitHub collection failed (the page shows which).
-- `error`: there is no readable snapshot. The last good page stays served.
+`health.json` includes the last build time, receiver snapshot age and critical receiver alerts, plus timestamps and status per GitHub and GA4 source. A missing, failed or stale source degrades the report. A malformed receiver snapshot or failed build reports an error and keeps the previous HTML. The CT build units use one lock across collection and publication.
 
-Monitors match the keyword `"status": "ok"`.
+Set `OPENRC_STATS_HEALTH_URL` in `/etc/openrc-stats-health.env` on a host that can reach the private URL. Enable `openrc-stats-health.timer`. The check fails when HTTPS is unavailable, the served build is older than two hours, or a source is unhealthy. A monitor that only matches a keyword cannot detect a stopped generator. Use a second physical host to detect loss of Proxmox itself.
+
+Run the daily SQLite backup before pulling it to a second host. A missing or invalid archive fails the task and leaves existing backups in place. For example, run the pull script on the operator workstation with an existing trusted key and an operator-only destination outside the repository:
+
+```text
+python pull_github_backup.py --host root@<proxmox-host> --key <ssh-key> --destination <private-backup-dir>
+```
+
+The transfer only reads the dated GitHub archive. It checks the downloaded SQLite database before retaining it. Keep raw receiver data out of this backup.

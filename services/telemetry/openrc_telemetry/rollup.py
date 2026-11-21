@@ -175,16 +175,16 @@ def run_rollup(contracts, raw, agg, day, now, releases):
         payload = contracts.validate_body(body)
         by_release.setdefault(payload["build"]["release_id"], []).append(payload)
     from .insights import daily_cells, encode_cells  # insights imports this module
-    results = []
+    prepared, results = {}, []
     for release_id in sorted(set(by_release) | {r for r in releases if "*" not in r}):
         payloads = by_release.get(release_id, [])
         # Compute and validate everything before any write, so a refusal never leaves a half-rolled day.
         reports = {"gpu": gpu_report(contracts, payloads, day, release_id, period),
                    "vehicle": vehicle_report(payloads, day, release_id, period)}
         cells = encode_cells(daily_cells(payloads))
+        prepared[release_id] = reports, cells
         for table, report in reports.items():
-            agg.put_day(day, release_id, table, report["status"], report["rows"], now)
             results.append((release_id, table, report["status"]))
-        agg.put_cells(day, release_id, cells, now)
         results.append((release_id, "cells", f"ready ({len(cells)} cells)" if cells else "no_data"))
+    agg.put_rollup(day, prepared, now)
     return results

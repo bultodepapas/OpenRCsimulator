@@ -35,12 +35,22 @@ class _Db:
     schema = ""
     incremental_vacuum = False
 
-    def __init__(self, path):
+    def __init__(self, path, *, read_only=False):
         self.path = Path(path)
+        self.read_only = read_only
         self._conn = None
         self._lock = threading.RLock()
 
     def _connect(self):
+        if self.read_only:
+            conn = sqlite3.connect(f"{self.path.resolve().as_uri()}?mode=ro", uri=True, timeout=5.0,
+                                   isolation_level=None, check_same_thread=False)
+            try:
+                self._verify(conn)
+            except (sqlite3.Error, StorageUnavailable):
+                conn.close()
+                raise
+            return conn
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fresh = not self.path.exists()
         conn = sqlite3.connect(str(self.path), timeout=5.0, isolation_level=None, check_same_thread=False)
@@ -90,6 +100,17 @@ class _Db:
                 raise StorageUnavailable("storage") from None
 
     @contextmanager
+    def read_snapshot(self):
+        """Keep successive reads on one committed SQLite view."""
+        with self.connection() as conn:
+            conn.execute("BEGIN")
+            try:
+                yield
+            finally:
+                if self._conn is conn:  # a failed query may already have closed the connection
+                    conn.execute("ROLLBACK")
+
+    @contextmanager
     def transaction(self):
         with self._lock:
             try:
@@ -128,8 +149,8 @@ class RawStore(_Db):
     CREATE INDEX IF NOT EXISTS batches_day ON batches(receipt_day);
     """
 
-    def __init__(self, path, max_bytes=2 * 1024**3):
-        super().__init__(path)
+    def __init__(self, path, max_bytes=2 * 1024**3, *, read_only=False):
+        super().__init__(path, read_only=read_only)
         self.max_bytes = max_bytes
 
     def _size(self, conn):
@@ -202,6 +223,8 @@ class AggStore(_Db):
     CREATE TABLE IF NOT EXISTS daily_status(
         day TEXT NOT NULL, release_id TEXT NOT NULL, tbl TEXT NOT NULL, status TEXT NOT NULL,
         computed_unix INTEGER NOT NULL, PRIMARY KEY(day, release_id, tbl)) WITHOUT ROWID;
+    CREATE TABLE IF NOT EXISTS daily_rollup(
+        day TEXT PRIMARY KEY NOT NULL, release_count INTEGER NOT NULL CHECK(release_count >= 0)) WITHOUT ROWID;
     CREATE TABLE IF NOT EXISTS daily_gpu(
         day TEXT NOT NULL, release_id TEXT NOT NULL, gpu_family TEXT NOT NULL,
         session_observations INTEGER NOT NULL, interval_sum_us INTEGER NOT NULL,
@@ -257,16 +280,43 @@ class AggStore(_Db):
 
     def put_day(self, day, release_id, table, status, rows, now):
         """Idempotent replace keyed by (day, release_id, table)."""
-        sql_table, columns = self.TABLES[table]
+        sql_table, _ = self.TABLES[table]
         with self.transaction() as conn:
             conn.execute(f"DELETE FROM {sql_table} WHERE day=? AND release_id=?", (day, release_id))
-            conn.executemany(
-                f"INSERT INTO {sql_table}(day, release_id, {', '.join(columns)}) VALUES(?,?,{','.join('?' * len(columns))})",
-                [(day, release_id, *(flat[c] for c in columns)) for flat in map(self._flatten, rows)])
-            conn.execute(
-                "INSERT INTO daily_status(day, release_id, tbl, status, computed_unix) VALUES(?,?,?,?,?) "
-                "ON CONFLICT(day, release_id, tbl) DO UPDATE SET status=excluded.status, "
-                "computed_unix=excluded.computed_unix", (day, release_id, table, status, int(now)))
+            self._insert_day(conn, day, release_id, table, status, rows, now)
+            conn.execute("DELETE FROM daily_rollup WHERE day=?", (day,))
+
+    @staticmethod
+    def _record_status(conn, day, release_id, table, status, now):
+        conn.execute(
+            "INSERT INTO daily_status(day, release_id, tbl, status, computed_unix) VALUES(?,?,?,?,?) "
+            "ON CONFLICT(day, release_id, tbl) DO UPDATE SET status=excluded.status, "
+            "computed_unix=excluded.computed_unix", (day, release_id, table, status, int(now)))
+
+    def _insert_day(self, conn, day, release_id, table, status, rows, now):
+        sql_table, columns = self.TABLES[table]
+        conn.executemany(
+            f"INSERT INTO {sql_table}(day, release_id, {', '.join(columns)}) VALUES(?,?,{','.join('?' * len(columns))})",
+            [(day, release_id, *(flat[c] for c in columns)) for flat in map(self._flatten, rows)])
+        self._record_status(conn, day, release_id, table, status, now)
+
+    def put_rollup(self, day, releases, now):
+        """Replace a closed day, including its completion marker, in one transaction."""
+        with self.transaction() as conn:
+            for table in ("daily_gpu", "daily_vehicle", "daily_cells", "daily_status", "daily_rollup"):
+                conn.execute(f"DELETE FROM {table} WHERE day=?", (day,))
+            for release_id, (reports, cells) in releases.items():
+                for table, report in reports.items():
+                    self._insert_day(conn, day, release_id, table, report["status"], report["rows"], now)
+                self._insert_cells(conn, day, release_id, cells, now)
+            conn.execute("INSERT INTO daily_rollup(day, release_count) VALUES(?,?)", (day, len(releases)))
+
+    def rollup_commits(self):
+        """Expected release counts for committed days. Older databases have no markers."""
+        with self.connection() as conn:
+            if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='daily_rollup'").fetchone():
+                return {}
+            return dict(conn.execute("SELECT day, release_count FROM daily_rollup"))
 
     def get_day(self, day, release_id, table):
         """(status, rows) or None when the day was never rolled up (missing)."""
@@ -287,7 +337,7 @@ class AggStore(_Db):
         cutoff = (today - timedelta(days=days)).isoformat()
         deleted = 0
         with self.transaction() as conn:
-            for table in ("daily_gpu", "daily_vehicle", "daily_status", "ingest_counts", "daily_cells"):
+            for table in ("daily_gpu", "daily_vehicle", "daily_status", "ingest_counts", "daily_cells", "daily_rollup"):
                 deleted += conn.execute(f"DELETE FROM {table} WHERE day < ?", (cutoff,)).rowcount
         return {"deleted_aggregate_rows": deleted}
 
@@ -312,13 +362,13 @@ class AggStore(_Db):
         """Idempotent replace of one (day, release) set. rows: [(tbl, dims_json, sessions, metrics_json)]."""
         with self.transaction() as conn:
             conn.execute("DELETE FROM daily_cells WHERE day=? AND release_id=?", (day, release_id))
-            conn.executemany("INSERT INTO daily_cells(day, release_id, tbl, dims, sessions, metrics) "
-                             "VALUES(?,?,?,?,?,?)", [(day, release_id, *row) for row in rows])
-            conn.execute(
-                "INSERT INTO daily_status(day, release_id, tbl, status, computed_unix) VALUES(?,?,?,?,?) "
-                "ON CONFLICT(day, release_id, tbl) DO UPDATE SET status=excluded.status, "
-                "computed_unix=excluded.computed_unix",
-                (day, release_id, "cells", "ready" if rows else "no_data", int(now)))
+            self._insert_cells(conn, day, release_id, rows, now)
+            conn.execute("DELETE FROM daily_rollup WHERE day=?", (day,))
+
+    def _insert_cells(self, conn, day, release_id, rows, now):
+        conn.executemany("INSERT INTO daily_cells(day, release_id, tbl, dims, sessions, metrics) "
+                         "VALUES(?,?,?,?,?,?)", [(day, release_id, *row) for row in rows])
+        self._record_status(conn, day, release_id, "cells", "ready" if rows else "no_data", now)
 
     def get_cells(self, day, release_id):
         with self.connection() as conn:

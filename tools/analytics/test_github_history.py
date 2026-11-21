@@ -146,6 +146,74 @@ class HistoryTests(unittest.TestCase):
         self.assertNotIn("SYNTHETIC_TEST_VALUE", " ".join(command))
         self.assertNotIn("GH_DEBUG", run.call_args.kwargs["env"])
 
+    def test_public_pagination_requests_only_github_and_ignores_host_credentials(self):
+        first = io.BytesIO(b'[{"id":1}]')
+        first.headers = {"Link": '<https://example.invalid/ignored>; rel="next", '
+                                  '<https://api.github.com/foo?page=2>; rel="last"'}
+        second = io.BytesIO(b'[{"id":2}]')
+        second.headers = {}
+        with mock.patch.dict(os.environ, {"GH_TOKEN": "SYNTHETIC_TEST_VALUE"}), \
+                mock.patch.object(history, "urlopen", side_effect=[first, second]) as api:
+            rows = history.public_github_json("repos/example/repo/releases?per_page=100", paginated=True)
+        self.assertEqual(rows, [{"id": 1}, {"id": 2}])
+        requests = [call.args[0] for call in api.call_args_list]
+        self.assertEqual([request.full_url for request in requests], [
+            "https://api.github.com/repos/example/repo/releases?per_page=100&page=1",
+            "https://api.github.com/repos/example/repo/releases?per_page=100&page=2",
+        ])
+        self.assertTrue(all(not request.has_header("Authorization") for request in requests))
+
+    def test_public_release_assets_reuse_embedded_counters_with_endpoint_fallback(self):
+        embedded = [{"id": 5, "name": "openrc-simulator-v1-linux.zip", "state": "uploaded", "download_count": 50},
+                    {"id": 6, "name": "SHA256SUMS", "state": "uploaded", "download_count": 30}]
+        fallback = [{"id": 7, "name": "openrc-simulator-v2-windows.zip", "state": "uploaded", "download_count": 7}]
+        releases = [{"id": 1, "tag_name": "v1", "draft": False, "assets": embedded},
+                    {"id": 2, "tag_name": "v2", "draft": False}]
+        with mock.patch.object(history, "public_github_json", side_effect=[releases, fallback]) as api:
+            result = history.fetch_assets("example/repo", history.DEFAULT_ASSET_GLOB, public_only=True)
+        self.assertEqual([(row["asset_id"], row["count"]) for row in result], [(5, 50), (7, 7)])
+        self.assertEqual([call.args[0] for call in api.call_args_list], [
+            "repos/example/repo/releases?per_page=100", "repos/example/repo/releases/2/assets?per_page=100",
+        ])
+
+    def test_public_collection_updates_public_data_and_keeps_private_observations(self):
+        full_response = self.community_responses()
+        with mock.patch.object(history, "github_json", side_effect=full_response):
+            private = history.fetch_community("example/repo")
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory)
+            with contextlib.closing(sqlite3.connect(destination / history.DATABASE_NAME)) as db:
+                history.initialize(db, "example/repo", "*.zip")
+                history.save_community(db, private, "2026-10-04T00:00:00.000000Z", "2026-10-04T00:00:01.000000Z")
+                db.commit()
+            public_response = [{**full_response[0], "forks_count": 4, "stargazers_count": 5}, full_response[3]]
+            moments = [f"2026-10-05T00:00:0{s}.000000Z" for s in range(4)]
+            with mock.patch.object(history, "public_github_json", side_effect=public_response) as api, \
+                    mock.patch.object(history, "github_json", side_effect=AssertionError("unexpected credential use")), \
+                    mock.patch.object(history, "fetch_assets", return_value=[asset(1, 70)]) as assets, \
+                    mock.patch.object(history, "timestamp", side_effect=moments), \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(history.collect(destination, "example/repo", "*.zip", public_only=True), 0)
+            assets.assert_called_once_with("example/repo", "*.zip", public_only=True)
+            self.assertEqual([call.args[0] for call in api.call_args_list], [
+                "repos/example/repo", "repos/example/repo/releases?per_page=100",
+            ])
+            with contextlib.closing(sqlite3.connect(destination / history.DATABASE_NAME)) as db:
+                self.assertEqual(db.execute("SELECT kind FROM observations ORDER BY id").fetchall(),
+                                 [("community",), ("assets",), ("public community",)])
+                self.assertEqual(db.execute("SELECT forks FROM repo_counters ORDER BY observation_id").fetchall(),
+                                 [(1,), (4,)])
+                self.assertEqual(db.execute("SELECT stars FROM repo_counters ORDER BY observation_id").fetchall(),
+                                 [(3,), (5,)])
+                self.assertEqual(db.execute("SELECT * FROM star_days ORDER BY day_utc").fetchall(),
+                                 [("2026-10-01", 2), ("2026-10-03", 1)])
+                self.assertEqual(db.execute("SELECT referrer, count FROM popular_referrers").fetchall(), [("reddit.com", 9)])
+                self.assertEqual(db.execute("SELECT path, count FROM popular_paths").fetchall(), [("/o/r/releases", 6)])
+                self.assertEqual(db.execute("SELECT kind, success FROM attempts ORDER BY id").fetchall(),
+                                 [("release assets", 1), ("public community", 1)])
+                with self.assertRaises(history.CollectionError):
+                    history.save_community(db, private, moments[2], moments[3])
+
     def test_source_failure_is_nonzero_but_other_source_is_saved(self):
         fake_days = [{"day": "2026-10-01", "views": 3, "uniques": 2, "status": "observed_after_day"}]
         with tempfile.TemporaryDirectory() as directory, \
