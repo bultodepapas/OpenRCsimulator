@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-15**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their historical reproductions, derivations, measurements and limits; the A34 text has only a status banner and repaired artifact/source links. Private external links in the updated ledger are omitted; its local report references remain.
+Updated **2026-11-21**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their historical reproductions, derivations, measurements and limits; the A34 text has only a status banner and repaired artifact/source links. Private external links in the updated ledger are omitted; its local report references remain.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -16,6 +16,18 @@ observations at `45d86d2` are not current reruns. A34's bounded corrections rema
 in the [implemented ledger](COMPLETED-AUDIT-WORK.md); its local-wing closure
 question remains research, not a newly calibrated flight model. A35 F06–F08
 repairs and their fresh verification are recorded in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
+
+## A36 - current mathematical and aerodynamic hardening
+
+The [21 November audit][A36] retains five primary reproduced defects, one measured retention opportunity and three CI/runtime gaps at `57abea0`. Its [research home](../docs/research/project-audit-2026-11-21/README.md#follow-up-status) owns the current implementation and qualification status for every finding. Preserve the original PDF, evidence ZIP and baseline observations there; the UID blocker is a recurrence, and the recorder notification remains source-level evidence. Implementation work stays with the existing IAQ/AC-PX, BL, FL and CI owners.
+
+**A36 R2 source review (21 November 2026):** the [continued mathematical and physical investigation](../docs/research/project-audit-2026-11-21/second-pass-physics-2026-11-21.md) independently identifies two new FPV source-level issues: missing stage-air-density dependence in rotor thrust/torque/drag (**R2-F01**), and the Angle controller's discontinuous near-vertical heading switch (**R2-F02**). Both have independent arithmetic witnesses, **not** accepted Godot flight regressions. The constructed high-resistance blimp power-ceiling case (**R2-I01**) needs an admitted-stage/trajectory reproduction. Fixed blimp atmosphere and other already-declared aerodynamic omissions are research gaps, **not additional defect counts**. The R2 original evidence and acceptance matrix remain in the linked research page; no R2 production correction has shipped.
+
+**A36 R3 physical-accounting continuation (21 November 2026):** the [third-pass technical report](../docs/research/project-audit-2026-11-21/third-pass-physics-2026-11-21.md) records **R3-F01**, stock blimp positive battery current during all-zero-command motor rundown (source-confirmed, independently calculated, no accepted flight executed); **R3-G01**, Nitro fuel mass changing without changing inertial body mass/CG/inertia (0.1 kg stocked fuel, 0.981 N potential full-to-empty weight change); and **R3-O01**, repetitive model/control allocations in the Nitro 240 Hz path (no measured speedup). **R5 narrows R3-F01 to an ESC/shaft-power coupling question:** zero command is not proof of an open pack/unpowered coast, and the physical interpretation depends on intended policy. The [independent probe](../docs/research/project-audit-2026-11-21/probes/third_pass_power_and_mass.py) remains numerical-only. R3-F01 is distinct from the repaired depleted-battery boundary and R2's maximum-power construction. All R3 implementation, Godot-session and physical qualification gates remain open.
+
+**A36 R4 independent fixed-wing wake review (21 November 2026):** the [end-to-end report](../docs/research/project-audit-2026-11-21/fourth-pass-physics-2026-11-21.md) documents **R4-F01**, an unsafe tailless/wake horizontal-tail GDScript Dictionary access absent from the native presence-guarded source, and **R4-F02**, independent wake pieces that can double-count the same physical tail patch because the parsed source data lacks cross-piece geometric partition/overlap validation. The [mathematical witness](../docs/research/project-audit-2026-11-21/probes/fourth_pass_wake_partition.py) checks force additivity and a 133% area overclaim, **not a fully admitted Godot aircraft**. **R4-O01 continues A6 O5**, the existing prepared wind-station geometry opportunity; its count is illustrative, and the prior unguarded timing failed a stale-NaN refusal control. No new optimization count or qualified FPS/RSS gain is claimed. No R4 physics changes are implemented. Validate full v2 admission, 240 Hz flight, native eligibility, exact checkpoint/replay and target-host performance before promotion.
+
+**A36 R5 accepted-domain and model-consistency review (21 November 2026):** the [fifth-pass report](../docs/research/project-audit-2026-11-21/fifth-pass-physics-2026-11-21.md) records **R5-F01**, stock helicopter cyclic trim added after swash limits, requiring a normalized servo target 1.029262 beyond the unit limit; **R5-F02**, insufficient projection of a curved path's chord allowance to the gate plane; **R5-F03**, admitted custom-battery thermal stiffness omitted by the launch guard, giving an accepted RK4 cooling amplification of 6.016236; and **R5-G01**, different ground-effect/aileron treatment in the attached and local strip paths, with a 13.8979% internal moment difference in the tested stock Stik case. The [reproducer](../docs/research/project-audit-2026-11-21/probes/reproduce_fifth_pass.py) rebuilds 439 real dependencies with no stubs; checked import, four probes, 52 existing race checks and three independent Python oracles pass. [Evidence](../docs/research/project-audit-2026-11-21/fifth-pass-evidence.json) distinguishes accepted reference sessions, constructed director input and component-only loads. No stock battery instability, integrated FPV scoring failure, native execution or physical handling error is claimed. This batch adds no production fix and explicitly corrects/deduplicates the two earlier entries above.
 
 ## Contents
 
@@ -427,6 +439,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A33 | [Mathematical CPU performance review — 2026-11-09][A33] |
 | A34 | [Reverse flow, graphics/scenario separation, statistics recovery, optional resources and layered clouds][A34] |
 | A35 | [Round two — swept lake normal and tolerance, repeat statistics quarantine][A35] |
+| A36 | [Phoenix equivalence, blimp energy boundaries and runtime gaps at 57abea0][A36] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -465,3 +478,5 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 [A33]: cpu-mathematical-optimization-2026-11-09.md
 [A34]: five-findings-audit-45d86d2.md
 [A35]: ../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf
+
+[A36]: physics-math-aero-audit-57abea0.md

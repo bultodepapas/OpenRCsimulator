@@ -2,6 +2,7 @@ extends SceneTree
 ## Focused checks of the Phoenix script container, GEO, texture and GLB writer (AC-PX).
 ## Every fixture is built here from the documented layout: no third-party bytes.
 const R := preload("res://workshop/creator/result.gd")
+const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
 const Definition := preload("res://workshop/creator/definition.gd")
 const Session := preload("res://sim/flight_session.gd")
@@ -19,6 +20,8 @@ const PhoenixSetup := preload("res://workshop/creator/phoenix/setup.gd")
 const PhoenixPhysics := preload("res://workshop/creator/phoenix/physics.gd")
 const Packages := preload("res://workshop/creator/packages.gd")
 const Compiler := preload("res://workshop/creator/compiler.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
 const ClearViewSetup := preload("res://workshop/creator/clearview/setup.gd")
@@ -40,6 +43,8 @@ func _initialize() -> void:
 	_biplane()
 	_physics()
 	_physics_propulsion()
+	_propeller_invariants()
+	_drag_area_invariants()
 	_physics_untrusted()
 	_import_hardening()
 	_physics_tuning()
@@ -695,8 +700,10 @@ func _physics() -> void:
 	var power: Dictionary = Packages.power(ids.power)
 	check("derived packages resolve and pass the package checks", airframe.ok and power.ok)
 	if airframe.ok and power.ok:
-		check("Phoenix section efficiency and drag", is_equal_approx(float(airframe.value.wing.oswald_efficiency.value), 0.85)
-			and float(airframe.value.wing.profile_drag.value) > 0.01 and str(airframe.value.wing.profile_drag.source).contains("Phoenix"))
+		check("Phoenix section efficiency and dimensional body drag", is_equal_approx(float(airframe.value.wing.oswald_efficiency.value), 0.85)
+			and is_equal_approx(float(airframe.value.wing.profile_drag.value), float(block.section.cd_min))
+			and is_equal_approx(float(airframe.value.wing.body_drag_area.value), 0.75 * 0.006)
+			and str(airframe.value.wing.body_drag_area.source).contains("Phoenix"))
 		check("Phoenix propeller diameter and RPM", float(power.value.propeller.diameter.value) <= 0.25 + 1e-9
 			and float(power.value.motor.kv_rpm_per_volt.value) > 0.0)
 		# IAQ T3: the start reference is the whole aircraft trimmed at start_alpha, capped near 1.2 × the stall speed.
@@ -846,6 +853,9 @@ func _physics_propulsion() -> void:
 		and absf(jet.thrust - 20.0) <= 1e-6 and float(jet.power.jet.efflux_speed.value) == PhoenixPhysics.JET_EFFLUX_MPS
 		and float(jet.power.jet.idle_rpm.value) >= 1000.0)
 	if not jet.is_empty():
+		check("a jet's efflux provenance is formatted without a placeholder",
+			str(jet.power.jet.efflux_speed.source).contains("100 m/s efflux")
+			and not str(jet.power.jet.efflux_speed.source).contains("%s"))
 		var block: Dictionary = Packages.propulsion_block(jet.power, "propulsion_main", 0.95, PackedFloat64Array([0.1, 0.0, 0.0]),
 			PackedFloat64Array([0.0, 0.0]))
 		var rows: Array = block.engine.mass_flow.value
@@ -874,8 +884,14 @@ func _physics_propulsion() -> void:
 	if not bladed.is_empty():
 		var ct0 := float(bladed.power.propeller.ct_table.value[0][1])
 		var cp0 := float(bladed.power.propeller.cp_table.value[0][1])
-		check("a many-bladed, tuned propeller keeps a real static figure of merit",
-			pow(ct0, 1.5) / (cp0 * sqrt(2.0 / PI)) <= PhoenixPhysics.MAX_FIGURE_OF_MERIT * (1.0 + 1e-9))
+		var diameter := float(bladed.power.propeller.diameter.value)
+		var density := 1.225
+		var rev_per_s := 8000.0 / 60.0
+		var thrust := density * rev_per_s * rev_per_s * pow(diameter, 4) * ct0
+		var shaft_power := density * pow(rev_per_s, 3) * pow(diameter, 5) * cp0
+		var ideal_power := pow(thrust, 1.5) / sqrt(2.0 * density * PI * diameter * diameter / 4.0)
+		check("a many-bladed, tuned propeller reaches the dimensional ideal-disk power cap",
+			absf(ideal_power / shaft_power - PhoenixPhysics.MAX_FIGURE_OF_MERIT) < 1.0e-9)
 	else:
 		check("a many-bladed, tuned propeller keeps a real static figure of merit", false)
 	# A glider without propulsion: an estimated launch motor of GLIDER_THRUST_SHARE × weight.
@@ -886,6 +902,206 @@ func _physics_propulsion() -> void:
 	check("a glider gets a labelled estimated launch motor", not glider.is_empty()
 		and absf(glider.thrust - PhoenixPhysics.GLIDER_THRUST_SHARE * weight) <= 0.05 * PhoenixPhysics.GLIDER_THRUST_SHARE * weight
 		and str(glider.power.propeller.diameter.kind) == "estimated")
+
+
+## Normalize the actual emitted electric record through the flight loader, including its Cp minimum.
+func _loaded_power(package: Dictionary) -> Dictionary:
+	var record: Dictionary = Packages.propulsion_block(package, "propulsion_main", 1.0,
+		PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0]))
+	record.erase("id")
+	var errors := PackedStringArray()
+	var loaded: Dictionary = AircraftData._electric_propulsion(errors, record)
+	return {ok = errors.is_empty() and not loaded.is_empty(), value = loaded, errors = errors, record = record}
+
+
+func _near(a: float, b: float) -> bool:
+	return is_finite(a) and is_finite(b) and absf(a - b) <= 1.0e-9 * maxf(1.0, maxf(absf(a), absf(b)))
+
+
+## Equal RPM and inflow: compare the runtime's complete T/Q, including interpolation and both tail floors,
+## to the independent N-times-single-rotor oracle. This is not a coupled multi-motor flight model.
+func _propeller_invariants() -> void:
+	var model := _physics_model(0.2, 8000.0)
+	var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+		model.airfoils[0], model.airfoils[1], null)
+	var selected: Dictionary = Packages.power("electric-3s-1250kv-9x6-estimated-v1")
+	check("equivalent-propeller base package is available", selected.ok)
+	if not selected.ok:
+		return
+	var rho := 1.225
+	var rpm := 8000.0
+	# Below-cap measured propeller: dimensional disk power must leave the original Cp unchanged.
+	# This also distinguishes the corrected cap from raising every propeller to the limit.
+	var below_block: Dictionary = block.duplicate(true)
+	below_block.propeller.pitch_m = 0.2 * PhoenixPhysics.TABLE_PITCH_RATIO
+	below_block.propeller.count = 1
+	var below: Dictionary = PhoenixPhysics._power_at(selected.value, below_block, "below-merit-cap", 1.0, 1.0)
+	var below_loaded := _loaded_power(below)
+	if below_loaded.ok:
+		var below_tq: PackedFloat64Array = Propulsion.thrust_torque(PackedFloat64Array([0.0, 0.0, 0.0]), rpm, below_loaded.value, rho)
+		var disk := PI * pow(float(below_loaded.value.diameter), 2) / 4.0
+		var dimensional_fm := pow(below_tq[0], 1.5) / sqrt(2.0 * rho * disk) / (below_tq[1] * TAU * rpm / 60.0)
+		check("a below-cap single propeller keeps the measured Cp", dimensional_fm > 0.6
+			and dimensional_fm < PhoenixPhysics.MAX_FIGURE_OF_MERIT
+			and _near(float(below.propeller.cp_table.value[0][1]), float(selected.value.propeller.cp_table.value[0][1])))
+	else:
+		check("the below-cap single propeller loads", false)
+	for negative_cp: bool in [false, true]:
+		var base: Dictionary = selected.value.duplicate(true)
+		if negative_cp:
+			# An interior windmilling minimum: the loader, not the last row, owns the Cp floor.
+			base.propeller.cp_table.value[3][1] = -0.03
+		block.propeller.count = 1
+		var one: Dictionary = PhoenixPhysics._power_at(base, block, "invariant-one-%s" % negative_cp, 1.0, 1.0)
+		var first := _loaded_power(one)
+		check("single propeller loads through aircraft admission (negative Cp %s)" % negative_cp, first.ok)
+		if not first.ok:
+			continue
+		var original: Dictionary = first.value
+		var samples: Array[float] = [-1.0, 0.0, 0.1, 0.4, 0.8, 1.5, 5.0, 50.0]
+		var ct: PackedFloat64Array = original.ct
+		for i in range(0, ct.size(), 2):
+			samples.append(ct[i])
+			if i >= 2:
+				samples.append(0.5 * (ct[i - 2] + ct[i]))
+		var last := ct.size() - 2
+		var last_slope := (ct[last + 1] - ct[last - 1]) / (ct[last] - ct[last - 2])
+		if last_slope < 0.0 and ct[last + 1] > Propulsion.CT_FLOOR:
+			var crossing := ct[last] + (Propulsion.CT_FLOOR - ct[last + 1]) / last_slope
+			samples.append_array([crossing - 1.0e-7, crossing, crossing + 1.0e-7, crossing + 10.0])
+		for count: int in [2, 4, 8, 16]:
+			block.propeller.count = count
+			var package: Dictionary = PhoenixPhysics._power_at(base, block, "invariant-%s-%d" % [negative_cp, count], 1.0, 1.0)
+			var aggregate := _loaded_power(package)
+			check("%d identical propellers load through aircraft admission (negative Cp %s)" % [count, negative_cp], aggregate.ok)
+			if not aggregate.ok:
+				continue
+			var loaded: Dictionary = aggregate.value
+			var worst_t := 0.0
+			var worst_q := 0.0
+			for j: float in samples:
+				var u := j * rpm / 60.0 * float(original.diameter)
+				var flow := PackedFloat64Array([u, 0.0, 0.0])
+				var expected: PackedFloat64Array = Propulsion.thrust_torque(flow, rpm, original, rho)
+				var actual: PackedFloat64Array = Propulsion.thrust_torque(flow, rpm, loaded, rho)
+				worst_t = maxf(worst_t, absf(actual[0] - count * expected[0]) / maxf(1.0, absf(count * expected[0])))
+				worst_q = maxf(worst_q, absf(actual[1] - count * expected[1]) / maxf(1.0, absf(count * expected[1])))
+			check("%d propellers preserve summed thrust and torque at knots, between knots and past Ct/Cp floors (negative Cp %s)" % [count, negative_cp],
+				worst_t < 1.0e-10 and worst_q < 1.0e-10)
+			if negative_cp:
+				check("%d propellers retain the scaled nonterminal Cp minimum" % count,
+					loaded.has("cp_min") and _near(float(loaded.cp_min), float(original.cp_min) / pow(float(count), 1.5)))
+			# Independent dimensional momentum balance: FM = ideal disk power / shaft power.
+			var tq: PackedFloat64Array = Propulsion.thrust_torque(PackedFloat64Array([0.0, 0.0, 0.0]), rpm, loaded, rho)
+			var one_tq: PackedFloat64Array = Propulsion.thrust_torque(PackedFloat64Array([0.0, 0.0, 0.0]), rpm, original, rho)
+			var area := PI * pow(float(loaded.diameter), 2) / 4.0
+			var one_area := PI * pow(float(original.diameter), 2) / 4.0
+			var fm := pow(tq[0], 1.5) / sqrt(2.0 * rho * area) / (tq[1] * TAU * rpm / 60.0)
+			var one_fm := pow(one_tq[0], 1.5) / sqrt(2.0 * rho * one_area) / (one_tq[1] * TAU * rpm / 60.0)
+			check("%d propellers preserve physical disk area and dimensional figure of merit" % count,
+				_near(area, count * one_area) and _near(fm, one_fm) and fm <= PhoenixPhysics.MAX_FIGURE_OF_MERIT + 1.0e-9)
+	# Inertia is the sum of physical D^4 rotors before the separate numerical stability floor.
+	var high: Dictionary = selected.value.duplicate(true)
+	high.propeller.rotating_inertia.value = 0.015
+	block.propeller.count = 4
+	var unfloored: Dictionary = PhoenixPhysics._power_at(high, block, "inertia-unfloored", 1.0, 1.0)
+	var expected_inertia := 4.0 * 0.015 * pow(0.2 / float(high.propeller.diameter.value), 4)
+	check("aggregate unfloored inertia sums four physical rotors", _near(float(unfloored.propeller.rotating_inertia.value), expected_inertia)
+		and not str(unfloored.propeller.rotating_inertia.source).begins_with("Raised"))
+	var low: Dictionary = selected.value.duplicate(true)
+	low.propeller.rotating_inertia.value = 0.000001
+	var floored: Dictionary = PhoenixPhysics._power_at(low, block, "inertia-floored", 1.0, 1.0)
+	var pre_floor := 4.0 * 0.000001 * pow(0.2 / float(low.propeller.diameter.value), 4)
+	check("active shaft floor reports the correct summed pre-floor inertia", float(floored.propeller.rotating_inertia.value) > pre_floor
+		and str(floored.propeller.rotating_inertia.source).contains(String.num(pre_floor, 9)))
+	# The aggregate does not get clamped to fit these loader limits: unsupported records refuse.
+	block.propeller.count = 1
+	var normal: Dictionary = PhoenixPhysics._power_at(selected.value, block, "diameter-limits", 1.0, 1.0)
+	var admitted := _loaded_power(normal)
+	if admitted.ok:
+		var bounded: Dictionary = admitted.record.duplicate(true)
+		bounded.propeller.diameter.value = 2.0
+		bounded.propeller.rotating_inertia.value = 0.1
+		var errors := PackedStringArray()
+		var edge := AircraftData._electric_propulsion(errors, bounded)
+		check("electric propeller accepts the documented diameter and inertia upper boundaries", errors.is_empty() and not edge.is_empty())
+		bounded.propeller.diameter.value = 2.0001
+		bounded.propeller.rotating_inertia.value = 0.1001
+		errors = PackedStringArray()
+		AircraftData._electric_propulsion(errors, bounded)
+		check("electric propeller rejects aggregate diameter or inertia above their bounds", Array(errors).any(func(e: String) -> bool:
+			return e.contains("propulsion.propeller.diameter")) and Array(errors).any(func(e: String) -> bool:
+			return e.contains("propulsion.propeller.rotating_inertia")))
+	else:
+		check("electric propeller admission boundary fixture loads", false)
+	block.propeller.count = 16
+	block.propeller.diameter_m = 0.6
+	var oversized: Dictionary = PhoenixPhysics._power_at(selected.value, block, "oversized-equivalent", 1.0, 1.0)
+	var refused := _loaded_power(oversized)
+	check("an oversized equivalent disk is retained and refused by the actual loader", _near(float(oversized.propeller.diameter.value), 2.4)
+		and not refused.ok and Array(refused.errors).any(func(e: String) -> bool:
+			return e.contains("propulsion.propeller.diameter")))
+	block.propeller.diameter_m = 0.2
+	var heavy: Dictionary = selected.value.duplicate(true)
+	heavy.propeller.rotating_inertia.value = 0.09
+	var heavy_aggregate: Dictionary = PhoenixPhysics._power_at(heavy, block, "heavy-equivalent", 1.0, 1.0)
+	var heavy_refused := _loaded_power(heavy_aggregate)
+	check("an excessive summed rotor inertia is retained and refused by the actual loader",
+		float(heavy_aggregate.propeller.rotating_inertia.value) > 0.1 and not heavy_refused.ok
+		and Array(heavy_refused.errors).any(func(e: String) -> bool:
+			return e.contains("propulsion.propeller.rotating_inertia")))
+
+
+func _drag_area_invariants() -> void:
+	var original := _physics_model()
+	for wings: int in [1, 2]:
+		for fitted_case: bool in [false, true]:
+			var model: Dictionary = original.duplicate(true)
+			if fitted_case:
+				# Aspect/taper are outside the estimated package, but within the source-block domain.
+				model.airfoils[0].attributes.Root_chord = 1.2
+				model.airfoils[0].attributes.Tip_chord = 0.3
+			if wings == 2:
+				var upper: Dictionary = model.airfoils[0].duplicate(true)
+				upper.attributes.Position.y = 20.0
+				model.airfoils.push_front(upper)
+			var lifting: Array = Converter.lifting_wings(Converter.summarize(model, 0.01))
+			var picked: Dictionary = Converter.layout_surfaces(model, lifting)
+			var values: Dictionary = Converter.definition_values(model, 0.01, [0.0, 0.02, 0.03], lifting)
+			var block := PhoenixPhysics.physics_block(model, 0.01, [0.0, 0.02, 0.03], {"Synthetic": _synthetic_polar()},
+				picked.wing, picked.tail, picked.fin)
+			var shape_fit := PhoenixSetup.fit_planform(float(values["wing/span"]), float(values["wing/root_chord"]),
+				float(values["wing/tip_chord"]), PhoenixPhysics.DERIVED_TAPER_RANGE, PhoenixPhysics.DERIVED_ASPECT_RANGE)
+			check("%d-wing %s fixture has the intended fit" % [wings, "fitted" if fitted_case else "ordinary"],
+				lifting.size() == wings and bool(shape_fit.changed) == fitted_case)
+			for scale: float in [0.5, 1.0, 2.0]:
+				var ids := PhoenixPhysics.derive(block, "conventional-trainer-estimated-v1", "electric-3s-1250kv-9x6-estimated-v1", scale)
+				if ids.is_empty():
+					check("dimensional body drag packages derive", false)
+					continue
+				var airframe: Dictionary = Packages.airframe(ids.airframe).value
+				var shape := {span = float(values["wing/span"]) * scale, root_chord = float(shape_fit.root) * scale,
+					tip_chord = float(shape_fit.tip) * scale, dihedral_deg = 3.0, h_span = 0.5 * scale, h_chord = 0.11 * scale,
+					h_position = PackedFloat64Array([0.45 * scale, 0.0, 0.0]), v_height = 0.25 * scale, v_chord = 0.11 * scale,
+					v_position = PackedFloat64Array([0.45 * scale, 0.0, 0.0])}
+				var aero := Packages.airframe_aero(airframe, shape)
+				var expected_area := 0.75 * 0.006 * scale * scale
+				check("%d-wing fitted=%s scale=%s preserves body drag area" % [wings, fitted_case, scale], not aero.is_empty()
+					and _near((float(aero.quantities.CD0.value) - float(block.section.cd_min)) * float(aero.wing_area), expected_area))
+				if wings == 1 and not fitted_case and scale == 1.0:
+					var malformed: Dictionary = airframe.duplicate(true)
+					malformed.wing.body_drag_area.value = [0.001]
+					check("nonscalar body drag area is refused without a conversion error", Packages.airframe_aero(malformed, shape).is_empty())
+					var stock: Dictionary = Packages.airframe("conventional-trainer-estimated-v1").value
+					var stock_aero := Packages.airframe_aero(stock, shape)
+					check("stock airframes keep their original profile drag", not stock_aero.is_empty()
+						and _near(float(stock_aero.quantities.CD0.value), float(stock.wing.profile_drag.value)))
+				# A later manual chord edit changes the reference area, not the source's dimensional body drag.
+				shape.root_chord *= 1.3
+				shape.tip_chord *= 1.3
+				var edited := Packages.airframe_aero(airframe, shape)
+				check("%d-wing fitted=%s scale=%s preserves body drag after a chord edit" % [wings, fitted_case, scale], not edited.is_empty()
+					and _near((float(edited.quantities.CD0.value) - float(block.section.cd_min)) * float(edited.wing_area), expected_area))
 
 
 func _physics_untrusted() -> void:
@@ -1029,6 +1245,53 @@ func _import_hardening() -> void:
 	var current := Authoring.new()
 	check("a current derivation reopens unchanged", current.restore(snapshot, source).ok
 		and str(current.definition().get("power_package", "")) == power and current.restore_notes.is_empty())
+	# A genuine older receipt has only a reference-area ratio, not the new dimensional field.
+	# Its span and aspect ratio describe the same decoded source wing, even for stacked wings.
+	var legacy_data: Dictionary = data.duplicate(true)
+	legacy_data.physics.erase("body_drag_area_m2")
+	var legacy_marked := GlbWriter.build(geo, {}, 1.0, {creator_setup = legacy_data}, [], [Installation.PHOENIX_NAMESPACE])
+	var legacy_source: Variant = SourceImporter.inspect_bytes(legacy_marked.value.bytes, "legacy.glb").value
+	var legacy_read := PhoenixSetup.creator_setup(legacy_source)
+	check("legacy receipt reconstructs the source body drag area", not legacy_read.is_empty()
+		and _near(float(legacy_read.physics.get("body_drag_area_m2", NAN)), 0.75 * 0.006))
+	var legacy_proposal := PhoenixSetup.propose(legacy_source, Authoring.span_domain())
+	var legacy_doc := Authoring.new()
+	legacy_doc.set_source(legacy_source)
+	legacy_doc.set_axis("nose_axis", "+z")
+	legacy_doc.set_axis("up_axis", "+y")
+	legacy_doc.set_units("m")
+	legacy_doc.set_datum([0.0, 0.02, 0.03])
+	var legacy_applied: Dictionary = legacy_doc.apply_clearview_setup(legacy_proposal.value, legacy_doc.revision) if legacy_proposal.ok else legacy_proposal
+	check("legacy receipt can derive dimensional drag", legacy_applied.ok)
+	if not legacy_applied.ok:
+		return
+	var legacy_snapshot: Dictionary = legacy_doc.snapshot()
+	var legacy_current := Authoring.new()
+	check("legacy receipt reopens with its new derivation unchanged", legacy_current.restore(legacy_snapshot, legacy_source).ok
+		and legacy_current.restore_notes.is_empty() and legacy_current.definition().get("power_package") == legacy_snapshot.power_package)
+	# Recreate the exact v19 tag using the pre-enrichment receipt and the real base package bytes.
+	var air_parts := str(legacy_snapshot.airframe_package).split("|")
+	var power_parts := str(legacy_snapshot.power_package).split("|")
+	var prior := CreatorBytes.encode({block = PhoenixSetup.receipt(legacy_source).creator_setup.physics,
+		airframe = Packages.airframe(air_parts[1]).value, power = Packages.power(power_parts[1]).value,
+		scale = air_parts[2], mass = air_parts[3], version = 19})
+	check("version-19 receipt identity can be recreated", prior.ok)
+	if prior.ok:
+		var old: Dictionary = legacy_snapshot.duplicate(true)
+		var prior_tag := str(prior.value.sha256).substr(0, 16)
+		air_parts[5] = prior_tag
+		power_parts[5] = prior_tag
+		old.airframe_package = "|".join(air_parts)
+		old.power_package = "|".join(power_parts)
+		var old_airframe: String = old.airframe_package
+		var old_power: String = old.power_package
+		var old_doc := Authoring.new()
+		var old_restored: Dictionary = old_doc.restore(old, legacy_source)
+		check("version-19 ids stay unchanged and reopen on base packages with a setup note", old_restored.ok
+			and old.airframe_package == old_airframe and old.power_package == old_power
+			and not PhoenixPhysics.is_derived(str(old_doc.definition().get("power_package", "")))
+			and old_doc.needs_source_installation() and old_doc.restore_notes.any(func(d: Dictionary) -> bool:
+				return d.message == Authoring.PHOENIX_DERIVATION_RESET))
 
 
 func _has_message(result: Dictionary, message: String) -> bool:

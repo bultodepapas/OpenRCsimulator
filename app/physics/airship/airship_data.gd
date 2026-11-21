@@ -19,15 +19,17 @@ const TOP_LEVEL_KEYS := ["format", "id", "name", "status", "provenance", "envelo
 const MAX_STATIONS := 64
 const MAX_POINTS := 64
 const MAX_MASSES := 32
-## Continuous layout: 4 motor speeds, 3 vector angles, 3 fin deflections, battery state of charge.
+## Continuous layout: 4 motor speeds, 3 vector angles, 3 fin deflections, battery state of charge and connection latch.
 const STATE_LAYOUT := ["n_port", "n_starboard", "n_stern_axial", "n_stern_lateral",
 	"vector_port_rad", "vector_starboard_rad", "vector_stern_rad",
-	"fin_dorsal_rad", "fin_port_rad", "fin_starboard_rad", "battery_soc"]
-const CONTINUOUS_SIZE := 11
+	"fin_dorsal_rad", "fin_port_rad", "fin_starboard_rad", "battery_soc", "battery_connected"]
+const CONTINUOUS_SIZE := 12
 const MOTOR := 0
 const VECTOR := 4
 const FIN := 7
 const SOC := 10
+## Exactly 1 while connected, exactly 0 after the located depletion event.
+const BATTERY_CONNECTED := 11
 
 
 ## BL-19: admit an in-memory document (a frozen Workshop variant). Its identity hashes the canonical JSON bytes.

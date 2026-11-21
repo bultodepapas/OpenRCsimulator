@@ -76,13 +76,14 @@ func start(context: Dictionary = {}, destination := "") -> Error:
 		checkpoint = {tick = _start_tick, state = _session.sim.state.duplicate(), continuous = _session.sim.continuous.duplicate()},
 		layout = {sticks = STICKS, state = STATE, continuous = _session.sim.continuous.size()},
 		input_boundary = "clean sticks [roll, pitch, yaw, throttle] driving the interval that ends at the row tick",
-		state_boundary = "accepted tick end: body [n e d u v w q0 q1 q2 q3 p q r] and continuous [motor x4, vector x3, fin x3, soc]",
+		state_boundary = "accepted tick end: body [n e d u v w q0 q1 q2 q3 p q r] and continuous [motor x4, vector x3, fin x3, soc, battery_connected]",
 	}
 	_file.store_buffer(OrflContainer.MAGIC.to_ascii_buffer())
 	if not _write_packet(header):
 		return ERR_FILE_CANT_WRITE
 	recording = true
 	_session.tick_advanced.connect(_ticked)
+	_session.sim.events_located.connect(_simulation_events)
 	_session.pause_changed.connect(_paused)
 	_session.crashed.connect(_crashed)
 	_session.faulted.connect(_faulted)
@@ -136,6 +137,18 @@ func _ticked(tick: int, _time_s: float) -> void:
 		_flush()
 	if recording and tick - _start_tick >= MAX_TICKS:
 		stop("recording limit reached")
+
+
+## Kernel events are published only after their tick commits, before tick_advanced.
+## Keep the located sub-tick time as well as the accepted tick.
+func _simulation_events(tick: int, located: Array[Dictionary]) -> void:
+	if not recording:
+		return
+	for event: Dictionary in located:
+		if event.get("type", "") == "battery_depleted":
+			_events.append({tick = tick, kind = "battery_depleted", detail = "", time_s = float(event.time_s)})
+			if _events.size() >= CHUNK_TICKS:
+				_flush()
 
 
 func _paused(value: bool, reason: String) -> void:
@@ -205,7 +218,8 @@ func _write_packet(value: Dictionary) -> bool:
 
 
 func _disconnect() -> void:
-	for pair in [[_session.tick_advanced, _ticked], [_session.pause_changed, _paused], [_session.crashed, _crashed],
+	for pair in [[_session.tick_advanced, _ticked], [_session.sim.events_located, _simulation_events],
+			[_session.pause_changed, _paused], [_session.crashed, _crashed],
 			[_session.faulted, _faulted], [_session.resetting, _resetting]]:
 		if pair[0].is_connected(pair[1]):
 			pair[0].disconnect(pair[1])
@@ -321,6 +335,15 @@ static func _replay(session: Node, field: Dictionary, head: Dictionary, read: Di
 	var sticks: PackedFloat64Array = read.sticks
 	var states: PackedFloat64Array = read.states
 	var conts: PackedFloat64Array = read.continuous
+	var recorded_depletion: Array[Dictionary] = []
+	for event: Variant in read.events:
+		if event is Dictionary and event.get("kind", "") == "battery_depleted":
+			if typeof(event.get("tick")) != TYPE_INT or typeof(event.get("time_s")) not in [TYPE_INT, TYPE_FLOAT] \
+					or not is_finite(float(event.time_s)):
+				report.error = "Recorded depletion event is malformed."
+				return report
+			recorded_depletion.append(event)
+	var replayed_depletion: Array[Dictionary] = []
 	for i in read.ticks.size():
 		if not session.tick_once(sticks.slice(STICKS * i, STICKS * i + STICKS)):
 			report.first_mismatch_tick = int(read.ticks[i])
@@ -330,6 +353,24 @@ static func _replay(session: Node, field: Dictionary, head: Dictionary, read: Di
 				or session.sim.continuous.to_byte_array() != conts.slice(cont_size * i, cont_size * i + cont_size).to_byte_array():
 			report.first_mismatch_tick = int(read.ticks[i])
 			report.error = "Replay diverged from the recorded state."
+			return report
+		for event: Dictionary in session.sim.last_events:
+			if event.get("type", "") == "battery_depleted":
+				replayed_depletion.append({tick = int(read.ticks[i]), time_s = float(event.time_s), replay_tick = session.sim.tick})
+	if recorded_depletion.size() != replayed_depletion.size():
+		report.error = "Replay depletion events differ from the recording."
+		return report
+	# Restoring a blimp checkpoint resets the clock. Compare the location within
+	# the matching tick; the time is diagnostic to 1 ns, not a cross-clock bit test.
+	var timestep := float(head.dt_s)
+	for i in recorded_depletion.size():
+		var recorded_event: Dictionary = recorded_depletion[i]
+		var replayed_event: Dictionary = replayed_depletion[i]
+		var recorded_local := float(recorded_event.time_s) - (int(recorded_event.tick) - 1) * timestep
+		var replayed_local := float(replayed_event.time_s) - (int(replayed_event.replay_tick) - 1) * timestep
+		if recorded_event.tick != replayed_event.tick or recorded_local < -1e-9 or recorded_local > timestep + 1e-9 \
+				or absf(recorded_local - replayed_local) > 1e-9:
+			report.error = "Replay depletion event timing differs from the recording."
 			return report
 	# Terminal outcome: the same crash at the same tick, or none (obstacle and contact code outside the solver
 	# fingerprint can change it without changing any recorded state).

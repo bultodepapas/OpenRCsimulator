@@ -5,6 +5,7 @@
 extends Node
 
 const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
 const Sim := preload("res://sim/simulation.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
@@ -21,6 +22,7 @@ const CollisionWorld := preload("res://scenery/collision_world.gd")
 const DEFAULT_DATA := "res://data/airships/rc-blimp-5m.json"
 const FORMAT := "openrc-airship-session v1"
 const FIXED_HZ := 240
+const STATE_LAYOUT_IDENTITY := "openrc-airship-body-actuator-battery-v2"
 const MAX_TAPE_TICKS := FIXED_HZ * 60 * 30
 const MAX_WIND_MPS := 4.0
 const ARM_THROTTLE := 0.05
@@ -88,10 +90,20 @@ static func default_options() -> Dictionary:
 		start = "air", altitude_m = 6.0, north_offset_m = 22.0, east_offset_m = 0.0, heading_deg = 90.0}
 
 
-## Build every derived object before replacing the running configuration. Refusal keeps the old session.
+## Reject malformed start options and derive the candidate configuration before
+## replacing the flight. General reset-failure atomicity still needs a detached
+## candidate reset; a late reset refusal can fault the installed session.
 func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var opts := default_options()
 	opts.merge(requested, true)
+	# Refuse malformed start options before replacing a flight or notifying recorders.
+	for key: String in ["altitude_m", "north_offset_m", "east_offset_m", "heading_deg"]:
+		if typeof(opts.get(key)) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(opts[key])):
+			load_error = "airship start %s must be finite" % key
+			return false
+	if typeof(opts.start) != TYPE_STRING or opts.start not in ["air", "ground"]:
+		load_error = "airship start must be air or ground"
+		return false
 	# A frozen Workshop variant arrives as an in-memory document; otherwise the shipped data file is read.
 	var loaded := Data.load_document(opts.data, "workshop variant") if opts.get("data") is Dictionary \
 		else Data.load_file(str(opts.data_path))
@@ -132,6 +144,9 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
 	var north := float(pilot.north) + float(opts.north_offset_m)
 	var east := float(pilot.east) + float(opts.east_offset_m)
+	if not is_finite(north) or not is_finite(east):
+		load_error = "airship start position must be finite"
+		return false
 	var under := candidate_env.ground(north, east)
 	if under.size() != 3 or not is_finite(under[0]):
 		load_error = "start position is outside the field"
@@ -155,6 +170,9 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	vehicle.aux_size = 0
 	vehicle.modes_size = 0
 	vehicle.continuous_size = Data.CONTINUOUS_SIZE
+	vehicle.state_layout_identity = STATE_LAYOUT_IDENTITY
+	vehicle.state_validator = _battery_state_is_valid
+	vehicle.events = [{type = "battery_depleted", index = RB.SIZE + Data.SOC, transition = _battery_depleted}]
 	vehicle.identity = {vehicle = "airship", law = Dynamics.LAW, mixer = Dynamics.MIXER_LAW, layout = Data.STATE_LAYOUT,
 		data_sha256 = loaded.source_sha256, heaviness_kg = heaviness, rho = rho}
 	var captured_model: Dictionary = derived.model
@@ -185,6 +203,23 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	prepared = true
 	load_error = ""
 	return reset()
+
+
+## Trial stages may have negative SOC while still connected; only accepted frames
+## and checkpoints must obey this domain. The event transition owns the latch.
+static func _battery_state_is_valid(frame: Dictionary, _context: Dictionary) -> bool:
+	var continuous: PackedFloat64Array = frame.continuous
+	var soc := continuous[Data.SOC]
+	var connected := continuous[Data.BATTERY_CONNECTED]
+	return soc >= 0.0 and soc <= 1.0 and ((soc > 0.0 and connected == 1.0) \
+		or (soc == 0.0 and connected == 0.0))
+
+
+static func _battery_depleted(combined: PackedFloat64Array, index: int) -> PackedFloat64Array:
+	var transitioned := combined.duplicate()
+	transitioned[index] = 0.0
+	transitioned[RB.SIZE + Data.BATTERY_CONNECTED] = 0.0
+	return transitioned
 
 
 ## Release state: airborne at the chosen height, or resting on the gear (datum lowered until the lowest gear or hull
@@ -227,6 +262,7 @@ func reset() -> bool:
 	var continuous := PackedFloat64Array()
 	continuous.resize(Data.CONTINUOUS_SIZE)
 	continuous[Data.SOC] = model.battery.initial_soc
+	continuous[Data.BATTERY_CONNECTED] = 1.0
 	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	sim.aux = PackedFloat64Array()
 	sim.modes = PackedInt64Array()
