@@ -238,6 +238,28 @@ fit depends on controller ramp settings and step size [S01]. Those observations
 justify separate torque channels, wind-on data and controller-specific dynamics.
 They do not calibrate the Schübeler candidates or establish universal thresholds.
 
+EDF-00-R3 adds [fourteen scientific studies](scientific-literature-2026-11-21.md)
+covering electrical demand, shaft-power inference, geometry, transients,
+crossflow and installed interaction. Its P identifiers extend, rather than
+renumber, S01–S30; overlapping sources are explicitly identified. A publication
+is evidence for its reported conditions, not an automatically reusable map.
+Store a paper's correction/version, experiment-family identity, measurement
+port, geometry convention and actual sampled support before coefficient adoption.
+
+An installed-data campaign must name whether RPM, electrical input, thrust or
+command is held constant; these comparisons answer different questions. If
+using an installation residual, define it at matched conditions as the complete
+installed load minus the explicitly owned isolated-fan and bare-airframe loads,
+with freestream, attitude and moment datum matched across all configurations.
+Match the declared drive variable, for example RPM or electrical power, across
+the powered fan-alone and installed configurations; record the other operating
+quantities. The bare airframe has no fan RPM to match. Do not attribute a
+difference to geometry alone when operating conditions or interaction/tare
+differ. Their uncertainty remains part of the residual. A complete-aircraft balance
+can read zero axial force while the fan still consumes power and provides
+positive thrust against airframe resistance (P12/P13). Such a balance cannot
+identify fan thrust by itself. Signed duct contributions are allowed (P10).
+
 ### Zero speed, windmilling and reverse flow
 
 `J_a` is singular at zero RPM. Define a dimensional low-speed branch for the
@@ -435,6 +457,83 @@ The existing SOC/temperature-dependent R and tau make C variable; interpreting
 oracle to fixed parameters, or explicitly derive/account for that parameter
 work. Do not silently extend the empirical ECM into a proven full-chemistry
 energy model. Its terminal-energy accumulator is not chemical depletion.
+
+### Performance and consumption metrics
+
+This is the authoritative proposed metric contract added by EDF-00-R3. The
+[scientific review](scientific-literature-2026-11-21.md) explains the evidence and
+source discrepancies behind it. Freeze actual schema names in EDF-01. Each
+reported quantity carries its unit, power/force boundary, reference frame,
+operating condition, time window and evidence kind. A generic `efficiency`
+field without those definitions is insufficient.
+
+| Quantity | Definition and admissible interpretation |
+| --- | --- |
+| Battery-terminal electrical power | `P_b = V_b * I_b` at the modeled/measured pack terminals. Includes the declared downstream propulsion and auxiliary loads; wiring and controller losses have explicit owners. |
+| Propulsion electrical input | `P_dc,prop` at a named ESC/supply port. Never assume it equals pack power when auxiliaries or wiring losses intervene. Per-drive and shared-bus values remain distinct. |
+| Motor shaft / fan-load power | `Q_motor * Omega` and `Q_fan * Omega` respectively, using relative shaft speed. Rotor acceleration, mechanical losses and body coupling prevent unconditional equality; the full inertial work contract above still applies. |
+| Static electrical power loading | `T_net / P_dc,prop`, in N/W or N/kW, for the declared isolated or installed propulsor boundary with positive input power. It is not dimensionless efficiency. Gram-force per watt converts with `1 gf = 0.00980665 N`; grams of mass alone are not force. |
+| Axial useful propulsive efficiency | `eta_axial = T_axial * V_infinity / P_dc,prop` only for the declared steady axial, uniform-airflow comparison and matching force/power boundary. Use air-relative freestream speed, not ground speed. At zero airspeed with positive power this measure is zero despite finite static thrust. |
+| Mission terminal energy and charge | `E_terminal,Wh = integral(V_b * I_b dt) / 3600`; `Q_terminal,Ah = integral(I_b dt) / 3600`, over accepted simulation time. State signed/net versus discharge convention. These are not automatically chemical depletion or battery heat. |
+| Endurance / energy per distance | A result of a specified mission, mass/CG, atmosphere, source and termination/reserve policy. Wh/km declares ground-track or air-distance basis and requires positive accumulated distance. |
+
+Do not extend the axial efficiency formula to arbitrary crossflow, a whole-aircraft
+net axial force, negative-thrust windmilling or an undefined power port. Report
+the underlying loads/power and an unavailable metric with a reason in those
+cases. Zero input power makes a ratio undefined; it is not permission to display
+infinite efficiency or to erase physical windmill drag. Unmodeled temperatures
+and electrical regeneration remain unavailable, not zero or an energy credit.
+
+For a chosen *open actuator-disk idealization* at static positive thrust, define
+the comparison explicitly:
+
+$$
+FM_{ref}=\frac{T^{3/2}}{P_{basis}\sqrt{2\rho A_{ref}}}.
+$$
+
+For `A_ref = pi D²/4` and the diameter-based coefficients of §4, this becomes
+`sqrt(2/pi) * CT^(3/2) / CP_basis`. A `1/sqrt(2)` multiplier on the same
+coefficients instead implies `A_ref = D²`. This algebra explains why a paper's
+figure of merit cannot be imported by name alone. Electrical-input, shaft and
+CFD polytropic efficiency are separate metrics. A rotor-disk reference applied
+to a ducted system is a declared comparison idealization, not proof that its
+figure of merit must lie below one; do not clip it to hide a mismatch. Rotor
+disk, swept annulus, inlet capture and jet areas are not interchangeable.
+
+Normalize dimensional measurements first. With identical diameter/density
+conventions, replacing rev/s `n` by rad/s `Omega = 2*pi*n` changes diameter-based
+`CT` by `(2*pi)^-2` and `CP` by `(2*pi)^-3`. Coefficients based on tip speed,
+area or aircraft `q V S` need their own derivation. `CP_electrical` cannot use
+`2*pi*CQ` unless its power is actually the corresponding shaft-load power.
+Preserve source-defined coefficients alongside a documented normalized form;
+never silently overwrite an uncorrected plot with guessed units.
+
+For measurements, `mean(V I)` need not equal `mean(V) * mean(I)`: their difference
+is the voltage/current covariance over the same window. Preserve synchronized
+samples, timing/latency, filtering and the port before comparing powers. A
+low-bandwidth averaged ESC model cannot validate switching peaks by resampling
+its output at a higher frequency. Synthetic example: samples `(40 V, 10 A)` and
+`(50 V, 20 A)` give mean power 700 W, while the product of means is 675 W.
+
+Compute mission accumulators using a frozen native quadrature on accepted
+segments, with an error budget for nonlinear power and located events. Exclude
+rejected RK/event probes, paused wall time and duplicate restore/replay advances.
+Their checkpoint/reset/recording semantics must be explicit; read-only HUD/audio
+observers never advance them. A synthetic 48 V, 20 A, 60 s interval must yield
+16 Wh and 1/3 Ah. This verifies units/accounting, not physical endurance.
+
+Compare the turbine and EDF on an explicitly controlled mission with separately
+trimmed starts and each configuration's own mass/CG. Report elapsed simulated
+time and each source's reserve/ending cause. For EDF, include terminal Wh/Ah,
+mean and time-resolved electrical power, limiting duration and minimum terminal
+voltage. For the turbine, use supported fuel quantity/rate/remaining telemetry;
+pack Wh/Ah is not its propulsion consumption. A common energy comparison would
+need an explicit fuel-energy basis and consistent auxiliary/loss ownership;
+leave it unavailable without that model, rather than adding an assumed fuel
+heating value or invented runtime telemetry. Thermal limits count only when
+modeled. The ideal-bus mode has no finite-pack endurance. Do not
+advertise nominal pack Wh divided by maximum watts as flight duration, or claim
+that increasing capacity improves endurance without regenerating mass and loads.
 
 ## 7. Inlets, nozzle area and unusually large installations
 

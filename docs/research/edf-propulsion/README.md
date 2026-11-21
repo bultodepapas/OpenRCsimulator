@@ -13,13 +13,14 @@ generated aircraft, certify a physical installation or claim flight validation.
 
 | Document | Purpose |
 | --- | --- |
+| [Fourteen scientific studies, EDF-00-R3](scientific-literature-2026-11-21.md) | Critical full-text review of thrust, electrical/shaft power, dynamics, geometry and installed behavior; corrections, measurement boundaries and concrete plan changes. |
 | [Twenty investigations, EDF-00-R2](native-research-2026-11-21.md) | Physics, native architecture, games, tools, GitHub and Reddit; 43 external source entries and nine community leads, with decisions and future experiments. |
 | [Native execution and product design](native-runtime-design.md) | Complete native numerical path, prepared memory, atomic world/input state, strict EDF admission, stand/preview/flight/debrief and performance scope. Proposed, not implemented. |
 | [Independent audit, EDF-00-R1](external-audit-2026-11-21.md) | Fifteen findings against the original proposal, corrections, additional sources and the verified inherited CI blocker. |
 | [Implementation plan](../../plans/edf-propulsion.md) | Authoritative EDF-00…15 steps, substeps, owners, interfaces and completion gates. |
-| [Physics and primary sources](physics-and-sources.md) | Thirty primary references, fan candidates, force/torque/energy equations, sizing and unresolved identification. |
+| [Physics and primary sources](physics-and-sources.md) | Original thirty-reference register, fan candidates, force/torque/energy equations and the R3 performance/consumption contract; further scientific sources are in the R3 register. |
 | [Repository audit](repository-audit.md) | Fifteen classified findings with current source paths and bounded repair/integration proposals. |
-| [Validation matrix](validation-matrix.md) | Thirty-six software/numerical/product cases, six physical cards, flight maneuvers and qualification policy. All future gates are pending. |
+| [Validation matrix](validation-matrix.md) | Forty software/numerical/product cases, six physical cards, flight maneuvers and qualification policy. All future gates are pending. |
 | [Reproducible calculations](calculations.json) | Generated energy, mass, area and analytic counterexample values with embedded limitations. |
 | [Calculation tool](../../../research/edf-propulsion/README.md) | Standard-library regeneration and freshness check. |
 
@@ -108,6 +109,17 @@ native ordinary-tick publication guard from current reset/restore-only guards.
 The opt-in event/world visibility change needs its own qualification; legacy
 listener behavior remains outside that proposed change.
 
+**EDF-00-R3** critically examines fourteen distinct scientific studies against
+`e4b42d06`, with electrical-performance and installed-flow specialists plus a
+fresh Good Enemy source review. Corrections and related publication versions
+are not counted as independent experiments. The useful findings are integrated
+into EDF-01…04/08…11, the native design, a precise metric contract, T37–T40 and
+V01–V06. They distinguish electrical/shaft/flow power, static N/kW versus useful
+efficiency, accepted mission Wh/Ah, geometry conventions and complete-aircraft
+versus propulsor loads. Source arithmetic/unit discrepancies and unverified
+geometry are recorded without inventing replacement data. No matched physical
+map or endurance result for the Vantage Jet is supplied by these papers.
+
 ## Verification and delivery
 
 The original EDF-00 delivery (`719c3cc6`) passed these local research checks on
@@ -143,9 +155,20 @@ The original EDF-00 delivery (`719c3cc6`) passed these local research checks on
 | Whitespace and change scope | `git diff --cached --check` passed; eleven Markdown documentation files changed. No runtime, generated aircraft, native source or CI policy changed. |
 | Native specialist and fresh Good Enemy closing review | Concrete findings corrected; no remaining blocking issue in the source-only review. Full native execution, physical behavior, audio/visual quality, packages and performance remain unqualified. |
 
+**EDF-00-R3 revised-candidate verification, 2026-11-21:**
+
+| Check | Result / scope |
+| --- | --- |
+| Existing documentation link/anchor routines | Passed: all links in ten EDF Markdown files plus new links in three shared indexes/decision files; 295 occurrences, 136 local targets/anchors, zero errors. Of these, 37 occurrences (18 local) are new against R2. External citations are scanned as links; this is not a claim that every external URL was availability-tested. |
+| Research and acceptance inventory | Exactly P01…14 and three supplementary X entries; T01…40 and six physical cards. The original S01…30, EDF-A01…15 and R2 twenty-investigation/43-source/nine-lead inventory remain intact. All 29 named existing tests resolve; four named EDF tests remain proposals. |
+| Independent arithmetic | Passed: 22 assertions across coefficient conversions, reference-area normalization, source arithmetic, accepted-interval consumption and installed-force composition. No simulator implementation was invoked; the apparent paper annulus comparison does not resolve its unknown geometry conventions. |
+| Calculation freshness | Existing `calculations.py --check` passed; the unchanged JSON remains reproducible planning arithmetic. |
+| Whitespace and change scope | `git diff --cached --check` passed; nine Markdown documentation files changed. No runtime, generated aircraft, native implementation or CI policy changed. |
+| Specialist and Good Enemy closing review | Power and installed-flow source checks completed. The material turbine-versus-EDF consumption-boundary finding was corrected and reread; no remaining material issue within the source-only review scope. All implementation and physical gates remain pending. |
+
 These link-check records use the repository's `tools/ci/check_docs.py` routines
 against Git objects, so sparse materialization cannot conceal a missing tracked
-target. R1/R2 check every link in their EDF documents and newly introduced links in
+target. R1/R2/R3 check every link in their EDF documents and newly introduced links in
 the shared indexes/decision record, without reclassifying unrelated legacy links.
 
 The calculation freshness check reproduces the committed JSON. These are research-artifact checks, not

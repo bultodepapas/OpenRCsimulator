@@ -153,6 +153,28 @@ output-specific evidence and separately acquired validation. Freeze production
 [independent audit](research/edf-propulsion/external-audit-2026-11-21.md) records
 the counterexamples and remaining implementation gates.
 
+### EDF evidence and consumption metrics retain their measurement boundary
+
+**EDF-00-R3, 2026-11-21; proposed, not implemented.** Integrate the
+[fourteen-study scientific review](research/edf-propulsion/scientific-literature-2026-11-21.md)
+through explicit source/version, geometry, power-port, force-datum and
+fit/validation identities. A paper's DC watts, efficiency-inferred shaft power,
+CFD prediction and assembly reaction torque are not interchangeable calibration
+data. Corrected and related publications do not create independent experiments;
+unresolved dimensional contradictions cannot be repaired by guessing.
+
+Use the [metric contract](research/edf-propulsion/physics-and-sources.md#performance-and-consumption-metrics)
+for static electrical N/kW, qualified axial efficiency and accepted mission
+terminal Wh/Ah. Native bounded accumulators share the accepted transaction and
+checkpoint/window semantics; HUD/audio cannot advance them. Preserve unavailable
+ratios and unmodeled thermal quantities. A controlled mission and reserve/ending
+policy establish a scoped endurance result; nominal battery energy divided by
+peak watts does not. A complete-aircraft net force must not be added to the
+component loads it already contains. These refinements retain the small native
+runtime, fixed clock and separate synthetic-software/physical-evidence tracks.
+Revisit when independently acquired matched data identify a different model or
+measurement boundary; implementation remains owned by the EDF plan.
+
 ### Keep finite resources and mass properties physically coherent
 
 **FUEL-00-R1 / FUEL-12 / BAT-13.** The fixed solver datum is the authored reference-inventory CG, not `plan_cg` or the current fill-dependent CG. Fuel changes mass, CG, inertia, contact response and source state through the accepted transaction. Eligible catalog aircraft with `battery_data` use finite packs by default, superseding the earlier ideal-default recommendation; declared ideal/fixed-voltage routes remain explicit exceptions. Pickup geometry and chemistry are not inferred from a generic fuel label. The [fuel standard](FUEL-SYSTEM.md) and [battery specification](research/battery/BAT-04/specification.md) own exact semantics; [Workshop](AIRCRAFT-WORKSHOP.md) owns its source exceptions.

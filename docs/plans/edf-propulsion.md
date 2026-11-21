@@ -24,6 +24,13 @@ the complete numerical path. This supersedes R1's permission for a selectable
 reference EDF product flight; a reference oracle remains an explicit verification
 tool. The existing stage-only backend does not yet satisfy this requirement.
 
+**Scientific literature revision:** EDF-00-R3 integrates
+[fourteen distinct scientific studies](../research/edf-propulsion/scientific-literature-2026-11-21.md)
+into power/force provenance, native consumption metrics, installed-load ownership
+and independent static/dynamic/mission validation. Corrected papers, inferred
+shaft power and CFD-only domains retain explicit limits. None supplies a matched
+calibration for the proposed A200 installation.
+
 ## 1. Goal and first playable slice
 
 Add a reusable **electric ducted fan** propulsion family, then make a separate
@@ -210,12 +217,13 @@ EDF-01/02 must define a closed versioned schema, with quantities following
 
 | Group | Required information / checks |
 | --- | --- |
-| Identity | Family and law versions, map/installation hashes, exact hardware and firmware context, source format and generator receipt. |
+| Identity | Family and law versions, map/installation hashes, exact hardware and firmware context, source format and generator receipt; corrected publication/file version, experiment-family identity and acquisition/fit/validation role. |
 | Native capability | Complete numerical route, model/world/control features, engine/API/ABI/toolchain/library identity, workspace limits and admission refusal reason. A loaded stage library is insufficient. |
-| Geometry | Actual rotor tip/hub/casing dimensions, FSA convention, blade/stator count, clearance, fan/intake/nozzle reference positions, thrust/spin axes and duct identity. |
+| Geometry | Actual rotor tip/hub/casing dimensions, FSA and inlet/exit area conventions, blade/stator count, clearance value and denominator, surface/manufacturing context, fan/intake/nozzle reference positions, thrust/spin axes and duct identity. Unresolved source geometry cannot become an identified map by guessing. |
 | Motor/ESC | Kv and resistance convention, loss context, inertia, valid voltage/RPM/current limits, command mapping, ramp/current supervisor, averaging bandwidth and cutoff/source-off circuit mode. Aerodynamic freewheel does not define electrical topology. |
 | Pack | Existing generated pack/template identity, series/parallel wiring, mass-matched inventory mount, initial charge/temperature and LVC. |
 | Map | Joint sampled support/cells and holes per output, interpolation/endpoint policy, power and force boundary, uncertainty type, acquisition/run IDs and installed geometry identity. A static sweep is not an N-dimensional support box. |
+| Measurements and metrics | Sensor location/port, torque mounting boundary, units/formula/frame/area, synchronization/filtering/latency, measured versus inferred/predicted power, matched comparison variable; accepted-time Wh/Ah, ratio availability and mission/reserve definition. |
 | Continuation | Bounded accepted physical domain, which may be entirely estimated; separately identified locator-only moving-side continuation through zero RPM/charge; unsupported accepted reverse-spin/brake/regeneration modes. |
 | Numerical budget | Per-observable absolute/relative scales, norms, time horizons, independent oracles and event-time/work limits frozen before results; 240 Hz must pass these in addition to refinement. |
 | Initialization | Instantaneous or conditioned quasi-steady launch, source-off stopped/freewheel branch, resource/controller state, sample phase and expected first-tick drift. |
@@ -318,12 +326,19 @@ measurements before developing a synthetic model.
     identity. Optional JSBSim/OpenVSP comparisons are offline cross-checks with
     matching assumptions and provenance, not replacement solvers or new runtime
     dependencies.
+11. Freeze the [performance and consumption contract](../research/edf-propulsion/physics-and-sources.md#performance-and-consumption-metrics):
+    power ports, signed load boundaries, coefficient/area conventions and metric
+    availability. Specify native accepted-path energy/charge quadrature, error
+    budget, reset/checkpoint/window semantics and event/pause handling. Do not
+    expose an unqualified generic efficiency or finite endurance for an ideal bus.
 
 **Proof:** signed-off specification and T01–T07/T10/T11/T15 test designs with independent
 expected results. EDF-A11 identifies a concrete transport limitation; prove the
 smallest compatible design before extending a kernel protocol. T30/T31/T34
 must expose a deliberately hidden GDScript numerical callback, stale mutable
 world state and wrong raw-input sampling before full native flight is admitted.
+T37–T40 additionally discriminate source conventions, accepted energy accounting,
+installed-force ownership and dynamic-identification ambiguity.
 
 ### EDF-02 — Build an auditable data package
 
@@ -340,6 +355,10 @@ parameter ranges as sensitivity bounds, not measured confidence intervals.
    DS-215 motor-name and old/new cell-range disagreements.
 2. Preserve source URL, date, page/figure, exact acquired-file hash and allowed
    reuse. Digitize plots with uncertainty; retain source points and conversion.
+   Record corrections and related publication/experiment families. Keep original
+   dimensional data and source-defined metrics; derive a normalized form only
+   after resolving speed, area and power conventions. The R3 literature register
+   is a discovery/evidence index, not an acquired raw-data package.
 3. Obtain or bound rotor inertia, equivalent motor resistance/no-load loss,
    shaft load and installation residual moment. Do not derive all from static
    thrust alone or call DC input a measured mechanical load.
@@ -349,6 +368,9 @@ parameter ranges as sensitivity bounds, not measured confidence intervals.
    arbitrarily withholding positions on the same plotted curve. Record each
    dataset's origin, calibration/validation role, units, timing/filtering/tare,
    source URL/date/hash and acquisition/redistribution rights.
+   Identify voltage/current sensor ports, auxiliary/wiring ownership, channel
+   synchronization and latency. Mark `VI * assumed_efficiency`, support-reaction
+   torque times speed and CFD shaft power distinctly from inline shaft measurement.
 6. Preserve the joint sampled locus/cells rather than the Cartesian product of
    scalar extrema. Identify what each output actually measures; estimated torque
    and moments cannot inherit a measured-thrust label. Use independent wind-on
@@ -361,6 +383,13 @@ parameter ranges as sensitivity bounds, not measured confidence intervals.
 7. If acquisition is unavailable, continue EDF-02a software work and mark EDF-09
    physical cards inconclusive. Do not fabricate missing measurements or a full
    measured support envelope from nominal manufacturer ranges.
+8. Define controlled equal-thrust, equal-RPM and equal-electrical-input comparisons
+   separately. Preserve measured rotor/hub/duct dimensions, clearance denominator,
+   surface finish and inlet/exit stations; a numerical geometry contradiction
+   blocks that coefficient's adoption until resolved, while qualitative evidence
+   can remain useful. Match fan-alone, airframe-alone and installed tests before
+   estimating an interaction residual. Do not multiply sample count by counting
+   a correction or conference/journal version twice.
 
 **Proof:** EDF-02a supplies the reproducible synthetic fixture needed by the stand.
 EDF-02b additionally supplies acquisition and independent-run manifests before
@@ -394,11 +423,18 @@ physical calibration; absent quantities block only their corresponding claims.
    affine passivity inequality; independent thrust/torque blends do not. Keep
    those two claims distinct. Defer cubic smoothing unless its error, domain and
    passivity behavior justify it (R2-01/09, T32).
+7. Specify whether the map represents the propulsor installation or a complete
+   aircraft, and which airframe terms remain outside it. For a residual approach,
+   subtract the owned component laws at matching conditions and one datum;
+   retain their interaction/tare uncertainty. Test zero total aircraft axial
+   force with positive propulsor thrust and power, and a signed duct contribution.
+   A throttle-only multiplier cannot replace joint wind-on thrust/power evidence.
 
 **Proof:** T02–T06, including nonzero shaft power and nonzero opposing rotor/stator
 fluid moments with zero net axial angular-momentum flux at both flow boundaries,
 zero net external axial torque, correct spin-axis conventions, mirrored-fixture
 reflection symmetry, and signed-flow/passivity counterexamples.
+T39 adds the complete-aircraft versus propulsor-load counterexample.
 
 ### EDF-04 — Integrate electrical behavior and numerical admission
 
@@ -429,6 +465,10 @@ reflection symmetry, and signed-flow/passivity counterexamples.
 6. Begin spool response with coupled shaft inertia, motor and fan torque. Add a
    controller lag only when separately identified; defer extra dynamic-inflow
    states until their physical storage/work and independent observations exist.
+   Fit independent upward/downward steps across operating conditions and retain
+   delay/filter bandwidth, step size/history and variability. Do not turn one
+   published mean response into a universal EDF lag, current-peak prediction or
+   controller limit (R3 P01/P02; T40/V02).
 
 **Proof:** T04/T07–T10, including the frozen 240 Hz accuracy limits as well as
 refinement. No hidden power/current clipping, no post-step temperature
@@ -571,6 +611,10 @@ native EDF product entry. All generic-kernel changes need owning SF/NK review.
    same kernel family/data as the aircraft, not a misleading installed-thrust
    claim. Give labels text/symbols, keyboard/controller focus and explicit
    unavailable quantities; show current limiting only from an accepted result.
+   Use the frozen metric contract for stand N/kW and flight terminal Wh/Ah,
+   elapsed accepted time, minimum voltage, limiting duration and ending/reserve
+   state. Label power ports and isolated/installed force. Undefined ratios and
+   unsupported thermal/endurance claims have an explicit unavailable state.
 3. Add explicit EDF audio selection. Rotor blade-pass frequency can inform sound
    design, but sound must never feed back into physics; preserve licensing and
    use a safe labeled fallback until a matched recording is available.
@@ -599,7 +643,7 @@ native EDF product entry. All generic-kernel changes need owning SF/NK review.
    any subsequently admitted Workshop route. Describe the unavailable feature
    plainly to the user; detailed ABI diagnostics belong in the developer receipt.
 
-**Proof:** T20–T23/T35, real rendered 1080p review under the shared display policy,
+**Proof:** T20–T23/T35/T38, real rendered 1080p review under the shared display policy,
 audio listening when available, and explicit evidence gaps otherwise.
 
 ### EDF-09 — Calibrate and independently validate the stand
@@ -620,6 +664,11 @@ audio listening when available, and explicit evidence gaps otherwise.
    adding model order. Battery pulse/rest calibration, independently acquired
    mission temperature and fan transients qualify different claims. Extra thermal
    or inflow states need evidence beyond improvement of one fitted trace.
+6. Keep measured electrical demand, inferred shaft power and CFD outputs in
+   separate evidence columns. Validate both thrust and DC power at wind-on
+   conditions; a static fit or CFD thrust agreement does not qualify current.
+   Use the R3 acquisition sequence and T37/T40 controls to expose circular
+   efficiency assumptions and fit/validation leakage before promotion.
 
 **Proof:** V01–V05 for available matched data; missing observations remain
 inconclusive and do not prevent EDF-10a synthetic flight. A plot fit and native
@@ -642,6 +691,16 @@ assessment for the corresponding physical claim.
    starts. A single post-conditioned input tape does not retrim the aircraft or
    model pilot adaptation; do not force an incompatible turbine replay into EDF.
 5. Obtain pilot acceptance separately from software and physical parameter gates.
+6. Define a repeatable mission comparison with atmosphere, target speeds/altitudes,
+   maneuver schedule, each installation's mass/trim, starting SOC/T, reserve and
+   ending conditions appropriate to its source. Integrate EDF terminal Wh/Ah
+   and retain electrical histories, voltage minima and limiting duration; use
+   the turbine's supported fuel quantity/rate/remaining measures for its source.
+   A common energy-efficiency comparison is unavailable without an explicit
+   fuel-energy basis and consistent auxiliaries; do not treat turbine fuel as
+   battery Wh/Ah or add invented telemetry. Report EDF Wh/km only with a named
+   distance basis and positive distance. Compare source consumption, cutoff and
+   modeled temperatures independently; nominal Wh/peak-W is not endurance.
 
 **Proof:** T24 with complete recordings, identities and numerical limits for
 EDF-10a; V06 and applicable EDF-09 evidence for EDF-10b. Report their status separately.
@@ -669,6 +728,11 @@ EDF-10a; V06 and applicable EDF-09 evidence for EDF-10b. Report their status sep
    Record source, map, generator, engine/native binary, card version, conditions,
    seed and outcome hashes for every case, including refusals. Report interactions
    as consequences of assumptions, not measured confidence intervals (R2-18/T36).
+6. Compare each size at explicitly matched thrust, RPM or electrical input, then
+   run the controlled mission at its own consistent installed mass/CG. Do not
+   rank aircraft efficiency from stand thrust per watt alone. Larger research
+   rigs in R3 demonstrate useful mechanisms and measurement methods, not a scale
+   factor or a physically validated fit in the A200.
 
 **Proof:** a per-size feasibility matrix: supported simulation experiment,
 unresolved physical fit, or different-airframe requirement. Physical promotion

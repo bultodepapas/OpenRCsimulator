@@ -2,6 +2,8 @@
 
 **Status:** proposed implementation contract, 2026-11-21; no runtime code delivered.
 **Source baseline:** `9d17c29ed2463cdb3a67d3bd573c0137587edb9d`.
+**Scientific revision:** EDF-00-R3 reviews `e4b42d064874dd56432b2b83744ad2e4ee0fb881`;
+[fourteen studies](scientific-literature-2026-11-21.md) refine evidence and metrics.
 **Owner:** EDF with SF/NK, BAT/M5, GP/CR, FL, AUD/SM and UI/DT.
 
 The owner requests native execution throughout the EDF experiment. This document
@@ -178,6 +180,33 @@ it cannot clip only the displayed current. Adding winding inductance is separate
 scope: demonstrate coupled accuracy, magnetic energy and a physical decay path,
 not just an isolated exact electrical update or an unstable 240 Hz RK step.
 
+### Evidence metadata and accepted consumption metrics
+
+Resolve scientific-data conventions during offline acquisition and native
+preparation: corrected file/version, experiment family, rotor/hub/duct geometry,
+clearance denominator, force datum, power port, coefficient definition and
+output-specific evidence. Prepare a compact immutable description with the map;
+do not parse papers, convert units or hash files inside RK stages. Source claims
+with unresolved dimensional contradictions cannot masquerade as identified
+coefficients. An explicitly assumed, internally consistent synthetic geometry
+remains admissible for the estimated software track.
+
+The [metric contract](physics-and-sources.md#performance-and-consumption-metrics)
+distinguishes static electrical N/kW, axial useful efficiency and terminal Wh/Ah.
+Add bounded native candidate accumulators for accepted energy/charge, elapsed
+simulation time and limiting duration, with declared quadrature and event error
+budgets. Rejected trials and paused wall time contribute nothing. Freeze whether
+an accumulator is a session total or a selected comparison window; checkpoint,
+reset, restore and recorder semantics must prevent duplicate increments.
+
+These diagnostics do not add a physical feedback state or another integration
+clock. Compute them from the qualified accepted path and publish them with the
+matching frame. HUD/audio reads never advance counters or recompute a different
+electrical operating point. Keep port/force-boundary and availability metadata in
+the snapshot; unknown thermal quantities, zero-denominator ratios and finite-pack
+endurance in ideal-bus mode must not acquire plausible-looking numeric values.
+Compare source data at its declared measurement bandwidth, not at the render rate.
+
 ### Floating point and ABI
 
 Preserve scalar/PackedFloat64Array physics and the qualified strict operation
@@ -200,7 +229,15 @@ short scripted stand commands, and a read-only detail panel.
 | EDF stand | Select a declared preset, run a throttle step/ramp or source-off case, pause/reset and inspect thrust, RPM, pack/motor current, voltage and current-limit status. | Same native law/data as flight; the stand is a separate physical boundary, with its own identity. Do not label isolated-stand force as installed-aircraft force. |
 | Installation preview | Inspect duct/fan/pack position and mass/CG changes on the existing jet; toggle simplified inlet/nozzle and force-axis overlays. | Draw authored geometry and declared estimates; no inferred physical fit or automatic resizing of the A200. Overlays are observers. |
 | Flight | Fly the same airframe with gear/flaps; show a compact RPM/pack/current panel and clear limiting/source-loss states. | Flight uses installed loads, admitted contact/world policies and the complete native tick. Changes requiring preparation return through the normal session boundary. |
-| Debrief | Compare a retained turbine run and a separately trimmed EDF run, including current/energy and estimated-domain use. | Preserve each recording's own model/law/backend identity. A comparison plot is not exact cross-model replay. |
+| Debrief | Compare a retained turbine run and a separately trimmed EDF run, with EDF electrical consumption, supported turbine fuel measures and estimated-domain use. | Preserve each recording's model/law/backend identity and energy boundary. A comparison plot is not exact cross-model replay or a qualified common energy-efficiency metric. |
+
+The stand can show net thrust, electrical input and N/kW for its declared
+boundary. EDF flight/debrief shows terminal Wh/Ah, accepted elapsed time, minimum
+voltage, limiting duration and reserve/termination reason. Offer Wh/km only for
+a positive, named distance measure. Ordinary flight does not need a generic
+efficiency gauge; the diagnostic view can expose qualified metric definitions.
+Changing battery capacity requires the corresponding source and mass model,
+not just a longer timer. T38 verifies accounting independently of rendering.
 
 Make estimate/unknown state readable with text and symbols, not color alone.
 Keep ABI hashes, solver names and developer timings in a details view; ordinary
@@ -257,7 +294,7 @@ Use the existing [native tools](../../../research/native-kernel/README.md),
 [tool index](../../tools/README.md), [audio tools](../../../tools/audio/README.md)
 and [flight logging](../../FLIGHT-LOGGING.md). Native sanitizers, fuzzing and
 metamorphic controls supplement analytic, exact parity, fault/rollback, physical,
-pilot, package and hardware checks; none substitutes for the others. T30–T36 in
+pilot, package and hardware checks; none substitutes for the others. T30–T40 in
 the [validation matrix](validation-matrix.md) specify the new discriminators.
 
 No speedup, allocation count, all-native flight, visual quality or package pass

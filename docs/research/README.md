@@ -28,6 +28,11 @@ results are integrated into the plan and a proposed
 [native runtime/product contract](edf-propulsion/native-runtime-design.md):
 complete native numerical flight, explicit native-only EDF admission, bounded
 models/workspace, native Godot stand/preview and measured full-callback efficiency.
+The [fourteen scientific studies in EDF-00-R3](edf-propulsion/scientific-literature-2026-11-21.md)
+add a critical power/thrust/dynamics review, corrected-source and geometry
+checks, native mission-energy accounting and stronger physical protocols.
+Electrical power, inferred shaft power, CFD predictions and installed-aircraft
+forces retain separate meanings; paper values do not calibrate the A200 by name.
 
 ## Sources, data and conversions
 
