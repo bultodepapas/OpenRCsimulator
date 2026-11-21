@@ -175,8 +175,21 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 		var attached: float = 1.0 - w
 		var wing_gain := 0.0
 		var roll_gain := 0.0
+		# A36 R5-G01: the strips' differential aileron incidence tau_a*delta (right/left by station side) also has its
+		# induced angle freed by the image system, as on the local strips: (1 - sigma_i)*a0*(Delta_i - sum_k E_ik Delta_k).
+		# Zero aileron adds nothing, leaving the uniform-alpha increment bit for bit.
+		var aileron_effect: float = float(model.surfaces.get("wing_aileron_effectiveness", 0.0))
+		var controlled: bool = aileron_effect != 0.0 and (dar != 0.0 or dal != 0.0)
+		var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+		var coupled: bool = e_map.size() == stations * stations
 		for i in stations:
 			var dcl: float = a0 * (alpha + alpha_zero) * (1.0 - ge[i]) * (1.0 - row_sum[i])
+			if controlled:
+				var control: float = aileron_effect * (dar if ys[i] > 0.0 else dal)
+				if coupled:
+					for k in stations:
+						control -= e_map[i * stations + k] * aileron_effect * (dar if ys[k] > 0.0 else dal)
+				dcl += a0 * (1.0 - ge[i]) * control
 			wing_gain += dcl / stations
 			roll_gain -= dcl * ys[i] / stations / b
 		co_cl += attached * wing_gain
@@ -977,6 +990,11 @@ static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: 
 		var clean_d := d.duplicate(true)
 		clean_d.erase("flap")
 		var ge_flap := GroundEffect.factors(s, model, ground_up)
+		# A36 R6-G02: the quasi-static route (NAN) is the settled wake. The clean baseline, its local reference and the
+		# flapped strips all receive the flapped wing's own wake, exactly as with an explicitly settled finite wake, so
+		# static flap loads equal the settled dynamic ones (tail drag and its pitch arm included).
+		if is_nan(downwash_cl) and model.get("surfaces", {}).get("horizontal", {}).has("free_slope"):
+			downwash_cl = _wing_lift_coefficient_with(s, air, d, model, ge_flap, true)
 		var blend_clean: float = local_flow_weight(s, air, clean_d, model, downwash_cl, ge_flap)
 		if blend_clean == 1.0:
 			return _local_loads(s, air, d, model, rho, downwash_cl, null, ge_flap)
