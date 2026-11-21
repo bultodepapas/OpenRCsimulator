@@ -275,6 +275,12 @@ msgstr "Leme"
 msgid "Throttle"
 msgstr "Acelerador"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Não foram coletadas amostras suficientes do tempo de GPU. Reinicie ou restaure os padrões gráficos para tentar novamente."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "As configurações foram salvas, mas não foi possível redefinir os gráficos automáticos (erro %d). Selecione Manter alterações para tentar novamente."
+
 msgid "Could not save settings (error %d)."
 msgstr "Não foi possível salvar as configurações (erro %d)."
 

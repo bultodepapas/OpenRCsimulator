@@ -318,6 +318,12 @@ msgstr "Timón"
 msgid "Throttle"
 msgstr "Acelerador"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "No se recopilaron suficientes muestras del tiempo de GPU. Reinicia o restablece los ajustes gráficos para reintentar."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Los ajustes se guardaron, pero no se pudo restablecer la configuración gráfica automática (error %d). Pulsa Conservar cambios para reintentar."
+
 msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."
 

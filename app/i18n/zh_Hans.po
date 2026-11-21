@@ -195,6 +195,12 @@ msgstr "方向舵"
 msgid "Throttle"
 msgstr "油门"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "收集到的 GPU 耗时样本不足。请重启或恢复默认图形设置后重试。"
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "设置已保存，但无法重置自动图形设置（错误 %d）。选择“保留更改”重试。"
+
 msgid "Could not save settings (error %d)."
 msgstr "无法保存设置（错误 %d）。"
 

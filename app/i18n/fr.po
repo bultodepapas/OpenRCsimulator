@@ -278,6 +278,12 @@ msgstr "Gouverne de direction"
 msgid "Throttle"
 msgstr "Gaz"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Le nombre de mesures du temps GPU est insuffisant. Redémarrez ou rétablissez les paramètres graphiques par défaut pour réessayer."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Les paramètres ont été enregistrés, mais les graphismes automatiques n’ont pas pu être réinitialisés (erreur %d). Sélectionnez Conserver pour réessayer."
+
 msgid "Could not save settings (error %d)."
 msgstr "Impossible d’enregistrer les paramètres (erreur %d)."
 

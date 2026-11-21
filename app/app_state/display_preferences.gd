@@ -186,10 +186,11 @@ static func recommended_defaults() -> Dictionary:
 
 
 ## The graphics choices Settings → "Restore graphics defaults" resets. TELEM-04 telemetry reports whether they all
-## still equal recommended_defaults() (graphics_profile), so both use this one list.
+## still equal recommended_defaults() (graphics_profile), so both use this one list. The physical RC circuit
+## belongs to the flight scenario; restoring graphics must preserve its terrain and collision choice.
 static func graphics_default_keys() -> Array[String]:
 	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
-		"runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+		"runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
 	for key: String in SHADOW_FILE_KEYS:
 		keys.append(key)
 	return keys

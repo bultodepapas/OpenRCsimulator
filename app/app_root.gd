@@ -1975,6 +1975,7 @@ func open_settings(from: Control = null) -> void:
 	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
 	settings.window_close_managed = true
 	settings.presentation_changed.connect(_apply_presentation)
+	settings.calibration_reset.connect(_apply_calibration_reset)
 	var window_checkpoint := _capture_display_window_state()
 	_display_preview_checkpoint = window_checkpoint
 	settings.presentation_committed.connect(func() -> void:
@@ -2112,15 +2113,7 @@ func _apply_presentation(config: Dictionary) -> void:
 	# LENS-01: a running flight (airplane, helicopter or FPV quad) rebuilds its lens stack at once; presentation only.
 	var lens_changed: bool = LensSettings.validate(config) != LensSettings.preference()
 	LensSettings.set_preference(config)
-	# Automatic follows Scene detail (applied above): a Scene detail change can change the lens tier too.
-	var lens_tier: String = str(LensSettings.resolve({}, true).quality)
-	lens_changed = lens_changed or (not _lens_tier_applied.is_empty() and lens_tier != _lens_tier_applied)
-	_lens_tier_applied = lens_tier
-	if lens_changed:
-		for activity: Node in [flight, ground_vehicle]:
-			if is_instance_valid(activity) and activity.has_method("apply_lens_preferences"):
-				activity.apply_lens_preferences()
-	get_tree().call_group("landscape_flags", "apply_quality")
+	_refresh_scene_detail_dependents(lens_changed)
 	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
 	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
 	get_tree().call_group(RunwayMeadow.GROUP, "set_visible", RunwayMeadow.preference() == "on")
@@ -2177,6 +2170,24 @@ func _apply_presentation(config: Dictionary) -> void:
 	# A window-size request is deferred while desktop fullscreen owns the size.
 	if requested == "windowed":
 		_display_resolution = resolution
+
+
+## A successful Restore changes Automatic's evidence after its preview was applied. Refresh only the
+## presentation that follows Scene detail; preserve reconstruction receipts, camera state and window geometry.
+func _apply_calibration_reset(config: Dictionary) -> void:
+	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
+	_refresh_scene_detail_dependents()
+
+
+func _refresh_scene_detail_dependents(lens_changed: bool = false) -> void:
+	var lens_tier: String = str(LensSettings.resolve({}, true).quality)
+	lens_changed = lens_changed or (not _lens_tier_applied.is_empty() and lens_tier != _lens_tier_applied)
+	_lens_tier_applied = lens_tier
+	if lens_changed:
+		for activity: Node in [flight, ground_vehicle]:
+			if is_instance_valid(activity) and activity.has_method("apply_lens_preferences"):
+				activity.apply_lens_preferences()
+	get_tree().call_group("landscape_flags", "apply_quality")
 
 
 func _refresh_screen_themes(node: Node) -> void:

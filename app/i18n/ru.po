@@ -201,6 +201,12 @@ msgstr "Руль направления"
 msgid "Throttle"
 msgstr "Газ"
 
+msgid "Not enough GPU timing samples were collected. Restart or restore graphics defaults to retry."
+msgstr "Собрано недостаточно замеров времени GPU. Перезапустите приложение или восстановите настройки графики по умолчанию, чтобы повторить попытку."
+
+msgid "Settings saved, but automatic graphics could not be reset (error %d). Keep changes retries."
+msgstr "Настройки сохранены, но сбросить автоматические настройки графики не удалось (ошибка %d). Нажмите «Сохранить», чтобы повторить попытку."
+
 msgid "Could not save settings (error %d)."
 msgstr "Не удалось сохранить настройки (ошибка %d)."
 
