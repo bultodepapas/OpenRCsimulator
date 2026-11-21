@@ -227,3 +227,9 @@ The baseline passed both guards, and the unrenewed candidate refused exactly the
 On Linux under WSL2 with pinned Godot 4.8 beta2, isolated projects compared the v0.3.0 tag `85840cca7` with `a1663d6b7` at version `0.3.1`. Of the 151 baseline inputs, 145 were unchanged. Five physics scripts and `app/project.godot` changed, and the ground-vehicle scenery-wall script was added. The new 152-file aggregate is `4430342a0061e95b7c35002afb820a96831baa7b41f03f8598cd889698fa5148`.
 
 The baseline passed both guards. The unrenewed candidate refused the three historical provenance leaves. The normalized aircraft input, trim, unrounded and rounded derivatives, sensitivity rows and generated provenance matched exactly. Both guards passed after renewal, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v031-qualification.json) binds the six reports.
+
+### 2026-11-21 v0.3.2 release renewal
+
+On Linux under WSL2 with pinned Godot 4.8 beta2, the v0.3.1 tag `caa45cee` and the v0.3.2 candidate `b720a502` yielded identical numerical and provenance results. Of the 152 inventory inputs, only `app/project.godot` changed, with the version going from `0.3.1` to `0.3.2`. The new aggregate is `58c12b9ffad2f269d902fca1970665dc11eadb397c9ab8f762fa4f4bc0606230`.
+
+Both guards passed on the baseline and refused the unrenewed candidate. The renewed guards passed, refused independent physics-comment and version mutations, and passed again after restoration. The [receipt](2026-11-21-release-v032-qualification.json) binds the six reports.
