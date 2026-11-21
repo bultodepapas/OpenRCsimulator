@@ -1,0 +1,85 @@
+{
+  "schema": "openrc-trailer-v2-vendored-skills-v1",
+  "researched_on": "2026-11-21",
+  "source_repository": "https://github.com/Benitoow/cinema-skills",
+  "source_commit": "b3d96caaf90729f086ce8bfa96654f40fd98e4e5",
+  "license": "MIT",
+  "author": "Benjamin Leleu",
+  "distribution": "verbatim text-only SKILL.md and complete MIT LICENSE in both .agents/skills and .claude/skills; no executable downloads",
+  "license_blob_sha": "b6511b06e1658152d11abd0f305355e4f244781c",
+  "skills": [
+    {
+      "name": "shot-list",
+      "upstream_path": "skills/shot-list/SKILL.md",
+      "upstream_blob_sha": "cda95fe902cbedf42df3a8671638d5e31b270886",
+      "copies": [
+        ".agents/skills/shot-list/SKILL.md",
+        ".claude/skills/shot-list/SKILL.md"
+      ],
+      "licenses": [
+        ".agents/skills/shot-list/LICENSE",
+        ".claude/skills/shot-list/LICENSE"
+      ]
+    },
+    {
+      "name": "scene-breakdown",
+      "upstream_path": "skills/scene-breakdown/SKILL.md",
+      "upstream_blob_sha": "1992079a9989426ddf2941c6def94196432fb8de",
+      "copies": [
+        ".agents/skills/scene-breakdown/SKILL.md",
+        ".claude/skills/scene-breakdown/SKILL.md"
+      ],
+      "licenses": [
+        ".agents/skills/scene-breakdown/LICENSE",
+        ".claude/skills/scene-breakdown/LICENSE"
+      ]
+    },
+    {
+      "name": "color-script",
+      "upstream_path": "skills/color-script/SKILL.md",
+      "upstream_blob_sha": "1a400841a05d82a0a7f7508c88b266ea66fc7e44",
+      "copies": [
+        ".agents/skills/color-script/SKILL.md",
+        ".claude/skills/color-script/SKILL.md"
+      ],
+      "licenses": [
+        ".agents/skills/color-script/LICENSE",
+        ".claude/skills/color-script/LICENSE"
+      ]
+    },
+    {
+      "name": "cut-list",
+      "upstream_path": "skills/cut-list/SKILL.md",
+      "upstream_blob_sha": "d4940552b8cc7fba8d0ac3be1aee79653541dd7d",
+      "copies": [
+        ".agents/skills/cut-list/SKILL.md",
+        ".claude/skills/cut-list/SKILL.md"
+      ],
+      "licenses": [
+        ".agents/skills/cut-list/LICENSE",
+        ".claude/skills/cut-list/LICENSE"
+      ]
+    },
+    {
+      "name": "export-checklist",
+      "upstream_path": "skills/export-checklist/SKILL.md",
+      "upstream_blob_sha": "fca73c50c62d8663f86fb9a8e73b94741c1e5b3b",
+      "copies": [
+        ".agents/skills/export-checklist/SKILL.md",
+        ".claude/skills/export-checklist/SKILL.md"
+      ],
+      "licenses": [
+        ".agents/skills/export-checklist/LICENSE",
+        ".claude/skills/export-checklist/LICENSE"
+      ]
+    }
+  ],
+  "new_openrc_original_skills": [
+    "openrc-trailer-director",
+    "openrc-trailer-continuity",
+    "openrc-trailer-ai-previs",
+    "openrc-trailer-edit-review"
+  ],
+  "external_packages_installed": false,
+  "media_generated": false
+}
