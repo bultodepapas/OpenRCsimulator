@@ -1,5 +1,7 @@
 # Graphics, FPS and native performance audit — 2026-11-21
 
+**Continued investigation:** the [second-pass report](second-pass.md) adds 16 scoped opportunities, a pinned-engine Nitro audio component measurement, independent cross-review, and a newer-main CI/source cross-check. The original missing-UID preflight failure below remains historical: release preflight passes at the newer `6b2228c…` revision, while broader CI was still running in the retained snapshot. Read the second pass for follow-up status; no production optimization or FPS gain is claimed.
+
 **Repository:** `bultodepapas/OpenRCsimulator` · **Audit branch:** `graphics-audit` · **Application baseline:** [`57abea025f62b20233ca281d58d2acbee4ab8b8e`](https://github.com/bultodepapas/OpenRCsimulator/commit/57abea025f62b20233ca281d58d2acbee4ab8b8e) · **Engine:** official `4.8.beta2.official.cafc17a19`.
 
 This audit finds reproducible automatic-graphics policy problems, recurring CPU work that can limit frame rate, and cold-construction/GPU-transfer paths that deserve targeted stutter measurements. It also finds a qualification gap: the audited main commit's CI fails before the application, graphics and native jobs. The reports separate confirmed behavior, synthetic counterexamples, historical measurements, mathematical bounds and hardware hypotheses. **No FPS improvement or new platform qualification is claimed.**

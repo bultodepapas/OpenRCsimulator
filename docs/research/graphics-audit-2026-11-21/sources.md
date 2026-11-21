@@ -1,5 +1,19 @@
 # Primary sources and applicability
 
+## Second-pass research additions
+
+The continued review uses immutable project links in the [runtime](second-pass-runtime.md), [rendering](second-pass-rendering.md) and [lifecycle](second-pass-lifecycle.md) reports, plus these official sources accessed on 2026-11-21. Public documentation is guidance; the pinned-engine component receipt and source/binary identities remain the empirical boundary.
+
+| Primary source | Application | Limit |
+| --- | --- | --- |
+| [Godot AudioStreamGenerator](https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html) | Compiled/GDExtension producer guidance; rate and buffer tradeoffs | Does not quantify OpenRC's native speedup or qualify a device |
+| [Godot AudioStreamGeneratorPlayback](https://docs.godotengine.org/en/stable/classes/class_audiostreamgeneratorplayback.html) | Batched submission and `get_skips()` underrun evidence | Existing Nitro code already submits one buffer per refill; no 22,050-per-second push claim |
+| [Godot thread-safe APIs](https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html) | Constraints on moving scene/resource/GPU work to workers | A detached CPU producer is different from arbitrary rendering on a worker |
+| [Godot GPU optimization](https://docs.godotengine.org/en/latest/tutorials/performance/gpu_optimization.html) | Fill-rate/transparent overlap and hardware-specific measurements | Card counts and source expressions do not establish executed cost |
+| [Godot 4.7 shader preprocessor](https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/shader_preprocessor.html) | Runtime-branch/register tradeoffs for the storm experiment | Related-version guidance, not inspected 4.8-beta2 compiler output |
+
+The stronger second-pass recommendations are inferences from project data flow and, for Nitro, the retained detached measurement. No external article is treated as an OpenRC benchmark.
+
 Research date: **2026-11-21**. Technical guidance below comes from project source/artifacts and official engine/vendor/tool documentation. Public documentation can change; the audited application and CI evidence are bound to immutable source/run identities. No external source supplies a measured OpenRC improvement. The suggestions are inferences to be tested through [platform validation](platform-validation.md).
 
 ## Application and empirical evidence

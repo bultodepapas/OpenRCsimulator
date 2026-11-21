@@ -1,5 +1,7 @@
 # GitHub, CI and artifact evidence
 
+**Later observation:** [second-pass CI follow-up](second-pass.md#githubci-follow-up) records successful release preflight at newer main `6b2228c…`, its still-running broader CI snapshot, and a separately diagnosed Windows test dependency failure. The evidence below describes the original `57abea…` baseline and historical specimens; it has not been rewritten as a newer-source result.
+
 Inspected on 2026-11-21 against [`57abea025f62b20233ca281d58d2acbee4ab8b8e`](https://github.com/bultodepapas/OpenRCsimulator/commit/57abea025f62b20233ca281d58d2acbee4ab8b8e). This report evaluates what CI actually established, rather than treating a workflow name or a green neighboring commit as a performance result. Machine-readable observations and log excerpts are in [ci-evidence.json](ci-evidence.json); the downloaded CPU specimen is in [native-ci-specimen.json](native-ci-specimen.json).
 
 ## E1. The audited main commit does not have a successful core CI result
