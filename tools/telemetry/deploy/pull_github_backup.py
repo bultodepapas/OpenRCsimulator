@@ -13,7 +13,7 @@ import tempfile
 def pull(host, key, ct, destination):
     destination = destination.resolve()
     repo = Path(__file__).resolve().parents[3]
-    if destination.is_relative_to(repo):
+    if (repo / ".git").exists() and destination.is_relative_to(repo):
         raise ValueError("backups must live outside the source repository")
     destination.mkdir(parents=True, exist_ok=True)
     name = f"github-history-{datetime.now(timezone.utc):%Y-%m-%d}.sqlite3"
