@@ -156,7 +156,9 @@ thrust axis. The wind difference vanishes in uniform wind. Spatial wind is
 **already implemented**: [WindFlow](../../../app/physics/wind_aircraft_flow.gd)
 prepares `air.propulsion_air_body` with both corrections. Register the EDF intake
 station and consume that receipt once; do not add rotation or the gradient again.
-Keep the existing receipt identity and native support/fallback rules. Intake and
+Keep the existing receipt identity. EDF-00-R2 requires native sampling and
+evaluation for every admitted EDF weather mode, with launch refusal when that
+capability is absent; the non-EDF fallback policy is unchanged. Intake and
 nozzle force locations can differ,
 so a net axial thrust alone does not identify the pitching moment. For crossflow,
 use a measured wrench or a labeled bounded approximation; do not quietly borrow
@@ -472,6 +474,48 @@ annulus is substituted for that area while duct forces remain in total thrust.
 Use conservation over the actual installation and consistent experimental
 boundaries. Do not reject real ducted-fan data solely because that substitution
 produces an apparent ideal-power contradiction.
+
+### Native model selection after the second research round
+
+The [twenty investigations](native-research-2026-11-21.md) add primary physics,
+native-engine and tooling sources without treating them as new hardware
+calibration. The following decisions constrain EDF-01…06/09/11:
+
+- **Keep the model compact and identifiable.** Prepare geometry-specific maps
+  offline; report regression rank/conditioning, tare effects and parameter
+  ambiguity. CFD may support a labeled surrogate after its own boundary/grid
+  checks, but is not an in-flight solver or automatic measurement substitute.
+  Each size needs actual rotor/chord/hub/clearance, Reynolds and helical-Mach
+  context; casing dimensions and nominal power do not establish similarity.
+- **Check the joint power inequality inside the admitted domain.** Monotone
+  scalar interpolation and valid vertices do not prove interior passivity when
+  the inputs also vary. The normalized example `Omega=x, Q=x, F=x, V=1` on
+  `[0,1]` has residual `F V - Q Omega = x - x²`: zero at both ends, positive
+  inside. It is an algebraic counterexample, not an EDF dataset. By contrast,
+  at one fixed input, common convex weights on complete output tuples preserve
+  an inequality affine in those outputs. Independent force/torque weights do
+  not. Apply the earlier scoped complete-installation inequality, including
+  its body-rate/flow assumptions; see R2-01/09 and T32.
+- **Resolve electrical topology before adding model order.** Use a declared
+  averaged one-quadrant drive and initially ideal-isolated source-off assumption.
+  Aerodynamic windmilling, winding-current freewheel, braking and regeneration
+  are different concepts. R2-05 derives a bounded direct active-limit branch
+  for a simple synthetic circuit; feasibility and branch checks remain required.
+  It also shows why a 1 ms winding mode cannot be added to one unsplit 240 Hz
+  RK4 step. A higher-order model needs coupled numerical admission and storage.
+- **Identify each dynamic effect separately.** Shaft inertia and motor/fan
+  torque already create spool response. Additional empirical lag or dynamic
+  inflow can double-count it unless independent transients identify the added
+  effect and its work/storage boundary. The present pack model's ohmic/RC heat
+  omits reversible entropy heat and spatial hot spots; pulse/rest voltage
+  identification and independent mission-temperature validation answer different
+  questions. An average pack temperature is not the hottest-cell temperature.
+
+These are model and implementation decisions, not measured speedups or new
+physical promotion. The [native design](native-runtime-design.md) specifies
+bounded data/workspace, strict float64 arithmetic and complete transaction
+ownership; the [matrix](validation-matrix.md) retains separate software and
+physical gates.
 
 ## 8. Source register and acquisition limits
 

@@ -70,6 +70,29 @@ The ledger binds actual canonical Main/replay and prepared Home/flight checks.
 Technical Home checks used headless/Dummy with scenery audio off; normal
 audio-enabled shutdown remains open and was not silently accepted as clean.
 
+### EDF requires a complete native numerical path
+
+**EDF-00-R2, owner direction, 2026-11-21; proposed, not implemented.** All new
+EDF runtime behavior uses C++ or Godot-native facilities. An admitted EDF flight
+requires native initialization, stateful input conditioning, weather/RNG, laws,
+integration, events, contact and mutable world/session policies. Current NK-3
+only replaces evaluation callbacks; extend the shared kernel with a generic
+qualified native tick behind its existing facade, retaining one clock and one
+accepted-state transaction. Do not add an EDF-specific solver or silently call
+GDScript numerical policies inside the native route.
+
+Missing/stale/unsupported native EDF capability disables the experiment with a
+reason. This EDF-specific admission decision supersedes the initial plan's
+selectable reference product flight; a reference oracle remains explicitly
+available for verification, and existing non-EDF fallback/replay policy stays
+unchanged. Offline research tooling is outside this runtime requirement. Native
+code alone establishes neither speed nor physical accuracy: retain exact
+qualification and measure the law, bridge, numerical tick and full callback on
+the target package. The [implementation plan](plans/edf-propulsion.md),
+[native execution/product contract](research/edf-propulsion/native-runtime-design.md)
+and [twenty investigations](research/edf-propulsion/native-research-2026-11-21.md)
+own the pending work, source evidence and alternatives.
+
 ### Preserve each event law's valid continuation
 
 **SF-04 / SF-04b / SF-05.** Share the declared-event protocol where its trial continuation is valid, and retain the rotorcraft domain-guarded locator where negative trial speed would invalidate the law. A whole-tick policy cannot also request kernel contact substeps. Full-load substeps preserve their tested integration semantics; forcing every route through one locator or splitting only selected forces would change them. [SF-04b](research/simulation-foundation/SF-04b/README.md) supersedes the earlier single-locator direction; [SF-05](research/simulation-foundation/SF-05/README.md) owns substep evidence.

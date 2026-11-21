@@ -13,11 +13,13 @@ generated aircraft, certify a physical installation or claim flight validation.
 
 | Document | Purpose |
 | --- | --- |
+| [Twenty investigations, EDF-00-R2](native-research-2026-11-21.md) | Physics, native architecture, games, tools, GitHub and Reddit; 43 external source entries and nine community leads, with decisions and future experiments. |
+| [Native execution and product design](native-runtime-design.md) | Complete native numerical path, prepared memory, atomic world/input state, strict EDF admission, stand/preview/flight/debrief and performance scope. Proposed, not implemented. |
 | [Independent audit, EDF-00-R1](external-audit-2026-11-21.md) | Fifteen findings against the original proposal, corrections, additional sources and the verified inherited CI blocker. |
 | [Implementation plan](../../plans/edf-propulsion.md) | Authoritative EDF-00…15 steps, substeps, owners, interfaces and completion gates. |
 | [Physics and primary sources](physics-and-sources.md) | Thirty primary references, fan candidates, force/torque/energy equations, sizing and unresolved identification. |
-| [Repository audit](repository-audit.md) | Fourteen classified findings with current source paths and bounded repair/integration proposals. |
-| [Validation matrix](validation-matrix.md) | Twenty-nine software/numerical cases, six physical cards, flight maneuvers and qualification policy. All future gates are pending. |
+| [Repository audit](repository-audit.md) | Fifteen classified findings with current source paths and bounded repair/integration proposals. |
+| [Validation matrix](validation-matrix.md) | Thirty-six software/numerical/product cases, six physical cards, flight maneuvers and qualification policy. All future gates are pending. |
 | [Reproducible calculations](calculations.json) | Generated energy, mass, area and analytic counterexample values with embedded limitations. |
 | [Calculation tool](../../../research/edf-propulsion/README.md) | Standard-library regeneration and freshness check. |
 
@@ -28,8 +30,13 @@ EDF-01. Reuse the established battery/motor conventions, float64 mechanics,
 shared RK4, atomic event transaction and replay identities. Add a pure fan and
 installation law that returns **shaft load separately from the net installation
 force and moment**. Stator recovery, rotor acceleration and gyroscopic reaction
-must each appear exactly once. Native and reference implementations share the
-same contract; production admission retains the existing qualification gates.
+must each appear exactly once. Implement new runtime behavior in C++/Godot-native
+code and extend the shared kernel with a generic **complete native numerical
+tick**. Current stage-only acceleration does not cover integration, stateful input,
+sampled weather/RNG or all world/session effects. EDF flight admission requires
+those native capabilities and refuses missing ones; the reference is an explicit
+verification oracle, with existing non-EDF fallback unchanged. Retain exact
+qualification gates and measure performance on actual native packages.
 
 The first reference is a **128 mm DS-98 / DSM6036-600 class** installation. A
 **152 mm DS-130** and **195 mm DS-215** are separately specified experiments, with
@@ -85,6 +92,22 @@ policy. The revised plan has separate synthetic-software and measured-physical
 dependencies; unavailable hardware measurements cannot silently block the
 declared experimental software slice or be replaced by interpolation evidence.
 
+**EDF-00-R2** adds twenty distinct investigations against `9d17c29e`, three
+read-only specialist assignments and a fresh Good Enemy review. Its source
+register and Reddit ledger distinguish inspected primary material, original
+upstream reports and community hypotheses. Useful findings are integrated into
+the owning EDF steps, the native design, EDF-A15 and T30–T36. The most consequential
+changes are complete native capability closure; checkpointed mutable world and
+raw-input/weather state; interior-map passivity; explicit averaged ESC/source-off
+semantics; bounded prepared memory; separate full-callback measurement; and a
+native Godot stand, installation preview and debrief. No new runtime dependency,
+skill, plugin, live CFD solver or parallel tick is introduced by this research.
+Closing review also made pre-/post-damage restores and input tick assignments
+explicit, removed stale EDF fallback wording, and distinguished the proposed
+native ordinary-tick publication guard from current reset/restore-only guards.
+The opt-in event/world visibility change needs its own qualification; legacy
+listener behavior remains outside that proposed change.
+
 ## Verification and delivery
 
 The original EDF-00 delivery (`719c3cc6`) passed these local research checks on
@@ -110,9 +133,19 @@ The original EDF-00 delivery (`719c3cc6`) passed these local research checks on
 | `git diff --cached --check` and scope | Passed; twelve research/documentation files changed, no runtime, aircraft data or CI policy paths changed. |
 | Fresh specialist / Good Enemy closing reviews | Physics, integration and evidence/acceptance corrections incorporated; no remaining blocking issue within the source-only review scope. Future gates remain pending. |
 
-Both link-check records use the repository's `tools/ci/check_docs.py` routines
+**EDF-00-R2 revised-candidate verification, 2026-11-21:**
+
+| Check | Result / scope |
+| --- | --- |
+| Existing documentation link/anchor routines | Passed: all links in nine EDF Markdown files plus new links in three shared indexes/decision files; 265 occurrences, 125 local targets/anchors, zero errors. Of these, 143 occurrences (38 local) are new against R1. |
+| Research and acceptance inventory | Exactly R2-01…20, N01…43 and nine community leads; T01…36, six physical cards, EDF-A01…15 and the original S01…30. All 29 named existing tests resolve in the baseline Git tree; four named EDF tests remain proposals. |
+| Independent arithmetic | Passed: 24 assertions across six groups—ideal limiter, winding-mode RK4, tuple blending, cell interior, audio frequencies and tick budget. The limiter was independently checked by high-precision bisection and circuit closure; no simulator implementation was invoked. |
+| Whitespace and change scope | `git diff --cached --check` passed; eleven Markdown documentation files changed. No runtime, generated aircraft, native source or CI policy changed. |
+| Native specialist and fresh Good Enemy closing review | Concrete findings corrected; no remaining blocking issue in the source-only review. Full native execution, physical behavior, audio/visual quality, packages and performance remain unqualified. |
+
+These link-check records use the repository's `tools/ci/check_docs.py` routines
 against Git objects, so sparse materialization cannot conceal a missing tracked
-target. R1 checks every link in the EDF documents and newly introduced links in
+target. R1/R2 check every link in their EDF documents and newly introduced links in
 the shared indexes/decision record, without reclassifying unrelated legacy links.
 
 The calculation freshness check reproduces the committed JSON. These are research-artifact checks, not
@@ -131,8 +164,9 @@ implementation/physical gates remain pending regardless of documentation CI.
 
 ## First implementation change
 
-Complete EDF-01's force/torque/energy/data and diagnostic-transport specification,
-then build a small analytic propulsion stand with a pure fan-map evaluator and
-separate torque/wrench outputs. Prove the signs, zero-speed behavior, power
-accounting and rejection paths before connecting the A200 session. The plan
-defines the subsequent electric, native, aircraft, product and flight changes.
+Complete EDF-01's model/data and generic native-boundary prototype, then build
+the small C++ analytic stand with separate torque/wrench outputs. Prove signs,
+zero-speed behavior, power accounting, interpolation interiors and refusal paths.
+Qualify the complete native input/weather/world transaction before connecting
+the A200 product flight. The plan defines the subsequent electrical, generated
+aircraft, native Godot experience, physical and package gates.

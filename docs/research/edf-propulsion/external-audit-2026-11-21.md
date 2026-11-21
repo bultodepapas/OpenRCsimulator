@@ -5,6 +5,13 @@
 **Runtime/source baseline:** `57abea025f62b20233ca281d58d2acbee4ab8b8e`.
 **Delivery:** `research/edf-propulsion-2026-11-21`, [PR #18](https://github.com/bultodepapas/OpenRCsimulator/pull/18).
 
+**Historical policy note:** this records the R1 review. The later owner's native
+requirement and [EDF-00-R2 native contract](native-runtime-design.md) supersede
+R1's permission for an EDF reference product fallback, including the T17
+disposition below. Current EDF admission refuses missing native capabilities;
+reference execution is an explicit verification tool. Other R1 evidence and its
+dated CI observations remain historical records.
+
 The user requested a skeptical external audit of the original plan. Three fresh
 source-read-only reviewers, without the original drafting conversation, examined
 physics, repository integration and evidence/acceptance. The lead independently

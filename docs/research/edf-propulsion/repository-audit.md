@@ -10,6 +10,10 @@ EDF-00-R1 independently rechecked the original research candidate and added
 EDF-A12…14 plus concrete catalog/presentation paths. The
 [external audit](external-audit-2026-11-21.md) owns the proposal corrections and
 the inherited CI blocker; source line references still target the baseline above.
+EDF-00-R2 rechecks the unchanged runtime tree at `9d17c29ed2463cdb3a67d3bd573c0137587edb9d`
+and adds EDF-A15: the existing native stage is insufficient for the owner's
+complete-native EDF requirement. This is an extension prerequisite, not a newly
+discovered failure of the current stage-only contract.
 
 The lead read root `AGENTS.md`, `docs/SUBAGENTS.md`, relevant scoped rules,
 architecture, track ownership, aircraft/propulsion/battery guides and CI tooling.
@@ -23,7 +27,7 @@ is not independently observable. No helper staged, committed or pushed files.
 
 | Boundary | Existing implementation and meaning | EDF work |
 | --- | --- | --- |
-| Kernel | [Simulation](../../../app/sim/simulation.gd), [VehicleModel](../../../app/sim/vehicle_model.gd): fixed 240 Hz, float64, RK4, events, atomic publish, checkpoints and rollback | Keep laws in adapter callbacks; no EDF branch in the shared kernel. |
+| Kernel | [Simulation](../../../app/sim/simulation.gd), [VehicleModel](../../../app/sim/vehicle_model.gd): fixed 240 Hz, float64, RK4, events, atomic publish, checkpoints and rollback | Preserve one shared transaction and model-owned laws; propose a generic complete native tick, without an EDF branch or second solver. |
 | Flight orchestration | [FlightSession](../../../app/sim/flight_session.gd), [propulsion runtime](../../../app/sim/aircraft_propulsion_runtime.gd) | Extend explicit family/capability dispatch, layout, trim, reset and telemetry. |
 | Source and shaft | [electric_motor.gd](../../../app/physics/electric_motor.gd), [propulsion.gd](../../../app/physics/propulsion.gd), [rotor_coupling.gd](../../../app/physics/rotor_coupling.gd) | Reuse electrical conventions and simultaneous rotor/body balance; separate fan shaft load from installation wrench. |
 | Supply | [electric_supply.gd](../../../app/physics/electric_supply.gd), [pack_ecm.gd](../../../app/physics/battery/pack_ecm.gd) | Reuse stage bus solve and pack state; add identified ESC current/ramp behavior and new numerical bounds. |
@@ -33,7 +37,7 @@ is not independently observable. No helper staged, committed or pushed files.
 | Turbine sibling | [turbine.gd](../../../app/physics/turbine.gd), [liquid_fuel_flight.gd](../../../app/sim/liquid_fuel_flight.gd) | Retain turbine law and finite fuel; EDF must not inherit fuel burn, turbine spool or ECU claims. |
 | Aircraft admission | [aircraft_modules.gd](../../../app/physics/aircraft_modules.gd), [aircraft_data.gd](../../../app/physics/aircraft_data.gd), [v2 contract](../../../app/data/schema/aircraft-contract-v2.json) | New family, conditional fields, units, quantities, capability/energy combinations and invalid-data refusal. |
 | Data sources | [AV-06 generator](../../../research/avanti-s/av06/derive_physics.py), [AV-06 inputs](../../../research/avanti-s/av06/inputs.json), [battery generator](../../../research/battery/bat-05/build_batteries.py) | Separate reproducible EDF inputs/output and pack identity; generated JSON is not an editing surface. |
-| Native backend | [native_stage.gd](../../../app/sim/native_stage.gd), [native kernel source](../../../research/native-kernel/src/), [admission guide](../../../research/native-kernel/README.md) | Prepared EDF layout/maps, immutable configuration guards, reference parity, source/binary identity and platform admission. |
+| Native backend | [native_stage.gd](../../../app/sim/native_stage.gd), [native kernel source](../../../research/native-kernel/src/), [admission guide](../../../research/native-kernel/README.md) | Current stage boundary needs generic native tick/control/weather/world closure; prepared data/workspace, exact verification, strict EDF product admission and measured boundary cost. |
 | Product | [catalog](../../../app/app_state/aircraft_catalog.gd), [model registry](../../../app/aircraft/model_registry.gd), audio, HUD, Workshop, failure/scenario consumers | Register a separate experimental sibling, support each route or explicitly exclude it. |
 
 The aircraft contract explicitly excludes EDF duct/fan momentum from the current
@@ -64,6 +68,7 @@ conditional regression trap are different findings.
 | EDF-A12 | P1 | Missed existing integration contract | Spatial weather already samples local propulsion flow and rejects unregistered families; extend its station definition and consume its receipt once. |
 | EDF-A13 | P1 | Plan/event-contract conflict | Existing stop/exhaustion locators need beyond-boundary numerical trial continuation; blanket negative-RPM/charge refusal prevents localization. |
 | EDF-A14 | P1 before source-off starts | Initialization gap | Glide trim hard-codes zero RPM; a windmilling fan may need a nonzero equilibrium, while a finite discharging pack cannot be fully steady. |
+| EDF-A15 | P1 for native EDF flight | New requirement / shared architecture prerequisite | NK-3 is stage-native; input conditioning, integration/events and state-affecting session/world behavior still need a generic qualified native capability. No EDF product reference fallback. |
 
 ### EDF-A01: Battery thermal stiffness is absent from the admission bound
 
@@ -164,11 +169,13 @@ and indices (`nk_kernel.cpp:821–842`); snapshots and preparation also pin fami
 and layouts (`trace.gd:969–986,1058–1089,1246–1267`). New map geometry, interpolation,
 controller policy, source kind and state layout must be included in identity.
 
-Reuse `electric_battery_step` only after checking ownership of subdivisions,
-exhaustion/stop localization, LVC and source-loss ordering. New state cannot live
-in mutable helper fields outside checkpoint/rollback. A refused native prepare
-may retain an explicitly reported reference fallback; a failed live guard must
-refuse the tick rather than switch backend mid-flight.
+Reuse the `electric_battery_step` semantics through a qualified native equivalent,
+after checking subdivision, exhaustion/stop, LVC and source-loss ownership;
+do not invoke the existing GDScript step callback in an admitted EDF flight. New state cannot live
+in mutable helper fields outside checkpoint/rollback. Under EDF-00-R2, refused
+native preparation disables the EDF product launch; existing non-EDF routes
+retain their own fallback policy. A failed live guard must refuse the tick
+rather than switch backend mid-flight. The EDF reference is a test-only oracle.
 
 ### EDF-A06: Internal fan must not become an exposed propeller collision disc
 
@@ -282,6 +289,46 @@ pack/controller snapshot for instantaneous trim, or additionally condition named
 RC/filter/controller states for quasi-steady trim at fixed SOC/T. Retain actual
 resource derivatives and sample phase; do not silently substitute a loaded pack
 equilibrium for a requested rested start.
+
+### EDF-A15: Native stage evaluation is not a native numerical flight
+
+**Evidence.** `native_stage.gd` installs NK-3 evaluation callbacks.
+`simulation.gd` owns sampling coordination, RK4/substeps/events, endpoint
+transitions, validation and publication. `flight_session.gd` retains stateful
+input conditioning in `_physics_process`, sampled turbulence/RNG in `_pre_step`,
+terminal crash/gear decisions in `_session_after_input`, and committed pending
+damage/incidents in `_on_sim_stepped`. `collision_world(active_only)` filters
+proxies using broken scenery IDs, so immutable world geometry alone cannot
+reproduce the next tick. A stage call counter does not cover these paths.
+
+The native C++ source already prepares configuration and reuses some buffers,
+but `nk_kernel.cpp` also constructs stage dictionaries/packed arrays, and
+`StageResult`/stage evaluation use vector storage. Source inspection does not
+establish zero allocation or zero-copy. Current `step_usec` is smoothed and
+recorded before observers, so it cannot stand in for complete callback latency.
+
+**Disposition.** EDF-01/05/06 propose a generic native numerical-tick capability
+behind the same shared facade, with native initialization, conditioning, weather
+sampling, events and admitted mutable world/session policies. One accepted owner
+must checkpoint all continuation state and distinguish precommit rollback from
+the proposed detected postcommit observer-violation policy. Current
+`Simulation._publish_committed_boundary` guards prepared reset/restore, while
+ordinary steps emit `events_located` then `stepped` without the same guard;
+session damage commits during the latter. The native opt-in proposes complete
+world/body commit before both signals and must qualify visibility, mutation,
+reentry and explicit failure reports without changing legacy listener behavior.
+This is a new capability, not an existing universal fault guarantee.
+EDF launch refuses missing capabilities;
+the reference is an explicit verification oracle and non-EDF behavior stays
+unchanged. See the [native contract](native-runtime-design.md) and R2-07…14/20
+in the [second research round](native-research-2026-11-21.md).
+
+**Proof required.** T30/T31/T34 native callback traps and mutation controls,
+raw-input/RNG fixtures, hit/restore/rejected-hit world continuation, existing
+matching-host parity plus full-tick comparisons, and T27/T36 allocation/callback
+measurements on actual native packages. A stand with excluded contact cannot
+qualify ordinary runway or landing behavior. No such implementation or target
+measurement is delivered in EDF-00-R2.
 
 ### Reuse boundaries confirmed by the external audit
 
