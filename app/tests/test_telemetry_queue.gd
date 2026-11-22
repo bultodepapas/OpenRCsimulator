@@ -165,3 +165,13 @@ func _statuses() -> void:
 	var it := q.begin(0.0, 1)
 	q.purge()
 	_check("a late answer after purge is stale", q.complete(int(it.serial), 202, 1.0) == Queue.STALE and q.sent_ok == 0)
+	var created := 296.2968
+	for age: float in [599.0, 600.0, 601.0]:
+		q = _queue(0.0)
+		q.push(_body(10), 1, created)
+		it = q.begin(created + 599.0, 1)
+		var outcome := q.complete(int(it.serial), 202, created + age)
+		var before_deadline := age < Queue.TTL_S
+		_check("a completion must arrive before the original deadline at %d s" % age,
+			outcome == (Queue.ACCEPTED if before_deadline else Queue.DROPPED)
+			and q.sent_ok == int(before_deadline) and q.items.is_empty())

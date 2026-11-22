@@ -8,6 +8,7 @@ extends RefCounted
 const MAX_BATCHES := 32
 const MAX_BYTES := 262144
 const TTL_S := 600.0
+const TTL_USEC := int(TTL_S * 1000000.0)
 const NORMAL_INTERVAL_S := 60.0
 const NORMAL_JITTER_S := 10.0
 const MAX_RETRIES := 5
@@ -57,15 +58,13 @@ func bytes() -> int:
 
 
 func expire(now: float) -> void:
-	var kept: Array[Dictionary] = []
-	for item: Dictionary in items:
-		if now - float(item.created) < TTL_S:
-			kept.append(item)
-		else:
-			dropped += 1
-			if item.serial == active_serial:
-				active_serial = -1
-	items = kept
+	# Batches enter FIFO with monotonic creation times. Do no work beyond inspecting the head
+	# while its deadline is still in the future.
+	while not items.is_empty() and _deadline_passed(float(items[0].created), now):
+		var item: Dictionary = items.pop_front()
+		dropped += 1
+		if item.serial == active_serial:
+			active_serial = -1
 
 
 ## The next item to send now for `generation`, counting it against the budget, or {} (nothing due, a request
@@ -106,6 +105,10 @@ func complete(serial: int, status: int, now: float, retry_after_s: float = -1.0)
 	if index < 0:
 		return STALE
 	var item: Dictionary = items[index]
+	if _deadline_passed(float(item.created), now):
+		items.remove_at(index)
+		dropped += 1
+		return DROPPED
 	if status == 202:
 		items.remove_at(index)
 		sent_ok += 1
@@ -120,7 +123,7 @@ func complete(serial: int, status: int, now: float, retry_after_s: float = -1.0)
 			delay = maxf(delay, retry_after_s)
 		item.retries = int(item.retries) + 1
 		item.due = now + delay
-		if float(item.due) < float(item.created) + TTL_S:
+		if not _deadline_passed(float(item.created), float(item.due)):
 			return RETRY
 	items.remove_at(index)
 	dropped += 1
@@ -131,6 +134,11 @@ func complete(serial: int, status: int, now: float, retry_after_s: float = -1.0)
 func purge() -> void:
 	items.clear()
 	active_serial = -1
+
+
+func _deadline_passed(created: float, now: float) -> bool:
+	# The service clock has microsecond resolution. Recover it after the seconds conversion.
+	return roundi((now - created) * 1000000.0) >= TTL_USEC
 
 
 func _index_of(serial: int) -> int:

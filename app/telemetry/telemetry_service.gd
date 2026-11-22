@@ -40,7 +40,7 @@ var context_provider := Callable()
 ## Injected clocks for tests.
 var clock_usec: Callable = func() -> int: return Time.get_ticks_usec()
 var frames_drawn: Callable = func() -> int: return Engine.get_frames_drawn()
-var utc_day: Callable = func() -> String: return Time.get_date_string_from_system(true)
+var utc_day: Callable = func() -> int: return floori(Time.get_unix_time_from_system() / 86400.0)
 ## Hardware facts override for tests ({} reads the engine).
 var hardware_facts: Dictionary = {}
 
@@ -57,7 +57,7 @@ var local_drops := 0
 
 var _session_id := ""
 var _session_start_usec := 0
-var _session_day := ""
+var _session_day := 0
 var _seq := 0
 var _pending: Array[Dictionary] = []
 var _pending_context: Dictionary = {}
@@ -83,6 +83,8 @@ var _errors: Dictionary = {}
 
 func _init() -> void:
 	name = "Telemetry"
+	# Deadlines still apply while the shell pauses gameplay. AppRoot excludes paused frames.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_process(false)
 
 
@@ -151,12 +153,16 @@ func disable() -> Error:
 func note_error(category: String) -> void:
 	if state != Policy.ON or not category in Contract.ERROR_CATEGORIES:
 		return
+	_rotate_if_due(int(clock_usec.call()))
 	_errors[category] = mini(int(_errors.get(category, 0)) + 1, Contract.ERROR_MAX_COUNT)
 
 
 ## Accepted fixed-wing classifier output (statistics service flight_events_accepted).
 func note_flight_events(events: Array) -> void:
-	if state != Policy.ON or _activity.is_empty() or _activity.classification != "accepted_fixed_wing":
+	if state != Policy.ON:
+		return
+	_rotate_if_due(int(clock_usec.call()))
+	if _activity.is_empty() or _activity.classification != "accepted_fixed_wing":
 		return
 	for event: Variant in events:
 		if not event is Dictionary:
@@ -202,9 +208,12 @@ func _process(_delta: float) -> void:
 		set_process(false)
 		return
 	var now := int(clock_usec.call())
+	_rotate_if_due(now)
 	_observe(now)
 	if not _pending.is_empty() and now - _last_seal_usec >= SEAL_INTERVAL_US:
 		_seal(now)
+	if sender.busy():
+		_expire_request(now)
 	if not sender.busy():
 		var item := queue.begin(now / 1000000.0, generation)
 		if not item.is_empty() and not sender.send(str(release.endpoint), item.body, int(item.serial)):
@@ -238,10 +247,9 @@ func _facts_with(next_choice: String, notice: String) -> Dictionary:
 func _start() -> void:
 	generation += 1
 	_hardware = {}
-	_new_session(int(clock_usec.call()))
-	_last_seal_usec = int(clock_usec.call())
-	_activity_from_start = false
-	_append({"name": "session_started"})
+	var now := int(clock_usec.call())
+	_new_session(now, int(utc_day.call()))
+	_append({"name": "session_started"}, now)
 
 
 ## Close the gate's consequences: no request, no queued byte, no window, activity or token survives.
@@ -250,37 +258,64 @@ func _stop() -> void:
 	if sender != null:
 		sender.cancel()
 	queue.purge()
+	_session_id = ""
+	_hardware = {}
+	_last_crash_generation = ""
+	_discard_unsealed()
+
+
+func _discard_unsealed() -> void:
 	_pending.clear()
 	_pending_context = {}
 	_pending_session = ""
-	_session_id = ""
-	_hardware = {}
 	_window = null
 	_window_key = []
 	_window_context = {}
 	_last_usec = -1
 	_activity = {}
-	_last_crash_generation = ""
+	_activity_from_start = false
 	_errors = {}
 
 
-func _new_session(now: int) -> void:
+func _new_session(now: int, day: int) -> void:
 	_session_id = Contract.random_id()
 	_session_start_usec = now
-	_session_day = str(utc_day.call())
+	_session_day = day
+	_last_seal_usec = now
 	_seq = 0
+
+
+func _rotate_if_due(now: int) -> void:
+	# Signals can arrive before the next frame. Retire the old epoch before accepting any observation.
+	var day := int(utc_day.call())
+	if now - _session_start_usec < SESSION_MAX_US and day == _session_day:
+		return
+	# The exact crossing may have happened while suspended. Discard unsealed observations instead of
+	# joining epochs or giving old observations a fresh queue deadline. Sealed bytes keep their age.
+	_discard_unsealed()
+	_expire_request(now)
+	_new_session(now, day)
+	var ctx := _read_context()
+	var active := Contract.is_true(ctx.get("activity"))
+	_track_activity(ctx, _mode(ctx), _vehicle(ctx, active), now, active)
+	state_changed.emit.call_deferred()
+
+
+func _expire_request(now: int) -> void:
+	var dropped_before: int = queue.dropped
+	queue.expire(now / 1000000.0)
+	if sender.busy() and queue.active_serial < 0:
+		sender.cancel()
+	if queue.dropped != dropped_before:
+		state_changed.emit.call_deferred()
 
 
 func _observe(now: int) -> void:
 	var ctx := _read_context()
 	var eligible := Contract.is_true(ctx.get("eligible"))
-	var mode := str(ctx.get("mode", "other"))
-	if not mode in Contract.MODES:
-		mode = "other"
-	# Only a simulated vehicle session is an activity; Home and Workshop editing are measured with no vehicle.
+	var mode := _mode(ctx)
 	var in_activity := Contract.is_true(ctx.get("activity"))
-	var vehicle := Contract.vehicle_id(str(ctx.get("vehicle", "")), Contract.is_true(ctx.get("custom"))) \
-		if in_activity else "none"
+	var vehicle := _vehicle(ctx, in_activity)
 	var key := [mode, vehicle, ctx.get("window_size", Vector2i.ZERO), ctx.get("vsync", -1),
 		_frame_cap(ctx), ctx.get("input_class", "unknown"), ctx.get("graphics_profile", "unknown"),
 		ctx.get("graphics_revision", 0), ctx.get("activity_id", 0), ctx.get("activity_revision", 0)]
@@ -397,14 +432,9 @@ func _end_activity(now: int, outcome: String, finished: bool) -> void:
 
 
 ## Number the event, keep batches context-stable and seal when full. `event` arrives without its seq.
-func _append(event: Dictionary, now: int = -1, observed_context: Dictionary = {}) -> void:
+func _append(event: Dictionary, now: int, observed_context: Dictionary = {}) -> void:
 	if state != Policy.ON or _session_id == "":
 		return
-	if now < 0:
-		now = int(clock_usec.call())
-	if now - _session_start_usec >= SESSION_MAX_US or str(utc_day.call()) != _session_day:
-		_seal(now)
-		_new_session(now)
 	var context := _context(_read_context()) if observed_context.is_empty() else observed_context
 	if not _pending.is_empty() and (context != _pending_context or _pending_session != _session_id):
 		_seal(now)
@@ -463,6 +493,17 @@ func _batch(events: Array[Dictionary], context: Dictionary, session_id: String, 
 
 func _read_context() -> Dictionary:
 	return context_provider.call() if context_provider.is_valid() else {}
+
+
+func _mode(ctx: Dictionary) -> String:
+	var mode := str(ctx.get("mode", "other"))
+	return mode if mode in Contract.MODES else "other"
+
+
+func _vehicle(ctx: Dictionary, active: bool) -> String:
+	# Home and Workshop editing have no simulated vehicle.
+	return Contract.vehicle_id(str(ctx.get("vehicle", "")), Contract.is_true(ctx.get("custom"))) \
+		if active else "none"
 
 
 func _frame_cap(ctx: Dictionary) -> int:

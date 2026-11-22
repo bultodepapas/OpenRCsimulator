@@ -41,7 +41,7 @@ class FakeSender extends Node:
 var _failures := 0
 var _now := 0
 var _frames := 0
-var _day := "2026-11-18"
+var _day := 20775 # 2026-11-18, as days since the Unix epoch
 var _ctx := {}
 
 
@@ -63,6 +63,7 @@ func _initialize() -> void:
 	_crash_revisions_across_slices()
 	_off_switch_and_suspension()
 	_rotation_and_partial_activity()
+	_epoch_entry_boundaries()
 	_quit_in_flight_keeps_slices()
 	_remove()
 	print("all telemetry service checks passed" if _failures == 0 else "%d failed" % _failures)
@@ -79,7 +80,7 @@ func _service(release := {}) -> Node:
 	s.locale = "en"
 	s.clock_usec = func() -> int: return _now
 	s.frames_drawn = func() -> int: return _frames
-	s.utc_day = func() -> String: return _day
+	s.utc_day = func() -> int: return _day
 	s.hardware_facts = {"os": "Linux", "architecture": "x86_64", "cpu": "AMD Ryzen 5 5600X", "threads": 12,
 		"memory_bytes": 17179869184, "gpu": "NVIDIA GeForce RTX 3060", "renderer": "forward_plus", "driver": "vulkan"}
 	s.context_provider = func() -> Dictionary: return _ctx
@@ -345,8 +346,9 @@ func _rotation_and_partial_activity() -> void:
 	var summaries := _events(s, "activity_summary")
 	_check("an activity already running at admission is not a complete observation", summaries.size() == 1
 		and summaries[0].complete_observation == false, str(summaries))
+	s._seal(_now)
 	var first: String = s._session_id
-	_day = "2026-11-19"
+	_day = 20776
 	_run(s, 31.0)
 	_check("the UTC day boundary rotates the session token", s._session_id != first and s._session_id != "")
 	var sessions := {}
@@ -355,17 +357,80 @@ func _rotation_and_partial_activity() -> void:
 	_check("old batches keep their own token", sessions.has(first), str(sessions.keys()))
 	_now += 4 * 3600 * 1000000
 	var second: String = s._session_id
-	_run(s, 31.0) # the next event after the bound (a closed window) carries a new token
-	_check("four hours rotate the session token for the next event", s._session_id != second
-		and s._pending.size() > 0 and s._pending_session == s._session_id)
+	_now += FRAME_US
+	s._process(0.0) # the first frame after the bound retires the previous token
+	_check("four hours rotate the session token before observing a new frame", s._session_id != second
+		and s._pending.is_empty() and s._seq == 0)
 	s.queue_free()
+
+
+func _epoch_entry_boundaries() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	for entry: String in ["frame", "error", "flight_event"]:
+		_day = 20777
+		var s := _service()
+		_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250",
+			"simulated_seconds": 0.0, "fixed_wing_accepted": true}, true)
+		_run(s, 15.0)
+		s._seal(_now)
+		s._process(0.0)
+		var old_session: String = s._session_id
+		var old_generation: int = s.generation
+		var sealed: Dictionary = s.queue.items[0].duplicate(true)
+		_check("the old epoch has an in-flight batch, an open window and an activity",
+			s.sender.busy() and s._window != null and not s._window.is_empty() and not s._activity.is_empty())
+
+		s.note_error("asset_load_failed")
+		s.note_error("renderer_unavailable")
+		s.note_flight_events([{"type": "TAKEOFF"}])
+		for _index: int in Contract.MAX_EVENTS - 1:
+			s._append(Contract.error_count(0, "aircraft_validation_failed", 1), _now)
+		var notified := [false]
+		s.state_changed.connect(func() -> void: notified[0] = true)
+
+		_ctx.eligible = false
+		if entry == "flight_event":
+			_now = s._session_start_usec + Service.SESSION_MAX_US
+			_ctx.simulated_seconds = 100.0
+			s.note_flight_events([{"type": "LANDING_SUCCESS"}])
+		elif entry == "error":
+			_day = 20776 # a UTC clock correction also retires the epoch
+			s.note_error("simulation_fault")
+		else:
+			_day = 20778
+			_now += FRAME_US
+			s._process(0.0)
+
+		_check("the first post-boundary " + entry + " opens a fresh epoch before collection",
+			s._session_id != old_session and s.generation == old_generation and s._window == null
+			and s._last_usec == -1 and s._pending_session.is_empty() and s._pending.is_empty()
+			and s._seq == 0 and not notified[0])
+		var expected_errors: Dictionary = {"simulation_fault": 1} if entry == "error" else {}
+		_check("the old epoch's unsealed observations do not cross the boundary",
+			s._errors == expected_errors and not s._activity.is_empty() and not s._activity.complete
+			and int(s._activity.active_us) == 0 and int(s._activity.takeoffs) == 0
+			and int(s._activity.landings) == (1 if entry == "flight_event" else 0))
+		if entry == "flight_event":
+			_check("an expired old request is canceled on the exact four-hour rotation",
+				s.queue.items.is_empty() and not s.sender.busy() and s.sender.cancels == 1)
+		else:
+			_check("a sealed batch retains its bytes, serial, retry state and original deadline",
+				s.queue.items.size() == 1 and s.queue.items[0] == sealed and s.sender.busy())
+			_now = roundi((float(sealed.created) + Queue.TTL_S) * 1000000.0)
+			s._process(0.0)
+			_check("the old request expires at its original deadline after rotation",
+				not s.queue.is_active(int(sealed.serial)) and s.sender.cancels == 1)
+		s.sender.finished.emit(int(sealed.serial), 410, -1.0)
+		_check("a late refusal from an expired request cannot suspend a later epoch", s.state == "on")
+		s.queue_free()
+	_day = 20775
 
 
 ## TELEM-19: a 12-minute flight that ends by quitting (no return to Home) still reports 10 minutes of usage in
 ## 5-minute slices; before, nothing was reported for flights shorter than the 30-minute slice.
 func _quit_in_flight_keeps_slices() -> void:
 	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
-	_day = "2026-11-18"
+	_day = 20775
 	var s := _service()
 	_run(s, 1.0)
 	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true,
