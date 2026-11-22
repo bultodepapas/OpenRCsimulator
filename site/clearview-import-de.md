@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Verwende v0.3.0 oder neuer und wähle in der Dateiauswahl **ClearView-Flugzeug-ZIP**. Automatische Einrichtung und Hubschrauberflüge kommen in der Version nach v0.3.0; v0.2.9 importiert nur die Vorschau.
+Für die automatische Einrichtung und Hubschrauber-Testflüge benötigst du v0.3.2 oder neuer. Wähle im Dateidialog **ClearView-Flugzeug-ZIP**. v0.3.0 erlaubt Testflüge mit Flächenflugzeugen, v0.2.9 bietet eine Vorschau.
 
 **Experimentell.** Das Modell behält sein ClearView-Aussehen, fliegt aber mit der OpenRC-Physik, nicht mit dem ClearView-Flugmodell: Flugzeuge mit einer geschätzten, auf das Modell abgestimmten Konfiguration, Nurflügler mit der Standardphysik des Skywalker X8 und Hubschrauber mit der Referenzphysik des X-Cell .60. Gespeicherte Flugzeuge können noch nicht vom Startbildschirm gestartet werden.
 

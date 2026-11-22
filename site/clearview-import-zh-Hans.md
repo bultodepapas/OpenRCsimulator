@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-请使用 v0.3.0 或更高版本，并在文件选择器中选择**ClearView 飞机 ZIP**。自动设置和直升机飞行将在 v0.3.0 之后的版本中提供；v0.2.9 只能导入预览。
+自动设置和直升机试飞需要 v0.3.2 或更高版本。在文件选择器中选择 **ClearView 飞行器 ZIP**。v0.3.0 支持固定翼试飞，v0.2.9 支持预览。
 
 **实验性。**模型保留 ClearView 外观，但使用 OpenRC 物理而不是 ClearView 的飞行模型飞行：固定翼飞机使用按模型尺寸估算的配置，飞翼使用标准 Skywalker X8 物理，直升机使用 X-Cell .60 参考物理。已保存的飞机暂时无法从主页启动。
 

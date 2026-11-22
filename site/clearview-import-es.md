@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Usa la v0.3.0 o posterior y elige **ZIP de avión ClearView** en el selector de archivos. La configuración automática y los vuelos en helicóptero llegan en la versión posterior a la v0.3.0; la v0.2.9 solo importa la vista previa.
+Usa la v0.3.2 o posterior para la configuración automática y las pruebas de helicóptero. Elige **ZIP de avión ClearView** en el selector de archivos. La v0.3.0 permite probar aviones en vuelo y la v0.2.9 permite ver la vista previa.
 
 **Experimental.** El modelo conserva su aspecto de ClearView, pero vuela con la física de OpenRC, no con el modelo de vuelo de ClearView: los aviones, con una configuración estimada ajustada al modelo; las alas voladoras, con la física estándar del Skywalker X8; y los helicópteros, con la física de referencia del X-Cell .60. Los aviones guardados aún no se pueden lanzar desde Inicio.
 

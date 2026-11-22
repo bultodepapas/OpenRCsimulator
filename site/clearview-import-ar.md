@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-استخدم الإصدار v0.3.0 أو أحدث واختر **ClearView aircraft ZIP** في منتقي الملفات. يصل الإعداد التلقائي والطيران بالمروحيات في الإصدار الذي يلي v0.3.0، بينما يستورد الإصدار v0.2.9 المعاينة فقط.
+استخدم الإصدار v0.3.2 أو أحدث للإعداد التلقائي وتجربة طيران المروحيات. اختر **ملف طائرة ClearView بصيغة ZIP** في منتقي الملفات. يدعم الإصدار v0.3.0 تجربة طيران الطائرات، ويدعم الإصدار v0.2.9 المعاينة.
 
 **تجريبي.** يحتفظ النموذج بمظهر ClearView لكنه يطير بفيزياء OpenRC وليس بنموذج طيران ClearView: الطائرات بإعداد تقديري مضبوط على حجم النموذج، والأجنحة الطائرة بفيزياء Skywalker X8 القياسية، والمروحيات بفيزياء X-Cell .60 المرجعية. لا يمكن تشغيل الطائرات المحفوظة من الشاشة الرئيسية بعد.
 

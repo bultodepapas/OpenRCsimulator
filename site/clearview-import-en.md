@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Use v0.3.0 or later and choose **ClearView aircraft ZIP** in the file picker. Automatic setup and helicopter flights arrive in the version after v0.3.0; v0.2.9 imports the preview only.
+Use v0.3.2 or later for automatic setup and helicopter trials. Choose **ClearView aircraft ZIP** in the file picker. v0.3.0 supports airplane trials and v0.2.9 supports previews.
 
 **Experimental.** The model keeps its ClearView look but flies with OpenRC physics, not ClearView’s flight model: airplanes with an estimated configuration sized to the model, flying wings with the stock Skywalker X8 physics and helicopters with the X-Cell .60 reference physics. Saved aircraft cannot be launched from Home yet.
 

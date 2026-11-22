@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-v0.3.0 以降を使い、ファイル選択で**ClearView 機体 ZIP**を選んでください。自動セットアップとヘリコプターの飛行は v0.3.0 の次のバージョンで利用できます。v0.2.9 はプレビューのみを読み込みます。
+自動設定とヘリコプターの試験飛行には v0.3.2 以降を使用してください。ファイル選択画面で**ClearView機体 ZIP**を選びます。v0.3.0 では固定翼機の試験飛行、v0.2.9 ではプレビューが可能です。
 
 **実験的機能です。**モデルは ClearView の外観を保ちますが、ClearView の飛行モデルではなく OpenRC の物理で飛行します。飛行機はモデルに合わせて推定した構成、全翼機は標準の Skywalker X8 の物理、ヘリコプターは X-Cell .60 の基準物理を使います。保存した機体はまだホームから起動できません。
 
