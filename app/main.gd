@@ -3692,8 +3692,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_controls(_airplane, _surface_rotations_for_render(c), float(c.get("throttle", 0.0)))
 	if session != null and session.flaps_available():
-		var flap_state: Dictionary = session.flap_state()
-		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
+		AirplaneBuilder.apply_flaps(_airplane, session.flap_angle_deg())
 	if AirplaneBuilder.has_folds(_airplane):
 		var fractions := {}
 		for key: String in _airplane.folds:

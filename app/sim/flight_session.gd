@@ -4450,6 +4450,13 @@ func set_flaps(amount: float) -> bool:
 	return true
 
 
+## Accepted actuator angle for rendering between simulation ticks.
+func flap_angle_deg() -> float:
+	if sim == null or not _flap_aux_valid(sim.aux):
+		return 0.0
+	return sim.aux[flap_aux_index()] * float(aircraft.model.flaps.max_angle_deg)
+
+
 ## Read-only status. The limit is advisory, not an automatic retraction or an invented damage law.
 func flap_state() -> Dictionary:
 	if not flaps_available() or sim == null or not _flap_aux_valid(sim.aux):
