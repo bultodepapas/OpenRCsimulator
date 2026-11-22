@@ -2784,6 +2784,9 @@ msgstr "Répéter le dernier vol"
 msgid "Back"
 msgstr "Retour"
 
+msgid "Change skin"
+msgstr "Changer de livrée"
+
 msgid "Paint schemes"
 msgstr "Schémas de peinture"
 

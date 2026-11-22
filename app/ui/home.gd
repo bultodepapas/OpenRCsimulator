@@ -126,6 +126,7 @@ var battery_button: Button
 var livery_id := ""
 var livery_button: Button
 var _livery_row: VBoxContainer
+var _preview_paint_slot: VBoxContainer
 var _livery_choices: Array = []
 var _livery_choices_aircraft := ""
 var livery_preview_cache: Dictionary = {} # small UI textures for the current aircraft only
@@ -553,7 +554,13 @@ func _init() -> void:
 	aircraft_statistics_button.pressed.connect(func() -> void: statistics_requested.emit(aircraft_statistics_button, aircraft_id))
 	aircraft_page.add_child(aircraft_statistics_button)
 	# F4U-20-R1: keep paint reachable when the catalog scrolls to the selected aircraft.
-	# Its own row stays below navigation; short windows/large text keep it in scrollable content.
+	# Flight shows the same control beside the model, keeping the setup rail free.
+	_preview_paint_slot = VBoxContainer.new()
+	_preview_paint_slot.name = "PreviewPaint"
+	_preview_paint_slot.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	_preview_paint_slot.alignment = BoxContainer.ALIGNMENT_END
+	_preview_paint_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_preview_paint_slot)
 	_livery_row = VBoxContainer.new()
 	_livery_row.name = "AircraftPaint"
 	_left_layout.add_child(_livery_row)
@@ -1078,10 +1085,18 @@ func _apply_responsive_layout() -> void:
 		compact or _fly_caption.visible or launch_warning.visible or note_label.visible or failure_launch_notice.visible))
 	if _livery_row != null:
 		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
+		if _pages[0].visible:
+			paint_parent = _preview_paint_slot
+		_preview_paint_slot.offset_right = -inset - span
+		_preview_paint_slot.offset_left = _preview_paint_slot.offset_right - minf(rail_width, viewport_size.x - rail_width - 3.0 * inset - 2.0 * span)
+		_preview_paint_slot.offset_bottom = -24.0
 		if _livery_row.get_parent() != paint_parent:
-			_livery_row.reparent(paint_parent)
-			paint_parent.move_child(_livery_row, 2 if paint_parent == _pages[1] else _scroll.get_index())
-		_update_livery_row()
+			var restore_paint_focus := livery_button.has_focus()
+			_livery_row.reparent(paint_parent, false)
+			if paint_parent != _preview_paint_slot:
+				paint_parent.move_child(_livery_row, 2 if paint_parent == _pages[1] else _scroll.get_index())
+			if restore_paint_focus:
+				livery_button.grab_focus()
 	if navigation_in_scroll != _navigation_in_scroll:
 		var focused := get_viewport().gui_get_focus_owner()
 		var restore_navigation_focus := is_instance_valid(focused) and _navigation.is_ancestor_of(focused)
@@ -1099,6 +1114,7 @@ func _apply_responsive_layout() -> void:
 		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button]
 		for index in _page_buttons.size():
 			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
+	_update_livery_row()
 	# Long concurrent notices can otherwise force the pinned actions below the viewport. Put the whole
 	# notice group at the start of the existing scroll body; the corrective action and Fly stay pinned.
 	# An empty visible container still reserves the parent's separation and can overflow Practice.
@@ -1654,27 +1670,34 @@ func _update_livery() -> void:
 		livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(id, "")))
 	livery_button.visible = _livery_choices.size() > 1 or activity_id.is_empty() and CustomSkin.supports(id)
 	_update_livery_row()
-	if not livery_button.visible:
-		return
-	var shown: Dictionary = _livery_choices[_livery_index()]
-	var action_text := tr("Choose paint (%d)") % _livery_choices.size()
-	var selected_paint := str(shown.label)
-	# At large text scales keep the selected scheme on one line; the tooltip retains its complete name and action.
-	# The button still opens the complete gallery, while ellipsis keeps it reachable in short rails.
-	livery_button.text = selected_paint if UiTheme.text_scale >= 1.5 else action_text + "\n" + selected_paint
-	livery_button.tooltip_text = "%s\n%s\n%s" % [action_text, selected_paint, tr("View all paint schemes and select one directly.")]
 
 
 func _update_livery_row() -> void:
 	if _livery_row == null or _pages.size() < 2:
 		return
-	_livery_row.visible = _pages[1].visible and livery_button.visible
+	_livery_row.visible = (_pages[0].visible or _pages[1].visible) and livery_button.visible
+	if livery_button.visible:
+		var selected_paint := str(_livery_choices[_livery_index()].label)
+		var action := tr("Change skin")
+		livery_button.accessibility_name = "%s · %s" % [action, selected_paint]
+		# The compact catalog scroll can be shorter than two enlarged lines.
+		livery_button.text = livery_button.accessibility_name if _pages[1].visible and UiTheme.text_scale >= 1.5 else action + "\n" + selected_paint
+		livery_button.tooltip_text = "%s\n%s" % [tr("Choose paint (%d)") % _livery_choices.size(), selected_paint]
 	if not is_inside_tree():
 		return
 	var selected: Button = _catalog_buttons[maxi(0, _catalog_ids.find(selected_id()))]
-	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(livery_button if _livery_row.visible else selected)
-	livery_button.focus_neighbor_top = livery_button.get_path_to(_page_buttons[1])
-	livery_button.focus_neighbor_bottom = livery_button.get_path_to(selected)
+	var beside_model := _pages[0].visible and _livery_row.visible
+	fly_button.focus_neighbor_right = fly_button.get_path_to(livery_button if beside_model else language_button)
+	next_button.focus_neighbor_right = next_button.get_path_to(livery_button) if beside_model else NodePath()
+	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(livery_button if _pages[1].visible and _livery_row.visible else selected)
+	if beside_model:
+		livery_button.focus_neighbor_left = livery_button.get_path_to(next_button if fly_button.disabled else fly_button)
+		livery_button.focus_neighbor_top = livery_button.get_path_to(settings_button)
+		livery_button.focus_neighbor_bottom = NodePath()
+	else:
+		livery_button.focus_neighbor_left = NodePath()
+		livery_button.focus_neighbor_top = livery_button.get_path_to(_page_buttons[1])
+		livery_button.focus_neighbor_bottom = livery_button.get_path_to(selected)
 
 
 func _livery_index() -> int:

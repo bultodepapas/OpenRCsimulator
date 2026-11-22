@@ -1640,6 +1640,105 @@
 							"roughness": 0.6
 						}
 					}
+				},
+				{
+					"id": "revoc_custom",
+					"label": "REVOC Custom",
+					"node_lod_bias": {
+						"fuselage_core": 16.0
+					},
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/revoc_custom_fuselage.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/revoc_custom_wing.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/revoc_custom_stab.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/revoc_custom_fin.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_doors_ala": {
+							"albedo": "#26282c",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_doors": {
+							"albedo": "#e30613",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_fence": {
+							"albedo": "#e30613",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_fence_lower": {
+							"albedo": "#26282c",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_fillets": {
+							"albedo": "#26282c",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						},
+						"paint_trim_carbono": {
+							"albedo": "#26282c",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.36,
+							"clearcoat": 0.52,
+							"clearcoat_roughness": 0.19
+						}
+					}
 				}
 			]
 		}

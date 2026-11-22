@@ -15,8 +15,8 @@ var grid: GridContainer
 var _screen: Control
 var _selected_index := 0
 var _chosen := false
-var _images: Array[TextureRect] = []
-var _paths: Array[String] = []
+var _images: Dictionary[int, TextureRect] = {}
+var _paths: Dictionary[int, String] = {}
 var _previews: Dictionary = {}
 var _pending: Array[int] = []
 var _labels: Array[Label] = []
@@ -40,9 +40,8 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 	var shell := VBoxContainer.new()
 	shell.add_theme_constant_override("separation", 12)
 	panel.add_child(shell)
-	shell.add_child(Widgets.label("Paint schemes", "TitleLabel", true))
+	shell.add_child(Widgets.label("Change skin", "TitleLabel", true))
 	shell.add_child(Widgets.label(aircraft_name, "SectionLabel", true, false))
-	shell.add_child(Widgets.label("Choose a paint for your next flight.", "SecondaryLabel", true))
 	scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -68,38 +67,19 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.add_theme_font_size_override("font_size", _font_size)
 		button.clip_text = false
-		# Keep the Button's text for accessibility and automation. A real layout
-		# draws the name below a fixed image area, so long names cannot clip or shrink it.
-		for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
-			button.add_theme_color_override(state, Color.TRANSPARENT)
-		var content := VBoxContainer.new()
-		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		button.add_child(content)
-		content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		content.offset_left = 8
-		content.offset_right = -8
-		content.offset_top = 8
-		content.offset_bottom = -8
-		var picture := TextureRect.new()
-		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		picture.custom_minimum_size.y = 128
-		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		content.add_child(picture)
-		_images.append(picture)
-		_paths.append(str(choice.get("thumbnail", "")))
-		var label := Widgets.label(("✓ " if active else "") + str(choice.label), "", true, false)
-		label.add_theme_font_size_override("font_size", _font_size)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		content.add_child(label)
-		_labels.append(label)
-		content.minimum_size_changed.connect(func() -> void: button.custom_minimum_size.y = content.get_combined_minimum_size().y + 16)
+		var path := str(choice.get("thumbnail", ""))
+		if path.is_empty():
+			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			button.resized.connect(_fit_named_choice.bind(button))
+			button.theme_changed.connect(_fit_named_choice.bind(button))
+		else:
+			_paths[index] = path
+			_add_thumbnail(index, button, ("✓ " if active else "") + str(choice.label))
 		button.pressed.connect(_choose.bind(str(choice.id)))
 		grid.add_child(button)
 		buttons.append(button)
 	if custom_skins:
-		var actions := HBoxContainer.new()
+		var actions := HFlowContainer.new()
 		shell.add_child(actions)
 		var create := Widgets.button("Create a skin", "", "CreateSkin")
 		create.pressed.connect(func() -> void: create_skin_requested.emit())
@@ -113,13 +93,55 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 	shell.add_child(cancel_button)
 	_screen.resized.connect(_resize)
 	_screen.theme_changed.connect(_resize)
+	grid.sort_children.connect(_reveal_focused_choice, CONNECT_DEFERRED)
+	scroll.resized.connect(_reveal_focused_choice, CONNECT_DEFERRED)
+	if _images.is_empty():
+		grid.minimum_size_changed.connect(_resize)
+		panel.minimum_size_changed.connect(_resize)
+
+func _fit_named_choice(button: Button) -> void:
+	# The grid truncates fractional row minima but draws each button at a whole
+	# pixel height. Round each row so even the last skin can scroll fully into view.
+	button.custom_minimum_size.y = ceilf(button.get_minimum_size().y)
+
+func _reveal_focused_choice() -> void:
+	if not is_inside_tree() or is_queued_for_deletion(): return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and focused.get_parent() == grid:
+		scroll.ensure_control_visible(focused)
+
+func _add_thumbnail(index: int, button: Button, caption: String) -> void:
+	# The native button keeps its accessible name. The visible caption wraps below the image.
+	for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		button.add_theme_color_override(state, Color.TRANSPARENT)
+	var content := VBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(content)
+	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 8
+	content.offset_right = -8
+	content.offset_top = 8
+	content.offset_bottom = -8
+	var picture := TextureRect.new()
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(picture)
+	_images[index] = picture
+	var label := Widgets.label(caption, "", true, false)
+	label.add_theme_font_size_override("font_size", _font_size)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(label)
+	_labels.append(label)
+	content.minimum_size_changed.connect(func() -> void: button.custom_minimum_size.y = content.get_combined_minimum_size().y + 16)
 
 func _ready() -> void:
 	_resize()
 	_focus_selected.call_deferred()
-	for index in buttons.size():
+	for index: int in _paths:
 		if _previews.has(_paths[index]): _images[index].texture = _previews[_paths[index]]
-		elif not _paths[index].is_empty(): _pending.append(index)
+		else: _pending.append(index)
 	if _pending.has(_selected_index):
 		_pending.erase(_selected_index)
 		_pending.push_front(_selected_index)
@@ -147,18 +169,24 @@ func _focus_selected() -> void:
 func _resize() -> void:
 	if not is_inside_tree(): return
 	var available := _screen.size - Vector2(48, 48)
-	panel.custom_minimum_size = Vector2(minf(1320, available.x), minf(930, available.y))
-	grid.columns = (5 if panel.custom_minimum_size.x >= 1180 else 4) if UiTheme.text_scale < 1.5 else 2
-	for picture in _images:
-		picture.custom_minimum_size.y = 128 if UiTheme.text_scale < 1.5 else 56
+	if _images.is_empty():
+		grid.columns = 1
+		panel.custom_minimum_size = Vector2(minf(720 * UiTheme.text_scale, available.x),
+			minf(available.y, ceilf(panel.get_minimum_size().y + grid.get_combined_minimum_size().y)))
+	else:
+		panel.custom_minimum_size = Vector2(minf(1320, available.x), minf(930, available.y))
+		grid.columns = (5 if panel.custom_minimum_size.x >= 1180 else 4) if UiTheme.text_scale < 1.5 else 2
+		for picture: TextureRect in _images.values():
+			picture.custom_minimum_size.y = 128 if UiTheme.text_scale < 1.5 else 56
 	# Theme replacement also happens on a live viewport/compact-layout change.
 	# Explicit card font overrides must follow it, not retain the opening size.
 	var font_size := _screen.theme.get_font_size("font_size", "Button")
 	if _font_size != font_size:
 		_font_size = font_size
-		for index in buttons.size():
-			buttons[index].add_theme_font_size_override("font_size", font_size)
-			_labels[index].add_theme_font_size_override("font_size", font_size)
+		for button in buttons:
+			button.add_theme_font_size_override("font_size", font_size)
+		for label in _labels:
+			label.add_theme_font_size_override("font_size", font_size)
 	if _focus_columns != grid.columns:
 		_focus_columns = grid.columns
 		_sync_focus()

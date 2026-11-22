@@ -2757,6 +2757,9 @@ msgstr "Repetir o último voo"
 msgid "Back"
 msgstr "Voltar"
 
+msgid "Change skin"
+msgstr "Trocar pintura"
+
 msgid "Paint schemes"
 msgstr "Pinturas"
 

@@ -2777,6 +2777,9 @@ msgstr "Letzten Flug wiederholen"
 msgid "Back"
 msgstr "Zurück"
 
+msgid "Change skin"
+msgstr "Lackierung ändern"
+
 msgid "Paint schemes"
 msgstr "Lackierungen"
 

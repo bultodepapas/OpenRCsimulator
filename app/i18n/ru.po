@@ -2656,6 +2656,9 @@ msgstr "Повторить последний полёт"
 msgid "Back"
 msgstr "Назад"
 
+msgid "Change skin"
+msgstr "Сменить окраску"
+
 msgid "Paint schemes"
 msgstr "Схемы окраски"
 

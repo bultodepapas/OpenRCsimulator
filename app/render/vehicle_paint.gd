@@ -11,6 +11,7 @@ const DATA_PATH := "res://data/vehicle_paints.json"
 const FORMAT := "openrc-vehicle-paints-v1"
 const ORIGIN_META := "vehicle_paint_origin"
 const COPY_META := "vehicle_paint_copy"
+const ORIGINAL_LOD_BIAS := &"vehicle_paint_original_lod_bias"
 
 static var _data: Dictionary = {}
 
@@ -69,16 +70,16 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 		entry = _vehicles().get(str(entry.same_as), {})
 	var bindings: Dictionary = (entry.get("base", {}) as Dictionary).duplicate()
 	var resolved := resolve(vehicle_id, skin_id)
-	if not resolved.is_empty():
-		_merge_materials(bindings, _skin(vehicle_id, resolved).get("materials", {}))
+	var skin := _skin(vehicle_id, resolved)
+	_merge_materials(bindings, skin.get("materials", {}))
+	var node_lod_bias: Dictionary = skin.get("node_lod_bias", {})
 	var node_layers: Array[Dictionary] = []
 	# Always-on part finishes (TiN shock shafts, powder-coated springs...). They merge over the material and skin
 	# bindings, so they should set finish (metallic, roughness, coating) rather than colours a skin changes.
 	if entry.has("base_nodes"):
 		node_layers.append(entry.base_nodes)
 	# A skin may give individual parts their own colours (for example shock bodies apart from the chassis).
-	var skin_nodes: Dictionary = (_skin(vehicle_id, resolved) if not resolved.is_empty() else entry).get(
-		"nodes" if not resolved.is_empty() else "default_nodes", {})
+	var skin_nodes: Dictionary = skin.get("nodes", {}) if not resolved.is_empty() else entry.get("default_nodes", {})
 	if not skin_nodes.is_empty():
 		node_layers.append(skin_nodes)
 	for layer_name: Variant in layers:
@@ -90,6 +91,15 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 	var textures := {}
 	for node: Node in root.find_children("*", "MeshInstance3D", true, false):
 		var mesh_node := node as MeshInstance3D
+		# LOD simplification can distort narrow UV stripes. Restore the instance's
+		# original bias when its next paint no longer needs the extra mesh detail.
+		if node_lod_bias.has(str(mesh_node.name)):
+			if not mesh_node.has_meta(ORIGINAL_LOD_BIAS):
+				mesh_node.set_meta(ORIGINAL_LOD_BIAS, mesh_node.lod_bias)
+			mesh_node.lod_bias = maxf(float(mesh_node.get_meta(ORIGINAL_LOD_BIAS)), float(node_lod_bias[str(mesh_node.name)]))
+		elif mesh_node.has_meta(ORIGINAL_LOD_BIAS):
+			mesh_node.lod_bias = float(mesh_node.get_meta(ORIGINAL_LOD_BIAS))
+			mesh_node.remove_meta(ORIGINAL_LOD_BIAS)
 		if mesh_node.mesh == null or mesh_node.material_override != null:
 			continue
 		for surface in mesh_node.mesh.get_surface_count():

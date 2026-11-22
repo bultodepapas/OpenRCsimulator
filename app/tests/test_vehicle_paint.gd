@@ -511,6 +511,27 @@ func _check_jet_livery() -> void:
 		and canopy[0].albedo_color.a < 0.95 and canopy[0].transparency != BaseMaterial3D.TRANSPARENCY_DISABLED)
 	var tub := _materials_named(jet.root, "cockpit_tub_grey")
 	check("the cockpit behind the gold canopy is dark and neutral", tub.size() >= 1 and tub[0].albedo_color.get_luminance() < 0.2)
+	check("the jet offers REVOC Custom", ids.has("revoc_custom"))
+	var shell := jet.root.find_child("fuselage_core", true, false) as MeshInstance3D
+	shell.lod_bias = 1.25
+	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
+	check("REVOC preserves the narrow fuselage stripe at close range", shell.lod_bias > 1.25)
+	for part in ["fuselage", "wing", "stab", "fin"]:
+		var finish := _materials_named(jet.root, "paint_" + str(part))
+		check("REVOC replaces the neon %s paint and glow" % part, finish.size() == 1
+			and finish[0].albedo_texture != null and finish[0].albedo_texture.resource_path.ends_with("revoc_custom_%s.png" % part)
+			and not finish[0].emission_enabled)
+	doors = _materials_named(jet.root, "paint_doors_ala")
+	check("REVOC wing doors match the plain graphite underside", doors.size() == 1
+		and doors[0].albedo_color.is_equal_approx(Color("#26282c")) and doors[0].albedo_texture == null and not doors[0].emission_enabled)
+	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
+	VehiclePaint.apply(jet.root, jet_id, "verde_neon_carbono")
+	check("repainting restores the original fuselage LOD bias", is_equal_approx(shell.lod_bias, 1.25))
+	shell.lod_bias = 32.0
+	VehiclePaint.apply(jet.root, jet_id, "revoc_custom")
+	check("REVOC keeps higher instance detail", is_equal_approx(shell.lod_bias, 32.0))
+	VehiclePaint.apply(jet.root, jet_id, "retired")
+	check("the fallback paint restores the instance detail", is_equal_approx(shell.lod_bias, 32.0))
 	jet.root.free()
 	var plain: Dictionary = AirplaneBuilder.build(jet_id)
 	var stock := _materials_named(plain.root, "paint_fuselage")

@@ -2455,6 +2455,9 @@ msgstr "重飞上次飞行"
 msgid "Back"
 msgstr "返回"
 
+msgid "Change skin"
+msgstr "更换涂装"
+
 msgid "Paint schemes"
 msgstr "涂装"
 

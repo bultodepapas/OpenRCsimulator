@@ -2754,6 +2754,9 @@ msgstr "Ripeti l’ultimo volo"
 msgid "Back"
 msgstr "Indietro"
 
+msgid "Change skin"
+msgstr "Cambia livrea"
+
 msgid "Paint schemes"
 msgstr "Livree"
 

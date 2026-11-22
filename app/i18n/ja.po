@@ -2547,6 +2547,9 @@ msgstr "前回のフライトを再現"
 msgid "Back"
 msgstr "戻る"
 
+msgid "Change skin"
+msgstr "塗装を変更"
+
 msgid "Paint schemes"
 msgstr "塗装パターン"
 

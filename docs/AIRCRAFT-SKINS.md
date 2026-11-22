@@ -11,7 +11,7 @@ identifies its model and follows the browser language.
 
 ## Player flow
 
-1. **Aircraft → choose a model → Choose paint → Create a skin → Save skin template…**.
+1. Choose a model on **Flight** or in **Vehicles**. Select **Change skin → Create a skin → Save skin template…**.
    Extract the ZIP and keep an untouched copy.
 2. Open `guide.html`. For the image route, give the assistant `kit.json`, the
    matching `Paint-NN.png` and `UV-NN.png` files, your design references and the
@@ -23,7 +23,7 @@ identifies its model and follows the browser language.
 4. In the extracted folder, run
    `python pack_image.py --output my-design.orskin --label "My design"`.
    A coding assistant with Python can package it; Blender is not required.
-5. **Choose paint → Load new skin…** imports the `.orskin` and selects it. Inspect
+5. **Change skin → Load new skin…** imports the `.orskin` and selects it. Inspect
    Home, flight, both sides, undersides and moving surfaces. Selection persists
    across restarts; choosing the original paint restores stock appearance.
    Rejected imports retain the current choice.

@@ -2448,6 +2448,9 @@ msgid "Back"
 msgstr "Volver"
 
 # F4U-20-R3: direct paint gallery.
+msgid "Change skin"
+msgstr "Cambiar pintura"
+
 msgid "Paint schemes"
 msgstr "Pinturas"
 
