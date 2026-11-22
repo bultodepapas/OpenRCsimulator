@@ -290,6 +290,13 @@ func _test_first_run() -> void:
 	_check("Retina on Apple Silicon uses native output", AutoGraphicsPolicy.first_display(Vector2i(3024, 1964), true) == {"window_mode": "borderless"})
 	_check("the basic notice describes the active settings", AutoGraphicsPolicy.basic_settings_active(basic, basic)
 		and not AutoGraphicsPolicy.basic_settings_active(basic, {"msaa_3d": Viewport.MSAA_8X}))
+	var partly_manual := basic.duplicate()
+	partly_manual.msaa_3d = Viewport.MSAA_2X
+	_check("a manual MSAA choice preserves guidance for the remaining basic settings",
+		AutoGraphicsPolicy.basic_settings_active(basic, partly_manual))
+	partly_manual.scene_detail = "high"
+	_check("a manually raised scene detail dismisses basic graphics guidance",
+		not AutoGraphicsPolicy.basic_settings_active(basic, partly_manual))
 	var path := "user://test gpu first run display.cfg"
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run("Intel(R) Iris(R) Xe Graphics")
