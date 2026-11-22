@@ -420,11 +420,11 @@ def aggregate_daily_gpu(records, day, release_id, minimum=20, *, as_of_utc):
                 "sessions": set(), "time": 0, "frames": 0, "intervals": 0, "gaps": 0,
                 "histogram": [0] * len(HISTOGRAM_UPPER_US)})
             group["sessions"].add(session)
-            group["time"] += event["interval_sum_us"]
-            group["frames"] += event["rendered_frames"]
-            group["intervals"] += event["interval_count"]
-            group["gaps"] += event["excluded_gap_count"]
-            group["histogram"] = [a + b for a, b in zip(group["histogram"], event["interval_histogram"])]
+            group["time"] += int(event["interval_sum_us"])
+            group["frames"] += int(event["rendered_frames"])
+            group["intervals"] += int(event["interval_count"])
+            group["gaps"] += int(event["excluded_gap_count"])
+            group["histogram"] = [a + int(b) for a, b in zip(group["histogram"], event["interval_histogram"])]
     status = "no_data" if not groups else "ready"
     if any(len(group["sessions"]) < minimum for group in groups.values()):
         status = "suppressed"
