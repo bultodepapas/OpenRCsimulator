@@ -38,6 +38,8 @@ Make OpenRC look substantially more convincing while flying: recognizable aircra
 
 **Timing ownership (graphics audit M0), 2026-11-17:** [shared GPU timing leases and sample status](../research/visual-quality-implementation/VQ-01c/timing-ownership-2026-11-17/README.md) stop one diagnostic consumer from disabling another's GPU timing and stop reporting cached GPU polls as measured samples. One RTX 3090 1080p Standard screen is VSync-limited (wall p95 8.46 ms, root GPU poll p50 1.64 ms, observer 31 µs p95): dynamic resolution stays ineligible (static-only). Uncapped, High Native (p50 1.56 ms) beats FSR2 85%/Quality (2.22/2.25 ms) on that GPU, so M1 needs a weaker GPU row.
 
+The [flight dynamic-resolution implementation plan](dynamic-resolution.md) takes the M0 timing result and the UHD 630 fixed-scale trial through workload selection, feedback, integration and per-device qualification.
+
 **Advanced settings, requested by the user:** [UI-24-R3 / VQ-06b](../research/menu-investigations/UI-24-R3/README.md) adds manual resolution, FPS cap, VSync and main-view antialiasing with persistent Keep/Revert recovery. This is the first configurable desktop slice; it does not label unmeasured combinations as hardware presets.
 
 **Selected and implemented High trial:** the owner prioritized a visible high-end mode. [VQ-07 temporary High trial](../research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md) adds a Home graphics-menu restart into Forward+, short-range SSAO, soft cascaded sun shadows and sky reflections. Renderer-specific sky, depth and vertex-color corrections keep accepted scenery usable. Standard remains the normal launch; this is an opt-in experiment, not hardware-profile qualification.
