@@ -1,13 +1,19 @@
 """Copy today's verified GitHub archive from Proxmox to an operator-owned second host."""
 import argparse
-from contextlib import closing
-from datetime import datetime, timezone
 import os
 from pathlib import Path
 import sqlite3
 import subprocess
 import sys
 import tempfile
+
+if __package__:
+    from .host.openrc_stats_backup import backup_name, utc_day, validate_archive
+else:
+    directory = Path(__file__).resolve().parent
+    validator = directory / "host" if (directory / "host" / "openrc_stats_backup.py").is_file() else directory
+    sys.path.insert(0, str(validator))
+    from openrc_stats_backup import backup_name, utc_day, validate_archive
 
 
 def pull(host, key, ct, destination):
@@ -16,7 +22,8 @@ def pull(host, key, ct, destination):
     if (repo / ".git").exists() and destination.is_relative_to(repo):
         raise ValueError("backups must live outside the source repository")
     destination.mkdir(parents=True, exist_ok=True)
-    name = f"github-history-{datetime.now(timezone.utc):%Y-%m-%d}.sqlite3"
+    day = utc_day()
+    name = backup_name(day)
     command = ["ssh", "-i", str(key), "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o",
                "StrictHostKeyChecking=yes", "-o", "ConnectTimeout=10", "--", host,
                f"pct exec {ct} -- cat /var/lib/openrc-stats/backups/{name}"]
@@ -27,11 +34,9 @@ def pull(host, key, ct, destination):
             subprocess.run(command, stdout=handle, timeout=45, check=True)
             handle.flush()
             os.fsync(handle.fileno())
-        with closing(sqlite3.connect(f"{tmp.as_uri()}?mode=ro&immutable=1", uri=True)) as db:
-            if db.execute("PRAGMA quick_check").fetchall() != [("ok",)]:
-                raise ValueError("copied backup failed SQLite integrity check")
-            if db.execute("SELECT 1 FROM observations LIMIT 1").fetchone() is None:
-                raise ValueError("copied archive has no observations")
+        validate_archive(tmp, max_bytes=None)
+        if utc_day() != day:
+            raise ValueError("UTC date changed during transfer")
         tmp.replace(destination / name)
     finally:
         tmp.unlink(missing_ok=True)

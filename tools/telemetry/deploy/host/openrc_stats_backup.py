@@ -14,6 +14,18 @@ import sys
 import tempfile
 
 
+if __package__ == "tools.telemetry.deploy.host":
+    from ... import github_archive
+else:
+    # The installed host script sits alongside telemetry/ and analytics/.
+    directory = Path(__file__).resolve().parent
+    reader = directory / "telemetry"
+    if not (reader / "github_archive.py").is_file():
+        reader = directory.parents[1]
+    sys.path.insert(0, str(reader))
+    import github_archive
+
+
 EXPORT_DIR = Path("/var/lib/openrc-stats-backup-export")
 PULL_DIR = Path("/var/lib/openrc-stats-backup")
 CT_BACKUP_DIR = "/var/lib/openrc-stats/backups"
@@ -29,21 +41,48 @@ def backup_name(day: str) -> str:
     return f"github-history-{day}.sqlite3"
 
 
-def validate_archive(path: Path) -> None:
-    if not 0 < path.stat().st_size <= MAX_ARCHIVE_BYTES:
+def validate_archive(path: Path, *, max_bytes=MAX_ARCHIVE_BYTES) -> None:
+    size = path.stat().st_size
+    if size <= 0 or (max_bytes is not None and size > max_bytes):
         raise ValueError("archive size is outside the allowed range")
     with closing(sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro&immutable=1", uri=True)) as db:
         db.execute("PRAGMA trusted_schema = OFF")
         if db.execute("PRAGMA quick_check").fetchall() != [("ok",)]:
             raise ValueError("archive failed SQLite quick_check")
-        if db.execute("PRAGMA user_version").fetchone()[0] not in (1, 2):
+        version = db.execute("PRAGMA user_version").fetchone()[0]
+        history = github_archive.github_history
+        if version not in history.READABLE_VERSIONS:
             raise ValueError("unknown GitHub archive schema version")
-        required_tables = {"settings", "observations", "asset_counts", "traffic_days"}
+        # A restored archive must also accept new collector writes. The collector uses positional inserts.
+        required = {"settings": "repo asset_glob", "attempts": "id kind started_utc finished_utc success",
+                    "observations": "id kind started_utc finished_utc",
+                    "asset_counts": "observation_id asset_id release_id tag name count started_utc finished_utc",
+                    "traffic_days": "day_utc views uniques status started_utc finished_utc"}
+        if version >= 2:
+            required.update(clone_days="day_utc views uniques status started_utc finished_utc",
+                            repo_counters="observation_id stars forks watchers open_issues",
+                            popular_referrers="observation_id referrer count uniques",
+                            popular_paths="observation_id path title count uniques",
+                            releases="tag published_utc prerelease", star_days="day_utc stars")
         tables = {name for (name,) in db.execute("SELECT name FROM sqlite_schema WHERE type = 'table'")}
-        if not required_tables <= tables:
-            raise ValueError("file is not a GitHub history archive")
+        for table, fields in required.items():
+            if table not in tables:
+                raise ValueError(f"missing GitHub archive table: {table}")
+            columns = [row[1] for row in db.execute(f"PRAGMA table_info({table})")]
+            if columns != fields.split():
+                raise ValueError(f"incomplete GitHub archive table: {table}")
+        if db.execute("SELECT repo, asset_glob FROM settings LIMIT 2").fetchall() != [
+                (history.DEFAULT_REPO, history.DEFAULT_ASSET_GLOB)]:
+            raise ValueError("unexpected GitHub archive repository or asset pattern")
         if db.execute("SELECT 1 FROM observations LIMIT 1").fetchone() is None:
             raise ValueError("GitHub archive has no observations")
+        if db.execute("PRAGMA foreign_key_check").fetchone() is not None:
+            raise ValueError("GitHub archive contains missing references")
+    # Use the same queries and data interpretation as the dashboard on this closed copy.
+    try:
+        github_archive.load_path(path, immutable=True)
+    except (TypeError, AttributeError, OverflowError) as error:
+        raise ValueError("invalid data in GitHub archive") from error
 
 
 def store_archive(command: list[str], directory: Path, day: str, *, mode: int, keep: int) -> Path:
