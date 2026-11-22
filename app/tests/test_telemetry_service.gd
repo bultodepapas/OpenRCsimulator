@@ -212,6 +212,9 @@ func _context_boundaries() -> void:
 			and measured[2].event.phase == "warmup" and not measured[2].event.window_complete
 			and measured[3].context == s._window_context and measured[3].event.window_complete
 			and int(measured[3].event.interval_sum_us) >= 30_000_000, str(measured))
+		if change.has("activity_revision"):
+			_check("a presentation/recorder boundary alone does not complete an activity",
+				_events(s, "activity_summary").is_empty())
 		s.queue_free()
 
 

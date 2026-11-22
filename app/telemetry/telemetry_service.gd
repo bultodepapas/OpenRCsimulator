@@ -382,14 +382,15 @@ func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, a
 	var key := (mode + "|" + vehicle) if active else ""
 	var simulated := float(ctx.get("simulated_seconds", -1.0))
 	var activity_id := int(ctx.get("activity_id", 0))
-	var revision := int(ctx.get("activity_revision", 0))
 	var restarted := false
 	if not _activity.is_empty():
 		if key != _activity["key"]:
 			_end_activity(now, "returned_home" if mode == "home" else "unknown", true)
 			_activity_from_start = true
-		elif activity_id != int(_activity.id) or revision != int(_activity.revision) \
-				or (simulated >= 0.0 and simulated + 0.5 < float(_activity.sim_last)):
+		elif activity_id != int(_activity.id):
+			_end_activity(now, "interrupted", false)
+			_activity_from_start = true
+		elif simulated >= 0.0 and simulated + 0.5 < float(_activity.sim_last):
 			_end_activity(now, "reset", true)
 			_activity_from_start = true
 			restarted = true
@@ -406,7 +407,7 @@ func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, a
 		return false
 	var fixed_wing := Contract.is_true(ctx.get("fixed_wing_accepted")) and vehicle in Contract.FIXED_WING_VEHICLES
 	# Without a simulated clock the summary reports 0 simulated seconds and says the observation is incomplete.
-	_activity = {"key": key, "vehicle": vehicle, "active_us": 0, "id": activity_id, "revision": revision,
+	_activity = {"key": key, "vehicle": vehicle, "active_us": 0, "id": activity_id,
 		"sim_start": maxf(simulated, 0.0), "sim_last": maxf(simulated, 0.0),
 		"complete": _activity_from_start and simulated >= 0.0,
 		"classification": "accepted_fixed_wing" if fixed_wing else "unsupported",
