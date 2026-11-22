@@ -76,7 +76,6 @@
     "downloadIntro": "ZIP herunterladen, entpacken und starten.<br>Godot muss nicht installiert werden.",
     "downloadKicker": "02 / DEIN NÄCHSTER START",
     "downloadNote": "Frühe Alpha-Version v0.3.2. Die ZIP-Dateien haben weder Installer noch Archivsiegel; die macOS-App ist ad hoc signiert, aber nicht notariell beglaubigt.<br>Flugzeug- und Bodenfahrzeugmodelle sind weiterhin experimentell und benötigen unabhängige Messungen und Pilotenevaluation.",
-    "droneNote": "Der ION R5 bietet die Modi Acro und Angle sowie lokale Torrennen über drei Runden, unter anderem auf Tower Sprint. Beim 5-m-RC-Luftschiff lenken schwenkbare Elektrorotoren den Schub.",
     "electricLink": "Elektroantrieb ↗",
     "evidenceBody": "Der openrc-aircraft-v2-Vertrag verlangt Einheiten, Evidenztyp und Quelle. Ungültige Konfigurationen können nicht fliegen. Geometrie und physikalische Daten werden aus ihren Quellen neu erzeugt.",
     "evidenceDetail1": "F10 zeichnet Starrflüglerflüge auf; F11 markiert Flugmanöver. CSV-Export und Vergleiche verwenden dieselbe Eingabesequenz.",
@@ -255,7 +254,13 @@
     "clearviewExample": "Importgetestetes Beispiel: <a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>.",
     "moonrunnerCopy": "Starte diesen Nurflügler mit 2,12 m Spannweite auf dem Club field aus der Hand. Zwei Elevons steuern Nick- und Rollbewegungen. Ein Druckpropeller sorgt für den Schub.",
     "corsairCopy": "Fahre zur Landung die Klappen und das Einziehfahrwerk aus. Am Boden lassen sich die Knickflügel dieses 2,78-m-Warbirds mit Moki-Fünfzylinder-Sternmotor einklappen.",
-    "phoenixScenery": "Phoenix-Fluggelände importieren ↗"
+    "phoenixScenery": "Phoenix-Fluggelände importieren ↗",
+    "vehicleHeading": "FPV-Rennen und RC-Luftschiff",
+    "vehicleStart": "Öffne auf der Startseite die Fahrzeugauswahl, wähle ION R5 oder das RC-Luftschiff und starte den Flug. Beide Modelle sind experimentell.",
+    "ionTitle": "ION R5 · FPV-Rennquad",
+    "ionCopy": "Fliege den 5-Zoll-Racer mit 6S-Akku aus Sicht der Bordkamera im Acro-Modus oder im selbstnivellierenden Angle-Modus. Auf dem Club field wechselst du mit <kbd>T</kbd> die Strecke. Schalte die Motoren auf dem Startplatz bei Standgas scharf, drücke <kbd>G</kbd> und warte auf GO. Durchfliege die Tore drei Runden lang in der richtigen Reihenfolge für eine lokale Bestzeit.",
+    "blimpTitle": "5-m-RC-Luftschiff",
+    "blimpCopy": "Starte auf den Rädern oder in 6 m Höhe. Stelle im Pausenmenü Ballast und gleichmäßigen Wind ein. Schwenke die Elektrorotoren zum Steigen oder Bremsen. In der Fahrzeugauswahl stehen drei Lackierungen bereit: Tiburón Blanco, Histórico und Cromo Carbono Azul."
   },
   "labels": {
     "navigation": "Hauptnavigation",
@@ -270,7 +275,9 @@
     "clubAlt": "OpenRC-Modellflugverein mit Boxen, Piloten und geparkten Fahrzeugen",
     "truckAlt": "Rendering des orangefarbenen Bisonte MT8 mit Federung und Geländereifen",
     "moonrunnerAlt": "MoonRunner X99 über dem Gras auf dem Club field, im Hintergrund Bäume",
-    "corsairAlt": "Dunkelblaue Corsair mit Dreiblattpropeller und Knickflügeln"
+    "corsairAlt": "Dunkelblaue Corsair mit Dreiblattpropeller und Knickflügeln",
+    "ionAlt": "ION R5 mit vier Propellern, Frontkamera und oben befestigtem Akku",
+    "blimpAlt": "Luftschiff Tiburón Blanco mit aufgemaltem Haifischmaul und Gondel unter der Hülle"
   },
   "attributes": {
     "Activar modo noche": "Nachtmodus aktivieren",

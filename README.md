@@ -26,9 +26,9 @@
 
 # OpenRC Simulator
 
-**An open-source flying field for RC pilots.** Hand-launch a MoonRunner X99, take a Corsair down the runway or race the ION R5 through FPV gates. Fly with a USB transmitter, gamepad or keyboard.
+**An open-source flying field for RC pilots.** Hand-launch a MoonRunner X99, take a Corsair down the runway, race the ION R5 through FPV gates or bring a five-metre RC blimp in to land. Fly with a USB transmitter, gamepad or keyboard.
 
-**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
+**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[FPV racing and RC blimp](#fpv-racing-and-rc-blimp)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
 <p align="center">
   <a href="https://www.paypal.com/paypalme/bultodepapas">
@@ -38,7 +38,7 @@
 
 ![Home screen with MoonRunner X99 at Club field](docs/media/ui-home-moonrunner-x99.png)
 
-*Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
+*Home with MoonRunner X99, captured in a development build at 1920×1080. [Capture details](docs/media/README.md#readme-gallery).*
 
 > The v0.3.2 download is an early alpha. The flight models still need independent measurements and feedback from RC pilots.
 
@@ -137,6 +137,17 @@ At **Club field**, geared airplanes offer runway or airborne starts. At **Green 
 
 [Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the MoonRunner X99 flight image comes from the running simulator.
 
+## FPV racing and RC blimp
+
+In v0.3.2, open **Home → Vehicles**, select **ION R5** or **RC blimp**, then choose **Fly**. Both are experimental.
+
+| ION R5 · FPV racing quad | 5 m RC blimp · Tiburón Blanco |
+| --- | --- |
+| ![ION R5 with four propellers, a forward-facing camera and a battery strapped to the top](site/assets/ion-r5-studio.webp) | ![Tiburón Blanco blimp with a shark-mouth paint scheme and gondola below the envelope](site/assets/rc-blimp-studio.webp) |
+| Fly this 5-inch, 6S quad from its onboard camera in Acro or self-levelling Angle mode. At Club field, **T** selects a course, including Tower Sprint. Arm on the pad at low throttle, press **G** and wait for **GO**. Fly the gates in order for three laps to set a local time. | Start on the wheels or release the blimp at **6 m**. Use the pause menu to set ballast and steady wind, then tilt the electric rotors to climb or brake. Home offers three finishes: **Tiburón Blanco**, **Histórico** and **Cromo Carbono Azul**. |
+
+[ION R5 model](research/drone-racing/DR-29/ION_R5.md) · [Race courses and records](docs/plans/drone-racing.md) · [Blimp model and controls](docs/research/rc-airship/BL-12/README.md). Both images are studio views of the models included in the simulator.
+
 ## Current features
 
 | For the pilot | What you can explore |
@@ -211,11 +222,6 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
     </td>
   </tr>
 </table>
-
-Home also offers two experimental electric aircraft:
-
-- **ION R5** is a 5-inch FPV racing quad. Fly in Acro or Angle mode, or enter a local three-lap gate race and chase your course record on Tower Sprint. [FPV flight and controls](docs/research/drone-racing/M1-M3-2026-11-11/README.md) · [Race courses and records](docs/plans/drone-racing.md)
-- **RC blimp** uses a 5 m envelope and vectored electric rotors. Choose a skin, set the wind and try its buoyancy and thrust controls. [Blimp guide](docs/research/rc-airship/BL-12/README.md)
 
 The X-Cell .60 trainer above is the playable helicopter. The advanced HX-700 candidate remains a laboratory project.
 

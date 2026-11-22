@@ -76,7 +76,6 @@
     "downloadIntro": "下载、解压 ZIP 文件，然后启动。<br>无需安装 Godot。",
     "downloadKicker": "02 / 准备起飞",
     "downloadNote": "早期 Alpha 版本 v0.3.2。ZIP 文件没有安装程序或归档签名；macOS 应用采用临时签名，未经公证。<br>飞机和地面车辆模型仍属实验性，仍需独立测量和飞行员评估。",
-    "droneNote": "ION R5 四轴飞行器提供 Acro 和 Angle 模式，还可在 Tower Sprint 等赛道上参加三圈本地穿门竞速。5 米遥控飞艇通过倾转电动旋翼改变推力方向。",
     "electricLink": "电动推进 ↗",
     "evidenceBody": "openrc-aircraft v2 规范要求每项数据注明单位、证据类型和来源。无效配置无法用于飞行。几何体和物理数据均从各自来源重新生成。",
     "evidenceDetail1": "F10 用于记录固定翼飞行；F11 用于标记机动动作。CSV 导出和对比使用同一段输入记录。",
@@ -255,7 +254,13 @@
     "clearviewExample": "已通过导入测试的示例：<a href=\"https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip\">MC Extra 330 Red</a>。",
     "moonrunnerCopy": "在 Club field 用手抛飞这架翼展 2.12 米的飞翼。两个升降副翼控制俯仰和横滚，后置螺旋桨提供推力。",
     "corsairCopy": "降落前放下襟翼和起落架。这架翼展 2.78 米的战机配有 Moki 五缸星形发动机，在地面可以折叠倒海鸥翼。",
-    "phoenixScenery": "导入 Phoenix 飞行场地 ↗"
+    "phoenixScenery": "导入 Phoenix 飞行场地 ↗",
+    "vehicleHeading": "FPV 无人机竞速与遥控飞艇",
+    "vehicleStart": "在主界面打开载具列表，选择 ION R5 或遥控飞艇，然后开始飞行。两款模型均为实验性模型。",
+    "ionTitle": "ION R5 · FPV 竞速无人机",
+    "ionCopy": "通过机载摄像头驾驶这架配备 6S 电池的 5 英寸四轴飞行器。可选 Acro 模式或自动回平的 Angle 模式。在 Club field 按 <kbd>T</kbd> 切换赛道。在起飞台上保持低油门并解锁，按 <kbd>G</kbd>，等到出现 GO 再起飞。按顺序穿过赛门，完成三圈，即可在本机记录成绩。",
+    "blimpTitle": "5 米遥控飞艇",
+    "blimpCopy": "可从地面机轮上起飞，也可从 6 米高处释放飞艇。在暂停菜单中调整压载和恒定风速，倾转电动旋翼即可爬升或减速。载具列表提供 Tiburón Blanco、Histórico 和 Cromo Carbono Azul 三种涂装。"
   },
   "labels": {
     "navigation": "主导航",
@@ -270,7 +275,9 @@
     "clubAlt": "OpenRC 模型飞行俱乐部、维修区、飞行员和停放的车辆",
     "truckAlt": "橙色 Bisonte MT8 模型渲染图，带悬架和越野轮胎",
     "moonrunnerAlt": "MoonRunner X99 飞过 Club field 的草地，远处可见树木",
-    "corsairAlt": "深蓝色 Corsair 配有三叶螺旋桨和倒海鸥翼"
+    "corsairAlt": "深蓝色 Corsair 配有三叶螺旋桨和倒海鸥翼",
+    "ionAlt": "四旋翼 ION R5，配有前置摄像头，电池固定在机架顶部",
+    "blimpAlt": "Tiburón Blanco 涂装的飞艇，艇首绘有鲨鱼嘴，艇身下方悬挂吊舱"
   },
   "attributes": {
     "Activar modo noche": "切换到夜间主题",

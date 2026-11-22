@@ -14,6 +14,8 @@ Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typ
 
 The hangar combines six interactive model orbits with a MoonRunner X99 flight capture and a Corsair studio view. It describes the eight stock airplane configurations available on Home, including the Electric 6S Stik. Downloads link to the published release and its guides for aircraft and scenery imports. The remaining sections cover the field, simulation systems, other vehicles, supporters and ways to contribute.
 
+The opening links to an illustrated guide to the ION R5 FPV racer and the five-metre RC blimp. Its studio views use the [ION R5 model](../app/assets/multirotors/ion-r5/NOTICE.txt) and the [Tiburón Blanco airship model](../assets/source-deliveries/rc-blimp-5m/README.md) shipped with the simulator. To regenerate the two WebP images, install Playwright 1.61.0 and Pillow 12.3.0, run `python -m playwright install chromium`, then run `python site/capture_vehicle_stills.py` from the repository root.
+
 Spanish is served at the project root. The language menu links all eleven static pages and works without JavaScript. The page-wide night theme is saved locally.
 
 WEB-14 adds a PayPal link beside the opening download action and a community-section explanation of the [US$100 Steam app fee](https://partner.steamgames.com/doc/gettingstarted/appfee), the intended use of donations beyond that goal, current platform/controller priorities and planned SITL integration. The links and funding copy are present in all eleven static languages without JavaScript. The source is `index.html`, `content.js`, `locales/*.json`, `details.css` and `cinema.css`; regenerate localized pages with `build_locales.py`.
