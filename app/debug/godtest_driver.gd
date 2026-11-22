@@ -9,6 +9,7 @@ const MAX_TRAJECTORY := 200000
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
+const RendererPreference := preload("res://app_state/renderer_preference.gd")
 
 var config: Dictionary = {}
 ## GFX-IGPU-01: "fixed" keeps the comparison workload; "automatic" records the product recommendation it applied.
@@ -155,6 +156,8 @@ func _run() -> void:
 	for key: String in ["max_fps", "vsync_mode", "render_scale", "dynamic_resolution_fps"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
 	identity.graphics = graphics_profile.duplicate(true)
+	if config.has("dynamic_resolution_fps"):
+		identity.renderer_profile = RendererPreference.load_state().mode
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
 	_begin("startup")
 	phase.start_usec = started_usec
@@ -259,6 +262,13 @@ func _prepare_profile() -> void:
 	if FileAccess.file_exists("user://settings.cfg") or FileAccess.file_exists("user://settings.cfg.display"):
 		failure = "benchmark requires fresh run-owned settings"
 		return
+	if config.has("dynamic_resolution_fps") and config.get("graphics", "fixed") == "fixed":
+		# Explicit fixed and adaptive controls share a deliberate renderer choice.
+		# An Automatic High first-flight calibration otherwise owns the viewport before DRS.
+		var mode := "high" if RenderingServer.get_current_rendering_method() == "forward_plus" else "standard"
+		if FileAccess.file_exists(RendererPreference.OVERRIDE_PATH) or not RendererPreference.save_state({mode = mode}):
+			failure = "cannot prepare the isolated renderer choice"
+			return
 	var settings := ConfigFile.new()
 	settings.set_value("meta", "schema", 1)
 	settings.set_value("ui", "language", "en")
