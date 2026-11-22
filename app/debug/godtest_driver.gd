@@ -111,7 +111,7 @@ func _run() -> void:
 			printerr("GOD TEST: refusing existing artifact ", filename)
 			return
 	var expected_arguments := PackedStringArray([FlightDynamicResolution.EXPERIMENT_FLAG]) \
-		if dynamic_resolution_fps > 0 else PackedStringArray()
+		if config.has("dynamic_resolution_fps") else PackedStringArray()
 	if config.get("schema") != "openrc-godtest-scenario-v1" or OS.get_cmdline_user_args() != expected_arguments:
 		_fail("startup arguments differ from the benchmark manifest")
 		return
@@ -146,7 +146,8 @@ func _run() -> void:
 	previous_drawn = Engine.get_frames_drawn()
 	running = true
 	identity = {engine = Engine.get_version_info(), user_dir = user_dir,
-		application_user_args = Array(OS.get_cmdline_user_args()), startup_route = "normal_startup",
+		application_user_args = Array(OS.get_cmdline_user_args()),
+		startup_route = "technical_render_experiment" if config.has("dynamic_resolution_fps") else "normal_startup",
 		cache_state = "fresh_process_os_cache_unknown", physics_hz = Engine.physics_ticks_per_second,
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
 		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
@@ -308,8 +309,7 @@ func _apply_automatic_graphics(path: String) -> void:
 	candidate.erase("note")
 	var applied := {}
 	for key: String in DisplayPreferences.GPU_MANAGED_KEYS:
-		if key != "max_fps" and bundle.has(key) \
-				and not (key == "render_scale" and (config.has(key) or dynamic_resolution_fps > 0)):
+		if key != "max_fps" and bundle.has(key) and not (key == "render_scale" and config.has(key)):
 			candidate[key] = bundle[key]
 			applied[key] = bundle[key]
 	if DisplayPreferences.save_to(path, candidate) != OK:
@@ -915,12 +915,29 @@ func _flight_3d_scaling() -> Dictionary:
 
 func _observe_dynamic_resolution(now: int) -> void:
 	var status: Dictionary = get_tree().root.get_meta(FlightDynamicResolution.STATUS_META, {})
-	if status.is_empty() or status == last_dynamic_resolution:
+	if status.is_empty():
+		status = {state = "awaiting_controller", target_fps = dynamic_resolution_fps}
+	if status == last_dynamic_resolution:
 		return
 	last_dynamic_resolution = status
 	var observation := {phase_id = phase.id, observed_usec = now, status = status}
 	phase.dynamic_resolution.append(observation)
 	_event("dynamic_resolution", observation)
+
+
+func _closing_dynamic_frame() -> Dictionary:
+	var viewport := get_tree().root
+	var status: Dictionary = viewport.get_meta(FlightDynamicResolution.STATUS_META, {})
+	var confirmed: Dictionary = status.get("completed_frame", {})
+	if status.get("state") != "observing" or confirmed.is_empty():
+		return {}
+	var sample: Dictionary = RenderingServer.call(FlightDynamicResolution.SAMPLE_METHOD, viewport.get_viewport_rid())
+	if sample.is_empty() or sample.get("generation") != confirmed.generation:
+		return {}
+	var input: Vector2i = sample.input_size
+	var output: Vector2i = sample.output_size
+	return {frame_id = sample.frame_id, generation = sample.generation, recorded_usec = sample.recorded_usec,
+		input_size = [input.x, input.y], output_size = [output.x, output.y]}
 
 
 func _runtime_display() -> Dictionary:
@@ -962,6 +979,9 @@ func _end(status: String = "complete", reason: String = "") -> void:
 	phase.runtime_display = _runtime_display()
 	if phase.has("start_flight_3d_scaling"):
 		phase.end_flight_3d_scaling = _flight_3d_scaling()
+	if phase.has("dynamic_resolution"):
+		_observe_dynamic_resolution(phase.end_usec)
+		phase.dynamic_resolution_end = _closing_dynamic_frame()
 	_event("phase_end", phase)
 	phases.append(phase.duplicate(true))
 	phase.clear()
@@ -1010,7 +1030,7 @@ func _finish(success: bool) -> void:
 		if not phases.any(func(record: Dictionary) -> bool: return record.name == str(raw_name) and record.requested): coverage_complete = false
 	if collector != null:
 		frame_report = collector.seal_event(success and failure.is_empty(), "scenario_finished" if success else failure)
-		frame_report.route = "godtest-normal-startup"
+		frame_report.route = "godtest-" + str(identity.startup_route).replace("_", "-")
 		frame_report.render_progress = {drawable_intervals = drawable_intervals, undrawable_intervals = undrawable_intervals,
 			window_mode_transition_intervals = transition_undrawable_intervals, no_draw_intervals = no_draw_intervals}
 		_write_json("frametimes.json", frame_report)

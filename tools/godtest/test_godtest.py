@@ -312,6 +312,9 @@ class SupervisionTests(unittest.TestCase):
             # The console wrapper launches the GUI executable the receipt binds.
             console = root / "Godot_win64_console.exe"
             self.assertEqual(runner.native_install_problem(root, "win32", console), "")
+            custom_console = root / "Godot_win64.console.exe"
+            custom_console.write_bytes(b"experimental console wrapper")
+            self.assertEqual(runner.native_install_problem(root, "win32", custom_console), "")
             (root / "Godot_win64.exe").write_bytes(b"upgraded engine")
             self.assertIn("another Godot executable", runner.native_install_problem(root, "win32", console))
             # Only the runtime receipt applies where a separate domain pin exists.

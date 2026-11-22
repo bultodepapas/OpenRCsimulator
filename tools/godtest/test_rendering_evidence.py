@@ -23,10 +23,12 @@ class RenderingEvidenceTests(unittest.TestCase):
                 manifest.update(dynamic_resolution_fps=60, render_scale=100, phases=["recover"])
                 write_json(path / name, manifest)
             runtime = json.loads((path / "runtime.json").read_text())
-            runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60}
+            runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60, "render_scale": 100}
             phase = runtime["phases"][0]
             phase.update(name="recover", id="0-0-recover", start_usec=1, end_usec=100)
-            frame = {"frame_id": 4, "generation": 3, "input_size": [1920, 1080], "output_size": [1920, 1080]}
+            frame = {"frame_id": 4, "generation": 3, "recorded_usec": 3,
+                     "input_size": [1920, 1080], "output_size": [1920, 1080]}
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=99)
             for status, eligible in (
                 ({"state": "observing", "completed_frame": frame}, True),
                 ({"state": "observing"}, False),
@@ -41,6 +43,27 @@ class RenderingEvidenceTests(unittest.TestCase):
                     self.assertEqual(result["data"] == "valid", eligible, result["issues"])
                     if not eligible:
                         self.assertIn("dynamic resolution not verified", " ".join(result["issues"]))
+            eligible_status = {"target_fps": 60, "configured_scale": 1.0, "state": "observing", "completed_frame": frame}
+            phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5, "status": eligible_status}]
+            for closing in (None, dict(frame, recorded_usec=0), dict(frame, generation=2)):
+                phase["dynamic_resolution_end"] = closing
+                write_json(path / "runtime.json", runtime)
+                self.assertIn("dynamic resolution not verified", " ".join(report(path, write=False)["issues"]))
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=99)
+            waiting = {"phase_id": phase["id"], "observed_usec": 2,
+                       "status": {"state": "awaiting_controller", "target_fps": 60}}
+            phase["dynamic_resolution"].insert(0, waiting)
+            write_json(path / "runtime.json", runtime)
+            self.assertEqual(report(path, write=False)["data"], "valid")
+            phase["dynamic_resolution"].append(dict(waiting, observed_usec=70))
+            write_json(path / "runtime.json", runtime)
+            self.assertIn("dynamic resolution not verified", " ".join(report(path, write=False)["issues"]))
+            phase["dynamic_resolution"].pop()
+            phase["dynamic_resolution"][1]["observed_usec"] = 110_000
+            phase["end_usec"] = 160_000
+            phase["dynamic_resolution_end"] = dict(frame, frame_id=6, recorded_usec=159_999)
+            write_json(path / "runtime.json", runtime)
+            self.assertIn("controller activation did not cover", " ".join(report(path, write=False)["issues"]))
 
     def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
         with tempfile.TemporaryDirectory() as temporary:

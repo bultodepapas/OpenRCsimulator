@@ -77,7 +77,7 @@ func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) 
 	if not sample.is_empty() and _policy.pending_level < 0 and sample.generation == _policy.generation \
 			and sample.generation != _confirmed_frame.get("generation", -1):
 		var input: Vector2i = sample.input_size
-		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation,
+		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation, recorded_usec = sample.recorded_usec,
 			input_size = [input.x, input.y], output_size = [_output.x, _output.y]}
 	if next >= 0:
 		_written = _scales[next]
