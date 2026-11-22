@@ -7,6 +7,7 @@ on:
       - 'tools/debug/**'
       - 'tools/godot/**'
       - 'tools/godtest/**'
+      - 'tools/graphics/**'
       - 'research/native-kernel/macos_engine_identity.py'
       - 'research/native-kernel/run.py'
       - 'research/performance/session_baseline.py'
@@ -25,6 +26,7 @@ on:
       - 'tools/debug/**'
       - 'tools/godot/**'
       - 'tools/godtest/**'
+      - 'tools/graphics/**'
       - 'research/native-kernel/macos_engine_identity.py'
       - 'research/native-kernel/run.py'
       - 'research/performance/session_baseline.py'
@@ -58,6 +60,7 @@ jobs:
             tools/debug
             tools/godot
             tools/godtest
+            tools/graphics
             tools/ci
             tools/readme
             tools/release
