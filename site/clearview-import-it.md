@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Usa la v0.3.0 o successiva e scegli **ZIP aereo ClearView** nel selettore di file. L’impostazione automatica e i voli in elicottero arrivano nella versione successiva alla v0.3.0; la v0.2.9 importa solo l’anteprima.
+Usa la v0.3.2 o una versione successiva per la configurazione automatica e le prove in elicottero. Nel selettore dei file scegli **ZIP aeromobile ClearView**. La v0.3.0 consente di provare gli aerei in volo e la v0.2.9 offre l’anteprima.
 
 **Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con la fisica di OpenRC, non con il modello di volo di ClearView: gli aerei con una configurazione stimata dimensionata sul modello, le ali volanti con la fisica standard dello Skywalker X8 e gli elicotteri con la fisica di riferimento X-Cell .60. Gli aerei salvati non si possono ancora avviare dalla Home.
 

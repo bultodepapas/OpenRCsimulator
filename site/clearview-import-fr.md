@@ -4,7 +4,7 @@
 
 [Español](clearview-import-es.md) · [English](clearview-import-en.md) · [Português](clearview-import-pt.md) · [简体中文](clearview-import-zh-Hans.md) · [Deutsch](clearview-import-de.md) · [Русский](clearview-import-ru.md) · [Français](clearview-import-fr.md) · [Italiano](clearview-import-it.md) · [日本語](clearview-import-ja.md) · [한국어](clearview-import-ko.md) · [العربية](clearview-import-ar.md)
 
-Utilisez la v0.3.0 ou plus récente et choisissez **ZIP d’avion ClearView** dans le sélecteur de fichiers. La configuration automatique et les vols en hélicoptère arrivent dans la version suivant la v0.3.0 ; la v0.2.9 importe seulement l’aperçu.
+Utilisez la v0.3.2 ou une version ultérieure pour la configuration automatique et les essais en hélicoptère. Choisissez **ZIP d’aéronef ClearView** dans le sélecteur de fichiers. La v0.3.0 permet les essais en avion et la v0.2.9 permet la prévisualisation.
 
 **Expérimental.** Le modèle garde son apparence ClearView, mais vole avec la physique d’OpenRC, pas avec le modèle de vol de ClearView : les avions avec une configuration estimée adaptée au modèle, les ailes volantes avec la physique standard du Skywalker X8 et les hélicoptères avec la physique de référence du X-Cell .60. Les avions enregistrés ne peuvent pas encore être lancés depuis l’accueil.
 
