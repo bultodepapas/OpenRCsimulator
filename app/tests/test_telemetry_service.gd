@@ -64,6 +64,7 @@ func _initialize() -> void:
 	_off_switch_and_suspension()
 	_rotation_and_partial_activity()
 	_epoch_entry_boundaries()
+	await _notification_can_disable_after_rotation()
 	_quit_in_flight_keeps_slices()
 	_remove()
 	print("all telemetry service checks passed" if _failures == 0 else "%d failed" % _failures)
@@ -426,6 +427,28 @@ func _epoch_entry_boundaries() -> void:
 		s.sender.finished.emit(int(sealed.serial), 410, -1.0)
 		_check("a late refusal from an expired request cannot suspend a later epoch", s.state == "on")
 		s.queue_free()
+	_day = 20775
+
+
+func _notification_can_disable_after_rotation() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	var s := _service()
+	s.set_process(false)
+	var old: String = s._session_id
+	var observed := [false, false]
+	s.state_changed.connect(func() -> void:
+		if observed[0]:
+			return
+		observed[0] = true
+		observed[1] = s.state == "on" and s._session_id != old and s._errors.get("simulation_fault") == 1
+		s.disable())
+	_day += 1
+	s.note_error("simulation_fault")
+	await process_frame
+	_check("a state listener can revoke consent after observing the completed rotation",
+		observed == [true, true] and s.state == "off" and s._session_id.is_empty()
+		and s.queue.items.is_empty() and s._errors.is_empty())
+	s.queue_free()
 	_day = 20775
 
 
