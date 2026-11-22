@@ -36,7 +36,10 @@ func _run() -> void:
 	_check_cars()
 	_check_stik_cyberpunk()
 	_check_stik_gear()
+	_check_extra_livery()
+	_check_lumber_livery()
 	_check_jet_livery()
+	_check_jeti_ruby()
 	_check_sabre_livery()
 	_check_steam_livery()
 	_check_camo_livery()
@@ -68,6 +71,106 @@ func _check_data() -> void:
 						check("texture exists: " + str(group[material_name][field]), ResourceLoader.exists(str(group[material_name][field])))
 	check("unknown vehicles and skins fall back", VehiclePaint.choices("ugly-stik-60").is_empty()
 		and VehiclePaint.resolve("mt8-bisonte", "nope") == "" and not VehiclePaint.contains("mt8-bisonte", "nope"))
+
+
+func _check_extra_livery() -> void:
+	var family := "gp-extra-300s-60"
+	var skin := "jumper_t15"
+	check("Extra exposes Jumper T15 in the livery picker", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("low")
+	var built := AirplaneBuilder.build(family, NAN, {}, skin)
+	SceneDetail.set_preference(previous)
+	check("Extra builds with Jumper T15 at Low", not built.is_empty())
+	if built.is_empty():
+		return
+	var airframe: Node3D = built.root
+	var fuselage := airframe.get_node("fuselage") as MeshInstance3D
+	var spinner := airframe.get_node("thrust_frame/spinner") as MeshInstance3D
+	var canopy := airframe.get_node("canopy") as MeshInstance3D
+	var original_mesh := fuselage.mesh
+	var stock_fuselage := original_mesh.surface_get_material(0) as ShaderMaterial
+	var painted := fuselage.get_active_material(0) as ShaderMaterial
+	var atlas: Texture2D = painted.get_shader_parameter("decals") if painted != null else null
+	check("Extra covering retains the model's cowl coordinates and Workshop paint input",
+		painted != null and painted.shader != stock_fuselage.shader
+		and painted.get_shader_parameter("part") == stock_fuselage.get_shader_parameter("part")
+		and painted.get_shader_parameter("cowl_rear_z") == stock_fuselage.get_shader_parameter("cowl_rear_z")
+		and painted.get_shader_parameter("red") is Color and atlas != null and atlas.get_size() == Vector2(1024, 512))
+	check("Jumper T15 changes spinner paint and keeps the canopy finish",
+		spinner.get_surface_override_material(0) != null and canopy.get_surface_override_material(0) == null)
+	VehiclePaint.apply(airframe, family, skin)
+	var repainted := fuselage.get_active_material(0)
+	check("Jumper T15 reapplies from the stock material on the same mesh",
+		repainted.get_meta(VehiclePaint.ORIGIN_META, null) == stock_fuselage and fuselage.mesh == original_mesh)
+	VehiclePaint.apply(airframe, family)
+	check("Extra restores the factory finish", fuselage.get_active_material(0) == stock_fuselage
+		and spinner.get_surface_override_material(0) == null)
+	airframe.free()
+
+
+func _check_lumber_livery() -> void:
+	var family := "turbo-lumber-evolution"
+	var skin := "jr_servos"
+	check("Lumber exposes the JR Servos tribute", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("medium")
+	var built := AirplaneBuilder.build(family, NAN, {}, skin)
+	check("Lumber builds with the JR Servos tribute", not built.is_empty())
+	if built.is_empty():
+		SceneDetail.set_preference(previous)
+		return
+	var airframe: Node3D = built.root
+	var wing := airframe.find_child("wing_left_fixed", true, false) as MeshInstance3D
+	var moving_wing := airframe.find_child("aileron_left", true, false) as MeshInstance3D
+	var canopy := airframe.find_child("canopy_glass", true, false) as MeshInstance3D
+	var original_mesh := wing.mesh
+	# The covering seam repair can emit corrected dark/black surfaces before white.
+	var surface := -1
+	for i in original_mesh.get_surface_count():
+		if original_mesh.surface_get_material(i).resource_name == "white":
+			surface = i
+			break
+	check("Lumber's fixed wing retains its main foam surface", surface >= 0)
+	if surface < 0:
+		SceneDetail.set_preference(previous)
+		airframe.free()
+		return
+	var painted := wing.get_active_material(surface) as ShaderMaterial
+	var moving := moving_wing.get_active_material(0) as ShaderMaterial
+	var decal: Texture2D = painted.get_shader_parameter("decals") if painted != null else null
+	check("Lumber paint covers wing and aileron and keeps the canopy's material type",
+		painted != null and moving != null and canopy.get_active_material(0) is StandardMaterial3D
+		and decal != null and decal.get_size() == Vector2(1024, 512))
+	var stock: StandardMaterial3D = painted.get_meta("timber_stock_paint_original") if painted != null else null
+	var detail := bool(painted.get_shader_parameter("detail_enabled")) if painted != null else false
+	check("Lumber paint follows scene detail and reuses the original foam",
+		stock != null and stock.normal_texture != null and detail == VehiclePaint.detail_enabled()
+		and (not detail or painted.get_shader_parameter("foam_normal") == stock.normal_texture))
+	var rest_basis: Variant = moving.get_shader_parameter("rest_basis") if moving != null else null
+	moving_wing.rotate_x(0.2)
+	SceneDetail.set_preference("low")
+	VehiclePaint.apply(airframe, family, skin)
+	var low := wing.get_active_material(surface) as ShaderMaterial
+	var low_moving := moving_wing.get_active_material(0) as ShaderMaterial
+	check("Lumber keeps the JR Servos decals at Low without replacing the mesh",
+		low != null and low.get_shader_parameter("decals") == decal and wing.mesh == original_mesh
+		and bool(low.get_shader_parameter("detail_enabled")) == VehiclePaint.detail_enabled())
+	check("Lumber retains both overrides through the life of the render instance",
+		wing.get_meta("_timber_override_materials", []).has(low)
+		and wing.get_meta("_timber_override_materials", []).has(painted))
+	check("Lumber keeps the neutral projection when repainted with a deflected control",
+		rest_basis is Basis and low_moving != null and low_moving.get_shader_parameter("rest_basis") == rest_basis)
+	if low != null and stock != null and not VehiclePaint.detail_enabled():
+		check("Lumber Low preserves the mean roughness of the foam finish",
+			is_equal_approx(float(low.get_shader_parameter("roughness_value")), stock.roughness * 0.481723))
+	VehiclePaint.apply(airframe, family, skin)
+	check("Lumber reuses an already prepared covering material", wing.get_active_material(surface) == low)
+	VehiclePaint.apply(airframe, family)
+	check("Lumber restores the unmodified stock foam material",
+		stock != null and wing.get_active_material(surface) == stock and wing.mesh == original_mesh)
+	SceneDetail.set_preference(previous)
+	airframe.free()
 
 
 func _materials_named(root: Node, material_name: String) -> Array[StandardMaterial3D]:
@@ -548,6 +651,37 @@ func _check_jet_livery() -> void:
 	check("the delivered jet paint is untouched without the livery", stock.size() == 1
 		and not stock[0].albedo_texture.resource_path.contains("vehicle-paints"))
 	plain.root.free()
+
+
+func _check_jeti_ruby() -> void:
+	var jet_id := "sebart-avanti-s-a200-p100rx"
+	var livery := "jeti_ruby"
+	check("the jet exposes JETI Ruby", AirplaneBuilder.resolve_livery(jet_id, livery) == livery)
+	var jet: Dictionary = AirplaneBuilder.build(jet_id, NAN, {}, livery)
+	check("JETI Ruby builds through the aircraft catalog", not jet.is_empty())
+	if jet.is_empty():
+		return
+	for part: String in ["fuselage", "wing", "stab"]:
+		var finish := _materials_named(jet.root, "paint_" + part)
+		var side := 2048 if part == "stab" else 4096
+		check("JETI Ruby binds the full-resolution %s atlas and clears stock glow" % part, finish.size() == 1
+			and finish[0].albedo_texture != null and finish[0].albedo_texture.get_size() == Vector2(side, side)
+			and finish[0].albedo_texture.resource_path.ends_with("jeti_ruby_%s.png" % part) and not finish[0].emission_enabled)
+	var fin := _node_material(jet.root, "vertical_tail_fixed", "paint_fin")
+	var rudder := _node_material(jet.root, "rudder", "paint_fin")
+	check("JETI Ruby signal bars stay on the fixed fin", fin != null and fin.albedo_texture != null
+		and fin.albedo_texture.resource_path.ends_with("jeti_ruby_fin.png") and not fin.emission_enabled)
+	check("JETI Ruby rudder has its own ruby finish", rudder != null and rudder.albedo_texture == null
+		and rudder.albedo_color.is_equal_approx(Color("#ae122e")) and not rudder.emission_enabled)
+	var doors := _materials_named(jet.root, "paint_doors_ala")
+	check("JETI Ruby gear doors match the silver belly", doors.size() == 1 and doors[0].albedo_texture == null
+		and doors[0].albedo_color.is_equal_approx(Color("#d6dee4")) and not doors[0].emission_enabled)
+	VehiclePaint.apply(jet.root, jet_id, "verde_neon_carbono")
+	rudder = _node_material(jet.root, "rudder", "paint_fin")
+	check("leaving JETI Ruby restores the next livery's rudder texture and glow", rudder != null
+		and rudder.albedo_texture != null and rudder.albedo_texture.resource_path.ends_with("verde_neon_carbono_fin.jpg")
+		and rudder.emission_enabled)
+	jet.root.free()
 
 
 func _check_sabre_livery() -> void:

@@ -165,7 +165,19 @@ LaunchServices launch from SSH gets no focus. On a Wayland-only Linux session,
 `debugctl` passes `--display-driver wayland` (Godot otherwise tries X11 and exits).
 There Godot also reports the window undrawable during any stall longer than its
 frame-event timeout (about 1 s); those intervals still invalidate render evidence
-and are marked as freezes. Use the
+and are marked as freezes.
+
+On a **headless Linux host** run Godot on X11 through the compositor's Xwayland:
+`weston --backend=headless --renderer=gl --shell=kiosk --xwayland`, then `DISPLAY` set
+and `WAYLAND_DISPLAY` unset. The host needs `xwayland` and the X11 client libraries
+Godot loads at runtime (`libxcursor1 libxinerama1 libxrandr2 libxi6 libxrender1
+libxext6`). Godot's Wayland backend does not suit a compositor that sends no input or
+frame events: shutdown joins its events thread, which waits in an untimed `poll()`, so
+6 of 21 cases there needed a forced kill. Its frame-timeout suspension also made a
+single 1.7 s startup frame invalidate the phase. On the same UHD 630 hosts X11 gave
+complete, valid cases and clean exits; Xwayland composition cost about 8 % of
+flight FPS. The [2026-11-22 comparison](../../docs/research/god-test/2026-11-22-linux-uhd630-comparison.md)
+records the evidence. Use the
 [existing host admission](../testqueue/README.md) on enrolled machines. The CLI
 retains its owning session through cleanup; the checked headless pool is not a
 replacement for a rendered performance run. Use [the Mac guide](../../docs/tools/macos-m1.md)
@@ -256,7 +268,13 @@ The default is uncapped with VSync disabled, so a cap cannot hide available
 capacity. `--max-fps 60 --vsync-mode enabled` defines a separate player-pacing
 campaign. Do not combine these populations. Every launch has fresh preferences
 with the Master bus muted (`master_volume = 0`, recorded in `profile_overrides`);
-audio streams and mixing still run, unlike the Dummy driver. Source copying and prior launches may warm OS/driver caches. These are not proven
+audio streams and mixing still run. On Linux without an accessible ALSA playback
+device (`/dev/snd/pcmC*D*p`; containers can list the host's cards in
+`/proc/asound/cards` without one), the runner launches Godot's Dummy driver, which
+still mixes every period at real-time pace, and records `audio_output` in
+`execution.json`. Do not give such a host a `pcm null` ALSA default: it never
+blocks, so Godot's mix thread spins a full core while holding the audio lock and
+stalls loading (13.6–19.0 s instead of 6.5 s Home → flight on a UHD 630). Source copying and prior launches may warm OS/driver caches. These are not proven
 OS-cold or shader-cold measurements, and the runner does not clear global caches.
 
 ## Metrics, evidence and verdicts

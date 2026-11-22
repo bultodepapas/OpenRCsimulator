@@ -1,0 +1,6 @@
+test_godot_client_batches_are_accepted_and_stored (tests.test_godot_e2e.GodotClientEndToEnd.test_godot_client_batches_are_accepted_and_stored) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 6.107s
+
+OK

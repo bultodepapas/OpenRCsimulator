@@ -1,0 +1,37 @@
+[
+  {
+    "probe": "integral_float_rollup.py",
+    "exit_code": 0,
+    "status": "reproduced",
+    "stdout": "{\n  \"daily_statuses\": {},\n  \"healthy_batches\": 20,\n  \"healthy_http_statuses\": [\n    202\n  ],\n  \"poison_change\": \"interval_count: 1800.0\",\n  \"poison_http_status\": 202,\n  \"rollup_commits\": {},\n  \"rollup_error\": \"insight_cell\",\n  \"stored_batches\": 21\n}\n",
+    "stderr": "/workspace/scratch/bb5cc1a5ab2b/OpenRCsimulator-telemetry-audit/research/telemetry/audit-2026-11-22/integral_float_rollup.py:17: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient\n"
+  },
+  {
+    "probe": "publisher_race.py",
+    "exit_code": 0,
+    "status": "reproduced",
+    "stdout": "outcomes: [('published', 2), ('published', 1)]\ncreated: 2\nfinal intent: 2\n",
+    "stderr": ""
+  },
+  {
+    "probe": "monitor_warning_probe.py",
+    "exit_code": 0,
+    "status": "reproduced",
+    "stdout": "{\n  \"day_states\": {\n    \"2026-11-20\": \"overdue\",\n    \"2026-11-21\": \"pending\"\n  },\n  \"alerts\": [\n    [\n      \"warning\",\n      \"Rollup overdue for 2026-11-20\",\n      \"run python -m openrc_telemetry rollup --day 2026-11-20 within 11.0 h\"\n    ],\n    [\n      \"warning\",\n      \"Raw retention near 48 h\",\n      \"oldest raw row 47 h: check the purge loop\"\n    ],\n    [\n      \"warning\",\n      \"Unapproved release batches\",\n      \"4 today/yesterday: a published tag is missing from OPENRC_TELEMETRY_RELEASES\"\n    ],\n    [\n      \"warning\",\n      \"Rate limiting\",\n      \"3 batches answered 429 today/yesterday; behind a proxy check OPENRC_TELEMETRY_TRUST_PROXY\"\n    ]\n  ],\n  \"health_status\": \"ok\",\n  \"receiver_issues\": [],\n  \"monitor_failure\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "probe": "backup_validation_probe.py",
+    "exit_code": 0,
+    "status": "reproduced",
+    "stdout": "backup validation: PASSED\nactual dashboard archive load: FAILED: OperationalError: no such column: asset_glob\n",
+    "stderr": ""
+  },
+  {
+    "probe": "ga4_credential_permissions_probe.py",
+    "exit_code": 0,
+    "status": "reproduced",
+    "stdout": "new configuration directory mode: 0755\ncredential file mode: 0644\n",
+    "stderr": ""
+  }
+]

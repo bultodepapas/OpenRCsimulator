@@ -1061,7 +1061,7 @@ REVOC_GRAPHITE = hex_rgb("#26282c")
 REVOC_SIZES = {"fuselage": (2048, 4096), "wing": (2048, 2048), "stab": (1024, 1024), "fin": (2048, 1024)}
 
 
-def revoc_decal(colour, p, art, z0, z1, centre_y):
+def avanti_flank_decal(colour, p, art, z0, z1, centre_y):
     """Project premultiplied artwork across the intake bevels without fading the ink."""
     height = (z1 - z0) * art.shape[0] / art.shape[1]
     u = (p[:, 2] - z0) / (z1 - z0)
@@ -1102,7 +1102,7 @@ def revoc_body(atlas, p, logo):
         # Follow the lower intake crease on both flanks. At 390 mm wide the midpoint
         # of the clear space between the two lines (source row 277) is 13.1 mm below centre.
         crease_y = np.interp(z, [-0.52, -0.36, -0.205], [0.0128, 0.0097, 0.0091])
-        revoc_decal(colour, p, logo, -0.595, -0.205, crease_y + 0.0131)
+        avanti_flank_decal(colour, p, logo, -0.595, -0.205, crease_y + 0.0131)
         return colour
     # Curl the cap up to the top edge before the rudder, which shares UVs with
     # the fixed fin and carries solid red across the whole hinge.
@@ -1110,11 +1110,11 @@ def revoc_body(atlas, p, logo):
     colour = mix(colour, REVOC_WHITE, smoothstep(-0.001, 0.001, cap))
     colour = mix(colour, REVOC_GRAPHITE, smoothstep(0.010, 0.012, cap))
     # The square emblem fits on the fixed fin ahead of the rudder hinge.
-    revoc_decal(colour, p, logo[:, :logo.shape[0]], 0.992, 1.109, 0.376)
+    avanti_flank_decal(colour, p, logo[:, :logo.shape[0]], 0.992, 1.109, 0.376)
     return colour
 
 
-def revoc_lifting(atlas, size):
+def bake_avanti_lifting(atlas, size, paint):
     # For the exposed skins U is linear in span and each half of V is linear in
     # chord. Use those shared paint coordinates on the fixed and moving pieces.
     # Wrapped and overlapping cove UVs then cannot overwrite the visible faces.
@@ -1132,42 +1132,36 @@ def revoc_lifting(atlas, size):
         end = min(start + 128, height)
         v = (np.arange(start, end)[:, None] + 0.5) / height
         z = aft - (aft - nose) * (2 * v % 1)
-        if atlas == "stab":
-            span_band = sweep = tip = span / outer
-        else:
-            span_band = span
-            sweep = span + 0.85 * (z - 0.28)
-            tip = span - 0.04 * (z - 0.4)
-        upper = mix(REVOC_WHITE, REVOC_GRAPHITE, smoothstep(0.397, 0.403, sweep))
-        upper = mix(upper, REVOC_WHITE, smoothstep(0.456, 0.462, sweep))
-        upper = mix(upper, REVOC_RED, smoothstep(0.485, 0.491, sweep))
-        lower = mix(REVOC_GRAPHITE, REVOC_WHITE, smoothstep(0.711, 0.717, span_band))
-        lower = mix(lower, REVOC_RED, smoothstep(0.826, 0.832, span_band))
-
         # Keep the leading-edge roll in upper colours. The lower field runs to
         # the hinge and trailing edge, where the UVs already separate the skins.
         position = np.stack(np.broadcast_arrays(span, 0.0, z), axis=-1)
         chord = chord_fraction(position, 0, edges, -outer, outer)
         lower_face = (v >= 0.5) * smoothstep(0.025, 0.036, chord)
-        rgb = mix(upper, lower, lower_face)
-        # Finish the tips with continuous white keylines and graphite on both faces.
-        rgb = mix(rgb, REVOC_WHITE, smoothstep(0.897, 0.903, tip))
-        rgb = mix(rgb, REVOC_GRAPHITE, smoothstep(0.919, 0.925, tip))
+        rgb = paint(atlas, span, z, lower_face)
         colour[start:end] = np.clip(rgb * 255 + 0.5, 0, 255).astype(np.uint8)
     return Image.fromarray(colour)
 
 
-def build_revoc(atlas):
-    size = REVOC_SIZES[atlas]
-    sample_size = (size[0] * 2, size[1] * 2)
-    if atlas in ("wing", "stab"):
-        return revoc_lifting(atlas, sample_size).resize(size, Image.Resampling.LANCZOS)
-    with Image.open(ROOT / "site/assets/brands/revoc/revoc-custom-logo.png") as source:
-        logo = np.asarray(source.convert("RGBA"), dtype=np.float32) / 255
-    logo[..., :3] *= logo[..., 3:]
+def revoc_lifting(atlas, span, z, lower_face):
+    if atlas == "stab":
+        span_band = sweep = tip = span / 0.443
+    else:
+        span_band = span
+        sweep = span + 0.85 * (z - 0.28)
+        tip = span - 0.04 * (z - 0.4)
+    upper = mix(REVOC_WHITE, REVOC_GRAPHITE, smoothstep(0.397, 0.403, sweep))
+    upper = mix(upper, REVOC_WHITE, smoothstep(0.456, 0.462, sweep))
+    upper = mix(upper, REVOC_RED, smoothstep(0.485, 0.491, sweep))
+    lower = mix(REVOC_GRAPHITE, REVOC_WHITE, smoothstep(0.711, 0.717, span_band))
+    lower = mix(lower, REVOC_RED, smoothstep(0.826, 0.832, span_band))
+    rgb = mix(upper, lower, lower_face)
+    # Finish the tips with continuous white keylines and graphite on both faces.
+    rgb = mix(rgb, REVOC_WHITE, smoothstep(0.897, 0.903, tip))
+    return mix(rgb, REVOC_GRAPHITE, smoothstep(0.919, 0.925, tip))
+
+
+def bake_avanti_side(atlas, sample_size, paint):
     materials = JET_ATLASES[atlas][0]
-    # Four samples per delivered texel. Filter the colour after projection and island
-    # padding, so a diagonal stripe and a UV seam get the same edge coverage.
     mesh_nodes = ("vertical_tail_fixed",) if atlas == "fin" else ()
     p, n, material_ids, covered = bake_scene(JET_GLB, materials, sample_size, skin_axis=0, mesh_nodes=mesh_nodes)
     del n, material_ids
@@ -1175,7 +1169,7 @@ def build_revoc(atlas):
     for rows in range(0, len(covered), 128):
         block = slice(rows, rows + 128)
         hit = covered[block]
-        rgb = revoc_body(atlas, p[block][hit], logo)
+        rgb = paint(p[block][hit])
         colour[block][hit] = np.clip(rgb * 255 + 0.5, 0, 255).astype(np.uint8)
     del p
     # Include the gutter on both sides of each strip, wrapping like the GPU sampler.
@@ -1186,7 +1180,95 @@ def build_revoc(atlas):
         rows = np.arange(start - gutter, end + gutter) % len(covered)
         strip = dilate(colour[rows].astype(np.float32), covered[rows], passes=gutter)
         padded[start:end] = np.rint(strip[gutter:-gutter]).astype(np.uint8)
-    return Image.fromarray(padded).resize(size, Image.Resampling.LANCZOS)
+    return Image.fromarray(padded)
+
+
+def build_revoc(atlas):
+    size = REVOC_SIZES[atlas]
+    # Filter four samples per delivered texel after projection and island padding.
+    sample_size = (size[0] * 2, size[1] * 2)
+    if atlas in ("wing", "stab"):
+        return bake_avanti_lifting(atlas, sample_size, revoc_lifting).resize(size, Image.Resampling.LANCZOS)
+    with Image.open(ROOT / "site/assets/brands/revoc/revoc-custom-logo.png") as source:
+        logo = np.asarray(source.convert("RGBA"), dtype=np.float32) / 255
+    logo[..., :3] *= logo[..., 3:]
+    return bake_avanti_side(atlas, sample_size, lambda p: revoc_body(atlas, p, logo)).resize(size, Image.Resampling.LANCZOS)
+
+
+JETI_RUBY = hex_rgb("#ae122e")
+JETI_GARNET = hex_rgb("#801129")
+JETI_GRAPHITE = hex_rgb("#353b44")
+JETI_SILVER = hex_rgb("#d6dee4")
+JETI_PEARL = hex_rgb("#f0f4f6")
+JETI_SIZES = {"fuselage": (4096, 4096), "wing": (4096, 4096), "stab": (2048, 2048), "fin": (2048, 2048)}
+
+
+def jeti_shell(y, z):
+    lower = y + 0.014 - 0.078 * smoothstep(0.30, 1.12, z)
+    shoulder = y - (0.111 - 0.022 * smoothstep(-0.19, 0.36, z) + 0.156 * smoothstep(0.28, 1.10, z))
+    lacquer = mix(JETI_GARNET, JETI_RUBY, smoothstep(0.0, 0.043, lower))
+    colour = mix(JETI_SILVER, lacquer, smoothstep(-0.0013, 0.0013, lower))
+    colour = mix(colour, JETI_PEARL, smoothstep(-0.0013, 0.0013, shoulder))
+    return mix(colour, JETI_GRAPHITE, smoothstep(0.005, 0.0076, shoulder))
+
+
+def jeti_fuselage(p, logo):
+    _, y, z = p.T
+    colour = jeti_shell(y, z)
+    cap = z + 0.784 - 0.20 * (y - 0.054)
+    colour = mix(JETI_GRAPHITE, colour, smoothstep(0.0, 0.003, cap))
+    colour = mix(colour, JETI_PEARL, smoothstep(0.002, 0.004, cap) * (1 - smoothstep(0.008, 0.010, cap)))
+    # The original wide badge sits on the shoulder above the lower intake crease.
+    avanti_flank_decal(colour, p, logo, -0.550, -0.260, 0.055)
+    return colour
+
+
+def jeti_fin(p):
+    _, y, z = p.T
+    colour = mix(jeti_shell(y, z), JETI_RUBY, smoothstep(0.243, 0.285, y))
+    # A rising group of telemetric signal bars with generous clearance from the rudder.
+    along = z - 0.72 * (y - 0.30)
+    across = y + 0.34 * (z - 1.03)
+    for start, height, length in ((0.328, 0.016, 0.088), (0.368, 0.021, 0.104), (0.413, 0.027, 0.119)):
+        shape = np.maximum(np.abs(across - start) - height / 2, np.abs(along - 0.982) - length / 2)
+        colour = mix(colour, JETI_PEARL, 1 - smoothstep(-0.001, 0.001, shape))
+    return colour
+
+
+def jeti_lifting(atlas, span, z, lower_face):
+    if atlas == "stab":
+        # The tailplane reuses V around the hinge. Its bands depend on span alone.
+        silver = mix(JETI_GRAPHITE, JETI_SILVER, smoothstep(0.162, 0.166, span))
+        silver = mix(silver, JETI_PEARL, smoothstep(0.254, 0.258, span))
+        return np.broadcast_to(mix(silver, JETI_RUBY, smoothstep(0.266, 0.270, span)), (*z.shape[:-1], span.size, 3))
+
+    # One tapered blade on each wing opens toward the leading edge.
+    blade = span - (0.310 + 0.45 * (z - 0.23) + 0.65 * (z - 0.24) ** 2)
+    width = 0.200 - 0.082 * smoothstep(0.11, 0.53, z)
+    silver = smoothstep(-0.002, 0.002, blade) * (1 - smoothstep(-0.002, 0.002, blade - width))
+    upper = mix(JETI_GRAPHITE, JETI_SILVER, silver)
+    border = smoothstep(-0.010, -0.007, blade) * (1 - smoothstep(-0.002, 0.001, blade))
+    upper = mix(upper, JETI_PEARL, border)
+    # The gear doors all close within the silver field on the underside.
+    lower = mix(JETI_SILVER, JETI_GRAPHITE, smoothstep(0.688, 0.694, span))
+    colour = mix(upper, lower, lower_face)
+    cap = span - (0.746 + 0.28 * (z - 0.28))
+    colour = mix(colour, JETI_PEARL, smoothstep(-0.017, -0.013, cap))
+    colour = mix(colour, JETI_RUBY, smoothstep(-0.002, 0.002, cap))
+    return mix(colour, JETI_GARNET, smoothstep(0.946, 0.951, span))
+
+
+def build_jeti(atlas):
+    size = JETI_SIZES[atlas]
+    if atlas in ("wing", "stab"):
+        return bake_avanti_lifting(atlas, size, jeti_lifting)
+    if atlas == "fin":
+        return bake_avanti_side(atlas, size, jeti_fin)
+    # Premultiply before filtering so the PNG's transparent corners leave no fringe.
+    with Image.open(SPONSORS / "jeti_model_logo.png") as source:
+        logo = np.asarray(source.convert("RGBA"), dtype=np.float32) / 255
+    logo[..., :3] *= logo[..., 3:]
+    return bake_avanti_side(atlas, size, lambda p: jeti_fuselage(p, logo))
 
 
 class _Skin:
@@ -2808,6 +2890,8 @@ def outputs() -> dict:
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}_roughness.png"] = lambda a=atlas: encode(_jet_cached(a)[2], ".png")
     for atlas in REVOC_SIZES:
         files[f"avanti-s-a200/revoc_custom_{atlas}.png"] = lambda a=atlas: encode(build_revoc(a), ".png")
+    for atlas in JETI_SIZES:
+        files[f"avanti-s-a200/jeti_ruby_{atlas}.png"] = lambda a=atlas: encode(build_jeti(a), ".png")
     for atlas in SABRE_ATLASES:
         stem = f"avanti-s-a200/sabre_plata_{atlas}"
         files[stem + ".jpg"] = lambda a=atlas: encode(_sabre_cached(a)[0], ".jpg")

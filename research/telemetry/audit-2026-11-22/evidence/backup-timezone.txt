@@ -1,0 +1,8 @@
+Normalized form: *-*-* 02:40:00
+    Next elapse: Sun 2026-11-22 02:40:00 -05
+       (in UTC): Sun 2026-11-22 07:40:00 UTC
+       From now: 6h ago
+Normalized form: *-*-* 02:55:00 UTC
+    Next elapse: Sat 2026-11-21 21:55:00 -05
+       (in UTC): Sun 2026-11-22 02:55:00 UTC
+       From now: 11h ago

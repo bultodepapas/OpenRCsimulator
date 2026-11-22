@@ -266,6 +266,26 @@ def rendering_options(manifest: dict, host_platform: str | None = None) -> dict:
     return {key: value for key, value in (("rendering_method", method), ("rendering_driver", driver)) if value}
 
 
+def audio_output(host_platform: str | None = None, sound_dir: Path = Path("/dev/snd")) -> dict:
+    """Use Godot's Dummy driver on Linux hosts without a usable ALSA playback device.
+
+    The Dummy driver still mixes every bus at real-time pace; only the output is absent. A `pcm null`
+    ALSA default never blocks instead, so Godot's mix thread spins at a full core while holding the
+    AudioServer lock: on the 2026-11-22 UHD 630 hosts Home -> flight took 13.6-19.0 s against 6.5 s.
+    Containers can show the host's /proc/asound/cards without any /dev/snd node, so check the nodes.
+    """
+    host_platform = host_platform or sys.platform
+    if not host_platform.startswith("linux"):
+        return {"driver": "platform_default"}
+    try:
+        playback = [node for node in sound_dir.glob("pcmC*D*p") if os.access(node, os.R_OK | os.W_OK)]
+    except OSError:
+        playback = []
+    if playback:
+        return {"driver": "platform_default"}
+    return {"driver": "dummy", "reason": "no accessible ALSA playback device"}
+
+
 def campaign_host_identity() -> dict:
     """Reuse the queue's OS identities, retaining only domain-separated hashes."""
     from tools.testqueue.processes import host_identity
@@ -329,6 +349,9 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         launcher += ["--" + key.replace("_", "-"), value]
     if manifest["headless"]:
         launcher.append("--headless")
+    audio = {"driver": "dummy", "reason": "headless"} if manifest["headless"] else audio_output()
+    if audio["driver"] == "dummy" and not manifest["headless"]:
+        launcher.append("--mute")  # debugctl: Godot's Dummy audio driver (still mixes in real time)
     capture = {"state": "starting", "launch_to_bridge_s": None, "failure": "", "shutdown": {}, "host": dict(platform=platform.platform(), machine=platform.machine()), "resource_scope": "owner-bracketed process observation after bridge readiness; startup and setup before observer construction are excluded"}
     capture["resource_sampling"] = resources
     capture["gpu_sampling"] = resources
@@ -337,6 +360,7 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
     if resources:
         capture["resource_sampler_source_sha256"] = RESOURCE_SAMPLER_SOURCE_SHA256
     capture["rendering_requested"] = render_options
+    capture["audio_output"] = audio
     capture["profile_isolation"] = launch_snapshot.get("profile_isolation", {"kind": "run_directory"})
     capture["orchestrator_sources"] = ORCHESTRATOR_SOURCES
     watch_requested = manifest.get("watch_frames", False)

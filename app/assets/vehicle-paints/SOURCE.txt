@@ -29,6 +29,17 @@ with --check) from assets already in this repository:
   https://shop.revoc.eu/telechargement (SHA-256 c6e2cce11dc402a8b60a2e4e22172067ceb2c2fb2b0fd4a72df7376699d099eb).
   REVOC retains its trademark rights. See site/BRANDS.md for the simulator acknowledgment.
   Rebuild or verify these four albedo maps with build_vehicle_paints.py --only revoc_custom.
+- avanti-s-a200/jeti_ruby_*: original JETI Ruby tribute. The JETI DS-24 II Carbon Line
+  Ruby lacquer inspired the ruby, graphite and silver palette.
+  https://www.jetimodel.com/katalog/duplex-ds-24-ii-carbon-line-ruby-lacquer.htm
+  The sport-jet photos informed the scale and placement of the original sweep and bands.
+  https://www.sebart.it/jets-L.html
+  https://carf-models.com/en/products/rebel_pro_
+  Both flanks use sponsors/jeti_model_logo.png (SHA-256
+  4f99224439ba7c6829c40c440c3ceae32974bb57bdfcce043efcd0d55e76f007), sized and
+  projected without altering its artwork. That file and its provenance are in sponsors/.
+  JETI model s.r.o. retains its trademark rights. See the sponsor source for redistribution.
+  Build or verify these four albedo maps with build_vehicle_paints.py --only jeti_ruby.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the
   owner-supplied Monster Car 2 livery and emission map, re-tinted.
 
@@ -36,6 +47,29 @@ shared/ holds CC0 material maps from ambientCG (twill carbon, brushed metal,
 rubber); provenance in shared/LICENSES.txt. The generator does not write them.
 
 Bindings: app/data/vehicle_paints.json. Runtime: app/render/vehicle_paint.gd.
+
+extra-300s-60/jumper_t15_decals.png: Jumper RC T15 tribute. The Cyan Blue,
+Platinum White and Space Gray T15 colours inspire the shader palette:
+https://www.jumper-rc.com/transmitters/t15/
+The official red logo is resized for the decal atlas from the existing
+avanti-s-a200/sponsors/jumper_rc_logo.png (see that folder's SOURCE.txt for
+the original URL and scope of sponsor support). Jumper retains trademark
+rights. Follow the existing written-permission requirement for redistribution.
+The twin-gimbal graphic is original. Lettering uses the bundled Noto
+Sans CJK JP font (SIL OFL 1.1, assets/fonts/OFL-NotoSansCJK.txt).
+Rebuild or verify with tools/skins/build_extra_jumper.py, which pins the
+source hashes. The covering shader uses the Extra's existing UV/UV2 data.
+
+turbo-lumber-evolution/jr_servos_decals.png: original JR Servos tribute to
+the black casing, silver ribs and red model label of the S8911BL 2K BIG BLOCK.
+https://www.jrpropo-jp.com/product-page/s8911bl-2k-big-block
+https://www.deeforce.net/product-page/f8912foc-12v
+https://jreurope.com/product/jr-propo-logo-sticker/
+The JR PROPO logo and product photos serve as references. The decal artwork
+uses original lettering and a drawn output spline. Lettering uses the
+bundled Noto Sans CJK JP font (SIL OFL 1.1, assets/fonts/OFL-NotoSansCJK.txt).
+Rebuild with tools/skins/build_lumber_jr_servos.py and verify with --check.
+The shader projects in the rest pose and reuses the stock foam textures.
 
 ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
 tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared
