@@ -488,8 +488,11 @@ is not an execution schedule or a requirement to run all sixteen candidates.
 | E: conditional/higher risk | R07–R10, R16 | Feature reachability, source-format/pass checks and focused visual gates before a full tour. | Baseline has no consumer, the pinned renderer lacks support, or coverage/precision contracts fail. |
 
 Use interleaved baseline/candidate repetitions and preserve each raw run, not
-just averages. A diagnostic disable can establish a feature's upper-bound cost;
-it does not qualify removing that feature. Existing script tests can protect
+just averages. A diagnostic hide changes the target, dependent passes and any
+background it exposes; its delta is not a pure upper bound on that feature.
+Use the [Green/Club isolation protocol](2026-11-22-intel-gpu-experiments.md#green-paradise-and-club-field-isolation)
+to distinguish visible work, scheduling, construction and interactions. A hide
+does not qualify removing that feature. Existing script tests can protect
 contracts, but cannot establish image parity, presentation quality or GPU
 performance. Keep physics at 240 Hz and animation on the accepted simulation
 clock. None of these ideas requires another machine or a different graphics card.

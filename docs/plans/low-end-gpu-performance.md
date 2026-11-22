@@ -2,6 +2,11 @@
 
 Updated 22 November 2026 after an adversarial audit of `main` at
 `85a2475f60029a4b6b09f23f643119bceea84a45`.
+The same-day follow-up integrates Green Paradise and feature-isolation
+experiments, refreshed against `main` at
+`843f357c07af842054f3ccd6728f93beca9a57ef`. The refresh covers new experimental
+flight scaling and Club scenery/material work; the original audit remains a
+dated record. This documentation branch does not merge those runtime changes.
 Owner: **VQ-07h-A2-R1**, with VQ-06/UI for quality controls, PT1h-R15 for
 measurement, DT-11a/UI-05 for loading and the existing scenery/effect owners.
 `L0`–`L6` below are substeps of that work, not a new project-wide track.
@@ -51,6 +56,48 @@ smoke are conditional on active work and the view. HUD arithmetic, two-rectangle
 relief guards and optional skin composition are lower-priority candidates.
 None has a promised FPS gain.
 
+### 1.1 Test the dominant-feature hypothesis with Green Paradise
+
+The user's hypothesis is testable: one expensive feature, an interaction, or a
+configuration may dominate the remaining frame cost. Begin with the existing
+**Green Paradise → Club field → Green Paradise** screen, followed by controlled
+Off/On comparisons inside Club. This is the first discriminating experiment
+within L0/L1, before committing to Simple ground or any particular tree,
+windsock, flag, bird, reflection or shadow optimization. The
+[landscape-isolation protocol](../research/god-test/2026-11-22-intel-gpu-experiments.md#green-paradise-and-club-field-isolation)
+owns case order, actual tool support, suspect families and interpretation.
+
+Green builds one rough plane with the shared grass shader and omits Club's
+scenery objects and lake. It still has shared sky/sun/weather, aircraft and
+aircraft-shadow paths. Club also changes the ground material and mesh: its
+photo-detail binding and horizon mesh are absent from ordinary Green. The
+refreshed Club also binds four managed pasture/hay/grazing parcels into ground
+and, when enabled and bound, worn-path materials, and adds hedges, fences/gates
+and trees. The worn-path turf binding is normally inactive at Low. Meadow Off
+controls runway plant colonies, not those painted parcels. Their cost remains
+unmeasured and hiding Scenery does not undo material bindings. The
+cross-landscape screen changes multiple visual and physical inputs; it cannot
+identify one culprit or qualify a product optimization.
+
+| Observation, after matching effective state | Next investigation |
+| --- | --- |
+| Green is much faster and Club repeatedly regresses. | Club ground/painted parcels, vegetation/hedges, fences/property batches, scenery/cues, water/reflection and their interactions; use same-Club reversible masks or material tests to narrow it. |
+| Both are slow and a coarse pixel reduction helps. | Shared ground/sky/aircraft pixel work, then the existing L1 scale and L2 material questions. |
+| Both are slow and reducing root pixels barely helps. | Check caps, CPU/driver submission, fixed-size auxiliary passes, observer cost and host pressure; this does not prove defective hardware. |
+| Frozen views are fast but live motion is slow. | Repeat with advancing accepted time and selectively isolate windsock/shadow updates, flag/bird motion and other live work; pausing also removes simulation work. |
+| Only first entry or a particular landscape-switch order is slow. | L3 cache/build/first-draw work or retained-resource/host-state effects, separately from steady rendering. |
+| No single feature explains a large combined change. | Check a bounded two-feature interaction or cumulative cost; do not assume one visible object must be responsible. |
+
+Use Home and airborne pilot views as separate populations. Match the camera,
+actual pixels and Home-budget state; select airborne on Club as well as Green.
+Keep the new experimental flight dynamic-resolution setting Off for attribution
+and verify fixed scale in active flight. A saved scalar or phase-end readback
+alone is not proof of continuous actual GPU dimensions.
+Green is a source of information, not a proposed replacement for Club. Within
+Club, keep scenario/contact/collision state unchanged while diagnostic visual
+masks are applied and restored. A negative screen is only informative when the
+target existed, the intended state held and restoration succeeded.
+
 ## 2. Current main: reuse these capabilities
 
 - [Automatic policy](../../app/render/auto_graphics_policy.gd) already recommends
@@ -73,6 +120,14 @@ None has a promised FPS gain.
   scene detail by one tier or reject an automatic High renderer. Low cannot
   move lower. New material/scale decisions need L5's stronger identity and
   application lifecycle before automatic promotion.
+- Main now includes a separate [experimental flight scale controller](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/flight_dynamic_resolution.gd).
+  Dynamic resolution defaults to Off. It requires the explicit experiment flag,
+  supported completed-frame feedback from a patched engine, Native/bilinear,
+  an active flight and a fixed ceiling above its 75% experiment floor.
+  Compatibility/OpenGL does not supply that feedback. The current Intel 75%
+  baseline therefore has neither a supported adaptive path nor a lower rung.
+  Reuse its [owning plan and engine contract](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/docs/plans/dynamic-resolution.md)
+  for any later adaptive candidate; do not build a competing scale writer.
 - Source preserves collidable placements across scene tiers through
   [collision setup](../../app/scenery/collision_setup.gd),
   [collision world](../../app/scenery/collision_world.gd) and
@@ -127,10 +182,10 @@ uniform or expose a developer environment variable as a finished feature.
 
 | Area | Current control/behavior | Planned treatment | First delivery |
 | --- | --- | --- | --- |
-| Renderer, resolution and main AA | Automatic/Standard/High; native 3D scale 100–50%; MSAA; frame cap; reconstruction provider. | Reuse. Clearly distinguish saved scale, effective scale and provider-owned scale. Keep Compatibility for this Intel baseline. | L1: visibility and matched use of existing controls; no new upscaler. |
+| Renderer, resolution and main AA | Automatic/Standard/High; native 3D scale 100–50%; MSAA; frame cap; reconstruction provider; separately gated experimental flight dynamic resolution, default Off. | Reuse. Clearly distinguish saved scale, effective scale and provider-owned scale. Keep Compatibility and dynamic resolution Off for the fixed Intel attribution baseline. | L1: visibility and matched use of existing controls; no new upscaler. |
 | Ground material | Full procedural/photographic work is not selected by an independent player terrain-quality control. Default club photo maps are bound even without enhanced-grass research mode; execution still fades by distance/footprint. | **Ground detail: Auto / Simple / Full.** Two bounded material variants; Simple preserves the flight surface cues and removes only attributed decorative work. | L2: first new quality control. |
 | Scene geometry and distant trees | Auto/Low/Medium/High/Extreme; Low uses tree cards and coarser LOD. | Keep physical objects represented. First optimize batching internally; add a separate visual distance/LOD choice only if it changes a measured decision. | L4, conditional. No blanket tree deletion. |
-| Near grass and meadow | Meadow Off/On exists. Imported near grass has tier caps; technical grass modes are not a complete player density control. | **Grass density: Auto / Off / Sparse / Standard** only for decorative, non-collidable vegetation. Meadow remains independently controllable. Do not reinterpret weather or surface friction. | L4, after visible coverage/overdraw attribution. |
+| Near grass and meadow | Meadow Off/On controls runway plant colonies, not Club's newly painted ground parcels. Imported near grass has tier caps; technical grass modes are not a complete player density control. | **Grass density: Auto / Off / Sparse / Standard** only for decorative, non-collidable vegetation. Keep painted parcels in the ground-material investigation, and meadow independently controllable. Do not reinterpret weather or surface friction. | L4, after visible coverage/overdraw attribution. |
 | Projected shadows | Technique, quality, distance, softness, aircraft cue and cloud shadows exist. Native atlas quality does not set aircraft mask 256²/4× MSAA or windsock 512²/MSAA-off. | Extend the existing **shadow-quality** resolution to projected targets; investigate a separate aircraft override only if the shared setting cannot express a useful choice. Retain a cheap readable aircraft cue. | L4: bounded resolution/AA experiment before defaults change. |
 | Water | Stock lake uses a refresh-on-change probe. Planar is a High-only technical opt-in. Water shader samples screen/depth for refraction. | **Water quality: Auto / Simple / Full.** Simple keeps the water/shoreline/wave representation, tests a material without refraction screen/depth inputs, and a cheaper reflection representation. Do not disable the lake scenario. | L4 only for a costly lake-visible case. |
 | Sky and clouds | Ground cloud-shadow Off exists. Sky can still own shared cloud-cache tiles. Density-bound variants are research-only. | **Cloud detail: Auto / Simple / Full** only after a supported, measured simple path exists. Preserve cloud coverage/weather cues, sun occlusion and clock. Keep cache mechanics internal. | L4, conditional; not a promised default win. |
@@ -222,8 +277,8 @@ GPU pass are different observations; retain that distinction.
 | --- | --- | --- |
 | L0.1 Source and prior evidence | Pin current main, engine and native artifact; inspect changes since the research source. Record which raw runs are available and which measurements are summary-only. Correct stale comments/claims in the next owning source change. | One traceable baseline description; no new profiler framework or broad evidence recreation. |
 | L0.2 Existing Intel route | Reconcile the existing test-pool/operator session and its admission. Inventory graphics adapter, actual renderer, audio/compositor, current memory limits, sharing/thermal state read-only. | If no admitted route is available, hardware execution remains blocked; source, settings design and offline checks proceed. Do not bypass admission, substitute another GPU or require new infrastructure before editing a bounded candidate. |
-| L0.3 Workload and effective state | Separate usable Home, pilot flight, runway/ground view and loading. Record camera, aircraft, scenery/weather/seed, output/drawable/internal pixels, root AA, auxiliary targets, Home-budget state, caches and actual native backend. | Unknown fields stay unknown. A physical scenario/hash is frozen for each A/B; no disabling RC track or lake to qualify a graphics gain. |
-| L0.4 Minimal attribution | Reuse existing graphics/debug/frame tools for a short reversible pixel or material screen, with capture overhead excluded from timed acceptance. | Pick one dominant affected view and one candidate. Full three-aircraft/nine-launch tours are not a prerequisite for this screen. |
+| L0.3 Workload and effective state | Separate usable Home, pilot flight, runway/ground view and loading. Record camera, aircraft, scenery/weather/seed, output/drawable/internal pixels, root AA, auxiliary targets, Home-budget state, experimental flight scale setting/support, caches and actual native backend. | Unknown fields stay unknown. Dynamic resolution stays Off during attribution. A physical scenario/hash is frozen for each A/B; no disabling RC track or lake to qualify a graphics gain. |
+| L0.4 Landscape and feature attribution | Use G0–G5 for inventory, warmed Green/Club screening, same-Club isolation, conditional G4 add-back/interaction and live confirmation. G6 belongs to the selected L2/L4 implementation and L6 acceptance. Reuse existing graphics/debug/frame tools and exclude capture overhead from timed acceptance. | Pick the next view/candidate from the result; no assumption that ground or one small object must win. Full three-aircraft/nine-launch tours are not a prerequisite. |
 
 L0 has decision value, not an FPS claim. Its purpose is to keep the rest of the
 plan executable and prevent optimizing the obsolete Forward+ baseline.
@@ -244,6 +299,10 @@ count, and 67% uses about 20.2% fewer pixels than 75%. These are arithmetic
 workload ratios, not predicted frame-time reductions. Check distant aircraft,
 grounding cues and moving edges at each step. Fixed-size secondary targets and
 CPU work do not automatically shrink.
+The protocol also permits the existing half-current-scale diagnostic as a
+coarse pixel-cost screen. At an effective 75% it becomes 37.5%, not 50% of
+native. Restore it after the screen; it is not a new recommendation or a
+readability-qualified setting.
 
 **L1.3 Understand Home adaptation.** Record the actual multiplier and elapsed
 time to its first decision. For a shader comparison, hold its effective state
@@ -253,6 +312,17 @@ elapsed-time/valid-sample adjustment within the existing owner. Preserve
 outlier exclusion, benefit testing, minimum evidence, focus/cover restoration
 and provider ownership. Do not add a second Home controller.
 
+**L1.4 Control the new flight scaler.** Explicitly select experimental Dynamic
+resolution Off and read back the fixed Native scale in each active flight.
+Do not combine an active controller with `@half_res`: both write viewport scale,
+and a simulation hold can suspend the controller and restore its ceiling.
+Current GOD TEST can seed a fixed scale and Off, but its start/end scalar checks
+are not a continuous actual-pixel trace. The protocol owns the supported
+Green/Club route and evidence limits. The retained
+[Primis synthetic result](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md)
+shows a pixel-sensitive patched Mobile/Vulkan test, not a qualified flight
+optimization or a reason to replace this Compatibility baseline.
+
 **Exit:** establish whether the remaining view is pixel-sensitive and retain
 the sharper setting if a lower one has no useful benefit. Preserve the current
 renderer unless a separate residual measurement justifies a different one.
@@ -261,6 +331,9 @@ renderer unless a separate residual measurement justifies a different one.
 
 **L2.1 Isolate the expensive material component.** Use a reversible A–B–A
 diagnostic material on the same field geometry, lighting, camera and scale.
+Select this work only after the landscape/family screen leaves ground as an
+actionable candidate. A faster Green result alone cannot distinguish Club's
+different ground material/mesh from its additional objects.
 Keep the normal physical world. Split procedural anti-tiling/noise, fine photo
 normal/roughness and other decorative terms only far enough to choose one
 bounded simplification. The default field has two relief rectangles, not 32;
@@ -345,8 +418,12 @@ full flight tours are unnecessary for a local construction screen.
 
 ### L4 — residual passes, off-state work and additional quality controls
 
-Select **one active, attributed path** after L1/L2 observations; this is not a
-mandatory checklist. No improvement is assumed from source inspection.
+Select **one active, attributed path** after L0/L1 and, where relevant, L2
+observations; this is not a mandatory checklist. No improvement is assumed from source inspection.
+Use the protocol's suspect matrix to split native shadows, projected aircraft
+and windsock masks, water/probe work, sky and lens effects. Flag Static does not
+disable the windsock, and a single field-treeline mask does not remove every
+tree family. Missing or overridden isolation is an inconclusive experiment.
 
 | Subphase / prior research | First discriminating experiment | Candidate only if useful | Stop / quality condition |
 | --- | --- | --- | --- |
@@ -390,12 +467,15 @@ workload remains pixel-limited, consider one existing scale step such as
 75→67, then remeasure. Roll back if the gain is absent, readability fails or
 another cost dominates. Unknown/family-only GPUs must earn any automatic scale
 reduction through the accepted measurement path, rather than being assumed
-slow by name. Coordinate Home ownership; do not introduce a second scale writer.
+slow by name. Coordinate Home and experimental flight-controller ownership;
+do not introduce a second scale writer. Fixed attribution keeps the latter Off.
 
 **L5.4 Ship the smallest justified policy.** Update the current decision snapshot,
 migration/restore cases, effective report and fallback reasons. Keep automatic
-changes bounded; a continuous in-flight dynamic-resolution controller, new GPU
-database model or general quality optimizer is not part of this first delivery.
+changes bounded. The continuous flight controller now exists as a separately
+gated experiment; promoting or extending it, a new GPU database model, or a
+general quality optimizer is not part of this first delivery. Its completed
+viewport feedback does not measure presentation or every secondary target.
 Manual controls can ship before automatic promotion completes.
 
 ### L6 — integration, evidence and stop
@@ -413,8 +493,8 @@ use the smallest
 admitted affected-view A/B, then the larger existing tour only when the
 three-aircraft whole-session change or final claim requires it. Preserve raw
 failures and configuration identity. A headless functional run is not rendered
-or physical-presentation evidence; unimplemented graphical admission and missing
-mandatory Intel monitoring leave formal qualification open.
+or physical-presentation evidence; unavailable graphical admission or missing
+mandatory Intel monitoring leaves the corresponding formal qualification open.
 Offline design and prototype checks can proceed while that access is unavailable;
 performance promotion and hardware/presentation qualification cannot.
 
@@ -451,7 +531,8 @@ changes. Preserve shared-host policy and record thermal/resource state; do not
 stop other workloads, change power limits or alter Proxmox to improve a report
 without the separate existing authorization and owner process.
 
-The first deliverable is L0/L1 attribution followed, if L2.1 supports it, by
+The first deliverable is the Green/Club and same-Club isolation screen within
+L0/L1, followed, if L2.1 supports it, by
 **one Simple-ground candidate and its complete settings contract**, with L3
 loading attribution in parallel. If ground is not actionable, deliver the next
 attributed bounded candidate instead. R01–R16 remain useful evidence, not
@@ -467,3 +548,4 @@ and the pinned engine, not inferred from a documentation version.
 - [Godot general optimization](https://docs.godotengine.org/en/latest/tutorials/performance/general_optimization.html): identify and retest the bottleneck; the same-device methodology here is constrained by the user's existing hardware.
 - [Godot 3D optimization](https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html): culling/LOD and overdraw tradeoffs. Existing project instancing remains the starting point.
 - The [earlier primary-source ledger](../research/god-test/2026-11-22-intel-render-internals.json) retains the Intel Gen9, Khronos and exact-engine readback/scheduling evidence; it does not quantify candidate gains.
+- [Godot GPU optimization](https://docs.godotengine.org/en/latest/tutorials/performance/gpu_optimization.html) and [Intel render-state experiments](https://www.intel.com/content/www/us/en/docs/gpa/user-guide/2025-1/run-render-state-experiments-with-frame-analyzer.html) support changing one rendering cause and remeasuring. They motivate the isolation method; Intel GPA availability on this Linux/OpenGL installation is not assumed or required.

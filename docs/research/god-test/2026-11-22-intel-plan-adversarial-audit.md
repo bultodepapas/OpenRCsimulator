@@ -5,6 +5,11 @@ Audited `main`: `85a2475f60029a4b6b09f23f643119bceea84a45`.
 Investigation branch before this revision:
 `48395fac4e9ca28111dcc920494000c12142d0af`.
 
+Sections 1–6 retain that original source audit. The same-day
+[Green/Club follow-up](#7-green-paradise-isolation-follow-up) refreshes relevant
+claims against main `843f357c07af842054f3ccd6728f93beca9a57ef`; its ledger entry
+preserves the original audit's source identities and results separately.
+
 **Decision:** replace the earlier mechanism-first implementation ranking with
 the [corrected low-end plan](../../plans/low-end-gpu-performance.md): existing
 pixel controls and ground-heavy Home attribution first, a bounded Simple ground
@@ -139,3 +144,89 @@ include Godot execution, new GPU measurements or full CI. The original raw
 campaign remains unavailable here; current hardware configuration is not
 inferred from the dated report. The audit makes no claim that the Intel card is
 defective or that Proxmox/driver changes would recover a specific amount of time.
+
+## 7. Green Paradise isolation follow-up
+
+The user's subsequent hypothesis is that a tree, flag, windsock, reflection,
+sun/bird/shadow path or configuration dominates the frame. Two source-read-only
+specialists rechecked the landscape builders and actual diagnostic controls
+against main, then refreshed the relevant changes after main advanced from
+`85a2475f60029a4b6b09f23f643119bceea84a45` to
+`843f357c07af842054f3ccd6728f93beca9a57ef` (17 intervening commits).
+The [plan](../../plans/low-end-gpu-performance.md#11-test-the-dominant-feature-hypothesis-with-green-paradise)
+now begins attribution with the [G0–G6 isolation sequence](2026-11-22-intel-gpu-experiments.md#green-paradise-and-club-field-isolation).
+
+The main corrections are:
+
+- Green is a simpler scene with shared ground/sky/sun/aircraft work, not an
+  empty renderer. Club changes its ground material/mesh as well as adding
+  objects, and the physical worlds differ. A faster Green narrows the search;
+  same-Club tests are needed to identify a feature.
+- Home is a static render-only composition with a temporary scale owner;
+  flight needs separately matched airborne starts, view and accepted time.
+  Frozen tests cannot exclude clock-driven scheduling, and an unfrozen command
+  alone does not reproduce a moving route. Fixed-input rendered replay is still
+  pending; current numerical replay is not a substitute for matching presentation.
+- The bridge has seven existing feature keys, not semantic switches for every
+  suspect. Native light shadows, projected aircraft/windsock targets, water
+  drawing and ReflectionProbe work must be distinguished. A hidden object can
+  retain CPU updates or trigger/expose other rendering work.
+- Flag Static does not disable windsock or all flag work; Birds Off has a live
+  departure/retention lifecycle and still allocates groups/buffers with no birds
+  initially visible when selected before construction. The separate technical no-build switch is distinguished.
+  The field-treeline hide is not all woods.
+  Technical scenery/lake Off changes physical context; Scene Detail preserves
+  collidable placements but remains a compound visual comparison.
+- Removal, restored baseline, selective add-back and a bounded two-feature
+  interaction can distinguish a single contributor from combined cost.
+  Neither a cached GPU delta nor an ineffective/overridden toggle exonerates a
+  feature. The old generic “upper-bound cost” description was corrected.
+- Landscape/setup setters persist choices, and a time preset can clear custom
+  lighting. Campaign isolation or complete owned preference restoration is
+  required, including pending ownership and intervening user changes.
+- The main refresh adds a separately gated experimental flight scaler,
+  default Off. Fixed attribution explicitly keeps it Off. Its required patched
+  completed-frame feedback is unavailable on Compatibility/OpenGL, and the
+  75% Intel baseline has no range below the experiment's 75% floor. An active
+  scaler conflicts with `@half_res`; pausing can suspend it and restore its
+  ceiling. This corrects the original audit's now-historical deferral of
+  implementing a continuous controller: one exists, while qualification and
+  promotion remain separate work under its existing owner.
+- The patched completed-frame API does not upgrade old bridge `render`/`ablate`
+  timings. Its supported viewport scope excludes presentation and other targets;
+  ordinary GOD TEST records controller transitions/identity/sizes, not a fresh
+  GPU-duration stream. The retained Primis Mobile/Vulkan result is a synthetic
+  pixel screen, not a new run by this audit or a flight qualification.
+- Current GOD TEST can seed Off and a fixed scale for the `green-paradise`
+  `recover` case with either landscape. The named full performance tour remains
+  Club-only. Explicit Low and matched trajectory/view are needed; start/end
+  scalar checks are not continuous actual allocation evidence. The small case
+  does not request native enforcement or tour monitoring by default; retain an
+  actual native receipt and the supported diagnostic evidence separately.
+- New Club painted pasture parcels remain bound after Scenery is hidden and
+  are independent of Meadow Off. Their material test must cover ground and any
+  bound worn-path material. Imported hedge/extra trees, shared fence/gate prop
+  cells and trails are separate candidates. Shared cells make a hide compound;
+  separately built collision proxies remain installed. `collides: false` on a
+  render definition does not establish an empty physical world. No performance
+  regression is inferred from the added source work alone.
+
+The protocol records source-backed controls, missing hooks, evidence fields,
+interpretation and stop rules. Its small owner-aware hooks remain proposals,
+not newly implemented commands. No hardware session, diagnostic mask or runtime
+change was executed by this follow-up. The ledger's follow-up section retains
+the additional source identities, review and scoped verification.
+
+An independent Good Enemy review found no remaining blockers after correcting
+landscape counterbalancing, attribution-versus-product phase ownership,
+GPU-specific versus whole-frame claims, cumulative interactions, bird allocation,
+saved preference restoration and rendered-replay assumptions. The lead checks
+the final ledger and documentation; that mechanical receipt is distinct from
+the source/plan review.
+
+A focused second review of the refreshed main found no remaining blockers after
+making the small flight case's native/monitoring defaults explicit and limiting
+the worn-path parcel claim to enabled/bound materials (normally inactive at
+Low). The complete option list links to the CLI owner as well as the operating
+guide. This review does not establish hardware performance or validate a new
+diagnostic implementation.

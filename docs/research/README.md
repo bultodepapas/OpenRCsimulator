@@ -87,6 +87,16 @@ physical scenarios, manual choices and existing release gates; all hardware
 work remains on the existing Intel installation. This revision changes plans,
 not runtime performance.
 
+The [Green Paradise / Club field isolation sequence](god-test/2026-11-22-intel-gpu-experiments.md#green-paradise-and-club-field-isolation)
+tests the dominant-feature hypothesis with a simpler-landscape screen, then
+same-Club removal, selective add-back/interaction and live confirmation. Its
+source audit distinguishes shared ground/sky work, native and projected shadows,
+water/probe ownership, complete vegetation families, flag versus windsock, and
+bird lifecycle costs. The refreshed main review adds experimental flight-scale
+ownership, painted ground parcels, hedges and shared fence/property batches.
+Existing controls and proposed diagnostic hooks are
+explicit; no experiment result is claimed.
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

@@ -2,7 +2,8 @@
 
 The [corrected low-end plan](../../plans/low-end-gpu-performance.md) owns
 execution order after the [adversarial audit](2026-11-22-intel-plan-adversarial-audit.md)
-of main `85a2475f60029a4b6b09f23f643119bceea84a45`. The
+of main `85a2475f60029a4b6b09f23f643119bceea84a45`, with the Green/Club
+follow-up refreshed against `843f357c07af842054f3ccd6728f93beca9a57ef`. The
 [render-internals follow-up](2026-11-22-intel-render-internals.md)
 retains sixteen code-linked candidates. This protocol owns admission, evidence
 identity and comparison scope; a full tour is conditional, not the entry ticket
@@ -82,7 +83,7 @@ this investigation's transcription is not a hash of the unavailable raw run.
 | --- | --- | --- |
 | Source/executable | Commit and dirty-input digest, engine version/hash, native binary/receipt, driver/tool versions. | Source-only, package and hardware results are different claims. |
 | Workload | Aircraft/model, scene/landscape/collision identity, camera, fixed view or real circuit, time/weather/seed, graphics identity, phases and raw frame stream. | Preserve the same route and effective settings within a pair. |
-| Display/rendering | Engine adapter/vendor/API, renderer, DRM render-node mapping/BDF, Weston renderer, Wayland versus X11, output/drawable/internal 3D dimensions, actual scale, HDR2D, AA enum and sample count, reconstruction, VSync/cap, Home budget state. | A compositor can use hardware while the app uses another adapter; verify both. A saved scale is not the final Home scale. |
+| Display/rendering | Engine adapter/vendor/API, renderer, DRM render-node mapping/BDF, Weston renderer, Wayland versus X11, output/drawable/internal 3D dimensions, actual scale, HDR2D, AA enum and sample count, reconstruction, VSync/cap, Home budget state, experimental flight dynamic-resolution request/support/status. | A compositor can use hardware while the app uses another adapter; verify both. A saved scale is not proof of actual pixels. Keep flight dynamic resolution Off during fixed attribution. |
 | Host GPU | Per-engine busy/time observations, actual/requested/configured maximum clocks, package/GPU power and temperature where available, thermal/power-limit indications, timestamped i915 errors/reset counters. | Render, video, copy and compute engines are distinct. Frequency alone is not utilization; device totals include other processes. |
 | Process/CPU | Existing process CPU/RSS/threads/I/O, thread hot spots when necessary; actual CT CPU quota/cpuset/weight and `cpu.stat` throttling deltas. | 100% process CPU is one logical CPU; 6 assigned threads do not imply six exclusive physical cores. |
 | Memory | Existing module sizes/slots/channels/configured speed; host available memory, swap activity and PSI; actual CT `memory.current`, `memory.stat`, `memory.events`, `memory.swap.current`, high/max limits and pressure. | Resolve the process's cgroup and relevant ancestors; container-visible `/proc/meminfo` alone is insufficient. Do not add overlapping RSS/shmem/engine counters. |
@@ -121,8 +122,10 @@ offline implementation; formal hardware qualification remains separate.
 
 Run one applicable experiment at a time, stopping once the evidence settles the
 decision. IDs below are stable references, not a requirement to execute every
-row. Start with I0/I6 inventory and I1 pixels, then I3 ground; I5 loading is a
-separate workstream whose hardware captures still serialize. I2 is conditional
+row. Start with I0/I6 inventory and the Green/Club G0–G2 screen below. Its result
+selects I1 pixels, I3 ground or a focused Club feature; a faster Green alone does
+not select ground or one object. I5 loading is a separate workstream whose
+hardware captures still serialize. I2 is conditional
 because current Automatic already disables main AA. I4/I7/I8/I9 are deferred
 until evidence identifies their question. Shared-host admission, memory
 headroom and clean teardown remain required. No row requires different physical
@@ -140,6 +143,318 @@ hardware.
 | I7 | Does sharing materially change the game? If an existing operator-authorized window permits, pair the same baseline with one co-tenant workload state changed. | Same cache/temperature/scene, service state and restoration receipt; per-engine activity and service health. | Without controlled state change and matched conditions, report correlation only. Do not stop Frigate or another service just to complete this row. |
 | I8 | Is Mesa version a reproducible factor? One supported/pinned user-space candidate versus 25.0.7 on the same Intel host. | Same kernel, engine, assets, compositor, effective settings and labelled warm caches; record actual loaded libraries and rollback identity. | A repeated gain/regression justifies that version finding. It does not attribute all remaining cost to Mesa or support a simultaneous kernel change. |
 | I9 | Is display backend trading throughput for reliability? Existing X11/Weston versus Wayland/Weston only if the shutdown issue needs a bounded reproducer. | Same workload and current engine; own processes; retain cleanup evidence and watchdog-safe limits. | A forced kill is a failure, not a faster run. Throughput and clean shutdown are separate results; no physical-presentation claim from a headless compositor. |
+
+### Green Paradise and Club field isolation
+
+This same-day follow-up makes the user's dominant-feature hypothesis testable.
+The cases below are local experiment labels inside L0/L1 and the existing
+owners, not new project tracks. They are proposed experiments: none was run by
+this documentation revision.
+
+Source checked against `main` at `843f357c07af842054f3ccd6728f93beca9a57ef`,
+including its flight dynamic-resolution experiment and newer Club scenery.
+This refresh supersedes the earlier same-day source snapshot for these cases.
+Pinned links below identify new code absent from the investigation branch's
+runtime; the plan update does not merge or claim to implement that code.
+
+**Hypotheses to distinguish:** one expensive pass/feature; several cumulative
+costs or an interaction; shared ground/sky/aircraft work; an ineffective setting
+or different renderer/pixel workload; CPU/driver/host pressure; and first-use
+loading. Do not assume the answer must be a small visible object.
+
+#### What Green actually removes
+
+[Green's adapter](../../../app/landscapes/green_paradise/landscape.gd) builds a
+rough plane with the shared [grass material](../../../app/render/ground.gd)
+and returns an empty obstacle world. It does not build Club's field treeline,
+flag/windsock/scenery birds, near vegetation or lake. Shared
+[World](../../../app/render/world/world.gd), sky/sun/weather, aircraft and
+aircraft-shadow paths remain. Green's logical field surfaces still feed ground
+contacts; an empty obstacle inventory does not mean physics or ground vanished.
+
+[Club](../../../app/landscapes/club_field/landscape.gd) also has a different
+[ground setup](../../../app/render/field.gd): default-field photo maps/detail,
+consolidated surface treatment and the horizon mesh. Ordinary Green does not
+bind that same Club photo/detail path; the enhanced-grass research setting is a
+separate override to record. Thus the Green/Club difference includes material,
+geometry, coverage, scene and physical differences. It is a diagnostic screen,
+not a one-variable speedup or a proposal to replace the principal landscape.
+
+The refreshed [Club field builder](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/field.gd)
+also binds four authored pasture/hay/grazing parcels into the existing ground
+draw; [worn-path materials](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/worn_ground_material.gd)
+can copy the same data when enabled and bound (normally inactive at Low).
+Green uses the shared revised shader but leaves this
+[parcel count](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/meadow_surface.gdshaderinc)
+at zero. **Meadow Off does not disable painted parcels**: it controls runway
+plant colonies. Hiding Scenery after build does not undo those material bindings.
+The changed [Club definition](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/data/scenery/default.json)
+adds hedges, fences/gates, trees and trails. Its physical obstacle inventory also
+changes through the separate collision builder; a visual object's
+`collides: false` is not evidence of no physical proxy. Preserve the actual
+world identity within Club tests. No source change establishes its own cost.
+
+#### Cases and order
+
+Use a qualified fixed-wing aircraft already available on the Intel installation.
+Home's landscape selection, or the bridge's existing validated `catalog`/`setup`
+flow, selects `green_paradise` and `club_field`. Keep the same aircraft/livery,
+camera transform/FOV, lighting/weather/seed, renderer, native physics backend,
+output/drawable/internal pixels, AA, frame cap/VSync and observer state. Record
+the actual returned selection. The [tool owner](../../../tools/debug/README.md#agents-and-mcp-pt1h-r11)
+owns command syntax; no new launcher or copied scenario framework is required.
+
+Use an admitted campaign-owned isolated profile initialized with the declared
+baseline where supported, with profile/cache identity recorded. Home/bridge
+setup is persistent: landscape, aircraft/start/livery and related choices can
+be saved, and selecting a time preset can clear an explicit lighting override.
+If the existing profile is used, retain requested/effective values and ownership
+for every affected selection, including custom lighting/weather and graphics,
+then restore and verify them at campaign end through the owning paths. Preserve
+intervening user changes instead of blindly overwriting a file. Record a failed
+or conflicted restore and complete normal owned-session cleanup. Returning to
+the previous landscape alone is not full preference restoration.
+
+| Case | Procedure | What the result can decide |
+| --- | --- | --- |
+| G0 — inventory | On the admitted existing Intel session, record current effective settings, scene root, active geometry families, material bindings and secondary targets before changing anything. Set/read back experimental flight dynamic resolution Off and verify fixed scale in active flight. Identify switches already Off, absent or unsupported. | A usable target list; no timing claim. Do not test an imaginary `@trees` or `@reflections` switch. Record patched/stock engine support separately from old bridge GPU timings. |
+| G1 — warmed Home screen | Visit Green, Club, then Green with the same parked aircraft and matched view. Warm each rebuilt world separately and record loading outside steady sampling. If a difference or order effect appears, counterbalance with Club → Green → Club in a matched later/interleaved run. | A repeatable Club cost or shared cost to investigate; not a feature attribution. Home has no flight simulation and uses a fixed shader clock, so this cannot exclude live animation costs. |
+| G2 — matched airborne screen | Repeat as a separate pilot-view population, selecting airborne on both landscapes. Match initial state/view and accepted-time windows; keep away from differing contacts/obstacles. Record actual physical identities rather than calling them equal. | Whether the Home difference also occurs in the relevant flight view. Do not compare Club runway idle with Green airborne flight. |
+| G3 — same-Club removal | Return to one fixed Club workload. Screen one active family/leaf or existing setting at a time: baseline A, changed state B, restored A. Start with the highest explanatory value from G1/G2 and the suspect matrix below. | A candidate contributor under that view. Preserve physical scene, other settings and ownership; visible masks are temporary diagnostic changes. |
+| G4 — selective add-back / interaction | If G3 leaves a compound group unresolved or suggests cumulative/interacting costs despite small individual changes, create a reversible visual mask within the same Club world, then restore one family at a time against that same masked reference. Alternatively test only the two strongest candidates in the four On/Off combinations. | Cumulative/interaction evidence. This is not adding Club assets to Green or removing contacts; a grouped mask may require the bounded hook below. Do not sum individual hide deltas. |
+| G5 — live confirmation | Repeat the selected candidate with accepted time advancing, matched wind/flight/camera and the same observation windows. Preserve the 240 Hz clock. Compare visible drawing and owner scheduling separately where needed. | Whether a frozen/static lead survives real motion. A paused screen cannot exonerate wind integration, birds, projected-mask refresh or other live CPU/GPU work. |
+| G6 — product candidate | Restore all diagnostic masks, implement one bounded optimization/quality choice, and run the existing paired affected-workload and visual gates below. | A qualified change only when the evidence passes. Retain failed/incomplete attempts and rerank if the candidate does not help. |
+
+**Home scale is a confound to resolve, not merely log once.** Its existing budget
+can change scale after a landscape rebuild. For attribution, establish and
+verify equal, stable effective scale throughout each window through the existing
+owner; never fight it with a second continuous writer. There is no documented
+public debug command to freeze this budget. If the current route cannot hold
+it or match a stable state, mark the Home comparison inconclusive and use the
+matched flight screen, or add a bounded reversible diagnostic hold to that
+owner. Test production adaptation separately after attribution.
+
+**Flight scale also needs an explicit owner check.** New main exposes
+Settings → Display → Dynamic resolution (experimental), with saved targets
+Off/30/60/90/120 and Off by default. The
+[controller](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/render/flight_dynamic_resolution.gd)
+only starts with the explicit experiment argument, supported patched-engine
+completed-frame API, Native/bilinear, a usable scale ladder above the 75% floor,
+and an active focused/drawable unpaused flight. Compatibility/OpenGL is
+unsupported; an unavailable option or absent controller metadata does not
+establish a successful adaptive run. Keep Off for G0–G5, record engine support
+and the actual viewport scalar during each window, and preserve the player's
+original choice for restoration. Treat computed nominal dimensions as computed;
+an actual-size receipt is a separate observation.
+
+Do not run `@half_res` against an active flight controller. Both write the same
+scale. A frozen ablation also suspends flight and can restore the controller's
+ceiling, with a new evidence window on resume. Probe and controller restoration
+can therefore change the intended A/B state. Disable adaptation first, inspect
+scale/status after each phase, and reject ownership conflicts. Test adaptive
+production behavior separately after fixed attribution through its
+[existing owner](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/docs/plans/dynamic-resolution.md).
+
+The normal Home path loads saved preferences. A direct `--scripted` launch is a
+different technical route and bypasses that first-run settings initialization.
+It is usable only with an explicit matching configuration receipt; do not call
+it the product's Automatic behavior. Switching landscape rebuilds Home and may
+change the allowed start, cache state, residency and camera composition.
+
+For a short airborne GOD TEST comparison, the current
+[catalog](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/tools/godtest/catalog.py)
+supports the `green-paradise` case's `recover` phase with an airborne start and
+either `green_paradise` or `club_field` landscape override. Reuse that case;
+the named `performance-tour` requires Club and its runway/landmark phases
+cannot simply be applied to Green. The
+[operating guide](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/tools/godtest/PERFORMANCE_TOUR.md)
+and [CLI help/parser](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/tools/godtest/godtest.py)
+own syntax for `--dynamic-resolution-fps`, `--render-scale`, `--landscape` and
+`--scene-detail`. Set Off (`0`), the same fixed scale and Low explicitly when
+that is the declared baseline: an explicit scale overrides Automatic's scale,
+and the harness seeds scene detail independently. Use separate fresh outputs.
+This small case does not enable `require_native`, frame watching or hardware
+monitoring by default, and the CLI has no `--require-native` flag. Selecting it
+alone therefore does not enforce the tour's native backend/evidence contract.
+Verify the actual native receipt and collect the required diagnostic evidence
+through the admitted route; use a validated owned manifest when that route
+needs the existing manifest-only fields. Missing tour-level monitoring does
+not block a supported initial screen or turn it into full-tour acceptance.
+The harness verifies the requested bilinear scale at the start/end of completed
+pilot phases, not uninterrupted internal allocation. Check actual trajectories
+and camera geometry before treating two closed-loop phases as paired. A direct
+scripted route, this isolated harness and the saved product profile retain
+distinct configuration receipts.
+
+For G5, use an available repeatable/adaptive flown route or matched starting
+states inside Club. Predeclare acceptable trajectory, accepted-time and camera
+matching limits and record actual pose, inputs and clock; classify nonmatching
+runs as leads only. An unfrozen A–B–A command does not automatically produce a
+matched moving-flight comparison. Current [GOD TEST](../../../tools/godtest/README.md)
+still lists fixed-input-tape rendered replay as pending, and
+[numerical flight-log replay](../../FLIGHT-LOGGING.md) does not reproduce the
+camera, smoke and sound presentation. Do not assume an existing rendered-tape
+runner or exact cross-landscape replay equivalence. New replay tooling is not
+a prerequisite for the initial screens.
+
+#### Source-informed suspects and discriminating tests
+
+The priority below is the value of the next test, not a measured cost ranking.
+Discover literal runtime paths from the current scene; source names illustrate
+families and do not authorize assuming a target exists.
+
+| Suspect / when to prioritize | Existing discriminating control | Required split or limitation |
+| --- | --- | --- |
+| **Ground and broad pixel work — first screen**, especially ground-heavy Home or slow Green | Existing Native scale controls; the probe's `@half_res`; a discovered rough-ground node for a visual hide screen. Then a same-geometry diagnostic material if ground remains actionable. | At effective 75%, half-current-scale is 37.5% of native per axis, about 720×405 at 1080p. It is not 50% native or a quality recommendation. Hiding ground exposes sky and removes dependent reception; a same-geometry simple material is the stronger follow-up. |
+| **Sky, sun and lens work — high explanatory value if Green remains slow** | Compare matched ground-facing and sky-facing orientations as a broad coverage screen; reuse existing Lens Off/effect choices. The probe has `@fog`/`@glow` for enabled Environment properties. | Split visible sky/cloud material, radiance refresh, directional-light shadow casting and lens/glare/afterimage. `@fog`, `@glow`, or hiding the Sun node is not a complete sky-off experiment. A cheap replacement sky or radiance-scheduling isolate is a proposed owned hook, not an existing flag. |
+| **Trees, woods and decorative vegetation — prioritize if Club adds a repeatable cost** | Census field cards/detail plus separately built scenery/woodland; hide each discovered family, then isolate a relevant subset or density change. | `Field/treeline` and conditional `treelineDetail` are not all trees. `ImportedVegetationBatches` can include other vegetation. Technical `--hide_treeline` is partial; tree-wind Off affects imported animation, not all trees or drawing. More batches can add CPU/draw cost. |
+| **New Club hedge, fences/gates and property batches — if the refreshed Club regresses** | Inventory the imported perimeter hedge, added trees, shared prop cells and worn access/stock trails separately; use discovered masks as coarse screens. | Additional trees are in imported vegetation batches, not the field treeline. Fences/gates share prop cells with other content; hiding a cell is not a fence-only result. Separate projected/contact owners and preserve the installed collision proxies. |
+| **Painted pasture/hay/grazing parcels — a Club-specific material question** | A bounded reversible same-geometry material test that disables only the bound parcel work, covering the ground and any worn-path material that copies its uniforms. | Meadow Off and Scenery visibility do not disable this path. Green's default parcel count is zero. The extent/edge/noise work is a source suspect, not a measured regression; a missing material hook leaves it unisolated. |
+| **Projected aircraft/windsock shadows — active auxiliary-work suspect** | Inspect per-target sizes/AA/update modes; screen the actual projector or receiver. Existing shadow settings and `@subviewports` can supply bounded leads. | Main `@msaa` does not control aircraft-mask 256²/4× AA; moving socks use a separate 512² mask. Hiding a receiver/caster is not equivalent to suppressing owner scheduling. Owners can re-enable a SubViewport; a held-state failure is inconclusive. Preserve the height cue in the eventual product. |
+| **Native shadows — only when actually enabled** | `@shadows` toggles visible Light3D shadow casting. | It does not disable projected/contact/cloud shadows. The technical field-projector Off option falls back to legacy contact shadows; it is not “all shadows off.” Avoid counting an already-off baseline feature as a gain. |
+| **Water and reflections — lake-visible or refresh-related case** | Discover Water and its separate ReflectionProbe; screen water drawing and probe work independently. Inspect actual planar-path reachability. | Hiding Water leaves the sibling probe's update logic; a ReflectionProbe is not a SubViewport. Stock Intel planar reflection is already Off. `--lake=off` changes the world/terrain context and cannot qualify a same-scenario rendering gain. A probe-scheduling isolate needs an owned hook if current controls cannot hold it. |
+| **Windsock versus flag — quick separate witnesses, not one flag switch** | The default windsock cue and seeded flag cloth are separate nodes. Existing Flag animation Static tests its motion model; a leaf hide tests visible work. | Low Auto flags still resolve to Basic. Static keeps the mesh and some publication work and does not affect windsock. Hiding cues leaves cached field subscriptions; windsock hide can also suppress its silhouette. Inspect cloth/cue draw, CPU integration and shadow scheduling separately. |
+| **Birds — test when present and live** | Existing Birds Off/Few/Normal/Many; verify live departure completes. Player Off before construction still allocates bird groups/buffers, initially with no birds visible. A separately matched technical `scenery_birds` construction switch can test avoiding the node, with its route/configuration recorded. | Green has no Club scenery birds. Live Off retains the node and polling; the fresh weak-GPU bundle selects Few, not Off. Frozen/Home observations cannot exclude live bird work. Technical no-build and player Off are distinct lifecycle experiments. |
+| **Other scenery, HUD and effects — residual or stage-specific** | Existing lens/lighting/overlay controls, discovered groups and `@canvas`; inspect draw/CPU changes only for active consumers. | Whole Field/Scenery/Motion/Canvas hides change many systems and coverage. They select a family to split; they do not identify one object. Current scenery Off can remove physical scenery/lake; use visual masks for same-Club attribution. |
+
+Sources: [field construction](../../../app/render/field.gd),
+[scenery and birds](../../../app/scenery/scenery.gd),
+[flag quality](../../../app/render/flag_quality.gd),
+[flag runtime](../../../app/render/flag.gd),
+[projected targets](../../../app/render/projected_shadow.gd),
+[field target policy](../../../app/render/field_projected_shadows.gd),
+[lake probe owner](../../../app/render/lake/lake_reflection.gd),
+[water/probe construction](../../../app/render/lake/lake_terrain.gd),
+[water material](../../../app/render/lake/water.gdshader),
+[render probe](../../../app/debug/render_probe.gd), refreshed
+[scenery batches](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/scenery/scenery.gd),
+[hedge builder](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/scenery/imported_hedge.gd),
+[trail geometry](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/scenery/ground_features.gd) and
+[physical proxies](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/app/scenery/collision_world.gd).
+Current Scene Detail keeps
+collidable placements across tiers, but changes several visual/LOD fields and
+therefore is not a single-feature isolation.
+
+#### Use the existing tools without overstating their result
+
+The [render-cost reference](../../../tools/debug/README.md#render-cost-pt1h-r9)
+owns syntax and limits. `layers` inventories geometry/light descendants below
+the active camera's scene root; use `find`/inspection for hidden or nongeometry
+owners such as ReflectionProbe. `layers` can descend to eight levels, while
+automatic `ablate` selection stops at four and caps its target list. Explicit
+paths can identify deeper nodes. Prefer a small explicit target list after
+discovery; absent, hidden, already-off and truncated targets are not negative
+performance results.
+
+The complete existing feature-key set is `@shadows`, `@fog`, `@glow`, `@msaa`,
+`@half_res`, `@subviewports` and `@canvas`. There are no semantic `@trees`,
+`@flag`, `@windsock`, `@birds`, `@water`, `@reflections`, `@sun` or `@sky` keys.
+Other targets are literal Node3D paths relative to the reported root.
+
+Existing `ablate` supplies interleaved A–B–A visibility/property screens and
+attempts restoration. Its default ten warmup and sixty sample **frames** are
+short diagnostics, not the time-based acceptance protocol. `freeze=true`
+acquires only a flight simulation hold; Home has no such session, and camera
+or visuals can still change. A live-motion question requires an explicit
+unfrozen matched run. Respect controller/focus/hold refusals; do not force
+resumption or disconnect a player's device to make the probe pass.
+
+Inspect `skipped`, `skipped_reasons`, `truncated`, `overridden` and pause/target
+restoration. A runtime owner can overwrite the probe's temporary value.
+The target list is a discovery snapshot; newly created nodes/targets or a
+currently disabled target that later schedules work may escape it. Recheck
+the affected family during the window before claiming it was completely Off.
+Restoration preserves intervening owner writes, so a successful command alone
+does not prove the original workload was restored. Verify configuration,
+visibility, targets, camera, pause and physical identity before the next case;
+abandon an interrupted comparison without deleting its evidence.
+
+The bridge's GPU observations remain delayed last readings with **unverified
+freshness**. Real `ablate` rows are not a statistically significant GPU-cost ranking. Root
+and secondary readings are separate and cannot be summed into current total
+GPU time. Keep wall/process distributions, root render CPU, draw/primitive
+counts, memory and any supported synchronized GPU observations. A repeatable
+whole-frame change supports a contributor in that workload; it does not by
+itself distinguish GPU shading from CPU submission or driver cost.
+
+The new [completed-frame engine contract](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/tools/graphics/dynamic_resolution/README.md)
+is separate: supported opt-in Vulkan/Metal 3 sampling returns a frame ID,
+configuration generation, recording time, GPU duration and input/output sizes.
+Its duration covers the viewport draw through its render target, excluding
+presentation and other viewports. The controller checks freshness, order and
+dimensions; the old bridge getter was not replaced. GOD TEST currently records
+controller status changes and completed-frame identity/sizes, not a stream of
+those fresh GPU durations. Do not infer pass or presentation timing from the
+ordinary report or call the patch available on Compatibility.
+
+The retained [Primis UHD 630 synthetic screen](https://github.com/bultodepapas/OpenRCsimulator/blob/843f357c07af842054f3ccd6728f93beca9a57ef/docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-primis-2026-11-22.md)
+reported pixel sensitivity on a patched Mobile/Vulkan shader workload and a
+virtual output. It is prior evidence, not a run by this audit or native-physics
+flight/readability/presentation qualification. The product baseline remains
+Compatibility at 75%; it has no supported feedback or range below the
+experiment's 75% floor. A later patched Mobile candidate on the existing Intel
+requires its own matched evidence and does not replace the fixed baseline.
+
+Use the existing [frame recorder/watch](../../../tools/debug/README.md#frame-pacing-and-stutter-captures-pt1h-r15)
+for time-based windows and raw intervals. A `frames` export is a snapshot of
+past samples, not a command that runs the next measurement. Establish window
+boundaries, reproduce the condition, then export; keep query/capture overhead
+outside timed windows and observer ownership/cadence matched. If phase-to-sample
+correlation is not available, add bounded phase markers to the existing tool
+before making per-phase frame claims. Do not create a second profiler.
+
+#### Removal, add-back and interpretation
+
+A hide is a **net workload perturbation**, not a pure upper bound on an object's
+cost. It may stop dependent passes, expose costly background, change overdraw
+or leave CPU updates/allocations intact. A negative or slower hide therefore
+does not prove that feature is free. Split drawing, owner scheduling and
+construction-time allocation when the lead survives restoration and repeats.
+
+For G4, restore the same masked reference between single-family additions.
+If cumulative add-back is useful, reverse its order to expose order/cache
+effects. For only the two strongest candidates X/Y, compare both On, X Off,
+Y Off and both Off with interleaved full baselines. The frame-time contrast
+`T11 - T01 - T10 + T00` can reveal an interaction beyond paired variation; it
+does not assign additive percentages to the features. Avoid an exhaustive
+matrix of every switch.
+
+If Green remains slow, examine shared paths and actual configuration. If only
+Club is slow, split Club families and its ground differences. If the return to
+Green stays slow, investigate residency, compilation, ownership or host drift
+before attributing the change to Club geometry. If the issue appears only with
+motion, follow G5. If only cold entry fails, use I5/L3. A missing target,
+overwritten state, unstable scale/camera or failed restoration makes that
+comparison inconclusive, not a clean negative. Unavailable or freshness-unverified
+GPU timing leaves GPU-specific/pass attribution inconclusive; a well-controlled,
+repeated wall/process comparison can still establish a whole-workload contributor
+with its CPU/GPU mechanism unresolved.
+
+**Bounded missing hooks, only when required by a selected case:** reversible
+semantic masks for all members of a visual family; separate draw/update
+suppression for projected cues, flag/windsock and water/probe owners; a cheap
+same-geometry ground/sky variant (including ground/worn parcel bindings if
+selected); Home-budget hold and phase markers. Reuse
+existing owners and debug infrastructure. Each hook must distinguish hidden,
+unscheduled and never-created work, retain the installed physical world and
+accepted clock, report whether it stayed applied, and restore on completion,
+cancel, timeout, scene exit or disconnect. Mark it proposed until implemented
+and checked; no undocumented flag is assumed to exist.
+
+For each case retain source/native/engine identity, landscape/field/physical
+hash, actual graphics state, camera/pose, accepted-time/wind state, target and
+affected owners, lifecycle mode, A/B/restored-A intervals, observer/cache state,
+draw/target activity, peak/retained memory, faults and restoration result.
+Pre/post images are outside timed windows. Keep “inactive”, “no useful change”,
+“candidate”, “interaction”, “overridden” and “unavailable” as distinct outcomes.
+Diagnostic masks never become default quality settings without G6's product
+and readability checks.
+
+The method is consistent with [Godot's GPU-bottleneck guidance](https://docs.godotengine.org/en/latest/tutorials/performance/gpu_optimization.html)
+and [Intel's render-state experiments](https://www.intel.com/content/www/us/en/docs/gpa/user-guide/2025-1/run-render-state-experiments-with-frame-analyzer.html).
+Those sources motivate controlled changes to pixel, material and draw work;
+they do not establish that Intel GPA supports or is installed on this
+Linux/OpenGL route. Existing project tools remain the first implementation.
 
 ### Pairing and acceptance
 
