@@ -1,4 +1,4 @@
-# Stutter map: three-aircraft tour on Windows and M1
+# Stutter map: three-aircraft tour on Windows, M1 and Linux UHD 630
 
 Where the [performance tour](../../../tools/godtest/PERFORMANCE_TOUR.md) detected
 frame drops and freezes on 2026-11-21. This record **marks** the problems; it does
@@ -81,6 +81,38 @@ screen transition, not repeated stutter while the screen is open.
 The M1 Home screen and the lighting Settings run below 60 FPS while the flight
 behind them is paused.
 
+## Linux, Intel UHD 630 (megatron CT 206)
+
+Run on 2026-11-22 03:14–03:38 UTC with Frigate, the other iGPU user, stopped.
+Setup: shared i5-10500 UHD 630, Mesa 25.0.7 ANV, headless Weston 14 (GL, kiosk) at
+1920×1080, Forward+/Vulkan, Medium detail, borderless. Native physics was verified
+for this exact engine and source (`fb9092123`). The host is a 6-core LXC container
+on a busy node, so the absolute values are a weak-GPU screen, not qualification.
+
+| Aircraft | Circuit FPS | 1 % low | Frames > 100 ms | Sim/wall | Circuit result |
+| --- | --- | --- | --- | --- | --- |
+| Stik | 13 | 7 | 191 | 0.63 | completed in 108 s wall for 67 s simulated |
+| Jet | 9 | 6 | 2438 | ~0.44 | **failed**: 300 s wall deadline after 132 s simulated |
+| Corsair | 9 | 6 | 2528 | ~0.43 | **failed**: 300 s wall deadline after 128 s simulated |
+
+| Area | Marked problem |
+| --- | --- |
+| Flight pace | **Slow motion.** At 9–14 FPS the simulation runs at 0.43–0.66 of real time in `recover` and `runway_circuit` |
+| Flight loading | **36–45 s freeze** (35,686 / 40,963 / 44,528 ms) plus 1.0–1.9 s freezes |
+| Home → selection | 0.62–0.65 s freeze |
+| Menu transitions | Settings 0.35–0.40 s, Controls 0.80–0.85 s, lighting Apply 0.40–0.67 s, Home return 0.44–0.77 s |
+| Home screen | 6 FPS |
+| Shutdown | Stik: the app did not exit in time and was killed (`forced`, exit -9) |
+
+Two artifacts limit Linux eligibility:
+
+- **Wayland suspension.** Godot's Wayland backend reports the window undrawable
+  during any stall longer than its frame-event timeout (about 1 s). Each of the 2–3
+  undrawable intervals per case *is* one of the marked stalls, in `startup` or
+  `loading`, so render evidence stays incomplete.
+- **Weak GPU.** On this GPU, Automatic graphics would start at Low detail; this
+  Medium run is the tour's fixed comparison workload.
+
 ## What to investigate next
 
 These are detection results only. Use the diagnostics in the tour guide's
@@ -91,5 +123,7 @@ and compare a matched before/after run on the same machine:
 2. The first Home → selection freeze on a fresh Windows launch (2.8 s).
 3. One freeze per menu transition: Settings, Controls, lighting Apply and Home return.
 4. M1 Home/menu frame rate and in-flight sub-60 FPS dips at full GPU load.
+5. Linux UHD 630: slow-motion simulation below ~15 FPS, 36–45 s loading freezes and
+   a forced kill at shutdown.
 
 Repeat with `--repeats 3` and an idle, unlocked desktop before claiming any change.

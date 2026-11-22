@@ -64,9 +64,12 @@ lighting Apply, Home, and shutdown remain part of every complete tour case.
 This is the implemented **V1** sequence.
 
 1. Start the real source/debug application through Startup and Home. Wait for a
-   verified frame-watcher cursor and, for up to 10 s, the focused application
-   window before aircraft selection; a locked desktop or background window fails
-   there with that cause.
+   verified frame-watcher cursor before aircraft selection, and record for up to
+   10 s whether the application window is focused. A flight that then starts
+   paused while unfocused (for example on a locked desktop) fails with that cause.
+   A headless Wayland compositor without a keyboard seat never focuses any window;
+   there the driver substitutes AppRoot's focus probe and records
+   `window_focus_probe_override`. Real focus-loss events still pause.
 2. Select the required aircraft, Club Field, calm weather, clear sky, day lighting,
    and the recorded sky seed through the application. Weather keeps its preset's
    own turbulence seed, so it stays an exact preset that the Mac native domain
@@ -158,7 +161,11 @@ roster into untracked jobs and call them the original complete suite.
 Run each campaign on its actual OS, physical GPU and visible desktop. The desktop
 must stay unlocked and undisturbed: a flight pauses on any OS focus loss, and the
 case then fails. On macOS a locked screen keeps `loginwindow` in front, so even a
-LaunchServices launch from SSH gets no focus. Use the
+LaunchServices launch from SSH gets no focus. On a Wayland-only Linux session,
+`debugctl` passes `--display-driver wayland` (Godot otherwise tries X11 and exits).
+There Godot also reports the window undrawable during any stall longer than its
+frame-event timeout (about 1 s); those intervals still invalidate render evidence
+and are marked as freezes. Use the
 [existing host admission](../testqueue/README.md) on enrolled machines. The CLI
 retains its owning session through cleanup; the checked headless pool is not a
 replacement for a rendered performance run. Use [the Mac guide](../../docs/tools/macos-m1.md)

@@ -487,6 +487,26 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(popen.call_args.args[0][:4],
                          ["/usr/bin/xvfb-run", "-a", "-s", "-screen 0 1920x1080x24"])
 
+    def test_rendered_linux_wayland_only_session_selects_the_wayland_driver(self) -> None:
+        # Godot defaults to X11 and exits on a Wayland-only session (headless Weston hosts).
+        os.environ["OPENRC_GODOT"] = "source-godot"
+        os.environ.pop("DISPLAY", None)
+        os.environ["WAYLAND_DISPLAY"] = "wl-0"
+        out = Path(self.tmp.name) / "wayland"
+        try:
+            with patch.object(debugctl.sys, "platform", "linux"), \
+                    patch.object(debugctl, "reserve_port", return_value=43211), \
+                    patch.object(debugctl.shutil, "which", side_effect=AssertionError("xvfb probed")), \
+                    patch.object(debugctl.subprocess, "Popen", return_value=SimpleNamespace(pid=12347)) as popen, \
+                    patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12348}}):
+                status, _, err = self.run_cli("launch", "--out", str(out))
+        finally:
+            os.environ.pop("WAYLAND_DISPLAY", None)
+        self.assertEqual((status, err), (0, ""))
+        command = popen.call_args.args[0]
+        self.assertEqual(command[0], "source-godot")
+        self.assertEqual(command[command.index("--display-driver") + 1], "wayland")
+
     def test_exported_launch_rejects_invalid_options_before_claiming_port(self) -> None:
         exe = Path(self.tmp.name) / "packaged.exe"
         exe.touch()
