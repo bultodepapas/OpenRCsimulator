@@ -2,6 +2,8 @@
 
 ## Implementation follow-up from `dc59add8e`
 
+These entries retain their recorded component evidence. The [sixth pass](sixth-pass.md#remote-repairs-and-integration-boundary) distinguishes the later presentation refactor and I01 source-pin mismatch from the earlier replay receipt.
+
 | Finding | Change and verification |
 | --- | --- |
 | [T04](vehicles-and-aircraft.md#t04-fixed-wing-flap-animation-reads-a-full-advisory-state) | Flap animation reads the accepted actuator angle directly. Across 18 headless cases using Avanti, P-51 and Extra data, angles matched the previous render input byte for byte and the full advisory dictionaries remained equal. For a valid actuator on the two equipped aircraft, one air-data call and two density calls fell to zero per visual read. |
@@ -14,7 +16,9 @@
 
 ## Audit record
 
-**Latest: [fifth pass into uncovered paths](fifth-pass.md).** The branch now integrates main `0f859b5f358f4807877ec8bd7fe8009bc3856d3f`, including new paint assets, render changes and Linux test evidence. Nine additional conditional investigations cover paint loading/residency/LOD, input event dispatch, quad keyboard sampling, repeated throttle decoding, propagation search, mechanical audio and first-rain warm-up. Independent review rejected duplicate claims for already-tracked glow and terrain-anchor work. The pass includes exact source-data arithmetic and a current-main/caps report; it adds no production optimization or newly measured FPS gain.
+**Latest: [sixth pass, native boundaries and old-hardware cost models](sixth-pass.md).** The latest-main source review pins `85a2475f60029a4b6b09f23f643119bceea84a45`, including fixed render scale and newer UHD 630 evidence. Publication preserves the concurrently updated audit branch through `ee46d96b`; its runtime is not combined with main without a fresh companion rebind. The latest presentation refactor also exposes a pinned source-identity mismatch, recorded as I01. This pass traces two RC shader experiments, residual star-buffer construction, and a quantified continuation of F17 spatial-weather statistics. The reproducible paused-view pixel model withholds the 67% observation and explicitly excludes track cost. Independent reviews preserve derivative, normal, validity, callback and lifetime contracts; smaller native/Off-path ideas remain a watchlist. No production optimization or new measured FPS gain is claimed.
+
+**Fifth-pass record: [previous uncovered paths](fifth-pass.md).** At main `0f859b5f358f4807877ec8bd7fe8009bc3856d3f`, nine conditional investigations covered paint loading/residency/LOD, input dispatch, quad sampling, throttle decoding, propagation search, mechanical audio and first-rain warm-up. Its asset counts and measurements retain that source identity.
 
 **Fourth-pass record: [deeper vehicle/rendering investigation](fourth-pass.md).** Thirteen further traced items cover cars, drones, helicopters, retractable aircraft, Home and lighting. A source-bound Nitro sampler experiment has byte-identical tested outputs and a 19.6–27.7% median paired component-time reduction across six process/workload summaries; this is not FPS or production visual qualification. The audited simulator-source CI completed successfully; latest main `c20a074de` adds only release/download website content and has a separate in-progress CI run. The branch integrates that latest main. Detailed traces, retained raw timings and native/platform follow-ups are linked there.
 

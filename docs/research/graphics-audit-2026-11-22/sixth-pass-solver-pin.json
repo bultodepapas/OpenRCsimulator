@@ -1,0 +1,50 @@
+{
+  "cases": [
+    {
+      "commit": "85a2475f60029a4b6b09f23f643119bceea84a45",
+      "computed_normalized_sha256": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "label": "main control",
+      "loader_sha256": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719",
+      "matches_both_pins": true,
+      "profile_blob_sha": "c7a1e9daa774b77492764efddcda07d1f4405d40",
+      "profile_pin": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "qualification_blob_sha": "2a3e3e898a55cecf3a0b8dd591468100de3913c8",
+      "qualification_pin": "7e404f01db1146361acea77bc76ac08edc31458daa97b35c01b4538977e34982",
+      "source_count": 203
+    },
+    {
+      "commit": "f1d1151ae3841d97a080c499a5a0280ab3bdd3d9",
+      "computed_normalized_sha256": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+      "label": "earlier audit control",
+      "loader_sha256": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719",
+      "matches_both_pins": true,
+      "profile_blob_sha": "53c9ffa22f5a99843080e461f11d9461c37c5d5d",
+      "profile_pin": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+      "qualification_blob_sha": "e51824ee91036bcb3fb6ab95fe503bdd4bb078b8",
+      "qualification_pin": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+      "source_count": 203
+    },
+    {
+      "commit": "ee46d96b7be4a77e040d814f6db71ab968751f01",
+      "computed_normalized_sha256": "1bc571466406d8eaa270162691b0cc7c162729f92eb4f8f3080681894df6c086",
+      "label": "later audit source",
+      "loader_sha256": "464bae461d41e6bdc992d239d4b4a9bee2c733981e0990199a0352d942ac5719",
+      "matches_both_pins": false,
+      "profile_blob_sha": "254d4c0e7aeb6c7ec7617747557bb5b9d1f090b3",
+      "profile_pin": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+      "qualification_blob_sha": "e51824ee91036bcb3fb6ab95fe503bdd4bb078b8",
+      "qualification_pin": "43c52f4e5b0ed314c7341738f77f22aa24ec383127eba71bc669fbaa5157fa9e",
+      "source_count": 203
+    }
+  ],
+  "limitations": [
+    "Reads committed Git source blobs, not a packaged or live Godot filesystem.",
+    "Matching two accepted controls checks this translation; no engine API or replay was executed.",
+    "The mismatch is source-identity evidence, not changed physics, FPS, or failed physical validation.",
+    "Never replace a qualification pin merely with this computed digest; the owning rebind requires tape comparison.",
+    "Later branch commits may repair the mismatch; the witness remains pinned to ee46d96b."
+  ],
+  "method": "Python translation of pinned canonical_solver_identity: sorted ASCII res:// paths for .gd blobs in physics/sim/failures, then UTF-8 content with CRLF/CR normalized to LF; SHA-256 without extra separators.",
+  "reproducer_sha256": "4382e0d7678b5c551842e84f26d3d87369045bed22aa93bbfbe6475edbe5d71c",
+  "schema": 1
+}

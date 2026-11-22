@@ -1,5 +1,27 @@
 # Current-main audit reproductions
 
+## Paused-view pixel-cost model
+
+The sixth pass fits `T(s) = A + B*s²` to the pinned UHD 630 report's minimal-view FPS table at native and 75% scale, holding out Mobile's 67% observation. It reads the report from main `85a2475f60029a4b6b09f23f643119bceea84a45` with Git, records script/report SHA-256 values, and writes the exact rows, coefficients, range-endpoint sensitivity and illustrative 240 Hz arithmetic. It uses only the Python standard library and Git:
+
+```sh
+python3 research/performance/graphics-audit-2026-11-22/reproduce_pixel_model.py \
+  --out tmp/graphics-audit-2026-11-22/pixel-model-fresh.json
+```
+
+The output path must be new. `--repo /absolute/path/to/checkout` selects the source repository; it must contain the pinned `85a2475f60029a4b6b09f23f643119bceea84a45` main Git object (fetch main if using a single-branch clone). A clone containing only the divergent audit-branch history cannot read the pinned report until that object is available. This is offline arithmetic over retained rounded summaries, not an engine launch, application test or new benchmark. The source profile is paused, with **RC track Off**. The intercept is not measured CPU time; endpoint sensitivity is not a statistical interval; the withheld observation is not independent replication. Nominal squared scales do not establish actual rounded internal dimensions. See [sixth-pass analysis](../../../docs/research/graphics-audit-2026-11-22/sixth-pass.md) and [retained receipt](../../../docs/research/graphics-audit-2026-11-22/sixth-pass-pixel-model.json).
+
+## Solver-source pin witness
+
+`reproduce_solver_pin.py` translates the pinned production `canonical_solver_identity` over sorted ASCII `res://` paths and UTF-8 source with LF normalization. It selects only `.gd` Git blobs under physics/sim/failures; it does not materialize assets, launch Godot or qualify a tape. Two accepted 203-source snapshots are controls; `ee46d96b` demonstrates the subsequent pin mismatch.
+
+```sh
+python3 research/performance/graphics-audit-2026-11-22/reproduce_solver_pin.py \
+  --out tmp/graphics-audit-2026-11-22/solver-pin-fresh.json
+```
+
+The output must be new. The selected `--repo` must contain all three pinned Git commits named in the script; fetch main and graphics-audit histories as necessary. The receipt records full computed/stored identities and loader, script and configuration identities. A successful witness means the expected matches/mismatch were reproduced; it does not approve replacing the stale pin. See [I01 and its qualification boundary](../../../docs/research/graphics-audit-2026-11-22/sixth-pass.md#i01--later-presentation-refactor-leaves-the-older-companion-solver-pin) and [retained receipt](../../../docs/research/graphics-audit-2026-11-22/sixth-pass-solver-pin.json).
+
 ## Phase/focus witness
 
 This source-bound witness exercises the existing GOD TEST reducer with synthetic frame packets. It reproduces two phase-attribution counterexamples and checks four focus receipts, including an existing later-loss rejection. It does not run Godot, touch an interactive desktop, submit a shared-host job, or benchmark FPS.
