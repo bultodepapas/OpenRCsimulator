@@ -204,12 +204,12 @@ def cinema_context(spec, resolve, prepare_only):
     # Use the repository sources and their pinned hashes, never trust a media
     # manifest to redefine the stock vehicle/skin bindings.
     shot_plan.validate(plan, HERE.parents[1])
-    if plan.get('revision') != 'R6':
-        raise ValueError('cinema style requires the R6 shot plan')
+    if plan.get('revision') not in ('R6', 'R7'):
+        raise ValueError('cinema style requires an R6 or R7 shot plan')
     actual = [(s['id'], s['frames']) for s in spec['shots']]
     expected = [(s['id'], s['out_frame']-s['in_frame']) for s in plan['shots']]
     if actual != expected:
-        raise ValueError('cinema media shot order and lengths must match the R6 shot plan')
+        raise ValueError('cinema media shot order and lengths must match the selected shot plan')
     for shot in spec['shots']:
         if shot.get('graphics') or shot.get('features'):
             raise ValueError('cinema titles come only from the global title plan')

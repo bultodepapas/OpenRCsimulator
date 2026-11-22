@@ -4,28 +4,42 @@ TRA-02…07 presentation tools originated with the English film **Every Input Ma
 See the [production plan](../../docs/plans/cinematic-trailer.md) and its linked evidence for scope and results.
 No tool here edits the simulation kernel, aircraft data, damage assessment or prices.
 
-## R6 cinematic titles and camera recipes
+## R7 cinematic titles and camera recipes
 
-The current [R6 shooting script](../../docs/plans/trailer-v2/cinematic-script-r6.md),
-[shot plan](../../docs/plans/trailer-v2/shot-plan-r6.json) and
-[title plan](../../docs/plans/trailer-v2/title-plan-r6.json) describe **150 s / 9,000 frames / 62 cuts**.
-The new code is presentation/capture/edit tooling. It does not change the simulator, choose a soundtrack,
-import a model batch or establish that the proposed flight can be flown.
+The current [R7 shooting script](../../docs/plans/trailer-v2/cinematic-script-r7.md),
+[shot plan](../../docs/plans/trailer-v2/shot-plan-r7.json),
+[storyboard](../../docs/plans/trailer-v2/storyboard-r7.md) and
+[title plan](../../docs/plans/trailer-v2/title-plan-r7.json) describe **150 s / 9,000 frames / 62 cuts**.
+The [direction and continuity guide](../../docs/plans/trailer-v2/direction-and-continuity.md) explains
+the scene entrances, exits and lighting. The signature section is Corsair orbit at 105–115 s,
+lake at 115–121 s, Bisonte shore at 121–126 s, imports at 126–141 s and Turbo Lumber at 141–145 s.
+Presentation/capture/edit tooling does not establish that a proposed flight can be flown; the actual
+gameplay takes, model imports, camera framing, soundtrack and finished film remain unqualified.
 
 ### One plan for positions, cards and camera recipes
 
 ```sh
-python3 tools/trailer/shot_plan.py validate
-python3 tools/trailer/shot_plan.py show R4-40
-python3 tools/trailer/shot_plan.py cards --out tmp/trailer/r6-plan-01/shot-cards.md
-python3 tools/trailer/shot_plan.py map R4-40 --out tmp/trailer/r6-plan-01/lake.svg
-python3 tools/trailer/shot_plan.py camera-recipe R4-40 --out tmp/trailer/r6-plan-01/lake-camera.json
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json validate
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json show R4-40
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json cards --out tmp/trailer/r7-plan-01/shot-cards.md
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json map R4-40 --out tmp/trailer/r7-plan-01/lake.svg
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json camera-recipe R4-01 --out tmp/trailer/r7-plan-01/r4-01-camera.json
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json camera-recipe R4-03 --out tmp/trailer/r7-plan-01/r4-03-camera.json
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r7.json camera-recipe R4-40 --out tmp/trailer/r7-plan-01/r4-40-camera.json
 ```
 
 Every `--out` creates a new file; use a fresh run directory. `cards` regenerates the block between the
 `BEGIN/END GENERATED SHOT CARDS` markers in the shooting script. Other commands check that block against
 the numeric plan. Cast/catalog/source hashes, 62 cut boundaries, 13-skin order and lake continuity retain
-the R5 checks. The parsed plan and exported SHA-256 come from the same byte snapshot.
+the R5 checks. The parsed plan and exported SHA-256 come from the same byte snapshot. R7 review recipes
+are intended at `docs/plans/trailer-v2/recipes/r4-01-camera.json`, `r4-03-camera.json` and
+`r4-40-camera.json`; regenerate against the final R7 plan and check their hashes before use. Historical
+recipes with older plan hashes do not represent R7.
+
+The 10% Workshop trial in R4-37 retains a proposed close `parallel_east` camera at N28.5, D−1.2,
+east = actual CG east −1 m and 24° vertical FOV. Its runtime model ID is `workshop-<hash>`, while the
+current recipe guard requires the stock model ID. The exporter rejects R4-37; combining that camera
+with the real tiny trial needs a separate qualified capture route. These marks do not position or fly it.
 
 The camera exporter accepts stock G-class fixed-wing Club-field shots using `fixed_tracking` or
 `parallel_east`. It rejects ground vehicles, rotorcraft, imports, panoramas, UI, inspection and unsupported
@@ -38,8 +52,9 @@ camera modes. The current exported lake recipe has this shape (the command suppl
   "shot_id": "R4-40",
   "vehicle_id": "f4u-corsair-250",
   "source_plan_sha256": "<SHA-256 of the parsed shot-plan bytes>",
-  "target": "presented_cg",
-  "fov_deg": 42,
+  "target": "presented_cg_water_plane",
+  "fov_deg": 34,
+  "water_down_m": 0.45,
   "mode": "parallel_east",
   "north_m": 145,
   "down_m": -1,
@@ -48,8 +63,11 @@ camera modes. The current exported lake recipe has this shape (the command suppl
 ```
 
 This displayed shape is explanatory; do not copy its hash placeholder into a capture. `fixed_world`
-recipes use `eye_ned_m: [north,east,down]` instead of the three parallel-rig fields. The adapter requires
-finite bounded values, a perspective camera, no optical offsets and an actual displayed CG. It fails
+recipes use `eye_ned_m: [north,east,down]` instead of the three parallel-rig fields. The regular
+`presented_cg` target aims at the actual displayed CG and refuses a water-plane field. The lake's
+`presented_cg_water_plane` target keeps the CG's actual north/east and aims at the pinned mean-water
+plane D+0.45 m; it requires bounded `water_down_m`. The adapter uses vertical FOV with
+`Camera3D.KEEP_HEIGHT`, a perspective camera, zero optical offsets and finite bounded values. It fails
 permanently after an invalid runtime target so a later good frame cannot hide the earlier failure.
 
 ### Composing the camera with a real flight
@@ -58,7 +76,7 @@ Supply the generated recipe to the existing **offline** `capture_flight.gd` work
 
 ```text
 --aircraft=f4u-corsair-250 --landscape=club_field
---camera-recipe=/absolute/path/to/lake-camera.json
+--camera-recipe=/absolute/path/to/r4-40-camera.json
 ```
 
 Retain the actual capture runtime, movie-writer configuration, output directory and qualified pilot
@@ -70,11 +88,15 @@ not apply the subject’s proposed marks, select livery, spawn at the lake or su
 Capture refuses real-time `--frametimes`, `lighting-pilot`, crash shots, a non-Club landscape,
 non-fixed-wing or mismatched selected/loaded vehicles, and an external/non-physics session. It also
 rejects paused, faulted, held, crashed or non-advancing capture frames, missing director frame evidence,
-a non-current camera, or a camera/target that changed after placement. The requested duration must be
+a non-current camera, or a camera/target that changed after placement. It requires the camera application
+to match the current engine process frame and simulation tick as well as the director's tick, including
+when the CG is stationary. The requested duration must be
 finite and span at least two source frames. Normal source/renderer/workload admission remains required.
 
 The take manifest retains the exact recipe bytes’ hash, camera-script hash, loaded aircraft identity
-and per-frame actual eye, orientation, FOV and CG target alongside the director’s frame/tick records.
+and per-frame actual eye, orientation, vertical FOV, aspect mode, actual displayed CG and separate aim
+alongside the director’s frame/tick records. Camera evidence includes the application process frame,
+simulation tick and water-plane value when applicable.
 `source_plan_sha256_claimed` is explicitly the recipe’s declaration: capture does not separately read
 the original plan file. Preserve that file and compare its hash when admitting a take.
 
@@ -82,33 +104,85 @@ A successful software test is not a captured lake pass. `external_spawn_airborne
 external-driver API, not a live pose setter or a drop-in flag for this harness. A flight driver/fixture,
 actual source range, shore/prop clearance and reflection still need their own qualification.
 
+### Field-world light and capture settings
+
+The R7 day-part settings use the field-world underscore option, with a blank clock override and frozen
+solar time. These are fixed-wing harness fragments; ground capture needs its own qualified sky route:
+
+```text
+--time= --time_of_day=morning     --time_scale=0 --sky=clear
+--time= --time_of_day=afternoon   --time_scale=0 --sky=clear
+--time= --time_of_day=golden_hour --time_scale=0 --sky=clear
+--time= --time_of_day=sunset      --time_scale=0 --sky=clear
+--time= --time_of_day=night       --time_scale=0 --sky=clear
+--time= --time_of_day=blue_hour   --time_scale=0 --sky=clear
+--time= --time_of_day=            --time_scale=0 --sky=clear
+```
+
+The source defines morning at rising apparent sun +25°, afternoon at setting +35°, golden hour at +6°,
+sunset at +0.5° and blue hour at −4°. Night instead searches for a dark-sky, nearly full-moon view.
+These are separate prepared sessions, not a claim of an uninterrupted day. The final line selects the
+calibrated fixed Day only in a fresh direct session with an empty `session_preset` and legacy lighting;
+**do not pass `--time_of_day=day`**, which is not a field-world preset. Explicit `--time=` suppresses
+an inherited `OPENRC_TIME`: otherwise that clock wins even over a named preset. The blank
+`--time_of_day=` also suppresses an inherited `OPENRC_TIME_OF_DAY` for fixed Day.
+
+Clear `OPENRC_DATE`, `OPENRC_LAT`, `OPENRC_LON` and `OPENRC_UTC_OFFSET` to use the source reference,
+or deliberately set and record alternative date/place values. Record the actual resolved preset, date,
+place, local hour and time scale; the night preset searches forward for its selected moon view. The
+field-world `--time=HH:MM`, `--date`, `--lat`, `--lon` and `--utc_offset` select a specific place/time;
+UTC offset is in hours. This interface differs from the separate `--time-of-day` lighting API.
+
+The fixed-wing harness accepts `--sky=clear` or `--sky=electrical_storm` and forwards wind/gust options,
+but does not forward arbitrary cloud seed/motion or storm-flash options. The ground-vehicle harness has
+its own option plumbing; its shared World can read the field-world time, but do not assume it forwards
+`--sky=clear` or provides the five-second Bisonte shore path. Read back actual weather and appearance.
+`capture_car_jump.gd` rejects time/sky arguments, starts with classic sky and uses a 46° orbit camera.
+It is a reference for R4-02's real jump; the planned morning/clear, 42° composition needs a qualified
+manual or adapted route. The dated jump evidence applies to its original settings.
+For matching golden orbit and lake takes, preserve the resolved date, place, sky, wind and time scale;
+frozen time does **not** freeze view-dependent exposure, so compare the actual images and record exposure.
+For the last Lumber shot use a validated `night_radian` aircraft-lighting profile with a readable airframe;
+`blue_hour` is the declared alternate if night is too dark. Keep moon options and the displayed date with
+the take: a forced moon phase can change that date.
+
+The lake's default reflection probe excludes the moving aircraft. A moving-aircraft reflection requires
+the optional `OPENRC_LAKE_REFLECTIONS=planar` route with active High, non-headless Forward+ and a valid
+visible-water/camera configuration. The default Compatibility capture route does not establish that
+result. Compare real frames and retain an honest unmirrored pass if reflection does not qualify.
+
 ### Global-frame film typography
 
 ```sh
 python3 tools/trailer/title_plan.py validate \
-  --shot-plan docs/plans/trailer-v2/shot-plan-r6.json
+  --plan docs/plans/trailer-v2/title-plan-r7.json \
+  --shot-plan docs/plans/trailer-v2/shot-plan-r7.json
 python3 tools/trailer/title_plan.py preview \
-  --shot-plan docs/plans/trailer-v2/shot-plan-r6.json \
-  --out-dir tmp/trailer/r6-type-study-01
+  --plan docs/plans/trailer-v2/title-plan-r7.json \
+  --shot-plan docs/plans/trailer-v2/shot-plan-r7.json \
+  --out-dir tmp/trailer/r7-type-study-01
 ```
 
-The preview is an **18.75 s / 1,125-frame synthetic typography study**, with a permanent
-`TYPOGRAPHY STUDY · NO GAME FOOTAGE` caption. It includes complete entrances/exits for all three story
-titles and the entire five-second end card. It creates an MP4, contact JPEG and `study-summary.json`,
-then removes intermediate PNGs. [The retained review](../../docs/plans/trailer-v2/review/r6/typography-study.mp4)
-uses the same generator; [its summary](../../docs/plans/trailer-v2/review/r6/study-summary.json)
-records dependencies and output hashes. It cannot qualify title/subject/HUD clearance over game footage.
+The retained R7 preview is a **22.75 s / 1,365-frame synthetic typography study**, permanently marked
+`TYPOGRAPHY STUDY · NO GAME FOOTAGE`. It samples all three story-title entrances/exits, the Lumber
+identifier and the full five-second end card. It creates an MP4, contact JPEG and `study-summary.json`,
+then removes intermediate PNGs. The generated and inspected R7 review is under `docs/plans/trailer-v2/review/r7/`;
+its summary records exact input/output hashes and FFmpeg probe results. The retained [R6 study](../../docs/plans/trailer-v2/review/r6/typography-study.mp4)
+and [summary](../../docs/plans/trailer-v2/review/r6/study-summary.json) are historical evidence for its
+18.75 s / 1,125-frame R6 inputs only. Neither study qualifies title/subject/HUD clearance over gameplay.
 
 `cinema_titles.py` reuses the vendored Barlow fonts and SIL OFL license, verifies their pinned digests,
 measures glyph ink with pair kerning plus tracking, and rejects missing glyphs, unsafe bounds and
 spatial/time collisions. RGBA sequences sample **global frames**, including half-open cue boundaries.
-Required labels have no entrance/exit fades; the Phoenix label stays opaque across all nine Phoenix
+R7 functional labels use 52 px type, with validation allowing 48–56 px. The unchanged story headlines
+are `A SKY WITHIN REACH`, `FEEL EVERY INPUT` and `EXPAND YOUR HANGAR`; the last appears at 126–128 s.
+The `TURBO LUMBER` identifier is visible at 141–145 s. Required labels have no entrance/exit fades; the Phoenix label stays opaque across all nine Phoenix
 cuts and ClearView does the same. The lake interval is text-free. The final trial binds to either
 `EXPERIMENTAL TEST FLIGHT · ESTIMATED PHYSICS` or `EXPERIMENTAL TEST FLIGHT · DONOR PHYSICS` only after the
 actual eligible model route establishes that basis. A binding is a copy setting, not acceptance evidence.
 
 The static `CINEMATIC SIZE COMPARISON` disclosure is implemented. Model-attached 7.62 m / 1.52 m / 15 cm
-labels are still a separate source/tracked-layout requirement; the R6 renderer does not create them.
+labels are still a separate source/tracked-layout requirement; the title renderer does not create them.
 
 ### Optional zoom-through-text study
 
@@ -130,7 +204,7 @@ It probes the resulting frame count and performs a full decode with FFmpeg `-xer
 
 The [research note](../../docs/plans/trailer-v2/research-text-window-transition-2026-11-22.md)
 explains the effect, the After Effects workflow and future assembly considerations.
-This tool generates synthetic review material; it is not integrated into the R6 title
+This tool generates synthetic review material; it is not automatically integrated into the R7 title
 plan or assembler and does not demonstrate the effect over actual game footage.
 
 ### Binding accepted media
@@ -139,8 +213,8 @@ A cinema media manifest adds these top-level fields to the existing media format
 
 ```text
 style: "cinema"
-shot_plan: path to shot-plan-r6.json
-title_plan: path to title-plan-r6.json
+shot_plan: path to shot-plan-r7.json
+title_plan: path to title-plan-r7.json
 trial_basis: "estimated" or "donor", after actual trial qualification
 fps: 60
 music: path to the selected and properly credited soundtrack
@@ -156,7 +230,7 @@ requires explicit `title`, `metadata_comment`, `video_description` and `output_f
 ```sh
 python3 tools/trailer/assemble.py --manifest /absolute/path/to/accepted-media.json \
   --ffmpeg /absolute/path/to/ffmpeg --ffprobe /absolute/path/to/ffprobe \
-  --out tmp/trailer/r6-export-01 --work tmp/trailer/r6-edit-01
+  --out tmp/trailer/r7-export-01 --work tmp/trailer/r7-edit-01
 ```
 
 `--prepare-only` can prepare available cuts while missing pictures, image-sequence frames or audio are
@@ -180,19 +254,32 @@ python3 -B tools/trailer/test_camera_recipe.py
 python3 -B tools/trailer/test_cinema_titles.py
 python3 -B tools/trailer/test_title_plan.py
 python3 -B tools/trailer/test_cinema_assembly.py
+python3 -B tools/trailer/test_r7_direction.py
 ```
 
-The assembly test encodes actual synthetic cuts through FFmpeg and checks both sides of the source-label
-cut; it is not a gameplay capture. This pass used Pillow 13.0.0, FreeType 2.14.3, raqm 0.11.0 and
-FFmpeg/ffprobe 7.1.5. Those version records scope these results; older film runtime versions below remain historical.
+The assembly test encodes synthetic cuts through FFmpeg and checks both sides of the source-label cut;
+it is not a gameplay capture. R7 passed 60 focused Python tests with Pillow 13.0.0, FreeType 2.14.3, raqm 0.11.0 and
+FFmpeg/ffprobe 7.1.5. The R7 audit records exact inputs and limitations; actual gameplay remains pending.
 
 Use the configured test pool for compatible Godot checks, or the checked local runner when no pool is
 configured, with the repository’s pinned Godot and any required admission. The standalone
 `test_planned_camera.gd` exercises Camera3D in a minimal project with a fake flight owner/director and
 real adapter; it does not load an aircraft or prove flight physics. Optional repeated
 `--exported-recipe=/absolute/path.json` arguments add file/hash checks for actual exported recipes.
-The exact commands, final counts and full-harness parse scope are in the
-[R6 audit](../../docs/plans/trailer-v2/script-audit-r6-2026-11-22.md).
+R7 passed 230 headless camera checks and 18 actual field-world resolver checks in `test_capture_time.gd`.
+The optional `--check-post-draw` camera probe needs an actual rendering route: the bounded headless
+probe emitted no draw callback and did not qualify it. That gap and the successful production-dependency
+parse are recorded in the [R7 audit](../../docs/plans/trailer-v2/script-audit-r7-2026-11-22.md).
+The [R6 audit](../../docs/plans/trailer-v2/script-audit-r6-2026-11-22.md) retains its historical counts.
+
+## R6 cinematic titles and camera recipes
+
+The [R6 shooting script](../../docs/plans/trailer-v2/cinematic-script-r6.md),
+[shot plan](../../docs/plans/trailer-v2/shot-plan-r6.json) and
+[title plan](../../docs/plans/trailer-v2/title-plan-r6.json) remain historical inputs. Its earlier
+software and typography-study results are scoped in the R6 audit above; current production commands
+and R7-specific camera behavior are in the preceding section. Select an older plan explicitly when
+reproducing a historical study.
 
 ## R5 shot plan and livery finish
 
@@ -297,7 +384,8 @@ flags and PNG color space. Sparse PNG captures are inspection samples, not full 
 For RGB acceptance captures, `capture_flight.gd --lighting-preset=<id>` freezes an ordinary
 Workshop trial from the chosen stock aircraft and built-in preset (`classic_rc`, `night_radian`,
 `neon_rgb`, `night_aerobatics`, `festival`, `custom`). It does not save a build or modify physics.
-Pass `--time_of_day=night` to the capture process for the existing moonlit world. `--shot=lighting-pass`
+Pass `--time= --time_of_day=night` to the capture process for the existing moonlit world, with the
+date/place inputs and actual readback retained as above. `--shot=lighting-pass`
 uses neutral flight controls with the existing trimmed throttle plus 0.08 and a moving close camera;
 `--shot=lighting-pilot` uses the same controls with the production pilot camera, auto-zoom off and
 the magnifier on. No previously recorded `.orfl` tape is replayed by these shots.
@@ -453,7 +541,7 @@ from an isolated source snapshot and retain its identities. Use a fresh output/p
 ```powershell
 $RgbRun = Join-Path $PWD 'tmp/rgb-performance-festival-new'
 $env:APPDATA = Join-Path $RgbRun 'profile'
-python tools/godot/run_checked.py --label rgb-performance-festival --warnings-as-errors --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path tmp/trailer/runtime/app --audio-driver Dummy --rendering-method gl_compatibility --fullscreen --disable-vsync --max-fps 0 --script "$PWD/tools/trailer/capture_flight.gd" -- "--out-dir=$RgbRun" "--frametimes=$RgbRun/frametimes.json" --lighting-preset=festival --lighting-quality=standard --time_of_day=night --shot=lighting-pass --warmup=30 --t=60
+python tools/godot/run_checked.py --label rgb-performance-festival --warnings-as-errors --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path tmp/trailer/runtime/app --audio-driver Dummy --rendering-method gl_compatibility --fullscreen --disable-vsync --max-fps 0 --script "$PWD/tools/trailer/capture_flight.gd" -- "--out-dir=$RgbRun" "--frametimes=$RgbRun/frametimes.json" --lighting-preset=festival --lighting-quality=standard --time= --time_of_day=night --time_scale=0 --shot=lighting-pass --warmup=30 --t=60
 ```
 
 This mode performs no image readback or movie encoding, and disables the director's full tick/frame

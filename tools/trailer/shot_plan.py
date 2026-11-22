@@ -19,10 +19,11 @@ import json
 import math
 import re
 import sys
+import textwrap
 from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parents[2]
-DEFAULT_PLAN = REPO / 'docs/plans/trailer-v2/shot-plan-r6.json'
+DEFAULT_PLAN = REPO / 'docs/plans/trailer-v2/shot-plan-r7.json'
 FIELD = 'app/data/fields/default.json'
 TRACK = 'app/data/ground_vehicle/airfield_track.json'
 AIRCRAFT_CATALOG = 'app/app_state/aircraft_catalog.gd'
@@ -440,13 +441,92 @@ def water_analysis(plan, shot, source_root):
     return result
 
 
+def validate_water_target(plan, camera, source_root):
+    """Bind a framing plane to actual pinned lake data, never to a freehand height."""
+    height = camera.get('water_down_m')
+    if not finite(height) or abs(height) > 100000:
+        fail('water_down_m must be a finite bounded number')
+    path = plan.get('lake_analysis', {}).get('source_path')
+    if path not in plan.get('source_files', {}):
+        fail('water-plane target requires a pinned lake source')
+    source = read_json(source_path(source_root, path))
+    if not eq_json(height, source.get('water_level_down_m')):
+        fail('water_down_m differs from the source mean-water plane')
+    return height
+
+
+def validate_direction(plan, source_root):
+    """Check R7 editorial handoffs and source-backed frozen lighting choices."""
+    shots = plan['shots']
+    directions = {'screen_right', 'screen_left', 'forward', 'neutral', 'variable'}
+    cuts = {'hard_cut', 'same_take_continuation', 'same_attempt_ellipsis',
+            'context_reset', 'graphic_match', 'silhouette_cut', 'end'}
+    for i, shot in enumerate(shots):
+        if shot.get('screen_direction') not in directions: fail(f"{shot['id']}: invalid screen direction")
+        string(shot.get('axis_note'), f"{shot['id']}.axis_note")
+        next_id = shots[i+1]['id'] if i+1 < len(shots) else None
+        if shot.get('cut_to') != next_id: fail(f"{shot['id']}: cut_to does not match the next actual cut")
+        if shot.get('cut_kind') not in cuts or (shot['cut_kind'] == 'end') != (next_id is None):
+            fail(f"{shot['id']}: invalid cut kind")
+    by = {s['id']:s for s in shots}
+    if not {'R4-39','R4-40','R4-42r','R4-43'}.issubset(by):
+        fail('R7 requires the Corsair and final-import continuity pairs')
+    if by['R4-39']['out_frame'] != by['R4-40']['in_frame']:
+        fail('Corsair orbit and lake must remain adjacent')
+    if by['R4-39']['environment'] != by['R4-40']['environment']:
+        fail('Corsair orbit and lake must share the exact golden environment')
+    if by['R4-42r']['out_frame'] != by['R4-43']['in_frame']:
+        fail('final import preview must lead directly into its trial')
+    if (by['R4-42r']['cast'] != by['R4-43']['cast'] or
+            by['R4-42r']['screen_direction'] != by['R4-43']['screen_direction']):
+        fail('final import preview/trial identity and screen direction must match')
+    boundaries = {s['in_frame'] for s in shots} | {plan['duration_frames']}
+    cursor = 0; chapter_ids = set()
+    for chapter in arr(plan.get('chapters'), 'chapters'):
+        obj(chapter, 'chapter')
+        cid = string(chapter.get('id'), 'chapter.id')
+        if cid in chapter_ids: fail('chapter IDs must be unique')
+        chapter_ids.add(cid)
+        start = integer(chapter.get('in_frame'), cid+'.in_frame')
+        end = integer(chapter.get('out_frame'), cid+'.out_frame')
+        if start != cursor or end <= start or start not in boundaries or end not in boundaries:
+            fail('chapters must cover complete cuts contiguously')
+        for key in ('purpose','lighting_story','reference_swatch'): string(chapter.get(key),cid+'.'+key)
+        if not re.fullmatch(r'#[0-9A-Fa-f]{6}',chapter['reference_swatch']): fail('invalid chapter reference swatch')
+        cursor = end
+    if cursor != plan['duration_frames']: fail('chapters do not cover the master')
+    source = 'app/render/world/conditions.gd'
+    text = pinned_text(source_root, plan['source_files'], source)
+    block = re.search(r'^const PRESETS := \{(.*?)^\}', text, re.M | re.S)
+    if not block: fail('cannot identify field-world presets in pinned source')
+    presets = set(re.findall(r'^\s*([a-z_]+) = \{',block[1],re.M))
+    sky_text = pinned_text(source_root,plan['source_files'],'app/environment/sky_appearance_config.gd')
+    sky_block = re.search(r'^const EXPECTED_PRESET_IDS := \[(.*?)^\]',sky_text,re.M|re.S)
+    if not sky_block: fail('cannot identify sky presets in pinned source')
+    skies = set(re.findall(r'"([a-z_]+)"',sky_block[1]))
+    for key, env in plan['environments'].items():
+        if env.get('landscape') != 'club_field': continue
+        if env.get('time_api') != 'field_world': fail(f'{key}: use the field-world time API')
+        preset = env.get('field_world_preset')
+        if preset is not None: string(preset, key+'.field_world_preset')
+        if preset is not None and preset not in presets: fail(f'{key}: unsupported field-world preset')
+        if env.get('time_of_day') != (preset or 'fixed_day'): fail(f'{key}: time-of-day description differs from preset')
+        if not eq_json(env.get('time_scale'), 0): fail(f'{key}: R7 matching shots require frozen world time')
+        if string(env.get('sky'),key+'.sky') not in skies: fail(f'{key}: unsupported sky preset')
+        expected_args = ['--time=', '--time_of_day='+(preset or ''), '--time_scale=0','--sky='+env['sky']]
+        if env.get('field_world_args') != expected_args: fail(f'{key}: field-world arguments differ from the selected state')
+        for value in ('wind_mps','gust_mps'):
+            if not finite(env.get(value)) or env[value] < 0: fail(f'{key}: invalid {value}')
+        string(env.get('notes'),key+'.notes')
+
+
 def validate(plan, source_root, plan_root=REPO, check_script=True):
     obj(plan, 'plan'); finite_tree(plan)
     for key, expected in [('format','openrc-trailer-shot-plan'),('version',1),('fps',60),('duration_frames',9000)]:
         if not eq_json(plan.get(key), expected): fail(f'{key}: expected {expected!r}')
-    if plan.get('revision') not in ('R5', 'R6'): fail('revision: expected R5 or R6')
-    if plan['revision'] == 'R6':
-        string(plan.get('script_path'), 'R6 script_path')
+    if plan.get('revision') not in ('R5', 'R6', 'R7'): fail('revision: expected R5, R6 or R7')
+    if plan['revision'] in ('R6', 'R7'):
+        string(plan.get('script_path'), plan['revision'] + ' script_path')
     baseline = string(plan.get('source_baseline'), 'source_baseline')
     if not re.fullmatch(r'[0-9a-f]{40}', baseline): fail('source_baseline must be a 40-character lowercase commit ID')
     hashes = obj(plan.get('source_files'), 'source_files')
@@ -493,6 +573,8 @@ def validate(plan, source_root, plan_root=REPO, check_script=True):
         if start!=previous or end<=start: fail(f'{sid}: expected contiguous positive interval beginning at frame {previous}, got {start}..{end}')
         previous=end
         if s.get('source_class') not in ('G','U','P','E'): fail(f'{sid}: unknown source_class')
+        if 'requires_workshop_trial' in s and type(s['requires_workshop_trial']) is not bool:
+            fail(f'{sid}: requires_workshop_trial must be boolean')
         cast_id = string(s.get('cast'), f'{sid}.cast')
         environment_id = string(s.get('environment'), f'{sid}.environment')
         if cast_id not in cast: fail(f'{sid}: unknown cast reference {cast_id!r}')
@@ -504,6 +586,10 @@ def validate(plan, source_root, plan_root=REPO, check_script=True):
         c=obj(s.get('camera'),f'{sid}.camera'); required(c, ('fov_deg',), f'{sid}.camera'); string(c.get('mode'),f'{sid}.camera.mode'); points(c,f'{sid}.camera',duration,('NED','FRU','inspector','preview','none'))
         if c.get('fov_deg') is not None and (not finite(c['fov_deg']) or not 0<c['fov_deg']<180): fail(f'{sid}.camera.fov_deg: expected null or 0 < FOV < 180')
         if c['mode'] == 'parallel_east': validate_parallel_camera(s)
+        if c.get('target') == 'presented_cg_water_plane':
+            validate_water_target(plan, c, source_root)
+        elif 'water_down_m' in c:
+            fail(f'{sid}: water_down_m requires a water-plane target')
         for field in ('actions','checks'):
             values=arr(s.get(field),f'{sid}.{field}')
             if not values: fail(f'{sid}.{field}: must not be empty')
@@ -511,6 +597,7 @@ def validate(plan, source_root, plan_root=REPO, check_script=True):
         exe=obj(s.get('execution'),f'{sid}.execution')
         for field in ('route','status','notes'): string(exe.get(field),f'{sid}.execution.{field}',empty=field=='notes')
     if previous!=9000: fail(f'timeline ends at {previous}, expected 9000')
+    if plan['revision'] == 'R7': validate_direction(plan, source_root)
     story = source_path(plan_root, string(plan.get('storyboard_path'),'storyboard_path'))
     expected=story_rows(story,plan['fps'])
     actual=[(s['id'],s['in_frame'],s['out_frame'],s['source_class']) for s in shots]
@@ -596,6 +683,9 @@ def render_shot_cards(plan):
         cast=plan['cast'][s['cast']]; camera=s['camera']; block=s['blocking']
         skin=cast['skin'].get('label','Not applicable')
         fov=f"FOV {camera['fov_deg']:g}°" if camera['fov_deg'] is not None else 'native preset/readback'
+        direction = (f"**Screen / axis:** {s['screen_direction'].replace('_',' ')}. {s['axis_note']} "
+                     f"**Next cut:** {s['cut_to'] or 'end'} · {s['cut_kind'].replace('_',' ')}.\n\n"
+                     if plan['revision'] == 'R7' else '')
         cards.append(f"### {s['id']} — {cast.get('label',s['picture'])} · {tc(s['in_frame'])}–{tc(s['out_frame'])} · {s['source_class']}\n\n"
             f"**Picture:** {s['picture']}\n\n"
             f"**Cast / paint:** {cast.get('label',s['cast'])} — {skin}. **Environment:** `{s['environment']}`.\n\n"
@@ -604,18 +694,63 @@ def render_shot_cards(plan):
             f"**Camera:** {camera['mode']}, {camera['space']}, {fov}. {marks(camera)} {camera.get('notes','')}\n\n"
             '**Action:**\n\n' + '\n'.join('- '+a for a in s['actions']) + '\n\n'
             f"**Exit / cut:** {s['exit_condition']} {s['transition']}\n\n"
-            f"**Continuity:** {s['continuity']}\n\n"
+            f"**Continuity:** {s['continuity']}\n\n" + direction +
             f"**Text:** {s.get('text_reference','Use the current title plan and genuine captured indicators.')}\n\n"
             f"**Implementation:** `{s['execution']['status']}` — `{s['execution']['route']}`. {s['execution']['notes']}\n\n"
             '**Accept only when:** ' + ' '.join(s['checks']) + '\n')
     return '\n'.join(line.rstrip() for line in '\n'.join(cards).splitlines()) + '\n'
 
 
+def render_storyboard_table(plan):
+    """Use the same frame boundaries and picture descriptions as the script."""
+    lines = ['| ID | In (s) | Out (s) | Duration (s) | Class | Picture / purpose |',
+             '| --- | ---: | ---: | ---: | --- | --- |']
+    for shot in plan['shots']:
+        start, end = shot['in_frame'], shot['out_frame']
+        picture = shot['picture'].replace('|', '\\|')
+        lines.append(f"| {shot['id']} | {start / plan['fps']:g} | {end / plan['fps']:g} | "
+                     f"{(end-start) / plan['fps']:g} | {shot['source_class']} | {picture} |")
+    return '\n'.join(lines) + '\n'
+
+
+def timeline_svg(plan):
+    """A measured edit map; its swatches are editorial references, not captures."""
+    if plan['revision'] != 'R7': fail('chapter timeline requires the R7 plan')
+    chapters = plan['chapters']
+    width, height = 1440, 205 + len(chapters) * 62
+    x0, chart_w = 590, 780
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="R7 edit and lighting map">',
+           '<title>OPEN RC SIMULATOR · R7 edit and lighting map</title>',
+           '<desc>Chapter widths follow exact planned duration. Color swatches are editorial references, not measured game color. No footage has been accepted.</desc>',
+           '<rect width="100%" height="100%" fill="#171c22"/>',
+           '<g font-family="sans-serif" fill="#efeae1">',
+           '<text x="40" y="48" font-size="28" font-weight="bold">A SKY WITHIN REACH · R7</text>',
+           '<text x="40" y="78" font-size="16" fill="#bfc9d2">150 seconds · 62 cuts · 60 fps · proposed edit, not a completed trailer</text>']
+    for seconds in range(0, 151, 30):
+        x = x0 + chart_w * seconds / 150
+        out += [f'<line x1="{x:g}" x2="{x:g}" y1="112" y2="{height-82}" stroke="#36414c"/>',
+                f'<text x="{x:g}" y="106" font-size="14" text-anchor="middle" fill="#bfc9d2">{seconds}s</text>']
+    for i, chapter in enumerate(chapters):
+        start, end = chapter['in_frame'] / 60, chapter['out_frame'] / 60
+        y = 128 + i * 62
+        x = x0 + chart_w * start / 150
+        bar_w = chart_w * (end-start) / 150
+        out += [f'<text x="40" y="{y+15}" font-size="16" fill="#bfc9d2">{start:g}–{end:g}s</text>',
+                f'<text x="150" y="{y+15}" font-size="17">{html.escape(chapter["purpose"])}</text>']
+        for j, line in enumerate(textwrap.wrap(chapter['lighting_story'], 52)):
+            out.append(f'<text x="150" y="{y+34+j*15}" font-size="13" fill="#aebcc8">{html.escape(line)}</text>')
+        out.append(f'<rect x="{x:.2f}" y="{y}" width="{bar_w:.2f}" height="36" rx="3" fill="{chapter["reference_swatch"]}"/>')
+    out += [f'<text x="40" y="{height-45}" font-size="14" fill="#bfc9d2">Separate lighting sessions. Studio, Creator UI and the daylight import trial are explicit chapter breaks.</text>',
+            f'<text x="40" y="{height-20}" font-size="14" fill="#bfc9d2">Bar positions and widths come from shot-plan-r7.json. Swatches indicate mood; they are not game output measurements.</text>',
+            '</g></svg>\n']
+    return '\n'.join(out)
+
+
 def validate_parallel_camera(shot):
     """Keep illustrative camera marks consistent with the actual-CG rig law."""
     sid = shot['id']; camera = shot['camera']; block = shot['blocking']
-    if camera.get('target') != 'presented_cg' or camera['space'] != 'NED' or block['space'] != 'NED':
-        fail(f'{sid}: parallel camera requires NED marks and presented_cg target')
+    if camera.get('target') not in ('presented_cg', 'presented_cg_water_plane') or camera['space'] != 'NED' or block['space'] != 'NED':
+        fail(f'{sid}: parallel camera requires NED marks and a supported presented-CG target')
     rig = obj(camera.get('rig'), f'{sid}.camera.rig')
     if set(rig) != {'north_m', 'down_m', 'east_offset_m'}:
         fail(f'{sid}: parallel camera rig requires north_m, down_m, east_offset_m only')
@@ -642,6 +777,8 @@ def camera_recipe(plan, shot_id, source_root, plan_sha256):
         fail('camera recipe requires the source plan SHA-256')
     shot = find_shot(plan, shot_id); cast = plan['cast'][shot['cast']]
     camera = shot['camera']; env = plan['environments'][shot['environment']]
+    if shot.get('requires_workshop_trial', False):
+        fail(f'{shot_id}: Workshop trial camera composition is not admitted by the stock capture adapter')
     if shot['source_class'] != 'G' or cast['kind'] != 'stock' or env.get('landscape') != 'club_field':
         fail(f'{shot_id}: camera recipe supports stock G-class Club-field airplane shots only')
     source = read_json(source_path(source_root, cast['data_path']))
@@ -651,11 +788,16 @@ def camera_recipe(plan, shot_id, source_root, plan_sha256):
     fov = camera.get('fov_deg')
     if not finite(fov) or not 2 <= fov <= 120:
         fail(f'{shot_id}: capture camera FOV must be between 2 and 120 degrees')
-    if camera.get('target', 'presented_cg') != 'presented_cg':
-        fail(f'{shot_id}: capture camera must target presented_cg')
+    target = camera.get('target', 'presented_cg')
+    if target not in ('presented_cg', 'presented_cg_water_plane'):
+        fail(f'{shot_id}: capture camera must use a supported presented-CG target')
     recipe = {'format': 'openrc-trailer-camera', 'version': 1, 'shot_id': shot_id,
               'vehicle_id': cast['vehicle_id'], 'source_plan_sha256': plan_sha256,
-              'target': 'presented_cg', 'fov_deg': fov}
+              'target': target, 'fov_deg': fov}
+    if target == 'presented_cg_water_plane':
+        recipe['water_down_m'] = validate_water_target(plan, camera, source_root)
+    elif 'water_down_m' in camera:
+        fail(f'{shot_id}: water_down_m requires a water-plane target')
     if camera['mode'] == 'fixed_tracking':
         if camera['space'] != 'NED' or len(camera['points']) != 1:
             fail(f'{shot_id}: fixed camera requires exactly one world-space eye')
@@ -789,7 +931,7 @@ def main(argv=None):
     parser.add_argument('--source-root',type=Path,default=REPO,help='checkout containing app/ (default: this repository)')
     parser.add_argument('--plan',type=Path,default=DEFAULT_PLAN,help='shot plan JSON')
     subs=parser.add_subparsers(dest='command',required=True)
-    for command in ('validate','show','export','map','camera-recipe','cards'):
+    for command in ('validate','show','export','map','camera-recipe','cards','storyboard','timeline'):
         p=subs.add_parser(command)
         if command in ('show','map','camera-recipe'): p.add_argument('shot_id')
         p.add_argument('--out',type=Path,help='create a new file; never overwrite')
@@ -802,6 +944,8 @@ def main(argv=None):
         summary=validate(plan,args.source_root,check_script=args.command!='cards')
         if args.command=='validate': result=json_text(summary)
         elif args.command=='cards': result=render_shot_cards(plan)
+        elif args.command=='storyboard': result=render_storyboard_table(plan)
+        elif args.command=='timeline': result=timeline_svg(plan)
         elif args.command=='show':
             shot=find_shot(plan,args.shot_id)
             result=json_text({'shot':enrich_shot(shot),'cast':plan['cast'][shot['cast']],

@@ -364,7 +364,7 @@ func _run() -> void:
 	if not _camera_recipe.is_empty():
 		_planned_camera = PlannedCamera.new()
 		_planned_camera.name = "TrailerPlannedCamera"
-		var camera_error: String = _planned_camera.configure(_main, _camera_recipe)
+		var camera_error: String = _planned_camera.configure(_main, _camera_recipe, Callable(self, "_planned_camera_tick"))
 		if not camera_error.is_empty():
 			await _abort_live_capture("Camera recipe refused: " + camera_error, 2)
 			return
@@ -872,8 +872,17 @@ func _capture_frames(count: int, preroll: int) -> void:
 			print("FLIGHT_CAPTURE_FRAME ", index, " tick=", _main.session.sim.tick)
 
 
-## Verify the camera recorded by the adapter is still the camera the viewport
-## presents; append its own evidence alongside the selected director's record.
+## Return a real session tick to the camera when it applies its presentation.
+func _planned_camera_tick() -> int:
+	if not is_instance_valid(_main) or not is_instance_valid(_main.session) \
+			or not is_instance_valid(_main.session.sim):
+		return -1
+	return int(_main.session.sim.tick)
+
+
+## After frame_post_draw, the adapter must have applied during this engine process
+## frame and at this same session tick, even if the aircraft CG did not move.
+## Append its evidence alongside the selected director's record.
 func _ensure_planned_camera_frame_evidence(frame_index: int, record_count_before: int) -> bool:
 	if record_count_before < 0:
 		return _planned_camera_capture_failure("The flight director has no readable frame_records array.")
@@ -892,23 +901,10 @@ func _ensure_planned_camera_frame_evidence(frame_index: int, record_count_before
 	var camera: Camera3D = _main._camera
 	if not is_instance_valid(camera) or root.get_camera_3d() != camera:
 		return _planned_camera_capture_failure("The planned camera is not the viewport's current camera.")
-	var eye: Variant = camera_evidence.get("actual_eye_render_m")
-	var target: Variant = camera_evidence.get("target_render_m")
-	var rotation: Variant = camera_evidence.get("actual_quaternion_xyzw")
-	if typeof(eye) != TYPE_ARRAY or eye.size() != 3 or typeof(target) != TYPE_ARRAY or target.size() != 3 \
-			or typeof(rotation) != TYPE_ARRAY or rotation.size() != 4:
-		return _planned_camera_capture_failure("Planned camera evidence has an invalid transform or target.")
-	var actual := camera.get_camera_transform()
-	var recorded_eye := Vector3(float(eye[0]), float(eye[1]), float(eye[2]))
-	var recorded_target := Vector3(float(target[0]), float(target[1]), float(target[2]))
-	var recorded_rotation := Quaternion(float(rotation[0]), float(rotation[1]), float(rotation[2]), float(rotation[3]))
-	var current_rotation := actual.basis.get_rotation_quaternion().normalized()
-	var pose: Variant = _main.get("_last_render_pose")
-	if typeof(pose) != TYPE_DICTIONARY or typeof(pose.get("pos")) != TYPE_VECTOR3 \
-			or not recorded_target.is_equal_approx(pose.pos) or not recorded_eye.is_equal_approx(actual.origin) \
-			or absf(recorded_rotation.dot(current_rotation)) < 0.99999 \
-			or not is_equal_approx(float(camera_evidence.get("actual_fov_deg", NAN)), float(camera.fov)):
-		return _planned_camera_capture_failure("Camera transform, FOV or presented CG changed after planned placement.")
+	var evidence_error: String = PlannedCamera.frame_evidence_error(camera_evidence, _camera_recipe,
+		_main.get("_last_render_pose"), camera, int(_main.session.sim.tick))
+	if not evidence_error.is_empty():
+		return _planned_camera_capture_failure(evidence_error)
 	record["planned_camera"] = camera_evidence.duplicate(true)
 	records[record_index] = record
 	_director.set("frame_records", records)

@@ -16,12 +16,15 @@ import cinema_titles as cinema
 import title_plan as titles
 
 
+LEGACY_PLAN = titles.REPO / "docs/plans/trailer-v2/title-plan-r6.json"
+
+
 class PlanTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        self.source = json.loads(titles.DEFAULT_PLAN.read_text(encoding="utf-8"))
+        self.source = json.loads(LEGACY_PLAN.read_text(encoding="utf-8"))
         self.shots = titles.REPO / "docs/plans/trailer-v2/shot-plan-r5.json"
 
     def write_plan(self, plan):
@@ -30,7 +33,7 @@ class PlanTests(unittest.TestCase):
         return path
 
     def test_exact_headlines_required_labels_and_open_lake(self):
-        plan = titles.load(titles.DEFAULT_PLAN, shot_plan=self.shots)
+        plan = titles.load(LEGACY_PLAN, shot_plan=self.shots)
         headlines = [(cue["lines"][0], cue["in_frame"], cue["out_frame"])
                      for cue in plan["cues"] if cue["role"] == "headline"]
         self.assertEqual(headlines, [("A SKY WITHIN REACH", 855, 1050),
@@ -41,7 +44,7 @@ class PlanTests(unittest.TestCase):
         self.assertIn("source-known", plan["metadata"]["website"])
         self.assertEqual(plan["metadata"]["trial_basis_binding"], "unresolved")
         self.assertFalse(plan["metadata"]["publication_ready"])
-        self.assertEqual(plan["source_sha256"], hashlib.sha256(titles.DEFAULT_PLAN.read_bytes()).hexdigest())
+        self.assertEqual(plan["source_sha256"], hashlib.sha256(LEGACY_PLAN.read_bytes()).hexdigest())
         self.assertEqual(plan["shot_plan_sha256"], hashlib.sha256(self.shots.read_bytes()).hexdigest())
         self.assertTrue(any("trial" in item.lower() for item in plan["metadata"]["production_blockers"]))
         for cue in plan["cues"]:
@@ -52,9 +55,9 @@ class PlanTests(unittest.TestCase):
 
     def test_trial_basis_is_required_for_publication_and_binds_the_whole_interval(self):
         with self.assertRaisesRegex(ValueError, "basis is unresolved"):
-            titles.load(titles.DEFAULT_PLAN, publication=True)
+            titles.load(LEGACY_PLAN, publication=True)
         for basis in ("estimated", "donor"):
-            plan = titles.load(titles.DEFAULT_PLAN, publication=True, trial_basis=basis)
+            plan = titles.load(LEGACY_PLAN, publication=True, trial_basis=basis)
             trial = next(cue for cue in plan["cues"] if cue["id"] == "trial")
             self.assertEqual(trial["lines"], [f"EXPERIMENTAL TEST FLIGHT · {basis.upper()} PHYSICS"])
             self.assertEqual((trial["in_frame"], trial["out_frame"]), (8220, 8400))
@@ -63,7 +66,7 @@ class PlanTests(unittest.TestCase):
             self.assertTrue(plan["metadata"]["production_blockers"])
         for bad in ("likely", "ESTIMATED", "", True):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
-                titles.load(titles.DEFAULT_PLAN, trial_basis=bad)
+                titles.load(LEGACY_PLAN, trial_basis=bad)
 
     def test_plan_mutations_cannot_remove_coverages_or_inject_copy(self):
         def changed(identifier, **values):
@@ -93,10 +96,10 @@ class PlanTests(unittest.TestCase):
 
     def test_optional_shot_plan_detects_incompatible_edit(self):
         shots = json.loads(self.shots.read_text(encoding="utf-8"))
-        self.assertEqual(titles.load(titles.DEFAULT_PLAN, shot_plan=shots)["duration_frames"], 9000)
+        self.assertEqual(titles.load(LEGACY_PLAN, shot_plan=shots)["duration_frames"], 9000)
         shots["fps"] = 30
         with self.assertRaisesRegex(ValueError, "60 fps"):
-            titles.load(titles.DEFAULT_PLAN, shot_plan=shots)
+            titles.load(LEGACY_PLAN, shot_plan=shots)
         shots["fps"] = 60
         shots["shots"][0]["out_frame"] -= 1
         shots["shots"][1]["in_frame"] -= 1
@@ -105,11 +108,11 @@ class PlanTests(unittest.TestCase):
             index = next(i for i, shot in enumerate(shots["shots"]) if shot["id"] == "R4-05")
             shots["shots"][index]["out_frame"] -= 1
             shots["shots"][index + 1]["in_frame"] -= 1
-            titles.load(titles.DEFAULT_PLAN, shot_plan=shots)
+            titles.load(LEGACY_PLAN, shot_plan=shots)
 
     def test_duplicate_json_keys_are_rejected(self):
         path = self.root / "duplicate.json"
-        original = titles.DEFAULT_PLAN.read_text(encoding="utf-8")
+        original = LEGACY_PLAN.read_text(encoding="utf-8")
         path.write_text(original.replace('"fps": 60,', '"fps": 60, "fps": 30,', 1), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "duplicate JSON key"):
             titles.load(path)
@@ -134,10 +137,10 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(len(loaded["cues"]), 22)
 
     def test_study_windows_cover_each_full_headline_and_end_card(self):
-        self.assertEqual(sum(length for _, length in titles.STUDY_WINDOWS), 1125)
+        self.assertEqual(sum(length for _, length in titles.STUDY_WINDOWS_R6), 1125)
         for key in ("sky", "input", "hangar", "end-brand"):
-            _, _, start, end = titles.REQUIRED[key]
-            self.assertIn((start, end - start), titles.STUDY_WINDOWS)
+            _, _, start, end = titles.REQUIRED_R6[key]
+            self.assertIn((start, end - start), titles.STUDY_WINDOWS_R6)
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "FFmpeg and ffprobe are required")
@@ -146,7 +149,7 @@ class StudyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "study"
             plan_path = Path(tmp) / "plan.json"
-            plan_path.write_bytes(titles.DEFAULT_PLAN.read_bytes())
+            plan_path.write_bytes(LEGACY_PLAN.read_bytes())
             expected_plan_sha = hashlib.sha256(plan_path.read_bytes()).hexdigest()
             original_load = titles.load
             def load_then_replace(*args, **kwargs):
@@ -174,7 +177,7 @@ class StudyTests(unittest.TestCase):
                     marked = frame.convert("L").crop((108, 1015, 700, 1065))
                     self.assertGreater(marked.getextrema()[1], 120)
             with self.assertRaises(FileExistsError):
-                titles.preview(titles.DEFAULT_PLAN, target, windows=((855, 1),))
+                titles.preview(LEGACY_PLAN, target, windows=((855, 1),))
 
 
 if __name__ == "__main__":

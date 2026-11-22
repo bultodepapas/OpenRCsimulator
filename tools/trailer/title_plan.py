@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Validate global R6 titles or create a synthetic typography-only study.
+"""Validate revision-bound global titles or create a synthetic type study.
 
 Examples:
-    python tools/trailer/title_plan.py validate --plan docs/plans/trailer-v2/title-plan-r6.json
-    python tools/trailer/title_plan.py preview --out-dir tmp/trailer/r6-type-study-01
+    python tools/trailer/title_plan.py validate --plan docs/plans/trailer-v2/title-plan-r7.json
+    python tools/trailer/title_plan.py preview --out-dir tmp/trailer/r7-type-study-01
 
 The preview contains no game footage. `publication=True` requires the caller
 to bind a trial basis, but does not establish that the basis, footage, website,
@@ -28,9 +28,9 @@ from PIL import Image, ImageDraw, ImageFont
 import cinema_titles as cinema
 
 REPO = Path(__file__).resolve().parents[2]
-DEFAULT_PLAN = REPO / "docs/plans/trailer-v2/title-plan-r6.json"
+DEFAULT_PLAN = REPO / "docs/plans/trailer-v2/title-plan-r7.json"
 FPS, TOTAL_FRAMES = 60, 9000
-REQUIRED = {
+REQUIRED_R6 = {
     "electric-stick": ("label", "UGLY STICK · ELECTRIC 6S", 480, 660),
     "sky": ("headline", "A SKY WITHIN REACH", 855, 1050),
     "hx700": ("label", "HX-700 · MECHANICAL INSPECTION", 3060, 3300),
@@ -54,7 +54,7 @@ REQUIRED = {
     "end-cta": ("endcard", "PLAY FREE", 8700, 9000),
     "end-url": ("label", "bultodepapas.github.io/OpenRCsimulator/", 8700, 9000),
 }
-_SHOT_ANCHORS = {
+_SHOT_ANCHORS_R6 = {
     "R4-05": (840, 1080), "R4-20": (3060, 3300), "R4-21": (3300, 3540),
     "R4-23": (3600, 3900), "R4-24": (3900, 4020), "R4-26": (4200, 4380),
     "R4-27": (4380, 4620), "R4-28": (4620, 4860), "R4-32": (5580, 5745),
@@ -65,12 +65,41 @@ _SHOT_ANCHORS = {
     "R4-42j": (7920, 7980), "R4-42r": (8190, 8220),
     "R4-43": (8220, 8400), "R4-45": (8700, 9000),
 }
+# R7 retains every shot duration but moves complete chapters. Keep the legacy
+# contract explicit so old manifests cannot silently acquire current timing.
+_R7_WINDOWS = {
+    "hx700": (2340, 2580), "xcell": (2580, 2820),
+    "lab-baseline": (4380, 4545), "lab-changed": (4635, 4800),
+    "stick-scale": (4800, 5100), "scale-500": (4890, 4995),
+    "scale-10": (4995, 5100), "size-comparison": (5100, 5340),
+    "companions": (5340, 5580), "scenery": (5580, 5820),
+    "liveries": (6300, 6900), "hangar": (7560, 7680),
+    "phoenix": (7680, 7980), "clearview": (7980, 8280),
+    "trial": (8280, 8460),
+}
+REQUIRED_R7 = {key: (role, text, *_R7_WINDOWS.get(key, (start, end)))
+               for key, (role, text, start, end) in REQUIRED_R6.items()}
+REQUIRED_R7["lumber"] = ("label", "TURBO LUMBER", 8460, 8700)
+REQUIRED = REQUIRED_R7
+_SHOT_ANCHORS_R7 = dict(_SHOT_ANCHORS_R6, **{
+    "R4-20": (2340, 2580), "R4-21": (2580, 2820),
+    "R4-32": (4380, 4545), "R4-33": (4545, 4635), "R4-34": (4635, 4800),
+    "R4-35": (4800, 4890), "R4-36": (4890, 4995), "R4-37": (4995, 5100),
+    "R4-38": (5100, 5340), "R4-27": (5340, 5580), "R4-28": (5580, 5820),
+    "R4-39": (6300, 6900), "R4-40": (6900, 7260), "R4-44": (7260, 7560),
+    "R4-41": (7560, 7680), "R4-42a": (7680, 7740), "R4-42i": (7950, 7980),
+    "R4-42j": (7980, 8040), "R4-42r": (8250, 8280), "R4-43": (8280, 8460),
+    "R4-31": (8460, 8700),
+})
 _FORBIDDEN = ("RACE THE GATES", "TAKE CONTROL", "TUNE YOUR SETUP", "MAKE IT YOURS", "300+",
               "MUSIC:", "SCOTT BUCKLEY", "CC BY")
 # Six source-timeline windows, 18.75 seconds total. These are samples, not an EDL.
 # All three headline animations and the entire five-second end card are shown.
-STUDY_WINDOWS = ((855, 195), (3060, 120), (3615, 270),
-                 (7500, 120), (7620, 120), (8700, 300))
+STUDY_WINDOWS_R6 = ((855, 195), (3060, 120), (3615, 270),
+                    (7500, 120), (7620, 120), (8700, 300))
+# Seven R7 windows, 22.75 seconds: additionally review the night identity cue.
+STUDY_WINDOWS = ((855, 195), (2340, 120), (3615, 270),
+                 (7560, 120), (7680, 120), (8460, 240), (8700, 300))
 STUDY_MARK = "TYPOGRAPHY STUDY · NO GAME FOOTAGE"
 
 
@@ -94,10 +123,13 @@ def _read_json(path):
     return _read_snapshot(path)[0]
 
 
-def _shot_plan_check(source):
+def _shot_plan_check(source, revision):
     plan = source if isinstance(source, dict) else _read_json(source)
     if not isinstance(plan, dict) or plan.get("format") != "openrc-trailer-shot-plan":
         raise ValueError("shot plan has the wrong format")
+    accepted = ("R5", "R6") if revision == "R6" else ("R7",)
+    if plan.get("revision") not in accepted:
+        raise ValueError("title and shot plan revisions do not match")
     if (type(plan.get("fps")) is not int or plan["fps"] != FPS
             or type(plan.get("duration_frames")) is not int or plan["duration_frames"] != TOTAL_FRAMES):
         raise ValueError("shot plan must be 60 fps and 9000 frames")
@@ -117,7 +149,8 @@ def _shot_plan_check(source):
         cursor = end
     if cursor != TOTAL_FRAMES:
         raise ValueError("shot plan does not end at frame 9000")
-    for name, expected in _SHOT_ANCHORS.items():
+    anchors = _SHOT_ANCHORS_R6 if revision == "R6" else _SHOT_ANCHORS_R7
+    for name, expected in anchors.items():
         if found.get(name) != expected:
             raise ValueError(f"shot plan boundary mismatch for {name}: expected {expected}")
 
@@ -139,8 +172,11 @@ def load(path, publication=False, trial_basis=None, shot_plan=None):
         raise ValueError("title plan must be an object")
     if "source_sha256" in plan:
         raise ValueError("source_sha256 is computed by the loader, not authored in the manifest")
+    revision = plan.get("revision")
+    if revision not in ("R6", "R7"):
+        raise ValueError("revision must be R6 or R7")
     for field, expected in (("format", "openrc-trailer-title-plan"), ("version", 1),
-                            ("revision", "R6"), ("fps", FPS), ("duration_frames", TOTAL_FRAMES)):
+                            ("fps", FPS), ("duration_frames", TOTAL_FRAMES)):
         if plan.get(field) != expected or (isinstance(expected, int) and type(plan.get(field)) is not int):
             raise ValueError(f"{field} must be {expected!r}")
     if not isinstance(plan.get("metadata"), dict):
@@ -150,7 +186,8 @@ def load(path, publication=False, trial_basis=None, shot_plan=None):
         raise ValueError("cues must be a list")
     cinema.validate_cues(cues)
     by_id = {cue["id"]: cue for cue in cues}
-    for name, (role, text, start, end) in REQUIRED.items():
+    required = REQUIRED_R6 if revision == "R6" else REQUIRED_R7
+    for name, (role, text, start, end) in required.items():
         cue = by_id.get(name)
         if cue is None or (cue["role"], cue["lines"], cue["in_frame"], cue["out_frame"]) != (role, [text], start, end):
             raise ValueError(f"required cue {name!r} has incorrect text, role or coverage")
@@ -160,15 +197,17 @@ def load(path, publication=False, trial_basis=None, shot_plan=None):
     for cue in cues:
         if cue["out_frame"] > TOTAL_FRAMES:
             raise ValueError(f"cue {cue['id']!r} exceeds the master")
-        if cue["in_frame"] < 7500 and cue["out_frame"] > 7140:
-            raise ValueError("the lake interval [7140, 7500) must have no title text")
+        lake_start, lake_end = (7140, 7500) if revision == "R6" else (6900, 7260)
+        if cue["in_frame"] < lake_end and cue["out_frame"] > lake_start:
+            raise ValueError(f"the lake interval [{lake_start}, {lake_end}) must have no title text")
         content = " ".join(cue["lines"]).upper()
         if any(forbidden in content for forbidden in _FORBIDDEN) or re.search(r"\b(?:BETA|ALPHA)\b", content):
             raise ValueError(f"cue {cue['id']!r} contains inactive or unverified copy")
         if cue["role"] == "label" and (cue.get("fade_in_frames", 0) != 0 or cue.get("fade_out_frames", 0) != 0):
             raise ValueError(f"functional label {cue['id']!r} must be fully visible throughout")
-        if cue["role"] == "label" and not 36 <= cue.get("size", 32) <= 40:
-            raise ValueError(f"functional label {cue['id']!r} must use 36–40 px type")
+        min_label, max_label = (36, 40) if revision == "R6" else (48, 56)
+        if cue["role"] == "label" and not min_label <= cue.get("size", 32) <= max_label:
+            raise ValueError(f"functional label {cue['id']!r} must use {min_label}–{max_label} px type")
         if cue["role"] == "headline":
             entrance = cue.get("fade_in_frames", 18)
             exit_ = cue.get("fade_out_frames", 12)
@@ -190,10 +229,10 @@ def load(path, publication=False, trial_basis=None, shot_plan=None):
     shot_source_sha256 = None
     if shot_plan is not None:
         if isinstance(shot_plan, dict):
-            _shot_plan_check(shot_plan)
+            _shot_plan_check(shot_plan, revision)
         else:
             shot_snapshot, shot_source_sha256 = _read_snapshot(shot_plan)
-            _shot_plan_check(shot_snapshot)
+            _shot_plan_check(shot_snapshot, revision)
     if publication and trial_basis is None:
         raise ValueError("publication blocked: the accepted experimental trial basis is unresolved")
     if trial_basis is not None:
@@ -279,7 +318,7 @@ def preview(plan_path, out_dir, ffmpeg="ffmpeg", ffprobe="ffprobe", shot_plan=No
     """Generate a neutral, permanently marked type study in a new directory."""
     plan = load(plan_path, trial_basis=trial_basis, shot_plan=shot_plan)
     if windows is None:
-        windows = STUDY_WINDOWS
+        windows = STUDY_WINDOWS_R6 if plan["revision"] == "R6" else STUDY_WINDOWS
     if (not isinstance(windows, (list, tuple)) or not windows
             or any(not isinstance(pair, (list, tuple)) or len(pair) != 2
                    or type(pair[0]) is not int or type(pair[1]) is not int

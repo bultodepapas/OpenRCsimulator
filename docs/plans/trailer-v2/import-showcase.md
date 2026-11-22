@@ -1,6 +1,6 @@
 # Trailer 2.0 — Phoenix RC and ClearView import showcase
 
-**Authority:** [R6 shooting script](cinematic-script-r6.md), [shot plan](shot-plan-r6.json) and [title plan](title-plan-r6.json), 02:05–02:20 / R4-41…43. R6 retains the R4-prefixed shot IDs.
+**Authority:** [R7 shooting script](cinematic-script-r7.md), [storyboard](storyboard-r7.md), [shot plan](shot-plan-r7.json), [title plan](title-plan-r7.json) and [direction and continuity](direction-and-continuity.md), 02:06–02:21 / R4-41…43. R7 retains the R4-prefixed shot IDs.
 **Owner / track:** trailer director-editor / V2. **Reviewed:** 21 November 2026.
 **Status:** 15-second chapter fully timed on paper; provisional casting from recorded source inventories. No new aircraft download, conversion, preview capture or flight was performed in this revision.
 
@@ -12,25 +12,25 @@ Use **18 real imported previews in ten seconds**, within a **15-second chapter**
 
 | Relative time | Master time | Duration | Picture | Source class |
 | --- | --- | ---: | --- | --- |
-| 0–2 s | 125–127 s | 2 s | Genuine Creator import/source-selection excerpt; EXPAND YOUR HANGAR. | U |
-| 2–7 s | 127–132 s | 5 s | Phoenix RC: one 1 s leader, then eight 0.5 s previews. | U |
-| 7–12 s | 132–137 s | 5 s | ClearView: one 1 s leader, then eight 0.5 s previews. | U |
-| 12–15 s | 137–140 s | 3 s | The final previewed model in its actual eligible Creator trial. | G |
-| **Total** | **125–140 s** | **15 s** | **18 preview cuts, one UI introduction, one flight payoff.** | **12 U + 3 G** |
+| 0–2 s | 126–128 s | 2 s | Genuine Creator import/source-selection excerpt; EXPAND YOUR HANGAR. | U |
+| 2–7 s | 128–133 s | 5 s | Phoenix RC: one 1 s leader, then eight 0.5 s previews. | U |
+| 7–12 s | 133–138 s | 5 s | ClearView: one 1 s leader, then eight 0.5 s previews. | U |
+| 12–15 s | 138–141 s | 3 s | The final previewed model in its actual eligible Creator trial. | G |
+| **Total** | **126–141 s** | **15 s** | **18 preview cuts, one UI introduction, one flight payoff.** | **12 U + 3 G** |
 
 At 60 fps, each fast preview gets **30 frames**, each leader **60 frames**, and the preview reel totals **600 frames**. The full chapter is **900 intended frames**. These are planned edit positions, not captured frame counts.
 
 ## Framing, rhythm and sound
 
-- Keep each model large, at a comparable three-quarter view, with a stable visual center, neutral preview background and matched exposure. Preserve native proportions; framing may normalize screen occupancy, not imply equal physical size.
-- Group the sources. Hold **PHOENIX RC · MODEL PREVIEWS** fully opaque for all frames at 127–132 seconds, then **CLEARVIEW · MODEL PREVIEWS** fully opaque for all frames at 132–137 seconds. Each label stays still and continuous across its nine cuts while silhouettes change; it must not fade again for each preview. Placement and readability require real capture review.
+- Keep each model large, at a comparable three-quarter view, with a stable visual center and the genuine Creator background. Compare actual preview exposure. Preserve native proportions; framing may normalize screen occupancy, not imply equal physical size.
+- Group the sources. Hold **PHOENIX RC · MODEL PREVIEWS** fully opaque for all frames at 128–133 seconds, then **CLEARVIEW · MODEL PREVIEWS** fully opaque for all frames at 133–138 seconds. Each label stays still and continuous across its nine cuts while silhouettes change; it must not fade again for each preview. R7 plans 52 px functional labels within its permitted 48–56 px range; placement and phone readability require real composite review.
 - Use hard cuts on an editorial percussion pattern. Exact music beats remain unmeasured. The one-second leaders establish each block before the half-second run.
 - Do not ask the viewer to read 18 changing names. Candidate names below belong to production notes, not rapid title cards.
 - Use actual Creator previews, including a crop of the genuine preview viewport if the label remains readable. No generated airframes, foreign-simulator footage or separately invented rendering is passed off as an OpenRC import.
-- Keep the same admitted model, texture and skin identity in the final preview and its flight payoff. Setup can occur between recorded stages; the edit does not claim conversion and flight preparation are instant.
+- Keep the same admitted model, texture and skin identity in the final preview and its flight payoff. The proposed trial camera is on the model's right/south side to match the preview's screen-right nose; verify actual orientation and never mirror footage. Setup can occur between recorded stages; the edit does not claim conversion and flight preparation are instant.
 - The preview reel has music/editorial accents, not a fabricated engine demonstration. Actual propulsion sound enters with the qualified trial.
 
-This rapid reel contrasts with the preceding ten-second Corsair orbit and six-second shoreline approach, crossing and exit. The planned water portion is approximately 3.225 seconds at nominal speed; keep the final frame long enough to resolve before the import chapter begins. Actual clearance, motion and reflection remain unverified.
+This reel follows the ten-second Corsair orbit, six-second lake approach/crossing/exit and a separate five-second sunset Bisonte shore scene. The proposed aircraft water crossing is approximately 3.225 seconds at nominal speed; actual clearance, motion and reflection remain unverified. The trial is a separate daytime session. At 141–145 seconds, a fully opaque Turbo Lumber identity label introduces a different aircraft in a separate night session.
 
 ## Provisional casting: nine Phoenix and nine ClearView models
 
@@ -38,24 +38,24 @@ These are **source-backed candidates, not accepted footage or a validated flight
 
 | Slot / ID | Master seconds | Duration (s) | Source family | Candidate name | Source locator |
 | --- | --- | ---: | --- | --- | --- |
-| 1 / R4-42a | 127–128 | 1.0 | Phoenix RC | Easystar | aircraft/fixedWing/Electric/easystar/easystar.mod |
-| 2 / R4-42b | 128–128.5 | 0.5 | Phoenix RC | J3 Piper Cub | aircraft/fixedWing/Scale/piperCub/piperCub.mod |
-| 3 / R4-42c | 128.5–129 | 0.5 | Phoenix RC | Fokker DR-1 | aircraft/fixedWing/Scale/fokkerDR1/fokkerDR1.mod |
-| 4 / R4-42d | 129–129.5 | 0.5 | Phoenix RC | Radian | aircraft/gliders/parkzoneRadian/parkzoneRadian.mod |
-| 5 / R4-42e | 129.5–130 | 0.5 | Phoenix RC | Spitfire | aircraft/fixedWing/Scale/spitfire/spitfire.mod |
-| 6 / R4-42f | 130–130.5 | 0.5 | Phoenix RC | Beaver Float-plane | aircraft/fixedWing/Amphibious/beaverFloat/beaverFloat.mod |
-| 7 / R4-42g | 130.5–131 | 0.5 | Phoenix RC | Tiger Moth | aircraft/fixedWing/Scale/tigerMoth/tigerMoth.mod |
-| 8 / R4-42h | 131–131.5 | 0.5 | Phoenix RC | Extra | aircraft/fixedWing/Performance/extra/extra.mod |
-| 9 / R4-42i | 131.5–132 | 0.5 | Phoenix RC | P-51 Mustang | aircraft/fixedWing/Scale/P51mustang/P51mustang.mod |
-| 10 / R4-42j | 132–133 | 1.0 | ClearView | F-117 | f117.zip |
-| 11 / R4-42k | 133–133.5 | 0.5 | ClearView | BD-5J | ken-pack1.zip |
-| 12 / R4-42l | 133.5–134 | 0.5 | ClearView | B-25 | ken-pack1.zip |
-| 13 / R4-42m | 134–134.5 | 0.5 | ClearView | C-130 | ken-pack1.zip |
-| 14 / R4-42n | 134.5–135 | 0.5 | ClearView | Beluga | ken-pack1.zip |
-| 15 / R4-42o | 135–135.5 | 0.5 | ClearView | A6-Zero | ken-pack1.zip |
-| 16 / R4-42p | 135.5–136 | 0.5 | ClearView | Agri Duck Duster | ken-pack1.zip |
-| 17 / R4-42q | 136–136.5 | 0.5 | ClearView | MC Tiburon-bipe-7-2 | biplane-v5.zip |
-| 18 / R4-42r | 136.5–137 | 0.5 | ClearView | MC 3D Hobby Shops Extra 330 Red | extra-v6.zip |
+| 1 / R4-42a | 128–129 | 1.0 | Phoenix RC | Easystar | aircraft/fixedWing/Electric/easystar/easystar.mod |
+| 2 / R4-42b | 129–129.5 | 0.5 | Phoenix RC | J3 Piper Cub | aircraft/fixedWing/Scale/piperCub/piperCub.mod |
+| 3 / R4-42c | 129.5–130 | 0.5 | Phoenix RC | Fokker DR-1 | aircraft/fixedWing/Scale/fokkerDR1/fokkerDR1.mod |
+| 4 / R4-42d | 130–130.5 | 0.5 | Phoenix RC | Radian | aircraft/gliders/parkzoneRadian/parkzoneRadian.mod |
+| 5 / R4-42e | 130.5–131 | 0.5 | Phoenix RC | Spitfire | aircraft/fixedWing/Scale/spitfire/spitfire.mod |
+| 6 / R4-42f | 131–131.5 | 0.5 | Phoenix RC | Beaver Float-plane | aircraft/fixedWing/Amphibious/beaverFloat/beaverFloat.mod |
+| 7 / R4-42g | 131.5–132 | 0.5 | Phoenix RC | Tiger Moth | aircraft/fixedWing/Scale/tigerMoth/tigerMoth.mod |
+| 8 / R4-42h | 132–132.5 | 0.5 | Phoenix RC | Extra | aircraft/fixedWing/Performance/extra/extra.mod |
+| 9 / R4-42i | 132.5–133 | 0.5 | Phoenix RC | P-51 Mustang | aircraft/fixedWing/Scale/P51mustang/P51mustang.mod |
+| 10 / R4-42j | 133–134 | 1.0 | ClearView | F-117 | f117.zip |
+| 11 / R4-42k | 134–134.5 | 0.5 | ClearView | BD-5J | ken-pack1.zip |
+| 12 / R4-42l | 134.5–135 | 0.5 | ClearView | B-25 | ken-pack1.zip |
+| 13 / R4-42m | 135–135.5 | 0.5 | ClearView | C-130 | ken-pack1.zip |
+| 14 / R4-42n | 135.5–136 | 0.5 | ClearView | Beluga | ken-pack1.zip |
+| 15 / R4-42o | 136–136.5 | 0.5 | ClearView | A6-Zero | ken-pack1.zip |
+| 16 / R4-42p | 136.5–137 | 0.5 | ClearView | Agri Duck Duster | ken-pack1.zip |
+| 17 / R4-42q | 137–137.5 | 0.5 | ClearView | MC Tiburon-bipe-7-2 | biplane-v5.zip |
+| 18 / R4-42r | 137.5–138 | 0.5 | ClearView | MC 3D Hobby Shops Extra 330 Red | extra-v6.zip |
 
 The Phoenix source locators are relative to `<Phoenix installation>/resources/objects/`. ClearView archive names identify the retained research corpus, not downloads newly performed here. Exact hashes and model-root names are recorded in the [ClearView corpus summary](../../research/aircraft-creator/import-closeout-2026-11-17/evidence/corpus-summary.json); Phoenix definitions are listed in the [stock census](../../research/aircraft-creator/phoenix-stock-census-2026-11-20.json).
 
@@ -80,7 +80,7 @@ Sources: [Creator selection/workflow](../../../app/ui/aircraft_creator.gd), [Pho
 
 ## The requested 300+ title: prepared, not yet substantiated
 
-**Current main copy:** **EXPAND YOUR HANGAR**, only on the 125–127-second Creator introduction. The subsequent preview blocks carry their source labels rather than an overlapping headline.
+**Current main copy:** **EXPAND YOUR HANGAR**, only on the 126–128-second Creator introduction. The subsequent preview blocks carry their source labels rather than an overlapping headline.
 **Source labels:** **PHOENIX RC · MODEL PREVIEWS** / **CLEARVIEW · MODEL PREVIEWS**.
 **Flight payoff:** **EXPERIMENTAL TEST FLIGHT**, with the actual estimated/donor qualification.
 **Prepared numerical variant:** **300+ MODELS TO IMPORT**. It is not active in the current script.
@@ -108,7 +108,7 @@ Public pages checked on 21 November 2026: [RC-Thoughts Phoenix collection](https
 5. Count at least 300 qualifying distinct models for “300+”; require at least 301 for the literal wording “more than 300.” Preserve the result manifest. Show a representative set of real accepted previews in the reel.
 6. Replace the main headline only when the applicable threshold is met, retaining readable preview/test-flight qualifications and the user's-own-source meaning.
 
-The number gate does not block writing the chapter. The scene, rhythm, provisional candidates and current honest copy are complete on paper. The initial offline shot-plan tools and opt-in livery hold-last change are implemented and narrowly tested; import capture adapters, source admission and footage remain pending.
+The number gate does not block writing the chapter. The scene, rhythm, provisional candidates and current honest copy are complete on paper. The initial offline shot-plan tools and opt-in livery hold-last have historical focused software evidence. The [R7 audit](script-audit-r7-2026-11-22.md) records software and synthetic-type checks. Import capture adapters, source admission, footage and real composite/phone readability remain pending.
 
 ## All-source preparation for the later production phase
 

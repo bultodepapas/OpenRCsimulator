@@ -1,6 +1,6 @@
 # Trailer 2.0 — Field Notes and companion films
 
-**Current master:** [R6, 150 seconds](cinematic-script-r6.md); [shot plan](shot-plan-r6.json). **Owner / track:** trailer director-editor / V2.
+**Current master:** [R7, 150 seconds](cinematic-script-r7.md); [storyboard](storyboard-r7.md); [shot plan](shot-plan-r7.json); [direction and continuity](direction-and-continuity.md). **Owner / track:** trailer director-editor / V2.
 **Status:** complete timed companion screenplays on paper; no companion film or new captured assets produced.
 **Purpose:** every discovered opportunity has a concrete editorial destination. The master shows the strongest actions; these companions allow settings, statistics and aftermath to make sense.
 
@@ -60,4 +60,4 @@ The [import showcase](import-showcase.md) gives two exact edits: the master uses
 
 ## Status and later work
 
-These are scripts, not additional finished videos. Their purpose is to integrate the complete opportunity list without hiding menu/statistics features in half-second master inserts. The initial offline shot-plan tools and opt-in livery hold-last have historical focused software evidence; the [R6 audit](script-audit-r6-2026-11-22.md) records completed title/camera integration checks and the synthetic typography study. Additional capture routes, source assets, actual takes, footage readability and soundtrack remain pending.
+These are scripts, not additional finished videos. Their purpose is to integrate the complete opportunity list without hiding menu/statistics features in half-second master inserts. The initial offline shot-plan tools and opt-in livery hold-last have historical focused software evidence; the [R6 audit](script-audit-r6-2026-11-22.md) records historical title/camera checks and the synthetic typography study. The [R7 audit](script-audit-r7-2026-11-22.md) records focused passing software checks; rendered post-draw capture, additional capture routes, source assets, actual takes, footage readability and soundtrack remain pending. The companion durations remain 90 and 32 seconds on paper.

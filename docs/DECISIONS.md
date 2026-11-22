@@ -634,3 +634,12 @@ sent. The receiver accepts v1 under the old notice and v2 under the new one, nev
 field only as the operator `usage_backend` table. Deploy the receiver before tagging a release with the v2 client;
 `check-release` ingests the v2 example. [Data contract](plans/telemetry/data-contract.md),
 [legacy modes audit](research/legacy-modes-audit-2026-11-20/README.md).
+
+
+### V2 — Bind the shooting package to one explicit revision
+
+**22 November 2026.** The trailer index selects one active script, numeric shot plan, title plan and direction sheet. Generated shot cards, cut tables, maps and camera recipes derive from that revision; title/assembly validation refuses a mixed current/legacy edit. Preserve older locked scripts and their evidence under their existing paths, but do not treat them as current filming instructions. This avoids several plausible yet conflicting scene orders and camera settings.
+
+Keep camera composition separate from aircraft/session admission. A water-plane look target records actual presented CG separately, uses the source lake plane and requires current engine-frame/session-tick evidence. It changes presentation only. Workshop trial IDs and strict ground harnesses retain their real admission boundaries; a proposed shot does not authorize weakening them to make a camera recipe run.
+
+The master uses distinct, frozen lighting sessions with explicit context changes; it does not imply one continuous day. Bind source time arguments and actual readback, because an inherited clock can override a named preset and a frozen sun does not freeze adaptive exposure. Revisit geometry or integration after real rehearsal, regenerating all dependent instructions together. [Current production package](plans/trailer-v2/README.md), [direction contract](plans/trailer-v2/direction-and-continuity.md).

@@ -1,35 +1,36 @@
 # Trailer 2.0 — creative opportunities discovered during the AI-skills research
 
 **Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.
-**Current screenplay:** [Revision 6](cinematic-script-r6.md) and its [shot plan](shot-plan-r6.json). This is the retained idea bank; R6 and its timed companions own selected forms, source qualifications and timing.
+**Current screenplay:** [Revision 7](cinematic-script-r7.md), its [shot plan](shot-plan-r7.json) and [direction guide](direction-and-continuity.md). This is the retained idea bank; R7 and its timed companions own selected forms, source qualifications and timing.
 **Sources:** [AI filmmaking skill and Reddit research](research-ai-video-skills-2026-11-21.md).
 
 ## Current disposition
 
-- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, followed by six uninterrupted seconds of shoreline approach, water crossing and exit; the planned water portion is about 3.225 seconds at the nominal speed. Coastal Three Tone matches the Corsair ground checks, final orbit skin and lake. Other vehicles use the R6 stock choices; Mustang, Extra and Turbo Lumber retain their shipped factory liveries. The tiny scale trial has a closer camera for readability; the disclosed trio is same-depth.
+- **Preserved and expanded:** the 105–115 s Corsair orbit shows all 13 stock skins; the separate 115–121 s lake take holds Coastal Three Tone through shoreline approach, crossing and exit. Its planned water portion is about 3.225 seconds at nominal speed. The 121–126 s Bisonte shore beat resolves before the import chapter; the 141–145 s Turbo Lumber night pass is the final gameplay image. Mustang, Extra and Lumber retain their shipped factory liveries. The tiny scale trial has a proposed closer camera requiring a separate qualified route; the disclosed trio is same-depth.
 - **Mechanics:** twelve seconds of Corsair ground checks, four seconds of labelled collective inspection, separate playable helicopter flight and the retained [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
 - **New master actions:** hand launch, Angle/Acro, turtle recovery, live transmitter input, engine-out practice, AI circuits, calibrated imported scenery, actual storm flash, suspension tuning and Bisonte at the shallow shore.
-- **Import expansion:** [15-second Phoenix/ClearView chapter](import-showcase.md), with 18 provisional real previews in ten seconds and a same-model eligible test flight. The 300+ numerical variant is inactive pending compatible-model count evidence.
+- **Opening jump:** the existing Monster Car 2 jump harness is a reference with classic sky and a 46° orbit, and it rejects time/sky arguments. R4-02's morning/clear sky and 42° framing need a qualified manual or adapted route; the earlier jump evidence keeps its original settings.
+- **Import expansion:** the [126–141 s Phoenix/ClearView chapter](import-showcase.md) has 18 provisional real previews in ten seconds and a same-model eligible test flight. `EXPAND YOUR HANGAR` introduces it at 126–128 s. The 300+ numerical variant is inactive pending compatible-model count evidence.
 - **Concrete companion coverage:** [90-second Field Notes](feature-companion-films.md) gives presets, touch-and-go statistics, Natural Random, finite energy, wreck inspection, Green paradise and environmental details timed scenes.
 - **Outside the current package:** five-plane smoke formation and person-strike blood. The master has one survivable quad impact/recovery; a separate fixed-wing incident belongs to Field Notes.
-- **Initial code:** offline shot-plan tools and the opt-in livery hold-last have historical focused software evidence. R6 title/camera integration and the synthetic typography study now have [focused software evidence](script-audit-r6-2026-11-22.md). Remaining shot-specific capture routes, the actual gameplay animatic, new imports/captures, music auditions and finished edits remain pending.
+- **Initial code:** offline shot-plan tools and the opt-in livery hold-last have historical focused software evidence. The [R6 audit](script-audit-r6-2026-11-22.md) and its synthetic typography study retain evidence for those historical inputs. The [R7 audit](script-audit-r7-2026-11-22.md) records camera/title checks and the 22.75-second synthetic [R7 study](review/r7/typography-study.mp4); shot-specific routes, gameplay animatic, imports/captures, music auditions and finished edits remain pending.
 
 ## Original top five — retained creative pitches
 
 ### 1. The Corsair "Orbit → Mirror" signature
-The v9.13 reference suggested one smooth orbit around the F4U as skins change **editorially**. R6 plans a new ten-second orbit ending on `three_tone`, then a separately filmed six-second shoreline approach, lake crossing and exit in the same scheme. Match the visible nose orientation; the proposed translating lake camera centers the aircraft while the shoreline moves. Preserve a real reflection only if that specific take qualifies.
+The v9.13 reference suggested one smooth orbit around the F4U as skins change **editorially**. R7 plans a ten-second orbit ending on `three_tone`, then a separately filmed six-second shoreline approach, lake crossing and exit in the same scheme. Match the visible nose orientation. The proposed north-bank camera follows the actual CG's eastward movement and aims at the mean-water plane, placing the aircraft above that aim while the shoreline moves. Its 34° vertical FOV, actual CG and separate aim must be recorded and reviewed. Preserve a real reflection only if that specific take qualifies.
 
 **AI assist:** shot-director camera start/end vocabulary, keyframe comparison board, color continuity/skin ledger, beat-map alternatives.
-**Gate:** a reflection requires current-build proof for this model and skin; otherwise retain the genuine unmirrored pass. No fake water mirror or implied in-flight paint UI.
+**Gate:** a moving-aircraft reflection needs the optional planar route with active High, non-headless Forward+ and current-build proof for this model and skin. Otherwise retain the genuine unmirrored pass. No fake water mirror or implied in-flight paint UI.
 
 ### 2. FPV gate "from spectator to pilot"
-The original pitch proposed two sequential gates and an exterior match. R6 requires one clear valid gate and separately recorded exterior coverage; no synchronized-replay claim. Let real speed/timer/next-gate OSD live near the edges, and use a gate cue only when the actual take produces it.
+The original pitch proposed two sequential gates and an exterior match. R7 requires one clear valid gate and separately recorded exterior coverage; no synchronized-replay claim. Let real speed/timer/next-gate OSD live near the edges, and use a gate cue only when the actual take produces it.
 
 **AI assist:** camera plan, gate order diagram, matching frames, cut rhythm test.
 **Gate:** physical gate crossing, proper course and camera view, gameplay timing.
 
 ### 3. Three sizes, one impossible-looking frame
-A giant and a mini Ugly Stick each make a **real Workshop trial** pass with recognizable field context; the tiny view is deliberately closer. Then a separate cinematic presentation shows all **three 500/100/10% aircraft together** at consistent depth. The previous film's idea is a reference, not current-footage proof.
+The plan calls for giant and mini Ugly Stick passes in **real Workshop trials** with recognizable field context, followed by a separate cinematic presentation of all **three 500/100/10% aircraft together** at consistent depth. The mini's proposed close eye is N28.5, D−1.2, actual CG east minus 1 m, at 24° vertical FOV. The 10% trial's `workshop-<hash>` model ID does not satisfy the current stock-ID camera-recipe guard, so combining that view and trial requires a separate qualified route. The previous film's idea is a reference, not current-footage proof.
 
 **AI assist:** continuity keyframes and perspective check; compositional alternatives.
 **Gate:** label the simultaneous trio as cinematic presentation, not multiple players.
@@ -48,7 +49,7 @@ Make three or four short musical beats from native sound textures: Corsair radia
 
 ## Strong secondary ideas — historical proposals
 
-The suggested placements and times in this retained brainstorm are historical; the R6 script and its timed companions define current coverage.
+The suggested placements and times in this retained brainstorm are historical; the R7 script and its timed companions define current coverage.
 
 | Idea | Potential place | AI skill contribution | Authenticity condition |
 |---|---|---|---|
@@ -61,7 +62,7 @@ The suggested placements and times in this retained brainstorm are historical; t
 | **Blip to blimp** | quiet contrast after drone race | rhythm alternative / sound bridge | actually selectable experimental 5 m blimp |
 | **Two-truck personality split** | 00:03 hook and 01:22 finale | camera and sound identity board | Bisonte electric, MONSTER CAR 2 nitro; full jump including landing |
 | **Rain beads and damaged lens** | impact moment | close camera reference, FX timing ideas | rain/lens from real in-game effect; crack and blood have separate triggers |
-| **World clock passage** | daylight → evening → moonrise | color-script with repeated angle | actual different time presets; edit not claimed as one-button gameplay transition |
+| **World clock passage** | daylight → evening → moonrise | color-script with repeated angle | separate real time presets, explicit blank clock override and resolved date/place readback; edit not claimed as one-button gameplay transition |
 | **Controller → flight response** | under widgets/multi-view | close controls, matched aircraft bank | genuine control input, no fake controller-inset behavior |
 | **Magnifier reveal for mini plane** | after three-size comparator | camera framing notes | only if the pilot magnifier actually presents model clearly; do not invent optics |
 | **Multiple imported preview gallery** | import section | storyboard + visual canon of three compatible models | gallery of previews; only eligible Creator trials can be described as flown |
@@ -74,6 +75,8 @@ The suggested placements and times in this retained brainstorm are historical; t
 **Low-risk / ready for an agent as reasoning work:** turn screenplay into shot list; propose a better camera path; score storyboard legibility; build a color script; draft captions/localizations; compare two cut structures; produce production manifest templates; audit claims; check source/audio rights paperwork.
 
 **Possible with existing approved media and separate video tooling:** inspect selected frames, track scene/skin names, draft rough FFmpeg or Remotion edits, make kinetic title options, generate waveform-based cue maps, render storyboard animatics, calculate actual runtime, validate MP4 metadata, make 30-second vertical variations with safe crops. Each requires real supplied media and a tool-specific QA pass.
+
+The [zoom-through-text research](research-text-window-transition-2026-11-22.md) remains an optional synthetic study. It is not automatically integrated into the R7 master, and it does not establish a transition over gameplay footage.
 
 **Optional generative AI, not the basis of gameplay advertising:** reference moodboards, alternate camera storyboard images, color look sketches, animated title experiments or fictional concepts. Keep output labeled concept, rights cleared, and away from any claim of gameplay functionality. The game should supply all aircraft, quad racing, trucks, skins, water reflections, physics and real-time widgets in the public trailer.
 

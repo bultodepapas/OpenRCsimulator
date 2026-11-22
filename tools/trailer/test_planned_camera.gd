@@ -11,8 +11,17 @@ class FlightStub extends Node:
 	var _rig: RefCounted
 	var _last_render_pose := {}
 	var _airplane := {}
+	var simulated_tick := 0
 	var simulated_state := PackedFloat64Array([128.0, 55.0, -2.55, 23.0])
 	var pilot_commands := {"roll": 0.1, "pitch": -0.2, "yaw": 0.0, "throttle": 0.7}
+
+
+class FrameCallback extends Node:
+	var callback := Callable()
+
+	func _process(_delta: float) -> void:
+		if callback.is_valid():
+			callback.call()
 
 
 class DirectorStub extends Node:
@@ -55,6 +64,11 @@ func _run() -> void:
 	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
 	_test_parallel_tracking(flight, camera, visual)
 	_test_fixed_tracking(flight, camera)
+	_test_water_plane_tracking(flight, camera, visual)
+	_test_frame_evidence(flight, camera)
+	await _test_freshness_same_position(flight, camera)
+	if OS.get_cmdline_user_args().has("--check-post-draw"):
+		await _test_post_draw_freshness(flight, camera)
 	await _test_composition(flight, camera)
 	_test_failures(flight, rig, camera)
 	flight.free()
@@ -81,10 +95,37 @@ func _fixed_recipe() -> Dictionary:
 	return recipe
 
 
+func _water_recipe() -> Dictionary:
+	var recipe := _base_recipe()
+	recipe.target = "presented_cg_water_plane"
+	recipe["water_down_m"] = 0.45
+	return recipe
+
+
 func _test_recipe_validation() -> void:
 	var recipe := _base_recipe()
 	_check("parallel recipe is accepted", PlannedCamera.validate_recipe(recipe).is_empty())
 	_check("fixed recipe is accepted", PlannedCamera.validate_recipe(_fixed_recipe()).is_empty())
+	var water := _water_recipe()
+	_check("parallel water-plane recipe is accepted", PlannedCamera.validate_recipe(water).is_empty())
+	var fixed_water := _fixed_recipe()
+	fixed_water.target = "presented_cg_water_plane"
+	fixed_water["water_down_m"] = 0.45
+	_check("fixed water-plane recipe is accepted", PlannedCamera.validate_recipe(fixed_water).is_empty())
+	var missing_water := water.duplicate(true)
+	missing_water.erase("water_down_m")
+	_check("water-plane recipe requires water_down_m", not PlannedCamera.validate_recipe(missing_water).is_empty())
+	for invalid: Variant in [100000.1, -100000.1, INF, NAN, "0.45", true, null]:
+		var changed := water.duplicate(true)
+		changed.water_down_m = invalid
+		_check("invalid water plane is refused: " + str(invalid), not PlannedCamera.validate_recipe(changed).is_empty())
+	for valid: float in [-100000.0, 100000.0]:
+		var changed := water.duplicate(true)
+		changed.water_down_m = valid
+		_check("inclusive water-plane bound is accepted: " + str(valid), PlannedCamera.validate_recipe(changed).is_empty())
+	var stray_water := recipe.duplicate(true)
+	stray_water["water_down_m"] = 0.45
+	_check("CG target refuses an extra water plane", not PlannedCamera.validate_recipe(stray_water).is_empty())
 	var source := JSON.stringify(recipe).to_utf8_buffer()
 	var parsed: Dictionary = PlannedCamera.parse_recipe_bytes(source)
 	var with_space := source.duplicate()
@@ -173,6 +214,7 @@ func _test_parallel_tracking(flight: FlightStub, camera: Camera3D, visual: Node3
 	var input_recipe := _base_recipe()
 	_check("parallel adapter configures", adapter.configure(flight, input_recipe).is_empty())
 	_check("priority composes after director and before planar reflection", adapter.process_priority == 20)
+	camera.keep_aspect = Camera3D.KEEP_WIDTH
 	input_recipe.east_offset_m = 999.0 # The adapter must retain the admitted recipe.
 	var original_root := visual.global_transform
 	var state_before := flight.simulated_state.duplicate()
@@ -192,13 +234,18 @@ func _test_parallel_tracking(flight: FlightStub, camera: Camera3D, visual: Node3
 		_check("parallel eye follows CG east, with fixed north and down", camera.global_position.is_equal_approx(expected_eye))
 		_check("parallel camera aims at displayed CG, not model root", _aims_at(camera, expected_target))
 		_check("parallel record has the actual target and eye", bool(record.get("valid", false)) \
+			and record.get("target") == "presented_cg" and record.has("water_down_m") and record.water_down_m == null \
+			and _array_vector(record.get("presented_cg_render_m", []), expected_target) \
+			and _array_vector(record.get("presented_cg_ned_m", []), Vector3(128.0, float(sample[0]), -2.55)) \
 			and _array_vector(record.get("target_render_m", []), expected_target) \
 			and _array_vector(record.get("target_ned_m", []), Vector3(128.0, float(sample[0]), -2.55)) \
 			and _array_vector(record.get("requested_eye_ned_m", []), Vector3(145.0, float(sample[1]), -1.0)) \
 			and _array_vector(record.get("actual_eye_render_m", []), expected_eye))
 		_check("parallel lens and mode are recorded", record.get("mode") == "parallel_east" \
 			and is_equal_approx(float(record.get("actual_fov_deg", 0.0)), 42.0) \
-			and is_equal_approx(float(record.get("requested_fov_deg", 0.0)), 42.0))
+			and is_equal_approx(float(record.get("requested_fov_deg", 0.0)), 42.0) \
+			and int(record.get("keep_aspect", -1)) == Camera3D.KEEP_HEIGHT \
+			and camera.keep_aspect == Camera3D.KEEP_HEIGHT)
 		_check("presented pose is read without mutation", flight._last_render_pose == pose_before)
 	_check("visual model root is not moved", visual.global_transform == original_root)
 	_check("simulation state and pilot commands are unchanged", flight.simulated_state == state_before and flight.pilot_commands == commands_before)
@@ -224,8 +271,257 @@ func _test_fixed_tracking(flight: FlightStub, camera: Camera3D) -> void:
 	adapter.free()
 
 
+func _test_water_plane_tracking(flight: FlightStub, camera: Camera3D, visual: Node3D) -> void:
+	var adapter := PlannedCamera.new()
+	var recipe := _water_recipe()
+	_check("water-plane adapter configures", adapter.configure(flight, recipe).is_empty())
+	recipe.water_down_m = 123.0 # Configuration retained a detached copy.
+	var state_before := flight.simulated_state.duplicate()
+	var commands_before := flight.pilot_commands.duplicate(true)
+	var root_before := visual.global_transform
+	for sample: Array in [[55.0, 2.55], [124.0, 3.1], [193.0, 1.9]]:
+		var cg := Vector3(float(sample[0]), float(sample[1]), -128.0)
+		var aim := Vector3(float(sample[0]), -0.45, -128.0)
+		var eye := Vector3(float(sample[0]) - 8.0, 1.0, -145.0)
+		flight._last_render_pose = {"pos": cg}
+		camera.keep_aspect = Camera3D.KEEP_WIDTH
+		_check("water-plane camera tracks a live CG", adapter.apply_frame())
+		var record: Dictionary = adapter.frame_record()
+		_check("water-plane eye follows CG east and aims at mean water", camera.global_position.is_equal_approx(eye) \
+			and _aims_at(camera, aim) and not _aims_at(camera, cg))
+		_check("water-plane evidence separates CG from actual aim", record.get("target") == "presented_cg_water_plane" \
+			and is_equal_approx(float(record.get("water_down_m", NAN)), 0.45) \
+			and _array_vector(record.get("presented_cg_render_m", []), cg) \
+			and _array_vector(record.get("presented_cg_ned_m", []), Vector3(128.0, float(sample[0]), -float(sample[1]))) \
+			and _array_vector(record.get("target_render_m", []), aim) \
+			and _array_vector(record.get("target_ned_m", []), Vector3(128.0, float(sample[0]), 0.45)) \
+			and _array_vector(record.get("actual_eye_render_m", []), eye))
+		_check("water-plane lens is explicitly vertical", camera.keep_aspect == Camera3D.KEEP_HEIGHT \
+			and int(record.get("keep_aspect", -1)) == Camera3D.KEEP_HEIGHT and is_equal_approx(camera.fov, 42.0))
+	var detached: Dictionary = adapter.frame_record()
+	detached.presented_cg_render_m[0] = 999.0
+	detached.presented_cg_ned_m[0] = 999.0
+	detached.target_render_m[0] = 999.0
+	detached.target_ned_m[0] = 999.0
+	var retained: Dictionary = adapter.frame_record()
+	_check("CG and water-plane evidence arrays are detached", float(retained.presented_cg_render_m[0]) != 999.0 \
+		and float(retained.presented_cg_ned_m[0]) != 999.0 and float(retained.target_render_m[0]) != 999.0 \
+		and float(retained.target_ned_m[0]) != 999.0)
+	_check("water-plane aim leaves simulation, inputs and visual root unchanged", flight.simulated_state == state_before \
+		and flight.pilot_commands == commands_before and visual.global_transform == root_before)
+	adapter.free()
+
+	var fixed := _fixed_recipe()
+	fixed.target = "presented_cg_water_plane"
+	fixed["water_down_m"] = 0.45
+	var fixed_adapter := PlannedCamera.new()
+	_check("fixed eye water-plane adapter configures", fixed_adapter.configure(flight, fixed).is_empty())
+	_check("fixed eye supports the same water-plane target", fixed_adapter.apply_frame() \
+		and camera.global_position.is_equal_approx(Vector3(125.0, 1.0, -145.0)) \
+		and _aims_at(camera, Vector3(193.0, -0.45, -128.0)))
+	fixed_adapter.free()
+
+
+func _test_frame_evidence(flight: FlightStub, camera: Camera3D) -> void:
+	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
+	var recipe := _water_recipe()
+	var adapter := PlannedCamera.new()
+	_check("evidence fixture configures", adapter.configure(flight, recipe).is_empty())
+	_check("evidence fixture captures a frame", adapter.apply_frame())
+	var evidence: Dictionary = adapter.frame_record()
+	_check("standalone evidence has the current engine frame and no session tick", \
+		evidence.get("process_frame") == Engine.get_process_frames() and evidence.has("sim_tick") \
+		and evidence.sim_tick == null)
+	_check("live water-plane evidence is accepted", PlannedCamera.frame_evidence_error(
+		evidence, recipe, flight._last_render_pose, camera).is_empty())
+	_check("capture requiring a session tick refuses standalone evidence", not PlannedCamera.frame_evidence_error(
+		evidence, recipe, flight._last_render_pose, camera, 0).is_empty())
+	var stale_identity := evidence.duplicate(true)
+	stale_identity.process_frame = Engine.get_process_frames() - 1
+	_check("evidence from another engine frame is refused at unchanged CG", \
+		not PlannedCamera.frame_evidence_error(stale_identity, recipe, flight._last_render_pose, camera).is_empty())
+	var moved_cg := {"pos": Vector3(55.0, 3.55, -128.0)}
+	_check("changed CG altitude is refused even when water-plane aim stays the same", \
+		not PlannedCamera.frame_evidence_error(evidence, recipe, moved_cg, camera).is_empty())
+	moved_cg.pos = Vector3(56.0, 2.55, -128.0)
+	_check("changed CG east and corresponding aim are refused", \
+		not PlannedCamera.frame_evidence_error(evidence, recipe, moved_cg, camera).is_empty())
+	_check("missing latest CG is refused", not PlannedCamera.frame_evidence_error(evidence, recipe, {}, camera).is_empty())
+	for field: String in ["presented_cg_render_m", "presented_cg_ned_m", "target_render_m", "target_ned_m", \
+			"requested_eye_ned_m", "actual_eye_render_m"]:
+		var changed := evidence.duplicate(true)
+		changed[field][0] = float(changed[field][0]) + 1.0
+		_check("changed recorded position is refused: " + field, \
+			not PlannedCamera.frame_evidence_error(changed, recipe, flight._last_render_pose, camera).is_empty())
+	var bad_plane := evidence.duplicate(true)
+	bad_plane.water_down_m = 0.46
+	_check("changed recorded water plane is refused", \
+		not PlannedCamera.frame_evidence_error(bad_plane, recipe, flight._last_render_pose, camera).is_empty())
+	bad_plane.erase("water_down_m")
+	_check("missing recorded water plane is refused", \
+		not PlannedCamera.frame_evidence_error(bad_plane, recipe, flight._last_render_pose, camera).is_empty())
+	var changed_recipe := recipe.duplicate(true)
+	changed_recipe.water_down_m = 0.46
+	_check("changed admitted water plane is refused", \
+		not PlannedCamera.frame_evidence_error(evidence, changed_recipe, flight._last_render_pose, camera).is_empty())
+	var bad_target := evidence.duplicate(true)
+	bad_target.target = "presented_cg"
+	_check("changed target kind is refused", \
+		not PlannedCamera.frame_evidence_error(bad_target, recipe, flight._last_render_pose, camera).is_empty())
+	var bad_value := evidence.duplicate(true)
+	bad_value.presented_cg_render_m[0] = NAN
+	_check("nonfinite evidence is refused", \
+		not PlannedCamera.frame_evidence_error(bad_value, recipe, flight._last_render_pose, camera).is_empty())
+	camera.keep_aspect = Camera3D.KEEP_WIDTH
+	_check("changed live FOV axis is refused", \
+		not PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera).is_empty())
+	_check("adapter restores vertical FOV", adapter.apply_frame() and camera.keep_aspect == Camera3D.KEEP_HEIGHT)
+	camera.fov = 40.0
+	_check("changed live FOV is refused", \
+		not PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera).is_empty())
+	_check("adapter restores the admitted FOV", adapter.apply_frame())
+	camera.global_position += Vector3(1.0, 0.0, 0.0)
+	_check("changed live camera eye is refused", \
+		not PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera).is_empty())
+	_check("adapter restores the admitted eye", adapter.apply_frame())
+	camera.look_at(flight._last_render_pose.pos, Vector3.UP)
+	var forged_rotation := evidence.duplicate(true)
+	var rotation := camera.get_camera_transform().basis.get_rotation_quaternion().normalized()
+	forged_rotation.actual_quaternion_xyzw = [rotation.x, rotation.y, rotation.z, rotation.w]
+	_check("live camera cannot look at CG when the admitted aim is the water plane", \
+		not PlannedCamera.frame_evidence_error(forged_rotation, recipe, flight._last_render_pose, camera).is_empty())
+	adapter.free()
+
+	var cg_adapter := PlannedCamera.new()
+	var cg_recipe := _base_recipe()
+	_check("legacy CG evidence fixture configures and applies", cg_adapter.configure(flight, cg_recipe).is_empty() \
+		and cg_adapter.apply_frame())
+	var cg_evidence: Dictionary = cg_adapter.frame_record()
+	_check("CG-targeted evidence remains accepted", PlannedCamera.frame_evidence_error(
+		cg_evidence, cg_recipe, flight._last_render_pose, camera).is_empty())
+	cg_evidence.water_down_m = 0.45
+	_check("CG-targeted evidence refuses a plane value", \
+		not PlannedCamera.frame_evidence_error(cg_evidence, cg_recipe, flight._last_render_pose, camera).is_empty())
+	cg_adapter.free()
+
+
+## Use real SceneTree processing and the engine frame counter. The stepper models
+## a session whose tick advances while its displayed CG remains stationary.
+func _test_freshness_same_position(flight: FlightStub, camera: Camera3D) -> void:
+	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
+	flight.simulated_tick = 0
+	var recipe := _water_recipe()
+	var adapter := PlannedCamera.new()
+	var tick_provider := func() -> int: return flight.simulated_tick
+	_check("freshness fixture configures with a tick provider", adapter.configure(flight, recipe, tick_provider).is_empty())
+	var stepper := FrameCallback.new()
+	stepper.process_priority = 0
+	stepper.callback = func() -> void: flight.simulated_tick += 1
+	var director_state := {"processed": 0}
+	var director := FrameCallback.new()
+	director.process_priority = 10
+	director.callback = func() -> void: director_state.processed += 1
+	var observations: Array[Dictionary] = []
+	var observer := FrameCallback.new()
+	observer.process_priority = 30 # After the camera's priority 20, in the same actual process frame.
+	observer.callback = func() -> void:
+		var evidence: Dictionary = adapter.frame_record()
+		observations.append({"engine_frame": Engine.get_process_frames(), "tick": flight.simulated_tick,
+			"director_processed": director_state.processed,
+			"cg": flight._last_render_pose.pos, "evidence": evidence,
+			"error": PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera, flight.simulated_tick),
+			"tick_mismatch_error": PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera, flight.simulated_tick + 1)})
+	root.add_child(stepper)
+	root.add_child(director)
+	root.add_child(adapter)
+	root.add_child(observer)
+	# The process_frame signal precedes node processing. Two signals contain at
+	# least one complete pass of the stepper, adapter and observer.
+	await process_frame
+	await process_frame
+	if observations.is_empty():
+		_check("freshness observer received a process pass", false)
+		stepper.free()
+		director.free()
+		adapter.free()
+		observer.free()
+		return
+	var before: Dictionary = observations.back()
+	_check("same-frame camera evidence records the current engine frame and simulation tick", \
+		str(before.error).is_empty() and before.evidence.process_frame == before.engine_frame \
+		and before.evidence.sim_tick == before.tick)
+	_check("different session tick is refused even in the same engine frame", not str(before.tick_mismatch_error).is_empty())
+	adapter.set_process(false)
+	await process_frame
+	await process_frame
+	var stale: Dictionary = observations.back()
+	_check("skipped camera application is refused while tick and director advance at unchanged CG", \
+		int(stale.engine_frame) > int(before.engine_frame) and int(stale.tick) > int(before.tick) \
+		and int(stale.director_processed) > int(before.director_processed) \
+		and stale.cg == before.cg and stale.evidence.process_frame == before.evidence.process_frame \
+		and stale.evidence.sim_tick == before.evidence.sim_tick and not str(stale.error).is_empty())
+	adapter.set_process(true)
+	await process_frame
+	await process_frame
+	var resumed: Dictionary = observations.back()
+	_check("resumed application supplies current frame and tick at the same CG", str(resumed.error).is_empty() \
+		and resumed.evidence.process_frame == resumed.engine_frame and resumed.evidence.sim_tick == resumed.tick \
+		and resumed.cg == before.cg and int(resumed.engine_frame) > int(stale.engine_frame))
+	stepper.free()
+	director.free()
+	adapter.free()
+	observer.free()
+
+
 ## Both nodes run in the scene tree: the adapter must win after the director
 ## without replacing it or changing the session and input records.
+func _test_post_draw_freshness(flight: FlightStub, camera: Camera3D) -> void:
+	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
+	flight.simulated_tick = 0
+	var recipe := _water_recipe()
+	var adapter := PlannedCamera.new()
+	var tick_provider := func() -> int: return flight.simulated_tick
+	_check("post-draw fixture configures", adapter.configure(flight, recipe, tick_provider).is_empty())
+	var stepper := FrameCallback.new()
+	stepper.process_priority = 0
+	stepper.callback = func() -> void: flight.simulated_tick += 1
+	var observations: Array[Dictionary] = []
+	var observer := func() -> void:
+		var evidence: Dictionary = adapter.frame_record()
+		observations.append({"frame": Engine.get_process_frames(), "tick": flight.simulated_tick,
+			"evidence": evidence,
+			"error": PlannedCamera.frame_evidence_error(evidence, recipe, flight._last_render_pose, camera, flight.simulated_tick)})
+	root.add_child(stepper)
+	root.add_child(adapter)
+	camera.make_current()
+	RenderingServer.frame_post_draw.connect(observer)
+	# Bounded even when a runner does not emit draw callbacks. A headless callback
+	# result establishes engine ordering only, never rendered pixels or GPU output.
+	for i: int in 4:
+		await process_frame
+	_check("frame_post_draw was observed on this engine route", not observations.is_empty())
+	if not observations.is_empty():
+		var fresh: Dictionary = observations.back()
+		_check("post-draw evidence uses the current engine frame and session tick", str(fresh.error).is_empty() \
+			and fresh.evidence.process_frame == fresh.frame and fresh.evidence.sim_tick == fresh.tick)
+		adapter.set_process(false)
+		var before := observations.size()
+		for i: int in 3:
+			await process_frame
+		_check("post-draw guard rejects a skipped adapter at unchanged CG", observations.size() > before \
+			and not str(observations.back().error).is_empty())
+		adapter.set_process(true)
+		before = observations.size()
+		for i: int in 3:
+			await process_frame
+		_check("post-draw guard accepts resumed fresh evidence", observations.size() > before \
+			and str(observations.back().error).is_empty())
+	RenderingServer.frame_post_draw.disconnect(observer)
+	stepper.free()
+	adapter.free()
+
+
+## Both nodes run in the scene tree: the adapter must win after the director.
 func _test_composition(flight: FlightStub, camera: Camera3D) -> void:
 	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
 	var state_before := flight.simulated_state.duplicate()
@@ -259,6 +555,13 @@ func _test_failures(flight: FlightStub, rig: RigStub, camera: Camera3D) -> void:
 	_check("invalid configuration cannot later be reused", not invalid.configure(flight, _base_recipe()).is_empty())
 	_check("configuration failure remains observable", not invalid.configuration_error().is_empty())
 	invalid.free()
+	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
+	var invalid_tick := PlannedCamera.new()
+	var invalid_tick_provider := func() -> int: return -1
+	_check("invalid-tick fixture configures", invalid_tick.configure(flight, _base_recipe(), invalid_tick_provider).is_empty())
+	_check("invalid simulation tick fails closed", not invalid_tick.apply_frame() \
+		and not invalid_tick.configuration_error().is_empty() and invalid_tick.frame_record().get("valid", true) == false)
+	invalid_tick.free()
 
 	flight._last_render_pose = {}
 	_assert_frame_failure(flight, "missing displayed CG")
@@ -268,6 +571,15 @@ func _test_failures(flight: FlightStub, rig: RigStub, camera: Camera3D) -> void:
 	_assert_frame_failure(flight, "coincident camera and CG")
 	flight._last_render_pose = {"pos": Vector3(125.0, 5.0, -145.0)}
 	_assert_frame_failure(flight, "vertical look")
+	var water_eye := _fixed_recipe()
+	water_eye.target = "presented_cg_water_plane"
+	water_eye["water_down_m"] = -1.0
+	flight._last_render_pose = {"pos": Vector3(125.0, 2.55, -145.0)}
+	var coincident_aim := PlannedCamera.new()
+	_check("water aim failure fixture configures", coincident_aim.configure(flight, water_eye).is_empty())
+	_check("water-plane aim coincident with eye is refused even when CG differs", not coincident_aim.apply_frame() \
+		and not coincident_aim.configuration_error().is_empty() and coincident_aim.frame_record().get("valid", true) == false)
+	coincident_aim.free()
 	flight._last_render_pose = {"pos": Vector3(55.0, 2.55, -128.0)}
 	flight._rig = null
 	_assert_frame_failure(flight, "missing rig")

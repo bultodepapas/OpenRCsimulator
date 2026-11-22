@@ -105,7 +105,7 @@ class CameraRecipeTests(unittest.TestCase):
     def test_cli_recipe_is_bound_to_file_and_never_overwrites(self):
         with tempfile.TemporaryDirectory() as folder:
             out = Path(folder)/'camera.json'
-            cmd=[sys.executable,str(Path(sp.__file__)),'camera-recipe','R4-40','--out',str(out)]
+            cmd=[sys.executable,str(Path(sp.__file__)),'--plan',str(self.path),'camera-recipe','R4-40','--out',str(out)]
             first=subprocess.run(cmd,capture_output=True,text=True)
             self.assertEqual(first.returncode,0,first.stderr)
             before=out.read_bytes()

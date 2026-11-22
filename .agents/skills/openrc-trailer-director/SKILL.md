@@ -4,7 +4,7 @@ description: Direct the OPEN RC SIMULATOR gameplay trailer as a cinematic short 
 license: MIT
 metadata:
   author: OpenRC Simulator trailer preproduction
-  version: "0.1.0"
+  version: "0.2.0"
   domain: filmmaking
   related-skills: shot-list, scene-breakdown, color-script, camera-cinematography, openrc-trailer-continuity
 ---
@@ -13,7 +13,7 @@ metadata:
 
 ## Read before directing
 
-1. Read docs/plans/trailer-v2/README.md and docs/plans/trailer-v2/cinematic-script-r2.md. The current script is the source of story beats; an earlier storyboard is not additional footage.
+1. Read docs/plans/trailer-v2/README.md, then the current script, shot plan, title plan and direction sheet it names. The index selects the active revision; earlier scripts/storyboards are historical, not additional footage. Keep all generated cards, cuts, titles and recipes bound to the same revision.
 2. Consult the real source or the current product feature record for every claimed game function. If no current runtime evidence exists, write "proposed — validate during capture."
 3. Distinguish actual interactive gameplay, real game UI, documented presentation-only choreography, and editorial montage. The previous v9.13 trailer showed both real footage and staged size/formation effects.
 4. Until a later explicit production request, produce only plans and documents: no engine changes, no footage claims, no generation, and no automatic downloads.
@@ -35,7 +35,7 @@ For every sequence produce this compact shot card:
 - Real audio cue and the cut transition.
 - What must remain unchanged; what fails the shot; fallback if not filmable.
 
-Each camera move earns its place. Suggested vocabulary: locked ground-pilot, fly-by, chase, orbit, closeup; for the ION R5 only, rigid onboard FPV with chase/pilot; trucks have their own chase, operator and orbit choices. "Cockpit" instruments are **widgets**, not proof of an airplane interior camera.
+Each camera move earns its place. Current fixed-wing source modes are pilot, fly-by, chase and orbit; a detail shot may use a separately implemented capture camera, so do not advertise closeup as an additional player mode; for the ION R5 only, rigid onboard FPV with chase/pilot; trucks have their own chase, operator and orbit choices. "Cockpit" instruments are **widgets**, not proof of an airplane interior camera.
 
 ## Dramatic composition rules
 

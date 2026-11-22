@@ -1,7 +1,7 @@
 # Trailer 2.0 — mechanisms that tell a story
 
 **22 November 2026 · V2 · Screenplay support, not capture instructions**
-**Current master:** [R6](cinematic-script-r6.md), 00:39–00:59; the [shot plan](shot-plan-r6.json) retains the R4-prefixed IDs. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e. The first offline plan tools and opt-in livery hold-last have historical focused software evidence; no mechanism was newly rendered or filmed.
+**Current master:** [R7](cinematic-script-r7.md), 00:39–00:59; the [shot plan](shot-plan-r7.json) retains the R4-prefixed IDs. The [storyboard](storyboard-r7.md) owns edit boundaries and the [direction sheet](direction-and-continuity.md) owns cut-to-cut continuity. **Source reviewed:** game code at 57abea025f62b20233ca281d58d2acbee4ab8b8e. The first offline plan tools and opt-in livery hold-last have historical focused software evidence; no mechanism was newly rendered or filmed.
 
 ## Director's idea: let the mechanism explain itself
 
@@ -32,18 +32,18 @@ The old [v9.13 revision record](../../research/cinematic-trailer/revision-9-2026
 
 ## Main-trailer insert — twelve seconds of Corsair, four of collective
 
-| Master ID | Seconds | Frame and movement | End condition |
-| --- | ---: | --- | --- |
-| R4-14 | 3.00 | Low front three-quarter, ~35–50 mm equivalent feeling; last part of wing spreading. Both outer panels and runway remain visible. | Spread/locked silhouette holds briefly. |
-| R4-15 | 2.00 | Rear three-quarter, moderate lens; both ailerons and fixed wing. One roll input. | Opposed deflection is visible; no hidden far aileron. |
-| R4-16 | 1.50 | Side close-up, ~65–85 mm feeling; elevator plus fixed tailplane. | Movement direction is readable on mute. |
-| R4-17 | 1.50 | Rear-oblique close-up; rudder plus fixed fin. | Lateral movement is distinct from previous insert. |
-| R4-18 | 2.00 | Low wing detail; final portion of flap deployment. | Panels reach a settled angle. |
-| R4-19 | 2.00 | Side canopy close-up; fixed cockpit rim remains in view. | Sliding canopy settles; no promised cockpit controls. |
-| R4-20 | 4.00 | Clearly labelled HX-700 studio inspection, tight head view; stopped rotor and visible blade roots. ~1 s neutral, ~2 s movement, ~1 s hold are creative targets. | Both blade-pitch changes and swash/link relationship can be understood. |
-| R4-21 | 4.00 | Hard cut to playable X-Cell, full side silhouette, forward movement past a field landmark. | Viewers recognize a new context and actual flight. |
+| Master ID | Master time | Frame and movement | End condition |
+| --- | --- | --- | --- |
+| R4-20 | 00:39–00:43 | Clearly labelled HX-700 studio inspection, tight head view; stopped rotor and visible blade roots. About 1 s neutral, 2 s movement and 1 s hold are creative targets. | Both blade-pitch changes and swash/link relationship can be understood. |
+| R4-21 | 00:43–00:47 | Hard cut to playable X-Cell, full side silhouette, forward movement past a field landmark. | Viewers recognize a new context and actual flight. |
+| R4-14 | 00:47–00:50 | Low front three-quarter; last part of wing spreading. Both outer panels and runway remain visible. | Spread/locked silhouette holds briefly. |
+| R4-15 | 00:50–00:52 | Grounded view with both ailerons and fixed wing. One roll input. | Opposed deflection is visible; no hidden far aileron. |
+| R4-16 | 00:52–00:53.5 | Side close-up; elevator plus fixed tailplane. | Movement direction is readable on mute. |
+| R4-17 | 00:53.5–00:55 | Rear-oblique close-up; rudder plus fixed fin. | Lateral movement is distinct from previous insert. |
+| R4-18 | 00:55–00:57 | Low wing detail; final portion of flap deployment. | Panels reach a settled angle. |
+| R4-19 | 00:57–00:59 | Side canopy close-up; fixed cockpit rim remains in view. | Sliding canopy settles; no promised cockpit controls. |
 
-Lens numbers in this table are composition references; R6's shot cards propose camera positions and Godot FOV values. Use the `three_tone` Corsair for the ground checks, matching the final orbit and lake. The 1.5-second tail details still need a real readability check: capture their full travel and retime if the action cannot be read. R6 has no spare reserve; transfer an explicitly identified lower-priority chapter to Field Notes before extending these inserts. Never turn the rotor studio into a fake field scene or remove the inspection identification to conceal its origin.
+The [R7 shot plan](shot-plan-r7.json) owns camera positions and Godot FOV. Use the `three_tone` Corsair for the ground checks, matching the final orbit and lake. The 1.5-second tail details need real readability checks: capture full travel and retime if the action cannot be read. The master has no spare reserve; a lower-priority feature must be transferred explicitly before extending these inserts. The inspector is a stationary studio presentation, not a shown grounded X-Cell; do not invent an outdoor scene or remove its identification.
 
 ### Collective-specific acceptance
 
@@ -70,7 +70,7 @@ Lens numbers in this table are composition references; R6's shot cards propose c
 | 00:26–00:32 | 6.0 s | Separate airborne departure: the current authored four-second gear/door retraction, with time to establish the view and hold a clean silhouette. |
 | **Total** | **32.0 s** | Proposed edit only; full-travel timing remains subject to capture handles and readability. |
 
-This is a montage of distinct demonstrations, not one unbroken checklist. Restore the flight configuration between demonstrations: wings spread and locked, canopy/hook/flaps in the intended takeoff/flight states. If natural travel and useful holds need longer, let this companion film grow to 33–35 seconds instead of speeding the machinery. An optional later cyclic/tail-pitch explanation belongs in another clearly identified inspector study.
+This is a montage of distinct demonstrations, not one unbroken checklist. Restore the flight configuration between demonstrations: wings spread and locked, canopy/hook/flaps in the intended takeoff/flight states. Retain native speed; if actual travel and useful holds do not fit this 32-second plan, revise the companion edit explicitly. An optional later cyclic/tail-pitch explanation belongs in another clearly identified inspector study.
 
 ## Sound and light
 
@@ -80,4 +80,4 @@ Use actual mechanical/engine sound where available. A restrained score pulse can
 
 ## Pending decisions for the later tools phase
 
-R6 proposes camera access and blocking; confirm the selected build exposes the supported mechanisms and produces readable frames. The inspector launcher is [inspect_hx700.gd](../../../app/tools/inspect_hx700.gd); this reference establishes a source route, not a successful launch. Shot-specific capture routes, actual rig visibility and footage remain pending; this sheet does not select a renderer or video package.
+R7 proposes camera access and blocking; confirm the selected build exposes the supported mechanisms and produces readable frames. The inspector launcher is [inspect_hx700.gd](../../../app/tools/inspect_hx700.gd); this reference establishes a source route, not a successful launch. Shot-specific capture routes, actual rig visibility and footage remain pending; this sheet does not select a renderer or video package.

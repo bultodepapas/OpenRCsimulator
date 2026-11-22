@@ -102,7 +102,7 @@ class CinemaAssemblyTests(unittest.TestCase):
                                 root/'out',root/'work',prepare_only=True)
             self.assertIn('AWAITING_SOURCE R4-01',output.getvalue())
             self.assertIn('AWAITING_SOURCE R4-32',output.getvalue())
-            self.assertFalse((root/'work/31-R4-32.mp4').exists())
+            self.assertFalse(list((root/'work').glob('*-R4-32.mp4')))
             self.assertFalse(any(p.is_dir() and '-cinema-' in p.name for p in (root/'work').iterdir()))
             cue=next(c for c in title_plan.load(title_plan.DEFAULT_PLAN)['cues'] if c['id']=='phoenix')
             box=cinema_titles.CinemaCue(cue).ink_boxes[0]
