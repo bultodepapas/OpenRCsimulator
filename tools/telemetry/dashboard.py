@@ -2027,6 +2027,7 @@ def render(snapshot):
     stale_hidden = "" if time.time() - now >= STALE_AFTER_S else " hidden"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="openrc-release-inventory" content="{downloads.release_inventory_token(snapshot.get('github'))}">
 <title>OpenRC Stats Dashboard</title><link rel="icon" href="data:,">
 <script>{HEAD_JS}</script><style>{CSS}</style>
 <noscript><style>.tabpanel[hidden]{{display:block}}.tabs,#theme{{display:none}}</style></noscript></head>
@@ -2222,8 +2223,11 @@ def build(args):
         if not release_changed:
             try:
                 report = json.loads((www / "health.json").read_text(encoding="utf-8"))
-                if previous and (www / "index.html").is_file() and isinstance(report, dict) and (
-                        report.get("status") in ("ok", "degraded", "stale")):
+                with (www / "index.html").open(encoding="utf-8") as page:
+                    head = page.read(1024)
+                token = downloads.release_inventory_token(previous_github)
+                if previous and f'name="openrc-release-inventory" content="{token}"' in head and (
+                        isinstance(report, dict) and report.get("status") in ("ok", "degraded", "stale")):
                     print("GitHub release inventory unchanged")
                     return 0
             except (OSError, ValueError):

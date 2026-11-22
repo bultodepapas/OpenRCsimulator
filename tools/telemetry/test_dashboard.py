@@ -536,9 +536,12 @@ class DashboardCase(unittest.TestCase):
             archive["assets"] = [{"id": 42, "tag": tag, "name": name, "platform": "Linux", "count": 0}]
             self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
             self.assertIn(f"Latest release {tag}", (www / "index.html").read_text(encoding="utf-8"))
+            (www / "index.html").write_bytes(page)  # Simulate interrupted publication after the state was saved.
+            self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
+            self.assertIn(f"Latest release {tag}", (www / "index.html").read_text(encoding="utf-8"))
             self.assertEqual(dashboard.main(args + ["--github-on-release"]), 0)
             self.assertEqual(collect.call_count, 2)
-            self.assertEqual(load.call_count, 3)
+            self.assertEqual(load.call_count, 4)
 
     def test_public_release_inventory_ignores_counters_and_drafts(self):
         api = downloads.github_history
@@ -551,9 +554,10 @@ class DashboardCase(unittest.TestCase):
                  "assets": [{"tag": tag, "id": 3, "name": name, "count": 0}]}
         with unittest.mock.patch.object(api, "public_github_json", return_value=rows) as request:
             inventory = downloads.public_release_inventory()
-        request.assert_called_once_with(f"repos/{api.DEFAULT_REPO}/releases?per_page=100")
+        request.assert_called_once_with(f"repos/{api.DEFAULT_REPO}/releases?per_page=100", paginated=True)
         self.assertEqual(set(inventory), {tag})
         self.assertFalse(downloads.release_inventory_changed(inventory, model))
+        self.assertTrue(downloads.release_inventory_changed({}, model))
         model["assets"][0]["id"] = 2
         self.assertTrue(downloads.release_inventory_changed(inventory, model))
 

@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from fnmatch import fnmatchcase
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -63,7 +65,7 @@ def public_release_inventory(pattern=github_history.DEFAULT_ASSET_GLOB):
     """Look for public release and package changes without reading download counts."""
     api = github_history.public_github_json
     endpoint = f"repos/{github_history.DEFAULT_REPO}/releases"
-    releases = api(f"{endpoint}?per_page=100")
+    releases = api(f"{endpoint}?per_page=100", paginated=True)
     error = github_history.CollectionError
     if not isinstance(releases, list):
         raise error("Invalid public release list")
@@ -96,6 +98,8 @@ def release_inventory_changed(inventory, model):
     """Compare the public page of releases with the last published dashboard snapshot."""
     model = model or {}
     releases = {row["tag"]: (_parse(row["published"]), row["prerelease"]) for row in model.get("releases", [])}
+    if releases.keys() != inventory.keys():
+        return True
     assets = {}
     for asset in model.get("assets", []):
         assets.setdefault(asset["tag"], {})[asset["name"]] = asset.get("id")
@@ -107,6 +111,15 @@ def release_inventory_changed(inventory, model):
                 known[name] is not None and known[name] != asset_id for name, asset_id in packages):
             return True
     return False
+
+
+def release_inventory_token(model):
+    """Identify the release data shared by the stored snapshot and its published HTML."""
+    model = model or {}
+    releases = sorted((r["tag"], r.get("published") or "", bool(r.get("prerelease")))
+                      for r in model.get("releases", []))
+    assets = sorted((a["tag"], a["name"], a.get("id") or 0) for a in model.get("assets", []))
+    return hashlib.sha256(json.dumps([releases, assets]).encode("utf-8")).hexdigest()
 
 
 def _parse(stamp):
