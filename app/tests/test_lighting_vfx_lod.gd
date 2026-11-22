@@ -96,6 +96,15 @@ func _run() -> void:
 			and int(spark_pool.get("gpu_instance_writes", 0)) == writes_before_denied_update
 			and int(vfx.budget_info().sparks_allocated) == 0
 			and int(vfx.budget_info().sparks_cpu_live) == 1)
+	var world_root: Node3D = vfx._world_root
+	var original_root := world_root.global_transform
+	var moved_root := Transform3D(Basis(Vector3.UP, 0.7).scaled(Vector3(1.5, 0.75, 2.0)), Vector3(3, -1, 5))
+	var spark_world: Transform3D = original_root * spark_pool.visual_transforms[0]
+	world_root.global_transform = moved_root
+	vfx._update_sparks(spark_pool, 0.5, 1.0, 1.0)
+	_check("denied spark retains its world pose when the effect root moves",
+		(moved_root * spark_pool.visual_transforms[0]).is_equal_approx(spark_world))
+	world_root.global_transform = original_root
 	spark_pool["particles"] = []
 	vfx._update_sparks(spark_pool, 0.6, 1.0, 1.0)
 
@@ -225,12 +234,14 @@ func _run() -> void:
 		trail_pool.visual_bounds.size.z >= float(vfx.TRAIL_MAX_WIDTH_M) - 0.000001
 			and trail_instance.custom_aabb.size.z >= float(vfx.TRAIL_MAX_WIDTH_M))
 	var extended_head := stationary_head + Vector3.RIGHT * 0.1
+	world_root.global_transform = moved_root
 	vfx._update_trail(trail_pool, 3.0, 1.0, 1.0, extended_head, true)
 	_check("64 history plus live-head segments keep the newest 63 within the fixed render cap",
 		trail_pool.visual_transforms.size() == LightingVfx.MAX_TRAIL_SEGMENTS
 			and trail_instance.multimesh.instance_count == LightingVfx.MAX_TRAIL_SEGMENTS
 			and _trail_world_endpoint(vfx, trail_pool, 0, false).distance_to(Vector3(0.1, 0.0, 0.0)) < 0.0001
 			and _trail_world_endpoint(vfx, trail_pool, trail_pool.visual_transforms.size() - 1).distance_to(extended_head) < 0.0001)
+	world_root.global_transform = original_root
 	vfx.reset()
 
 	rig.advance(1.6, _telemetry(10.0, 1.0))

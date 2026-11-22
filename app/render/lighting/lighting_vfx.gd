@@ -591,6 +591,9 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 	var live_bounds := AABB()
 	var has_live_bounds := false
 	var camera_basis := _camera_basis()
+	var has_world_root := is_instance_valid(_world_root)
+	var inverse_ready := false
+	var world_to_local := Transform3D.IDENTITY
 	for particle_value: Variant in particles:
 		if not particle_value is Dictionary:
 			continue
@@ -608,7 +611,12 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 			continue
 		var size := float(particle.get("size", 0.025)) * (0.7 + 0.3 * fade)
 		var basis := Basis(camera_basis.x * size, camera_basis.y * size, camera_basis.z * size)
-		var local_transform := _local_transform(Transform3D(basis, point))
+		var local_transform := Transform3D(basis, point)
+		if has_world_root:
+			if not inverse_ready:
+				world_to_local = _world_root.global_transform.affine_inverse()
+				inverse_ready = true
+			local_transform = world_to_local * local_transform
 		if not local_transform.is_finite():
 			continue
 		var particle_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
@@ -705,6 +713,9 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 			head_segment = is_finite(head_length) and head_length >= 0.001 and head_length <= 5.0
 	var segment_count := history_segments + int(head_segment)
 	var first_segment := maxi(0, segment_count - MAX_TRAIL_SEGMENTS)
+	var has_world_root := is_instance_valid(_world_root)
+	var inverse_ready := false
+	var world_to_local := Transform3D.IDENTITY
 	for segment_index in range(first_segment, segment_count):
 		var before: Dictionary
 		var after: Dictionary
@@ -745,7 +756,12 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 		if fade <= 0.0:
 			continue
 		var basis := Basis(tangent * length, side * TRAIL_BASE_WIDTH_M, normal)
-		var local_transform := _local_transform(Transform3D(basis, midpoint))
+		var local_transform := Transform3D(basis, midpoint)
+		if has_world_root:
+			if not inverse_ready:
+				world_to_local = _world_root.global_transform.affine_inverse()
+				inverse_ready = true
+			local_transform = world_to_local * local_transform
 		if not local_transform.is_finite():
 			continue
 		var segment_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
@@ -1106,12 +1122,6 @@ func _set_live_effect_bounds(instance: MultiMeshInstance3D, multi: MultiMesh, bo
 		live_bounds = AABB()
 	multi.custom_aabb = live_bounds
 	instance.custom_aabb = live_bounds
-
-
-func _local_transform(world_transform: Transform3D) -> Transform3D:
-	if not is_instance_valid(_world_root):
-		return world_transform
-	return _world_root.global_transform.affine_inverse() * world_transform
 
 
 func _clear_transients() -> void:
