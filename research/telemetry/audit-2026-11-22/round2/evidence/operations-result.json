@@ -1,0 +1,57 @@
+{
+  "archive_scaling": [
+    {
+      "asset_queries": 20,
+      "asset_rows": 60,
+      "assets": 3,
+      "database_bytes": 86016,
+      "observations": 20,
+      "retained_intervals": 19
+    },
+    {
+      "asset_queries": 200,
+      "asset_rows": 600,
+      "assets": 3,
+      "database_bytes": 167936,
+      "observations": 200,
+      "retained_intervals": 199
+    }
+  ],
+  "malformed_ga4_date": {
+    "downloads_error": null,
+    "downloads_quality": null,
+    "malformed_count": 0,
+    "normal_count": 4
+  },
+  "private_overlap": {
+    "collected": [
+      "clones",
+      "community",
+      "traffic"
+    ],
+    "discarded_new_private_referrer_count": 14,
+    "exit_code": 0,
+    "imported": [
+      "traffic",
+      "clones"
+    ],
+    "retained_private_referrer_count": 1,
+    "retained_private_timestamp": "2026-11-21T21:00:00.000000Z",
+    "stdout": "Imported private GitHub sources traffic clones\n"
+  },
+  "stale_receiver_fresh_ga4": {
+    "condition": "Unavailable",
+    "coverage": 0,
+    "ga4_available_days": [
+      "2026-12-17",
+      "2027-01-15"
+    ],
+    "ga4_latest_closed": "2027-01-12",
+    "note": "Presentation helpers are stubbed; the actual overview date selection and week_metric execute.",
+    "overview_week": [
+      "2026-11-29",
+      "2026-12-05"
+    ],
+    "receiver_day": "2026-12-06"
+  }
+}

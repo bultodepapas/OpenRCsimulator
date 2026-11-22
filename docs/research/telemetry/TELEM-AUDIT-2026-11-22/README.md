@@ -2,7 +2,11 @@
 
 **Decision:** prioritize the receiver's admission/aggregation mismatch and the independent monitor's missing actionable warnings. The audited code can accept data that prevents completion of a daily rollup, while the separate health check can remain green during the available recovery window. Client measurement errors, queue deadline violations and conditional operational weaknesses also need repair before the telemetry is used as a reliable basis for product decisions.
 
-This is an evidence-backed code and operational-design audit of OpenRC Simulator's telemetry stack. It contains **13 findings: 2 High, 10 Medium and 1 Low**, with conditions and confidence stated individually. Nine findings have local behavioral counterexamples, one conditional scheduling issue has a systemd calendar check, and three findings are supported by traced source paths without a rendered application reproduction. A separately reproduced consent-persistence problem is retained as a previously documented residual risk, outside the count of 13.
+This is an evidence-backed code and operational-design audit of OpenRC Simulator's telemetry stack. The first pass contains **13 findings: 2 High, 10 Medium and 1 Low**, with conditions and confidence stated individually. Nine findings have local behavioral counterexamples, one conditional scheduling issue has a systemd calendar check, and three findings are supported by traced source paths without a rendered application reproduction. A separately reproduced consent-persistence problem is retained as a previously documented residual risk, outside the count of 13.
+
+## Deeper review added the same day
+
+The [second pass](second-pass.md) adds **five correctness/recovery findings, two validation gaps and three optimization opportunities** against the same runtime baseline. It includes [client](second-pass-client.md) and [operations](second-pass-operations.md) detail, six new behavioral counterexample cases, two measured optimization paths and two source-level entries. These categories are separate from the 13 first-pass findings below. The [round-two package](../../../../research/telemetry/audit-2026-11-22/round2/README.md) retains the new probes, measurements and provenance; the original verification totals are not presented as rerun results.
 
 ## Source identity and deliverables
 

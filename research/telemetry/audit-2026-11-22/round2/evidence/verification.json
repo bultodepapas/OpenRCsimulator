@@ -1,0 +1,81 @@
+{
+  "audit_date_local": "2026-11-22",
+  "audit_file_hashes": 5,
+  "baseline_commit": "7940a4081e10994f34c858c4acac3d7a1a271464",
+  "baseline_file_hashes_verified": 137,
+  "documentation_validation": {
+    "errors": 0,
+    "immutable_source_links_checked": 56,
+    "local_links_checked": 65,
+    "markdown_files": 6,
+    "python_ast_files": 4
+  },
+  "godot": "4.8.beta2.official.cafc17a19",
+  "limitations": [
+    "Original 370 Python passes, two Windows skips, five Godot suites and bridge were not rerun.",
+    "No full application/CI, rendered/native controller, target-hardware FPS or production qualification.",
+    "Overview probe stubs presentation helpers; window selection and week_metric are actual code.",
+    "Invalid configuration and GA4 responses are constructed, not observed production inputs.",
+    "Python traced allocation peak is not process RSS; local timings are not a capacity projection.",
+    "Counterexample success is not a repair. No runtime fixes or deployments made."
+  ],
+  "measurement": {
+    "all_rollups_committed": true,
+    "events_per_batch": 16,
+    "instrumented_rollups_per_workload": 1,
+    "no_optimized_candidate_measured": true,
+    "ordinary_rollups_per_workload": 3,
+    "production_rollup_revalidation_included": true,
+    "setup_prevalidation_excluded": true,
+    "workloads": [
+      40,
+      160,
+      480
+    ]
+  },
+  "new_entries": {
+    "behaviorally_reproduced_findings": 4,
+    "correctness_recovery_findings": 5,
+    "measured_optimization_opportunities": 2,
+    "source_only_optimization_opportunities": 1,
+    "source_traced_findings": 1,
+    "validation_gaps_reproduced": 2
+  },
+  "portable_runner_outcomes": {
+    "outcomes": [
+      {
+        "exit_code": 0,
+        "ok": true,
+        "probe": "receiver_boundaries_probe.py"
+      },
+      {
+        "exit_code": 0,
+        "ok": true,
+        "probe": "operations_probe.py"
+      },
+      {
+        "ok": true,
+        "probe": "errors_only_idle_probe.gd"
+      }
+    ],
+    "python": "3.12.14",
+    "scope": "Synthetic local baseline counterexamples; no fix or production acceptance claim."
+  },
+  "prior_audit_commit": "87c95474bc2d767655de780a1b67ca4a0ff7d0bd",
+  "python": "3.12.14",
+  "receiver_refinement": {
+    "exit_code": 0,
+    "reason": "After independent review, advanced the fake clock by 240 seconds before the successful retry; original receipt remained unchanged.",
+    "result": "receiver-boundaries.json",
+    "stderr": "receiver_boundaries_probe.py:14: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient\ningest status=503 category=storage_unavailable\ningest status=503 category=storage_unavailable\n"
+  },
+  "review_adjustments": [
+    "Corrected private-import no-op ordering language.",
+    "Corrected source-inspection scope language.",
+    "Added a discriminating advanced-clock retry check.",
+    "Clarified production body revalidation remains in rollup timing.",
+    "Bounded source anchors to actual file length."
+  ],
+  "runtime_changed": false,
+  "timezone": "America/Bogota"
+}

@@ -4,6 +4,8 @@ Reports: [TELEM-AUDIT-2026-11-22](../../../docs/research/telemetry/TELEM-AUDIT-2
 
 Baseline: `7940a4081e10994f34c858c4acac3d7a1a271464`. These research scripts reproduce defects and a documented residual risk in that source. **Exit zero means the counterexample reproduced.** They are intentionally not added to the regular correctness test discovery. A future repair should convert the relevant cases into assertions of correct behavior while preserving this historical evidence.
 
+The [second-pass package](round2/README.md) adds errors-only delivery, quota retry, invalid configuration, private import, GA4/window checks and bounded rollup/archive measurements. Its results and source/probe hashes are retained separately from this original evidence.
+
 ## Python probes
 
 Use Python 3.12 and an isolated environment with the baseline receiver and reference requirements installed. See the owning [receiver README](../../../services/telemetry/README.md) and [reference README](../README.md) for their dependency/test workflow. The audit used Python 3.12.14. The extra `cryptography==50.0.0` was needed for the existing optional GA4 signing test, not these fake-OAuth probes.
