@@ -36,7 +36,7 @@ The [primary-source inventory](../../../../research/telemetry/audit-2026-11-22/e
 
 **Distinct Python total: 370 passed, 2 unresolved platform-specific skips.** The Godot bridge is one of the 142 receiver tests, rerun successfully on its own; adding 142 + 128 + 102 + 1 as independent test cases would double-count it. The five GDScript suites are reported as suites, not added to the Python test count.
 
-The six operations modules were `tools/telemetry/test_dashboard.py`, `test_ga4.py`, `test_release_metrics.py`, `tools/telemetry/deploy/host/test_openrc_stats_backup.py`, `tools/telemetry/deploy/test_sync_private_github.py`, and `tools/analytics/test_github_history.py`. Their owning READMEs and the baseline [workflow](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/.github/workflows/telemetry-contracts.yml#L46-L69) provide the ordinary suite invocation. The [reproduction package](../../../../research/telemetry/audit-2026-11-22/README.md) owns the new probe-runner commands.
+The six operations modules were `tools/telemetry/test_dashboard.py`, `test_ga4.py`, `test_release_metrics.py`, `tools/telemetry/deploy/host/test_openrc_stats_backup.py`, `tools/telemetry/deploy/test_sync_private_github.py`, and `tools/analytics/test_github_history.py`. Their owning READMEs and the baseline [workflow](https://github.com/bultodepapas/OpenRCsimulator/blob/7940a4081e10994f34c858c4acac3d7a1a271464/.github/workflows/telemetry-contracts.yml#L46-L69) provide the ordinary suite invocation. The [first-pass evidence](../../../../research/telemetry/audit-2026-11-22/evidence) records the probe outcomes and source hashes.
 
 ## New counterexamples
 

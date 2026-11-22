@@ -6,7 +6,7 @@ This is an evidence-backed code and operational-design audit of OpenRC Simulator
 
 ## Deeper review added the same day
 
-The [second pass](second-pass.md) adds **five correctness/recovery findings, two validation gaps and three optimization opportunities** against the same runtime baseline. It includes [client](second-pass-client.md) and [operations](second-pass-operations.md) detail, six new behavioral counterexample cases, two measured optimization paths and two source-level entries. These categories are separate from the 13 first-pass findings below. The [round-two package](../../../../research/telemetry/audit-2026-11-22/round2/README.md) retains the new probes, measurements and provenance; the original verification totals are not presented as rerun results.
+The [second pass](second-pass.md) adds **five correctness/recovery findings, two validation gaps and three optimization opportunities** against the same runtime baseline. It includes [client](second-pass-client.md) and [operations](second-pass-operations.md) detail, six new behavioral counterexample cases, two measured optimization paths and two source-level entries. These categories are separate from the 13 first-pass findings below. The [round-two evidence](../../../../research/telemetry/audit-2026-11-22/round2/evidence) retains the observed results, measurements and provenance; the original verification totals are not presented as rerun results.
 
 ## Source identity and deliverables
 
@@ -30,7 +30,7 @@ The work used an isolated branch/worktree. The findings apply to the pinned sour
 | [Operations](operations.md) | Warning propagation, credential file permissions, backup usability and timer timezone alignment |
 | [Verification](verification.md) | Exact test scope, retained results, reproduction method, environment adjustments and limitations |
 | [Scope and remediation](scope-and-remediation.md) | System map, reviewed boundaries, prior-audit reconciliation, ordered repair plan and deployment acceptance evidence |
-| [Reproduction package](../../../../research/telemetry/audit-2026-11-22/README.md) | Five Python and six Godot counterexamples, portable runners, output and source hashes |
+| [First-pass evidence](../../../../research/telemetry/audit-2026-11-22/evidence) | Outputs from five Python and six Godot counterexamples, with source hashes |
 
 ## Prioritized findings
 

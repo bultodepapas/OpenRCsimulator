@@ -17,6 +17,7 @@ The requested enabled-by-default experience is represented by a visibly recommen
 | Need | Authoritative home |
 | --- | --- |
 | Decisions, phases and backlog | This plan |
+| Findings and repair acceptance from the 22 November audit | [First pass](../research/telemetry/TELEM-AUDIT-2026-11-22/scope-and-remediation.md#repair-sequence-and-acceptance), [second pass](../research/telemetry/TELEM-AUDIT-2026-11-22/second-pass.md#findings-and-evidence-map) |
 | Reuse, architecture, interfaces, lifecycle and transport | [Architecture](telemetry/architecture.md) |
 | First-run, startup and Settings copy, EN/ES | [Consent and privacy](telemetry/consent.md) |
 | Events, hardware, measurement semantics and retention | [Data contract](telemetry/data-contract.md) |

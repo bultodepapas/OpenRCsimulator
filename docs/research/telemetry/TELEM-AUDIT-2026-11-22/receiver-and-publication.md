@@ -25,7 +25,7 @@ This is a disagreement between two boundaries of the same pipeline: an HTTP 202 
 
 ### Executed counterexample
 
-[`integral_float_rollup.py`](../../../../research/telemetry/audit-2026-11-22/integral_float_rollup.py) submits 20 ordinary valid batches and one valid batch with only the numeric representation above changed, using Starlette's in-process client. It then runs the production rollup for the eligible day. The [retained result](../../../../research/telemetry/audit-2026-11-22/evidence/python-probes.json) contains:
+The audit exercised ingress and daily aggregation in process with 21 schema-valid synthetic batches. The [retained result](../../../../research/telemetry/audit-2026-11-22/evidence/python-probes.json) contains:
 
 ```text
 healthy_batches: 20
@@ -65,7 +65,7 @@ Individual SQLite transactions serialize the writes, but they do not make a stal
 
 ### Executed counterexample
 
-[`publisher_race.py`](../../../../research/telemetry/audit-2026-11-22/publisher_race.py) creates one intent in a disposable aggregate database, opens two independent `AggStore` instances, and uses a barrier in fake discovery so both publishers have read the intent before either proceeds. Fake issue creation is protected by a lock to count side effects accurately.
+[`publisher_race.py`](../../../../research/telemetry/audit-2026-11-22/evidence/python-probes.json) creates one intent in a disposable aggregate database, opens two independent `AggStore` instances, and uses a barrier in fake discovery so both publishers have read the intent before either proceeds. Fake issue creation is protected by a lock to count side effects accurately.
 
 ```text
 outcomes: [('published', 2), ('published', 1)]
