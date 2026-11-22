@@ -142,6 +142,9 @@ class LocalePublicationTests(unittest.TestCase):
             self.assertEqual(query['utm_source'], ['github'])
             self.assertEqual(query['utm_campaign'], ['readme'])
             for page in self.pages.values():
+                version = release.removeprefix('v')
+                self.assertEqual(json.loads(page.select_one('#software-schema').string)['softwareVersion'], version)
+                self.assertEqual(page.select_one('.hero-top .release-stage').get_text(strip=True).split('/')[-1].strip(), version)
                 self.assertEqual(len(page.select('script[src^="downloads.js?"]')), 1)
                 targets = [a['href'] for a in page.select('#download a[href]')
                            if '/releases/download/' + release + '/' in a['href']

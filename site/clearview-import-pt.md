@@ -6,7 +6,7 @@
 
 Use a v0.3.2 ou posterior para a configuração automática e os testes de helicópteros. Escolha **ZIP de aeronave ClearView** no seletor de arquivos. A v0.3.0 permite testar aviões em voo e a v0.2.9 oferece prévias.
 
-**Experimental.** O modelo mantém a aparência do ClearView, mas voa com a física do OpenRC, não com o modelo de voo do ClearView: aviões, com uma configuração estimada dimensionada para o modelo; asas voadoras, com a física padrão do Skywalker X8; e helicópteros, com a física de referência do X-Cell .60. Aeronaves salvas ainda não podem ser lançadas pelo Início.
+**Experimental.** O modelo mantém a aparência do ClearView, mas voa com a física do OpenRC, não com o modelo de voo do ClearView: aviões, com uma configuração estimada dimensionada para o modelo; asas voadoras, com a física padrão do Skywalker X8 (MoonRunner X99); e helicópteros, com a física de referência do X-Cell .60. Aeronaves salvas ainda não podem ser lançadas pelo Início.
 
 ## Onde baixar
 
@@ -19,7 +19,7 @@ Exemplo testado na importação: [MC Extra 330 Red](https://time2rc.s3.amazonaws
 
 1. Baixe o `.zip` do modelo e mantenha-o compactado.
 2. Abra **Oficina → Criar aeronave… → Importação → Escolher modelo…**. Selecione o ZIP; se for um pacote, escolha uma aeronave.
-3. Confira a pré-visualização e as mensagens. Selecione **Configurar para voo automaticamente** (para um helicóptero, **Voar como helicóptero**), revise as estimativas e use **Fazer voo de teste**. Dê um nome e escolha **Salvar aeronave** ou **Salvar rascunho**.
+3. Para um avião convencional, escolha **Configurar para voo automaticamente**, confira as estimativas e selecione **Fazer voo de teste**. Para um helicóptero, escolha **Voar como helicóptero** e confirme para iniciar o teste. Salve um rascunho para continuar editando. **Salvar aeronave** está disponível para aviões com configuração própria aprovada nas verificações.
 
 ## Quais arquivos funcionam?
 

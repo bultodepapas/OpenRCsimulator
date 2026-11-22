@@ -173,3 +173,17 @@ html[data-theme=night] .donation-button { background:var(--lime); color:var(--in
   .donation-button { width:100%; margin-top:12px; }
 }
 @media(prefers-reduced-motion:reduce) { .hero-donate { transition:none; } }
+.hangar-stills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 64px);
+  margin-block: clamp(32px, 5vw, 72px) 24px;
+}
+.hangar-stills img { display: block; width: 100%; height: auto; }
+.hangar-stills h3 { margin: 18px 0 8px; font-size: clamp(24px, 2.5vw, 38px); line-height: 1.1; }
+.hangar-stills h3 a:hover { text-decoration: underline; }
+.hangar-stills h3 span { font-size: .65em; }
+.hangar-stills p { max-width: 60ch; font-size: 15px; line-height: 1.6; }
+@media (max-width: 700px) {
+  .hangar-stills { grid-template-columns: minmax(0, 1fr); }
+}

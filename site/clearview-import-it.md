@@ -6,7 +6,7 @@
 
 Usa la v0.3.2 o una versione successiva per la configurazione automatica e le prove in elicottero. Nel selettore dei file scegli **ZIP aeromobile ClearView**. La v0.3.0 consente di provare gli aerei in volo e la v0.2.9 offre l’anteprima.
 
-**Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con la fisica di OpenRC, non con il modello di volo di ClearView: gli aerei con una configurazione stimata dimensionata sul modello, le ali volanti con la fisica standard dello Skywalker X8 e gli elicotteri con la fisica di riferimento X-Cell .60. Gli aerei salvati non si possono ancora avviare dalla Home.
+**Sperimentale.** Il modello mantiene l’aspetto di ClearView, ma vola con la fisica di OpenRC, non con il modello di volo di ClearView: gli aerei con una configurazione stimata dimensionata sul modello, le ali volanti con la fisica standard dello Skywalker X8 (MoonRunner X99) e gli elicotteri con la fisica di riferimento X-Cell .60. Gli aerei salvati non si possono ancora avviare dalla Home.
 
 ## Dove scaricare
 
@@ -19,7 +19,7 @@ Esempio testato per l’importazione: [MC Extra 330 Red](https://time2rc.s3.amaz
 
 1. Scarica il `.zip` del modello e lascialo compresso.
 2. Apri **Officina → Crea aereo… → Importazione → Scegli modello…**. Seleziona lo ZIP; per un pacchetto, scegli un aereo.
-3. Controlla l’anteprima e i messaggi. Seleziona **Imposta automaticamente per il volo** (per un elicottero, **Vola come elicottero**), controlla le stime, poi usa **Vola per provare**. Dagli un nome e scegli **Salva aereo** o **Salva bozza**.
+3. Per un aereo convenzionale, scegli **Imposta automaticamente per il volo**, verifica le stime e avvia il **Vola per provare**. Per un elicottero, scegli **Vola come elicottero** e conferma per iniziare la prova. Salva una bozza per continuare a modificarla. **Salva aereo** è disponibile per gli aerei che superano i controlli con la propria configurazione.
 
 ## Quali file funzionano?
 
