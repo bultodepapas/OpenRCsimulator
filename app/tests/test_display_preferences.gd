@@ -403,9 +403,9 @@ func _test_gpu_defaults() -> void:
 	_reset()
 	var previous := DisplayPreferences.first_run_defaults
 	var flagship := AutoGraphicsPolicy.first_run("NVIDIA GeForce RTX 5090", "Windows", 1.0, 60.0,
-		Vector2i(2560, 1440), 16, true)
+		{screen = Vector2i(2560, 1440), cpu_threads = 16, forward_plus = true})
 	var integrated := AutoGraphicsPolicy.first_run("Intel(R) UHD Graphics 630", "Windows", 1.0, 60.0,
-		Vector2i(1366, 768), 8, false)
+		{screen = Vector2i(1366, 768), cpu_threads = 8, forward_plus = false})
 	DisplayPreferences.first_run_defaults = flagship
 	var store := DisplayPreferences.new(PREFS)
 	_check("fresh renderer uses and stores GPU defaults", store.apply_gpu_defaults(true) == OK

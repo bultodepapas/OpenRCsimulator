@@ -71,6 +71,13 @@ func _run() -> void:
 	await ui.settle() # Theme lookups and deferred focus need a frame inside the tree
 	var home: Control = app.home
 	_check("Home shown, no flight scene, no simulation", home != null and app.flight == null and _sessions(root) == 0)
+	home.set_note("Session status")
+	home.set_basic_graphics_notice(true)
+	await ui.settle()
+	_check("Home shows basic graphics guidance alongside other notices", home.basic_graphics_notice.is_visible_in_tree()
+		and home.basic_graphics_notice.text.contains("Settings > Graphics") and home.note_label.text == "Session status")
+	home.set_basic_graphics_notice(false)
+	home.set_note("")
 	var scene: Node3D = app.home_scene
 	_check("Home backdrop: our airplane, its camera current", scene != null and scene.airplane.root.is_inside_tree()
 		and root.get_viewport().get_camera_3d() == scene.camera)

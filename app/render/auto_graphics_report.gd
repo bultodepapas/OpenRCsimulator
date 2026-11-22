@@ -20,7 +20,7 @@ static func decide(inputs: Dictionary) -> Dictionary:
 	return AutoGraphicsPolicy.decide(inputs)
 
 
-## One compact line per decision, for snapshots and logs: renderer|scene|msaa|window|max_fps ("-" = default).
+## One compact line per decision, for snapshots and logs: renderer, scene, MSAA, window, cap, resolution and shadows ("-" = default).
 static func compact(decision: Dictionary) -> String:
 	var first_run: Dictionary = decision.get("first_run", {})
 	return "|".join([str(decision.renderer), str(decision.scene_detail),
@@ -55,10 +55,12 @@ static func player_summary(report: Dictionary) -> Dictionary:
 static func runtime(include_driver_info: bool = true) -> Dictionary:
 	var adapter := RenderingServer.get_video_adapter_name()
 	var headless := DisplayServer.get_name() == "headless"
-	var screen := Vector2i.ZERO if headless else DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
+	var index := 0 if headless else DisplayServer.window_get_current_screen()
+	var screen := Vector2i.ZERO if headless else DisplayServer.screen_get_size(index)
 	var inputs := {adapter = adapter, os = OS.get_name(), arm64 = OS.has_feature("arm64"), screen = screen,
-		scale = 1.0 if headless else DisplayServer.screen_get_scale(),
-		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate(), cpu_threads = OS.get_processor_count(),
+		usable = Vector2i.ZERO if headless else DisplayServer.screen_get_usable_rect(index).size,
+		scale = 1.0 if headless else DisplayServer.screen_get_scale(index),
+		refresh = 60.0 if headless else DisplayServer.screen_get_refresh_rate(index), cpu_threads = OS.get_processor_count(),
 		forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"}
 	if AutoGraphicsPolicy.startup_output_pixels > 0:
 		inputs["output_pixels"] = AutoGraphicsPolicy.startup_output_pixels

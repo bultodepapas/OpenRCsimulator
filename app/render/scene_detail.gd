@@ -119,7 +119,7 @@ static func calibrated(recommendation: Dictionary, adapter: String) -> Dictionar
 
 
 ## VQ-07h / AGENTS display exception: a Retina Mac targets its panel's native resolution, so Automatic judges the
-## GPU against the pixels it renders there (MetalFX Automatic included). Other systems keep the 1080p reference.
+## GPU against the pixels it renders there (MetalFX Automatic included). Other systems use the chosen startup output.
 static func _native_render_pixels() -> int:
 	if DisplayServer.get_name() == "headless" or not OS.has_feature("arm64") \
 			or not GpuCapability.mac_native_target(OS.get_name(), DisplayServer.screen_get_scale()):
