@@ -41,7 +41,7 @@ The retention and IP statements apply to the deployed service. The operator veri
 
 The Interface page, after Updates, has **Share technical telemetry** (one switch), a status line and **See exactly what we send** / **Privacy notice**. Status lines: on (with batches sent this session), off, off until you choose, not offered in this language, paused by the receiving service, unreadable saved choice, not available in this build, plus a save-failure line. The switch is disabled where it cannot take effect (unavailable build, unreviewed language, suspended service).
 
-**See exactly what we send** shows the exact sealed batches in memory byte for byte, then the events not yet sealed (with a placeholder batch ID). Before admission nothing exists to show. Off closes the gate immediately; no confirmation.
+**See exactly what we send** shows the exact sealed batches in memory byte for byte, then the events not yet sealed (with a placeholder batch ID). Before admission nothing exists to show. The open preview updates when reports are sent, discarded, or expire. Off closes the gate immediately.
 
 Not implemented (deliberately deferred): copy/export of a sanitized report, a separate "clear pending" action (off already clears), and the manual GitHub diagnostics projector below.
 

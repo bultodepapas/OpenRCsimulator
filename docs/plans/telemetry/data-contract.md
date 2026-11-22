@@ -125,13 +125,15 @@ These are **deployment requirements**, not claims about a service already runnin
 
 | Surface | Maximum lifetime | Implementation / qualification |
 | --- | --- | --- |
-| Unsealed counters / pending client bytes | 10 minutes for sealed queue; current session for counters | RAM only; immediately clear on off, unknown consent or exit |
+| Unsealed counters / pending client bytes | 10 minutes from the oldest included observation, including before sealing | RAM only; immediately clear on off, unknown consent or exit |
 | Client session token | Active collection epoch: four hours or UTC day boundary, whichever first; pending sealed bytes: remainder of their original ten-minute TTL | RAM only. Old sealed bytes may cross the epoch/day boundary, but never recover a token from local flight history or reuse it for new observations |
 | Client consent choice | Until changed/reset | Contains choice and notice, no player identifier; atomic persistence and fail-closed recovery |
 | Raw minimized receiver records, session IDs, event and batch dedup indexes | **48 hours from each receipt** | Per-record expiry, including queues, replicas, backups and recoveries |
 | IP-derived abuse keys | 15 minutes, memory only | No raw-IP analytics; rotating keyed value remains potentially identifying |
 | ID-free internal daily aggregates | 180 days | Fixed dimensions, operator access; row deletion/backup expiry tested |
 | Public GitHub reports | Indefinite unless deliberately removed; copies may persist | No raw records, IDs or sensitive small cells; private TTL does not erase publication |
+
+An expired open observation is discarded. Each sealed batch inherits the earliest deadline of its contents. At that deadline the client discards the whole batch, cancels any active send, and ignores a late response.
 
 Why 48 hours: a report received early in a UTC day must survive the next day's rollup. Roll up at day close + one hour, commit idempotently and purge raw data by its exact deadline. Allow recovery only while the oldest contributing records are still available. The prototype conservatively permits completion only before UTC day start +47 hours. A missed deadline yields an incomplete/missing day, not fabricated data or extended retention. A privacy provider/configuration that cannot honor this requirement must be changed or explicitly revisited before release.
 

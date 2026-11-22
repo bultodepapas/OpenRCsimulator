@@ -217,7 +217,7 @@ class FrameWindow:
 class Item:
     body: bytes
     epoch: int
-    created: float
+    observed: float
     due: float
     retries: int = 0
 
@@ -263,13 +263,17 @@ class ClientModel:
         self.session_id = None
 
     def expire(self, now):
-        self.queue = deque(x for x in self.queue if now - x.created < QUEUE_TTL)
+        self.queue = deque(x for x in self.queue if now - x.observed < QUEUE_TTL)
         if self.active and not any(x is self.active[1] for x in self.queue):
             self.active = None
 
-    def collect(self, factory, now):
+    def collect(self, factory, now, *, observed=None):
         # A factory can represent a hardware probe. It must not run before grant.
         if not self.enabled:
+            return False
+        observed = now if observed is None else observed
+        self.expire(now)
+        if now - observed >= QUEUE_TTL:
             return False
         epoch = self.epoch
         payload = factory()
@@ -281,13 +285,12 @@ class ClientModel:
         validate_body(body)
         if not self.enabled or self.epoch != epoch:
             return False
-        self.expire(now)
         while self.queue and (len(self.queue) >= QUEUE_BATCHES or
                               sum(len(x.body) for x in self.queue) + len(body) > QUEUE_BYTES):
             victim = self.queue.popleft()
             if self.active and self.active[1] is victim:
                 self.active = None  # production adapter must cancel that request too
-        self.queue.append(Item(body, epoch, now, now))
+        self.queue.append(Item(body, epoch, observed, now))
         return True
 
     def begin_send(self, now):
@@ -311,6 +314,7 @@ class ClientModel:
         return token, item.body
 
     def complete(self, token, status, now, retry_after=0, jitter=0.5):
+        self.expire(now)
         if not self.enabled or not self.active or self.active[0] != token or token[0] != self.epoch:
             return False
         item = self.active[1]
@@ -325,7 +329,7 @@ class ClientModel:
                 delay = max(delay, retry_after)
             item.retries += 1
             item.due = now + delay
-            if item.due < item.created + QUEUE_TTL:
+            if item.due < item.observed + QUEUE_TTL:
                 return True
         self.queue = deque(x for x in self.queue if x is not item)
         return True

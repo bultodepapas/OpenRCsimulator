@@ -64,6 +64,8 @@ func _initialize() -> void:
 	_off_switch_and_suspension()
 	_rotation_and_partial_activity()
 	_epoch_entry_boundaries()
+	_observation_retention()
+	_sealing_can_evict_the_active_batch()
 	await _notification_can_disable_after_rotation()
 	_quit_in_flight_keeps_slices()
 	_remove()
@@ -420,7 +422,7 @@ func _epoch_entry_boundaries() -> void:
 		else:
 			_check("a sealed batch retains its bytes, serial, retry state and original deadline",
 				s.queue.items.size() == 1 and s.queue.items[0] == sealed and s.sender.busy())
-			_now = roundi((float(sealed.created) + Queue.TTL_S) * 1000000.0)
+			_now = roundi((float(sealed.observed) + Queue.TTL_S) * 1000000.0)
 			s._process(0.0)
 			_check("the old request expires at its original deadline after rotation",
 				not s.queue.is_active(int(sealed.serial)) and s.sender.cancels == 1)
@@ -428,6 +430,73 @@ func _epoch_entry_boundaries() -> void:
 		_check("a late refusal from an expired request cannot suspend a later epoch", s.state == "on")
 		s.queue_free()
 	_day = 20775
+
+
+func _observation_retention() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	_now = 0
+	var s := _service()
+	_ctx.eligible = false
+	s._process(0.0) # Session start at monotonic time zero.
+	_now = 60_000_000
+	s._seal(_now)
+	var sealed: Dictionary = s.queue.items[0]
+	_check("sealing keeps the oldest observation timestamp", sealed.created == 60.0 and sealed.observed == 0.0)
+	_now = Queue.TTL_USEC - 1
+	s._process(0.0)
+	_check("the batch can start one microsecond before its observation deadline", s.sender.busy())
+	_now = Queue.TTL_USEC
+	s._process(0.0)
+	_check("an unanswered request is canceled at the original deadline",
+		s.queue.items.is_empty() and not s.sender.busy() and s.sender.cancels == 1)
+	_now += 1_000_000
+	s.sender.finished.emit(int(sealed.serial), 202, -1.0)
+	s.sender.finished.emit(int(sealed.serial), 410, -1.0)
+	_check("late acceptance and refusal have no effect", s.queue.sent_ok == 0 and s.state == "on")
+	s.queue_free()
+
+	_now = 0
+	s = _service()
+	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250",
+		"simulated_seconds": 0.0, "fixed_wing_accepted": true}, true)
+	_run(s, 0.1)
+	s.note_flight_events([{"type": "TAKEOFF"}])
+	s.note_error("asset_load_failed")
+	var last_old := _now
+	_now += Queue.TTL_USEC - 1
+	s.note_error("simulation_fault")
+	s._append(Contract.error_count(0, "renderer_unavailable", 1), _now)
+	_now = last_old + Queue.TTL_USEC
+	s.note_flight_events([{"type": "LANDING_SUCCESS"}])
+	s._seal(_now)
+	var counts := _events(s, "error_count")
+	_check("pre-seal expiry removes old data while keeping fresh events and counters",
+		_events(s, "session_started").is_empty() and counts.size() == 2
+		and counts[0].category == "renderer_unavailable" and counts[1].category == "simulation_fault", str(counts))
+	_check("a long stall discards the old window and starts an incomplete activity",
+		s._window == null and s._last_usec == -1 and not s._activity.complete
+		and s._activity.active_us == 0 and s._activity.takeoffs == 0 and s._activity.landings == 1)
+	s.queue_free()
+
+
+func _sealing_can_evict_the_active_batch() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	_now = 0
+	var s := _service()
+	_ctx.eligible = false
+	s._process(0.0)
+	s._seal(_now)
+	s._process(0.0)
+	var active: int = s.queue.active_serial
+	for _index: int in Queue.MAX_BATCHES:
+		s.note_error("asset_load_failed")
+		s._seal(_now)
+	_check("capacity eviction during sealing cancels the active request immediately",
+		s.queue.items.size() == Queue.MAX_BATCHES and not s.queue.is_active(active)
+		and not s.sender.busy() and s.sender.cancels == 1)
+	s.sender.finished.emit(active, 410, -1.0)
+	_check("an evicted request cannot suspend collection", s.state == "on")
+	s.queue_free()
 
 
 func _notification_can_disable_after_rotation() -> void:
@@ -461,7 +530,11 @@ func _quit_in_flight_keeps_slices() -> void:
 	_run(s, 1.0)
 	_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "fixed_wing_accepted": true,
 		"simulated_seconds": 0.0}, true)
-	_run(s, 12.5 * 60.0) # counts only sealed batches (queued or sent): pending events are lost at quit
+	# Answer during flight so this test measures the final unsealed slice, independently of offline expiry.
+	for _second: int in 751:
+		_run(s, 1.0)
+		if s.sender.busy():
+			s.sender.answer(202)
 	var slices := {}
 	var bodies: Array = []
 	for item: Dictionary in s.sender.sent:

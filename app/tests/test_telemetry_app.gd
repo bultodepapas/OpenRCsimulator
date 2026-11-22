@@ -143,6 +143,11 @@ func _settings_switch_and_language() -> void:
 	var info: Node = app.screens.get_screen("telemetry_info")
 	var data: Label = info.find_child("PendingData", true, false) if info != null else null
 	_check("the preview shows the exact pending data", data != null and data.text.contains("\"session_started\""))
+	app.telemetry.clock_usec = func() -> int: return Time.get_ticks_usec() + 601_000_000
+	_check("opening a preview after the deadline cannot show expired bytes", not app.telemetry.preview_text().contains("session_started"))
+	app.telemetry._process(0.0)
+	await ui.settle()
+	_check("the open preview removes the expired data", data != null and data.text.is_empty() and not data.visible)
 	info.close()
 	await ui.settle()
 	app.set_language("de")
@@ -253,6 +258,35 @@ func _enable_button_and_send() -> void:
 	_check("a loading flight is not yet an activity", loading.activity == false and loading.mode != "flight", str(loading))
 	_check("AppRoot's context in a flight", flying and in_flight.mode == "flight" and in_flight.vehicle in Contract.STOCK_VEHICLES
 		and in_flight.fixed_wing_accepted == true and float(in_flight.simulated_seconds) >= 0.0 and in_flight.eligible == true, str(in_flight))
+	if not flying:
+		await ui.close_app(app)
+		return
+	var session: Node = app.flight.session
+	var active_before: int = app.telemetry._activity.get("active_us", -1)
+	session.hold("telemetry-test")
+	offset[0] += 40_000_000
+	app.telemetry._process(0.0)
+	_check("a focused hold excludes cadence and active time without a shell menu",
+		app.screens.top() == null and not app._telemetry_context().eligible
+		and app.telemetry._window == null and app.telemetry._activity.active_us == active_before)
+	session.release("telemetry-test")
+	session.resume()
+	offset[0] += 1_000_000
+	app.telemetry._process(0.0)
+	_check("resuming re-primes the frame clock without adding held time",
+		app._telemetry_context().eligible and app.telemetry._activity.active_us == active_before)
+	offset[0] += 1_000_000
+	app.telemetry._process(0.0)
+	_check("eligible time advances again after the first resumed frame",
+		app.telemetry._activity.active_us > active_before)
+	session.crash_auto_restart = false
+	session._crash(session._gear_limit_impact(session.sim.state))
+	var after_crash: int = app.telemetry._activity.active_us
+	offset[0] += 35_000_000
+	app.telemetry._process(0.0)
+	_check("a terminal crash excludes telemetry with focus and no shell menu",
+		app.screens.top() == null and not app._telemetry_context().eligible
+		and app.telemetry._window == null and app.telemetry._activity.active_us == after_crash)
 	app.open_pause()
 	await ui.settle()
 	var paused_context: Dictionary = app._telemetry_context()

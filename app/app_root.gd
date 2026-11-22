@@ -3203,6 +3203,9 @@ func _push_telemetry_state() -> void:
 func _on_telemetry_state_changed() -> void:
 	_push_telemetry_state()
 	_refresh_telemetry_home_note()
+	var info := screens.get_screen("telemetry_info") as TelemetryScreen if screens != null else null
+	if is_instance_valid(info) and info.mode == "preview":
+		info.set_pending_data(telemetry.preview_text() if _telemetry_is_on() else "")
 	if not _telemetry_is_on():
 		_telemetry_graphics_values.clear()
 		_telemetry_graphics_profile = "unknown"
@@ -3316,6 +3319,7 @@ func _telemetry_context() -> Dictionary:
 	var vehicle := ""
 	var custom := false
 	var simulated := -1.0
+	var simulation_paused := false
 	var fixed_wing := false
 	var physics_backend := "unknown"
 	var activity_id := 0
@@ -3338,16 +3342,21 @@ func _telemetry_context() -> Dictionary:
 		var session: Variant = activity.get("session") if _has_property(activity, "session") else null
 		if session is Object and is_instance_valid(session):
 			activity_id = session.get_instance_id()
-			if activity == ground_vehicle:
+			if activity.has_signal(&"activity_reset"):
 				_bind_telemetry_reset(activity, &"activity_reset")
 			else:
 				_bind_telemetry_reset(session, &"resetting")
+			var sim: Variant = session.get("sim")
+			# Manually stepped ground, multirotor and airship sessions own their pause flag.
+			# Fixed-wing and helicopter sessions let the kernel own it.
+			var paused: Variant = session.get("paused")
+			if not paused is bool and sim is Object and is_instance_valid(sim):
+				paused = sim.get("paused")
+			simulation_paused = not paused is bool or bool(paused)
 			if session.has_method("time_s"):
 				simulated = float(session.call("time_s"))
-			else:
-				var sim: Variant = session.get("sim")
-				if sim is Object and is_instance_valid(sim) and sim.has_method("time"):
-					simulated = float(sim.call("time"))
+			elif sim is Object and is_instance_valid(sim) and sim.has_method("time"):
+				simulated = float(sim.call("time"))
 			fixed_wing = activity == flight and statistics_service != null and statistics_service.has_method("observing") \
 				and statistics_service.observing(session)
 			# Telemetry v2: only the backend kind (native_fallback.gd), never the refusal text.
@@ -3363,7 +3372,8 @@ func _telemetry_context() -> Dictionary:
 	var minimized := bool(window_minimized_probe.call())
 	var menu_over_activity := activity != null and screens.top() != null
 	var eligible: bool = not _loading_active and not home_build_pending and not screens.is_top("loading") \
-		and not get_tree().paused and not menu_over_activity and not minimized and bool(window_focus_probe.call())
+		and not get_tree().paused and not simulation_paused and not menu_over_activity \
+		and not minimized and bool(window_focus_probe.call())
 	var input_class := "unknown"
 	if controllers != null and controllers.get("registry") != null:
 		var flight_device: int = controllers.registry.selected_device_id("flight")
