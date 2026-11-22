@@ -313,6 +313,7 @@
 
 # MetalFX intake and native witnesses bind exact source/patch bytes across hosts.
 /tools/graphics/metalfx/patches/*.patch text eol=lf -whitespace
+/tools/graphics/dynamic_resolution/*.patch text eol=lf -whitespace
 /tools/graphics/metalfx/*.py text eol=lf
 /research/engine-upgrade/metalfx/*.gd text eol=lf
 /research/engine-upgrade/metalfx/alpha_qualification_experiment.patch text eol=lf -whitespace

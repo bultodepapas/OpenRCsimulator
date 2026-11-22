@@ -8,6 +8,7 @@ const MIN_SCALE_PERCENT := 75
 const EXPERIMENT_FLAG := "--experimental-dynamic-resolution"
 const SAMPLE_METHOD := &"viewport_get_completed_gpu_frame"
 const SUPPORT_METHOD := &"viewport_supports_completed_gpu_frame"
+const SAMPLE_TOGGLE_METHOD := &"viewport_set_completed_gpu_sampling"
 const STATUS_META := &"openrc_flight_dynamic_resolution"
 
 var _policy: RefCounted
@@ -30,6 +31,7 @@ static func supports(viewport: Viewport) -> bool:
 			or DisplayServer.get_name() == "headless" or not is_instance_valid(viewport):
 		return false
 	return RenderingServer.has_method(SAMPLE_METHOD) and RenderingServer.has_method(SUPPORT_METHOD) \
+		and RenderingServer.has_method(SAMPLE_TOGGLE_METHOD) \
 		and bool(RenderingServer.call(SUPPORT_METHOD, viewport.get_viewport_rid()))
 
 
@@ -103,7 +105,10 @@ func _begin(viewport: Viewport) -> bool:
 		if refresh > 0.0 and _target > ceili(refresh):
 			_publish(viewport, "fixed", "target_exceeds_refresh_rate")
 			return false
-	_fixed = viewport.scaling_3d_scale
+	_fixed = float(_reconstruction.get("scale", 0.0))
+	if not is_equal_approx(viewport.scaling_3d_scale, _fixed):
+		_publish(viewport, "fixed_unverified", "viewport_owner_changed")
+		return false
 	var ladder: Array[Vector2i] = []
 	_scales.clear()
 	var floor_scale := MIN_SCALE_PERCENT / 100.0
@@ -122,6 +127,7 @@ func _begin(viewport: Viewport) -> bool:
 	if _lease == 0:
 		_publish(viewport, "fixed", "timing_unavailable")
 		return false
+	RenderingServer.call(SAMPLE_TOGGLE_METHOD, viewport.get_viewport_rid(), true)
 	_policy = Policy.new(ladder, _target, Time.get_ticks_usec())
 	_publish(viewport, "observing", "warming")
 	return true
@@ -165,6 +171,8 @@ func _owns_write(viewport: Viewport) -> bool:
 func _restore(viewport: Viewport) -> void:
 	if _owns_write(viewport):
 		viewport.scaling_3d_scale = _fixed
+	if _lease != 0 and is_instance_valid(viewport):
+		RenderingServer.call(SAMPLE_TOGGLE_METHOD, viewport.get_viewport_rid(), false)
 	TimingLease.release(_lease)
 	_lease = 0
 	_policy = null
