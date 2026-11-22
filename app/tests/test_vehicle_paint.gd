@@ -40,6 +40,7 @@ func _run() -> void:
 	_check_lumber_livery()
 	_check_lumber_wood_livery()
 	_check_lumber_glass_livery()
+	_check_lumber_metal_livery()
 	_check_jet_livery()
 	_check_jeti_ruby()
 	_check_elan_35()
@@ -246,6 +247,65 @@ func _check_lumber_glass_livery() -> void:
 	var factory_canopy := canopy.get_active_material(0) as StandardMaterial3D
 	check("Factory paint restores the airframe and canopy after Vitral", wing.get_active_material(0) is StandardMaterial3D
 		and factory_canopy != null and factory_canopy.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED)
+	airframe.free()
+
+
+func _check_lumber_metal_livery() -> void:
+	var family := "turbo-lumber-evolution"
+	var skin := "chapa_noble"
+	check("Lumber offers Chapa Noble", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var built := AirplaneBuilder.build(family, NAN, {}, skin)
+	check("Chapa Noble builds through the aircraft route", not built.is_empty())
+	if built.is_empty():
+		return
+	var airframe: Node3D = built.root
+	var wing := airframe.find_child("wing_left_fixed", true, false) as MeshInstance3D
+	var flap := airframe.find_child("flap_left", true, false) as MeshInstance3D
+	var aileron := airframe.find_child("aileron_left", true, false) as MeshInstance3D
+	var cowl := airframe.find_child("cowl", true, false) as MeshInstance3D
+	var leg := airframe.find_child("gear_left_leg", true, false) as MeshInstance3D
+	var wheel := airframe.find_child("wheel_left", true, false) as MeshInstance3D
+	var wing_paint := wing.get_active_material(0) as ShaderMaterial
+	var flap_paint := flap.get_active_material(0) as ShaderMaterial
+	var aileron_paint := aileron.get_active_material(0) as ShaderMaterial
+	var cowl_paint := cowl.get_active_material(0) as ShaderMaterial
+	check("Chapa Noble separates fixed skin, cowl, flaps and ailerons", wing_paint != null
+		and wing_paint.get_shader_parameter("part") == 0
+		and cowl_paint != null and cowl_paint.get_shader_parameter("part") == 8
+		and flap_paint != null and flap_paint.get_shader_parameter("part") == 9
+		and aileron_paint != null and aileron_paint.get_shader_parameter("part") == 10)
+	var exhaust_surface := -1
+	for surface in cowl.mesh.get_surface_count():
+		if cowl.mesh.surface_get_material(surface).resource_name == "metal":
+			exhaust_surface = surface
+			break
+	var exhaust := cowl.get_active_material(exhaust_surface) as ShaderMaterial if exhaust_surface >= 0 else null
+	check("Chapa Noble gives the actual exhaust its own weathered surface",
+		exhaust != null and exhaust.get_shader_parameter("part") == 15)
+	var leg_paint := leg.get_active_material(0) as ShaderMaterial
+	var axle_paint := leg.get_active_material(1) as ShaderMaterial
+	var tire_paint := wheel.get_active_material(0) as ShaderMaterial
+	var hub_paint := wheel.get_active_material(1) as ShaderMaterial
+	check("Chapa Noble distinguishes surfaces on the same gear and wheel meshes", leg_paint != null
+		and leg_paint.get_shader_parameter("part") == 5
+		and axle_paint != null and axle_paint.get_shader_parameter("part") == 13
+		and tire_paint != null and tire_paint.get_shader_parameter("part") == 14
+		and hub_paint != null and hub_paint.get_shader_parameter("part") == 6)
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("low")
+	VehiclePaint.apply(airframe, family, skin)
+	var low := flap.get_active_material(0) as ShaderMaterial
+	check("Chapa Noble retains movable panel assignments at Low", low != null
+		and low.get_shader_parameter("part") == 9
+		and bool(low.get_shader_parameter("detail_enabled")) == VehiclePaint.detail_enabled())
+	SceneDetail.set_preference(previous)
+	VehiclePaint.apply(airframe, family, "aserradero")
+	check("Aserradero restores the stock exhaust after Chapa Noble",
+		exhaust_surface >= 0 and cowl.get_active_material(exhaust_surface) is StandardMaterial3D)
+	var wood := flap.get_active_material(0) as ShaderMaterial
+	check("Repainting a flap with Aserradero restores its shared wing projection", wood != null
+		and wood.shader.resource_path.ends_with("/aserradero.gdshader")
+		and wood.get_shader_parameter("part") == 0)
 	airframe.free()
 
 
@@ -796,41 +856,109 @@ func _check_elan_35() -> void:
 	check("Élan 35 builds through the aircraft catalog", not jet.is_empty())
 	if jet.is_empty():
 		return
-	for part: String in ["fuselage", "wing", "stab"]:
+	var atlas_sizes := {"fuselage": Vector2(8192, 8192), "wing": Vector2(8192, 4096), "stab": Vector2(4096, 2048)}
+	for part: String in atlas_sizes:
 		var skin := _materials_named(jet.root, "paint_" + part)
-		var size := 2048 if part == "stab" else 4096
+		var compact := part != "stab" and SceneDetail.level() in ["medium", "low"]
+		var atlas_size: Vector2 = atlas_sizes[part] * (0.5 if compact else 1.0)
+		var atlas_suffix := "_low" if compact else ""
 		check("Élan 35 binds the %s atlas and drops stock glow" % part, skin.size() == 1
-			and skin[0].albedo_texture != null and skin[0].albedo_texture.get_size() == Vector2(size, size)
-			and skin[0].albedo_texture.resource_path.ends_with("elan_35_%s.png" % part) and not skin[0].emission_enabled)
+			and skin[0].albedo_texture != null and skin[0].albedo_texture.get_size() == atlas_size
+			and skin[0].albedo_texture.resource_path.ends_with("elan_35_%s%s.png" % [part, atlas_suffix])
+			and not skin[0].emission_enabled)
 	var fin := _node_material(jet.root, "vertical_tail_fixed", "paint_fin")
 	var rudder := _node_material(jet.root, "rudder", "paint_fin")
 	check("Élan 35 keeps the number on the fixed fin", fin != null and fin.albedo_texture != null
-		and fin.albedo_texture.resource_path.ends_with("elan_35_fin.png") and rudder != null
+		and fin.albedo_texture.resource_path.ends_with("elan_35_fin.png") and fin.albedo_texture.get_size() == Vector2(4096, 4096)
+		and rudder != null
 		and rudder.albedo_texture == null and rudder.albedo_color.is_equal_approx(Color("#192330")))
 	var doors := _materials_named(jet.root, "paint_doors_ala")
-	check("Élan 35 lower wing doors use solid carbon", doors.size() == 1 and doors[0].albedo_texture == null
+	check("Élan 35 fixed gear panels use solid carbon", doors.size() == 1 and doors[0].albedo_texture == null
 		and doors[0].albedo_color.is_equal_approx(Color("#243140")))
+	var liner_surfaces: Array[Dictionary] = []
+	var axes := {"mesh_MainGear_L_Pivot": Vector3.LEFT, "mesh_MainGear_R_Pivot": Vector3.RIGHT,
+		"mesh_NoseGear_Door_Pivot": Vector3.UP}
+	for node_name: String in axes:
+		var door := jet.root.find_child(node_name, true, false) as MeshInstance3D
+		var found := false
+		if door != null:
+			for index in door.mesh.get_surface_count():
+				var liner := door.get_active_material(index) as ShaderMaterial
+				if liner == null or liner.shader == null or liner.shader.resource_path != "res://render/vehicle_door_liner.gdshader":
+					continue
+				var exterior := Color("#e8f1f5") if node_name == "mesh_NoseGear_Door_Pivot" else Color("#243140")
+				check(node_name + " lines the inside face in local space",
+					liner.get_shader_parameter("inside_axis") == axes[node_name]
+					and (liner.get_shader_parameter("exterior_color") as Color).is_equal_approx(exterior)
+					and bool(liner.get_shader_parameter("brushed")) == VehiclePaint.detail_enabled())
+				liner_surfaces.append({node = door, surface = index, mesh = door.mesh,
+					source = liner.get_meta(VehiclePaint.ORIGIN_META)})
+				found = true
+		check(node_name + " has a distinct inner finish", found)
+	var hub := _node_material(jet.root, "mesh_gear_spin_nose", "metal")
+	var piston := _node_material(jet.root, "mesh_MainGear_L_Act_Piston", "metal")
+	check("Élan 35 separates anodized wheels from bright pistons", hub != null and piston != null
+		and hub.albedo_color.is_equal_approx(Color("#375d88"))
+		and piston.albedo_color.is_equal_approx(Color("#c3d0d7")))
+	for node_name: String in ["fuselage_core", "wing_left_fixed", "wing_right_fixed"]:
+		var well := _node_material(jet.root, node_name, "mk_ply")
+		check(node_name + " carries the satin gear well finish",
+			well != null and well.albedo_color.is_equal_approx(Color("#3b4b5e")))
 	var glass := _node_material(jet.root, "canopy_glass", "canopy_glass")
 	check("Élan 35 retains a transparent cockpit", glass != null
 		and glass.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED
-		and glass.albedo_color.is_equal_approx(Color("#314d6674")))
+		and glass.albedo_color.is_equal_approx(Color("#39536e59")))
+	var instruments := _node_material(jet.root, "cockpit", "instrument_panel")
+	var console := _node_material(jet.root, "cockpit", "side_console")
+	check("Élan 35 uses the square instrument atlas and a separate status-light mask", instruments != null
+		and instruments.albedo_texture != null and instruments.albedo_texture.get_size() == Vector2(2048, 2048)
+		and instruments.emission_enabled and instruments.emission_texture != null
+		and instruments.emission_texture.resource_path.ends_with("elan_35_instruments_emission.png"))
+	check("Élan 35 uses an independent console atlas", console != null
+		and console.albedo_texture != null and console.albedo_texture.get_size() == Vector2(512, 2048))
 	var roughness_path := "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png"
+	var wing_roughness_path := "res://assets/vehicle-paints/avanti-s-a200/elan_35_wing_roughness.png"
 	var body := _node_material(jet.root, "fuselage_core", "paint_fuselage")
+	var wing := _node_material(jet.root, "wing_left_fixed", "paint_wing")
+	check("Élan 35 keeps channel separation for the machined fuselage trim", body != null
+		and body.metallic == 1.0 and body.metallic_texture != null
+		and body.metallic_texture.resource_path.ends_with("elan_35_fuselage_metallic.png"))
 	if VehiclePaint.detail_enabled():
-		check("Élan 35 binds the fuselage finish map", body != null and body.roughness_texture != null
-			and body.roughness_texture.resource_path == roughness_path)
+		check("Élan 35 binds the fuselage roughness and relief", body != null and body.roughness_texture != null
+			and body.roughness_texture.resource_path == roughness_path and body.normal_enabled
+			and body.normal_texture != null and body.normal_texture.resource_path.ends_with("elan_35_fuselage_normal.png"))
+		check("Élan 35 uses distinct wing finishes", wing != null and wing.roughness_texture != null
+			and wing.roughness_texture.resource_path == wing_roughness_path)
 	var previous: String = SceneDetail._preference
 	SceneDetail.set_preference("low")
 	if not VehiclePaint.detail_enabled():
 		VehiclePaint.apply(jet.root, id, livery)
 		body = _node_material(jet.root, "fuselage_core", "paint_fuselage")
 		check("Low uses the average Élan 35 finish", body != null and body.roughness_texture == null
+			and not body.normal_enabled and body.normal_texture == null and body.metallic_texture != null
+			and body.albedo_texture != null and body.albedo_texture.get_size() == Vector2(4096, 4096)
 			and is_equal_approx(body.roughness, VehiclePaint._detail_means()[roughness_path]))
+		wing = _node_material(jet.root, "wing_left_fixed", "paint_wing")
+		check("Low uses the average wing finish", wing != null and wing.roughness_texture == null
+			and wing.albedo_texture != null and wing.albedo_texture.get_size() == Vector2(4096, 2048)
+			and is_equal_approx(wing.roughness, VehiclePaint._detail_means()[wing_roughness_path]))
+		for entry: Dictionary in liner_surfaces:
+			var liner := entry.node.get_active_material(entry.surface) as ShaderMaterial
+			check("Low keeps the door liner and drops its brushing", liner != null
+				and liner.get_meta(VehiclePaint.ORIGIN_META) == entry.source
+				and not bool(liner.get_shader_parameter("brushed")))
 	SceneDetail.set_preference(previous)
 	VehiclePaint.apply(jet.root, id, "jeti_ruby")
 	glass = _node_material(jet.root, "canopy_glass", "canopy_glass")
 	check("switching liveries restores JETI Ruby's tint", glass != null
 		and glass.albedo_color.is_equal_approx(Color("#2c3c5088")))
+	for entry: Dictionary in liner_surfaces:
+		check("switching liveries drops the Élan 35 door liner", entry.node.get_active_material(entry.surface) is StandardMaterial3D)
+	VehiclePaint.apply(jet.root, id, livery)
+	VehiclePaint.apply(jet.root, id)
+	for entry: Dictionary in liner_surfaces:
+		check("factory gear door restores the imported material and geometry",
+			entry.node.get_active_material(entry.surface) == entry.source and entry.node.mesh == entry.mesh)
 	jet.root.free()
 
 

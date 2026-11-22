@@ -27,6 +27,7 @@ const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
 ## own mode scales. On a UHD 630, 75 % took a minimal flight from 25 to 39 FPS (docs/research/god-test/
 ## 2026-11-22-linux-uhd630-comparison.md).
 const RENDER_SCALES: Array[int] = [100, 85, 75, 67, 50]
+const DYNAMIC_RESOLUTION_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120]
 const NVIDIA_REFLEX_MODES: Array[String] = ["off", "on", "boost"]
 const RECONSTRUCTION_MODES: Array[String] = [
 	"auto", "native",
@@ -55,6 +56,7 @@ const DEFAULTS := {
 	"msaa_3d": 2,
 	"reconstruction": "auto", # DT-MAC-07b: MetalFX Spatial on large Metal outputs, else Native
 	"render_scale": 100,
+	"dynamic_resolution_fps": 0,
 	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
@@ -100,7 +102,7 @@ const DEFAULTS := {
 const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "render_scale",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
-	"fsr2_sharpness", "nvidia_reflex",
+	"fsr2_sharpness", "nvidia_reflex", "dynamic_resolution_fps",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
 	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness", "shadow_cloud",
@@ -243,7 +245,7 @@ static func recommended_defaults() -> Dictionary:
 ## belongs to the flight scenario; restoring graphics must preserve its terrain and collision choice.
 static func graphics_default_keys() -> Array[String]:
 	var keys: Array[String] = ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds",
-		"runway_meadow", "reconstruction", "render_scale", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
+		"runway_meadow", "reconstruction", "render_scale", "dynamic_resolution_fps", "fsr2_sharpness", "nvidia_reflex", "aircraft_lighting_quality"]
 	for key: String in SHADOW_FILE_KEYS:
 		keys.append(key)
 	return keys
@@ -313,6 +315,7 @@ static func _load_existing(file_path: String, result: Dictionary, owned_gpu_defa
 	if raw.reconstruction == "native" and cfg.get_value("meta", RECONSTRUCTION_AUTO_KEY, false) != true:
 		raw.reconstruction = "auto"
 	raw.render_scale = cfg.get_value("graphics", "render_scale", DEFAULTS.render_scale)
+	raw.dynamic_resolution_fps = cfg.get_value("graphics", "dynamic_resolution_fps", DEFAULTS.dynamic_resolution_fps)
 	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
@@ -405,6 +408,7 @@ static func save_to(file_path: String, candidate: Dictionary, owned_gpu_defaults
 	cfg.set_value("graphics", "msaa_3d", checked.config.msaa_3d)
 	cfg.set_value("graphics", "reconstruction", checked.config.reconstruction)
 	cfg.set_value("graphics", "render_scale", checked.config.render_scale)
+	cfg.set_value("graphics", "dynamic_resolution_fps", checked.config.dynamic_resolution_fps)
 	cfg.set_value("graphics", "nvidia_reflex", checked.config.nvidia_reflex)
 	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
@@ -456,6 +460,9 @@ static func validate(raw: Variant) -> Dictionary:
 	var render_scale: Variant = raw.get("render_scale", DEFAULTS.render_scale)
 	if typeof(render_scale) != TYPE_INT or render_scale not in RENDER_SCALES:
 		errors.append("render_scale must be 100, 85, 75, 67 or 50")
+	var dynamic_resolution_fps: Variant = raw.get("dynamic_resolution_fps", DEFAULTS.dynamic_resolution_fps)
+	if typeof(dynamic_resolution_fps) != TYPE_INT or dynamic_resolution_fps not in DYNAMIC_RESOLUTION_FPS_VALUES:
+		errors.append("dynamic_resolution_fps must be Off or a supported frame target")
 	var reflex: Variant = raw.get("nvidia_reflex", DEFAULTS.nvidia_reflex)
 	if typeof(reflex) != TYPE_STRING or reflex not in NVIDIA_REFLEX_MODES:
 		errors.append("nvidia_reflex must be off, on or boost")
@@ -510,6 +517,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"msaa_3d": msaa_3d,
 		"reconstruction": reconstruction,
 		"render_scale": render_scale,
+		"dynamic_resolution_fps": dynamic_resolution_fps,
 		"nvidia_reflex": reflex,
 		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,

@@ -1,0 +1,172 @@
+{
+  "format": "openrc-ci-audit-hosted-followup-v1",
+  "audited_baseline": "85a2475f60029a4b6b09f23f643119bceea84a45",
+  "fixture_correction_commit": "1d276c00ba70f9586227bcb03dd95c2fded4a93b",
+  "concurrent_main": "843f357c07af842054f3ccd6728f93beca9a57ef",
+  "upstream_commits_since_baseline": 17,
+  "upstream_changed_paths": 92,
+  "verified_merge_commit": "1098412605263554f647702e0ae469af87111824",
+  "verified_merge_tree": "a90d786e0c079bc86ed04a02d0d642b9c9c7e0ef",
+  "verified_merge_parents": [
+    "843f357c07af842054f3ccd6728f93beca9a57ef",
+    "1d276c00ba70f9586227bcb03dd95c2fded4a93b"
+  ],
+  "source_counts": {
+    "baseline": {
+      "tracked_paths": 52627,
+      "app_gd_scripts": 2067,
+      "top_level_unit_scripts": 1163
+    },
+    "concurrent_main": {
+      "tracked_paths": 52664,
+      "app_gd_scripts": 2073,
+      "top_level_unit_scripts": 1164
+    }
+  },
+  "preflight_rejection": {
+    "run_id": 45078157682,
+    "wall_seconds": 181,
+    "summed_active_job_seconds": 223,
+    "jobs_run": 3,
+    "jobs_skipped": 17,
+    "scope_job_id": 137380124664,
+    "scope_seconds": 82,
+    "tooling_job_id": 137380124945,
+    "tooling_seconds": 129,
+    "tooling_checkout_seconds": 4,
+    "ci_cases": 139,
+    "ci_seconds": 64.836,
+    "queue_cases": 459,
+    "queue_seconds": 54.391,
+    "queue_skips": 12,
+    "required_job_id": 137380783700,
+    "required_seconds": 12,
+    "required_checkout_seconds": 5,
+    "required_failure": "ci-selection artifact absent after source preflight rejection; later policy step skipped"
+  },
+  "uid_generation": {
+    "source_commit": "843f357c07af842054f3ccd6728f93beca9a57ef",
+    "source_blob_sha1": {
+      "app/render/flight_dynamic_resolution.gd": "26a03c239eee66b0deb214f5f27bac4b8f88ef94",
+      "app/render/flight_resolution_policy.gd": "d1ac02de85cc604d07d43976d57487b2a6dc54a0",
+      "app/tests/probe_completed_gpu_frame.gd": "ca9ba56d8e3566b0edf98bb35bdd44ba9cf21516",
+      "app/tests/probe_flight_resolution_stress.gd": "3add71f598ad3a4cf2e47f70fe8e5c8991ddac24",
+      "app/tests/test_flight_resolution_policy.gd": "95481dc12c91a43a99c406fb8e54079a31441ad5",
+      "app/render/reconstruction.gd": "72934a71b80a17daffafa68ae58779d359245fe0",
+      "app/render/render_timing_lease.gd": "da6da678939f0208d3a6c75bb81f4038013469a9",
+      "app/render/high_graphics_profile.gd": "5a2e4b16876f90e87f70668c6611e65580091ac5",
+      "app/render/nvidia_reflex.gd": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "app/render/metalfx_policy.gd": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "app/render/shadow_settings.gd": "125c089f4718425b674fcc4b5affc03f286a8261",
+      "app/app_state/renderer_preference.gd": "c442c375ed8c6e9f53d7c2cb7e4e461272011004",
+      "app/render/gpu_capability.gd": "abf79d972defe9799cf8c12105becc77dbf3931e",
+      "app/render/auto_graphics_policy.gd": "b5ecfe5fd1e797a49b17eea87c564bc287391eec",
+      "app/render/auto_calibration.gd": "611353ed9fb62fc9dc21147db60558ab839d569a",
+      "app/render/reconstruction.gd.uid": "0e9dbc7cd71d54df56ed000ee17f7542aadf15bd",
+      "app/render/render_timing_lease.gd.uid": "90169a009db1ff19ea8e003ba5beb2c39082214b",
+      "app/render/high_graphics_profile.gd.uid": "07347cfd98d7e3225430dc37e55a17ba180e1080",
+      "app/render/nvidia_reflex.gd.uid": "b446f565e66bfeb85af3d5bd3a453cf2fdc7cfa4",
+      "app/render/metalfx_policy.gd.uid": "adf1ec5064cad1ecf4ef18bd6286e94728ab1c2a",
+      "app/render/shadow_settings.gd.uid": "48869e752c493619893147048757abc91c58db57",
+      "app/app_state/renderer_preference.gd.uid": "3864574594e4fb058561bdd4f2bebd4f635d6812",
+      "app/render/gpu_capability.gd.uid": "e7161948801f319b417e1ebb5ebba8303ad59338",
+      "app/render/auto_graphics_policy.gd.uid": "d69e753c031e300ce8b4ec6591c0e0ca5b98c849",
+      "app/render/auto_calibration.gd.uid": "f2e02d0da9b6b97abcefcbcf145c2b5209f9adab"
+    },
+    "engine_version": "4.8.beta2.official.cafc17a19",
+    "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "upstream_uid_sidecar_files": 2174,
+    "upstream_uid_sidecar_unique_ids": 2174,
+    "outputs": {
+      "app/render/flight_dynamic_resolution.gd.uid": "uid://uk8h751acd7c",
+      "app/render/flight_resolution_policy.gd.uid": "uid://bnxsqxu7rv74o",
+      "app/tests/probe_completed_gpu_frame.gd.uid": "uid://cxy6rur0jybgx",
+      "app/tests/probe_flight_resolution_stress.gd.uid": "uid://bqb4a7vnckwix",
+      "app/tests/test_flight_resolution_policy.gd.uid": "uid://bjvwrm2m3k85k"
+    },
+    "checks": [
+      {
+        "label": "editor-import",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 6.258525,
+        "log_sha256": "2cfa5b2332b64e199c4f6490761274f42ae2b206ec44b20f51b324782fabccf1"
+      },
+      {
+        "label": "flight_dynamic_resolution",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.525122,
+        "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+      },
+      {
+        "label": "flight_resolution_policy",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.283119,
+        "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+      },
+      {
+        "label": "probe_completed_gpu_frame",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.36336,
+        "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+      },
+      {
+        "label": "probe_flight_resolution_stress",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.36354,
+        "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+      },
+      {
+        "label": "test_flight_resolution_policy",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.48494,
+        "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+      },
+      {
+        "label": "resource-uids",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.303487,
+        "log_sha256": "520913483c1a195e75795483c47ca1ed88eca7b9c14b4c69951613f110bbd867"
+      }
+    ]
+  },
+  "offline_suite_followup": {
+    "source_scope": "pre-integration audit source",
+    "separately_successful_invocations": 31,
+    "tests_run": 1753,
+    "passed": 1724,
+    "skipped": 29,
+    "single_uninterrupted_pass": false,
+    "disk_backed_attempt_tests_run": 1648,
+    "disk_backed_attempt_limit": "GOD TEST snapshot fixtures require 512 MiB free; host had 236 MiB. Two cases failed on that limit. All 212 passed separately on tmpfs; final 105 release cases passed separately.",
+    "physical_io_limit": "Checked-runner physical-write measurement required a disk-backed TMPDIR. That suite passed 328 cases with 26 skips on disk."
+  },
+  "latest_head_status": "Awaiting the branch-only merge/UID-repair PR run. Do not interpret earlier cancelled or failed runs as a complete pass."
+}

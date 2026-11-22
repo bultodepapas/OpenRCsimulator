@@ -13,6 +13,8 @@ JET = "sebart-avanti-s-a200-p100rx"
 CORSAIR = "f4u-corsair-250"
 TOUR_AIRCRAFT = (STIK, JET, CORSAIR)
 TOUR_PHASES = ["startup", "selection", "loading", "recover", "runway_circuit", "pause", "menu_settings", "menu_controls", "settings", "home", "shutdown"]
+PILOT_PHASES = {"takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover",
+                "large_loop", "approach", "landing", "stop"}
 PHASES = {"startup", "home", "selection", "loading", "takeoff", "climb_right", "farmhouse", "flag", "pause", "right_circuit", "runway_circuit", "menu_settings", "menu_controls", "roll", "recover", "large_loop", "approach", "landing", "stop", "settings", "environment", "shutdown"}
 FULL = ["startup", "selection", "loading", "takeoff", "climb_right", "farmhouse", "flag", "pause", "right_circuit", "roll", "recover", "large_loop", "recover", "approach", "landing", "stop", "settings", "environment", "home", "shutdown"]
 BASE = dict(schema=SCHEMA, aircraft=STIK, start="runway", landscape="club_field", time="day", weather="calm", sky="clear", seed=20261110, entry="continuous", resolution=[1920, 1080], scene_detail="medium", camera="pilot", timeout_s=900, phase_timeout_s=180, headless=False, cycles=1, sample_s=10, pause_s=5)
@@ -43,6 +45,8 @@ RESOLUTIONS = {(1920, 1080), (1920, 1200), (2560, 1440), (2560, 1600), (2560, 16
                (3840, 2160), (5120, 2880), (6016, 3384), (1280, 720), (1280, 800), (1600, 900)}
 WINDOWED_RESOLUTIONS = {(1920, 1080), (1920, 1200), (2560, 1440), (2560, 1600), (3440, 1440),
                         (3840, 2160), (1280, 720), (1280, 800), (1600, 900)}
+RENDER_SCALES = (100, 85, 75, 67, 50)
+DYNAMIC_RESOLUTION_TARGETS = (0, 30, 60, 90, 120)
 NUMBERS = {"seed": (0, 2147483647, True), "timeout_s": (10, 3600, False), "phase_timeout_s": (1, 3600, False), "cycles": (1, 50, True), "sample_s": (1, 1800, False), "pause_s": (5, 60, False)}
 
 
@@ -61,7 +65,8 @@ def validate(value: dict, *, resolved: bool = False) -> None:
     if not isinstance(value, dict):
         raise ValueError("manifest must be an object")
     allowed = set(BASE) | {"id", "phases", "output_dir", "watch_frames", "require_native", "monitor_hardware",
-                           "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics"}
+                           "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics", "render_scale",
+                           "dynamic_resolution_fps"}
     if resolved:
         allowed |= {"isolated_user_dir", "isolated_project_name"}
     if set(value) - allowed:
@@ -92,6 +97,16 @@ def validate(value: dict, *, resolved: bool = False) -> None:
             raise ValueError(f"unsupported {key}: {value[key]!r}")
     if "max_fps" in value and (type(value["max_fps"]) is not int or value["max_fps"] not in {0, 30, 60, 90, 120, 144, 165, 240}):
         raise ValueError("max_fps must be an admitted integer limit")
+    if "render_scale" in value and (type(value["render_scale"]) is not int or value["render_scale"] not in RENDER_SCALES):
+        raise ValueError("render_scale must be an admitted integer percentage")
+    target = value.get("dynamic_resolution_fps", 0)
+    if type(target) is not int or target not in DYNAMIC_RESOLUTION_TARGETS:
+        raise ValueError("dynamic_resolution_fps must be Off or an admitted frame target")
+    if target and (value["headless"] or value.get("render_scale", 100) <= 75
+                   or value.get("rendering_method") == "gl_compatibility"
+                   or value.get("rendering_driver") in {"opengl3", "d3d12"}
+                   or 0 < value.get("max_fps", 0) < target):
+        raise ValueError("dynamic resolution requires a rendered Vulkan/Metal workload, a ceiling above 75%, and a compatible frame cap")
     for key, (minimum, maximum, integer) in NUMBERS.items():
         item = value[key]
         if type(item) not in (float, int) or not math.isfinite(item) or not minimum <= item <= maximum or (integer and int(item) != item):
@@ -106,6 +121,8 @@ def validate(value: dict, *, resolved: bool = False) -> None:
     phases = value["phases"]
     if not isinstance(phases, list) or not 1 <= len(phases) <= 64 or any(type(p) is not str or p not in PHASES for p in phases):
         raise ValueError("phases must contain 1..64 supported phase names")
+    if target and not PILOT_PHASES.intersection(phases):
+        raise ValueError("dynamic resolution requires a measured flight phase")
     if value["entry"] == "isolated" and len([p for p in phases if p not in ("startup", "home", "selection", "loading", "shutdown")]) > 1:
         raise ValueError("isolated mode requires one target phase; use --phase")
     if value["entry"] == "isolated" and any(p in phases for p in ("approach", "landing", "stop")) and (value["aircraft"] != STIK or value["start"] != "airborne" or value["weather"] != "calm" or value["landscape"] != "club_field"):

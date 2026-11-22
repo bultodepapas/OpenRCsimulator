@@ -1,0 +1,26 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://assets/vehicle-paints/turbo-lumber-evolution/chapa_noble.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg" id="2"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/brushed_metal = ExtResource("2")
+metadata/project_trim = true
+metadata/canopy_tint = Color(0.42, 0.48, 0.56, 0.84)
+metadata/part_overrides = {
+"aileron_left": 10,
+"aileron_right": 10,
+"cowl": 8,
+"cowl/metal": 15,
+"elevator": 11,
+"flap_left": 9,
+"flap_right": 9,
+"gear_left_leg/metal": 13,
+"gear_right_leg/metal": 13,
+"rudder": 12,
+"tailwheel/foam": 14,
+"tailwheel_fork": 13,
+"wheel_left/foam": 14,
+"wheel_right/foam": 14
+}

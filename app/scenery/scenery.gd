@@ -250,11 +250,11 @@ static func keep_instance(prefab: String, tier: String, seed: int, quality: Stri
 	return CollisionWorld.instance_has_collision(prefab) or keep(tier, seed, quality)
 
 
-static func _cell(n: float, e: float) -> Vector2i:
+static func _cell(n: float, e: float, near_span: int = 1) -> Vector2i:
 	var far := Vector2(n, e).length() > FAR_M
-	var size := FAR_CELL_M if far else CELL_M
+	var size := FAR_CELL_M if far else CELL_M * near_span
 	var key := Vector2i(floori(n / size), floori(e / size))
-	return key * (1000 if far else 1) + (Vector2i(1, 1) * 1000000 if far else Vector2i.ZERO)
+	return key * (1000 if far else near_span) + (Vector2i(1, 1) * 1000000 if far else Vector2i.ZERO)
 
 
 static func _kit(cells: Dictionary, key: Vector2i) -> MeshKit:
@@ -574,27 +574,43 @@ static func _advance_group(context: _SceneryBuild) -> void:
 				var piece: Dictionary = context.fence_pieces[context.fence_index]
 				context.fence_index += 1
 				var center: Vector3 = (piece.a + piece.b) * 0.5
-				var kit := _kit(context.cells, _cell(-center.z, center.x))
+				# Long, sparse fence runs share four-by-four prop cells. Each bay
+				# keeps its damage range without a new draw every forty metres.
+				var kit := _kit(context.cells, _cell(-center.z, center.x, 4))
 				var damage_first := kit.verts.size()
-				kit.beam(piece.a, piece.b, piece.width, piece.color)
+				FenceParts.draw(kit, piece, str(group.id) == "club-entrance")
 				kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
-				kit.damage_ranges.back()["beam"] = piece
+				if piece.part != "gate":
+					kit.damage_ranges.back()["beam"] = piece
 			else: _finish_group(context)
 		"hedge":
 			var pts: Array[Vector2] = []
 			for point: Vector2 in group.points: pts.append(_xz(point))
-			var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, context.quality)
+			var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, context.quality,
+				false, str(group.id) == "club-perimeter")
 			hedge.name = "ImportedHedge_" + str(group.id)
 			context.root.add_child(hedge)
 			_finish_group(context)
 		"track", "patch":
+			if group.type == "patch" and Loader.FIELD_COVERS.has(group.surface):
+				# The field's ground shader paints these paddocks directly onto the terrain.
+				_finish_group(context)
+				return
 			var poly := PackedVector2Array()
 			for p: Vector2 in group.points: poly.append(_xz(p))
 			var first: Vector2 = group.points[0]
 			var key := _cell(first.x, first.y) + Vector2i(0, 7777)
 			context.ground_cells[key] = true
 			var kit := _kit(context.cells, key)
-			if group.type == "track": GroundFeatures.track(kit, poly, group.width, group.surface, context.theme)
+			if group.type == "track":
+				var gate := PackedVector2Array()
+				if group.id == "access-track":
+					for landmark: Dictionary in context.scenery.groups:
+						if landmark.id == "club-entrance" and landmark.type == "fence" and landmark.style == "gate":
+							for post: Vector2 in landmark.points:
+								gate.append(_xz(post))
+							break
+				GroundFeatures.track(kit, poly, group.width, group.surface, context.theme, gate)
 			else: GroundFeatures.patch(kit, poly, group.surface, context.theme, group.seed)
 			_finish_group(context)
 		_: _finish_group(context) # The retired procedural flowers and unknown types are no-ops.

@@ -93,6 +93,7 @@ const AircraftLightingPolicy := preload("res://render/lighting/lighting_policy.g
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
@@ -115,6 +116,8 @@ var _popup_realign_pending := false
 ## Test seam. Production restart is temporary: a normal launch always retains Compatibility.
 var graphics_restart: Callable = Callable(self, "_perform_graphics_restart")
 var display_preferences: DisplayPreferences
+var _flight_dynamic_resolution: RefCounted
+var _flight_graphics_calibration: Node
 var _display_window_mode := "windowed"
 var _display_resolution := "auto"
 var _automatic_window_size := Vector2i(1280, 720)
@@ -521,6 +524,7 @@ func _process(_delta: float) -> void:
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
 	_tick_telemetry_prompt()
+	_tick_flight_dynamic_resolution()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
 			_flush_home_scene_rebuild()
@@ -529,6 +533,26 @@ func _process(_delta: float) -> void:
 	# The shell owns the window viewport for Home and Home-started flights. Direct
 	# flights leave has_home false and are monitored by main.gd instead.
 	Reconstruction.guard_runtime_failure(get_viewport())
+
+
+func _tick_flight_dynamic_resolution() -> void:
+	if display_preferences == null:
+		return
+	var config: Dictionary = display_preferences.config
+	var target := int(config.get("dynamic_resolution_fps", 0))
+	if _flight_dynamic_resolution == null:
+		if target == 0 or not FlightDynamicResolution.supports(get_viewport()):
+			return
+		_flight_dynamic_resolution = FlightDynamicResolution.new()
+	var has_session := has_home and is_instance_valid(flight) and flight.session != null
+	var active: bool = has_session and not _loading_active and not _quit_audio_pending \
+		and not is_instance_valid(_flight_graphics_calibration) and flight.session.sim != null \
+		and not flight.session.sim.paused and flight.session.holds.is_empty() and screens.top() == null
+	var window := get_window()
+	if active:
+		active = window != null and window.mode != Window.MODE_MINIMIZED \
+			and DisplayServer.window_can_draw(window.get_window_id()) and bool(window_focus_probe.call())
+	_flight_dynamic_resolution.tick(get_viewport(), flight.session.get_instance_id() if has_session else 0, active, config)
 
 
 func _frame_generation_boundary(reason: String) -> void:
@@ -607,9 +631,12 @@ func shutdown_home_flight_preparation() -> void:
 	home_flight_preparation.drained = true
 
 
-## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
+## Flight arguments select the technical route. The graphics experiment opens the normal menu.
 static func wants_direct_flight(args: PackedStringArray) -> bool:
-	return not args.is_empty()
+	for argument: String in args:
+		if argument != FlightDynamicResolution.EXPERIMENT_FLAG:
+			return true
+	return false
 
 
 ## Direct-flight route selector. Plane arguments remain parsed by main.gd; Home supplies its selected catalog ID.
@@ -1791,6 +1818,7 @@ func _attach_graphics_calibration() -> void:
 	if not (automatic_scene or automatic_high) or not AutoCalibration.needed(adapter, method, pixels, automatic_level):
 		return
 	var calibration := AutoCalibration.new(flight.session, adapter, SceneDetail.level())
+	_flight_graphics_calibration = calibration
 	calibration.finished.connect(func(result: Dictionary) -> void:
 		SceneDetail.calibration = AutoCalibration.load_result(adapter, method)
 		print("Graphics calibration: ", JSON.stringify(result)))
@@ -4081,6 +4109,8 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	if _flight_dynamic_resolution != null:
+		_flight_dynamic_resolution.stop(get_viewport())
 	if is_instance_valid(statistics_service):
 		statistics_service.close()
 	if is_instance_valid(_home_flight_preparation):

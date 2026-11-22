@@ -21,6 +21,7 @@ render_mode cull_back;
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://render/cloud_shadow_map.gdshaderinc"
 #include "res://render/grass_surface.gdshaderinc"
+#include "res://render/meadow_surface.gdshaderinc"
 #include "res://render/turf_detail.gdshaderinc"
 #include "res://render/rc_ground_detail.gdshaderinc"
 #include "res://vehicles/ground/track_surface_detail.gdshaderinc"
@@ -142,14 +143,6 @@ vec3 parcel(vec2 p) {
 	return mix(crop(id2), crop(id1), 0.5 + 0.5 * smoothstep(0.0, parcel_blend_m, d2 - d1));
 }
 
-// A square wave of period 1 (+1, then -1) box-filtered over du: the exact mean via its triangle-wave integral.
-float square_filtered(float u, float du) {
-	du = max(du, 1e-4);
-	float a = 0.5 - abs(fract(u + 0.5 * du) - 0.5);
-	float b = 0.5 - abs(fract(u - 0.5 * du) - 0.5);
-	return (a - b) / du;
-}
-
 // Mown turf over the rough colour, inside the surface's rectangle (Phase 4).
 vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footprint, int kind, vec4 rect) {
 	vec2 half_size = rect.zw;
@@ -266,6 +259,9 @@ void fragment() {
 	col = club_turf(col, world_pos.xz, club_field_detail);
 	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
 	vec2 footprint = fwidth(world_pos.xz);
+	if (meadow_count > 0) {
+		col = meadow_colour(col, vec2(-world_pos.z, world_pos.x), footprint.yx);
+	}
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);

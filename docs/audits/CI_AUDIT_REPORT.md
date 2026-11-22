@@ -2,6 +2,8 @@
 
 **Baseline** `85a2475f60029a4b6b09f23f643119bceea84a45` · **Audit branch** `audit/ci-quality-performance-overhaul-2026-11-22` · **Evidence collected** 2026-11-22
 
+**Later hosted evidence:** the [hosted follow-up](CI_HOSTED_FOLLOWUP.md) records a concurrent 17-commit advance of `main`, the resulting UID preflight failure, its branch-only metadata repair, and additional local validation. The inventory and performance baseline below remain bound to the original source snapshot.
+
 ## A. Executive Summary
 
 The clearest opportunity was to improve what a green run proves. The baseline Linux offline runner selected eight native-kernel Python test files. It missed existing regression cases for receipts, platform policy and packaging. Its telemetry workflow could finish its health-readiness loop successfully after every HTTP probe failed. The real Godot client-to-receiver test could skip because the engine path was absent. The three.js capture upload could match screenshots already tracked in the repository. These are distinct failure modes, each with a testable remedy. [Test effectiveness appendix](CI_TEST_EFFECTIVENESS.md) · [Baseline workflow](https://github.com/bultodepapas/OpenRCsimulator/blob/85a2475f60029a4b6b09f23f643119bceea84a45/.github/workflows/ci.yml)

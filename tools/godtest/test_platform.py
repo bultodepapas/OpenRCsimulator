@@ -54,6 +54,24 @@ class PlatformTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 catalog.performance_tour(options)
 
+    def test_fixed_render_scale_reaches_every_tour_case_and_rejects_invalid_values(self):
+        args = parser().parse_args(["performance-tour", "--render-scale", "75", "--graphics", "automatic", "--dry-run"])
+        self.assertEqual({case["render_scale"] for case in plan(args)}, {75})
+        self.assertNotIn("render_scale", catalog.scenario("runway-menus"))
+        for value in (True, 75.0, 74, "75"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "render_scale"):
+                catalog.scenario("runway-menus", {"render_scale": value})
+
+    def test_dynamic_resolution_reaches_every_tour_case_and_needs_rendered_flight(self):
+        cases = plan(parser().parse_args(["performance-tour", "--dynamic-resolution-fps", "60", "--dry-run"]))
+        self.assertEqual({case["dynamic_resolution_fps"] for case in cases}, {60})
+        self.assertTrue(all(case["require_native"] for case in cases))
+        for overrides in ({"headless": True}, {"render_scale": 75}, {"max_fps": 30},
+                          {"rendering_method": "gl_compatibility"}, {"phases": ["startup", "shutdown"]},
+                          {"dynamic_resolution_fps": True}):
+            with self.subTest(overrides=overrides), self.assertRaisesRegex(ValueError, "dynamic resolution|dynamic_resolution_fps"):
+                catalog.scenario("runway-menus", {"dynamic_resolution_fps": 60, **overrides})
+
     def test_native_panel_requires_borderless_and_product_vsync_values(self):
         with self.assertRaisesRegex(ValueError, "borderless"):
             catalog.scenario("runway-menus", {"resolution": [3024, 1964]})

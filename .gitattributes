@@ -15,6 +15,9 @@
 /app/assets/aircraft-notices/*.txt text eol=lf
 # Grass placement is compared byte-for-byte with its LF generator output.
 /app/data/fields/grass.json text eol=lf
+# The countryside bake hashes the scenery layout and compares its own output byte-for-byte.
+/app/data/scenery/default.json text eol=lf
+/app/data/scenery/countryside.json text eol=lf
 # Baked hill settlements bind the exact visual ridge profile bytes.
 /app/data/fields/mountains.json text eol=lf
 # Downloaded vegetation and generated tree-color buffers carry exact file hashes.
@@ -313,6 +316,7 @@
 
 # MetalFX intake and native witnesses bind exact source/patch bytes across hosts.
 /tools/graphics/metalfx/patches/*.patch text eol=lf -whitespace
+/tools/graphics/dynamic_resolution/*.patch text eol=lf -whitespace
 /tools/graphics/metalfx/*.py text eol=lf
 /research/engine-upgrade/metalfx/*.gd text eol=lf
 /research/engine-upgrade/metalfx/alpha_qualification_experiment.patch text eol=lf -whitespace
