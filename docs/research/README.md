@@ -29,7 +29,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Product telemetry
 
-- [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; no runtime collection or receiving service is active.
+- [System audit, 2026-11-22](telemetry/TELEM-AUDIT-2026-11-22/README.md): 13 findings (2 High, 10 Medium, 1 Low) across client, receiver, publication, operations, local HUD and recording; immutable source evidence, portable counterexamples, 370 passing Python tests and five core Godot suites, with explicit deployment and native-platform limits.
+- [Transparent telemetry, 2026-11-18](telemetry/TELEM-00/README.md): 38 primary-source investigations, repository integration audit, independent review, versioned schemas, synthetic examples and offline contract tests. The [TELEM plan](../plans/telemetry.md) owns implementation phases; at that research snapshot, no runtime collection or receiving service was active.
 - [Telemetry implementation verification, 2026-11-18](telemetry/TELEM-02/README.md): client, UI, receiver and release-configuration checks for TELEM-02…11, with review dispositions and remaining activation limits.
 - [Adaptive telemetry follow-up, 2026-11-18](telemetry/TELEM-00-R1/README.md): 30 additional investigations in ten/review/ten/ten sequence, including eight non-English source languages; revised operational and publication contracts, test-only generative coverage and a frozen-intent reference. The method record discloses corrected discovery-query deviations.
 
