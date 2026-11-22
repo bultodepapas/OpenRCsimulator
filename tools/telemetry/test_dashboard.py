@@ -302,11 +302,27 @@ class DashboardCase(unittest.TestCase):
         self.assertIn("Website analytics failed", [t for _, t, _ in dashboard.alerts(data, rows, {})])
 
     def test_week_over_week_delta(self):
-        self.assertIn("▲ 50% (+5) vs prior 7 days", dashboard.delta_html(15, 10))
-        self.assertIn("▼ 25% (-5) vs prior 7 days", dashboard.delta_html(15, 20))
-        self.assertIn("nothing in either week", dashboard.delta_html(0, 0))
-        self.assertIn("new (+3)", dashboard.delta_html(3, 0))
-        self.assertIn("no comparison yet", dashboard.delta_html(3, None))
+        up = dashboard.delta_html(15, 10)
+        down = dashboard.delta_html(15, 20)
+        self.assertIn('class="delta delta-up"', up)
+        self.assertIn('aria-hidden="true">↑</span><span class="vh">Up </span>50% (+5)', up)
+        self.assertIn('class="delta delta-down"', down)
+        self.assertIn('aria-hidden="true">↓</span><span class="vh">Down </span>25% (−5)', down)
+        self.assertIn("No activity in either week", dashboard.delta_html(0, 0))
+        self.assertIn("No change", dashboard.delta_html(3, 3))
+        self.assertIn("New (+3)", dashboard.delta_html(3, 0))
+        self.assertEqual(dashboard.delta_html(3, None), '<span class="delta">No comparison yet</span>')
+        current, missing, previous = "2027-01-19", "2027-01-20", "2027-01-18"
+        metric = dashboard.week_metric("Views", "github", "GitHub", "UTC", [current, missing], [previous],
+                                       {current: 9, previous: 3}, "2027-01-20T01:19:52.987Z")
+        card = dashboard.kpi_tiles([metric])
+        self.assertIn('class="kpi-coverage kpi-partial"', card)
+        self.assertIn("1/2 days observed", card)
+        self.assertIn("Jan 19–20 · UTC", card)
+        self.assertIn('<time datetime="2027-01-20T01:19:52.987Z"', card)
+        self.assertIn("Jan 20, 01:19 UTC", card)
+        self.assertNotIn("delta-up", card)
+        self.assertNotIn("delta-down", card)
 
     def test_provisional_and_missing_observations_stay_distinct(self):
         days = ["2027-01-01", "2027-01-02", "2027-01-03", "2027-01-04"]

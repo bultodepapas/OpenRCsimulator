@@ -1009,21 +1009,19 @@ def latest_week_players(snapshot):
 
 
 def delta_html(current, previous):
-    """Week-over-week change in text ink (a change is not a status, so no status color)."""
+    """Present a weekly comparison only when both totals are comparable."""
     if current is None or previous is None:
-        return '<span class="delta">no comparison yet</span>'
+        return '<span class="delta">No comparison yet</span>'
     diff = current - previous
-    if current == 0 and previous == 0:
-        return '<span class="delta">nothing in either week</span>'
-    if previous == 0:
-        text = "new" if current else "no change"
-        glyph = "▲" if current else "–"
-    else:
-        glyph = "▲" if diff > 0 else "▼" if diff < 0 else "–"
-        text = f"{abs(diff) * 100 / previous:.0f}%"
-    sign = "+" if diff > 0 else ""
-    label = f"{glyph} {text} ({sign}{fmt_int(diff)}) vs prior 7 days"
-    return f'<span class="delta" aria-label="{e(label, quote=True)}">{e(label)}</span>'
+    if not diff:
+        text = "No activity in either week" if current == 0 else "No change vs prior 7 days"
+        return f'<span class="delta">{text}</span>'
+    direction, glyph = ("up", "↑") if diff > 0 else ("down", "↓")
+    change = "New" if previous == 0 else f"{abs(diff) * 100 / previous:.0f}%"
+    sign = "+" if diff > 0 else "−"
+    return (f'<span class="delta delta-{direction}"><span class="delta-change">'
+            f'<span aria-hidden="true">{glyph}</span><span class="vh">{direction.title()} </span>'
+            f'{change} ({sign}{fmt_int(abs(diff))})</span><span>vs prior 7 days</span></span>')
 
 
 @dataclass(frozen=True)
@@ -1054,18 +1052,42 @@ def week_metric(title, target, source, zone, days, previous, values, observed_ut
                       None if unavailable or not known else sum(known), prior_value, len(known), state, detail)
 
 
+def kpi_period(days, zone):
+    start, end = date.fromisoformat(days[0]), date.fromisoformat(days[-1])
+    if start.year != end.year:
+        return f"{start.isoformat()} to {end.isoformat()} · {zone}"
+    start_label = f"{start:%b} {start.day}"
+    end_label = str(end.day) if start.month == end.month else f"{end:%b} {end.day}"
+    return f"{start_label}–{end_label} · {zone}"
+
+
+def kpi_observation(stamp):
+    if stamp:
+        try:
+            parsed = datetime.fromisoformat(stamp)
+            if parsed.tzinfo is not None:
+                moment = parsed.astimezone(timezone.utc)
+                label = f"{moment:%b} {moment.day}, {moment:%H:%M} UTC"
+                return f'<time datetime="{e(stamp)}" title="Last observation {e(stamp)}">{e(label)}</time>'
+        except ValueError:
+            pass
+    return "Observation time unknown"
+
+
 def kpi_tiles(items):
     tiles = []
     for metric in items:
         value = "—" if metric.value is None else fmt_int(metric.value)
-        delta = delta_html(metric.value, metric.previous) if metric.previous is not None else ""
-        observation = metric.observed_utc or "unknown"
-        label = f"{metric.condition} · {metric.coverage}/{len(metric.days)} days observed"
+        delta = delta_html(metric.value, metric.previous)
+        coverage = " kpi-partial" if metric.condition == "Partial coverage" else ""
         period = f"{metric.days[0]} to {metric.days[-1]} · {metric.zone}"
-        tiles.append(f'<div class="tile"><div class="tl">{e(metric.title)}</div><div class="tv">{e(value)}</div>{delta}'
-                     f'<div class="ts">{e(label)}</div><div class="ts">{e(period)}</div>'
-                     f'<div class="ts">{e(metric.source)} · last observation {e(observation)}</div>'
-                     + (f'<div class="ts">{e(metric.detail)}</div>' if metric.detail else "") + "</div>")
+        tiles.append(f'<div class="tile week-kpi"><div class="tl">{e(metric.title)}</div>'
+                     f'<div class="tv">{e(value)}</div>{delta}<div class="kpi-evidence">'
+                     f'<div class="kpi-coverage{coverage}"><b>{e(metric.condition)}</b>'
+                     f'<span>{metric.coverage}/{len(metric.days)} days observed</span></div>'
+                     f'<div class="ts" title="{e(period)}">{e(kpi_period(metric.days, metric.zone))}</div>'
+                     f'<div class="ts">{e(metric.source)} · {kpi_observation(metric.observed_utc)}</div>'
+                     + (f'<div class="ts kpi-detail">{e(metric.detail)}</div>' if metric.detail else "") + "</div></div>")
     return '<div class="tiles">' + "".join(tiles) + "</div>"
 
 
@@ -1726,13 +1748,16 @@ def players_section(snapshot, insight_html, rows):
 CSS = """
 :root{color-scheme:light;--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#6b6964;
 --grid:#e7e6e1;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--s1:#276bc0;--s2:#a64528;--s3:#187c67;--s4:#7158aa;
+--up-ink:#146344;--up-fill:#e5f4eb;--down-ink:#a22d42;--down-fill:#fbe9ed;--partial-ink:#805315;
 --other:#75736b;--good:#0ca30c;--warning:#fab219;--critical:#d03b3b;--wash:rgba(11,11,11,.05);--focus:#276bc0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--surface:#1a1a19;--page:#0d0d0d;
 --ink:#f0efec;--ink2:#c3c2b7;--muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#73aff7;
---s2:#f5a078;--s3:#62cbb0;--s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef}}
+--s2:#f5a078;--s3:#62cbb0;--s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef;
+--up-ink:#85dfae;--up-fill:#20372b;--down-ink:#ff9dab;--down-fill:#43282e;--partial-ink:#ecc382}}
 :root[data-theme="dark"]{color-scheme:dark;--surface:#1a1a19;--page:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;
 --muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#73aff7;--s2:#f5a078;--s3:#62cbb0;
---s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef}
+--s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef;
+--up-ink:#85dfae;--up-fill:#20372b;--down-ink:#ff9dab;--down-fill:#43282e;--partial-ink:#ecc382}
 *{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);
 font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:1440px;margin:0 auto;padding:24px 16px 64px}
@@ -1747,7 +1772,17 @@ padding:8px 12px;border-radius:6px;margin:12px 0;color:var(--ink2)}.banner[hidde
 .tile,.card,.panel{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px 16px;min-width:0}
 .tl{color:var(--ink2);font-size:13px}.tv{font-size:21px;font-weight:600;margin:4px 0;overflow-wrap:anywhere}
 .ts{color:var(--muted);font-size:12px;display:block}
-.delta{display:block;color:var(--ink2);font-size:12.5px;font-variant-numeric:tabular-nums;margin-bottom:2px}
+.week-kpi .tl{font-weight:600;line-height:1.3;min-height:2.6em}
+.week-kpi .tv{font-size:28px;line-height:1.15;font-variant-numeric:tabular-nums;margin:5px 0 7px}
+.delta{display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px;min-height:24px;
+color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.delta-change{display:inline-flex;align-items:center;gap:5px;border-radius:5px;padding:2px 6px;font-weight:700}
+.delta-up .delta-change{color:var(--up-ink);background:var(--up-fill)}
+.delta-down .delta-change{color:var(--down-ink);background:var(--down-fill)}
+.kpi-evidence{border-top:1px solid var(--grid);margin-top:9px;padding-top:9px}
+.kpi-coverage{display:flex;flex-wrap:wrap;gap:0 7px;color:var(--ink2);font-size:12px;margin-bottom:3px}
+.kpi-coverage span{color:var(--muted);white-space:nowrap}.kpi-partial b{color:var(--partial-ink)}
+.kpi-detail{margin-top:5px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--ring);
 border-radius:999px;padding:4px 12px 4px 4px;font-size:12.5px;color:var(--ink2)}.chip b{color:var(--ink)}
