@@ -545,7 +545,7 @@ func _tick_flight_dynamic_resolution() -> void:
 			return
 		_flight_dynamic_resolution = FlightDynamicResolution.new()
 	var has_session := has_home and is_instance_valid(flight) and flight.session != null
-	var active := has_session and not _loading_active and not _quit_audio_pending \
+	var active: bool = has_session and not _loading_active and not _quit_audio_pending \
 		and not is_instance_valid(_flight_graphics_calibration) and flight.session.sim != null \
 		and not flight.session.sim.paused and flight.session.holds.is_empty() and screens.top() == null
 	var window := get_window()
