@@ -4,20 +4,187 @@ TRA-02…07 presentation tools originated with the English film **Every Input Ma
 See the [production plan](../../docs/plans/cinematic-trailer.md) and its linked evidence for scope and results.
 No tool here edits the simulation kernel, aircraft data, damage assessment or prices.
 
+## R6 cinematic titles and camera recipes
+
+The current [R6 shooting script](../../docs/plans/trailer-v2/cinematic-script-r6.md),
+[shot plan](../../docs/plans/trailer-v2/shot-plan-r6.json) and
+[title plan](../../docs/plans/trailer-v2/title-plan-r6.json) describe **150 s / 9,000 frames / 62 cuts**.
+The new code is presentation/capture/edit tooling. It does not change the simulator, choose a soundtrack,
+import a model batch or establish that the proposed flight can be flown.
+
+### One plan for positions, cards and camera recipes
+
+```sh
+python3 tools/trailer/shot_plan.py validate
+python3 tools/trailer/shot_plan.py show R4-40
+python3 tools/trailer/shot_plan.py cards --out tmp/trailer/r6-plan-01/shot-cards.md
+python3 tools/trailer/shot_plan.py map R4-40 --out tmp/trailer/r6-plan-01/lake.svg
+python3 tools/trailer/shot_plan.py camera-recipe R4-40 --out tmp/trailer/r6-plan-01/lake-camera.json
+```
+
+Every `--out` creates a new file; use a fresh run directory. `cards` regenerates the block between the
+`BEGIN/END GENERATED SHOT CARDS` markers in the shooting script. Other commands check that block against
+the numeric plan. Cast/catalog/source hashes, 62 cut boundaries, 13-skin order and lake continuity retain
+the R5 checks. The parsed plan and exported SHA-256 come from the same byte snapshot.
+
+The camera exporter accepts stock G-class fixed-wing Club-field shots using `fixed_tracking` or
+`parallel_east`. It rejects ground vehicles, rotorcraft, imports, panoramas, UI, inspection and unsupported
+camera modes. The current exported lake recipe has this shape (the command supplies the actual plan hash):
+
+```json
+{
+  "format": "openrc-trailer-camera",
+  "version": 1,
+  "shot_id": "R4-40",
+  "vehicle_id": "f4u-corsair-250",
+  "source_plan_sha256": "<SHA-256 of the parsed shot-plan bytes>",
+  "target": "presented_cg",
+  "fov_deg": 42,
+  "mode": "parallel_east",
+  "north_m": 145,
+  "down_m": -1,
+  "east_offset_m": -8
+}
+```
+
+This displayed shape is explanatory; do not copy its hash placeholder into a capture. `fixed_world`
+recipes use `eye_ned_m: [north,east,down]` instead of the three parallel-rig fields. The adapter requires
+finite bounded values, a perspective camera, no optical offsets and an actual displayed CG. It fails
+permanently after an invalid runtime target so a later good frame cannot hide the earlier failure.
+
+### Composing the camera with a real flight
+
+Supply the generated recipe to the existing **offline** `capture_flight.gd` workflow:
+
+```text
+--aircraft=f4u-corsair-250 --landscape=club_field
+--camera-recipe=/absolute/path/to/lake-camera.json
+```
+
+Retain the actual capture runtime, movie-writer configuration, output directory and qualified pilot
+director for the chosen take. `--camera-recipe` adds an independent node at process priority 20, after
+the pilot director at 10 and before planar reflection at 100. It reads `Main._last_render_pose.pos`
+and changes only Camera3D. The existing director continues to own real pilot inputs. The adapter does
+not apply the subject’s proposed marks, select livery, spawn at the lake or supply a lake autopilot.
+
+Capture refuses real-time `--frametimes`, `lighting-pilot`, crash shots, a non-Club landscape,
+non-fixed-wing or mismatched selected/loaded vehicles, and an external/non-physics session. It also
+rejects paused, faulted, held, crashed or non-advancing capture frames, missing director frame evidence,
+a non-current camera, or a camera/target that changed after placement. The requested duration must be
+finite and span at least two source frames. Normal source/renderer/workload admission remains required.
+
+The take manifest retains the exact recipe bytes’ hash, camera-script hash, loaded aircraft identity
+and per-frame actual eye, orientation, FOV and CG target alongside the director’s frame/tick records.
+`source_plan_sha256_claimed` is explicitly the recipe’s declaration: capture does not separately read
+the original plan file. Preserve that file and compare its hash when admitting a take.
+
+A successful software test is not a captured lake pass. `external_spawn_airborne` is a pre-tree/tick-zero
+external-driver API, not a live pose setter or a drop-in flag for this harness. A flight driver/fixture,
+actual source range, shore/prop clearance and reflection still need their own qualification.
+
+### Global-frame film typography
+
+```sh
+python3 tools/trailer/title_plan.py validate \
+  --shot-plan docs/plans/trailer-v2/shot-plan-r6.json
+python3 tools/trailer/title_plan.py preview \
+  --shot-plan docs/plans/trailer-v2/shot-plan-r6.json \
+  --out-dir tmp/trailer/r6-type-study-01
+```
+
+The preview is an **18.75 s / 1,125-frame synthetic typography study**, with a permanent
+`TYPOGRAPHY STUDY · NO GAME FOOTAGE` caption. It includes complete entrances/exits for all three story
+titles and the entire five-second end card. It creates an MP4, contact JPEG and `study-summary.json`,
+then removes intermediate PNGs. [The retained review](../../docs/plans/trailer-v2/review/r6/typography-study.mp4)
+uses the same generator; [its summary](../../docs/plans/trailer-v2/review/r6/study-summary.json)
+records dependencies and output hashes. It cannot qualify title/subject/HUD clearance over game footage.
+
+`cinema_titles.py` reuses the vendored Barlow fonts and SIL OFL license, verifies their pinned digests,
+measures glyph ink with pair kerning plus tracking, and rejects missing glyphs, unsafe bounds and
+spatial/time collisions. RGBA sequences sample **global frames**, including half-open cue boundaries.
+Required labels have no entrance/exit fades; the Phoenix label stays opaque across all nine Phoenix
+cuts and ClearView does the same. The lake interval is text-free. The final trial binds to either
+`EXPERIMENTAL TEST FLIGHT · ESTIMATED PHYSICS` or `EXPERIMENTAL TEST FLIGHT · DONOR PHYSICS` only after the
+actual eligible model route establishes that basis. A binding is a copy setting, not acceptance evidence.
+
+The static `CINEMATIC SIZE COMPARISON` disclosure is implemented. Model-attached 7.62 m / 1.52 m / 15 cm
+labels are still a separate source/tracked-layout requirement; the R6 renderer does not create them.
+
+### Binding accepted media
+
+A cinema media manifest adds these top-level fields to the existing media format:
+
+```text
+style: "cinema"
+shot_plan: path to shot-plan-r6.json
+title_plan: path to title-plan-r6.json
+trial_basis: "estimated" or "donor", after actual trial qualification
+fps: 60
+music: path to the selected and properly credited soundtrack
+shots: all 62 R4-prefixed IDs in the exact plan order and frame lengths
+```
+
+Paths resolve relative to the media manifest. Each ordinary shot retains actual `source`, `kind`,
+source start/frame, audio and grade fields. R4-45 uses `kind: "end_card"`; the assembler supplies a
+text-free background and all card wording comes from the global title plan. Do not use the old
+`end-card` ID, per-shot `graphics`/`features` or picture fades in the cinema mode. New output metadata
+requires explicit `title`, `metadata_comment`, `video_description` and `output_filename`.
+
+```sh
+python3 tools/trailer/assemble.py --manifest /absolute/path/to/accepted-media.json \
+  --ffmpeg /absolute/path/to/ffmpeg --ffprobe /absolute/path/to/ffprobe \
+  --out tmp/trailer/r6-export-01 --work tmp/trailer/r6-edit-01
+```
+
+`--prepare-only` can prepare available cuts while missing pictures, image-sequence frames or audio are
+reported as `AWAITING_SOURCE`. It does not make a finished film. A missing trial-basis binding blocks a
+normal cinema export; other capture, destination and final-visual gates remain production requirements.
+`--graphics-only --manifest ...` produces the new cinema card for a cinema manifest; with no manifest, graphics-only retains
+the historical card behavior.
+
+Cache identities include the master start frame, exact parsed title/shot plans, selected image-frame
+content, fonts/license/provenance, Pillow/FreeType/raqm and FFmpeg, as well as source media/audio/editor
+code. Cache receipts check both encoded outputs by SHA-256; an interrupted encode invalidates the old
+receipt first. Each newly encoded picture clip is checked for its exact 1080p60 frame count. Full-film
+probe, decode and audio checks remain in the existing final export path. Keep one writer per edit work
+directory and start a fresh directory for a new production run.
+
+### Focused checks and measured scope
+
+```sh
+python3 -B tools/trailer/test_shot_plan.py
+python3 -B tools/trailer/test_camera_recipe.py
+python3 -B tools/trailer/test_cinema_titles.py
+python3 -B tools/trailer/test_title_plan.py
+python3 -B tools/trailer/test_cinema_assembly.py
+```
+
+The assembly test encodes actual synthetic cuts through FFmpeg and checks both sides of the source-label
+cut; it is not a gameplay capture. This pass used Pillow 13.0.0, FreeType 2.14.3, raqm 0.11.0 and
+FFmpeg/ffprobe 7.1.5. Those version records scope these results; older film runtime versions below remain historical.
+
+Use the configured test pool for compatible Godot checks, or the checked local runner when no pool is
+configured, with the repository’s pinned Godot and any required admission. The standalone
+`test_planned_camera.gd` exercises Camera3D in a minimal project with a fake flight owner/director and
+real adapter; it does not load an aircraft or prove flight physics. Optional repeated
+`--exported-recipe=/absolute/path.json` arguments add file/hash checks for actual exported recipes.
+The exact commands, final counts and full-harness parse scope are in the
+[R6 audit](../../docs/plans/trailer-v2/script-audit-r6-2026-11-22.md).
+
 ## R5 shot plan and livery finish
 
-The [Trailer 2.0 R5 shooting script](../../docs/plans/trailer-v2/cinematic-script-r5.md) and
+Historical foundation: the [Trailer 2.0 R5 shooting script](../../docs/plans/trailer-v2/cinematic-script-r5.md) and
 [shot plan](../../docs/plans/trailer-v2/shot-plan-r5.json) retain a 150-second, 62-cut master.
-R5 adds offline blocking tools and an opt-in final-livery hold to the existing flight director.
+R5 added offline blocking tools and an opt-in final-livery hold to the existing flight director.
 The older capture recipes below retain their dated qualification; R5 does not requalify their footage.
 
 From a complete repository checkout, Python's standard library is sufficient:
 
 ```sh
-python3 tools/trailer/shot_plan.py validate
-python3 tools/trailer/shot_plan.py show R4-40
-python3 tools/trailer/shot_plan.py export --out tmp/trailer/r5-plan-01/shot-plan.json
-python3 tools/trailer/shot_plan.py map R4-40 --out tmp/trailer/r5-plan-01/lake.svg
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r5.json validate
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r5.json show R4-40
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r5.json export --out tmp/trailer/r5-plan-01/shot-plan.json
+python3 tools/trailer/shot_plan.py --plan docs/plans/trailer-v2/shot-plan-r5.json map R4-40 --out tmp/trailer/r5-plan-01/lake.svg
 python3 tools/trailer/test_shot_plan.py
 ```
 

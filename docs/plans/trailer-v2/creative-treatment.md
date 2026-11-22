@@ -1,6 +1,6 @@
-# Trailer 2.0 — creative treatment, Revision 5
+# Trailer 2.0 — creative treatment, Revision 6
 
-**Story authority:** [R5 — EXPAND YOUR HANGAR](cinematic-script-r5.md). The [150-second storyboard](storyboard-150s.md) owns the exact cuts and disclosures; the [shot plan](shot-plan-r5.json) owns the proposed cast and blocking.
+**Story authority:** [R6 shooting script](cinematic-script-r6.md). The [150-second storyboard](storyboard-150s.md) owns the exact cuts and disclosures; the [shot plan](shot-plan-r6.json) owns the proposed cast and blocking, and the [title plan](title-plan-r6.json) owns global cue frames.
 **Audience:** RC enthusiasts, curious new players and model creators. **Objective:** make trying the simulator feel inviting.
 **Tone:** energetic, tactile and playful, with room for the images that deserve it. This is creative direction, not an audience-test result.
 
@@ -12,7 +12,7 @@
 
 **Discover the field, 01:13–01:33.** Actual AI circuit traffic, an eligible calibrated photo panorama and a real storm flash suggest different places and conditions without suggesting multiplayer, a free-roaming panorama or a storm-caused failure. Extra smoke and a readable night-lit Turbo Lumber change the mood while keeping aircraft visible.
 
-**Make it yours, 01:33–02:05.** Two real Bisonte suspension runs make a setup change visible; actual Ugly Stick scale trials lead into the explicitly cinematic three-size comparison. The Corsair earns the emotional pause: one coherent ten-second 360-degree orbit cycles through all 13 stock schemes, then Coastal Three Tone holds for a six-second shoreline approach, water crossing and exit. The planned crossing is about 3.225 seconds over water at the nominal 23 m/s; the flight and clearance remain unverified.
+**Explore the details, 01:33–02:05.** Two real Bisonte suspension runs make a setup change visible; actual Ugly Stick scale trials lead into the explicitly cinematic three-size comparison. The Corsair earns the emotional pause: one coherent ten-second 360-degree orbit cycles through all 13 stock schemes, then Coastal Three Tone holds for a six-second shoreline approach, water crossing and exit. The planned crossing is about 3.225 seconds over water at the nominal 23 m/s; the flight and clearance remain unverified.
 
 **Open the hangar, 02:05–02:30.** A genuine Creator introduction leads to ten seconds of rapid, distinct Phoenix RC and ClearView model previews. One eligible model then makes a genuine experimental test flight. The electric Bisonte returns at the shallow shore before a five-second invitation. Previewing a model and flying an eligible model are separate results; a larger compatible-model count remains unsubstantiated.
 
@@ -21,7 +21,7 @@
 - Give the audience one primary action at a time. Show complete gate passage, truck landing and turtle recovery; let fixed references make each brief control movement understandable.
 - All 13 reviewed Home configurations have a purpose in the [fleet coverage table](storyboard-150s.md#fleet-coverage). They are distributed through the story, rather than repeated in a roster parade. The 18 imported previews are a separate, explicitly identified Creator montage.
 - Keep the Corsair's full orbit and all 13 stock skins. Livery transitions are editorial presentation, not an in-flight paint control. Use `three_tone` for the ground checks, the orbit's final scheme and the lake sequence; a matching reflection is conditional on a real qualified take.
-- Use the R5 stock selections for the Electric Stick, MoonRunner, blimp and trucks. Mustang, Extra and Turbo Lumber each use their one shipped factory livery; a custom-paint kit is not an existing alternate. Record asset IDs and rights.
+- Use the R6 stock selections for the Electric Stick, MoonRunner, blimp and trucks. Mustang, Extra and Turbo Lumber each use their one shipped factory livery; a custom-paint kit is not an existing alternate. Record asset IDs and rights.
 - Use the supported Inspector, gameplay, UI and cinematic-comparison identities. A fixed-wing Cockpit preset is a widget layout, the HX-700 inspection is not the playable X-Cell, and the three-size trio is not multiplayer.
 - Preserve native timing within mechanical and flight excerpts. Edit omitted time openly; do not compress the full eight-second wing-spreading cycle, imply the suspension setting changes in the air, or suggest the selected imports appear instantaneously in real time.
 - Keep MONSTER CAR 2 and Bisonte distinct in body, propulsion and sound: the former completes a nitro jump; the latter demonstrates suspension settings and electric shore driving.
@@ -54,7 +54,7 @@ The preview montage uses editorial rhythm, not fabricated engine demonstrations;
 
 ## Text and variants
 
-The [storyboard](storyboard-150s.md#title-and-disclosure-placement) owns the actual title and qualification timings. Names, real HUD indicators and source disclosures share the viewer's reading budget. The import blocks hold one source label each instead of 18 flashing names. **EXPAND YOUR HANGAR** is the current headline; a 300+ claim is conditional on the evidence described in the [import showcase](import-showcase.md#the-requested-300-title-prepared-not-yet-substantiated).
+The film has three main-copy beats: **A SKY WITHIN REACH** over the blimp, **FEEL EVERY INPUT** over the Mustang's real input demonstration, and **EXPAND YOUR HANGAR** on the Creator introduction. Use warm-white Barlow typography with a brief fade; there is no headline over the lake. The [storyboard](storyboard-150s.md#title-and-disclosure-placement) summarizes the timings. Names, real HUD indicators and source disclosures share the viewer's reading budget. Necessary inspection, presentation and source labels stay fully opaque for their entire exposure; the import blocks hold one continuous source label each instead of 18 flashing names. A 300+ claim is inactive pending the evidence described in the [import showcase](import-showcase.md#the-requested-300-title-prepared-not-yet-substantiated). All type placement and phone-size readability require review against actual images.
 
 The English master leads; Spanish copy and short derivatives follow picture review. The timed [90-second Field Notes](feature-companion-films.md#field-notes--90-seconds) gives instruments, practice and field details room, and the [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet) shows complete mechanical travel. These are scripts, not rendered versions.
 
@@ -62,4 +62,4 @@ The English master leads; Spanish copy and short derivatives follow picture revi
 
 The cut totals 150 seconds and 62 retained R4 shot IDs on paper; there is no unallocated timing reserve. If a proof shot needs longer, explicitly transfer a complete eligible feature to Field Notes and update the master, storyboard and shot plan once. Protect the full orbit, lake, import chapter, recovery outcome, core fleet and five-second invitation.
 
-The first offline shot-plan tools and the opt-in `--livery-hold-last` director change are implemented and narrowly tested; additional capture adapters and actual footage remain pending. Future review must test phone-size and silent readability, especially half-second import silhouettes, tail controls, the smallest Stick, night body, actual control response, collective framing and lake reflection. The [verification gates](verification-gates.md) own acceptance. No footage, music, target-hardware result or export has been accepted.
+The first offline shot-plan tools and the opt-in `--livery-hold-last` director change have historical focused software evidence. The [R6 audit](script-audit-r6-2026-11-22.md) records completed focused camera/title checks and the synthetic typography study; these establish software behavior, while flown paths and footage still need qualification. Future review must test phone-size and silent readability, especially half-second import silhouettes, tail controls, the smallest Stick, night body, actual control response, collective framing and lake reflection. The [verification gates](verification-gates.md) own acceptance. Actual gameplay footage, music, target-hardware results and the finished film remain unaccepted.

@@ -1,8 +1,8 @@
-# Trailer 2.0 — integrated feature opportunities, Revision 5
+# Trailer 2.0 — integrated feature opportunities, Revision 6
 
 **Reviewed:** 21 November 2026. **Track / owner:** V2 / trailer director-editor.
 **Source baseline:** 57abea025f62b20233ca281d58d2acbee4ab8b8e.
-**Current authority:** [R5 shooting script](cinematic-script-r5.md), [shot plan](shot-plan-r5.json), [150-second storyboard](storyboard-150s.md), [90-second Field Notes](feature-companion-films.md) and [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet). The R4-prefixed IDs are retained in R5.
+**Current authority:** [R6 shooting script](cinematic-script-r6.md), [shot plan](shot-plan-r6.json), [title plan](title-plan-r6.json), [150-second storyboard](storyboard-150s.md), [90-second Field Notes](feature-companion-films.md) and [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet). The R4-prefixed IDs are retained in R6.
 
 The earlier candidate list is now integrated. Every opportunity has a specific master shot or a fully timed companion sequence. This ledger owns the mapping and source boundaries; the screenplays own timing and direction. All visual acceptance is still pending actual footage.
 
@@ -61,4 +61,4 @@ Imported-aircraft previews, setup eligibility, test-flight evidence and normal H
 | V2-FEATURE-03 | Qualify selected shots on the promoted build | Pending actual footage under the [verification gates](verification-gates.md). |
 | V2-IMPORT-COUNT | Substantiate any numerical imported-aircraft claim | Pending deduplicated current-build evidence; no 300+ public claim accepted. |
 
-The initial offline shot-plan tools and opt-in livery hold-last change are implemented and narrowly tested. Additional capture adapters, gameplay footage, hardware measurements and flight validation remain pending. The original source observations remain evidence for their documented versions; the next production phase must qualify the selected images.
+The initial offline shot-plan tools and opt-in livery hold-last change have historical focused software evidence. The [R6 audit](script-audit-r6-2026-11-22.md) records completed focused typography/camera software checks and the synthetic study; gameplay footage, hardware measurements and flight validation remain pending. The original source observations remain evidence for their documented versions; the next production phase must qualify the selected images.

@@ -1,8 +1,8 @@
 # Trailer 2.0 — retained Windows / RTX 3090 capture study
 
-**R5 priority:** [review the shooting script](cinematic-script-r5.md) and [shot plan](shot-plan-r5.json) before capture. The routes below retain prior production research; their equipment and render settings are proposals, not proof of R5 footage. The current [verification gates](verification-gates.md) supersede older shot-priority assumptions in this study.
+**R6 priority:** [review the shooting script](cinematic-script-r6.md) and [shot plan](shot-plan-r6.json) before capture. The routes below retain prior production research; their equipment and render settings are proposals, not proof of R6 footage. The current [verification gates](verification-gates.md) supersede older shot-priority assumptions in this study.
 
-**This file documents a future capture setup.** Initial offline shot-plan tools and the opt-in livery hold-last change are implemented and narrowly tested. No new RTX 3090 capture, graphics qualification or benchmark is claimed; additional capture adapters and footage remain pending.
+**This file documents a future capture setup.** Initial offline shot-plan tools and the opt-in livery hold-last have historical focused software evidence. No new RTX 3090 capture, graphics qualification or benchmark is claimed; R6 camera integration and footage remain unqualified.
 
 ## Reference machine, lock and output
 - Target: owner's Windows PC, NVIDIA GeForce RTX 3090, qualified driver. Before filming log Windows version, driver number, GPU/CPU/RAM, monitor/window dimensions, source commit, clean profile, actual Godot executable hash and output storage.
@@ -38,7 +38,7 @@ Planned PowerShell preflight setup (illustrative, not executed here):
     # Log effective renderer, lighting, skin and reflection states.
     Remove-Item Env:OPENRC_LAKE_REFLECTIONS
 
-For R5, the essential mirror test uses `three_tone`, the final orbit skin, through the six-second shoreline approach, water crossing and exit: compare flag off/on and the actual moving Corsair. The proposed over-water interval is about 3.225 seconds at the nominal 23 m/s, not the whole six seconds. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check reflection geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If the Corsair reflection doesn't qualify, retain a genuine unmirrored Corsair pass; a documented Vantage reflection can be shown only as a separately identified alternate.
+For R6, the essential mirror test uses `three_tone`, the final orbit skin, through the six-second shoreline approach, water crossing and exit: compare flag off/on and the actual moving Corsair. The proposed `parallel_east` camera follows the actual presented CG at N145, D−1 and east minus 8 m; its nominal eyes are (145, 47, −1), (145, 116, −1) and (145, 185, −1), with a 42° Godot FOV. The aircraft is centered and nose-left while the shoreline moves. The flight path and camera remain unflown and unqualified. The proposed over-water interval is about 3.225 seconds at the nominal 23 m/s, not the whole six seconds. Additional skin passes are optional coverage, not a requirement to switch paint over the lake. Check reflection geometry, movement, colors, clipping at frame edges and shore; don't assume an environmental/static cubemap proves plane reflection. If the Corsair reflection doesn't qualify, retain a genuine unmirrored Corsair pass; a documented Vantage reflection can be shown only as a separately identified alternate.
 
 ## Lens options and precisely what generates them
 
@@ -65,7 +65,7 @@ Blood/splatter requires actual person/pilot collision; terrain crash causes grim
 
 ## Capture lanes and evidence
 
-**Lane 1 — existing Godot cinema tools:** [tools/trailer/README.md](../../../tools/trailer/README.md) includes flight director, cars, Corsair deck, formation, night lighting and renderer caveats. R5 adds an opt-in hold-last schedule; the focused schedule test does not prove source-frame alignment or actual GLB appearance. Re-qualify against the pinned engine; do not assume old 4.8-beta1 scripts produce correctly measured beta2 High footage. Movie Maker with --fixed-fps 60 and --write-movie captures offline deterministic frames and synchronized audio when configured; actual dimensions must be ready before the film writer initializes. Track output manifest and screen format. Captured 60fps is not proof that the game ran 60fps in real time.
+**Lane 1 — existing Godot cinema tools:** [tools/trailer/README.md](../../../tools/trailer/README.md) includes flight director, cars, Corsair deck, formation, night lighting and renderer caveats. R5 added an opt-in hold-last schedule; its focused schedule test does not prove source-frame alignment or actual GLB appearance. The R6 camera-only adapter is designed to compose at priority 20 after the existing director at 10 and record actual CG; it cannot spawn or fly the aircraft, and its capture route still needs qualification. Re-qualify against the pinned engine; do not assume old 4.8-beta1 scripts produce correctly measured beta2 High footage. Movie Maker with --fixed-fps 60 and --write-movie captures offline deterministic frames and synchronized audio when configured; actual dimensions must be ready before the film writer initializes. Track output manifest and screen format. Captured 60fps is not proof that the game ran 60fps in real time.
 
 **Lane 2 — manual gameplay/UI:** use a verified Windows capture route for FPV racing, variable car behavior and Creator menus where capture directors cannot supply controls; OBS is one option to qualify. Record controller input and avoid dropped/duplicate frames.
 

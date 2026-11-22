@@ -1,6 +1,6 @@
 # Trailer 2.0 — Phoenix RC and ClearView import showcase
 
-**Authority:** [R5 shooting script](cinematic-script-r5.md) and [shot plan](shot-plan-r5.json), 02:05–02:20 / R4-41…43. R5 retains the R4-prefixed shot IDs.
+**Authority:** [R6 shooting script](cinematic-script-r6.md), [shot plan](shot-plan-r6.json) and [title plan](title-plan-r6.json), 02:05–02:20 / R4-41…43. R6 retains the R4-prefixed shot IDs.
 **Owner / track:** trailer director-editor / V2. **Reviewed:** 21 November 2026.
 **Status:** 15-second chapter fully timed on paper; provisional casting from recorded source inventories. No new aircraft download, conversion, preview capture or flight was performed in this revision.
 
@@ -23,7 +23,7 @@ At 60 fps, each fast preview gets **30 frames**, each leader **60 frames**, and 
 ## Framing, rhythm and sound
 
 - Keep each model large, at a comparable three-quarter view, with a stable visual center, neutral preview background and matched exposure. Preserve native proportions; framing may normalize screen occupancy, not imply equal physical size.
-- Group the sources. Hold **PHOENIX RC · MODEL PREVIEWS** for five seconds, then **CLEARVIEW · MODEL PREVIEWS** for five seconds. The source label stays still while silhouettes change.
+- Group the sources. Hold **PHOENIX RC · MODEL PREVIEWS** fully opaque for all frames at 127–132 seconds, then **CLEARVIEW · MODEL PREVIEWS** fully opaque for all frames at 132–137 seconds. Each label stays still and continuous across its nine cuts while silhouettes change; it must not fade again for each preview. Placement and readability require real capture review.
 - Use hard cuts on an editorial percussion pattern. Exact music beats remain unmeasured. The one-second leaders establish each block before the half-second run.
 - Do not ask the viewer to read 18 changing names. Candidate names below belong to production notes, not rapid title cards.
 - Use actual Creator previews, including a crop of the genuine preview viewport if the label remains readable. No generated airframes, foreign-simulator footage or separately invented rendering is passed off as an OpenRC import.
@@ -80,7 +80,7 @@ Sources: [Creator selection/workflow](../../../app/ui/aircraft_creator.gd), [Pho
 
 ## The requested 300+ title: prepared, not yet substantiated
 
-**Current main copy:** **EXPAND YOUR HANGAR**.
+**Current main copy:** **EXPAND YOUR HANGAR**, only on the 125–127-second Creator introduction. The subsequent preview blocks carry their source labels rather than an overlapping headline.
 **Source labels:** **PHOENIX RC · MODEL PREVIEWS** / **CLEARVIEW · MODEL PREVIEWS**.
 **Flight payoff:** **EXPERIMENTAL TEST FLIGHT**, with the actual estimated/donor qualification.
 **Prepared numerical variant:** **300+ MODELS TO IMPORT**. It is not active in the current script.

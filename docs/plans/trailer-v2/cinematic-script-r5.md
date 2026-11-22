@@ -1,3 +1,5 @@
+> Historical R5 revision. [R6](cinematic-script-r6.md) is the current directing and implementation authority.
+
 # OPEN RC SIMULATOR — Trailer 2.0
 
 ## Director’s shooting script — Revision 5: EXPAND YOUR HANGAR

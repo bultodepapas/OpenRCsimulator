@@ -5,6 +5,7 @@ Examples:
   python3 tools/trailer/shot_plan.py --source-root /path/to/OpenRCsimulator validate
   python3 tools/trailer/shot_plan.py --source-root /path/to/OpenRCsimulator show R4-40
   python3 tools/trailer/shot_plan.py --source-root /path/to/OpenRCsimulator map R4-40 --out /tmp/lake.svg
+  python3 tools/trailer/shot_plan.py camera-recipe R4-40 --out /tmp/lake-camera.json
 
 The file is a blocking plan, not flight, collision, camera or visual evidence.
 """
@@ -21,7 +22,7 @@ import sys
 from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parents[2]
-DEFAULT_PLAN = REPO / 'docs/plans/trailer-v2/shot-plan-r5.json'
+DEFAULT_PLAN = REPO / 'docs/plans/trailer-v2/shot-plan-r6.json'
 FIELD = 'app/data/fields/default.json'
 TRACK = 'app/data/ground_vehicle/airfield_track.json'
 AIRCRAFT_CATALOG = 'app/app_state/aircraft_catalog.gd'
@@ -42,7 +43,8 @@ def fail(message):
     raise PlanError(message)
 
 
-def read_json(path):
+def read_snapshot(path):
+    """Parse and identify one byte snapshot, including during concurrent edits."""
     def bad_constant(value):
         fail(f'{path}: non-finite JSON number {value}')
     def unique_object(pairs):
@@ -52,10 +54,16 @@ def read_json(path):
             result[key] = value
         return result
     try:
-        return json.loads(path.read_text(encoding='utf-8'), parse_constant=bad_constant,
-                          object_pairs_hook=unique_object)
+        data = Path(path).read_bytes()
+        parsed = json.loads(data.decode('utf-8'), parse_constant=bad_constant,
+                            object_pairs_hook=unique_object)
+        return parsed, hashlib.sha256(data).hexdigest()
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         fail(f'{path}: {exc}')
+
+
+def read_json(path):
+    return read_snapshot(path)[0]
 
 
 def source_path(root, value):
@@ -432,10 +440,13 @@ def water_analysis(plan, shot, source_root):
     return result
 
 
-def validate(plan, source_root, plan_root=REPO):
+def validate(plan, source_root, plan_root=REPO, check_script=True):
     obj(plan, 'plan'); finite_tree(plan)
-    for key, expected in [('format','openrc-trailer-shot-plan'),('version',1),('revision','R5'),('fps',60),('duration_frames',9000)]:
+    for key, expected in [('format','openrc-trailer-shot-plan'),('version',1),('fps',60),('duration_frames',9000)]:
         if not eq_json(plan.get(key), expected): fail(f'{key}: expected {expected!r}')
+    if plan.get('revision') not in ('R5', 'R6'): fail('revision: expected R5 or R6')
+    if plan['revision'] == 'R6':
+        string(plan.get('script_path'), 'R6 script_path')
     baseline = string(plan.get('source_baseline'), 'source_baseline')
     if not re.fullmatch(r'[0-9a-f]{40}', baseline): fail('source_baseline must be a 40-character lowercase commit ID')
     hashes = obj(plan.get('source_files'), 'source_files')
@@ -492,6 +503,7 @@ def validate(plan, source_root, plan_root=REPO):
         if 'heading_deg' in b and not finite(b['heading_deg']): fail(f'{sid}.blocking.heading_deg: expected finite number')
         c=obj(s.get('camera'),f'{sid}.camera'); required(c, ('fov_deg',), f'{sid}.camera'); string(c.get('mode'),f'{sid}.camera.mode'); points(c,f'{sid}.camera',duration,('NED','FRU','inspector','preview','none'))
         if c.get('fov_deg') is not None and (not finite(c['fov_deg']) or not 0<c['fov_deg']<180): fail(f'{sid}.camera.fov_deg: expected null or 0 < FOV < 180')
+        if c['mode'] == 'parallel_east': validate_parallel_camera(s)
         for field in ('actions','checks'):
             values=arr(s.get(field),f'{sid}.{field}')
             if not values: fail(f'{sid}.{field}: must not be empty')
@@ -540,6 +552,14 @@ def validate(plan, source_root, plan_root=REPO):
     cfg=obj(plan.get('lake_analysis'),'lake_analysis')
     if cfg.get('shot_id')!='R4-40': fail('lake_analysis must refer to R4-40')
     analysis=water_analysis(plan,lake,source_root)
+    if check_script and plan.get('script_path'):
+        script = source_path(plan_root, plan['script_path']).read_text(encoding='utf-8')
+        begin, end = '<!-- BEGIN GENERATED SHOT CARDS -->', '<!-- END GENERATED SHOT CARDS -->'
+        if script.count(begin) != 1 or script.count(end) != 1:
+            fail('shooting script requires one generated shot-card block')
+        actual_cards = script.split(begin,1)[1].split(end,1)[0].strip()
+        if actual_cards != render_shot_cards(plan).strip():
+            fail('shooting script shot cards drifted from the numeric plan; regenerate with cards')
     return {'ok': True,'shots':len(shots),'duration_frames':previous,'source_baseline':baseline,
             'source_files_verified':len(hashes),'lake_analysis':analysis}
 
@@ -558,6 +578,97 @@ def find_shot(plan, shot_id):
     for shot in plan['shots']:
         if shot['id']==shot_id: return shot
     fail(f'unknown shot ID {shot_id!r}')
+
+
+def render_shot_cards(plan):
+    """Readable production cards generated from the same values as recipes."""
+    def tc(frame):
+        seconds, sub = divmod(frame, plan['fps'])
+        minutes, seconds = divmod(seconds,60)
+        return f'{minutes:02}:{seconds:02}:{sub:02}'
+    def marks(block):
+        if not block['points']:
+            return 'Native UI/preset or actual camera readback; no invented world coordinates.'
+        return ' → '.join(f"{p['frame']/plan['fps']:g}s: ({', '.join(f'{v:g}' for v in p['position_m'])})"
+                          for p in block['points'])
+    cards=[]
+    for s in plan['shots']:
+        cast=plan['cast'][s['cast']]; camera=s['camera']; block=s['blocking']
+        skin=cast['skin'].get('label','Not applicable')
+        fov=f"FOV {camera['fov_deg']:g}°" if camera['fov_deg'] is not None else 'native preset/readback'
+        cards.append(f"### {s['id']} — {cast.get('label',s['picture'])} · {tc(s['in_frame'])}–{tc(s['out_frame'])} · {s['source_class']}\n\n"
+            f"**Picture:** {s['picture']}\n\n"
+            f"**Cast / paint:** {cast.get('label',s['cast'])} — {skin}. **Environment:** `{s['environment']}`.\n\n"
+            f"**Preparation:** {s['setup']} **At the edit’s start:** {s['start_condition']}\n\n"
+            f"**Blocking ({block['space']}):** {marks(block)} {block.get('notes','')}\n\n"
+            f"**Camera:** {camera['mode']}, {camera['space']}, {fov}. {marks(camera)} {camera.get('notes','')}\n\n"
+            '**Action:**\n\n' + '\n'.join('- '+a for a in s['actions']) + '\n\n'
+            f"**Exit / cut:** {s['exit_condition']} {s['transition']}\n\n"
+            f"**Continuity:** {s['continuity']}\n\n"
+            f"**Text:** {s.get('text_reference','Use the current title plan and genuine captured indicators.')}\n\n"
+            f"**Implementation:** `{s['execution']['status']}` — `{s['execution']['route']}`. {s['execution']['notes']}\n\n"
+            '**Accept only when:** ' + ' '.join(s['checks']) + '\n')
+    return '\n'.join(line.rstrip() for line in '\n'.join(cards).splitlines()) + '\n'
+
+
+def validate_parallel_camera(shot):
+    """Keep illustrative camera marks consistent with the actual-CG rig law."""
+    sid = shot['id']; camera = shot['camera']; block = shot['blocking']
+    if camera.get('target') != 'presented_cg' or camera['space'] != 'NED' or block['space'] != 'NED':
+        fail(f'{sid}: parallel camera requires NED marks and presented_cg target')
+    rig = obj(camera.get('rig'), f'{sid}.camera.rig')
+    if set(rig) != {'north_m', 'down_m', 'east_offset_m'}:
+        fail(f'{sid}: parallel camera rig requires north_m, down_m, east_offset_m only')
+    for key, value in rig.items():
+        if not finite(value) or abs(value) > 100000:
+            fail(f'{sid}: parallel camera {key} must be finite and within 100000 m')
+    if len(camera['points']) != len(block['points']) or len(block['points']) < 2:
+        fail(f'{sid}: parallel camera requires matching subject/camera marks')
+    for eye, subject in zip(camera['points'], block['points']):
+        expected = [rig['north_m'], subject['position_m'][1] + rig['east_offset_m'], rig['down_m']]
+        if eye['frame'] != subject['frame'] or any(abs(a-b) > 1e-8 for a,b in zip(eye['position_m'], expected)):
+            fail(f'{sid}: parallel camera marks disagree with actual-CG rig law')
+
+
+def camera_recipe(plan, shot_id, source_root, plan_sha256):
+    """Export only presentation camera settings, never a spawn or flight path.
+
+    The caller must validate the plan first. Source-class, vehicle, environment
+    and mode checks keep ground, inspector, import and panorama routes out of
+    the fixed-wing capture adapter. Numeric geometry is checked again here so
+    a direct API caller cannot silently export a different rig from its marks.
+    """
+    if not isinstance(plan_sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', plan_sha256):
+        fail('camera recipe requires the source plan SHA-256')
+    shot = find_shot(plan, shot_id); cast = plan['cast'][shot['cast']]
+    camera = shot['camera']; env = plan['environments'][shot['environment']]
+    if shot['source_class'] != 'G' or cast['kind'] != 'stock' or env.get('landscape') != 'club_field':
+        fail(f'{shot_id}: camera recipe supports stock G-class Club-field airplane shots only')
+    source = read_json(source_path(source_root, cast['data_path']))
+    if (source.get('format') != 'openrc-aircraft v2' or source.get('vehicle', 'fixed_wing') != 'fixed_wing'
+            or not all(key in source for key in ('start', 'aero', 'propulsion'))):
+        fail(f'{shot_id}: camera recipe requires a fixed-wing openrc-aircraft v2 source')
+    fov = camera.get('fov_deg')
+    if not finite(fov) or not 2 <= fov <= 120:
+        fail(f'{shot_id}: capture camera FOV must be between 2 and 120 degrees')
+    if camera.get('target', 'presented_cg') != 'presented_cg':
+        fail(f'{shot_id}: capture camera must target presented_cg')
+    recipe = {'format': 'openrc-trailer-camera', 'version': 1, 'shot_id': shot_id,
+              'vehicle_id': cast['vehicle_id'], 'source_plan_sha256': plan_sha256,
+              'target': 'presented_cg', 'fov_deg': fov}
+    if camera['mode'] == 'fixed_tracking':
+        if camera['space'] != 'NED' or len(camera['points']) != 1:
+            fail(f'{shot_id}: fixed camera requires exactly one world-space eye')
+        eye = camera['points'][0]['position_m']
+        if len(eye) != 3 or any(not finite(v) or abs(v) > 100000 for v in eye):
+            fail(f'{shot_id}: fixed camera eye must contain three bounded finite coordinates')
+        recipe.update(mode='fixed_world', eye_ned_m=copy.deepcopy(eye))
+    elif camera['mode'] == 'parallel_east':
+        validate_parallel_camera(shot)
+        recipe.update(mode='parallel_east', **camera['rig'])
+    else:
+        fail(f'{shot_id}: camera mode {camera["mode"]!r} has no capture recipe adapter')
+    return recipe
 
 
 def map_svg(plan, shot, source_root):
@@ -651,7 +762,7 @@ def map_svg(plan, shot, source_root):
     source_note = html.escape('Source context shown: '+(', '.join(shown) if shown else 'none in this close view')+'. Other field landmarks are outside this view.')
     ground_note = 'NE markers specify ground locations; actual supported height must be solved.' if block['space'] == 'NE_surface' else 'NED altitude and exact camera instructions are in the shot plan.'
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="{title}">
-<title>{title}</title><desc>Generated by tools/trailer/shot_plan.py map {html.escape(shot["id"])} from the R5 shot plan. Source baseline {html.escape(plan["source_baseline"])}.</desc><rect width="100%" height="100%" fill="#f3f5ed"/>
+<title>{title}</title><desc>Generated by tools/trailer/shot_plan.py map {html.escape(shot["id"])} from the {html.escape(plan["revision"])} shot plan. Source baseline {html.escape(plan["source_baseline"])}.</desc><rect width="100%" height="100%" fill="#f3f5ed"/>
 <defs><clipPath id="plot"><rect x="{plot_x}" y="{plot_y}" width="{plot_w}" height="{plot_h}"/></clipPath></defs>
 <g clip-path="url(#plot)">{''.join(geography)}{trace(bp,'#b4452e','B')}{trace(cp,'#7646a1','C')}</g>
 <g font-family="sans-serif" fill="#243738">
@@ -678,17 +789,19 @@ def main(argv=None):
     parser.add_argument('--source-root',type=Path,default=REPO,help='checkout containing app/ (default: this repository)')
     parser.add_argument('--plan',type=Path,default=DEFAULT_PLAN,help='shot plan JSON')
     subs=parser.add_subparsers(dest='command',required=True)
-    for command in ('validate','show','export','map'):
+    for command in ('validate','show','export','map','camera-recipe','cards'):
         p=subs.add_parser(command)
-        if command in ('show','map'): p.add_argument('shot_id')
+        if command in ('show','map','camera-recipe'): p.add_argument('shot_id')
         p.add_argument('--out',type=Path,help='create a new file; never overwrite')
         # Accept these options on either side of the subcommand.
         p.add_argument('--source-root',type=Path,default=argparse.SUPPRESS)
         p.add_argument('--plan',type=Path,default=argparse.SUPPRESS)
     args=parser.parse_args(argv)
     try:
-        plan=read_json(args.plan); summary=validate(plan,args.source_root)
+        plan, plan_digest=read_snapshot(args.plan)
+        summary=validate(plan,args.source_root,check_script=args.command!='cards')
         if args.command=='validate': result=json_text(summary)
+        elif args.command=='cards': result=render_shot_cards(plan)
         elif args.command=='show':
             shot=find_shot(plan,args.shot_id)
             result=json_text({'shot':enrich_shot(shot),'cast':plan['cast'][shot['cast']],
@@ -698,6 +811,8 @@ def main(argv=None):
             enriched=copy.deepcopy(plan); enriched['shots']=[enrich_shot(s) for s in plan['shots']]
             enriched['derived_lake_analysis']=summary['lake_analysis']
             result=json_text(enriched)
+        elif args.command=='camera-recipe':
+            result=json_text(camera_recipe(plan,args.shot_id,args.source_root,plan_digest))
         else: result=map_svg(plan,find_shot(plan,args.shot_id),args.source_root)
         output(result,args.out)
         return 0

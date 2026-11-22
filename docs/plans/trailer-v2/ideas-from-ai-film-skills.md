@@ -1,29 +1,29 @@
 # Trailer 2.0 — creative opportunities discovered during the AI-skills research
 
 **Date:** 2026-11-21 · **Status:** pitch deck / brainstorming, not approved new shots or video captures.
-**Current screenplay:** [Revision 5](cinematic-script-r5.md) and its [shot plan](shot-plan-r5.json). This is the retained idea bank; R5 and its timed companions own selected forms, source qualifications and timing.
+**Current screenplay:** [Revision 6](cinematic-script-r6.md) and its [shot plan](shot-plan-r6.json). This is the retained idea bank; R6 and its timed companions own selected forms, source qualifications and timing.
 **Sources:** [AI filmmaking skill and Reddit research](research-ai-video-skills-2026-11-21.md).
 
-## Disposition after R5
+## Current disposition
 
-- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, followed by six uninterrupted seconds of shoreline approach, water crossing and exit; the planned water portion is about 3.225 seconds at the nominal speed. Coastal Three Tone matches the Corsair ground checks, final orbit skin and lake. Other vehicles use the actual R5 stock choices; Mustang, Extra and Turbo Lumber retain their shipped factory liveries. The tiny scale trial has a closer camera for readability; the disclosed trio is same-depth.
+- **Preserved and expanded:** continuous ten-second Corsair orbit with all 13 stock skins, followed by six uninterrupted seconds of shoreline approach, water crossing and exit; the planned water portion is about 3.225 seconds at the nominal speed. Coastal Three Tone matches the Corsair ground checks, final orbit skin and lake. Other vehicles use the R6 stock choices; Mustang, Extra and Turbo Lumber retain their shipped factory liveries. The tiny scale trial has a closer camera for readability; the disclosed trio is same-depth.
 - **Mechanics:** twelve seconds of Corsair ground checks, four seconds of labelled collective inspection, separate playable helicopter flight and the retained [32-second Preflight Ballet](mechanical-sequences.md#separate-32-second-idea--the-preflight-ballet).
 - **New master actions:** hand launch, Angle/Acro, turtle recovery, live transmitter input, engine-out practice, AI circuits, calibrated imported scenery, actual storm flash, suspension tuning and Bisonte at the shallow shore.
 - **Import expansion:** [15-second Phoenix/ClearView chapter](import-showcase.md), with 18 provisional real previews in ten seconds and a same-model eligible test flight. The 300+ numerical variant is inactive pending compatible-model count evidence.
 - **Concrete companion coverage:** [90-second Field Notes](feature-companion-films.md) gives presets, touch-and-go statistics, Natural Random, finite energy, wreck inspection, Green paradise and environmental details timed scenes.
 - **Outside the current package:** five-plane smoke formation and person-strike blood. The master has one survivable quad impact/recovery; a separate fixed-wing incident belongs to Field Notes.
-- **Initial code:** offline shot-plan tools and the opt-in livery hold-last change are implemented and narrowly tested. Additional capture adapters, generated previs, actual animatic, new imports/captures, music auditions and finished edits remain pending.
+- **Initial code:** offline shot-plan tools and the opt-in livery hold-last have historical focused software evidence. R6 title/camera integration and the synthetic typography study now have [focused software evidence](script-audit-r6-2026-11-22.md). Remaining shot-specific capture routes, the actual gameplay animatic, new imports/captures, music auditions and finished edits remain pending.
 
 ## Original top five — retained creative pitches
 
 ### 1. The Corsair "Orbit → Mirror" signature
-The v9.13 reference suggested one smooth orbit around the F4U as skins change **editorially**. R5 plans a new ten-second orbit ending on `three_tone`, then a separately filmed six-second shoreline approach, lake crossing and exit in the same scheme. Match screen direction and preserve a real reflection only if that specific take qualifies.
+The v9.13 reference suggested one smooth orbit around the F4U as skins change **editorially**. R6 plans a new ten-second orbit ending on `three_tone`, then a separately filmed six-second shoreline approach, lake crossing and exit in the same scheme. Match the visible nose orientation; the proposed translating lake camera centers the aircraft while the shoreline moves. Preserve a real reflection only if that specific take qualifies.
 
 **AI assist:** shot-director camera start/end vocabulary, keyframe comparison board, color continuity/skin ledger, beat-map alternatives.
 **Gate:** a reflection requires current-build proof for this model and skin; otherwise retain the genuine unmirrored pass. No fake water mirror or implied in-flight paint UI.
 
 ### 2. FPV gate "from spectator to pilot"
-The original pitch proposed two sequential gates and an exterior match. R5 requires one clear valid gate and separately recorded exterior coverage; no synchronized-replay claim. Let real speed/timer/next-gate OSD live near the edges, and use a gate cue only when the actual take produces it.
+The original pitch proposed two sequential gates and an exterior match. R6 requires one clear valid gate and separately recorded exterior coverage; no synchronized-replay claim. Let real speed/timer/next-gate OSD live near the edges, and use a gate cue only when the actual take produces it.
 
 **AI assist:** camera plan, gate order diagram, matching frames, cut rhythm test.
 **Gate:** physical gate crossing, proper course and camera view, gameplay timing.
@@ -48,7 +48,7 @@ Make three or four short musical beats from native sound textures: Corsair radia
 
 ## Strong secondary ideas — historical proposals
 
-The suggested placements and times in this retained brainstorm are historical; the R5 script and its timed companions define current coverage.
+The suggested placements and times in this retained brainstorm are historical; the R6 script and its timed companions define current coverage.
 
 | Idea | Potential place | AI skill contribution | Authenticity condition |
 |---|---|---|---|
@@ -67,7 +67,7 @@ The suggested placements and times in this retained brainstorm are historical; t
 | **Multiple imported preview gallery** | import section | storyboard + visual canon of three compatible models | gallery of previews; only eligible Creator trials can be described as flown |
 | **Palette continuity** | skin and night sequences | color-script connects Corsair red/blue tones to RGB lights | not random grading changes that misrepresent original skin |
 | **Sound-to-light beat** | switch from prop to nighttime RGB | animation timing and spectral beat memo | RGB sequence must exist for supported Workshop profile |
-| **Free, open source, your controls** | final endcard | title/CTA variants for 16:9 and vertical | actual downloads page and honest early-alpha status |
+| **Free, open source, your controls** | final endcard | title/CTA variants for 16:9 and vertical | verify the destination and actual product status before release |
 
 ## "What could AI do beyond just planning?" — realistic future options
 

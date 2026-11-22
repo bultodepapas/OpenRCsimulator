@@ -1,6 +1,6 @@
-# OPEN RC SIMULATOR — 150-second storyboard, Revision 5
+# OPEN RC SIMULATOR — 150-second storyboard, Revision 6
 
-**Current source:** [Director's shooting script R5](cinematic-script-r5.md). **Date:** 21 November 2026. R4 cut IDs are retained; the timeline is unchanged. Exact proposed blocking and identities are in the [R5 shot plan](shot-plan-r5.json).
+**Current source:** [Director's shooting script R6](cinematic-script-r6.md). **Date:** 22 November 2026. R4 cut IDs are retained; the timeline is unchanged. Proposed blocking and identities are in the [R6 shot plan](shot-plan-r6.json); the [R6 title plan](title-plan-r6.json) owns global frame windows.
 **Status:** paper edit; all positions are proposed timeline seconds, not source-media timecodes. No footage or measured music grid has been accepted. Target frame rate: 60 fps; every boundary below is a whole frame.
 
 **Edit concept:** action and recovery earn attention; visible controls make the machines tangible; practice and customization lead to the Corsair signature and an expanding imported-model hangar.
@@ -11,9 +11,9 @@
 
 | ID | In (s) | Out (s) | Duration (s) | Class | Picture / purpose |
 | --- | ---: | ---: | ---: | --- | --- |
-| R4-01 | 0 | 4 | 4 | G | Vantage Jet: genuine inverted external pass; real banked pass is the rehearsal fallback. |
+| R4-01 | 0 | 4 | 4 | G | Vantage Jet: genuine inverted external pass; cut at the world exit mark while visible. A real banked pass is the rehearsal fallback. |
 | R4-02 | 4 | 8 | 4 | G | MONSTER CAR 2: nitro ramp departure, apex, touchdown and suspension response. |
-| R4-03 | 8 | 11 | 3 | G | Ugly Stick Electric 6S: clear lateral pass, actual alternate skin and variant identification. |
+| R4-03 | 8 | 11 | 3 | G | Ugly Stick Electric 6S: clear lateral pass, actual alternate skin and variant identification; cut at the world exit mark while visible. |
 | R4-04 | 11 | 14 | 3 | G | MoonRunner: actual hand-launch release into a climbing bank; no throwing-person animation. |
 | R4-05 | 14 | 18 | 4 | G | Blimp: full envelope/gondola, quiet motion and real birds if readable. |
 | R4-06 | 18 | 19.5 | 1.5 | G | ION R5: exterior course geography and end of the actual countdown. |
@@ -72,7 +72,7 @@
 | R4-42r | 136.5 | 137 | 0.5 | U | ClearView imported preview: MC 3D Hobby Shops Extra 330 Red; provisional casting, exact source and new visual acceptance required. |
 | R4-43 | 137 | 140 | 3 | G | Same final previewed model in its genuine eligible Creator trial; experimental/estimated or donor qualification. |
 | R4-44 | 140 | 145 | 5 | G | Bisonte at the shallow shore: real tires, mud/water contact, modest droplets/rings and actual sound. |
-| R4-45 | 145 | 150 | 5 | E | Stable OPEN RC SIMULATOR / PLAY FREE / verified official URL / verified actual product status. |
+| R4-45 | 145 | 150 | 5 | E | Stable OPEN RC SIMULATOR / PLAY FREE / source-known official destination; no unverified status copy. |
 
 **Runtime:** 112 G + 15 U + 18 P + 5 E = **150.000 seconds**; **9,000 intended frames** at 60 fps. There are **62 planned cuts**, including **18 preview cuts in 10 seconds**. Actual session footage is about 74.7%; session plus UI about 84.7%. No real-time performance or measured media duration is implied.
 
@@ -100,37 +100,41 @@ Sources: [aircraft catalog](../../../app/app_state/aircraft_catalog.gd), [vehicl
 
 ## Title and disclosure placement
 
-| Interval (s) | Copy / real indicator | Reading rule |
-| --- | --- | --- |
-| 8–11 | UGLY STICK · ELECTRIC 6S | Identify the configuration without a second slogan. |
-| 18–22 | RACE THE GATES | Clear of the gate opening and genuine guidance. |
-| 26–31 | Actual ANGL / ACRO indicator | Readable mode proof; no competing title. |
-| 31–39 | Actual recovery/arming indicators where applicable | Keep the quad/action clear; no invented result. |
-| 39–44 | TAKE CONTROL | One held position across the opening mechanics. |
-| 51–55 | HX-700 · MECHANICAL INSPECTION | Full four-second insert, legible studio identification. |
-| 55–59 | X-CELL .60 · RESEARCH HELICOPTER | Make the change of model/context explicit. |
-| 65–73 | FAILURE PRACTICE · ENGINE OUT | Hold across actual failure, glide and landing excerpts. |
-| 73–77 | AI FLIGHT COMPANIONS | No multiplayer or close-formation implication. |
-| 77–81 | IMPORTED SCENERY · EXPERIMENTAL RUNWAY | Fixed-eye calibrated panorama; keep the airplane visible. |
-| 93–100 | TUNE YOUR SETUP; BASELINE / CHANGED SETUP | Fixed comparison labels; actual setting/reset is edited. |
-| 100–105 | UGLY STICK · .61 GLOW · 10%–500% | Specific supported model and range. |
-| 105–109 | CINEMATIC SIZE COMPARISON; 7.62 m / 1.52 m / 15 cm | Correct labels by aircraft at the same depth. |
-| 109–114 | MAKE IT YOURS | Remove before the lake. |
-| 109–119 | LIVERY SHOWCASE | Stable identification; no individual skin-name flashcards. |
-| 125–137 | EXPAND YOUR HANGAR | Current no-count headline; the conditional 300+ variant is not active. |
-| 127–132 | PHOENIX RC · MODEL PREVIEWS | One source label held through all nine preview images. |
-| 132–137 | CLEARVIEW · MODEL PREVIEWS | Same position and treatment as previous block. |
-| 137–140 | EXPERIMENTAL TEST FLIGHT + actual estimated/donor qualification | Same last model; exact copy selected for the real accepted route. |
-| 145–150 | Logo, PLAY FREE, official URL, accurate product status | Five settled seconds; no competing feature list. |
+The three main-copy cues use warm-white Barlow typography with a brief fade. Frame windows are zero-based and end-exclusive at 60 fps; the [title plan](title-plan-r6.json) is the machine-readable authority. Required source, inspection and presentation labels are fully opaque throughout their exposure, with compact high-contrast placement. Real HUD values remain genuine. Every position, subject clearance and phone-size reading remains unqualified until actual captures are reviewed.
 
-Names, real HUD and qualifiers count toward the same reading load. These are layout targets; phone/mute acceptance remains pending.
+| Interval (s) | Frames | Copy / real indicator | Reading rule |
+| --- | --- | --- | --- |
+| 8–11 | 480–660 | UGLY STICK · ELECTRIC 6S | Identify the configuration without covering the model. |
+| 14.25–17.5 | 855–1050 | A SKY WITHIN REACH | Main copy; keep the blimp envelope and gondola clear. |
+| 26–31 | 1560–1860 | Actual ANGL / ACRO indicator | Readable mode proof; no competing title. |
+| 31–39 | 1860–2340 | Actual recovery/arming indicators where applicable | Keep the quad/action clear; no invented result. |
+| 51–55 | 3060–3300 | HX-700 · MECHANICAL INSPECTION | Opaque for the whole four-second studio insert. |
+| 55–59 | 3300–3540 | X-CELL .60 · RESEARCH HELICOPTER | Identify the separate playable aircraft. |
+| 60.25–64.75 | 3615–3885 | FEEL EVERY INPUT | Main copy; clear the aircraft, real transmitter and telemetry. |
+| 65–73 | 3900–4380 | FAILURE PRACTICE · ENGINE OUT | Hold across actual failure, glide and landing excerpts. |
+| 73–77 | 4380–4620 | AI FLIGHT COMPANIONS | No multiplayer or close-formation implication. |
+| 77–81 | 4620–4860 | IMPORTED SCENERY · EXPERIMENTAL RUNWAY | Fixed-eye calibrated panorama; keep the airplane visible. |
+| 93–95.75 | 5580–5745 | BASELINE SETUP | Hold throughout the first run. |
+| 95.75–97.25 | 5745–5835 | Actual Lab setting/application | Keep the genuine control readable; setup/reset time is edited. |
+| 97.25–100 | 5835–6000 | CHANGED SETUP | Hold throughout the separately prepared second run. |
+| 100–105 | 6000–6300 | UGLY STICK · .61 GLOW · 10%–500% | Add **GIANT · 500%** for 101.5–103.25 s and **TINY · 10%** for 103.25–105 s. |
+| 105–109 | 6300–6540 | CINEMATIC SIZE COMPARISON; 7.62 m / 1.52 m / 15 cm | Disclose the whole presentation; keep approximate span labels associated with the correct aircraft. |
+| 109–119 | 6540–7140 | PRESENTATION · LIVERY SHOWCASE | Hold throughout all 13 skins; no skin-name flashcards. |
+| 119–125 | 7140–7500 | No headline | Let the six-second lake approach, crossing and exit breathe. |
+| 125–127 | 7500–7620 | EXPAND YOUR HANGAR | Main copy; keep actual Creator controls readable. The conditional 300+ variant remains inactive. |
+| 127–132 | 7620–7920 | PHOENIX RC · MODEL PREVIEWS | One opaque continuous source label across all nine previews. |
+| 132–137 | 7920–8220 | CLEARVIEW · MODEL PREVIEWS | One opaque continuous source label across all nine previews. |
+| 137–140 | 8220–8400 | EXPERIMENTAL TEST FLIGHT + actual estimated/donor qualification | Same last model; copy depends on the real accepted route. |
+| 145–150 | 8700–9000 | OPEN RC SIMULATOR, PLAY FREE, source-known URL | Five settled seconds; recheck the destination before release; status copy is optional and must be verified. |
+
+Names, genuine HUD and qualifiers share the reading budget. The end card displays `bultodepapas.github.io/OpenRCsimulator/`, the source-known URL `https://bultodepapas.github.io/OpenRCsimulator/`; the destination returned HTTP 200 with a matching project page title on 22 November 2026. Browser/download/installation behavior remains unchecked; recheck before publication. There is no hardcoded beta claim or music credit without evidence for the actual release.
 
 ## Rhythm and retiming
 
 The blimp, complete gate pass, recovery payoff, ten-second orbit and six-second lake contrast with short mechanism details and the rapid import reel. The single 0.5-second preview is a silhouette impression, not a model-name lesson. The two one-second source-block leaders establish the visual grammar.
 
-R3's two-second reserve no longer exists. R5 retains the R4 cut IDs and sums to 150 seconds exactly. A feature transferred to [Field Notes](feature-companion-films.md) releases its stated interval once; record the new master positions and coverage before using those seconds. Protect the orbit/lake, recovery outcome, import chapter and end card. No source EDL or media in/out is fabricated.
+R3's two-second reserve no longer exists. R6 retains the R4 cut IDs and sums to 150 seconds exactly. A feature transferred to [Field Notes](feature-companion-films.md) releases its stated interval once; record the new master positions and coverage before using those seconds. Protect the orbit/lake, recovery outcome, import chapter and end card. No source EDL or media in/out is fabricated.
 
 ## Review status
 
-Paper timing, source paths, catalog evidence and document agreement are reviewed in the [R5 audit](script-audit-r5-2026-11-21.md). All actual visual, handling, sound, target-hardware and export judgments remain open under the [verification gates](verification-gates.md).
+The [R5 audit](script-audit-r5-2026-11-21.md) is historical. The [R6 audit](script-audit-r6-2026-11-22.md) records the current revision. Actual visual, handling, sound, target-hardware and export judgments remain open under the [verification gates](verification-gates.md).
