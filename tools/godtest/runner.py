@@ -352,6 +352,8 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
     audio = {"driver": "dummy", "reason": "headless"} if manifest["headless"] else audio_output()
     if audio["driver"] == "dummy" and not manifest["headless"]:
         launcher.append("--mute")  # debugctl: Godot's Dummy audio driver (still mixes in real time)
+    if manifest.get("dynamic_resolution_fps", 0):
+        launcher += ["--", "--experimental-dynamic-resolution"]
     capture = {"state": "starting", "launch_to_bridge_s": None, "failure": "", "shutdown": {}, "host": dict(platform=platform.platform(), machine=platform.machine()), "resource_scope": "owner-bracketed process observation after bridge readiness; startup and setup before observer construction are excluded"}
     capture["resource_sampling"] = resources
     capture["gpu_sampling"] = resources
@@ -377,7 +379,7 @@ def run(manifest: dict, output: Path | None = None, *, godot: str | None = None,
         raise ValueError(f"engine not found: {engine_path}")
     capture["engine_files"] = {str(engine_path): file_hash(engine_path)}
     capture["engine_command_verified"] = False
-    direct = Path(str(engine_path).replace("_console.exe", ".exe"))
+    direct = Path(str(engine_path).replace("_console.exe", ".exe").replace(".console.exe", ".exe"))
     if direct != engine_path and direct.is_file():
         capture["engine_files"][str(direct)] = file_hash(direct)
     launch_began = time.monotonic()

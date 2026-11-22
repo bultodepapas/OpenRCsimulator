@@ -14,6 +14,34 @@ from test_godtest import artifacts, replace_stream
 
 
 class RenderingEvidenceTests(unittest.TestCase):
+    def test_dynamic_resolution_requires_a_confirmed_frame_and_allows_holding_the_ceiling(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "run"
+            artifacts(path)
+            for name in ("manifest.requested.json", "manifest.resolved.json"):
+                manifest = json.loads((path / name).read_text())
+                manifest.update(dynamic_resolution_fps=60, render_scale=100, phases=["recover"])
+                write_json(path / name, manifest)
+            runtime = json.loads((path / "runtime.json").read_text())
+            runtime["identity"]["effective_display"] = {"dynamic_resolution_fps": 60}
+            phase = runtime["phases"][0]
+            phase.update(name="recover", id="0-0-recover", start_usec=1, end_usec=100)
+            frame = {"frame_id": 4, "generation": 3, "input_size": [1920, 1080], "output_size": [1920, 1080]}
+            for status, eligible in (
+                ({"state": "observing", "completed_frame": frame}, True),
+                ({"state": "observing"}, False),
+                ({"state": "observing", "completed_frame": dict(frame, input_size=[1632, 918])}, False),
+                ({"state": "fixed", "reason": "gpu_feedback_expired"}, False),
+            ):
+                with self.subTest(status=status):
+                    phase["dynamic_resolution"] = [{"phase_id": phase["id"], "observed_usec": 5,
+                                                     "status": {"target_fps": 60, "configured_scale": 1.0, **status}}]
+                    write_json(path / "runtime.json", runtime)
+                    result = report(path, write=False)
+                    self.assertEqual(result["data"] == "valid", eligible, result["issues"])
+                    if not eligible:
+                        self.assertIn("dynamic resolution not verified", " ".join(result["issues"]))
+
     def test_explicit_render_scale_requires_matching_bilinear_receipts_at_both_boundaries(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "run"

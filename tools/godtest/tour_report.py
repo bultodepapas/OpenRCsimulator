@@ -23,7 +23,8 @@ REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).enco
 # reviewed scenario default, including the phase list and instrumentation.
 OVERRIDES = ("time", "weather", "sky", "scene_detail", "camera", "seed", "cycles",
              "sample_s", "timeout_s", "phase_timeout_s", "headless", "resolution",
-             "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics", "render_scale")
+             "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics", "render_scale",
+             "dynamic_resolution_fps")
 HARDWARE = ("cpu_model", "adapter_name", "adapter_vendor", "adapter_api_version",
             "os_name", "os_version", "architecture", "rendering_method", "rendering_driver",
             "vsync_mode", "max_fps", "reconstruction_at_start")

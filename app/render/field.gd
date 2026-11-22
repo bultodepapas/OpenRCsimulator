@@ -278,6 +278,7 @@ static func _advance_build(context: _BuildContext) -> void:
 					break
 			if Scenery.build_finished(context.scenery_build):
 				var attached_scenery: Node3D = Scenery.take_build(context.scenery_build)
+				_bind_meadow_parcels(context.grass, attached_scenery.get_meta("source_definition", {}))
 				if WornGroundMaterial.enabled() and str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
 					WornGroundMaterial.bind(attached_scenery, context.grass)
 				context.result.add_child(attached_scenery)
@@ -369,6 +370,42 @@ static func _countryside_layout_is_present(context: _BuildContext) -> bool:
 		if group.get("id") == "countryside-hamlet":
 			return true
 	return false
+
+
+## Paint the grass up to the authored fence lines in the existing ground draw.
+## Each convex quad supplies four inward-facing planes in north/east metres.
+static func _bind_meadow_parcels(material: ShaderMaterial, scenery: Dictionary) -> void:
+	var edges := PackedVector4Array()
+	var bounds := PackedVector4Array()
+	var extent := Rect2()
+	for group: Dictionary in scenery.get("groups", []):
+		if group.type != "patch" or group.surface not in Scenery.Loader.FIELD_COVERS:
+			continue
+		var points: Array = group.points
+		var first: Vector2 = points[0]
+		var second: Vector2 = points[1]
+		var third: Vector2 = points[2]
+		var winding := signf((second - first).cross(third - first))
+		var box := Rect2(first, Vector2.ZERO)
+		var cover := Scenery.Loader.FIELD_COVERS.find(group.surface)
+		for i in 4:
+			var a: Vector2 = points[i]
+			var b: Vector2 = points[(i + 1) % 4]
+			var side := (b - a).normalized()
+			var inward := Vector2(-side.y, side.x) * winding
+			edges.append(Vector4(inward.x, inward.y, -inward.dot(a), float(cover)))
+			box = box.expand(a)
+		extent = box if bounds.is_empty() else extent.merge(box)
+		bounds.append(Vector4(box.position.x, box.position.y, box.end.x, box.end.y))
+	if bounds.is_empty():
+		return
+	var count := bounds.size()
+	edges.resize(Scenery.Loader.MAX_MEADOW_PARCELS * 4)
+	bounds.resize(Scenery.Loader.MAX_MEADOW_PARCELS)
+	material.set_shader_parameter("meadow_edges", edges)
+	material.set_shader_parameter("meadow_bounds", bounds)
+	material.set_shader_parameter("meadow_extent", Vector4(extent.position.x, extent.position.y, extent.end.x, extent.end.y))
+	material.set_shader_parameter("meadow_count", count)
 
 
 static func _build_ground_setup(context: _BuildContext) -> void:

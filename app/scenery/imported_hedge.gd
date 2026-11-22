@@ -12,6 +12,7 @@ const BUSH_ATLAS_ASSET_ID := "bush_common_flowers_4view_impostor"
 const TREE_SOURCE_ID := "common_tree_3"
 const CARD_TRIANGLES := 2
 const CARD_SPACING_M := 1.35
+const PLANTED_CARD_LIMIT := 1024
 const CARD_INSTANCE_LIMITS := {"low": 64, "balanced": 128, "high": 256}
 const TREE_INSTANCE_LIMITS := {"low": 2, "balanced": 3, "high": 4}
 const QUALITY_RANK_LIMITS := {"low": 0.45, "balanced": 0.74, "high": 1.0}
@@ -30,12 +31,13 @@ static func build(
 	width: float,
 	seed: int,
 	quality: String = "balanced",
-	include_trees: bool = false
+	include_trees: bool = false,
+	planted: bool = false
 ) -> Node3D:
 	var root := Node3D.new()
 	root.name = "ImportedHedge"
 	var quality_id := _quality_id(quality)
-	var placements := layout(points, height, width, seed, quality_id)
+	var placements := layout(points, height, width, seed, quality_id, planted)
 	var all_cpu_placements: Array[Dictionary] = []
 	var group_stats: Dictionary = {}
 	var source_triangles := 0
@@ -59,7 +61,7 @@ static func build(
 			multi_mesh.set_instance_transform(instance_index, transform)
 			multi_mesh.set_instance_color(instance_index, Color.WHITE)
 			var yaw := float(placement.get("yaw_rad", 0.0))
-			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, 0.0, 0.0, 1.0))
+			multi_mesh.set_instance_custom_data(instance_index, Color(fposmod(yaw, TAU) / TAU, float(planted), 0.0, 1.0))
 		var cards := MultiMeshInstance3D.new()
 		cards.name = "Bush_Common_Flowers_4View"
 		cards.multimesh = multi_mesh
@@ -166,7 +168,8 @@ static func build_packed(
 
 
 ## Deterministic nested quality layout for source-derived cards along the path.
-static func layout(points: Array[Vector2], height: float, width: float, seed: int, quality: String = "balanced") -> Array[Dictionary]:
+static func layout(points: Array[Vector2], height: float, width: float, seed: int,
+		quality: String = "balanced", planted: bool = false) -> Array[Dictionary]:
 	var output: Array[Dictionary] = []
 	if height <= 0.0 or width < 0.0 or points.size() < 2:
 		return output
@@ -175,6 +178,12 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 		return output
 	var candidates: Array[Dictionary] = []
 	var candidate_id := 0
+	# Maintained hedges need cover along every bay. Scale spacing, keeping the
+	# silhouette continuous even on low; wild hedges still use sparse ranked bushes.
+	var spacing := CARD_SPACING_M
+	if planted:
+		var quality_spacing: float = {"low": 0.92, "balanced": 0.78, "high": 0.67}.get(quality, 0.78)
+		spacing = maxf(height * quality_spacing, _path_length(clean_points) / PLANTED_CARD_LIMIT)
 	for segment_index: int in range(clean_points.size() - 1):
 		var start: Vector2 = clean_points[segment_index]
 		var finish: Vector2 = clean_points[segment_index + 1]
@@ -184,9 +193,14 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 			continue
 		var direction := delta / segment_length
 		var normal := Vector2(-direction.y, direction.x)
-		var step_count := int(floor(segment_length / CARD_SPACING_M))
+		var step_count := floori(segment_length / spacing)
+		if planted:
+			step_count = mini(maxi(1, roundi(segment_length / spacing)), PLANTED_CARD_LIMIT - candidate_id)
+			if step_count == 0:
+				break
+		var pitch := segment_length / step_count if planted else spacing
 		for step_index: int in range(step_count):
-			var along := CARD_SPACING_M * (float(step_index) + 0.5)
+			var along := pitch * (float(step_index) + 0.5)
 			var max_jitter := maxf(0.0, minf(0.18, minf(along - 0.1, segment_length - along - 0.1)))
 			along += (Palette.hash01(seed, candidate_id, 41) * 2.0 - 1.0) * max_jitter
 			var centre := start.lerp(finish, clampf(along / segment_length, 0.0, 1.0))
@@ -202,7 +216,7 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 			)
 			candidates.append({
 				"id": "hedge:%d:bush:%d" % [seed, candidate_id],
-			"asset_id": BUSH_ATLAS_ASSET_ID,
+				"asset_id": BUSH_ATLAS_ASSET_ID,
 				"source_asset_id": BUSH_SOURCE_ID,
 				"candidate_index": candidate_id,
 				"rank": rank,
@@ -215,6 +229,8 @@ static func layout(points: Array[Vector2], height: float, width: float, seed: in
 				"transform": transform,
 			})
 			candidate_id += 1
+	if planted:
+		return candidates
 	var quality_id := _quality_id(quality)
 	var rank_limit := float(QUALITY_RANK_LIMITS.get(quality_id, 0.74))
 	var ranked: Array[Dictionary] = []

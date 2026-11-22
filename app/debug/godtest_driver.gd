@@ -1,6 +1,6 @@
 extends Node
 ## GOD: opt-in source/debug benchmark, attached beside Startup, never a new solver.
-## OPENRC_GODTEST_CONFIG names a runner-owned manifest. No user CLI arguments are added.
+## OPENRC_GODTEST_CONFIG names a runner-owned manifest and its optional rendering experiment.
 
 const PILOT_PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_circuit", "runway_circuit", "roll", "recover", "large_loop", "approach", "landing", "stop"]
 const MAX_PHASE_FRAMES := 1000000
@@ -8,6 +8,7 @@ const MAX_EVENTS := 20000
 const MAX_TRAJECTORY := 200000
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
+const FlightDynamicResolution := preload("res://render/flight_dynamic_resolution.gd")
 
 var config: Dictionary = {}
 ## GFX-IGPU-01: "fixed" keeps the comparison workload; "automatic" records the product recommendation it applied.
@@ -55,6 +56,8 @@ var identity: Dictionary = {}
 var frame_report: Dictionary = {}
 var cycle := 0
 var profile_prepared := false
+var dynamic_resolution_fps := 0
+var last_dynamic_resolution: Dictionary = {}
 
 
 ## Called synchronously by Startup before it queues the headless handoff or loads Home.
@@ -63,6 +66,10 @@ func prepare_startup() -> bool:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("OPENRC_GODTEST_CONFIG")))
 	if not parsed is Dictionary: return false
 	config = parsed
+	var target: Variant = config.get("dynamic_resolution_fps", 0)
+	if typeof(target) not in [TYPE_INT, TYPE_FLOAT] or target not in DisplayPreferences.DYNAMIC_RESOLUTION_FPS_VALUES:
+		return false
+	dynamic_resolution_fps = int(target)
 	output_dir = str(config.get("output_dir", "")).replace("\\", "/").simplify_path()
 	var user_dir := OS.get_user_data_dir().replace("\\", "/").simplify_path()
 	if not output_dir.is_absolute_path() or not DirAccess.dir_exists_absolute(output_dir) or not _profile_is_owned(user_dir):
@@ -103,8 +110,10 @@ func _run() -> void:
 		if FileAccess.file_exists(output_dir.path_join(filename)):
 			printerr("GOD TEST: refusing existing artifact ", filename)
 			return
-	if config.get("schema") != "openrc-godtest-scenario-v1" or not OS.get_cmdline_user_args().is_empty():
-		_fail("normal startup requires a supported manifest and no app user arguments")
+	var expected_arguments := PackedStringArray([FlightDynamicResolution.EXPERIMENT_FLAG]) \
+		if dynamic_resolution_fps > 0 else PackedStringArray()
+	if config.get("schema") != "openrc-godtest-scenario-v1" or OS.get_cmdline_user_args() != expected_arguments:
+		_fail("startup arguments differ from the benchmark manifest")
 		return
 	requested_phases = config.get("phases", [])
 	if requested_phases.is_empty() or requested_phases.size() > 64:
@@ -142,7 +151,7 @@ func _run() -> void:
 		instrumentation = "frames_diagnostics_pilot_v1", physical_presentation = "not_observed",
 		profile_overrides = {first_flight_hint_seen = true, update_checks = false,
 			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
-	for key: String in ["max_fps", "vsync_mode", "render_scale"]:
+	for key: String in ["max_fps", "vsync_mode", "render_scale", "dynamic_resolution_fps"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
 	identity.graphics = graphics_profile.duplicate(true)
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
@@ -150,6 +159,9 @@ func _run() -> void:
 	phase.start_usec = started_usec
 	if not await _wait_home(): return
 	identity.effective_display = app.display_preferences.config.duplicate(true)
+	if dynamic_resolution_fps > 0 and not FlightDynamicResolution.supports(get_tree().root):
+		_fail("requested dynamic resolution needs completed GPU frames from the patched renderer")
+		return
 	_event("home_ready", {})
 	await get_tree().process_frame
 	_event("home_draw_observed", {drawn = Engine.get_frames_drawn()})
@@ -266,6 +278,10 @@ func _prepare_profile() -> void:
 	display.set_value("graphics", "reconstruction", "native")
 	if config.has("render_scale"):
 		display.set_value("graphics", "render_scale", int(config.render_scale))
+	elif dynamic_resolution_fps > 0:
+		display.set_value("graphics", "render_scale", 100)
+	if config.has("dynamic_resolution_fps"):
+		display.set_value("graphics", "dynamic_resolution_fps", dynamic_resolution_fps)
 	if config.has("max_fps"): display.set_value("graphics", "max_fps", int(config.max_fps))
 	if config.has("vsync_mode"): display.set_value("graphics", "vsync_mode", str(config.vsync_mode))
 	display.set_value("camera", "view", str(config.get("camera", "pilot")))
@@ -292,7 +308,8 @@ func _apply_automatic_graphics(path: String) -> void:
 	candidate.erase("note")
 	var applied := {}
 	for key: String in DisplayPreferences.GPU_MANAGED_KEYS:
-		if key != "max_fps" and bundle.has(key) and not (key == "render_scale" and config.has(key)):
+		if key != "max_fps" and bundle.has(key) \
+				and not (key == "render_scale" and (config.has(key) or dynamic_resolution_fps > 0)):
 			candidate[key] = bundle[key]
 			applied[key] = bundle[key]
 	if DisplayPreferences.save_to(path, candidate) != OK:
@@ -844,6 +861,8 @@ func _process(delta: float) -> void:
 			_fail("phase frame bound reached")
 			return
 		phase_frame_count += 1
+		if phase.has("dynamic_resolution"):
+			_observe_dynamic_resolution(began)
 	if began - last_telemetry_usec >= 100000:
 		last_telemetry_usec = began
 		if is_instance_valid(bound_session) and bound_session.sim.state.size() >= 13:
@@ -876,8 +895,12 @@ func _begin(name_value: String) -> void:
 		start_drawn = Engine.get_frames_drawn(), start_undrawable = undrawable_intervals, start_focus_losses = focus_losses}
 	phase_frames.clear()
 	phase_frame_count = 0
-	if config.has("render_scale") and name_value in PILOT_PHASES:
-		phase.start_flight_3d_scaling = _flight_3d_scaling()
+	if name_value in PILOT_PHASES:
+		if config.has("render_scale"):
+			phase.start_flight_3d_scaling = _flight_3d_scaling()
+		if dynamic_resolution_fps > 0:
+			phase.dynamic_resolution = []
+			last_dynamic_resolution = {}
 	_event("phase_start", {name = name_value, id = phase.id, requested = phase.requested})
 	_progress("running")
 
@@ -888,6 +911,16 @@ func _flight_3d_scaling() -> Dictionary:
 	var viewport := get_tree().root
 	return {bilinear = viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR,
 		scale = viewport.scaling_3d_scale}
+
+
+func _observe_dynamic_resolution(now: int) -> void:
+	var status: Dictionary = get_tree().root.get_meta(FlightDynamicResolution.STATUS_META, {})
+	if status.is_empty() or status == last_dynamic_resolution:
+		return
+	last_dynamic_resolution = status
+	var observation := {phase_id = phase.id, observed_usec = now, status = status}
+	phase.dynamic_resolution.append(observation)
+	_event("dynamic_resolution", observation)
 
 
 func _runtime_display() -> Dictionary:

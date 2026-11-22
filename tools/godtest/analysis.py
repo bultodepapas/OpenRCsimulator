@@ -24,6 +24,53 @@ REDUCER_SOURCES = {name: hashlib.sha256(Path(__file__).with_name(name).read_byte
 REDUCER_SHA256 = hashlib.sha256(json.dumps(REDUCER_SOURCES, sort_keys=True).encode()).hexdigest()
 
 
+def _dynamic_resolution_problem(phase: dict, manifest: dict) -> str:
+    trace = phase.get("dynamic_resolution")
+    if not isinstance(trace, list) or not trace:
+        return "missing controller observations"
+    target = manifest["dynamic_resolution_fps"]
+    output = manifest["resolution"]
+    ceiling = manifest.get("render_scale", 100)
+    sizes = {tuple(axis * percent // 100 for axis in output): percent / 100
+             for percent in (75, 85, ceiling) if percent <= ceiling}
+    confirmed = False
+    when = phase.get("start_usec", 0)
+    end = phase.get("end_usec", -1)
+    if type(when) is not int or type(end) is not int:
+        return "invalid phase timing"
+    previous: dict = {}
+    for row in trace:
+        if not isinstance(row, dict) or row.get("phase_id") != phase.get("id"):
+            return "observation belongs to another phase"
+        at = row.get("observed_usec")
+        if type(at) is not int or not when <= at <= end:
+            return "observation lies outside the phase or is out of order"
+        when = at
+        state = row.get("status")
+        if not isinstance(state, dict) or state.get("target_fps") != target:
+            return "controller target differs from the manifest"
+        if state.get("state") not in ("observing", "apply_pending"):
+            return f"controller used fixed resolution ({state.get('reason', 'unknown')})"
+        frame = state.get("completed_frame")
+        if frame is None:
+            continue
+        if not isinstance(frame, dict) or state["state"] != "observing" or frame.get("output_size") != output:
+            return "completed frame does not identify the active output"
+        if any(type(frame.get(key)) is not int or frame[key] < 0 for key in ("frame_id", "generation")):
+            return "invalid completed frame identity"
+        size = frame.get("input_size")
+        scale = state.get("configured_scale")
+        if (not isinstance(size, list) or len(size) != 2 or any(type(axis) is not int for axis in size)
+                or tuple(size) not in sizes or type(scale) not in (int, float)
+                or not math.isclose(scale, sizes[tuple(size)], abs_tol=1e-6)):
+            return "completed pixels do not match an allowed scale"
+        if previous and frame != previous and (frame["generation"] <= previous["generation"] or frame["frame_id"] <= previous["frame_id"]):
+            return "completed scale identity did not advance"
+        previous = frame
+        confirmed = True
+    return "" if confirmed else "no completed frame confirmed an active scale"
+
+
 def validate_stream(directory: Path, frames: dict) -> dict:
     stream = frames.get("stream", {})
     filename = stream.get("file", "")
@@ -503,8 +550,13 @@ def report(directory: Path, *, write: bool = True) -> dict:
         phase["pacing"] = integrity.get("phase_pacing", {}).get(str(phase.get("index")), {})
         if not observed and phase.get("requested") and phase.get("status") == "complete":
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
-        if (manifest_valid and "render_scale" in manifest and phase.get("requested")
-                and phase["status"] == "complete" and phase.get("name") in catalog.PILOT_PHASES):
+        measured_flight = (manifest_valid and phase.get("requested") and phase["status"] == "complete"
+                           and phase.get("name") in catalog.PILOT_PHASES)
+        if measured_flight and manifest.get("dynamic_resolution_fps", 0):
+            issue = _dynamic_resolution_problem(phase, manifest)
+            if issue:
+                problems.append(f"dynamic resolution not verified at {phase.get('id')}: {issue}")
+        elif measured_flight and "render_scale" in manifest:
             expected_scale = manifest["render_scale"] / 100
             for boundary in ("start", "end"):
                 scaling = phase.get(f"{boundary}_flight_3d_scaling")
@@ -531,6 +583,12 @@ def report(directory: Path, *, write: bool = True) -> dict:
     problems.extend(rendering["issues"])
     if isinstance(requested_manifest, dict) and requested_manifest.get("render_scale") != manifest.get("render_scale"):
         problems.append("render scale differs between requested and resolved manifests")
+    if isinstance(requested_manifest, dict) and requested_manifest.get("dynamic_resolution_fps") != manifest.get("dynamic_resolution_fps"):
+        problems.append("dynamic resolution target differs between requested and resolved manifests")
+    if manifest_valid and "dynamic_resolution_fps" in manifest:
+        effective = runtime.get("identity", {}).get("effective_display", {})
+        if not isinstance(effective, dict) or effective.get("dynamic_resolution_fps") != manifest["dynamic_resolution_fps"]:
+            problems.append("runtime dynamic resolution preference differs from the manifest")
     requested_rendered = rendering["requested_headless"] is False
     rendered = requested_rendered and rendering["status"] == "complete"
     display_ok = runtime.get("metrics", {}).get("requested_resolution_match") is True

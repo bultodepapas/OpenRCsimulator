@@ -281,6 +281,23 @@ loading Home if the debug observer or its private-profile check is unavailable.
 Godot's [user-data path contract](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#accessing-persistent-user-data-user)
 explains why the Mac needs the distinct adapter.
 
+### Dynamic resolution flight comparisons
+
+Use `--dynamic-resolution-fps 60 --render-scale 100` with the experimental
+completed-GPU-frame engine. The render scale is the ceiling for this case.
+Pair it with `--dynamic-resolution-fps 0 --render-scale 100` and a readable
+fixed scale such as 85 on the same engine, aircraft workload and display.
+Use the qualified native kernel for that exact engine. The registered stock
+engine lacks the completed-frame API and the runtime rejects a positive request.
+
+Each measured flight phase records controller state changes, the requested FPS,
+the configured scale and completed-frame input and output sizes with the frame
+and configuration generation. A verified ceiling is valid when the workload
+has headroom. A fixed fallback or an unconfirmed scale cannot qualify as
+adaptive evidence. Compare retained phases and route landmarks using the
+[experiment design](../../docs/research/visual-quality-implementation/VQ-07/dynamic-resolution-flight-experiments-2026-11-22.md).
+The existing `compare` command's whole-flight geometry gate still applies.
+
 ### Preflight and repeats
 
 Use the pinned engine and current imports, a matching native artifact, and a fresh

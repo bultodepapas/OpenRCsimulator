@@ -24,6 +24,7 @@ var _failed := false
 var _restore_since := -1
 var _restore_generation := -1
 var _failure_reason := ""
+var _confirmed_frame: Dictionary = {}
 
 
 static func supports(viewport: Viewport) -> bool:
@@ -73,6 +74,11 @@ func tick(viewport: Viewport, flight_id: int, active: bool, config: Dictionary) 
 	if _policy.retired:
 		_fail(viewport, _policy.reason)
 		return
+	if not sample.is_empty() and _policy.pending_level < 0 and sample.generation == _policy.generation \
+			and sample.generation != _confirmed_frame.get("generation", -1):
+		var input: Vector2i = sample.input_size
+		_confirmed_frame = {frame_id = sample.frame_id, generation = sample.generation,
+			input_size = [input.x, input.y], output_size = [_output.x, _output.y]}
 	if next >= 0:
 		_written = _scales[next]
 		viewport.scaling_3d_scale = _written
@@ -178,10 +184,13 @@ func _restore(viewport: Viewport) -> void:
 	_policy = null
 	_written = -1.0
 	_restore_since = -1
+	_confirmed_frame = {}
 
 
 func _publish(viewport: Viewport, state: String, reason: String) -> void:
 	var status := {state = state, reason = reason, target_fps = _target,
 		configured_scale = viewport.scaling_3d_scale}
+	if not _confirmed_frame.is_empty() and state == "observing":
+		status.completed_frame = _confirmed_frame
 	if status != viewport.get_meta(STATUS_META, {}):
 		viewport.set_meta(STATUS_META, status)

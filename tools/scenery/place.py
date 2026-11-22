@@ -483,6 +483,55 @@ def build():
                    "points": q([[-19.0, -0.25], [-18.5, 3.0], [-17.5, 6.0], [-15.0, 8.0],
                                 [-13.8, 9.0], [-13.8, 31.0], [-15.5, 31.0]],
                                "m", "estimated", "Worn pedestrian path around the flower border to the east shelter's open front bay")})
+    # Club and adjoining parcels, in north/east metres. Shared corners put the
+    # mowing changes under the actual hedges and fences, including the old paddock.
+    hinge, latch = [-68, -60.3], [-68, -54.4]
+    south_w, south_e = [-72, -50], [-76, 119]
+    west, north_w, north_mid = [-68, -128], [65, -141], [65, 28]
+    north_e, east = [63, 207], [-78, 201]
+    # The hedge returns angle inwards to a gate set back from the wider turning mouth.
+    perimeter = [hinge, [-74, -66], west, north_w, north_mid, north_e, east, south_e,
+                 south_w, [-73.5, -53.5], latch]
+    groups.append({"id": "club-perimeter", "type": "hedge", "zone": "countryside", "collides": False,
+                   "height": q(1.35, "m", "estimated", "Low planted hedge around the club and runway approaches"),
+                   "width": q(1.6, "m", "estimated", "Maintained mixed shrub boundary"),
+                   "points": q(perimeter, "m", "estimated", "Club boundary ends at the two vehicle gateposts on the access track")})
+    fence("club-entrance", "gate", [hinge, latch], "Open swing gate on the club lane, hinged on the west post")
+
+    def meadow(gid, cover, corners):
+        groups.append({"id": gid, "type": "patch", "zone": "countryside", "surface": cover, "collides": False,
+                       "points": q(corners, "m", "estimated", "Agricultural cover inside the shared property lines")})
+
+    # The wire fence beyond the flight box already supplies the north edge.
+    northwest, northeast = [239.5, -174], [239.5, 5]
+    meadow("north-hay-meadow", "hay", [north_w, northwest, northeast, north_mid])
+    fence("hay-west-wire", "barbed", [north_w, northwest], "Hay meadow west boundary")
+    fence("hay-east-wire", "barbed", [northeast, [71, 27.2]], "Farm access gap at the club end of the hay meadow")
+
+    # The long east hedge and the livestock paddock's west rails are shared.
+    pen_n, pen_s = [60, 330], [-20, 330]
+    meadow("east-grazing-lot", "grazed", [north_e, pen_n, pen_s, east])
+    fence("grazing-north-rails", "rail", [north_e, pen_n], "Timber rails joining the original livestock paddock")
+    fence("grazing-south-rails", "rail", [east, [-23, 323.4]], "Leave a stock passage by the bale stacks")
+
+    south_far_w, south_far_e = [-145, -65], [-164, 107]
+    meadow("lane-side-pasture", "pasture", [south_w, south_e, south_far_e, south_far_w])
+    fence("lane-side-wire", "barbed", [south_e, south_far_e, south_far_w, [-77.35, -51.1]],
+          "Three wire boundaries meeting the lane-side gate strainer")
+    lane_gate = [[-77, -51.03], [-72.55, -50.11]]
+    fence("lane-stock-gate", "stock_gate", lane_gate,
+          "Closed timber field gate beside the club entrance, hinged on the wire side")
+
+    # Retained shade trees punctuate the shrub and wire lines as in the Ulloa and
+    # Neira pasture photos in CIPAV/CARDER, Sistemas silvopastoriles (pp. 179–189).
+    # The low tree on the right and broad crown on the left frame the inbound lane.
+    for gid, prefab, n, e, source in [
+        ("gate-maple", "shade_tree", -73.75, -77.0, "Mature shade on the hinge side of the entrance"),
+        ("young-boundary-tree", "sapling", -88.0, -51.5, "Younger tree beside the lane-side pasture wire"),
+        ("hay-meadow-shade", "shade_tree", 252.0, -171.0, "Shade beyond the hay meadow corner and flight box"),
+    ]:
+        inst(gid, "countryside", [prefab], [(n, e, h01(n, e) * 360)], "estimated", source)
+
     # --- the countryside, in front ---
     bales, _relocated_bale_indices = relocate_hay_bales()
     inst("hay-bales", "flight_box", ["round_bale"], bales, "estimated",
@@ -496,11 +545,27 @@ def build():
     groups.append({"id": "fence-north", "type": "fence", "zone": "countryside", "style": "wire", "collides": False,
                    "points": q([[239.5, -300.0], [239.5, 300.0]], "m", "estimated", "Post-and-wire boundary in front of the hedge")})
     # paddock in the tree-free east corridor (no trees within 56 m of the runway's centre line, tools/trees/place.py)
-    pad = [[-20.0, 330.0], [60.0, 330.0], [60.0, 440.0], [-20.0, 440.0], [-20.0, 330.0]]
+    pen_far_n, pen_far_s = [60, 440], [-20, 440]
+    meadow("home-paddock", "close_grazed", [pen_s, pen_n, pen_far_n, pen_far_s])
+    transfer_gate = [[-8, 330], [-3.5, 330]]
+    fence("paddock-stock-gate", "stock_gate", transfer_gate,
+          "Timber transfer gate between the grazing lot and the cattle paddock")
+    pad = [[-3.15, 330], pen_n, pen_far_n, pen_far_s, pen_s, [-8.35, 330]]
     for n, e in pad:
         assert clear_of_trees(trees, n, e, 6.0)
     groups.append({"id": "paddock-fence", "type": "fence", "zone": "countryside", "style": "rail", "collides": False,
                    "points": q(pad, "m", "estimated", "Paddock outside the flight box's side (AMA: 305 m)")})
+    # Hoof-worn ground funnels into each gate, then spreads and disappears in grass.
+    # Start the lane spur on the existing vehicle surface so its lower layer tucks beneath it.
+    for gid, points in [
+        ("lane-stock-trail", [[-80.5, -62.3], [-77.4, -57.7], [-75.6, -53.4],
+                              [-74.775, -50.57], [-75.4, -46], [-78.5, -40], [-80, -33]]),
+        ("paddock-stock-trail", [[-1, 309], [-3, 315], [-5.5, 323], [-5.75, 330],
+                                 [-5, 335], [-1.5, 342], [0.5, 351]]),
+    ]:
+        groups.append({"id": gid, "type": "track", "zone": "countryside", "surface": "trampled", "collides": False,
+                       "width": q(2.15, "m", "estimated", "Continuous cattle tread through a field gate"),
+                       "points": q(points, "m", "estimated", "A worn approach fading into the pasture")})
     animals = []
     for i in range(9):
         n = -10.0 + 64.0 * h01(i, 11)
@@ -679,7 +744,7 @@ def main():
         print("scenery layout matches the committed file")
         return
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(text)
+    OUT.write_bytes(text.encode("utf-8"))
     print(f"wrote {OUT.relative_to(ROOT)}: {len(data['groups'])} groups")
 
 
