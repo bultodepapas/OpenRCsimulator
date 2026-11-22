@@ -41,10 +41,13 @@ const BASIC_SETTINGS := {
 static func basic_settings_active(recommended: Dictionary, current: Dictionary) -> bool:
 	if str(current.get("scene_detail", "auto")) not in ["auto", "low"]:
 		return false
+	var uses_basic_setting := false
 	for key: String in BASIC_SETTINGS:
-		if recommended.get(key) != BASIC_SETTINGS[key] or current.get(key) != BASIC_SETTINGS[key]:
+		if recommended.get(key) != BASIC_SETTINGS[key]:
 			return false
-	return true
+		if current.get(key) == BASIC_SETTINGS[key]:
+			uses_basic_setting = true
+	return uses_basic_setting
 
 
 static func needs_fallback(gpu: Dictionary) -> bool:
