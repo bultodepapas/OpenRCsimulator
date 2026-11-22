@@ -390,7 +390,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "9fefdd4e416d2554abbd1f1ff1b59e9a8365b2bd82dd56aa64706353d2f1dfe2"
+          "sha256": "31fd3ea45535fc98c10d218e1f001b0e605f9138447fb6faf1725ab1f6b334e8"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -469,7 +469,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "1ad71b56341724dc5e0fb82213d6ab32367865466f66a73130dacfec4191b74d"
+      "slots_sha256": "5cffbb45a84a4ace9523b73865a821ddb97c0b8e6fc73693491e7eaa094cd9bd"
     }
   ]
 }
