@@ -258,6 +258,9 @@ func _enable_button_and_send() -> void:
 	_check("a loading flight is not yet an activity", loading.activity == false and loading.mode != "flight", str(loading))
 	_check("AppRoot's context in a flight", flying and in_flight.mode == "flight" and in_flight.vehicle in Contract.STOCK_VEHICLES
 		and in_flight.fixed_wing_accepted == true and float(in_flight.simulated_seconds) >= 0.0 and in_flight.eligible == true, str(in_flight))
+	if not flying:
+		await ui.close_app(app)
+		return
 	var session: Node = app.flight.session
 	var active_before: int = app.telemetry._activity.get("active_us", -1)
 	session.hold("telemetry-test")
