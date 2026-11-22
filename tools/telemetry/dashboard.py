@@ -164,18 +164,11 @@ def rounded_top(x, y, w, h, r=4):
             f"Q{x + w:.1f},{y:.1f} {x + w:.1f},{y + r:.1f}V{y + h:.1f}Z")
 
 
-def rounded_right(x, y, w, h, r=4):
-    """Bar path with a rounded data-end on the right and a square baseline on the left."""
-    r = min(r, h / 2, w)
-    return (f"M{x:.1f},{y:.1f}H{x + w - r:.1f}Q{x + w:.1f},{y:.1f} {x + w:.1f},{y + r:.1f}V{y + h - r:.1f}"
-            f"Q{x + w:.1f},{y + h:.1f} {x + w - r:.1f},{y + h:.1f}H{x:.1f}Z")
-
-
-def tip_attrs(lines, role="img"):
+def tip_attrs(lines, role="img", *, tab_index=0):
     """Hover/focus/tap target attributes: tooltip text plus the same text for assistive technology."""
     text = e("\n".join(lines), quote=True)
     label = f' role="{role}" aria-label="{e(" · ".join(lines), quote=True)}"' if role else ""
-    return f'tabindex="0"{label} data-tip="{text}"'
+    return f'tabindex="{tab_index}"{label} data-tip="{text}"'
 
 
 def scroll(inner, min_width=None):
@@ -347,28 +340,65 @@ def last_seen(snapshot, rows):
 # ---------------------------------------------------------------------------------------------- sections
 
 
+def timeline_open(width, height, aria):
+    return ('<div class="timeline"><svg class="chart" data-chart="days" role="group" '
+            f'viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" '
+            'aria-description="Use Left and Right arrow keys to explore days.">')
+
+
+def timeline_labels(count):
+    intervals = min(6, count - 1)
+    if intervals <= 0:
+        return {0: True} if count else {}
+    return {round(step * (count - 1) / intervals): step % 2 == 0 or step == intervals
+            for step in range(intervals + 1)}
+
+
+def timeline_date(x, height, date_label, major):
+    return (f'<text class="tick date-tick{"" if major else " minor-tick"}" x="{x:.1f}" y="{height - 19}" '
+            f'text-anchor="middle">{e(date_label[5:])}</text>')
+
+
+def timeline_tick(value):
+    if 1_000 <= value < 10_000:
+        return f"{value / 1_000:.1f}K".replace(".0K", "K")
+    return fmt_compact(value)
+
+
+def timeline_target(left, width, center, top, plot_h, lines, latest):
+    attrs = tip_attrs(lines, tab_index=0 if latest else -1)
+    return (f'<rect class="hit" x="{left:.1f}" y="{top}" width="{width:.1f}" '
+            f'height="{plot_h}" data-center="{center:.1f}" {attrs}/>')
+
+
+def timeline_end(parts, targets, top, plot_h):
+    parts.append(f'<line class="crosshair" y1="{top}" y2="{top + plot_h}" aria-hidden="true" hidden=""/>')
+    return "".join([*parts, *targets, "</svg></div>"])
+
+
 def ingest_chart(rows):
-    width, height, left, right, top, bottom = 900, 260, 52, 8, 12, 34
+    width, height, left, right, top, bottom = 640, 232, 82, 34, 25, 44
     plot_w, plot_h = width - left - right, height - top - bottom
     totals = [sum(r["counts"].values()) for r in rows]
     ticks = nice_ticks(max(totals, default=0))
     scale = plot_h / ticks[-1]
     slot = plot_w / max(len(rows), 1)
     bar = min(24.0, slot * 0.64)
-    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="Ingest outcomes per UTC day" class="chart">']
+    parts = [timeline_open(width, height, "Ingest outcomes per UTC day")]
     for tick in ticks:
         y = top + plot_h - tick * scale
         cls = "axis" if tick == 0 else "grid"
         parts.append(f'<line class="{cls}" x1="{left}" x2="{width - right}" y1="{y:.1f}" y2="{y:.1f}"/>')
-        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{fmt_compact(tick)}</text>')
-    label_every = max(1, round(len(rows) / 10))
+        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{timeline_tick(tick)}</text>')
+    labels = timeline_labels(len(rows))
+    targets = []
     for index, row in enumerate(rows):
         x = left + index * slot + (slot - bar) / 2
         base = top + plot_h
         drawn = [(key, row["counts"][key], cls) for key, _, cls in INGEST_SERIES if row["counts"][key]]
         for position, (key, count, cls) in enumerate(drawn):
             h = count * scale
-            seg_h = max(h - (2 if position else 0), 1)
+            seg_h = h - (min(1.0, h / 4) if position else 0)
             y = base - h
             if position == len(drawn) - 1:
                 parts.append(f'<path class="fill-{cls}" d="{rounded_top(x, y, bar, seg_h)}"/>')
@@ -379,13 +409,11 @@ def ingest_chart(rows):
         lines += [f"{label}: {fmt_int(row['counts'][key])}" for key, label, _ in INGEST_SERIES]
         extra = sorted((c, n) for c, n in row["detail"].items() if c not in ("accepted", "duplicate"))
         lines += [f"  {c}: {fmt_int(n)}" for c, n in extra]
-        parts.append(f'<rect class="hit" x="{left + index * slot:.1f}" y="{top}" width="{slot:.1f}" '
-                     f'height="{plot_h}" {tip_attrs(lines)}/>')
-        if index % label_every == 0 or index == len(rows) - 1:
-            parts.append(f'<text class="tick" x="{left + index * slot + slot / 2:.1f}" y="{height - 12}" '
-                         f'text-anchor="middle">{e(row["day"][5:])}</text>')
-    parts.append("</svg>")
-    return scroll("".join(parts), 640)
+        center = left + (index + 0.5) * slot
+        targets.append(timeline_target(center - slot / 2, slot, center, top, plot_h, lines, index == len(rows) - 1))
+        if index in labels:
+            parts.append(timeline_date(center, height, row["day"], labels[index]))
+    return timeline_end(parts, targets, top, plot_h)
 
 
 def ingest_table(rows):
@@ -399,9 +427,30 @@ def ingest_table(rows):
             f"</tr></thead><tbody>{body}</tbody></table>")}</details>')
 
 
-def legend(series):
-    items = "".join(f'<span class="key"><i class="sw fill-{cls}"></i>{e(label)}</span>' for _, label, cls in series)
+def legend(series, *, lines=False):
+    color = ("inkline" if lines else "sw fill")
+    items = "".join(f'<span class="key"><i aria-hidden="true" class="{color}-{cls}"></i>{e(label)}</span>'
+                    for _, label, cls in series)
     return f'<div class="legend">{items}</div>'
+
+
+def bar_row(name, value, scale, segments, tip, first, *, combined=False):
+    width = f"{scale:.6%}"
+    bars = "".join(f'<i class="fill-{slot}" style="flex-grow:{weight}"></i>' for slot, weight in segments)
+    return len(value), (f'<div class="bar-row{" combined" if combined else ""}" '
+                        f'{tip_attrs([name, *tip], tab_index=0 if first else -1)}>'
+                        f'<span class="bar-label">{e(name)}</span><span class="bar-value">{e(value)}</span>'
+                        f'<span class="bar-track"><span class="bar-stack" style="width:{width}">{bars}</span>'
+                        '</span></div>')
+
+
+def bar_plot(aria, rows):
+    rows = list(rows)
+    value_width = max((width for width, _ in rows), default=0) + 1
+    return (f'<div class="bar-plot" style="--bar-value-width:{value_width}ch" data-chart="rows" role="group" '
+            f'aria-label="{e(aria, quote=True)}" '
+            'aria-description="Use Up and Down arrow keys to explore rows.">'
+            + "".join(markup for _, markup in rows) + "</div>")
 
 
 def hbar_chart(rows, unit_fmt, aria):
@@ -409,25 +458,12 @@ def hbar_chart(rows, unit_fmt, aria):
     if not rows:
         return '<p class="empty">Nothing to show at this floor.</p>'
     rows = sorted((r for r in rows if not r[3]), key=lambda r: (-r[1], r[0])) + [r for r in rows if r[3]]
-    width, label_w, value_w, row_h, bar_h = 560, 210, 72, 26, 14
-    plot_w = width - label_w - value_w
     maximum = max(value for _, value, _, _ in rows) or 1
-    height = row_h * len(rows) + 4
-    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" class="chart hbar">',
-             f'<line class="axis" x1="{label_w}" x2="{label_w}" y1="0" y2="{height}"/>']
-    for index, (name, value, tip, combined) in enumerate(rows):
-        y = index * row_h + (row_h - bar_h) / 2 + 2
-        w = max(value / maximum * plot_w, 1.5) if value else 0
-        cls = "fill-other" if combined else "fill-s1"
-        short = name if len(name) <= 30 else name[:29] + "\u2026"
-        parts.append(f'<text class="rowlabel{" muted" if combined else ""}" x="{label_w - 8}" y="{y + bar_h - 3:.1f}" '
-                     f'text-anchor="end"><title>{e(name)}</title>{e(short)}</text>')
-        parts.append(f'<path class="{cls}" d="{rounded_right(label_w, y, w, bar_h)}"/>')
-        parts.append(f'<text class="value" x="{label_w + w + 6:.1f}" y="{y + bar_h - 3:.1f}">{e(unit_fmt(value))}</text>')
-        parts.append(f'<rect class="hit" x="0" y="{index * row_h + 2}" width="{width}" height="{row_h}" '
-                     f'{tip_attrs([name, *tip])}/>')
-    parts.append("</svg>")
-    return scroll("".join(parts), 420)
+    return bar_plot(aria, (
+        bar_row(name, unit_fmt(value), value / maximum, [("other" if combined else "s1", 1)],
+                tip, index == 0, combined=combined)
+        for index, (name, value, tip, combined) in enumerate(rows)
+    ))
 
 
 def table_rows(entry):
@@ -479,7 +515,9 @@ def simple_block(title, entry, value_of, value_fmt, sub, extra_cols):
     for row in rows:
         name = " / ".join(row["dims"])
         cols = [(col, fn(row)) for col, fn in extra_cols]
-        bars.append((name, value_of(row), [f"Session-days {row['sessions']}", *(f"{c} {v}" for c, v in cols)],
+        value = value_of(row)
+        tip = [f"{sub}: {value_fmt(value)}", f"Session-days {row['sessions']}", *(f"{c} {v}" for c, v in cols)]
+        bars.append((name, value, tip,
                      row.get("_combined", False)))
         body.append("<tr><td>" + e(name) + "</td><td>" + str(row["sessions"]) + "</td>"
                     + "".join(f"<td>{e(str(v))}</td>" for _, v in cols) + "</tr>")
@@ -654,32 +692,13 @@ def refusal_table(rows):
 
 def release_chart(releases):
     """Horizontal stacked bars: downloads per release split by platform (fixed slot per platform)."""
-    width, label_w, value_w, row_h, bar_h = 640, 110, 56, 24, 14
-    plot_w = width - label_w - value_w
     maximum = max((total for _, _, total in releases), default=0) or 1
-    height = row_h * len(releases) + 4
-    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="Downloads per release by platform" class="chart">',
-             f'<line class="axis" x1="{label_w}" x2="{label_w}" y1="0" y2="{height}"/>']
+    rows = []
     for index, (tag, counts, total) in enumerate(releases):
-        y = index * row_h + (row_h - bar_h) / 2 + 2
-        x = float(label_w)
-        drawn = [(platform, counts[platform], cls) for platform, cls in PLATFORM_SLOTS if counts[platform]]
-        for position, (platform, count, cls) in enumerate(drawn):
-            w = count / maximum * plot_w
-            last = position == len(drawn) - 1
-            seg = max(w - (0 if last else 2), 1)
-            if last:
-                parts.append(f'<path class="fill-{cls}" d="{rounded_right(x, y, seg, bar_h)}"/>')
-            else:
-                parts.append(f'<rect class="fill-{cls}" x="{x:.1f}" y="{y:.1f}" width="{seg:.1f}" height="{bar_h}"/>')
-            x += w
-        parts.append(f'<text class="rowlabel" x="{label_w - 8}" y="{y + bar_h - 3:.1f}" text-anchor="end">{e(tag)}</text>')
-        parts.append(f'<text class="value" x="{x + 6:.1f}" y="{y + bar_h - 3:.1f}">{fmt_int(total)}</text>')
-        tip = [tag, f"Total {fmt_int(total)}"] + [f"{p}: {fmt_int(counts[p])}" for p, _ in PLATFORM_SLOTS if counts[p]]
-        parts.append(f'<rect class="hit" x="0" y="{index * row_h + 2}" width="{width}" height="{row_h}" '
-                     f'{tip_attrs(tip)}/>')
-    parts.append("</svg>")
-    return scroll("".join(parts), 480)
+        segments = [(slot, counts[p]) for p, slot in PLATFORM_SLOTS if counts[p]]
+        tip = [f"Total {fmt_int(total)}"] + [f"{p}: {fmt_int(counts[p])}" for p, _ in PLATFORM_SLOTS if counts[p]]
+        rows.append(bar_row(tag, fmt_int(total), total / maximum, segments, tip, index == 0))
+    return bar_plot("Downloads per release by platform", rows)
 
 
 def download_daily(model):
@@ -782,7 +801,7 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
     notes: {day: text} appended to that day's tooltip."""
     markers, notes = markers or {}, notes or {}
     provisional = provisional or {}
-    width, left, right, top, bottom = 900, 52, 64, 14, 34
+    width, left, right, top, bottom = 640, 82, 46, 25, 44
     plot_w, plot_h = width - left - right, height - top - bottom
     known = [v for _, values, _ in series for v in values if v is not None]
     ticks = nice_ticks(max(known, default=0))
@@ -790,12 +809,12 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
     n = len(days)
     x_of = (lambda i: left + plot_w / 2) if n < 2 else (lambda i: left + i * plot_w / (n - 1))  # noqa: E731
     y_of = lambda v: top + plot_h - v * scale  # noqa: E731
-    parts = [f'<svg viewBox="0 0 {width} {height}" aria-label="{e(aria, quote=True)}" class="chart">']
+    parts = [timeline_open(width, height, aria)]
     for tick in ticks:
         y = y_of(tick)
         parts.append(f'<line class="{"axis" if tick == 0 else "grid"}" x1="{left}" x2="{width - right}" '
                      f'y1="{y:.1f}" y2="{y:.1f}"/>')
-        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{fmt_compact(tick)}</text>')
+        parts.append(f'<text class="tick" x="{left - 8}" y="{y + 4:.1f}" text-anchor="end">{timeline_tick(tick)}</text>')
     for index, day in enumerate(days):
         if day in markers:
             x = x_of(index)
@@ -826,15 +845,19 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
                      and days[i] not in provisional.get(label, ())), None)
         if last is not None:
             parts.append(f'<circle class="dot fill-{slot}" cx="{x_of(last):.1f}" cy="{y_of(values[last]):.1f}" r="4"/>')
-            end_labels.append((y_of(values[last]), x_of(last), values[last]))
+            if last == n - 1:
+                end_labels.append((y_of(values[last]), x_of(last), values[last]))
     placed = []
     for y, x, value in end_labels:  # direct end labels only where they do not collide
         if all(abs(y - other) >= 13 for other in placed):
             placed.append(y)
-            parts.append(f'<text class="value" x="{x + 8:.1f}" y="{y + 4:.1f}">{fmt_compact(value)}</text>')
-    label_every = max(1, round(n / 10))
+            parts.append(f'<text class="value end-value" x="{x + 8:.1f}" y="{y + 4:.1f}">{fmt_compact(value)}</text>')
+    labels = timeline_labels(n)
     step = plot_w / max(n - 1, 1)
+    focus_index = next((i for i in range(n - 1, -1, -1) if any(values[i] is not None for _, values, _ in series)),
+                       n - 1)
     table_rows_html = []
+    targets = []
     for index, day in enumerate(days):
         values_today = []
         for label, values, _ in series:
@@ -852,16 +875,16 @@ def line_chart(days, series, aria, markers=None, height=240, notes=None, *, prov
         comment = " · ".join([*(f"Release {tag}" for tag in markers.get(day, [])), notes.get(day, "")]).rstrip(" ·")
         table_rows_html.append(f'<tr><th scope="row">{e(day)}</th>{columns}<td>{e(comment)}</td></tr>')
         x = x_of(index)
-        attrs = tip_attrs(tip) if n <= 60 else f'data-tip="{e(chr(10).join(tip), quote=True)}"'
-        parts.append(f'<rect class="hit" x="{x - step / 2:.1f}" y="{top}" width="{step:.1f}" height="{plot_h}" '
-                     f'{attrs}/>')
-        if (index % label_every == 0 and n - 1 - index >= label_every / 2) or index == n - 1:
-            parts.append(f'<text class="tick" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{e(day[5:])}</text>')
-    parts.append("</svg>")
+        band_left = left if index == 0 else x - step / 2
+        band_right = width - right if index == n - 1 else x + step / 2
+        targets.append(timeline_target(band_left, band_right - band_left, x, top, plot_h, tip, index == focus_index))
+        if index in labels:
+            parts.append(timeline_date(x, height, day, labels[index]))
+    chart = timeline_end(parts, targets, top, plot_h)
     heads = "".join(f'<th scope="col">{e(label)}</th>' for label, _, _ in series)
     table = (f'<table><caption>{e(aria)}</caption><thead><tr><th scope="col">Day</th>{heads}'
              f'<th scope="col">Notes</th></tr></thead><tbody>{"".join(table_rows_html)}</tbody></table>')
-    return scroll("".join(parts), 640) + '<details><summary>Data table</summary>' + scroll(table) + "</details>"
+    return chart + '<details><summary>Data table</summary>' + scroll(table) + "</details>"
 
 
 def stat_tiles(items):
@@ -1276,7 +1299,7 @@ def overview_section(snapshot, rows, alert_items):
         if series:
             charts.append(panel("Downloads per day", "GitHub counter increases by collection date. Each series uses "
                                 "its own day boundaries. Hollow points are provisional.",
-                                legend([(s[0], s[0], s[2]) for s in series]) + line_chart(
+                                legend([(s[0], s[0], s[2]) for s in series], lines=True) + line_chart(
                                     days, series, "Downloads per day", markers, 220,
                                     download_partial,
                                     provisional={request_label: ga_provisional})))
@@ -1284,7 +1307,7 @@ def overview_section(snapshot, rows, alert_items):
         if website:
             interest.append((session_label, [daily.get(d) for d in days], "s2"))
         charts.append(panel("Interest per day", "Each series uses the reporting time zone in its label.",
-                            legend([(s[0], s[0], s[2]) for s in interest]) + line_chart(
+                            legend([(s[0], s[0], s[2]) for s in interest], lines=True) + line_chart(
                                 days, interest, "Interest per day", markers, 220,
                                  partial_notes(traffic), provisional={session_label: ga_provisional,
                                                                       "Repository views (UTC)": partial_notes(traffic)})))
@@ -1343,12 +1366,12 @@ def github_section(model, now):
     pair = lambda a, b: f'<div class="pair">{a}{b}</div>'  # noqa: E731
     return (stat_tiles(items)
             + pair(panel("Repository page views", "per UTC day; triangles mark releases",
-                         legend([("v", "Page views", "s1"), ("u", "Unique visitors", "s2")]) + line_chart(
+                         legend([("v", "Page views", "s1"), ("u", "Unique visitors", "s2")], lines=True) + line_chart(
                              days, [("Page views", daily_values(traffic, days, "count"), "s1"),
                                     ("Unique visitors", daily_values(traffic, days, "uniques"), "s2")],
                              "Repository page views per day", markers, notes=partial_notes(traffic))),
                    panel("Git clones", "per UTC day; archived from the first collection",
-                         legend([("c", "Clones", "s1"), ("u", "Unique cloners", "s2")]) + line_chart(
+                         legend([("c", "Clones", "s1"), ("u", "Unique cloners", "s2")], lines=True) + line_chart(
                              days, [("Clones", daily_values(clones, days, "count"), "s1"),
                                     ("Unique cloners", daily_values(clones, days, "uniques"), "s2")],
                              "Git clones per day", markers, notes=partial_notes(clones))))
@@ -1541,7 +1564,7 @@ def website_section(model, github_model, now):
             if model.get("zone_fallback") else
             f"per day in the property time zone ({model.get('time_zone') or 'unknown'}); triangles mark releases")
     visitors = panel("Visitors per day", zone, legend([("u", "Active users", "s1"), ("s", "Sessions", "s2"),
-                                                       ("v", "Page views", "s3")]) + line_chart(
+                                                       ("v", "Page views", "s3")], lines=True) + line_chart(
         days, [("Active users", daily_values(daily, days, "users"), "s1"),
                ("Sessions", daily_values(daily, days, "sessions"), "s2"),
                ("Page views", daily_values(daily, days, "views"), "s3")], "Website visitors per day", markers,
@@ -1609,14 +1632,14 @@ def players_section(snapshot, insight_html):
 
 CSS = """
 :root{color-scheme:light;--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#6b6964;
---grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;
---other:#b5b3ab;--good:#0ca30c;--warning:#fab219;--critical:#d03b3b;--wash:rgba(11,11,11,.05);--focus:#2a78d6}
+--grid:#e7e6e1;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--s1:#276bc0;--s2:#a64528;--s3:#187c67;--s4:#7158aa;
+--other:#75736b;--good:#0ca30c;--warning:#fab219;--critical:#d03b3b;--wash:rgba(11,11,11,.05);--focus:#276bc0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--surface:#1a1a19;--page:#0d0d0d;
---ink:#f0efec;--ink2:#c3c2b7;--muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#3987e5;
---s2:#d95926;--s3:#199e70;--s4:#c98500;--other:#5c5b56;--wash:rgba(255,255,255,.06);--focus:#86b6ef}}
+--ink:#f0efec;--ink2:#c3c2b7;--muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#73aff7;
+--s2:#f5a078;--s3:#62cbb0;--s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef}}
 :root[data-theme="dark"]{color-scheme:dark;--surface:#1a1a19;--page:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;
---muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#3987e5;--s2:#d95926;--s3:#199e70;
---s4:#c98500;--other:#5c5b56;--wash:rgba(255,255,255,.06);--focus:#86b6ef}
+--muted:#9a988f;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#73aff7;--s2:#f5a078;--s3:#62cbb0;
+--s4:#b39be9;--other:#76746c;--wash:rgba(255,255,255,.06);--focus:#86b6ef}
 *{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);
 font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:1440px;margin:0 auto;padding:24px 16px 64px}
@@ -1644,17 +1667,43 @@ justify-content:center;font-size:13px;font-weight:700;vertical-align:3px}
 .st-good{background:var(--good);color:#0b0b0b}.st-warning{background:var(--warning);color:#0b0b0b}
 .st-critical{background:var(--critical);color:#fff}.st-muted{background:var(--grid);color:var(--ink2)}
 .st-neutral{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--axis)}
-.chart{width:100%;height:auto;display:block}line.grid{stroke:var(--grid);stroke-width:1}
-line.axis{stroke:var(--axis);stroke-width:1}.tick{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
-.rowlabel{fill:var(--ink2);font-size:12px}.value{fill:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
+.timeline,.bar-plot{container-type:inline-size}
+.chart{width:100%;height:auto;display:block}
+line.grid{stroke:var(--grid);stroke-width:1;vector-effect:non-scaling-stroke}
+line.axis{stroke:var(--axis);stroke-width:1;vector-effect:non-scaling-stroke}
+.tick,.value{font-variant-numeric:tabular-nums}.tick{fill:var(--muted);font-size:13px}
+.value{fill:var(--ink2);font-size:13px;font-weight:600}
+.date-tick{dominant-baseline:central}
+.crosshair{stroke:var(--focus);stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;pointer-events:none}
+.crosshair[hidden]{display:none}
+@container (max-width:510px){.tick{font-size:16px}.minor-tick,.end-value{display:none}}
+@container (max-width:390px){.tick{font-size:20px}}
+@container (max-width:330px){.tick{font-size:23px}.chart circle{r:5px}}
+@container (max-width:280px){.tick{font-size:27px}.chart circle{r:6px}}
 .fill-s1{fill:var(--s1);background:var(--s1)}.fill-s2{fill:var(--s2);background:var(--s2)}
 .fill-s3{fill:var(--s3);background:var(--s3)}.fill-s4{fill:var(--s4);background:var(--s4)}
 .fill-other{fill:var(--other);background:var(--other)}
-.hit{fill:transparent;cursor:default;outline:none}.hit:hover,.hit:focus{fill:var(--wash)}
-.hit:focus-visible{stroke:var(--focus);stroke-width:2}
+.hit{fill:transparent;outline:none;cursor:crosshair}.hit.inspected{fill:var(--wash)}
+.hit:focus-visible{stroke:var(--focus);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.bar-row{display:grid;grid-template:"name track value" auto/minmax(0,38%) minmax(0,1fr) max(3ch,var(--bar-value-width));
+align-items:center;gap:8px 12px;padding:5px 5px;border-radius:6px;min-height:29px;font-size:13px}
+.bar-label{grid-area:name;color:var(--ink2);overflow-wrap:anywhere;line-height:1.3}
+.bar-value{grid-area:value;justify-self:end;font-weight:600;font-variant-numeric:tabular-nums}
+.bar-track{grid-area:track;height:8px;border-radius:4px;background:var(--grid);overflow:hidden}
+.bar-stack{height:100%;display:flex;border-radius:inherit;overflow:hidden}
+.bar-stack i{flex-basis:0;min-width:0}
+.bar-row.inspected{background:var(--wash)}.bar-row:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.bar-row.combined .bar-label{color:var(--muted)}
+@container (max-width:395px){
+ .bar-row{grid-template:"name value" auto "track track" auto/minmax(0,1fr) max-content;gap:5px 12px;padding:6px 5px 8px}
+ .bar-track{height:6px}
+}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0;color:var(--ink2);font-size:13px}
 .key{display:inline-flex;align-items:center;gap:6px}.sw{display:inline-block;width:12px;height:12px;border-radius:3px;
 vertical-align:-1px}.note{color:var(--ink2);font-size:12.5px;margin:6px 0 0}
+[class^="inkline-"]{width:18px;border-top:2px solid var(--s1)}
+.inkline-s2{border-color:var(--s2);border-top-style:dashed}.inkline-s3{border-color:var(--s3);border-top-style:dotted}
+.inkline-s4{border-color:var(--s4);border-top-style:dashed}
 .split{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:16px}
 @media (max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:12px}
@@ -1666,14 +1715,16 @@ padding:10px 14px;cursor:pointer;white-space:nowrap}.tab:hover{color:var(--ink)}
 .count{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--warning);color:#0b0b0b;
 font-size:11px;font-weight:700;text-align:center}
 .tabpanel[hidden]{display:none}
-path.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+path.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+path.line-s2{stroke-dasharray:5 4}path.line-s3{stroke-dasharray:1 4}path.line-s4{stroke-dasharray:7 4}
 .line-s1{stroke:var(--s1)}.line-s2{stroke:var(--s2)}.line-s3{stroke:var(--s3)}.line-s4{stroke:var(--s4)}
-circle.provisional{fill:var(--surface);stroke-width:2}
+circle.provisional{fill:var(--surface);stroke-width:1.5;vector-effect:non-scaling-stroke}
 .review{margin:14px 0}.review ul{padding:0;margin:0;list-style:none;display:grid;gap:8px}
 .review li{background:var(--surface);border:1px solid var(--ring);border-radius:8px;padding:10px 12px;
  display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between}
 .review span{display:block;color:var(--ink2);overflow-wrap:anywhere}.review a{white-space:nowrap}
-circle.dot{stroke:var(--surface);stroke-width:2}circle.pt{stroke:none}line.mark{stroke:var(--axis);stroke-width:1}
+circle.dot{stroke:var(--surface);stroke-width:1.5;vector-effect:non-scaling-stroke}
+circle.pt{stroke:none}line.mark{stroke:var(--axis);stroke-width:1;stroke-dasharray:2 4;vector-effect:non-scaling-stroke}
 path.markhead{fill:var(--muted)}
 .pair{display:grid;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:12px;margin-top:12px}
 .scroll{overflow-x:auto;max-width:100%}
@@ -1694,8 +1745,9 @@ padding:5px 10px}
 .days{display:flex;flex-wrap:wrap;gap:6px}.day{display:inline-flex;gap:4px;align-items:center;border-radius:6px;
 padding:2px 8px;font-size:12px}.pill{border-radius:999px;padding:1px 8px;font-size:12px;margin-left:6px}
 .pill.warn{background:var(--warning);color:#0b0b0b}
-#tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--ring);
-border-radius:8px;padding:8px 10px;font-size:12px;white-space:pre;box-shadow:0 4px 16px rgba(0,0,0,.18);
+#tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--axis);
+border-radius:8px;padding:8px 10px;font-size:13px;white-space:pre-line;max-width:min(330px,calc(100vw - 16px));
+overflow-wrap:anywhere;box-shadow:0 6px 22px rgba(0,0,0,.22);
 display:none;z-index:9;font-variant-numeric:tabular-nums}
 @media (forced-colors:active){.sw,.fill-s1,.fill-s2,.fill-s3,.fill-s4{forced-color-adjust:none}}
 """
@@ -1705,18 +1757,45 @@ HEAD_JS = ("try{const t=localStorage.getItem('openrc-telem-theme');if(t)document
 
 JS = """
 const tip=document.getElementById('tip');
+let inspected=null;
 function place(x,y){const w=tip.offsetWidth,h=tip.offsetHeight;let px=x+14,py=y+14;
  if(px+w>innerWidth-8)px=x-w-14;if(py+h>innerHeight-8)py=y-h-14;
  tip.style.left=Math.max(8,px)+'px';tip.style.top=Math.max(8,py)+'px'}
-function show(t,x,y){tip.textContent=t.dataset.tip;tip.style.display='block';place(x,y)}
-function hide(){tip.style.display='none'}
+function mark(point,on){if(!point)return;point.classList.toggle('inspected',on);
+ const cursor=point.closest('[data-chart]')?.querySelector('.crosshair');
+ if(!cursor)return;
+ if(on){cursor.setAttribute('x1',point.dataset.center);cursor.setAttribute('x2',point.dataset.center)}
+ cursor.toggleAttribute('hidden',!on)}
+function show(t,x,y){if(t!==inspected){mark(inspected,false);inspected=t;mark(t,true);tip.textContent=t.dataset.tip}
+ tip.style.display='block';place(x,y)}
+function hide(){mark(inspected,false);inspected=null;tip.style.display='none'}
+function showAt(t){const r=t.getBoundingClientRect();show(t,r.left+r.width/2,r.top+r.height/2)}
 document.addEventListener('mousemove',ev=>{const t=ev.target.closest('[data-tip]');if(t)show(t,ev.clientX,ev.clientY);
- else if(!document.activeElement||!document.activeElement.dataset||!document.activeElement.dataset.tip)hide()});
+ else if(inspected!==document.activeElement)hide()});
+document.addEventListener('click',ev=>{const t=ev.target.closest('[data-chart] [data-tip]');if(t)showAt(t)});
 document.addEventListener('focusin',ev=>{const t=ev.target.closest('[data-tip]');if(!t)return hide();
- const r=t.getBoundingClientRect();show(t,r.left+r.width/2,r.top+r.height/2)});
+ const plot=t.closest('[data-chart]');
+ if(plot&&t.tabIndex!==0){plot.querySelector('[data-tip][tabindex="0"]')?.setAttribute('tabindex','-1');t.tabIndex=0}
+ showAt(t)});
 document.addEventListener('focusout',hide);
-document.addEventListener('keydown',ev=>{if(ev.key==='Escape')hide()});
-document.addEventListener('scroll',hide,{passive:true});
+document.addEventListener('keydown',ev=>{
+ if(ev.key==='Escape'){hide();return}
+ if(ev.altKey||ev.ctrlKey||ev.metaKey||ev.shiftKey)return;
+ const point=ev.target.closest('[data-tip]'),plot=point?.closest('[data-chart]');
+ if(!plot)return;
+ const days=plot.dataset.chart==='days',previous=days?'ArrowLeft':'ArrowUp',next=days?'ArrowRight':'ArrowDown';
+ if(![previous,next,'Home','End'].includes(ev.key))return;
+ const points=[...plot.querySelectorAll('[data-tip]')],index=points.indexOf(point);
+ const dest=ev.key==='Home'?0:ev.key==='End'?points.length-1:
+  Math.min(points.length-1,Math.max(0,index+(ev.key===next?1:-1)));
+ ev.preventDefault();
+ const target=points[dest];if(target!==point)target.focus();else showAt(point);
+});
+document.addEventListener('scroll',()=>{
+ const visible=inspected&&inspected===document.activeElement&&inspected.matches(':focus-visible');
+ if(visible){const rect=inspected.getBoundingClientRect();if(rect.bottom>0&&rect.top<innerHeight){showAt(inspected);return}}
+ hide();
+},{capture:true,passive:true});
 const tabs=[...document.querySelectorAll('[data-tab]')];
 function openTab(key,focus){const t=tabs.find(b=>b.dataset.tab===key)||tabs[0];
  tabs.forEach(b=>{const on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;
@@ -1783,7 +1862,7 @@ def render(snapshot):
         insight_html = ""
     receiver = (f"{tiles(snapshot, rows, alert_items)}"
                 f'<h2>Ingest outcomes per day</h2><p class="sub">Every POST /v1/batches by fixed outcome category, '
-                f'UTC days; hover, tap or tab to a day for detail</p>'
+                f'UTC days. Hover, tap or use the arrow keys in the chart for details.</p>'
                 f'<div class="split"><div class="panel">{legend(INGEST_SERIES)}{ingest_chart(rows)}{ingest_table(rows)}'
                 f'</div><div class="panel"><h4>Refusals in the period</h4>{refusal_table(rows)}</div></div>'
                 f'<h2>Daily rollup coverage</h2><p class="sub">Insight cells per release and UTC day; a day becomes '

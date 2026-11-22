@@ -292,6 +292,25 @@ class DashboardCase(unittest.TestCase):
         self.assertIsNone(metric.previous)
         self.assertEqual(metric.condition, "Partial coverage")
 
+    def test_long_timeline_keeps_every_day_inspectable_with_one_tab_stop(self):
+        days = [(MONDAY + timedelta(days=offset)).isoformat() for offset in range(90)]
+        page = dashboard.line_chart(days, [("Views", list(range(90)), "s1")], "Views")
+        self.assertEqual(page.count('class="hit"'), 90)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+        self.assertIn(f'aria-label="{days[-1]} · Views: 89"', page)
+        self.assertIn(f'<th scope="row">{days[0]}</th><td>0 (observed)</td>', page)
+        self.assertEqual(page.count('class="tick date-tick'), 7)
+
+    def test_stacked_release_bars_keep_exact_proportions_and_zero(self):
+        counts = {"Windows": 199, "macOS": 1, "Linux": 0, "Other": 0}
+        empty = dict.fromkeys(counts, 0)
+        page = dashboard.release_chart([("v2", counts, 200), ("v1", empty, 0)])
+        self.assertIn('class="fill-s1" style="flex-grow:199"', page)
+        self.assertIn('class="fill-s2" style="flex-grow:1"', page)
+        self.assertIn('aria-label="v2 · Total 200 · Windows: 199 · macOS: 1"', page)
+        self.assertIn('aria-label="v1 · Total 0"', page)
+        self.assertEqual(page.count('tabindex="0"'), 1)
+
     def test_download_counter_gap_preserves_the_original_interval(self):
         intervals = [{"from_end": "2027-01-16T10:00:00Z", "to_end": "2027-01-19T10:00:00Z",
                       "increase": 30, "status": "matched_ids"}]
