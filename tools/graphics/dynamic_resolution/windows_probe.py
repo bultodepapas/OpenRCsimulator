@@ -40,6 +40,19 @@ def _experiment_data(log: Path, stress: bool) -> dict:
     return {}
 
 
+def _engine_identity(engine: Path) -> dict[str, str]:
+    files = [engine]
+    for suffix in (".console.exe", "_console.exe"):
+        if engine.name.lower().endswith(suffix):
+            files.append(engine.with_name(engine.name[:-len(suffix)] + ".exe"))
+            break
+    hashes = {}
+    for path in files:
+        with path.open("rb") as stream:
+            hashes[path.name] = hashlib.file_digest(stream, "sha256").hexdigest()
+    return hashes
+
+
 def run(args: argparse.Namespace) -> int:
     if os.name != "nt":
         raise ValueError("The manual probe requires Windows.")
@@ -72,9 +85,7 @@ def run(args: argparse.Namespace) -> int:
     profile.mkdir()
     environment = dict(os.environ)
     environment["APPDATA"] = str(profile)
-    with engine.open("rb") as stream:
-        engine_sha256 = hashlib.file_digest(stream, "sha256").hexdigest()
-    identity = {"command": command, "engine_sha256": engine_sha256,
+    identity = {"command": command, "engine_files": _engine_identity(engine),
                 "patch_sha256": hashlib.sha256((Path(__file__).parent / "completed_viewport_gpu.patch").read_bytes()).hexdigest(),
                 "reservation_owner": owner}
     write_json(output / "experiment.json", identity)
