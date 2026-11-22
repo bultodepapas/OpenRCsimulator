@@ -272,6 +272,11 @@ func _test_first_run() -> void:
 	_check("desktop flagship opens a 1080p window with Extreme, 8x AA and Ultra shadows",
 		top.scene_detail == "extreme" and top.first_run.window_resolution == "1920x1080" and
 		top.first_run.msaa_3d == Viewport.MSAA_8X and top.first_run.shadow_quality == "ultra", top)
+	hardware.output_pixels = 7680 * 4320
+	var ultra_hd := AutoGraphicsPolicy.decide(hardware)
+	_check("a saved native 8K output is budgeted before applying flagship effects",
+		ultra_hd.scene_detail != "extreme" and not ultra_hd.first_run.has("shadow_quality"), ultra_hd)
+	hardware.erase("output_pixels")
 	hardware.adapter = "NVIDIA GeForce RTX 3060"
 	var mid := AutoGraphicsPolicy.decide(hardware)
 	_check("the 3060 budgets High for its 1080p window on a 4K desktop", mid.renderer == "high" and
@@ -280,6 +285,8 @@ func _test_first_run() -> void:
 	_check("the laptop flagship does not inherit desktop maximums", not AutoGraphicsPolicy.decide(hardware).first_run.has("shadow_quality"))
 	for panel: Vector2i in [Vector2i(1920, 1080), Vector2i(1366, 768)]:
 		_check("1080p and smaller panels use their native output", AutoGraphicsPolicy.first_display(panel, false) == {"window_mode": "borderless"})
+	_check("a reserved dock leaves a native fullscreen instead of an undersized 1080p window",
+		AutoGraphicsPolicy.first_display(Vector2i(2560, 1440), false, Vector2i(2560, 1130)) == {"window_mode": "borderless"})
 	_check("Retina on Apple Silicon uses native output", AutoGraphicsPolicy.first_display(Vector2i(3024, 1964), true) == {"window_mode": "borderless"})
 	_check("the basic notice describes the active settings", AutoGraphicsPolicy.basic_settings_active(basic, basic)
 		and not AutoGraphicsPolicy.basic_settings_active(basic, {"msaa_3d": Viewport.MSAA_8X}))

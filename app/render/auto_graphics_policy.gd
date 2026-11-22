@@ -151,12 +151,14 @@ static func scene_detail(adapter: String, _vendor: String, render_pixels: int = 
 
 ## A native fullscreen fits small panels. Larger desktops get a 1080p window, leaving space
 ## for window chrome. Apple Silicon Retina presents at native resolution.
-static func first_display(screen: Vector2i, native_retina: bool) -> Dictionary:
+static func first_display(screen: Vector2i, native_retina: bool, usable: Vector2i = Vector2i.ZERO) -> Dictionary:
 	if native_retina:
 		return {"window_mode": "borderless"}
 	if screen.x <= 0 or screen.y <= 0:
 		return {}
-	if screen.x >= 1952 and screen.y >= 1200:
+	var available := usable if usable.x > 0 and usable.y > 0 else screen
+	# Match the title-bar and recovery-control margins applied to windowed resolutions by AppRoot.
+	if available.x >= 1920 + 32 and available.y >= 1080 + 64:
 		return {"window_resolution": "1920x1080"}
 	return {"window_mode": "borderless"}
 
@@ -174,11 +176,14 @@ static func output_pixels(screen: Vector2i, config: Dictionary, window: Vector2i
 
 ## First install and Restore share this bundle. Manual values are persisted by DisplayPreferences.
 static func first_run(adapter: String, os_name: String = "", screen_scale: float = 1.0, refresh_hz: float = 60.0,
-		screen: Vector2i = Vector2i.ZERO, cpu_threads: int = 0, forward_plus: bool = false) -> Dictionary:
+		facts: Dictionary = {}) -> Dictionary:
+	var screen: Vector2i = facts.get("screen", Vector2i.ZERO)
+	var arm64 := bool(facts.get("arm64", false))
 	var gpu := GpuCapability.lookup(adapter)
 	var apple := str(gpu.id).begins_with("apple_")
-	var retina := apple and GpuCapability.mac_native_target(os_name, screen_scale)
-	var settings := first_display(screen, retina)
+	var retina := (arm64 or apple) and GpuCapability.mac_native_target(os_name, screen_scale)
+	var settings := first_display(screen, retina, facts.get("usable", Vector2i.ZERO))
+	var target_pixels := int(facts.get("output_pixels", output_pixels(screen, settings, screen)))
 	if retina and refresh_hz > 61.0 and float(gpu.rel) < MAC_120HZ_MIN_REL:
 		settings["max_fps"] = 60
 	if needs_fallback(gpu) or str(gpu["class"]) == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
@@ -192,8 +197,8 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 	elif float(gpu.rel) < EXTREME_MIN_REL:
 		settings["msaa_3d"] = Viewport.MSAA_DISABLED if float(gpu.rel) < SCENE_MEDIUM_BELOW else Viewport.MSAA_2X
 		settings["shadow_quality"] = "low" if float(gpu.rel) < SCENE_MEDIUM_BELOW else "medium"
-	elif float(gpu.rel) >= MAX_QUALITY_MIN_REL and extreme({adapter = adapter, os = os_name, pixels = output_pixels(screen, settings, screen),
-			cpu_threads = cpu_threads, forward_plus = forward_plus}).extreme:
+	elif float(gpu.rel) >= MAX_QUALITY_MIN_REL and extreme({adapter = adapter, os = os_name, pixels = target_pixels, arm64 = arm64,
+			cpu_threads = int(facts.get("cpu_threads", 0)), forward_plus = bool(facts.get("forward_plus", false))}).extreme:
 		settings.merge({"msaa_3d": Viewport.MSAA_8X, "shadow_quality": "ultra", "shadow_distance": "far",
 			"aircraft_lighting_quality": "high", "birds": "many"})
 	return settings
@@ -209,7 +214,7 @@ static func decide(inputs: Dictionary) -> Dictionary:
 	var screen: Vector2i = inputs.get("screen", Vector2i.ZERO)
 	var scale := float(inputs.get("scale", 1.0))
 	var arm64 := bool(inputs.get("arm64", false))
-	var display := first_display(screen, GpuCapability.mac_native_target(os_name, scale) and arm64)
+	var display := first_display(screen, GpuCapability.mac_native_target(os_name, scale) and arm64, inputs.get("usable", Vector2i.ZERO))
 	var pixels := int(inputs.get("output_pixels", output_pixels(screen, display, screen)))
 	var facts := {os = os_name, arm64 = arm64, adapter = adapter, pixels = pixels,
 		cpu_threads = int(inputs.get("cpu_threads", 0)), forward_plus = bool(inputs.get("forward_plus", true))}
@@ -219,6 +224,7 @@ static func decide(inputs: Dictionary) -> Dictionary:
 		if GpuCapability.mac_native_target(os_name, scale) and arm64 else pixels
 	var scene := scene_detail(adapter, "", render_pixels, facts)
 	return {"renderer": str(chosen_renderer.profile), "scene_detail": str(scene.level),
-		"first_run": first_run(adapter, os_name, scale, float(inputs.get("refresh", 60.0)), screen,
-			int(facts.cpu_threads), bool(facts.forward_plus)),
+		"first_run": first_run(adapter, os_name, scale, float(inputs.get("refresh", 60.0)),
+			{screen = screen, usable = inputs.get("usable", Vector2i.ZERO), cpu_threads = facts.cpu_threads,
+			forward_plus = facts.forward_plus, output_pixels = pixels, arm64 = arm64}),
 		"reasons": {"renderer": str(chosen_renderer.reason), "scene_detail": str(scene.get("detail", scene.reason))}}

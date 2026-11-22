@@ -426,15 +426,16 @@ func _ready() -> void:
 	# and stores them at once; upgraders keep their values. Restore graphics defaults offers the same recommendation.
 	var display_path := preferences_path + ".display"
 	var fresh_install := false
-	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless":
-		SceneDetail.calibration = AutoCalibration.load_result(RenderingServer.get_video_adapter_name(),
-			RenderingServer.get_current_rendering_method())
-		var screen := DisplayServer.window_get_current_screen()
-		var adapter := RenderingServer.get_video_adapter_name()
-		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(adapter,
-			OS.get_name(), DisplayServer.screen_get_scale(screen), DisplayServer.screen_get_refresh_rate(screen),
-			DisplayServer.screen_get_size(screen), OS.get_processor_count(),
-			RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD)
+	var player_display := preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless"
+	var screen := ui_window.current_screen
+	var adapter := RenderingServer.get_video_adapter_name()
+	DisplayPreferences.first_run_defaults = {}
+	if player_display:
+		SceneDetail.calibration = AutoCalibration.load_result(adapter, RenderingServer.get_current_rendering_method())
+		var native_retina := OS.has_feature("arm64") and AutoGraphicsPolicy.GpuCapability.mac_native_target(
+			OS.get_name(), DisplayServer.screen_get_scale(screen))
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_display(DisplayServer.screen_get_size(screen),
+			native_retina, DisplayServer.screen_get_usable_rect(screen).size)
 		fresh_install = not FileAccess.file_exists(preferences_path) and not FileAccess.file_exists(display_path)
 	DisplayPreferences.first_run_applies = fresh_install
 	display_preferences = DisplayPreferences.new(display_path)
@@ -446,9 +447,15 @@ func _ready() -> void:
 			RendererGuard.build_identity(), preferences_path == Preferences.DEFAULT_PATH):
 		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
 		return # restarting into the saved graphics mode (exported builds only)
-	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless" \
-			and display_preferences.apply_gpu_defaults(fresh_install) != OK:
-		push_warning("Could not store the recommended display settings; they apply to this session only.")
+	if player_display:
+		DisplayPreferences.first_run_defaults = AutoGraphicsPolicy.first_run(adapter,
+			OS.get_name(), DisplayServer.screen_get_scale(screen), DisplayServer.screen_get_refresh_rate(screen),
+			{screen = DisplayServer.screen_get_size(screen), usable = DisplayServer.screen_get_usable_rect(screen).size,
+			cpu_threads = OS.get_processor_count(), arm64 = OS.has_feature("arm64"),
+			forward_plus = RenderingServer.get_current_rendering_method() == RendererPreference.HIGH_METHOD,
+			output_pixels = AutoGraphicsPolicy.startup_output_pixels})
+		if display_preferences.apply_gpu_defaults(fresh_install) != OK:
+			push_warning("Could not store the recommended display settings; they apply to this session only.")
 	# VQ-07h-A0: one line explaining every automatic graphics decision for this host (also `debugctl graphics_auto`).
 	if DisplayServer.get_name() != "headless":
 		var report := AutoGraphicsReport.runtime(false)
