@@ -703,6 +703,24 @@
 					"label": "JR Servos Tribute",
 					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/jr_servos.tres",
 					"materials": {}
+				},
+				{
+					"id": "aserradero",
+					"label": "Aserradero",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/aserradero.tres",
+					"materials": {}
+				},
+				{
+					"id": "vitral",
+					"label": "Vitral",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/vitral.tres",
+					"materials": {}
+				},
+				{
+					"id": "domingo_en_springfield",
+					"label": "Domingo en Springfield",
+					"covering": "res://assets/vehicle-paints/turbo-lumber-evolution/domingo_en_springfield.tres",
+					"materials": {}
 				}
 			]
 		},
@@ -1793,6 +1811,16 @@
 								"albedo": "#ae122e",
 								"albedo_texture": null
 							}
+						},
+						"canopy_frame": {
+							"paint_trim_carbono": {
+								"albedo": "#a0aab5",
+								"albedo_texture": null,
+								"metallic": 0.24,
+								"roughness": 0.47,
+								"clearcoat": 0.2,
+								"clearcoat_roughness": 0.34
+							}
 						}
 					},
 					"materials": {
@@ -1801,9 +1829,11 @@
 							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage.png",
 							"emission_texture": null,
 							"metallic": 0.0,
-							"roughness": 0.38,
-							"clearcoat": 0.44,
-							"clearcoat_roughness": 0.23
+							"roughness": 1.0,
+							"clearcoat": 0.27,
+							"clearcoat_roughness": 0.24,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png",
+							"specular": 0.46
 						},
 						"paint_wing": {
 							"albedo": "#ffffff",
@@ -1885,6 +1915,165 @@
 							"roughness": 0.49,
 							"clearcoat": 0.36,
 							"clearcoat_roughness": 0.23
+						},
+						"canopy_glass": {
+							"albedo": "#2c3c5088",
+							"metallic": 0.0,
+							"roughness": 0.055,
+							"specular": 0.57,
+							"clearcoat": 0.62,
+							"clearcoat_roughness": 0.055
+						},
+						"intake_duct": {
+							"albedo": "#24262e",
+							"metallic": 0.0,
+							"roughness": 0.61,
+							"clearcoat": 0.0
+						}
+					}
+				},
+				{
+					"id": "elan_35",
+					"label": "Élan 35",
+					"node_lod_bias": {
+						"fuselage_core": 16.0,
+						"vertical_tail_fixed": 16.0
+					},
+					"nodes": {
+						"rudder": {
+							"paint_fin": {
+								"albedo": "#192330",
+								"albedo_texture": null,
+								"emission_texture": null,
+								"metallic": 0.0,
+								"roughness": 0.46,
+								"clearcoat": 0.23,
+								"clearcoat_roughness": 0.28
+							}
+						},
+						"canopy_frame": {
+							"paint_trim_carbono": {
+								"albedo": "#a6b4bf",
+								"albedo_texture": null,
+								"emission_texture": null,
+								"metallic": 0.24,
+								"roughness": 0.37,
+								"clearcoat": 0.23,
+								"clearcoat_roughness": 0.28
+							}
+						}
+					},
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 0.33,
+							"clearcoat_roughness": 0.23,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png",
+							"specular": 0.46
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_wing.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.39,
+							"clearcoat": 0.33,
+							"clearcoat_roughness": 0.24
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_stab.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.42,
+							"clearcoat": 0.27,
+							"clearcoat_roughness": 0.24
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/elan_35_fin.png",
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.39,
+							"clearcoat": 0.27,
+							"clearcoat_roughness": 0.24
+						},
+						"paint_doors_ala": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.43,
+							"clearcoat": 0.29,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_doors": {
+							"albedo": "#e8f1f5",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.49,
+							"clearcoat": 0.25,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fence": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.39,
+							"clearcoat": 0.28,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fence_lower": {
+							"albedo": "#192330",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.48,
+							"clearcoat": 0.21,
+							"clearcoat_roughness": 0.28
+						},
+						"paint_fillets": {
+							"albedo": "#243140",
+							"albedo_texture": null,
+							"emission_texture": null,
+							"metallic": 0.0,
+							"roughness": 0.43,
+							"clearcoat": 0.28,
+							"clearcoat_roughness": 0.28
+						},
+						"intake_duct": {
+							"albedo": "#222c3a",
+							"metallic": 0.0,
+							"roughness": 0.59
+						},
+						"canopy_glass": {
+							"albedo": "#314d6674",
+							"metallic": 0.0,
+							"roughness": 0.045,
+							"specular": 0.54,
+							"clearcoat": 0.57,
+							"clearcoat_roughness": 0.05
+						},
+						"seat_tan": {
+							"albedo": "#ad8058",
+							"metallic": 0.0,
+							"roughness": 0.61
+						},
+						"seat_cushion": {
+							"albedo": "#303e50",
+							"metallic": 0.0,
+							"roughness": 0.67
+						},
+						"side_console": {
+							"albedo": "#33465c",
+							"metallic": 0.0,
+							"roughness": 0.55
 						}
 					}
 				}
@@ -1892,6 +2081,8 @@
 		}
 	},
 	"detail_map_means": {
+		"res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png": 0.42628541834214156,
+		"res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png": 0.43056630527271944,
 		"res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png": 0.36732230373457364,
 		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,

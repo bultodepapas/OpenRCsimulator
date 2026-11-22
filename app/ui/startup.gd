@@ -6,6 +6,7 @@ const NativePackage := preload("res://app_state/native_package.gd")
 const APP_SCENE := "res://app_root.tscn"
 const Intro := preload("res://ui/brand_intro.gd")
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
+const GraphicsPreparation := preload("res://render/graphics_preparation.gd")
 ## UI-28-R5: the staged first Home reports these top-level stages in order (World.build_staged, then
 ## the aircraft). The bar position counts completed milestones: the shell scene load and each stage;
 ## Home ready fills it. Other stage names are sub-stages and only advance within the current segment.
@@ -339,6 +340,10 @@ func _commit() -> void:
 	# UI-28-R5b: nothing is left to skip once Home is being prepared; a visible Skip would promise an
 	# action that no longer exists. Skip inputs are still held below so Home cannot receive them.
 	intro.skip_button.visible = false
+	# GFX-IGPU-02: before Home's first draw compiles this computer's shaders, say why the next frames may stop.
+	var preparing_graphics := GraphicsPreparation.pending("home")
+	if preparing_graphics:
+		intro.status_text = GraphicsPreparation.FIRST_START_TEXT
 	await _presentation_frame()
 	if _closing or not is_inside_tree():
 		return
@@ -367,6 +372,8 @@ func _commit() -> void:
 	intro.detail_text = ""
 	intro.subdetail_text = ""
 	intro.progress = 1.0
+	if preparing_graphics:
+		GraphicsPreparation.mark("home")
 	await _presentation_frame()
 	await _owned_frame(get_tree().process_frame)
 	while true:

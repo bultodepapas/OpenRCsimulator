@@ -38,8 +38,11 @@ func _run() -> void:
 	_check_stik_gear()
 	_check_extra_livery()
 	_check_lumber_livery()
+	_check_lumber_wood_livery()
+	_check_lumber_glass_livery()
 	_check_jet_livery()
 	_check_jeti_ruby()
+	_check_elan_35()
 	_check_sabre_livery()
 	_check_steam_livery()
 	_check_camo_livery()
@@ -170,6 +173,79 @@ func _check_lumber_livery() -> void:
 	check("Lumber restores the unmodified stock foam material",
 		stock != null and wing.get_active_material(surface) == stock and wing.mesh == original_mesh)
 	SceneDetail.set_preference(previous)
+	airframe.free()
+
+
+func _check_lumber_wood_livery() -> void:
+	var family := "turbo-lumber-evolution"
+	var skin := "aserradero"
+	check("Lumber exposes Aserradero in the paint gallery", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var built := AirplaneBuilder.build(family, NAN, {}, skin)
+	check("Lumber builds Aserradero through the normal presentation route", not built.is_empty())
+	if built.is_empty():
+		return
+	var airframe: Node3D = built.root
+	var canopy := airframe.find_child("canopy_glass", true, false) as MeshInstance3D
+	var wheel := airframe.find_child("wheel_left", true, false) as MeshInstance3D
+	var prop := airframe.find_child("propeller_rotor", true, false) as MeshInstance3D
+	var wooden_canopy := canopy.get_active_material(0) as ShaderMaterial
+	var wooden_wheel := wheel.get_active_material(0) as ShaderMaterial
+	var wooden_prop := prop.get_active_material(0) as StandardMaterial3D
+	var wood_atlas: Texture2D = wooden_canopy.get_shader_parameter("wood_atlas") if wooden_canopy != null else null
+	var stamp: Texture2D = wooden_canopy.get_shader_parameter("stamp") if wooden_canopy != null else null
+	check("Aserradero adds wood to the canopy and main wheels with imported art",
+		wood_atlas != null and wood_atlas.get_size() == Vector2(1024, 1024)
+		and stamp != null and stamp.get_size() == Vector2(512, 192)
+		and wooden_wheel != null and wooden_wheel.get_shader_parameter("part") == 6)
+	check("Aserradero keeps the laminated rotor compatible with blade fading",
+		wooden_prop != null and wooden_prop.albedo_texture != null and wooden_prop.uv1_triplanar
+		and wooden_prop.metallic == 0.0)
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("low")
+	VehiclePaint.apply(airframe, family, skin)
+	var wood_low := canopy.get_active_material(0) as ShaderMaterial
+	check("Aserradero retains wood grain at Low", wood_low != null
+		and wood_low.get_shader_parameter("wood_atlas") == wood_atlas
+		and bool(wood_low.get_shader_parameter("detail_enabled")) == VehiclePaint.detail_enabled())
+	SceneDetail.set_preference(previous)
+	VehiclePaint.apply(airframe, family, "jr_servos")
+	var jr_prop := prop.get_active_material(0) as StandardMaterial3D
+	check("Changing back to a non-wood livery restores the canopy, rotor and wheels",
+		canopy.get_active_material(0) is StandardMaterial3D and wheel.get_active_material(0) is StandardMaterial3D
+		and jr_prop != null and jr_prop != wooden_prop and jr_prop.albedo_texture == null)
+	airframe.free()
+
+
+func _check_lumber_glass_livery() -> void:
+	var family := "turbo-lumber-evolution"
+	var skin := "vitral"
+	check("Lumber exposes Vitral in the paint gallery", AirplaneBuilder.resolve_livery(family, skin) == skin)
+	var built := AirplaneBuilder.build(family, NAN, {}, "aserradero")
+	check("Lumber builds for a wood-to-glass repaint", not built.is_empty())
+	if built.is_empty():
+		return
+	var airframe: Node3D = built.root
+	var wing := airframe.find_child("wing_left_fixed", true, false) as MeshInstance3D
+	var canopy := airframe.find_child("canopy_glass", true, false) as MeshInstance3D
+	var prop := airframe.find_child("propeller_rotor", true, false) as MeshInstance3D
+	var previous := SceneDetail._preference
+	SceneDetail.set_preference("low")
+	var result := VehiclePaint.apply(airframe, family, skin)
+	var glass := canopy.get_active_material(0) as StandardMaterial3D
+	var wing_glass := wing.get_active_material(0) as ShaderMaterial
+	check("Vitral projects glass panes over the airframe at Low", result.ok and wing_glass != null
+		and wing_glass.shader.resource_path.ends_with("/vitral.gdshader")
+		and bool(wing_glass.get_shader_parameter("detail_enabled")) == VehiclePaint.detail_enabled())
+	check("Vitral shades the canopy with translucent tinted glass", glass != null
+		and glass.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+		and glass.albedo_color.a < 1.0)
+	check("Vitral restores the stock rotor after the wooden finish",
+		prop.get_active_material(0) is StandardMaterial3D and prop.get_active_material(0).albedo_texture == null)
+	SceneDetail.set_preference(previous)
+	VehiclePaint.apply(airframe, family, "")
+	var factory_canopy := canopy.get_active_material(0) as StandardMaterial3D
+	check("Factory paint restores the airframe and canopy after Vitral", wing.get_active_material(0) is StandardMaterial3D
+		and factory_canopy != null and factory_canopy.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED)
 	airframe.free()
 
 
@@ -676,11 +752,85 @@ func _check_jeti_ruby() -> void:
 	var doors := _materials_named(jet.root, "paint_doors_ala")
 	check("JETI Ruby gear doors match the silver belly", doors.size() == 1 and doors[0].albedo_texture == null
 		and doors[0].albedo_color.is_equal_approx(Color("#d6dee4")) and not doors[0].emission_enabled)
+	var frame := _node_material(jet.root, "canopy_frame", "paint_trim_carbono")
+	var cockpit_trim := _node_material(jet.root, "cockpit", "paint_trim_carbono")
+	var glass := _node_material(jet.root, "canopy_glass", "canopy_glass")
+	check("JETI Ruby satin trim is confined to the canopy frame", frame != null and cockpit_trim != null
+		and frame.albedo_color.is_equal_approx(Color("#a0aab5"))
+		and cockpit_trim.albedo_color.is_equal_approx(Color("#353b44")))
+	check("JETI Ruby canopy keeps the transparent glass material", glass != null
+		and glass.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED
+		and glass.albedo_color.is_equal_approx(Color("#2c3c5088")))
+	var body := _node_material(jet.root, "fuselage_core", "paint_fuselage")
+	var roughness_path := "res://assets/vehicle-paints/avanti-s-a200/jeti_ruby_fuselage_roughness.png"
+	if VehiclePaint.detail_enabled():
+		check("JETI Ruby uses the UV-aligned fuselage roughness map", body != null
+			and body.roughness_texture != null and body.roughness_texture.resource_path == roughness_path
+			and not body.uv1_triplanar)
+	var previous: String = SceneDetail._preference
+	SceneDetail.set_preference("low")
+	if not VehiclePaint.detail_enabled():
+		VehiclePaint.apply(jet.root, jet_id, livery)
+		body = _node_material(jet.root, "fuselage_core", "paint_fuselage")
+		check("Low keeps the JETI Ruby design and average sheen", body != null
+			and body.albedo_texture != null and body.roughness_texture == null
+			and is_equal_approx(body.roughness, VehiclePaint._detail_means()[roughness_path]))
+	SceneDetail.set_preference(previous)
 	VehiclePaint.apply(jet.root, jet_id, "verde_neon_carbono")
 	rudder = _node_material(jet.root, "rudder", "paint_fin")
 	check("leaving JETI Ruby restores the next livery's rudder texture and glow", rudder != null
 		and rudder.albedo_texture != null and rudder.albedo_texture.resource_path.ends_with("verde_neon_carbono_fin.jpg")
 		and rudder.emission_enabled)
+	frame = _node_material(jet.root, "canopy_frame", "paint_trim_carbono")
+	check("leaving JETI Ruby restores the stock frame", frame != null and not frame.has_meta(VehiclePaint.ORIGIN_META))
+	jet.root.free()
+
+
+func _check_elan_35() -> void:
+	var id := "sebart-avanti-s-a200-p100rx"
+	var livery := "elan_35"
+	var choices: Array = AirplaneBuilder.livery_choices(id)
+	check("the jet offers Élan 35 in the stock selector", choices.any(
+		func(choice: Dictionary) -> bool: return choice.id == livery and choice.label == "Élan 35"))
+	var jet: Dictionary = AirplaneBuilder.build(id, NAN, {}, livery)
+	check("Élan 35 builds through the aircraft catalog", not jet.is_empty())
+	if jet.is_empty():
+		return
+	for part: String in ["fuselage", "wing", "stab"]:
+		var skin := _materials_named(jet.root, "paint_" + part)
+		var size := 2048 if part == "stab" else 4096
+		check("Élan 35 binds the %s atlas and drops stock glow" % part, skin.size() == 1
+			and skin[0].albedo_texture != null and skin[0].albedo_texture.get_size() == Vector2(size, size)
+			and skin[0].albedo_texture.resource_path.ends_with("elan_35_%s.png" % part) and not skin[0].emission_enabled)
+	var fin := _node_material(jet.root, "vertical_tail_fixed", "paint_fin")
+	var rudder := _node_material(jet.root, "rudder", "paint_fin")
+	check("Élan 35 keeps the number on the fixed fin", fin != null and fin.albedo_texture != null
+		and fin.albedo_texture.resource_path.ends_with("elan_35_fin.png") and rudder != null
+		and rudder.albedo_texture == null and rudder.albedo_color.is_equal_approx(Color("#192330")))
+	var doors := _materials_named(jet.root, "paint_doors_ala")
+	check("Élan 35 lower wing doors use solid carbon", doors.size() == 1 and doors[0].albedo_texture == null
+		and doors[0].albedo_color.is_equal_approx(Color("#243140")))
+	var glass := _node_material(jet.root, "canopy_glass", "canopy_glass")
+	check("Élan 35 retains a transparent cockpit", glass != null
+		and glass.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED
+		and glass.albedo_color.is_equal_approx(Color("#314d6674")))
+	var roughness_path := "res://assets/vehicle-paints/avanti-s-a200/elan_35_fuselage_roughness.png"
+	var body := _node_material(jet.root, "fuselage_core", "paint_fuselage")
+	if VehiclePaint.detail_enabled():
+		check("Élan 35 binds the fuselage finish map", body != null and body.roughness_texture != null
+			and body.roughness_texture.resource_path == roughness_path)
+	var previous: String = SceneDetail._preference
+	SceneDetail.set_preference("low")
+	if not VehiclePaint.detail_enabled():
+		VehiclePaint.apply(jet.root, id, livery)
+		body = _node_material(jet.root, "fuselage_core", "paint_fuselage")
+		check("Low uses the average Élan 35 finish", body != null and body.roughness_texture == null
+			and is_equal_approx(body.roughness, VehiclePaint._detail_means()[roughness_path]))
+	SceneDetail.set_preference(previous)
+	VehiclePaint.apply(jet.root, id, "jeti_ruby")
+	glass = _node_material(jet.root, "canopy_glass", "canopy_glass")
+	check("switching liveries restores JETI Ruby's tint", glass != null
+		and glass.albedo_color.is_equal_approx(Color("#2c3c5088")))
 	jet.root.free()
 
 

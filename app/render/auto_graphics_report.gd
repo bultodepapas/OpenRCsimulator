@@ -26,7 +26,7 @@ static func compact(decision: Dictionary) -> String:
 	return "|".join([str(decision.renderer), str(decision.scene_detail),
 		str(first_run.get("msaa_3d", "-")), str(first_run.get("window_mode", "-")), str(first_run.get("max_fps", "-")),
 		str(first_run.get("window_resolution", "-")), str(first_run.get("shadow_quality", "-")),
-		str(first_run.get("shadow_technique", "-"))])
+		str(first_run.get("shadow_technique", "-")), str(first_run.get("render_scale", "-"))])
 
 
 ## VQ-07h-A7: what Settings tells the player about Automatic on this host: the mode and Scene detail it picks, how

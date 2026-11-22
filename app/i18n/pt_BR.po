@@ -14630,5 +14630,20 @@ msgstr "Escolha um avião que possa decolar de uma pista."
 msgid "Preparing panorama"
 msgstr "Preparando o panorama"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "Os gráficos estão na qualidade básica. Você pode aumentar a qualidade em Configurações > Gráficos."
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "Os gráficos estão na qualidade básica. Você pode aumentar a qualidade em Configurações > Gráficos e a escala de renderização 3D em Configurações > Tela."
+
+msgid "3D render scale"
+msgstr "Escala de renderização 3D"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "Renderiza a visão 3D em resolução menor e a amplia. Valores menores aumentam a taxa de quadros em gráficos integrados; a imagem fica mais suave."
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR, DLSS e MetalFX definem a própria escala de renderização. Sua escolha volta com a reconstrução nativa."
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "Preparando os gráficos para este computador. Só a primeira inicialização demora assim."
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "Preparando os gráficos para o primeiro voo neste computador. Os voos seguintes carregam mais rápido."

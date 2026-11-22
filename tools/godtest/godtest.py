@@ -41,6 +41,8 @@ def parser():
         command.add_argument("--window-mode", choices=("windowed", "borderless"))
         command.add_argument("--max-fps", type=int, choices=(0, 30, 60, 90, 120, 144, 165, 240))
         command.add_argument("--vsync-mode", choices=("enabled", "disabled"))
+        command.add_argument("--graphics", choices=("fixed", "automatic"),
+                             help="fixed: the comparison workload (default); automatic: the product's first-run recommendation for this GPU")
         command.add_argument("--phase", choices=sorted(catalog.PHASES))
         command.add_argument("--entry", choices=("continuous", "isolated"))
         command.add_argument("--seed", type=int)
@@ -318,7 +320,7 @@ def resume_suite(args) -> int:
 
 
 def plan(args) -> list[dict]:
-    overrides = {key: getattr(args, key) for key in ("aircraft", "time", "weather", "sky", "start", "landscape", "scene_detail", "camera", "entry", "seed", "cycles", "sample_s", "timeout_s", "phase_timeout_s", "headless", "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode") if getattr(args, key) is not None}
+    overrides = {key: getattr(args, key) for key in ("aircraft", "time", "weather", "sky", "start", "landscape", "scene_detail", "camera", "entry", "seed", "cycles", "sample_s", "timeout_s", "phase_timeout_s", "headless", "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics") if getattr(args, key) is not None}
     if args.resolution:
         try:
             overrides["resolution"] = [int(n) for n in args.resolution.lower().split("x")]

@@ -675,7 +675,7 @@ def compare(baseline: Path, candidate: Path, phase_name: str | None = None) -> d
     ignored = {"output_dir", "isolated_user_dir", "isolated_project_name"}
     if {k: v for k, v in manifests[0].items() if k not in ignored} != {k: v for k, v in manifests[1].items() if k not in ignored}:
         reasons.append("requested workload differs")
-    for key in ("actual_resolution", "viewport_size", "selection", "backend", "scenery_sha256", "field", "pilot", "camera", "effective_weather", "effective_lighting", "effective_sky"):
+    for key in ("actual_resolution", "viewport_size", "selection", "backend", "scenery_sha256", "field", "pilot", "camera", "effective_weather", "effective_lighting", "effective_sky", "graphics"):
         if runtimes[0].get("identity", {}).get(key) != runtimes[1].get("identity", {}).get(key):
             reasons.append(f"effective {key} differs")
     hardware_keys = ("cpu_model", "adapter_name", "adapter_vendor", "adapter_api_version", "os_name", "os_version", "rendering_method", "rendering_driver", "vsync_mode", "max_fps", "reconstruction_at_start")
