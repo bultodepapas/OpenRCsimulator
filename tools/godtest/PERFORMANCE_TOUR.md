@@ -42,6 +42,16 @@ python3 tools/godtest/godtest.py performance-tour --repeats 3 \
   --out tmp/performance-tour/baseline-01
 ```
 
+`--graphics fixed` (the default) keeps the comparison workload: MSAA and other
+graphics options stay at the product defaults, and only scene detail, window and pacing come
+from the tour. `--graphics automatic` instead writes the first-run recommendation that
+a fresh install stores for the GPU it runs on: MSAA, shadows, birds, runway meadow,
+aircraft lighting and 3D render scale. The product's own preference writer stores
+it, and the case records it as `identity.graphics`. Pair it with the renderer
+Automatic would choose; on an integrated GPU that is
+`--rendering-method gl_compatibility --scene-detail low`. Fixed and automatic
+results are different workloads and are not compared.
+
 The standard screen is three repeats of three aircraft: **nine separate owned
 application launches**, in Stik → jet → Corsair order for each repeat. `--repeats 1`
 is the first functional smoke run. `--cycles 2` repeats the entire Home/flight/menu

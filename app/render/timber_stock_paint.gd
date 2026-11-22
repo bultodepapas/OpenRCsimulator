@@ -20,11 +20,12 @@ const PARTS := {
 	"fin_fixed": 3, "rudder": 3,
 }
 const COVERING := ["white", "red", "black", "dark_grey"]
-# The wood finish also replaces the canopy, gear and rotor materials. The
-# rotor keeps a StandardMaterial3D so the blade fade uses the laminate.
+# Full-surface finishes also project over the canopy, gear and wheels.
+# A wooden rotor keeps a StandardMaterial3D so the blade fade uses the laminate.
+const CANOPY := 4
 const ROTOR := 7
-const WOOD_TRIM := {
-	"canopy_glass": 4,
+const TRIM := {
+	"canopy_glass": CANOPY,
 	"gear_left_leg": 5, "gear_right_leg": 5, "tailwheel_fork": 5,
 	"wheel_left": 6, "wheel_right": 6, "tailwheel": 6,
 	"propeller_rotor": ROTOR,
@@ -44,15 +45,19 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 	var prop_wood: Texture2D
 	if preset != null and preset.has_meta(&"wood_propeller"):
 		prop_wood = preset.get_meta(&"wood_propeller") as Texture2D
+	var project_trim := preset != null and (prop_wood != null or bool(preset.get_meta(&"project_trim", false)))
+	var canopy_tint: Color = preset.get_meta(&"canopy_tint", Color.TRANSPARENT) if preset != null else Color.TRANSPARENT
 	var detail := SceneDetail.level() != "low"
 	var count := 0
 	for mesh_node: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
 		var name := str(mesh_node.name)
-		var trim := WOOD_TRIM.has(name)
-		var part: int = PARTS.get(name, WOOD_TRIM.get(name, -1))
+		var trim := TRIM.has(name)
+		var part: int = PARTS.get(name, TRIM.get(name, -1))
 		if part < 0 or mesh_node.mesh == null or mesh_node.material_override != null:
 			continue
-		var paint_node := preset != null and (not trim or prop_wood != null)
+		var paint_node := preset != null and (not trim or project_trim)
+		if part == ROTOR and prop_wood == null:
+			paint_node = false
 		if not paint_node and not mesh_node.has_meta(COATS):
 			continue
 		# AirplaneBuilder applies the first coat before any control poses.
@@ -71,7 +76,12 @@ static func apply(root: Node3D, skin: String, covering_path: String) -> Dictiona
 			if paint_node:
 				var key := "%s:%d:%d" % [covering_path, surface, int(detail and part != ROTOR)]
 				if not coats.has(key):
-					coats[key] = _rotor(original, prop_wood) if part == ROTOR else _covering(preset, original, part, rest, detail, prop_wood == null)
+					if part == ROTOR:
+						coats[key] = _rotor(original, prop_wood)
+					elif part == CANOPY and canopy_tint.a > 0.0:
+						coats[key] = _canopy(original, canopy_tint)
+					else:
+						coats[key] = _covering(preset, original, part, rest, detail, not project_trim)
 					if not retained.has(original):
 						retained.append(original)
 					retained.append(coats[key])
@@ -113,6 +123,16 @@ static func _covering(preset: ShaderMaterial, original: StandardMaterial3D, part
 		painted.set_shader_parameter("foam_offset", original.uv1_offset)
 		painted.set_shader_parameter("foam_sharpness", original.uv1_triplanar_sharpness)
 		painted.set_shader_parameter("normal_strength", original.normal_scale)
+	return painted
+
+
+static func _canopy(original: StandardMaterial3D, tint: Color) -> StandardMaterial3D:
+	var painted := original.duplicate() as StandardMaterial3D
+	painted.set_meta(ORIGINAL, original)
+	painted.albedo_color = tint
+	painted.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+	painted.roughness = 0.13
+	painted.metallic_specular = 0.55
 	return painted
 
 

@@ -57,6 +57,10 @@ static func needs_fallback(gpu: Dictionary) -> bool:
 # --- First-launch display values ---------------------------------------------------------------------------------
 ## Shared-memory integrated GPUs below this start without MSAA.
 const MSAA_OFF_BELOW := 0.10
+## GFX-IGPU-01: recognized integrated or software GPUs below SCENE_LOW_BELOW start at this 3D render scale (percent,
+## Native reconstruction). On a UHD 630 (0.03x) the basic settings gave 25 flight FPS at 100 % and 39 at 75 %, above
+## the 20 FPS real-time floor of the 240 Hz simulation (docs/research/god-test/2026-11-22-linux-uhd630-comparison.md).
+const LOW_GPU_RENDER_SCALE := 75
 ## Apple GPUs from about M4 Pro class keep 120 Hz on ProMotion panels; slower chips start capped at 60 fps.
 const MAC_120HZ_MIN_REL := 0.18
 
@@ -191,6 +195,9 @@ static func first_run(adapter: String, os_name: String = "", screen_scale: float
 		settings["max_fps"] = 60
 	if needs_fallback(gpu) or str(gpu["class"]) == "software" or float(gpu.rel) < SCENE_LOW_BELOW:
 		settings.merge(BASIC_SETTINGS)
+		# A recognized shared-memory GPU this slow is pixel-bound; an unknown GPU keeps full resolution.
+		if not needs_fallback(gpu) and str(gpu["class"]) in ["integrated", "software"]:
+			settings["render_scale"] = LOW_GPU_RENDER_SCALE
 		return settings
 	if apple or str(gpu.id).begins_with("adreno_"):
 		return settings

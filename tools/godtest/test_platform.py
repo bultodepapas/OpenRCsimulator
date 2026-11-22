@@ -35,6 +35,15 @@ class PlatformTests(unittest.TestCase):
         for host in ("win32", "darwin"):
             self.assertEqual(audio_output(host, Path("/nonexistent"))["driver"], "platform_default")
 
+    def test_graphics_profile_option_is_validated_and_kept_for_every_tour_case(self):
+        cases = plan(parser().parse_args(["performance-tour", "--repeats", "1", "--graphics", "automatic", "--dry-run"]))
+        self.assertEqual({case["graphics"] for case in cases}, {"automatic"})
+        self.assertNotIn("graphics", catalog.scenario("runway-menus"))
+        with self.assertRaisesRegex(ValueError, "graphics"):
+            catalog.scenario("runway-menus", {"graphics": "minimal"})
+        with self.assertRaises(SystemExit):
+            parser().parse_args(["performance-tour", "--graphics", "minimal"])
+
     def test_three_aircraft_roster_cannot_be_reduced(self):
         cases = plan(parser().parse_args(["performance-tour", "--repeats", "2", "--dry-run"]))
         self.assertEqual([item["aircraft"] for item in cases], list(catalog.TOUR_AIRCRAFT) * 2)

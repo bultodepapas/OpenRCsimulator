@@ -42,6 +42,22 @@ with --check) from assets already in this repository:
   The procedural carbon inlay and the fuselage roughness map share the original shell UVs.
   Build or verify the four albedo maps and the roughness map with
   build_vehicle_paints.py --only jeti_ruby.
+- avanti-s-a200/elan_35_*: original Élan 35 motorsport livery projected through
+  the stock Avanti UVs. Bugatti's racing blue, exposed carbon and two-tone
+  design language informed the palette and alloy sweep.
+  https://newsroom.bugatti.com/en/press-releases/a-historic-meeting-of-bugatti-trailblazers-on-the-track
+  https://newsroom.bugatti.com/en/press-releases/form-function-and-the-future
+  Sport-jet scheme galleries informed graphic scale and top/bottom contrast.
+  https://carf-models.com/en/products/rebel_pro_
+  https://pilot-rc.com/matrix-2-2m-87/
+  https://www.krill-model.com/ares-xl
+  https://www.toprcmodel-usa.com/odyssey.html
+  https://www.sebart.it/jets-XS.html
+  https://www.eliteaerosports.com/collections/sport-jets
+  The generator draws the carbon twill and rasterizes the original ÉLAN and 35
+  markings with the bundled OFL Noto font. Reference photos are visual research.
+  Build or verify the four albedo maps and fuselage roughness with
+  build_vehicle_paints.py --only elan_35.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the
   owner-supplied Monster Car 2 livery and emission map, re-tinted.
 
@@ -80,6 +96,14 @@ and SHA-256 hashes are shared with tools/skins/sources/marquetry/sources.json.
 The pressed shop mark uses Noto Sans CJK JP (SIL OFL 1.1). The dowels,
 end grain, joints and inlays are original. Rebuild or verify the three
 maps with tools/skins/build_lumber_aserradero.py.
+
+turbo-lumber-evolution/vitral.gdshader: original stained-glass design.
+The panes, bevels and rolled-glass ripples are generated in the shader
+from the neutral airframe coordinates. No source images are used.
+
+turbo-lumber-evolution/domingo_en_springfield.gdshader: original cartoon
+clouds and doughnut illustrations drawn in the shader. No source images,
+character art or logos are used.
 
 ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
 tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared

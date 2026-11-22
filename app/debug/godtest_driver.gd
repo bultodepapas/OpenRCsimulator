@@ -6,8 +6,12 @@ const PILOT_PHASES := ["takeoff", "climb_right", "farmhouse", "flag", "right_cir
 const MAX_PHASE_FRAMES := 1000000
 const MAX_EVENTS := 20000
 const MAX_TRAJECTORY := 200000
+const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const AutoGraphicsPolicy := preload("res://render/auto_graphics_policy.gd")
 
 var config: Dictionary = {}
+## GFX-IGPU-01: "fixed" keeps the comparison workload; "automatic" records the product recommendation it applied.
+var graphics_profile: Dictionary = {mode = "fixed"}
 var output_dir := ""
 var app: Node
 var pilot: RefCounted
@@ -140,6 +144,7 @@ func _run() -> void:
 			window_mode = str(config.get("window_mode", "windowed")), master_volume = 0.0}}
 	for key: String in ["max_fps", "vsync_mode"]:
 		if config.has(key): identity.profile_overrides[key] = config[key]
+	identity.graphics = graphics_profile.duplicate(true)
 	_event("startup_entered", {internal_scope = "after opt-in driver load; parent launch measured externally"})
 	_begin("startup")
 	phase.start_usec = started_usec
@@ -265,8 +270,33 @@ func _prepare_profile() -> void:
 	display.set_value("camera", "auto_zoom", false)
 	# Silent desk runs: mute the Master bus only; streams and mixing still run.
 	display.set_value("audio", "master_volume", 0.0)
-	if display.save("user://settings.cfg.display") != OK: failure = "cannot prepare isolated display settings"
+	if display.save("user://settings.cfg.display") != OK:
+		failure = "cannot prepare isolated display settings"
+	elif str(config.get("graphics", "fixed")) == "automatic":
+		_apply_automatic_graphics("user://settings.cfg.display")
 	OS.set_environment("OPENRC_SCENE_DETAIL", str(config.get("scene_detail", "medium")))
+
+
+## GFX-IGPU-01: `graphics: automatic` adds the first-run recommendation a fresh install stores for this adapter, through
+## the product's own loader and writer. The tour keeps its window, frame pacing, camera, scene detail and muted audio.
+func _apply_automatic_graphics(path: String) -> void:
+	var adapter := RenderingServer.get_video_adapter_name()
+	var bundle := AutoGraphicsPolicy.first_run(adapter, OS.get_name(), DisplayServer.screen_get_scale(),
+		DisplayServer.screen_get_refresh_rate(), {screen = DisplayServer.screen_get_size(),
+		usable = DisplayServer.screen_get_usable_rect().size, cpu_threads = OS.get_processor_count(),
+		arm64 = OS.has_feature("arm64"), forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"})
+	var candidate := DisplayPreferences.load_from(path)
+	candidate.erase("writable")
+	candidate.erase("note")
+	var applied := {}
+	for key: String in DisplayPreferences.GPU_MANAGED_KEYS:
+		if key != "max_fps" and bundle.has(key):
+			candidate[key] = bundle[key]
+			applied[key] = bundle[key]
+	if DisplayPreferences.save_to(path, candidate) != OK:
+		failure = "cannot apply the automatic graphics recommendation"
+		return
+	graphics_profile = {mode = "automatic", adapter = adapter, applied = applied}
 
 
 func _wait_frame_watch() -> bool:

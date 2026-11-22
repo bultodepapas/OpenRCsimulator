@@ -1199,6 +1199,7 @@ JETI_RUBY = hex_rgb("#ae122e")
 JETI_GARNET = hex_rgb("#801129")
 JETI_GRAPHITE = hex_rgb("#353b44")
 JETI_CARBON = hex_rgb("#262b33")
+JETI_PEWTER = hex_rgb("#77838f")
 JETI_SILVER = hex_rgb("#d6dee4")
 JETI_PEARL = hex_rgb("#f0f4f6")
 JETI_SIZES = {"fuselage": (4096, 4096), "wing": (4096, 4096), "stab": (2048, 2048), "fin": (2048, 2048)}
@@ -1228,12 +1229,40 @@ def jeti_exhaust_collar(z):
     return smoothstep(1.219, 1.234, z)
 
 
+def jeti_belly_panel(x, y, z):
+    # Follow the keel between the nose-gear door and the rising tail.
+    taper = smoothstep(-0.538, -0.371, z) * (1 - smoothstep(0.622, 0.875, z))
+    half_width = (0.040 + 0.014 * smoothstep(-0.225, 0.24, z)) * taper
+    edge = half_width - np.abs(x)
+    belly = 1 - smoothstep(-0.041, -0.024, y)
+    panel = smoothstep(-0.0011, 0.0011, edge) * smoothstep(0.001, 0.004, half_width)
+    return edge, panel * belly
+
+
 def jeti_fuselage(p, logo):
     x, y, z = p.T
     colour = jeti_shell(y, z)
     cap = jeti_nose_cut(y, z)
     colour = mix(JETI_CARBON, colour, smoothstep(0.001, 0.003, cap))
     colour = mix(colour, JETI_PEARL, smoothstep(0.002, 0.004, cap) * (1 - smoothstep(0.007, 0.009, cap)))
+
+    edge, panel = jeti_belly_panel(x, y, z)
+    colour = mix(colour, JETI_GRAPHITE, panel)
+    piping = 1 - smoothstep(0.0020, 0.0052, edge)
+    colour = mix(colour, JETI_PEWTER, 0.88 * panel * piping)
+    # Repeat the telemetry marks within the keel, in front of its taper.
+    for start, span in ((0.438, 0.021), (0.477, 0.026), (0.520, 0.031)):
+        shape = np.maximum(np.abs(x) - span, np.abs(z - start + 0.31 * np.abs(x)) - 0.008)
+        colour = mix(colour, JETI_RUBY, panel * (1 - smoothstep(-0.001, 0.001, shape)))
+
+    # Corner marks sit on the fixed shell, just outside the closed nose-gear door.
+    side = np.abs(x)
+    for stop, direction in ((-0.763, 1), (-0.552, -1)):
+        along = direction * (z - stop)
+        upright = _box_distance(side, along, 0.026, 0.029, 0.0, 0.024)
+        crossbar = _box_distance(side, along, 0.014, 0.029, 0.0, 0.003)
+        bracket = 1 - smoothstep(-0.0006, 0.0006, np.minimum(upright, crossbar))
+        colour = mix(colour, JETI_PEWTER, bracket * (1 - smoothstep(-0.052, -0.040, y)))
 
     # The carbon insert follows the exposed spine behind the cockpit.
     taper = smoothstep(0.31, 0.45, z) * (1 - smoothstep(0.75, 0.91, z))
@@ -1260,12 +1289,14 @@ def jeti_fuselage(p, logo):
 
 
 def jeti_fuselage_roughness(p):
-    _, y, z = p.T
+    x, y, z = p.T
     lower, shoulder = jeti_shell_edges(y, z)
     lacquer = smoothstep(-0.002, 0.002, lower) * (1 - smoothstep(-0.002, 0.007, shoulder))
     # Lacquer, satin aluminium and satin carbon share one UV layout.
     satin = 0.49 + 0.09 * smoothstep(0.0, 0.009, shoulder)
     rough = satin + (0.27 - satin) * lacquer
+    _, panel = jeti_belly_panel(x, y, z)
+    rough += (0.59 - rough) * panel
     rough = 0.55 + (rough - 0.55) * smoothstep(0.001, 0.011, jeti_nose_cut(y, z))
     rough += (0.55 - rough) * jeti_exhaust_collar(z)
     return np.repeat(rough[:, None], 3, axis=1)
@@ -1287,6 +1318,20 @@ def jeti_fin(p):
     return colour
 
 
+def jeti_wing_lower(span, z):
+    # Sweep into the graphite tip ahead of the outboard door and hinge line.
+    tip = smoothstep(0.688, 0.694, span)
+    sweep = z - (0.131 + 0.49 * (span - 0.430))
+    width = 0.081 - 0.043 * smoothstep(0.470, 0.627, span)
+    entry = smoothstep(-0.002, 0.002, span - (0.433 + 0.52 * sweep))
+    blade = smoothstep(-0.0015, 0.0015, sweep) * (1 - smoothstep(width - 0.0015, width + 0.0015, sweep))
+    dark = np.maximum(tip, entry * blade)
+    colour = mix(JETI_SILVER, JETI_GRAPHITE, dark)
+    rail = smoothstep(0.004, 0.007, sweep) * (1 - smoothstep(0.020, 0.023, sweep))
+    rail *= smoothstep(0.459, 0.484, span) * (1 - smoothstep(0.646, 0.681, span))
+    return mix(colour, JETI_RUBY, rail)
+
+
 def jeti_lifting(atlas, span, z, lower_face):
     if atlas == "stab":
         # The tailplane reuses V around the hinge. Its bands depend on span alone.
@@ -1306,8 +1351,7 @@ def jeti_lifting(atlas, span, z, lower_face):
     inlay = smoothstep(-0.033, -0.029, blade) * (1 - smoothstep(-0.015, -0.011, blade))
     inlay *= smoothstep(0.045, 0.117, z) * (1 - smoothstep(0.33, 0.43, z))
     upper = mix(upper, JETI_CARBON, 0.64 * inlay)
-    # The gear doors all close within the silver field on the underside.
-    lower = mix(JETI_SILVER, JETI_GRAPHITE, smoothstep(0.688, 0.694, span))
+    lower = jeti_wing_lower(span, z)
     colour = mix(upper, lower, lower_face)
     cap = span - (0.746 + 0.28 * (z - 0.28))
     colour = mix(colour, JETI_PEARL, smoothstep(-0.017, -0.013, cap))
@@ -1330,6 +1374,217 @@ def build_jeti(atlas):
         logo = np.asarray(source.convert("RGBA"), dtype=np.float32) / 255
     logo[..., :3] *= logo[..., 3:]
     return bake_avanti_side(atlas, size, lambda p: jeti_fuselage(p, logo))
+
+
+ELAN_BLUE = hex_rgb("#227bd3")
+ELAN_DEEP = hex_rgb("#174785")
+ELAN_CARBON = hex_rgb("#243140")
+ELAN_INK = hex_rgb("#192330")
+ELAN_ALLOY = hex_rgb("#b3c7d3")
+ELAN_PEARL = hex_rgb("#e8f1f5")
+ELAN_AMBER = hex_rgb("#e6ad63")
+ELAN_SIZES = {
+    "fuselage": (4096, 4096), "wing": (4096, 4096), "stab": (2048, 2048), "fin": (2048, 2048),
+}
+
+
+def elan_twill(a, b):
+    warp = np.sin(2 * np.pi * a / 0.0064)
+    weft = np.sin(2 * np.pi * b / 0.0064)
+    return ELAN_CARBON + (0.015 * warp * weft * np.cos(2 * np.pi * (a - b) / 0.013))[..., None]
+
+
+def elan_lettering(text, aspect):
+    alpha = _sabre_text(text, aspect, stroke=3)[..., None]
+    return np.concatenate((ELAN_PEARL * alpha, alpha), axis=-1)
+
+
+def elan_shell_masks(y, z):
+    # The alloy C follows the two-tone split behind the intake shoulder.
+    split = z - (0.281 - 11.3 * (y - 0.101) ** 2)
+    lower_edge = -0.030 + 0.071 * smoothstep(0.50, 1.14, z)
+    belly = 1 - smoothstep(-0.002, 0.002, y - lower_edge)
+    # The wrapped atlas shares a filter edge between the nose pole and exhaust.
+    collars = np.maximum(1 - smoothstep(-0.892, -0.879, z), smoothstep(1.219, 1.234, z))
+    return split, belly, collars
+
+
+def elan_chamfer(a, b, half_a, half_b, corner):
+    a = np.abs(a) - half_a
+    b = np.abs(b) - half_b
+    return np.maximum(np.maximum(a, b), (a + b + corner) * 0.7071)
+
+
+def elan_panel_layout(side, y, z):
+    service = elan_chamfer(z - 0.521 - 0.29 * (y - 0.078), y - 0.080, 0.070, 0.030, 0.011)
+    flank = smoothstep(0.062, 0.087, side)
+    deck = elan_chamfer(side - 0.043, z - 0.681, 0.015, 0.058, 0.010)
+    crown = smoothstep(0.177, 0.207, y)
+    return service, flank, deck, crown
+
+
+def elan_fuselage(p, badge):
+    x, y, z = p.T
+    side = np.abs(x)
+    split, belly, collars = elan_shell_masks(y, z)
+    blue = mix(ELAN_DEEP, ELAN_BLUE, smoothstep(-0.012, 0.134, y))
+    core = elan_twill(y + 0.43 * side, z)
+    colour = mix(blue, core, smoothstep(-0.002, 0.002, split))
+    colour = mix(colour, ELAN_PEARL, belly)
+
+    flank = smoothstep(0.043, 0.082, side) * smoothstep(-0.030, 0.015, y)
+    flank *= 1 - smoothstep(0.196, 0.259, y)
+    colour = mix(colour, ELAN_INK, flank * _line(split - 0.0025, 0.014))
+    colour = mix(colour, ELAN_ALLOY, flank * _line(split, 0.0070))
+    colour = mix(colour, ELAN_PEARL, flank * _line(split - 0.0021, 0.0018))
+
+    # The centerline ends cleanly at the glass and follows the rear spine.
+    nose_spine = smoothstep(-0.872, -0.782, z) * (1 - smoothstep(-0.666, -0.628, z))
+    tail_spine = smoothstep(0.26, 0.45, z) * (1 - smoothstep(0.99, 1.13, z))
+    spine = (nose_spine + tail_spine) * smoothstep(0.078, 0.106, y)
+    colour = mix(colour, ELAN_ALLOY, spine * _line(x, 0.0042))
+    colour = mix(colour, ELAN_PEARL, spine * _line(x + 0.0008, 0.0014))
+
+    # The sill follows the shell below the glass, behind the nose-frame joint.
+    sill_run = smoothstep(-0.354, -0.342, z) * (1 - smoothstep(-0.222, -0.209, z))
+    sill_run *= smoothstep(0.068, 0.083, side)
+    colour = mix(colour, ELAN_INK, 0.56 * sill_run * _line(y - 0.110, 0.0047))
+    colour = mix(colour, ELAN_ALLOY, 0.78 * sill_run * _line(y - 0.1115, 0.00165))
+    for station in (-0.336, -0.305, -0.274, -0.243, -0.218):
+        pin = np.hypot(z - station, y - 0.110)
+        colour = mix(colour, ELAN_INK, sill_run * (1 - smoothstep(0.0016, 0.0027, pin)))
+        colour = mix(colour, ELAN_ALLOY, sill_run * (1 - smoothstep(0.0009, 0.0015, pin)))
+
+    # Small index marks sit on the smooth shoulder above the intake lip.
+    intake_flank = smoothstep(0.103, 0.122, side)
+    for station, ink in ((-0.106, ELAN_AMBER), (-0.091, ELAN_ALLOY), (-0.076, ELAN_ALLOY)):
+        mark = elan_chamfer(z - station + 0.55 * (y - 0.095), y - 0.095, 0.004, 0.0015, 0.001)
+        colour = mix(colour, ink, 0.77 * intake_flank * (1 - smoothstep(-0.0005, 0.0005, mark)))
+
+    # Service covers and quarter-turn fasteners are kept on the fixed rear shell.
+    service, panel_flank, deck, crown = elan_panel_layout(side, y, z)
+    colour = mix(colour, ELAN_INK, 0.55 * panel_flank * (1 - smoothstep(-0.002, 0.001, service)))
+    colour = mix(colour, ELAN_ALLOY, 0.47 * panel_flank * _line(service, 0.0018))
+    brush = 0.25 + 0.038 * np.cos(2 * np.pi * z / 0.0047)
+    colour = mix(colour, ELAN_ALLOY, brush * crown * (1 - smoothstep(-0.001, 0.001, deck)))
+    colour = mix(colour, ELAN_ALLOY, 0.62 * crown * _line(deck, 0.0016))
+    for station in (0.641, 0.721):
+        fastener = np.hypot(side - 0.043, z - station)
+        colour = mix(colour, ELAN_INK, crown * (1 - smoothstep(0.003, 0.0042, fastener)))
+        colour = mix(colour, ELAN_ALLOY, crown * (1 - smoothstep(0.0014, 0.0022, fastener)))
+    for station in (0.472, 0.570):
+        rivet = np.hypot(z - station, y - 0.082)
+        colour = mix(colour, ELAN_ALLOY, 0.84 * panel_flank * (1 - smoothstep(0.0017, 0.0027, rivet)))
+
+    # Dark rails follow the sill below the wing while the silver keel stays readable.
+    length = smoothstep(-0.535, -0.374, z) * (1 - smoothstep(0.754, 0.946, z))
+    sill = side - (0.035 + 0.025 * smoothstep(-0.357, 0.094, z)
+                   - 0.025 * smoothstep(0.53, 0.91, z))
+    colour = mix(colour, core, belly * length * _line(sill, 0.027))
+    colour = mix(colour, ELAN_DEEP, belly * length * _line(sill + 0.011, 0.0047))
+    for station in (-0.748, -0.567):
+        locator = _box_distance(side, z - station, 0.025, 0.030, -0.006, 0.006)
+        colour = mix(colour, ELAN_DEEP, 0.58 * belly * (1 - smoothstep(-0.001, 0.001, locator)))
+    for height, width in ((0.066, 0.042), (0.078, 0.036), (0.090, 0.028)):
+        slot = _box_distance(z - 0.52 - 0.29 * (y - 0.078), y, -width / 2, width / 2, height, height + 0.003)
+        colour = mix(colour, ELAN_ALLOY, 0.72 * smoothstep(0.066, 0.087, side)
+                     * (1 - smoothstep(-0.0006, 0.0006, slot)))
+
+    centre = 0.034 + 0.012 * smoothstep(-0.743, -0.492, z)
+    avanti_flank_decal(colour, p, badge, -0.743, -0.492, centre)
+    return mix(colour, ELAN_INK, collars)
+
+
+def elan_roughness(p):
+    x, y, z = p.T
+    split, belly, collars = elan_shell_masks(y, z)
+    rough = mix(0.27, 0.54, smoothstep(-0.002, 0.002, split))[:, 0]
+    rough += (0.49 - rough) * belly
+    rough += (0.32 - rough) * _line(split, 0.0085) * smoothstep(0.022, 0.061, y)
+    service, flank, deck, crown = elan_panel_layout(np.abs(x), y, z)
+    rough += (0.58 - rough) * flank * (1 - smoothstep(-0.002, 0.001, service))
+    rough += (0.43 - rough) * crown * (1 - smoothstep(-0.001, 0.001, deck))
+    rough += (0.56 - rough) * collars
+    return np.repeat(rough[:, None], 3, axis=1)
+
+
+def elan_fin(p, number):
+    _, y, z = p.T
+    core = elan_twill(y, z)
+    cut = z - (1.082 + 0.63 * (y - 0.33))
+    colour = mix(ELAN_BLUE, ELAN_DEEP, smoothstep(0.355, 0.52, y))
+    colour = mix(colour, ELAN_INK, smoothstep(-0.002, 0.002, cut))
+    colour = mix(colour, ELAN_ALLOY, _line(cut + 0.004, 0.0036))
+    colour = mix(core, colour, smoothstep(0.239, 0.286, y))
+    tab = elan_chamfer(z - 0.971 - 0.60 * (y - 0.283), y - 0.283, 0.020, 0.004, 0.002)
+    colour = mix(colour, ELAN_ALLOY, 0.81 * (1 - smoothstep(-0.001, 0.001, tab)))
+    # Shear the number with the leading edge. Its two faces have distinct UVs.
+    upright = p.copy()
+    upright[:, 2] -= 0.70 * (y - 0.351)
+    avanti_flank_decal(colour, upright, number, 0.970, 1.047, 0.351)
+    return colour
+
+
+def elan_lifting(atlas, span, z, lower_face):
+    if atlas == "stab":
+        # Shared UVs on the tailplane and elevator keep these bands spanwise.
+        outer = mix(ELAN_CARBON, ELAN_BLUE, smoothstep(0.213, 0.219, span))
+        outer = mix(outer, ELAN_ALLOY, _line(span - 0.223, 0.007))
+        outer = mix(outer, ELAN_DEEP, 0.72 * _line(span - 0.239, 0.004))
+        outer = mix(outer, ELAN_INK, smoothstep(0.420, 0.438, span))
+        return np.broadcast_to(outer, (*z.shape[:-1], span.size, 3))
+
+    sweep = span - (0.356 + 0.60 * (z - 0.21) + 0.5 * (z - 0.21) ** 2)
+    carbon = elan_twill(span + np.zeros_like(z), z)
+    blue = mix(ELAN_DEEP, ELAN_BLUE, smoothstep(0.03, 0.13, span - 0.16 * z))
+    upper = mix(blue, carbon, smoothstep(-0.002, 0.002, sweep))
+    foil = smoothstep(0.044, 0.090, z) * (1 - smoothstep(0.350, 0.415, z))
+    upper = mix(upper, ELAN_ALLOY, _line(sweep + 0.010, 0.005) * foil)
+    slot = _box_distance(sweep, z, 0.027, 0.033, 0.188, 0.308)
+    upper = mix(upper, ELAN_AMBER, (1 - smoothstep(-0.001, 0.001, slot)) * 0.85)
+    cap = span - (0.759 + 0.21 * (z - 0.28))
+    upper = mix(upper, ELAN_BLUE, smoothstep(-0.002, 0.002, cap))
+    upper = mix(upper, ELAN_ALLOY, _line(cap - 0.007, 0.0048))
+    # The fixed tip panel is outboard of the aileron's entire UV range.
+    tip_track = span - (0.930 + 0.17 * (z - 0.438))
+    insert = elan_chamfer(tip_track, z - 0.438, 0.016, 0.054, 0.007)
+    upper = mix(upper, ELAN_INK, 0.82 * (1 - smoothstep(-0.001, 0.001, insert)))
+    upper = mix(upper, ELAN_ALLOY, 0.59 * _line(insert, 0.0018))
+    accent = _box_distance(tip_track, z, -0.007, -0.003, 0.403, 0.469)
+    upper = mix(upper, ELAN_ALLOY, 0.81 * (1 - smoothstep(-0.001, 0.001, accent)))
+    amber = _box_distance(tip_track, z, 0.003, 0.007, 0.421, 0.453)
+    upper = mix(upper, ELAN_AMBER, 0.86 * (1 - smoothstep(-0.001, 0.001, amber)))
+
+    # The lower stripes clear the main and outboard gear doors and follow the span across the hinges.
+    lower = mix(ELAN_CARBON, ELAN_DEEP, smoothstep(0.784, 0.901, span))
+    for start, end, finish in ((0.443, 0.541, ELAN_PEARL), (0.694, 0.762, ELAN_ALLOY)):
+        band = smoothstep(start - 0.002, start + 0.002, span) * (1 - smoothstep(end - 0.002, end + 0.002, span))
+        lower = mix(lower, finish, band)
+    # Inspection corner marks frame the main and outboard gear bays.
+    for inside, outside, front, rear in ((0.218, 0.427, 0.185, 0.389), (0.594, 0.683, 0.279, 0.385)):
+        s = np.minimum(np.abs(span - inside), np.abs(span - outside))
+        t = np.minimum(np.abs(z - front), np.abs(z - rear))
+        inset_s = smoothstep(inside - 0.001, inside + 0.001, span) * (1 - smoothstep(outside - 0.001, outside + 0.001, span))
+        inset_z = smoothstep(front - 0.001, front + 0.001, z) * (1 - smoothstep(rear - 0.001, rear + 0.001, z))
+        corners = np.maximum(_line(s, 0.0028) * (1 - smoothstep(0.015, 0.018, t)) * inset_z,
+                             _line(t, 0.0028) * (1 - smoothstep(0.015, 0.018, s)) * inset_s)
+        lower = mix(lower, ELAN_ALLOY, 0.71 * corners)
+    lower = mix(lower, ELAN_BLUE, smoothstep(0.828, 0.928, span))
+    colour = mix(upper, lower, lower_face)
+    return mix(colour, ELAN_INK, smoothstep(0.968, 0.985, span))
+
+
+def build_elan(atlas):
+    if atlas == "fuselage_roughness":
+        return bake_avanti_side("fuselage", (1024, 1024), elan_roughness).convert("L")
+    size = ELAN_SIZES[atlas]
+    if atlas in ("wing", "stab"):
+        return bake_avanti_lifting(atlas, size, elan_lifting)
+    if atlas == "fin":
+        number = elan_lettering("35", 0.82)
+        return bake_avanti_side(atlas, size, lambda p: elan_fin(p, number))
+    badge = elan_lettering("ÉLAN", 3.65)
+    return bake_avanti_side(atlas, size, lambda p: elan_fuselage(p, badge))
 
 
 class _Skin:
@@ -2954,6 +3209,9 @@ def outputs() -> dict:
     for atlas in JETI_SIZES:
         files[f"avanti-s-a200/jeti_ruby_{atlas}.png"] = lambda a=atlas: encode(build_jeti(a), ".png")
     files["avanti-s-a200/jeti_ruby_fuselage_roughness.png"] = lambda: encode(build_jeti("fuselage_roughness"), ".png")
+    for atlas in ELAN_SIZES:
+        files[f"avanti-s-a200/elan_35_{atlas}.png"] = lambda a=atlas: encode(build_elan(a), ".png")
+    files["avanti-s-a200/elan_35_fuselage_roughness.png"] = lambda: encode(build_elan("fuselage_roughness"), ".png")
     for atlas in SABRE_ATLASES:
         stem = f"avanti-s-a200/sabre_plata_{atlas}"
         files[stem + ".jpg"] = lambda a=atlas: encode(_sabre_cached(a)[0], ".jpg")

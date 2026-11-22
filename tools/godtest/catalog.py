@@ -61,7 +61,7 @@ def validate(value: dict, *, resolved: bool = False) -> None:
     if not isinstance(value, dict):
         raise ValueError("manifest must be an object")
     allowed = set(BASE) | {"id", "phases", "output_dir", "watch_frames", "require_native", "monitor_hardware",
-                           "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode"}
+                           "rendering_method", "rendering_driver", "window_mode", "max_fps", "vsync_mode", "graphics"}
     if resolved:
         allowed |= {"isolated_user_dir", "isolated_project_name"}
     if set(value) - allowed:
@@ -85,6 +85,8 @@ def validate(value: dict, *, resolved: bool = False) -> None:
         "rendering_method": {"auto", "forward_plus", "mobile", "gl_compatibility"},
         "rendering_driver": {"auto", "vulkan", "metal", "d3d12", "opengl3"},
         "window_mode": {"windowed", "borderless"}, "vsync_mode": {"disabled", "enabled"},
+        # GFX-IGPU-01: "automatic" adds the product's first-run graphics recommendation for the actual GPU.
+        "graphics": {"fixed", "automatic"},
     }.items():
         if key in value and (not isinstance(value[key], str) or value[key] not in choices):
             raise ValueError(f"unsupported {key}: {value[key]!r}")

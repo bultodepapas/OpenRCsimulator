@@ -19,7 +19,15 @@ On a fresh install the game starts at 1920 × 1080 when a window of that size fi
 | Desktop RTX 5090 | Forward+, Extreme scene detail, 8× MSAA, Ultra shadows at Far distance, High aircraft lighting and Many birds |
 | Desktop RTX 3090 | Forward+, Extreme detail, 4× MSAA and the High renderer's standard shadow configuration |
 | Desktop RTX 3060 | Forward+, High detail, 2× MSAA and Medium shadows |
-| Intel UHD 630, software renderer or unidentified model | Standard, Low detail, MSAA off, projected aircraft shadow, cloud shadows and runway meadow off, Few birds. Home explains how to raise quality. |
+| Intel UHD 630 or software renderer | Standard, Low detail, MSAA off, projected aircraft shadow, cloud shadows and runway meadow off, Few birds and a 75 % 3D render scale. Home explains how to raise quality. |
+| Unidentified model | The same basic graphics at full 3D render scale, because the GPU may be fast |
+
+GFX-IGPU-01 (2026-11-22) added the render scale. It applies to recognized integrated
+or software GPUs below the Low threshold, with Native reconstruction (bilinear), in
+every renderer. On a UHD 630 a minimal flight rose from 25 to 39 FPS at 75 %. That
+is above the 20 FPS needed for real-time 240 Hz simulation. Players choose 100–50 %
+under Settings → Display; FSR, DLSS and MetalFX keep their own scales. See the
+[Linux UHD 630 comparison](../research/god-test/2026-11-22-linux-uhd630-comparison.md).
 
 Recommendations use the shipped table offline. Public raster tests put a desktop RTX 3060 12 GB at about 0.50 and an RTX 5090 at 1.66 relative to the 3090 at 1080p Ultra. At 4K their ratios differ. OpenRC uses the estimates to order initial graphics choices. Its 3090 and M1 workload measurements, resolution, renderer availability and CPU floor constrain those choices. The 0.75 desktop floor for Extreme and 1.50 floor for maximum effects are provisional policy margins. [Raster measurements and methodology](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)
 

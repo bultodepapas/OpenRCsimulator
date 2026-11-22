@@ -701,4 +701,7 @@ field only as the operator `usage_backend` table. Deploy the receiver before tag
 the planned output size to seed individual graphics options. Unknown or ambiguous models
 start at Low with a visible explanation. Track ownership per quality option across
 GPU changes and renderer recovery. The [automatic graphics plan](plans/automatic-graphics.md#first-launch-policy-on-main)
-owns thresholds, hardware examples and evidence limits.
+owns thresholds, hardware examples and evidence limits. **GFX-IGPU-01, 2026-11-22:**
+recognized integrated or software GPUs below the Low threshold also start at a 75 %
+3D render scale. Lowering pixels was the largest measured gain on a UHD 630; driver
+tuning offered none.

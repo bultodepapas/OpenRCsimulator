@@ -61,7 +61,7 @@ const Languages := preload("res://i18n/languages.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
-const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
+const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "render_scale", "fsr2_sharpness", "nvidia_reflex"]
 
 var display_preferences: DisplayPreferences
 var window_close_managed := false # AppRoot owns save/recovery decisions before closing this route.
@@ -105,6 +105,8 @@ var _resolution_picker: OptionButton
 var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
+## GFX-IGPU-01: 3D render scale for Native reconstruction; available in every renderer.
+var _render_scale_picker: OptionButton
 var _reconstruction_picker: OptionButton
 var _reflex_picker: OptionButton
 var _reflex_poll_seconds := 0.0
@@ -319,6 +321,9 @@ func _build() -> void:
 
 	_resolution_picker = _choice_picker("WindowResolution", "window_resolution", DisplayPreferences.WINDOW_RESOLUTIONS)
 	_add_row(display_page, "Window resolution", _resolution_picker)
+	# GFX-IGPU-01: beside the window size it scales; the Graphics page has no height left at 1080p.
+	_render_scale_picker = _choice_picker("RenderScale", "render_scale", DisplayPreferences.RENDER_SCALES)
+	_add_row(display_page, "3D render scale", _render_scale_picker)
 
 
 	_scale_picker = OptionButton.new()
@@ -847,6 +852,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
+		"render_scale": return tr("Native") if int(value) == 100 else "%d %%" % int(value)
 		"reconstruction": return {auto = tr("Auto"), native = tr("Native"),
 			fsr2_native = tr("FSR2 · Native AA"), fsr2_85 = tr("FSR2 · 85%"), fsr2_quality = tr("FSR2 · Quality"),
 			fsr2_balanced = tr("FSR2 · Balanced"), fsr2_performance = tr("FSR2 · Performance"),
@@ -1445,6 +1451,7 @@ func _sync_controls() -> void:
 	_select_metadata(_fps_picker, _draft.max_fps)
 	_select_metadata(_vsync_picker, _draft.vsync_mode)
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
+	_select_metadata(_render_scale_picker, _draft.get("render_scale", 100))
 	_select_metadata(_reconstruction_picker, _draft.get("reconstruction", "native"))
 	_sync_reconstruction_controls()
 	_select_metadata(_reflex_picker, _draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
@@ -1554,6 +1561,11 @@ func _sync_reconstruction_controls(capabilities_override: Dictionary = {}) -> vo
 	else:
 		_fsr2_sharpness_slider.tooltip_text = tr("Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3.")
 	_msaa_picker.disabled = bool(policy.temporal)
+	# FSR, DLSS and MetalFX choose their own input size; the saved render scale returns with Native.
+	_render_scale_picker.disabled = str(policy.provider) != "native"
+	_render_scale_picker.tooltip_text = tr("FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction.") \
+		if _render_scale_picker.disabled \
+		else tr("Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer.")
 	_msaa_picker.tooltip_text = tr("Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
 
@@ -1746,7 +1758,7 @@ func _refresh_translated_text() -> void:
 			_update_channel_picker.set_item_text(index, _update_channel_caption(str(_update_channel_picker.get_item_metadata(index))))
 	_refresh_update_status_text()
 	_refresh_telemetry_status_text()
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_render_scale_picker, "render_scale"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"], [_shadow_cloud_picker, "shadow_cloud"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],

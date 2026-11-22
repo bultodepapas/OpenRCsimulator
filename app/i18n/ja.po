@@ -13842,5 +13842,20 @@ msgstr "滑走路から離陸できる飛行機を選んでください。"
 msgid "Preparing panorama"
 msgstr "パノラマを準備中"
 
-msgid "Basic graphics are active. You can raise the quality in Settings > Graphics."
-msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を上げられます。"
+msgid "Basic graphics are active. You can raise the quality in Settings > Graphics and the 3D render scale in Settings > Display."
+msgstr "基本のグラフィック設定を使用しています。「設定」>「グラフィック」で画質を、「設定」>「画面」で3D描画スケールを上げられます。"
+
+msgid "3D render scale"
+msgstr "3D描画スケール"
+
+msgid "Renders the 3D view at a lower resolution and enlarges it. Lower values raise the frame rate on integrated graphics; the image becomes softer."
+msgstr "3D ビューを低い解像度で描画して拡大します。値を下げると内蔵グラフィックスでフレームレートが上がりますが、画像はやわらかくなります。"
+
+msgid "FSR, DLSS and MetalFX set their own render scale. Your choice returns with Native reconstruction."
+msgstr "FSR、DLSS、MetalFX は独自の描画スケールを使います。ネイティブ再構成に戻すと、選んだ値が再び使われます。"
+
+msgid "Preparing graphics for this computer. Only the first start takes this long."
+msgstr "このコンピューター用にグラフィックを準備しています。時間がかかるのは初回起動時だけです。"
+
+msgid "Preparing graphics for the first flight on this computer. Later flights load faster."
+msgstr "このコンピューターでの初回フライト用にグラフィックを準備しています。次回以降のフライトはより速く読み込まれます。"
