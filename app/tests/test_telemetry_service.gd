@@ -58,6 +58,7 @@ func _initialize() -> void:
 	_remove()
 	_unavailable()
 	_lifecycle()
+	_context_boundaries()
 	_activities()
 	_crash_revisions_across_slices()
 	_off_switch_and_suspension()
@@ -160,10 +161,7 @@ func _lifecycle() -> void:
 	s.sender.answer(202)
 	_check("202 removes it", s.queue.items.is_empty() and s.queue.sent_ok == 1 and s.status().sent == 1)
 	_check("without a graphics provider the context's own value applies", batch.context.graphics_profile == "unknown")
-	var profile_asks := [0]
-	s.graphics_profile_provider = func() -> String:
-		profile_asks[0] += 1
-		return "custom"
+	_ctx.graphics_profile = "custom"
 	s.note_error("asset_load_failed")
 	s.note_error("asset_load_failed")
 	s.note_error("not_a_category")
@@ -171,10 +169,8 @@ func _lifecycle() -> void:
 	var errors := _events(s, "error_count")
 	_check("errors are coalesced counters", errors.size() == 1 and int(errors[0].count) == 2
 		and errors[0].category == "asset_load_failed", str(errors))
-	var later: Dictionary = _batches(s).back()
-	_check("the graphics profile comes from its provider, asked per recorded event, not per frame",
-		later.context.graphics_profile == "custom" and int(profile_asks[0]) >= 1 and int(profile_asks[0]) <= 10,
-		"%s asks=%d" % [later.context, profile_asks[0]])
+	_check("a new window uses the applied graphics profile", s._pending_context.get("graphics_profile") == "custom",
+		str(s._pending_context))
 	_ctx.eligible = false
 	_run(s, 1.0)
 	_check("a pause closes the open window as partial", _events(s, "performance_window").back().window_complete == false)
@@ -184,6 +180,38 @@ func _lifecycle() -> void:
 		and Store.load_choice(PATH).choice != "enabled" and s.status().save_error != OK)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH + ".tmp"))
 	s.queue_free()
+
+
+func _context_boundaries() -> void:
+	Store.save_choice("enabled", Contract.NOTICE_VERSION, PATH)
+	for change: Dictionary in [
+		{"window_size": Vector2i(3840, 2160)}, {"window_size": Vector2i(1919, 1080)},
+		{"vsync": DisplayServer.VSYNC_DISABLED}, {"max_fps": 60},
+		{"input_class": "gamepad"}, {"graphics_revision": 1}, {"activity_revision": 1},
+		{"activity_id": 2},
+	]:
+		var s := _service()
+		_ctx.merge({"mode": "flight", "activity": true, "vehicle": "f4u-corsair-250", "activity_id": 1,
+			"simulated_seconds": 0.0, "max_fps": 50, "graphics_profile": "custom"}, true)
+		_run(s, 25.0)
+		var old_context: Dictionary = s._window_context
+		_ctx.merge(change, true)
+		_run(s, 41.0)
+		var measured := []
+		var batches := _batches(s)
+		batches.append({"context": s._pending_context, "events": s._pending})
+		for b: Dictionary in batches:
+			for event: Dictionary in b.events:
+				if event.name == "performance_window":
+					measured.append({"context": b.context, "event": event})
+		_check("context change splits a partial and restarts warmup: " + str(change),
+			measured.size() == 4 and measured[1].context == old_context
+			and measured[1].event.phase == "steady" and not measured[1].event.window_complete
+			and int(measured[1].event.interval_sum_us) < 15_050_000
+			and measured[2].event.phase == "warmup" and not measured[2].event.window_complete
+			and measured[3].context == s._window_context and measured[3].event.window_complete
+			and int(measured[3].event.interval_sum_us) >= 30_000_000, str(measured))
+		s.queue_free()
 
 
 func _activities() -> void:

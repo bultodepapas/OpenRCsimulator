@@ -177,12 +177,21 @@ func _enable_button_and_send() -> void:
 	_check("a free note line shows the telemetry status again", app.home.note_label.text == "Telemetry is on · Settings → Interface",
 		app.home.note_label.text)
 	_check("a headless window counts as minimized: nothing is measured", app._telemetry_context().eligible == false)
-	_check("default graphics choices report current_default", app._telemetry_graphics_profile() == "current_default",
-		app._telemetry_graphics_profile())
-	var msaa: Variant = app.display_preferences.config.msaa_3d
-	app.display_preferences.config.msaa_3d = 0 if int(msaa) != 0 else 2
-	_check("a changed graphics choice reports custom", app._telemetry_graphics_profile() == "custom")
-	app.display_preferences.config.msaa_3d = msaa
+	var original: Dictionary = app._telemetry_context()
+	_check("default graphics choices report current_default", original.graphics_profile == "current_default",
+		original.graphics_profile)
+	var saved: Dictionary = app.display_preferences.config.duplicate(true)
+	var preview := saved.duplicate(true)
+	preview.msaa_3d = 0 if int(saved.msaa_3d) != 0 else 2
+	app._apply_presentation(preview)
+	var applied: Dictionary = app._telemetry_context()
+	_check("the effective preview changes the telemetry context before a save",
+		applied.graphics_profile == "custom" and applied.graphics_revision > original.graphics_revision
+		and app.display_preferences.config.msaa_3d == saved.msaa_3d)
+	app._apply_presentation(saved)
+	var reverted: Dictionary = app._telemetry_context()
+	_check("reverting a preview restores the original profile and splits the measurement",
+		reverted.graphics_profile == original.graphics_profile and reverted.graphics_revision > applied.graphics_revision)
 	_check("an ordinary renderer session is not reported as unavailable", not app._telemetry_renderer_unavailable())
 	RendererGuard.save_state(app.renderer_guard_path, {"failed": {"method": "mobile", "build": RendererGuard.build_identity()}})
 	_check("a failed record alone, without the guard's restart argument, is not renderer_unavailable",
@@ -236,7 +245,14 @@ func _enable_button_and_send() -> void:
 		and in_flight.fixed_wing_accepted == true and float(in_flight.simulated_seconds) >= 0.0 and in_flight.eligible == true, str(in_flight))
 	app.open_pause()
 	await ui.settle()
-	_check("a menu over the flight is not measured", app._telemetry_context().eligible == false)
+	var paused_context: Dictionary = app._telemetry_context()
+	_check("a menu over the flight is not measured", paused_context.eligible == false)
+	app.restart_flight()
+	var restarted: Dictionary = app._telemetry_context()
+	_check("the active flight reset advances its telemetry boundary",
+		restarted.activity_id == paused_context.activity_id
+		and restarted.activity_revision > paused_context.activity_revision)
+	await ui.settle()
 	app.end_flight()
 	await ui.settle()
 	await ui.wait_until(func() -> bool: return app.home != null and not app.home_build_pending, 20000)
@@ -250,9 +266,10 @@ func _enable_button_and_send() -> void:
 		for event: Dictionary in JSON.parse_string(item.body.get_string_from_utf8()).events:
 			if event.name == "activity_summary":
 				summaries.append(event)
-	_check("returning home summarizes the flight with the accepted classifier", summaries.size() == 1
-		and summaries[0].outcome == "returned_home" and summaries[0].classification == "accepted_fixed_wing"
-		and summaries[0].vehicle_id == in_flight.vehicle and summaries[0].complete_observation == true, str(summaries))
+	var returned := summaries.filter(func(event: Dictionary) -> bool: return event.outcome == "returned_home")
+	_check("returning home summarizes the flight with the accepted classifier", returned.size() == 1
+		and returned[0].classification == "accepted_fixed_wing" and returned[0].vehicle_id == in_flight.vehicle
+		and returned[0].complete_observation == true, str(summaries))
 	await ui.close_app(app)
 
 

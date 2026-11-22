@@ -33,12 +33,10 @@ var interactive := false
 var consent_path := ConsentStore.DEFAULT_PATH
 var locale := "en"
 ## Returns the observation context each frame: {mode, activity (a simulated vehicle session), vehicle, custom,
-## eligible, simulated_seconds, fixed_wing_accepted, window_size, vsync, max_fps, input_class}.
+## eligible, simulated_seconds, fixed_wing_accepted, window_size, vsync, max_fps, input_class,
+## graphics_profile, graphics_revision, activity_id, activity_revision}.
 ## See AppRoot._telemetry_context().
 var context_provider := Callable()
-## Returns "current_default", "custom" or "unknown"; asked when an event is recorded, never every frame. Unset, the
-## context's own graphics_profile (tests) or "unknown" applies.
-var graphics_profile_provider := Callable()
 ## Injected clocks for tests.
 var clock_usec: Callable = func() -> int: return Time.get_ticks_usec()
 var frames_drawn: Callable = func() -> int: return Engine.get_frames_drawn()
@@ -67,7 +65,8 @@ var _pending_session := ""
 var _last_seal_usec := 0
 var _hardware: Dictionary = {}
 var _window: RefCounted
-var _window_key := ""
+var _window_key: Array = []
+var _window_context: Dictionary = {}
 var _window_mode := ""
 var _window_vehicle := ""
 var _warmup_left_us := 0
@@ -257,7 +256,8 @@ func _stop() -> void:
 	_session_id = ""
 	_hardware = {}
 	_window = null
-	_window_key = ""
+	_window_key = []
+	_window_context = {}
 	_last_usec = -1
 	_activity = {}
 	_last_crash_generation = ""
@@ -272,7 +272,7 @@ func _new_session(now: int) -> void:
 
 
 func _observe(now: int) -> void:
-	var ctx: Dictionary = context_provider.call() if context_provider.is_valid() else {}
+	var ctx := _read_context()
 	var eligible := Contract.is_true(ctx.get("eligible"))
 	var mode := str(ctx.get("mode", "other"))
 	if not mode in Contract.MODES:
@@ -281,13 +281,17 @@ func _observe(now: int) -> void:
 	var in_activity := Contract.is_true(ctx.get("activity"))
 	var vehicle := Contract.vehicle_id(str(ctx.get("vehicle", "")), Contract.is_true(ctx.get("custom"))) \
 		if in_activity else "none"
-	var key := mode + "|" + vehicle
-	_track_activity(ctx, mode, vehicle, now, in_activity)
-	if not eligible or key != _window_key:
+	var key := [mode, vehicle, ctx.get("window_size", Vector2i.ZERO), ctx.get("vsync", -1),
+		_frame_cap(ctx), ctx.get("input_class", "unknown"), ctx.get("graphics_profile", "unknown"),
+		ctx.get("graphics_revision", 0), ctx.get("activity_id", 0), ctx.get("activity_revision", 0)]
+	var restarted := _track_activity(ctx, mode, vehicle, now, in_activity)
+	var changed := restarted or key != _window_key
+	if not eligible or changed:
 		_close_window(now, false)
 		_last_usec = -1
-		if key != _window_key:
+		if changed:
 			_window_key = key
+			_window_context = _context(ctx)
 			_window_mode = mode
 			_window_vehicle = vehicle
 			_warmup_left_us = WARMUP_US
@@ -336,39 +340,45 @@ func _close_window(now: int, complete: bool, phase := "") -> void:
 	var event: Dictionary = _window.event(0, _window_mode, _window_vehicle, phase, complete)
 	_window = null
 	if not event.is_empty():
-		_append(event, now)
+		_append(event, now, _window_context)
 
 
-func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, active: bool) -> void:
+func _track_activity(ctx: Dictionary, mode: String, vehicle: String, now: int, active: bool) -> bool:
 	var key := (mode + "|" + vehicle) if active else ""
 	var simulated := float(ctx.get("simulated_seconds", -1.0))
+	var activity_id := int(ctx.get("activity_id", 0))
+	var revision := int(ctx.get("activity_revision", 0))
+	var restarted := false
 	if not _activity.is_empty():
 		if key != _activity["key"]:
 			_end_activity(now, "returned_home" if mode == "home" else "unknown", true)
 			_activity_from_start = true
-		elif simulated >= 0.0 and simulated + 0.5 < float(_activity["sim_last"]):
-			_end_activity(now, "reset", true) # the same vehicle restarted: its time went back
+		elif activity_id != int(_activity.id) or revision != int(_activity.revision) \
+				or (simulated >= 0.0 and simulated + 0.5 < float(_activity.sim_last)):
+			_end_activity(now, "reset", true)
 			_activity_from_start = true
+			restarted = true
 		elif int(_activity["active_us"]) >= ACTIVITY_SLICE_US:
 			_end_activity(now, "slice", false) # the activity continues in a new, incomplete part
 			_activity_from_start = false
 		else:
 			if simulated >= 0.0:
 				_activity["sim_last"] = simulated
-			return
+			return false
 	if key == "":
 		_activity_from_start = true
 		_last_crash_generation = ""
-		return
+		return false
 	var fixed_wing := Contract.is_true(ctx.get("fixed_wing_accepted")) and vehicle in Contract.FIXED_WING_VEHICLES
 	# Without a simulated clock the summary reports 0 simulated seconds and says the observation is incomplete.
-	_activity = {"key": key, "vehicle": vehicle, "active_us": 0,
+	_activity = {"key": key, "vehicle": vehicle, "active_us": 0, "id": activity_id, "revision": revision,
 		"sim_start": maxf(simulated, 0.0), "sim_last": maxf(simulated, 0.0),
 		"complete": _activity_from_start and simulated >= 0.0,
 		"classification": "accepted_fixed_wing" if fixed_wing else "unsupported",
 		"takeoffs": 0, "landings": 0, "aircraft_crashes": 0,
 		# Captured at the activity start: a backend change needs a new flight or reset, which ends this activity.
 		"physics_backend": Contract.physics_backend(ctx.get("physics_backend"))}
+	return restarted
 
 
 func _end_activity(now: int, outcome: String, finished: bool) -> void:
@@ -387,7 +397,7 @@ func _end_activity(now: int, outcome: String, finished: bool) -> void:
 
 
 ## Number the event, keep batches context-stable and seal when full. `event` arrives without its seq.
-func _append(event: Dictionary, now: int = -1) -> void:
+func _append(event: Dictionary, now: int = -1, observed_context: Dictionary = {}) -> void:
 	if state != Policy.ON or _session_id == "":
 		return
 	if now < 0:
@@ -395,7 +405,7 @@ func _append(event: Dictionary, now: int = -1) -> void:
 	if now - _session_start_usec >= SESSION_MAX_US or str(utc_day.call()) != _session_day:
 		_seal(now)
 		_new_session(now)
-	var context := _context()
+	var context := _context(_read_context()) if observed_context.is_empty() else observed_context
 	if not _pending.is_empty() and (context != _pending_context or _pending_session != _session_id):
 		_seal(now)
 	if _pending.is_empty():
@@ -426,14 +436,15 @@ func _seal(now: int) -> void:
 		push_warning("telemetry: dropped a batch that failed the local contract check (%s)" % error)
 		return
 	queue.push(Contract.encode(batch), generation, now / 1000000.0)
-	state_changed.emit()
+	# Observers may change admission or record errors. Notify after the collector transition finishes.
+	state_changed.emit.call_deferred()
 
 
 func _flush_errors_into_pending() -> void:
 	if _errors.is_empty() or _pending.size() >= Contract.MAX_EVENTS:
 		return
 	if _pending.is_empty():
-		_pending_context = _context()
+		_pending_context = _context(_read_context())
 		_pending_session = _session_id
 	for category: String in Contract.ERROR_CATEGORIES:
 		if _errors.has(category) and _pending.size() < Contract.MAX_EVENTS:
@@ -450,26 +461,27 @@ func _batch(events: Array[Dictionary], context: Dictionary, session_id: String, 
 		"context": context, "events": events.duplicate(true)}
 
 
-## Hardware is classified once per admission (after the grant); display facts follow the live window.
-func _context() -> Dictionary:
-	var ctx: Dictionary = context_provider.call() if context_provider.is_valid() else {}
+func _read_context() -> Dictionary:
+	return context_provider.call() if context_provider.is_valid() else {}
+
+
+func _frame_cap(ctx: Dictionary) -> int:
+	return int(ctx.get("max_fps", hardware_facts.get("max_fps", Engine.max_fps)))
+
+
+## Hardware is classified once per admission (after the grant). Project a detached wire context.
+func _context(ctx: Dictionary) -> Dictionary:
 	if _hardware.is_empty():
 		var facts := hardware_facts.duplicate()
 		facts.window_size = Vector2i.ZERO
 		_hardware = Hardware.context(facts)
 	var out := _hardware.duplicate()
-	var live := hardware_facts.duplicate()
-	live.window_size = ctx.get("window_size", Vector2i.ZERO)
-	live.vsync = int(ctx.get("vsync", -1))
-	if ctx.has("max_fps"):
-		live.max_fps = int(ctx.max_fps)
-	out.resolution_class = Hardware.resolution_class(live.window_size)
-	out.resolution_basis = "viewport_coordinates" if live.window_size != Vector2i.ZERO else "unknown"
-	out.vsync = Hardware.vsync(live.vsync)
-	out.fps_cap_bucket = Hardware.fps_cap(int(live.get("max_fps", Engine.max_fps)))
-	var source: Variant = graphics_profile_provider.call() if graphics_profile_provider.is_valid() \
-		else ctx.get("graphics_profile", "unknown")
-	var profile := str(source)
+	var size: Vector2i = ctx.get("window_size", Vector2i.ZERO)
+	out.resolution_class = Hardware.resolution_class(size)
+	out.resolution_basis = "viewport_coordinates" if size != Vector2i.ZERO else "unknown"
+	out.vsync = Hardware.vsync(int(ctx.get("vsync", -1)))
+	out.fps_cap_bucket = Hardware.fps_cap(_frame_cap(ctx))
+	var profile := str(ctx.get("graphics_profile", "unknown"))
 	out.graphics_profile = profile if profile in Contract.CONTEXT_VALUES.graphics_profile else "unknown"
 	var input := str(ctx.get("input_class", "unknown"))
 	out.input_class = input if input in Contract.CONTEXT_VALUES.input_class else "unknown"
