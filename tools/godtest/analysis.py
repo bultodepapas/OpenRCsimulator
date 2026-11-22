@@ -497,16 +497,28 @@ def report(directory: Path, *, write: bool = True) -> dict:
             break
         if type(phase.get("requested")) is not bool:
             problems.append("phase requested flags must be explicit booleans")
-        observed = integrity.get("phase_stats", {}).get(str(phase.get("index")))
+        index = str(phase.get("index"))
+        evidence = integrity
+        pacing = integrity.get("phase_pacing", {}).get(index, {})
+        count_mismatch = bool(integrity) and (type(phase.get("frames")) is not int or
+                                               phase["frames"] != pacing.get("frames", 0))
+        if count_mismatch:
+            # Older drivers could tag callbacks between phases with the next
+            # phase index. Keep the raw stream but withhold that phase's metrics.
+            problems.append(f"runtime and stream frame counts differ: {phase.get('id')}")
+            evidence = {}
+        observed = evidence.get("phase_stats", {}).get(index)
         phase["frame_ms"] = observed or {"p50": None, "p95": None, "p99": None, "max": None}
         phase["frame_statistics_status"] = "available" if observed else "unavailable_no_verified_samples"
-        phase["pacing"] = integrity.get("phase_pacing", {}).get(str(phase.get("index")), {})
+        if count_mismatch:
+            phase["frame_statistics_status"] = "unavailable_phase_frame_mismatch"
+        phase["pacing"] = evidence.get("phase_pacing", {}).get(index, {})
         if not observed and phase.get("requested") and phase.get("status") == "complete":
             problems.append(f"requested phase has no verified frame samples: {phase.get('id')}")
-        phase["hitches"] = integrity.get("phase_hitches", {}).get(str(phase.get("index")), {})
-        phase["engine_counters_at_last_sample"] = integrity.get("phase_final_counters", {}).get(str(phase.get("index")), {})
-        phase["simulation_pace"] = integrity.get("phase_simulation_pace", {}).get(str(phase.get("index")),
-            {"status": "unavailable_stream_evidence", "issues": [integrity.get("simulation_pace_error") or "no_verified_samples"]})
+        phase["hitches"] = evidence.get("phase_hitches", {}).get(index, {})
+        phase["engine_counters_at_last_sample"] = evidence.get("phase_final_counters", {}).get(index, {})
+        phase["simulation_pace"] = evidence.get("phase_simulation_pace", {}).get(index,
+            {"status": "unavailable_stream_evidence", "issues": [evidence.get("simulation_pace_error") or "no_verified_samples"]})
         for key in ("wall_seconds", "sim_seconds"):
             if type(phase.get(key)) not in (float, int) or not math.isfinite(phase[key]) or phase[key] < 0:
                 problems.append(f"invalid phase {key}")

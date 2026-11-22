@@ -156,8 +156,10 @@ stream chunks. Boundary runs may be clipped; maximum frame count and maximum
 run duration are separate maxima and need not describe the same run.
 
 A missing `phase_index` channel invalidates phase reduction. Phase percentiles come
-from the verified stream; supplied summary values cannot replace it. A completed
-requested phase without verified samples is ineligible. Its statistics and pacing
+from the verified stream. The reducer checks each phase's sample count against the
+driver's counter. A mismatch withholds that phase's metrics and makes the run
+ineligible, including older captures that counted focus-wait callbacks as selection.
+A completed requested phase without verified samples is ineligible. Its statistics and pacing
 targets remain unavailable, preventing missing data from appearing as a zero-ms pass.
 The existing `report` command rebuilds these views from retained original artifacts.
 

@@ -65,7 +65,8 @@ This is the implemented **V1** sequence.
 
 1. Start the real source/debug application through Startup and Home. Wait for a
    verified frame-watcher cursor before aircraft selection, and record for up to
-   10 s whether the application window is focused. A flight that then starts
+   10 s whether the application window is focused. Callbacks during the wait belong
+   to the separate `focus_wait` setup phase. A flight that then starts
    paused while unfocused (for example on a locked desktop) fails with that cause.
    A headless Wayland compositor without a keyboard seat never focuses any window;
    there the driver substitutes AppRoot's focus probe and records

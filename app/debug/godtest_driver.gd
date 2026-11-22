@@ -685,8 +685,13 @@ func _prepare_isolated_approach(session: Node) -> bool:
 func _observe_window_focus() -> bool:
 	if DisplayServer.get_name() == "headless": return true
 	var deadline := Time.get_ticks_usec() + 10000000
-	while running and not DisplayServer.window_is_focused(get_window().get_window_id()) and Time.get_ticks_usec() <= deadline:
-		await get_tree().process_frame
+	var window_id := get_window().get_window_id()
+	if not DisplayServer.window_is_focused(window_id):
+		_begin("focus_wait")
+		while running and not DisplayServer.window_is_focused(window_id) and Time.get_ticks_usec() <= deadline:
+			await get_tree().process_frame
+		if not running: return false
+		_end()
 	window_focused_before_selection = DisplayServer.window_is_focused(get_window().get_window_id())
 	identity.window_focused_before_selection = window_focused_before_selection
 	_event("window_focused" if window_focused_before_selection else "window_unfocused", {display_server = DisplayServer.get_name()})

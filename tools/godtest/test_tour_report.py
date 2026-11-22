@@ -65,7 +65,7 @@ def fixture(root: Path, repeats=1, *, headless=False):
             indexes.extend([index] * len(values))
             phase = {"name": name, "id": f"{cycle}-{index}-{name}", "cycle": cycle, "index": index,
                      "requested": True, "status": "complete", "reason": "", "start_usec": start,
-                     "end_usec": clock, "wall_seconds": sum(values) / 1_000_000,
+                     "end_usec": clock, "frames": len(values), "wall_seconds": sum(values) / 1_000_000,
                      "sim_seconds": sum(values) / 1_000_000, "rendered": not headless,
                      "runtime_display": display(manifest, clock)}
             if name == "runway_circuit":
