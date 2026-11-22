@@ -178,7 +178,7 @@ func _test_hud_ground(field: Dictionary, track: Dictionary) -> void:
 	for point: Array in [[39.0, -4.0], [39.31, -4.1], [45.0, east], [80.0, 0.0]]:
 		var terrain := session.environment.ground(point[0], point[1])
 		session.sim.state = _state([point[0], point[1], -(terrain[0] + 2.0)], [8.0, 0.0, 0.0])
-		var before := session.sim.state.to_byte_array()
+		var before: PackedByteArray = session.sim.state.to_byte_array()
 		_check("flight HUD agrees with contact ground at %s" % [point],
 			absf(flight._overlay_snapshot().telemetry.height_agl - 2.0) < 1.0e-12
 			and session.sim.state.to_byte_array() == before)
