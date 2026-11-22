@@ -78,7 +78,7 @@ Opt-in ephemeral sessions are not unique people or an unbiased sample of all pla
 
 ## Repair sequence and acceptance
 
-The following are proposed ownership areas and acceptance evidence, not tickets already assigned to people or repairs implemented by this branch.
+The table records the audit's proposed order, ownership and acceptance criteria. Repair evidence from `main` follows below.
 
 | Order | Work item | Suggested owner | Evidence required to close |
 | --- | --- | --- | --- |
@@ -94,4 +94,24 @@ The following are proposed ownership areas and acceptance evidence, not tickets 
 | 4 | TA22-L01: clean up failed local metadata export | Ground recording | Injected failure after temporary JSON creation leaves no owned orphan; samples remain available; retry and existing-output preservation verified |
 | 4 | Residual consent, deletion and release qualification | Product + client + DevOps | Explicit persistence decision, all-copy deletion drill, packaged OS admission and current deployment evidence |
 
-After each repair, convert the corresponding counterexample to an assertion of correct behavior. Preserve the baseline evidence and add a new dated closure record referencing the repair commit. Re-run the affected existing suite and actual bridge where a contract or wire behavior changes. Full application tests and deployment gates belong to the eventual repair/release scope; broad test repetition on this documentation branch would not supply the missing native or live-host evidence.
+For each repair, add a regression that asserts the expected behavior and record the repair commit and verification here. Run the affected suites and the Godot-to-receiver bridge when a contract or wire behavior changes. Qualify native packages and deployed operations through their own acceptance gates.
+
+## Verification on main — 2026-11-22
+
+Both source inventories matched all 137 distinct Git blobs at the audited commit. Before repairs, 136 matched integrated `main` at `2bfb4dc7b`. The only difference was the link to this audit in the telemetry plan.
+
+| Finding | Repair and verification | Open acceptance |
+| --- | --- | --- |
+| TA22-R01 | Validated integer metrics stay integral in GPU, vehicle and private insight aggregation. The regression covers stored and newly ingested integer, decimal and exponent forms across two releases. It also checks aggregate equality and original-body retry/conflict behavior. The receiver suite passed 142 tests and the reference suite passed 128. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/25c3736d3badd71e45eae5dcf140c93d9419fbf4) | Loopback Godot bridge and deployed recovery rehearsal |
+| TA22-O01 | Machine health and the independent checker now include warning severity and recovery details. Regression checks cover all six receiver warnings, a recoverable rollup, quiet and suppressed cases, and separation from upstream failures. All 103 operator tests passed on Windows. [Repair](https://github.com/bultodepapas/OpenRCsimulator/commit/0f859b5f358f4807877ec8bd7fe8009bc3856d3f) | Deploy matching dashboard and checker code and confirm notification delivery before the rollup cutoff |
+| TA22-C01 | Cadence splits at raw display, input, applied graphics and activity boundaries. Partial windows retain the original context and new windows restart warmup. The checked service and AppRoot paths passed, including a same-vehicle restart and a Settings preview during opt-in. | Rendered checks across vehicle families and display configurations |
+| TA22-C02 | The first frame, error or accepted flight event after a UTC day change or the four-hour limit retires the old epoch. Unsealed observations are discarded. Sealed batches retain their bytes and deadline, and expired completions are fenced. Checked service tests passed, including early signals and reentrant consent changes. | Full application CI. Pre-seal lifetime remains tracked in TA22-C05. |
+| TA22-C03 | Crash revisions and duplicate events count once per detector generation, including across slices and resets. The checked service regression passed. | The earlier Windows request remains queued behind host admission. |
+
+The hosted telemetry workflow passed schemas, examples, reference, receiver, operator and container-smoke checks for both repairs. [Telemetry contracts run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/45046440057).
+
+### Client implementation dependencies
+
+Ground uses its scene's accepted reset boundary. Air activities use their existing recorder reset signals to split cadence. Activity summaries still require an observed rewind or a change of session before ending the previous activity. AppRoot clears telemetry-specific presentation state when collection closes and initializes it from the effective Settings preview on admission. The renewed companion behavior manifest passed its checked admission suite. [Manifest and profile validation](../../../../app/ai/companions/profile_loader.gd).
+
+The integrated client checks used pinned Godot on an Apple Silicon Mac in headless mode. The AppRoot and companion checks are in pool request `ta22-c01-c02-app-final-20261122`. The service and queue checks share that same frozen source and use jobs `03b71824a57d401e8b62f6bf32b4ca5c` and `2ca50785e3c34172a9c1289a4d09a2c8`. Linux admission reported insufficient space before dispatch.
